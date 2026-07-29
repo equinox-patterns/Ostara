@@ -38,7 +38,7 @@
 #include "../version.h"
 #include "../vformat/knownmeasurements/vknownmeasurementsdatabase.h"
 #include "../vganalytics/vganalytics.h"
-#include "../vmisc/qt_dispatch/qt_dispatch.h"
+#include "../vdispatch/qt_dispatch.h"
 #include "../vmisc/theme/vtheme.h"
 #include "../vmisc/vsysexits.h"
 #include "../vmisc/vvalentinasettings.h"

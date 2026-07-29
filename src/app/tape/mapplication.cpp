@@ -37,7 +37,7 @@
 #include "../vformat/knownmeasurements/vknownmeasurementsdatabase.h"
 #include "../vganalytics/vganalytics.h"
 #include "../vmisc/projectversion.h"
-#include "../vmisc/qt_dispatch/qt_dispatch.h"
+#include "../vdispatch/qt_dispatch.h"
 #include "../vmisc/theme/vtheme.h"
 #include "../vmisc/vsysexits.h"
 #include "dialogs/dialogtapepreferences.h"

@@ -5,6 +5,7 @@ VToolApp {
     Depends { name: "buildconfig" }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt"; submodules: ["core", "widgets", "svg"] }
+    Depends { name: "VDispatchLib" }
     Depends { name: "VMiscLib"; }
     Depends { name: "VPatternDBLib"; }
     Depends { name: "FervorLib"; }

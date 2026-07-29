@@ -35,7 +35,7 @@
 #include "../ifc/exception/vexceptionwrongid.h"
 #include "../vganalytics/vganalytics.h"
 #include "../vmisc/projectversion.h"
-#include "../vmisc/qt_dispatch/qt_dispatch.h"
+#include "../vdispatch/qt_dispatch.h"
 #include "../vmisc/theme/vtheme.h"
 #include "../vmisc/vsysexits.h"
 #include "vpmainwindow.h"

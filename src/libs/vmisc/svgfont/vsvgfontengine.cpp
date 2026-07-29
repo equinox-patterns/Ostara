@@ -41,7 +41,7 @@
 #include <QSet>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 9, 0)
-#include "../backport/qpainterstateguard.h"
+#include "../../vbackport/qpainterstateguard.h"
 #else
 #include <QPainterStateGuard>
 #endif

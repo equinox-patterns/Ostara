@@ -3,6 +3,8 @@ Project {
         "fervor/fervor.qbs",
         "ifc/ifc.qbs",
         "qmuparser/qmuparser.qbs",
+        "vbackport/vbackport.qbs",
+        "vdispatch/vdispatch.qbs",
         "vdxf/vdxf.qbs",
         "vformat/vformat.qbs",
         "vgeometry/vgeometry.qbs",

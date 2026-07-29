@@ -69,7 +69,6 @@ VLib {
         "defglobal.h",
         "testvapplication.h",
         "literals.h",
-        "qt_dispatch/qt_dispatch.h",
         "vmodifierkey.h",
         "typedef.h",
         "vabstractshortcutmanager.h",
@@ -222,16 +221,6 @@ VLib {
             "vcrashpaths.h",
         ]
         condition: buildconfig.useConanPackages && buildconfig.conanCrashReportingEnabled
-    }
-
-    Group {
-        name: "backport"
-        prefix: "backport/"
-        files: [
-            "qpainterstateguard.h",
-            "qpainterstateguard.cpp",
-        ]
-        condition: Utilities.versionCompare(Qt.core.version, "6.9") < 0
     }
 
     Group {
