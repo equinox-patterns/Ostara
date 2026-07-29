@@ -28,7 +28,7 @@
 #ifndef VEXCEPTIONINVALIDHISTORY_H
 #define VEXCEPTIONINVALIDHISTORY_H
 
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 
 class VExceptionInvalidHistory : public VException
 {

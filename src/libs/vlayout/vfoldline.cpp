@@ -30,7 +30,7 @@
 #include "../vgeometry/vgeometrydef.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/def.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/svgfont/svgdef.h"
 #include "../vmisc/svgfont/vsvgfont.h"
 #include "../vmisc/svgfont/vsvgfontdatabase.h"

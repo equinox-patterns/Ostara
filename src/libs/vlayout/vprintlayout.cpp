@@ -45,7 +45,7 @@
 
 #include "../ifc/xml/vwatermarkconverter.h"
 #include "../vformat/vwatermark.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vpropertyexplorer/checkablemessagebox.h"
 #include "dialogs/dialoglayoutscale.h"

@@ -36,7 +36,7 @@
 
 #include "../vgeometry/vgeometrydef.h"
 #include "../vgeometry/vlayoutplacelabel.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vpatterndb/floatItemData/floatitemdef.h"
 #include "../vwidgets/vpiecegrainline.h"
 #include "vlayoutpiecepath.h"

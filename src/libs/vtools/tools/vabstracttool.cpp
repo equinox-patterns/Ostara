@@ -66,7 +66,7 @@
 #include "../vgeometry/vgobject.h"
 #include "../vgeometry/vpointf.h"
 #include "../vgeometry/vsplinepath.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/variables/vinternalvariable.h"
 #include "../vpatterndb/vcontainer.h"

@@ -32,7 +32,7 @@
 #include <QString>
 #include <QtGlobal>
 
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 
 class QDomElement;
 

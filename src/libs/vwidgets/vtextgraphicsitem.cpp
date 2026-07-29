@@ -43,7 +43,7 @@
 #include "../vformat/vsinglelineoutlinechar.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/def.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/literals.h"
 #include "../vmisc/svgfont/svgdef.h"
 #include "../vmisc/svgfont/vsvgfont.h"

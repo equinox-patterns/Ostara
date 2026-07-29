@@ -45,7 +45,7 @@
 #include "../vhpgl/vhpglpaintdevice.h"
 #include "../vmisc/def.h"
 #include "../vmisc/defglobal.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vobj/vobjpaintdevice.h"
 #include "vgraphicsfillitem.h"

@@ -42,7 +42,7 @@
 #include "../vgeometry/vpointf.h"
 #include "../vlayout/vrawsapoint.h"
 #include "../vlayout/vsapoint.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/typedef.h"
 
 #ifdef __GNUC__

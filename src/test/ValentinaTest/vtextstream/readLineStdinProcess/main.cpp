@@ -29,7 +29,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QString>
 
-#include "../vmisc/vtextstream.h"
+#include "vtextstream.h"
 
 int main(int argc, char **argv)
 {

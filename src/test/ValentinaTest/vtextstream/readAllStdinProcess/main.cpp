@@ -28,7 +28,7 @@
 
 #include <stdio.h>
 
-#include "../vmisc/vtextstream.h"
+#include "vtextstream.h"
 
 int main(int, char**)
 {

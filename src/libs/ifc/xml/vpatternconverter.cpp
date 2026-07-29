@@ -43,7 +43,7 @@
 #include "../exception/vexceptionwrongid.h"
 #include "../qmuparser/qmutokenparser.h"
 #include "../vmisc/def.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/compatibility.h"
 
 using namespace Qt::Literals::StringLiterals;

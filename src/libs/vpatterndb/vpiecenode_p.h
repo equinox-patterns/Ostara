@@ -34,7 +34,7 @@
 #include <QSharedData>
 
 #include "../ifc/ifcdef.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_GCC("-Weffc++")

@@ -34,7 +34,7 @@
 #include <QSharedData>
 #include <QVector>
 
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "vlayoutpoint.h"
 
 QT_WARNING_PUSH

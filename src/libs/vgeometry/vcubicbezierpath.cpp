@@ -32,7 +32,7 @@
 #include <QPoint>
 #include <QtMath>
 
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "vabstractcurve.h"
 #include "vcubicbezierpath_p.h"
 #include "vspline.h"

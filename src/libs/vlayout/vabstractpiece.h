@@ -41,7 +41,7 @@
 #include "../vgeometry/vgeometrydef.h"
 #include "../vgeometry/vgobject.h"
 #include "../vmisc/compatibility.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/testpath.h"
 #include "../vmisc/vabstractapplication.h"
 #include "vrawsapoint.h"

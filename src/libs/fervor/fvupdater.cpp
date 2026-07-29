@@ -42,7 +42,7 @@
 #include <qxmlstream.h>
 
 #include "../ifc/xml/vabstractconverter.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/projectversion.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"

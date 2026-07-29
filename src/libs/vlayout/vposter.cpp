@@ -48,7 +48,7 @@
 #include "../ifc/ifcdef.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/def.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/vabstractvalapplication.h"
 
 using namespace Qt::Literals::StringLiterals;

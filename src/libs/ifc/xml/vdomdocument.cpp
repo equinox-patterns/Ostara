@@ -37,7 +37,7 @@
 #include "../exception/vexceptionwrongid.h"
 #include "../ifcdef.h"
 #include "../vmisc/compatibility.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "vparsererrorhandler.h"
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)

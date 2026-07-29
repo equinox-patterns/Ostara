@@ -49,7 +49,7 @@
 #include "../vlayout/vlayoutpoint.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/def.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "vpiecegrainline.h"
 
 //---------------------------------------------------------------------------------------------------------------------

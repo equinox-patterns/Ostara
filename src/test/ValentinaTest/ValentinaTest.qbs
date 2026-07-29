@@ -4,6 +4,7 @@ import qbs.FileInfo
 VTestApp {
     Depends { name: "buildconfig" }
     Depends { name: "VTestLib" }
+    Depends { name: "VTextStreamLib" }
     Depends { name: "Qt"; submodules: ["core", "testlib"] }
     Depends { name: "VToolsLib" }
     Depends { name: "VGeometryLib" }

@@ -55,7 +55,7 @@
 #include "../vlayout/vrawlayout.h"
 #include "../vmisc/dialogs/dialogaskcollectstatistic.h"
 #include "../vmisc/dialogs/dialogselectlanguage.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/lambdaconstants.h"
 #include "../vmisc/projectversion.h"
 #include "../vmisc/theme/themeDef.h"

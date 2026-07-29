@@ -29,7 +29,7 @@
 #define VPIECEGRAINLINE_P_H
 
 #include "../vmisc/defglobal.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vpatterndb/floatItemData/floatitemdef.h"
 
 #include <QLineF>

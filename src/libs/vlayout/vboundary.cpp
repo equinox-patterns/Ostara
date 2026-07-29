@@ -28,7 +28,7 @@
 
 #include "vboundary.h"
 #include "../vgeometry/vgobject.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/vabstractapplication.h"
 #include "vabstractpiece.h"
 #include "vlayoutpiecepath.h"

@@ -17,7 +17,7 @@ using QTextCodec = VTextCodec;
 #include <QTextCodec>
 #endif // QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/vabstractapplication.h"
 
 DRW_TextCodec::DRW_TextCodec()

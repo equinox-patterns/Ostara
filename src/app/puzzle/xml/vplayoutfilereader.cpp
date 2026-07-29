@@ -36,7 +36,7 @@
 #include "../vlayout/vlayoutpiecepath.h"
 #include "../vlayout/vtextmanager.h"
 #include "../vmisc/compatibility.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/floatItemData/floatitemdef.h"
 #include "../vwidgets/vpiecegrainline.h"

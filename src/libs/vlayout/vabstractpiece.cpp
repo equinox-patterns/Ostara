@@ -31,7 +31,7 @@
 #include "../vgeometry/vlayoutplacelabel.h"
 #include "../vgeometry/vpointf.h"
 #include "../vmisc/compatibility.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"

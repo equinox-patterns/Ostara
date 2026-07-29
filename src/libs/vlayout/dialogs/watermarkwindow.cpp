@@ -42,7 +42,7 @@
 #include "../vformat/vwatermark.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/def.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vpropertyexplorer/checkablemessagebox.h"
 #include "../vwidgets/vmousewheelwidgetadjustmentguard.h"

@@ -31,7 +31,7 @@
 
 #include <QString>
 
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 
 class VExceptionUndo : public VException
 {

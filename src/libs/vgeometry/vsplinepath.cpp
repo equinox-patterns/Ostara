@@ -35,7 +35,7 @@
 
 #include "../ifc/ifcdef.h"
 #include "../vmisc/defglobal.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "vabstractcurve.h"
 #include "vsplinepath_p.h"
 

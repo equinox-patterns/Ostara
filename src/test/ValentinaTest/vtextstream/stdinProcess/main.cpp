@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include "../vmisc/vtextstream.h"
+#include "vtextstream.h"
 
 #include <stdio.h>
 

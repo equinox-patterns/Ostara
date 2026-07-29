@@ -27,7 +27,7 @@
  *************************************************************************/
 #include "vsvgfontreader.h"
 #include "../def.h"
-#include "../exception/vexception.h"
+#include "vexception.h"
 #include "qpainterpath.h"
 #include "svgdef.h"
 #include "vsvgfont.h"

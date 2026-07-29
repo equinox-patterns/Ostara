@@ -5,6 +5,7 @@ CppApplication {
   Depends { name: "buildconfig" }
   Depends { name: "Qt"; submodules: ["core"] }
   Depends { name: "VMiscLib"; }
+  Depends { name: "VTextStreamLib" }
 
   name: "readLineStdinProcess"
   condition: buildconfig.enableUnitTests &&

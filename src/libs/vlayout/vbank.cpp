@@ -32,7 +32,7 @@
 #include <climits>
 
 #include "../vmisc/compatibility.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "vlayoutdef.h"
 

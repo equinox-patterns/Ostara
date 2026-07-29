@@ -28,7 +28,7 @@
 
 #include "dialogsavemanuallayout.h"
 #include "../vlayout/vlayoutexporter.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vpapplication.h"
 #include "ui_dialogsavemanuallayout.h"
 

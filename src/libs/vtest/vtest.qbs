@@ -1,5 +1,6 @@
 VLib {
     Depends { name: "Qt"; submodules: ["testlib"] }
+    Depends { name: "VMiscLib" }
     Depends { name: "VGeometryLib" }
     Depends { name: "VPatternDBLib" }
     Depends { name: "VLayoutLib" }
@@ -15,6 +16,7 @@ VLib {
 
     Export {
         Depends { name: "cpp" }
+        Depends { name: "VMiscLib" }
         cpp.includePaths: [exportingProduct.sourceDirectory]
     }
 }

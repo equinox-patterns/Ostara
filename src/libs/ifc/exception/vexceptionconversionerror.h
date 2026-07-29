@@ -31,7 +31,7 @@
 
 #include <QString>
 
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 
 /**
  * @brief The VExceptionConversionError class for exception of conversion error

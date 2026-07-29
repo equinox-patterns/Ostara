@@ -35,7 +35,7 @@
 #include "../ifc/ifcdef.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/def.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "vabstractapplication.h"
 #include "vpointf.h"
 #include "vspline.h"

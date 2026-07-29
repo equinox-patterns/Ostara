@@ -5,6 +5,7 @@ Project {
         "qmuparser/qmuparser.qbs",
         "vbackport/vbackport.qbs",
         "vdispatch/vdispatch.qbs",
+        "vexception/vexception.qbs",
         "vdxf/vdxf.qbs",
         "vformat/vformat.qbs",
         "vgeometry/vgeometry.qbs",

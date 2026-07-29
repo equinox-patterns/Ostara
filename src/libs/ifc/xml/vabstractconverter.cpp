@@ -42,7 +42,7 @@
 #include <QTextDocument>
 #include <QUrl>
 
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "vdomdocument.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)

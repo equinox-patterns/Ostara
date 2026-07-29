@@ -54,7 +54,7 @@
 #include <QUrl>
 #include <QtDebug>
 
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "compatibility.h"
 #include "literals.h"
 #include "vabstractapplication.h"

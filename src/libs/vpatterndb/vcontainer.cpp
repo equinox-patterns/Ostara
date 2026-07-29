@@ -43,7 +43,7 @@
 #include "../vgeometry/vgobject.h"
 #include "../vgeometry/vpointf.h"
 #include "../vgeometry/vspline.h"
-#include "../vmisc/exception/vexception.h"
+#include "vexception.h"
 #include "../vmisc/literals.h"
 #include "variables/varcradius.h"
 #include "variables/vcurveangle.h"
