@@ -59,9 +59,7 @@
 #include <qtypes.h>
 #endif
 
-#if defined(WITH_TEXTCODEC)
-#include "codecs/qtextcodec.h"
-#endif
+
 
 #include <QIODevice>
 #include <QLocale>

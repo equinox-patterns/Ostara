@@ -80,16 +80,6 @@ VLib {
     ]
 
     Group {
-        name: "VTextStream"
-        condition: Utilities.versionCompare(Qt.core.version, "6") >= 0
-        files: [
-            "vtextstream.h",
-            "vtextstream.cpp",
-            "vtextstream_p.h"
-        ]
-    }
-
-    Group {
         name: "AppImage"
         condition: buildconfig.enableAppImage && qbs.targetOS.contains("unix") && !qbs.targetOS.contains("macos")
         files: [

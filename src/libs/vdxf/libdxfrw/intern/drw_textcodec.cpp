@@ -11,12 +11,8 @@
 #endif
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#ifdef WITH_TEXTCODEC
-#include "../vmisc/codecs/qtextcodec.h"
-#else
 #include "vtextcodec.h"
 using QTextCodec = VTextCodec;
-#endif // WITH_TEXTCODEC
 #else
 #include <QTextCodec>
 #endif // QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)

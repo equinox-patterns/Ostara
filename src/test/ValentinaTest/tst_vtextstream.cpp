@@ -30,11 +30,7 @@
 
 #include <QtTest/QtTest>
 
-#ifdef WITH_TEXTCODEC
-#include "../vmisc/codecs/qtextcodec.h"
-#endif
-
-#include "../vmisc/vtextstream.h"
+#include "../vtextstream/vtextstream.h"
 #include <qobject.h>
 #include <qstringliteral.h>
 

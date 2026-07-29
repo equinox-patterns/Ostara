@@ -24,6 +24,7 @@ CppApplication {
     Properties {
         condition: qbs.targetOS.contains("macos")
         cpp.minimumMacosVersion: buildconfig.minimumMacosVersion
+        cpp.linkerFlags: ["-headerpad_max_install_names"]
         codesign.enableCodeSigning: buildconfig.enableCodeSigning
     }
 

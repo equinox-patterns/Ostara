@@ -44,10 +44,6 @@
 #include <QList>
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#ifdef WITH_TEXTCODEC
-#include "codecs/qtextcodec.h"
-#include "vtextstream.h"
-#else
 
 #include <QTextStream>
 using VTextStream = QTextStream;
@@ -55,7 +51,6 @@ using VTextStream = QTextStream;
 #include "vtextcodec.h"
 using QTextCodec = VTextCodec;
 
-#endif // WITH_TEXTCODEC
 #else
 #include <QTextCodec>
 
