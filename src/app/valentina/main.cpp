@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CRASH_REPORTING
-#include "../vmisc/crashhandler/crashhandler.h"
+#include "crashhandler.h"
 #include "version.h"
 #endif
 

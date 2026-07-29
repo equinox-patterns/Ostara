@@ -15,6 +15,7 @@ VToolApp {
     Depends { name: "VFormatLib"; }
     Depends { name: "VDispatchLib" }
     Depends { name: "VMiscLib"; }
+    Depends { name: "VCrashHandlerLib"; condition: buildconfig.useConanPackages && buildconfig.conanCrashReportingEnabled }
     Depends { name: "VGAnalyticsLib" }
     Depends { name: "Tape"; condition: qbs.targetOS.contains("macos") && buildconfig.enableMultiBundle }
     Depends { name: "Puzzle"; condition: qbs.targetOS.contains("macos") && buildconfig.enableMultiBundle }

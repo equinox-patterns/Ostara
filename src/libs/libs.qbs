@@ -4,6 +4,7 @@ Project {
         "ifc/ifc.qbs",
         "qmuparser/qmuparser.qbs",
         "vbackport/vbackport.qbs",
+        "vcrashhandler/vcrashhandler.qbs",
         "vdispatch/vdispatch.qbs",
         "vexception/vexception.qbs",
         "vdxf/vdxf.qbs",

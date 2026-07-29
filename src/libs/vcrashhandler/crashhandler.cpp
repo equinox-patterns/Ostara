@@ -53,11 +53,11 @@
 
 #include "vcrashpaths.h"
 
-#include "../projectversion.h"
-#include "../vcommonsettings.h"
+#include "projectversion.h"
+#include "vcommonsettings.h"
 
 #if defined(APPIMAGE) && defined(Q_OS_LINUX)
-#include "../appimage.h"
+#include "appimage.h"
 #endif
 
 #include <vcsRepoState.h>

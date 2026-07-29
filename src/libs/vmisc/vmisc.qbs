@@ -5,30 +5,6 @@ VLib {
     Depends { name: "buildconfig" }
     Depends { name: "VExceptionLib" }
 
-    Depends {
-        name: "crashpad";
-        condition: buildconfig.useConanPackages && buildconfig.conanCrashReportingEnabled
-    }
-
-
-    Properties {
-        condition: buildconfig.useConanPackages && buildconfig.conanCrashReportingEnabled && qbs.targetOS.contains("windows") && qbs.toolchain.contains("msvc")
-        cpp.dynamicLibraries: ["Advapi32"]
-    }
-
-    Properties {
-        condition: buildconfig.useConanPackages && buildconfig.conanCrashReportingEnabled && qbs.targetOS.contains("macos")
-        cpp.libraryPaths: ["/usr/lib"]
-        cpp.dynamicLibraries: ["bsm"]
-        cpp.frameworks: ["AppKit", "Security"]
-    }
-
-    Properties {
-        condition: buildconfig.useConanPackages && buildconfig.conanCrashReportingEnabled && qbs.targetOS.contains("unix") && !qbs.targetOS.contains("macos")
-        cpp.dynamicLibraries: ["dl"]
-    }
-
-
     Properties {
         condition: qbs.targetOS.contains("windows")
         cpp.staticLibraries: ["User32"]
@@ -212,26 +188,10 @@ VLib {
         condition: qbs.targetOS.contains("macos")
     }
 
-    Group {
-        name: "crashhandler"
-        prefix: "crashhandler/"
-        files: [
-            "crashhandler.h",
-            "crashhandler.cpp",
-            "vcrashpaths.cpp",
-            "vcrashpaths.h",
-        ]
-        condition: buildconfig.useConanPackages && buildconfig.conanCrashReportingEnabled
-    }
-
     Export {
         Depends { name: "cpp" }
         Depends { name: "Qt"; submodules: ["printsupport", "widgets"] }
         Depends { name: "VExceptionLib" }
-        Depends {
-            name: "crashpad";
-            condition: buildconfig.useConanPackages && buildconfig.conanCrashReportingEnabled
-        }
         cpp.includePaths: [exportingProduct.sourceDirectory]
     }
 }
