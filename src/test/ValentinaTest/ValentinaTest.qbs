@@ -176,27 +176,6 @@ VTestApp {
     }
 
     Group {
-        name: "Text codec tests"
-        condition: Utilities.versionCompare(Qt.core.version, "6") >= 0 && project.withTextCodec
-        files: [
-            "tst_qstringiterator.cpp",
-            "tst_qstringiterator.h",
-            "tst_utf8.cpp",
-            "tst_utf8.h",
-            "tst_qtextcodec.cpp",
-            "tst_qtextcodec.h",
-        ]
-    }
-
-    Group {
-        name: "Codecs test data"
-        condition: project.withTextCodec
-        prefix: "codecs/"
-        files: ["*.txt"]
-        fileTags: []
-    }
-
-    Group {
         name: "VTextCodec tests"
         condition: Utilities.versionCompare(Qt.core.version, "6") >= 0 && !project.withTextCodec
         files: [

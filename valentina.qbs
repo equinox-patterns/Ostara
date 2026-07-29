@@ -22,21 +22,9 @@ Project {
         return false;
     }
 
-    // Enable the QTextCodec API and support for character encodings.
-    // Required for any text codec functionality.
-    property bool withTextCodec: true
-    // Include minimal, common built-in codecs (UTF-8, UTF-16, Latin-1, local 8-bit encodings).
-    // Lightweight, always sufficient for standard text conversions.
-    property bool withBasicCodecs: true
-    // Include extended or “large” built-in codecs (rare legacy encodings, extra code pages).
-    // Optional; increases binary size.
-    property bool withBigCodecs: false
-    // Use ICU library for Unicode conversion and extended codec support.
-    // Provides widest coverage; optional if you have ICU.
-    property bool withICUCodecs: false
-    // Use system iconv library for encoding conversions.
-    // Alternative to ICU; optional depending on platform.
-    property bool withICONVCodecs: false
+    // Text codec support is now handled natively by Qt 6 QStringConverter.
+    // The legacy codecs/ subsystem has been removed.
+    property bool withTextCodec: false
 
 
     property string conanInstallPath: conanProbe.generatedFilesPath
