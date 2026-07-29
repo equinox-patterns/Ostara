@@ -46,7 +46,7 @@
 #include <qnumeric.h>
 
 #include "../qmuparser/qmuparsererror.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/vcontainer.h"

@@ -32,7 +32,7 @@
 #include <QGraphicsLineItem>
 
 #include "../vmisc/def.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 
 class VScaledLine : public QGraphicsLineItem
 {

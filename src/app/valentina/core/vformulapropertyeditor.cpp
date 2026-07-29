@@ -37,7 +37,7 @@
 #include <QRegularExpression>
 #include <QSpacerItem>
 
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vpropertyexplorer/vproperty.h"
 #include "../vtools/dialogs/support/dialogeditwrongformula.h"

@@ -31,7 +31,7 @@
 #include "../vganalytics/vganalytics.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/dialogs/vshortcutdialog.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vabstractshortcutmanager.h"
 #include "../vwidgets/vmousewheelwidgetadjustmentguard.h"
 #include "ui_puzzlepreferencesconfigurationpage.h"

@@ -33,7 +33,7 @@
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../ifc/xml/vpatterngraph.h"
 #include "../vlayout/vabstractpiece.h"
-#include "../vmisc/theme/vscenestylesheet.h"
+#include "vscenestylesheet.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vpatterndb/vpiecepath.h"
 #include "../vtoolseamallowance.h"

@@ -37,7 +37,7 @@
 #include "../vgeometry/varc.h"
 #include "../vgeometry/vellipticalarc.h"
 #include "../visualization.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 #include "../vmisc/vmodifierkey.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/scalesceneitems.h"

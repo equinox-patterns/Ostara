@@ -3,6 +3,7 @@ import qbs.Utilities
 VLib {
     Depends { name: "Qt"; submodules: ["core", "gui", "xml", "svg", "concurrent"] }
     Depends { name: "VMiscLib" }
+    Depends { name: "VThemeLib" }
     Depends { name: "GraafLib" }
 
     Depends {
@@ -109,6 +110,7 @@ VLib {
         Depends { name: "cpp" }
         Depends { name: "Qt"; submodules: ["core", "xml"] }
         Depends { name: "VMiscLib" }
+    Depends { name: "VThemeLib" }
         Depends { name: "xerces-c"; condition: Utilities.versionCompare(Qt.core.version, "6") >= 0 &&
                                                (!buildconfig.useConanPackages ||
                                                 (buildconfig.useConanPackages && !buildconfig.conanXercesEnabled)) }

@@ -33,7 +33,7 @@
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vformat/vsinglelineoutlinechar.h"
 #include "../vmisc/svgfont/vsvgfontdatabase.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vwidgets/vmaingraphicsview.h"
 #include "../vwidgets/vmousewheelwidgetadjustmentguard.h"

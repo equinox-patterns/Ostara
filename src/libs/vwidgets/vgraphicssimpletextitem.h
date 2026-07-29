@@ -39,7 +39,7 @@
 #include <QtGlobal>
 
 #include "../vmisc/def.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 
 /**
  * @brief The VGraphicsSimpleTextItem class pointer label.

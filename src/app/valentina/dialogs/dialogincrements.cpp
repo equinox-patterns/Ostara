@@ -31,7 +31,7 @@
 #include "../qmuparser/qmutokenparser.h"
 #include "../vmisc/dialogs/dialogexporttocsv.h"
 #include "../vmisc/qxtcsvmodel.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/variables/varcradius.h"

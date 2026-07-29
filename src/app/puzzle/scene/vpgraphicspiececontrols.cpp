@@ -45,8 +45,8 @@
 #include "../layout/vpsheet.h"
 #include "../undocommands/vpundooriginmove.h"
 #include "../undocommands/vpundopiecerotate.h"
-#include "../vmisc/theme/vscenestylesheet.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vscenestylesheet.h"
+#include "vtheme.h"
 #include "../vwidgets/global.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 9, 0)

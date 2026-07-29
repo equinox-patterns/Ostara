@@ -30,7 +30,7 @@
 
 #include "../../../visualization/line/vistoolspecialpoint.h"
 #include "../../support/dialogeditwrongformula.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vpatterndb/vcontainer.h"
 
 #include <QTimer>

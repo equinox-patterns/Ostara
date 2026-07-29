@@ -85,7 +85,7 @@
 #include "../vmisc/dialogs/dialogaskcollectstatistic.h"
 #include "../vmisc/dialogs/dialogselectlanguage.h"
 #include "../vmisc/qxtcsvmodel.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vmodifierkey.h"
 #include "../vmisc/vsysexits.h"

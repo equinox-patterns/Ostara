@@ -41,7 +41,7 @@
 #include "../visualization.h"
 #include "../vmisc/vmodifierkey.h"
 #include "../vwidgets/scalesceneitems.h"
-#include "theme/themeDef.h"
+#include "themeDef.h"
 #include "vispath.h"
 
 //---------------------------------------------------------------------------------------------------------------------

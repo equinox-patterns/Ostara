@@ -17,6 +17,7 @@ Project {
         "vpropertyexplorer/vpropertyexplorer.qbs",
         "vtest/vtest.qbs",
         "vtextstream/vtextstream.qbs",
+        "vtheme/vtheme.qbs",
         "vtools/vtools.qbs",
         "vwidgets/vwidgets.qbs",
         "vganalytics/vganalytics.qbs",

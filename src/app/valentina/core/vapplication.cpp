@@ -39,7 +39,7 @@
 #include "../vformat/knownmeasurements/vknownmeasurementsdatabase.h"
 #include "../vganalytics/vganalytics.h"
 #include "../vdispatch/qt_dispatch.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vsysexits.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "vvalentinashortcutmanager.h"

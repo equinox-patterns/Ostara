@@ -28,7 +28,7 @@
 
 #include "vwidgetgroups.h"
 #include "../vmisc/compatibility.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vtools/dialogs/tools/dialoggroup.h"
 #include "../vtools/undocommands/undogroup.h"

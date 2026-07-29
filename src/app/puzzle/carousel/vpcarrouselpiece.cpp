@@ -34,7 +34,7 @@
 
 #include "../layout/vplayout.h"
 #include "../layout/vppiece.h"
-#include "../vmisc/theme/vscenestylesheet.h"
+#include "vscenestylesheet.h"
 
 #include <QLoggingCategory>
 

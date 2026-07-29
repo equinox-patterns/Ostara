@@ -34,7 +34,7 @@
 #include <vector>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-#include "../compatibility.h"
+#include "compatibility.h"
 #endif
 
 using namespace Qt::Literals::StringLiterals;

@@ -42,10 +42,10 @@
 #include <QRectF>
 
 #include "../vmisc/literals.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "global.h"
-#include "theme/vscenestylesheet.h"
+#include "vscenestylesheet.h"
 #include "vmaingraphicsview.h"
 #include "vscenepoint.h"
 

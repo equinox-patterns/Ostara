@@ -29,8 +29,8 @@
 
 #include "../ifc/ifcdef.h"
 #include "../vmisc/compatibility.h"
-#include "../vmisc/theme/themeDef.h"
-#include "../vmisc/theme/vscenestylesheet.h"
+#include "themeDef.h"
+#include "vscenestylesheet.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"

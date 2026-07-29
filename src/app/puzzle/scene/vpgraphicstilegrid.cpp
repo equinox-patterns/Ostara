@@ -7,7 +7,7 @@
 #include "../vformat/vsinglelineoutlinechar.h"
 #include "../vmisc/svgfont/vsvgfontdatabase.h"
 #include "../vmisc/svgfont/vsvgfontengine.h"
-#include "../vmisc/theme/vscenestylesheet.h"
+#include "vscenestylesheet.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vptilefactory.h"
 #include "../vwidgets/global.h"

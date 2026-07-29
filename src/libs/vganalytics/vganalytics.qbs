@@ -9,6 +9,7 @@ VLib {
     ]
     Depends { name: "Qt"; submodules: ["core", "network", "gui"] }
     Depends { name: "VMiscLib"; }
+    Depends { name: "VThemeLib" }
 
     Export {
         Depends { name: "cpp" }

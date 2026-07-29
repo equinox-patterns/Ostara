@@ -30,7 +30,7 @@
 #define VGRAINLINEITEM_H
 
 #include "../vmisc/def.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 #include "../vpatterndb/floatItemData/floatitemdef.h"
 #include "vpieceitem.h"
 

@@ -36,7 +36,7 @@
 #include "../vganalytics/vganalytics.h"
 #include "../vmisc/projectversion.h"
 #include "../vdispatch/qt_dispatch.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vsysexits.h"
 #include "vpmainwindow.h"
 #include "vpuzzleshortcutmanager.h"

@@ -38,7 +38,7 @@
 #include "../../undocommands/image/zvaluemovebackgroundimage.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../toolsdef.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vwidgets/vmaingraphicsview.h"
 

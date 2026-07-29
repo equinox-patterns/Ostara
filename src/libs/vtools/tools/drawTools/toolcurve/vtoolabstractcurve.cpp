@@ -54,7 +54,7 @@
 #include "../vgeometry/vpointf.h"
 #include "../vgeometry/vspline.h"
 #include "vexception.h"
-#include "../vmisc/theme/vscenestylesheet.h"
+#include "vscenestylesheet.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/global.h"
 

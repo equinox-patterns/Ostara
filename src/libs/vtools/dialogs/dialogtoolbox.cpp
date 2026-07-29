@@ -39,7 +39,7 @@
 #include "../vgeometry/vspline.h"
 #include "../vgeometry/vsplinepath.h"
 #include "../vmisc/def.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/variables/vcurvelength.h"

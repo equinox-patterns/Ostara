@@ -37,7 +37,7 @@
 #include "../../support/dialogeditwrongformula.h"
 #include "../vgeometry/vplacelabelitem.h"
 #include "../vmisc/def.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/typedef.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vmodifierkey.h"

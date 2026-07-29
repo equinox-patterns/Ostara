@@ -33,7 +33,7 @@
 #include <QtGlobal>
 
 #include "../vmisc/def.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_GCC("-Wsuggest-final-types")

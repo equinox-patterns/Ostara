@@ -27,7 +27,7 @@
  *************************************************************************/
 
 #include "dialoginsertnode.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vtools/tools/toolsdef.h"
 #include "../vtools/visualization/path/vistoolinsertnode.h"

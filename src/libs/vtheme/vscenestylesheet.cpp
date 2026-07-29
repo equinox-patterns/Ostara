@@ -27,7 +27,7 @@
  *************************************************************************/
 #include "vscenestylesheet.h"
 
-#include "../def.h"
+#include "def.h"
 #include "vmanuallayoutstyle.h"
 #include "vtheme.h"
 

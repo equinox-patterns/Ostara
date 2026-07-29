@@ -44,7 +44,7 @@
 
 #include "../vgeometry/vgobject.h"
 #include "../vmisc/literals.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 #include "../vwidgets/global.h"
 #include "scalesceneitems.h"
 #include "vmaingraphicsview.h"

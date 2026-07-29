@@ -30,7 +30,7 @@
 #include <QIcon>
 #include <QtTest>
 
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"

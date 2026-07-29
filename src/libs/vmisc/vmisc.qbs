@@ -115,38 +115,7 @@ VLib {
         ]
     }
 
-    Group {
-        name: "theme"
-        prefix: "theme/"
-        files: [
-            "themeDef.cpp",
-            "themeDef.h",
-            "vapplicationstyle.cpp",
-            "vapplicationstyle.h",
-            "vmanuallayoutstyle.cpp",
-            "vmanuallayoutstyle.h",
-            "vpatternpiecestyle.cpp",
-            "vpatternpiecestyle.h",
-            "vscenestylesheet.cpp",
-            "vscenestylesheet.h",
-            "vstylesheetstyle.cpp",
-            "vstylesheetstyle.h",
-            "vtheme.h",
-            "vtheme.cpp",
-            "vtoolstyle.cpp",
-            "vtoolstyle.h",
-        ]
-    }
-
-    Group {
-        name: "Mac utils"
-        prefix: "theme/"
-        files: [
-            "macutils.h",
-            "macutils.mm"
-        ]
-        condition: qbs.targetOS.contains("macos")
-    }
+    // theme/ extrait vers VThemeLib
 
     Group {
         name: "Codecs: Text codec (internal)"

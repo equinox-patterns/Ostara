@@ -33,7 +33,7 @@
 #include <QtGlobal>
 
 #include "../vmisc/def.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 
 class VGraphicsSimpleTextItem;
 class VPointF;

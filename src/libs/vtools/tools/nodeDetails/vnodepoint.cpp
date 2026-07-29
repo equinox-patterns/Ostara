@@ -50,7 +50,7 @@
 #include "../vabstracttool.h"
 #include "../vdatatool.h"
 #include "../vgeometry/vpointf.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiecenode.h"

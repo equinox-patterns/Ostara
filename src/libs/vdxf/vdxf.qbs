@@ -2,6 +2,7 @@ import qbs.Utilities
 
 VLib {
     Depends { name: "VMiscLib" }
+    Depends { name: "VThemeLib" }
     Depends { name: "Qt"; submodules: ["core", "gui", "xml"] }
 
     name: "VDXFLib"

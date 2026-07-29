@@ -39,7 +39,7 @@
 #include "../layout/vppiece.h"
 #include "../layout/vpsheet.h"
 #include "../vmisc/compatibility.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "undocommands/vpundopiecezvaluemove.h"
 #include "vpgraphicspiece.h"

@@ -3,6 +3,7 @@ import qbs.Utilities
 VLib {
     Depends { name: "Qt"; submodules: ["core", "widgets", "xml"] }
     Depends { name: "VMiscLib" }
+    Depends { name: "VThemeLib" }
     Depends { name: "VPropertyExplorerLib" }
     Depends { name: "VPatternDBLib" }
 

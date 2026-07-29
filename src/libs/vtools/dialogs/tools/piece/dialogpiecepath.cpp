@@ -30,7 +30,7 @@
 #include "../../../tools/vtoolseamallowance.h"
 #include "../../../visualization/path/vistoolpiecepath.h"
 #include "../../support/dialogeditwrongformula.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vmodifierkey.h"
 #include "../vpatterndb/variables/vincrement.h"
 #include "../vpatterndb/vpiecenode.h"

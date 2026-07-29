@@ -35,7 +35,7 @@
 #include <QtMath>
 
 #include "../vgeometry/vgobject.h"
-#include "../vmisc/theme/themeDef.h"
+#include "themeDef.h"
 #include "../vpatterndb/vcontainer.h"
 
 //---------------------------------------------------------------------------------------------------------------------

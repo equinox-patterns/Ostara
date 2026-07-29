@@ -16,7 +16,7 @@
 #include "layout/vppiece.h"
 #include "layout/vpsheet.h"
 #include "scene/scenedef.h"
-#include "theme/vtheme.h"
+#include "vtheme.h"
 #include "vpapplication.h"
 #include "vtextmanager.h"
 

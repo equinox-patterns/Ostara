@@ -32,7 +32,7 @@
 #include "../qmuparser/qmudef.h"
 #include "../support/dialogeditwrongformula.h"
 #include "../vgeometry/vsplinepath.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/variables/vincrement.h"
 #include "../vpatterndb/vcontainer.h"

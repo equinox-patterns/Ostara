@@ -27,7 +27,7 @@
  *************************************************************************/
 
 #include "dialoglayoutprogress.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "ui_dialoglayoutprogress.h"

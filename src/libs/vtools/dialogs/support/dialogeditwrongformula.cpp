@@ -56,7 +56,7 @@
 #include "../vformat/knownmeasurements/vknownmeasurements.h"
 #include "../vformat/knownmeasurements/vknownmeasurementsdatabase.h"
 #include "../vmisc/def.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/variables/varcradius.h"

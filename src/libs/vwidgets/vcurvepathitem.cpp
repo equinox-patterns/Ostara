@@ -28,7 +28,7 @@
 
 #include "vcurvepathitem.h"
 #include "../vgeometry/vabstractcurve.h"
-#include "../vmisc/theme/vscenestylesheet.h"
+#include "vscenestylesheet.h"
 #include "../vmisc/vabstractapplication.h"
 #include "global.h"
 

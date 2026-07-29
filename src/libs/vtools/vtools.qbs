@@ -4,6 +4,7 @@ VLib {
     Depends { name: "VLayoutLib"; }
     Depends { name: "VFormatLib"; }
     Depends { name: "VWidgetsLib"; }
+    Depends { name: "VThemeLib" }
 
     name: "VToolsLib"
 

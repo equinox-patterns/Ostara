@@ -52,7 +52,7 @@
 #include "../vmisc/svgfont/vsvgfont.h"
 #include "../vmisc/svgfont/vsvgfontdatabase.h"
 #include "../vmisc/svgfont/vsvgfontengine.h"
-#include "../vmisc/theme/vscenestylesheet.h"
+#include "vscenestylesheet.h"
 #include "../vpapplication.h"
 #include "../vpatterndb/vpiecepath.h"
 #include "undocommands/vpundomovepieceonsheet.h"

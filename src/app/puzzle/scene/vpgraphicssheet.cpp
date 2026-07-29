@@ -33,7 +33,7 @@
 #include "../vlayout/vlayoutpiece.h"
 #include "../vmisc/svgfont/vsvgfontdatabase.h"
 #include "../vmisc/svgfont/vsvgfontengine.h"
-#include "../vmisc/theme/vscenestylesheet.h"
+#include "vscenestylesheet.h"
 #include "../vptilefactory.h"
 #include "../vwidgets/global.h"
 #include "../vwidgets/vpiecegrainline.h"

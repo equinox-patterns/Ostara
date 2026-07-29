@@ -30,7 +30,7 @@
 #include "../../visualization/visualization.h"
 #include "../support/dialogeditwrongformula.h"
 #include "../vgeometry/vsplinepath.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/global.h"

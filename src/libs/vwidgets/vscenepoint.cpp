@@ -29,7 +29,7 @@
 #include "vscenepoint.h"
 #include "../vgeometry/vpointf.h"
 #include "../vmisc/def.h"
-#include "../vmisc/theme/vscenestylesheet.h"
+#include "vscenestylesheet.h"
 #include "../vmisc/vabstractapplication.h"
 #include "global.h"
 #include "scalesceneitems.h"

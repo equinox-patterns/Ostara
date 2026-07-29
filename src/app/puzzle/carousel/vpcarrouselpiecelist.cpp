@@ -38,7 +38,7 @@
 #include "../layout/vppiece.h"
 #include "../layout/vpsheet.h"
 #include "../undocommands/vpundomovepieceonsheet.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "vpcarrousel.h"
 #include "vpcarrouselpiece.h"
 #include "vpmimedatapiece.h"

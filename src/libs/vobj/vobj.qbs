@@ -1,6 +1,7 @@
 VLib {
     Depends { name: "Qt"; submodules: ["gui"] }
     Depends { name: "VMiscLib"; }
+    Depends { name: "VThemeLib" }
 
     name: "VObjLib"
     files: [

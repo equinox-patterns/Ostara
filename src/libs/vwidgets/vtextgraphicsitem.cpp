@@ -50,7 +50,7 @@
 #include "../vmisc/svgfont/vsvgfontdatabase.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vwidgets/global.h"
-#include "theme/vscenestylesheet.h"
+#include "vscenestylesheet.h"
 #include "vtextgraphicsitem.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 9, 0)

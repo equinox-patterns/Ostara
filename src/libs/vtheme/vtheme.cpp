@@ -26,7 +26,7 @@
  **
  *************************************************************************/
 #include "vtheme.h"
-#include "../vcommonsettings.h"
+#include "vcommonsettings.h"
 
 #include <QIcon>
 #include <QOperatingSystemVersion>
@@ -48,12 +48,12 @@
 #include <QStyleHints>
 #endif
 
-#include "../vabstractapplication.h"
+#include "vabstractapplication.h"
 #include "vapplicationstyle.h"
 #include "vscenestylesheet.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-#include "../compatibility.h"
+#include "compatibility.h"
 #endif
 
 using namespace std::chrono_literals;

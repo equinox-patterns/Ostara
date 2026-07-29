@@ -46,7 +46,7 @@
 #include "../ifc/xml/vdomdocument.h"
 #include "../vgeometry/vgobject.h"
 #include "../vgeometry/vpointf.h"
-#include "../vmisc/theme/vscenestylesheet.h"
+#include "vscenestylesheet.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vtoolsinglepoint.h"
 #include "../vwidgets/scalesceneitems.h"

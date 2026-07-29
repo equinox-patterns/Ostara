@@ -33,8 +33,8 @@
 #include "../scene/vpgraphicstilegrid.h"
 #include "../vpapplication.h"
 #include "../vwidgets/vmaingraphicsscene.h"
-#include "theme/vscenestylesheet.h"
-#include "theme/vstylesheetstyle.h"
+#include "vscenestylesheet.h"
+#include "vstylesheetstyle.h"
 #include "vplayout.h"
 #include "vppiece.h"
 

@@ -33,7 +33,7 @@
 #include "../vmisc/compatibility.h"
 #include "../vmisc/dialogs/vshortcutdialog.h"
 #include "../vmisc/literals.h"
-#include "../vmisc/theme/vtheme.h"
+#include "vtheme.h"
 #include "../vmisc/vabstractshortcutmanager.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vwidgets/vmousewheelwidgetadjustmentguard.h"
