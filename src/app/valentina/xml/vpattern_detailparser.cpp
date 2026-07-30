@@ -1,0 +1,467 @@
+/************************************************************************
+ **
+ **  @file   vpattern_detailparser.cpp
+ **  @author Roman Telezhynskyi <dismine(at)gmail.com>
+ **  @date   30/07/2026
+ **
+ **  @brief  Detail/piece parsing methods extracted from vpattern.cpp
+ **
+ **  @note   Extracted from vpattern.cpp by Sophie Denys <contact@sophiedenys.com>
+ **          as part of Ostara refactoring.
+ **
+ **  @copyright
+ **  Copyright (C) 2013-2015 Valentina project
+ **
+ **  This program is free software: you can redistribute it and/or modify
+ **  it under the terms of the GNU General Public License as published by
+ **  the Free Software Foundation, either version 3 of the License, or
+ **  (at your option) any later version.
+ **
+ **  This program is distributed in the hope that it will be useful,
+ **  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ **  GNU General Public License for more details.
+ **
+ **  You should have received a copy of the GNU General Public License
+ **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **
+ *************************************************************************/
+
+#include "vpattern.h"
+
+#include "../core/vapplication.h"
+#include "../ifc/exception/vexceptionbadid.h"
+#include "../ifc/exception/vexceptionobjecterror.h"
+#include "../ifc/xml/vpatternconverter.h"
+#include "../vmisc/def.h"
+#include "../vmisc/vvalentinasettings.h"
+#include "../vpatterndb/floatItemData/vgrainlinedata.h"
+#include "../vpatterndb/floatItemData/vpatternlabeldata.h"
+#include "../vpatterndb/floatItemData/vpiecelabeldata.h"
+#include "../vpatterndb/vnodedetail.h"
+#include "../vpatterndb/vpiecenode.h"
+#include "../vtools/tools/vtoolseamallowance.h"
+#include "vpattern_helpers.h"
+
+#include <QtConcurrentRun>
+
+using namespace VPatternHelpers;
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPattern::ParseDetailNode(const QDomElement &domElement) -> VNodeDetail
+{
+    const quint32 id = GetParametrUInt(domElement, AttrIdObject, NULL_ID_STR);
+    const qreal mx = GetParametrDouble(domElement, AttrMx, QStringLiteral("0.0"));
+    const qreal my = GetParametrDouble(domElement, AttrMy, QStringLiteral("0.0"));
+    const bool reverse = GetParametrUInt(domElement, VAbstractPattern::AttrNodeReverse, QChar('0'));
+    const NodeDetail nodeType = NodeDetail::Contour;
+
+    const QString t = GetParametrString(domElement, AttrType, QStringLiteral("NodePoint"));
+    Tool tool;
+
+    switch (QStringList const types{VAbstractPattern::NodePoint, VAbstractPattern::NodeArc,
+                                    VAbstractPattern::NodeSpline, VAbstractPattern::NodeSplinePath,
+                                    VAbstractPattern::NodeElArc};
+            types.indexOf(t))
+    {
+        case 0: // NodePoint
+            tool = Tool::NodePoint;
+            break;
+        case 1: // NodeArc
+            tool = Tool::NodeArc;
+            break;
+        case 2: // NodeSpline
+            tool = Tool::NodeSpline;
+            break;
+        case 3: // NodeSplinePath
+            tool = Tool::NodeSplinePath;
+            break;
+        case 4: // NodeElArc
+            tool = Tool::NodeElArc;
+            break;
+        default:
+            throw VException(tr("Wrong tag name '%1'.").arg(t));
+    }
+    return {id, tool, nodeType, mx, my, reverse};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ParseDetailElement parse detail tag.
+ * @param domElement tag in xml tree.
+ * @param parse parser file mode.
+ */
+void VPattern::ParseDetailElement(QDomElement &domElement, const Document &parse)
+{
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+    try
+    {
+        VToolSeamAllowanceInitData initData;
+        initData.id = GetParametrId(domElement);
+        initData.detail.SetName(GetParametrString(domElement, AttrName, tr("Detail")));
+        initData.detail.SetUUID(GetParametrEmptyString(domElement, AttrUUID));
+        initData.detail.SetShortName(GetParametrEmptyString(domElement, AttrShortName).left(25));
+        initData.detail.SetGradationLabel(GetParametrEmptyString(domElement, AttrGradationLabel));
+        initData.detail.SetMx(
+            VAbstractValApplication::VApp()->toPixel(GetParametrDouble(domElement, AttrMx, QStringLiteral("0.0"))));
+        initData.detail.SetMy(
+            VAbstractValApplication::VApp()->toPixel(GetParametrDouble(domElement, AttrMy, QStringLiteral("0.0"))));
+        initData.detail.SetSeamAllowance(GetParametrBool(domElement, VToolSeamAllowance::AttrSeamAllowance, falseStr));
+        initData.detail.SetHideMainPath(
+            GetParametrBool(domElement, VToolSeamAllowance::AttrHideMainPath,
+                            QString().setNum(VAbstractValApplication::VApp()->ValentinaSettings()->IsHideMainPath())));
+        initData.detail.SetShowFullPiece(GetParametrBool(domElement, VToolSeamAllowance::AttrShowFullPiece, trueStr));
+        initData.detail.SetSeamAllowanceBuiltIn(
+            GetParametrBool(domElement, VToolSeamAllowance::AttrSeamAllowanceBuiltIn, falseStr));
+        initData.detail.SetForbidFlipping(GetParametrBool(
+            domElement, AttrForbidFlipping,
+            QString().setNum(VAbstractValApplication::VApp()->ValentinaSettings()->GetForbidWorkpieceFlipping())));
+        initData.detail.SetForceFlipping(GetParametrBool(
+            domElement, AttrForceFlipping,
+            QString().setNum(VAbstractValApplication::VApp()->ValentinaSettings()->GetForceWorkpieceFlipping())));
+        initData.detail.SetSymmetricalCopy(GetParametrBool(domElement, AttrSymmetricalCopy, falseStr));
+        initData.detail.SetFollowGrainline(GetParametrBool(domElement, AttrFollowGrainline, falseStr));
+        initData.detail.SetSewLineOnDrawing(GetParametrBool(
+            domElement, AttrSewLineOnDrawing,
+            QString().setNum(VAbstractValApplication::VApp()->ValentinaSettings()->GetSewLineOnDrawing())));
+        initData.detail.SetInLayout(GetParametrBool(domElement, AttrInLayout, trueStr));
+        initData.detail.SetUnited(GetParametrBool(domElement, VToolSeamAllowance::AttrUnited, falseStr));
+        initData.detail.SetPriority(GetParametrUInt(domElement, VToolSeamAllowance::AttrPiecePriority, QChar('0')));
+        initData.detail.SetTrueZeroWidth(GetParametrBool(domElement, AttrTrueZeroWidth, falseStr));
+
+        initData.width = GetParametrString(domElement, AttrWidth, QStringLiteral("0.0"));
+        const QString w = initData.width; // need for saving fixed formula;
+
+        ParseDetailInternals(domElement, initData.detail);
+
+        initData.scene = sceneDetail;
+        initData.doc = this;
+        initData.data = data;
+        initData.parse = parse;
+        initData.typeCreation = Source::FromFile;
+
+        if (const VToolSeamAllowance *piece = VToolSeamAllowance::Create(initData); parse == Document::FullParse)
+        {
+            updatePieces.append(piece->getId());
+        }
+        // Rewrite attribute formula. Need for situation when we have wrong formula.
+        if (w != initData.width)
+        {
+            SetAttribute(domElement, AttrWidth, initData.width);
+            modified = true;
+            haveLiteChange();
+        }
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating detail"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detail) const
+{
+    const uint version = GetParametrUInt(domElement, AttrVersion, QChar('1'));
+
+    const QStringList tags{TagNodes,
+                           TagData,
+                           TagPatternInfo,
+                           TagGrainline,
+                           VToolSeamAllowance::TagCSA,
+                           VToolSeamAllowance::TagIPaths,
+                           VToolSeamAllowance::TagPins,
+                           VToolSeamAllowance::TagPlaceLabels,
+                           VAbstractPattern::TagMirrorLine};
+
+    QFuture<QVector<VPieceNode>> futurePathV1;
+    QFuture<VPiecePath> futurePathV2;
+    QFuture<VPieceLabelData> futurePPData;
+    QFuture<VPatternLabelData> futurePatternInfo;
+    QFuture<VGrainlineData> futureGGeometry;
+    QFuture<QVector<CustomSARecord>> futureRecords;
+    QFuture<QVector<quint32>> futureIPaths;
+    QFuture<QVector<quint32>> futurePins;
+    QFuture<QVector<quint32>> futurePlaceLabels;
+    QFuture<VPieceFoldLineData> futureMirrorLine;
+
+    const QDomNodeList nodeList = domElement.childNodes();
+    QDOM_LOOP(nodeList, i)
+    {
+        if (const QDomElement element = QDOM_ELEMENT(nodeList, i).toElement(); not element.isNull())
+        {
+            switch (tags.indexOf(element.tagName()))
+            {
+                case 0: // TagNodes
+                    if (version == 1)
+                    {
+                        // TODO. Delete if minimal supported version is 0.4.0
+                        Q_STATIC_ASSERT_X(VPatternConverter::PatternMinVer < FormatVersion(0, 4, 0),
+                                          "Time to refactor the code.");
+                        futurePathV1 = QtConcurrent::run(
+                            [this, domElement, element]() -> QVector<VPieceNode>
+                            {
+                                const bool closed = GetParametrUInt(domElement, AttrClosed, QChar('1'));
+                                const qreal width = GetParametrDouble(domElement, AttrWidth, QStringLiteral("0.0"));
+                                return ParseDetailNodes(element, width, closed);
+                            });
+                    }
+                    else
+                    {
+                        futurePathV2 = QtConcurrent::run(&VPattern::ParsePieceNodes, element);
+                    }
+                    break;
+                case 1: // TagData
+                    futurePPData = QtConcurrent::run([this, element, detail]() -> VPieceLabelData
+                                                     { return ParsePieceDataTag(element, detail.GetPieceLabelData()); });
+                    break;
+                case 2: // TagPatternInfo
+                    futurePatternInfo = QtConcurrent::run(
+                        [this, element, detail]() -> VPatternLabelData
+                        { return ParsePiecePatternInfo(element, detail.GetPatternLabelData()); });
+                    break;
+                case 3: // TagGrainline
+                    futureGGeometry = QtConcurrent::run(
+                        [this, element, detail]() -> VGrainlineData
+                        { return ParsePieceGrainline(element, detail.GetGrainlineGeometry()); });
+                    break;
+                case 4: // VToolSeamAllowance::TagCSA
+                    futureRecords = QtConcurrent::run(&VPattern::ParsePieceCSARecords, element);
+                    break;
+                case 5: // VToolSeamAllowance::TagIPaths
+                    futureIPaths = QtConcurrent::run(&VPattern::ParsePieceInternalPaths, element);
+                    break;
+                case 6: // VToolSeamAllowance::TagPins
+                    futurePins = QtConcurrent::run(&VPattern::ParsePiecePointRecords, element);
+                    break;
+                case 7: // VToolSeamAllowance::TagPlaceLabels
+                    futurePlaceLabels = QtConcurrent::run(&VPattern::ParsePiecePointRecords, element);
+                    break;
+                case 8: // VToolSeamAllowance::TagMirrorLine
+                    futureMirrorLine = QtConcurrent::run(&ParsePieceMirrorLine, element);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    if (version == 1 && not futurePathV1.isCanceled())
+    {
+        detail.GetPath().SetNodes(futurePathV1.result());
+    }
+    else if (not futurePathV2.isCanceled())
+    {
+        detail.SetPath(futurePathV2.result());
+    }
+
+    if (not futurePPData.isCanceled())
+    {
+        detail.SetPieceLabelData(futurePPData.result());
+    }
+
+    if (not futurePatternInfo.isCanceled())
+    {
+        detail.SetPatternLabelData(futurePatternInfo.result());
+    }
+
+    if (not futureGGeometry.isCanceled())
+    {
+        detail.SetGrainlineGeometry(futureGGeometry.result());
+    }
+
+    if (not futureRecords.isCanceled())
+    {
+        detail.SetCustomSARecords(futureRecords.result());
+    }
+
+    if (not futureIPaths.isCanceled())
+    {
+        detail.SetInternalPaths(futureIPaths.result());
+    }
+
+    if (not futurePins.isCanceled())
+    {
+        detail.SetPins(futurePins.result());
+    }
+
+    if (not futurePlaceLabels.isCanceled())
+    {
+        detail.SetPlaceLabels(futurePlaceLabels.result());
+    }
+
+    if (not futureMirrorLine.isCanceled())
+    {
+        VPieceFoldLineData const data = futureMirrorLine.result();
+        detail.SetMirrorLineStartPoint(data.p1);
+        detail.SetMirrorLineEndPoint(data.p2);
+        detail.SetShowMirrorLine(data.mirrorLineVisible);
+        detail.SetManualFoldHeight(data.manualHeight);
+        detail.SetManualFoldWidth(data.manualWidth);
+        detail.SetManualFoldCenter(data.manualCenter);
+        detail.SetFormulaFoldHeight(data.heightFormula);
+        detail.SetFormulaFoldWidth(data.widthFormula);
+        detail.SetFormulaFoldCenter(data.centerFormula);
+        detail.SetFoldLineType(data.type);
+        detail.SetFoldLineSvgFontSize(data.fontSize);
+        detail.SetFoldLineLabelFontItalic(data.italic);
+        detail.SetFoldLineLabelFontBold(data.bold);
+        detail.SetFoldLineLabel(data.label);
+        detail.SetFoldLineLabelAlignment(data.alignment);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPattern::ParseDetailNodes(const QDomElement &domElement, qreal width, bool closed) const -> QVector<VPieceNode>
+{
+    QVector<VNodeDetail> oldNodes;
+    const QDomNodeList nodeList = domElement.childNodes();
+    QDOM_LOOP(nodeList, i)
+    {
+        const QDomElement element = QDOM_ELEMENT(nodeList, i).toElement();
+        if (not element.isNull() &&
+            element.tagName() == VAbstractPattern::TagNode) // Old detail version need this check!
+        {
+            oldNodes.append(ParseDetailNode(element));
+        }
+    }
+
+    return VNodeDetail::Convert(data, oldNodes, width, closed);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPattern::ParsePieceDataTag(const QDomElement &domElement, VPieceLabelData ppData) const -> VPieceLabelData
+{
+    ppData.SetEnabled(GetParametrBool(domElement, AttrVisible, trueStr));
+    ppData.SetLetter(GetParametrEmptyString(domElement, AttrLetter));
+    ppData.SetAnnotation(GetParametrEmptyString(domElement, AttrAnnotation));
+    ppData.SetOrientation(GetParametrEmptyString(domElement, AttrOrientation));
+    ppData.SetRotationWay(GetParametrEmptyString(domElement, AttrRotationWay));
+    ppData.SetTilt(GetParametrEmptyString(domElement, AttrTilt));
+    ppData.SetFoldPosition(GetParametrEmptyString(domElement, AttrFoldPosition));
+    ppData.SetQuantity(static_cast<quint16>(GetParametrUInt(domElement, AttrQuantity, QChar('1'))));
+    ppData.SetOnFold(GetParametrBool(domElement, AttrOnFold, falseStr));
+    ppData.SetPos(
+        QPointF(GetParametrDouble(domElement, AttrMx, QChar('0')), GetParametrDouble(domElement, AttrMy, QChar('0'))));
+    ppData.SetFontSize(static_cast<int>(GetParametrUInt(domElement, VToolSeamAllowance::AttrFont, QChar('0'))));
+    ppData.SetRotation(GetParametrString(domElement, AttrRotation, QChar('0')));
+
+    const quint32 topLeftPin = GetParametrUInt(domElement, VToolSeamAllowance::AttrTopLeftPin, NULL_ID_STR);
+
+    if (const quint32 bottomRightPin = GetParametrUInt(domElement, VToolSeamAllowance::AttrBottomRightPin, NULL_ID_STR);
+        topLeftPin != NULL_ID && bottomRightPin != NULL_ID && topLeftPin != bottomRightPin)
+    {
+        ppData.SetTopLeftPin(topLeftPin);
+        ppData.SetBottomRightPin(bottomRightPin);
+        ppData.SetCenterPin(NULL_ID);
+        ppData.SetLabelWidth(QChar('1'));
+        ppData.SetLabelHeight(QChar('1'));
+    }
+    else
+    {
+        ppData.SetTopLeftPin(NULL_ID);
+        ppData.SetBottomRightPin(NULL_ID);
+        ppData.SetCenterPin(GetParametrUInt(domElement, VToolSeamAllowance::AttrCenterPin, NULL_ID_STR));
+        ppData.SetLabelWidth(GetParametrString(domElement, AttrWidth, QChar('1')));
+        ppData.SetLabelHeight(GetParametrString(domElement, AttrHeight, QChar('1')));
+    }
+
+    ppData.SetLabelTemplate(GetLabelTemplate(domElement));
+    return ppData;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPattern::ParsePiecePatternInfo(const QDomElement &domElement, VPatternLabelData patternInfo) const
+    -> VPatternLabelData
+{
+    patternInfo.SetEnabled(GetParametrBool(domElement, AttrVisible, trueStr));
+    patternInfo.SetPos(
+        QPointF(GetParametrDouble(domElement, AttrMx, QChar('0')), GetParametrDouble(domElement, AttrMy, QChar('0'))));
+    patternInfo.SetFontSize(static_cast<int>(GetParametrUInt(domElement, VToolSeamAllowance::AttrFont, QChar('0'))));
+    patternInfo.SetRotation(GetParametrString(domElement, AttrRotation, QChar('0')));
+
+    const quint32 topLeftPin = GetParametrUInt(domElement, VToolSeamAllowance::AttrTopLeftPin, NULL_ID_STR);
+
+    if (const quint32 bottomRightPin = GetParametrUInt(domElement, VToolSeamAllowance::AttrBottomRightPin, NULL_ID_STR);
+        topLeftPin != NULL_ID && bottomRightPin != NULL_ID && topLeftPin != bottomRightPin)
+    {
+        patternInfo.SetTopLeftPin(topLeftPin);
+        patternInfo.SetBottomRightPin(bottomRightPin);
+        patternInfo.SetCenterPin(NULL_ID);
+        patternInfo.SetLabelWidth(QChar('1'));
+        patternInfo.SetLabelHeight(QChar('1'));
+    }
+    else
+    {
+        patternInfo.SetTopLeftPin(NULL_ID);
+        patternInfo.SetBottomRightPin(NULL_ID);
+        patternInfo.SetCenterPin(GetParametrUInt(domElement, VToolSeamAllowance::AttrCenterPin, NULL_ID_STR));
+        patternInfo.SetLabelWidth(GetParametrString(domElement, AttrWidth, QChar('1')));
+        patternInfo.SetLabelHeight(GetParametrString(domElement, AttrHeight, QChar('1')));
+    }
+
+    return patternInfo;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPattern::ParsePieceGrainline(const QDomElement &domElement, VGrainlineData gGeometry) const -> VGrainlineData
+{
+    gGeometry.SetEnabled(GetParametrBool(domElement, AttrEnabled, falseStr));
+    gGeometry.SetVisible(GetParametrBool(domElement, AttrVisible, trueStr));
+    gGeometry.SetPos(
+        QPointF(GetParametrDouble(domElement, AttrMx, QChar('0')), GetParametrDouble(domElement, AttrMy, QChar('0'))));
+    gGeometry.SetArrowType(static_cast<GrainlineArrowDirection>(GetParametrUInt(domElement, AttrArrows, QChar('0'))));
+
+    const quint32 topPin = GetParametrUInt(domElement, VToolSeamAllowance::AttrTopPin, NULL_ID_STR);
+
+    if (const quint32 bottomPin = GetParametrUInt(domElement, VToolSeamAllowance::AttrBottomPin, NULL_ID_STR);
+        topPin != NULL_ID && bottomPin != NULL_ID && topPin != bottomPin)
+    {
+        gGeometry.SetTopPin(topPin);
+        gGeometry.SetBottomPin(bottomPin);
+
+        gGeometry.SetLength(QChar('1'));
+        gGeometry.SetRotation(QString::number(90));
+        gGeometry.SetCenterPin(NULL_ID);
+    }
+    else
+    {
+        gGeometry.SetTopPin(NULL_ID);
+        gGeometry.SetBottomPin(NULL_ID);
+
+        gGeometry.SetLength(GetParametrString(domElement, AttrLength, QChar('1')));
+        gGeometry.SetRotation(GetParametrString(domElement, AttrRotation, QString::number(90)));
+        gGeometry.SetCenterPin(GetParametrUInt(domElement, VToolSeamAllowance::AttrCenterPin, NULL_ID_STR));
+    }
+
+    return gGeometry;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ParseDetails parse details tag.
+ * @param domElement tag in xml tree.
+ * @param parse parser file mode.
+ */
+void VPattern::ParseDetails(const QDomElement &domElement, const Document &parse)
+{
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+    QDomNode domNode = domElement.firstChild();
+    while (!domNode.isNull())
+    {
+        if (domNode.isElement())
+        {
+            if (QDomElement domElement = domNode.toElement(); !domElement.isNull() && domElement.tagName() == TagDetail)
+            {
+                ParseDetailElement(domElement, parse);
+            }
+        }
+        domNode = domNode.nextSibling();
+    }
+
+    if (parse == Document::FullParse)
+    {
+        emit MadeProgress();
+    }
+}
