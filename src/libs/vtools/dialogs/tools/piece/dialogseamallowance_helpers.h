@@ -32,6 +32,16 @@
 #ifndef DIALOGSEAMALLOWANCE_HELPERS_H
 #define DIALOGSEAMALLOWANCE_HELPERS_H
 
+#include <QComboBox>
+#include <QPlainTextEdit>
+#include <QPushButton>
+#include <QString>
+#include <QStringList>
+
+#include "../ifc/ifcdef.h"
+#include "../vmisc/def.h"
+#include "../vmisc/vabstractapplication.h"
+
 enum class MainPathContextMenuOption : int
 {
     NoSelection,
@@ -53,5 +63,42 @@ enum class MainPathContextMenuOption : int
     Delete,
     LAST_ONE_DO_NOT_USE
 };
+
+//---------------------------------------------------------------------------------------------------------------------
+inline void EnableDefButton(QPushButton *defButton, const QString &formula)
+{
+    SCASSERT(defButton != nullptr)
+
+    if (formula != currentSeamAllowance)
+    {
+        defButton->setEnabled(true);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+inline auto GetFormulaFromUser(QPlainTextEdit *textEdit) -> QString
+{
+    SCASSERT(textEdit != nullptr)
+    return VTranslateVars::TryFormulaFromUser(textEdit->toPlainText(),
+                                              VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+inline void InitComboBoxFormats(QComboBox *box, const QStringList &items, const QString &currentFormat)
+{
+    SCASSERT(box != nullptr)
+
+    const QSignalBlocker blocker(box);
+    box->addItems(items);
+    int const index = box->findText(currentFormat);
+    if (index != -1)
+    {
+        box->setCurrentIndex(index);
+    }
+    else
+    {
+        box->setCurrentIndex(0);
+    }
+}
 
 #endif // DIALOGSEAMALLOWANCE_HELPERS_H
