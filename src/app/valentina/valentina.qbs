@@ -112,6 +112,8 @@ VToolApp {
         "main.cpp",
         "mainwindow.cpp",
         "mainwindow.h",
+        "mainwindow_helpers.h",
+        "mainwindow_helpers.cpp",
         "mainwindowsnogui.cpp",
         "mainwindowsnogui.h",
         "version.h",
