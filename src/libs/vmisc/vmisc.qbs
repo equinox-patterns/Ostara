@@ -147,16 +147,6 @@ VLib {
         ]
     }
 
-    Group {
-        name: "Mac icon themes"
-        prefix: "share/resources/"
-        files: [
-            "mac_light_theme.qrc",
-            "mac_dark_theme.qrc"
-        ]
-        condition: qbs.targetOS.contains("macos")
-    }
-
     Export {
         Depends { name: "cpp" }
         Depends { name: "Qt"; submodules: ["printsupport", "widgets"] }

@@ -121,6 +121,8 @@ VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QDockWidget *parent)
     auto *scroll = new QScrollArea(parent);
     scroll->setWidgetResizable(true);
     scroll->setWidget(m_formView);
+    // Dot-selector: cible uniquement le viewport sans cascader aux enfants (SUBTILITES_CODE.md §13)
+    scroll->viewport()->setStyleSheet(QStringLiteral(".QWidget { background: transparent; }"));
 
     parent->setWidget(scroll);
 

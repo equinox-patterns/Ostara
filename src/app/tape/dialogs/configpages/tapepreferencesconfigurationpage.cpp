@@ -151,23 +151,6 @@ auto TapePreferencesConfigurationPage::Apply() -> QStringList
         settings->GetThemeMode() != themeMode)
     {
         QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-        if (themeMode == VThemeMode::System && VTheme::NativeDarkThemeAvailable())
-        {
-            if (QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark)
-            {
-                settings->SetThemeMode(VThemeMode::Light);
-            }
-            else
-            {
-                settings->SetThemeMode(VThemeMode::Dark);
-            }
-
-            VTheme::Instance()->ResetThemeSettings();
-            QCoreApplication::processEvents();
-        }
-#endif
-
         settings->SetThemeMode(themeMode);
         VTheme::Instance()->ResetThemeSettings();
         QGuiApplication::restoreOverrideCursor();
@@ -291,9 +274,8 @@ void TapePreferencesConfigurationPage::RetranslateUi()
 void TapePreferencesConfigurationPage::SetThemeModeComboBox()
 {
     ui->comboBoxThemeMode->clear();
-    ui->comboBoxThemeMode->addItem(tr("System", "theme"), static_cast<int>(VThemeMode::System));
-    ui->comboBoxThemeMode->addItem(tr("Dark", "theme"), static_cast<int>(VThemeMode::Dark));
     ui->comboBoxThemeMode->addItem(tr("Light", "theme"), static_cast<int>(VThemeMode::Light));
+    ui->comboBoxThemeMode->addItem(tr("Dark", "theme"), static_cast<int>(VThemeMode::Dark));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

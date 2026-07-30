@@ -649,9 +649,9 @@ void VCommonSettings::SetToolboxIconSizeSmall(bool value)
 auto VCommonSettings::GetThemeMode() const -> VThemeMode
 {
     QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    int val = settings.value(*settingConfigurationThemeMode, static_cast<int>(VThemeMode::System)).toInt();
+    int val = settings.value(*settingConfigurationThemeMode, static_cast<int>(VThemeMode::Light)).toInt();
 
-    if (val < 0 || val > 2)
+    if (val < 0 || val > 1)
     {
         val = 0;
     }

@@ -26,15 +26,6 @@ VLib {
         "vmanuallayoutstyle.cpp",
     ]
 
-    Group {
-        name: "Mac utils"
-        files: [
-            "macutils.h",
-            "macutils.mm",
-        ]
-        condition: qbs.targetOS.contains("macos")
-    }
-
     // Private: need vcommonsettings.h, vabstractapplication.h, def.h, compatibility.h from vmisc
     cpp.includePaths: [FileInfo.joinPaths(product.sourceDirectory, "..", "vmisc")]
 

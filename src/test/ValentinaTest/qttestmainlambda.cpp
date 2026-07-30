@@ -93,13 +93,8 @@ auto main(int argc, char **argv) -> int
 {
     Q_INIT_RESOURCE(schema); // NOLINT
 
-#if defined(Q_OS_MACX)
-    Q_INIT_RESOURCE(mac_light_theme); // NOLINT
-    Q_INIT_RESOURCE(mac_dark_theme);  // NOLINT
-#else
     Q_INIT_RESOURCE(win_light_theme); // NOLINT
     Q_INIT_RESOURCE(win_dark_theme);  // NOLINT
-#endif
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();

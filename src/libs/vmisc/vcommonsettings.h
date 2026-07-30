@@ -46,9 +46,8 @@ class QMarginsF;
 
 enum class VThemeMode
 {
-    System = 0,
-    Dark = 1,
-    Light = 2
+    Light = 0,
+    Dark = 1
 };
 
 class VCommonSettings : public QSettings

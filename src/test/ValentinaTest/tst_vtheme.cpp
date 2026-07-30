@@ -64,13 +64,8 @@ void TST_VTheme::TestThemeIconMappings_data()
     QHash<VThemeIcon, QString> const stringMappings = ThemeIconStringMappings();
 
     QStringList const themes{
-#if defined(Q_OS_MACX)
-        "La-Sierra-Light"_L1,
-        "La-Sierra-Dark"_L1,
-#else
         "Eleven-Light"_L1,
         "Eleven-Dark"_L1,
-#endif
     };
 
     for (const auto &theme : themes)
@@ -104,13 +99,8 @@ void TST_VTheme::TestThemeIconStringMappings_data()
     QHash<VThemeIcon, QString> const stringMappings = ThemeIconStringMappings();
 
     QStringList const themes{
-#if defined(Q_OS_MACX)
-        "La-Sierra-Light"_L1,
-        "La-Sierra-Dark"_L1,
-#else
         "Eleven-Light"_L1,
         "Eleven-Dark"_L1,
-#endif
     };
 
     for (const auto &theme : themes)

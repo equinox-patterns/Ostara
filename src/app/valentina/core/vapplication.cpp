@@ -631,9 +631,7 @@ void VApplication::InitOptions()
     {
         LoadTranslation(ValentinaSettings()->GetLocale());
 
-        VTheme::InitApplicationStyle();
-        VTheme::SetIconTheme();
-        VTheme::InitThemeMode();
+        VTheme::Instance()->ResetThemeSettings();
 
         m_shortcutManager = new VValentinaShortcutManager(this);
     }

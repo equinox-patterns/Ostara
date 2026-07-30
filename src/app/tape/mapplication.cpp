@@ -534,9 +534,7 @@ void MApplication::InitOptions()
                                });
                        });
 
-    VTheme::InitApplicationStyle();
-    VTheme::SetIconTheme();
-    VTheme::InitThemeMode();
+    VTheme::Instance()->ResetThemeSettings();
 
     VGAnalytics::Init(settings);
 

@@ -31,6 +31,7 @@
 #include <QApplication>
 #include <QChar>
 #include <QColor>
+#include <QColorSpace>
 #include <QComboBox>
 #include <QCursor>
 #include <QDesktopServices>
@@ -132,7 +133,19 @@ auto QPixmapFromCache(const QString &pixmapPath) -> QPixmap
 
     if (not QPixmapCache::find(pixmapPath, &pixmap))
     {
-        pixmap = QPixmap(pixmapPath);
+        // Load via QImage first to strip any problematic ICC color profile
+        // that would cause CGImageCreate to reject the color space on macOS 26+
+        // (e.g., GIMP-built sRGB profiles in indexed PNGs)
+        QImage img(pixmapPath);
+        if (not img.isNull())
+        {
+            img.setColorSpace(QColorSpace()); // Reset to default — let CG use device RGB
+            pixmap = QPixmap::fromImage(img);
+        }
+        else
+        {
+            pixmap = QPixmap(pixmapPath);
+        }
         QPixmapCache::insert(pixmapPath, pixmap);
     }
     return pixmap;

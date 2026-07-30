@@ -28,8 +28,17 @@
 #include "vtheme.h"
 #include "vcommonsettings.h"
 
+#include <QAbstractItemView>
+#include <QApplication>
+#include <QComboBox>
+#include <QCoreApplication>
+#include <QDockWidget>
+#include <QEvent>
+#include <QHBoxLayout>
 #include <QIcon>
-#include <QOperatingSystemVersion>
+#include <QLabel>
+#include <QLayout>
+#include <QMainWindow>
 #include <QPainter>
 #include <QPalette>
 #include <QPixmap>
@@ -39,14 +48,6 @@
 #include <QtDebug>
 #include <QtGlobal>
 #include <QtSvg/QSvgRenderer>
-
-#if defined(Q_OS_MACX)
-#include "macutils.h"
-#endif
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-#include <QStyleHints>
-#endif
 
 #include "vabstractapplication.h"
 #include "vapplicationstyle.h"
@@ -61,43 +62,6 @@ using namespace Qt::Literals::StringLiterals;
 
 namespace
 {
-//---------------------------------------------------------------------------------------------------------------------
-#ifdef Q_OS_WIN
-auto NativeWindowsDarkThemeAvailable() -> bool
-{
-    // dark mode supported Windows 10 1809 10.0.17763 onward
-    // https://stackoverflow.com/questions/53501268/win10-dark-theme-how-to-use-in-winapi
-    if (QOperatingSystemVersion::current().majorVersion() > 10)
-    {
-        return true;
-    }
-
-    if (QOperatingSystemVersion::current().majorVersion() == 10)
-    {
-        return QOperatingSystemVersion::current().microVersion() >= 17763;
-    }
-
-    return false;
-}
-#endif // Q_OS_WIN
-
-//---------------------------------------------------------------------------------------------------------------------
-#if defined(Q_OS_MACX)
-inline auto NativeMacDarkThemeAvailable() -> bool
-{
-    return NSNativeMacDarkThemeAvailable();
-}
-#endif
-
-//---------------------------------------------------------------------------------------------------------------------
-#if defined(Q_OS_LINUX)
-inline auto NativeLinuxDarkThemeAvailable() -> bool
-{
-    // There is no way to check native support. Assume always available.
-    return true;
-}
-#endif
-
 //---------------------------------------------------------------------------------------------------------------------
 void ActivateCustomLightTheme()
 {
@@ -141,37 +105,6 @@ void ActivateCustomDarkTheme()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-#if defined(Q_OS_WIN)
-void ActivateDefaultThemeWin()
-{
-#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-// Fix for issue QTBUG-123722
-#if QT_VERSION == QT_VERSION_CHECK(6, 7, 0)
-    if (!VTheme::IsInDarkTheme())
-    {
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
-        qApp->setStyleSheet(QStringLiteral("QComboBox QAbstractItemView {background-color: white}"));
-    }
-#else
-    qApp->setStyleSheet(QString()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
-#endif
-#else
-    qApp->setStyleSheet(QString()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
-#endif // QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-}
-#endif // defined(Q_OS_WIN)
-
-//---------------------------------------------------------------------------------------------------------------------
-void ActivateDefaultTheme()
-{
-#if defined(Q_OS_WIN)
-    ActivateDefaultThemeWin();
-#else
-    qApp->setStyleSheet(QString()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
-#endif
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto GetResourceName(const QString &root, const QString &iconName, bool dark) -> QString
 {
     return QStringLiteral(":/%1/%2/%3").arg(root, dark ? "dark"_L1 : "light"_L1, iconName);
@@ -200,86 +133,10 @@ auto VTheme::Instance() -> VTheme *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VTheme::NativeDarkThemeAvailable() -> bool
-{
-#if defined(Q_OS_MACX)
-    return NativeMacDarkThemeAvailable();
-#elif defined(Q_OS_WIN)
-    return NativeWindowsDarkThemeAvailable();
-#elif defined(Q_OS_LINUX)
-    return NativeLinuxDarkThemeAvailable();
-#else
-    return false;
-#endif
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VTheme::IsInDarkTheme() -> bool
-{
-    if (NativeDarkThemeAvailable())
-    {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-        // On Linux we cannot rely only on QStyleHints::colorScheme(). User can setup light theme while the settings
-        // will recommend dark color scheme. Checking a palette more robust way.
-#if defined(Q_OS_LINUX)
-        return ShouldApplyDarkTheme();
-#else
-        return QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
-#endif // defined(Q_OS_LINUX)
-#else
-#if defined(Q_OS_MACX)
-        return NSMacIsInDarkTheme();
-#elif defined(Q_OS_WIN)
-        QSettings settings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
-                           QSettings::NativeFormat);
-        return settings.value("AppsUseLightTheme", 1).toInt() == 0;
-#elif defined(Q_OS_LINUX)
-        return ShouldApplyDarkTheme();
-#endif
-#endif // QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-    }
-
-    return false;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VTheme::ShouldApplyDarkTheme() -> bool
-{
-    QPalette const palette = qApp->palette(); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
-    return palette.color(QPalette::WindowText).lightness() > palette.color(QPalette::Window).lightness();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VTheme::ColorSheme() -> VColorSheme
 {
     VThemeMode const themeMode = VAbstractApplication::VApp()->Settings()->GetThemeMode();
-
-    if (themeMode == VThemeMode::Light)
-    {
-        return VColorSheme::Light;
-    }
-
-    if (themeMode == VThemeMode::Dark)
-    {
-        return VColorSheme::Dark;
-    }
-
-    if (NativeDarkThemeAvailable())
-    {
-        if (IsInDarkTheme())
-        {
-            return VColorSheme::Dark;
-        }
-
-        return VColorSheme::Light;
-    }
-
-    if (ShouldApplyDarkTheme())
-    {
-        return VColorSheme::Dark;
-    }
-
-    return VColorSheme::Light;
+    return (themeMode == VThemeMode::Dark) ? VColorSheme::Dark : VColorSheme::Light;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -287,81 +144,30 @@ auto VTheme::DefaultThemeName() -> QString
 {
     VColorSheme const colorScheme = ColorSheme();
     QString const themePrefix = (colorScheme == VColorSheme::Light ? QStringLiteral("Light") : QStringLiteral("Dark"));
-
-#if defined(Q_OS_MACX)
-    return QStringLiteral("La-Sierra-%1").arg(themePrefix);
-#else
     return QStringLiteral("Eleven-%1").arg(themePrefix);
-#endif
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VTheme::InitApplicationStyle()
 {
-    if (VThemeMode const themeMode = VAbstractApplication::VApp()->Settings()->GetThemeMode();
-        themeMode == VThemeMode::Light || themeMode == VThemeMode::Dark)
+    if (QStyle *style = QStyleFactory::create(QStringLiteral("fusion")); style != nullptr)
     {
-        if (QStyle *style = QStyleFactory::create(QStringLiteral("fusion")); style != nullptr)
-        {
-            style = new VApplicationStyle(style);
-            QApplication::setStyle(style);
-        }
-
-        return;
+        style = new VApplicationStyle(style);
+        QApplication::setStyle(style);
     }
-
-#if defined(Q_OS_WIN) && QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-    if (NativeDarkThemeAvailable())
-    {
-        if (QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark)
-        {
-            QApplication::setStyle(QStyleFactory::create(QStringLiteral("fusion")));
-        }
-    }
-#endif
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VTheme::SetIconTheme()
 {
-    if (not HasThemeIcon(VThemeIcon::DocumentOpen))
-    {
-        // If there is no default working icon theme then we should
-        // use an icon theme that we provide via a .qrc file
-        // This case happens under Windows and Mac OS X
-        // This does not happen under GNOME or KDE
-        QIcon::setThemeName(DefaultThemeName());
-    }
-    else
-    {
-        if (VThemeMode const themeMode = VAbstractApplication::VApp()->Settings()->GetThemeMode();
-            (themeMode == VThemeMode::Dark && !ShouldApplyDarkTheme())
-            || (themeMode == VThemeMode::Light && ShouldApplyDarkTheme()))
-        {
-            QIcon::setThemeName(DefaultThemeName());
-            QIcon::setFallbackThemeName(QString());
-        }
-        else
-        {
-            QIcon::setThemeName(QString());
-            QIcon::setFallbackThemeName(DefaultThemeName());
-        }
-    }
+    QIcon::setThemeSearchPaths({u":/icons"_s});
+    QIcon::setThemeName(DefaultThemeName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VTheme::SetToAutoTheme() const
 {
-// Fix for issue QTBUG-123722
-#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 7, 0)
-    if (!IsInDarkTheme())
-    {
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
-        qApp->setStyleSheet(QStringLiteral("QComboBox QAbstractItemView {background-color: white}"));
-    }
-#else
     qApp->setStyleSheet(QString()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
-#endif
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -371,53 +177,11 @@ void VTheme::InitThemeMode()
 
     if (themeMode == VThemeMode::Light)
     {
-        if (NativeDarkThemeAvailable())
-        {
-            if (IsInDarkTheme())
-            {
-#if defined(Q_OS_MACX)
-                NSMacSetToLightTheme();
-#else
-                ActivateCustomLightTheme();
-#endif
-            }
-        }
-        else if (ShouldApplyDarkTheme())
-        {
-            ActivateCustomLightTheme();
-        }
-    }
-    else if (themeMode == VThemeMode::Dark)
-    {
-        if (NativeDarkThemeAvailable())
-        {
-            if (!IsInDarkTheme())
-            {
-#if defined(Q_OS_MACX)
-                NSMacSetToDarkTheme();
-#else
-                ActivateCustomDarkTheme();
-#endif
-            }
-        }
-        else
-        {
-            ActivateCustomDarkTheme();
-        }
+        ActivateCustomLightTheme();
     }
     else
     {
-        if (NativeDarkThemeAvailable())
-        {
-            ActivateDefaultTheme();
-        }
-        else
-        {
-            if (ShouldApplyDarkTheme())
-            {
-                ActivateCustomDarkTheme();
-            }
-        }
+        ActivateCustomDarkTheme();
     }
 }
 
@@ -425,98 +189,95 @@ void VTheme::InitThemeMode()
 auto VTheme::ThemeStylesheet() -> QString
 {
     VThemeMode const themeMode = VAbstractApplication::VApp()->Settings()->GetThemeMode();
-
-    if (themeMode == VThemeMode::Light)
-    {
-        if (NativeDarkThemeAvailable())
-        {
-            if (IsInDarkTheme())
-            {
-#if defined(Q_OS_MACX)
-                return QStringLiteral("native");
-#else
-                return QStringLiteral("light");
-#endif
-            }
-        }
-        else if (ShouldApplyDarkTheme())
-        {
-            return QStringLiteral("light");
-        }
-
-        return QStringLiteral("native");
-    }
-
-    if (themeMode == VThemeMode::Dark)
-    {
-        if (NativeDarkThemeAvailable())
-        {
-            if (!IsInDarkTheme())
-            {
-#if defined(Q_OS_MACX)
-                return QStringLiteral("native");
-#else
-                return QStringLiteral("dark");
-#endif
-            }
-        }
-        else
-        {
-            return QStringLiteral("dark");
-        }
-
-        return QStringLiteral("native");
-    }
-
-    if (!NativeDarkThemeAvailable())
-    {
-        if (ShouldApplyDarkTheme())
-        {
-            return QStringLiteral("dark");
-        }
-
-        return QStringLiteral("light");
-    }
-
-    return QStringLiteral("native");
+    return (themeMode == VThemeMode::Light) ? QStringLiteral("light") : QStringLiteral("dark");
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VTheme::ResetColorScheme()
 {
-    if (!VTheme::NativeDarkThemeAvailable())
-    {
-        return;
-    }
-
-    if (m_isProcessingColorSchemeChange)
-    {
-        return; // Already processing, avoid recursion
-    }
-
-    m_isProcessingColorSchemeChange = true;
-    QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-    if (bool const darkTheme = IsInDarkTheme(); m_darkTheme != darkTheme)
-    {
-        m_darkTheme = darkTheme;
-        ResetThemeSettings();
-    }
-
-    QGuiApplication::restoreOverrideCursor();
-    m_isProcessingColorSchemeChange = false;
+    // No-op: System theme mode has been removed. Theme is controlled entirely by user preference.
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VTheme::ResetThemeSettings() const
 {
     InitApplicationStyle();
-    SetToAutoTheme();
+    qApp->setStyleSheet(QString()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
     SetIconTheme();
     InitThemeMode();
     VSceneStylesheet::ResetStyles();
 
+    if (auto *s = qApp->style())
+    {
+        qApp->setPalette(s->standardPalette());
+        s->polish(qApp);
+    }
+
     emit Instance()->ThemeSettingsChanged();
+
+    ApplyThemeToWindows();
+
+    for (auto *w : QApplication::topLevelWidgets())
+    {
+        QEvent event(QEvent::ThemeChange);
+        QCoreApplication::sendEvent(w, &event);
+        w->update();
+    }
+
+    for (auto *combo : qApp->findChildren<QComboBox *>())
+    {
+        if (auto *view = combo->view(); view != nullptr)
+        {
+            if (auto *s = view->style())
+            {
+                s->polish(view);
+            }
+            view->update();
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VTheme::ApplyThemeToWindows() const
+{
+    for (auto *w : QApplication::topLevelWidgets())
+    {
+        if (auto *mw = qobject_cast<QMainWindow *>(w))
+        {
+            for (auto *dock : mw->findChildren<QDockWidget *>())
+            {
+                // Force Qt to use widget rendering instead of native QStyle rendering
+                // so that the QSS background property is applied to the dock body.
+                // Without a custom title bar, the native QStyle ignores QSS background
+                // on docked QDockWidgets (macOS-specific behavior).
+                if (dock->titleBarWidget() == nullptr)
+                {
+                    auto *bar = new QWidget();
+                    bar->setObjectName(QStringLiteral("dockTitleBar"));
+                    auto *layout = new QHBoxLayout(bar);
+                    layout->setContentsMargins(4, 2, 4, 2);
+                    auto *label = new QLabel(dock->windowTitle());
+                    label->setObjectName(QStringLiteral("dockTitleLabel"));
+                    layout->addWidget(label);
+                    layout->addStretch();
+                    dock->setTitleBarWidget(bar);
+                }
+
+                dock->setAutoFillBackground(true);
+                dock->update();
+            }
+
+            if (auto *central = mw->centralWidget())
+            {
+                central->setContentsMargins(0, 0, 0, 0);
+                if (auto *lay = central->layout())
+                {
+                    lay->setContentsMargins(0, 0, 0, 0);
+                    lay->setSpacing(0);
+                }
+            }
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -564,39 +325,6 @@ auto VTheme::GetResourceName(const QString &root, const QString &iconName) -> QS
 
 //---------------------------------------------------------------------------------------------------------------------
 VTheme::VTheme(QObject *parent)
-  : QObject(parent),
-    m_darkTheme(IsInDarkTheme())
+  : QObject(parent)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-    auto colorSchemeChangedSlot = [this]()
-    {
-        if (m_isProcessingColorSchemeChange)
-        {
-            return; // Already processing, avoid recursion
-        }
-
-        m_isProcessingColorSchemeChange = true;
-        QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-        VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-
-        if (VThemeMode const themeMode = settings->GetThemeMode();
-            themeMode == VThemeMode::System && VTheme::NativeDarkThemeAvailable())
-        {
-            settings->SetThemeMode(IsInDarkTheme() ? VThemeMode::Light : VThemeMode::Dark);
-
-            ResetThemeSettings();
-            QCoreApplication::processEvents();
-            settings->SetThemeMode(themeMode);
-        }
-
-        ResetThemeSettings();
-        QGuiApplication::restoreOverrideCursor();
-
-        m_isProcessingColorSchemeChange = false;
-    };
-
-    QStyleHints  const*hints = QGuiApplication::styleHints();
-    connect(hints, &QStyleHints::colorSchemeChanged, this, colorSchemeChangedSlot);
-#endif // QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
 }

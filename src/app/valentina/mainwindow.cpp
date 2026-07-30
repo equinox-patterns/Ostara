@@ -30,9 +30,11 @@
 
 #include <QAction>
 #include <QComboBox>
+#include <QCoreApplication>
 #include <QPointer>
 #include <QDesktopServices>
 #include <QDoubleSpinBox>
+#include <QPainter>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
@@ -885,7 +887,21 @@ void MainWindow::showEvent(QShowEvent *event)
 
     MinimumScrollBar();
 
+    VTheme::Instance()->ApplyThemeToWindows();
+
+    // Notify ourselves that the theme is applied so the pen style combo
+    // and other palette-dependent widgets are populated with correct colors
+    QEvent themeEvent(QEvent::ThemeChange);
+    QCoreApplication::sendEvent(this, &themeEvent);
+
     m_isInitialized = true; // first show windows are held
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::paintEvent(QPaintEvent * /*event*/)
+{
+    QPainter painter(this);
+    painter.fillRect(rect(), palette().window().color());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

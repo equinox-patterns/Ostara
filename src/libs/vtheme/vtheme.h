@@ -50,15 +50,13 @@ public:
 
     void SetToAutoTheme() const;
     void ResetThemeSettings() const;
+    void ApplyThemeToWindows() const;
 
     static auto GetFallbackThemeIcon(const QString &iconName, QSize iconSize) -> QIcon;
     static auto GetIconResource(const QString &root, const QString &iconName) -> QIcon;
     static auto GetPixmapResource(const QString &root, const QString &iconName) -> QPixmap;
     static auto GetResourceName(const QString &root, const QString &iconName) -> QString;
 
-    static auto NativeDarkThemeAvailable() -> bool;
-    static auto IsInDarkTheme() -> bool;
-    static auto ShouldApplyDarkTheme() -> bool;
     static auto ColorSheme() -> VColorSheme;
     static auto DefaultThemeName() -> QString;
     static void InitApplicationStyle();
@@ -76,9 +74,6 @@ private:
     Q_DISABLE_COPY_MOVE(VTheme) // NOLINT
 
     explicit VTheme(QObject *parent = nullptr);
-
-    bool m_isProcessingColorSchemeChange{false};
-    bool m_darkTheme;
 };
 
 #endif // VTHEME_H
