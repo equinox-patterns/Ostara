@@ -1543,53 +1543,10 @@ void MainWindow::ZoomFitBestCurrent()
         ScaleChanged(scale);
     }
 }
+// Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::PlaceBackgroundImage(const QPointF &pos, const QString &fileName)
-{
-    DialogAddBackgroundImage dialog(fileName, this);
-    if (dialog.exec() == QDialog::Rejected)
-    {
-        qCritical() << tr("Unable to add background image");
-        return;
-    }
+// Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-    VBackgroundPatternImage image = VBackgroundPatternImage::FromFile(fileName, dialog.BuiltIn());
-    image.SetName(dialog.Name());
-
-    VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-    image.SetOpacity(settings->GetBackgroundImageDefOpacity() / 100.);
-
-    QTransform m;
-    m.translate(pos.x(), pos.y());
-
-    QTransform imageMatrix = image.Matrix();
-    imageMatrix *= m;
-
-    image.SetMatrix(m);
-
-    if (not image.IsValid())
-    {
-        qCritical() << tr("Invalid image. Error: %1").arg(image.ErrorString());
-        return;
-    }
-
-    auto *addBackgroundImage = new AddBackgroundImage(image, doc);
-    connect(addBackgroundImage, &AddBackgroundImage::AddItem, this, &MainWindow::AddBackgroundImageItem);
-    connect(addBackgroundImage, &AddBackgroundImage::DeleteItem, this, &MainWindow::DeleteBackgroundImageItem);
-    VApplication::VApp()->getUndoStack()->push(addBackgroundImage);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::RemoveBackgroundImage(const QUuid &id)
-{
-    VBackgroundPatternImage const image = doc->GetBackgroundImage(id);
-
-    auto *deleteBackgroundImage = new DeleteBackgroundImage(image, doc);
-    connect(deleteBackgroundImage, &DeleteBackgroundImage::AddItem, this, &MainWindow::AddBackgroundImageItem);
-    connect(deleteBackgroundImage, &DeleteBackgroundImage::DeleteItem, this, &MainWindow::DeleteBackgroundImageItem);
-    VApplication::VApp()->getUndoStack()->push(deleteBackgroundImage);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -2410,69 +2367,16 @@ void MainWindow::MeasurementsSyncTimerTimeout()
         }
     }
 }
+// Extracted to mainwindow_watermark.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::CreateWatermark()
-{
-    CleanWaterkmarkEditors();
-    OpenWatermark();
-}
+// Extracted to mainwindow_watermark.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::EditCurrentWatermark()
-{
-    CleanWaterkmarkEditors();
+// Extracted to mainwindow_watermark.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-    QString const watermarkFile = doc->GetWatermarkPath();
-    if (not watermarkFile.isEmpty())
-    {
-        OpenWatermark(watermarkFile);
-    }
-}
+// Extracted to mainwindow_watermark.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::LoadWatermark()
-{
-    const QString filter(tr("Watermark files") + QStringLiteral(" (*.vwm)"));
-    QString const dir = QDir::homePath();
-    qDebug("Run QFileDialog::getOpenFileName: dir = %s.", qUtf8Printable(dir));
-    const QString filePath = QFileDialog::getOpenFileName(this, tr("Open file"), dir, filter, nullptr,
-                                                          VAbstractApplication::VApp()->NativeFileDialog());
-    if (filePath.isEmpty())
-    {
-        return;
-    }
+// Extracted to mainwindow_watermark.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-    if (doc->SetWatermarkPath(filePath))
-    {
-        ui->actionRemoveWatermark->setEnabled(true);
-        ui->actionEditCurrentWatermark->setEnabled(true);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::RemoveWatermark()
-{
-    if (doc->SetWatermarkPath(QString()))
-    {
-        ui->actionRemoveWatermark->setEnabled(false);
-        ui->actionEditCurrentWatermark->setEnabled(false);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::CleanWaterkmarkEditors()
-{
-    QMutableListIterator i(m_watermarkEditors);
-    while (i.hasNext())
-    {
-        QPointer<WatermarkWindow> const watermarkEditor = i.next();
-        if (watermarkEditor.isNull())
-        {
-            i.remove();
-        }
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::StoreMultisizeMDimensions()
@@ -2724,71 +2628,10 @@ void MainWindow::ExportDraw(const QString &fileName)
 
     m_sceneDraw->EnableTools();
 }
+// Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::NewBackgroundImageItem(const VBackgroundPatternImage &image)
-{
-    if (m_backgroudcontrols == nullptr)
-    {
-        m_backgroudcontrols = new VBackgroundImageControls(doc);
-        connect(m_sceneDraw, &VMainGraphicsScene::ItemByMouseRelease, m_backgroudcontrols,
-                &VBackgroundImageControls::DeactivateControls);
-        m_sceneDraw->addItem(m_backgroudcontrols);
-    }
+// Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-    if (m_backgroundImages.contains(image.Id()))
-    {
-        VBackgroundImageItem *item = m_backgroundImages.value(image.Id());
-        if (item != nullptr)
-        {
-            item->SetImage(image);
-            item->setVisible(true);
-        }
-    }
-    else
-    {
-        VBackgroundImageItem *item = InitBackgroundImageItem(image);
-        if (item != nullptr)
-        {
-            m_backgroundImages.insert(image.Id(), item);
-            m_sceneDraw->addItem(item);
-        }
-    }
-
-    VMainGraphicsView::NewSceneRect(m_sceneDraw, ui->view);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto MainWindow::InitBackgroundImageItem(const VBackgroundPatternImage &image) -> VBackgroundImageItem *
-{
-    VBackgroundImageItem  *item = nullptr;
-    if (image.Type() == PatternImage::Raster)
-    {
-        item = new VBackgroundPixmapItem(image, doc);
-    }
-    else if (image.Type() == PatternImage::Vector || image.Type() == PatternImage::Unknown)
-    {
-        item = new VBackgroundSVGItem(image, doc);
-    }
-
-    if (item != nullptr)
-    {
-        connect(item, &VBackgroundImageItem::UpdateControls, m_backgroudcontrols,
-                &VBackgroundImageControls::UpdateControls);
-        connect(item, &VBackgroundImageItem::ActivateControls, m_backgroudcontrols,
-                &VBackgroundImageControls::ActivateControls);
-        connect(item, &VBackgroundImageItem::DeleteImage, this, &MainWindow::RemoveBackgroundImage);
-        connect(this, &MainWindow::EnableBackgroundImageSelection, item, &VBackgroundImageItem::EnableSelection);
-        connect(item, &VBackgroundImageItem::ShowImageInExplorer, this, &MainWindow::ShowBackgroundImageInExplorer);
-        connect(item, &VBackgroundImageItem::SaveImage, this, &MainWindow::SaveBackgroundImage);
-        connect(m_backgroudcontrols, &VBackgroundImageControls::ActiveImageChanged, m_backgroundImagesWidget,
-                &VWidgetBackgroundImages::ImageSelected);
-        connect(m_backgroundImagesWidget, &VWidgetBackgroundImages::SelectImage, m_backgroudcontrols,
-                &VBackgroundImageControls::ActivateControls);
-    }
-
-    return item;
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto MainWindow::SavePatternAs(const QString &fileName) -> bool
@@ -3791,74 +3634,7 @@ void MainWindow::CancelTool()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::SetupDrawToolsIcons()
-{
-    const auto resource = QStringLiteral("toolicon");
-
-    // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were handled.");
-
-    ui->actionLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("line.png")));
-    ui->actionEndLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("segment.png")));
-    ui->actionAlongLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("along_line.png")));
-    ui->actionMidpointTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("midpoint.png")));
-    ui->actionNormalTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("normal.png")));
-    ui->actionBisectorTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("bisector.png")));
-    ui->actionHeightTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("height.png")));
-    ui->actionPointOfIntersectionTool->setIcon(
-        VTheme::GetIconResource(resource, QStringLiteral("point_of_intersection.png")));
-    ui->actionLineIntersectTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("intersect.png")));
-    ui->actionShoulderPointTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("shoulder.png")));
-    ui->actionTriangleTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("triangle.png")));
-    ui->actionLineIntersectAxisTool->setIcon(
-        VTheme::GetIconResource(resource, QStringLiteral("line_intersect_axis.png")));
-    ui->actionCurveIntersectAxisTool->setIcon(
-        VTheme::GetIconResource(resource, QStringLiteral("curve_intersect_axis.png")));
-    ui->actionArcIntersectAxisTool->setIcon(
-        VTheme::GetIconResource(resource, QStringLiteral("arc_intersect_axis.png")));
-    ui->actionSplineCutPointTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("spline_cut_point.png")));
-    ui->actionSplinePathCutPointTool->setIcon(
-        VTheme::GetIconResource(resource, QStringLiteral("splinePath_cut_point.png")));
-    ui->actionArcCutPointTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("arc_cut.png")));
-    ui->actionIntersectionCurvesTool->setIcon(
-        VTheme::GetIconResource(resource, QStringLiteral("intersection_curves.png")));
-    ui->actionPointOfIntersectionArcsTool->setIcon(
-        VTheme::GetIconResource(resource, QStringLiteral("point_of_intersection_arcs.png")));
-    ui->actionPointOfIntersectionCirclesTool->setIcon(
-        VTheme::GetIconResource(resource, QStringLiteral("point_of_intersection_circles.png")));
-    ui->actionPointFromArcAndTangentTool->setIcon(
-        VTheme::GetIconResource(resource, QStringLiteral("point_from_arc_and_tangent.png")));
-    ui->actionPointFromCircleAndTangentTool->setIcon(
-        VTheme::GetIconResource(resource, QStringLiteral("point_from_circle_and_tangent.png")));
-    ui->actionPointOfContactTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("point_of_contact.png")));
-    ui->actionSplineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("spline.png")));
-    ui->actionCubicBezierTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("cubic_bezier.png")));
-    ui->actionSplinePathTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("splinePath.png")));
-    ui->actionCubicBezierPathTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("cubic_bezier_path.png")));
-    ui->actionArcTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("arc.png")));
-    ui->actionArcWithLengthTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("arc_with_length.png")));
-    ui->actionEllipticalArcTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("el_arc.png")));
-    ui->actionGroupTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("group_plus.png")));
-    ui->actionFlippingByAxisTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("flipping_axis.png")));
-    ui->actionFlippingByLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("flipping_line.png")));
-    ui->actionRotationTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("rotation.png")));
-    ui->actionMoveTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("move.png")));
-    ui->actionTrueDartsTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("true_darts.png")));
-    ui->actionNewDetailTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("new_detail.png")));
-    ui->actionUnionDetailsTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("union.png")));
-    ui->actionDuplicateDetailTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("duplicate_detail.png")));
-    ui->actionInternalPathTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("path.png")));
-    ui->actionPinTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("pin.png")));
-    ui->actionInsertNodeTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("insert_node.png")));
-    ui->actionPlaceLabelTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("place_label.png")));
-    ui->actionArcStartPointTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("arc_start.png")));
-    ui->actionArcEndPointTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("arc_end.png")));
-    ui->actionEllipticalArcWithLengthTool->setIcon(
-                VTheme::GetIconResource(resource, QStringLiteral("el_arc_with_length.png")));
-    ui->actionParallelCurveTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("parallel_curve.png")));
-    ui->actionGraduatedCurveTool->setIcon(
-                VTheme::GetIconResource(resource, QStringLiteral("graduated_curve_offseting.png")));
-}
+// SetupDrawToolsIcons extracted to mainwindow_icons.cpp
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -4531,19 +4307,8 @@ void MainWindow::on_actionUpdateManualLayout_triggered()
         qCCritical(vMainWindow, "%s", qUtf8Printable(tr("Unable to prepare raw layout data.")));
     }
 }
+// Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ActionAddBackgroundImage()
-{
-    const QString fileName =
-        QFileDialog::getOpenFileName(this, tr("Select background image"), QDir::homePath(), PrepareImageFilters(),
-                                     nullptr, VAbstractApplication::VApp()->NativeFileDialog());
-    if (not fileName.isEmpty())
-    {
-        QRect const viewportRect(0, 0, ui->view->viewport()->width(), ui->view->viewport()->height());
-        PlaceBackgroundImage(ui->view->mapToScene(viewportRect.center()), fileName);
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ActionExportFontCorrections()
@@ -5272,110 +5037,16 @@ void MainWindow::AskDefaultSettings()
         }
     }
 }
+// Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::AddBackgroundImageItem(const QUuid &id)
-{
-    NewBackgroundImageItem(doc->GetBackgroundImage(id));
+// Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-    if (m_backgroundImagesWidget != nullptr)
-    {
-        m_backgroundImagesWidget->UpdateImages();
-    }
-}
+// Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::DeleteBackgroundImageItem(const QUuid &id)
-{
-    if (m_backgroundImages.contains(id))
-    {
-        VBackgroundImageItem *item = m_backgroundImages.value(id);
-        emit ui->view->itemClicked(nullptr); // Hide visualization to avoid a crash
-        item->setVisible(false);             // Do not remove the item from scene to prevent crashes.
-        if (m_backgroudcontrols != nullptr && m_backgroudcontrols->Id() == id)
-        {
-            m_backgroudcontrols->ActivateControls(QUuid());
-        }
+// Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-        if (m_backgroundImagesWidget != nullptr)
-        {
-            m_backgroundImagesWidget->UpdateImages();
-        }
-    }
-}
+// Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ShowBackgroundImageInExplorer(const QUuid &id)
-{
-    ShowInGraphicalShell(doc->GetBackgroundImage(id).FilePath());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::SaveBackgroundImage(const QUuid &id)
-{
-    VBackgroundPatternImage const image = doc->GetBackgroundImage(id);
-
-    if (not image.IsValid())
-    {
-        qCritical() << tr("Unable to save image. Error: %1").arg(image.ErrorString());
-        return;
-    }
-
-    if (image.ContentData().isEmpty())
-    {
-        qCritical() << tr("Unable to save image. No data.");
-        return;
-    }
-
-    const QByteArray imageData = QByteArray::fromBase64(image.ContentData());
-    QMimeType const mime = MimeTypeFromByteArray(imageData);
-    QString path = QDir::homePath() + QDir::separator() + tr("untitled");
-    QStringList filters;
-
-    if (mime.isValid())
-    {
-        if (QStringList const suffixes = mime.suffixes(); not suffixes.isEmpty())
-        {
-            path += '.'_L1 + suffixes.at(0);
-        }
-
-        filters.append(mime.filterString());
-    }
-
-    filters.append(tr("All files") + " (*.*)"_L1);
-
-    QString const filter = filters.join(QStringLiteral(";;"));
-
-    QString const filename = QFileDialog::getSaveFileName(this, tr("Save Image"), path, filter, nullptr,
-                                                          VAbstractApplication::VApp()->NativeFileDialog());
-    if (not filename.isEmpty())
-    {
-        QFile file(filename);
-        if (file.open(QIODevice::WriteOnly))
-        {
-            file.write(imageData);
-        }
-        else
-        {
-            qCritical() << tr("Unable to save image. Error: %1").arg(file.errorString());
-        }
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ParseBackgroundImages()
-{
-    // No memory leak. Scene should take care of these items
-    m_backgroudcontrols = nullptr; // force creating new controls
-    m_backgroundImages.clear();    // clear dangling pointers
-
-    QVector<VBackgroundPatternImage> const allImages = doc->GetBackgroundImages();
-    for (const auto &image : allImages)
-    {
-        NewBackgroundImageItem(image);
-    }
-    m_backgroundImagesWidget->UpdateImages();
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ActionExportRecipe_triggered()
@@ -8302,27 +7973,8 @@ void MainWindow::PrintPatternMessage(QEvent *event)
         m_unreadPatternMessage->setText(DialogWarningIcon(m_unreadPatternMessage) + tr("Pattern messages"));
     }
 }
+// Extracted to mainwindow_watermark.cpp: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::OpenWatermark(const QString &path)
-{
-    for (const auto &watermarkEditor : std::as_const(m_watermarkEditors))
-    {
-        if (not watermarkEditor.isNull() && not watermarkEditor->CurrentFile().isEmpty() &&
-            watermarkEditor->CurrentFile() == AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), path))
-        {
-            watermarkEditor->show();
-            return;
-        }
-    }
-
-    auto *watermark = new WatermarkWindow(VAbstractValApplication::VApp()->GetPatternPath(), this);
-    connect(watermark, &WatermarkWindow::New, this, [this]() { OpenWatermark(); });
-    connect(watermark, &WatermarkWindow::OpenAnother, this, [this](const QString &path) { OpenWatermark(path); });
-    m_watermarkEditors.append(watermark);
-    watermark->show();
-    watermark->Open(path);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::AutoArrangeLabels(QPoint globalPos)
