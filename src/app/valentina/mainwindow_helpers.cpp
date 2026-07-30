@@ -56,6 +56,13 @@
 
 using namespace Qt::Literals::StringLiterals;
 
+//---------------------------------------------------------------------------------------------------------------------
+auto AutosavePrefix() -> const QString &
+{
+    static const QString prefix = QStringLiteral(".autosave");
+    return prefix;
+}
+
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_CLANG("-Wmissing-prototypes")
 

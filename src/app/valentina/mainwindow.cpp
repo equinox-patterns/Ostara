@@ -268,16 +268,6 @@ using QTextCodec = VTextCodec;
 using namespace std::chrono_literals;
 using namespace Qt::Literals::StringLiterals;
 
-namespace
-{
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wunused-member-function")
-
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, autosavePrefix, (".autosave"_L1)) // NOLINT
-
-QT_WARNING_POP
-} // anonymous namespace
-
 #include "mainwindow_helpers.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -666,744 +656,97 @@ auto MainWindow::UpdateMeasurements(const QSharedPointer<VMeasurements> &mFile, 
     return true;
 }
 // Extracted: 
+// Template extracted to mainwindow_tools.cpp
 
+// Extracted: /**
 
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+// Template extracted to mainwindow_tools.cpp
 
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief SetToolButton set tool and show dialog.
- * @param checked true if tool button checked.
- * @param t tool type.
- * @param cursor path tool cursor icon.
- * @param toolTip first tooltipe.
- * @param closeDialogSlot function what handle after close dialog.
- */
-template <typename Dialog, typename Func>
-void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, const QString &toolTip,
-                               Func closeDialogSlot)
-{
-    if (!checked)
-    {
-        if (auto *tButton = qobject_cast<QAction *>(this->sender()))
-        {
-            tButton->setChecked(true);
-        }
-        return;
-    }
-
-    CancelTool();
-    emit EnableItemMove(false);
-    m_currentTool = m_lastUsedTool = t;
-
-    if (const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-        settings->GetPointerMode() == VToolPointerMode::ToolIcon)
-    {
-        const auto resource = QStringLiteral("toolcursor");
-        QPixmap const pixmap(ResolveToolCursorResource(resource, cursor));
-        QCursor const cur(pixmap, 2, 2);
-        ui->view->viewport()->setCursor(cur);
-        ui->view->setCurrentCursorShape(); // Hack to fix problem with a cursor
-    }
-
-    m_statusLabel->setText(toolTip);
-    ui->view->setShowToolOptions(false);
-    auto *dialogTool = new Dialog(pattern, doc, 0, this);
-
-    // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Check if need to extend.");
-
-    switch (t)
-    {
-        case Tool::ArcStart:
-        case Tool::ArcEnd:
-        case Tool::Midpoint:
-            dialogTool->Build(t);
-            break;
-        case Tool::PiecePath:
-        case Tool::Pin:
-        case Tool::InsertNode:
-        case Tool::PlaceLabel:
-            dialogTool->SetPiecesList(doc->GetActivePPPieces());
-            break;
-        case Tool::Rotation:
-        case Tool::Move:
-        case Tool::FlippingByAxis:
-        case Tool::FlippingByLine:
-        case Tool::Group:
-            dialogTool->SetGroupCategories(doc->GetGroupCategories());
-            break;
-        case Tool::Piece:
-            dialogTool->SetPatternDoc(doc);
-            break;
-        default:
-            break;
-    }
-
-    VValentinaSettings  const*settings = VApplication::VApp()->ValentinaSettings();
-
-    if constexpr (std::is_same_v<Dialog,DialogEndLine> || std::is_same_v<Dialog,DialogAlongLine> ||
-                  std::is_same_v<Dialog,DialogBisector> || std::is_same_v<Dialog,DialogCurveIntersectAxis> ||
-                  std::is_same_v<Dialog,DialogHeight> || std::is_same_v<Dialog,DialogLine> ||
-                  std::is_same_v<Dialog,DialogLineIntersectAxis> || std::is_same_v<Dialog,DialogNormal> ||
-                  std::is_same_v<Dialog,DialogShoulderPoint>)
-    {
-        dialogTool->SetTypeLine(settings->GetGlobalPenStyle());
-        dialogTool->SetLineColor(settings->GetGlobalToolColor());
-    }
-
-    if constexpr (std::is_same_v<Dialog,DialogArc> || std::is_same_v<Dialog,DialogArcWithLength> ||
-                  std::is_same_v<Dialog,DialogEllipticalArc> ||
-                  std::is_same_v<Dialog,DialogEllipticalArcWithLength> ||
-                  std::is_same_v<Dialog,DialogParallelCurve> || std::is_same_v<Dialog,DialogGraduatedCurve>)
-    {
-        dialogTool->SetPenStyle(settings->GetGlobalPenStyle());
-        dialogTool->SetColor(settings->GetGlobalToolColor());
-    }
-
-    if constexpr (std::is_same_v<Dialog,DialogCubicBezier> || std::is_same_v<Dialog,DialogCubicBezierPath> ||
-                  std::is_same_v<Dialog,DialogSpline> || std::is_same_v<Dialog,DialogSplinePath>)
-    {
-        dialogTool->SetDefPenStyle(settings->GetGlobalPenStyle());
-        dialogTool->SetDefColor(settings->GetGlobalToolColor());
-    }
-
-    auto *scene = qobject_cast<VMainGraphicsScene *>(currentScene);
-    SCASSERT(scene != nullptr)
-
-    m_dialogTool = dialogTool;
-
-    // A full reparse (e.g. deleting a tool from the dependencies dock) would clear the scene and destroy this
-    // dialog's visualization. Block tool deletion until the creation is finished.
-    m_dependenciesWidget->SetToolCreationActive(true);
-
-    connect(scene, &VMainGraphicsScene::ChoosedObject, m_dialogTool.data(), &DialogTool::ChosenObject);
-    if (t == Tool::Group)
-    {
-        connect(scene, &VMainGraphicsScene::SelectedObject, m_dialogTool.data(), &DialogTool::SelectedObject);
-    }
-    connect(m_dialogTool.data(), &DialogTool::DialogClosed, this, closeDialogSlot);
-    connect(m_dialogTool.data(), &DialogTool::ToolTip, this, &MainWindow::ShowToolTip);
-    connect(m_dialogTool.data(), &DialogTool::destroyed, this, [this] () -> void { ShowToolTip(QString()); });
-    emit ui->view->itemClicked(nullptr);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-template <typename Dialog, typename Func, typename Func2>
-/**
- * @brief SetToolButtonWithApply set tool and show dialog.
- * @param checked true if tool button checked.
- * @param t tool type.
- * @param cursor path tool cursor icon.
- * @param toolTip first tooltipe.
- * @param closeDialogSlot function to handle close of dialog.
- * @param applyDialogSlot function to handle apply in dialog.
- */
-void MainWindow::SetToolButtonWithApply(bool checked, Tool t, const QString &cursor, const QString &toolTip,
-                                        Func closeDialogSlot, Func2 applyDialogSlot)
-{
-    if (checked)
-    {
-        SetToolButton<Dialog>(checked, t, cursor, toolTip, closeDialogSlot);
-
-        connect(m_dialogTool.data(), &DialogTool::DialogApplied, this, applyDialogSlot);
-    }
-    else
-    {
-        if (auto *tButton = qobject_cast<QAction *>(this->sender()))
-        {
-            tButton->setChecked(true);
-        }
-    }
-}
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ClosedDialog handle close dialog
- * @param result result working dialog.
- */
-template <typename DrawTool> void MainWindow::ClosedDialog(int result)
-{
-    SCASSERT(not m_dialogTool.isNull())
-    if (result == QDialog::Accepted)
-    {
-        auto *scene = qobject_cast<VMainGraphicsScene *>(currentScene);
-        SCASSERT(scene != nullptr)
-
-        auto *tool = dynamic_cast<QGraphicsItem *>(DrawTool::Create(m_dialogTool, scene, doc, pattern));
-        // Do not check for nullptr! See issue #719.
-        emit ui->view->itemClicked(tool);
-    }
-    ArrowTool(true);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ClosedDialogWithApply handle close dialog that has apply button
- * @param result result working dialog.
- */
-template <typename DrawTool> void MainWindow::ClosedDialogWithApply(int result, VMainGraphicsScene *scene)
-{
-    SCASSERT(not m_dialogTool.isNull())
-    if (result == QDialog::Accepted)
-    {
-        ApplyDialog<DrawTool>(scene);
-    }
-    // If before Cancel was used Apply we have an item
-    auto *vtool = qobject_cast<DrawTool *>(m_dialogTool->GetAssociatedTool()); // Don't check for nullptr here
-    if (m_dialogTool->GetAssociatedTool() != nullptr)
-    {
-        SCASSERT(vtool != nullptr)
-        vtool->DialogLinkDestroy();
-        connect(vtool, &DrawTool::ToolTip, this, &MainWindow::ShowToolTip);
-    }
-    ArrowTool(true);
-    ui->view->itemClicked(vtool); // Don't check for nullptr here
-    if (vtool)
-    {
-        vtool->setFocus();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ApplyDialog handle apply in dialog
- */
-template <typename DrawTool> void MainWindow::ApplyDialog(VMainGraphicsScene *scene)
-{
-    SCASSERT(not m_dialogTool.isNull())
-
-    // Only create tool if not already created with apply
-    if (m_dialogTool->GetAssociatedTool() == nullptr)
-    {
-        SCASSERT(scene != nullptr)
-
-        m_dialogTool->SetAssociatedTool(DrawTool::Create(m_dialogTool, scene, doc, pattern));
-    }
-    else
-    { // Or update associated tool with data
-        auto *vtool = qobject_cast<DrawTool *>(m_dialogTool->GetAssociatedTool());
-        SCASSERT(vtool != nullptr)
-        vtool->FullUpdateFromGuiApply();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-template <typename DrawTool> void MainWindow::ClosedDrawDialogWithApply(int result)
-{
-    ClosedDialogWithApply<DrawTool>(result, m_sceneDraw);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-template <typename DrawTool> void MainWindow::ApplyDrawDialog()
-{
-    ApplyDialog<DrawTool>(m_sceneDraw);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-template <typename DrawTool> void MainWindow::ClosedDetailsDialogWithApply(int result)
-{
-    ClosedDialogWithApply<DrawTool>(result, m_sceneDetails);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-template <typename DrawTool> void MainWindow::ApplyDetailsDialog()
-{
-    ApplyDialog<DrawTool>(m_sceneDetails);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolEndLine handler tool endLine.
- * @param checked true - button checked.
- */
-void MainWindow::ToolEndLine(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogEndLine>(checked, Tool::EndLine, QStringLiteral("segment_cursor.png"),
-                                          tr("Select point"), &MainWindow::ClosedDrawDialogWithApply<VToolEndLine>,
-                                          &MainWindow::ApplyDrawDialog<VToolEndLine>);
-    LogPatternToolUsed(checked, QStringLiteral("Segment tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolLine handler tool line.
- * @param checked true - button checked.
- */
-void MainWindow::ToolLine(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogLine>(checked, Tool::Line, QStringLiteral("line_cursor.png"), tr("Select first point"),
-                                       &MainWindow::ClosedDrawDialogWithApply<VToolLine>,
-                                       &MainWindow::ApplyDrawDialog<VToolLine>);
-    LogPatternToolUsed(checked, QStringLiteral("Line tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolAlongLine handler tool alongLine.
- * @param checked true - button checked.
- */
-void MainWindow::ToolAlongLine(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogAlongLine>(checked, Tool::AlongLine, QStringLiteral("along_line_cursor.png"),
-                                            tr("Select point"), &MainWindow::ClosedDrawDialogWithApply<VToolAlongLine>,
-                                            &MainWindow::ApplyDrawDialog<VToolAlongLine>);
-    LogPatternToolUsed(checked, QStringLiteral("Along line tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolMidpoint(bool checked)
-{
-    ToolSelectPointByRelease();
-    // Reuse DialogAlongLine and VToolAlongLine but with different cursor
-    SetToolButtonWithApply<DialogAlongLine>(checked, Tool::Midpoint, QStringLiteral("midpoint_cursor.png"),
-                                            tr("Select point"), &MainWindow::ClosedDrawDialogWithApply<VToolAlongLine>,
-                                            &MainWindow::ApplyDrawDialog<VToolAlongLine>);
-    LogPatternToolUsed(checked, QStringLiteral("Midpoint tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolShoulderPoint handler tool shoulderPoint.
- * @param checked true - button checked.
- */
-void MainWindow::ToolShoulderPoint(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogShoulderPoint>(
-        checked, Tool::ShoulderPoint, QStringLiteral("shoulder_cursor.png"), tr("Select point"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolShoulderPoint>, &MainWindow::ApplyDrawDialog<VToolShoulderPoint>);
-    LogPatternToolUsed(checked, QStringLiteral("Shoulder point tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolNormal handler tool normal.
- * @param checked true - button checked.
- */
-void MainWindow::ToolNormal(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogNormal>(
-        checked, Tool::Normal, QStringLiteral("normal_cursor.png"), tr("Select first point of line"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolNormal>, &MainWindow::ApplyDrawDialog<VToolNormal>);
-    LogPatternToolUsed(checked, QStringLiteral("Normal tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolBisector handler tool bisector.
- * @param checked true - button checked.
- */
-void MainWindow::ToolBisector(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogBisector>(
-        checked, Tool::Bisector, QStringLiteral("bisector_cursor.png"), tr("Select first point of angle"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolBisector>, &MainWindow::ApplyDrawDialog<VToolBisector>);
-    LogPatternToolUsed(checked, QStringLiteral("Bisector tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolLineIntersect handler tool lineIntersect.
- * @param checked true - button checked.
- */
-void MainWindow::ToolLineIntersect(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogLineIntersect>(
-        checked, Tool::LineIntersect, QStringLiteral("intersect_cursor.png"), tr("Select first point of first line"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolLineIntersect>, &MainWindow::ApplyDrawDialog<VToolLineIntersect>);
-    LogPatternToolUsed(checked, QStringLiteral("Line intersect tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolSpline handler tool spline.
- * @param checked true - button checked.
- */
-void MainWindow::ToolSpline(bool checked)
-{
-    ToolSelectPointByPress();
-    SetToolButtonWithApply<DialogSpline>(
-        checked, Tool::Spline, QStringLiteral("spline_cursor.png"), tr("Select first point curve"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolSpline>, &MainWindow::ApplyDrawDialog<VToolSpline>);
-    LogPatternToolUsed(checked, QStringLiteral("Spline tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolCubicBezier(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogCubicBezier>(
-        checked, Tool::CubicBezier, QStringLiteral("cubic_bezier_cursor.png"), tr("Select first curve point"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolCubicBezier>, &MainWindow::ApplyDrawDialog<VToolCubicBezier>);
-    LogPatternToolUsed(checked, QStringLiteral("Cubic bezier tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolCutSpline handler tool CutSpline.
- * @param checked true - button is checked
- */
-void MainWindow::ToolCutSpline(bool checked)
-{
-    ToolSelectSpline();
-    SetToolButtonWithApply<DialogCutSpline>(
-        checked, Tool::CutSpline, QStringLiteral("spline_cut_point_cursor.png"), tr("Select simple curve"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolCutSpline>, &MainWindow::ApplyDrawDialog<VToolCutSpline>);
-    LogPatternToolUsed(checked, QStringLiteral("Cut spline tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolArc handler tool arc.
- * @param checked true - button checked.
- */
-void MainWindow::ToolArc(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogArc>(
-        checked, Tool::Arc, QStringLiteral("arc_cursor.png"), tr("Select point of center of arc"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolArc>, &MainWindow::ApplyDrawDialog<VToolArc>);
-    LogPatternToolUsed(checked, QStringLiteral("Arc tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolEllipticalArc handler tool arc.
- * @param checked true - button checked.
- */
-void MainWindow::ToolEllipticalArc(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogEllipticalArc>(checked, Tool::EllipticalArc, QStringLiteral("el_arc_cursor.png"),
-                                                tr("Select point of center of elliptical arc"),
-                                                &MainWindow::ClosedDrawDialogWithApply<VToolEllipticalArc>,
-                                                &MainWindow::ApplyDrawDialog<VToolEllipticalArc>);
-    LogPatternToolUsed(checked, QStringLiteral("Elliptical arc tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolSplinePath handler tool splinePath.
- * @param checked true - button checked.
- */
-void MainWindow::ToolSplinePath(bool checked)
-{
-    ToolSelectPointByPress();
-    SetToolButtonWithApply<DialogSplinePath>(
-        checked, Tool::SplinePath, QStringLiteral("splinePath_cursor.png"), tr("Select point of curve path"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolSplinePath>, &MainWindow::ApplyDrawDialog<VToolSplinePath>);
-    LogPatternToolUsed(checked, QStringLiteral("Spline path tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolCubicBezierPath(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogCubicBezierPath>(
-        checked, Tool::CubicBezierPath, QStringLiteral("cubic_bezier_path_cursor.png"),
-        tr("Select point of cubic bezier path"), &MainWindow::ClosedDrawDialogWithApply<VToolCubicBezierPath>,
-        &MainWindow::ApplyDrawDialog<VToolCubicBezierPath>);
-    LogPatternToolUsed(checked, QStringLiteral("Cubic bezier path tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolCutSplinePath handler tool CutSplinePath.
- * @param checked true - button is checked
- */
-void MainWindow::ToolCutSplinePath(bool checked)
-{
-    ToolSelectSplinePath();
-    SetToolButtonWithApply<DialogCutSplinePath>(
-        checked, Tool::CutSplinePath, QStringLiteral("splinePath_cut_point_cursor.png"), tr("Select curve path"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolCutSplinePath>, &MainWindow::ApplyDrawDialog<VToolCutSplinePath>);
-    LogPatternToolUsed(checked, QStringLiteral("Cut spline path tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolPointOfContact handler tool pointOfContact.
- * @param checked true - button checked.
- */
-void MainWindow::ToolPointOfContact(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogPointOfContact>(
-        checked, Tool::PointOfContact, QStringLiteral("point_of_contact_cursor.png"), tr("Select first point of line"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolPointOfContact>, &MainWindow::ApplyDrawDialog<VToolPointOfContact>);
-    LogPatternToolUsed(checked, QStringLiteral("Point of contact tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolDetail handler tool detail.
- * @param checked true - button checked.
- */
-void MainWindow::ToolDetail(bool checked)
-{
-    ToolSelectAllDrawObjects();
-    SetToolButtonWithApply<DialogSeamAllowance>(checked, Tool::Piece, QStringLiteral("new_detail_cursor.png"),
-                                                tr("Select main path objects clockwise."),
-                                                &MainWindow::ClosedDetailsDialogWithApply<VToolSeamAllowance>,
-                                                &MainWindow::ApplyDetailsDialog<VToolSeamAllowance>);
-    LogPatternToolUsed(checked, QStringLiteral("Piece tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolPiecePath(bool checked)
-{
-    ToolSelectAllDrawObjects();
-    SetToolButton<DialogPiecePath>(
-        checked, Tool::PiecePath, QStringLiteral("path_cursor.png"),
-        tr("Select path objects, <b>%1</b> - reverse direction curve").arg(VModifierKey::Shift()),
-        &MainWindow::ClosedDialogPiecePath);
-    LogPatternToolUsed(checked, QStringLiteral("Piece path tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolPin(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButton<DialogPin>(checked, Tool::Pin, QStringLiteral("pin_cursor.png"), tr("Select pin point"),
-                             &MainWindow::ClosedDialogPin);
-    LogPatternToolUsed(checked, QStringLiteral("Pin tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolPlaceLabel(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButton<DialogPlaceLabel>(checked, Tool::PlaceLabel, QStringLiteral("place_label_cursor.png"),
-                                    tr("Select placelabel center point"), &MainWindow::ClosedDialogPlaceLabel);
-    LogPatternToolUsed(checked, QStringLiteral("Place label tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolHeight handler tool height.
- * @param checked true - button checked.
- */
-void MainWindow::ToolHeight(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogHeight>(checked, Tool::Height, QStringLiteral("height_cursor.png"),
-                                         tr("Select base point"), &MainWindow::ClosedDrawDialogWithApply<VToolHeight>,
-                                         &MainWindow::ApplyDrawDialog<VToolHeight>);
-    LogPatternToolUsed(checked, QStringLiteral("Height tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolTriangle handler tool triangle.
- * @param checked true - button checked.
- */
-void MainWindow::ToolTriangle(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogTriangle>(
-        checked, Tool::Triangle, QStringLiteral("triangle_cursor.png"), tr("Select first point of axis"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolTriangle>, &MainWindow::ApplyDrawDialog<VToolTriangle>);
-    LogPatternToolUsed(checked, QStringLiteral("Triangle tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolPointOfIntersection handler tool pointOfIntersection.
- * @param checked true - button checked.
- */
-void MainWindow::ToolPointOfIntersection(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogPointOfIntersection>(
-        checked, Tool::PointOfIntersection, QStringLiteral("point_of_intersection_cursor.png"),
-        tr("Select point for X value (vertical)"), &MainWindow::ClosedDrawDialogWithApply<VToolPointOfIntersection>,
-        &MainWindow::ApplyDrawDialog<VToolPointOfIntersection>);
-    LogPatternToolUsed(checked, QStringLiteral("Point of intersection tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolUnionDetails handler tool unionDetails.
- * @param checked true - button checked.
- */
-void MainWindow::ToolUnionDetails(bool checked)
-{
-    ToolSelectDetail();
-    SetToolButton<DialogUnionDetails>(checked, Tool::UnionDetails, QStringLiteral("union_cursor.png"),
-                                      tr("Select detail"), &MainWindow::ClosedDialogUnionDetails);
-    LogPatternToolUsed(checked, QStringLiteral("Union details tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ClosedDialogUnionDetails actions after closing DialogUnionDetails.
- * @param result result of dialog working.
- */
-void MainWindow::ClosedDialogUnionDetails(int result)
-{
-    ClosedDialog<VToolUnionDetails>(result); // Avoid error: Template function as signal or slot
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolDuplicateDetail(bool checked)
-{
-    ToolSelectDetail();
-    SetToolButton<DialogDuplicateDetail>(checked, Tool::DuplicateDetail, QStringLiteral("duplicate_detail_cursor.png"),
-                                         tr("Select detail"), &MainWindow::ClosedDialogDuplicateDetail);
-    LogPatternToolUsed(checked, QStringLiteral("Duplicate detail tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ClosedDialogDuplicateDetail(int result)
-{
-    SCASSERT(not m_dialogTool.isNull())
-    if (result == QDialog::Accepted)
-    {
-        auto *scene = qobject_cast<VMainGraphicsScene *>(currentScene);
-        SCASSERT(scene != nullptr)
-
-        auto *tool = dynamic_cast<QGraphicsItem *>(VToolSeamAllowance::Duplicate(m_dialogTool, scene, doc));
-        // Do not check for nullptr! See issue #719.
-        emit ui->view->itemClicked(tool);
-    }
-    ArrowTool(true);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolGroup(bool checked)
-{
-    ToolSelectGroupObjects();
-    const QString tooltip = tr("Select one or more objects, hold <b>%1</b> - for multiple selection, "
-                               "<b>%2</b> - finish creation")
-                                .arg(VModifierKey::Control(), VModifierKey::EnterKey());
-    SetToolButton<DialogGroup>(checked, Tool::Group, QStringLiteral("group_plus_cursor.png"), tooltip,
-                               &MainWindow::ClosedDialogGroup);
-    LogPatternToolUsed(checked, QStringLiteral("Group tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolRotation(bool checked)
-{
-    ToolSelectOperationObjects();
-    const QString tooltip = tr("Select one or more objects, <b>%1</b> - confirm selection")
-                                .arg(VModifierKey::EnterKey());
-    SetToolButtonWithApply<DialogRotation>(checked, Tool::Rotation, QStringLiteral("rotation_cursor.png"), tooltip,
-                                           &MainWindow::ClosedDrawDialogWithApply<VToolRotation>,
-                                           &MainWindow::ApplyDrawDialog<VToolRotation>);
-    LogPatternToolUsed(checked, QStringLiteral("Rotation tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolFlippingByLine(bool checked)
-{
-    ToolSelectOperationObjects();
-    const QString tooltip = tr("Select one or more objects, <b>%1</b> - confirm selection")
-                                .arg(VModifierKey::EnterKey());
-    SetToolButtonWithApply<DialogFlippingByLine>(
-        checked, Tool::FlippingByLine, QStringLiteral("flipping_line_cursor.png"), tooltip,
-        &MainWindow::ClosedDrawDialogWithApply<VToolFlippingByLine>, &MainWindow::ApplyDrawDialog<VToolFlippingByLine>);
-    LogPatternToolUsed(checked, QStringLiteral("Flipping by line tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolFlippingByAxis(bool checked)
-{
-    ToolSelectOperationObjects();
-    const QString tooltip = tr("Select one or more objects, <b>%1</b> - confirm selection")
-                                .arg(VModifierKey::EnterKey());
-    SetToolButtonWithApply<DialogFlippingByAxis>(
-        checked, Tool::FlippingByAxis, QStringLiteral("flipping_axis_cursor.png"), tooltip,
-        &MainWindow::ClosedDrawDialogWithApply<VToolFlippingByAxis>, &MainWindow::ApplyDrawDialog<VToolFlippingByAxis>);
-    LogPatternToolUsed(checked, QStringLiteral("Flipping by axis tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolMove(bool checked)
-{
-    ToolSelectOperationObjects();
-    const QString tooltip = tr("Select one or more objects, <b>%1</b> - confirm selection")
-                                .arg(VModifierKey::EnterKey());
-    SetToolButtonWithApply<DialogMove>(checked, Tool::Move, QStringLiteral("move_cursor.png"), tooltip,
-                                       &MainWindow::ClosedDrawDialogWithApply<VToolMove>,
-                                       &MainWindow::ApplyDrawDialog<VToolMove>);
-    LogPatternToolUsed(checked, QStringLiteral("Move tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ClosedDialogGroup(int result)
-{
-    SCASSERT(m_dialogTool != nullptr)
-    if (result == QDialog::Accepted)
-    {
-        const QPointer<DialogGroup> dialog = qobject_cast<DialogGroup *>(m_dialogTool);
-        SCASSERT(not dialog.isNull())
-
-        if (const QDomElement group =
-                doc->CreateGroup(pattern->getNextId(), dialog->GetName(), dialog->GetTags(), dialog->GetGroup());
-                !group.isNull())
-        {
-            auto *addGroup = new AddGroup(group, doc);
-            connect(addGroup, &AddGroup::UpdateGroups, m_groupsWidget, &VWidgetGroups::UpdateGroups);
-            VAbstractApplication::VApp()->getUndoStack()->push(addGroup);
-        }
-    }
-    ArrowTool(true);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ClosedDialogPiecePath(int result)
-{
-    SCASSERT(m_dialogTool != nullptr);
-    if (result == QDialog::Accepted)
-    {
-        VToolPiecePath::Create(m_dialogTool, m_sceneDetails, doc, pattern);
-    }
-    ArrowTool(true);
-    doc->LiteParseTree(Document::LiteParse);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ClosedDialogPin(int result)
-{
-    SCASSERT(m_dialogTool != nullptr);
-    if (result == QDialog::Accepted)
-    {
-        VToolPin::Create(m_dialogTool, doc, pattern);
-    }
-    ArrowTool(true);
-    doc->LiteParseTree(Document::LiteParse);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ClosedDialogPlaceLabel(int result)
-{
-    SCASSERT(m_dialogTool != nullptr);
-    if (result == QDialog::Accepted)
-    {
-        VToolPlaceLabel::Create(m_dialogTool, doc, pattern);
-    }
-    ArrowTool(true);
-    doc->LiteParseTree(Document::LiteParse);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ClosedDialogInsertNode(int result)
-{
-    SCASSERT(m_dialogTool != nullptr);
-    if (result == QDialog::Accepted)
-    {
-        const QPointer<DialogInsertNode> dTool = qobject_cast<DialogInsertNode *>(m_dialogTool);
-        SCASSERT(not dTool.isNull())
-        VToolSeamAllowance::InsertNodes(dTool->GetNodes(), dTool->GetPieceId(), m_sceneDetails, pattern, doc);
-    }
-    ArrowTool(true);
-    doc->LiteParseTree(Document::LiteParse);
-}
+// Template extracted to mainwindow_tools.cpp
+
+// Template extracted to mainwindow_tools.cpp
+
+// Template extracted to mainwindow_tools.cpp
+
+// Template extracted to mainwindow_tools.cpp
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
+
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ZoomFitBestCurrent()
@@ -1433,198 +776,40 @@ void MainWindow::ZoomFitBestCurrent()
 // Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
 // Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
+// Extracted: 
 
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolCutArc handler tool cutArc.
- * @param checked true - button checked.
- */
-void MainWindow::ToolCutArc(bool checked)
-{
-    ToolSelectArcCurve();
-    SetToolButtonWithApply<DialogCutArc>(checked, Tool::CutArc, QStringLiteral("arc_cut_cursor.png"), tr("Select arc"),
-                                         &MainWindow::ClosedDrawDialogWithApply<VToolCutArc>,
-                                         &MainWindow::ApplyDrawDialog<VToolCutArc>);
-    LogPatternToolUsed(checked, QStringLiteral("Cut arc tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolLineIntersectAxis(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogLineIntersectAxis>(
-        checked, Tool::LineIntersectAxis, QStringLiteral("line_intersect_axis_cursor.png"),
-        tr("Select first point of line"), &MainWindow::ClosedDrawDialogWithApply<VToolLineIntersectAxis>,
-        &MainWindow::ApplyDrawDialog<VToolLineIntersectAxis>);
-    LogPatternToolUsed(checked, QStringLiteral("Line intersect axis tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolCurveIntersectAxis(bool checked)
-{
-    ToolSelectAllDrawObjects();
-    SetToolButtonWithApply<DialogCurveIntersectAxis>(
-        checked, Tool::CurveIntersectAxis, QStringLiteral("curve_intersect_axis_cursor.png"), tr("Select curve"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolCurveIntersectAxis>,
-        &MainWindow::ApplyDrawDialog<VToolCurveIntersectAxis>);
-    LogPatternToolUsed(checked, QStringLiteral("Curve intersect axis tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolArcIntersectAxis(bool checked)
-{
-    ToolSelectAllDrawObjects();
-    // Reuse ToolCurveIntersectAxis but with different cursor and tool tip
-    SetToolButtonWithApply<DialogCurveIntersectAxis>(checked, Tool::ArcIntersectAxis,
-                                                     QStringLiteral("arc_intersect_axis_cursor.png"), tr("Select arc"),
-                                                     &MainWindow::ClosedDrawDialogWithApply<VToolCurveIntersectAxis>,
-                                                     &MainWindow::ApplyDrawDialog<VToolCurveIntersectAxis>);
-    LogPatternToolUsed(checked, QStringLiteral("Arc intersect axis tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolPointOfIntersectionArcs(bool checked)
-{
-    ToolSelectArc();
-    SetToolButtonWithApply<DialogPointOfIntersectionArcs>(
-        checked, Tool::PointOfIntersectionArcs, QStringLiteral("point_of_intersection_arcs_cursor.png"),
-        tr("Select first an arc"), &MainWindow::ClosedDrawDialogWithApply<VToolPointOfIntersectionArcs>,
-        &MainWindow::ApplyDrawDialog<VToolPointOfIntersectionArcs>);
-    LogPatternToolUsed(checked, QStringLiteral("Point of intersection arcs tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolPointOfIntersectionCircles(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogPointOfIntersectionCircles>(
-        checked, Tool::PointOfIntersectionCircles, QStringLiteral("point_of_intersection_circles_cursor.png"),
-        tr("Select first circle center"), &MainWindow::ClosedDrawDialogWithApply<VToolPointOfIntersectionCircles>,
-        &MainWindow::ApplyDrawDialog<VToolPointOfIntersectionCircles>);
-    LogPatternToolUsed(checked, QStringLiteral("Point of intersection circles tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolPointOfIntersectionCurves(bool checked)
-{
-    ToolSelectCurve();
-    SetToolButtonWithApply<DialogPointOfIntersectionCurves>(
-        checked, Tool::PointOfIntersectionCurves, QStringLiteral("intersection_curves_cursor.png"),
-        tr("Select first curve"), &MainWindow::ClosedDrawDialogWithApply<VToolPointOfIntersectionCurves>,
-        &MainWindow::ApplyDrawDialog<VToolPointOfIntersectionCurves>);
-    LogPatternToolUsed(checked, QStringLiteral("Point of intersection curves tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolPointFromCircleAndTangent(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogPointFromCircleAndTangent>(
-        checked, Tool::PointFromCircleAndTangent, QStringLiteral("point_from_circle_and_tangent_cursor.png"),
-        tr("Select point on tangent"), &MainWindow::ClosedDrawDialogWithApply<VToolPointFromCircleAndTangent>,
-        &MainWindow::ApplyDrawDialog<VToolPointFromCircleAndTangent>);
-    LogPatternToolUsed(checked, QStringLiteral("Point from circle and tangent tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolPointFromArcAndTangent(bool checked)
-{
-    ToolSelectPointArc();
-    SetToolButtonWithApply<DialogPointFromArcAndTangent>(
-        checked, Tool::PointFromArcAndTangent, QStringLiteral("point_from_arc_and_tangent_cursor.png"),
-        tr("Select point on tangent"), &MainWindow::ClosedDrawDialogWithApply<VToolPointFromArcAndTangent>,
-        &MainWindow::ApplyDrawDialog<VToolPointFromArcAndTangent>);
-    LogPatternToolUsed(checked, QStringLiteral("Point from arc and tangent tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolArcWithLength(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogArcWithLength>(
-        checked, Tool::ArcWithLength, QStringLiteral("arc_with_length_cursor.png"),
-        tr("Select point of the center of the arc"), &MainWindow::ClosedDrawDialogWithApply<VToolArcWithLength>,
-        &MainWindow::ApplyDrawDialog<VToolArcWithLength>);
-    LogPatternToolUsed(checked, QStringLiteral("Arc with length tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolTrueDarts(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogTrueDarts>(
-        checked, Tool::TrueDarts, QStringLiteral("true_darts_cursor.png"), tr("Select the first base line point"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolTrueDarts>, &MainWindow::ApplyDrawDialog<VToolTrueDarts>);
-    LogPatternToolUsed(checked, QStringLiteral("True darts tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolInsertNode(bool checked)
-{
-    ToolSelectOperationObjects();
-    const QString tooltip = tr("Select one or more objects, <b>%1</b> - confirm selection")
-                                .arg(VModifierKey::EnterKey());
-    SetToolButton<DialogInsertNode>(checked, Tool::InsertNode, QStringLiteral("insert_node_cursor.png"), tooltip,
-                                    &MainWindow::ClosedDialogInsertNode);
-    LogPatternToolUsed(checked, QStringLiteral("Insert node tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolArcStart(bool checked)
-{
-    ToolSelectArcElArc();
-    // Reuse DialogCutArc and VToolCutArc but with different cursor
-    SetToolButtonWithApply<DialogCutArc>(checked, Tool::ArcStart, QStringLiteral("arc_start_cursor.png"),
-                                         tr("Select arc"), &MainWindow::ClosedDrawDialogWithApply<VToolCutArc>,
-                                         &MainWindow::ApplyDrawDialog<VToolCutArc>);
-    LogPatternToolUsed(checked, QStringLiteral("Arc start tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolArcEnd(bool checked)
-{
-    ToolSelectArcElArc();
-    // Reuse DialogCutArc and VToolCutArc but with different cursor
-    SetToolButtonWithApply<DialogCutArc>(checked, Tool::ArcEnd, QStringLiteral("arc_end_cursor.png"), tr("Select arc"),
-                                         &MainWindow::ClosedDrawDialogWithApply<VToolCutArc>,
-                                         &MainWindow::ApplyDrawDialog<VToolCutArc>);
-    LogPatternToolUsed(checked, QStringLiteral("Arc end tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolEllipticalArcWithLength(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogEllipticalArcWithLength>(
-        checked, Tool::EllipticalArcWithLength, QStringLiteral("el_arc_with_length_cursor.png"),
-        tr("Select point of the center of the elliptical arc"),
-                &MainWindow::ClosedDrawDialogWithApply<VToolEllipticalArcWithLength>,
-        &MainWindow::ApplyDrawDialog<VToolEllipticalArcWithLength>);
-    LogPatternToolUsed(checked, QStringLiteral("Elliptical arc with length tool"));
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolParallelCurve(bool checked)
-{
-    ToolSelectCurve();
-    SetToolButtonWithApply<DialogParallelCurve>(
-        checked, Tool::ParallelCurve, QStringLiteral("parallel_curve_cursor.png"),
-        tr("Select curve"), &MainWindow::ClosedDrawDialogWithApply<VToolParallelCurve>,
-        &MainWindow::ApplyDrawDialog<VToolParallelCurve>);
-    LogPatternToolUsed(checked, QStringLiteral("Parallel curve tool"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolGraduatedCurve(bool checked)
-{
-    ToolSelectCurve();
-    SetToolButtonWithApply<DialogGraduatedCurve>(
-        checked, Tool::GraduatedCurve, QStringLiteral("graduated_curve_offseting_cursor.png"),
-        tr("Select curve"), &MainWindow::ClosedDrawDialogWithApply<VToolGraduatedCurve>,
-        &MainWindow::ApplyDrawDialog<VToolGraduatedCurve>);
-    LogPatternToolUsed(checked, QStringLiteral("Graduated curve tool"));
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -2168,7 +1353,7 @@ auto MainWindow::SavePatternAs(const QString &fileName) -> bool
         QStringList restoreFiles = VAbstractValApplication::VApp()->ValentinaSettings()->GetRestoreFileList();
         restoreFiles.removeAll(oldFilePath);
         VAbstractValApplication::VApp()->ValentinaSettings()->SetRestoreFileList(restoreFiles);
-        QFile::remove(oldFilePath + *autosavePrefix);
+        QFile::remove(oldFilePath + AutosavePrefix());
     }
 
     m_curFileFormatVersion = VPatternConverter::PatternMaxVer;
@@ -2301,502 +1486,18 @@ void MainWindow::OpenAt(QAction *where)
     process.waitForFinished();
 }
 #endif // defined(Q_OS_MAC)
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolBarOption enable option toolbar.
- */
-void MainWindow::ToolBarOption()
-{
-    ui->toolBarOption->clear();
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-    delete m_zoomScale.data();
-    delete m_doubleSpinBoxScale.data();
-    delete m_mouseCoordinate.data();
-    delete m_unreadPatternMessage.data();
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-    InitDimensionControls();
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-    m_zoomScale = new QLabel(tr("Scale:"), this);
-    ui->toolBarOption->addWidget(m_zoomScale);
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-    m_doubleSpinBoxScale = new QDoubleSpinBox(this);
-    m_doubleSpinBoxScale->setDecimals(1);
-    m_doubleSpinBoxScale->setSuffix(QChar('%'));
-    ScaleChanged(ui->view->transform().m11());
-    connect(m_doubleSpinBoxScale.data(), QOverload<double>::of(&QDoubleSpinBox::valueChanged), this,
-            [this](double d) { ui->view->Zoom(d / 100.0); });
-    ui->toolBarOption->addWidget(m_doubleSpinBoxScale);
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-    ui->toolBarOption->addSeparator();
-
-    m_mouseCoordinate =
-        new QLabel(QStringLiteral("0, 0 (%1)").arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)));
-    ui->toolBarOption->addWidget(m_mouseCoordinate);
-
-    ui->toolBarOption->addSeparator();
-    m_unreadPatternMessage = new QLabel();
-    ui->toolBarOption->addWidget(m_unreadPatternMessage);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolBarStages()
-{
-    const auto resource = QStringLiteral("icon");
-
-    m_leftGoToStage = new QLabel(this);
-    m_leftGoToStage->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/go-next-skip.png")));
-    ui->toolBarStages->insertWidget(ui->actionDetails, m_leftGoToStage);
-
-    m_rightGoToStage = new QLabel(this);
-    m_rightGoToStage->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/go-next.png")));
-    ui->toolBarStages->insertWidget(ui->actionLayout, m_rightGoToStage);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolBarDraws enable draw toolbar.
- */
-void MainWindow::ToolBarDraws()
-{
-    m_patternPieceLabel = new QLabel(tr("Pattern Piece:"));
-    ui->toolBarDraws->addWidget(m_patternPieceLabel);
-
-    // By using Qt UI Designer we can't add QComboBox to toolbar
-    m_comboBoxDraws = new QComboBox;
-    ui->toolBarDraws->addWidget(m_comboBoxDraws);
-    m_comboBoxDraws->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    m_comboBoxDraws->setEnabled(false);
-    connect(m_comboBoxDraws, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            [this](int index) { ChangePP(index); });
-
-    connect(ui->actionOptionDraw, &QAction::triggered, this,
-            [this]()
-            {
-                QString draw = doc->PatternBlockMapper()->GetActive();
-                if (bool const ok = PatternPieceName(draw); not ok)
-                {
-                    return;
-                }
-                VAbstractApplication::VApp()->getUndoStack()->push(new RenamePP(doc, draw, m_comboBoxDraws));
-            });
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolBarPenOptions()
-{
-    // Pen style
-    m_globalPenStyleLabel = new QLabel(tr("Pen style:"));
-    ui->toolBarPenOptions->addWidget(m_globalPenStyleLabel);
-
-    // By using Qt UI Designer we can't add QComboBox to toolbar
-    m_comboBoxPenStyle = new QComboBox;
-    m_comboBoxPenStyle->setToolTip(tr("Sets the <b>default pen style</b> for all newly created objects. This style is "
-                                      "applied the first time an object is drawn."));
-    ui->toolBarPenOptions->addWidget(m_comboBoxPenStyle);
-    m_comboBoxPenStyle->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    m_comboBoxPenStyle->setMinimumSize(QSize(80, 0));
-    m_comboBoxPenStyle->setIconSize(QSize(80, 14));
-    FillComboBoxTypeLine(m_comboBoxPenStyle,
-                         LineStylesPics(m_comboBoxPenStyle->palette().color(QPalette::Base),
-                                        m_comboBoxPenStyle->palette().color(QPalette::Text)));
-    ChangeCurrentData(m_comboBoxPenStyle, VApplication::VApp()->ValentinaSettings()->GetGlobalPenStyle());
-
-    connect(m_comboBoxPenStyle, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            [this]()
-    {
-        VValentinaSettings *settings = VApplication::VApp()->ValentinaSettings();
-        settings->SetGlobalPenStyle(GetComboBoxCurrentData(m_comboBoxPenStyle, TypeLineLine));
-    });
-
-    // Color
-    m_globalColorLabel = new QLabel(tr("Color:"));
-    ui->toolBarPenOptions->addWidget(m_globalColorLabel);
-
-    m_pushButtonColor = new VPE::QtColorPicker(this);
-    m_pushButtonColor->setToolTip(tr("Defines the <b>global object color property</b>. This color is applied "
-                                     "automatically the first time a new object is drawn."));
-    VValentinaSettings const *settings = VApplication::VApp()->ValentinaSettings();
-    InitColorPicker(m_pushButtonColor, settings->GetUserToolColors());
-    m_pushButtonColor->setUseNativeDialog(!settings->IsDontUseNativeDialog());
-    m_pushButtonColor->setCurrentColor(settings->GetGlobalToolColor());
-    ui->toolBarPenOptions->addWidget(m_pushButtonColor);
-
-    connect(m_pushButtonColor, &VPE::QtColorPicker::colorChanged, this, [this]()
-    {
-        VValentinaSettings *settings = VApplication::VApp()->ValentinaSettings();
-        settings->SetGlobalToolColor(m_pushButtonColor->currentColor().name());
-        settings->SetUserToolColors(m_pushButtonColor->CustomColors());
-    });
-
-    connect(settings, &VValentinaSettings::UserToolColorsChanged, this, [this]()
-    {
-        QVector<QColor> const colors = VApplication::VApp()->ValentinaSettings()->GetUserToolColors();
-        for (const auto &color : colors)
-        {
-            m_pushButtonColor->insertCustomColor(color);
-        }
-    }, Qt::QueuedConnection);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolBarTools()
-{
-    m_shortcutActions.insert(VShortcutAction::ZoomIn, ui->actionZoomIn);
-    connect(ui->actionZoomIn, &QAction::triggered, ui->view, &VMainGraphicsView::ZoomIn);
-
-    m_shortcutActions.insert(VShortcutAction::ZoomOut, ui->actionZoomOut);
-    connect(ui->actionZoomOut, &QAction::triggered, ui->view, &VMainGraphicsView::ZoomOut);
-
-    m_shortcutActions.insert(VShortcutAction::ZoomOriginal, ui->actionZoomOriginal);
-    connect(ui->actionZoomOriginal, &QAction::triggered, ui->view, &VMainGraphicsView::ZoomOriginal);
-
-    m_shortcutActions.insert(VShortcutAction::ZoomFitBest, ui->actionZoomFitBest);
-    connect(ui->actionZoomFitBest, &QAction::triggered, ui->view, &VMainGraphicsView::ZoomFitBest);
-
-    m_shortcutActions.insert(VShortcutAction::ZoomFitBestCurrent, ui->actionZoomFitBestCurrent);
-    connect(ui->actionZoomFitBestCurrent, &QAction::triggered, this, &MainWindow::ZoomFitBestCurrent,
-            Qt::QueuedConnection);
-
-    connect(ui->actionPreviousPatternPiece, &QAction::triggered, this, &MainWindow::PreviousPatternPiece);
-    connect(ui->actionNextPatternPiece, &QAction::triggered, this, &MainWindow::NextPatternPiece);
-
-    m_shortcutActions.insert(VShortcutAction::IncreaseLabelFont, ui->actionIncreaseLabelFont);
-    connect(ui->actionIncreaseLabelFont, &QAction::triggered, this,
-            [this]()
-            {
-                VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-                settings->SetPatternLabelFontSize(settings->GetPatternLabelFontSize() + 1);
-                // Label visibility depends on the font size and is recomputed in RefreshScale(),
-                // not in paint(), so drive the existing refresh dispatch instead of a bare update().
-                ScaleChanged(ui->view->transform().m11());
-            });
-
-    m_shortcutActions.insert(VShortcutAction::DecreaseLabelFont, ui->actionDecreaseLabelFont);
-    connect(ui->actionDecreaseLabelFont, &QAction::triggered, this,
-            [this]()
-            {
-                VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-                settings->SetPatternLabelFontSize(settings->GetPatternLabelFontSize() - 1);
-                ScaleChanged(ui->view->transform().m11());
-            });
-
-    m_shortcutActions.insert(VShortcutAction::OriginalLabelFont, ui->actionOriginalLabelFont);
-    connect(ui->actionOriginalLabelFont, &QAction::triggered, this,
-            [this]()
-            {
-                VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-                settings->SetPatternLabelFontSize(VCommonSettings::GetDefPatternLabelFontSize());
-                ScaleChanged(ui->view->transform().m11());
-            });
-
-    m_shortcutActions.insert(VShortcutAction::HideLabels, ui->actionHideLabels);
-    ui->actionHideLabels->setChecked(VAbstractValApplication::VApp()->ValentinaSettings()->GetHideLabels());
-    connect(ui->actionHideLabels, &QAction::triggered, this,
-            [this](bool checked)
-            {
-                VAbstractValApplication::VApp()->ValentinaSettings()->SetHideLabels(checked);
-                ScaleChanged(ui->view->transform().m11());
-            });
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolBarDrawTools()
-{
-    SetupDrawToolsIcons();
-
-    VValentinaSettings  const*settings = VApplication::VApp()->ValentinaSettings();
-
-    ui->toolBarPointTools->clear();
-    if (settings->IsUseToolGroups())
-    {
-        // Point tools
-        {
-            auto *linePointToolMenu = new QMenu(this);
-            linePointToolMenu->addAction(ui->actionEndLineTool);
-            linePointToolMenu->addAction(ui->actionAlongLineTool);
-            linePointToolMenu->addAction(ui->actionMidpointTool);
-
-            auto *linePointTool = new VToolButtonPopup(this);
-            linePointTool->AssignMenu(linePointToolMenu);
-            linePointTool->setDefaultAction(ui->actionEndLineTool);
-            linePointTool->SetToolGroupTooltip(tr("Point at a given distance tools"));
-
-            ui->toolBarPointTools->addWidget(linePointTool);
-        }
-
-        {
-            auto *angleLinePointToolMenu = new QMenu(this);
-            angleLinePointToolMenu->addAction(ui->actionNormalTool);
-            angleLinePointToolMenu->addAction(ui->actionBisectorTool);
-            angleLinePointToolMenu->addAction(ui->actionHeightTool);
-
-            auto *angleLinePointTool = new VToolButtonPopup(this);
-            angleLinePointTool->AssignMenu(angleLinePointToolMenu);
-            angleLinePointTool->setDefaultAction(ui->actionNormalTool);
-            angleLinePointTool->SetToolGroupTooltip(tr("Perpendicular/Bisector tools"));
-
-            ui->toolBarPointTools->addWidget(angleLinePointTool);
-        }
-
-        {
-            auto *lineIntersectionPointToolMenu = new QMenu(this);
-            lineIntersectionPointToolMenu->addAction(ui->actionPointOfIntersectionTool);
-            lineIntersectionPointToolMenu->addAction(ui->actionLineIntersectTool);
-
-            auto *lineIntersectionPointTool = new VToolButtonPopup(this);
-            lineIntersectionPointTool->AssignMenu(lineIntersectionPointToolMenu);
-            lineIntersectionPointTool->setDefaultAction(ui->actionPointOfIntersectionTool);
-            lineIntersectionPointTool->SetToolGroupTooltip(tr("Point at the intersections of lines/axis tools"));
-
-            ui->toolBarPointTools->addWidget(lineIntersectionPointTool);
-        }
-
-        {
-            auto *specialPointToolMenu = new QMenu(this);
-            specialPointToolMenu->addAction(ui->actionShoulderPointTool);
-            specialPointToolMenu->addAction(ui->actionTriangleTool);
-
-            auto *specialPointTool = new VToolButtonPopup(this);
-            specialPointTool->AssignMenu(specialPointToolMenu);
-            specialPointTool->setDefaultAction(ui->actionShoulderPointTool);
-            specialPointTool->SetToolGroupTooltip(tr("Triangular tools"));
-
-            ui->toolBarPointTools->addWidget(specialPointTool);
-        }
-
-        {
-            auto *axisPointToolMenu = new QMenu(this);
-            axisPointToolMenu->addAction(ui->actionLineIntersectAxisTool);
-            axisPointToolMenu->addAction(ui->actionCurveIntersectAxisTool);
-            axisPointToolMenu->addAction(ui->actionArcIntersectAxisTool);
-
-            auto *axisPointTool = new VToolButtonPopup(this);
-            axisPointTool->AssignMenu(axisPointToolMenu);
-            axisPointTool->setDefaultAction(ui->actionLineIntersectAxisTool);
-            axisPointTool->SetToolGroupTooltip(tr("Point intersecting with axis tools"));
-
-            ui->toolBarPointTools->addWidget(axisPointTool);
-        }
-
-        {
-            auto *curveSegmentPointToolMenu = new QMenu(this);
-            curveSegmentPointToolMenu->addAction(ui->actionSplineCutPointTool);
-            curveSegmentPointToolMenu->addAction(ui->actionSplinePathCutPointTool);
-            curveSegmentPointToolMenu->addAction(ui->actionArcCutPointTool);
-            curveSegmentPointToolMenu->addAction(ui->actionArcStartPointTool);
-            curveSegmentPointToolMenu->addAction(ui->actionArcEndPointTool);
-
-            auto *curveSegmentPointTool = new VToolButtonPopup(this);
-            curveSegmentPointTool->AssignMenu(curveSegmentPointToolMenu);
-            curveSegmentPointTool->setDefaultAction(ui->actionSplineCutPointTool);
-            curveSegmentPointTool->SetToolGroupTooltip(tr("Point segmenting curves/arcs tools"));
-
-            ui->toolBarPointTools->addWidget(curveSegmentPointTool);
-        }
-
-        {
-            auto *curveIntersectionPointToolMenu = new QMenu(this);
-            curveIntersectionPointToolMenu->addAction(ui->actionIntersectionCurvesTool);
-            curveIntersectionPointToolMenu->addAction(ui->actionPointOfIntersectionArcsTool);
-            curveIntersectionPointToolMenu->addAction(ui->actionPointOfIntersectionCirclesTool);
-
-            auto *curveIntersectionPointTool = new VToolButtonPopup(this);
-            curveIntersectionPointTool->AssignMenu(curveIntersectionPointToolMenu);
-            curveIntersectionPointTool->setDefaultAction(ui->actionIntersectionCurvesTool);
-            curveIntersectionPointTool->SetToolGroupTooltip(tr("Points intersecting with 2 curves/arcs/circles tools"));
-
-            ui->toolBarPointTools->addWidget(curveIntersectionPointTool);
-        }
-
-        {
-            auto *tangentPointToolMenu = new QMenu(this);
-            tangentPointToolMenu->addAction(ui->actionPointFromArcAndTangentTool);
-            tangentPointToolMenu->addAction(ui->actionPointFromCircleAndTangentTool);
-            tangentPointToolMenu->addAction(ui->actionPointOfContactTool);
-
-            auto *tangentPointTool = new VToolButtonPopup(this);
-            tangentPointTool->AssignMenu(tangentPointToolMenu);
-            tangentPointTool->setDefaultAction(ui->actionPointFromArcAndTangentTool);
-            tangentPointTool->SetToolGroupTooltip(
-                tr("Points intersecting with arcs/curves and tangents/segments tools"));
-
-            ui->toolBarPointTools->addWidget(tangentPointTool);
-        }
-    }
-    else
-    {
-        ui->toolBarPointTools->addAction(ui->actionEndLineTool);
-        ui->toolBarPointTools->addAction(ui->actionAlongLineTool);
-        ui->toolBarPointTools->addAction(ui->actionMidpointTool);
-
-        ui->toolBarPointTools->addAction(ui->actionNormalTool);
-        ui->toolBarPointTools->addAction(ui->actionBisectorTool);
-        ui->toolBarPointTools->addAction(ui->actionHeightTool);
-
-        ui->toolBarPointTools->addAction(ui->actionPointOfIntersectionTool);
-        ui->toolBarPointTools->addAction(ui->actionLineIntersectTool);
-
-        ui->toolBarPointTools->addAction(ui->actionShoulderPointTool);
-        ui->toolBarPointTools->addAction(ui->actionTriangleTool);
-
-        ui->toolBarPointTools->addAction(ui->actionLineIntersectAxisTool);
-        ui->toolBarPointTools->addAction(ui->actionCurveIntersectAxisTool);
-        ui->toolBarPointTools->addAction(ui->actionArcIntersectAxisTool);
-
-        ui->toolBarPointTools->addAction(ui->actionSplineCutPointTool);
-        ui->toolBarPointTools->addAction(ui->actionSplinePathCutPointTool);
-        ui->toolBarPointTools->addAction(ui->actionArcCutPointTool);
-        ui->toolBarPointTools->addAction(ui->actionArcStartPointTool);
-        ui->toolBarPointTools->addAction(ui->actionArcEndPointTool);
-
-        ui->toolBarPointTools->addAction(ui->actionIntersectionCurvesTool);
-        ui->toolBarPointTools->addAction(ui->actionPointOfIntersectionArcsTool);
-        ui->toolBarPointTools->addAction(ui->actionPointOfIntersectionCirclesTool);
-
-        ui->toolBarPointTools->addAction(ui->actionPointFromArcAndTangentTool);
-        ui->toolBarPointTools->addAction(ui->actionPointFromCircleAndTangentTool);
-        ui->toolBarPointTools->addAction(ui->actionPointOfContactTool);
-    }
-
-    ui->toolBarCurveTools->clear();
-    if (settings->IsUseToolGroups())
-    {
-        // Curve tools
-        {
-            auto *curveToolMenu = new QMenu(this);
-            curveToolMenu->addAction(ui->actionSplineTool);
-            curveToolMenu->addAction(ui->actionCubicBezierTool);
-            curveToolMenu->addAction(ui->actionSplinePathTool);
-            curveToolMenu->addAction(ui->actionCubicBezierPathTool);
-            curveToolMenu->addAction(ui->actionArcTool);
-            curveToolMenu->addAction(ui->actionArcWithLengthTool);
-            curveToolMenu->addAction(ui->actionEllipticalArcTool);
-            curveToolMenu->addAction(ui->actionEllipticalArcWithLengthTool);
-            curveToolMenu->addAction(ui->actionParallelCurveTool);
-            curveToolMenu->addAction(ui->actionGraduatedCurveTool);
-
-            auto *curvePointTool = new VToolButtonPopup(this);
-            curvePointTool->AssignMenu(curveToolMenu);
-            curvePointTool->setDefaultAction(ui->actionSplineTool);
-            curvePointTool->SetToolGroupTooltip(tr("Curves and arcs tools"));
-
-            ui->toolBarCurveTools->addWidget(curvePointTool);
-        }
-    }
-    else
-    {
-        ui->toolBarCurveTools->addAction(ui->actionSplineTool);
-        ui->toolBarCurveTools->addAction(ui->actionCubicBezierTool);
-        ui->toolBarCurveTools->addAction(ui->actionSplinePathTool);
-        ui->toolBarCurveTools->addAction(ui->actionCubicBezierPathTool);
-        ui->toolBarCurveTools->addAction(ui->actionArcTool);
-        ui->toolBarCurveTools->addAction(ui->actionArcWithLengthTool);
-        ui->toolBarCurveTools->addAction(ui->actionEllipticalArcTool);
-        ui->toolBarCurveTools->addAction(ui->actionEllipticalArcWithLengthTool);
-        ui->toolBarCurveTools->addAction(ui->actionParallelCurveTool);
-        ui->toolBarCurveTools->addAction(ui->actionGraduatedCurveTool);
-    }
-
-    ui->toolBarOperationTools->clear();
-    if (settings->IsUseToolGroups())
-    {
-        // Group tools
-        ui->toolBarOperationTools->addAction(ui->actionGroupTool);
-
-        {
-            auto *symmetryToolMenu = new QMenu(this);
-            symmetryToolMenu->addAction(ui->actionFlippingByAxisTool);
-            symmetryToolMenu->addAction(ui->actionFlippingByLineTool);
-
-            auto *symmetryTool = new VToolButtonPopup(this);
-            symmetryTool->AssignMenu(symmetryToolMenu);
-            symmetryTool->setDefaultAction(ui->actionFlippingByAxisTool);
-            symmetryTool->SetToolGroupTooltip(tr("Flipping objects tools"));
-
-            ui->toolBarOperationTools->addWidget(symmetryTool);
-        }
-
-        {
-            auto *transformToolMenu = new QMenu(this);
-            transformToolMenu->addAction(ui->actionRotationTool);
-            transformToolMenu->addAction(ui->actionMoveTool);
-
-            auto *transformTool = new VToolButtonPopup(this);
-            transformTool->AssignMenu(transformToolMenu);
-            transformTool->setDefaultAction(ui->actionRotationTool);
-            transformTool->SetToolGroupTooltip(tr("Rotating/moving objects tools"));
-
-            ui->toolBarOperationTools->addWidget(transformTool);
-        }
-
-        ui->toolBarOperationTools->addAction(ui->actionTrueDartsTool);
-        ui->toolBarOperationTools->addAction(ui->actionExportDraw);
-    }
-    else
-    {
-        ui->toolBarOperationTools->addAction(ui->actionGroupTool);
-
-        ui->toolBarOperationTools->addAction(ui->actionFlippingByAxisTool);
-        ui->toolBarOperationTools->addAction(ui->actionFlippingByLineTool);
-
-        ui->toolBarOperationTools->addAction(ui->actionRotationTool);
-        ui->toolBarOperationTools->addAction(ui->actionMoveTool);
-
-        ui->toolBarOperationTools->addAction(ui->actionTrueDartsTool);
-        ui->toolBarOperationTools->addAction(ui->actionExportDraw);
-    }
-
-    ui->toolBarDetailTools->clear();
-    if (settings->IsUseToolGroups())
-    {
-        // Detail tools
-        ui->toolBarDetailTools->addAction(ui->actionNewDetailTool);
-        {
-            auto *detailToolMenu = new QMenu(this);
-            detailToolMenu->addAction(ui->actionUnionDetailsTool);
-            detailToolMenu->addAction(ui->actionDuplicateDetailTool);
-
-            auto *detailTool = new VToolButtonPopup(this);
-            detailTool->AssignMenu(detailToolMenu);
-            detailTool->setDefaultAction(ui->actionUnionDetailsTool);
-            detailTool->SetToolGroupTooltip(tr("Merge/duplicate pieces tools"));
-
-            ui->toolBarDetailTools->addWidget(detailTool);
-        }
-
-        {
-            auto *internalDetailItemToolMenu = new QMenu(this);
-            internalDetailItemToolMenu->addAction(ui->actionInternalPathTool);
-            internalDetailItemToolMenu->addAction(ui->actionPinTool);
-            internalDetailItemToolMenu->addAction(ui->actionInsertNodeTool);
-            internalDetailItemToolMenu->addAction(ui->actionPlaceLabelTool);
-
-            auto *detailTool = new VToolButtonPopup(this);
-            detailTool->AssignMenu(internalDetailItemToolMenu);
-            detailTool->setDefaultAction(ui->actionInternalPathTool);
-            detailTool->SetToolGroupTooltip(tr("Adding objects for Details mode tools"));
-
-            ui->toolBarDetailTools->addWidget(detailTool);
-        }
-
-        ui->toolBarDetailTools->addAction(ui->actionDetailExportAs);
-    }
-    else
-    {
-        ui->toolBarDetailTools->addAction(ui->actionNewDetailTool);
-
-        ui->toolBarDetailTools->addAction(ui->actionUnionDetailsTool);
-        ui->toolBarDetailTools->addAction(ui->actionDuplicateDetailTool);
-
-        ui->toolBarDetailTools->addAction(ui->actionInternalPathTool);
-        ui->toolBarDetailTools->addAction(ui->actionPinTool);
-        ui->toolBarDetailTools->addAction(ui->actionInsertNodeTool);
-        ui->toolBarDetailTools->addAction(ui->actionPlaceLabelTool);
-
-        ui->toolBarDetailTools->addAction(ui->actionDetailExportAs);
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::InitToolButtons()
@@ -3612,7 +2313,7 @@ auto MainWindow::on_actionSave_triggered() -> bool
     bool const result = SavePattern(VAbstractValApplication::VApp()->GetPatternPath(), error);
     if (result)
     {
-        QFile::remove(VAbstractValApplication::VApp()->GetPatternPath() + *autosavePrefix);
+        QFile::remove(VAbstractValApplication::VApp()->GetPatternPath() + AutosavePrefix());
         m_curFileFormatVersion = VPatternConverter::PatternMaxVer;
         m_curFileFormatVersionStr = VPatternConverter::PatternMaxVerStr;
     }
@@ -4031,24 +2732,8 @@ void MainWindow::Clear()
     ui->actionEditCurrentWatermark->setEnabled(false);
     PatternChangesWereSaved(true);
 }
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::FileClosedCorrect()
-{
-    WriteSettings();
-
-    // File was closed correct.
-    QStringList restoreFiles = VAbstractValApplication::VApp()->ValentinaSettings()->GetRestoreFileList();
-    restoreFiles.removeAll(VAbstractValApplication::VApp()->GetPatternPath());
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetRestoreFileList(restoreFiles);
-
-    // Remove autosave file
-    if (QFile autofile(VAbstractValApplication::VApp()->GetPatternPath() + *autosavePrefix); autofile.exists())
-    {
-        autofile.remove();
-    }
-    qCDebug(vMainWindow, "File %s closed correct.", qUtf8Printable(VAbstractValApplication::VApp()->GetPatternPath()));
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::FullParseFile()
@@ -4828,177 +3513,16 @@ void MainWindow::MinimumScrollBar()
     QScrollBar *verScrollBar = ui->view->verticalScrollBar();
     verScrollBar->setValue(verScrollBar->minimum());
 }
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief SavePattern save pattern file.
- * @param fileName pattern file name.
- * @return true if all is good.
- */
-auto MainWindow::SavePattern(const QString &fileName, QString &error) -> bool
-{
-    qCDebug(vMainWindow, "Saving pattern file %s.", qUtf8Printable(fileName));
-    QFileInfo const tempInfo(fileName);
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-    const QString mPath = AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
-    if (not mPath.isEmpty() && VAbstractValApplication::VApp()->GetPatternPath() != fileName)
-    {
-        doc->SetMPath(RelativeMPath(fileName, mPath));
-    }
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-    const bool result = doc->SaveDocument(fileName, error);
-    if (result)
-    {
-        if (tempInfo.suffix() != "autosave"_L1)
-        {
-            setCurrentFile(fileName);
-            statusBar()->showMessage(tr("File saved"), 5000);
-            qCDebug(vMainWindow, "File %s saved.", qUtf8Printable(fileName));
-            PatternChangesWereSaved(result);
-        }
-    }
-    else
-    {
-        doc->SetMPath(mPath);
-        emit doc->UpdatePatternLabel();
-        qCDebug(vMainWindow, "Could not save file %s. %s.", qUtf8Printable(fileName), qUtf8Printable(error));
-    }
-    return result;
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief AutoSavePattern start safe saving.
- */
-void MainWindow::AutoSavePattern()
-{
-    if (VApplication::IsGUIMode() && not VAbstractValApplication::VApp()->GetPatternPath().isEmpty() &&
-        isWindowModified() && isNeedAutosave)
-    {
-        qCDebug(vMainWindow, "Autosaving pattern.");
-        QString error;
-        if (SavePattern(VAbstractValApplication::VApp()->GetPatternPath() + *autosavePrefix, error))
-        {
-            isNeedAutosave = false;
-        }
-    }
-}
+// Extracted: //---------------------------------------------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief setCurrentFile the function is called to reset the state of a few variables when a file
- * is loaded or saved, or when the user starts editing a new file (in which case fileName is empty).
- * @param fileName file name.
- */
-void MainWindow::setCurrentFile(const QString &fileName)
-{
-    qCDebug(vMainWindow, "Set current name to \"%s\"", qUtf8Printable(fileName));
-    VAbstractValApplication::VApp()->SetPatternPath(fileName);
-    doc->SetPatternWasChanged(true);
-    emit doc->UpdatePatternLabel();
-    VAbstractApplication::VApp()->getUndoStack()->setClean();
-
-    if (not VAbstractValApplication::VApp()->GetPatternPath().isEmpty() && VApplication::IsGUIMode())
-    {
-        qCDebug(vMainWindow, "Updating recent file list.");
-        VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-        QStringList files = settings->GetRecentFileList();
-        files.removeAll(fileName);
-        files.prepend(fileName);
-        while (files.size() > MaxRecentFiles)
-        {
-            files.removeLast();
-        }
-
-        settings->SetRecentFileList(files);
-        UpdateRecentFileActions();
-
-        qCDebug(vMainWindow, "Updating restore file list.");
-        QStringList restoreFiles = settings->GetRestoreFileList();
-        restoreFiles.removeAll(fileName);
-        restoreFiles.prepend(fileName);
-        settings->SetRestoreFileList(restoreFiles);
-    }
-
-    UpdateWindowTitle();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ReadSettings read setting for app.
- */
-void MainWindow::ReadSettings()
-{
-    qCDebug(vMainWindow, "Reading settings.");
-    const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-
-    if (settings->status() == QSettings::NoError)
-    {
-        restoreGeometry(settings->GetGeometry());
-        restoreState(settings->GetToolbarsState(), kToolbarStateVersion);
-
-        m_groupsActive = settings->IsDockWidgetGroupsActive();
-        m_toolOptionsActive = settings->IsDockWidgetToolOptionsActive();
-        m_patternMessagesActive = settings->IsDockWidgetPatternMessagesActive();
-        m_backgroundImagesActive = settings->IsDockWidgetBackgroundImagesActive();
-        m_dependenciesActive = settings->IsDockWidgetDependenciesActive();
-
-        ui->dockWidgetGroups->setVisible(m_groupsActive);
-        ui->dockWidgetToolOptions->setVisible(m_toolOptionsActive);
-        ui->dockWidgetMessages->setVisible(m_patternMessagesActive);
-        ui->dockWidgetBackgroundImages->setVisible(m_backgroundImagesActive);
-        ui->dockWidgetDependencies->setVisible(m_dependenciesActive);
-
-        // Scene antialiasing
-        ui->view->SetAntialiasing(settings->GetGraphicalOutput());
-
-        // Stack limit
-        VAbstractApplication::VApp()->getUndoStack()->setUndoLimit(settings->GetUndoCount());
-
-        // Text under tool buton icon
-        ToolBarStyles();
-
-        ToolboxIconSize();
-
-        QFont f = ui->plainTextEditPatternMessages->font();
-        f.setPointSize(qMax(settings->GetPatternMessageFontSize(f.pointSize()), 1));
-        ui->plainTextEditPatternMessages->setFont(f);
-
-        if (VAbstractShortcutManager *manager = VAbstractValApplication::VApp()->GetShortcutManager())
-        {
-            manager->UpdateShortcuts();
-        }
-    }
-    else
-    {
-        qWarning() << tr("Cannot read settings from a malformed .INI file.");
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief WriteSettings save setting for app.
- */
-void MainWindow::WriteSettings()
-{
-    ActionDraw(true);
-
-    VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-    settings->SetGeometry(saveGeometry());
-    settings->SetToolbarsState(saveState(kToolbarStateVersion));
-
-    settings->SetDockWidgetGroupsActive(ui->dockWidgetGroups->isVisible());
-    settings->SetDockWidgetToolOptionsActive(ui->dockWidgetToolOptions->isVisible());
-    settings->SetDockWidgetPatternMessagesActive(ui->dockWidgetMessages->isVisible());
-    settings->SetDockWidgetBackgroundImagesActive(actionDockWidgetBackgroundImages->isChecked());
-    settings->SetDockWidgetDependenciesActive(ui->dockWidgetDependencies->isVisible());
-
-    settings->sync();
-    if (settings->status() == QSettings::AccessError)
-    {
-        qWarning() << tr("Cannot save settings. Access denied.");
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -6123,7 +4647,7 @@ void MainWindow::ReopenFilesAfterCrash(QStringList &args)
     restoreFiles.reserve(files.size());
     for (const auto &file : files)
     {
-        if (QFile::exists(file + *autosavePrefix))
+        if (QFile::exists(file + AutosavePrefix()))
         {
             restoreFiles.append(file);
         }
@@ -6148,16 +4672,16 @@ void MainWindow::ReopenFilesAfterCrash(QStringList &args)
     for (auto &file : restoreFiles)
     {
         QString error;
-        if (VDomDocument::SafeCopy(file + *autosavePrefix, file, error))
+        if (VDomDocument::SafeCopy(file + AutosavePrefix(), file, error))
         {
-            QFile autoFile(file + *autosavePrefix);
+            QFile autoFile(file + AutosavePrefix());
             autoFile.remove();
             LoadPattern(file);
             args.removeAll(file); // Do not open file twice after we restore him.
         }
         else
         {
-            qCDebug(vMainWindow, "Could not copy %s%s to %s %s", qUtf8Printable(file), qUtf8Printable(*autosavePrefix),
+            qCDebug(vMainWindow, "Could not copy %s%s to %s %s", qUtf8Printable(file), qUtf8Printable(AutosavePrefix()),
                     qUtf8Printable(file), qUtf8Printable(error));
         }
     }

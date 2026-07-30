@@ -63,4 +63,7 @@ auto MakeRubberBandEntry(QGraphicsItem *target) -> std::pair<quint32, TriggerFn>
 void HandleRubberBandSelection(const VMainGraphicsScene *scene, const QRectF &sceneRect,
                                const std::shared_ptr<QMap<quint32, TriggerFn>> &prevBandTriggers);
 
+// Accessor for autosave prefix used by AutoSavePattern and ReopenFilesAfterCrash
+auto AutosavePrefix() -> const QString &;
+
 #endif // MAINWINDOW_HELPERS_H
