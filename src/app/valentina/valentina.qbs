@@ -194,7 +194,14 @@ VToolApp {
         prefix: "xml/"
         files: [
             "vpattern.h",
-            "vpattern.cpp"
+            "vpattern.cpp",
+            "vpattern_garbagecollector.cpp",
+            "vpattern_commonattrs.cpp",
+            "vpattern_geometryrefresh.cpp",
+            "vpattern_helpers.h",
+            "vpattern_increments.cpp",
+            "vpattern_labels.cpp",
+            "vpattern_helpers.cpp"
         ]
     }
 
