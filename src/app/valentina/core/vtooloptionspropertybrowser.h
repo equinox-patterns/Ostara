@@ -42,6 +42,8 @@ class QGraphicsItem;
 class QScrollArea;
 class VFormula;
 
+struct PropertyDesc;
+
 class VToolOptionsPropertyBrowser : public QObject
 {
     Q_OBJECT // NOLINT
@@ -51,6 +53,8 @@ public:
     ~VToolOptionsPropertyBrowser() override = default;
 
     void ClearPropertyBrowser();
+    QGraphicsItem *currentItem() const { return m_currentItem; }
+    auto ComboBoxPalette() const -> QPalette;
 
 public slots:
     void itemClicked(QGraphicsItem *item);
@@ -72,10 +76,20 @@ private:
     QMap<VPE::VProperty *, QString> m_propertyToId{};
     QMap<QString, VPE::VProperty *> m_idToProperty{};
 
-    auto ComboBoxPalette() const -> QPalette;
-
     void AddProperty(VPE::VProperty *property, const QString &id);
     void ShowItemOptions(QGraphicsItem *item);
+
+    // --- Declarative property system ---
+    template <class Tool>
+    void ShowToolOptions(QGraphicsItem *item, const QString &title,
+                         const std::vector<PropertyDesc> &descriptors);
+
+    template <class Tool>
+    void ChangeToolData(VPE::VProperty *property,
+                        const std::vector<PropertyDesc> &descriptors);
+
+    template <class Tool>
+    void UpdateToolOptions(const std::vector<PropertyDesc> &descriptors);
 
     template<class Tool, typename Getter, typename Setter>
     void SetStringPropertyGeneric(VPE::VProperty *property, Getter getter, Setter setter);
@@ -287,127 +301,17 @@ private:
     void AddPropertyText(const QString &propertyName, const QString &text, const QString &attrName);
     void AddPropertyBool(const QString &propertyName, bool value, const QString &attrName);
 
-    static auto PropertiesList() -> QStringList;
+    // PointOfIntersection*, PointFrom* — migrated to declarative system
+    // Rotation, Move, FlippingByLine, FlippingByAxis — migrated to declarative system
+    // BackgroundPixmapItem, BackgroundSVGItem — migrated to declarative system
 
-    void ChangeDataToolSinglePoint(VPE::VProperty *property);
-    void ChangeDataToolEndLine(VPE::VProperty *property);
-    void ChangeDataToolAlongLine(VPE::VProperty *property);
-    void ChangeDataToolArc(VPE::VProperty *property);
-    void ChangeDataToolArcWithLength(VPE::VProperty *property);
-    void ChangeDataToolBisector(VPE::VProperty *property);
-    void ChangeDataToolTrueDarts(VPE::VProperty *property);
-    void ChangeDataToolCutArc(VPE::VProperty *property);
-    void ChangeDataToolCutSpline(VPE::VProperty *property);
-    void ChangeDataToolCutSplinePath(VPE::VProperty *property);
-    void ChangeDataToolHeight(VPE::VProperty *property);
-    void ChangeDataToolLine(VPE::VProperty *property);
-    void ChangeDataToolLineIntersect(VPE::VProperty *property);
-    void ChangeDataToolNormal(VPE::VProperty *property);
-    void ChangeDataToolPointOfContact(VPE::VProperty *property);
-    void ChangeDataToolPointOfIntersection(VPE::VProperty *property);
-    void ChangeDataToolPointOfIntersectionArcs(VPE::VProperty *property);
-    void ChangeDataToolPointOfIntersectionCircles(VPE::VProperty *property);
-    void ChangeDataToolPointOfIntersectionCurves(VPE::VProperty *property);
-    void ChangeDataToolPointFromCircleAndTangent(VPE::VProperty *property);
-    void ChangeDataToolPointFromArcAndTangent(VPE::VProperty *property);
-    void ChangeDataToolShoulderPoint(VPE::VProperty *property);
-    void ChangeDataToolSpline(VPE::VProperty *property);
-    void ChangeDataToolCubicBezier(VPE::VProperty *property);
-    void ChangeDataToolSplinePath(VPE::VProperty *property);
-    void ChangeDataToolCubicBezierPath(VPE::VProperty *property);
-    void ChangeDataToolTriangle(VPE::VProperty *property);
-    void ChangeDataToolLineIntersectAxis(VPE::VProperty *property);
-    void ChangeDataToolCurveIntersectAxis(VPE::VProperty *property);
-    void ChangeDataToolRotation(VPE::VProperty *property);
-    void ChangeDataToolMove(VPE::VProperty *property);
-    void ChangeDataToolFlippingByLine(VPE::VProperty *property);
-    void ChangeDataToolFlippingByAxis(VPE::VProperty *property);
-    void ChangeDataToolEllipticalArc(VPE::VProperty *property);
-    void ChangeDataBackgroundPixmapItem(VPE::VProperty *property);
-    void ChangeDataBackgroundSVGItem(VPE::VProperty *property);
-    void ChangeDataToolEllipticalArcWithLength(VPE::VProperty *property);
-    void ChangeDataToolParallelCurve(VPE::VProperty *property);
-    void ChangeDataToolGraduatedCurve(VPE::VProperty *property);
+    // PointOfIntersection*, PointFrom* — migrated to declarative system
+    // Rotation, Move, FlippingByLine, FlippingByAxis — migrated to declarative system
+    // BackgroundPixmapItem, BackgroundSVGItem — migrated to declarative system
 
-    void ShowOptionsToolSinglePoint(QGraphicsItem *item);
-    void ShowOptionsToolEndLine(QGraphicsItem *item);
-    void ShowOptionsToolAlongLine(QGraphicsItem *item);
-    void ShowOptionsToolArc(QGraphicsItem *item);
-    void ShowOptionsToolArcWithLength(QGraphicsItem *item);
-    void ShowOptionsToolBisector(QGraphicsItem *item);
-    void ShowOptionsToolTrueDarts(QGraphicsItem *item);
-    void ShowOptionsToolCutArc(QGraphicsItem *item);
-    void ShowOptionsToolCutSpline(QGraphicsItem *item);
-    void ShowOptionsToolCutSplinePath(QGraphicsItem *item);
-    void ShowOptionsToolHeight(QGraphicsItem *item);
-    void ShowOptionsToolLine(QGraphicsItem *item);
-    void ShowOptionsToolLineIntersect(QGraphicsItem *item);
-    void ShowOptionsToolNormal(QGraphicsItem *item);
-    void ShowOptionsToolPointOfContact(QGraphicsItem *item);
-    void ShowOptionsToolPointOfIntersection(QGraphicsItem *item);
-    void ShowOptionsToolPointOfIntersectionArcs(QGraphicsItem *item);
-    void ShowOptionsToolPointOfIntersectionCircles(QGraphicsItem *item);
-    void ShowOptionsToolPointOfIntersectionCurves(QGraphicsItem *item);
-    void ShowOptionsToolPointFromCircleAndTangent(QGraphicsItem *item);
-    void ShowOptionsToolPointFromArcAndTangent(QGraphicsItem *item);
-    void ShowOptionsToolShoulderPoint(QGraphicsItem *item);
-    void ShowOptionsToolSpline(QGraphicsItem *item);
-    void ShowOptionsToolCubicBezier(QGraphicsItem *item);
-    void ShowOptionsToolSplinePath(QGraphicsItem *item);
-    void ShowOptionsToolCubicBezierPath(QGraphicsItem *item);
-    void ShowOptionsToolTriangle(QGraphicsItem *item);
-    void ShowOptionsToolLineIntersectAxis(QGraphicsItem *item);
-    void ShowOptionsToolCurveIntersectAxis(QGraphicsItem *item);
-    void ShowOptionsToolRotation(QGraphicsItem *item);
-    void ShowOptionsToolMove(QGraphicsItem *item);
-    void ShowOptionsToolFlippingByLine(QGraphicsItem *item);
-    void ShowOptionsToolFlippingByAxis(QGraphicsItem *item);
-    void ShowOptionsToolEllipticalArc(QGraphicsItem *item);
-    void ShowOptionsBackgroundPixmapItem(QGraphicsItem *item);
-    void ShowOptionsBackgroundSVGItem(QGraphicsItem *item);
-    void ShowOptionsToolEllipticalArcWithLength(QGraphicsItem *item);
-    void ShowOptionsToolParallelCurve(QGraphicsItem *item);
-    void ShowOptionsToolGraduatedCurve(QGraphicsItem *item);
-
-    void UpdateOptionsToolSinglePoint();
-    void UpdateOptionsToolEndLine();
-    void UpdateOptionsToolAlongLine();
-    void UpdateOptionsToolArc();
-    void UpdateOptionsToolArcWithLength();
-    void UpdateOptionsToolBisector();
-    void UpdateOptionsToolTrueDarts();
-    void UpdateOptionsToolCutArc();
-    void UpdateOptionsToolCutSpline();
-    void UpdateOptionsToolCutSplinePath();
-    void UpdateOptionsToolHeight();
-    void UpdateOptionsToolLine();
-    void UpdateOptionsToolLineIntersect();
-    void UpdateOptionsToolNormal();
-    void UpdateOptionsToolPointOfContact();
-    void UpdateOptionsToolPointOfIntersection();
-    void UpdateOptionsToolPointOfIntersectionArcs();
-    void UpdateOptionsToolPointOfIntersectionCircles();
-    void UpdateOptionsToolPointOfIntersectionCurves();
-    void UpdateOptionsToolPointFromCircleAndTangent();
-    void UpdateOptionsToolPointFromArcAndTangent();
-    void UpdateOptionsToolShoulderPoint();
-    void UpdateOptionsToolSpline();
-    void UpdateOptionsToolCubicBezier();
-    void UpdateOptionsToolSplinePath();
-    void UpdateOptionsToolCubicBezierPath();
-    void UpdateOptionsToolTriangle();
-    void UpdateOptionsToolLineIntersectAxis();
-    void UpdateOptionsToolCurveIntersectAxis();
-    void UpdateOptionsToolRotation();
-    void UpdateOptionsToolMove();
-    void UpdateOptionsToolFlippingByLine();
-    void UpdateOptionsToolFlippingByAxis();
-    void UpdateOptionsToolEllipticalArc();
-    void UpdateOptionsBackgroundPixmapItem();
-    void UpdateOptionsBackgroundSVGItem();
-    void UpdateOptionsToolEllipticalArcWithLength();
-    void UpdateOptionsToolParallelCurve();
-    void UpdateOptionsToolGraduatedCurve();
+    // PointOfIntersection*, PointFrom* — migrated to declarative system
+    // Rotation, Move, Flipping — migrated to declarative system
+    // Background* — migrated to declarative system
 };
 
 #endif // VTOOLOPTIONSPROPERTYBROWSER_H

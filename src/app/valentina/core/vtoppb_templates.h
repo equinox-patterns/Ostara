@@ -30,6 +30,10 @@
 #ifndef VTOPPB_TEMPLATES_H
 #define VTOPPB_TEMPLATES_H
 
+#include <algorithm>
+#include <functional>
+#include <vector>
+
 #include "vtooloptionspropertybrowser.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vpropertyexplorer/plugins/vboolproperty.h"
@@ -48,6 +52,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "ifcdef.h"
 #include "../vmisc/def.h"
+#include "../vtools/tools/vabstracttool.h"
 
 namespace VtoppbConstants
 {
@@ -56,6 +61,21 @@ inline const QString AttrVisible(QStringLiteral("visible"));
 inline const QString AttrOpacity(QStringLiteral("opacity"));
 inline const QString AttrSubName(QStringLiteral("subName"));
 } // namespace VtoppbConstants
+
+
+struct PropertyDesc
+{
+    QString attrId;
+    QString label;
+    bool readOnly = false;
+
+    // create:  called in ShowOptions — creates a VPE::VProperty* from the tool
+    // apply:   called in ChangeData — applies user edit to the tool (nullptr = read-only)
+    // refresh: called in UpdateOptions — refreshes the property widget from the tool
+    std::function<VPE::VProperty *(VToolOptionsPropertyBrowser *, void *tool)> create;
+    std::function<void(VToolOptionsPropertyBrowser *, VPE::VProperty *)> apply;
+    std::function<void(VToolOptionsPropertyBrowser *, VPE::VProperty *)> refresh;
+};
 
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_CLANG("-Wheader-hygiene")
@@ -1012,6 +1032,74 @@ void VToolOptionsPropertyBrowser::AddPropertyArc2Alias2(Tool *i, const QString &
     itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetArc2AliasSuffix2());
     AddProperty(itemName, AttrCurve2Alias2);
+}
+
+// ============================================================================
+// Declarative property system — generic template functions
+// ============================================================================
+
+template <class Tool>
+void VToolOptionsPropertyBrowser::ShowToolOptions(QGraphicsItem *item, const QString &title,
+                                                   const std::vector<PropertyDesc> &descriptors)
+{
+    auto *i = qgraphicsitem_cast<Tool *>(item);
+    if constexpr (requires(Tool & t) { t.ShowVisualization(true); })
+    {
+        i->ShowVisualization(true);
+    }
+    m_formView->setTitle(title);
+
+    for (const auto &desc : descriptors)
+    {
+        if (desc.create)
+        {
+            auto *prop = desc.create(this, static_cast<void *>(i));
+            if (prop)
+            {
+                AddProperty(prop, desc.attrId);
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <class Tool>
+void VToolOptionsPropertyBrowser::ChangeToolData(VPE::VProperty *property,
+                                                  const std::vector<PropertyDesc> &descriptors)
+{
+    SCASSERT(property != nullptr)
+
+    const QString id = m_propertyToId[property];
+
+    auto it = std::find_if(descriptors.begin(), descriptors.end(),
+                           [&id](const PropertyDesc &d) { return d.attrId == id; });
+    if (it == descriptors.end())
+    {
+        qWarning() << "Unknown property type. id =" << id;
+        return;
+    }
+
+    if (it->apply)
+    {
+        it->apply(this, property);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <class Tool>
+void VToolOptionsPropertyBrowser::UpdateToolOptions(const std::vector<PropertyDesc> &descriptors)
+{
+    for (const auto &desc : descriptors)
+    {
+        if (desc.refresh)
+        {
+            auto *prop = m_idToProperty.value(desc.attrId);
+            if (prop)
+            {
+                desc.refresh(this, prop);
+            }
+        }
+    }
 }
 
 #endif // VTOPPB_TEMPLATES_H

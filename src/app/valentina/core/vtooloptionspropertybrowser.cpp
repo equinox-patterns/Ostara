@@ -109,6 +109,46 @@ using namespace VtoppbConstants;
 
 using namespace Qt::Literals::StringLiterals;
 
+// Forward declarations — declarative property descriptors (defined in vtoppb_*.cpp)
+auto RotationProperties() -> std::vector<PropertyDesc>;
+auto MoveProperties() -> std::vector<PropertyDesc>;
+auto FlippingByLineProperties() -> std::vector<PropertyDesc>;
+auto FlippingByAxisProperties() -> std::vector<PropertyDesc>;
+auto PointOfIntersectionArcsProperties() -> std::vector<PropertyDesc>;
+auto PointOfIntersectionCirclesProperties() -> std::vector<PropertyDesc>;
+auto PointOfIntersectionCurvesProperties() -> std::vector<PropertyDesc>;
+auto PointFromCircleAndTangentProperties() -> std::vector<PropertyDesc>;
+auto PointFromArcAndTangentProperties() -> std::vector<PropertyDesc>;
+auto BackgroundPixmapItemProperties() -> std::vector<PropertyDesc>;
+auto BackgroundSVGItemProperties() -> std::vector<PropertyDesc>;
+auto SinglePointProperties() -> std::vector<PropertyDesc>;
+auto EndLineProperties() -> std::vector<PropertyDesc>;
+auto AlongLineProperties() -> std::vector<PropertyDesc>;
+auto BisectorProperties() -> std::vector<PropertyDesc>;
+auto TrueDartsProperties() -> std::vector<PropertyDesc>;
+auto HeightProperties() -> std::vector<PropertyDesc>;
+auto LineProperties() -> std::vector<PropertyDesc>;
+auto LineIntersectProperties() -> std::vector<PropertyDesc>;
+auto NormalProperties() -> std::vector<PropertyDesc>;
+auto PointOfContactProperties() -> std::vector<PropertyDesc>;
+auto PointOfIntersectionProperties() -> std::vector<PropertyDesc>;
+auto ShoulderPointProperties() -> std::vector<PropertyDesc>;
+auto TriangleProperties() -> std::vector<PropertyDesc>;
+auto LineIntersectAxisProperties() -> std::vector<PropertyDesc>;
+auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>;
+auto ArcProperties() -> std::vector<PropertyDesc>;
+auto ArcWithLengthProperties() -> std::vector<PropertyDesc>;
+auto CutArcProperties() -> std::vector<PropertyDesc>;
+auto CutSplineProperties() -> std::vector<PropertyDesc>;
+auto CutSplinePathProperties() -> std::vector<PropertyDesc>;
+auto SplineProperties() -> std::vector<PropertyDesc>;
+auto CubicBezierProperties() -> std::vector<PropertyDesc>;
+auto SplinePathProperties() -> std::vector<PropertyDesc>;
+auto CubicBezierPathProperties() -> std::vector<PropertyDesc>;
+auto EllipticalArcProperties() -> std::vector<PropertyDesc>;
+auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>;
+auto ParallelCurveProperties() -> std::vector<PropertyDesc>;
+auto GraduatedCurveProperties() -> std::vector<PropertyDesc>;
 
 //---------------------------------------------------------------------------------------------------------------------
 VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QDockWidget *parent)
@@ -149,76 +189,76 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
     switch (item->type())
     {
         case VToolBasePoint::Type:
-            ShowOptionsToolSinglePoint(item);
+            ShowToolOptions<VToolBasePoint>(item, tr("Base point"), SinglePointProperties());
             break;
         case VToolEndLine::Type:
-            ShowOptionsToolEndLine(item);
+            ShowToolOptions<VToolEndLine>(item, tr("Point at distance and angle"), EndLineProperties());
             break;
         case VToolAlongLine::Type:
-            ShowOptionsToolAlongLine(item);
+            ShowToolOptions<VToolAlongLine>(item, tr("Point at distance along line"), AlongLineProperties());
             break;
         case VToolArc::Type:
-            ShowOptionsToolArc(item);
+            ShowToolOptions<VToolArc>(item, tr("Arc"), ArcProperties());
             break;
         case VToolArcWithLength::Type:
-            ShowOptionsToolArcWithLength(item);
+            ShowToolOptions<VToolArcWithLength>(item, tr("Arc with given length"), ArcWithLengthProperties());
             break;
         case VToolBisector::Type:
-            ShowOptionsToolBisector(item);
+            ShowToolOptions<VToolBisector>(item, tr("Point along bisector"), BisectorProperties());
             break;
         case VToolCutArc::Type:
-            ShowOptionsToolCutArc(item);
+            ShowToolOptions<VToolCutArc>(item, tr("Cut arc tool"), CutArcProperties());
             break;
         case VToolCutSpline::Type:
-            ShowOptionsToolCutSpline(item);
+            ShowToolOptions<VToolCutSpline>(item, tr("Tool for segmenting a curve"), CutSplineProperties());
             break;
         case VToolCutSplinePath::Type:
-            ShowOptionsToolCutSplinePath(item);
+            ShowToolOptions<VToolCutSplinePath>(item, tr("Tool segment a pathed curve"), CutSplinePathProperties());
             break;
         case VToolHeight::Type:
-            ShowOptionsToolHeight(item);
+            ShowToolOptions<VToolHeight>(item, tr("Perpendicular point along line"), HeightProperties());
             break;
         case VToolLine::Type:
-            ShowOptionsToolLine(item);
+            ShowToolOptions<VToolLine>(item, tr("Line between points"), LineProperties());
             break;
         case VToolLineIntersect::Type:
-            ShowOptionsToolLineIntersect(item);
+            ShowToolOptions<VToolLineIntersect>(item, tr("Point at intersection of two lines"), LineIntersectProperties());
             break;
         case VToolNormal::Type:
-            ShowOptionsToolNormal(item);
+            ShowToolOptions<VToolNormal>(item, tr("Point along normal to line"), NormalProperties());
             break;
         case VToolPointOfContact::Type:
-            ShowOptionsToolPointOfContact(item);
+            ShowToolOptions<VToolPointOfContact>(item, tr("Point of contact"), PointOfContactProperties());
             break;
         case VToolPointOfIntersection::Type:
-            ShowOptionsToolPointOfIntersection(item);
+            ShowToolOptions<VToolPointOfIntersection>(item, tr("Point of intersection two lines"), PointOfIntersectionProperties());
             break;
         case VToolPointOfIntersectionArcs::Type:
-            ShowOptionsToolPointOfIntersectionArcs(item);
+            ShowToolOptions<VToolPointOfIntersectionArcs>(item, tr("Tool to make point from intersection two arcs"), PointOfIntersectionArcsProperties());
             break;
         case VToolPointOfIntersectionCircles::Type:
-            ShowOptionsToolPointOfIntersectionCircles(item);
+            ShowToolOptions<VToolPointOfIntersectionCircles>(item, tr("Tool to make point from intersection two circles"), PointOfIntersectionCirclesProperties());
             break;
         case VToolPointOfIntersectionCurves::Type:
-            ShowOptionsToolPointOfIntersectionCurves(item);
+            ShowToolOptions<VToolPointOfIntersectionCurves>(item, tr("Tool to make point from intersection two curves"), PointOfIntersectionCurvesProperties());
             break;
         case VToolShoulderPoint::Type:
-            ShowOptionsToolShoulderPoint(item);
+            ShowToolOptions<VToolShoulderPoint>(item, tr("Shoulder point"), ShoulderPointProperties());
             break;
         case VToolSpline::Type:
-            ShowOptionsToolSpline(item);
+            ShowToolOptions<VToolSpline>(item, tr("Curve tool"), SplineProperties());
             break;
         case VToolCubicBezier::Type:
-            ShowOptionsToolCubicBezier(item);
+            ShowToolOptions<VToolCubicBezier>(item, tr("Cubic bezier curve"), CubicBezierProperties());
             break;
         case VToolSplinePath::Type:
-            ShowOptionsToolSplinePath(item);
+            ShowToolOptions<VToolSplinePath>(item, tr("Tool for path curve"), SplinePathProperties());
             break;
         case VToolCubicBezierPath::Type:
-            ShowOptionsToolCubicBezierPath(item);
+            ShowToolOptions<VToolCubicBezierPath>(item, tr("Tool cubic bezier curve"), CubicBezierPathProperties());
             break;
         case VToolTriangle::Type:
-            ShowOptionsToolTriangle(item);
+            ShowToolOptions<VToolTriangle>(item, tr("Triangle"), TriangleProperties());
             break;
         case VGraphicsSimpleTextItem::Type:
         case VControlPointSpline::Type:
@@ -230,49 +270,49 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
             ShowItemOptions(m_currentItem);
             break;
         case VToolLineIntersectAxis::Type:
-            ShowOptionsToolLineIntersectAxis(item);
+            ShowToolOptions<VToolLineIntersectAxis>(item, tr("Point of intersection line and axis"), LineIntersectAxisProperties());
             break;
         case VToolCurveIntersectAxis::Type:
-            ShowOptionsToolCurveIntersectAxis(item);
+            ShowToolOptions<VToolCurveIntersectAxis>(item, tr("Point of intersection curve and axis"), CurveIntersectAxisProperties());
             break;
         case VToolPointFromCircleAndTangent::Type:
-            ShowOptionsToolPointFromCircleAndTangent(item);
+            ShowToolOptions<VToolPointFromCircleAndTangent>(item, tr("Tool to make point from circle and tangent"), PointFromCircleAndTangentProperties());
             break;
         case VToolPointFromArcAndTangent::Type:
-            ShowOptionsToolPointFromArcAndTangent(item);
+            ShowToolOptions<VToolPointFromArcAndTangent>(item, tr("Tool to make point from arc and tangent"), PointFromArcAndTangentProperties());
             break;
         case VToolTrueDarts::Type:
-            ShowOptionsToolTrueDarts(item);
+            ShowToolOptions<VToolTrueDarts>(item, tr("True darts"), TrueDartsProperties());
             break;
         case VToolRotation::Type:
-            ShowOptionsToolRotation(item);
+            ShowToolOptions<VToolRotation>(item, tr("Tool rotation"), RotationProperties());
             break;
         case VToolFlippingByLine::Type:
-            ShowOptionsToolFlippingByLine(item);
+            ShowToolOptions<VToolFlippingByLine>(item, tr("Tool flipping by line"), FlippingByLineProperties());
             break;
         case VToolFlippingByAxis::Type:
-            ShowOptionsToolFlippingByAxis(item);
+            ShowToolOptions<VToolFlippingByAxis>(item, tr("Tool flipping by axis"), FlippingByAxisProperties());
             break;
         case VToolMove::Type:
-            ShowOptionsToolMove(item);
+            ShowToolOptions<VToolMove>(item, tr("Tool move"), MoveProperties());
             break;
         case VToolEllipticalArc::Type:
-            ShowOptionsToolEllipticalArc(item);
+            ShowToolOptions<VToolEllipticalArc>(item, tr("Elliptical arc"), EllipticalArcProperties());
             break;
         case VBackgroundPixmapItem::Type:
-            ShowOptionsBackgroundPixmapItem(item);
+            ShowToolOptions<VBackgroundPixmapItem>(item, tr("Background image"), BackgroundPixmapItemProperties());
             break;
         case VBackgroundSVGItem::Type:
-            ShowOptionsBackgroundSVGItem(item);
+            ShowToolOptions<VBackgroundSVGItem>(item, tr("Background image"), BackgroundSVGItemProperties());
             break;
         case VToolEllipticalArcWithLength::Type:
-            ShowOptionsToolEllipticalArcWithLength(item);
+            ShowToolOptions<VToolEllipticalArcWithLength>(item, tr("Elliptical arc with length"), EllipticalArcWithLengthProperties());
             break;
         case VToolParallelCurve::Type:
-            ShowOptionsToolParallelCurve(item);
+            ShowToolOptions<VToolParallelCurve>(item, tr("Tool parallel curve"), ParallelCurveProperties());
             break;
         case VToolGraduatedCurve::Type:
-            ShowOptionsToolGraduatedCurve(item);
+            ShowToolOptions<VToolGraduatedCurve>(item, tr("Tool graduated curve"), GraduatedCurveProperties());
             break;
         default:
             break;
@@ -293,125 +333,125 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
     switch (m_currentItem->type())
     {
         case VToolBasePoint::Type:
-            UpdateOptionsToolSinglePoint();
+            UpdateToolOptions<VToolBasePoint>(SinglePointProperties());
             break;
         case VToolEndLine::Type:
-            UpdateOptionsToolEndLine();
+            UpdateToolOptions<VToolEndLine>(EndLineProperties());
             break;
         case VToolAlongLine::Type:
-            UpdateOptionsToolAlongLine();
+            UpdateToolOptions<VToolAlongLine>(AlongLineProperties());
             break;
         case VToolArc::Type:
-            UpdateOptionsToolArc();
+            UpdateToolOptions<VToolArc>(ArcProperties());
             break;
         case VToolArcWithLength::Type:
-            UpdateOptionsToolArcWithLength();
+            UpdateToolOptions<VToolArcWithLength>(ArcWithLengthProperties());
             break;
         case VToolBisector::Type:
-            UpdateOptionsToolBisector();
+            UpdateToolOptions<VToolBisector>(BisectorProperties());
             break;
         case VToolCutArc::Type:
-            UpdateOptionsToolCutArc();
+            UpdateToolOptions<VToolCutArc>(CutArcProperties());
             break;
         case VToolCutSpline::Type:
-            UpdateOptionsToolCutSpline();
+            UpdateToolOptions<VToolCutSpline>(CutSplineProperties());
             break;
         case VToolCutSplinePath::Type:
-            UpdateOptionsToolCutSplinePath();
+            UpdateToolOptions<VToolCutSplinePath>(CutSplinePathProperties());
             break;
         case VToolHeight::Type:
-            UpdateOptionsToolHeight();
+            UpdateToolOptions<VToolHeight>(HeightProperties());
             break;
         case VToolLine::Type:
-            UpdateOptionsToolLine();
+            UpdateToolOptions<VToolLine>(LineProperties());
             break;
         case VToolLineIntersect::Type:
-            UpdateOptionsToolLineIntersect();
+            UpdateToolOptions<VToolLineIntersect>(LineIntersectProperties());
             break;
         case VToolNormal::Type:
-            UpdateOptionsToolNormal();
+            UpdateToolOptions<VToolNormal>(NormalProperties());
             break;
         case VToolPointOfContact::Type:
-            UpdateOptionsToolPointOfContact();
+            UpdateToolOptions<VToolPointOfContact>(PointOfContactProperties());
             break;
         case VToolPointOfIntersection::Type:
-            UpdateOptionsToolPointOfIntersection();
+            UpdateToolOptions<VToolPointOfIntersection>(PointOfIntersectionProperties());
             break;
         case VToolPointOfIntersectionArcs::Type:
-            UpdateOptionsToolPointOfIntersectionArcs();
+            UpdateToolOptions<VToolPointOfIntersectionArcs>(PointOfIntersectionArcsProperties());
             break;
         case VToolPointOfIntersectionCircles::Type:
-            UpdateOptionsToolPointOfIntersectionCircles();
+            UpdateToolOptions<VToolPointOfIntersectionCircles>(PointOfIntersectionCirclesProperties());
             break;
         case VToolPointOfIntersectionCurves::Type:
-            UpdateOptionsToolPointOfIntersectionCurves();
+            UpdateToolOptions<VToolPointOfIntersectionCurves>(PointOfIntersectionCurvesProperties());
             break;
         case VToolShoulderPoint::Type:
-            UpdateOptionsToolShoulderPoint();
+            UpdateToolOptions<VToolShoulderPoint>(ShoulderPointProperties());
             break;
         case VToolSpline::Type:
-            UpdateOptionsToolSpline();
+            UpdateToolOptions<VToolSpline>(SplineProperties());
             break;
         case VToolCubicBezier::Type:
-            UpdateOptionsToolCubicBezier();
+            UpdateToolOptions<VToolCubicBezier>(CubicBezierProperties());
             break;
         case VToolSplinePath::Type:
-            UpdateOptionsToolSplinePath();
+            UpdateToolOptions<VToolSplinePath>(SplinePathProperties());
             break;
         case VToolCubicBezierPath::Type:
-            UpdateOptionsToolCubicBezierPath();
+            UpdateToolOptions<VToolCubicBezierPath>(CubicBezierPathProperties());
             break;
         case VToolTriangle::Type:
-            UpdateOptionsToolTriangle();
+            UpdateToolOptions<VToolTriangle>(TriangleProperties());
             break;
         case VGraphicsSimpleTextItem::Type:
         case VControlPointSpline::Type:
             ShowItemOptions(m_currentItem->parentItem());
             break;
         case VToolLineIntersectAxis::Type:
-            UpdateOptionsToolLineIntersectAxis();
+            UpdateToolOptions<VToolLineIntersectAxis>(LineIntersectAxisProperties());
             break;
         case VToolCurveIntersectAxis::Type:
-            UpdateOptionsToolCurveIntersectAxis();
+            UpdateToolOptions<VToolCurveIntersectAxis>(CurveIntersectAxisProperties());
             break;
         case VToolPointFromCircleAndTangent::Type:
-            UpdateOptionsToolPointFromCircleAndTangent();
+            UpdateToolOptions<VToolPointFromCircleAndTangent>(PointFromCircleAndTangentProperties());
             break;
         case VToolPointFromArcAndTangent::Type:
-            UpdateOptionsToolPointFromArcAndTangent();
+            UpdateToolOptions<VToolPointFromArcAndTangent>(PointFromArcAndTangentProperties());
             break;
         case VToolTrueDarts::Type:
-            UpdateOptionsToolTrueDarts();
+            UpdateToolOptions<VToolTrueDarts>(TrueDartsProperties());
             break;
         case VToolRotation::Type:
-            UpdateOptionsToolRotation();
+            UpdateToolOptions<VToolRotation>(RotationProperties());
             break;
         case VToolFlippingByLine::Type:
-            UpdateOptionsToolFlippingByLine();
+            UpdateToolOptions<VToolFlippingByLine>(FlippingByLineProperties());
             break;
         case VToolFlippingByAxis::Type:
-            UpdateOptionsToolFlippingByAxis();
+            UpdateToolOptions<VToolFlippingByAxis>(FlippingByAxisProperties());
             break;
         case VToolMove::Type:
-            UpdateOptionsToolMove();
+            UpdateToolOptions<VToolMove>(MoveProperties());
             break;
         case VToolEllipticalArc::Type:
-            UpdateOptionsToolEllipticalArc();
+            UpdateToolOptions<VToolEllipticalArc>(EllipticalArcProperties());
             break;
         case VBackgroundPixmapItem::Type:
-            UpdateOptionsBackgroundPixmapItem();
+            UpdateToolOptions<VBackgroundPixmapItem>(BackgroundPixmapItemProperties());
             break;
         case VBackgroundSVGItem::Type:
-            UpdateOptionsBackgroundSVGItem();
+            UpdateToolOptions<VBackgroundSVGItem>(BackgroundSVGItemProperties());
             break;
         case VToolEllipticalArcWithLength::Type:
-            UpdateOptionsToolEllipticalArcWithLength();
+            UpdateToolOptions<VToolEllipticalArcWithLength>(EllipticalArcWithLengthProperties());
             break;
         case VToolParallelCurve::Type:
-            UpdateOptionsToolParallelCurve();
+            UpdateToolOptions<VToolParallelCurve>(ParallelCurveProperties());
             break;
         case VToolGraduatedCurve::Type:
-            UpdateOptionsToolGraduatedCurve();
+            UpdateToolOptions<VToolGraduatedCurve>(GraduatedCurveProperties());
             break;
         default:
             break;
@@ -455,121 +495,121 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
     switch (m_currentItem->type())
     {
         case VToolBasePoint::Type:
-            ChangeDataToolSinglePoint(prop);
+            ChangeToolData<VToolBasePoint>(prop, SinglePointProperties());
             break;
         case VToolEndLine::Type:
-            ChangeDataToolEndLine(prop);
+            ChangeToolData<VToolEndLine>(prop, EndLineProperties());
             break;
         case VToolAlongLine::Type:
-            ChangeDataToolAlongLine(prop);
+            ChangeToolData<VToolAlongLine>(prop, AlongLineProperties());
             break;
         case VToolArc::Type:
-            ChangeDataToolArc(prop);
+            ChangeToolData<VToolArc>(prop, ArcProperties());
             break;
         case VToolArcWithLength::Type:
-            ChangeDataToolArcWithLength(prop);
+            ChangeToolData<VToolArcWithLength>(prop, ArcWithLengthProperties());
             break;
         case VToolBisector::Type:
-            ChangeDataToolBisector(prop);
+            ChangeToolData<VToolBisector>(prop, BisectorProperties());
             break;
         case VToolCutArc::Type:
-            ChangeDataToolCutArc(prop);
+            ChangeToolData<VToolCutArc>(prop, CutArcProperties());
             break;
         case VToolCutSpline::Type:
-            ChangeDataToolCutSpline(prop);
+            ChangeToolData<VToolCutSpline>(prop, CutSplineProperties());
             break;
         case VToolCutSplinePath::Type:
-            ChangeDataToolCutSplinePath(prop);
+            ChangeToolData<VToolCutSplinePath>(prop, CutSplinePathProperties());
             break;
         case VToolHeight::Type:
-            ChangeDataToolHeight(prop);
+            ChangeToolData<VToolHeight>(prop, HeightProperties());
             break;
         case VToolLine::Type:
-            ChangeDataToolLine(prop);
+            ChangeToolData<VToolLine>(prop, LineProperties());
             break;
         case VToolLineIntersect::Type:
-            ChangeDataToolLineIntersect(prop);
+            ChangeToolData<VToolLineIntersect>(prop, LineIntersectProperties());
             break;
         case VToolNormal::Type:
-            ChangeDataToolNormal(prop);
+            ChangeToolData<VToolNormal>(prop, NormalProperties());
             break;
         case VToolPointOfContact::Type:
-            ChangeDataToolPointOfContact(prop);
+            ChangeToolData<VToolPointOfContact>(prop, PointOfContactProperties());
             break;
         case VToolPointOfIntersection::Type:
-            ChangeDataToolPointOfIntersection(prop);
+            ChangeToolData<VToolPointOfIntersection>(prop, PointOfIntersectionProperties());
             break;
         case VToolPointOfIntersectionArcs::Type:
-            ChangeDataToolPointOfIntersectionArcs(prop);
+            ChangeToolData<VToolPointOfIntersectionArcs>(prop, PointOfIntersectionArcsProperties());
             break;
         case VToolPointOfIntersectionCircles::Type:
-            ChangeDataToolPointOfIntersectionCircles(prop);
+            ChangeToolData<VToolPointOfIntersectionCircles>(prop, PointOfIntersectionCirclesProperties());
             break;
         case VToolPointOfIntersectionCurves::Type:
-            ChangeDataToolPointOfIntersectionCurves(prop);
+            ChangeToolData<VToolPointOfIntersectionCurves>(prop, PointOfIntersectionCurvesProperties());
             break;
         case VToolShoulderPoint::Type:
-            ChangeDataToolShoulderPoint(prop);
+            ChangeToolData<VToolShoulderPoint>(prop, ShoulderPointProperties());
             break;
         case VToolSpline::Type:
-            ChangeDataToolSpline(prop);
+            ChangeToolData<VToolSpline>(prop, SplineProperties());
             break;
         case VToolCubicBezier::Type:
-            ChangeDataToolCubicBezier(prop);
+            ChangeToolData<VToolCubicBezier>(prop, CubicBezierProperties());
             break;
         case VToolSplinePath::Type:
-            ChangeDataToolSplinePath(prop);
+            ChangeToolData<VToolSplinePath>(prop, SplinePathProperties());
             break;
         case VToolCubicBezierPath::Type:
-            ChangeDataToolCubicBezierPath(prop);
+            ChangeToolData<VToolCubicBezierPath>(prop, CubicBezierPathProperties());
             break;
         case VToolTriangle::Type:
-            ChangeDataToolTriangle(prop);
+            ChangeToolData<VToolTriangle>(prop, TriangleProperties());
             break;
         case VToolLineIntersectAxis::Type:
-            ChangeDataToolLineIntersectAxis(prop);
+            ChangeToolData<VToolLineIntersectAxis>(prop, LineIntersectAxisProperties());
             break;
         case VToolCurveIntersectAxis::Type:
-            ChangeDataToolCurveIntersectAxis(prop);
+            ChangeToolData<VToolCurveIntersectAxis>(prop, CurveIntersectAxisProperties());
             break;
         case VToolPointFromCircleAndTangent::Type:
-            ChangeDataToolPointFromCircleAndTangent(prop);
+            ChangeToolData<VToolPointFromCircleAndTangent>(prop, PointFromCircleAndTangentProperties());
             break;
         case VToolPointFromArcAndTangent::Type:
-            ChangeDataToolPointFromArcAndTangent(prop);
+            ChangeToolData<VToolPointFromArcAndTangent>(prop, PointFromArcAndTangentProperties());
             break;
         case VToolTrueDarts::Type:
-            ChangeDataToolTrueDarts(prop);
+            ChangeToolData<VToolTrueDarts>(prop, TrueDartsProperties());
             break;
         case VToolRotation::Type:
-            ChangeDataToolRotation(prop);
+            ChangeToolData<VToolRotation>(prop, RotationProperties());
             break;
         case VToolFlippingByLine::Type:
-            ChangeDataToolFlippingByLine(prop);
+            ChangeToolData<VToolFlippingByLine>(prop, FlippingByLineProperties());
             break;
         case VToolFlippingByAxis::Type:
-            ChangeDataToolFlippingByAxis(prop);
+            ChangeToolData<VToolFlippingByAxis>(prop, FlippingByAxisProperties());
             break;
         case VToolMove::Type:
-            ChangeDataToolMove(prop);
+            ChangeToolData<VToolMove>(prop, MoveProperties());
             break;
         case VToolEllipticalArc::Type:
-            ChangeDataToolEllipticalArc(prop);
+            ChangeToolData<VToolEllipticalArc>(prop, EllipticalArcProperties());
             break;
         case VBackgroundPixmapItem::Type:
-            ChangeDataBackgroundPixmapItem(prop);
+            ChangeToolData<VBackgroundPixmapItem>(prop, BackgroundPixmapItemProperties());
             break;
         case VBackgroundSVGItem::Type:
-            ChangeDataBackgroundSVGItem(prop);
+            ChangeToolData<VBackgroundSVGItem>(prop, BackgroundSVGItemProperties());
             break;
         case VToolEllipticalArcWithLength::Type:
-            ChangeDataToolEllipticalArcWithLength(prop);
+            ChangeToolData<VToolEllipticalArcWithLength>(prop, EllipticalArcWithLengthProperties());
             break;
         case VToolParallelCurve::Type:
-            ChangeDataToolParallelCurve(prop);
+            ChangeToolData<VToolParallelCurve>(prop, ParallelCurveProperties());
             break;
         case VToolGraduatedCurve::Type:
-            ChangeDataToolGraduatedCurve(prop);
+            ChangeToolData<VToolGraduatedCurve>(prop, GraduatedCurveProperties());
             break;
         default:
             break;
@@ -630,93 +670,6 @@ void VToolOptionsPropertyBrowser::AddPropertyFormula(const QString &propertyName
     auto *itemLength = new VFormulaProperty(propertyName);
     itemLength->SetFormula(formula);
     AddProperty(itemLength, attrName);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VToolOptionsPropertyBrowser::PropertiesList() -> QStringList
-{
-    static QStringList const attr{
-        AttrName,                           /* 0 */
-        "position"_L1,                      /* 1 */
-        AttrBasePoint,                      /* 2 */
-        AttrTypeLine,                       /* 3 */
-        AttrLength,                         /* 4 */
-        AttrAngle,                          /* 5 */
-        AttrFirstPoint,                     /* 6 */
-        AttrSecondPoint,                    /* 7 */
-        AttrRadius,                         /* 8 */
-        AttrAngle1,                         /* 9 */
-        AttrAngle2,                         /* 10 */
-        AttrCenter,                         /* 11 */
-        AttrThirdPoint,                     /* 12 */
-        AttrArc,                            /* 13 */
-        VToolCutSpline::AttrSpline,         /* 14 */
-        VToolCutSplinePath::AttrSplinePath, /* 15 */
-        AttrP1Line,                         /* 16 */
-        AttrP2Line,                         /* 17 */
-        AttrP1Line1,                        /* 18 */
-        AttrP2Line1,                        /* 19 */
-        AttrP1Line2,                        /* 20 */
-        AttrP2Line2,                        /* 21 */
-        AttrPShoulder,                      /* 22 */
-        AttrAxisP1,                         /* 23 */
-        AttrAxisP2,                         /* 24 */
-        AttrWidth,                          /* 25 */
-        AttrLineColor,                      /* 26 */
-        AttrColor,                          /* 27 */
-        AttrCrossPoint,                     /* 28 */
-        AttrC1Radius,                       /* 29 */
-        AttrC2Radius,                       /* 30 */
-        AttrCRadius,                        /* 31 */
-        AttrName1,                          /* 32 */
-        AttrName2,                          /* 33 */
-        AttrVCrossPoint,                    /* 34 */
-        AttrHCrossPoint,                    /* 35 */
-        AttrLength1,                        /* 36 */
-        AttrLength2,                        /* 37 */
-        AttrSuffix,                         /* 38 */
-        AttrAxisType,                       /* 39 */
-        AttrRadius1,                        /* 40 */
-        AttrRadius2,                        /* 41 */
-        AttrRotationAngle,                  /* 42 */
-        AttrDartP1,                         /* 43 */
-        AttrDartP2,                         /* 44 */
-        AttrDartP3,                         /* 45 */
-        AttrCurve,                          /* 46 */
-        AttrFirstArc,                       /* 47 */
-        AttrSecondArc,                      /* 48 */
-        AttrC1Center,                       /* 49 */
-        AttrC2Center,                       /* 50 */
-        AttrCurve1,                         /* 51 */
-        AttrCurve2,                         /* 52 */
-        AttrCCenter,                        /* 53 */
-        AttrTangent,                        /* 54 */
-        AttrPoint1,                         /* 55 */
-        AttrPoint2,                         /* 56 */
-        AttrPoint3,                         /* 57 */
-        AttrPoint4,                         /* 58 */
-        AttrPenStyle,                       /* 59 */
-        AttrAScale,                         /* 60 */
-        AttrNotes,                          /* 61 */
-        AttrAlias,                          /* 62 */
-        AttrAlias1,                         /* 63 */
-        AttrAlias2,                         /* 64 */
-        VtoppbConstants::AttrHold,                          /* 65 */
-        VtoppbConstants::AttrVisible,                       /* 66 */
-        VtoppbConstants::AttrOpacity,                       /* 67 */
-        VtoppbConstants::AttrSubName,                       /* 68 */
-        AttrCurveName1,                     /* 69 */
-        AttrCurveName2,                     /* 70 */
-        AttrCurve1Name1,                    /* 71 */
-        AttrCurve1Name2,                    /* 72 */
-        AttrCurve2Name1,                    /* 73 */
-        AttrCurve2Name2,                    /* 74 */
-        AttrCurve1Alias1,                   /* 75 */
-        AttrCurve1Alias2,                   /* 76 */
-        AttrCurve2Alias1,                   /* 77 */
-        AttrCurve2Alias2                    /* 78 */
-    };
-    return attr;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

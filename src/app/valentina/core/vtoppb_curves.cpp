@@ -4,7 +4,7 @@
  **  @author Roman Telezhynskyi <dismine(at)gmail.com>
  **  @date   30/07/2026
  **
- **  @brief  curves property browser methods
+ **  @brief  curves property browser methods — declarative descriptors
  **
  **  @note   Extracted from vtooloptionspropertybrowser.cpp by Sophie Denys <contact@sophiedenys.com>
  **          as part of Ostara refactoring.
@@ -29,1560 +29,965 @@
 
 #include "vtooloptionspropertybrowser.h"
 #include "vtoppb_templates.h"
-#include "../vtools/tools/drawTools/vtoolline.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtooltriangle.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncircles.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectionarcs.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersection.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromcircleandtangent.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromarcandtangent.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolnormal.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollineintersectaxis.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolheight.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolendline.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolbisector.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolalongline.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.h"
-#include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/vtooltruedarts.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolsplinepath.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolspline.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolparallelcurve.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarc.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
-#include "../vtools/tools/drawTools/operation/vtoolrotation.h"
-#include "../vtools/tools/drawTools/operation/vtoolmove.h"
-#include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
-#include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
-
-#include "vformulaproperty.h"
-#include "tools/drawTools/toolcurve/vtoolgraduatedcurve.h"
-#include "ifcdef.h"
-#include "../vwidgets/vsimplepoint.h"
-#include "../vwidgets/vsimplecurve.h"
-#include "../vwidgets/vsegmentlabel.h"
-#include "../vwidgets/vgraphicssimpletextitem.h"
-#include "../vwidgets/vcontrolpointspline.h"
-#include "../vtools/tools/backgroundimage/vbackgroundsvgitem.h"
-#include "../vtools/tools/backgroundimage/vbackgroundpixmapitem.h"
-#include "../vpropertyexplorer/plugins/vtextproperty.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarc.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolparallelcurve.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolspline.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolsplinepath.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.h"
 #include "../vpropertyexplorer/plugins/vstringproperty.h"
-#include "../vpropertyexplorer/plugins/vpointfproperty.h"
-#include "../vpropertyexplorer/plugins/vnumberproperty.h"
+#include "../vpropertyexplorer/plugins/vtextproperty.h"
+#include "../vpropertyexplorer/plugins/vlabelproperty.h"
 #include "../vpropertyexplorer/plugins/vlinetypeproperty.h"
 #include "../vpropertyexplorer/plugins/vlinecolorproperty.h"
-#include "../vpropertyexplorer/plugins/vlabelproperty.h"
-#include "../vpropertyexplorer/plugins/venumproperty.h"
-#include "../vpropertyexplorer/plugins/vboolproperty.h"
+#include "../vpropertyexplorer/plugins/vnumberproperty.h"
 #include "../vpatterndb/vformula.h"
-#include "../vmisc/vvalentinasettings.h"
+#include "vformulaproperty.h"
+#include "ifcdef.h"
 #include "../vmisc/def.h"
 #include "../vgeometry/vsplinepath.h"
 #include "../vgeometry/vcubicbezierpath.h"
 #include "../vgeometry/vcubicbezier.h"
-#include "../qmuparser/qmudef.h"
 
-
-
-void VToolOptionsPropertyBrowser::ChangeDataToolArc(VPE::VProperty *property)
+namespace
 {
-    SCASSERT(property != nullptr)
+auto T(const char *s) -> QString { return VToolOptionsPropertyBrowser::tr(s); }
 
-    const QString id = m_propertyToId[property];
+// --- Helpers ---
 
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0:              // AttrName
-            Q_UNREACHABLE(); // The attribute is read only
-            break;
-        case 8: // AttrRadius
-            SetFormulaRadius<VToolArc>(property);
-            break;
-        case 9: // AttrAngle1
-            SetFormulaF1<VToolArc>(property);
-            break;
-        case 10: // AttrAngle2
-            SetFormulaF2<VToolArc>(property);
-            break;
-        case 27: // AttrTypeColor
-            SetLineColor<VToolArc>(property);
-            break;
-        case 11: // AttrCenter (read only)
-            break;
-        case 59: // AttrPenStyle
-            SetPenStyle<VToolArc>(property);
-            break;
-        case 60: // AttrAScale
-            SetApproximationScale<VToolArc>(property);
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolArc>(property);
-            break;
-        case 62: // AttrAlias
-            SetAlias<VToolArc>(property);
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+template <typename Tool>
+auto MakeObjectNameReadOnly(const QString &label) -> PropertyDesc
+{
+    return {AttrName, label, true,
+            [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new VPE::VLabelProperty(label);
+                p->setValue(t->name());
+                return p;
+            }, nullptr,
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                    prop->setValue(t->name());
+            }};
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolArcWithLength(VPE::VProperty *property)
+template <typename Tool>
+auto MakeObjectName(const QString &label) -> PropertyDesc
 {
-    SCASSERT(property != nullptr)
-
-    const QString id = m_propertyToId[property];
-
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0:              // AttrName
-            Q_UNREACHABLE(); // The attribute is read only
-            break;
-        case 8: // AttrRadius
-            SetFormulaRadius<VToolArcWithLength>(property);
-            break;
-        case 9: // AttrAngle1
-            SetFormulaF1<VToolArcWithLength>(property);
-            break;
-        case 4: // AttrLength
-            SetFormulaLength<VToolArcWithLength>(property);
-            break;
-        case 27: // AttrTypeColor
-            SetLineColor<VToolArcWithLength>(property);
-            break;
-        case 11: // AttrCenter (read only)
-            break;
-        case 59: // AttrPenStyle
-            SetPenStyle<VToolArcWithLength>(property);
-            break;
-        case 60: // AttrAScale
-            SetApproximationScale<VToolArcWithLength>(property);
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolArcWithLength>(property);
-            break;
-        case 62: // AttrAlias
-            SetAlias<VToolArcWithLength>(property);
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+    return {AttrName, label, false,
+            [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new VPE::VStringProperty(label);
+                p->setClearButtonEnable(true);
+                p->setValue(t->name());
+                return p;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    QString const n = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                    if (n != t->name()) t->setName(n);
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                    prop->setValue(t->name());
+            }};
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolCutArc(VPE::VProperty *property)
+template <typename Tool, typename Getter>
+auto MakeParentPoint(const QString &attrId, const QString &label, Getter getter) -> PropertyDesc
 {
-    SCASSERT(property != nullptr)
-
-    const QString id = m_propertyToId[property];
-
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0: // AttrName
-            SetPointName<VToolCutArc>(property);
-            break;
-        case 4: // AttrLength
-            SetFormulaLength<VToolCutArc>(property);
-            break;
-        case 13: // AttrArc (read only)
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolCutArc>(property);
-            break;
-        case 63: // AttrAlias1
-            SetAlias1<VToolCutArc>(property);
-            break;
-        case 64: // AttrAlias2
-            SetAlias2<VToolCutArc>(property);
-            break;
-        case 69: // AttrCurveName1
-            SetCurveName1<VToolCutArc>(property);
-            break;
-        case 70: // AttrCurveName2
-            SetCurveName2<VToolCutArc>(property);
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+    return {attrId, label, true,
+            [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new VPE::VLabelProperty(label);
+                p->setValue((t->*getter)());
+                return p;
+            }, nullptr,
+            [getter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                    prop->setValue((t->*getter)());
+            }};
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolCutSpline(VPE::VProperty *property)
+template <typename Tool>
+auto MakeNotes(const QString &label) -> PropertyDesc
 {
-    SCASSERT(property != nullptr)
-
-    const QString id = m_propertyToId[property];
-
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0: // AttrName
-            SetPointName<VToolCutSpline>(property);
-            break;
-        case 4: // AttrLength
-            SetFormulaLength<VToolCutSpline>(property);
-            break;
-        case 46: // AttrCurve (read only)
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolCutSpline>(property);
-            break;
-        case 63: // AttrAlias1
-            SetAlias1<VToolCutSpline>(property);
-            break;
-        case 64: // AttrAlias2
-            SetAlias2<VToolCutSpline>(property);
-            break;
-        case 69: // AttrCurveName1
-            SetCurveName1<VToolCutSpline>(property);
-            break;
-        case 70: // AttrCurveName2
-            SetCurveName2<VToolCutSpline>(property);
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+    return {AttrNotes, label, false,
+            [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new VPE::VTextProperty(label);
+                p->setValue(t->GetNotes());
+                return p;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    QString const s = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                    if (s != t->GetNotes()) t->SetNotes(s);
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                    prop->setValue(t->GetNotes());
+            }};
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolCutSplinePath(VPE::VProperty *property)
+template <typename Tool>
+auto MakeCurvePenStyle(const QString &label) -> PropertyDesc
 {
-    SCASSERT(property != nullptr)
-
-    const QString id = m_propertyToId[property];
-
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0: // AttrName
-            SetPointName<VToolCutSplinePath>(property);
-            break;
-        case 4: // AttrLength
-            SetFormulaLength<VToolCutSplinePath>(property);
-            break;
-        case 46: // AttrCurve (read only)
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolCutSplinePath>(property);
-            break;
-        case 63: // AttrAlias1
-            SetAlias1<VToolCutSplinePath>(property);
-            break;
-        case 64: // AttrAlias2
-            SetAlias2<VToolCutSplinePath>(property);
-            break;
-        case 69: // AttrCurveName1
-            SetCurveName1<VToolCutSplinePath>(property);
-            break;
-        case 70: // AttrCurveName2
-            SetCurveName2<VToolCutSplinePath>(property);
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+    return {AttrPenStyle, label, false,
+            [label](VToolOptionsPropertyBrowser *b, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                QPalette const cp = b->ComboBoxPalette();
+                auto styles = CurvePenStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+                auto *p = new VPE::VLineTypeProperty(label);
+                p->setStyles(styles);
+                auto idx = VPE::VLineTypeProperty::IndexOfStyle(styles, t->GetPenStyle());
+                p->setValue(idx >= 0 ? idx : 0);
+                return p;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    QString const s = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                    if (s != t->GetPenStyle()) t->SetPenStyle(s);
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    QPalette const cp = b->ComboBoxPalette();
+                    auto styles = CurvePenStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+                    auto idx = VPE::VLineTypeProperty::IndexOfStyle(styles, t->GetPenStyle());
+                    prop->setValue(idx >= 0 ? idx : 0);
+                }
+            }};
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolSpline(VPE::VProperty *property)
+template <typename Tool>
+auto MakeLineColor(const QString &label) -> PropertyDesc
 {
-    SCASSERT(property != nullptr)
-
-    QVariant const value = property->data(VPE::VProperty::DPC_Data, Qt::DisplayRole);
-    const QString id = m_propertyToId[property];
-
-    auto *i = qgraphicsitem_cast<VToolSpline *>(m_currentItem);
-    SCASSERT(i != nullptr)
-
-    VSpline spl = i->getSpline();
-    const auto f = value.value<VFormula>();
-
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0:              // AttrName
-            Q_UNREACHABLE(); // The attribute is read only
-            break;
-        case 9: // AttrAngle1
-            if (not f.error())
-            {
-                spl.SetStartAngle(f.getDoubleValue(), f.GetFormula(FormulaType::FromUser));
-                i->setSpline(spl);
-            }
-            break;
-        case 10: // AttrAngle2
-            if (not f.error())
-            {
-                spl.SetEndAngle(f.getDoubleValue(), f.GetFormula(FormulaType::FromUser));
-                i->setSpline(spl);
-            }
-            break;
-        case 36: // AttrLength1
-            if (not f.error() && f.getDoubleValue() >= 0)
-            {
-                spl.SetC1Length(VAbstractValApplication::VApp()->toPixel(f.getDoubleValue()),
-                                f.GetFormula(FormulaType::FromUser));
-                i->setSpline(spl);
-            }
-            break;
-        case 37: // AttrLength2
-            if (not f.error() && f.getDoubleValue() >= 0)
-            {
-                spl.SetC2Length(VAbstractValApplication::VApp()->toPixel(f.getDoubleValue()),
-                                f.GetFormula(FormulaType::FromUser));
-                i->setSpline(spl);
-            }
-            break;
-        case 27: // AttrColor
-            SetLineColor<VToolSpline>(property);
-            break;
-        case 59: // AttrPenStyle
-            SetPenStyle<VToolSpline>(property);
-            break;
-        case 60: // AttrAScale
-            spl.SetApproximationScale(value.toDouble());
-            i->setSpline(spl);
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolSpline>(property);
-            break;
-        case 62: // AttrAlias
-            SetAlias<VToolSpline>(property);
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+    return {AttrColor, label, false,
+            [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new VPE::VLineColorProperty(label);
+                p->SetDefaultColors(VAbstractTool::ColorsList());
+                p->SetCustomColors(VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
+                p->SetUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+                p->setValue(t->GetLineColor());
+                return p;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    QString const c = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                    if (c != t->GetLineColor()) t->SetLineColor(c);
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                    prop->setValue(t->GetLineColor());
+            }};
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolCubicBezier(VPE::VProperty *property)
+template <typename Tool>
+auto MakeApproximationScale(const QString &label) -> PropertyDesc
 {
-    SCASSERT(property != nullptr)
-
-    const QString id = m_propertyToId[property];
-
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0:              // AttrName
-            Q_UNREACHABLE(); // The attribute is read only
-            break;
-        case 27: // AttrTypeColor
-            SetLineColor<VToolCubicBezier>(property);
-            break;
-        case 59: // AttrPenStyle
-            SetPenStyle<VToolCubicBezier>(property);
-            break;
-        case 60: // AttrAScale
-        {
-            auto *i = qgraphicsitem_cast<VToolCubicBezier *>(m_currentItem);
-            SCASSERT(i != nullptr)
-
-            const QVariant value = property->data(VPE::VProperty::DPC_Data, Qt::DisplayRole);
-            VCubicBezier spl = i->getSpline();
-            spl.SetApproximationScale(value.toDouble());
-            i->setSpline(spl);
-            break;
-        }
-        case 61: // AttrNotes
-            SetNotes<VToolCubicBezier>(property);
-            break;
-        case 62: // AttrAlias
-            SetAlias<VToolCubicBezier>(property);
-            break;
-        case 55: // AttrPoint1 (read only)
-        case 56: // AttrPoint2 (read only)
-        case 57: // AttrPoint3 (read only)
-        case 58: // AttrPoint4 (read only)
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+    return {AttrAScale, label, false,
+            [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                QMap<QString, QVariant> s{{QStringLiteral("Min"), 0}, {QStringLiteral("Max"), maxCurveApproximationScale},
+                                           {QStringLiteral("Step"), 0.1}, {QStringLiteral("Precision"), 1}};
+                auto *p = new VPE::VDoubleProperty(label, s);
+                p->setValue(t->GetApproximationScale());
+                return p;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    double const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toDouble();
+                    if (!VFuzzyComparePossibleNulls(v, t->GetApproximationScale()))
+                        t->SetApproximationScale(v);
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                    prop->setValue(t->GetApproximationScale());
+            }};
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolSplinePath(VPE::VProperty *property)
+template <typename Tool, typename Getter, typename Setter>
+auto MakeStringProp(const QString &attrId, const QString &label, Getter getter, Setter setter) -> PropertyDesc
 {
-    SCASSERT(property != nullptr)
-
-    const QString id = m_propertyToId[property];
-
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0:              // AttrName
-            Q_UNREACHABLE(); // The attribute is read only
-            break;
-        case 27: // AttrTypeColor
-            SetLineColor<VToolSplinePath>(property);
-            break;
-        case 59: // AttrPenStyle
-            SetPenStyle<VToolSplinePath>(property);
-            break;
-        case 60: // AttrAScale
-        {
-            auto *i = qgraphicsitem_cast<VToolSplinePath *>(m_currentItem);
-            SCASSERT(i != nullptr)
-
-            QVariant const value = property->data(VPE::VProperty::DPC_Data, Qt::DisplayRole);
-            VSplinePath spl = i->getSplinePath();
-            spl.SetApproximationScale(value.toDouble());
-            i->setSplinePath(spl);
-            break;
-        }
-        case 61: // AttrNotes
-            SetNotes<VToolSplinePath>(property);
-            break;
-        case 62: // AttrAlias
-            SetAlias<VToolSplinePath>(property);
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+    return {attrId, label, false,
+            [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new VPE::VStringProperty(label);
+                p->setClearButtonEnable(true);
+                p->setValue((t->*getter)());
+                return p;
+            },
+            [getter, setter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    QString const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                    if (v != (t->*getter)()) (t->*setter)(v);
+                }
+            },
+            [getter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                    prop->setValue((t->*getter)());
+            }};
 }
 
-//---------------------------------------------------------------------------------------------------------------------
+} // anonymous namespace
 
-void VToolOptionsPropertyBrowser::ChangeDataToolCubicBezierPath(VPE::VProperty *property)
+// Forward declarations
+auto ArcProperties() -> std::vector<PropertyDesc>;
+auto ArcWithLengthProperties() -> std::vector<PropertyDesc>;
+auto CutArcProperties() -> std::vector<PropertyDesc>;
+auto CutSplineProperties() -> std::vector<PropertyDesc>;
+auto CutSplinePathProperties() -> std::vector<PropertyDesc>;
+auto SplineProperties() -> std::vector<PropertyDesc>;
+auto CubicBezierProperties() -> std::vector<PropertyDesc>;
+auto SplinePathProperties() -> std::vector<PropertyDesc>;
+auto CubicBezierPathProperties() -> std::vector<PropertyDesc>;
+auto EllipticalArcProperties() -> std::vector<PropertyDesc>;
+auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>;
+auto ParallelCurveProperties() -> std::vector<PropertyDesc>;
+auto GraduatedCurveProperties() -> std::vector<PropertyDesc>;
+
+// ====== Tool descriptors ======
+
+// --- VToolArc ---
+auto ArcProperties() -> std::vector<PropertyDesc>
 {
-    SCASSERT(property != nullptr)
-
-    const QString id = m_propertyToId[property];
-
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0:              // AttrName
-            Q_UNREACHABLE(); // The attribute is read only
-            break;
-        case 27: // AttrTypeColor
-            SetLineColor<VToolCubicBezierPath>(property);
-            break;
-        case 59: // AttrPenStyle
-            SetPenStyle<VToolCubicBezierPath>(property);
-            break;
-        case 60: // AttrAScale
-        {
-            auto *i = qgraphicsitem_cast<VToolCubicBezierPath *>(m_currentItem);
-            SCASSERT(i != nullptr)
-
-            QVariant const value = property->data(VPE::VProperty::DPC_Data, Qt::DisplayRole);
-            VCubicBezierPath spl = i->getSplinePath();
-            spl.SetApproximationScale(value.toDouble());
-            i->setSplinePath(spl);
-            break;
-        }
-        case 61: // AttrNotes
-            SetNotes<VToolCubicBezierPath>(property);
-            break;
-        case 62: // AttrAlias
-            SetAlias<VToolCubicBezierPath>(property);
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolEllipticalArc(VPE::VProperty *property)
-{
-    SCASSERT(property != nullptr)
-
-    const QString id = m_propertyToId[property];
-
-    auto SetFormulaRadius1 = [this](const VPE::VProperty *property)
-    {
-        if (auto *i = qgraphicsitem_cast<VToolEllipticalArc *>(m_currentItem))
-        {
-            auto formula = property->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
-            if (formula == i->GetFormulaRadius1())
-            {
-                return;
-            }
-
-            i->SetFormulaRadius1(formula);
-        }
-        else
-        {
-            qWarning() << "Can't cast item";
-        }
+    return {
+        MakeObjectNameReadOnly<VToolArc>(T("Name:")),
+        MakeParentPoint<VToolArc>(AttrCenter, T("Center point:"), &VToolArc::CenterPointName),
+        {AttrRadius, T("Radius:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolArc *>(tool);
+             auto *p = new VFormulaProperty(T("Radius:"));
+             p->SetFormula(t->GetFormulaRadius()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArc *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaRadius()) t->SetFormulaRadius(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArc *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaRadius()); prop->setValue(v);
+             }
+         }},
+        {AttrAngle1, T("First angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolArc *>(tool);
+             auto *p = new VFormulaProperty(T("First angle:"));
+             p->SetFormula(t->GetFormulaF1()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArc *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaF1()) t->SetFormulaF1(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArc *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaF1()); prop->setValue(v);
+             }
+         }},
+        {AttrAngle2, T("Second angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolArc *>(tool);
+             auto *p = new VFormulaProperty(T("Second angle:"));
+             p->SetFormula(t->GetFormulaF2()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArc *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaF2()) t->SetFormulaF2(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArc *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaF2()); prop->setValue(v);
+             }
+         }},
+        MakeStringProp<VToolArc>(AttrAlias, T("Alias:"), &VToolArc::GetAliasSuffix, &VToolArc::SetAliasSuffix),
+        MakeCurvePenStyle<VToolArc>(T("Pen style:")),
+        MakeLineColor<VToolArc>(T("Color:")),
+        MakeApproximationScale<VToolArc>(T("Approximation scale:")),
+        MakeNotes<VToolArc>(T("Notes:")),
     };
+}
 
-    auto SetFormulaRadius2 = [this](const VPE::VProperty *property)
-    {
-        if (auto *i = qgraphicsitem_cast<VToolEllipticalArc *>(m_currentItem))
-        {
-            auto formula = property->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
-            if (formula == i->GetFormulaRadius2())
-            {
-                return;
-            }
-
-            i->SetFormulaRadius2(formula);
-        }
-        else
-        {
-            qWarning() << "Can't cast item";
-        }
+// --- VToolArcWithLength ---
+auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
+{
+    return {
+        MakeObjectNameReadOnly<VToolArcWithLength>(T("Name:")),
+        MakeParentPoint<VToolArcWithLength>(AttrCenter, T("Center point:"), &VToolArcWithLength::CenterPointName),
+        {AttrRadius, T("Radius:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolArcWithLength *>(tool);
+             auto *p = new VFormulaProperty(T("Radius:"));
+             p->SetFormula(t->GetFormulaRadius()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArcWithLength *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaRadius()) t->SetFormulaRadius(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArcWithLength *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaRadius()); prop->setValue(v);
+             }
+         }},
+        {AttrAngle1, T("First angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolArcWithLength *>(tool);
+             auto *p = new VFormulaProperty(T("First angle:"));
+             p->SetFormula(t->GetFormulaF1()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArcWithLength *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaF1()) t->SetFormulaF1(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArcWithLength *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaF1()); prop->setValue(v);
+             }
+         }},
+        {AttrLength, T("Length:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolArcWithLength *>(tool);
+             auto *p = new VFormulaProperty(T("Length:"));
+             p->SetFormula(t->GetFormulaLength()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArcWithLength *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaLength()) t->SetFormulaLength(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArcWithLength *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
+             }
+         }},
+        MakeStringProp<VToolArcWithLength>(AttrAlias, T("Alias:"), &VToolArcWithLength::GetAliasSuffix, &VToolArcWithLength::SetAliasSuffix),
+        MakeCurvePenStyle<VToolArcWithLength>(T("Pen style:")),
+        MakeLineColor<VToolArcWithLength>(T("Color:")),
+        MakeApproximationScale<VToolArcWithLength>(T("Approximation scale:")),
+        MakeNotes<VToolArcWithLength>(T("Notes:")),
     };
-
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0:              // AttrName
-            Q_UNREACHABLE(); // The attribute is read only
-            break;
-        case 40: // AttrRadius1
-            SetFormulaRadius1(property);
-            break;
-        case 41: // AttrRadius2
-            SetFormulaRadius2(property);
-            break;
-        case 9: // AttrAngle1
-            SetFormulaF1<VToolEllipticalArc>(property);
-            break;
-        case 10: // AttrAngle2
-            SetFormulaF2<VToolEllipticalArc>(property);
-            break;
-        case 42: // AttrRotationAngle
-            SetFormulaRotationAngle<VToolEllipticalArc>(property);
-            break;
-        case 27: // AttrColor
-            SetLineColor<VToolEllipticalArc>(property);
-            break;
-        case 62: // AttrAlias
-            SetAlias<VToolEllipticalArc>(property);
-            break;
-        case 59: // AttrPenStyle
-            SetPenStyle<VToolEllipticalArc>(property);
-            break;
-        case 60: // AttrAScale
-            SetApproximationScale<VToolEllipticalArc>(property);
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolEllipticalArc>(property);
-            break;
-        case 11: // AttrCenter (read only)
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolEllipticalArcWithLength(VPE::VProperty *property)
+// --- VToolCutArc ---
+auto CutArcProperties() -> std::vector<PropertyDesc>
 {
-    SCASSERT(property != nullptr)
-
-    const QString id = m_propertyToId[property];
-
-    auto SetFormulaRadius1 = [this](VPE::VProperty *property)
-    {
-        if (auto *i = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(m_currentItem))
-        {
-            auto formula = property->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
-            if (formula == i->GetFormulaRadius1())
-            {
-                return;
-            }
-
-            i->SetFormulaRadius1(formula);
-        }
-        else
-        {
-            qWarning() << "Can't cast item";
-        }
+    return {
+        MakeObjectName<VToolCutArc>(T("Point label:")),
+        MakeParentPoint<VToolCutArc>(AttrArc, T("Arc:"), &VToolCutArc::CurveName),
+        MakeStringProp<VToolCutArc>(AttrCurveName1, T("Name1:"), &VToolCutArc::GetName1, &VToolCutArc::SetName1),
+        MakeStringProp<VToolCutArc>(AttrCurveName2, T("Name2:"), &VToolCutArc::GetName2, &VToolCutArc::SetName2),
+        MakeStringProp<VToolCutArc>(AttrAlias1, T("Alias1:"), &VToolCutArc::GetAliasSuffix1, &VToolCutArc::SetAliasSuffix1),
+        MakeStringProp<VToolCutArc>(AttrAlias2, T("Alias2:"), &VToolCutArc::GetAliasSuffix2, &VToolCutArc::SetAliasSuffix2),
+        {AttrLength, T("Length:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolCutArc *>(tool);
+             auto *p = new VFormulaProperty(T("Length:"));
+             p->SetFormula(t->GetFormulaLength()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolCutArc *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaLength()) t->SetFormulaLength(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolCutArc *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
+             }
+         }},
+        MakeNotes<VToolCutArc>(T("Notes:")),
     };
+}
 
-    auto SetFormulaRadius2 = [this](VPE::VProperty *property)
-    {
-        if (auto *i = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(m_currentItem))
-        {
-            auto formula = property->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
-            if (formula == i->GetFormulaRadius2())
-            {
-                return;
-            }
-
-            i->SetFormulaRadius2(formula);
-        }
-        else
-        {
-            qWarning() << "Can't cast item";
-        }
+// --- VToolCutSpline ---
+auto CutSplineProperties() -> std::vector<PropertyDesc>
+{
+    return {
+        MakeObjectName<VToolCutSpline>(T("Point label:")),
+        MakeParentPoint<VToolCutSpline>(AttrCurve, T("Curve:"), &VToolCutSpline::CurveName),
+        MakeStringProp<VToolCutSpline>(AttrCurveName1, T("Name1:"), &VToolCutSpline::GetName1, &VToolCutSpline::SetName1),
+        MakeStringProp<VToolCutSpline>(AttrCurveName2, T("Name2:"), &VToolCutSpline::GetName2, &VToolCutSpline::SetName2),
+        MakeStringProp<VToolCutSpline>(AttrAlias1, T("Alias1:"), &VToolCutSpline::GetAliasSuffix1, &VToolCutSpline::SetAliasSuffix1),
+        MakeStringProp<VToolCutSpline>(AttrAlias2, T("Alias2:"), &VToolCutSpline::GetAliasSuffix2, &VToolCutSpline::SetAliasSuffix2),
+        {AttrLength, T("Length:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolCutSpline *>(tool);
+             auto *p = new VFormulaProperty(T("Length:"));
+             p->SetFormula(t->GetFormulaLength()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolCutSpline *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaLength()) t->SetFormulaLength(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolCutSpline *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
+             }
+         }},
+        MakeNotes<VToolCutSpline>(T("Notes:")),
     };
-
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0:              // AttrName
-            Q_UNREACHABLE(); // The attribute is read only
-            break;
-        case 40: // AttrRadius1
-            SetFormulaRadius1(property);
-            break;
-        case 41: // AttrRadius2
-            SetFormulaRadius2(property);
-            break;
-        case 9: // AttrAngle1
-            SetFormulaF1<VToolEllipticalArcWithLength>(property);
-            break;
-        case 4: // AttrLength
-            SetFormulaLength<VToolEllipticalArcWithLength>(property);
-            break;
-        case 42: // AttrRotationAngle
-            SetFormulaRotationAngle<VToolEllipticalArcWithLength>(property);
-            break;
-        case 27: // AttrTypeColor
-            SetLineColor<VToolEllipticalArcWithLength>(property);
-            break;
-        case 11: // AttrCenter (read only)
-            break;
-        case 59: // AttrPenStyle
-            SetPenStyle<VToolEllipticalArcWithLength>(property);
-            break;
-        case 60: // AttrAScale
-            SetApproximationScale<VToolEllipticalArcWithLength>(property);
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolEllipticalArcWithLength>(property);
-            break;
-        case 62: // AttrAlias
-            SetAlias<VToolEllipticalArcWithLength>(property);
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolParallelCurve(VPE::VProperty *property)
+// --- VToolCutSplinePath ---
+auto CutSplinePathProperties() -> std::vector<PropertyDesc>
 {
-    SCASSERT(property != nullptr)
-
-    const QString id = m_propertyToId[property];
-
-    auto SetFormulaWidth = [this](VPE::VProperty *property)
-    {
-        if (auto *i = qgraphicsitem_cast<VToolParallelCurve *>(m_currentItem))
-        {
-            auto formula = property->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
-            if (formula == i->GetFormulaWidth())
-            {
-                return;
-            }
-
-            i->SetFormulaWidth(formula);
-        }
-        else
-        {
-            qWarning() << "Can't cast item";
-        }
+    return {
+        MakeObjectName<VToolCutSplinePath>(T("Point label:")),
+        MakeParentPoint<VToolCutSplinePath>(AttrCurve, T("Curve:"), &VToolCutSplinePath::CurveName),
+        MakeStringProp<VToolCutSplinePath>(AttrCurveName1, T("Name1:"), &VToolCutSplinePath::GetName1, &VToolCutSplinePath::SetName1),
+        MakeStringProp<VToolCutSplinePath>(AttrCurveName2, T("Name2:"), &VToolCutSplinePath::GetName2, &VToolCutSplinePath::SetName2),
+        MakeStringProp<VToolCutSplinePath>(AttrAlias1, T("Alias1:"), &VToolCutSplinePath::GetAliasSuffix1, &VToolCutSplinePath::SetAliasSuffix1),
+        MakeStringProp<VToolCutSplinePath>(AttrAlias2, T("Alias2:"), &VToolCutSplinePath::GetAliasSuffix2, &VToolCutSplinePath::SetAliasSuffix2),
+        {AttrLength, T("Length:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolCutSplinePath *>(tool);
+             auto *p = new VFormulaProperty(T("Length:"));
+             p->SetFormula(t->GetFormulaLength()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolCutSplinePath *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaLength()) t->SetFormulaLength(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolCutSplinePath *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
+             }
+         }},
+        MakeNotes<VToolCutSplinePath>(T("Notes:")),
     };
-
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0:              // AttrName
-            Q_UNREACHABLE(); // The attribute is read only
-            break;
-        case 25: // AttrWidth
-            SetFormulaWidth(property);
-            break;
-        case 27: // AttrTypeColor
-            SetLineColor<VToolParallelCurve>(property);
-            break;
-        case 46: // AttrCurve (read only)
-            break;
-        case 59: // AttrPenStyle
-            SetPenStyle<VToolParallelCurve>(property);
-            break;
-        case 60: // AttrAScale
-            SetApproximationScale<VToolParallelCurve>(property);
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolParallelCurve>(property);
-            break;
-        case 62: // AttrAlias
-            SetAlias<VToolParallelCurve>(property);
-            break;
-        case 68: // AttrSubName
-            SetSubName<VToolParallelCurve>(property);
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolGraduatedCurve(VPE::VProperty *property)
+// --- VToolSpline ---
+auto SplineProperties() -> std::vector<PropertyDesc>
 {
-    SCASSERT(property != nullptr)
-
-    const QString id = m_propertyToId[property];
-
-    switch (PropertiesList().indexOf(id))
-    {
-        case 0:              // AttrName
-            Q_UNREACHABLE(); // The attribute is read only
-            break;
-        case 27: // AttrTypeColor
-            SetLineColor<VToolGraduatedCurve>(property);
-            break;
-        case 46: // AttrCurve (read only)
-            break;
-        case 59: // AttrPenStyle
-            SetPenStyle<VToolGraduatedCurve>(property);
-            break;
-        case 60: // AttrAScale
-            SetApproximationScale<VToolGraduatedCurve>(property);
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolGraduatedCurve>(property);
-            break;
-        case 62: // AttrAlias
-            SetAlias<VToolGraduatedCurve>(property);
-            break;
-        case 68: // AttrSubName
-            SetSubName<VToolGraduatedCurve>(property);
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+    return {
+        MakeObjectNameReadOnly<VToolSpline>(T("Name:")),
+        // C1 angle — custom VFormula construction
+        {AttrAngle1, T("C1: angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolSpline *>(tool);
+             const auto spl = t->getSpline();
+             VFormula angle1(spl.GetStartAngleFormula(), t->getData());
+             angle1.setToolId(t->getId());
+             angle1.setPostfix(degreeSymbol);
+             angle1.Eval();
+             auto *p = new VFormulaProperty(T("C1: angle:"));
+             p->SetFormula(angle1); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolSpline *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (!f.error()) {
+                     VSpline spl = t->getSpline();
+                     spl.SetStartAngle(f.getDoubleValue(), f.GetFormula(FormulaType::FromUser));
+                     t->setSpline(spl);
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolSpline *>(b->currentItem())) {
+                 const VSpline spl = t->getSpline();
+                 VFormula angleF(spl.GetStartAngleFormula(), t->getData());
+                 angleF.setToolId(t->getId());
+                 angleF.setPostfix(degreeSymbol);
+                 angleF.Eval();
+                 QVariant v; v.setValue(angleF); prop->setValue(v);
+             }
+         }},
+        // C1 length
+        {AttrLength1, T("C1: length:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolSpline *>(tool);
+             const auto spl = t->getSpline();
+             VFormula length1(spl.GetC1LengthFormula(), t->getData());
+             length1.setToolId(t->getId());
+             length1.Eval();
+             auto *p = new VFormulaProperty(T("C1: length:"));
+             p->SetFormula(length1); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolSpline *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (!f.error()) {
+                     VSpline spl = t->getSpline();
+                     spl.SetC1Length(f.getDoubleValue(), f.GetFormula(FormulaType::FromUser));
+                     t->setSpline(spl);
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolSpline *>(b->currentItem())) {
+                 const VSpline spl = t->getSpline();
+                 VFormula lenF(spl.GetC1LengthFormula(), t->getData());
+                 lenF.setToolId(t->getId());
+                 lenF.Eval();
+                 QVariant v; v.setValue(lenF); prop->setValue(v);
+             }
+         }},
+        // C2 angle
+        {AttrAngle2, T("C2: angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolSpline *>(tool);
+             const auto spl = t->getSpline();
+             VFormula angle2(spl.GetEndAngleFormula(), t->getData());
+             angle2.setToolId(t->getId());
+             angle2.setPostfix(degreeSymbol);
+             angle2.Eval();
+             auto *p = new VFormulaProperty(T("C2: angle:"));
+             p->SetFormula(angle2); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolSpline *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (!f.error()) {
+                     VSpline spl = t->getSpline();
+                     spl.SetEndAngle(f.getDoubleValue(), f.GetFormula(FormulaType::FromUser));
+                     t->setSpline(spl);
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolSpline *>(b->currentItem())) {
+                 const VSpline spl = t->getSpline();
+                 VFormula angleF(spl.GetEndAngleFormula(), t->getData());
+                 angleF.setToolId(t->getId());
+                 angleF.setPostfix(degreeSymbol);
+                 angleF.Eval();
+                 QVariant v; v.setValue(angleF); prop->setValue(v);
+             }
+         }},
+        // C2 length
+        {AttrLength2, T("C2: length:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolSpline *>(tool);
+             const auto spl = t->getSpline();
+             VFormula length2(spl.GetC2LengthFormula(), t->getData());
+             length2.setToolId(t->getId());
+             length2.Eval();
+             auto *p = new VFormulaProperty(T("C2: length:"));
+             p->SetFormula(length2); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolSpline *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (!f.error()) {
+                     VSpline spl = t->getSpline();
+                     spl.SetC2Length(f.getDoubleValue(), f.GetFormula(FormulaType::FromUser));
+                     t->setSpline(spl);
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolSpline *>(b->currentItem())) {
+                 const VSpline spl = t->getSpline();
+                 VFormula lenF(spl.GetC2LengthFormula(), t->getData());
+                 lenF.setToolId(t->getId());
+                 lenF.Eval();
+                 QVariant v; v.setValue(lenF); prop->setValue(v);
+             }
+         }},
+        MakeCurvePenStyle<VToolSpline>(T("Pen style:")),
+        MakeLineColor<VToolSpline>(T("Color:")),
+        {AttrAScale, T("Approximation scale:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolSpline *>(tool);
+             QMap<QString, QVariant> s{{QStringLiteral("Min"), 0}, {QStringLiteral("Max"), maxCurveApproximationScale},
+                                        {QStringLiteral("Step"), 0.1}, {QStringLiteral("Precision"), 1}};
+             auto *p = new VPE::VDoubleProperty(T("Approximation scale:"), s);
+             p->setValue(t->getSpline().GetApproximationScale());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolSpline *>(b->currentItem())) {
+                 double const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toDouble();
+                 VSpline spl = t->getSpline();
+                 if (!VFuzzyComparePossibleNulls(v, spl.GetApproximationScale())) {
+                     spl.SetApproximationScale(v);
+                     t->setSpline(spl);
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolSpline *>(b->currentItem()))
+                 prop->setValue(t->getSpline().GetApproximationScale());
+         }},
+        MakeNotes<VToolSpline>(T("Notes:")),
+    };
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolArc(QGraphicsItem *item)
+// --- VToolCubicBezier ---
+auto CubicBezierProperties() -> std::vector<PropertyDesc>
 {
-    auto *i = qgraphicsitem_cast<VToolArc *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Arc"));
-
-    QPalette const comboBoxPalette = ComboBoxPalette();
-
-    AddPropertyObjectName(i, tr("Name:"), true);
-    AddPropertyParentPointName(i->CenterPointName(), tr("Center point:"), AttrCenter);
-    AddPropertyFormula(tr("Radius:"), i->GetFormulaRadius(), AttrRadius);
-    AddPropertyFormula(tr("First angle:"), i->GetFormulaF1(), AttrAngle1);
-    AddPropertyFormula(tr("Second angle:"), i->GetFormulaF2(), AttrAngle2);
-    AddPropertyAlias(i, tr("Alias:"));
-    AddPropertyCurvePenStyle(
-        i, tr("Pen style:"),
-        CurvePenStylesPics(comboBoxPalette.color(QPalette::Base), comboBoxPalette.color(QPalette::Text)));
-    AddPropertyLineColor(i, tr("Color:"), VAbstractTool::ColorsList(), AttrColor);
-    AddPropertyApproximationScale(tr("Approximation scale:"), i->GetApproximationScale());
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
+    return {
+        MakeObjectNameReadOnly<VToolCubicBezier>(T("Name:")),
+        MakeParentPoint<VToolCubicBezier>(AttrPoint1, T("First point:"), &VToolCubicBezier::FirstPointName),
+        MakeParentPoint<VToolCubicBezier>(AttrPoint2, T("Second point:"), &VToolCubicBezier::SecondPointName),
+        MakeParentPoint<VToolCubicBezier>(AttrPoint3, T("Third point:"), &VToolCubicBezier::ThirdPointName),
+        MakeParentPoint<VToolCubicBezier>(AttrPoint4, T("Fourth point:"), &VToolCubicBezier::ForthPointName),
+        MakeStringProp<VToolCubicBezier>(AttrAlias, T("Alias:"), &VToolCubicBezier::GetAliasSuffix, &VToolCubicBezier::SetAliasSuffix),
+        MakeCurvePenStyle<VToolCubicBezier>(T("Pen style:")),
+        MakeLineColor<VToolCubicBezier>(T("Color:")),
+        {AttrAScale, T("Approximation scale:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolCubicBezier *>(tool);
+             QMap<QString, QVariant> s{{QStringLiteral("Min"), 0}, {QStringLiteral("Max"), maxCurveApproximationScale},
+                                        {QStringLiteral("Step"), 0.1}, {QStringLiteral("Precision"), 1}};
+             auto *p = new VPE::VDoubleProperty(T("Approximation scale:"), s);
+             p->setValue(t->getSpline().GetApproximationScale());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolCubicBezier *>(b->currentItem())) {
+                 double const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toDouble();
+                 VCubicBezier spl = t->getSpline();
+                 if (!VFuzzyComparePossibleNulls(v, spl.GetApproximationScale())) {
+                     spl.SetApproximationScale(v);
+                     t->setSpline(spl);
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolCubicBezier *>(b->currentItem()))
+                 prop->setValue(t->getSpline().GetApproximationScale());
+         }},
+        MakeNotes<VToolCubicBezier>(T("Notes:")),
+    };
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolArcWithLength(QGraphicsItem *item)
+// --- VToolSplinePath ---
+auto SplinePathProperties() -> std::vector<PropertyDesc>
 {
-    auto *i = qgraphicsitem_cast<VToolArcWithLength *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Arc with given length"));
-
-    QPalette const comboBoxPalette = ComboBoxPalette();
-
-    AddPropertyObjectName(i, tr("Name:"), true);
-    AddPropertyParentPointName(i->CenterPointName(), tr("Center point:"), AttrCenter);
-    AddPropertyFormula(tr("Radius:"), i->GetFormulaRadius(), AttrRadius);
-    AddPropertyFormula(tr("First angle:"), i->GetFormulaF1(), AttrAngle1);
-    AddPropertyFormula(tr("Length:"), i->GetFormulaLength(), AttrLength);
-    AddPropertyAlias(i, tr("Alias:"));
-    AddPropertyCurvePenStyle(
-        i, tr("Pen style:"),
-        CurvePenStylesPics(comboBoxPalette.color(QPalette::Base), comboBoxPalette.color(QPalette::Text)));
-    AddPropertyLineColor(i, tr("Color:"), VAbstractTool::ColorsList(), AttrColor);
-    AddPropertyApproximationScale(tr("Approximation scale:"), i->GetApproximationScale());
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
+    return {
+        MakeObjectNameReadOnly<VToolSplinePath>(T("Name:")),
+        MakeStringProp<VToolSplinePath>(AttrAlias, T("Alias:"), &VToolSplinePath::GetAliasSuffix, &VToolSplinePath::SetAliasSuffix),
+        MakeCurvePenStyle<VToolSplinePath>(T("Pen style:")),
+        MakeLineColor<VToolSplinePath>(T("Color:")),
+        {AttrAScale, T("Approximation scale:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolSplinePath *>(tool);
+             QMap<QString, QVariant> s{{QStringLiteral("Min"), 0}, {QStringLiteral("Max"), maxCurveApproximationScale},
+                                        {QStringLiteral("Step"), 0.1}, {QStringLiteral("Precision"), 1}};
+             auto *p = new VPE::VDoubleProperty(T("Approximation scale:"), s);
+             p->setValue(t->getSplinePath().GetApproximationScale());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolSplinePath *>(b->currentItem())) {
+                 double const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toDouble();
+                 if (!VFuzzyComparePossibleNulls(v, t->getSplinePath().GetApproximationScale())) {
+                     VSplinePath sp = t->getSplinePath();
+                     sp.SetApproximationScale(v);
+                     t->setSplinePath(sp);
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolSplinePath *>(b->currentItem()))
+                 prop->setValue(t->getSplinePath().GetApproximationScale());
+         }},
+        MakeNotes<VToolSplinePath>(T("Notes:")),
+    };
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolCutArc(QGraphicsItem *item)
+// --- VToolCubicBezierPath ---
+auto CubicBezierPathProperties() -> std::vector<PropertyDesc>
 {
-    auto *i = qgraphicsitem_cast<VToolCutArc *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Cut arc tool"));
-
-    AddPropertyObjectName(i, tr("Point label:"));
-    AddPropertyParentPointName(i->CurveName(), tr("Arc:"), AttrArc);
-    AddPropertyCurveName1(i, tr("Name1:"));
-    AddPropertyCurveName2(i, tr("Name2:"));
-    AddPropertyAlias1(i, tr("Alias1:"));
-    AddPropertyAlias2(i, tr("Alias2:"));
-    AddPropertyFormula(tr("Length:"), i->GetFormulaLength(), AttrLength);
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
+    return {
+        MakeObjectNameReadOnly<VToolCubicBezierPath>(T("Name:")),
+        MakeStringProp<VToolCubicBezierPath>(AttrAlias, T("Alias:"), &VToolCubicBezierPath::GetAliasSuffix, &VToolCubicBezierPath::SetAliasSuffix),
+        MakeCurvePenStyle<VToolCubicBezierPath>(T("Pen style:")),
+        MakeLineColor<VToolCubicBezierPath>(T("Color:")),
+        {AttrAScale, T("Approximation scale:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolCubicBezierPath *>(tool);
+             QMap<QString, QVariant> s{{QStringLiteral("Min"), 0}, {QStringLiteral("Max"), maxCurveApproximationScale},
+                                        {QStringLiteral("Step"), 0.1}, {QStringLiteral("Precision"), 1}};
+             auto *p = new VPE::VDoubleProperty(T("Approximation scale:"), s);
+             p->setValue(t->getSplinePath().GetApproximationScale());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolCubicBezierPath *>(b->currentItem())) {
+                 double const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toDouble();
+                 VCubicBezierPath sp = t->getSplinePath();
+                 if (!VFuzzyComparePossibleNulls(v, sp.GetApproximationScale())) {
+                     sp.SetApproximationScale(v);
+                     t->setSplinePath(sp);
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolCubicBezierPath *>(b->currentItem()))
+                 prop->setValue(t->getSplinePath().GetApproximationScale());
+         }},
+        MakeNotes<VToolCubicBezierPath>(T("Notes:")),
+    };
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolCutSpline(QGraphicsItem *item)
+// --- VToolEllipticalArc ---
+auto EllipticalArcProperties() -> std::vector<PropertyDesc>
 {
-    auto *i = qgraphicsitem_cast<VToolCutSpline *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Tool for segmenting a curve"));
-
-    AddPropertyObjectName(i, tr("Point label:"));
-    AddPropertyParentPointName(i->CurveName(), tr("Curve:"), AttrCurve);
-    AddPropertyCurveName1(i, tr("Name1:"));
-    AddPropertyCurveName2(i, tr("Name2:"));
-    AddPropertyAlias1(i, tr("Alias1:"));
-    AddPropertyAlias2(i, tr("Alias2:"));
-    AddPropertyFormula(tr("Length:"), i->GetFormulaLength(), AttrLength);
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
+    return {
+        MakeObjectNameReadOnly<VToolEllipticalArc>(T("Name:")),
+        MakeParentPoint<VToolEllipticalArc>(AttrCenter, T("Center point:"), &VToolEllipticalArc::CenterPointName),
+        {AttrRadius1, T("Radius 1:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArc *>(tool);
+             auto *p = new VFormulaProperty(T("Radius 1:"));
+             p->SetFormula(t->GetFormulaRadius1()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaRadius1()) t->SetFormulaRadius1(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaRadius1()); prop->setValue(v);
+             }
+         }},
+        {AttrRadius2, T("Radius 2:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArc *>(tool);
+             auto *p = new VFormulaProperty(T("Radius 2:"));
+             p->SetFormula(t->GetFormulaRadius2()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaRadius2()) t->SetFormulaRadius2(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaRadius2()); prop->setValue(v);
+             }
+         }},
+        {AttrAngle1, T("First angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArc *>(tool);
+             auto *p = new VFormulaProperty(T("First angle:"));
+             p->SetFormula(t->GetFormulaF1()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaF1()) t->SetFormulaF1(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaF1()); prop->setValue(v);
+             }
+         }},
+        {AttrAngle2, T("Second angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArc *>(tool);
+             auto *p = new VFormulaProperty(T("Second angle:"));
+             p->SetFormula(t->GetFormulaF2()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaF2()) t->SetFormulaF2(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaF2()); prop->setValue(v);
+             }
+         }},
+        {AttrRotationAngle, T("Rotation angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArc *>(tool);
+             auto *p = new VFormulaProperty(T("Rotation angle:"));
+             p->SetFormula(t->GetFormulaRotationAngle()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaRotationAngle()) t->SetFormulaRotationAngle(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaRotationAngle()); prop->setValue(v);
+             }
+         }},
+        MakeStringProp<VToolEllipticalArc>(AttrAlias, T("Alias:"), &VToolEllipticalArc::GetAliasSuffix, &VToolEllipticalArc::SetAliasSuffix),
+        MakeCurvePenStyle<VToolEllipticalArc>(T("Pen style:")),
+        MakeLineColor<VToolEllipticalArc>(T("Color:")),
+        MakeApproximationScale<VToolEllipticalArc>(T("Approximation scale:")),
+        MakeNotes<VToolEllipticalArc>(T("Notes:")),
+    };
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolCutSplinePath(QGraphicsItem *item)
+// --- VToolEllipticalArcWithLength ---
+auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
 {
-    auto *i = qgraphicsitem_cast<VToolCutSplinePath *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Tool segment a pathed curve"));
-
-    AddPropertyObjectName(i, tr("Point label:"));
-    AddPropertyParentPointName(i->CurveName(), tr("Curve:"), AttrCurve);
-    AddPropertyCurveName1(i, tr("Name1:"));
-    AddPropertyCurveName2(i, tr("Name2:"));
-    AddPropertyAlias1(i, tr("Alias1:"));
-    AddPropertyAlias2(i, tr("Alias2:"));
-    AddPropertyFormula(tr("Length:"), i->GetFormulaLength(), AttrLength);
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
+    return {
+        MakeObjectNameReadOnly<VToolEllipticalArcWithLength>(T("Name:")),
+        MakeParentPoint<VToolEllipticalArcWithLength>(AttrCenter, T("Center point:"), &VToolEllipticalArcWithLength::CenterPointName),
+        {AttrRadius1, T("Radius 1:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
+             auto *p = new VFormulaProperty(T("Radius 1:"));
+             p->SetFormula(t->GetFormulaRadius1()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaRadius1()) t->SetFormulaRadius1(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaRadius1()); prop->setValue(v);
+             }
+         }},
+        {AttrRadius2, T("Radius 2:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
+             auto *p = new VFormulaProperty(T("Radius 2:"));
+             p->SetFormula(t->GetFormulaRadius2()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaRadius2()) t->SetFormulaRadius2(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaRadius2()); prop->setValue(v);
+             }
+         }},
+        {AttrAngle1, T("First angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
+             auto *p = new VFormulaProperty(T("First angle:"));
+             p->SetFormula(t->GetFormulaF1()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaF1()) t->SetFormulaF1(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaF1()); prop->setValue(v);
+             }
+         }},
+        {AttrLength, T("Length:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
+             auto *p = new VFormulaProperty(T("Length:"));
+             p->SetFormula(t->GetFormulaLength()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaLength()) t->SetFormulaLength(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
+             }
+         }},
+        {AttrRotationAngle, T("Rotation angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
+             auto *p = new VFormulaProperty(T("Rotation angle:"));
+             p->SetFormula(t->GetFormulaRotationAngle()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaRotationAngle()) t->SetFormulaRotationAngle(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaRotationAngle()); prop->setValue(v);
+             }
+         }},
+        MakeStringProp<VToolEllipticalArcWithLength>(AttrAlias, T("Alias:"), &VToolEllipticalArcWithLength::GetAliasSuffix, &VToolEllipticalArcWithLength::SetAliasSuffix),
+        MakeCurvePenStyle<VToolEllipticalArcWithLength>(T("Pen style:")),
+        MakeLineColor<VToolEllipticalArcWithLength>(T("Color:")),
+        MakeApproximationScale<VToolEllipticalArcWithLength>(T("Approximation scale:")),
+        MakeNotes<VToolEllipticalArcWithLength>(T("Notes:")),
+    };
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolSpline(QGraphicsItem *item)
+// --- VToolParallelCurve ---
+auto ParallelCurveProperties() -> std::vector<PropertyDesc>
 {
-    auto *i = qgraphicsitem_cast<VToolSpline *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Curve tool"));
-
-    const auto spl = i->getSpline();
-
-    AddPropertyObjectName(i, tr("Name:"), true);
-
-    VFormula angle1(spl.GetStartAngleFormula(), i->getData());
-    angle1.setToolId(i->getId());
-    angle1.setPostfix(degreeSymbol);
-    angle1.Eval();
-    AddPropertyFormula(tr("C1: angle:"), angle1, AttrAngle1);
-
-    VFormula length1(spl.GetC1LengthFormula(), i->getData());
-    length1.setToolId(i->getId());
-    length1.setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits()));
-    length1.Eval();
-    AddPropertyFormula(tr("C1: length:"), length1, AttrLength1);
-
-    VFormula angle2(spl.GetEndAngleFormula(), i->getData());
-    angle2.setToolId(i->getId());
-    angle2.setPostfix(degreeSymbol);
-    angle2.Eval();
-    AddPropertyFormula(tr("C2: angle:"), angle2, AttrAngle2);
-
-    VFormula length2(spl.GetC2LengthFormula(), i->getData());
-    length2.setToolId(i->getId());
-    length2.setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits()));
-    length2.Eval();
-    AddPropertyFormula(tr("C2: length:"), length2, AttrLength2);
-
-    QPalette const comboBoxPalette = ComboBoxPalette();
-
-    AddPropertyAlias(i, tr("Alias:"));
-    AddPropertyCurvePenStyle(
-        i, tr("Pen style:"),
-        CurvePenStylesPics(comboBoxPalette.color(QPalette::Base), comboBoxPalette.color(QPalette::Text)));
-    AddPropertyLineColor(i, tr("Color:"), VAbstractTool::ColorsList(), AttrColor);
-    AddPropertyApproximationScale(tr("Approximation scale:"), spl.GetApproximationScale());
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
+    return {
+        MakeObjectNameReadOnly<VToolParallelCurve>(T("Full name:")),
+        MakeParentPoint<VToolParallelCurve>(AttrCurve, T("Curve:"), &VToolParallelCurve::CurveName),
+        {AttrWidth, T("Width:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolParallelCurve *>(tool);
+             auto *p = new VFormulaProperty(T("Width:"));
+             p->SetFormula(t->GetFormulaWidth()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolParallelCurve *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaWidth()) t->SetFormulaWidth(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolParallelCurve *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaWidth()); prop->setValue(v);
+             }
+         }},
+        MakeLineColor<VToolParallelCurve>(T("Color:")),
+        MakeNotes<VToolParallelCurve>(T("Notes:")),
+    };
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolCubicBezier(QGraphicsItem *item)
+// --- VToolGraduatedCurve ---
+auto GraduatedCurveProperties() -> std::vector<PropertyDesc>
 {
-    auto *i = qgraphicsitem_cast<VToolCubicBezier *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Cubic bezier curve"));
-
-    QPalette const comboBoxPalette = ComboBoxPalette();
-
-    AddPropertyObjectName(i, tr("Name:"), true);
-    AddPropertyParentPointName(i->FirstPointName(), tr("First point:"), AttrPoint1);
-    AddPropertyParentPointName(i->SecondPointName(), tr("Second point:"), AttrPoint2);
-    AddPropertyParentPointName(i->ThirdPointName(), tr("Third point:"), AttrPoint3);
-    AddPropertyParentPointName(i->ForthPointName(), tr("Fourth point:"), AttrPoint4);
-    AddPropertyAlias(i, tr("Alias:"));
-    AddPropertyCurvePenStyle(
-        i, tr("Pen style:"),
-        CurvePenStylesPics(comboBoxPalette.color(QPalette::Base), comboBoxPalette.color(QPalette::Text)));
-    AddPropertyLineColor(i, tr("Color:"), VAbstractTool::ColorsList(), AttrColor);
-    AddPropertyApproximationScale(tr("Approximation scale:"), i->getSpline().GetApproximationScale());
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
+    return {
+        MakeObjectNameReadOnly<VToolGraduatedCurve>(T("Full name:")),
+        MakeParentPoint<VToolGraduatedCurve>(AttrCurve, T("Curve:"), &VToolGraduatedCurve::CurveName),
+        MakeStringProp<VToolGraduatedCurve>(VtoppbConstants::AttrSubName, T("Name:"), &VToolGraduatedCurve::GetName, &VToolGraduatedCurve::SetName),
+        MakeStringProp<VToolGraduatedCurve>(AttrAlias, T("Alias:"), &VToolGraduatedCurve::GetAliasSuffix, &VToolGraduatedCurve::SetAliasSuffix),
+        MakeCurvePenStyle<VToolGraduatedCurve>(T("Pen style:")),
+        MakeLineColor<VToolGraduatedCurve>(T("Color:")),
+        MakeApproximationScale<VToolGraduatedCurve>(T("Approximation scale:")),
+        MakeNotes<VToolGraduatedCurve>(T("Notes:")),
+    };
 }
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolSplinePath(QGraphicsItem *item)
-{
-    auto *i = qgraphicsitem_cast<VToolSplinePath *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Tool for path curve"));
-
-    QPalette const comboBoxPalette = ComboBoxPalette();
-
-    AddPropertyObjectName(i, tr("Name:"), true);
-    AddPropertyAlias(i, tr("Alias:"));
-    AddPropertyCurvePenStyle(
-        i, tr("Pen style:"),
-        CurvePenStylesPics(comboBoxPalette.color(QPalette::Base), comboBoxPalette.color(QPalette::Text)));
-    AddPropertyLineColor(i, tr("Color:"), VAbstractTool::ColorsList(), AttrColor);
-    AddPropertyApproximationScale(tr("Approximation scale:"), i->getSplinePath().GetApproximationScale());
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolCubicBezierPath(QGraphicsItem *item)
-{
-    auto *i = qgraphicsitem_cast<VToolCubicBezierPath *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Tool cubic bezier curve"));
-
-    QPalette const comboBoxPalette = ComboBoxPalette();
-
-    AddPropertyObjectName(i, tr("Name:"), true);
-    AddPropertyAlias(i, tr("Alias:"));
-    AddPropertyCurvePenStyle(
-        i, tr("Pen style:"),
-        CurvePenStylesPics(comboBoxPalette.color(QPalette::Base), comboBoxPalette.color(QPalette::Text)));
-    AddPropertyLineColor(i, tr("Color:"), VAbstractTool::ColorsList(), AttrColor);
-    AddPropertyApproximationScale(tr("Approximation scale:"), i->getSplinePath().GetApproximationScale());
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolEllipticalArc(QGraphicsItem *item)
-{
-    auto *i = qgraphicsitem_cast<VToolEllipticalArc *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Elliptical arc"));
-
-    QPalette const comboBoxPalette = ComboBoxPalette();
-
-    AddPropertyObjectName(i, tr("Name:"), true);
-    AddPropertyParentPointName(i->CenterPointName(), tr("Center point:"), AttrCenter);
-    AddPropertyFormula(tr("Radius:"), i->GetFormulaRadius1(), AttrRadius1);
-    AddPropertyFormula(tr("Radius:"), i->GetFormulaRadius2(), AttrRadius2);
-    AddPropertyFormula(tr("First angle:"), i->GetFormulaF1(), AttrAngle1);
-    AddPropertyFormula(tr("Second angle:"), i->GetFormulaF2(), AttrAngle2);
-    AddPropertyFormula(tr("Rotation angle:"), i->GetFormulaRotationAngle(), AttrRotationAngle);
-    AddPropertyAlias(i, tr("Alias:"));
-    AddPropertyCurvePenStyle(i,
-                             tr("Pen style:"),
-                             CurvePenStylesPics(comboBoxPalette.color(QPalette::Base),
-                                                comboBoxPalette.color(QPalette::Text)));
-    AddPropertyLineColor(i, tr("Color:"), VAbstractTool::ColorsList(), AttrColor);
-    AddPropertyApproximationScale(tr("Approximation scale:"), i->GetApproximationScale());
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolEllipticalArcWithLength(QGraphicsItem *item)
-{
-    auto *i = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Elliptical arc with given length"));
-
-    QPalette const comboBoxPalette = ComboBoxPalette();
-
-    AddPropertyObjectName(i, tr("Name:"), true);
-    AddPropertyParentPointName(i->CenterPointName(), tr("Center point:"), AttrCenter);
-    AddPropertyFormula(tr("Radius1:"), i->GetFormulaRadius1(), AttrRadius1);
-    AddPropertyFormula(tr("Radius2:"), i->GetFormulaRadius2(), AttrRadius2);
-    AddPropertyFormula(tr("First angle:"), i->GetFormulaF1(), AttrAngle1);
-    AddPropertyFormula(tr("Length:"), i->GetFormulaLength(), AttrLength);
-    AddPropertyFormula(tr("Rotation angle:"), i->GetFormulaRotationAngle(), AttrRotationAngle);
-    AddPropertyAlias(i, tr("Alias:"));
-    AddPropertyCurvePenStyle(i,
-                             tr("Pen style:"),
-                             CurvePenStylesPics(comboBoxPalette.color(QPalette::Base),
-                                                comboBoxPalette.color(QPalette::Text)));
-    AddPropertyLineColor(i, tr("Color:"), VAbstractTool::ColorsList(), AttrColor);
-    AddPropertyApproximationScale(tr("Approximation scale:"), i->GetApproximationScale());
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolParallelCurve(QGraphicsItem *item)
-{
-    auto *i = qgraphicsitem_cast<VToolParallelCurve *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Parallel curve"));
-
-    QPalette const comboBoxPalette = ComboBoxPalette();
-
-    AddPropertyObjectName(i, tr("Full name:"), true);
-    AddPropertyParentPointName(i->CurveName(), tr("Curve:"), AttrCurve);
-    AddPropertyFormula(tr("Width:"), i->GetFormulaWidth(), AttrWidth);
-    AddPropertySubName(i, tr("Name:"));
-    AddPropertyAlias(i, tr("Alias:"));
-    AddPropertyCurvePenStyle(i,
-                             tr("Pen style:"),
-                             CurvePenStylesPics(comboBoxPalette.color(QPalette::Base),
-                                                comboBoxPalette.color(QPalette::Text)));
-    AddPropertyLineColor(i, tr("Color:"), VAbstractTool::ColorsList(), AttrColor);
-    AddPropertyApproximationScale(tr("Approximation scale:"), i->GetApproximationScale());
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolGraduatedCurve(QGraphicsItem *item)
-{
-    auto *i = qgraphicsitem_cast<VToolGraduatedCurve *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Graduated curve"));
-
-    QPalette const comboBoxPalette = ComboBoxPalette();
-
-    AddPropertyObjectName(i, tr("Full name:"), true);
-    AddPropertyParentPointName(i->CurveName(), tr("Curve:"), AttrCurve);
-    AddPropertySubName(i, tr("Name:"));
-    AddPropertyAlias(i, tr("Alias:"));
-    AddPropertyCurvePenStyle(i,
-                             tr("Pen style:"),
-                             CurvePenStylesPics(comboBoxPalette.color(QPalette::Base),
-                                                comboBoxPalette.color(QPalette::Text)));
-    AddPropertyLineColor(i, tr("Color:"), VAbstractTool::ColorsList(), AttrColor);
-    AddPropertyApproximationScale(tr("Approximation scale:"), i->GetApproximationScale());
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolArc()
-{
-    auto *i = qgraphicsitem_cast<VToolArc *>(m_currentItem);
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    QVariant valueRadius;
-    valueRadius.setValue(i->GetFormulaRadius());
-    m_idToProperty[AttrRadius]->setValue(valueRadius);
-
-    QVariant valueFirstAngle;
-    valueFirstAngle.setValue(i->GetFormulaF1());
-    m_idToProperty[AttrAngle1]->setValue(valueFirstAngle);
-
-    QVariant valueSecondAngle;
-    valueSecondAngle.setValue(i->GetFormulaF2());
-    m_idToProperty[AttrAngle2]->setValue(valueSecondAngle);
-
-    {
-        QPalette const comboBoxPalette = ComboBoxPalette();
-        const auto index = VPE::VLineTypeProperty::IndexOfStyle(
-            CurvePenStylesPics(comboBoxPalette.color(QPalette::Base), comboBoxPalette.color(QPalette::Text)),
-            i->GetPenStyle());
-        m_idToProperty[AttrPenStyle]->setValue(index);
-    }
-
-    m_idToProperty[AttrColor]->setValue(i->GetLineColor());
-
-    QVariant valueCenterPoint;
-    valueCenterPoint.setValue(i->CenterPointName());
-    m_idToProperty[AttrCenter]->setValue(valueCenterPoint);
-
-    QVariant valueApproximationScale;
-    valueApproximationScale.setValue(i->GetApproximationScale());
-    m_idToProperty[AttrAScale]->setValue(valueApproximationScale);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[AttrAlias]->setValue(i->GetAliasSuffix());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolArcWithLength()
-{
-    auto *i = qgraphicsitem_cast<VToolArcWithLength *>(m_currentItem);
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    QVariant valueRadius;
-    valueRadius.setValue(i->GetFormulaRadius());
-    m_idToProperty[AttrRadius]->setValue(valueRadius);
-
-    QVariant valueFirstAngle;
-    valueFirstAngle.setValue(i->GetFormulaF1());
-    m_idToProperty[AttrAngle1]->setValue(valueFirstAngle);
-
-    QVariant valueLength;
-    valueLength.setValue(i->GetFormulaLength());
-    m_idToProperty[AttrLength]->setValue(valueLength);
-
-    {
-        QPalette const comboBoxPalette = ComboBoxPalette();
-        const auto index = VPE::VLineTypeProperty::IndexOfStyle(
-            CurvePenStylesPics(comboBoxPalette.color(QPalette::Base), comboBoxPalette.color(QPalette::Text)),
-            i->GetPenStyle());
-        m_idToProperty[AttrPenStyle]->setValue(index);
-    }
-
-    m_idToProperty[AttrColor]->setValue(i->GetLineColor());
-
-    QVariant valueCenterPoint;
-    valueCenterPoint.setValue(i->CenterPointName());
-    m_idToProperty[AttrCenter]->setValue(valueCenterPoint);
-
-    QVariant valueApproximationScale;
-    valueApproximationScale.setValue(i->GetApproximationScale());
-    m_idToProperty[AttrAScale]->setValue(valueApproximationScale);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[AttrAlias]->setValue(i->GetAliasSuffix());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolCutArc()
-{
-    auto *i = qgraphicsitem_cast<VToolCutArc *>(m_currentItem);
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    QVariant valueFormula;
-    valueFormula.setValue(i->GetFormulaLength());
-    m_idToProperty[AttrLength]->setValue(valueFormula);
-
-    QVariant valueArc;
-    valueArc.setValue(i->CurveName());
-    m_idToProperty[AttrArc]->setValue(valueArc);
-
-    m_idToProperty[AttrCurveName1]->setValue(i->GetName1());
-    m_idToProperty[AttrCurveName2]->setValue(i->GetName2());
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[AttrAlias1]->setValue(i->GetAliasSuffix1());
-    m_idToProperty[AttrAlias2]->setValue(i->GetAliasSuffix2());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolCutSpline()
-{
-    auto *i = qgraphicsitem_cast<VToolCutSpline *>(m_currentItem);
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    QVariant valueFormula;
-    valueFormula.setValue(i->GetFormulaLength());
-    m_idToProperty[AttrLength]->setValue(valueFormula);
-
-    QVariant valueCurve;
-    valueCurve.setValue(i->CurveName());
-    m_idToProperty[AttrCurve]->setValue(valueCurve);
-
-    m_idToProperty[AttrCurveName1]->setValue(i->GetName1());
-    m_idToProperty[AttrCurveName2]->setValue(i->GetName2());
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[AttrAlias1]->setValue(i->GetAliasSuffix1());
-    m_idToProperty[AttrAlias2]->setValue(i->GetAliasSuffix2());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolCutSplinePath()
-{
-    auto *i = qgraphicsitem_cast<VToolCutSplinePath *>(m_currentItem);
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    QVariant valueFormula;
-    valueFormula.setValue(i->GetFormulaLength());
-    m_idToProperty[AttrLength]->setValue(valueFormula);
-
-    QVariant valueCurve;
-    valueCurve.setValue(i->CurveName());
-    m_idToProperty[AttrCurve]->setValue(valueCurve);
-
-    m_idToProperty[AttrCurveName1]->setValue(i->GetName1());
-    m_idToProperty[AttrCurveName2]->setValue(i->GetName2());
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[AttrAlias1]->setValue(i->GetAliasSuffix1());
-    m_idToProperty[AttrAlias2]->setValue(i->GetAliasSuffix2());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolSpline()
-{
-    auto *i = qgraphicsitem_cast<VToolSpline *>(m_currentItem);
-    const VSpline spl = i->getSpline();
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    VFormula angle1F(spl.GetStartAngleFormula(), i->getData());
-    angle1F.setToolId(i->getId());
-    angle1F.setPostfix(degreeSymbol);
-    angle1F.Eval();
-    QVariant angle1;
-    angle1.setValue(angle1F);
-    m_idToProperty[AttrAngle1]->setValue(angle1);
-
-    VFormula length1F(spl.GetC1LengthFormula(), i->getData());
-    length1F.setToolId(i->getId());
-    length1F.setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits()));
-    length1F.Eval();
-    QVariant length1;
-    length1.setValue(length1F);
-    m_idToProperty[AttrLength1]->setValue(length1);
-
-    VFormula angle2F(spl.GetEndAngleFormula(), i->getData());
-    angle2F.setToolId(i->getId());
-    angle2F.setPostfix(degreeSymbol);
-    angle2F.Eval();
-    QVariant angle2;
-    angle2.setValue(angle2F);
-    m_idToProperty[AttrAngle2]->setValue(angle2);
-
-    VFormula length2F(spl.GetC2LengthFormula(), i->getData());
-    length2F.setToolId(i->getId());
-    length2F.setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits()));
-    length2F.Eval();
-    QVariant length2;
-    length2.setValue(length2F);
-    m_idToProperty[AttrLength2]->setValue(length2);
-
-    {
-        QPalette const comboBoxPalette = ComboBoxPalette();
-        const auto index = VPE::VLineTypeProperty::IndexOfStyle(
-            CurvePenStylesPics(comboBoxPalette.color(QPalette::Base), comboBoxPalette.color(QPalette::Text)),
-            i->GetPenStyle());
-        m_idToProperty[AttrPenStyle]->setValue(index);
-    }
-
-    m_idToProperty[AttrColor]->setValue(i->GetLineColor());
-
-    QVariant valueApproximationScale;
-    valueApproximationScale.setValue(spl.GetApproximationScale());
-    m_idToProperty[AttrAScale]->setValue(valueApproximationScale);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[AttrAlias]->setValue(i->GetAliasSuffix());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolCubicBezier()
-{
-    auto *i = qgraphicsitem_cast<VToolCubicBezier *>(m_currentItem);
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    {
-        QPalette const comboBoxPalette = ComboBoxPalette();
-        const auto index = VPE::VLineTypeProperty::IndexOfStyle(
-            CurvePenStylesPics(comboBoxPalette.color(QPalette::Base), comboBoxPalette.color(QPalette::Text)),
-            i->GetPenStyle());
-        m_idToProperty[AttrPenStyle]->setValue(index);
-    }
-
-    m_idToProperty[AttrColor]->setValue(i->GetLineColor());
-
-    QVariant valueFirstPoint;
-    valueFirstPoint.setValue(i->FirstPointName());
-    m_idToProperty[AttrPoint1]->setValue(valueFirstPoint);
-
-    QVariant valueSecondPoint;
-    valueSecondPoint.setValue(i->SecondPointName());
-    m_idToProperty[AttrPoint2]->setValue(valueSecondPoint);
-
-    QVariant valueThirdPoint;
-    valueThirdPoint.setValue(i->ThirdPointName());
-    m_idToProperty[AttrPoint3]->setValue(valueThirdPoint);
-
-    QVariant valueForthPoint;
-    valueForthPoint.setValue(i->ForthPointName());
-    m_idToProperty[AttrPoint4]->setValue(valueForthPoint);
-
-    QVariant valueApproximationScale;
-    valueApproximationScale.setValue(i->getSpline().GetApproximationScale());
-    m_idToProperty[AttrAScale]->setValue(valueApproximationScale);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[AttrAlias]->setValue(i->GetAliasSuffix());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolSplinePath()
-{
-    auto *i = qgraphicsitem_cast<VToolSplinePath *>(m_currentItem);
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    {
-        QPalette const comboBoxPalette = ComboBoxPalette();
-        const auto index = VPE::VLineTypeProperty::IndexOfStyle(
-            CurvePenStylesPics(comboBoxPalette.color(QPalette::Base), comboBoxPalette.color(QPalette::Text)),
-            i->GetPenStyle());
-        m_idToProperty[AttrPenStyle]->setValue(index);
-    }
-
-    m_idToProperty[AttrColor]->setValue(i->GetLineColor());
-
-    QVariant valueApproximationScale;
-    valueApproximationScale.setValue(i->getSplinePath().GetApproximationScale());
-    m_idToProperty[AttrAScale]->setValue(valueApproximationScale);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[AttrAlias]->setValue(i->GetAliasSuffix());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolCubicBezierPath()
-{
-    auto *i = qgraphicsitem_cast<VToolCubicBezierPath *>(m_currentItem);
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    {
-        QPalette const comboBoxPalette = ComboBoxPalette();
-        const auto index = VPE::VLineTypeProperty::IndexOfStyle(
-            CurvePenStylesPics(comboBoxPalette.color(QPalette::Base), comboBoxPalette.color(QPalette::Text)),
-            i->GetPenStyle());
-        m_idToProperty[AttrPenStyle]->setValue(index);
-    }
-
-    m_idToProperty[AttrColor]->setValue(i->GetLineColor());
-
-    QVariant valueApproximationScale;
-    valueApproximationScale.setValue(i->getSplinePath().GetApproximationScale());
-    m_idToProperty[AttrAScale]->setValue(valueApproximationScale);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[AttrAlias]->setValue(i->GetAliasSuffix());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolEllipticalArc()
-{
-    auto *i = qgraphicsitem_cast<VToolEllipticalArc *>(m_currentItem);
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    QVariant valueFormulaRadius1;
-    valueFormulaRadius1.setValue(i->GetFormulaRadius1());
-    m_idToProperty[AttrRadius1]->setValue(valueFormulaRadius1);
-
-    QVariant valueFormulaRadius2;
-    valueFormulaRadius2.setValue(i->GetFormulaRadius2());
-    m_idToProperty[AttrRadius2]->setValue(valueFormulaRadius2);
-
-    QVariant valueFormulaF1;
-    valueFormulaF1.setValue(i->GetFormulaF1());
-    m_idToProperty[AttrAngle1]->setValue(valueFormulaF1);
-
-    QVariant valueFormulaF2;
-    valueFormulaF2.setValue(i->GetFormulaF2());
-    m_idToProperty[AttrAngle2]->setValue(valueFormulaF2);
-
-    QVariant valueFormulaRotationAngle;
-    valueFormulaRotationAngle.setValue(i->GetFormulaRotationAngle());
-    m_idToProperty[AttrRotationAngle]->setValue(valueFormulaRotationAngle);
-
-    {
-        QPalette const comboBoxPalette = ComboBoxPalette();
-        const auto index = VPE::VLineTypeProperty::IndexOfStyle(CurvePenStylesPics(comboBoxPalette.color(QPalette::Base),
-                                                                                   comboBoxPalette.color(
-                                                                                       QPalette::Text)),
-                                                                i->GetPenStyle());
-        m_idToProperty[AttrPenStyle]->setValue(index);
-    }
-
-    m_idToProperty[AttrColor]->setValue(i->GetLineColor());
-
-    QVariant valueCenterPoint;
-    valueCenterPoint.setValue(i->CenterPointName());
-    m_idToProperty[AttrCenter]->setValue(valueCenterPoint);
-
-    QVariant valueApproximationScale;
-    valueApproximationScale.setValue(i->GetApproximationScale());
-    m_idToProperty[AttrAScale]->setValue(valueApproximationScale);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[AttrAlias]->setValue(i->GetAliasSuffix());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolEllipticalArcWithLength()
-{
-    auto *i = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(m_currentItem);
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    QVariant valueRadius1;
-    valueRadius1.setValue(i->GetFormulaRadius1());
-    m_idToProperty[AttrRadius1]->setValue(valueRadius1);
-
-    QVariant valueFormulaRadius2;
-    valueFormulaRadius2.setValue(i->GetFormulaRadius2());
-    m_idToProperty[AttrRadius2]->setValue(valueFormulaRadius2);
-
-    QVariant valueFirstAngle;
-    valueFirstAngle.setValue(i->GetFormulaF1());
-    m_idToProperty[AttrAngle1]->setValue(valueFirstAngle);
-
-    QVariant valueLength;
-    valueLength.setValue(i->GetFormulaLength());
-    m_idToProperty[AttrLength]->setValue(valueLength);
-
-    QVariant valueFormulaRotationAngle;
-    valueFormulaRotationAngle.setValue(i->GetFormulaRotationAngle());
-    m_idToProperty[AttrRotationAngle]->setValue(valueFormulaRotationAngle);
-
-    {
-        QPalette const comboBoxPalette = ComboBoxPalette();
-        const auto index = VPE::VLineTypeProperty::IndexOfStyle(CurvePenStylesPics(comboBoxPalette.color(QPalette::Base),
-                                                                                   comboBoxPalette.color(
-                                                                                       QPalette::Text)),
-                                                                i->GetPenStyle());
-        m_idToProperty[AttrPenStyle]->setValue(index);
-    }
-
-    m_idToProperty[AttrColor]->setValue(i->GetLineColor());
-
-    QVariant valueCenterPoint;
-    valueCenterPoint.setValue(i->CenterPointName());
-    m_idToProperty[AttrCenter]->setValue(valueCenterPoint);
-
-    QVariant valueApproximationScale;
-    valueApproximationScale.setValue(i->GetApproximationScale());
-    m_idToProperty[AttrAScale]->setValue(valueApproximationScale);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[AttrAlias]->setValue(i->GetAliasSuffix());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolParallelCurve()
-{
-    auto *i = qgraphicsitem_cast<VToolParallelCurve *>(m_currentItem);
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    QVariant valueWidth;
-    valueWidth.setValue(i->GetFormulaWidth());
-    m_idToProperty[AttrWidth]->setValue(valueWidth);
-
-    {
-        QPalette const comboBoxPalette = ComboBoxPalette();
-        const auto index = VPE::VLineTypeProperty::IndexOfStyle(CurvePenStylesPics(comboBoxPalette.color(QPalette::Base),
-                                                                                   comboBoxPalette.color(
-                                                                                       QPalette::Text)),
-                                                                i->GetPenStyle());
-        m_idToProperty[AttrPenStyle]->setValue(index);
-    }
-
-    m_idToProperty[AttrColor]->setValue(i->GetLineColor());
-
-    QVariant valueCurve;
-    valueCurve.setValue(i->CurveName());
-    m_idToProperty[AttrCurve]->setValue(valueCurve);
-
-    QVariant valueApproximationScale;
-    valueApproximationScale.setValue(i->GetApproximationScale());
-    m_idToProperty[AttrAScale]->setValue(valueApproximationScale);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[VtoppbConstants::AttrSubName]->setValue(i->GetName());
-
-    m_idToProperty[AttrAlias]->setValue(i->GetAliasSuffix());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolGraduatedCurve()
-{
-    auto *i = qgraphicsitem_cast<VToolGraduatedCurve *>(m_currentItem);
-
-    m_idToProperty[AttrName]->setValue(i->name());
-
-    {
-        QPalette const comboBoxPalette = ComboBoxPalette();
-        const auto index = VPE::VLineTypeProperty::IndexOfStyle(CurvePenStylesPics(comboBoxPalette.color(QPalette::Base),
-                                                                                   comboBoxPalette.color(
-                                                                                       QPalette::Text)),
-                                                                i->GetPenStyle());
-        m_idToProperty[AttrPenStyle]->setValue(index);
-    }
-
-    m_idToProperty[AttrColor]->setValue(i->GetLineColor());
-
-    QVariant valueCurve;
-    valueCurve.setValue(i->CurveName());
-    m_idToProperty[AttrCurve]->setValue(valueCurve);
-
-    QVariant valueApproximationScale;
-    valueApproximationScale.setValue(i->GetApproximationScale());
-    m_idToProperty[AttrAScale]->setValue(valueApproximationScale);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-
-    m_idToProperty[VtoppbConstants::AttrSubName]->setValue(i->GetName());
-
-    m_idToProperty[AttrAlias]->setValue(i->GetAliasSuffix());
-}
-
-//---------------------------------------------------------------------------------------------------------------------

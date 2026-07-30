@@ -4,7 +4,7 @@
  **  @author Roman Telezhynskyi <dismine(at)gmail.com>
  **  @date   30/07/2026
  **
- **  @brief  ops property browser methods
+ **  @brief  ops property browser methods — declarative descriptors
  **
  **  @note   Extracted from vtooloptionspropertybrowser.cpp by Sophie Denys <contact@sophiedenys.com>
  **          as part of Ostara refactoring.
@@ -29,297 +29,378 @@
 
 #include "vtooloptionspropertybrowser.h"
 #include "vtoppb_templates.h"
-#include "../vtools/tools/drawTools/vtoolline.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtooltriangle.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncircles.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectionarcs.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersection.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromcircleandtangent.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromarcandtangent.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolnormal.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollineintersectaxis.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolheight.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolendline.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolbisector.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolalongline.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.h"
-#include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/vtooltruedarts.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolsplinepath.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolspline.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolparallelcurve.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarc.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
-
+#include "../vpatterndb/vformula.h"
 #include "vformulaproperty.h"
-#include "tools/drawTools/toolcurve/vtoolgraduatedcurve.h"
-#include "ifcdef.h"
-#include "../vwidgets/vsimplepoint.h"
-#include "../vwidgets/vsimplecurve.h"
-#include "../vwidgets/vsegmentlabel.h"
-#include "../vwidgets/vgraphicssimpletextitem.h"
-#include "../vwidgets/vcontrolpointspline.h"
-#include "../vtools/tools/backgroundimage/vbackgroundsvgitem.h"
-#include "../vtools/tools/backgroundimage/vbackgroundpixmapitem.h"
-#include "../vpropertyexplorer/plugins/vtextproperty.h"
-#include "../vpropertyexplorer/plugins/vstringproperty.h"
-#include "../vpropertyexplorer/plugins/vpointfproperty.h"
-#include "../vpropertyexplorer/plugins/vnumberproperty.h"
-#include "../vpropertyexplorer/plugins/vlinetypeproperty.h"
-#include "../vpropertyexplorer/plugins/vlinecolorproperty.h"
 #include "../vpropertyexplorer/plugins/vlabelproperty.h"
 #include "../vpropertyexplorer/plugins/venumproperty.h"
-#include "../vpropertyexplorer/plugins/vboolproperty.h"
-#include "../vpatterndb/vformula.h"
-#include "../vmisc/vvalentinasettings.h"
+#include "../vpropertyexplorer/plugins/vtextproperty.h"
+#include "ifcdef.h"
 #include "../vmisc/def.h"
-#include "../vgeometry/vsplinepath.h"
-#include "../vgeometry/vcubicbezierpath.h"
-#include "../vgeometry/vcubicbezier.h"
-#include "../qmuparser/qmudef.h"
 
-
-
-void VToolOptionsPropertyBrowser::ChangeDataToolRotation(VPE::VProperty *property)
+namespace
 {
-    SCASSERT(property != nullptr)
+auto T(const char *s) -> QString
+{
+    return VToolOptionsPropertyBrowser::tr(s);
+}
+} // anonymous namespace
 
-    const QString id = m_propertyToId[property];
+// Forward declarations
+auto RotationProperties() -> std::vector<PropertyDesc>;
+auto MoveProperties() -> std::vector<PropertyDesc>;
+auto FlippingByLineProperties() -> std::vector<PropertyDesc>;
+auto FlippingByAxisProperties() -> std::vector<PropertyDesc>;
 
-    switch (PropertiesList().indexOf(id))
-    {
-        case 5: // AttrAngle
-            SetFormulaAngle<VToolRotation>(property);
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolRotation>(property);
-            break;
-        case 11: // AttrCenter (read only)
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+// --- VToolRotation ---
+auto RotationProperties() -> std::vector<PropertyDesc>
+{
+    return {
+        // Origin point (read-only label)
+        {AttrCenter, T("Origin point:"), true,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolRotation *>(tool);
+             auto *prop = new VPE::VLabelProperty(T("Origin point:"));
+             prop->setValue(t->OriginPointName());
+             return prop;
+         },
+         nullptr,
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolRotation *>(b->currentItem()))
+                 prop->setValue(t->OriginPointName());
+         }},
+
+        // Angle formula
+        {AttrAngle, T("Angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolRotation *>(tool);
+             auto *prop = new VFormulaProperty(T("Angle:"));
+             prop->SetFormula(t->GetFormulaAngle());
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolRotation *>(b->currentItem()))
+             {
+                 auto formula = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (formula != t->GetFormulaAngle())
+                     t->SetFormulaAngle(formula);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolRotation *>(b->currentItem()))
+             {
+                 QVariant v;
+                 v.setValue(t->GetFormulaAngle());
+                 prop->setValue(v);
+             }
+         }},
+
+        // Notes
+        {AttrNotes, T("Notes:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolRotation *>(tool);
+             auto *prop = new VPE::VTextProperty(T("Notes:"));
+             prop->setValue(t->GetNotes());
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolRotation *>(b->currentItem()))
+             {
+                 QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                 if (text != t->GetNotes())
+                     t->SetNotes(text);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolRotation *>(b->currentItem()))
+                 prop->setValue(t->GetNotes());
+         }},
+    };
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolMove(VPE::VProperty *property)
+// --- VToolMove ---
+auto MoveProperties() -> std::vector<PropertyDesc>
 {
-    SCASSERT(property != nullptr)
+    return {
+        // Angle formula
+        {AttrAngle, T("Angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolMove *>(tool);
+             auto *prop = new VFormulaProperty(T("Angle:"));
+             prop->SetFormula(t->GetFormulaAngle());
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolMove *>(b->currentItem()))
+             {
+                 auto formula = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (formula != t->GetFormulaAngle())
+                     t->SetFormulaAngle(formula);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolMove *>(b->currentItem()))
+             {
+                 QVariant v;
+                 v.setValue(t->GetFormulaAngle());
+                 prop->setValue(v);
+             }
+         }},
 
-    const QString id = m_propertyToId[property];
+        // Length formula
+        {AttrLength, T("Length:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolMove *>(tool);
+             auto *prop = new VFormulaProperty(T("Length:"));
+             prop->SetFormula(t->GetFormulaLength());
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolMove *>(b->currentItem()))
+             {
+                 auto formula = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (formula != t->GetFormulaLength())
+                     t->SetFormulaLength(formula);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolMove *>(b->currentItem()))
+             {
+                 QVariant v;
+                 v.setValue(t->GetFormulaLength());
+                 prop->setValue(v);
+             }
+         }},
 
-    switch (PropertiesList().indexOf(id))
-    {
-        case 5: // AttrAngle
-            SetFormulaAngle<VToolMove>(property);
-            break;
-        case 4: // AttrLength
-            SetFormulaLength<VToolMove>(property);
-            break;
-        case 42: // AttrRotationAngle
-            SetFormulaRotationAngle<VToolMove>(property);
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolMove>(property);
-            break;
-        case 11: // AttrCenter (read only)
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+        // Rotation angle formula
+        {AttrRotationAngle, T("Rotation angle:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolMove *>(tool);
+             auto *prop = new VFormulaProperty(T("Rotation angle:"));
+             prop->SetFormula(t->GetFormulaRotationAngle());
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolMove *>(b->currentItem()))
+             {
+                 auto formula = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (formula != t->GetFormulaRotationAngle())
+                     t->SetFormulaRotationAngle(formula);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolMove *>(b->currentItem()))
+             {
+                 QVariant v;
+                 v.setValue(t->GetFormulaRotationAngle());
+                 prop->setValue(v);
+             }
+         }},
+
+        // Origin point (read-only)
+        {AttrCenter, T("Rotation origin point:"), true,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolMove *>(tool);
+             auto *prop = new VPE::VLabelProperty(T("Rotation origin point:"));
+             prop->setValue(t->OriginPointName());
+             return prop;
+         },
+         nullptr,
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolMove *>(b->currentItem()))
+                 prop->setValue(t->OriginPointName());
+         }},
+
+        // Notes
+        {AttrNotes, T("Notes:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolMove *>(tool);
+             auto *prop = new VPE::VTextProperty(T("Notes:"));
+             prop->setValue(t->GetNotes());
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolMove *>(b->currentItem()))
+             {
+                 QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                 if (text != t->GetNotes())
+                     t->SetNotes(text);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolMove *>(b->currentItem()))
+                 prop->setValue(t->GetNotes());
+         }},
+    };
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolFlippingByLine(VPE::VProperty *property)
+// --- VToolFlippingByLine ---
+auto FlippingByLineProperties() -> std::vector<PropertyDesc>
 {
-    SCASSERT(property != nullptr)
+    return {
+        // First line point (read-only)
+        {AttrFirstPoint, T("First line point:"), true,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolFlippingByLine *>(tool);
+             auto *prop = new VPE::VLabelProperty(T("First line point:"));
+             prop->setValue(t->FirstLinePointName());
+             return prop;
+         },
+         nullptr,
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolFlippingByLine *>(b->currentItem()))
+                 prop->setValue(t->FirstLinePointName());
+         }},
 
-    const QString id = m_propertyToId[property];
+        // Second line point (read-only)
+        {AttrSecondPoint, T("Second line point:"), true,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolFlippingByLine *>(tool);
+             auto *prop = new VPE::VLabelProperty(T("Second line point:"));
+             prop->setValue(t->SecondLinePointName());
+             return prop;
+         },
+         nullptr,
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolFlippingByLine *>(b->currentItem()))
+                 prop->setValue(t->SecondLinePointName());
+         }},
 
-    switch (PropertiesList().indexOf(id))
-    {
-        case 61: // AttrNotes
-            SetNotes<VToolFlippingByLine>(property);
-            break;
-        case 6: // AttrFirstPoint
-        case 7: // AttrSecondPoint
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+        // Notes
+        {AttrNotes, T("Notes:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolFlippingByLine *>(tool);
+             auto *prop = new VPE::VTextProperty(T("Notes:"));
+             prop->setValue(t->GetNotes());
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolFlippingByLine *>(b->currentItem()))
+             {
+                 QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                 if (text != t->GetNotes())
+                     t->SetNotes(text);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolFlippingByLine *>(b->currentItem()))
+                 prop->setValue(t->GetNotes());
+         }},
+    };
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ChangeDataToolFlippingByAxis(VPE::VProperty *property)
+// --- VToolFlippingByAxis ---
+auto FlippingByAxisProperties() -> std::vector<PropertyDesc>
 {
-    SCASSERT(property != nullptr)
+    return {
+        // Axis type enum
+        {AttrAxisType, T("Axis type:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolFlippingByAxis *>(tool);
+             auto *prop = new VPE::VEnumProperty(T("Axis type:"));
+             prop->setLiterals(QStringList({VToolOptionsPropertyBrowser::tr("Vertical axis"),
+                                            VToolOptionsPropertyBrowser::tr("Horizontal axis")}));
+             prop->setValue(static_cast<int>(t->GetAxisType()) - 1);
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolFlippingByAxis *>(b->currentItem()))
+             {
+                 const QVariant value = prop->data(VPE::VProperty::DPC_Data, Qt::EditRole);
+                 bool ok = false;
+                 const int val = value.toInt(&ok);
+                 if (ok)
+                 {
+                     AxisType type = AxisType::VerticalAxis;
+                     switch (val)
+                     {
+                         case 0: type = AxisType::VerticalAxis; break;
+                         case 1: type = AxisType::HorizontalAxis; break;
+                         default: break;
+                     }
+                     if (type != t->GetAxisType())
+                         t->SetAxisType(type);
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolFlippingByAxis *>(b->currentItem()))
+                 prop->setValue(static_cast<int>(t->GetAxisType()) - 1);
+         }},
 
-    const QString id = m_propertyToId[property];
+        // Origin point (read-only)
+        {AttrCenter, T("Origin point:"), true,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolFlippingByAxis *>(tool);
+             auto *prop = new VPE::VLabelProperty(T("Origin point:"));
+             prop->setValue(t->OriginPointName());
+             return prop;
+         },
+         nullptr,
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolFlippingByAxis *>(b->currentItem()))
+                 prop->setValue(t->OriginPointName());
+         }},
 
-    switch (PropertiesList().indexOf(id))
-    {
-        case 39: // AttrAxisType
-            SetAxisType<VToolFlippingByAxis>(property);
-            break;
-        case 61: // AttrNotes
-            SetNotes<VToolFlippingByAxis>(property);
-            break;
-        case 11: // AttrCenter (read only)
-            break;
-        default:
-            qWarning() << "Unknown property type. id = " << id;
-            break;
-    }
+        // Notes
+        {AttrNotes, T("Notes:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolFlippingByAxis *>(tool);
+             auto *prop = new VPE::VTextProperty(T("Notes:"));
+             prop->setValue(t->GetNotes());
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolFlippingByAxis *>(b->currentItem()))
+             {
+                 QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                 if (text != t->GetNotes())
+                     t->SetNotes(text);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolFlippingByAxis *>(b->currentItem()))
+                 prop->setValue(t->GetNotes());
+         }},
+    };
 }
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolRotation(QGraphicsItem *item)
-{
-    auto *i = qgraphicsitem_cast<VToolRotation *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Tool rotation"));
-
-    AddPropertyParentPointName(i->OriginPointName(), tr("Origin point:"), AttrCenter);
-    AddPropertyFormula(tr("Angle:"), i->GetFormulaAngle(), AttrAngle);
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolMove(QGraphicsItem *item)
-{
-    auto *i = qgraphicsitem_cast<VToolMove *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Tool move"));
-
-    AddPropertyFormula(tr("Angle:"), i->GetFormulaAngle(), AttrAngle);
-    AddPropertyFormula(tr("Length:"), i->GetFormulaLength(), AttrLength);
-    AddPropertyFormula(tr("Rotation angle:"), i->GetFormulaRotationAngle(), AttrRotationAngle);
-    AddPropertyParentPointName(i->OriginPointName(), tr("Rotation origin point:"), AttrCenter);
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolFlippingByLine(QGraphicsItem *item)
-{
-    auto *i = qgraphicsitem_cast<VToolFlippingByLine *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Tool flipping by line"));
-
-    AddPropertyParentPointName(i->FirstLinePointName(), tr("First line point:"), AttrFirstPoint);
-    AddPropertyParentPointName(i->SecondLinePointName(), tr("Second line point:"), AttrSecondPoint);
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::ShowOptionsToolFlippingByAxis(QGraphicsItem *item)
-{
-    auto *i = qgraphicsitem_cast<VToolFlippingByAxis *>(item);
-    i->ShowVisualization(true);
-    m_formView->setTitle(tr("Tool flipping by axis"));
-
-    AddPropertyAxisType(i, tr("Axis type:"));
-    AddPropertyParentPointName(i->OriginPointName(), tr("Origin point:"), AttrCenter);
-    AddPropertyText(tr("Notes:"), i->GetNotes(), AttrNotes);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolRotation()
-{
-    auto *i = qgraphicsitem_cast<VToolRotation *>(m_currentItem);
-
-    QVariant valueAngle;
-    valueAngle.setValue(i->GetFormulaAngle());
-    m_idToProperty[AttrAngle]->setValue(valueAngle);
-
-    QVariant valueOriginPoint;
-    valueOriginPoint.setValue(i->OriginPointName());
-    m_idToProperty[AttrCenter]->setValue(valueOriginPoint);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolMove()
-{
-    auto *i = qgraphicsitem_cast<VToolMove *>(m_currentItem);
-
-    QVariant valueAngle;
-    valueAngle.setValue(i->GetFormulaAngle());
-    m_idToProperty[AttrAngle]->setValue(valueAngle);
-
-    QVariant valueLength;
-    valueLength.setValue(i->GetFormulaLength());
-    m_idToProperty[AttrLength]->setValue(valueLength);
-
-    QVariant valueRotationAngle;
-    valueRotationAngle.setValue(i->GetFormulaRotationAngle());
-    m_idToProperty[AttrRotationAngle]->setValue(valueRotationAngle);
-
-    QVariant valueRotationOriginPoint;
-    valueRotationOriginPoint.setValue(i->OriginPointName());
-    m_idToProperty[AttrCenter]->setValue(valueRotationOriginPoint);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolFlippingByLine()
-{
-    auto *i = qgraphicsitem_cast<VToolFlippingByLine *>(m_currentItem);
-
-    QVariant valueFirstPoint;
-    valueFirstPoint.setValue(i->FirstLinePointName());
-    m_idToProperty[AttrFirstPoint]->setValue(valueFirstPoint);
-
-    QVariant valueSecondPoint;
-    valueSecondPoint.setValue(i->SecondLinePointName());
-    m_idToProperty[AttrSecondPoint]->setValue(valueSecondPoint);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void VToolOptionsPropertyBrowser::UpdateOptionsToolFlippingByAxis()
-{
-    auto *i = qgraphicsitem_cast<VToolFlippingByAxis *>(m_currentItem);
-    m_idToProperty[AttrAxisType]->setValue(static_cast<int>(i->GetAxisType()) - 1);
-
-    QVariant valueOriginPoint;
-    valueOriginPoint.setValue(i->OriginPointName());
-    m_idToProperty[AttrCenter]->setValue(valueOriginPoint);
-
-    m_idToProperty[AttrNotes]->setValue(i->GetNotes());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
