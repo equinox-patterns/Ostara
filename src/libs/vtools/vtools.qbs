@@ -117,6 +117,7 @@ VLib {
             "tools/piece/dialogseamallowance.cpp",
             "tools/piece/dialogseamallowance_contextmenus.cpp",
             "tools/piece/dialogseamallowance_passmarks.cpp",
+            "tools/piece/dialogseamallowance_foldline.cpp",
             "tools/piece/dialogpiecepath.cpp",
             "tools/piece/dialogpin.cpp",
             "tools/piece/dialoginsertnode.cpp",
