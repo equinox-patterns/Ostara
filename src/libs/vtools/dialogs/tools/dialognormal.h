@@ -37,6 +37,8 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogNormal;
@@ -83,13 +85,7 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    /**
-     * @brief DeployFormulaTextEdit grow or shrink formula input
-     */
-    void DeployFormulaTextEdit();
     void PointNameChanged() override;
-    void FXLength();
-    void EvalFormula();
 
 private slots:
     void SwapPoints();
@@ -110,20 +106,13 @@ private:
     /** @brief ui keeps information about user interface */
     Ui::DialogNormal *ui;
 
-    /** @brief formula formula */
-    QString m_formula{};
+    FormulaInputWidget *m_formula;
 
     /** @brief angle aditional angle of normal */
     qreal m_angle{0};
 
-    /** @brief formulaBaseHeight base height defined by dialogui */
-    int m_formulaBaseHeight{0};
-
     QString m_pointName{};
 
-    QTimer *m_timerFormula;
-
-    bool m_flagFormula{false};
     bool m_flagName{true};
     bool m_flagError{true};
 
@@ -136,11 +125,5 @@ private:
 
     void InitIcons();
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogNormal::IsValid() const -> bool
-{
-    return m_flagFormula && m_flagName && m_flagError;
-}
 
 #endif // DIALOGNORMAL_H

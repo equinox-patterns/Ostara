@@ -52,6 +52,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vabstractmainwindow.h"
+#include "../widgets/formulainputwidget.h"
 #include "ui_dialogshoulderpoint.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -63,7 +64,7 @@
 DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent)
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogShoulderPoint),
-    m_timerFormula(new QTimer(this))
+    m_formula(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
 
@@ -73,15 +74,30 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, VAbstractPatter
     MakeFilterableComboBox(ui->comboBoxP2Line);
     MakeFilterableComboBox(ui->comboBoxP3);
 
-    m_timerFormula->setSingleShot(true);
-    connect(m_timerFormula, &QTimer::timeout, this, &DialogShoulderPoint::EvalFormula);
+    // --- Configure formula widget ---
+    m_formula->setData(&this->data);
+    m_formula->setToolId(toolId);
+    m_formula->setLabelText(tr("Length:"));
+    m_formula->setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
+    m_formula->setDialogTitle(tr("Edit length"));
+    connect(m_formula, &FormulaInputWidget::valueChanged, this,
+            [this]() { CheckState(); });
+
+    if (auto *placeholder = ui->formulaPlaceholder)
+    {
+        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+        if (parentLayout != nullptr)
+        {
+            const int idx = parentLayout->indexOf(placeholder);
+            parentLayout->insertWidget(idx, m_formula);
+            placeholder->deleteLater();
+        }
+    }
 
     ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
-    m_formulaBaseHeight = ui->plainTextEditFormula->height();
-    ui->plainTextEditFormula->installEventFilter(this);
 
     InitOkCancelApply(ui);
 
@@ -93,7 +109,6 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, VAbstractPatter
     InitColorPicker(ui->pushButtonLineColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
     ui->pushButtonLineColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
 
-    connect(ui->toolButtonExprLength, &QPushButton::clicked, this, &DialogShoulderPoint::FXLength);
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
             {
@@ -101,9 +116,6 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, VAbstractPatter
                                 m_flagName);
                 CheckState();
             });
-    connect(ui->plainTextEditFormula, &QPlainTextEdit::textChanged, this,
-            [this]() { m_timerFormula->start(formulaTimerTimeout); });
-    connect(ui->pushButtonGrowLength, &QPushButton::clicked, this, &DialogShoulderPoint::DeployFormulaTextEdit);
     connect(ui->comboBoxP1Line, &QComboBox::currentTextChanged, this, &DialogShoulderPoint::PointNameChanged);
     connect(ui->comboBoxP2Line, &QComboBox::currentTextChanged, this, &DialogShoulderPoint::PointNameChanged);
     connect(ui->comboBoxP3, &QComboBox::currentTextChanged, this, &DialogShoulderPoint::PointNameChanged);
@@ -140,40 +152,15 @@ void DialogShoulderPoint::PointNameChanged()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogShoulderPoint::FXLength()
+auto DialogShoulderPoint::IsValid() const -> bool
 {
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit length"));
-    dialog->SetFormula(GetFormula());
-    dialog->setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetFormula(dialog->GetFormula());
-    }
-    delete dialog;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogShoulderPoint::EvalFormula()
-{
-    Eval({.formula = ui->plainTextEditFormula->toPlainText(),
-          .variables = data.DataVariables(),
-          .labelEditFormula = ui->labelEditFormula,
-          .labelResult = ui->labelResultCalculation,
-          .postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)},
-         m_flagFormula);
+    return m_formula->isValid() && m_flagName && m_flagError;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogShoulderPoint::ShowVisualization()
 {
     AddVisualization<VisToolShoulderPoint>();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogShoulderPoint::DeployFormulaTextEdit()
-{
-    DeployFormula(this, ui->plainTextEditFormula, ui->pushButtonGrowLength, m_formulaBaseHeight);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -238,7 +225,7 @@ void DialogShoulderPoint::ChosenObject(quint32 id, const SceneObject &type)
 void DialogShoulderPoint::SaveData()
 {
     m_pointName = ui->lineEditNamePoint->text();
-    m_formula = ui->plainTextEditFormula->toPlainText();
+    const QString formulaText = m_formula->formula();
 
     auto *line = qobject_cast<VisToolShoulderPoint *>(vis);
     SCASSERT(line != nullptr)
@@ -246,7 +233,7 @@ void DialogShoulderPoint::SaveData()
     line->SetPoint3Id(GetP3());
     line->SetLineP1Id(GetP1Line());
     line->SetLineP2Id(GetP2Line());
-    line->SetLength(m_formula);
+    line->SetLength(formulaText);
     line->SetLineStyle(LineStyleToPenStyle(GetTypeLine()));
     line->RefreshGeometry();
 }
@@ -254,7 +241,6 @@ void DialogShoulderPoint::SaveData()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogShoulderPoint::closeEvent(QCloseEvent *event)
 {
-    ui->plainTextEditFormula->blockSignals(true);
     DialogTool::closeEvent(event);
 }
 
@@ -268,7 +254,6 @@ void DialogShoulderPoint::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
-        InitIcons();
         InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
@@ -317,10 +302,6 @@ void DialogShoulderPoint::FinishCreating()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogShoulderPoint::InitIcons()
 {
-    const auto resource = QStringLiteral("icon");
-
-    ui->toolButtonExprLength->setIcon(VTheme::GetIconResource(resource, QStringLiteral("24x24/fx.png")));
-    ui->label_3->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/equal.png")));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -384,24 +365,16 @@ void DialogShoulderPoint::SetP1Line(const quint32 &value)
  */
 void DialogShoulderPoint::SetFormula(const QString &value)
 {
-    m_formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (m_formula.length() > 80)
-    {
-        this->DeployFormulaTextEdit();
-    }
-    ui->plainTextEditFormula->setPlainText(m_formula);
+    m_formula->setFormula(value);
 
     if (auto *line = qobject_cast<VisToolShoulderPoint *>(vis))
     {
-        line->SetLength(m_formula);
+        line->SetLength(m_formula->formula());
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-    MoveCursorToEnd(ui->plainTextEditFormula);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -443,7 +416,7 @@ auto DialogShoulderPoint::GetTypeLine() const -> QString
  */
 auto DialogShoulderPoint::GetFormula() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(m_formula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formula->formula();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

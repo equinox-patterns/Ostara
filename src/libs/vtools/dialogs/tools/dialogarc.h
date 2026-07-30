@@ -37,6 +37,8 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogArc;
@@ -86,22 +88,9 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    /**
-     * @brief DeployFormulaTextEdit grow or shrink formula input
-     */
-    void DeployFormulaTextEdit();
-    void DeployF1TextEdit();
-    void DeployF2TextEdit();
-
-    void FXRadius();
-    void FXF1();
-    void FXF2();
 
 protected:
     void ShowVisualization() override;
-    /**
-     * @brief SaveData Put dialog data in local variables
-     */
     void SaveData() override;
     void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
@@ -116,39 +105,11 @@ private:
     /** @brief ui keeps information about user interface */
     Ui::DialogArc *ui;
 
-    /** @brief flagRadius true if value of radius is correct */
-    bool m_flagRadius{false};
-
-    /** @brief flagF1 true if value of first angle is correct */
-    bool m_flagF1{false};
-
-    /** @brief flagF2 true if value of second angle is correct */
-    bool m_flagF2{false};
+    FormulaInputWidget *m_formulaRadius;
+    FormulaInputWidget *m_formulaF1;
+    FormulaInputWidget *m_formulaF2;
 
     bool m_flagAlias{true};
-
-    /** @brief timerRadius timer of check formula of radius */
-    QTimer *m_timerRadius;
-
-    /** @brief timerF1 timer of check formula of first angle */
-    QTimer *m_timerF1;
-
-    /** @brief timerF2 timer of check formula of second angle */
-    QTimer *m_timerF2;
-
-    /** @brief radius formula of radius */
-    QString m_radius{};
-
-    /** @brief f1 formula of first angle */
-    QString m_f1{};
-
-    /** @brief f2 formula of second angle */
-    QString m_f2{};
-
-    /** @brief formulaBaseHeight base height defined by dialogui */
-    int m_formulaBaseHeight{0};
-    int m_formulaBaseHeightF1{0};
-    int m_formulaBaseHeightF2{0};
 
     qreal m_angleF1{INT_MIN};
     qreal m_angleF2{INT_MIN};
@@ -160,18 +121,9 @@ private:
 
     bool m_firstRelease{false};
 
-    void EvalRadius();
-    void EvalF();
-
     void FinishCreating();
 
     void InitIcons();
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogArc::IsValid() const -> bool
-{
-    return m_flagRadius && m_flagF1 && m_flagF2 && m_flagAlias;
-}
 
 #endif // DIALOGARC_H

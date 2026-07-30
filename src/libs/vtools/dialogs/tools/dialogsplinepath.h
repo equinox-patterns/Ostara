@@ -40,6 +40,8 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogSplinePath;
@@ -94,21 +96,6 @@ private slots:
     void MoveDown();
     void MoveBottom();
 
-    void DeployAngle1TextEdit();
-    void DeployAngle2TextEdit();
-    void DeployLength1TextEdit();
-    void DeployLength2TextEdit();
-
-    void Angle1Changed();
-    void Angle2Changed();
-    void Length1Changed();
-    void Length2Changed();
-
-    void FXAngle1();
-    void FXAngle2();
-    void FXLength1();
-    void FXLength2();
-
     void ValidateAlias();
 
 private:
@@ -120,17 +107,6 @@ private:
     /** @brief path spline path */
     VSplinePath path{};
 
-    /** @brief formulaBaseHeight base height defined by dialogui */
-    int formulaBaseHeightAngle1{0};
-    int formulaBaseHeightAngle2{0};
-    int formulaBaseHeightLength1{0};
-    int formulaBaseHeightLength2{0};
-
-    /** @brief flagAngle1 true if value of first angle is correct */
-    QVector<bool> flagAngle1{};
-    QVector<bool> flagAngle2{};
-    QVector<bool> flagLength1{};
-    QVector<bool> flagLength2{};
     bool flagError{false};
     bool flagAlias{true};
 
@@ -140,10 +116,10 @@ private:
 
     QString m_oldName{};
 
-    void EvalAngle1();
-    void EvalAngle2();
-    void EvalLength1();
-    void EvalLength2();
+    FormulaInputWidget *m_formulaLength1;
+    FormulaInputWidget *m_formulaAngle1;
+    FormulaInputWidget *m_formulaLength2;
+    FormulaInputWidget *m_formulaAngle2;
 
     void NewItem(const VSplinePoint &point);
     void DataPoint(const VSplinePoint &p);
@@ -152,8 +128,6 @@ private:
     auto IsPathValid() const -> bool;
     auto ExtractPath() const -> VSplinePath;
     void ShowPointIssue(const QString &pName);
-
-    void InitIcons();
 
     void MoveControls();
 };

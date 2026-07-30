@@ -28,19 +28,18 @@
 
 #include "dialogcutsplinepath.h"
 
+#include "../widgets/formulainputwidget.h"
+
 #include <QDialog>
 #include <QLineEdit>
-#include <QPlainTextEdit>
 #include <QPointer>
 #include <QPushButton>
-#include <QTimer>
 #include <QToolButton>
 
 #include "../../visualization/path/vistoolcutsplinepath.h"
 #include "../../visualization/visualization.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../qmuparser/qmudef.h"
-#include "../support/dialogeditwrongformula.h"
 #include "../vgeometry/vsplinepath.h"
 #include "vtheme.h"
 #include "../vmisc/vabstractapplication.h"
@@ -65,7 +64,7 @@ using namespace Qt::Literals::StringLiterals;
 DialogCutSplinePath::DialogCutSplinePath(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent)
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogCutSplinePath),
-    m_timerFormula(new QTimer(this))
+    m_formula(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
 
@@ -73,23 +72,38 @@ DialogCutSplinePath::DialogCutSplinePath(const VContainer *data, VAbstractPatter
 
     MakeFilterableComboBox(ui->comboBoxSplinePath);
 
-    m_timerFormula->setSingleShot(true);
-    connect(m_timerFormula, &QTimer::timeout, this, &DialogCutSplinePath::EvalFormula);
-
     ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     SetPointName(VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
-    this->m_formulaBaseHeight = ui->plainTextEditFormula->height();
-    ui->plainTextEditFormula->installEventFilter(this);
 
     InitOkCancelApply(ui);
 
     FillComboBoxSplinesPath(ui->comboBoxSplinePath);
 
+    {
+        const QString postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
+        m_formula->setData(&this->data);
+        m_formula->setToolId(toolId);
+        m_formula->setLabelText(tr("Length:"));
+        m_formula->setPostfix(postfix);
+        m_formula->setDialogTitle(tr("Edit length"));
+        connect(m_formula, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
+
+        if (auto *placeholder = ui->formulaPlaceholder)
+        {
+            auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+            if (parentLayout != nullptr)
+            {
+                const int idx = parentLayout->indexOf(placeholder);
+                parentLayout->insertWidget(idx, m_formula);
+                placeholder->deleteLater();
+            }
+        }
+    }
+
     connect(ui->lineEditName1, &QLineEdit::textEdited, this, &DialogCutSplinePath::ValidateCurveNames);
     connect(ui->lineEditName2, &QLineEdit::textEdited, this, &DialogCutSplinePath::ValidateCurveNames);
 
-    connect(ui->toolButtonExprLength, &QPushButton::clicked, this, &DialogCutSplinePath::FXLength);
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
             {
@@ -97,9 +111,6 @@ DialogCutSplinePath::DialogCutSplinePath(const VContainer *data, VAbstractPatter
                                 m_flagName);
                 CheckState();
             });
-    connect(ui->plainTextEditFormula, &QPlainTextEdit::textChanged, this,
-            [this]() { m_timerFormula->start(formulaTimerTimeout); });
-    connect(ui->pushButtonGrowLength, &QPushButton::clicked, this, &DialogCutSplinePath::DeployFormulaTextEdit);
     connect(ui->comboBoxSplinePath, &QComboBox::currentTextChanged, this, &DialogCutSplinePath::SplinePathChanged);
 
     connect(ui->lineEditAlias1, &QLineEdit::textEdited, this, &DialogCutSplinePath::ValidateAlias);
@@ -169,26 +180,16 @@ auto DialogCutSplinePath::GetName2() const -> QString
  */
 void DialogCutSplinePath::SetFormula(const QString &value)
 {
-    m_formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed. TODO : see if I can get the max number of caracters in one line
-    // of this PlainTextEdit to change 80 to this value
-    if (m_formula.length() > 80)
-    {
-        this->DeployFormulaTextEdit();
-    }
-    ui->plainTextEditFormula->setPlainText(m_formula);
+    m_formula->setFormula(value);
 
     if (auto *path = qobject_cast<VisToolCutSplinePath *>(vis))
     {
-        path->SetLength(m_formula);
+        path->SetLength(value);
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditFormula);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -244,20 +245,18 @@ void DialogCutSplinePath::ChosenObject(quint32 id, const SceneObject &type)
 void DialogCutSplinePath::SaveData()
 {
     m_pointName = ui->lineEditNamePoint->text();
-    m_formula = ui->plainTextEditFormula->toPlainText();
 
     auto *path = qobject_cast<VisToolCutSplinePath *>(vis);
     SCASSERT(path != nullptr)
 
     path->SetSplinePathId(getSplinePathId());
-    path->SetLength(m_formula);
+    path->SetLength(m_formula->formula());
     path->RefreshGeometry();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogCutSplinePath::closeEvent(QCloseEvent *event)
 {
-    ui->plainTextEditFormula->blockSignals(true);
     DialogTool::closeEvent(event);
 }
 
@@ -384,10 +383,6 @@ void DialogCutSplinePath::FinishCreating()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogCutSplinePath::InitIcons()
 {
-    auto const resource = QStringLiteral("icon");
-
-    ui->toolButtonExprLength->setIcon(VTheme::GetIconResource(resource, QStringLiteral("24x24/fx.png")));
-    ui->label_4->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/equal.png")));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -403,34 +398,9 @@ auto DialogCutSplinePath::GenerateDefRightSubName() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogCutSplinePath::DeployFormulaTextEdit()
+auto DialogCutSplinePath::IsValid() const -> bool
 {
-    DeployFormula(this, ui->plainTextEditFormula, ui->pushButtonGrowLength, m_formulaBaseHeight);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogCutSplinePath::FXLength()
-{
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit length"));
-    dialog->SetFormula(GetFormula());
-    dialog->setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetFormula(dialog->GetFormula());
-    }
-    delete dialog;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogCutSplinePath::EvalFormula()
-{
-    Eval({.formula = ui->plainTextEditFormula->toPlainText(),
-          .variables = data.DataVariables(),
-          .labelEditFormula = ui->labelEditFormula,
-          .labelResult = ui->labelResultCalculation,
-          .postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)},
-         m_flagFormula);
+    return m_formula->isValid() && m_flagName && m_flagAlias1 && m_flagAlias2 && m_flagCurveName1 && m_flagCurveName2;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -446,7 +416,7 @@ void DialogCutSplinePath::ShowVisualization()
  */
 auto DialogCutSplinePath::GetFormula() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(m_formula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formula->formula();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

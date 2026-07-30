@@ -35,6 +35,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/global.h"
 #include "../vwidgets/vabstractmainwindow.h"
+#include "../widgets/formulainputwidget.h"
 #include "ui_dialogparallelcurve.h"
 
 #include <QTimer>
@@ -49,7 +50,7 @@ using namespace Qt::Literals::StringLiterals;
 DialogParallelCurve::DialogParallelCurve(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent)
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogParallelCurve),
-    m_timerWidth(new QTimer(this))
+    m_formula(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
 
@@ -57,12 +58,26 @@ DialogParallelCurve::DialogParallelCurve(const VContainer *data, VAbstractPatter
 
     MakeFilterableComboBox(ui->comboBoxCurve);
 
-    this->m_formulaBaseHeightWidth = ui->plainTextEditWidth->height();
+    // --- Configure formula widget ---
+    const QString postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
+    m_formula->setData(&this->data);
+    m_formula->setToolId(toolId);
+    m_formula->setLabelText(tr("Width:"));
+    m_formula->setPostfix(postfix);
+    m_formula->setDialogTitle(tr("Edit width to parallel curve"));
+    connect(m_formula, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
 
-    ui->plainTextEditWidth->installEventFilter(this);
-
-    m_timerWidth->setSingleShot(true);
-    connect(m_timerWidth, &QTimer::timeout, this, &DialogParallelCurve::Width);
+    // Replace placeholder
+    if (auto *placeholder = ui->formulaPlaceholder)
+    {
+        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+        if (parentLayout != nullptr)
+        {
+            const int idx = parentLayout->indexOf(placeholder);
+            parentLayout->insertWidget(idx, m_formula);
+            placeholder->deleteLater();
+        }
+    }
 
     InitOkCancelApply(ui);
 
@@ -75,15 +90,6 @@ DialogParallelCurve::DialogParallelCurve(const VContainer *data, VAbstractPatter
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
     ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
-
-    connect(ui->toolButtonExprWidth, &QPushButton::clicked, this, &DialogParallelCurve::FXWidth);
-
-    connect(ui->plainTextEditWidth,
-            &QPlainTextEdit::textChanged,
-            this,
-            [this]() -> void { m_timerWidth->start(formulaTimerTimeout); });
-
-    connect(ui->pushButtonGrowLengthWidth, &QPushButton::clicked, this, &DialogParallelCurve::DeployWidthTextEdit);
 
     connect(ui->lineEditName, &QLineEdit::textEdited, this, &DialogParallelCurve::ValidateName);
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogParallelCurve::ValidateAlias);
@@ -119,32 +125,22 @@ void DialogParallelCurve::SetOriginCurveId(const quint32 &value)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogParallelCurve::GetFormulaWidth() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(m_width, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formula->formula();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogParallelCurve::SetFormulaWidth(const QString &value)
 {
-    m_width = VAbstractApplication::VApp()
-                  ->TrVars()
-                  ->FormulaToUser(value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (m_width.length() > 80)
-    {
-        this->DeployWidthTextEdit();
-    }
-    ui->plainTextEditWidth->setPlainText(m_width);
+    m_formula->setFormula(value);
 
     if (auto *path = qobject_cast<VisToolParallelCurve *>(vis))
     {
-        path->SetOffsetWidth(m_width);
+        path->SetOffsetWidth(m_formula->formula());
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditWidth);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -309,23 +305,9 @@ void DialogParallelCurve::ChosenObject(quint32 id, const SceneObject &type)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogParallelCurve::DeployWidthTextEdit()
+auto DialogParallelCurve::IsValid() const -> bool
 {
-    DeployFormula(this, ui->plainTextEditWidth, ui->pushButtonGrowLengthWidth, m_formulaBaseHeightWidth);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogParallelCurve::FXWidth()
-{
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit width to parallel curve"));
-    dialog->SetFormula(GetFormulaWidth());
-    dialog->setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetFormulaWidth(dialog->GetFormula());
-    }
-    delete dialog;
+    return m_formula->isValid() && m_flagName && m_flagAlias;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -337,13 +319,11 @@ void DialogParallelCurve::ShowVisualization()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogParallelCurve::SaveData()
 {
-    m_width = ui->plainTextEditWidth->toPlainText();
-
     auto *path = qobject_cast<VisToolParallelCurve *>(vis);
     SCASSERT(path != nullptr)
 
     path->SetCurveId(GetOriginCurveId());
-    path->SetOffsetWidth(m_width);
+    path->SetOffsetWidth(m_formula->formula());
     path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     path->RefreshGeometry();
 }
@@ -351,7 +331,6 @@ void DialogParallelCurve::SaveData()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogParallelCurve::closeEvent(QCloseEvent *event)
 {
-    ui->plainTextEditWidth->blockSignals(true);
     DialogTool::closeEvent(event);
 }
 
@@ -365,7 +344,6 @@ void DialogParallelCurve::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
-        InitIcons();
         InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
@@ -420,17 +398,6 @@ void DialogParallelCurve::ValidateAlias()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogParallelCurve::Width()
-{
-    Eval({.formula = ui->plainTextEditWidth->toPlainText(),
-          .variables = data.DataVariables(),
-          .labelEditFormula = ui->labelEditWidth,
-          .labelResult = ui->labelResultWidth,
-          .postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)},
-         m_flagWidth);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogParallelCurve::FinishCreating()
 {
     vis->SetMode(Mode::Show);
@@ -445,11 +412,6 @@ void DialogParallelCurve::FinishCreating()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogParallelCurve::InitIcons()
 {
-    const auto resource = QStringLiteral("icon");
-
-    const auto fxIcon = QStringLiteral("24x24/fx.png");
-    ui->toolButtonExprWidth->setIcon(VTheme::GetIconResource(resource, fxIcon));
-
-    const auto equalIcon = QStringLiteral("24x24/equal.png");
-    ui->label_10->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
+    // Formula-related icons are now managed by FormulaInputWidget.
+    // PaletteChange re-initialization is handled by FormulaInputWidget internally.
 }

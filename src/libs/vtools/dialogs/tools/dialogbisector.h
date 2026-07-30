@@ -37,6 +37,8 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogBisector;
@@ -83,14 +85,8 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    /**
-     * @brief DeployFormulaTextEdit grow or shrink formula input
-     */
-    void DeployFormulaTextEdit();
 
     void PointNameChanged() override;
-    void FXLength();
-    void EvalFormula();
 
 protected:
     void ShowVisualization() override;
@@ -108,16 +104,10 @@ private:
     /** @brief ui keeps information about user interface */
     Ui::DialogBisector *ui;
 
-    /** @brief formula formula */
-    QString m_formula{};
+    FormulaInputWidget *m_formula;
+
     QString m_pointName{};
 
-    /** @brief formulaBaseHeight base height defined by dialogui */
-    int m_formulaBaseHeight{0};
-
-    QTimer *m_timerFormula;
-
-    bool m_flagFormula{false};
     bool m_flagError{true};
     bool m_flagName{true};
 
@@ -132,11 +122,5 @@ private:
 
     void InitIcons();
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogBisector::IsValid() const -> bool
-{
-    return m_flagFormula && m_flagError && m_flagName;
-}
 
 #endif // DIALOGBISECTOR_H

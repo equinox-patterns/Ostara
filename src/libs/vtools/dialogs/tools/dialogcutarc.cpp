@@ -30,11 +30,8 @@
 
 #include <QDialog>
 #include <QLineEdit>
-#include <QPlainTextEdit>
 #include <QPointer>
 #include <QPushButton>
-#include <QTimer>
-#include <QToolButton>
 
 #include "../../visualization/path/vistoolcutarc.h"
 #include "../../visualization/visualization.h"
@@ -48,6 +45,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vabstractmainwindow.h"
+#include "../widgets/formulainputwidget.h"
 #include "ui_dialogcutarc.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -65,7 +63,7 @@ using namespace Qt::Literals::StringLiterals;
 DialogCutArc::DialogCutArc(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent)
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogCutArc),
-    m_timerFormula(new QTimer(this))
+    m_formula(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
 
@@ -73,14 +71,30 @@ DialogCutArc::DialogCutArc(const VContainer *data, VAbstractPattern *doc, quint3
 
     MakeFilterableComboBox(ui->comboBoxArc);
 
-    m_timerFormula->setSingleShot(true);
-    connect(m_timerFormula, &QTimer::timeout, this, &DialogCutArc::EvalFormula);
-
     ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     SetPointName(VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
-    m_formulaBaseHeight = ui->plainTextEditFormula->height();
-    ui->plainTextEditFormula->installEventFilter(this);
+
+    // --- Configure formula widget ---
+    const QString postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
+    m_formula->setData(&this->data);
+    m_formula->setToolId(toolId);
+    m_formula->setLabelText(tr("Length:"));
+    m_formula->setPostfix(postfix);
+    m_formula->setDialogTitle(tr("Edit length"));
+    connect(m_formula, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
+
+    // Replace placeholder
+    if (auto *placeholder = ui->formulaPlaceholder)
+    {
+        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+        if (parentLayout != nullptr)
+        {
+            const int idx = parentLayout->indexOf(placeholder);
+            parentLayout->insertWidget(idx, m_formula);
+            placeholder->deleteLater();
+        }
+    }
 
     InitOkCancelApply(ui);
 
@@ -89,7 +103,6 @@ DialogCutArc::DialogCutArc(const VContainer *data, VAbstractPattern *doc, quint3
     connect(ui->lineEditName1, &QLineEdit::textEdited, this, &DialogCutArc::ValidateCurveNames);
     connect(ui->lineEditName2, &QLineEdit::textEdited, this, &DialogCutArc::ValidateCurveNames);
 
-    connect(ui->toolButtonExprLength, &QPushButton::clicked, this, &DialogCutArc::FXLength);
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
             {
@@ -97,9 +110,6 @@ DialogCutArc::DialogCutArc(const VContainer *data, VAbstractPattern *doc, quint3
                                 m_flagName);
                 CheckState();
             });
-    connect(ui->plainTextEditFormula, &QPlainTextEdit::textChanged, this,
-            [this]() { m_timerFormula->start(formulaTimerTimeout); });
-    connect(ui->pushButtonGrowLength, &QPushButton::clicked, this, &DialogCutArc::DeployFormulaTextEdit);
 
     connect(ui->comboBoxArc, &QComboBox::currentTextChanged, this, &DialogCutArc::ArcChanged);
 
@@ -113,40 +123,15 @@ DialogCutArc::DialogCutArc(const VContainer *data, VAbstractPattern *doc, quint3
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogCutArc::FXLength()
+auto DialogCutArc::IsValid() const -> bool
 {
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit length"));
-    dialog->SetFormula(GetFormula());
-    dialog->setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetFormula(dialog->GetFormula());
-    }
-    delete dialog;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogCutArc::EvalFormula()
-{
-    Eval({.formula = ui->plainTextEditFormula->toPlainText(),
-          .variables = data.DataVariables(),
-          .labelEditFormula = ui->labelEditFormula,
-          .labelResult = ui->labelResultCalculation,
-          .postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)},
-         m_flagFormula);
+    return m_formula->isValid() && m_flagName && m_flagAlias1 && m_flagAlias2 && m_flagCurveName1 && m_flagCurveName2;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogCutArc::ShowVisualization()
 {
     AddVisualization<VisToolCutArc>();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogCutArc::DeployFormulaTextEdit()
-{
-    DeployFormula(this, ui->plainTextEditFormula, ui->pushButtonGrowLength, m_formulaBaseHeight);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -214,20 +199,18 @@ void DialogCutArc::ChosenObject(quint32 id, const SceneObject &type)
 void DialogCutArc::SaveData()
 {
     m_pointName = ui->lineEditNamePoint->text();
-    m_formula = ui->plainTextEditFormula->toPlainText();
 
     auto *path = qobject_cast<VisToolCutArc *>(vis);
     SCASSERT(path != nullptr)
 
     path->SetArcId(getArcId());
-    path->SetLength(m_formula);
+    path->SetLength(m_formula->formula());
     path->RefreshGeometry();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogCutArc::closeEvent(QCloseEvent *event)
 {
-    ui->plainTextEditFormula->blockSignals(true);
     DialogTool::closeEvent(event);
 }
 
@@ -241,7 +224,6 @@ void DialogCutArc::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
-        InitIcons();
         InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
@@ -354,10 +336,8 @@ void DialogCutArc::FinishCreating()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogCutArc::InitIcons()
 {
-    auto const resource = QStringLiteral("icon");
-
-    ui->toolButtonExprLength->setIcon(VTheme::GetIconResource(resource, QStringLiteral("24x24/fx.png")));
-    ui->label_4->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/equal.png")));
+    // Formula-related icons are now managed by FormulaInputWidget.
+    // PaletteChange re-initialization is handled by FormulaInputWidget internally.
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -393,25 +373,16 @@ void DialogCutArc::setArcId(quint32 value)
  */
 void DialogCutArc::SetFormula(const QString &value)
 {
-    m_formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (m_formula.length() > 80)
-    {
-        this->DeployFormulaTextEdit();
-    }
-    ui->plainTextEditFormula->setPlainText(m_formula);
+    m_formula->setFormula(value);
 
     if (auto *path = qobject_cast<VisToolCutArc *>(vis))
     {
-        path->SetLength(m_formula);
+        path->SetLength(m_formula->formula());
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditFormula);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -460,7 +431,7 @@ auto DialogCutArc::GetName2() const -> QString
  */
 auto DialogCutArc::GetFormula() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(m_formula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formula->formula();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -30,18 +30,14 @@
 
 #include <QDialog>
 #include <QLabel>
-#include <QPlainTextEdit>
 #include <QPointer>
 #include <QPushButton>
 #include <QTimer>
-#include <QToolButton>
 
 #include "../../visualization/path/vistoolarc.h"
 #include "../../visualization/visualization.h"
 #include "../qmuparser/qmudef.h"
-#include "../support/dialogeditwrongformula.h"
 #include "../vgeometry/varc.h"
-#include "vtheme.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vvalentinasettings.h"
@@ -49,45 +45,82 @@
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/global.h"
 #include "../vwidgets/vabstractmainwindow.h"
+#include "vtheme.h"
+#include "../widgets/formulainputwidget.h"
 #include "ui_dialogarc.h"
 
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief DialogArc create dialog
- * @param data container with data
- * @param parent parent widget
- */
 DialogArc::DialogArc(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent)
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogArc),
-    m_timerRadius(new QTimer(this)),
-    m_timerF1(new QTimer(this)),
-    m_timerF2(new QTimer(this))
+    m_formulaRadius(new FormulaInputWidget(this)),
+    m_formulaF1(new FormulaInputWidget(this)),
+    m_formulaF2(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
-
-    InitIcons();
 
     MakeFilterableComboBox(ui->comboBoxBasePoint);
 
     ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
 
-    this->m_formulaBaseHeight = ui->plainTextEditFormula->height();
-    this->m_formulaBaseHeightF1 = ui->plainTextEditF1->height();
-    this->m_formulaBaseHeightF2 = ui->plainTextEditF2->height();
+    // --- Configure formula widgets ---
+    const QString lengthPostfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
 
-    ui->plainTextEditFormula->installEventFilter(this);
-    ui->plainTextEditF1->installEventFilter(this);
-    ui->plainTextEditF2->installEventFilter(this);
+    m_formulaRadius->setData(&this->data);
+    m_formulaRadius->setToolId(toolId);
+    m_formulaRadius->setLabelText(tr("Radius:"));
+    m_formulaRadius->setPostfix(lengthPostfix);
+    m_formulaRadius->setDialogTitle(tr("Edit radius"));
+    connect(m_formulaRadius, &FormulaInputWidget::valueChanged, this,
+            [this]() { CheckState(); });
 
-    m_timerRadius->setSingleShot(true);
-    connect(m_timerRadius, &QTimer::timeout, this, &DialogArc::EvalRadius);
+    m_formulaF1->setData(&this->data);
+    m_formulaF1->setToolId(toolId);
+    m_formulaF1->setLabelText(tr("First angle:"));
+    m_formulaF1->setPostfix(degreeSymbol);
+    m_formulaF1->setDialogTitle(tr("Edit first angle"));
+    connect(m_formulaF1, &FormulaInputWidget::valueChanged, this,
+            [this]() { m_angleF1 = m_formulaF1->value(); CheckState(); });
 
-    m_timerF1->setSingleShot(true);
-    connect(m_timerF1, &QTimer::timeout, this, &DialogArc::EvalF);
+    m_formulaF2->setData(&this->data);
+    m_formulaF2->setToolId(toolId);
+    m_formulaF2->setLabelText(tr("Second angle:"));
+    m_formulaF2->setPostfix(degreeSymbol);
+    m_formulaF2->setDialogTitle(tr("Edit second angle"));
+    connect(m_formulaF2, &FormulaInputWidget::valueChanged, this,
+            [this]() { m_angleF2 = m_formulaF2->value(); CheckState(); });
 
-    m_timerF2->setSingleShot(true);
-    connect(m_timerF2, &QTimer::timeout, this, &DialogArc::EvalF);
+    // Replace formula placeholders in the UI layout with the actual widgets.
+    if (auto *placeholder = ui->formulaRadiusPlaceholder)
+    {
+        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+        if (parentLayout != nullptr)
+        {
+            const int idx = parentLayout->indexOf(placeholder);
+            parentLayout->insertWidget(idx, m_formulaRadius);
+            placeholder->deleteLater();
+        }
+    }
+    if (auto *placeholder = ui->formulaF1Placeholder)
+    {
+        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+        if (parentLayout != nullptr)
+        {
+            const int idx = parentLayout->indexOf(placeholder);
+            parentLayout->insertWidget(idx, m_formulaF1);
+            placeholder->deleteLater();
+        }
+    }
+    if (auto *placeholder = ui->formulaF2Placeholder)
+    {
+        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+        if (parentLayout != nullptr)
+        {
+            const int idx = parentLayout->indexOf(placeholder);
+            parentLayout->insertWidget(idx, m_formulaF2);
+            placeholder->deleteLater();
+        }
+    }
 
     InitOkCancelApply(ui);
 
@@ -98,23 +131,6 @@ DialogArc::DialogArc(const VContainer *data, VAbstractPattern *doc, quint32 tool
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
-    connect(ui->toolButtonExprRadius, &QPushButton::clicked, this, &DialogArc::FXRadius);
-    connect(ui->toolButtonExprF1, &QPushButton::clicked, this, &DialogArc::FXF1);
-    connect(ui->toolButtonExprF2, &QPushButton::clicked, this, &DialogArc::FXF2);
-
-    connect(ui->plainTextEditFormula, &QPlainTextEdit::textChanged, this,
-            [this]() { m_timerRadius->start(formulaTimerTimeout); });
-
-    connect(ui->plainTextEditF1, &QPlainTextEdit::textChanged, this,
-            [this]() { m_timerF1->start(formulaTimerTimeout); });
-
-    connect(ui->plainTextEditF2, &QPlainTextEdit::textChanged, this,
-            [this]() { m_timerF2->start(formulaTimerTimeout); });
-
-    connect(ui->pushButtonGrowLength, &QPushButton::clicked, this, &DialogArc::DeployFormulaTextEdit);
-    connect(ui->pushButtonGrowLengthF1, &QPushButton::clicked, this, &DialogArc::DeployF1TextEdit);
-    connect(ui->pushButtonGrowLengthF2, &QPushButton::clicked, this, &DialogArc::DeployF2TextEdit);
-
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogArc::ValidateAlias);
 
     vis = new VisToolArc(&this->data);
@@ -124,21 +140,9 @@ DialogArc::DialogArc(const VContainer *data, VAbstractPattern *doc, quint32 tool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogArc::DeployFormulaTextEdit()
+auto DialogArc::IsValid() const -> bool
 {
-    DeployFormula(this, ui->plainTextEditFormula, ui->pushButtonGrowLength, m_formulaBaseHeight);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogArc::DeployF1TextEdit()
-{
-    DeployFormula(this, ui->plainTextEditF1, ui->pushButtonGrowLengthF1, m_formulaBaseHeightF1);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogArc::DeployF2TextEdit()
-{
-    DeployFormula(this, ui->plainTextEditF2, ui->pushButtonGrowLengthF2, m_formulaBaseHeightF2);
+    return m_formulaRadius->isValid() && m_formulaF1->isValid() && m_formulaF2->isValid() && m_flagAlias;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -149,10 +153,6 @@ DialogArc::~DialogArc()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief SetCenter set id of center point
- * @param value id
- */
 void DialogArc::SetCenter(const quint32 &value)
 {
     ChangeCurrentData(ui->comboBoxBasePoint, value);
@@ -163,31 +163,18 @@ void DialogArc::SetCenter(const quint32 &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief SetF2 set formula second angle of arc
- * @param value formula
- */
 void DialogArc::SetF2(const QString &value)
 {
-    m_f2 = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (m_f2.length() > 80)
-    {
-        this->DeployF2TextEdit();
-    }
-    ui->plainTextEditF2->setPlainText(m_f2);
+    m_formulaF2->setFormula(value);
 
     if (auto *path = qobject_cast<VisToolArc *>(vis))
     {
-        path->SetF2(m_f2);
+        path->SetF2(m_formulaF2->formula());
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditF2);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -266,15 +253,12 @@ void DialogArc::ShowDialog(bool click)
 
         if (click)
         {
-            // The check need to ignore first release of mouse button.
-            // User can select point by clicking on a label.
             if (not m_firstRelease)
             {
                 m_firstRelease = true;
                 return;
             }
 
-            /*We will ignore click if pointer is in point circle*/
             auto *scene = qobject_cast<VMainGraphicsScene *>(VAbstractValApplication::VApp()->getCurrentScene());
             SCASSERT(scene != nullptr)
             const QSharedPointer<VPointF> point = data.GeometricObject<VPointF>(GetCenter());
@@ -294,7 +278,6 @@ void DialogArc::ShowDialog(bool click)
 
             if (m_stageRadius)
             {
-                // Radius of point circle, but little bigger. Need handle with hover sizes.
                 if (line.length() <= ScaledRadius(SceneScale(VAbstractValApplication::VApp()->getCurrentScene())) * 1.5)
                 {
                     return;
@@ -333,71 +316,40 @@ void DialogArc::CheckDependencyTreeComplete()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief SetF1 set formula first angle of arc
- * @param value formula
- */
 void DialogArc::SetF1(const QString &value)
 {
-    m_f1 = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (m_f1.length() > 80)
-    {
-        this->DeployF1TextEdit();
-    }
-    ui->plainTextEditF1->setPlainText(m_f1);
+    m_formulaF1->setFormula(value);
 
     if (auto *path = qobject_cast<VisToolArc *>(vis))
     {
-        path->SetF1(m_f1);
+        path->SetF1(m_formulaF1->formula());
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditF1);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief SetRadius set formula of radius
- * @param value formula
- */
 void DialogArc::SetRadius(const QString &value)
 {
-    m_radius = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (m_radius.length() > 80)
-    {
-        this->DeployFormulaTextEdit();
-    }
-    ui->plainTextEditFormula->setPlainText(m_radius);
+    m_formulaRadius->setFormula(value);
 
     if (auto *path = qobject_cast<VisToolArc *>(vis))
     {
-        path->SetRadius(m_radius);
+        path->SetRadius(m_formulaRadius->formula());
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditFormula);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ChoosedObject gets id and type of selected object. Save right data and ignore wrong.
- * @param id id of point or detail
- * @param type type of object
- */
 void DialogArc::ChosenObject(quint32 id, const SceneObject &type)
 {
     if (not prepare && type == SceneObject::Point &&
-        SetObject(id, ui->comboBoxBasePoint, QString())) // After first choose we ignore all objects
+        SetObject(id, ui->comboBoxBasePoint, QString()))
     {
         if (vis != nullptr)
         {
@@ -427,17 +379,17 @@ void DialogArc::ShowVisualization()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogArc::SaveData()
 {
-    m_radius = ui->plainTextEditFormula->toPlainText();
-    m_f1 = ui->plainTextEditF1->toPlainText();
-    m_f2 = ui->plainTextEditF2->toPlainText();
-
     auto *path = qobject_cast<VisToolArc *>(vis);
     SCASSERT(path != nullptr)
 
+    const QString radius = m_formulaRadius->formula();
+    const QString f1 = m_formulaF1->formula();
+    const QString f2 = m_formulaF2->formula();
+
     path->SetCenterId(GetCenter());
-    path->SetRadius(m_radius);
-    path->SetF1(m_f1);
-    path->SetF2(m_f2);
+    path->SetRadius(radius);
+    path->SetF1(f1);
+    path->SetF2(f2);
     path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     path->RefreshGeometry();
 }
@@ -445,9 +397,6 @@ void DialogArc::SaveData()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogArc::closeEvent(QCloseEvent *event)
 {
-    ui->plainTextEditFormula->blockSignals(true);
-    ui->plainTextEditF1->blockSignals(true);
-    ui->plainTextEditF2->blockSignals(true);
     DialogTool::closeEvent(event);
 }
 
@@ -461,11 +410,9 @@ void DialogArc::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
-        InitIcons();
         InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
-    // remember to call base class implementation
     DialogTool::changeEvent(event);
 }
 
@@ -492,83 +439,6 @@ void DialogArc::ValidateAlias()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogArc::FXRadius()
-{
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit radius"));
-    dialog->SetFormula(GetRadius());
-    dialog->setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetRadius(dialog->GetFormula());
-    }
-    delete dialog;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogArc::FXF1()
-{
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit first angle"));
-    dialog->SetFormula(GetF1());
-    dialog->setPostfix(degreeSymbol);
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetF1(dialog->GetFormula());
-    }
-    delete dialog;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogArc::FXF2()
-{
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit second angle"));
-    dialog->SetFormula(GetF2());
-    dialog->setPostfix(degreeSymbol);
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetF2(dialog->GetFormula());
-    }
-    delete dialog;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief EvalRadius calculate value of radius
- */
-void DialogArc::EvalRadius()
-{
-    Eval({.formula = ui->plainTextEditFormula->toPlainText(),
-          .variables = data.DataVariables(),
-          .labelEditFormula = ui->labelEditRadius,
-          .labelResult = ui->labelResultRadius,
-          .postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)},
-         m_flagRadius);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief EvalF1 calculate value of angle
- */
-void DialogArc::EvalF()
-{
-    m_angleF1 = Eval({.formula = ui->plainTextEditF1->toPlainText(),
-                      .variables = data.DataVariables(),
-                      .labelEditFormula = ui->labelEditF1,
-                      .labelResult = ui->labelResultF1,
-                      .postfix = degreeSymbol},
-                     m_flagF1);
-
-    m_angleF2 = Eval({.formula = ui->plainTextEditF2->toPlainText(),
-                      .variables = data.DataVariables(),
-                      .labelEditFormula = ui->labelEditF2,
-                      .labelResult = ui->labelResultF2,
-                      .postfix = degreeSymbol},
-                     m_flagF2);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogArc::FinishCreating()
 {
     vis->SetMode(Mode::Show);
@@ -583,55 +453,29 @@ void DialogArc::FinishCreating()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogArc::InitIcons()
 {
-    const auto resource = QStringLiteral("icon");
-
-    const auto fxIcon = QStringLiteral("24x24/fx.png");
-    ui->toolButtonExprRadius->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    ui->toolButtonExprF1->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    ui->toolButtonExprF2->setIcon(VTheme::GetIconResource(resource, fxIcon));
-
-    const auto equalIcon = QStringLiteral("24x24/equal.png");
-    ui->label_2->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    ui->label_3->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    ui->label_5->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
+    // Formula-related icons are now managed by FormulaInputWidget.
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief GetCenter return id of center point
- * @return id id
- */
 auto DialogArc::GetCenter() const -> quint32
 {
     return getCurrentObjectId(ui->comboBoxBasePoint);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief GetRadius return formula of radius
- * @return formula
- */
 auto DialogArc::GetRadius() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(m_radius, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formulaRadius->formula();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief GetF1 return formula first angle of arc
- * @return formula
- */
 auto DialogArc::GetF1() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(m_f1, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formulaF1->formula();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief GetF2 return formula second angle of arc
- * @return formula
- */
 auto DialogArc::GetF2() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(m_f2, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formulaF2->formula();
 }

@@ -37,6 +37,8 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogCurveIntersectAxis;
@@ -89,9 +91,6 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    void EvalAngle();
-    void DeployAngleTextEdit();
-    void FXAngle();
 
 protected:
     void ShowVisualization() override;
@@ -111,16 +110,12 @@ private:
     Q_DISABLE_COPY_MOVE(DialogCurveIntersectAxis) // NOLINT
     Ui::DialogCurveIntersectAxis *ui;
 
-    QString formulaAngle;
-    int formulaBaseHeightAngle;
+    FormulaInputWidget *m_formula;
 
     QString pointName;
 
     bool m_firstRelease;
 
-    QTimer *timerFormula;
-
-    bool flagFormula;
     bool flagName;
     bool flagAlias1{true};
     bool flagAlias2{true};
@@ -141,11 +136,5 @@ private:
     auto GenerateDefLeftSubName() const -> QString;
     auto GenerateDefRightSubName() const -> QString;
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogCurveIntersectAxis::IsValid() const -> bool
-{
-    return flagFormula && flagName && flagAlias1 && flagAlias2 && m_flagCurveName1 && m_flagCurveName2;
-}
 
 #endif // DIALOGCURVEINTERSECTAXIS_H

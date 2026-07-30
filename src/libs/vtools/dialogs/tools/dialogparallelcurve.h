@@ -30,6 +30,8 @@
 
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogParallelCurve;
@@ -73,12 +75,6 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    /**
-     * @brief DeployWidthTextEdit grow or shrink formula input
-     */
-    void DeployWidthTextEdit();
-
-    void FXWidth();
 
 protected:
     void ShowVisualization() override;
@@ -98,33 +94,19 @@ private:
     Q_DISABLE_COPY_MOVE(DialogParallelCurve) // NOLINT
     Ui::DialogParallelCurve *ui;
 
-    /** @brief m_flagWidth true if value of width is correct */
-    bool m_flagWidth{false};
+    FormulaInputWidget *m_formula;
+
     bool m_flagName{true};
     bool m_flagAlias{true};
-
-    QTimer *m_timerWidth;
-
-    QString m_width{};
-
-    int m_formulaBaseHeightWidth{0};
 
     QString m_originName{};
     QString m_originAliasSuffix{};
 
     bool m_firstRelease{false};
 
-    void Width();
-
     void FinishCreating();
 
     void InitIcons();
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogParallelCurve::IsValid() const -> bool
-{
-    return m_flagWidth && m_flagName && m_flagAlias;
-}
 
 #endif // DIALOGPARALLELCURVE_H

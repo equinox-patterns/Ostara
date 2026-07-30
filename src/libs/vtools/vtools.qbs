@@ -73,6 +73,8 @@ VLib {
             "tools/piece/dialogplacelabel.h",
             "tools/piece/dialogduplicatedetail.h",
             "dialogtoolbox.h",
+            "widgets/formulainputwidget.h",
+            "widgets/formulainputwidget.cpp",
             "tools/piece/dialogpatternmaterials.h",
             "tools/dialogalongline.cpp",
             "tools/dialogarc.cpp",

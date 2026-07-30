@@ -38,6 +38,8 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogPointFromCircleAndTangent;
@@ -78,10 +80,6 @@ public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
     void PointChanged();
 
-    void DeployCircleRadiusTextEdit();
-    void FXCircleRadius();
-    void EvalCircleRadius();
-
 protected:
     void ShowVisualization() override;
     /**
@@ -97,11 +95,8 @@ private:
 
     Ui::DialogPointFromCircleAndTangent *ui;
 
-    QTimer *m_timerCircleRadius{nullptr};
-    QString m_circleRadius{};
-    int m_formulaBaseHeightCircleRadius{0};
+    FormulaInputWidget *m_formula;
     QString m_pointName{};
-    bool m_flagCircleRadius{false};
     bool m_flagName{true};
     bool m_flagError{true};
     /** @brief number number of handled objects */
@@ -112,11 +107,5 @@ private:
 
     void InitIcons();
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogPointFromCircleAndTangent::IsValid() const -> bool
-{
-    return m_flagCircleRadius && m_flagName && m_flagError;
-}
 
 #endif // DIALOGPOINTFROMCIRCLEANDTANGENT_H

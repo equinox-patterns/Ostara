@@ -37,14 +37,13 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogAlongLine;
 }
 
-/**
- * @brief The DialogAlongLine class dialog for ToolAlongLine. Help create point and edit option.
- */
 class DialogAlongLine final : public DialogTool
 {
     Q_OBJECT // NOLINT
@@ -81,14 +80,7 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    /**
-     * @brief DeployFormulaTextEdit grow or shrink formula input
-     */
-    void DeployFormulaTextEdit();
     void PointChanged();
-
-    void FXLength();
-    void EvalFormula();
 
 private slots:
     void SwapPoints();
@@ -96,9 +88,6 @@ private slots:
 protected:
     void ShowVisualization() override;
     void RestoreTransientVariables() override;
-    /**
-     * @brief SaveData Put dialog data in local variables
-     */
     void SaveData() override;
     void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
@@ -107,28 +96,19 @@ protected:
 private:
     Q_DISABLE_COPY_MOVE(DialogAlongLine) // NOLINT
 
-    /** @brief ui keeps information about user interface */
     Ui::DialogAlongLine *ui;
 
-    /** @brief formula formula */
-    QString m_formula{};
+    FormulaInputWidget *m_formula;
 
     QString m_pointName{};
 
-    /** @brief formulaBaseHeight base height defined by dialogui */
-    int m_formulaBaseHeight{0};
-
     bool m_buildMidpoint{false};
 
-    QTimer *m_timerFormula;
-
-    bool m_flagFormula{false};
     bool m_flagError{true};
     bool m_flagName{true};
 
     bool m_firstRelease{false};
 
-    /** @brief number number of handled objects */
     qint32 m_number{0};
 
     void SetCurrentLength();
@@ -139,11 +119,5 @@ private:
 
     void InitIcons();
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogAlongLine::IsValid() const -> bool
-{
-    return m_flagName && m_flagFormula && m_flagError;
-}
 
 #endif // DIALOGALONGLINE_H

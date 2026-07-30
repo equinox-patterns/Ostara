@@ -36,6 +36,8 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogEllipticalArcWithLength;
@@ -92,18 +94,6 @@ public:
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
 
-    void DeployRadius1TextEdit();
-    void DeployRadius2TextEdit();
-    void DeployF1TextEdit();
-    void DeployLengthTextEdit();
-    void DeployRotationAngleTextEdit();
-
-    void FXRadius1();
-    void FXRadius2();
-    void FXF1();
-    void FXLength();
-    void FXRotationAngle();
-
 protected:
     void ShowVisualization() override;
     /**
@@ -121,55 +111,13 @@ private:
     Q_DISABLE_COPY_MOVE(DialogEllipticalArcWithLength) // NOLINT
     Ui::DialogEllipticalArcWithLength *ui;
 
-    /** @brief flagRadius1 true if value of radius1 is correct */
-    bool m_flagRadius1{false};
-
-    /** @brief flagRadius2 true if value of radius2 is correct */
-    bool m_flagRadius2{false};
-
-    /** @brief flagF1 true if value of first angle is correct */
-    bool m_flagF1{false};
-
-    bool m_flagLength{false};
-
-    /** @brief flagRotationAngle true if value of rotation angle is correct */
-    bool m_flagRotationAngle{false};
+    FormulaInputWidget *m_formulaRadius1;
+    FormulaInputWidget *m_formulaRadius2;
+    FormulaInputWidget *m_formulaF1;
+    FormulaInputWidget *m_formulaLength;
+    FormulaInputWidget *m_formulaRotationAngle;
 
     bool m_flagAlias{true};
-
-    /** @brief timerRadius1 timer of check formula of radius1 */
-    QTimer *m_timerRadius1;
-
-    /** @brief timerRadius2 timer of check formula of radius2 */
-    QTimer *m_timerRadius2;
-
-    /** @brief timerF1 timer of check formula of first angle */
-    QTimer *m_timerF1;
-
-    QTimer *m_timerLength;
-
-    /** @brief timerRotationAngle timer of check formula of rotation angle */
-    QTimer *m_timerRotationAngle;
-
-    /** @brief radius1 formula of radius1 */
-    QString m_radius1{};
-
-    /** @brief radius2 formula of radius2 */
-    QString m_radius2{};
-
-    /** @brief f1 formula of first angle */
-    QString m_f1{};
-
-    QString m_length{};
-
-    /** @brief rotationAngle formula of rotation angle */
-    QString m_rotationAngle{};
-
-    int m_formulaBaseHeightRadius1{0};
-    int m_formulaBaseHeightRadius2{0};
-    int m_formulaBaseHeightF1{0};
-    int m_formulaBaseHeightLength{0};
-    int m_formulaBaseHeightRotationAngle{0};
 
     QString m_originAliasSuffix{};
 
@@ -177,21 +125,9 @@ private:
 
     int m_stage{0};
 
-    void Radius1();
-    void Radius2();
-    void Length();
-    void EvalF();
-    void RotationAngle();
-
     void FinishCreating();
 
     void InitIcons();
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogEllipticalArcWithLength::IsValid() const -> bool
-{
-    return m_flagRadius1 && m_flagRadius2 && m_flagF1 && m_flagLength && m_flagAlias && m_flagRotationAngle;
-}
 
 #endif // DIALOGELLIPTICALARCWITHLENGTH_H

@@ -38,6 +38,8 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogPointOfIntersectionCircles;
@@ -81,15 +83,6 @@ public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
     void PointChanged();
 
-    void DeployCircle1RadiusTextEdit();
-    void DeployCircle2RadiusTextEdit();
-
-    void FXCircle1Radius();
-    void FXCircle2Radius();
-
-    void EvalCircle1Radius();
-    void EvalCircle2Radius();
-
 protected:
     void ShowVisualization() override;
     /**
@@ -105,21 +98,13 @@ private:
 
     Ui::DialogPointOfIntersectionCircles *ui;
 
-    QTimer *m_timerCircle1Radius;
-    QTimer *m_timerCircle2Radius;
-
-    QString m_circle1Radius{};
-    QString m_circle2Radius{};
-
-    int m_formulaBaseHeightCircle1Radius{0};
-    int m_formulaBaseHeightCircle2Radius{0};
-
     QString m_pointName{};
 
-    bool m_flagCircle1Radius{false};
-    bool m_flagCircle2Radius{false};
     bool m_flagName{true};
     bool m_flagError{true};
+
+    FormulaInputWidget *m_formulaCircle1;
+    FormulaInputWidget *m_formulaCircle2;
 
     bool m_firstRelease{false};
 
@@ -130,11 +115,5 @@ private:
 
     void InitIcons();
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogPointOfIntersectionCircles::IsValid() const -> bool
-{
-    return m_flagCircle1Radius && m_flagCircle2Radius && m_flagName && m_flagError;
-}
 
 #endif // DIALOGPOINTOFINTERSECTIONCIRCLES_H

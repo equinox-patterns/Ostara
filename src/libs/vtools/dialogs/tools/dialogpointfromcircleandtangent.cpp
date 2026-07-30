@@ -33,32 +33,48 @@
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPlainTextEdit>
 #include <QPointer>
 #include <QPushButton>
-#include <QTimer>
-#include <QToolButton>
 #include <climits>
 
 #include "../../visualization/line/vistoolpointfromcircleandtangent.h"
 #include "../../visualization/visualization.h"
-#include "../support/dialogeditwrongformula.h"
 #include "../vgeometry/vpointf.h"
-#include "vtheme.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vabstractmainwindow.h"
+#include "../widgets/formulainputwidget.h"
 #include "ui_dialogpointfromcircleandtangent.h"
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogPointFromCircleAndTangent::DialogPointFromCircleAndTangent(const VContainer *data, VAbstractPattern *doc,
                                                                  quint32 toolId, QWidget *parent)
   : DialogTool(data, doc, toolId, parent),
-    ui(new Ui::DialogPointFromCircleAndTangent)
+    ui(new Ui::DialogPointFromCircleAndTangent),
+    m_formula(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
+
+    const QString postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
+    m_formula->setData(&this->data);
+    m_formula->setToolId(toolId);
+    m_formula->setLabelText(tr("Radius:"));
+    m_formula->setPostfix(postfix);
+    m_formula->setDialogTitle(tr("Edit radius"));
+    connect(m_formula, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
+
+    if (auto *placeholder = ui->formulaPlaceholder)
+    {
+        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+        if (parentLayout != nullptr)
+        {
+            const int idx = parentLayout->indexOf(placeholder);
+            parentLayout->insertWidget(idx, m_formula);
+            placeholder->deleteLater();
+        }
+    }
 
     InitIcons();
 
@@ -69,13 +85,6 @@ DialogPointFromCircleAndTangent::DialogPointFromCircleAndTangent(const VContaine
 
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
-
-    this->m_formulaBaseHeightCircleRadius = ui->plainTextEditRadius->height();
-
-    ui->plainTextEditRadius->installEventFilter(this);
-
-    m_timerCircleRadius = new QTimer(this);
-    connect(m_timerCircleRadius, &QTimer::timeout, this, &DialogPointFromCircleAndTangent::EvalCircleRadius);
 
     InitOkCancelApply(ui);
 
@@ -92,14 +101,6 @@ DialogPointFromCircleAndTangent::DialogPointFromCircleAndTangent(const VContaine
             });
     connect(ui->comboBoxCircleCenter, &QComboBox::currentTextChanged, this,
             &DialogPointFromCircleAndTangent::PointChanged);
-
-    connect(ui->toolButtonExprRadius, &QPushButton::clicked, this, &DialogPointFromCircleAndTangent::FXCircleRadius);
-
-    connect(ui->plainTextEditRadius, &QPlainTextEdit::textChanged, this,
-            [this]() { m_timerCircleRadius->start(formulaTimerTimeout); });
-
-    connect(ui->pushButtonGrowRadius, &QPushButton::clicked, this,
-            &DialogPointFromCircleAndTangent::DeployCircleRadiusTextEdit);
 
     vis = new VisToolPointFromCircleAndTangent(&this->data);
 
@@ -145,32 +146,22 @@ void DialogPointFromCircleAndTangent::SetCircleCenterId(const quint32 &value)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogPointFromCircleAndTangent::GetCircleRadius() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(ui->plainTextEditRadius->toPlainText(),
-                                              VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formula->formula();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPointFromCircleAndTangent::SetCircleRadius(const QString &value)
 {
-    const QString formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (formula.length() > 80)
-    {
-        this->DeployCircleRadiusTextEdit();
-    }
-    ui->plainTextEditRadius->setPlainText(formula);
+    m_formula->setFormula(value);
 
     if (auto *point = qobject_cast<VisToolPointFromCircleAndTangent *>(vis))
     {
-        point->SetCRadius(formula);
+        point->SetCRadius(m_formula->formula());
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditRadius);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -314,47 +305,6 @@ void DialogPointFromCircleAndTangent::PointChanged()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogPointFromCircleAndTangent::DeployCircleRadiusTextEdit()
-{
-    DeployFormula(this, ui->plainTextEditRadius, ui->pushButtonGrowRadius, m_formulaBaseHeightCircleRadius);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPointFromCircleAndTangent::FXCircleRadius()
-{
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit radius"));
-    dialog->SetFormula(GetCircleRadius());
-    dialog->setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetCircleRadius(dialog->GetFormula());
-    }
-    delete dialog;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPointFromCircleAndTangent::EvalCircleRadius()
-{
-    const qreal radius = Eval({.formula = ui->plainTextEditRadius->toPlainText(),
-                               .variables = data.DataVariables(),
-                               .labelEditFormula = ui->labelEditRadius,
-                               .labelResult = ui->labelResultCircleRadius,
-                               .postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)},
-                              m_flagCircleRadius);
-
-    if (radius < 0)
-    {
-        m_flagCircleRadius = false;
-        ChangeColor(ui->labelEditRadius, errorColor);
-        ui->labelResultCircleRadius->setText(tr("Error"));
-        ui->labelResultCircleRadius->setToolTip(tr("Radius can't be negative"));
-
-        DialogPointFromCircleAndTangent::CheckState();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogPointFromCircleAndTangent::ShowVisualization()
 {
     AddVisualization<VisToolPointFromCircleAndTangent>();
@@ -370,7 +320,7 @@ void DialogPointFromCircleAndTangent::SaveData()
 
     point->SetPointId(GetTangentPointId());
     point->SetCenterId(GetCircleCenterId());
-    point->SetCRadius(ui->plainTextEditRadius->toPlainText());
+    point->SetCRadius(m_formula->formula());
     point->SetCrossPoint(GetCrossCirclesPoint());
     point->RefreshGeometry();
 }
@@ -378,7 +328,6 @@ void DialogPointFromCircleAndTangent::SaveData()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPointFromCircleAndTangent::closeEvent(QCloseEvent *event)
 {
-    ui->plainTextEditRadius->blockSignals(true);
     DialogTool::closeEvent(event);
 }
 
@@ -401,6 +350,12 @@ void DialogPointFromCircleAndTangent::changeEvent(QEvent *event)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto DialogPointFromCircleAndTangent::IsValid() const -> bool
+{
+    return m_formula->isValid() && m_flagName && m_flagError;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogPointFromCircleAndTangent::FinishCreating()
 {
     vis->SetMode(Mode::Show);
@@ -415,10 +370,7 @@ void DialogPointFromCircleAndTangent::FinishCreating()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPointFromCircleAndTangent::InitIcons()
 {
-    const auto resource = QStringLiteral("icon");
-
-    ui->toolButtonExprRadius->setIcon(VTheme::GetIconResource(resource, QStringLiteral("24x24/fx.png")));
-    ui->label_3->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/equal.png")));
+    // Formula icons are managed by FormulaInputWidget.
 }
 
 //---------------------------------------------------------------------------------------------------------------------

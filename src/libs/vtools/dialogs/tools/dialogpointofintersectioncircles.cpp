@@ -33,22 +33,15 @@
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPlainTextEdit>
 #include <QPointer>
-#include <QPushButton>
-#include <QTimer>
-#include <QToolButton>
 #include <climits>
 
 #include "../../visualization/line/vistoolpointofintersectioncircles.h"
 #include "../../visualization/visualization.h"
-#include "../support/dialogeditwrongformula.h"
 #include "../vgeometry/vpointf.h"
-#include "vtheme.h"
+#include "../widgets/formulainputwidget.h"
 #include "../vmisc/vabstractapplication.h"
-#include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/vcontainer.h"
-#include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vabstractmainwindow.h"
 #include "ui_dialogpointofintersectioncircles.h"
 
@@ -57,8 +50,8 @@ DialogPointOfIntersectionCircles::DialogPointOfIntersectionCircles(const VContai
                                                                    quint32 toolId, QWidget *parent)
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogPointOfIntersectionCircles),
-    m_timerCircle1Radius(new QTimer(this)),
-    m_timerCircle2Radius(new QTimer(this))
+    m_formulaCircle1(new FormulaInputWidget(this)),
+    m_formulaCircle2(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
 
@@ -72,17 +65,44 @@ DialogPointOfIntersectionCircles::DialogPointOfIntersectionCircles(const VContai
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
 
-    this->m_formulaBaseHeightCircle1Radius = ui->plainTextEditCircle1Radius->height();
-    this->m_formulaBaseHeightCircle2Radius = ui->plainTextEditCircle2Radius->height();
+    const QString postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
 
-    ui->plainTextEditCircle1Radius->installEventFilter(this);
-    ui->plainTextEditCircle2Radius->installEventFilter(this);
+    m_formulaCircle1->setData(&this->data);
+    m_formulaCircle1->setToolId(toolId);
+    m_formulaCircle1->setLabelText(tr("Radius of the first circle:"));
+    m_formulaCircle1->setPostfix(postfix);
+    m_formulaCircle1->setDialogTitle(tr("Edit first circle radius"));
+    m_formulaCircle1->setCheckLessThanZero(true);
+    connect(m_formulaCircle1, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
 
-    m_timerCircle1Radius->setSingleShot(true);
-    connect(m_timerCircle1Radius, &QTimer::timeout, this, &DialogPointOfIntersectionCircles::EvalCircle1Radius);
+    m_formulaCircle2->setData(&this->data);
+    m_formulaCircle2->setToolId(toolId);
+    m_formulaCircle2->setLabelText(tr("Radius of the second circle:"));
+    m_formulaCircle2->setPostfix(postfix);
+    m_formulaCircle2->setDialogTitle(tr("Edit second circle radius"));
+    m_formulaCircle2->setCheckLessThanZero(true);
+    connect(m_formulaCircle2, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
 
-    m_timerCircle2Radius->setSingleShot(true);
-    connect(m_timerCircle2Radius, &QTimer::timeout, this, &DialogPointOfIntersectionCircles::EvalCircle2Radius);
+    if (auto *placeholder = ui->formulaPlaceholder)
+    {
+        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+        if (parentLayout != nullptr)
+        {
+            const int idx = parentLayout->indexOf(placeholder);
+            parentLayout->insertWidget(idx, m_formulaCircle1);
+            placeholder->deleteLater();
+        }
+    }
+    if (auto *placeholder = ui->formula2Placeholder)
+    {
+        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+        if (parentLayout != nullptr)
+        {
+            const int idx = parentLayout->indexOf(placeholder);
+            parentLayout->insertWidget(idx, m_formulaCircle2);
+            placeholder->deleteLater();
+        }
+    }
 
     InitOkCancelApply(ui);
 
@@ -101,22 +121,6 @@ DialogPointOfIntersectionCircles::DialogPointOfIntersectionCircles(const VContai
             &DialogPointOfIntersectionCircles::PointChanged);
     connect(ui->comboBoxCircle2Center, &QComboBox::currentTextChanged, this,
             &DialogPointOfIntersectionCircles::PointChanged);
-
-    connect(ui->toolButtonExprCircle1Radius, &QPushButton::clicked, this,
-            &DialogPointOfIntersectionCircles::FXCircle1Radius);
-    connect(ui->toolButtonExprCircle2Radius, &QPushButton::clicked, this,
-            &DialogPointOfIntersectionCircles::FXCircle2Radius);
-
-    connect(ui->plainTextEditCircle1Radius, &QPlainTextEdit::textChanged, this,
-            [this]() { m_timerCircle1Radius->start(formulaTimerTimeout); });
-
-    connect(ui->plainTextEditCircle2Radius, &QPlainTextEdit::textChanged, this,
-            [this]() { m_timerCircle2Radius->start(formulaTimerTimeout); });
-
-    connect(ui->pushButtonGrowCircle1Radius, &QPushButton::clicked, this,
-            &DialogPointOfIntersectionCircles::DeployCircle1RadiusTextEdit);
-    connect(ui->pushButtonGrowCircle2Radius, &QPushButton::clicked, this,
-            &DialogPointOfIntersectionCircles::DeployCircle2RadiusTextEdit);
 
     vis = new VisToolPointOfIntersectionCircles(&this->data);
 
@@ -178,63 +182,43 @@ void DialogPointOfIntersectionCircles::SetSecondCircleCenterId(const quint32 &va
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogPointOfIntersectionCircles::GetFirstCircleRadius() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(ui->plainTextEditCircle1Radius->toPlainText(),
-                                              VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formulaCircle1->formula();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPointOfIntersectionCircles::SetFirstCircleRadius(const QString &value)
 {
-    const QString formula = VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (formula.length() > 80)
-    {
-        this->DeployCircle1RadiusTextEdit();
-    }
-    ui->plainTextEditCircle1Radius->setPlainText(formula);
+    m_formulaCircle1->setFormula(value);
 
     if (auto *point = qobject_cast<VisToolPointOfIntersectionCircles *>(vis))
     {
-        point->SetC1Radius(formula);
+        point->SetC1Radius(value);
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditCircle1Radius);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogPointOfIntersectionCircles::GetSecondCircleRadius() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(ui->plainTextEditCircle2Radius->toPlainText(),
-                                              VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formulaCircle2->formula();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPointOfIntersectionCircles::SetSecondCircleRadius(const QString &value)
 {
-    const QString formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (formula.length() > 80)
-    {
-        this->DeployCircle2RadiusTextEdit();
-    }
-    ui->plainTextEditCircle2Radius->setPlainText(formula);
+    m_formulaCircle2->setFormula(value);
 
     if (auto *point = qobject_cast<VisToolPointOfIntersectionCircles *>(vis))
     {
-        point->SetC2Radius(formula);
+        point->SetC2Radius(value);
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditCircle2Radius);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -391,90 +375,6 @@ void DialogPointOfIntersectionCircles::PointChanged()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogPointOfIntersectionCircles::DeployCircle1RadiusTextEdit()
-{
-    DeployFormula(this, ui->plainTextEditCircle1Radius, ui->pushButtonGrowCircle1Radius,
-                  m_formulaBaseHeightCircle1Radius);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPointOfIntersectionCircles::DeployCircle2RadiusTextEdit()
-{
-    DeployFormula(this, ui->plainTextEditCircle2Radius, ui->pushButtonGrowCircle2Radius,
-                  m_formulaBaseHeightCircle2Radius);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPointOfIntersectionCircles::FXCircle1Radius()
-{
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit first circle radius"));
-    dialog->SetFormula(GetFirstCircleRadius());
-    dialog->setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetFirstCircleRadius(dialog->GetFormula());
-    }
-    delete dialog;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPointOfIntersectionCircles::FXCircle2Radius()
-{
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit second circle radius"));
-    dialog->SetFormula(GetSecondCircleRadius());
-    dialog->setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetSecondCircleRadius(dialog->GetFormula());
-    }
-    delete dialog;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPointOfIntersectionCircles::EvalCircle1Radius()
-{
-    const qreal radius = Eval({.formula = ui->plainTextEditCircle1Radius->toPlainText(),
-                               .variables = data.DataVariables(),
-                               .labelEditFormula = ui->labelEditCircle1Radius,
-                               .labelResult = ui->labelResultCircle1Radius,
-                               .postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)},
-                              m_flagCircle1Radius);
-
-    if (radius < 0)
-    {
-        m_flagCircle2Radius = false;
-        ChangeColor(ui->labelEditCircle1Radius, errorColor);
-        ui->labelResultCircle1Radius->setText(tr("Error"));
-        ui->labelResultCircle1Radius->setToolTip(tr("Radius can't be negative"));
-
-        DialogPointOfIntersectionCircles::CheckState();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPointOfIntersectionCircles::EvalCircle2Radius()
-{
-    const qreal radius = Eval({.formula = ui->plainTextEditCircle2Radius->toPlainText(),
-                               .variables = data.DataVariables(),
-                               .labelEditFormula = ui->labelEditCircle2Radius,
-                               .labelResult = ui->labelResultCircle2Radius,
-                               .postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)},
-                              m_flagCircle2Radius);
-
-    if (radius < 0)
-    {
-        m_flagCircle2Radius = false;
-        ChangeColor(ui->labelEditCircle2Radius, errorColor);
-        ui->labelResultCircle2Radius->setText(tr("Error"));
-        ui->labelResultCircle2Radius->setToolTip(tr("Radius can't be negative"));
-
-        DialogPointOfIntersectionCircles::CheckState();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogPointOfIntersectionCircles::ShowVisualization()
 {
     AddVisualization<VisToolPointOfIntersectionCircles>();
@@ -490,8 +390,8 @@ void DialogPointOfIntersectionCircles::SaveData()
 
     point->SetCircle1Id(GetFirstCircleCenterId());
     point->SetCircle2Id(GetSecondCircleCenterId());
-    point->SetC1Radius(ui->plainTextEditCircle1Radius->toPlainText());
-    point->SetC2Radius(ui->plainTextEditCircle2Radius->toPlainText());
+    point->SetC1Radius(m_formulaCircle1->formula());
+    point->SetC2Radius(m_formulaCircle2->formula());
     point->SetCrossPoint(GetCrossCirclesPoint());
     point->RefreshGeometry();
 }
@@ -499,8 +399,8 @@ void DialogPointOfIntersectionCircles::SaveData()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPointOfIntersectionCircles::closeEvent(QCloseEvent *event)
 {
-    ui->plainTextEditCircle1Radius->blockSignals(true);
-    ui->plainTextEditCircle2Radius->blockSignals(true);
+    m_formulaCircle1->blockSignals(true);
+    m_formulaCircle2->blockSignals(true);
     DialogTool::closeEvent(event);
 }
 
@@ -535,17 +435,14 @@ void DialogPointOfIntersectionCircles::FinishCreating()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto DialogPointOfIntersectionCircles::IsValid() const -> bool
+{
+    return m_formulaCircle1->isValid() && m_formulaCircle2->isValid() && m_flagName && m_flagError;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogPointOfIntersectionCircles::InitIcons()
 {
-    const auto resource = QStringLiteral("icon");
-
-    const auto fxIcon = QStringLiteral("24x24/fx.png");
-    ui->toolButtonExprCircle1Radius->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    ui->toolButtonExprCircle2Radius->setIcon(VTheme::GetIconResource(resource, fxIcon));
-
-    const auto equalIcon = QStringLiteral("24x24/equal.png");
-    ui->label_2->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    ui->label_3->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

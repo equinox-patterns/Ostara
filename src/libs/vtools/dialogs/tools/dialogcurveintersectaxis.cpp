@@ -55,6 +55,7 @@
 #include "../vwidgets/global.h"
 #include "../vwidgets/vabstractmainwindow.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "../widgets/formulainputwidget.h"
 #include "ui_dialogcurveintersectaxis.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -68,12 +69,9 @@ DialogCurveIntersectAxis::DialogCurveIntersectAxis(const VContainer *data, VAbst
                                                    QWidget *parent)
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogCurveIntersectAxis),
-    formulaAngle(),
-    formulaBaseHeightAngle(0),
+    m_formula(new FormulaInputWidget(this)),
     pointName(),
     m_firstRelease(false),
-    timerFormula(new QTimer(this)),
-    flagFormula(false),
     flagName(true)
 {
     ui->setupUi(this);
@@ -83,13 +81,29 @@ DialogCurveIntersectAxis::DialogCurveIntersectAxis(const VContainer *data, VAbst
     MakeFilterableComboBox(ui->comboBoxAxisPoint);
     MakeFilterableComboBox(ui->comboBoxCurve);
 
-    timerFormula->setSingleShot(true);
-
     ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     SetPointName(VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
-    formulaBaseHeightAngle = ui->plainTextEditFormula->height();
-    ui->plainTextEditFormula->installEventFilter(this);
+
+    // --- Configure formula widget ---
+    m_formula->setData(&this->data);
+    m_formula->setToolId(toolId);
+    m_formula->setLabelText(tr("Angle:"));
+    m_formula->setPostfix(degreeSymbol);
+    m_formula->setDialogTitle(tr("Edit angle"));
+    connect(m_formula, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
+
+    // Replace placeholder
+    if (auto *placeholder = ui->formulaPlaceholder)
+    {
+        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+        if (parentLayout != nullptr)
+        {
+            const int idx = parentLayout->indexOf(placeholder);
+            parentLayout->insertWidget(idx, m_formula);
+            placeholder->deleteLater();
+        }
+    }
 
     InitOkCancelApply(ui);
 
@@ -103,17 +117,12 @@ DialogCurveIntersectAxis::DialogCurveIntersectAxis(const VContainer *data, VAbst
     connect(ui->lineEditName1, &QLineEdit::textEdited, this, &DialogCurveIntersectAxis::ValidateCurveNames);
     connect(ui->lineEditName2, &QLineEdit::textEdited, this, &DialogCurveIntersectAxis::ValidateCurveNames);
 
-    connect(ui->toolButtonExprAngle, &QPushButton::clicked, this, &DialogCurveIntersectAxis::FXAngle);
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
             {
                 CheckPointLabel(this, ui->lineEditNamePoint, ui->labelEditNamePoint, pointName, &this->data, flagName);
                 CheckState();
             });
-    connect(ui->plainTextEditFormula, &QPlainTextEdit::textChanged, this,
-            [this]() { timerFormula->start(formulaTimerTimeout); });
-    connect(ui->pushButtonGrowLengthAngle, &QPushButton::clicked, this, &DialogCurveIntersectAxis::DeployAngleTextEdit);
-    connect(timerFormula, &QTimer::timeout, this, &DialogCurveIntersectAxis::EvalAngle);
     connect(ui->lineEditAlias1, &QLineEdit::textEdited, this, &DialogCurveIntersectAxis::ValidateAlias);
     connect(ui->lineEditAlias2, &QLineEdit::textEdited, this, &DialogCurveIntersectAxis::ValidateAlias);
 
@@ -159,32 +168,22 @@ void DialogCurveIntersectAxis::SetTypeLine(const QString &value)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogCurveIntersectAxis::GetAngle() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(formulaAngle, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formula->formula();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogCurveIntersectAxis::SetAngle(const QString &value)
 {
-    formulaAngle = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed. TODO : see if I can get the max number of caracters in one line
-    // of this PlainTextEdit to change 80 to this value
-    if (formulaAngle.length() > 80)
-    {
-        this->DeployAngleTextEdit();
-    }
-    ui->plainTextEditFormula->setPlainText(formulaAngle);
+    m_formula->setFormula(value);
 
     if (auto *line = qobject_cast<VisToolCurveIntersectAxis *>(vis))
     {
-        line->SetAngle(formulaAngle);
+        line->SetAngle(m_formula->formula());
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditFormula);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -328,34 +327,9 @@ void DialogCurveIntersectAxis::ChosenObject(quint32 id, const SceneObject &type)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogCurveIntersectAxis::EvalAngle()
+auto DialogCurveIntersectAxis::IsValid() const -> bool
 {
-    Eval({.formula = ui->plainTextEditFormula->toPlainText(),
-          .variables = data.DataVariables(),
-          .labelEditFormula = ui->labelEditFormula,
-          .labelResult = ui->labelResultCalculation,
-          .postfix = degreeSymbol},
-         flagFormula);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogCurveIntersectAxis::DeployAngleTextEdit()
-{
-    DeployFormula(this, ui->plainTextEditFormula, ui->pushButtonGrowLengthAngle, formulaBaseHeightAngle);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogCurveIntersectAxis::FXAngle()
-{
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit angle"));
-    dialog->SetFormula(GetAngle());
-    dialog->setPostfix(degreeSymbol);
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetAngle(dialog->GetFormula());
-    }
-    delete dialog;
+    return m_formula->isValid() && flagName && flagAlias1 && flagAlias2 && m_flagCurveName1 && m_flagCurveName2;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -368,14 +342,13 @@ void DialogCurveIntersectAxis::ShowVisualization()
 void DialogCurveIntersectAxis::SaveData()
 {
     pointName = ui->lineEditNamePoint->text();
-    formulaAngle = ui->plainTextEditFormula->toPlainText();
 
     auto *line = qobject_cast<VisToolCurveIntersectAxis *>(vis);
     SCASSERT(line != nullptr)
 
     line->SetCurveId(getCurveId());
     line->setAxisPointId(GetBasePointId());
-    line->SetAngle(formulaAngle);
+    line->SetAngle(m_formula->formula());
     line->SetLineStyle(LineStyleToPenStyle(GetTypeLine()));
     line->RefreshGeometry();
 }
@@ -383,7 +356,6 @@ void DialogCurveIntersectAxis::SaveData()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogCurveIntersectAxis::closeEvent(QCloseEvent *event)
 {
-    ui->plainTextEditFormula->blockSignals(true);
     DialogTool::closeEvent(event);
 }
 
@@ -397,7 +369,6 @@ void DialogCurveIntersectAxis::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
-        InitIcons();
         InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
@@ -510,10 +481,8 @@ void DialogCurveIntersectAxis::ValidateCurveNames()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogCurveIntersectAxis::InitIcons()
 {
-    auto const resource = QStringLiteral("icon");
-
-    ui->toolButtonExprAngle->setIcon(VTheme::GetIconResource(resource, QStringLiteral("24x24/fx.png")));
-    ui->label_3->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/equal.png")));
+    // Formula-related icons are now managed by FormulaInputWidget.
+    // PaletteChange re-initialization is handled by FormulaInputWidget internally.
 }
 
 //---------------------------------------------------------------------------------------------------------------------

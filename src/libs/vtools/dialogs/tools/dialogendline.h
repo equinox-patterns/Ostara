@@ -37,6 +37,8 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogEndLine;
@@ -81,16 +83,6 @@ public:
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
 
-    void EvalLength();
-    void EvalAngle();
-
-    /** @brief DeployFormulaTextEdit grow or shrink formula input */
-    void DeployFormulaTextEdit();
-    void DeployAngleTextEdit();
-
-    void FXAngle();
-    void FXLength();
-
 protected:
     void ShowVisualization() override;
     /**
@@ -107,36 +99,18 @@ private:
     /** @brief ui keeps information about user interface */
     Ui::DialogEndLine *ui;
 
-    /** @brief formula formula */
-    QString formulaLength;
-
-    /** @brief angle angle of line */
-    QString formulaAngle;
-
-    /** @brief formulaBaseHeight base height defined by dialogui */
-    int formulaBaseHeight;
-    int formulaBaseHeightAngle;
+    FormulaInputWidget *m_formulaLength;
+    FormulaInputWidget *m_formulaAngle;
 
     QString pointName;
 
     bool m_firstRelease;
 
-    QTimer *timerFormulaLength;
-    QTimer *timerFormulaAngle;
-
-    bool flagFormula;
-    bool flagError;
     bool flagName;
 
     void FinishCreating();
 
     void InitIcons();
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogEndLine::IsValid() const -> bool
-{
-    return flagFormula && flagError && flagName;
-}
 
 #endif // DIALOGENDLINE_H

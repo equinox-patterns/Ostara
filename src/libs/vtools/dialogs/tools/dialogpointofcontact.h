@@ -37,6 +37,8 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogPointOfContact;
@@ -77,13 +79,7 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    /**
-     * @brief DeployFormulaTextEdit grow or shrink formula input
-     */
-    void DeployFormulaTextEdit();
     void PointNameChanged() override;
-    void FXRadius();
-    void EvalFormula();
 
 protected:
     void ShowVisualization() override;
@@ -101,17 +97,10 @@ private:
     /** @brief ui keeps information about user interface */
     Ui::DialogPointOfContact *ui;
 
-    /** @brief radius radius of arc */
-    QString m_radius{};
-
-    /** @brief formulaBaseHeight base height defined by dialogui */
-    int m_formulaBaseHeight{0};
-
     QString m_pointName{};
 
-    QTimer *m_timerFormula;
+    FormulaInputWidget *m_formula;
 
-    bool m_flagFormula{false};
     bool m_flagName{true};
     bool m_flagError{true};
 
@@ -124,11 +113,5 @@ private:
 
     void InitIcons();
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogPointOfContact::IsValid() const -> bool
-{
-    return m_flagFormula && m_flagName && m_flagError;
-}
 
 #endif // DIALOGPOINTOFCONTACT_H

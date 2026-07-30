@@ -37,6 +37,8 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogArcWithLength;
@@ -83,16 +85,6 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    /**
-     * @brief DeployFormulaTextEdit grow or shrink formula input
-     */
-    void DeployRadiusTextEdit();
-    void DeployF1TextEdit();
-    void DeployLengthTextEdit();
-
-    void FXRadius();
-    void FXF1();
-    void FXLength();
 
 protected:
     void ShowVisualization() override;
@@ -111,36 +103,11 @@ private:
     Q_DISABLE_COPY_MOVE(DialogArcWithLength) // NOLINT
     Ui::DialogArcWithLength *ui;
 
-    /** @brief flagRadius true if value of radius is correct */
-    bool m_flagRadius{false};
-
-    /** @brief flagF1 true if value of first angle is correct */
-    bool m_flagF1{false};
-
-    bool m_flagLength{false};
+    FormulaInputWidget *m_formula;
+    FormulaInputWidget *m_formula2;
+    FormulaInputWidget *m_formula3;
 
     bool m_flagAlias{true};
-
-    /** @brief timerRadius timer of check formula of radius */
-    QTimer *m_timerRadius;
-
-    /** @brief timerF1 timer of check formula of first angle */
-    QTimer *m_timerF1;
-
-    QTimer *m_timerLength;
-
-    /** @brief radius formula of radius */
-    QString m_radius{};
-
-    /** @brief f1 formula of first angle */
-    QString m_f1{};
-
-    QString m_length{};
-
-    /** @brief formulaBaseHeight base height defined by dialogui */
-    int m_formulaBaseHeightRadius{0};
-    int m_formulaBaseHeightF1{0};
-    int m_formulaBaseHeightLength{0};
 
     QString m_originAliasSuffix{};
 
@@ -149,19 +116,9 @@ private:
 
     bool m_firstRelease{false};
 
-    void Radius();
-    void Length();
-    void EvalF();
-
     void FinishCreating();
 
     void InitIcons();
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogArcWithLength::IsValid() const -> bool
-{
-    return m_flagRadius && m_flagF1 && m_flagLength && m_flagAlias;
-}
 
 #endif // DIALOGARCWITHLENGTH_H

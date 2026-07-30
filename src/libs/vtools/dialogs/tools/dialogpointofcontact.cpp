@@ -33,17 +33,13 @@
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPlainTextEdit>
 #include <QPointer>
-#include <QPushButton>
 #include <QSet>
-#include <QTimer>
-#include <QToolButton>
 
+#include "../widgets/formulainputwidget.h"
 #include "../../visualization/line/vistoolpointofcontact.h"
 #include "../../visualization/visualization.h"
 #include "../ifc/xml/vabstractpattern.h"
-#include "../support/dialogeditwrongformula.h"
 #include "../vgeometry/vpointf.h"
 #include "vtheme.h"
 #include "../vmisc/vabstractapplication.h"
@@ -63,25 +59,41 @@ DialogPointOfContact::DialogPointOfContact(const VContainer *data, VAbstractPatt
                                            QWidget *parent)
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogPointOfContact),
-    m_timerFormula(new QTimer(this))
+    m_formula(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
 
     InitIcons();
 
+    {
+        const QString postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
+        m_formula->setData(&this->data);
+        m_formula->setToolId(toolId);
+        m_formula->setLabelText(tr("Radius:"));
+        m_formula->setPostfix(postfix);
+        m_formula->setDialogTitle(tr("Edit radius"));
+        connect(m_formula, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
+
+        if (auto *placeholder = ui->formulaPlaceholder)
+        {
+            auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+            if (parentLayout != nullptr)
+            {
+                const int idx = parentLayout->indexOf(placeholder);
+                parentLayout->insertWidget(idx, m_formula);
+                placeholder->deleteLater();
+            }
+        }
+    }
+
     MakeFilterableComboBox(ui->comboBoxCenter);
     MakeFilterableComboBox(ui->comboBoxFirstPoint);
     MakeFilterableComboBox(ui->comboBoxSecondPoint);
-
-    m_timerFormula->setSingleShot(true);
-    connect(m_timerFormula, &QTimer::timeout, this, &DialogPointOfContact::EvalFormula);
 
     ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
-    this->m_formulaBaseHeight = ui->plainTextEditFormula->height();
-    ui->plainTextEditFormula->installEventFilter(this);
 
     InitOkCancelApply(ui);
 
@@ -89,7 +101,6 @@ DialogPointOfContact::DialogPointOfContact(const VContainer *data, VAbstractPatt
     FillComboBoxPoints(ui->comboBoxSecondPoint);
     FillComboBoxPoints(ui->comboBoxCenter);
 
-    connect(ui->toolButtonExprRadius, &QPushButton::clicked, this, &DialogPointOfContact::FXRadius);
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
             {
@@ -97,9 +108,6 @@ DialogPointOfContact::DialogPointOfContact(const VContainer *data, VAbstractPatt
                                 m_flagName);
                 CheckState();
             });
-    connect(ui->plainTextEditFormula, &QPlainTextEdit::textChanged, this,
-            [this]() { m_timerFormula->start(formulaTimerTimeout); });
-    connect(ui->pushButtonGrowLength, &QPushButton::clicked, this, &DialogPointOfContact::DeployFormulaTextEdit);
     connect(ui->comboBoxFirstPoint, &QComboBox::currentTextChanged, this, &DialogPointOfContact::PointNameChanged);
     connect(ui->comboBoxSecondPoint, &QComboBox::currentTextChanged, this, &DialogPointOfContact::PointNameChanged);
     connect(ui->comboBoxCenter, &QComboBox::currentTextChanged, this, &DialogPointOfContact::PointNameChanged);
@@ -148,40 +156,15 @@ void DialogPointOfContact::PointNameChanged()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogPointOfContact::FXRadius()
+auto DialogPointOfContact::IsValid() const -> bool
 {
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit radius"));
-    dialog->SetFormula(GetRadius());
-    dialog->setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetRadius(dialog->GetFormula());
-    }
-    delete dialog;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPointOfContact::EvalFormula()
-{
-    Eval({.formula = ui->plainTextEditFormula->toPlainText(),
-          .variables = data.DataVariables(),
-          .labelEditFormula = ui->labelEditFormula,
-          .labelResult = ui->labelResultCalculation,
-          .postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)},
-         m_flagFormula);
+    return m_formula->isValid() && m_flagName && m_flagError;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPointOfContact::ShowVisualization()
 {
     AddVisualization<VisToolPointOfContact>();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPointOfContact::DeployFormulaTextEdit()
-{
-    DeployFormula(this, ui->plainTextEditFormula, ui->pushButtonGrowLength, m_formulaBaseHeight);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -298,7 +281,6 @@ void DialogPointOfContact::ChosenObject(quint32 id, const SceneObject &type)
 void DialogPointOfContact::SaveData()
 {
     m_pointName = ui->lineEditNamePoint->text();
-    m_radius = ui->plainTextEditFormula->toPlainText();
 
     auto *line = qobject_cast<VisToolPointOfContact *>(vis);
     SCASSERT(line != nullptr)
@@ -306,14 +288,13 @@ void DialogPointOfContact::SaveData()
     line->SetLineP1Id(GetFirstPoint());
     line->SetLineP2Id(GetSecondPoint());
     line->SetRadiusId(GetCenter());
-    line->SetRadius(m_radius);
+    line->SetRadius(m_formula->formula());
     line->RefreshGeometry();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPointOfContact::closeEvent(QCloseEvent *event)
 {
-    ui->plainTextEditFormula->blockSignals(true);
     DialogTool::closeEvent(event);
 }
 
@@ -350,10 +331,6 @@ void DialogPointOfContact::FinishCreating()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPointOfContact::InitIcons()
 {
-    const auto resource = QStringLiteral("icon");
-
-    ui->toolButtonExprRadius->setIcon(VTheme::GetIconResource(resource, QStringLiteral("24x24/fx.png")));
-    ui->label->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/equal.png")));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -405,25 +382,16 @@ void DialogPointOfContact::SetCenter(quint32 value)
  */
 void DialogPointOfContact::SetRadius(const QString &value)
 {
-    m_radius = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (m_radius.length() > 80)
-    {
-        this->DeployFormulaTextEdit();
-    }
-    ui->plainTextEditFormula->setPlainText(m_radius);
+    m_formula->setFormula(value);
 
     if (auto *line = qobject_cast<VisToolPointOfContact *>(vis))
     {
-        line->SetRadius(m_radius);
+        line->SetRadius(m_formula->formula());
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditFormula);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -444,7 +412,7 @@ void DialogPointOfContact::SetPointName(const QString &value)
  */
 auto DialogPointOfContact::GetRadius() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(m_radius, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formula->formula();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

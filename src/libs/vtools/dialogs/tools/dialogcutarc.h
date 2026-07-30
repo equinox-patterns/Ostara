@@ -37,6 +37,8 @@
 #include "../vmisc/def.h"
 #include "dialogtool.h"
 
+class FormulaInputWidget;
+
 namespace Ui
 {
 class DialogCutArc;
@@ -84,13 +86,6 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    /**
-     * @brief DeployFormulaTextEdit grow or shrink formula input
-     */
-    void DeployFormulaTextEdit();
-
-    void FXLength();
-    void EvalFormula();
 
 protected:
     void ShowVisualization() override;
@@ -113,16 +108,10 @@ private:
     /** @brief ui keeps information about user interface */
     Ui::DialogCutArc *ui;
 
-    /** @brief formula string with formula */
-    QString m_formula{};
+    FormulaInputWidget *m_formula;
+
     QString m_pointName{};
 
-    /** @brief formulaBaseHeight base height defined by dialogui */
-    int m_formulaBaseHeight{0};
-
-    QTimer *m_timerFormula;
-
-    bool m_flagFormula{false};
     bool m_flagName{true};
     bool m_flagAlias1{true};
     bool m_flagAlias2{true};
@@ -147,11 +136,5 @@ private:
     auto GenerateDefLeftSubName() const -> QString;
     auto GenerateDefRightSubName() const -> QString;
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogCutArc::IsValid() const -> bool
-{
-    return m_flagFormula && m_flagName && m_flagAlias1 && m_flagAlias2 && m_flagCurveName1 && m_flagCurveName2;
-}
 
 #endif // DIALOGCUTARC_H

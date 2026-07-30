@@ -33,12 +33,9 @@
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPlainTextEdit>
 #include <QPointer>
 #include <QPushButton>
 #include <QSet>
-#include <QTimer>
-#include <QToolButton>
 
 #include "../../visualization/line/vistoolbisector.h"
 #include "../../visualization/visualization.h"
@@ -53,6 +50,7 @@
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolbisector.h"
 #include "../vwidgets/vabstractmainwindow.h"
+#include "../widgets/formulainputwidget.h"
 #include "ui_dialogbisector.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -64,7 +62,7 @@
 DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent)
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogBisector),
-    m_timerFormula(new QTimer(this))
+    m_formula(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
 
@@ -74,15 +72,31 @@ DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, qu
     MakeFilterableComboBox(ui->comboBoxSecondPoint);
     MakeFilterableComboBox(ui->comboBoxThirdPoint);
 
-    m_timerFormula->setSingleShot(true);
-    connect(m_timerFormula, &QTimer::timeout, this, &DialogBisector::EvalFormula);
-
     ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
-    this->m_formulaBaseHeight = ui->plainTextEditFormula->height();
-    ui->plainTextEditFormula->installEventFilter(this);
+
+    // --- Configure formula widget ---
+    const QString postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
+    m_formula->setData(&this->data);
+    m_formula->setToolId(toolId);
+    m_formula->setLabelText(tr("Length:"));
+    m_formula->setPostfix(postfix);
+    m_formula->setDialogTitle(tr("Edit length"));
+    connect(m_formula, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
+
+    // Replace placeholder
+    if (auto *placeholder = ui->formulaPlaceholder)
+    {
+        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+        if (parentLayout != nullptr)
+        {
+            const int idx = parentLayout->indexOf(placeholder);
+            parentLayout->insertWidget(idx, m_formula);
+            placeholder->deleteLater();
+        }
+    }
 
     InitOkCancelApply(ui);
 
@@ -94,7 +108,6 @@ DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, qu
     InitColorPicker(ui->pushButtonLineColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
     ui->pushButtonLineColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
 
-    connect(ui->toolButtonExprLength, &QPushButton::clicked, this, &DialogBisector::FXLength);
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
             {
@@ -102,9 +115,6 @@ DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, qu
                                 m_flagName);
                 CheckState();
             });
-    connect(ui->plainTextEditFormula, &QPlainTextEdit::textChanged, this,
-            [this]() { m_timerFormula->start(formulaTimerTimeout); });
-    connect(ui->pushButtonGrowLength, &QPushButton::clicked, this, &DialogBisector::DeployFormulaTextEdit);
     connect(ui->comboBoxFirstPoint, &QComboBox::currentTextChanged, this, &DialogBisector::PointNameChanged);
     connect(ui->comboBoxSecondPoint, &QComboBox::currentTextChanged, this, &DialogBisector::PointNameChanged);
     connect(ui->comboBoxThirdPoint, &QComboBox::currentTextChanged, this, &DialogBisector::PointNameChanged);
@@ -113,6 +123,12 @@ DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, qu
 
     ui->tabWidget->setCurrentIndex(0);
     SetTabStopDistance(ui->plainTextEditToolNotes);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogBisector::IsValid() const -> bool
+{
+    return m_formula->isValid() && m_flagError && m_flagName;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -141,40 +157,9 @@ void DialogBisector::PointNameChanged()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogBisector::FXLength()
-{
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit length"));
-    dialog->SetFormula(GetFormula());
-    dialog->setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetFormula(dialog->GetFormula());
-    }
-    delete dialog;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogBisector::EvalFormula()
-{
-    Eval({.formula = ui->plainTextEditFormula->toPlainText(),
-          .variables = data.DataVariables(),
-          .labelEditFormula = ui->labelEditFormula,
-          .labelResult = ui->labelResultCalculation,
-          .postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)},
-         m_flagFormula);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogBisector::ShowVisualization()
 {
     AddVisualization<VisToolBisector>();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogBisector::DeployFormulaTextEdit()
-{
-    DeployFormula(this, ui->plainTextEditFormula, ui->pushButtonGrowLength, m_formulaBaseHeight);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -264,25 +249,16 @@ void DialogBisector::SetTypeLine(const QString &value)
  */
 void DialogBisector::SetFormula(const QString &value)
 {
-    m_formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (m_formula.length() > 80)
-    {
-        this->DeployFormulaTextEdit();
-    }
-    ui->plainTextEditFormula->setPlainText(m_formula);
+    m_formula->setFormula(value);
 
     if (auto *line = qobject_cast<VisToolBisector *>(vis))
     {
-        line->SetLength(m_formula);
+        line->SetLength(m_formula->formula());
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditFormula);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -409,7 +385,6 @@ void DialogBisector::CheckDependencyTreeComplete()
 void DialogBisector::SaveData()
 {
     m_pointName = ui->lineEditNamePoint->text();
-    m_formula = ui->plainTextEditFormula->toPlainText();
 
     auto *line = qobject_cast<VisToolBisector *>(vis);
     SCASSERT(line != nullptr)
@@ -417,7 +392,7 @@ void DialogBisector::SaveData()
     line->SetPoint1Id(GetFirstPointId());
     line->SetPoint2Id(GetSecondPointId());
     line->SetPoint3Id(GetThirdPointId());
-    line->SetLength(m_formula);
+    line->SetLength(m_formula->formula());
     line->SetLineStyle(LineStyleToPenStyle(GetTypeLine()));
     line->RefreshGeometry();
 }
@@ -425,7 +400,6 @@ void DialogBisector::SaveData()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogBisector::closeEvent(QCloseEvent *event)
 {
-    ui->plainTextEditFormula->blockSignals(true);
     DialogTool::closeEvent(event);
 }
 
@@ -439,7 +413,6 @@ void DialogBisector::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
-        InitIcons();
         InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
@@ -488,10 +461,8 @@ void DialogBisector::FinishCreating()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogBisector::InitIcons()
 {
-    auto const resource = QStringLiteral("icon");
-
-    ui->toolButtonExprLength->setIcon(VTheme::GetIconResource(resource, QStringLiteral("24x24/fx.png")));
-    ui->label_3->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/equal.png")));
+    // Formula-related icons are now managed by FormulaInputWidget.
+    // PaletteChange re-initialization is handled by FormulaInputWidget internally.
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -511,7 +482,7 @@ auto DialogBisector::GetTypeLine() const -> QString
  */
 auto DialogBisector::GetFormula() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(m_formula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formula->formula();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
