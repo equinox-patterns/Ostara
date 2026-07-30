@@ -226,6 +226,7 @@ VToolApp {
             "vformulaproperty.cpp",
             "vformulapropertyeditor.cpp",
             "vtooloptionspropertybrowser.cpp",
+            "vtoppb_tools.cpp",
             "vcmdexport.cpp",
             "vvalentinashortcutmanager.cpp",
             "vvalentinashortcutmanager.h",
