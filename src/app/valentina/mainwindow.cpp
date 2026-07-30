@@ -619,62 +619,12 @@ void MainWindow::InitScenes()
     ui->view->setSizePolicy(policy);
     VAbstractValApplication::VApp()->setSceneView(ui->view);
 }
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-auto MainWindow::LoadMeasurements(const QString &patternPath, QString &path) -> bool
-{
-    m_m = OpenMeasurementFile(patternPath, path);
 
-    if (m_m.isNull())
-    {
-        return false;
-    }
+// Extracted: 
 
-    try
-    {
-        VAbstractValApplication::VApp()->SetMeasurementsType(m_m->Type());
-        if (m_m->Type() == MeasurementsType::Individual)
-        {
-            VAbstractValApplication::VApp()->SetCustomerName(m_m->Customer());
-            VAbstractValApplication::VApp()->SetCustomerBirthDate(m_m->BirthDate());
-            VAbstractValApplication::VApp()->SetCustomerEmail(m_m->Email());
-        }
-        else if (m_m->Type() == MeasurementsType::Multisize)
-        {
-            auto DimensionBase = [](qreal current, qreal tableBase)
-            { return not VFuzzyComparePossibleNulls(current, -1) ? current : tableBase; };
 
-            m_currentDimensionA = DimensionBase(doc->GetDimensionAValue(), m_m->DimensionABase());
-            m_currentDimensionB = DimensionBase(doc->GetDimensionBValue(), m_m->DimensionBBase());
-            m_currentDimensionC = DimensionBase(doc->GetDimensionCValue(), m_m->DimensionCBase());
-        }
-        ToolBarOption();
-        SetDimensionBases();
-        pattern->ClearVariables({VarType::Measurement, VarType::MeasurementSeparator});
-        m_m->StoreNames(false);
-        m_m->ReadMeasurements(m_currentDimensionA, m_currentDimensionB, m_currentDimensionC);
-    }
-    catch (VExceptionEmptyParameter &e)
-    {
-        qCCritical(vMainWindow, "%s\n\n%s\n\n%s", qUtf8Printable(tr("File error.")), qUtf8Printable(e.ErrorMessage()),
-                   qUtf8Printable(e.DetailedInformation()));
-        if (not VApplication::IsGUIMode())
-        {
-            QCoreApplication::exit(V_EX_NOINPUT);
-        }
-        return false;
-    }
-
-    StoreDimensions();
-
-    return true;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto MainWindow::UpdateMeasurements(const QString &patternPath, QString &path, qreal baseA, qreal baseB, qreal baseC) -> bool
-{
-    return UpdateMeasurements(OpenMeasurementFile(patternPath, path), baseA, baseB, baseC);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto MainWindow::UpdateMeasurements(const QSharedPointer<VMeasurements> &mFile, qreal baseA, qreal baseB, qreal baseC,
@@ -715,72 +665,9 @@ auto MainWindow::UpdateMeasurements(const QSharedPointer<VMeasurements> &mFile, 
 
     return true;
 }
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ReadMeasurements(qreal baseA, qreal baseB, qreal baseC, bool rebuildGradation)
-{
-    pattern->ClearVariables({VarType::Measurement, VarType::MeasurementSeparator});
 
-    // Rebuilding the dimension labels and gradation combo boxes is only needed when the measurement
-    // file itself (re)loads. On a plain size switch the gradation lists are unchanged and rebuilding
-    // them (with per-item QFontMetrics work) is redundant synchronous UI work on the hot path.
-    if (rebuildGradation && not m_m->Dimensions().isEmpty())
-    {
-        const QList<MeasurementDimension_p> dimensions = m_m->Dimensions().values();
-
-        auto InitDimensionLabel =
-            [this](const MeasurementDimension_p &dimension, QPointer<QLabel> &name, QPointer<QComboBox> &control)
-        {
-            if (dimension.isNull())
-            {
-                return;
-            }
-
-            if (name == nullptr)
-            {
-                name = new QLabel(dimension->Name() + ':'_L1);
-            }
-            else
-            {
-                name->setText(dimension->Name() + ':'_L1);
-            }
-            name->setToolTip(VAbstartMeasurementDimension::DimensionToolTip(dimension, m_m->IsFullCircumference()));
-
-            if (control == nullptr)
-            {
-                control = new QComboBox;
-                control->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-            }
-        };
-
-        MeasurementDimension_p dimension = dimensions.at(0);
-        InitDimensionLabel(dimension, m_dimensionALabel, m_dimensionA);
-        InitDimensionGradation(0, dimension, m_dimensionA);
-
-        if (dimensions.size() > 1)
-        {
-            dimension = dimensions.at(1);
-            InitDimensionLabel(dimension, m_dimensionBLabel, m_dimensionB);
-            InitDimensionGradation(1, dimension, m_dimensionB);
-
-            if (dimensions.size() > 2)
-            {
-                dimension = dimensions.at(2);
-                InitDimensionLabel(dimension, m_dimensionCLabel, m_dimensionC);
-                InitDimensionGradation(2, dimension, m_dimensionC);
-            }
-        }
-    }
-
-    m_m->StoreNames(false);
-    m_m->ReadMeasurements(baseA, baseB, baseC);
-    if (m_m->Type() == MeasurementsType::Individual)
-    {
-        VAbstractValApplication::VApp()->SetCustomerName(m_m->Customer());
-        VAbstractValApplication::VApp()->SetCustomerBirthDate(m_m->BirthDate());
-        VAbstractValApplication::VApp()->SetCustomerEmail(m_m->Email());
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -2092,281 +1979,24 @@ void MainWindow::ScaleChanged(qreal scale)
         }
     }
 }
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ConnectMeasurements()
-{
-    DialogSelectMeasurementsType selector(this);
-    if (selector.exec() != QDialog::Accepted)
-    {
-        return;
-    }
 
-    const MeasurementsType type = selector.Type();
+// Extracted: 
 
-    QString filter;
-    QString defaultPath;
-    bool updateIndividualPath = false;
 
-    if (type == MeasurementsType::Individual)
-    {
-        filter = tr("Individual measurements") + " (*.vit);;"_L1 + tr("All files") + " (*.*)"_L1;
-        defaultPath = VAbstractValApplication::VApp()->ValentinaSettings()->GetPathIndividualMeasurements();
-        updateIndividualPath = true;
-    }
-    else if (type == MeasurementsType::Multisize)
-    {
-        filter = tr("Multisize measurements") + " (*.vst);;"_L1 + tr("All files") + " (*.*)"_L1;
-        defaultPath = VAbstractValApplication::VApp()->ValentinaSettings()->GetPathMultisizeMeasurements();
-    }
-    else
-    {
-        return; // unknown type
-    }
+// Extracted: 
 
-    QString mPath = QFileDialog::getOpenFileName(
-        this,
-        tr("Open file"),
-        defaultPath,
-        filter,
-        nullptr,
-        VAbstractApplication::VApp()->NativeFileDialog());
 
-    if (mPath.isEmpty())
-    {
-        return;
-    }
+// Extracted: 
 
-    const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
-    if (!LoadMeasurements(patternPath, mPath))
-    {
-        return;
-    }
 
-    if (!doc->MPath().isEmpty())
-    {
-        m_watcher->removePath(AbsoluteMPath(patternPath, doc->MPath()));
-    }
-    ui->actionUnloadMeasurements->setEnabled(true);
-    doc->SetMPath(RelativeMPath(patternPath, mPath));
-    m_watcher->addPath(mPath);
-    PatternChangesWereSaved(false);
-    ui->actionEditCurrent->setEnabled(true);
-    statusBar()->showMessage(tr("Measurements loaded"), 5000);
-    doc->LiteParseTree(Document::FullLiteParse);
-    UpdateWindowTitle();
+// Extracted: 
 
-    if (updateIndividualPath)
-    {
-        VAbstractValApplication::VApp()->ValentinaSettings()
-            ->SetPathIndividualMeasurements(QFileInfo(mPath).absolutePath());
-    }
-}
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::UnloadMeasurements()
-{
-    if (doc->MPath().isEmpty())
-    {
-        ui->actionUnloadMeasurements->setDisabled(true);
-        return;
-    }
+// Extracted: 
 
-    if (doc->ListMeasurements().isEmpty())
-    {
-        m_watcher->removePath(AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath()));
 
-        const MeasurementsType oldType = VAbstractValApplication::VApp()->GetMeasurementsType();
-        VAbstractValApplication::VApp()->SetMeasurementsType(MeasurementsType::Unknown);
-
-        m_m.clear();
-
-        VAbstractValApplication::VApp()->SetDimensionHeight(0);
-        VAbstractValApplication::VApp()->SetDimensionSize(0);
-        VAbstractValApplication::VApp()->SetDimensionHip(0);
-        VAbstractValApplication::VApp()->SetDimensionWaist(0);
-
-        VAbstractValApplication::VApp()->SetDimensionHeightLabel(QString());
-        VAbstractValApplication::VApp()->SetDimensionSizeLabel(QString());
-        VAbstractValApplication::VApp()->SetDimensionHipLabel(QString());
-        VAbstractValApplication::VApp()->SetDimensionWaistLabel(QString());
-
-        if (oldType == MeasurementsType::Multisize)
-        {
-            m_currentDimensionA = 0;
-            m_currentDimensionB = 0;
-            m_currentDimensionC = 0;
-
-            ToolBarOption();
-        }
-        else if (oldType == MeasurementsType::Individual)
-        {
-            VAbstractValApplication::VApp()->SetCustomerBirthDate(QDate());
-            VAbstractValApplication::VApp()->SetCustomerEmail(QString());
-            VAbstractValApplication::VApp()->SetCustomerName(QString());
-            VAbstractValApplication::VApp()->SetMeasurementsUnits(Unit::LAST_UNIT_DO_NOT_USE);
-            VAbstractValApplication::VApp()->SetDimensionSizeUnits(Unit::LAST_UNIT_DO_NOT_USE);
-        }
-
-        doc->SetMPath(QString());
-        emit doc->UpdatePatternLabel();
-        PatternChangesWereSaved(false);
-        ui->actionEditCurrent->setEnabled(false);
-        ui->actionUnloadMeasurements->setDisabled(true);
-        statusBar()->showMessage(tr("Measurements unloaded"), 5000);
-
-        UpdateWindowTitle();
-    }
-    else
-    {
-        qCWarning(vMainWindow, "%s",
-                  qUtf8Printable(tr("Couldn't unload measurements. Some of them are used in the pattern.")));
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ShowMeasurements()
-{
-    if (not doc->MPath().isEmpty())
-    {
-        const QString absoluteMPath = AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
-
-        QStringList arguments;
-        arguments.append(absoluteMPath);
-        arguments.append("-u"_L1);
-        arguments.append(UnitsToStr(VAbstractValApplication::VApp()->patternUnits()));
-
-        if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
-        {
-            if (m_currentDimensionA > 0)
-            {
-                arguments.append("-a"_L1);
-                arguments.append(QString::number(m_currentDimensionA));
-            }
-
-            if (m_currentDimensionB > 0)
-            {
-                arguments.append("-b"_L1);
-                arguments.append(QString::number(m_currentDimensionB));
-            }
-
-            if (m_currentDimensionC > 0)
-            {
-                arguments.append("-c"_L1);
-                arguments.append(QString::number(m_currentDimensionC));
-            }
-        }
-
-        if (isNoScaling)
-        {
-            arguments.append("--"_L1 + LONG_OPTION_NO_HDPI_SCALING);
-        }
-
-        const QString path = VApplication::TapeFilePath();
-        qDebug("Opening Tape: path = %s.", qUtf8Printable(path));
-        VApplication::StartDetachedProcess(path, arguments);
-    }
-    else
-    {
-        ui->actionEditCurrent->setEnabled(false);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::MeasurementsChanged(const QString &path)
-{
-    qCDebug(vMainWindow, "Measurements file changed: %s", qUtf8Printable(path));
-    m_mChanges = false;
-    if (QFileInfo const checkFile(path); checkFile.exists())
-    {
-        m_mChanges = true;
-        m_mChangesAsked = false;
-        m_measurementsSyncTimer->start(1500ms);
-    }
-    else
-    {
-        for (int i = 0; i <= 1000; i = i + 10)
-        {
-            if (checkFile.exists())
-            {
-                m_mChanges = true;
-                m_mChangesAsked = false;
-                m_measurementsSyncTimer->start(1500ms);
-                break;
-            }
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
-    }
-
-    UpdateWindowTitle();
-    ui->actionSyncMeasurements->setEnabled(m_mChanges);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::SyncMeasurements()
-{
-    if (m_mChanges)
-    {
-        const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
-        QString path = AbsoluteMPath(patternPath, doc->MPath());
-        qCDebug(vMainWindow, "Syncing measurements: %s", qUtf8Printable(path));
-
-        // Temporarily remove the path to prevent infinite synchronization after a format conversion.
-        m_watcher->removePath(path);
-
-        if (UpdateMeasurements(patternPath, path, m_currentDimensionA, m_currentDimensionB, m_currentDimensionC))
-        {
-            const QString msg = tr("Measurements have been synced");
-            qCDebug(vMainWindow, "%s", qUtf8Printable(msg));
-            statusBar()->showMessage(msg, 5000);
-            VWidgetPopup::PopupMessage(this, msg);
-            doc->LiteParseTree(Document::FullLiteParse);
-            StoreDimensions();
-            m_mChanges = false;
-            m_mChangesAsked = true;
-            m_measurementsSyncTimer->stop();
-            UpdateWindowTitle();
-            ui->actionSyncMeasurements->setEnabled(m_mChanges);
-        }
-        else
-        {
-            qCWarning(vMainWindow, "%s", qUtf8Printable(tr("Couldn't sync measurements.")));
-        }
-
-        if (not m_watcher->files().contains(path))
-        {
-            m_watcher->addPath(path);
-        }
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::MeasurementsSyncTimerTimeout()
-{
-    if (isActiveWindow())
-    {
-        static bool asking = false;
-        if (not asking && m_mChanges && not m_mChangesAsked)
-        {
-            asking = true;
-            m_mChangesAsked = true;
-            m_measurementsSyncTimer->stop();
-            qCDebug(vMainWindow, "Asking user to sync measurements.");
-            const auto answer = QMessageBox::question(
-                this, tr("Measurements"),
-                tr("Measurements were changed. Do you want to sync measurements now?"),
-                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-            qCDebug(vMainWindow, "User answered sync prompt: %s",
-                    answer == QMessageBox::Yes ? "Yes" : "No");
-            if (answer == QMessageBox::Yes)
-            {
-                SyncMeasurements();
-            }
-            asking = false;
-        }
-    }
-}
 // Extracted to mainwindow_watermark.cpp: //---------------------------------------------------------------------------------------------------------------------
 
 // Extracted to mainwindow_watermark.cpp: //---------------------------------------------------------------------------------------------------------------------
@@ -2376,45 +2006,12 @@ void MainWindow::MeasurementsSyncTimerTimeout()
 // Extracted to mainwindow_watermark.cpp: //---------------------------------------------------------------------------------------------------------------------
 
 // Extracted to mainwindow_watermark.cpp: //---------------------------------------------------------------------------------------------------------------------
+// Extracted: 
 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::StoreMultisizeMDimensions()
-{
-    VAbstractValApplication::VApp()->SetMeasurementsUnits(m_m->Units());
+// Extracted: 
 
-    QList<MeasurementDimension_p> const dimensions = m_m->Dimensions().values();
 
-    if (not dimensions.isEmpty() && not m_dimensionALabel.isNull())
-    {
-        m_dimensionALabel->setText(dimensions.at(0)->Name() + ':'_L1);
-    }
-
-    if (dimensions.size() > 1 && not m_dimensionBLabel.isNull())
-    {
-        m_dimensionBLabel->setText(dimensions.at(1)->Name() + ':'_L1);
-    }
-
-    if (dimensions.size() > 2 && not m_dimensionCLabel.isNull())
-    {
-        m_dimensionCLabel->setText(dimensions.at(2)->Name() + ':'_L1);
-    }
-
-    StoreMultisizeMDimension(dimensions, 0, m_currentDimensionA);
-    StoreMultisizeMDimension(dimensions, 1, m_currentDimensionB);
-    StoreMultisizeMDimension(dimensions, 2, m_currentDimensionC);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::StoreIndividualMDimensions()
-{
-    QMap<QString, QSharedPointer<VMeasurement>> const measurements = pattern->DataMeasurements();
-
-    StoreIndividualMDimension(measurements, IMD::X);
-    StoreIndividualMDimension(measurements, IMD::Y);
-    StoreIndividualMDimension(measurements, IMD::W);
-    StoreIndividualMDimension(measurements, IMD::Z);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::StoreMultisizeMDimension(const QList<MeasurementDimension_p> &dimensions, int index, qreal currentBase)
@@ -2524,110 +2121,15 @@ auto MainWindow::DimensionRestrictedValues(int index, const MeasurementDimension
 
     return VAbstartMeasurementDimension::ValidBases(min, max, dimension->Step(), restriction.GetExcludeValues());
 }
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::SetDimensionBases()
-{
-    const QList<MeasurementDimension_p> dimensions = m_m->Dimensions().values();
 
-    auto SetBase = [dimensions](int index, const QPointer<QComboBox> &control, double &value)
-    {
-        if (dimensions.size() > index)
-        {
-            SCASSERT(control != nullptr)
+// Extracted: 
 
-            const QSignalBlocker blocker(control);
 
-            if (const qint32 i = control->findData(value); i != -1)
-            {
-                control->setCurrentIndex(i);
-            }
-            else
-            {
-                value = control->currentData().toDouble();
-            }
-        }
-    };
+// Extracted: 
 
-    SetBase(0, m_dimensionA, m_currentDimensionA);
-    SetBase(1, m_dimensionB, m_currentDimensionB);
-    SetBase(2, m_dimensionC, m_currentDimensionC);
-}
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::StoreDimensions()
-{
-    if (m_m->Type() == MeasurementsType::Multisize)
-    {
-        StoreMultisizeMDimensions();
-
-        doc->SetPatternWasChanged(true);
-        emit doc->UpdatePatternLabel();
-    }
-    else if (m_m->Type() == MeasurementsType::Individual)
-    {
-        StoreIndividualMDimensions();
-
-        doc->SetPatternWasChanged(true);
-        emit doc->UpdatePatternLabel();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ExportDraw(const QString &fileName)
-{
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_GCC("-Wnoexcept")
-
-    VLayoutExporter exporter;
-
-    QT_WARNING_POP
-
-    exporter.SetFileName(fileName);
-
-    int const verticalScrollBarValue = ui->view->verticalScrollBar()->value();
-    int const horizontalScrollBarValue = ui->view->horizontalScrollBar()->value();
-
-    QTransform const viewTransform = ui->view->transform();
-    ui->view->ZoomFitBest(); // Resize all labels
-    ui->view->repaint();
-    ui->view->ZoomOriginal(); // Set to original scale
-
-    // Enable all items on scene
-    const QList<QGraphicsItem *> qItems = m_sceneDraw->items();
-    for (auto *item : qItems)
-    {
-        item->setEnabled(true);
-        if (item->type() == VGraphicsSimpleTextItem::Type)
-        {
-            auto *text = dynamic_cast<VGraphicsSimpleTextItem *>(item);
-            text->RefreshColor(); // Regular update doesn't work on labels
-        }
-    }
-
-    ui->view->repaint();
-
-    m_sceneDraw->SetOriginsVisible(false);
-
-    const QRectF rect = m_sceneDraw->VisibleItemsBoundingRect();
-    m_sceneDraw->update(rect);
-    exporter.SetImageRect(rect);
-    exporter.SetOffset(rect.topLeft()); // Correct positions to fit SVG view rect
-
-    exporter.ExportToSVG(m_sceneDraw, QList<QGraphicsItem *>());
-
-    m_sceneDraw->SetOriginsVisible(true);
-
-    // Restore scale, scrollbars and current active pattern piece
-    ui->view->setTransform(viewTransform);
-    VMainGraphicsView::NewSceneRect(ui->view->scene(), ui->view);
-    ScaleChanged(ui->view->transform().m11());
-
-    ui->view->verticalScrollBar()->setValue(verticalScrollBarValue);
-    ui->view->horizontalScrollBar()->setValue(horizontalScrollBarValue);
-
-    m_sceneDraw->EnableTools();
-}
 // Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
 // Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
@@ -4859,104 +4361,18 @@ void MainWindow::PatternChangesWereSaved(bool saved)
         isNeedAutosave = not saved;
     }
 }
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::DimensionABaseChanged()
-{
-    if (m_m.isNull())
-    {
-        return;
-    }
 
-    const qreal oldValue = m_currentDimensionA;
-    m_currentDimensionA = m_dimensionA->currentData().toDouble();
-    doc->SetDimensionAValue(m_currentDimensionA);
+// Extracted: 
 
-    if (not VFuzzyComparePossibleNulls(oldValue, m_currentDimensionA))
-    {
-        if (const QList<MeasurementDimension_p> dimensions = m_m->Dimensions().values(); dimensions.size() > 1)
-        {
-            MeasurementDimension_p dimension = dimensions.at(1);
-            InitDimensionGradation(1, dimension, m_dimensionB);
 
-            if (dimensions.size() > 2)
-            {
-                dimension = dimensions.at(2);
-                InitDimensionGradation(2, dimension, m_dimensionC);
-            }
-        }
+// Extracted: 
 
-        m_gradation->start();
-    }
-}
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::DimensionBBaseChanged()
-{
-    if (m_m.isNull())
-    {
-        return;
-    }
+// Extracted: 
 
-    const qreal oldValue = m_currentDimensionB;
-    m_currentDimensionB = m_dimensionB->currentData().toDouble();
-    doc->SetDimensionBValue(m_currentDimensionB);
 
-    if (not VFuzzyComparePossibleNulls(oldValue, m_currentDimensionB))
-    {
-        if (const QList<MeasurementDimension_p> dimensions = m_m->Dimensions().values(); dimensions.size() > 2)
-        {
-            const MeasurementDimension_p &dimension = dimensions.at(2);
-            InitDimensionGradation(2, dimension, m_dimensionC);
-        }
-
-        m_gradation->start();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::DimensionCBaseChanged()
-{
-    const qreal oldValue = m_currentDimensionC;
-    m_currentDimensionC = m_dimensionC->currentData().toDouble();
-    doc->SetDimensionCValue(m_currentDimensionC);
-
-    if (not VFuzzyComparePossibleNulls(oldValue, m_currentDimensionC))
-    {
-        m_gradation->start();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::GradationChanged()
-{
-    m_gradation->stop();
-
-    // Only a freshly (re)opened measurement file needs the dimension gradation combo boxes rebuilt.
-    // A plain size switch keeps the same gradation lists, so skip that redundant work.
-    bool reopened = false;
-    if (m_m.isNull())
-    {
-        const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
-        QString mPath = AbsoluteMPath(patternPath, doc->MPath());
-        m_m = OpenMeasurementFile(patternPath, mPath);
-        reopened = true;
-    }
-
-    if (UpdateMeasurements(m_m, m_currentDimensionA, m_currentDimensionB, m_currentDimensionC, reopened))
-    {
-        doc->LiteParseTree(Document::FullLiteParse);
-        StoreDimensions();
-        // A size switch is a discrete user action: refresh piece geometry immediately instead of
-        // waiting for the debounce timer started by the parse. RefreshPieceGeometry() also refreshes
-        // the piece labels, so the previous eager DimensionsChanged() emit is no longer needed.
-        doc->RefreshPieceGeometry();
-    }
-    else
-    {
-        qCWarning(vMainWindow, "%s", qUtf8Printable(tr("Couldn't update measurements.")));
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ShowProgress()
@@ -5046,34 +4462,9 @@ void MainWindow::AskDefaultSettings()
 // Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
 
 // Extracted to mainwindow_background.cpp: //---------------------------------------------------------------------------------------------------------------------
+// Extracted: 
 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ActionExportRecipe_triggered()
-{
-    QString const filters(tr("Recipe files") + QStringLiteral("(*.vpr)"));
-    QString const fileName = QFileDialog::getSaveFileName(
-        this, tr("Export recipe"), QDir::homePath() + '/' + tr("recipe") + QStringLiteral(".vpr"), filters, nullptr,
-        VAbstractApplication::VApp()->NativeFileDialog());
-    if (fileName.isEmpty())
-    {
-        return;
-    }
-
-    try
-    {
-        VPatternRecipe recipe(doc);
-        QString error;
-        if (not recipe.SaveDocument(fileName, error))
-        {
-            qCWarning(vMainWindow, "%s", qUtf8Printable(tr("Could not save recipe. %1").arg(error)));
-        }
-    }
-    catch (const VExceptionInvalidHistory &e)
-    {
-        qCCritical(vMainWindow, "%s", qUtf8Printable(tr("Could not create recipe file. %1").arg(e.ErrorMessage())));
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ActionNewDraw_triggered()
@@ -5206,75 +4597,9 @@ void MainWindow::UpdateShortcuts()
         manager->UpdateActionShortcuts(m_shortcutActions);
     }
 }
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::InitDimensionControls()
-{
-    delete m_dimensionA.data();
-    delete m_dimensionALabel.data();
-    delete m_dimensionB.data();
-    delete m_dimensionBLabel.data();
-    delete m_dimensionC.data();
-    delete m_dimensionCLabel.data();
 
-    if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
-    {
-        const QList<MeasurementDimension_p> dimensions = m_m->Dimensions().values();
-
-        auto InitControl = [this, dimensions](int index, QPointer<QLabel> &name, QPointer<QComboBox> &control)
-        {
-            if (dimensions.size() > index)
-            {
-                const MeasurementDimension_p &dimension = dimensions.at(index);
-
-                if (name.isNull())
-                {
-                    name = new QLabel(dimension->Name() + ':'_L1);
-                }
-                else
-                {
-                    name->setText(dimension->Name() + ':'_L1);
-                }
-                name->setToolTip(VAbstartMeasurementDimension::DimensionToolTip(dimension, m_m->IsFullCircumference()));
-
-                if (control.isNull())
-                {
-                    control = new QComboBox;
-                    control->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-                }
-
-                InitDimensionGradation(index, dimension, control);
-
-                ui->toolBarOption->addWidget(name);
-                ui->toolBarOption->addWidget(control);
-            }
-        };
-
-        InitControl(0, m_dimensionALabel, m_dimensionA);
-        InitControl(1, m_dimensionBLabel, m_dimensionB);
-        InitControl(2, m_dimensionCLabel, m_dimensionC);
-
-        if (not m_dimensionA.isNull())
-        {
-            connect(m_dimensionA.data(), QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-                    &MainWindow::DimensionABaseChanged);
-        }
-
-        if (not m_dimensionB.isNull())
-        {
-            connect(m_dimensionB.data(), QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-                    &MainWindow::DimensionBBaseChanged);
-        }
-
-        if (not m_dimensionC.isNull())
-        {
-            connect(m_dimensionC.data(), QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-                    &MainWindow::DimensionCBaseChanged);
-        }
-
-        ui->toolBarOption->addSeparator();
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::InitDimensionGradation(int index, const MeasurementDimension_p &dimension,
@@ -6773,123 +6098,15 @@ void MainWindow::CreateMeasurements()
     QProcess::startDetached(tape, arguments, workingDirectory);
 }
 #endif
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ExportDrawAs(bool checked)
-{
-    Q_UNUSED(checked)
 
-    auto Uncheck = qScopeGuard([this] { ui->actionExportDraw->setChecked(false); });
+// Extracted: 
 
-    QString const filters(tr("Scalable Vector Graphics files") + QStringLiteral("(*.svg)"));
-    QString const dir = QDir::homePath() + '/'_L1 + FileName() + QStringLiteral(".svg");
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save draw"), dir, filters, nullptr,
-                                                    VAbstractApplication::VApp()->NativeFileDialog());
 
-    if (fileName.isEmpty())
-    {
-        return;
-    }
+// Extracted: 
 
-    if (QFileInfo const f(fileName); f.suffix().isEmpty() || f.suffix() != "svg"_L1)
-    {
-        fileName += ".svg"_L1;
-    }
 
-    ExportDraw(fileName);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ExportLayoutAs(bool checked)
-{
-    Q_UNUSED(checked)
-
-    auto Uncheck = qScopeGuard([this] { ui->actionLayoutExportAs->setChecked(false); });
-
-    if (m_layoutSettings->IsLayoutStale() && VPrintLayout::ContinueIfLayoutStale(this) == QMessageBox::No)
-    {
-        return;
-    }
-
-    try
-    {
-        m_dialogSaveLayout = QSharedPointer<DialogSaveLayout>(new DialogSaveLayout(
-            static_cast<int>(m_layoutSettings->LayoutScenes().size()), Draw::Layout, FileName(), this));
-        m_dialogSaveLayout->SetBoundaryTogetherWithNotches(m_layoutSettings->IsBoundaryTogetherWithNotches());
-
-        if (m_dialogSaveLayout->exec() == QDialog::Rejected)
-        {
-            m_dialogSaveLayout.clear();
-            return;
-        }
-
-        ExportData(QVector<VLayoutPiece>());
-        m_dialogSaveLayout.clear();
-    }
-    catch (const VException &e)
-    {
-        m_dialogSaveLayout.clear();
-        qCritical("%s\n\n%s\n\n%s", qUtf8Printable(tr("Export error.")), qUtf8Printable(e.ErrorMessage()),
-                  qUtf8Printable(e.DetailedInformation()));
-        return;
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ExportDetailsAs(bool checked)
-{
-    Q_UNUSED(checked)
-
-    auto Uncheck = qScopeGuard([this] { ui->actionDetailExportAs->setChecked(false); });
-
-    QVector<DetailForLayout> const detailsInLayout = SortDetailsForLayout(pattern->DataPieces());
-
-    if (detailsInLayout.isEmpty())
-    {
-        QMessageBox::information(this, tr("Layout mode"),
-                                 tr("You don't have enough details to export. Please, "
-                                    "include at least one detail in layout."),
-                                 QMessageBox::Ok, QMessageBox::Ok);
-        return;
-    }
-
-    QVector<VLayoutPiece> listDetails;
-    try
-    {
-        listDetails = PrepareDetailsForLayout(detailsInLayout);
-    }
-    catch (VException &e)
-    {
-        QMessageBox::warning(this, tr("Export details"), tr("Can't export details.") + " \n"_L1 + e.ErrorMessage(),
-                             QMessageBox::Ok, QMessageBox::Ok);
-        return;
-    }
-
-    try
-    {
-        m_dialogSaveLayout =
-            QSharedPointer<DialogSaveLayout>(new DialogSaveLayout(1, Draw::Modeling, FileName(), this));
-
-        VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-        m_dialogSaveLayout->SetBoundaryTogetherWithNotches(settings->IsBoundaryTogetherWithNotches());
-
-        if (m_dialogSaveLayout->exec() == QDialog::Rejected)
-        {
-            m_dialogSaveLayout.clear();
-            return;
-        }
-
-        ExportData(listDetails);
-        m_dialogSaveLayout.clear();
-    }
-    catch (const VException &e)
-    {
-        m_dialogSaveLayout.clear();
-        qCritical("%s\n\n%s\n\n%s", qUtf8Printable(tr("Export error.")), qUtf8Printable(e.ErrorMessage()),
-                  qUtf8Printable(e.DetailedInformation()));
-        return;
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ReopenFilesAfterCrash(QStringList &args)
@@ -6945,134 +6162,9 @@ void MainWindow::ReopenFilesAfterCrash(QStringList &args)
         }
     }
 }
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-auto MainWindow::CheckPathToMeasurements(const QString &patternPath, const QString &path) -> QString
-{
-    if (path.isEmpty())
-    {
-        return path;
-    }
 
-    auto FindLocation = [this](const QString &filter, const QString &dirPath, const QString &selectedName)
-    {
-        QFileDialog dialog(this, tr("Open file"), dirPath, filter);
-        dialog.selectFile(selectedName);
-        dialog.setFileMode(QFileDialog::ExistingFile);
-        dialog.setOption(QFileDialog::DontUseNativeDialog,
-                         VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
-
-        QString mPath;
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            mPath = dialog.selectedFiles().value(0);
-        }
-
-        return mPath;
-    };
-
-    QFileInfo const table(path);
-    if (table.exists())
-    {
-        return path;
-    }
-
-    if (not VApplication::IsGUIMode())
-    {
-        return {}; // console mode doesn't support fixing path to a measurement file
-    }
-
-    const QString text = tr("The measurements file <br/><br/> <b>%1</b> <br/><br/> could not be found. Do you "
-                            "want to update the file location?")
-                             .arg(path);
-
-    if (QMessageBox::StandardButton const res = QMessageBox::question(
-            this, tr("Loading measurements file"), text, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-        res == QMessageBox::No)
-    {
-        return {};
-    }
-
-    MeasurementsType patternType;
-    if (table.suffix() == "vst"_L1)
-    {
-        patternType = MeasurementsType::Multisize;
-    }
-    else
-    {
-        patternType = MeasurementsType::Individual; // or Unknown
-    }
-
-    auto DirPath = [patternPath, table](const QString &defPath, QString &selectedName)
-    {
-        QString dirPath;
-        const QDir patternDir = QFileInfo(patternPath).absoluteDir();
-        if (QString measurements = table.fileName(); patternDir.exists(measurements))
-        {
-            selectedName = measurements;
-            dirPath = patternDir.absolutePath();
-        }
-        else if (patternDir.exists(measurements.replace(' '_L1, '_'_L1)))
-        {
-            selectedName = measurements.replace(' '_L1, '_'_L1);
-            dirPath = patternDir.absolutePath();
-        }
-        else
-        {
-            dirPath = defPath;
-        }
-        return dirPath;
-    };
-
-    QString mPath;
-    if (patternType == MeasurementsType::Multisize)
-    {
-        const QString filter =
-            tr("Multisize measurements") + " (*.vst);;"_L1 + tr("Individual measurements") + " (*.vit)"_L1;
-        // Use standard path to multisize measurements
-        QString selectedName;
-        const QString dirPath =
-            DirPath(VAbstractValApplication::VApp()->ValentinaSettings()->GetPathMultisizeMeasurements(), selectedName);
-        mPath = FindLocation(filter, dirPath, selectedName);
-        if (!mPath.isEmpty())
-        {
-            VAbstractValApplication::VApp()->ValentinaSettings()->SetPathMultisizeMeasurements(mPath);
-        }
-    }
-    else
-    {
-        const QString filter =
-            tr("Individual measurements") + " (*.vit);;"_L1 + tr("Multisize measurements") + " (*.vst)"_L1;
-        // Use standard path to individual measurements
-        QString selectedName;
-        const QString dirPath = DirPath(
-            VAbstractValApplication::VApp()->ValentinaSettings()->GetPathIndividualMeasurements(), selectedName);
-        mPath = FindLocation(filter, dirPath, selectedName);
-        if (!mPath.isEmpty())
-        {
-            VAbstractValApplication::VApp()->ValentinaSettings()->SetPathIndividualMeasurements(mPath);
-        }
-    }
-
-    if (mPath.isEmpty())
-    {
-        return mPath;
-    }
-
-    QScopedPointer<VMeasurements> const m(new VMeasurements(pattern));
-    m->setXMLContent(mPath);
-
-    patternType = m->Type();
-
-    if (patternType == MeasurementsType::Unknown)
-    {
-        throw VException(tr("Measurement file has unknown format."));
-    }
-
-    VAbstractValApplication::VApp()->SetMeasurementsType(patternType);
-    doc->SetMPath(RelativeMPath(patternPath, mPath));
-    return mPath;
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ChangePP(int index, bool zoomBestFit)
@@ -7587,351 +6679,48 @@ void MainWindow::UpdateWindowTitle()
     setWindowIcon(icon);
 #endif // defined(Q_OS_MAC)
 }
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectPoint()
-{
-    // Only true for rubber band selection
-    emit EnableLabelSelection(false);
-    emit EnablePointSelection(false);
-    emit EnableLineSelection(false);
-    emit EnableArcSelection(false);
-    emit EnableElArcSelection(false);
-    emit EnableSplineSelection(false);
-    emit EnableSplinePathSelection(false);
-    emit EnableBackgroundImageSelection(false);
 
-    // Hovering
-    emit EnableLabelHover(true);
-    emit EnablePointHover(true);
-    emit EnableLineHover(false);
-    emit EnableArcHover(false);
-    emit EnableElArcHover(false);
-    emit EnableSplineHover(false);
-    emit EnableSplinePathHover(false);
-    emit EnableImageBackgroundHover(false);
+// Extracted: 
 
-    ui->view->AllowRubberBand(false);
-}
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectPointByRelease()
-{
-    ToolSelectPoint();
-    emit ItemsSelection(SelectionType::ByMouseRelease);
-}
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectPointByPress()
-{
-    ToolSelectPoint();
-    emit ItemsSelection(SelectionType::ByMousePress);
-}
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectSpline()
-{
-    // Only true for rubber band selection
-    emit EnableLabelSelection(false);
-    emit EnablePointSelection(false);
-    emit EnableLineSelection(false);
-    emit EnableArcSelection(false);
-    emit EnableElArcSelection(false);
-    emit EnableSplineSelection(false);
-    emit EnableSplinePathSelection(false);
-    emit EnableBackgroundImageSelection(false);
+// Extracted: 
 
-    // Hovering
-    emit EnableLabelHover(false);
-    emit EnablePointHover(false);
-    emit EnableLineHover(false);
-    emit EnableArcHover(false);
-    emit EnableElArcHover(false);
-    emit EnableSplineHover(true);
-    emit EnableSplinePathHover(false);
-    emit EnableImageBackgroundHover(false);
 
-    emit ShowSplineSegmentLabel(true);
+// Extracted: 
 
-    emit ItemsSelection(SelectionType::ByMouseRelease);
 
-    ui->view->AllowRubberBand(false);
-}
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectSplinePath()
-{
-    // Only true for rubber band selection
-    emit EnableLabelSelection(false);
-    emit EnablePointSelection(false);
-    emit EnableLineSelection(false);
-    emit EnableArcSelection(false);
-    emit EnableElArcSelection(false);
-    emit EnableSplineSelection(false);
-    emit EnableSplinePathSelection(false);
-    emit EnableBackgroundImageSelection(false);
 
-    // Hovering
-    emit EnableLabelHover(false);
-    emit EnablePointHover(false);
-    emit EnableLineHover(false);
-    emit EnableArcHover(false);
-    emit EnableElArcHover(false);
-    emit EnableSplineHover(false);
-    emit EnableSplinePathHover(true);
-    emit EnableImageBackgroundHover(false);
+// Extracted: 
 
-    emit ShowSplinePathSegmentLabel(true);
 
-    emit ItemsSelection(SelectionType::ByMouseRelease);
+// Extracted: 
 
-    ui->view->AllowRubberBand(false);
-}
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectArc()
-{
-    // Only true for rubber band selection
-    emit EnableLabelSelection(false);
-    emit EnablePointSelection(false);
-    emit EnableLineSelection(false);
-    emit EnableArcSelection(false);
-    emit EnableElArcSelection(false);
-    emit EnableSplineSelection(false);
-    emit EnableSplinePathSelection(false);
-    emit EnableBackgroundImageSelection(false);
+// Extracted: 
 
-    // Hovering
-    emit EnableLabelHover(false);
-    emit EnablePointHover(false);
-    emit EnableLineHover(false);
-    emit EnableArcHover(true);
-    emit EnableElArcHover(false);
-    emit EnableSplineHover(false);
-    emit EnableSplinePathHover(false);
-    emit EnableImageBackgroundHover(false);
 
-    emit ShowArcSegmentLabel(true);
+// Extracted: 
 
-    emit ItemsSelection(SelectionType::ByMouseRelease);
 
-    ui->view->AllowRubberBand(false);
-}
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectArcElArc()
-{
-    // Only true for rubber band selection
-    emit EnableLabelSelection(false);
-    emit EnablePointSelection(false);
-    emit EnableLineSelection(false);
-    emit EnableArcSelection(false);
-    emit EnableElArcSelection(false);
-    emit EnableSplineSelection(false);
-    emit EnableSplinePathSelection(false);
-    emit EnableBackgroundImageSelection(false);
 
-    // Hovering
-    emit EnableLabelHover(false);
-    emit EnablePointHover(false);
-    emit EnableLineHover(false);
-    emit EnableArcHover(true);
-    emit EnableElArcHover(true);
-    emit EnableSplineHover(false);
-    emit EnableSplinePathHover(false);
-    emit EnableImageBackgroundHover(false);
+// Extracted: 
 
-    emit ShowArcSegmentLabel(true);
-    emit ShowElArcSegmentLabel(true);
 
-    emit ItemsSelection(SelectionType::ByMouseRelease);
+// Extracted: 
 
-    ui->view->AllowRubberBand(false);
-}
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectArcCurve()
-{
-    ToolSelectArcElArc();
-}
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectPointArc()
-{
-    // Only true for rubber band selection
-    emit EnableLabelSelection(false);
-    emit EnablePointSelection(false);
-    emit EnableLineSelection(false);
-    emit EnableArcSelection(false);
-    emit EnableElArcSelection(false);
-    emit EnableSplineSelection(false);
-    emit EnableSplinePathSelection(false);
-    emit EnableBackgroundImageSelection(false);
 
-    // Hovering
-    emit EnableLabelHover(true);
-    emit EnablePointHover(true);
-    emit EnableLineHover(false);
-    emit EnableArcHover(true);
-    emit EnableElArcHover(false);
-    emit EnableSplineHover(false);
-    emit EnableSplinePathHover(false);
-    emit EnableImageBackgroundHover(false);
-
-    emit ShowArcSegmentLabel(true);
-
-    emit ItemsSelection(SelectionType::ByMouseRelease);
-
-    ui->view->AllowRubberBand(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectCurve()
-{
-    // Only true for rubber band selection
-    emit EnableLabelSelection(false);
-    emit EnablePointSelection(false);
-    emit EnableLineSelection(false);
-    emit EnableArcSelection(false);
-    emit EnableElArcSelection(false);
-    emit EnableSplineSelection(false);
-    emit EnableSplinePathSelection(false);
-    emit EnableBackgroundImageSelection(false);
-
-    // Hovering
-    emit EnableLabelHover(false);
-    emit EnablePointHover(false);
-    emit EnableLineHover(false);
-    emit EnableArcHover(true);
-    emit EnableElArcHover(true);
-    emit EnableSplineHover(true);
-    emit EnableSplinePathHover(true);
-    emit EnableImageBackgroundHover(false);
-
-    emit ShowArcSegmentLabel(true);
-    emit ShowElArcSegmentLabel(true);
-    emit ShowSplineSegmentLabel(true);
-    emit ShowSplinePathSegmentLabel(true);
-
-    emit ItemsSelection(SelectionType::ByMouseRelease);
-
-    ui->view->AllowRubberBand(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectAllDrawObjects()
-{
-    // Only true for rubber band selection
-    emit EnableLabelSelection(false);
-    emit EnablePointSelection(false);
-    emit EnableLineSelection(false);
-    emit EnableArcSelection(false);
-    emit EnableElArcSelection(false);
-    emit EnableSplineSelection(false);
-    emit EnableSplinePathSelection(false);
-    emit EnableBackgroundImageSelection(false);
-
-    // Hovering
-    emit EnableLabelHover(true);
-    emit EnablePointHover(true);
-    emit EnableLineHover(false);
-    emit EnableArcHover(true);
-    emit EnableElArcHover(true);
-    emit EnableSplineHover(true);
-    emit EnableSplinePathHover(true);
-    emit EnableImageBackgroundHover(false);
-
-    emit ShowArcSegmentLabel(true);
-    emit ShowElArcSegmentLabel(true);
-    emit ShowSplineSegmentLabel(true);
-    emit ShowSplinePathSegmentLabel(true);
-
-    emit ItemsSelection(SelectionType::ByMouseRelease);
-
-    ui->view->AllowRubberBand(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectOperationObjects()
-{
-    emit EnableLabelSelection(false);
-    emit EnablePointSelection(false);
-    emit EnableLineSelection(false);
-    emit EnableArcSelection(false);
-    emit EnableElArcSelection(false);
-    emit EnableSplineSelection(false);
-    emit EnableSplinePathSelection(false);
-    emit EnableBackgroundImageSelection(false);
-
-    emit EnableLabelHover(true);
-    emit EnablePointHover(true);
-    emit EnableLineHover(false);
-    emit EnableArcHover(true);
-    emit EnableElArcHover(true);
-    emit EnableSplineHover(true);
-    emit EnableSplinePathHover(true);
-    emit EnableImageBackgroundHover(false);
-
-    emit ShowArcSegmentLabel(true);
-    emit ShowElArcSegmentLabel(true);
-    emit ShowSplineSegmentLabel(true);
-    emit ShowSplinePathSegmentLabel(true);
-
-    emit ItemsSelection(SelectionType::ByMouseRelease);
-
-    ui->view->AllowCustomRubberBand(true);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectGroupObjects()
-{
-    // Only true for rubber band selection
-    emit EnableLabelSelection(true);
-    emit EnablePointSelection(true);
-    emit EnableLineSelection(true);
-    emit EnableArcSelection(true);
-    emit EnableElArcSelection(true);
-    emit EnableSplineSelection(true);
-    emit EnableSplinePathSelection(true);
-    emit EnableBackgroundImageSelection(false);
-
-    // Hovering
-    emit EnableLabelHover(true);
-    emit EnablePointHover(true);
-    emit EnableLineHover(true);
-    emit EnableArcHover(true);
-    emit EnableElArcHover(true);
-    emit EnableSplineHover(true);
-    emit EnableSplinePathHover(true);
-    emit EnableImageBackgroundHover(false);
-
-    emit ShowArcSegmentLabel(false);
-    emit ShowElArcSegmentLabel(false);
-    emit ShowSplineSegmentLabel(false);
-    emit ShowSplinePathSegmentLabel(false);
-
-    emit ItemsSelection(SelectionType::ByMouseRelease);
-
-    ui->view->AllowRubberBand(true);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectDetail()
-{
-    // Only true for rubber band selection
-    emit EnableNodeLabelSelection(false);
-    emit EnableNodePointSelection(false);
-    emit EnableDetailSelection(true); // Disable when done visualization details
-
-    // Hovering
-    emit EnableNodeLabelHover(true);
-    emit EnableNodePointHover(true);
-    emit EnableDetailHover(true);
-
-    emit ItemsSelection(SelectionType::ByMouseRelease);
-
-    ui->view->AllowRubberBand(false);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::PrintPatternMessage(QEvent *event)
@@ -7994,80 +6783,6 @@ void MainWindow::AutoArrangeLabels(QPoint globalPos)
 
     RunAutoArrangeLabels();
 }
+// Extracted: 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::RunAutoArrangeLabels()
-{
-    if (m_currentTool != Tool::Arrow)
-    {
-        return;
-    }
 
-    VMainGraphicsScene *const activeScene = m_drawMode ? m_sceneDraw : m_sceneDetails;
-    auto [arrangeData, requests] = VDrawLabelCollector::Collect(activeScene);
-
-    if (arrangeData.isEmpty())
-    {
-        return;
-    }
-
-    // Run the placement engine on a worker thread so the UI stays alive (progress bar animates).
-    // setEnabled(false) blocks mouse/keyboard input to prevent re-entrant invocations.
-    m_progressBar->setRange(0, 0); // indeterminate spinner
-    m_progressBar->setValue(0);
-    m_statusLabel->setVisible(false);
-    m_progressBar->setVisible(true);
-    setEnabled(false);
-
-    // Structured-binding names cannot be captured by name in lambdas (Clang limitation),
-    // so copy to a regular named variable first.
-    const QVector<LabelArrangeData> labelData = arrangeData;
-
-    QFutureWatcher<QVector<QPointF>> watcher;
-    QEventLoop loop;
-    QObject::connect(&watcher, &QFutureWatcher<QVector<QPointF>>::finished, &loop, &QEventLoop::quit);
-    watcher.setFuture(QtConcurrent::run([&labelData]() { return VLabelArrangeEngine::Arrange(labelData); }));
-    loop.exec();
-
-    setEnabled(true);
-    m_progressBar->setVisible(false);
-    m_statusLabel->setVisible(true);
-
-    const QVector<QPointF> newOffsets = watcher.result();
-
-    QUndoStack *const undoStack = VAbstractApplication::VApp()->getUndoStack();
-    undoStack->beginMacro(tr("Auto-arrange labels"));
-
-    for (int i = 0; i < requests.size(); ++i)
-    {
-        const QPointF newOff = newOffsets.at(i);
-        const QPointF curOff = arrangeData.at(i).currentOffset;
-        if (qAbs(newOff.x() - curOff.x()) < 0.1 && qAbs(newOff.y() - curOff.y()) < 0.1)
-        {
-            continue;
-        }
-
-        const LabelMoveRequest &req = requests.at(i);
-        switch (req.kind)
-        {
-            case LabelMoveRequest::Kind::Point:
-                undoStack->push(new MoveLabel(doc, newOff, req.toolId));
-                break;
-            case LabelMoveRequest::Kind::Double:
-                undoStack->push(new MoveDoubleLabel(doc, newOff, static_cast<MoveDoublePoint>(req.extraIdx),
-                                                    req.toolId, req.pointId));
-                break;
-            case LabelMoveRequest::Kind::Operation:
-                undoStack->push(new OperationMoveLabel(req.toolId, doc, newOff, req.pointId));
-                break;
-            case LabelMoveRequest::Kind::Segment:
-                undoStack->push(new MoveSegmentLabel(doc, newOff, req.toolId,
-                                                     static_cast<SegmentLabel>(req.extraIdx)));
-                break;
-            default:
-                break;
-        }
-    }
-
-    undoStack->endMacro();
-}
