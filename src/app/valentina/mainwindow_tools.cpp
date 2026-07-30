@@ -28,75 +28,21 @@
  *************************************************************************/
 
 #include "mainwindow.h"
-
-#include <QAction>
-#include <QComboBox>
-#include <QPointer>
-#include <QDesktopServices>
-#include <QDoubleSpinBox>
-#include <QFileDialog>
-#include <QFileInfo>
-#include <QFileSystemWatcher>
-#include <QEventLoop>
-#include <QFuture>
-#include <QFutureWatcher>
-#include <QGlobalStatic>
-#include <QImageReader>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QProcess>
-#include <QProgressBar>
-#include <QScopeGuard>
-#include <QScrollBar>
-#include <QSettings>
-#include <QShowEvent>
-#include <QStyleFactory>
-#include <QTimer>
-#include <QUndoStack>
-#include <QUuid>
-#include <QtConcurrent>
-#include <QtDebug>
-#include <QtGlobal>
-#include <chrono>
-#include <functional>
-#include <memory>
-#include <thread>
-
-#include "../vpropertyexplorer/qtcolorpicker.h"
-#include "../ifc/exception/vexceptionconversionerror.h"
-#include "../ifc/exception/vexceptionemptyparameter.h"
-#include "../ifc/exception/vexceptioninvalidhistory.h"
-#include "../ifc/exception/vexceptionobjecterror.h"
-#include "../ifc/exception/vexceptionundo.h"
-#include "../ifc/exception/vexceptionwrongid.h"
-#include "../ifc/xml/utils.h"
-#include "../ifc/xml/vbackgroundpatternimage.h"
-#include "../ifc/xml/vpatternconverter.h"
-#include "../ifc/xml/vvitconverter.h"
-#include "../ifc/xml/vvstconverter.h"
-#include "../vformat/vmeasurements.h"
-#include "../vformat/vpatternrecipe.h"
-#include "../vganalytics/vganalytics.h"
-#include "../vlayout/dialogs/dialoglayoutscale.h"
-#include "../vlayout/dialogs/watermarkwindow.h"
-#include "../vlayout/vlayoutexporter.h"
-#include "../vmisc/customevents.h"
-#include "../vtools/dialogs/dialogtoolbox.h"
-#include "../vmisc/def.h"
-#include "../vmisc/dialogs/dialogaskcollectstatistic.h"
-#include "../vmisc/dialogs/dialogselectlanguage.h"
-#include "../vmisc/qxtcsvmodel.h"
+#include "ui_mainwindow.h"
+#include "mainwindow_helpers.h"
 #include "vtheme.h"
+#include "../vmisc/vabstractvalapplication.h"
+#include "../vmisc/vvalentinasettings.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vmodifierkey.h"
-#include "../vmisc/vsysexits.h"
-#include "../vmisc/vvalentinasettings.h"
-#include "../vmisc/vfontinstaller.h"
-#include "../vmisc/projectversion.h"
-#include "../vmisc/dialogs/dialogselectmeasurementstype.h"
-#include "../vpatterndb/variables/vincrement.h"
-#include "../vpatterndb/variables/vmeasurement.h"
-#include "../vtools/dialogs/support/dialogeditlabel.h"
+#include "../vganalytics/vganalytics.h"
+#include "../vtools/dialogs/dialogtoolbox.h"
+#include "../vwidgets/vmaingraphicsscene.h"
+#include "../vwidgets/vtoolbuttonpopup.h"
+#include "../vwidgets/vwidgetpopup.h"
+#include "core/vapplication.h"
+
+// Dialog headers (one per tool)
 #include "../vtools/dialogs/tools/dialogalongline.h"
 #include "../vtools/dialogs/tools/dialogarc.h"
 #include "../vtools/dialogs/tools/dialogarcwithlength.h"
@@ -107,8 +53,8 @@
 #include "../vtools/dialogs/tools/dialogcutarc.h"
 #include "../vtools/dialogs/tools/dialogcutspline.h"
 #include "../vtools/dialogs/tools/dialogcutsplinepath.h"
-#include "../vtools/dialogs/tools/dialogellipticalarcwithlength.h"
 #include "../vtools/dialogs/tools/dialogellipticalarc.h"
+#include "../vtools/dialogs/tools/dialogellipticalarcwithlength.h"
 #include "../vtools/dialogs/tools/dialogendline.h"
 #include "../vtools/dialogs/tools/dialogflippingbyaxis.h"
 #include "../vtools/dialogs/tools/dialogflippingbyline.h"
@@ -133,16 +79,16 @@
 #include "../vtools/dialogs/tools/dialogtriangle.h"
 #include "../vtools/dialogs/tools/dialogtruedarts.h"
 #include "../vtools/dialogs/tools/dialoguniondetails.h"
+#include "../vtools/dialogs/tools/dialoggraduatedcurve.h"
+#include "../vtools/dialogs/tools/dialogparallelcurve.h"
 #include "../vtools/dialogs/tools/piece/dialogduplicatedetail.h"
 #include "../vtools/dialogs/tools/piece/dialoginsertnode.h"
 #include "../vtools/dialogs/tools/piece/dialogpiecepath.h"
 #include "../vtools/dialogs/tools/piece/dialogpin.h"
 #include "../vtools/dialogs/tools/piece/dialogplacelabel.h"
 #include "../vtools/dialogs/tools/piece/dialogseamallowance.h"
-#include "../vtools/tools/backgroundimage/vbackgroundimagecontrols.h"
-#include "../vtools/tools/backgroundimage/vbackgroundimageitem.h"
-#include "../vtools/tools/backgroundimage/vbackgroundpixmapitem.h"
-#include "../vtools/tools/backgroundimage/vbackgroundsvgitem.h"
+
+// VTool headers (one per tool)
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
@@ -152,6 +98,9 @@
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarc.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolparallelcurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolspline.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolsplinepath.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/vtooltruedarts.h"
@@ -182,85 +131,26 @@
 #include "../vtools/tools/nodeDetails/vtoolplacelabel.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/tools/vtooluniondetails.h"
-#include "../vtools/undocommands/image/addbackgroundimage.h"
-#include "../vtools/undocommands/image/deletebackgroundimage.h"
-#include "../vtools/undocommands/renamepp.h"
-#include "../vtools/undocommands/undogroup.h"
-#include "../vtools/undocommands/label/movedoublelabel.h"
-#include "../vtools/undocommands/label/movelabel.h"
-#include "../vtools/undocommands/label/movesegmentlabel.h"
-#include "../vtools/undocommands/label/operationmovelabel.h"
-#include "../vwidgets/vabstractsimple.h"
-#include "../vwidgets/vgraphicssimpletextitem.h"
-#include "../vwidgets/labelarrange/vdrawlabelcollector.h"
-#include "../vwidgets/labelarrange/vlabelarrangeengine.h"
-#include "../vwidgets/vmaingraphicsscene.h"
-#include "../vwidgets/vscenepoint.h"
-#include "../vwidgets/vsegmentlabel.h"
-#include "../vwidgets/vsimplecurve.h"
-#include "../vwidgets/vsimplepoint.h"
-#include "../vtools/tools/vabstracttool.h"
-#include "../vwidgets/vtoolbuttonpopup.h"
-#include "../vwidgets/vwidgetpopup.h"
-#include "core/vapplication.h"
-#include "core/vtooloptionspropertybrowser.h"
-#include "dialogs/dialogaboutapp.h"
-#include "dialogs/dialogaddbackgroundimage.h"
-#include "dialogs/dialogfinalmeasurements.h"
-#include "dialogs/dialogincrements.h"
-#include "dialogs/dialognewpattern.h"
-#include "dialogs/dialogpatternproperties.h"
-#include "dialogs/dialogpreferences.h"
-#include "../vtools/dialogs/tools/dialogparallelcurve.h"
-#include "dialogs/vwidgetbackgroundimages.h"
-#include "dialogs/vwidgetdetails.h"
+
+// Docks used by tool callbacks
 #include "dialogs/vwidgetgroups.h"
 #include "dialogs/vwidgetdependencies.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolparallelcurve.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.h"
-#include "../vtools/dialogs/tools/dialoggraduatedcurve.h"
-#include "vabstractapplication.h"
-#include "vabstractshortcutmanager.h"
-#include "vsinglelineoutlinechar.h"
-#include "../ifc/xml/vpatternblockmapper.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include "../vmisc/vtextcodec.h"
-#else
-#include <QTextCodec>
-#endif // QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+// Undo commands used by tool callbacks
+#include "../vtools/undocommands/renamepp.h"
+#include "../vtools/undocommands/undogroup.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QSourceLocation>
-#endif
+// Other needed headers
+#include "../vmisc/def.h"
+#include "../vpatterndb/variables/vmeasurement.h"
 
-#if defined(Q_OS_WIN32) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QWinTaskbarButton>
-#include <QWinTaskbarProgress>
-#endif
+#include <QAction>
+#include <QApplication>
+#include <QComboBox>
+#include <QMessageBox>
+#include <QPointer>
 
-#if defined(Q_OS_MAC)
-#include <QDrag>
-#include <QMimeData>
-#endif // defined(Q_OS_MAC)
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-#include "../vmisc/compatibility.h"
-#endif
-
-#ifdef Q_OS_WIN
-#ifdef DocumentProperties
-#endif
-#endif
-
-#include "ui_mainwindow.h"
-
-using namespace std::chrono_literals;
 using namespace Qt::Literals::StringLiterals;
-
-#include "mainwindow_helpers.h"
-
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
