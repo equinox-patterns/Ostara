@@ -120,6 +120,7 @@ auto VCrashPaths::GetMetricsPath() -> QString
 
 //---------------------------------------------------------------------------------------------------------------------
 
+#ifdef CRASH_REPORTING
 auto VCrashPaths::GetPlatformString(const QString &string) -> base::FilePath::StringType
 {
 #if defined(Q_OS_UNIX)
@@ -130,3 +131,4 @@ auto VCrashPaths::GetPlatformString(const QString &string) -> base::FilePath::St
 #error GetPlatformString not implemented on this platform
 #endif
 }
+#endif // CRASH_REPORTING

@@ -47,9 +47,11 @@
 #include <string>
 #include <vector>
 
+#ifdef CRASH_REPORTING
 #include <client/crash_report_database.h>
 #include <client/crashpad_client.h>
 #include <client/settings.h>
+#endif
 
 #include "vcrashpaths.h"
 
@@ -62,7 +64,9 @@
 
 #include <vcsRepoState.h>
 
+#ifdef CRASH_REPORTING
 using namespace crashpad;
+#endif
 
 namespace
 {
@@ -73,6 +77,7 @@ Q_REQUIRED_RESULT auto AppSettings(const QString &appName) -> VCommonSettings *
                                appName);
 }
 
+#ifdef CRASH_REPORTING
 //---------------------------------------------------------------------------------------------------------------------
 auto AppCrashVersion() -> QString
 {
@@ -101,6 +106,7 @@ auto AppCrashVersion() -> QString
 
     return QStringLiteral("%1-%2-%3-%4%5").arg(version, revision, qtVersion, platform, multibundle);
 }
+#endif // CRASH_REPORTING
 
 //---------------------------------------------------------------------------------------------------------------------
 auto GetExecutableDir() -> QString
@@ -180,6 +186,7 @@ auto InitializeCrashpad(const QString &appName) -> bool
     QString const exeDir = GetExecutableDir();
 #endif
 
+#ifdef CRASH_REPORTING
     // Helper class for cross-platform file systems
     VCrashPaths const crashpadPaths(exeDir);
 
@@ -257,4 +264,7 @@ auto InitializeCrashpad(const QString &appName) -> bool
     CrashpadClient client;
     return client.StartHandler(handler, reportsDir, metricsDir, url.toStdString(), "", annotations.toStdMap(),
                                arguments, true, true, attachments);
+#else
+    return true;
+#endif // CRASH_REPORTING
 }

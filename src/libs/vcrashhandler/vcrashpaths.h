@@ -30,7 +30,9 @@
 
 #include <QString>
 
+#ifdef CRASH_REPORTING
 #include <base/files/file_path.h>
+#endif
 
 class VCrashPaths
 {
@@ -43,11 +45,13 @@ public:
     static auto GetReportsPath() -> QString;
     static auto GetMetricsPath() -> QString;
 
+#ifdef CRASH_REPORTING
 #if defined(Q_OS_UNIX) || defined(Q_OS_WINDOWS)
     static auto GetPlatformString(const QString &string) -> base::FilePath::StringType;
 #elif
 #error GetPlatformString not implemented on this platform
 #endif
+#endif // CRASH_REPORTING
 
 private:
     QString m_exeDir;
