@@ -15,8 +15,8 @@
 # I have spent hour before understand why i don't see PNG inside SVG in Nautilus.
 
 PATTERN=*@2x.png
-TOOLICONPATH=../src/app/valentina/share/resources/toolicon/ # PNG tool icon should be here
-OUTPATH=../src/app/valentina/share/resources/toolcursor
+TOOLICONPATH=../src/app/ostara/share/resources/toolicon/ # PNG tool icon should be here
+OUTPATH=../src/app/ostara/share/resources/toolcursor
 
 COLOR_SCHEMES=("light" "dark")
 

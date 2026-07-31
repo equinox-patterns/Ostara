@@ -1,6 +1,6 @@
 Project {
     references: [
-        "valentina/valentina.qbs",
+        "ostara/valentina.qbs",
         "puzzle/puzzle.qbs",
         "tape/tape.qbs",
     ]
