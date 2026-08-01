@@ -213,10 +213,13 @@ auto PreferencesConfigurationPage::Apply() -> QStringList
     settings->SetAutosaveTime(ui->autoTime->value());
 
     QTimer *autoSaveTimer = VApplication::VApp()->getAutoSaveTimer();
-    SCASSERT(autoSaveTimer)
-
-    ui->autoSaveCheck->isChecked() ? autoSaveTimer->start(std::chrono::minutes{ui->autoTime->value()})
-                                   : autoSaveTimer->stop();
+    // autoSaveTimer may be null if MainWindow hasn't been created yet
+    // (e.g., Preferences opened from WelcomeScreen before any pattern is loaded).
+    if (autoSaveTimer != nullptr)
+    {
+        ui->autoSaveCheck->isChecked() ? autoSaveTimer->start(std::chrono::minutes{ui->autoTime->value()})
+                                       : autoSaveTimer->stop();
+    }
 
     settings->SetOsSeparator(ui->osOptionCheck->isChecked());
     settings->SetToolBarStyle(ui->toolBarStyleCheck->isChecked());

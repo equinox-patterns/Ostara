@@ -28,11 +28,19 @@
 
 #include "WelcomeWindow.h"
 #include "WelcomeScreen.h"
+#include "dialogs/dialogaboutapp.h"
 #include "vabstractvalapplication.h"
+#include "vcommonsettings.h"
+#include "vtheme.h"
 #include "vvalentinasettings.h"
 
+#include <QAction>
+#include <QApplication>
 #include <QCloseEvent>
 #include <QGuiApplication>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
 #include <QScreen>
 
 WelcomeWindow::WelcomeWindow(QWidget *parent)
@@ -82,6 +90,78 @@ WelcomeWindow::WelcomeWindow(QWidget *parent)
             this, &WelcomeWindow::OpenRecentPatternRequested);
     connect(m_welcomeScreen, &WelcomeScreen::OpenRecentMeasurement,
             this, &WelcomeWindow::OpenRecentMeasurementRequested);
+
+    // ── macOS Application Menu ──────────────────────────────────────
+    // On macOS, the Application menu items (About, Preferences, Quit)
+    // use the text of QActions with matching MenuRoles. Without these,
+    // Qt falls back to its own default English strings.
+    //
+    // Per Qt docs, a macOS app with multiple windows must use a SINGLE
+    // shared QMenuBar with NO parent (new QMenuBar(nullptr)). We do NOT
+    // call setMenuBar() — the bar is standalone. It is explicitly deleted
+    // in closeEvent so it doesn't interfere with MainWindow's menu bar.
+
+    auto *mb = new QMenuBar(nullptr);
+    auto *hiddenMenu = mb->addMenu(QString());
+
+    auto *aboutQtAction = new QAction(this);
+    aboutQtAction->setMenuRole(QAction::AboutQtRole);
+    aboutQtAction->setText(
+        QCoreApplication::translate("MainWindow", "About &Qt"));
+    connect(aboutQtAction, &QAction::triggered, this, [this]() {
+        QMessageBox::aboutQt(this);
+    });
+    hiddenMenu->addAction(aboutQtAction);
+
+    auto *aboutAction = new QAction(this);
+    aboutAction->setMenuRole(QAction::AboutRole);
+    aboutAction->setText(
+        QCoreApplication::translate("MainWindow", "&About Valentina"));
+    connect(aboutAction, &QAction::triggered, this, [this]() {
+        auto *dlg = new DialogAboutApp(this);
+        dlg->setAttribute(Qt::WA_DeleteOnClose);
+        dlg->show();
+    });
+    hiddenMenu->addAction(aboutAction);
+
+    auto *prefsAction = new QAction(this);
+    prefsAction->setMenuRole(QAction::PreferencesRole);
+    // Dev-only: toggle between light and dark theme.
+    // Will be removed before release.
+    VThemeMode const currentMode =
+        VAbstractApplication::VApp()->Settings()->GetThemeMode();
+    prefsAction->setText(currentMode == VThemeMode::Light
+        ? tr("Mode sombre")
+        : tr("Mode clair"));
+    prefsAction->setShortcut(QKeySequence::Preferences);
+    connect(prefsAction, &QAction::triggered, this, [prefsAction]() {
+        VCommonSettings *s = VAbstractApplication::VApp()->Settings();
+        VThemeMode const newMode =
+            (s->GetThemeMode() == VThemeMode::Light) ? VThemeMode::Dark : VThemeMode::Light;
+        s->SetThemeMode(newMode);
+        VTheme::InitThemeMode();
+        if (auto *style = qApp->style())
+        {
+            qApp->setPalette(style->standardPalette());
+            style->polish(qApp);
+        }
+        prefsAction->setText(newMode == VThemeMode::Light
+            ? tr("Mode sombre")
+            : tr("Mode clair"));
+    });
+    hiddenMenu->addAction(prefsAction);
+
+    auto *quitAction = new QAction(this);
+    quitAction->setMenuRole(QAction::QuitRole);
+    quitAction->setText(
+        QCoreApplication::translate("MainWindow", "E&xit"));
+    quitAction->setShortcut(QKeySequence::Quit);
+    connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
+    hiddenMenu->addAction(quitAction);
+
+    // Keep a raw pointer to delete in closeEvent — the QMenuBar has no
+    // QObject parent so it won't be auto-deleted.
+    m_appMenuBar = mb;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -103,5 +183,11 @@ void WelcomeWindow::closeEvent(QCloseEvent *event)
             s->sync();
         }
     }
+
+    // The standalone QMenuBar has no QObject parent — delete it now so it
+    // doesn't interfere with MainWindow's menu bar after we close.
+    delete m_appMenuBar;
+    m_appMenuBar = nullptr;
+
     QMainWindow::closeEvent(event);
 }

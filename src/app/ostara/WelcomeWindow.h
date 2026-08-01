@@ -31,7 +31,9 @@
 
 #include <QMainWindow>
 
+class QAction;
 class QCloseEvent;
+class QMenuBar;
 class WelcomeScreen;
 
 class WelcomeWindow final : public QMainWindow
@@ -59,6 +61,7 @@ protected:
 
 private:
     WelcomeScreen *m_welcomeScreen{nullptr};
+    QMenuBar *m_appMenuBar{nullptr}; // standalone, no parent — deleted in closeEvent
 };
 
 #endif // WELCOMEWINDOW_H
