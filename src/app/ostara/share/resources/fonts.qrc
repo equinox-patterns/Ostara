@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/fonts">
+        <file alias="inter/Inter-VariableFont.ttf">fonts/inter/Inter-VariableFont.ttf</file>
+        <file alias="phosphor/regular/Phosphor.ttf">fonts/phosphor/regular/Phosphor.ttf</file>
+        <file alias="phosphor/fill/Phosphor-Fill.ttf">fonts/phosphor/fill/Phosphor-Fill.ttf</file>
+    </qresource>
+</RCC>

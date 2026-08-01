@@ -60,6 +60,7 @@ public:
     static auto ColorSheme() -> VColorSheme;
     static auto DefaultThemeName() -> QString;
     static void InitApplicationStyle();
+    static void InitFonts();
     static void SetIconTheme();
     static void InitThemeMode();
     static auto ThemeStylesheet() -> QString;

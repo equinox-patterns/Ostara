@@ -9,6 +9,7 @@ file(GLOB_RECURSE OSTARA_XML xml/*.cpp xml/*.h)
 set(OSTARA_QRC
     share/resources/toolcursor.qrc
     share/resources/toolicon.qrc
+    share/resources/fonts.qrc
 )
 
 qt_add_executable(Ostara

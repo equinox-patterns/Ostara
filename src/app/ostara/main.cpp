@@ -68,6 +68,7 @@ auto main(int argc, char *argv[]) -> int
 
     Q_INIT_RESOURCE(cursor);     // NOLINT
     Q_INIT_RESOURCE(toolcursor); // NOLINT
+    Q_INIT_RESOURCE(fonts);      // NOLINT
     Q_INIT_RESOURCE(icon);       // NOLINT
     Q_INIT_RESOURCE(schema);     // NOLINT
     Q_INIT_RESOURCE(flags);      // NOLINT
@@ -77,6 +78,7 @@ auto main(int argc, char *argv[]) -> int
     Q_INIT_RESOURCE(scenestyle); // NOLINT
     Q_INIT_RESOURCE(win_light_theme); // NOLINT
     Q_INIT_RESOURCE(win_dark_theme);  // NOLINT
+    Q_INIT_RESOURCE(ostara_theme);    // NOLINT
 
 #ifdef CRASH_REPORTING
     InitializeCrashpad(QStringLiteral(VER_PRODUCTNAME_STR));

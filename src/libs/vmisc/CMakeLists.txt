@@ -104,6 +104,7 @@ set(VMISC_QRC
     share/resources/breezethemes/breeze.qrc
     share/resources/scenestyle.qrc
     share/resources/cursor.qrc
+    share/resources/ostara_theme.qrc
 )
 
 # Windows-only icon themes — malgré le nom, toujours inclus (pas de condition dans le QBS)

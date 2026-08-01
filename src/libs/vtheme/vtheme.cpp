@@ -34,6 +34,7 @@
 #include <QCoreApplication>
 #include <QDockWidget>
 #include <QEvent>
+#include <QFontDatabase>
 #include <QHBoxLayout>
 #include <QIcon>
 #include <QLabel>
@@ -65,9 +66,14 @@ namespace
 //---------------------------------------------------------------------------------------------------------------------
 void ActivateCustomLightTheme()
 {
-    if (QFile f(QStringLiteral(":/light/stylesheet.qss")); !f.exists())
+    if (QFile f(QStringLiteral(":/ostara/light.qss")); !f.exists())
     {
-        qDebug() << "Unable to set stylesheet, file not found\n";
+        qWarning() << "Ostara light theme not found, falling back to Eleven\n";
+        if (QFile fallback(QStringLiteral(":/light/stylesheet.qss")); fallback.open(QFile::ReadOnly | QFile::Text))
+        {
+            QTextStream ts(&fallback);
+            qApp->setStyleSheet(ts.readAll()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
+        }
     }
     else
     {
@@ -78,7 +84,7 @@ void ActivateCustomLightTheme()
         }
         else
         {
-            qDebug() << "Unable to set stylesheet, unable to open file\n";
+            qWarning() << "Unable to open Ostara light theme\n";
         }
     }
 }
@@ -86,9 +92,14 @@ void ActivateCustomLightTheme()
 //---------------------------------------------------------------------------------------------------------------------
 void ActivateCustomDarkTheme()
 {
-    if (QFile f(QStringLiteral(":/dark/stylesheet.qss")); !f.exists())
+    if (QFile f(QStringLiteral(":/ostara/dark.qss")); !f.exists())
     {
-        qDebug() << "Unable to set stylesheet, file not found\n";
+        qWarning() << "Ostara dark theme not found, falling back to Eleven\n";
+        if (QFile fallback(QStringLiteral(":/dark/stylesheet.qss")); fallback.open(QFile::ReadOnly | QFile::Text))
+        {
+            QTextStream ts(&fallback);
+            qApp->setStyleSheet(ts.readAll()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
+        }
     }
     else
     {
@@ -99,7 +110,7 @@ void ActivateCustomDarkTheme()
         }
         else
         {
-            qDebug() << "Unable to set stylesheet, unable to open file\n";
+            qWarning() << "Unable to open Ostara dark theme\n";
         }
     }
 }
@@ -145,6 +156,45 @@ auto VTheme::DefaultThemeName() -> QString
     VColorSheme const colorScheme = ColorSheme();
     QString const themePrefix = (colorScheme == VColorSheme::Light ? QStringLiteral("Light") : QStringLiteral("Dark"));
     return QStringLiteral("Eleven-%1").arg(themePrefix);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VTheme::InitFonts()
+{
+    // ── Inter — UI font (variable weight 100-900) ──
+    if (int const id = QFontDatabase::addApplicationFont(QStringLiteral(":/fonts/inter/Inter-VariableFont.ttf"));
+        id != -1)
+    {
+        QStringList const families = QFontDatabase::applicationFontFamilies(id);
+        if (!families.isEmpty())
+        {
+            QFont interFont(families.first());
+            interFont.setWeight(QFont::Normal); // 400 — variable font, Normal is a safe default
+            qApp->setFont(interFont);           // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
+        }
+    }
+    else
+    {
+        qWarning() << "VTheme::InitFonts — Failed to load Inter font";
+    }
+
+    // ── Phosphor — icon font (regular) ──
+    if (int const id = QFontDatabase::addApplicationFont(
+            QStringLiteral(":/fonts/phosphor/regular/Phosphor.ttf"));
+        id == -1)
+    {
+        qWarning() << "VTheme::InitFonts — Failed to load Phosphor Regular font";
+    }
+
+    // ── Phosphor Fill — icon font (filled variant) ──
+    if (int const id = QFontDatabase::addApplicationFont(
+            QStringLiteral(":/fonts/phosphor/fill/Phosphor-Fill.ttf"));
+        id == -1)
+    {
+        qWarning() << "VTheme::InitFonts — Failed to load Phosphor Fill font";
+    }
+
+    qDebug() << "VTheme::InitFonts — Inter + Phosphor loaded";
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -201,6 +251,7 @@ void VTheme::ResetColorScheme()
 //---------------------------------------------------------------------------------------------------------------------
 void VTheme::ResetThemeSettings() const
 {
+    InitFonts();
     InitApplicationStyle();
     qApp->setStyleSheet(QString()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
     SetIconTheme();
