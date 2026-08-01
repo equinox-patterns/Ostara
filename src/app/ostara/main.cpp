@@ -30,6 +30,9 @@
 #include "../vpatterndb/vpiecenode.h"
 #include "core/vapplication.h"
 #include "mainwindow.h"
+#include "WelcomeWindow.h"
+
+#include <QFileDialog>
 #include "vabstractapplication.h"
 
 #include <QMessageBox> // For QT_REQUIRE_VERSION
@@ -127,32 +130,89 @@ auto main(int argc, char *argv[]) -> int
 
     VApplication::setDesktopFileName(QStringLiteral("com.ostara.ostara"));
 
-    MainWindow w;
+    // === MVC Controller — main.cpp orchestrates which view is shown ===
+
+    auto createMainWindow = [](const QString &filePath = {}) {
+        auto *mw = new MainWindow();
+        mw->setAttribute(Qt::WA_DeleteOnClose);
+        // When MainWindow closes → quit the app (no return to Welcome)
+        QObject::connect(mw, &QObject::destroyed, []() { QApplication::quit(); });
+        mw->show();
+        if (!filePath.isEmpty())
+        {
+            mw->LoadPattern(filePath);
+        }
+        return mw;
+    };
+
+    auto showWelcome = [&]() {
+        auto *welcome = new WelcomeWindow();
+        welcome->setAttribute(Qt::WA_DeleteOnClose);
+
+        // "Nouveau patron"
+        QObject::connect(welcome, &WelcomeWindow::NewPatternRequested, [welcome, createMainWindow]() {
+            createMainWindow();
+            welcome->close();
+        });
+
+        // "Ouvrir un patron..."
+        QObject::connect(welcome, &WelcomeWindow::OpenPatternRequested, [welcome, createMainWindow]() {
+            const QString filter = QObject::tr("Fichiers patron (*.val *.ostara)");
+            const QString path = QFileDialog::getOpenFileName(welcome, QObject::tr("Ouvrir un patron"),
+                                                              QDir::homePath(), filter);
+            if (path.isEmpty())
+            {
+                return;
+            }
+            createMainWindow(path);
+            welcome->close();
+        });
+
+        // Double-clic sur un récent patron
+        QObject::connect(welcome, &WelcomeWindow::OpenRecentPatternRequested,
+                         [welcome, createMainWindow](const QString &path) {
+            if (path.isEmpty())
+            {
+                return;
+            }
+            createMainWindow(path);
+            welcome->close();
+        });
+
+        // Measurement — placeholder (pas encore implémenté)
+        auto showMeasurementPlaceholder = [welcome]() {
+            QMessageBox::information(welcome,
+                QObject::tr("Fonctionnalité à venir"),
+                QObject::tr("L'éditeur de tableaux de mesures sera disponible "
+                            "dans une prochaine mise à jour."));
+        };
+        QObject::connect(welcome, &WelcomeWindow::NewMeasurementRequested,
+                         welcome, showMeasurementPlaceholder);
+        QObject::connect(welcome, &WelcomeWindow::OpenMeasurementRequested,
+                         welcome, showMeasurementPlaceholder);
+        QObject::connect(welcome, &WelcomeWindow::OpenRecentMeasurementRequested,
+                         welcome, [showMeasurementPlaceholder](const QString &) {
+            showMeasurementPlaceholder();
+        });
+
+        // Auto-updater
+        if (VApplication::IsGUIMode() && VAbstractApplication::VApp()->Settings()->IsAutomaticallyCheckUpdates())
+        {
+            FvUpdater::sharedUpdater()->SetFeedURL(FvUpdater::CurrentFeedURL());
+            FvUpdater::sharedUpdater()->SetMainWindow(welcome);
+            FvUpdater::sharedUpdater()->CheckForUpdatesSilent();
+        }
+
+        welcome->show();
+    };
+
+    QApplication::setQuitOnLastWindowClosed(false);
 #if !defined(Q_OS_MAC)
     VApplication::setWindowIcon(QIcon(":/icon/64x64/icon64x64.png"));
 #endif // !defined(Q_OS_MAC)
-    app.setMainWindow(&w);
 
-    if (VApplication::IsGUIMode() && VAbstractApplication::VApp()->Settings()->IsAutomaticallyCheckUpdates())
-    {
-        // Set feed URL before doing anything else
-        FvUpdater::sharedUpdater()->SetFeedURL(FvUpdater::CurrentFeedURL());
-
-        FvUpdater::sharedUpdater()->SetMainWindow(&w);
-
-        // Check for updates automatically
-        FvUpdater::sharedUpdater()->CheckForUpdatesSilent();
-    }
-
-    int msec = 0;
-    // Before we load pattern show window.
-    if (VApplication::IsGUIMode())
-    {
-        w.show();
-        msec = 15; // set delay for correct the first fitbest zoom
-    }
-
-    QTimer::singleShot(msec, &w, &MainWindow::ProcessCMD);
+    // === Go ===
+    QTimer::singleShot(0, showWelcome);
 
     return VApplication::exec();
 }

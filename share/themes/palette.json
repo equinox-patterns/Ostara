@@ -12,7 +12,23 @@
             "accent": "#8C4560",
             "accent_clair": "#A0667C"
         },
-        "semantique": {}
+        "semantique": {
+            "fond_fenetre": "@gris_50",
+            "fond_panneau": "@blanc",
+            "fond_alternatif": "@gris_100",
+            "texte_principal": "@gris_600",
+            "texte_secondaire": "@gris_400",
+            "accent": "@accent",
+            "accent_clair": "@accent_clair",
+            "accent_texte": "@blanc",
+            "bordure": "@gris_300",
+            "selection_fond": "@gris_100",
+            "selection_texte": "@gris_600",
+            "barre_statut_fond": "@gris_100",
+            "fond_groupe": "@gris_100",
+            "fond_canvas": "@gris_50",
+            "fond_toolbar": "@gris_100"
+        }
     },
     "dark": {
         "primitives": {
@@ -27,6 +43,22 @@
             "accent": "#a33a69",
             "accent_clair": "#B75c81"
         },
-        "semantique": {}
+        "semantique": {
+            "fond_fenetre": "@gris_50",
+            "fond_toolbar": "@gris_50",
+            "fond_panneau": "@gris_50",
+            "fond_alternatif": "@gris_100",
+            "texte_principal": "@gris_600",
+            "texte_secondaire": "@gris_400",
+            "accent": "@accent",
+            "accent_clair": "@accent_clair",
+            "accent_texte": "@blanc",
+            "bordure": "@gris_200",
+            "selection_fond": "@gris_100",
+            "selection_texte": "@gris_600",
+            "barre_statut_fond": "@gris_50",
+            "fond_groupe": "@gris_100",
+            "fond_canvas": "@gris_300"
+        }
     }
 }
