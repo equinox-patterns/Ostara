@@ -33,7 +33,11 @@
 #include "WelcomeWindow.h"
 
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QScreen>
+
 #include "vabstractapplication.h"
+#include "vvalentinasettings.h"
 
 #include <QMessageBox> // For QT_REQUIRE_VERSION
 #include <QTimer>
@@ -132,11 +136,23 @@ auto main(int argc, char *argv[]) -> int
 
     // === MVC Controller — main.cpp orchestrates which view is shown ===
 
-    auto createMainWindow = [](const QString &filePath = {}) {
+    auto createMainWindow = [](const QString &filePath = {}, QWidget *referenceWindow = nullptr) {
         auto *mw = new MainWindow();
         mw->setAttribute(Qt::WA_DeleteOnClose);
         // When MainWindow closes → quit the app (no return to Welcome)
         QObject::connect(mw, &QObject::destroyed, []() { QApplication::quit(); });
+
+        // Inherit geometry from WelcomeWindow for seamless "same window" transition.
+        // MainWindow::ReadSettings() already restored the saved "geometry" key in the
+        // constructor, but we override it with the WelcomeWindow's actual screen position
+        // so MainWindow always replaces WelcomeWindow in-place.
+        if (referenceWindow != nullptr)
+        {
+            mw->setWindowState(Qt::WindowNoState);
+            mw->setGeometry(referenceWindow->geometry());
+        }
+
+        VAbstractValApplication::VApp()->setMainWindow(mw);
         mw->show();
         if (!filePath.isEmpty())
         {
@@ -151,20 +167,26 @@ auto main(int argc, char *argv[]) -> int
 
         // "Nouveau patron"
         QObject::connect(welcome, &WelcomeWindow::NewPatternRequested, [welcome, createMainWindow]() {
-            createMainWindow();
+            createMainWindow({}, welcome);
             welcome->close();
         });
 
         // "Ouvrir un patron..."
         QObject::connect(welcome, &WelcomeWindow::OpenPatternRequested, [welcome, createMainWindow]() {
             const QString filter = QObject::tr("Fichiers patron (*.val *.ostara)");
+            // Start in the folder of the most recently used pattern, like on_actionOpen_triggered().
+            const QStringList recentFiles =
+                VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentFileList();
+            const QString dir = recentFiles.isEmpty()
+                ? QDir::homePath()
+                : QFileInfo(recentFiles.constFirst()).absolutePath();
             const QString path = QFileDialog::getOpenFileName(welcome, QObject::tr("Ouvrir un patron"),
-                                                              QDir::homePath(), filter);
+                                                              dir, filter);
             if (path.isEmpty())
             {
                 return;
             }
-            createMainWindow(path);
+            createMainWindow(path, welcome);
             welcome->close();
         });
 
@@ -175,7 +197,7 @@ auto main(int argc, char *argv[]) -> int
             {
                 return;
             }
-            createMainWindow(path);
+            createMainWindow(path, welcome);
             welcome->close();
         });
 
@@ -202,6 +224,14 @@ auto main(int argc, char *argv[]) -> int
             FvUpdater::sharedUpdater()->SetMainWindow(welcome);
             FvUpdater::sharedUpdater()->CheckForUpdatesSilent();
         }
+
+        // Publish WelcomeWindow as the active main window (macOS sheets, getMainWindow()).
+        VAbstractValApplication::VApp()->setMainWindow(welcome);
+
+        // Populate recent-file lists from QSettings.
+        welcome->UpdateRecentItems(
+            VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentFileList(),
+            QStringList()); // measurement recent files — not implemented yet
 
         welcome->show();
     };

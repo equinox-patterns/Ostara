@@ -28,11 +28,40 @@
 
 #include "WelcomeWindow.h"
 #include "WelcomeScreen.h"
+#include "vabstractvalapplication.h"
+#include "vvalentinasettings.h"
+
+#include <QCloseEvent>
+#include <QGuiApplication>
+#include <QScreen>
 
 WelcomeWindow::WelcomeWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     setWindowTitle(QStringLiteral("Ostara"));
+
+    // Restore geometry from the shared key (written by MainWindow on last close,
+    // or by WelcomeWindow's own closeEvent). On first launch, use "faux plein écran".
+    if (VAbstractValApplication *va = VAbstractValApplication::VApp())
+    {
+        if (VValentinaSettings *s = va->ValentinaSettings())
+        {
+            const QByteArray geom = s->value(QStringLiteral("geometry")).toByteArray();
+            if (!geom.isEmpty())
+            {
+                restoreGeometry(geom);
+            }
+            else
+            {
+                // First launch: ~90% width, ~85% height of primary screen
+                if (QScreen *screen = QGuiApplication::primaryScreen())
+                {
+                    const QRect avail = screen->availableGeometry();
+                    resize(qRound(avail.width() * 0.90), qRound(avail.height() * 0.85));
+                }
+            }
+        }
+    }
 
     m_welcomeScreen = new WelcomeScreen(this);
     setCentralWidget(m_welcomeScreen);
@@ -51,4 +80,26 @@ WelcomeWindow::WelcomeWindow(QWidget *parent)
             this, &WelcomeWindow::OpenRecentPatternRequested);
     connect(m_welcomeScreen, &WelcomeScreen::OpenRecentMeasurement,
             this, &WelcomeWindow::OpenRecentMeasurementRequested);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void WelcomeWindow::UpdateRecentItems(const QStringList &patternPaths,
+                                       const QStringList &measurementPaths)
+{
+    m_welcomeScreen->UpdateRecentItems(patternPaths, measurementPaths);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void WelcomeWindow::closeEvent(QCloseEvent *event)
+{
+    // Save geometry to the SHARED key so MainWindow inherits the same size/position.
+    if (VAbstractValApplication *va = VAbstractValApplication::VApp())
+    {
+        if (VValentinaSettings *s = va->ValentinaSettings())
+        {
+            s->setValue(QStringLiteral("geometry"), saveGeometry());
+            s->sync();
+        }
+    }
+    QMainWindow::closeEvent(event);
 }

@@ -31,6 +31,7 @@
 
 #include <QMainWindow>
 
+class QCloseEvent;
 class WelcomeScreen;
 
 class WelcomeWindow final : public QMainWindow
@@ -41,6 +42,10 @@ public:
     explicit WelcomeWindow(QWidget *parent = nullptr);
     ~WelcomeWindow() override = default;
 
+    /// Populate the recent-file lists shown in each section of the welcome screen.
+    void UpdateRecentItems(const QStringList &patternPaths,
+                           const QStringList &measurementPaths);
+
 signals:
     void NewPatternRequested();
     void OpenPatternRequested();
@@ -48,6 +53,9 @@ signals:
     void OpenMeasurementRequested();
     void OpenRecentPatternRequested(const QString &path);
     void OpenRecentMeasurementRequested(const QString &path);
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private:
     WelcomeScreen *m_welcomeScreen{nullptr};

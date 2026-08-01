@@ -327,6 +327,16 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
         type = QtDebugMsg;
     }
 
+    // QObject::connect with null sender/receiver ("invalid nullptr parameter") is a
+    // benign side-effect of FullParseFile tearing down and reconnecting spline/path
+    // tools. The handler promotes any ::connect message to warning, so without this
+    // filter each one pops a modal. Keep them in the log but out of the user's face.
+    if ((type == QtWarningMsg) && msg.contains(QStringLiteral("QObject::connect")) &&
+        msg.contains(QStringLiteral("invalid nullptr parameter")))
+    {
+        type = QtDebugMsg;
+    }
+
     if (msg.contains("GOAWAY invalid stream"_L1, Qt::CaseInsensitive))
     {
         type = QtDebugMsg;
