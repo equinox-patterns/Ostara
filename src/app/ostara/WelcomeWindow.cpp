@@ -40,8 +40,13 @@ WelcomeWindow::WelcomeWindow(QWidget *parent)
 {
     setWindowTitle(QStringLiteral("Ostara"));
 
+    m_welcomeScreen = new WelcomeScreen(this);
+    setCentralWidget(m_welcomeScreen);
+
     // Restore geometry from the shared key (written by MainWindow on last close,
-    // or by WelcomeWindow's own closeEvent). On first launch, use "faux plein écran".
+    // or by WelcomeWindow's own closeEvent). Must happen AFTER setCentralWidget()
+    // because restoreGeometry can change window state (fullscreen, minimized, etc.)
+    // which Qt queries on internal widgets. On first launch, use "faux plein écran".
     if (VAbstractValApplication *va = VAbstractValApplication::VApp())
     {
         if (VValentinaSettings *s = va->ValentinaSettings())
@@ -62,9 +67,6 @@ WelcomeWindow::WelcomeWindow(QWidget *parent)
             }
         }
     }
-
-    m_welcomeScreen = new WelcomeScreen(this);
-    setCentralWidget(m_welcomeScreen);
 
     // Forward all WelcomeScreen signals → WelcomeWindow signals
     // main.cpp (the controller) connects these to navigation lambdas
