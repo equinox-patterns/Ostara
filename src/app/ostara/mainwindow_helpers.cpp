@@ -37,7 +37,6 @@
 #include <QUuid>
 
 #include "vtheme.h"
-#include "../vganalytics/vganalytics.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vexception/vexception.h"
@@ -73,26 +72,9 @@ QT_WARNING_POP
 //---------------------------------------------------------------------------------------------------------------------
 void LogPatternToolUsed(bool checked, const QString &toolName)
 {
-    if (checked)
-    {
-        const auto *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-        if (VApplication::IsGUIMode() && settings->IsCollectStatistic())
-        {
-            auto *statistic = VGAnalytics::Instance();
-
-            if (QString clientID = settings->GetClientID(); clientID.isEmpty())
-            {
-                clientID = QUuid::createUuid().toString();
-                settings->SetClientID(clientID);
-                statistic->SetClientID(clientID);
-            }
-
-            statistic->Enable(true);
-
-            const qint64 uptime = VAbstractValApplication::VApp()->AppUptime();
-            statistic->SendPatternToolUsedEvent(uptime, toolName);
-        }
-    }
+    // VGAnalyticsLib removed — no tracking
+    Q_UNUSED(checked)
+    Q_UNUSED(toolName)
 }
 
 //---------------------------------------------------------------------------------------------------------------------

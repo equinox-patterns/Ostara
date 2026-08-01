@@ -35,7 +35,6 @@
 #include "../vmisc/vvalentinasettings.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vmodifierkey.h"
-#include "../vganalytics/vganalytics.h"
 #include "../vtools/dialogs/dialogtoolbox.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vtoolbuttonpopup.h"

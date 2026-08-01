@@ -1,0 +1,2 @@
+/usr/bin/ar qc libVTextStreamLib.a CMakeFiles/VTextStreamLib.dir/VTextStreamLib_autogen/mocs_compilation.cpp.o CMakeFiles/VTextStreamLib.dir/vtextstream.cpp.o
+/usr/bin/ranlib libVTextStreamLib.a

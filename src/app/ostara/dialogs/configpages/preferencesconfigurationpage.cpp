@@ -29,7 +29,6 @@
 #include "preferencesconfigurationpage.h"
 #include "../../core/vapplication.h"
 #include "../qmuparser/qmudef.h"
-#include "../vganalytics/vganalytics.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/dialogs/vshortcutdialog.h"
 #include "../vmisc/literals.h"
@@ -261,9 +260,6 @@ auto PreferencesConfigurationPage::Apply() -> QStringList
     {
         const auto locale = qvariant_cast<QString>(ui->langCombo->currentData());
         settings->SetLocale(locale);
-        VGAnalytics::Instance()->SetGUILanguage(settings->GetLocale());
-        m_langChanged = false;
-
         VAbstractApplication::VApp()->LoadTranslation(locale);
     }
 
@@ -309,7 +305,7 @@ auto PreferencesConfigurationPage::Apply() -> QStringList
 
     // Tab Privacy
     settings->SetCollectStatistic(ui->checkBoxSendUsageStatistics->isChecked());
-    VGAnalytics::Instance()->Enable(ui->checkBoxSendUsageStatistics->isChecked());
+    // VGAnalyticsLib removed — no tracking
 
 #if defined(CRASH_REPORTING)
     if (m_sendCrashReportsChanged)

@@ -1,0 +1,7 @@
+VCrashHandlerLib_autogen/timestamp: \
+	/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vcrashhandler/CMakeLists.txt \
+	/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vcrashhandler/crashhandler.cpp \
+	/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vcrashhandler/crashhandler.h \
+	/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vcrashhandler/vcrashpaths.cpp \
+	/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vcrashhandler/vcrashpaths.h \
+	/opt/homebrew/bin/cmake

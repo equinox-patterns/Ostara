@@ -36,7 +36,6 @@
 #include "../qmuparser/qmudef.h"
 #include "../vformat/knownmeasurements/vknownmeasurement.h"
 #include "../vformat/knownmeasurements/vknownmeasurementsdatabase.h"
-#include "../vganalytics/vganalytics.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/def.h"
 #include "../vmisc/defglobal.h"
@@ -572,32 +571,8 @@ auto TMainWindow::LoadFile(const QString &path) -> bool
 //---------------------------------------------------------------------------------------------------------------------
 void TMainWindow::CollectFormatVersionStatistic(MeasurementsType mType) const
 {
-    VCommonSettings const *settings = VAbstractApplication::VApp()->Settings();
-    if (not(MApplication::VApp()->IsAppInGUIMode() && settings->IsCollectStatistic()))
-    {
-        return;
-    }
-
-    auto *statistic = VGAnalytics::Instance();
-
-    if (QString clientID = settings->GetClientID(); clientID.isEmpty())
-    {
-        clientID = QUuid::createUuid().toString();
-        settings->SetClientID(clientID);
-        statistic->SetClientID(clientID);
-    }
-
-    statistic->Enable(true);
-
-    const qint64 uptime = VAbstractApplication::VApp()->AppUptime();
-    if (mType == MeasurementsType::Multisize)
-    {
-        statistic->SendMultisizeMeasurementsFormatVersion(uptime, m_curFileFormatVersionStr);
-    }
-    else
-    {
-        statistic->SendIndividualMeasurementsFormatVersion(uptime, m_curFileFormatVersionStr);
-    }
+    // VGAnalyticsLib removed — no tracking
+    Q_UNUSED(mType)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1910,23 +1885,7 @@ void TMainWindow::ImportFromPattern()
         doc->setXMLContent(converter.Convert());
         measurements = doc->ListMeasurements();
 
-        VCommonSettings const *settings = VAbstractApplication::VApp()->Settings();
-        if (MApplication::VApp()->IsAppInGUIMode() && settings->IsCollectStatistic())
-        {
-            auto *statistic = VGAnalytics::Instance();
-
-            if (QString clientID = settings->GetClientID(); clientID.isEmpty())
-            {
-                clientID = QUuid::createUuid().toString();
-                settings->SetClientID(clientID);
-                statistic->SetClientID(clientID);
-            }
-
-            statistic->Enable(true);
-
-            const qint64 uptime = VAbstractApplication::VApp()->AppUptime();
-            statistic->SendPatternFormatVersion(uptime, converter.GetFormatVersionStr());
-        }
+        // VGAnalyticsLib removed — no tracking
     }
     catch (VException &e)
     {
@@ -2918,25 +2877,7 @@ void TMainWindow::AskDefaultSettings()
         settings->SetAskSendCrashReport(false);
     }
 
-    if (settings->IsCollectStatistic())
-    {
-        auto *statistic = VGAnalytics::Instance();
-        statistic->SetGUILanguage(settings->GetLocale());
-
-        bool freshID = false;
-        if (QString clientID = settings->GetClientID(); clientID.isEmpty())
-        {
-            clientID = QUuid::createUuid().toString();
-            settings->SetClientID(clientID);
-            statistic->SetClientID(clientID);
-            freshID = true;
-        }
-
-        statistic->Enable(true);
-
-        const qint64 uptime = MApplication::VApp()->AppUptime();
-        freshID ? statistic->SendAppFreshInstallEvent(uptime) : statistic->SendAppStartEvent(uptime);
-    }
+    // VGAnalyticsLib removed — no tracking
 }
 
 //---------------------------------------------------------------------------------------------------------------------

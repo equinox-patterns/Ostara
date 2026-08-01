@@ -28,7 +28,6 @@
 
 #include "puzzlepreferencesconfigurationpage.h"
 #include "../../vpapplication.h"
-#include "../vganalytics/vganalytics.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/dialogs/vshortcutdialog.h"
 #include "vtheme.h"
@@ -164,7 +163,7 @@ auto PuzzlePreferencesConfigurationPage::Apply() -> QStringList
     {
         const auto locale = qvariant_cast<QString>(ui->langCombo->currentData());
         settings->SetLocale(locale);
-        VGAnalytics::Instance()->SetGUILanguage(settings->GetLocale());
+        // VGAnalyticsLib removed — no tracking
         m_langChanged = false;
 
         VAbstractApplication::VApp()->LoadTranslation(locale);
@@ -226,7 +225,7 @@ auto PuzzlePreferencesConfigurationPage::Apply() -> QStringList
 
     // Tab Privacy
     settings->SetCollectStatistic(ui->checkBoxSendUsageStatistics->isChecked());
-    VGAnalytics::Instance()->Enable(ui->checkBoxSendUsageStatistics->isChecked());
+    // VGAnalyticsLib removed — no tracking
 
 #if defined(CRASH_REPORTING)
     if (m_sendCrashReportsChanged)

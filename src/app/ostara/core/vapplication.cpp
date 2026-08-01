@@ -636,7 +636,7 @@ void VApplication::InitOptions()
         m_shortcutManager = new VValentinaShortcutManager(this);
     }
 
-    VGAnalytics::Init(settings);
+    // VGAnalyticsLib: Init removed — no GA4 tracking (sanctions check kept above)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -802,18 +802,7 @@ void VApplication::AboutToQuit()
 //---------------------------------------------------------------------------------------------------------------------
 void VApplication::SendAppCloseStatistic()
 {
-    if (m_appCloseEventSent || !IsGUIMode() || !settings->IsCollectStatistic())
-    {
-        return;
-    }
-
-    if (settings->GetClientID().isEmpty())
-    {
-        return;
-    }
-
-    m_appCloseEventSent = true;
-    VGAnalytics::Instance()->SendAppCloseEvent(m_uptimeTimer.elapsed());
+    // VGAnalyticsLib removed — no tracking
 }
 
 //---------------------------------------------------------------------------------------------------------------------

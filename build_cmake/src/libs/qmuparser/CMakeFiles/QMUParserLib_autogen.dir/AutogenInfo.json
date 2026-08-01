@@ -1,0 +1,255 @@
+{
+	"BUILD_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/qmuparser/QMUParserLib_autogen",
+	"CMAKE_BINARY_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake",
+	"CMAKE_CURRENT_BINARY_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/qmuparser",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser",
+	"CMAKE_EXECUTABLE" : "/opt/homebrew/bin/cmake",
+	"CMAKE_LIST_FILES" : 
+	[
+		"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/CMakeLists.txt"
+	],
+	"CMAKE_SOURCE_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara",
+	"CROSS_CONFIG" : false,
+	"DEP_FILE" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/qmuparser/QMUParserLib_autogen/deps",
+	"DEP_FILE_RULE_NAME" : "QMUParserLib_autogen/timestamp",
+	"HEADERS" : 
+	[
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/make_unique.h",
+			"MU",
+			"EWIEGA46WW/moc_make_unique.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmudef.h",
+			"MU",
+			"EWIEGA46WW/moc_qmudef.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuformulabase.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuformulabase.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparser.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuparser.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparser_global.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuparser_global.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparserbase.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuparserbase.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparserbytecode.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuparserbytecode.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparsercallback.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuparsercallback.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparsercallback_p.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuparsercallback_p.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparserdef.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuparserdef.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparsererror.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuparsererror.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparserfixes.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuparserfixes.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparsertest.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuparsertest.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparsertoken.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuparsertoken.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparsertokenreader.h",
+			"MU",
+			"EWIEGA46WW/moc_qmuparsertokenreader.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmutokenparser.h",
+			"MU",
+			"EWIEGA46WW/moc_qmutokenparser.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmutranslation.h",
+			"MU",
+			"EWIEGA46WW/moc_qmutranslation.cpp",
+			null
+		]
+	],
+	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
+	"INCLUDE_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/qmuparser/QMUParserLib_autogen/include",
+	"MOC_COMPILATION_FILE" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/qmuparser/QMUParserLib_autogen/mocs_compilation.cpp",
+	"MOC_DEFINITIONS" : 
+	[
+		"MULTI_BUNDLE",
+		"PKGDATADIR=\"/usr/local/share/ostara\"",
+		"QMUPARSER_LIBRARY",
+		"QMUP_VERSION=\"2.7.0\"",
+		"QMUParserLib_EXPORTS",
+		"QT_CORE_LIB",
+		"QT_DEPRECATED_WARNINGS",
+		"QT_DISABLE_DEPRECATED_BEFORE=0x060900",
+		"QT_MESSAGELOGCONTEXT",
+		"QT_NO_DEBUG",
+		"QT_NO_FOREACH",
+		"QT_USE_NODISCARD_FILE_OPEN",
+		"V_NO_ASSERT"
+	],
+	"MOC_DEPEND_FILTERS" : 
+	[
+		[
+			"Q_PLUGIN_METADATA",
+			"[\n][ \t]*Q_PLUGIN_METADATA[ \t]*\\([^\\)]*FILE[ \t]*\"([^\"]+)\""
+		]
+	],
+	"MOC_INCLUDES" : 
+	[
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/generated",
+		"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser",
+		"/Users/sophie/Qt/6.11.1/macos/lib/QtCore.framework/Headers",
+		"/Users/sophie/Qt/6.11.1/macos/lib/QtCore.framework",
+		"/Users/sophie/Qt/6.11.1/macos/mkspecs/macx-clang",
+		"/Users/sophie/Qt/6.11.1/macos/include",
+		"/usr/local/include",
+		"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1",
+		"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/include",
+		"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include",
+		"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"
+	],
+	"MOC_MACRO_NAMES" : 
+	[
+		"Q_OBJECT",
+		"Q_GADGET",
+		"Q_NAMESPACE",
+		"Q_NAMESPACE_EXPORT",
+		"Q_GADGET_EXPORT",
+		"Q_ENUM_NS"
+	],
+	"MOC_OPTIONS" : [],
+	"MOC_PATH_PREFIX" : false,
+	"MOC_PREDEFS_CMD" : 
+	[
+		"/usr/bin/c++",
+		"-std=gnu++20",
+		"-w",
+		"-dM",
+		"-E",
+		"/opt/homebrew/share/cmake/Modules/CMakeCXXCompilerABI.cpp"
+	],
+	"MOC_PREDEFS_FILE" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/qmuparser/QMUParserLib_autogen/moc_predefs.h",
+	"MOC_RELAXED_MODE" : false,
+	"MOC_SKIP" : [],
+	"MULTI_CONFIG" : false,
+	"PARALLEL" : 10,
+	"PARSE_CACHE_FILE" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/qmuparser/CMakeFiles/QMUParserLib_autogen.dir/ParseCache.txt",
+	"QT_MOC_EXECUTABLE" : "/Users/sophie/Qt/6.11.1/macos/libexec/moc",
+	"QT_UIC_EXECUTABLE" : "/Users/sophie/Qt/6.11.1/macos/libexec/uic",
+	"QT_VERSION_MAJOR" : 6,
+	"QT_VERSION_MINOR" : 11,
+	"SETTINGS_FILE" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/qmuparser/CMakeFiles/QMUParserLib_autogen.dir/AutogenUsed.txt",
+	"SOURCES" : 
+	[
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmudef.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuformulabase.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparser.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparserbase.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparserbytecode.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparsercallback.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparsererror.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparsertest.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmuparsertokenreader.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmutokenparser.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/qmuparser/qmutranslation.cpp",
+			"MU",
+			null
+		]
+	],
+	"UIC_OPTIONS" : [],
+	"UIC_SEARCH_PATHS" : [],
+	"UIC_SKIP" : [],
+	"UIC_UI_FILES" : [],
+	"USE_BETTER_GRAPH" : true,
+	"VERBOSITY" : 0
+}

@@ -1,0 +1,289 @@
+{
+	"BUILD_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vdxf/VDXFLib_autogen",
+	"CMAKE_BINARY_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake",
+	"CMAKE_CURRENT_BINARY_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vdxf",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf",
+	"CMAKE_EXECUTABLE" : "/opt/homebrew/bin/cmake",
+	"CMAKE_LIST_FILES" : [ "/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/CMakeLists.txt" ],
+	"CMAKE_SOURCE_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara",
+	"CROSS_CONFIG" : false,
+	"DEP_FILE" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vdxf/VDXFLib_autogen/deps",
+	"DEP_FILE_RULE_NAME" : "VDXFLib_autogen/timestamp",
+	"HEADERS" : 
+	[
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/dxfdef.h",
+			"MU",
+			"EWIEGA46WW/moc_dxfdef.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/dxiface.h",
+			"MU",
+			"EWIEGA46WW/moc_dxiface.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/drw_base.h",
+			"MU",
+			"ZAI4QQ2U3S/moc_drw_base.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/drw_classes.h",
+			"MU",
+			"ZAI4QQ2U3S/moc_drw_classes.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/drw_entities.h",
+			"MU",
+			"ZAI4QQ2U3S/moc_drw_entities.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/drw_header.h",
+			"MU",
+			"ZAI4QQ2U3S/moc_drw_header.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/drw_interface.h",
+			"MU",
+			"ZAI4QQ2U3S/moc_drw_interface.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/drw_objects.h",
+			"MU",
+			"ZAI4QQ2U3S/moc_drw_objects.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/drw_reserve.h",
+			"MU",
+			"ZAI4QQ2U3S/moc_drw_reserve.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/intern/drw_dbg.h",
+			"MU",
+			"NAV4YOFLCI/moc_drw_dbg.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/intern/drw_textcodec.h",
+			"MU",
+			"NAV4YOFLCI/moc_drw_textcodec.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/intern/dxfreader.h",
+			"MU",
+			"NAV4YOFLCI/moc_dxfreader.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/intern/dxfwriter.h",
+			"MU",
+			"NAV4YOFLCI/moc_dxfwriter.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/intern/make_unique.h",
+			"MU",
+			"NAV4YOFLCI/moc_make_unique.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/libdxfrw.h",
+			"MU",
+			"ZAI4QQ2U3S/moc_libdxfrw.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/main_doc.h",
+			"MU",
+			"ZAI4QQ2U3S/moc_main_doc.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/vdxfengine.h",
+			"MU",
+			"EWIEGA46WW/moc_vdxfengine.cpp",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/vdxfpaintdevice.h",
+			"MU",
+			"EWIEGA46WW/moc_vdxfpaintdevice.cpp",
+			null
+		]
+	],
+	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
+	"INCLUDE_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vdxf/VDXFLib_autogen/include",
+	"MOC_COMPILATION_FILE" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vdxf/VDXFLib_autogen/mocs_compilation.cpp",
+	"MOC_DEFINITIONS" : 
+	[
+		"MULTI_BUNDLE",
+		"PKGDATADIR=\"/usr/local/share/ostara\"",
+		"QT_CORE_LIB",
+		"QT_DEPRECATED_WARNINGS",
+		"QT_DISABLE_DEPRECATED_BEFORE=0x060900",
+		"QT_GUI_LIB",
+		"QT_MESSAGELOGCONTEXT",
+		"QT_NO_DEBUG",
+		"QT_NO_FOREACH",
+		"QT_PRINTSUPPORT_LIB",
+		"QT_USE_NODISCARD_FILE_OPEN",
+		"QT_WIDGETS_LIB",
+		"QT_XML_LIB",
+		"V_NO_ASSERT"
+	],
+	"MOC_DEPEND_FILTERS" : 
+	[
+		[
+			"Q_PLUGIN_METADATA",
+			"[\n][ \t]*Q_PLUGIN_METADATA[ \t]*\\([^\\)]*FILE[ \t]*\"([^\"]+)\""
+		]
+	],
+	"MOC_INCLUDES" : 
+	[
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/generated",
+		"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf",
+		"/Users/sophie/Val_SD/EnCours/Ostara/src/libs",
+		"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vmisc",
+		"/Users/sophie/Val_SD/EnCours/Ostara/src/libs",
+		"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vexception",
+		"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vmisc",
+		"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vtheme",
+		"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vmisc",
+		"/Users/sophie/Qt/6.11.1/macos/lib/QtCore.framework/Headers",
+		"/Users/sophie/Qt/6.11.1/macos/lib/QtCore.framework",
+		"/Users/sophie/Qt/6.11.1/macos/mkspecs/macx-clang",
+		"/Users/sophie/Qt/6.11.1/macos/include",
+		"/Users/sophie/Qt/6.11.1/macos/lib/QtGui.framework/Headers",
+		"/Users/sophie/Qt/6.11.1/macos/lib/QtGui.framework",
+		"/Users/sophie/Qt/6.11.1/macos/lib/QtXml.framework/Headers",
+		"/Users/sophie/Qt/6.11.1/macos/lib/QtXml.framework",
+		"/Users/sophie/Qt/6.11.1/macos/lib/QtWidgets.framework/Headers",
+		"/Users/sophie/Qt/6.11.1/macos/lib/QtWidgets.framework",
+		"/Users/sophie/Qt/6.11.1/macos/lib/QtPrintSupport.framework/Headers",
+		"/Users/sophie/Qt/6.11.1/macos/lib/QtPrintSupport.framework",
+		"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include",
+		"/usr/local/include",
+		"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1",
+		"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/include",
+		"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"
+	],
+	"MOC_MACRO_NAMES" : 
+	[
+		"Q_OBJECT",
+		"Q_GADGET",
+		"Q_NAMESPACE",
+		"Q_NAMESPACE_EXPORT",
+		"Q_GADGET_EXPORT",
+		"Q_ENUM_NS"
+	],
+	"MOC_OPTIONS" : [],
+	"MOC_PATH_PREFIX" : false,
+	"MOC_PREDEFS_CMD" : 
+	[
+		"/usr/bin/c++",
+		"-std=gnu++20",
+		"-w",
+		"-dM",
+		"-E",
+		"/opt/homebrew/share/cmake/Modules/CMakeCXXCompilerABI.cpp"
+	],
+	"MOC_PREDEFS_FILE" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vdxf/VDXFLib_autogen/moc_predefs.h",
+	"MOC_RELAXED_MODE" : false,
+	"MOC_SKIP" : [],
+	"MULTI_CONFIG" : false,
+	"PARALLEL" : 10,
+	"PARSE_CACHE_FILE" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vdxf/CMakeFiles/VDXFLib_autogen.dir/ParseCache.txt",
+	"QT_MOC_EXECUTABLE" : "/Users/sophie/Qt/6.11.1/macos/libexec/moc",
+	"QT_UIC_EXECUTABLE" : "/Users/sophie/Qt/6.11.1/macos/libexec/uic",
+	"QT_VERSION_MAJOR" : 6,
+	"QT_VERSION_MINOR" : 11,
+	"SETTINGS_FILE" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vdxf/CMakeFiles/VDXFLib_autogen.dir/AutogenUsed.txt",
+	"SOURCES" : 
+	[
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/dxfdef.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/dxiface.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/drw_base.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/drw_classes.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/drw_entities.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/drw_header.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/drw_objects.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/intern/drw_dbg.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/intern/drw_textcodec.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/intern/dxfreader.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/intern/dxfwriter.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/libdxfrw/libdxfrw.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/vdxfengine.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vdxf/vdxfpaintdevice.cpp",
+			"MU",
+			null
+		]
+	],
+	"UIC_OPTIONS" : [],
+	"UIC_SEARCH_PATHS" : [],
+	"UIC_SKIP" : [],
+	"UIC_UI_FILES" : [],
+	"USE_BETTER_GRAPH" : true,
+	"VERBOSITY" : 0
+}

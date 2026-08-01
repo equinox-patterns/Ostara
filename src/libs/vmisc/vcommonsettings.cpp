@@ -366,7 +366,7 @@ void VCommonSettings::SetPathCustomImage(const QString &value) const
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetDefPathSVGFonts() -> QString
 {
-    auto const defPath = QStringList{QDir::homePath(), "Valentina"_L1, "Svg fonts"_L1}.join(QDir::separator());
+    auto const defPath = QStringList{QDir::homePath(), "Ostara"_L1, "Svg fonts"_L1}.join(QDir::separator());
 
 #if defined(Q_OS_WIN)
     QString const docPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
@@ -375,7 +375,7 @@ auto VCommonSettings::GetDefPathSVGFonts() -> QString
         return defPath;
     }
 
-    return QStringList{docPath, "Valentina"_L1, "Svg fonts"_L1}.join(QDir::separator());
+    return QStringList{docPath, "Ostara"_L1, "Svg fonts"_L1}.join(QDir::separator());
 #else
     return defPath;
 #endif
@@ -407,7 +407,7 @@ void VCommonSettings::SetPathSVGFonts(const QString &value)
 auto VCommonSettings::GetDefPathFontCorrections() -> QString
 {
     QString const defPath =
-        QStringList{QDir::homePath(), "Valentina"_L1, "Font corrections"_L1}.join(QDir::separator());
+        QStringList{QDir::homePath(), "Ostara"_L1, "Font corrections"_L1}.join(QDir::separator());
 
 #if defined(Q_OS_WIN)
     QString const docPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
@@ -416,7 +416,7 @@ auto VCommonSettings::GetDefPathFontCorrections() -> QString
         return defPath;
     }
 
-    return QStringList{docPath, "Valentina"_L1, "Font corrections"_L1}.join(QDir::separator());
+    return QStringList{docPath, "Ostara"_L1, "Font corrections"_L1}.join(QDir::separator());
 #else
     return defPath;
 #endif
@@ -441,7 +441,7 @@ void VCommonSettings::SetPathFontCorrections(const QString &value) const
 auto VCommonSettings::GetDefPathKnownMeasurements() -> QString
 {
     QString const defPath =
-        QStringList{QDir::homePath(), "Valentina"_L1, "Known measurements"_L1}.join(QDir::separator());
+        QStringList{QDir::homePath(), "Ostara"_L1, "Known measurements"_L1}.join(QDir::separator());
 
 #if defined(Q_OS_WIN)
     QString const docPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
@@ -450,7 +450,7 @@ auto VCommonSettings::GetDefPathKnownMeasurements() -> QString
         return defPath;
     }
 
-    return QStringList{docPath, "Valentina"_L1, "Known measurements"_L1}.join(QDir::separator());
+    return QStringList{docPath, "Ostara"_L1, "Known measurements"_L1}.join(QDir::separator());
 #else
     return defPath;
 #endif

@@ -1,0 +1,26 @@
+{
+	"BUILD_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vlayout/VLayoutLib_autogen",
+	"CMAKE_BINARY_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake",
+	"CMAKE_CURRENT_BINARY_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vlayout",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vlayout",
+	"CMAKE_SOURCE_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Unix Makefiles",
+	"INCLUDE_DIR" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vlayout/VLayoutLib_autogen/include",
+	"INPUTS" : 
+	[
+		"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vlayout/share/scissors_horizontal.png",
+		"/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vlayout/share/scissors_vertical.png"
+	],
+	"LOCK_FILE" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vlayout/CMakeFiles/VLayoutLib_autogen.dir/AutoRcc_icons_3333JJZB4S_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "icons" ],
+	"OUTPUT_CHECKSUM" : "3333JJZB4S",
+	"OUTPUT_NAME" : "qrc_icons.cpp",
+	"RCC_EXECUTABLE" : "/Users/sophie/Qt/6.11.1/macos/libexec/rcc",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vlayout/CMakeFiles/VLayoutLib_autogen.dir/AutoRcc_icons_3333JJZB4S_Used.txt",
+	"SOURCE" : "/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vlayout/share/icons.qrc",
+	"USE_BETTER_GRAPH" : true,
+	"VERBOSITY" : 0
+}

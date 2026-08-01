@@ -231,7 +231,7 @@ auto InitializeCrashpad(const QString &appName) -> bool
     MakeDir(metricsPath);
     base::FilePath const metricsDir(VCrashPaths::GetPlatformString(metricsPath));
 
-    auto const dbName = QStringLiteral("valentina");
+    auto const dbName = QStringLiteral("ostara");
     // Configure url with your BugSplat database
     auto const url = QStringLiteral("https://%1.bugsplat.com/post/bp/crash/crashpad.php").arg(dbName);
 

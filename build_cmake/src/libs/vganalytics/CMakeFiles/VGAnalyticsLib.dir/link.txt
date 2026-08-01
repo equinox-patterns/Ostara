@@ -1,0 +1,2 @@
+/usr/bin/ar qc libVGAnalyticsLib.a CMakeFiles/VGAnalyticsLib.dir/VGAnalyticsLib_autogen/mocs_compilation.cpp.o CMakeFiles/VGAnalyticsLib.dir/vganalytics.cpp.o
+/usr/bin/ranlib libVGAnalyticsLib.a

@@ -31,7 +31,6 @@
 #include "../ifc/xml/vvstconverter.h"
 #include "../vdxf/libdxfrw/drw_base.h"
 #include "../vformat/vmeasurements.h"
-#include "../vganalytics/vganalytics.h"
 #include "../vlayout/vlayoutexporter.h"
 #include "../vlayout/vlayoutgenerator.h"
 #include "../vmisc/compatibility.h"
@@ -1397,29 +1396,9 @@ auto MainWindowsNoGUI::ApplyConverter(const QSharedPointer<VMeasurements> &m, co
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindowsNoGUI::CollectStatistics(MeasurementsType measurementsType, const QString &formatVersion) const
 {
-    const VCommonSettings *settings = VAbstractApplication::VApp()->Settings();
-    if (!VApplication::IsGUIMode() || !settings->IsCollectStatistic())
-    {
-        return;
-    }
-
-    auto *statistic = VGAnalytics::Instance();
-    if (settings->GetClientID().isEmpty())
-    {
-        const QString clientID = QUuid::createUuid().toString();
-        settings->SetClientID(clientID);
-        statistic->SetClientID(clientID);
-    }
-    statistic->Enable(true);
-    qint64 const uptime = VAbstractApplication::VApp()->AppUptime();
-    if (measurementsType == MeasurementsType::Multisize)
-    {
-        statistic->SendMultisizeMeasurementsFormatVersion(uptime, formatVersion);
-    }
-    else
-    {
-        statistic->SendIndividualMeasurementsFormatVersion(uptime, formatVersion);
-    }
+    // VGAnalyticsLib removed — no tracking
+    Q_UNUSED(measurementsType)
+    Q_UNUSED(formatVersion)
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,32 @@
+{
+    "light": {
+        "primitives": {
+            "blanc": "#FFFFFF",
+            "gris_50": "#F5F5F6",
+            "gris_100": "#ECECEF",
+            "gris_200": "#E0E0E5",
+            "gris_300": "#D0D0D8",
+            "gris_400": "#A0A0A8",
+            "gris_500": "#707078",
+            "gris_600": "#303036",
+            "accent": "#8C4560",
+            "accent_clair": "#A0667C"
+        },
+        "semantique": {}
+    },
+    "dark": {
+        "primitives": {
+            "blanc": "#FFFFFF",
+            "gris_50": "#262627",
+            "gris_100": "#323232",
+            "gris_200": "#3E3E3E",
+            "gris_300": "#404040",
+            "gris_400": "#C2C2C2",
+            "gris_500": "#808080",
+            "gris_600": "#FFFFFF",
+            "accent": "#a33a69",
+            "accent_clair": "#B75c81"
+        },
+        "semantique": {}
+    }
+}

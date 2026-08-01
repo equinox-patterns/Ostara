@@ -75,13 +75,23 @@ auto LocalList() -> QStringList
         return fileNames;
     }
 
-    QDirIterator it(VAbstractApplication::translationsPath(), QStringList("valentina_*.qm"), QDir::Files,
+    // Search embedded translations (Qt resources)
+    QDir resourceDir(QStringLiteral(":/i18n/"));
+    const auto resourceFiles = resourceDir.entryList({QStringLiteral("ostara_*.qm")}, QDir::Files);
+    for (const auto &file : resourceFiles)
+    {
+        fileNames.append(file);
+    }
+
+    // Also search disk translations (legacy or custom installs)
+    QDirIterator it(VAbstractApplication::translationsPath(), QStringList(QStringLiteral("ostara_*.qm")), QDir::Files,
                     QDirIterator::Subdirectories);
     while (it.hasNext())
     {
         it.next();
         fileNames.append(it.fileName());
     }
+
     return fileNames;
 }
 

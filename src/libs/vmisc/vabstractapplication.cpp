@@ -73,41 +73,40 @@ namespace
 {
 constexpr auto DAYS_TO_KEEP_LOGS = 3;
 
-auto FilterLocales(const QStringList &locales) -> QStringList
-{
-    QStringList filtered;
-    for (const auto &locale : locales)
-    {
-        if (not locale.startsWith("ru"_L1) && not locale.startsWith("ir"_L1))
-        {
-            filtered.append(locale);
-        }
-    }
-
-    return filtered;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
-auto LoadQM(QTranslator *translator, const QString &filename, const QString &locale, const QString &qmDir) -> bool
+auto LoadTranslationFromResource(QTranslator *translator, const QString &locale) -> bool
 {
-    QStringList languages;
+    // Build candidate list: requested locale → bare language → system locales
+    QStringList candidates;
     if (not locale.isEmpty())
     {
-        languages.append(locale);
+        candidates.append(locale);
+        const vsizetype uscore = locale.indexOf(u'_');
+        if (uscore > 0)
+        {
+            candidates.append(locale.left(uscore));
+        }
     }
     else
     {
-        languages = QLocale().uiLanguages();
+        candidates = QLocale().uiLanguages();
     }
 
-    languages = FilterLocales(languages);
-
-    for (auto &locale : languages)
+    // Filter out ru/ir (same as before)
+    QStringList filtered;
+    for (const auto &candidate : candidates)
     {
-        const bool loaded = translator->load(filename + locale, qmDir);
-        if (loaded)
+        if (not candidate.startsWith("ru"_L1) && not candidate.startsWith("ir"_L1))
         {
-            return loaded;
+            filtered.append(candidate);
+        }
+    }
+
+    for (const auto &candidate : filtered)
+    {
+        if (translator->load(QStringLiteral(":/i18n/ostara_%1.qm").arg(candidate)))
+        {
+            return true;
         }
     }
 
@@ -402,33 +401,14 @@ void VAbstractApplication::LoadTranslation(QString locale)
 
     ClearTranslation();
 
-    const QString appQmDir = VAbstractApplication::translationsPath(locale);
-
-    qtTranslator = new QTranslator(this);
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
-    const QString qtQmDir = appQmDir;
-#else
-#if defined(APPIMAGE)
-    const QString qtQmDir = VAbstractApplication::QtTranslationsPath(locale);
-#else
-    const QString qtQmDir = QLibraryPath(QLibraryInfo::TranslationsPath);
-#endif // defined(APPIMAGE)
-#endif
-    LoadQM(qtTranslator, QStringLiteral("qt_"), locale, qtQmDir);
-    installTranslator(qtTranslator);
-
-#if defined(APPIMAGE)
-    qtxmlTranslator = new QTranslator(this);
-    LoadQM(qtxmlTranslator, QStringLiteral("qtxmlpatterns_"), locale, qtQmDir);
-    installTranslator(qtxmlTranslator);
-
-    qtBaseTranslator = new QTranslator(this);
-    LoadQM(qtBaseTranslator, QStringLiteral("qtbase_"), locale, qtQmDir);
-    installTranslator(qtBaseTranslator);
-#endif // defined(APPIMAGE)
-
+    // Translations are embedded in the binary via qt_add_translations
+    // with MERGE_QT_TRANSLATIONS — Qt translations are already fused
+    // into the app .qm files, so only one translator is needed.
     appTranslator = new QTranslator(this);
-    LoadQM(appTranslator, QStringLiteral("valentina_"), locale, appQmDir);
+    if (not LoadTranslationFromResource(appTranslator, locale))
+    {
+        qWarning() << "Failed to load embedded translation for locale:" << locale;
+    }
     installTranslator(appTranslator);
 
     InitTrVars(); // Very important do it after load QM files.
@@ -437,26 +417,6 @@ void VAbstractApplication::LoadTranslation(QString locale)
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractApplication::ClearTranslation()
 {
-    if (not qtTranslator.isNull())
-    {
-        removeTranslator(qtTranslator);
-        delete qtTranslator.data();
-    }
-
-#if defined(APPIMAGE)
-    if (not qtxmlTranslator.isNull())
-    {
-        removeTranslator(qtxmlTranslator);
-        delete qtxmlTranslator.data();
-    }
-
-    if (not qtBaseTranslator.isNull())
-    {
-        removeTranslator(qtBaseTranslator);
-        delete qtBaseTranslator.data();
-    }
-#endif // defined(APPIMAGE)
-
     if (not appTranslator.isNull())
     {
         removeTranslator(appTranslator);
@@ -576,7 +536,7 @@ auto VAbstractApplication::GetPlaceholderTranslator() -> QSharedPointer<VTransla
 
     auto translator = QSharedPointer<VTranslator>(new VTranslator);
     const QString appQmDir = VAbstractApplication::translationsPath(settings->GetLocale());
-    if (translator->load(QStringLiteral("valentina_") + pieceLabelLocale, appQmDir))
+    if (translator->load(QStringLiteral("ostara_") + pieceLabelLocale, appQmDir))
     {
         return translator;
     }

@@ -48,7 +48,6 @@
 
 #include "../ifc/xml/vlayoutconverter.h"
 #include "../vdxf/libdxfrw/drw_base.h"
-#include "../vganalytics/vganalytics.h"
 #include "../vlayout/dialogs/watermarkwindow.h"
 #include "../vlayout/vlayoutexporter.h"
 #include "../vlayout/vprintlayout.h"
@@ -546,23 +545,7 @@ auto VPMainWindow::LoadFile(const QString &path) -> bool
             return false;
         }
 
-        VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-        if (VPApplication::VApp()->IsAppInGUIMode() && settings->IsCollectStatistic())
-        {
-            auto *statistic = VGAnalytics::Instance();
-
-            if (QString clientID = settings->GetClientID(); clientID.isEmpty())
-            {
-                clientID = QUuid::createUuid().toString();
-                settings->SetClientID(clientID);
-                statistic->SetClientID(clientID);
-            }
-
-            statistic->Enable(true);
-
-            const qint64 uptime = VAbstractApplication::VApp()->AppUptime();
-            statistic->SendLayoutFormatVersion(uptime, converter.GetFormatVersionStr());
-        }
+        // VGAnalyticsLib removed — no tracking
     }
     catch (VException &e)
     {
@@ -4964,25 +4947,7 @@ void VPMainWindow::AskDefaultSettings()
             settings->SetAskSendCrashReport(false);
         }
 
-        if (settings->IsCollectStatistic())
-        {
-            auto *statistic = VGAnalytics::Instance();
-            statistic->SetGUILanguage(settings->GetLocale());
-
-            bool freshID = false;
-            if (QString clientID = settings->GetClientID(); clientID.isEmpty())
-            {
-                clientID = QUuid::createUuid().toString();
-                settings->SetClientID(clientID);
-                statistic->SetClientID(clientID);
-                freshID = true;
-            }
-
-            statistic->Enable(true);
-
-            const qint64 uptime = VPApplication::VApp()->AppUptime();
-            freshID ? statistic->SendAppFreshInstallEvent(uptime) : statistic->SendAppStartEvent(uptime);
-        }
+        // VGAnalyticsLib removed — no tracking
     }
 }
 

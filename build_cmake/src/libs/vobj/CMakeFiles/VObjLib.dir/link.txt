@@ -1,0 +1,2 @@
+/usr/bin/ar qc libVObjLib.a CMakeFiles/VObjLib.dir/VObjLib_autogen/mocs_compilation.cpp.o CMakeFiles/VObjLib.dir/vobjengine.cpp.o CMakeFiles/VObjLib.dir/vobjpaintdevice.cpp.o CMakeFiles/VObjLib.dir/delaunay.cpp.o CMakeFiles/VObjLib.dir/predicates.cpp.o
+/usr/bin/ranlib libVObjLib.a

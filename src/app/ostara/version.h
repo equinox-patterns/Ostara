@@ -31,9 +31,9 @@
 
 #include "../../libs/vmisc/projectversion.h"
 
-#define VER_INTERNALNAME_STR "Valentina"         // NOLINT(cppcoreguidelines-macro-usage)
-#define VER_ORIGINALFILENAME_STR "valentina.exe" // NOLINT(cppcoreguidelines-macro-usage)
-#define VER_PRODUCTNAME_STR "Valentina"          // NOLINT(cppcoreguidelines-macro-usage)
-#define VER_FILEDESCRIPTION_STR "Valentina"      // NOLINT(cppcoreguidelines-macro-usage)
+#define VER_INTERNALNAME_STR "Ostara"            // NOLINT(cppcoreguidelines-macro-usage)
+#define VER_ORIGINALFILENAME_STR "ostara"         // NOLINT(cppcoreguidelines-macro-usage)
+#define VER_PRODUCTNAME_STR "Ostara"             // NOLINT(cppcoreguidelines-macro-usage)
+#define VER_FILEDESCRIPTION_STR "Ostara"         // NOLINT(cppcoreguidelines-macro-usage)
 
 #endif // VERSION_H

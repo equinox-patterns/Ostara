@@ -1,0 +1,2 @@
+/usr/bin/ar qc libVExceptionLib.a CMakeFiles/VExceptionLib.dir/VExceptionLib_autogen/mocs_compilation.cpp.o CMakeFiles/VExceptionLib.dir/vexception.cpp.o
+/usr/bin/ranlib libVExceptionLib.a

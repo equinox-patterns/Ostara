@@ -30,7 +30,6 @@
 #include "../ifc/xml/vknownmeasurementsconverter.h"
 #include "../vformat/knownmeasurements/vknownmeasurement.h"
 #include "../vformat/knownmeasurements/vknownmeasurementsdocument.h"
-#include "../vganalytics/vganalytics.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/dialogs/dialogaskcollectstatistic.h"
 #include "../vmisc/dialogs/dialogexporttocsv.h"
@@ -221,23 +220,7 @@ auto TKMMainWindow::LoadFile(const QString &path) -> bool
         m_m = new VKnownMeasurementsDocument();
         m_m->setXMLContent(converter.Convert());
 
-        if (const VCommonSettings *settings = VAbstractApplication::VApp()->Settings();
-            MApplication::VApp()->IsAppInGUIMode() && settings->IsCollectStatistic())
-        {
-            auto *statistic = VGAnalytics::Instance();
-
-            if (QString clientID = settings->GetClientID(); clientID.isEmpty())
-            {
-                clientID = QUuid::createUuid().toString();
-                settings->SetClientID(clientID);
-                statistic->SetClientID(clientID);
-            }
-
-            statistic->Enable(true);
-
-            const qint64 uptime = VAbstractApplication::VApp()->AppUptime();
-            statistic->SendMultisizeMeasurementsFormatVersion(uptime, m_curFileFormatVersionStr);
-        }
+        // VGAnalyticsLib removed — no tracking
 
         ui->labelToolTip->setVisible(false);
         ui->tabWidget->setVisible(true);
@@ -1666,25 +1649,7 @@ void TKMMainWindow::AskDefaultSettings()
         settings->SetAskSendCrashReport(false);
     }
 
-    if (settings->IsCollectStatistic())
-    {
-        auto *statistic = VGAnalytics::Instance();
-        statistic->SetGUILanguage(settings->GetLocale());
-
-        bool freshID = false;
-        if (QString clientID = settings->GetClientID(); clientID.isEmpty())
-        {
-            clientID = QUuid::createUuid().toString();
-            settings->SetClientID(clientID);
-            statistic->SetClientID(clientID);
-            freshID = true;
-        }
-
-        statistic->Enable(true);
-
-        const qint64 uptime = MApplication::VApp()->AppUptime();
-        freshID ? statistic->SendAppFreshInstallEvent(uptime) : statistic->SendAppStartEvent(uptime);
-    }
+    // VGAnalyticsLib removed — no tracking
 }
 
 //---------------------------------------------------------------------------------------------------------------------

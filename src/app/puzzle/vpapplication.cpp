@@ -33,7 +33,7 @@
 #include "../ifc/exception/vexceptionemptyparameter.h"
 #include "../ifc/exception/vexceptionobjecterror.h"
 #include "../ifc/exception/vexceptionwrongid.h"
-#include "../vganalytics/vganalytics.h"
+#include "../vganalytics/vganalytics.h" // CheckCountryCodeAsync (sanctions)
 #include "../vmisc/projectversion.h"
 #include "../vdispatch/qt_dispatch.h"
 #include "vtheme.h"
@@ -330,16 +330,7 @@ VPApplication::VPApplication(int &argc, char **argv)
 //---------------------------------------------------------------------------------------------------------------------
 VPApplication::~VPApplication()
 {
-    if (VPApplication::IsAppInGUIMode() && settings->IsCollectStatistic())
-    {
-        auto *statistic = VGAnalytics::Instance();
-
-        QString const clientID = settings->GetClientID();
-        if (!clientID.isEmpty())
-        {
-            statistic->SendAppCloseEvent(m_uptimeTimer.elapsed());
-        }
-    }
+    // VGAnalyticsLib removed — no tracking
 
     qDeleteAll(m_mainWindows);
 }
@@ -518,7 +509,7 @@ void VPApplication::InitOptions()
 
     VTheme::Instance()->ResetThemeSettings();
 
-    VGAnalytics::Init(settings);
+    // VGAnalyticsLib removed — no tracking
 
     m_shortcutManager = new VPuzzleShortcutManager(this);
 }

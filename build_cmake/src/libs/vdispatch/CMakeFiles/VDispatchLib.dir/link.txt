@@ -1,0 +1,2 @@
+/usr/bin/ar qc libVDispatchLib.a CMakeFiles/VDispatchLib.dir/VDispatchLib_autogen/mocs_compilation.cpp.o
+/usr/bin/ranlib libVDispatchLib.a

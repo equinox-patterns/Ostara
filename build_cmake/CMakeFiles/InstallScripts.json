@@ -1,0 +1,35 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vexception/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vdispatch/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vtextstream/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vbackport/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/graaflib/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/qmuparser/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vmisc/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vtheme/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/ifc/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vcrashhandler/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vgeometry/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vdxf/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vobj/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vformat/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vhpgl/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vpatterndb/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vpropertyexplorer/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vwidgets/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vlayout/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vtools/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/fervor/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/libs/vganalytics/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/app/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/app/ostara/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/app/tape/cmake_install.cmake",
+		"/Users/sophie/Val_SD/EnCours/Ostara/build_cmake/src/app/puzzle/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

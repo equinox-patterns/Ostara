@@ -1,0 +1,8 @@
+VHPGLLib_autogen/timestamp: \
+	/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vhpgl/CMakeLists.txt \
+	/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vhpgl/stable.h \
+	/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vhpgl/vhpglengine.cpp \
+	/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vhpgl/vhpglengine.h \
+	/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vhpgl/vhpglpaintdevice.cpp \
+	/Users/sophie/Val_SD/EnCours/Ostara/src/libs/vhpgl/vhpglpaintdevice.h \
+	/opt/homebrew/bin/cmake
