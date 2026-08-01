@@ -184,10 +184,16 @@ void WelcomeWindow::closeEvent(QCloseEvent *event)
         }
     }
 
-    // The standalone QMenuBar has no QObject parent — delete it now so it
-    // doesn't interfere with MainWindow's menu bar after we close.
-    delete m_appMenuBar;
-    m_appMenuBar = nullptr;
+    // The standalone QMenuBar has no QObject parent — schedule deletion so
+    // it doesn't interfere with MainWindow's menu bar after we close.
+    // Use deleteLater() rather than delete: if the close was triggered by
+    // a QAction inside m_appMenuBar (Cmd+Q / Quit menu), deleting
+    // immediately would corrupt the event that's still being processed.
+    if (m_appMenuBar != nullptr)
+    {
+        m_appMenuBar->deleteLater();
+        m_appMenuBar = nullptr;
+    }
 
     QMainWindow::closeEvent(event);
 }

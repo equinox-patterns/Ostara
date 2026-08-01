@@ -236,7 +236,6 @@ auto main(int argc, char *argv[]) -> int
         welcome->show();
     };
 
-    QApplication::setQuitOnLastWindowClosed(false);
 #if !defined(Q_OS_MAC)
     VApplication::setWindowIcon(QIcon(":/icon/64x64/icon64x64.png"));
 #endif // !defined(Q_OS_MAC)
