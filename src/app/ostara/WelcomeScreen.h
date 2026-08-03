@@ -63,6 +63,7 @@ signals:
     void OpenMeasurementClicked();
     void OpenRecentPattern(const QString &path);
     void OpenRecentMeasurement(const QString &path);
+    void FeaturesClicked();
 
 private:
     void CreateHeader();

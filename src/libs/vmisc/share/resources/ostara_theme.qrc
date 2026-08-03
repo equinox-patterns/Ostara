@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/ostara">
-        <file alias="light.qss">ostara/light.qss</file>
-        <file alias="dark.qss">ostara/dark.qss</file>
+        <file alias="light.qss">../../../../../share/themes/generated/light.qss</file>
+        <file alias="dark.qss">../../../../../share/themes/generated/dark.qss</file>
     </qresource>
 </RCC>

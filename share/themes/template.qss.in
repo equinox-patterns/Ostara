@@ -1,97 +1,1042 @@
-/* ── Ostara — Ostara (generated from palette.json) ── */
+/* ── Ostara — generated from palette.json ── */
+/* ⚠️  DO NOT EDIT — this file is generated from template.qss.in + palette.json  */
+/*     Run: python3 scripts/generate_themes.py share/themes/palette.json            */
+/*          share/themes share/themes/generated                                     */
+/*                                                                                  */
+/* All SVG icons come from the Breeze theme QRC (109 per theme).                   */
+/* Paths: :/light/... and :/dark/...                                               */
+/* See design-system.md §6 for QScrollArea viewport (C++ workaround, not QSS).     */
 
-/* ===== WelcomeScreen ===== */
+/* =========================================================================
+   GLOBAL — Police de base (Inter, 15px)
+   ========================================================================= */
 
-/* Fond de la fenêtre d'accueil */
-QWidget#welcomeScreen {
-    background-color: $fond_fenetre;
+QWidget {
+    font-family: "Inter";
+    font-size: 15px;
 }
 
-/* Titre "Ostara" */
-QLabel#welcomeTitle {
-    font-size: 32px;
+/* =========================================================================
+   QToolTip
+   ========================================================================= */
+
+QToolTip {
+    background-color: $Window;
+    color: $Text;
+    border: 1px solid $Border;
+    border-radius: 2px;
+    padding: 4px 8px;
+    font-size: 13px;
+}
+
+/* =========================================================================
+   MAIN WINDOW / DIALOG — Fond principal
+   ========================================================================= */
+
+QMainWindow,
+QDialog {
+    background-color: $Window;
+}
+
+/* =========================================================================
+   QMenuBar — Barre de menus système
+   Design: $MenuBar background, 1px $Border bottom separator
+   ========================================================================= */
+
+QMenuBar {
+    background-color: $MenuBar;
+    color: $Text;
+    border-bottom: 1px solid $Border;
+    padding: 1px 0px;
+}
+
+QMenuBar::item {
+    background: transparent;
+    padding: 4px 12px;
+    border-radius: 2px;
+}
+
+QMenuBar::item:selected {
+    background-color: $HoverBg;
+}
+
+QMenuBar::item:pressed {
+    background-color: $PressedBg;
+}
+
+/* =========================================================================
+   QMenu — Menus déroulants
+   Design: $Window background, $Accent highlight on selected items
+   ========================================================================= */
+
+QMenu {
+    background-color: $Window;
+    color: $Text;
+    border: 1px solid $Border;
+    padding: 4px 0px;
+}
+
+QMenu::item {
+    padding: 5px 30px 5px 12px;
+}
+
+QMenu::item:selected {
+    background-color: $Accent;
+    color: $AccentText;
+}
+
+QMenu::item:disabled {
+    color: $TextDisabled;
+    background: transparent;
+}
+
+QMenu::separator {
+    height: 1px;
+    background: $Border;
+    margin: 4px 8px;
+}
+
+QMenu::indicator {
+    width: 16px;
+    height: 16px;
+    margin-left: 4px;
+}
+
+/* =========================================================================
+   QToolBar — Barres d'outils (TopBar, ToolBar latérale, etc.)
+   Design: $ToolBar background, $Border separators
+   ========================================================================= */
+
+QToolBar {
+    background-color: $ToolBar;
+    border: none;
+    spacing: 4px;
+    padding: 2px;
+}
+
+QToolBar::separator {
+    background: $Border;
+    width: 1px;
+    margin: 4px 4px;
+}
+
+/* =========================================================================
+   QStatusBar — Barre de statut
+   Design: $StatusBar background, $TextSecondary for text, 13px labels
+   ========================================================================= */
+
+QStatusBar {
+    background-color: $StatusBar;
+    color: $TextSecondary;
+    border-top: 1px solid $Border;
+}
+
+QStatusBar::item {
+    border: none;
+}
+
+QStatusBar QLabel {
+    color: $TextSecondary;
+    font-size: 13px;
+}
+
+/* =========================================================================
+   QPushButton — Boutons standards
+   Design: flat, $Window at rest → $Accent on hover/pressed/default
+   Disabled: $TextDisabled + $BorderLight
+   ========================================================================= */
+
+QPushButton {
+    background-color: $Window;
+    color: $Text;
+    border: 1px solid $Border;
+    border-radius: 2px;
+    padding: 6px 16px;
+}
+
+QPushButton:hover,
+QPushButton:pressed,
+QPushButton:default {
+    background-color: $Accent;
+    color: $AccentText;
+    border-color: $Accent;
+}
+
+QPushButton:disabled {
+    background-color: $Window;
+    color: $TextDisabled;
+    border-color: $BorderLight;
+}
+
+/* Variante : bouton icône seule (Phosphor, transparent, sans bordure) */
+QPushButton#phosphorIconBtn {
+    background: transparent;
+    border: none;
+    padding: 0px;
+    color: $TextSecondary;
+}
+
+QPushButton#phosphorIconBtn:hover {
+    background: transparent;
+    color: $Accent;
+}
+
+QPushButton#phosphorIconBtn:pressed {
+    background: transparent;
+    color: $AccentHover;
+}
+
+QPushButton#phosphorIconBtn:disabled {
+    background: transparent;
+    color: $TextDisabled;
+}
+
+/* =========================================================================
+   QToolButton — Boutons d'outils (toolbar, popup, dialog fx buttons)
+   Design: transparent rest → $HoverBg hover → $SelectionBg + $Accent border when checked
+   Variant #drawToolBtn: larger border-radius, $SelectionBg on hover/checked
+   ========================================================================= */
+
+QToolButton {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    padding: 2px;
+    color: $TextSecondary;
+}
+
+QToolButton:hover {
+    background: $HoverBg;
+    color: $Text;
+}
+
+QToolButton:pressed {
+    background: $PressedBg;
+}
+
+QToolButton:checked {
+    background: $SelectionBg;
+    border-color: $Accent;
+    color: $Text;
+}
+
+QToolButton:disabled {
+    color: $TextDisabled;
+}
+
+/* Menu indicator (flèche de popup — VToolButtonPopup) */
+QToolButton::menu-indicator {
+    image: none;
+}
+
+QToolButton::menu-button {
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+    width: 16px;
+}
+
+QToolButton::menu-button:hover {
+    background: $HoverBg;
+}
+
+QToolButton::menu-arrow {
+    image: url(:/$theme/down_arrow.svg);
+}
+
+/* Variante : bouton toolbar draw (design-system.md §4 — DrawToolBar) */
+QToolButton#drawToolBtn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+QToolButton#drawToolBtn:hover {
+    background: $SelectionBg;
+}
+
+QToolButton#drawToolBtn:checked {
+    background: $SelectionBg;
+    border-color: $Accent;
+}
+
+QToolButton#drawToolBtn:disabled {
+    color: $TextDisabled;
+}
+
+/* =========================================================================
+   QLineEdit / QPlainTextEdit — Champs texte
+   Design: $InputBg background, $InputFocus border on focus
+   Selection: $Accent + $AccentText
+   ========================================================================= */
+
+QLineEdit,
+QPlainTextEdit {
+    background-color: $InputBg;
+    color: $Text;
+    border: 1px solid $InputBorder;
+    border-radius: 2px;
+    padding: 4px 8px;
+    selection-background-color: $Accent;
+    selection-color: $AccentText;
+}
+
+QLineEdit:focus,
+QPlainTextEdit:focus {
+    border-color: $InputFocus;
+}
+
+QLineEdit:read-only,
+QPlainTextEdit:read-only {
+    background-color: $Window;
+}
+
+QLineEdit:disabled,
+QPlainTextEdit:disabled {
+    color: $TextDisabled;
+    border-color: $BorderLight;
+}
+
+/* =========================================================================
+   QSpinBox / QDoubleSpinBox — Champs numériques
+   Design: like QLineEdit + custom up/down buttons (all-or-nothing rule)
+   ========================================================================= */
+
+QSpinBox,
+QDoubleSpinBox {
+    background-color: $InputBg;
+    color: $Text;
+    border: 1px solid $InputBorder;
+    border-radius: 2px;
+    padding: 4px 8px;
+}
+
+QSpinBox:focus,
+QDoubleSpinBox:focus {
+    border-color: $InputFocus;
+}
+
+QSpinBox:disabled,
+QDoubleSpinBox:disabled {
+    color: $TextDisabled;
+    border-color: $BorderLight;
+}
+
+QSpinBox::up-button,
+QDoubleSpinBox::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+    border: none;
+    border-left: 1px solid $InputBorder;
+    border-bottom: 1px solid $InputBorder;
+    border-top-right-radius: 2px;
+    width: 20px;
+    background: transparent;
+}
+
+QSpinBox::down-button,
+QDoubleSpinBox::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+    border: none;
+    border-left: 1px solid $InputBorder;
+    border-bottom-right-radius: 2px;
+    width: 20px;
+    background: transparent;
+}
+
+QSpinBox::up-button:hover,
+QDoubleSpinBox::up-button:hover,
+QSpinBox::down-button:hover,
+QDoubleSpinBox::down-button:hover {
+    background: $HoverBg;
+}
+
+QSpinBox::up-button:pressed,
+QDoubleSpinBox::up-button:pressed,
+QSpinBox::down-button:pressed,
+QDoubleSpinBox::down-button:pressed {
+    background: $SelectionBg;
+}
+
+QSpinBox::up-arrow,
+QDoubleSpinBox::up-arrow {
+    image: url(:/$theme/up_arrow.svg);
+    width: 8px;
+    height: 8px;
+}
+
+QSpinBox::down-arrow,
+QDoubleSpinBox::down-arrow {
+    image: url(:/$theme/down_arrow.svg);
+    width: 8px;
+    height: 8px;
+}
+
+/* =========================================================================
+   QComboBox — Listes déroulantes (all-or-nothing rule)
+   Design: like an input + transparent drop-down + $Accent hover border
+   ========================================================================= */
+
+QComboBox {
+    background-color: $InputBg;
+    color: $Text;
+    border: 1px solid $InputBorder;
+    border-radius: 2px;
+    padding: 5px 8px;
+}
+
+QComboBox:hover {
+    border-color: $Accent;
+}
+
+QComboBox:focus {
+    border-color: $InputFocus;
+}
+
+QComboBox:disabled {
+    color: $TextDisabled;
+    border-color: $BorderLight;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    background: transparent;
+    border: none;
+    border-left: 1px solid $InputBorder;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+QComboBox::down-arrow {
+    image: url(:/$theme/down_arrow.svg);
+    width: 12px;
+    height: 12px;
+}
+
+/* Popup list */
+QComboBox QAbstractItemView {
+    background-color: $InputBg;
+    color: $Text;
+    border: none;
+    outline: none;
+}
+
+QComboBox QAbstractItemView::item {
+    background-color: $TableRowBg;
+    padding: 4px 8px;
+}
+
+QComboBox QAbstractItemView::item:hover {
+    background-color: $TableRowHoverBg;
+    color: $AccentText;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background-color: $Accent;
+    color: $AccentText;
+}
+
+/* =========================================================================
+   QAbstractItemView — Vues d'items communes (QListWidget, QTreeView, QTableWidget, etc.)
+   Design: $InputBg background, no borders. Separation by color only.
+   Selected → $Accent + $AccentText. Hover → $TableRowHoverBg.
+   ⚠️  Exception QComboBox in cells: hover must be disabled on those rows
+       (not expressible in QSS — handled in C++, see design-system.md §3).
+   ========================================================================= */
+
+QAbstractItemView {
+    background-color: $InputBg;
+    alternate-background-color: $TableRowAltBg;
+    color: $Text;
+    border: none;
+    outline: none;
+    selection-background-color: $Accent;
+    selection-color: $AccentText;
+}
+
+QAbstractItemView::item {
+    background-color: $TableRowBg;
+    border: none;
+    padding: 4px 8px;
+}
+
+QAbstractItemView::item:alternate {
+    background-color: $TableRowAltBg;
+}
+
+QAbstractItemView::item:hover {
+    background-color: $TableRowHoverBg;
+    color: $AccentText;
+}
+
+QAbstractItemView::item:selected {
+    background-color: $Accent;
+    color: $AccentText;
+}
+
+/* =========================================================================
+   QTreeView — Branches (expand/collapse arrows)
+   ========================================================================= */
+
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings {
+    image: url(:/$theme/branch_closed.svg);
+}
+
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings {
+    image: url(:/$theme/branch_open.svg);
+}
+
+/* =========================================================================
+   QHeaderView — En-têtes de tables / arbres
+   Design: $TableHeaderBg background, no top/left border, subtle right/bottom
+   ========================================================================= */
+
+QHeaderView::section {
+    background-color: $TableHeaderBg;
+    color: $Text;
+    border: none;
+    border-right: 1px solid $BorderLight;
+    border-bottom: 1px solid $Border;
+    padding: 4px 8px;
+}
+
+QHeaderView::section:hover {
+    background-color: $HoverBg;
+}
+
+/* =========================================================================
+   QCheckBox / QRadioButton
+   Design: checkbox = 16×16, $InputBg + $Border → $Accent when checked
+           radio = SVG icons (radio_checked.svg / radio_unchecked.svg already exist)
+   ========================================================================= */
+
+QCheckBox,
+QRadioButton {
+    color: $Text;
+    spacing: 8px;
+}
+
+QCheckBox:disabled,
+QRadioButton:disabled {
+    color: $TextDisabled;
+}
+
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+}
+
+QCheckBox::indicator:unchecked {
+    border: none;
+    image: url(:/$theme/checkbox_unchecked.svg);
+}
+
+QCheckBox::indicator:checked {
+    border: none;
+    image: url(:/$theme/checkbox_checked.svg);
+}
+
+QCheckBox::indicator:unchecked:disabled {
+    border: none;
+    image: url(:/$theme/checkbox_unchecked_disabled.svg);
+}
+
+QCheckBox::indicator:checked:disabled {
+    border: none;
+    image: url(:/$theme/checkbox_checked_disabled.svg);
+}
+
+QRadioButton::indicator {
+    width: 16px;
+    height: 16px;
+}
+
+QRadioButton::indicator:unchecked {
+    image: url(:/$theme/radio_unchecked.svg);
+}
+
+QRadioButton::indicator:checked {
+    image: url(:/$theme/radio_checked.svg);
+}
+
+QRadioButton::indicator:unchecked:disabled {
+    image: url(:/$theme/radio_unchecked_disabled.svg);
+}
+
+QRadioButton::indicator:checked:disabled {
+    image: url(:/$theme/radio_checked_disabled.svg);
+}
+
+/* =========================================================================
+   QTabWidget / QTabBar — Onglets
+   Design: inactive = $TableHeaderBg + $TextSecondary + $Border
+           selected = $InputBg + $Text, bottom border matches pane
+   ========================================================================= */
+
+QTabWidget::pane {
+    border: 1px solid $Border;
+    background: $InputBg;
+    top: -1px;
+}
+
+QTabBar::tab {
+    background: $TableHeaderBg;
+    color: $TextSecondary;
+    border: 1px solid $Border;
+    padding: 6px 16px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    margin-right: 2px;
+}
+
+QTabBar::tab:selected {
+    background: $InputBg;
+    color: $Text;
+    border-bottom-color: $InputBg;
+}
+
+QTabBar::tab:hover:!selected {
+    background: $HoverBg;
+}
+
+QTabBar::tab:disabled {
+    color: $TextDisabled;
+}
+
+/* Close button on tabs (if any) */
+QTabBar::close-button {
+    image: url(:/$theme/tab_close.svg);
+}
+
+QTabBar::close-button:hover {
+    image: url(:/$theme/tab_close.svg);
+}
+
+/* =========================================================================
+   QGroupBox
+   Design: $DockBody background, $Border border, bold title centered at top
+   ========================================================================= */
+
+QGroupBox {
+    background: $DockBody;
+    border: 1px solid $Border;
+    border-radius: 4px;
+    padding: 20px 16px 16px 16px;
     font-weight: bold;
-    color: $texte_principal;
+    color: $Text;
 }
 
-/* Numéro de version */
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    padding: 0 8px;
+    color: $Text;
+}
+
+/* =========================================================================
+   QDockWidget — Docks
+   Design: $DockTitle background on native title bar,
+           but docks will use custom title bars via setTitleBarWidget()
+           (see design-system.md §7e). This QSS is the fallback.
+   ========================================================================= */
+
+QDockWidget {
+    background-color: $DockBody;
+    color: $Text;
+    titlebar-close-icon: url(:/$theme/close.svg);
+    titlebar-normal-icon: url(:/$theme/undock.svg);
+}
+
+QDockWidget::title {
+    background: $DockTitle;
+    padding: 6px 12px;
+    border-bottom: 1px solid $Border;
+}
+
+QDockWidget::close-button,
+QDockWidget::float-button {
+    background: transparent;
+    border: none;
+    padding: 0px;
+    margin: 2px;
+}
+
+/* =========================================================================
+   QMainWindow::separator — Resize handle entre docks
+   ========================================================================= */
+
+QMainWindow::separator {
+    background: $Border;
+    width: 1px;
+    height: 1px;
+}
+
+/* =========================================================================
+   QScrollBar — Vertical + Horizontal (all-or-nothing rule)
+   Design: fine (0.65em), $ToolBar background, $Accent handle, no arrows
+   ========================================================================= */
+
+QScrollBar:vertical {
+    background-color: $ToolBar;
+    width: 0.65em;
+    margin: 0.13em 0.13em 0.13em 0.13em;
+    border-radius: 0.17em;
+}
+
+QScrollBar::handle:vertical {
+    background-color: $Accent;
+    min-height: 1.5em;
+    border-radius: 0.17em;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: $AccentHover;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+    background: none;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+QScrollBar::up-arrow:vertical,
+QScrollBar::down-arrow:vertical {
+    background: none;
+}
+
+QScrollBar:horizontal {
+    background-color: $ToolBar;
+    height: 0.65em;
+    margin: 0.13em 0.13em 0.13em 0.13em;
+    border-radius: 0.17em;
+}
+
+QScrollBar::handle:horizontal {
+    background-color: $Accent;
+    min-width: 1.5em;
+    border-radius: 0.17em;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background-color: $AccentHover;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    width: 0px;
+    background: none;
+}
+
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+QScrollBar::up-arrow:horizontal,
+QScrollBar::down-arrow:horizontal {
+    background: none;
+}
+
+/* =========================================================================
+   QProgressBar
+   Design: $InputBg background, $Accent chunk, subtle border
+   ========================================================================= */
+
+QProgressBar {
+    background-color: $InputBg;
+    border: 1px solid $Border;
+    border-radius: 2px;
+    text-align: center;
+    color: $Text;
+    font-size: 13px;
+}
+
+QProgressBar::chunk {
+    background-color: $Accent;
+    border-radius: 1px;
+}
+
+/* =========================================================================
+   QSplitter — Handle
+   ========================================================================= */
+
+QSplitter::handle {
+    background-color: $Border;
+}
+
+QSplitter::handle:horizontal {
+    width: 1px;
+}
+
+QSplitter::handle:vertical {
+    height: 1px;
+}
+
+/* =========================================================================
+   QGraphicsView — Canvas (zone de dessin)
+   Design: $Canvas background, no border
+   ========================================================================= */
+
+QGraphicsView {
+    background-color: $Canvas;
+    border: none;
+}
+
+/* =========================================================================
+   QScrollArea
+   The viewport is a plain QWidget (direct child) — make it transparent so
+   the QScrollArea/QMainWindow background shows through.
+   ========================================================================= */
+
+QScrollArea {
+    background-color: $Window;
+    border: none;
+}
+
+QScrollArea > .QWidget {
+    background: transparent;
+}
+
+/* =========================================================================
+   QLabel — Labels
+   Design: transparent background, $Text color
+   ========================================================================= */
+
+QLabel {
+    color: $Text;
+    background: transparent;
+    border: none;
+}
+
+/* =========================================================================
+   QDialogButtonBox
+   ========================================================================= */
+
+QDialogButtonBox {
+    button-layout: 0;
+}
+
+/* =========================================================================
+   QDateEdit
+   ========================================================================= */
+
+QDateEdit {
+    background-color: $InputBg;
+    color: $Text;
+    border: 1px solid $InputBorder;
+    border-radius: 2px;
+    padding: 4px 8px;
+}
+
+QDateEdit:focus {
+    border-color: $InputFocus;
+}
+
+QDateEdit::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    background: transparent;
+    border: none;
+    border-left: 1px solid $InputBorder;
+}
+
+QDateEdit::down-arrow {
+    image: url(:/$theme/down_arrow.svg);
+}
+
+/* =========================================================================
+   QFontComboBox
+   ========================================================================= */
+
+QFontComboBox {
+    background-color: $InputBg;
+    color: $Text;
+    border: 1px solid $InputBorder;
+    border-radius: 2px;
+    padding: 5px 8px;
+}
+
+QFontComboBox:hover {
+    border-color: $Accent;
+}
+
+QFontComboBox:focus {
+    border-color: $InputFocus;
+}
+
+QFontComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    background: transparent;
+    border: none;
+    border-left: 1px solid $InputBorder;
+}
+
+QFontComboBox::down-arrow {
+    image: url(:/$theme/down_arrow.svg);
+}
+
+/* =========================================================================
+   QKeySequenceEdit
+   ========================================================================= */
+
+QKeySequenceEdit {
+    background-color: $InputBg;
+    color: $Text;
+    border: 1px solid $InputBorder;
+    border-radius: 2px;
+    padding: 4px 8px;
+}
+
+QKeySequenceEdit:focus {
+    border-color: $InputFocus;
+}
+
+/* =========================================================================
+   WelcomeScreen — #id selectors (see WelcomeScreen.cpp for objectNames)
+   ========================================================================= */
+
+QWidget#welcomeScreen {
+    background-color: $Window;
+}
+
+QLabel#welcomeTitle {
+    font-size: 28px;
+    font-weight: bold;
+    color: $Accent;
+}
+
 QLabel#welcomeVersion {
-    font-size: 12px;
-    color: $texte_secondaire;
+    font-size: 13px;
+    color: $TextSecondary;
 }
 
-/* Sous-titre */
 QLabel#welcomeSubtitle {
     font-size: 15px;
-    color: $texte_secondaire;
+    color: $TextSecondary;
 }
 
-/* Cartes des sections */
 QFrame#welcomeSection {
-    background-color: $fond_panneau;
-    border: 1px solid $bordure;
+    background-color: $DockBody;
+    border: 1px solid $Border;
     border-radius: 4px;
 }
 
-/* Titre de section */
 QLabel#welcomeSectionTitle {
     font-size: 13px;
     font-weight: bold;
-    color: $texte_principal;
+    color: $Text;
 }
 
-/* Bouton "Nouveau" */
 QPushButton#welcomeNewBtn {
-    background-color: $fond_fenetre;
-    color: $texte_principal;
-    border: 1px solid $bordure;
-    padding: 6px 16px;
+    background-color: $Accent;
+    color: $AccentText;
+    border: 1px solid $Accent;
     border-radius: 2px;
+    padding: 6px 16px;
+    font-size: 13px;
 }
+
 QPushButton#welcomeNewBtn:hover {
-    background-color: $accent;
-    color: $accent_texte;
+    background-color: $AccentHover;
+    border-color: $AccentHover;
 }
 
-/* Bouton "Ouvrir" */
 QPushButton#welcomeOpenBtn {
-    background-color: $fond_fenetre;
-    color: $texte_principal;
-    border: 1px solid $bordure;
+    background-color: $Window;
+    color: $Text;
+    border: 1px solid $Border;
+    border-radius: 2px;
     padding: 6px 16px;
-    border-radius: 2px;
+    font-size: 13px;
 }
+
 QPushButton#welcomeOpenBtn:hover {
-    background-color: $accent;
-    color: $accent_texte;
+    background-color: $Accent;
+    color: $AccentText;
+    border-color: $Accent;
 }
 
-/* Label "Récents" */
 QLabel#welcomeRecentLabel {
-    font-size: 11px;
-    color: $texte_secondaire;
+    font-size: 13px;
+    color: $TextSecondary;
 }
 
-/* Liste des récents */
 QListWidget#welcomeRecentList {
-    background-color: $fond_panneau;
-    border: 1px solid $bordure;
+    background-color: $InputBg;
+    color: $Text;
+    border: 1px solid $BorderLight;
     border-radius: 2px;
+    outline: none;
+    font-size: 13px;
 }
+
 QListWidget#welcomeRecentList::item {
     padding: 4px 8px;
-    color: $texte_principal;
-}
-QListWidget#welcomeRecentList::item:hover {
-    background-color: $selection_fond;
-}
-QListWidget#welcomeRecentList::item:selected {
-    background-color: $accent;
-    color: $accent_texte;
 }
 
-/* Placeholder Favoris */
+QListWidget#welcomeRecentList::item:hover {
+    background-color: $TableRowHoverBg;
+    color: $AccentText;
+}
+
+QListWidget#welcomeRecentList::item:selected {
+    background-color: $Accent;
+    color: $AccentText;
+}
+
 QLabel#welcomeFavPlaceholder {
     font-size: 13px;
-    color: $texte_secondaire;
+    color: $TextSecondary;
+}
+
+/* =========================================================================
+   StyleGuide / Features window (dev-only)
+   ========================================================================= */
+
+QWidget#styleGuideWindow {
+    background-color: $Window;
+}
+
+/* =========================================================================
+   Dock custom title bars
+   Design: use setTitleBarWidget() in C++ (design-system.md §7e).
+   QSS targets the #id objectNames set on those custom widgets.
+   ========================================================================= */
+
+QWidget#dockTitleBar {
+    background: $DockTitle;
+    border-bottom: 1px solid $Border;
+}
+
+QLabel#dockTitleLabel {
+    color: $Text;
+    font-weight: bold;
+}
+
+QPushButton#dockTitleBtn {
+    background: transparent;
+    border: none;
+    color: $TextSecondary;
+    min-width: 20px;
+    max-width: 20px;
+    padding: 0px;
+}
+
+QPushButton#dockTitleBtn:hover {
+    color: $Text;
+    background: $HoverBg;
 }

@@ -64,6 +64,58 @@ using namespace Qt::Literals::StringLiterals;
 namespace
 {
 //---------------------------------------------------------------------------------------------------------------------
+/// Sets qApp palette from Ostara design tokens so that QStyle (Fusion) uses our
+/// colors for elements not covered by QSS (popup frames, tooltip backgrounds,
+/// scrollbar backgrounds, etc.).
+void ApplyOstaraPalette(bool dark)
+{
+    QPalette p;
+
+    if (dark)
+    {
+        // ── Dark palette (from palette.json dark semantique) ──
+        p.setColor(QPalette::Window,          QColor(0x28, 0x28, 0x2C)); // Gray800
+        p.setColor(QPalette::WindowText,      QColor(0xFA, 0xFA, 0xFA)); // Gray50
+        p.setColor(QPalette::Base,            QColor(0x28, 0x28, 0x2C)); // Gray800
+        p.setColor(QPalette::AlternateBase,   QColor(0x28, 0x28, 0x2C)); // Gray800
+        p.setColor(QPalette::Text,            QColor(0xFA, 0xFA, 0xFA)); // Gray50
+        p.setColor(QPalette::Button,          QColor(0x40, 0x40, 0x44)); // Gray700
+        p.setColor(QPalette::ButtonText,      QColor(0xFA, 0xFA, 0xFA)); // Gray50
+        p.setColor(QPalette::ToolTipBase,     QColor(0x28, 0x28, 0x2C)); // Gray800
+        p.setColor(QPalette::ToolTipText,     QColor(0xFA, 0xFA, 0xFA)); // Gray50
+        p.setColor(QPalette::Highlight,       QColor(0x98, 0x3E, 0x60)); // Accent
+        p.setColor(QPalette::HighlightedText, QColor(0xFA, 0xFA, 0xFA)); // Gray50
+        p.setColor(QPalette::Light,           QColor(0x54, 0x54, 0x59)); // Gray600
+        p.setColor(QPalette::Midlight,        QColor(0x40, 0x40, 0x44)); // Gray700
+        p.setColor(QPalette::Mid,             QColor(0x54, 0x54, 0x59)); // Gray600
+        p.setColor(QPalette::Dark,            QColor(0x71, 0x71, 0x7A)); // Gray500
+        p.setColor(QPalette::Shadow,          QColor(0x1E, 0x1E, 0x22)); // Gray900
+    }
+    else
+    {
+        // ── Light palette (from palette.json light semantique) ──
+        p.setColor(QPalette::Window,          QColor(0xFA, 0xFA, 0xFA)); // Gray50
+        p.setColor(QPalette::WindowText,      QColor(0x27, 0x27, 0x2A)); // Gray800
+        p.setColor(QPalette::Base,            QColor(0xFA, 0xFA, 0xFA)); // Gray50
+        p.setColor(QPalette::AlternateBase,   QColor(0xFA, 0xFA, 0xFA)); // Gray50
+        p.setColor(QPalette::Text,            QColor(0x27, 0x27, 0x2A)); // Gray800
+        p.setColor(QPalette::Button,          QColor(0xF4, 0xF4, 0xF5)); // Gray100
+        p.setColor(QPalette::ButtonText,      QColor(0x27, 0x27, 0x2A)); // Gray800
+        p.setColor(QPalette::ToolTipBase,     QColor(0xFA, 0xFA, 0xFA)); // Gray50
+        p.setColor(QPalette::ToolTipText,     QColor(0x27, 0x27, 0x2A)); // Gray800
+        p.setColor(QPalette::Highlight,       QColor(0x8C, 0x45, 0x60)); // Accent
+        p.setColor(QPalette::HighlightedText, QColor(0xFA, 0xFA, 0xFA)); // Gray50
+        p.setColor(QPalette::Light,           QColor(0xF4, 0xF4, 0xF5)); // Gray100
+        p.setColor(QPalette::Midlight,        QColor(0xE4, 0xE4, 0xE7)); // Gray200
+        p.setColor(QPalette::Mid,             QColor(0xD4, 0xD4, 0xD8)); // Gray300
+        p.setColor(QPalette::Dark,            QColor(0xA1, 0xA1, 0xAA)); // Gray400
+        p.setColor(QPalette::Shadow,          QColor(0x72, 0x72, 0x79)); // Gray500
+    }
+
+    qApp->setPalette(p); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ActivateCustomLightTheme()
 {
     if (QFile f(QStringLiteral(":/ostara/light.qss")); !f.exists())
@@ -87,6 +139,8 @@ void ActivateCustomLightTheme()
             qWarning() << "Unable to open Ostara light theme\n";
         }
     }
+
+    ApplyOstaraPalette(false);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -113,6 +167,8 @@ void ActivateCustomDarkTheme()
             qWarning() << "Unable to open Ostara dark theme\n";
         }
     }
+
+    ApplyOstaraPalette(true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -169,6 +225,7 @@ void VTheme::InitFonts()
         if (!families.isEmpty())
         {
             QFont interFont(families.first());
+            interFont.setPixelSize(15);
             interFont.setWeight(QFont::Normal); // 400 — variable font, Normal is a safe default
             qApp->setFont(interFont);           // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
         }
@@ -252,21 +309,30 @@ void VTheme::ResetColorScheme()
 void VTheme::ResetThemeSettings() const
 {
     InitFonts();
-    InitApplicationStyle();
-    qApp->setStyleSheet(QString()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
     SetIconTheme();
-    InitThemeMode();
+    InitThemeMode(); // qApp->setStyleSheet() + ApplyOstaraPalette()
     VSceneStylesheet::ResetStyles();
 
     if (auto *s = qApp->style())
     {
-        qApp->setPalette(s->standardPalette());
         s->polish(qApp);
     }
 
     emit Instance()->ThemeSettingsChanged();
 
     ApplyThemeToWindows();
+
+    // qApp->setStyleSheet() pushes explicit palettes onto matching widgets.
+    // After that, qApp->setPalette() has no effect on those widgets — they
+    // already have their own palette and no longer inherit from the app.
+    // Resetting every widget's palette to an empty one forces inheritance
+    // from the application level, which was just updated by ApplyOstaraPalette().
+    // See QWidget::setPalette() doc: "pass an empty palette to inherit from parent".
+    const auto widgets = qApp->allWidgets();
+    for (auto *w : widgets)
+    {
+        w->setPalette(QPalette());
+    }
 
     for (auto *w : QApplication::topLevelWidgets())
     {

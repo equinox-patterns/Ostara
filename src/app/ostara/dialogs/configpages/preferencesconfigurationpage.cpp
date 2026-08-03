@@ -228,10 +228,11 @@ auto PreferencesConfigurationPage::Apply() -> QStringList
     if (auto themeMode = static_cast<VThemeMode>(ui->comboBoxThemeMode->currentData().toInt());
         settings->GetThemeMode() != themeMode)
     {
-        QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
         settings->SetThemeMode(themeMode);
         VTheme::Instance()->ResetThemeSettings();
-        QGuiApplication::restoreOverrideCursor();
+        // Force immediate repaint — the Settings dialog is still open and the
+        // modal event loop may defer paint events otherwise.
+        QCoreApplication::processEvents();
     }
 
     settings->SetPointerMode(static_cast<VToolPointerMode>(ui->comboBoxPointerMode->currentData().toInt()));

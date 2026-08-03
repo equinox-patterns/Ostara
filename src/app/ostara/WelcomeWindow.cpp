@@ -90,6 +90,8 @@ WelcomeWindow::WelcomeWindow(QWidget *parent)
             this, &WelcomeWindow::OpenRecentPatternRequested);
     connect(m_welcomeScreen, &WelcomeScreen::OpenRecentMeasurement,
             this, &WelcomeWindow::OpenRecentMeasurementRequested);
+    connect(m_welcomeScreen, &WelcomeScreen::FeaturesClicked,
+            this, &WelcomeWindow::FeaturesRequested);
 
     // ── macOS Application Menu ──────────────────────────────────────
     // On macOS, the Application menu items (About, Preferences, Quit)
@@ -139,10 +141,9 @@ WelcomeWindow::WelcomeWindow(QWidget *parent)
         VThemeMode const newMode =
             (s->GetThemeMode() == VThemeMode::Light) ? VThemeMode::Dark : VThemeMode::Light;
         s->SetThemeMode(newMode);
-        VTheme::InitThemeMode();
+        VTheme::InitThemeMode(); // sets both QSS and palette
         if (auto *style = qApp->style())
         {
-            qApp->setPalette(style->standardPalette());
             style->polish(qApp);
         }
         prefsAction->setText(newMode == VThemeMode::Light

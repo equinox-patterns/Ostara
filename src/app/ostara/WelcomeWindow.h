@@ -55,6 +55,7 @@ signals:
     void OpenMeasurementRequested();
     void OpenRecentPatternRequested(const QString &path);
     void OpenRecentMeasurementRequested(const QString &path);
+    void FeaturesRequested();
 
 protected:
     void closeEvent(QCloseEvent *event) override;

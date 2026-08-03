@@ -150,6 +150,7 @@ auto VApplicationStyle::StyleName() const -> QString
 #endif
 
 //---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 void VApplicationStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, QPainter *p, const QWidget *w) const
 {
     m_style->drawPrimitive(pe, opt, p, w);

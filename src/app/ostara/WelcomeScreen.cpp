@@ -185,6 +185,13 @@ void WelcomeScreen::CreateSections()
     sectionsLayout->addWidget(m_favoritesSection.frame, 1);
 
     mainLayout->addLayout(sectionsLayout, 1);
+
+    // Features button — opens style guide window (dev-only)
+    auto *featuresBtn = new QPushButton(tr("🧪 Features"));
+    featuresBtn->setObjectName(QStringLiteral("welcomeNewBtn"));
+    connect(featuresBtn, &QPushButton::clicked,
+            this, &WelcomeScreen::FeaturesClicked);
+    mainLayout->addWidget(featuresBtn, 0, Qt::AlignCenter);
 }
 
 void WelcomeScreen::RetranslateUI()

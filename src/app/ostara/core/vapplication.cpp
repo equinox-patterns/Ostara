@@ -641,6 +641,7 @@ void VApplication::InitOptions()
     {
         LoadTranslation(ValentinaSettings()->GetLocale());
 
+        VTheme::InitApplicationStyle(); // set Fusion + VApplicationStyle once
         VTheme::Instance()->ResetThemeSettings();
 
         m_shortcutManager = new VValentinaShortcutManager(this);

@@ -30,6 +30,7 @@
 #include "../vpatterndb/vpiecenode.h"
 #include "core/vapplication.h"
 #include "mainwindow.h"
+#include "StyleGuideWindow.h"
 #include "WelcomeWindow.h"
 
 #include <QFileDialog>
@@ -215,6 +216,13 @@ auto main(int argc, char *argv[]) -> int
         QObject::connect(welcome, &WelcomeWindow::OpenRecentMeasurementRequested,
                          welcome, [showMeasurementPlaceholder](const QString &) {
             showMeasurementPlaceholder();
+        });
+
+        // Features — modeless style-guide window (dev-only)
+        QObject::connect(welcome, &WelcomeWindow::FeaturesRequested, []() {
+            auto *sg = new StyleGuideWindow();
+            sg->setAttribute(Qt::WA_DeleteOnClose);
+            sg->show();
         });
 
         // Auto-updater
