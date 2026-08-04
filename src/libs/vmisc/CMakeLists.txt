@@ -116,6 +116,17 @@ list(APPEND VMISC_QRC
 # Note: mac_light_theme.qrc, mac_dark_theme.qrc and theme.qrc exist on disk
 # but are NOT listed in vmisc.qbs — they may be used by vtheme or the app target.
 
+# macOS native window theme (Objective-C++)
+if(APPLE)
+    list(APPEND VMISC_SOURCES
+        macwindowtheme.h
+        macwindowtheme.mm
+    )
+    set_source_files_properties(macwindowtheme.mm PROPERTIES
+        SKIP_PRECOMPILE_HEADERS ON
+    )
+endif()
+
 add_library(VMiscLib STATIC
     ${VMISC_SOURCES}
     ${VMISC_DIALOGS}

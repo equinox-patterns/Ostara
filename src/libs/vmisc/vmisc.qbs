@@ -118,6 +118,15 @@ VLib {
     // theme/ extrait vers VThemeLib
 
     Group {
+        name: "macOS native window theme"
+        condition: qbs.targetOS.contains("macos")
+        files: [
+            "macwindowtheme.h",
+            "macwindowtheme.mm",
+        ]
+    }
+
+    Group {
         name: "Codecs: Text codec (internal)"
         condition: Utilities.versionCompare(Qt.core.version, "6") >= 0 && !project.withTextCodec
         files: [

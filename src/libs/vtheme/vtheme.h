@@ -52,6 +52,7 @@ public:
     void ResetThemeSettings() const;
     void ApplyThemeToWindows() const;
 
+public:
     static auto GetFallbackThemeIcon(const QString &iconName, QSize iconSize) -> QIcon;
     static auto GetIconResource(const QString &root, const QString &iconName) -> QIcon;
     static auto GetPixmapResource(const QString &root, const QString &iconName) -> QPixmap;

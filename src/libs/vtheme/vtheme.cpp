@@ -50,6 +50,7 @@
 #include <QtGlobal>
 #include <QtSvg/QSvgRenderer>
 
+#include "macwindowtheme.h"
 #include "vabstractapplication.h"
 #include "vapplicationstyle.h"
 #include "vscenestylesheet.h"
@@ -290,6 +291,11 @@ void VTheme::InitThemeMode()
     {
         ActivateCustomDarkTheme();
     }
+
+    // Update native title bar appearance globally (NSApp.appearance).
+    // Affects all existing and future windows — no per-window loop needed.
+    bool const dark = (themeMode == VThemeMode::Dark);
+    SetMacWindowAppearance(0, dark);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -357,6 +363,9 @@ void VTheme::ResetThemeSettings() const
 //---------------------------------------------------------------------------------------------------------------------
 void VTheme::ApplyThemeToWindows() const
 {
+    // Global native title bar appearance — one call affects all windows.
+    SetMacWindowAppearance(0, ColorSheme() == VColorSheme::Dark);
+
     for (auto *w : QApplication::topLevelWidgets())
     {
         if (auto *mw = qobject_cast<QMainWindow *>(w))
