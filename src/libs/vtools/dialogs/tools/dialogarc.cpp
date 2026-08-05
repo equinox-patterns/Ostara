@@ -125,8 +125,7 @@ DialogArc::DialogArc(const VContainer *data, VAbstractPattern *doc, quint32 tool
     InitOkCancelApply(ui);
 
     FillComboBoxPoints(ui->comboBoxBasePoint);
-    InitColorPicker(ui->pushButtonColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
     FillComboBoxTypeLine(ui->comboBoxPenStyle,
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
@@ -147,9 +146,7 @@ auto DialogArc::IsValid() const -> bool
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogArc::~DialogArc()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -192,13 +189,13 @@ void DialogArc::SetPenStyle(const QString &value)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogArc::GetColor() const -> QString
 {
-    return ui->pushButtonColor->currentColor().name();
+    return GetColorComboCurrentName(m_colorCombo);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogArc::SetColor(const QString &value)
 {
-    ui->pushButtonColor->setCurrentColor(value);
+    SetColorComboCurrentName(m_colorCombo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

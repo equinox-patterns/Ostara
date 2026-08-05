@@ -32,13 +32,11 @@
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QIcon>
-#include <QLocale>
 #include <QPainter>
 #include <QPixmap>
-#include <QSize>
-#include <QWidget>
+#include <QStyle>
 
-#include "../qtcolorpicker.h"
+#include "../../ifc/ifcdef.h"
 #include "../vproperty_p.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -52,10 +50,13 @@ namespace
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_CLANG("-Wunused-member-function")
 
-// The list of all string we use for conversion
-// Better to use global variables because repeating QStringLiteral blows up code size
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, defaultColorName, ("default"_L1))     // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, StrCustomColors, ("customColors"_L1)) // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, defaultColorName, ("default"_L1)) // NOLINT
+
+// Return true if the application palette indicates dark mode (avoids cross-dylib VTheme call).
+auto IsDarkMode() -> bool
+{
+    return qApp->palette().color(QPalette::Window).lightness() < 128;
+}
 
 QT_WARNING_POP
 } // namespace
@@ -78,127 +79,204 @@ auto VPE::VLineColorProperty::data(int column, int role) const -> QVariant
 {
     if (column == DPC_Data && (Qt::DisplayRole == role || Qt::EditRole == role))
     {
+        // Return the color constant name (e.g. "darkBlue") for both roles.
+        // The combo handles the translated display name internally.
         return vproperty_d_ptr->VariantValue.toString();
     }
 
     return VProperty::data(column, role);
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 auto VPE::VLineColorProperty::createEditor(QWidget *parent, const QStyleOptionViewItem &options,
                                            const QAbstractItemDelegate *delegate) -> QWidget *
 {
     Q_UNUSED(options)
     Q_UNUSED(delegate)
-    auto *tmpPicker = new VPE::QtColorPicker(parent);
-    tmpPicker->setPalette(parent->palette());
-    tmpPicker->setUseNativeDialog(useNativeDialog);
 
-    bool foundDefaultColor = false;
+    auto *combo = new QComboBox(parent);
+    const bool dark = IsDarkMode();
+    const int iconSize = combo->style()->pixelMetric(QStyle::PM_SmallIconSize);
 
     QMap<QString, QString> colors = defaultColors;
 
+    // "default" entry (for operations: no specific color)
     if (colors.contains(*defaultColorName))
     {
-        tmpPicker->insertColor(QColor(), colors.value(*defaultColorName));
+        combo->addItem(colors.value(*defaultColorName), *defaultColorName);
         colors.remove(*defaultColorName);
-        foundDefaultColor = true;
     }
 
     auto i = colors.constBegin();
     while (i != colors.constEnd())
     {
-        tmpPicker->insertColor(QColor(i.key()), i.value());
+        const QColor swatch = ColorNameToQColorForTheme(i.key(), dark);
+        QString displayName = i.value();
+        if (dark && i.key() == ColorBlack)
+        {
+            displayName = QCoreApplication::translate("VLineColorProperty", "White");
+        }
+
+        QPixmap pix(iconSize, iconSize);
+        pix.fill(Qt::transparent);
+        QPainter painter(&pix);
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setBrush(swatch);
+        painter.setPen(Qt::NoPen);
+        painter.drawRoundedRect(1, 1, iconSize - 2, iconSize - 2, 3, 3);
+        painter.end();
+
+        combo->addItem(QIcon(pix), displayName);
+        combo->setItemData(combo->count() - 1, i.key(), Qt::UserRole);
         ++i;
     }
 
-    for (auto color : std::as_const(customColors))
+    // Set current selection from the stored value.
+    const QString storedName = vproperty_d_ptr->VariantValue.toString();
+    int idx = -1;
+    if (storedName == *defaultColorName || storedName.isEmpty())
     {
-        tmpPicker->insertCustomColor(color);
-    }
-
-    tmpPicker->setCurrentColor(foundDefaultColor ? QColor() : QColor(Qt::black));
-    tmpPicker->setLocale(parent->locale());
-    tmpPicker->setCurrentColor(vproperty_d_ptr->VariantValue.value<QColor>());
-    connect(tmpPicker, &VPE::QtColorPicker::colorChanged, this, &VLineColorProperty::currentColorChanged);
-
-    VProperty::vproperty_d_ptr->editor = tmpPicker;
-    return VProperty::vproperty_d_ptr->editor;
-}
-
-auto VPE::VLineColorProperty::setEditorData(QWidget *editor) -> bool
-{
-    if (auto *tmpWidget = qobject_cast<VPE::QtColorPicker *>(editor); tmpWidget != nullptr)
-    {
-        QString const colorName = vproperty_d_ptr->VariantValue.toString();
-        QColor const color = colorName != *defaultColorName ? QColor(colorName) : QColor();
-
-        tmpWidget->setCurrentColor(color);
+        idx = combo->findData(*defaultColorName, Qt::UserRole);
     }
     else
     {
-        return false;
+        idx = combo->findData(storedName, Qt::UserRole);
+        if (idx < 0)
+        {
+            // Try legacy name → hex → Ostara name.
+            QColor c = ColorNameToQColor(storedName);
+            if (!c.isValid())
+            {
+                c = QColor(storedName);
+            }
+            if (c.isValid())
+            {
+                const QString baseName = ColorNameFromQColor(c);
+                idx = combo->findData(baseName, Qt::UserRole);
+            }
+        }
     }
+    if (idx < 0)
+    {
+        idx = 0; // fallback: first item
+    }
+    combo->setCurrentIndex(idx);
 
-    return true;
+    connect(combo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &VLineColorProperty::currentColorChanged);
+
+    VProperty::vproperty_d_ptr->editor = combo;
+    return VProperty::vproperty_d_ptr->editor;
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+auto VPE::VLineColorProperty::setEditorData(QWidget *editor) -> bool
+{
+    if (auto *combo = qobject_cast<QComboBox *>(editor); combo != nullptr)
+    {
+        const QString value = vproperty_d_ptr->VariantValue.toString();
+
+        // 1. Exact match on color constant name (e.g. "black", "darkBlue").
+        int idx = combo->findData(value, Qt::UserRole);
+
+        // 2. Translated display name → color constant (e.g. "bleu foncé" → "darkBlue").
+        if (idx < 0)
+        {
+            auto di = defaultColors.constBegin();
+            while (di != defaultColors.constEnd())
+            {
+                if (di.value() == value)
+                {
+                    idx = combo->findData(di.key(), Qt::UserRole);
+                    break;
+                }
+                ++di;
+            }
+        }
+
+        // 3. Legacy hex or SVG name → color constant (e.g. "#000000" → "black").
+        if (idx < 0)
+        {
+            QColor c = ColorNameToQColor(value);
+            if (!c.isValid())
+            {
+                c = QColor(value);
+            }
+            if (c.isValid())
+            {
+                const QString baseName = ColorNameFromQColor(c);
+                if (!baseName.isEmpty())
+                {
+                    idx = combo->findData(baseName, Qt::UserRole);
+                }
+            }
+        }
+        if (idx >= 0 && idx != combo->currentIndex())
+        {
+            combo->blockSignals(true);
+            combo->setCurrentIndex(idx);
+            combo->blockSignals(false);
+        }
+        return true;
+    }
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VPE::VLineColorProperty::getEditorData(const QWidget *editor) const -> QVariant
 {
-    if (const auto *tmpPicker = qobject_cast<const VPE::QtColorPicker *>(editor); tmpPicker != nullptr)
+    if (const auto *combo = qobject_cast<const QComboBox *>(editor); combo != nullptr)
     {
-        QColor const color = tmpPicker->currentColor();
-        return color.isValid() ? color : *defaultColorName;
+        return combo->currentData(Qt::UserRole);
     }
-
     return *defaultColorName;
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 auto VPE::VLineColorProperty::getSetting(const QString &key) const -> QVariant
 {
-    if (key == *StrCustomColors)
-    {
-        if (const auto *tmpPicker = qobject_cast<const VPE::QtColorPicker *>(VProperty::vproperty_d_ptr->editor);
-            tmpPicker != nullptr)
-        {
-            return QVariant::fromValue(tmpPicker->CustomColors());
-        }
-    }
-
-    return VProperty::getSetting(key);
+    Q_UNUSED(key)
+    return {};
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 auto VPE::VLineColorProperty::getSettingKeys() const -> QStringList
 {
-    return {*StrCustomColors};
+    return {};
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 auto VPE::VLineColorProperty::type() const -> QString
 {
     return QStringLiteral("lineColor");
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 auto VPE::VLineColorProperty::clone(bool include_children, VProperty *container) const -> VPE::VProperty *
 {
     return VProperty::clone(include_children, container ? container : new VLineColorProperty(getName()));
 }
 
-void VPE::VLineColorProperty::currentColorChanged(const QColor &color)
+//---------------------------------------------------------------------------------------------------------------------
+void VPE::VLineColorProperty::currentColorChanged(int /*index*/)
 {
-    Q_UNUSED(color)
     auto *event = new UserChangeEvent();
     QCoreApplication::postEvent(VProperty::vproperty_d_ptr->editor, event);
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 void VPE::VLineColorProperty::SetUseNativeDialog(bool newUseNativeDialog)
 {
     useNativeDialog = newUseNativeDialog;
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 void VPE::VLineColorProperty::SetCustomColors(const QVector<QColor> &newCustomColors)
 {
     customColors = newCustomColors;
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 void VPE::VLineColorProperty::SetDefaultColors(const QMap<QString, QString> &newDefaultColors)
 {
     defaultColors = newDefaultColors;

@@ -59,6 +59,7 @@ public:
 
     static auto CorrectToolColor(const QGraphicsItem *item, const QColor &color) -> QColor;
     static auto CorrectToolColorForDarkTheme(const QColor &color) -> QColor;
+    static auto CorrectToolColorForDarkTheme(const QString &colorName) -> QColor;
 
 private:
     Q_DISABLE_COPY_MOVE(VSceneStylesheet) // NOLINT

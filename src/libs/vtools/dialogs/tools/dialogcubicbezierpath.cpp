@@ -73,8 +73,7 @@ DialogCubicBezierPath::DialogCubicBezierPath(const VContainer *data,
 
     FillComboBoxPoints(ui->comboBoxNewPoint);
     FillComboBoxPoints(ui->comboBoxPoint);
-    InitColorPicker(ui->pushButtonColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
     FillComboBoxTypeLine(ui->comboBoxPenStyle,
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
@@ -105,9 +104,7 @@ DialogCubicBezierPath::DialogCubicBezierPath(const VContainer *data,
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogCubicBezierPath::~DialogCubicBezierPath()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -138,7 +135,7 @@ void DialogCubicBezierPath::SetPath(const VCubicBezierPath &value)
         ValidateAlias();
 
         ChangeCurrentData(ui->comboBoxPenStyle, path.GetPenStyle());
-        ui->pushButtonColor->setCurrentColor(path.GetColor());
+        SetColorComboCurrentName(m_colorCombo, path.GetColor());
 
         auto *visPath = qobject_cast<VisToolCubicBezierPath *>(vis);
         SCASSERT(visPath != nullptr)
@@ -416,7 +413,7 @@ void DialogCubicBezierPath::SavePath()
     path.Clear();
     path = ExtractPath();
     path.SetPenStyle(GetComboBoxCurrentData(ui->comboBoxPenStyle, TypeLineLine));
-    path.SetColor(ui->pushButtonColor->currentColor().name());
+    path.SetColor(GetColorComboCurrentName(m_colorCombo));
     path.SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     path.SetAliasSuffix(ui->lineEditAlias->text());
     path.SetDuplicate(d);
@@ -518,7 +515,7 @@ void DialogCubicBezierPath::SetDefPenStyle(const QString &value)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogCubicBezierPath::SetDefColor(const QString &value)
 {
-    ui->pushButtonColor->setCurrentColor(value);
+    SetColorComboCurrentName(m_colorCombo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

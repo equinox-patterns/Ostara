@@ -3,8 +3,7 @@
 /*     Run: python3 scripts/generate_themes.py share/themes/palette.json            */
 /*          share/themes share/themes/generated                                     */
 /*                                                                                  */
-/* All SVG icons come from the Breeze theme QRC (109 per theme).                   */
-/* Paths: :/light/... and :/dark/...                                               */
+/* Icons: all indicators are drawn natively by Fusion (no SVG images in QSS).      */
 /* See design-system.md §6 for QScrollArea viewport (C++ workaround, not QSS).     */
 
 /* =========================================================================
@@ -241,7 +240,6 @@ QToolButton::menu-button:hover {
 }
 
 QToolButton::menu-arrow {
-    image: url(:/$theme/down_arrow.svg);
 }
 
 /* Variante : bouton toolbar draw (design-system.md §4 — DrawToolBar) */
@@ -362,14 +360,12 @@ QDoubleSpinBox::down-button:pressed {
 
 QSpinBox::up-arrow,
 QDoubleSpinBox::up-arrow {
-    image: url(:/$theme/up_arrow.svg);
     width: 8px;
     height: 8px;
 }
 
 QSpinBox::down-arrow,
 QDoubleSpinBox::down-arrow {
-    image: url(:/$theme/down_arrow.svg);
     width: 8px;
     height: 8px;
 }
@@ -412,7 +408,6 @@ QComboBox::drop-down {
 }
 
 QComboBox::down-arrow {
-    image: url(:/$theme/down_arrow.svg);
     width: 12px;
     height: 12px;
 }
@@ -480,17 +475,8 @@ QAbstractItemView::item:selected {
 
 /* =========================================================================
    QTreeView — Branches (expand/collapse arrows)
+   Drawn natively by Fusion — no SVG images
    ========================================================================= */
-
-QTreeView::branch:has-children:!has-siblings:closed,
-QTreeView::branch:closed:has-children:has-siblings {
-    image: url(:/$theme/branch_closed.svg);
-}
-
-QTreeView::branch:open:has-children:!has-siblings,
-QTreeView::branch:open:has-children:has-siblings {
-    image: url(:/$theme/branch_open.svg);
-}
 
 /* =========================================================================
    QHeaderView — En-têtes de tables / arbres
@@ -512,8 +498,7 @@ QHeaderView::section:hover {
 
 /* =========================================================================
    QCheckBox / QRadioButton
-   Design: checkbox = 16×16, $InputBg + $Border → $Accent when checked
-           radio = SVG icons (radio_checked.svg / radio_unchecked.svg already exist)
+   Design: indicators drawn natively by Fusion — no SVG images
    ========================================================================= */
 
 QCheckBox,
@@ -532,45 +517,9 @@ QCheckBox::indicator {
     height: 16px;
 }
 
-QCheckBox::indicator:unchecked {
-    border: none;
-    image: url(:/$theme/checkbox_unchecked.svg);
-}
-
-QCheckBox::indicator:checked {
-    border: none;
-    image: url(:/$theme/checkbox_checked.svg);
-}
-
-QCheckBox::indicator:unchecked:disabled {
-    border: none;
-    image: url(:/$theme/checkbox_unchecked_disabled.svg);
-}
-
-QCheckBox::indicator:checked:disabled {
-    border: none;
-    image: url(:/$theme/checkbox_checked_disabled.svg);
-}
-
 QRadioButton::indicator {
     width: 16px;
     height: 16px;
-}
-
-QRadioButton::indicator:unchecked {
-    image: url(:/$theme/radio_unchecked.svg);
-}
-
-QRadioButton::indicator:checked {
-    image: url(:/$theme/radio_checked.svg);
-}
-
-QRadioButton::indicator:unchecked:disabled {
-    image: url(:/$theme/radio_unchecked_disabled.svg);
-}
-
-QRadioButton::indicator:checked:disabled {
-    image: url(:/$theme/radio_checked_disabled.svg);
 }
 
 /* =========================================================================
@@ -609,13 +558,11 @@ QTabBar::tab:disabled {
     color: $TextDisabled;
 }
 
-/* Close button on tabs (if any) */
+/* Close button on tabs (if any) — drawn natively by Fusion */
 QTabBar::close-button {
-    image: url(:/$theme/tab_close.svg);
 }
 
 QTabBar::close-button:hover {
-    image: url(:/$theme/tab_close.svg);
 }
 
 /* =========================================================================
@@ -649,8 +596,6 @@ QGroupBox::title {
 QDockWidget {
     background-color: $DockBody;
     color: $Text;
-    titlebar-close-icon: url(:/$theme/close.svg);
-    titlebar-normal-icon: url(:/$theme/undock.svg);
 }
 
 QDockWidget::title {
@@ -853,7 +798,6 @@ QDateEdit::drop-down {
 }
 
 QDateEdit::down-arrow {
-    image: url(:/$theme/down_arrow.svg);
 }
 
 /* =========================================================================
@@ -886,7 +830,6 @@ QFontComboBox::drop-down {
 }
 
 QFontComboBox::down-arrow {
-    image: url(:/$theme/down_arrow.svg);
 }
 
 /* =========================================================================

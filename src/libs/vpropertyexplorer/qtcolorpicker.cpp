@@ -219,6 +219,7 @@ public:
     ~ColorPickerPopup() override = default;
 
     void insertColor(const QColor &col, const QString &text, vsizetype index, bool custom = false);
+    void clear();
     void exec();
 
     void setExecFlag();
@@ -616,6 +617,21 @@ void VPE::QtColorPicker::insertCustomColor(const QColor &color, int index)
     }
 }
 
+/*!
+    Removes all colors from the picker.
+*/
+void VPE::QtColorPicker::clear()
+{
+    if (popup != nullptr)
+    {
+        popup->clear();
+    }
+    col = QColor();
+    firstInserted = false;
+    dirty = true;
+    setText(QString());
+}
+
 /*! \property QtColorPicker::colorDialog
     \brief Whether the ellipsis "..." (more) button is available.
 
@@ -772,6 +788,24 @@ void ColorPickerPopup::insertColor(const QColor &col, const QString &text, vsize
     items.insert(index, item);
     regenerateGrid();
 
+    update();
+}
+
+/*! \internal
+    Removes all color items from the popup.
+*/
+void ColorPickerPopup::clear()
+{
+    for (auto *item : items)
+    {
+        if (item != nullptr)
+        {
+            item->deleteLater();
+        }
+    }
+    items.clear();
+    lastSel = QColor();
+    regenerateGrid();
     update();
 }
 

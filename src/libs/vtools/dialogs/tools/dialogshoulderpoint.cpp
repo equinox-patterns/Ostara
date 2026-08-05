@@ -106,8 +106,7 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, VAbstractPatter
     FillComboBoxPoints(ui->comboBoxP1Line);
     FillComboBoxPoints(ui->comboBoxP2Line);
     FillComboBoxPoints(ui->comboBoxP3);
-    InitColorPicker(ui->pushButtonLineColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonLineColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonLineColor);
 
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
@@ -165,9 +164,7 @@ void DialogShoulderPoint::ShowVisualization()
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogShoulderPoint::~DialogShoulderPoint()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonLineColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -321,13 +318,13 @@ void DialogShoulderPoint::SetP3(const quint32 &value)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogShoulderPoint::GetLineColor() const -> QString
 {
-    return ui->pushButtonLineColor->currentColor().name();
+    return GetColorComboCurrentName(m_colorCombo);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogShoulderPoint::SetLineColor(const QString &value)
 {
-    ui->pushButtonLineColor->setCurrentColor(value);
+    SetColorComboCurrentName(m_colorCombo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

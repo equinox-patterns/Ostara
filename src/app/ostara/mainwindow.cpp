@@ -939,17 +939,10 @@ void MainWindow::changeEvent(QEvent *event)
         m_globalPenStyleLabel->setText(tr("Pen style:"));
         m_globalColorLabel->setText(tr("Color:"));
 
-        const QMap<QString, QString> defaultColors = VAbstractTool::ColorsList();
-        auto i = defaultColors.constBegin();
-        while (i != defaultColors.constEnd())
-        {
-            m_pushButtonColor->insertColor(QColor(i.key()), i.value());
-            if (QColor(i.key()) == m_pushButtonColor->currentColor())
-            {
-                m_pushButtonColor->setText(i.value());
-            }
-            ++i;
-        }
+        // Rebuild color combo for translated names.
+        const QString storedName = GetColorComboCurrentName(m_colorCombo);
+        InitColorCombo(m_colorCombo);
+        SetColorComboCurrentName(m_colorCombo, storedName);
     }
 
     if (event->type() == QEvent::PaletteChange)
@@ -970,7 +963,12 @@ void MainWindow::changeEvent(QEvent *event)
             ChangeCurrentData(m_comboBoxPenStyle, VApplication::VApp()->ValentinaSettings()->GetGlobalPenStyle());
         }
 
-        m_pushButtonColor->makeDirty();
+        // Rebuild color combo icons for new theme.
+        {
+            const QString storedName = GetColorComboCurrentName(m_colorCombo);
+            InitColorCombo(m_colorCombo);
+            SetColorComboCurrentName(m_colorCombo, storedName);
+        }
     }
 
     // remember to call base class implementation

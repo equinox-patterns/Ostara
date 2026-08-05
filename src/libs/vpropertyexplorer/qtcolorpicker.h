@@ -77,6 +77,7 @@ public:
 
     void insertColor(const QColor &color, const QString &text = QString(), int index = -1);
     void insertCustomColor(const QColor &color, int index = -1);
+    void clear();
 
     auto currentColor() const -> QColor;
 

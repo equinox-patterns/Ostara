@@ -96,7 +96,7 @@ public:
     void SetCustomColors(const QVector<QColor> &newCustomColors);
 
 public slots:
-    void currentColorChanged(const QColor &color);
+    void currentColorChanged(int index);
 
 private:
     Q_DISABLE_COPY_MOVE(VLineColorProperty) // NOLINT

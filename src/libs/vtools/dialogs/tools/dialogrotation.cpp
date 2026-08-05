@@ -102,9 +102,7 @@ DialogRotation::DialogRotation(const VContainer *data, VAbstractPattern *doc, qu
                          OperationLineStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                                  ui->comboBoxPenStyle->palette().color(QPalette::Text)),
                          TypeLineDefault);
-    InitOperationColorPicker(ui->pushButtonColor,
-                             VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
 
     connect(ui->lineEditVisibilityGroup, &QLineEdit::textChanged, this, &DialogOperationTool::GroupNameChanged);
     connect(ui->toolButtonExprAngle, &QPushButton::clicked, this, &DialogRotation::FXAngle);
@@ -120,7 +118,7 @@ DialogRotation::DialogRotation(const VContainer *data, VAbstractPattern *doc, qu
     connect(ui->lineEditName, &QLineEdit::textEdited, this, &DialogOperationTool::NameChanged);
     connect(ui->comboBoxPenStyle, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             &DialogOperationTool::PenStyleChanged);
-    connect(ui->pushButtonColor, &VPE::QtColorPicker::colorChanged, this, &DialogOperationTool::ColorChanged);
+    connect(m_colorCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &DialogOperationTool::ColorChanged);
     connect(ui->toolButtonBulkRename, &QToolButton::clicked, this, &DialogOperationTool::BulkRename);
 
     connect(ui->comboBoxObjectType,
@@ -144,9 +142,7 @@ DialogRotation::DialogRotation(const VContainer *data, VAbstractPattern *doc, qu
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogRotation::~DialogRotation()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

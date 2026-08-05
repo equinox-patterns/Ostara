@@ -120,8 +120,7 @@ DialogEndLine::DialogEndLine(const VContainer *data, VAbstractPattern *doc, quin
     FillComboBoxPoints(ui->comboBoxBasePoint);
     FillComboBoxTypeLine(ui->comboBoxLineType, LineStylesPics(ui->comboBoxLineType->palette().color(QPalette::Base),
                                                               ui->comboBoxLineType->palette().color(QPalette::Text)));
-    InitColorPicker(ui->pushButtonLineColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonLineColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonLineColor);
 
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
@@ -246,13 +245,13 @@ void DialogEndLine::SetBasePointId(const quint32 &value)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogEndLine::GetLineColor() const -> QString
 {
-    return ui->pushButtonLineColor->currentColor().name();
+    return GetColorComboCurrentName(m_colorCombo);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEndLine::SetLineColor(const QString &value)
 {
-    ui->pushButtonLineColor->setCurrentColor(value);
+    SetColorComboCurrentName(m_colorCombo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -367,9 +366,7 @@ void DialogEndLine::InitIcons()
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogEndLine::~DialogEndLine()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonLineColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

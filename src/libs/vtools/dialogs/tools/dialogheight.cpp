@@ -77,8 +77,7 @@ DialogHeight::DialogHeight(const VContainer *data, VAbstractPattern *doc, quint3
     FillComboBoxPoints(ui->comboBoxP2Line);
     FillComboBoxTypeLine(ui->comboBoxLineType, LineStylesPics(ui->comboBoxLineType->palette().color(QPalette::Base),
                                                               ui->comboBoxLineType->palette().color(QPalette::Text)));
-    InitColorPicker(ui->pushButtonLineColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonLineColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonLineColor);
 
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
@@ -99,9 +98,7 @@ DialogHeight::DialogHeight(const VContainer *data, VAbstractPattern *doc, quint3
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogHeight::~DialogHeight()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonLineColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -177,13 +174,13 @@ void DialogHeight::SetP2LineId(const quint32 &value)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogHeight::GetLineColor() const -> QString
 {
-    return ui->pushButtonLineColor->currentColor().name();
+    return GetColorComboCurrentName(m_colorCombo);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogHeight::SetLineColor(const QString &value)
 {
-    ui->pushButtonLineColor->setCurrentColor(value);
+    SetColorComboCurrentName(m_colorCombo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

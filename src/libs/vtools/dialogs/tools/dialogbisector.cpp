@@ -105,8 +105,7 @@ DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, qu
     FillComboBoxTypeLine(ui->comboBoxLineType, LineStylesPics(ui->comboBoxLineType->palette().color(QPalette::Base),
                                                               ui->comboBoxLineType->palette().color(QPalette::Text)));
     FillComboBoxPoints(ui->comboBoxThirdPoint);
-    InitColorPicker(ui->pushButtonLineColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonLineColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonLineColor);
 
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
@@ -164,9 +163,7 @@ void DialogBisector::ShowVisualization()
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogBisector::~DialogBisector()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonLineColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -306,13 +303,13 @@ void DialogBisector::SetThirdPointId(const quint32 &value)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogBisector::GetLineColor() const -> QString
 {
-    return ui->pushButtonLineColor->currentColor().name();
+    return GetColorComboCurrentName(m_colorCombo);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogBisector::SetLineColor(const QString &value)
 {
-    ui->pushButtonLineColor->setCurrentColor(value);
+    SetColorComboCurrentName(m_colorCombo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

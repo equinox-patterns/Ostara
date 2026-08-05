@@ -66,8 +66,7 @@ DialogLine::DialogLine(const VContainer *data, VAbstractPattern *doc, quint32 to
 
     FillComboBoxPoints(ui->comboBoxFirstPoint);
     FillComboBoxPoints(ui->comboBoxSecondPoint);
-    InitColorPicker(ui->pushButtonLineColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonLineColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonLineColor);
 
     QMap<QString, QIcon> stylesPics = LineStylesPics(ui->comboBoxLineType->palette().color(QPalette::Base),
                                                      ui->comboBoxLineType->palette().color(QPalette::Text));
@@ -86,9 +85,7 @@ DialogLine::DialogLine(const VContainer *data, VAbstractPattern *doc, quint32 to
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogLine::~DialogLine()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonLineColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -119,13 +116,13 @@ void DialogLine::SetTypeLine(const QString &value)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogLine::GetLineColor() const -> QString
 {
-    return ui->pushButtonLineColor->currentColor().name();
+    return GetColorComboCurrentName(m_colorCombo);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogLine::SetLineColor(const QString &value)
 {
-    ui->pushButtonLineColor->setCurrentColor(value);
+    SetColorComboCurrentName(m_colorCombo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

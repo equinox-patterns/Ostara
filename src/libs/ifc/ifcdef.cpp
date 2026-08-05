@@ -279,22 +279,128 @@ auto CurvePenStylesPics(QColor backgroundColor, QColor textColor) -> QMap<QStrin
 
 const QString ColorDefault = QStringLiteral("default");
 const QString ColorBlack = QStringLiteral("black");
-const QString ColorGreen = QStringLiteral("green");
-const QString ColorBlue = QStringLiteral("blue");
-const QString ColorDarkRed = QStringLiteral("darkRed");
-const QString ColorDarkGreen = QStringLiteral("darkGreen");
+const QString ColorLightBlue = QStringLiteral("lightBlue");
 const QString ColorDarkBlue = QStringLiteral("darkBlue");
+const QString ColorPink = QStringLiteral("pink");
+const QString ColorPurple = QStringLiteral("purple");
 const QString ColorYellow = QStringLiteral("yellow");
-const QString ColorLightSalmon = QStringLiteral("lightsalmon");
-const QString ColorGoldenRod = QStringLiteral("goldenrod");
 const QString ColorOrange = QStringLiteral("orange");
-const QString ColorDeepPink = QStringLiteral("deeppink");
-const QString ColorViolet = QStringLiteral("violet");
-const QString ColorDarkViolet = QStringLiteral("darkviolet");
-const QString ColorMediumSeaGreen = QStringLiteral("mediumseagreen");
-const QString ColorLime = QStringLiteral("lime");
-const QString ColorDeepSkyBlue = QStringLiteral("deepskyblue");
-const QString ColorCornFlowerBlue = QStringLiteral("cornflowerblue");
+const QString ColorLightGreen = QStringLiteral("lightGreen");
+const QString ColorDarkGreen = QStringLiteral("darkGreen");
+const QString ColorBrown = QStringLiteral("brown");
+
+// Dark-mode fixed hex values.
+const QString ColorBlackDark      = QStringLiteral("#E5E5E5");
+const QString ColorLightBlueDark  = QStringLiteral("#38B5EE");
+const QString ColorDarkBlueDark   = QStringLiteral("#0062FF");
+const QString ColorPinkDark       = QStringLiteral("#FF38A0");
+const QString ColorPurpleDark     = QStringLiteral("#A070E0");
+const QString ColorYellowDark     = QStringLiteral("#FFD640");
+const QString ColorOrangeDark     = QStringLiteral("#FF8838");
+const QString ColorLightGreenDark = QStringLiteral("#44D838");
+const QString ColorDarkGreenDark  = QStringLiteral("#339300");
+const QString ColorBrownDark      = QStringLiteral("#C05038");
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ColorNameToQColor maps a color constant to its Ostara palette hex value.
+ * @param colorName one of the ColorXxx constants.
+ * @return the mapped QColor.
+ */
+auto ColorNameToQColor(const QString &colorName) -> QColor
+{
+    static const QMap<QString, QColor> colorMap = {
+        // ── New Ostara palette ──
+        {ColorBlack,      QColor(0x00, 0x00, 0x00)},
+        {ColorLightBlue,  QColor(0x0E, 0x9C, 0xD8)},
+        {ColorDarkBlue,   QColor(0x1C, 0x4D, 0xB5)},
+        {ColorPink,       QColor(0xEC, 0x00, 0x78)},
+        {ColorPurple,     QColor(0x6C, 0x2D, 0xA8)},
+        {ColorYellow,     QColor(0xF5, 0xC4, 0x00)},
+        {ColorOrange,     QColor(0xED, 0x5C, 0x00)},
+        {ColorLightGreen, QColor(0x28, 0xA8, 0x28)},
+        {ColorDarkGreen,  QColor(0x18, 0x71, 0x3C)},
+        {ColorBrown,      QColor(0x6E, 0x3E, 0x08)},
+        // ── Legacy Valentina → Ostara mapping (backward compat) ──
+        {QStringLiteral("green"),           QColor(0x28, 0xA8, 0x28)}, // → light green
+        {QStringLiteral("blue"),            QColor(0x0E, 0x9C, 0xD8)}, // → light blue
+        {QStringLiteral("darkRed"),         QColor(0xEC, 0x00, 0x78)}, // → pink
+        {QStringLiteral("lightsalmon"),     QColor(0xED, 0x5C, 0x00)}, // → orange
+        {QStringLiteral("goldenrod"),       QColor(0xF5, 0xC4, 0x00)}, // → yellow
+        {QStringLiteral("deeppink"),        QColor(0xEC, 0x00, 0x78)}, // → pink
+        {QStringLiteral("violet"),          QColor(0x6C, 0x2D, 0xA8)}, // → purple
+        {QStringLiteral("darkviolet"),      QColor(0x1C, 0x4D, 0xB5)}, // → dark blue
+        {QStringLiteral("mediumseagreen"),  QColor(0x28, 0xA8, 0x28)}, // → light green
+        {QStringLiteral("lime"),            QColor(0x28, 0xA8, 0x28)}, // → light green
+        {QStringLiteral("deepskyblue"),     QColor(0x0E, 0x9C, 0xD8)}, // → light blue
+        {QStringLiteral("cornflowerblue"),  QColor(0x0E, 0x9C, 0xD8)}, // → light blue
+    };
+    return colorMap.value(colorName);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ColorNameToQColorForTheme maps a color constant to its light or dark hex value.
+ * @param colorName one of the ColorXxx constants.
+ * @param dark true for dark-mode hex, false for light-mode hex.
+ * @return the mapped QColor.
+ */
+auto ColorNameToQColorForTheme(const QString &colorName, bool dark) -> QColor
+{
+    if (!dark)
+    {
+        return ColorNameToQColor(colorName);
+    }
+
+    static const QMap<QString, QColor> darkMap = {
+        {ColorBlack,      QColor(0xE5, 0xE5, 0xE5)},
+        {ColorLightBlue,  QColor(0x38, 0xB5, 0xEE)},
+        {ColorDarkBlue,   QColor(0x00, 0x62, 0xFF)},
+        {ColorPink,       QColor(0xFF, 0x38, 0xA0)},
+        {ColorPurple,     QColor(0xA0, 0x70, 0xE0)},
+        {ColorYellow,     QColor(0xFF, 0xD6, 0x40)},
+        {ColorOrange,     QColor(0xFF, 0x88, 0x38)},
+        {ColorLightGreen, QColor(0x44, 0xD8, 0x38)},
+        {ColorDarkGreen,  QColor(0x33, 0x93, 0x00)},
+        {ColorBrown,      QColor(0xC0, 0x50, 0x38)},
+    };
+    return darkMap.value(colorName);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ColorNameFromQColor reverse-maps a QColor to its color constant name.
+ * @param color the QColor to look up.
+ * @return the matching ColorXxx constant, or color.name() if no match.
+ */
+auto ColorNameFromQColor(const QColor &color) -> QString
+{
+    static const QMap<QRgb, QString> rgbMap = {
+        // ── New Ostara palette (light) ──
+        {QColor(0x00, 0x00, 0x00).rgb(), ColorBlack},
+        {QColor(0x0E, 0x9C, 0xD8).rgb(), ColorLightBlue},
+        {QColor(0x1C, 0x4D, 0xB5).rgb(), ColorDarkBlue},
+        {QColor(0xEC, 0x00, 0x78).rgb(), ColorPink},
+        {QColor(0x6C, 0x2D, 0xA8).rgb(), ColorPurple},
+        {QColor(0xF5, 0xC4, 0x00).rgb(), ColorYellow},
+        {QColor(0xED, 0x5C, 0x00).rgb(), ColorOrange},
+        {QColor(0x28, 0xA8, 0x28).rgb(), ColorLightGreen},
+        {QColor(0x18, 0x71, 0x3C).rgb(), ColorDarkGreen},
+        {QColor(0x6E, 0x3E, 0x08).rgb(), ColorBrown},
+        // ── Dark mode swatches → base name ──
+        {QColor(0xE5, 0xE5, 0xE5).rgb(), ColorBlack},
+        {QColor(0x38, 0xB5, 0xEE).rgb(), ColorLightBlue},
+        {QColor(0x00, 0x62, 0xFF).rgb(), ColorDarkBlue},
+        {QColor(0xFF, 0x38, 0xA0).rgb(), ColorPink},
+        {QColor(0xA0, 0x70, 0xE0).rgb(), ColorPurple},
+        {QColor(0xFF, 0xD6, 0x40).rgb(), ColorYellow},
+        {QColor(0xFF, 0x88, 0x38).rgb(), ColorOrange},
+        {QColor(0x44, 0xD8, 0x38).rgb(), ColorLightGreen},
+        {QColor(0x33, 0x93, 0x00).rgb(), ColorDarkGreen},
+        {QColor(0xC0, 0x50, 0x38).rgb(), ColorBrown},
+    };
+    return rgbMap.value(color.rgb());
+}
 
 // variables
 const QString measurement_ = QStringLiteral("M_");

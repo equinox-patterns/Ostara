@@ -100,8 +100,7 @@ DialogGraduatedCurve::DialogGraduatedCurve(const VContainer *data,
 
     FillComboBoxCurves(ui->comboBoxCurve);
 
-    InitColorPicker(ui->pushButtonColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
     FillComboBoxTypeLine(ui->comboBoxPenStyle,
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
@@ -156,10 +155,7 @@ DialogGraduatedCurve::~DialogGraduatedCurve()
     for (const auto &offset : std::as_const(m_offsets))
     {
         data.RemoveUniqueName(offset.name);
-    }
-
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonColor->CustomColors());
-    delete ui;
+    }    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -249,13 +245,13 @@ void DialogGraduatedCurve::SetPenStyle(const QString &value)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogGraduatedCurve::GetColor() const -> QString
 {
-    return ui->pushButtonColor->currentColor().name();
+    return GetColorComboCurrentName(m_colorCombo);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogGraduatedCurve::SetColor(const QString &value)
 {
-    ui->pushButtonColor->setCurrentColor(value);
+    SetColorComboCurrentName(m_colorCombo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

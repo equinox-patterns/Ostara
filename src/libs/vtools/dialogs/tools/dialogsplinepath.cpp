@@ -196,8 +196,7 @@ DialogSplinePath::DialogSplinePath(const VContainer *data, VAbstractPattern *doc
     replacePlaceholder("formulaLength2Placeholder", m_formulaLength2);
     replacePlaceholder("formulaAngle2Placeholder", m_formulaAngle2);
 
-    InitColorPicker(ui->pushButtonColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
     FillComboBoxTypeLine(ui->comboBoxPenStyle,
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
@@ -238,9 +237,7 @@ DialogSplinePath::DialogSplinePath(const VContainer *data, VAbstractPattern *doc
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogSplinePath::~DialogSplinePath()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -269,7 +266,7 @@ void DialogSplinePath::SetPath(const VSplinePath &value)
         ValidateAlias();
 
         ChangeCurrentData(ui->comboBoxPenStyle, path.GetPenStyle());
-        ui->pushButtonColor->setCurrentColor(path.GetColor());
+        SetColorComboCurrentName(m_colorCombo, path.GetColor());
 
         auto *visPath = qobject_cast<VisToolSplinePath *>(vis);
         SCASSERT(visPath != nullptr)
@@ -677,7 +674,7 @@ void DialogSplinePath::SavePath()
     path = ExtractPath();
     path.SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     path.SetPenStyle(GetComboBoxCurrentData(ui->comboBoxPenStyle, TypeLineLine));
-    path.SetColor(ui->pushButtonColor->currentColor().name());
+    path.SetColor(GetColorComboCurrentName(m_colorCombo));
     path.SetAliasSuffix(ui->lineEditAlias->text());
     path.SetDuplicate(d);
 }
@@ -820,7 +817,7 @@ void DialogSplinePath::SetDefPenStyle(const QString &value)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSplinePath::SetDefColor(const QString &value)
 {
-    ui->pushButtonColor->setCurrentColor(value);
+    SetColorComboCurrentName(m_colorCombo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -27,6 +27,7 @@
  *************************************************************************/
 #include "vscenestylesheet.h"
 
+#include "../ifc/ifcdef.h"
 #include "def.h"
 #include "vmanuallayoutstyle.h"
 #include "vtheme.h"
@@ -151,6 +152,17 @@ auto VSceneStylesheet::CorrectToolColor(const QGraphicsItem *item, const QColor 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VSceneStylesheet::CorrectToolColorForDarkTheme(const QString &colorName) -> QColor
+{
+    QColor lightColor = ColorNameToQColor(colorName);
+    if (!lightColor.isValid())
+    {
+        lightColor = QColor(colorName); // custom hex, legacy name
+    }
+    return CorrectToolColorForDarkTheme(lightColor);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VSceneStylesheet::CorrectToolColorForDarkTheme(const QColor &color) -> QColor
 {
     if (VTheme::ColorSheme() != VColorSheme::Dark)
@@ -158,15 +170,25 @@ auto VSceneStylesheet::CorrectToolColorForDarkTheme(const QColor &color) -> QCol
         return color;
     }
 
-    QMap<QString, QString> const adjustments = ToolStyle().ColorAdjustments();
+    // Try to find the base color name from the light QColor, then use its fixed dark hex.
+    const QString baseName = ColorNameFromQColor(color);
+    if (!baseName.isEmpty())
+    {
+        QColor darkColor = ColorNameToQColorForTheme(baseName, true);
+        if (darkColor.isValid())
+        {
+            return darkColor;
+        }
+    }
 
+    // Fallback: check style.json ColorAdjustments (for backward compat / custom entries).
+    QMap<QString, QString> const adjustments = ToolStyle().ColorAdjustments();
     QString colorName = color.name(QColor::HexArgb);
     if (adjustments.contains(colorName))
     {
-        QColor c = adjustments.value(color.name(QColor::HexArgb));
-        colorName = c.name(QColor::HexArgb);
-        return c;
+        return QColor(adjustments.value(colorName));
     }
 
+    // Last resort: generic lighter for custom/unknown colors.
     return color.lighter(150);
 }

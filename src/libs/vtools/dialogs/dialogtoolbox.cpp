@@ -40,6 +40,8 @@
 #include "../vgeometry/vsplinepath.h"
 #include "../vmisc/def.h"
 #include "themeDef.h"
+#include "../vtheme/vscenestylesheet.h"
+#include "../vtheme/vtheme.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/variables/vcurvelength.h"
@@ -59,6 +61,8 @@
 #include <QListWidget>
 #include <QLocale>
 #include <QPainter>
+#include <QPixmap>
+#include <QStyle>
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QRegularExpression>
@@ -1062,33 +1066,32 @@ auto NodeRowIndex(QListWidget *listWidget, quint32 id) -> int
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void InitColorPicker(VPE::QtColorPicker *button, const QVector<QColor> &customColor)
+void InitColorPicker(VPE::QtColorPicker *button)
 {
     SCASSERT(button != nullptr)
 
+    button->clear();
     const QMap<QString, QString> defaultColors = VAbstractTool::ColorsList();
+    const bool dark = VTheme::ColorSheme() == VColorSheme::Dark;
 
     auto i = defaultColors.constBegin();
     while (i != defaultColors.constEnd())
     {
-        button->insertColor(QColor(i.key()), i.value());
+        button->insertColor(ColorNameToQColorForTheme(i.key(), dark), i.value());
         ++i;
     }
 
-    for (auto color : customColor)
-    {
-        button->insertCustomColor(color);
-    }
-
-    button->setCurrentColor(QColor(Qt::black));
+    button->setCurrentColor(ColorNameToQColorForTheme(ColorBlack, dark));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void InitOperationColorPicker(VPE::QtColorPicker *button, const QVector<QColor> &customColor)
+void InitOperationColorPicker(VPE::QtColorPicker *button)
 {
     SCASSERT(button != nullptr)
 
+    button->clear();
     QMap<QString, QString> defaultColors = VAbstractOperation::OperationColorsList();
+    const bool dark = VTheme::ColorSheme() == VColorSheme::Dark;
 
     if (defaultColors.contains(ColorDefault))
     {
@@ -1099,16 +1102,111 @@ void InitOperationColorPicker(VPE::QtColorPicker *button, const QVector<QColor> 
     auto i = defaultColors.constBegin();
     while (i != defaultColors.constEnd())
     {
-        button->insertColor(QColor(i.key()), i.value());
+        button->insertColor(ColorNameToQColorForTheme(i.key(), dark), i.value());
         ++i;
     }
 
-    for (auto color : customColor)
+    button->setCurrentColor(QColor());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void InitColorCombo(QComboBox *combo)
+{
+    SCASSERT(combo != nullptr)
+
+    const bool dark = VTheme::ColorSheme() == VColorSheme::Dark;
+    const QMap<QString, QString> colors = VAbstractTool::ColorsList();
+    const int iconSize = combo->style()->pixelMetric(QStyle::PM_SmallIconSize);
+
+    combo->blockSignals(true);
+    combo->clear();
+
+    auto i = colors.constBegin();
+    while (i != colors.constEnd())
     {
-        button->insertCustomColor(color);
+        const QColor swatch = ColorNameToQColorForTheme(i.key(), dark);
+        QString displayName = i.value();
+        if (dark && i.key() == ColorBlack)
+        {
+            displayName = QCoreApplication::translate("VAbstractTool", "White");
+        }
+
+        QPixmap pix(iconSize, iconSize);
+        pix.fill(Qt::transparent);
+        QPainter painter(&pix);
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setBrush(swatch);
+        painter.setPen(Qt::NoPen);
+        painter.drawRoundedRect(1, 1, iconSize - 2, iconSize - 2, 3, 3);
+        painter.end();
+
+        combo->addItem(QIcon(pix), displayName, i.key());
+        ++i;
     }
 
-    button->setCurrentColor(QColor());
+    combo->blockSignals(false);
+    combo->setCurrentIndex(0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void SetColorComboCurrentName(QComboBox *combo, const QString &colorName)
+{
+    if (colorName.isEmpty() || colorName == ColorDefault)
+    {
+        combo->setCurrentIndex(0); // default = black
+        return;
+    }
+
+    // Try exact match on color constant name.
+    int idx = combo->findData(colorName, Qt::UserRole);
+    if (idx >= 0)
+    {
+        combo->setCurrentIndex(idx);
+        return;
+    }
+
+    // Try legacy SVG name → Ostara hex → Ostara name.
+    QColor c = ColorNameToQColor(colorName);
+    if (!c.isValid())
+    {
+        c = QColor(colorName); // Try as direct hex.
+    }
+    if (c.isValid())
+    {
+        const QString baseName = ColorNameFromQColor(c);
+        idx = combo->findData(baseName, Qt::UserRole);
+        if (idx >= 0)
+        {
+            combo->setCurrentIndex(idx);
+            return;
+        }
+    }
+
+    // Fallback: black.
+    combo->setCurrentIndex(0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto GetColorComboCurrentName(const QComboBox *combo) -> QString
+{
+    return combo->currentData(Qt::UserRole).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ReplaceColorPickerWithCombo(QWidget *parent, VPE::QtColorPicker *oldPicker) -> QComboBox *
+{
+    auto *combo = new QComboBox(parent);
+    combo->setSizePolicy(oldPicker->sizePolicy());
+
+    QWidget *pw = oldPicker->parentWidget();
+    if (pw != nullptr && pw->layout() != nullptr)
+    {
+        pw->layout()->replaceWidget(oldPicker, combo);
+    }
+    oldPicker->deleteLater();
+
+    InitColorCombo(combo);
+    return combo;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

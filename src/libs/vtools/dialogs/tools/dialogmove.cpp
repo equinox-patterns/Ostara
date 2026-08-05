@@ -113,9 +113,7 @@ DialogMove::DialogMove(const VContainer *data, VAbstractPattern *doc, quint32 to
                          OperationLineStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                                  ui->comboBoxPenStyle->palette().color(QPalette::Text)),
                          TypeLineDefault);
-    InitOperationColorPicker(ui->pushButtonColor,
-                             VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
     FillComboBoxPoints(ui->comboBoxRotationOriginPoint);
 
     {
@@ -151,7 +149,7 @@ DialogMove::DialogMove(const VContainer *data, VAbstractPattern *doc, quint32 to
     connect(ui->lineEditName, &QLineEdit::textEdited, this, &DialogOperationTool::NameChanged);
     connect(ui->comboBoxPenStyle, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             &DialogOperationTool::PenStyleChanged);
-    connect(ui->pushButtonColor, &VPE::QtColorPicker::colorChanged, this, &DialogOperationTool::ColorChanged);
+    connect(m_colorCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &DialogOperationTool::ColorChanged);
     connect(ui->toolButtonBulkRename, &QToolButton::clicked, this, &DialogOperationTool::BulkRename);
 
     connect(ui->comboBoxObjectType,
@@ -177,9 +175,7 @@ DialogMove::DialogMove(const VContainer *data, VAbstractPattern *doc, quint32 to
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogMove::~DialogMove()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

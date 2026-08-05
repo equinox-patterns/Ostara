@@ -1,12 +1,12 @@
 {
   "ToolStyle": {
-    "PatternColor": "#d9d9d9",
+    "PatternColor": "#e5e5e5",
     "DisabledColor": "#5a4949",
     "ColorAdjustments": {
-      "black": "#d9d9d9"
+      "black": "#e5e5e5"
     },
-    "PointColor": "#d9d9d9",
-    "LabelColor": "#d9d9d9",
+    "PointColor": "#e5e5e5",
+    "LabelColor": "#e5e5e5",
     "LabelHoverColor": "#ffd900",
     "LabelLineColor": [255, 217, 0, 32],
     "AccuracyRadiusColor": "#ffd900",
@@ -22,11 +22,11 @@
   "PatternPieceStyle": {
     "PieceColor": "#83aad1",
     "PointColor": "#ffd900",
-    "NodeLabelColor": "#d9d9d9",
+    "NodeLabelColor": "#e5e5e5",
     "NodeLabelHoverColor": "#ffd900",
     "NodeLabelLineColor": [255, 217, 0, 32],
     "LabelBackgroundColor": "#80ffd900",
-    "LabelTextColor": "#d9d9d9",
+    "LabelTextColor": "#e5e5e5",
     "LabelModeColor": "white"
   },
   "ManualLayoutStyle": {

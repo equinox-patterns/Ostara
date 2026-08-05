@@ -61,10 +61,6 @@ class Quuid;
 class VBackgroundImageItem;
 class VBackgroundImageControls;
 class VWidgetBackgroundImages;
-namespace VPE
-{
-class QtColorPicker;
-}
 
 /**
  * @brief The MainWindow class main windows.
@@ -326,7 +322,7 @@ private:
     QComboBox *m_comboBoxPenStyle{nullptr};
     QLabel *m_globalPenStyleLabel{nullptr};
 
-    VPE::QtColorPicker *m_pushButtonColor{nullptr};
+    QComboBox *m_colorCombo{nullptr};
     QLabel *m_globalColorLabel{nullptr};
 
     /** @brief currentDrawIndex save current selected pattern peace. */

@@ -131,8 +131,7 @@ DialogSpline::DialogSpline(const VContainer *data, VAbstractPattern *doc, quint3
 
     FillComboBoxPoints(ui->comboBoxP1);
     FillComboBoxPoints(ui->comboBoxP4);
-    InitColorPicker(ui->pushButtonColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
     FillComboBoxTypeLine(ui->comboBoxPenStyle,
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
@@ -159,9 +158,7 @@ DialogSpline::DialogSpline(const VContainer *data, VAbstractPattern *doc, quint3
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogSpline::~DialogSpline()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -311,7 +308,7 @@ void DialogSpline::SaveSpline()
     spl = VSpline(*GetP1(), *GetP4(), angle1, angle1F, angle2, angle2F, length1, length1F, length2, length2F);
     spl.SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     spl.SetPenStyle(GetComboBoxCurrentData(ui->comboBoxPenStyle, TypeLineLine));
-    spl.SetColor(ui->pushButtonColor->currentColor().name());
+    spl.SetColor(GetColorComboCurrentName(m_colorCombo));
     spl.SetAliasSuffix(ui->lineEditAlias->text());
     spl.SetDuplicate(d);
 }
@@ -384,7 +381,7 @@ void DialogSpline::SetSpline(const VSpline &spline)
     m_oldName = spl.name();
 
     ui->doubleSpinBoxApproximationScale->setValue(spl.GetApproximationScale());
-    ui->pushButtonColor->setCurrentColor(spl.GetColor());
+    SetColorComboCurrentName(m_colorCombo, spl.GetColor());
     ChangeCurrentData(ui->comboBoxPenStyle, spl.GetPenStyle());
 
     setCurrentPointId(ui->comboBoxP1, spl.GetP1().id());
@@ -435,7 +432,7 @@ void DialogSpline::SetDefPenStyle(const QString &value)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSpline::SetDefColor(const QString &value)
 {
-    ui->pushButtonColor->setCurrentColor(value);
+    SetColorComboCurrentName(m_colorCombo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

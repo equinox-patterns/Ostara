@@ -83,8 +83,7 @@ DialogParallelCurve::DialogParallelCurve(const VContainer *data, VAbstractPatter
 
     FillComboBoxCurves(ui->comboBoxCurve);
 
-    InitColorPicker(ui->pushButtonColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
     FillComboBoxTypeLine(ui->comboBoxPenStyle,
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
@@ -102,9 +101,7 @@ DialogParallelCurve::DialogParallelCurve(const VContainer *data, VAbstractPatter
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogParallelCurve::~DialogParallelCurve()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -158,13 +155,13 @@ void DialogParallelCurve::SetPenStyle(const QString &value)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogParallelCurve::GetColor() const -> QString
 {
-    return ui->pushButtonColor->currentColor().name();
+    return GetColorComboCurrentName(m_colorCombo);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogParallelCurve::SetColor(const QString &value)
 {
-    ui->pushButtonColor->setCurrentColor(value);
+    SetColorComboCurrentName(m_colorCombo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

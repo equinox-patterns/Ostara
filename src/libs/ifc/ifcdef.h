@@ -192,22 +192,31 @@ auto CurvePenStylesPics(QColor backgroundColor, QColor textColor) -> QMap<QStrin
 
 extern const QString ColorDefault;
 extern const QString ColorBlack;
-extern const QString ColorGreen;
-extern const QString ColorBlue;
-extern const QString ColorDarkRed;
-extern const QString ColorDarkGreen;
+extern const QString ColorLightBlue;
 extern const QString ColorDarkBlue;
+extern const QString ColorPink;
+extern const QString ColorPurple;
 extern const QString ColorYellow;
-extern const QString ColorLightSalmon;
-extern const QString ColorGoldenRod;
 extern const QString ColorOrange;
-extern const QString ColorDeepPink;
-extern const QString ColorViolet;
-extern const QString ColorDarkViolet;
-extern const QString ColorMediumSeaGreen;
-extern const QString ColorLime;
-extern const QString ColorDeepSkyBlue;
-extern const QString ColorCornFlowerBlue;
+extern const QString ColorLightGreen;
+extern const QString ColorDarkGreen;
+extern const QString ColorBrown;
+
+// Dark-mode fixed hex equivalents (Qt lighter(150) HSL algorithm).
+extern const QString ColorBlackDark;
+extern const QString ColorLightBlueDark;
+extern const QString ColorDarkBlueDark;
+extern const QString ColorPinkDark;
+extern const QString ColorPurpleDark;
+extern const QString ColorYellowDark;
+extern const QString ColorOrangeDark;
+extern const QString ColorLightGreenDark;
+extern const QString ColorDarkGreenDark;
+extern const QString ColorBrownDark;
+
+auto ColorNameToQColor(const QString &colorName) -> QColor;
+auto ColorNameToQColorForTheme(const QString &colorName, bool dark) -> QColor;
+auto ColorNameFromQColor(const QColor &color) -> QString;
 
 // variables name
 // Hacks for avoiding the linker error "undefined reference to"

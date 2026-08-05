@@ -37,6 +37,7 @@
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vmodifierkey.h"
 #include "../vtools/dialogs/dialogtoolbox.h"
+#include "../vtools/tools/vabstracttool.h"
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../vtools/undocommands/renamepp.h"
 #include "../vwidgets/vtoolbuttonpopup.h"
@@ -165,30 +166,28 @@ void MainWindow::ToolBarPenOptions()
     m_globalColorLabel = new QLabel(tr("Color:"));
     ui->toolBarPenOptions->addWidget(m_globalColorLabel);
 
-    m_pushButtonColor = new VPE::QtColorPicker(this);
-    m_pushButtonColor->setToolTip(tr("Defines the <b>global object color property</b>. This color is applied "
-                                     "automatically the first time a new object is drawn."));
+    m_colorCombo = new QComboBox(this);
+    m_colorCombo->setToolTip(tr("Defines the <b>global object color property</b>. This color is applied "
+                                "automatically the first time a new object is drawn."));
+    InitColorCombo(m_colorCombo);
     VValentinaSettings const *settings = VApplication::VApp()->ValentinaSettings();
-    InitColorPicker(m_pushButtonColor, settings->GetUserToolColors());
-    m_pushButtonColor->setUseNativeDialog(!settings->IsDontUseNativeDialog());
-    m_pushButtonColor->setCurrentColor(settings->GetGlobalToolColor());
-    ui->toolBarPenOptions->addWidget(m_pushButtonColor);
+    SetColorComboCurrentName(m_colorCombo, settings->GetGlobalToolColor());
+    ui->toolBarPenOptions->addWidget(m_colorCombo);
 
-    connect(m_pushButtonColor, &VPE::QtColorPicker::colorChanged, this, [this]()
+    connect(m_colorCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this]()
     {
         VValentinaSettings *settings = VApplication::VApp()->ValentinaSettings();
-        settings->SetGlobalToolColor(m_pushButtonColor->currentColor().name());
-        settings->SetUserToolColors(m_pushButtonColor->CustomColors());
+        settings->SetGlobalToolColor(GetColorComboCurrentName(m_colorCombo));
     });
 
-    connect(settings, &VValentinaSettings::UserToolColorsChanged, this, [this]()
+    // Rebuild combo icons when theme changes (light ↔ dark).
+    connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, [this]()
     {
-        QVector<QColor> const colors = VApplication::VApp()->ValentinaSettings()->GetUserToolColors();
-        for (const auto &color : colors)
-        {
-            m_pushButtonColor->insertCustomColor(color);
-        }
-    }, Qt::QueuedConnection);
+        VValentinaSettings const *settings = VApplication::VApp()->ValentinaSettings();
+        const QString storedName = settings->GetGlobalToolColor();
+        InitColorCombo(m_colorCombo);
+        SetColorComboCurrentName(m_colorCombo, storedName);
+    });
 }
 
 

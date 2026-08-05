@@ -60,8 +60,7 @@ DialogCubicBezier::DialogCubicBezier(const VContainer *data, VAbstractPattern *d
     FillComboBoxPoints(ui->comboBoxP2);
     FillComboBoxPoints(ui->comboBoxP3);
     FillComboBoxPoints(ui->comboBoxP4);
-    InitColorPicker(ui->pushButtonColor, VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
-    ui->pushButtonColor->setUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
     FillComboBoxTypeLine(ui->comboBoxPenStyle,
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
@@ -81,9 +80,7 @@ DialogCubicBezier::DialogCubicBezier(const VContainer *data, VAbstractPattern *d
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogCubicBezier::~DialogCubicBezier()
-{
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetUserToolColors(ui->pushButtonColor->CustomColors());
-    delete ui;
+{    delete ui;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -105,7 +102,7 @@ void DialogCubicBezier::SetSpline(const VCubicBezier &spline)
     setCurrentPointId(ui->comboBoxP4, spl.GetP4().id());
 
     ChangeCurrentData(ui->comboBoxPenStyle, spl.GetPenStyle());
-    ui->pushButtonColor->setCurrentColor(spl.GetColor());
+    SetColorComboCurrentName(m_colorCombo, spl.GetColor());
 
     ui->doubleSpinBoxApproximationScale->setValue(spl.GetApproximationScale());
 
@@ -301,7 +298,7 @@ void DialogCubicBezier::SaveSpline()
     spl = VCubicBezier(*GetP1(), *GetP2(), *GetP3(), *GetP4());
     spl.SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     spl.SetPenStyle(GetComboBoxCurrentData(ui->comboBoxPenStyle, TypeLineLine));
-    spl.SetColor(ui->pushButtonColor->currentColor().name());
+    spl.SetColor(GetColorComboCurrentName(m_colorCombo));
     spl.SetAliasSuffix(ui->lineEditAlias->text());
     spl.SetDuplicate(d);
 }
@@ -327,7 +324,7 @@ void DialogCubicBezier::SetDefPenStyle(const QString &value)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogCubicBezier::SetDefColor(const QString &value)
 {
-    ui->pushButtonColor->setCurrentColor(value);
+    SetColorComboCurrentName(m_colorCombo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
