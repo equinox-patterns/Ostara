@@ -36,6 +36,8 @@
 #include "core/vapplication.h"
 #include "dialogs/DialogNewMeasurements.h"
 #include "dialogs/DialogOpenMeasurements.h"
+#include "dialogs/DialogManageMeasurements.h"
+#include "widgets/MeasurementWorkspace/MeasurementLibraryScanner.h"
 #include "widgets/MeasurementWorkspace/MeasurementWindow.h"
 #include "widgets/MeasurementWorkspace/MeasurementWorkspace.h"
 #include <QFileInfo>
@@ -192,6 +194,59 @@ void MainWindow::OnNewMeasurements()
             return;
         }
         LoadAndConnectMeasurements(savedPath);
+    });
+
+    mw->show();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ActionManageMeasurements()
+{
+    DialogManageMeasurements dlg(this);
+    if (dlg.exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    const QString path = dlg.selectedPath();
+    if (path.isEmpty())
+    {
+        return;
+    }
+
+    auto *mw = new MeasurementWindow(this);
+    mw->setAttribute(Qt::WA_DeleteOnClose);
+    mw->SetOrigin(MeasurementWorkspace::Origin::FromDraw);
+    mw->SetModeless(true);
+
+    if (!mw->LoadFile(path))
+    {
+        delete mw;
+        return;
+    }
+
+    // When saved, if this file is the one currently loaded in the canvas, reload it
+    connect(mw, &MeasurementWindow::measurementsSaved, this,
+            [this](const QString &savedPath) {
+        if (savedPath.isEmpty())
+        {
+            return;
+        }
+        if (!doc->MPath().isEmpty())
+        {
+            const QString currentMPath = AbsoluteMPath(
+                VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
+            if (currentMPath == savedPath)
+            {
+                const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
+                QString mutablePath = savedPath;
+                if (LoadMeasurements(patternPath, mutablePath))
+                {
+                    doc->LiteParseTree(Document::FullLiteParse);
+                    VWidgetPopup::PopupMessage(this, tr("Measurements reloaded"));
+                }
+            }
+        }
     });
 
     mw->show();

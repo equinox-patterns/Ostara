@@ -145,6 +145,12 @@
     <addaction name="actionFinalMeasurements"/>
     <addaction name="actionExportFinalMeasurementsToCSV"/>
    </widget>
+   <widget class="QMenu" name="menuLibraries">
+    <property name="title">
+     <string>&amp;Libraries</string>
+    </property>
+    <addaction name="actionManageMeasurements"/>
+   </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
      <string>Window</string>
@@ -187,6 +193,7 @@
    <addaction name="menuPatternPiece"/>
    <addaction name="menuMode"/>
    <addaction name="menuMeasurements"/>
+   <addaction name="menuLibraries"/>
    <addaction name="menuWatermark"/>
    <addaction name="menuManual_Layout"/>
    <addaction name="menuWindow"/>
@@ -2676,6 +2683,17 @@
    </property>
    <property name="toolTip">
     <string>Graduated curve tool</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionManageMeasurements">
+   <property name="text">
+    <string>Measurement Tables</string>
+   </property>
+   <property name="toolTip">
+    <string>Browse, open, and manage measurement tables in the library</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
