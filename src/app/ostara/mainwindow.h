@@ -248,6 +248,12 @@ private slots:
     void SyncMeasurements();
     void MeasurementsSyncTimerTimeout();
 
+    // Ostara Measurement (not Tape)
+    void OnLoadMeasurements();
+    void OnEditMeasurements();
+    void OnNewMeasurements();
+    void LoadAndConnectMeasurements(const QString &path);
+
     void CreateWatermark();
     void EditCurrentWatermark();
     void LoadWatermark();

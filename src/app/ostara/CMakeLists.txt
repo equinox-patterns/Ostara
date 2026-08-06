@@ -4,6 +4,7 @@ file(GLOB OSTARA_SOURCES *.cpp *.h *.ui)
 file(GLOB OSTARA_CORE core/*.cpp core/*.h)
 file(GLOB_RECURSE OSTARA_DIALOGS dialogs/*.cpp dialogs/*.h dialogs/*.ui)
 file(GLOB_RECURSE OSTARA_XML xml/*.cpp xml/*.h)
+file(GLOB_RECURSE OSTARA_WIDGETS widgets/*.cpp widgets/*.h)
 
 # QRC resources
 set(OSTARA_QRC
@@ -17,6 +18,7 @@ qt_add_executable(Ostara
     ${OSTARA_CORE}
     ${OSTARA_DIALOGS}
     ${OSTARA_XML}
+    ${OSTARA_WIDGETS}
     ${OSTARA_QRC}
 )
 

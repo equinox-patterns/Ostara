@@ -62,6 +62,8 @@ using namespace Qt::Literals::StringLiterals;
 
 const QString VMeasurements::TagVST = QStringLiteral("vst");
 const QString VMeasurements::TagVIT = QStringLiteral("vit");
+const QString VMeasurements::TagOMT = QStringLiteral("omt");
+const QString VMeasurements::TagOTU = QStringLiteral("otu");
 const QString VMeasurements::TagBodyMeasurements = QStringLiteral("body-measurements");
 const QString VMeasurements::TagNotes = QStringLiteral("notes");
 const QString VMeasurements::TagPersonal = QStringLiteral("personal");
@@ -268,6 +270,21 @@ void VMeasurements::setXMLContent(const QString &fileName)
     VDomDocument::setXMLContent(fileName);
     type = ReadType();
     m_units = ReadUnits();
+
+    // .omt/.otu files: version is an attribute on the root element, not a child <version> tag.
+    // Dimensions come from <sizeGroup> elements instead of <dimension> elements.
+    const QDomElement root = documentElement();
+    const QString rootTag = root.tagName();
+    if (rootTag == TagOMT)
+    {
+        m_dimensions = ReadDimensionsFromSizeGroups();
+        BuildGridCache();
+        return;
+    }
+    if (rootTag == TagOTU)
+    {
+        return; // single-size — no dimensions, no grid needed
+    }
 
     if (type == MeasurementsType::Multisize
         && VVSTConverter::MeasurementMaxVer == GetFormatVersion(GetFormatVersionStr()))
@@ -1456,12 +1473,12 @@ auto VMeasurements::FindM(const QString &name) const -> QDomElement
 auto VMeasurements::ReadType() const -> MeasurementsType
 {
     QDomElement const root = documentElement();
-    if (root.tagName() == TagVST)
+    if (root.tagName() == TagVST || root.tagName() == TagOMT)
     {
         return MeasurementsType::Multisize;
     }
 
-    if (root.tagName() == TagVIT)
+    if (root.tagName() == TagVIT || root.tagName() == TagOTU)
     {
         return MeasurementsType::Individual;
     }
@@ -1541,6 +1558,149 @@ auto VMeasurements::ReadDimensions() const -> VDimensions
     }
 
     return dimensions;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VMeasurements::ReadDimensionsFromSizeGroups() const -> VDimensions
+{
+    VDimensions dimensions;
+
+    const QDomElement root = documentElement();
+    const QDomElement sgContainer = root.firstChildElement(QStringLiteral("sizeGroups"));
+    if (sgContainer.isNull())
+    {
+        return {};
+    }
+
+    const QDomNodeList groups = sgContainer.elementsByTagName(QStringLiteral("sizeGroup"));
+    const Unit units = Units();
+
+    // Map group index → MeasurementDimension type (max 3 groups: A=X, B=Y, C=W)
+    static const MeasurementDimension typeMap[] = {
+        MeasurementDimension::X,
+        MeasurementDimension::Y,
+        MeasurementDimension::W
+    };
+
+    for (qsizetype i = 0; i < groups.count() && i < 3; ++i)
+    {
+        const QDomElement sg = groups.at(static_cast<int>(i)).toElement();
+        const QString name = sg.attribute(QStringLiteral("name"));
+        const QString valuesStr = sg.attribute(QStringLiteral("values"));
+
+        QStringList values = valuesStr.split(QLatin1Char(','), Qt::SkipEmptyParts);
+        for (QString &v : values)
+        {
+            v = v.trimmed();
+        }
+        values.removeAll({});
+
+        if (values.isEmpty())
+        {
+            continue;
+        }
+
+        const qreal min = 1;
+        const qreal max = static_cast<qreal>(values.size());
+        const qreal step = 1;
+
+        MeasurementDimension_p dim;
+        const MeasurementDimension t = typeMap[i];
+
+        if (t == MeasurementDimension::X)
+        {
+            dim = QSharedPointer<VXMeasurementDimension>::create(units, min, max, step);
+        }
+        else if (t == MeasurementDimension::Y)
+        {
+            dim = QSharedPointer<VYMeasurementDimension>::create(units, min, max, step);
+        }
+        else
+        {
+            dim = QSharedPointer<VWMeasurementDimension>::create(units, min, max, step);
+        }
+
+        dim->SetCustomName(name);
+        dim->SetBodyMeasurement(true);
+
+        // Labels: 1-based index → display value (dimension requires min > 0)
+        DimesionLabels labels;
+        for (qsizetype j = 0; j < values.size(); ++j)
+        {
+            labels.insert(static_cast<qreal>(j + 1), values.at(j));
+        }
+        dim->SetLabels(labels);
+
+        // Base value (anchor): find the anchor binding for this group
+        const QDomElement anchorEl = root.firstChildElement(QStringLiteral("anchor"));
+        if (!anchorEl.isNull())
+        {
+            const QDomNodeList binds = anchorEl.elementsByTagName(QStringLiteral("bind"));
+            for (qsizetype b = 0; b < binds.count(); ++b)
+            {
+                const QDomElement bind = binds.at(static_cast<int>(b)).toElement();
+                if (bind.attribute(QStringLiteral("group")) == name)
+                {
+                    const QString anchorVal = bind.attribute(QStringLiteral("value"));
+                    const qsizetype idx = values.indexOf(anchorVal);
+                    if (idx >= 0)
+                    {
+                        dim->SetBaseValue(static_cast<qreal>(idx + 1)); // 1-based
+                    }
+                    break;
+                }
+            }
+        }
+
+        dimensions.insert(t, dim);
+    }
+
+    return dimensions;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMeasurements::BuildGridCache()
+{
+    m_gridCache.clear();
+
+    const QDomElement root = documentElement();
+    const QDomElement gridEl = root.firstChildElement(QStringLiteral("grid"));
+    if (gridEl.isNull())
+    {
+        return;
+    }
+
+    const QDomNodeList cells = gridEl.elementsByTagName(QStringLiteral("cell"));
+    for (qsizetype i = 0; i < cells.count(); ++i)
+    {
+        const QDomElement cell = cells.at(static_cast<int>(i)).toElement();
+        const QString mName = cell.attribute(QStringLiteral("m"));
+        const QString sg = cell.attribute(QStringLiteral("sg"));
+        const QString vStr = cell.attribute(QStringLiteral("v"));
+
+        if (mName.isEmpty() || sg.isEmpty())
+        {
+            continue;
+        }
+
+        QString norm = vStr;
+        norm.replace(QLatin1Char(','), QLatin1Char('.'));
+        bool ok = false;
+        const qreal val = norm.toDouble(&ok);
+
+        m_gridCache[mName][sg] = ok ? val : 0.0;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VMeasurements::LookupGridValue(const QString &mName, const QStringList &sizeLabels) const -> qreal
+{
+    const QString key = sizeLabels.join(QLatin1Char(','));
+    if (m_gridCache.contains(mName) && m_gridCache[mName].contains(key))
+    {
+        return m_gridCache[mName][key];
+    }
+    return 0.0;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1709,13 +1869,58 @@ void VMeasurements::ReadMeasurement(const QDomElement &dom,
     const QString name = GetParametrString(dom, AttrName).simplified();
     const QString description = GetParametrEmptyString(dom, AttrDescription);
 
+    // Detect Ostara format (.omt/.otu) — values are child elements, not attributes
+    const QDomElement root = documentElement();
+    const QString rootTag = root.tagName();
+    const bool isOstaraFormat = (rootTag == TagOMT || rootTag == TagOTU);
+
     if (type == MeasurementsType::Multisize)
     {
-        qreal base = GetParametrDouble(dom, AttrBase, QChar('0'));
-        qreal shiftA = GetParametrDouble(dom, AttrShiftA, QChar('0'));
-        qreal shiftB = GetParametrDouble(dom, AttrShiftB, QChar('0'));
-        qreal shiftC = GetParametrDouble(dom, AttrShiftC, QChar('0'));
-        QMap<QString, VMeasurementCorrection> corrections = ReadCorrections(dom);
+        qreal base = 0;
+        qreal shiftA = 0;
+        qreal shiftB = 0;
+        qreal shiftC = 0;
+        QMap<QString, VMeasurementCorrection> corrections;
+
+        if (isOstaraFormat)
+        {
+            // .omt: look up the pre-computed value from the grid for the current combo selection
+            QStringList sizeLabels;
+            // Convert dimension indices → labels using the dimension label maps
+            auto labelForDim = [this](MeasurementDimension t, qreal idx) -> QString {
+                if (m_dimensions.contains(t))
+                {
+                    const auto &labels = m_dimensions[t]->Labels();
+                    if (labels.contains(idx))
+                    {
+                        return labels[idx];
+                    }
+                }
+                return QString::number(qRound(idx));
+            };
+            if (m_dimensions.contains(MeasurementDimension::X))
+            {
+                sizeLabels.append(labelForDim(MeasurementDimension::X, bases.baseA));
+            }
+            if (m_dimensions.contains(MeasurementDimension::Y))
+            {
+                sizeLabels.append(labelForDim(MeasurementDimension::Y, bases.baseB));
+            }
+            if (m_dimensions.contains(MeasurementDimension::W))
+            {
+                sizeLabels.append(labelForDim(MeasurementDimension::W, bases.baseC));
+            }
+            base = LookupGridValue(name, sizeLabels);
+            // Shifts are zero — the grid provides the exact value per combination
+        }
+        else
+        {
+            base = GetParametrDouble(dom, AttrBase, QChar('0'));
+            shiftA = GetParametrDouble(dom, AttrShiftA, QChar('0'));
+            shiftB = GetParametrDouble(dom, AttrShiftB, QChar('0'));
+            shiftC = GetParametrDouble(dom, AttrShiftC, QChar('0'));
+            corrections = ReadCorrections(dom);
+        }
 
         qreal convertedBaseA = DimensionABase();
         qreal convertedBaseB = DimensionBBase();
@@ -1782,7 +1987,27 @@ void VMeasurements::ReadMeasurement(const QDomElement &dom,
     {
         const IMD dimension = VMeasurements::StrToIMD(
             GetParametrString(dom, AttrDimension, VMeasurements::IMDToStr(IMD::N)));
-        const QString formula = GetParametrString(dom, AttrValue, QChar('0'));
+
+        QString formula;
+        if (isOstaraFormat)
+        {
+            // .otu: read <value> child element
+            const QDomElement valEl = dom.firstChildElement(QStringLiteral("value"));
+            if (!valEl.isNull())
+            {
+                QString valStr = valEl.text().trimmed();
+                valStr.replace(QLatin1Char(','), QLatin1Char('.'));
+                formula = valStr;
+            }
+            else
+            {
+                formula = QStringLiteral("0");
+            }
+        }
+        else
+        {
+            formula = GetParametrString(dom, AttrValue, QChar('0'));
+        }
         bool ok = false;
         qreal value = EvalFormula(tempData.data(), formula, &ok);
 

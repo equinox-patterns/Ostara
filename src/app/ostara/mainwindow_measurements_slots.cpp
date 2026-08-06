@@ -37,6 +37,10 @@
 #include "../vmisc/dialogs/dialogselectmeasurementstype.h"
 #include "../ifc/xml/utils.h"
 #include "core/vapplication.h"
+#include "dialogs/DialogNewMeasurements.h"
+#include "dialogs/DialogOpenMeasurements.h"
+#include "widgets/MeasurementWorkspace/MeasurementWindow.h"
+#include "widgets/MeasurementWorkspace/MeasurementWorkspace.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QDir>
@@ -66,13 +70,13 @@ void MainWindow::ConnectMeasurements()
 
     if (type == MeasurementsType::Individual)
     {
-        filter = tr("Individual measurements") + " (*.vit);;"_L1 + tr("All files") + " (*.*)"_L1;
+        filter = tr("Individual measurements") + " (*.otu *.vit);;"_L1 + tr("All files") + " (*.*)"_L1;
         defaultPath = VAbstractValApplication::VApp()->ValentinaSettings()->GetPathIndividualMeasurements();
         updateIndividualPath = true;
     }
     else if (type == MeasurementsType::Multisize)
     {
-        filter = tr("Multisize measurements") + " (*.vst);;"_L1 + tr("All files") + " (*.*)"_L1;
+        filter = tr("Multisize measurements") + " (*.omt *.vst);;"_L1 + tr("All files") + " (*.*)"_L1;
         defaultPath = VAbstractValApplication::VApp()->ValentinaSettings()->GetPathMultisizeMeasurements();
     }
     else
@@ -108,6 +112,7 @@ void MainWindow::ConnectMeasurements()
     m_watcher->addPath(mPath);
     PatternChangesWereSaved(false);
     ui->actionEditCurrent->setEnabled(true);
+    ui->actionEditMeasurements->setEnabled(true);
     statusBar()->showMessage(tr("Measurements loaded"), 5000);
     doc->LiteParseTree(Document::FullLiteParse);
     UpdateWindowTitle();
@@ -169,6 +174,7 @@ void MainWindow::UnloadMeasurements()
         emit doc->UpdatePatternLabel();
         PatternChangesWereSaved(false);
         ui->actionEditCurrent->setEnabled(false);
+        ui->actionEditMeasurements->setEnabled(false);
         ui->actionUnloadMeasurements->setDisabled(true);
         statusBar()->showMessage(tr("Measurements unloaded"), 5000);
 
@@ -227,6 +233,7 @@ void MainWindow::ShowMeasurements()
     else
     {
         ui->actionEditCurrent->setEnabled(false);
+        ui->actionEditMeasurements->setEnabled(false);
     }
 }
 
@@ -327,5 +334,162 @@ void MainWindow::MeasurementsSyncTimerTimeout()
             asking = false;
         }
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::LoadAndConnectMeasurements(const QString &path)
+{
+    const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
+    QString mutablePath = path;
+    if (!LoadMeasurements(patternPath, mutablePath))
+    {
+        return;
+    }
+
+    if (!doc->MPath().isEmpty())
+    {
+        m_watcher->removePath(AbsoluteMPath(patternPath, doc->MPath()));
+    }
+    ui->actionUnloadMeasurements->setEnabled(true);
+    doc->SetMPath(RelativeMPath(patternPath, path));
+    m_watcher->addPath(path);
+    PatternChangesWereSaved(false);
+    ui->actionEditCurrent->setEnabled(true);
+    ui->actionEditMeasurements->setEnabled(true);
+    doc->LiteParseTree(Document::FullLiteParse);
+    UpdateWindowTitle();
+    const QString msg = tr("Measurements loaded");
+    statusBar()->showMessage(msg, 5000);
+    VWidgetPopup::PopupMessage(this, msg);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::OnLoadMeasurements()
+{
+    DialogOpenMeasurements dlg(this);
+    if (dlg.exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    const QString path = dlg.selectedPath();
+    if (path.isEmpty())
+    {
+        return;
+    }
+
+    // .vst/.vit → open MeasurementWindow for conversion (like Welcome Screen)
+    const QFileInfo fi(path);
+    const QString suffix = fi.suffix().toLower();
+    if (suffix == QStringLiteral("vst") || suffix == QStringLiteral("vit"))
+    {
+        auto *mw = new MeasurementWindow(this);
+        mw->setAttribute(Qt::WA_DeleteOnClose);
+        mw->SetOrigin(MeasurementWorkspace::Origin::FromDraw);
+        mw->SetModeless(true);
+        if (!mw->LoadFile(path))
+        {
+            delete mw;
+            return;
+        }
+        // When the converted file is saved, load it into the canvas
+        connect(mw, &MeasurementWindow::measurementsSaved, this,
+                [this](const QString &savedPath) {
+            if (!savedPath.isEmpty())
+            {
+                LoadAndConnectMeasurements(savedPath);
+            }
+        });
+        mw->show();
+        return;
+    }
+
+    // .omt/.otu → direct load into canvas
+    LoadAndConnectMeasurements(path);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::OnEditMeasurements()
+{
+    if (doc->MPath().isEmpty())
+    {
+        statusBar()->showMessage(tr("No measurement table loaded"), 5000);
+        return;
+    }
+
+    const QString absoluteMPath = AbsoluteMPath(
+        VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
+
+    if (absoluteMPath.isEmpty() || !QFileInfo::exists(absoluteMPath))
+    {
+        QMessageBox::warning(this, tr("File not found"),
+            tr("The measurement file could not be found at:\n%1").arg(absoluteMPath));
+        return;
+    }
+
+    auto *mw = new MeasurementWindow(this);
+    mw->setAttribute(Qt::WA_DeleteOnClose);
+    mw->SetOrigin(MeasurementWorkspace::Origin::FromDraw);
+    mw->SetModeless(true);
+
+    if (!mw->LoadFile(absoluteMPath))
+    {
+        delete mw;
+        return;
+    }
+
+    connect(mw, &MeasurementWindow::measurementsSaved, this,
+            [this](const QString &savedPath) {
+        if (savedPath.isEmpty())
+        {
+            return;
+        }
+        // Reload measurements into the canvas
+        const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
+        QString mutablePath = savedPath;
+        if (!LoadMeasurements(patternPath, mutablePath))
+        {
+            return;
+        }
+        doc->LiteParseTree(Document::FullLiteParse);
+        // Suppress the sync prompt — we triggered the reload ourselves
+        m_mChanges = false;
+        m_measurementsSyncTimer->stop();
+        // Delay the popup so the modeless window has time to close first
+        const QString msg = tr("Measurements reloaded");
+        QTimer::singleShot(150, this, [this, msg]() {
+            VWidgetPopup::PopupMessage(this, msg);
+        });
+    });
+
+    mw->show();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::OnNewMeasurements()
+{
+    DialogNewMeasurements dlg(this);
+    if (dlg.exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    auto *mw = new MeasurementWindow(this);
+    mw->setAttribute(Qt::WA_DeleteOnClose);
+    mw->SetOrigin(MeasurementWorkspace::Origin::FromDraw);
+    mw->SetModeless(true);
+    mw->NewDocument(dlg.MeasurementsType(), dlg.Unit());
+    mw->SetTableName(dlg.TableName());
+
+    connect(mw, &MeasurementWindow::measurementsSaved, this,
+            [this](const QString &savedPath) {
+        if (savedPath.isEmpty())
+        {
+            return;
+        }
+        LoadAndConnectMeasurements(savedPath);
+    });
+
+    mw->show();
 }
 

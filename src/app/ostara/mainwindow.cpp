@@ -208,8 +208,11 @@
 #include "dialogs/dialogaddbackgroundimage.h"
 #include "dialogs/dialogfinalmeasurements.h"
 #include "dialogs/dialogincrements.h"
+#include "dialogs/DialogOpenMeasurements.h"
 #include "dialogs/dialognewpattern.h"
 #include "dialogs/dialogpatternproperties.h"
+#include "widgets/MeasurementWorkspace/MeasurementWindow.h"
+#include "widgets/MeasurementWorkspace/MeasurementWorkspace.h"
 #include "dialogs/dialogpreferences.h"
 #include "../vtools/dialogs/tools/dialogparallelcurve.h"
 #include "dialogs/vwidgetbackgroundimages.h"
@@ -2713,6 +2716,7 @@ void MainWindow::Clear()
     ui->actionConnectMeasurements->setEnabled(false);
     ui->actionUnloadMeasurements->setEnabled(false);
     ui->actionEditCurrent->setEnabled(false);
+    ui->actionEditMeasurements->setEnabled(false);
     ui->actionPreviousPatternPiece->setEnabled(false);
     ui->actionNextPatternPiece->setEnabled(false);
     ui->actionAddBackgroundImage->setEnabled(false);
@@ -4058,6 +4062,10 @@ void MainWindow::CreateActions()
     connect(ui->actionConnectMeasurements, &QAction::triggered, this, &MainWindow::ConnectMeasurements);
     connect(ui->actionOpenTape, &QAction::triggered, this, &MainWindow::ActionOpenTape_triggered);
     connect(ui->actionEditCurrent, &QAction::triggered, this, &MainWindow::ShowMeasurements);
+    // Ostara Measurement (not Tape)
+    connect(ui->actionLoadMeasurements, &QAction::triggered, this, &MainWindow::OnLoadMeasurements);
+    connect(ui->actionEditMeasurements, &QAction::triggered, this, &MainWindow::OnEditMeasurements);
+    connect(ui->actionCreateMeasurements, &QAction::triggered, this, &MainWindow::OnNewMeasurements);
     connect(ui->actionExportAs, &QAction::triggered, this, &MainWindow::ExportLayoutAs);
     connect(ui->actionPrintPreview, &QAction::triggered, this, &MainWindow::PrintPreviewOrigin);
     connect(ui->actionPrintPreviewTiled, &QAction::triggered, this, &MainWindow::PrintPreviewTiled);
@@ -4357,6 +4365,83 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
 
         if (not fixedMPath.isEmpty())
         {
+            // Legacy .vst/.vit → offer conversion or replacement with .omt/.otu
+            const QFileInfo fi(fixedMPath);
+            const QString suffix = fi.suffix().toLower();
+            if (suffix == QStringLiteral("vst") || suffix == QStringLiteral("vit"))
+            {
+                const bool isMulti = (suffix == QStringLiteral("vst"));
+                const QString targetExt = isMulti ? QStringLiteral(".omt") : QStringLiteral(".otu");
+
+                QMessageBox msgBox(this);
+                msgBox.setWindowTitle(tr("Legacy measurement file"));
+                msgBox.setText(tr("The pattern is linked to a legacy Tape file:\n\n%1\n\n"
+                                   "Ostara uses .omt/.otu format. Choose how to proceed:")
+                                   .arg(fi.fileName()));
+                auto *convertBtn = msgBox.addButton(tr("Convert this file"), QMessageBox::AcceptRole);
+                auto *replaceBtn = msgBox.addButton(tr("Replace with existing .%1").arg(targetExt),
+                                                     QMessageBox::ActionRole);
+                msgBox.addButton(QMessageBox::Cancel);
+                msgBox.exec();
+
+                QString newPath;
+                if (msgBox.clickedButton() == convertBtn)
+                {
+                    // Open MeasurementWindow for conversion, block until saved
+                    auto *mw = new MeasurementWindow(this);
+                    mw->SetOrigin(MeasurementWorkspace::Origin::FromDraw);
+                    mw->SetModeless(true);
+                    mw->LoadFile(fixedMPath);
+
+                    QString savedPath;
+                    QEventLoop loop;
+                    connect(mw, &MeasurementWindow::measurementsSaved, &loop, [&](const QString &p) {
+                        savedPath = p;
+                        loop.quit();
+                    });
+                    connect(mw, &QObject::destroyed, &loop, &QEventLoop::quit);
+                    mw->setAttribute(Qt::WA_DeleteOnClose);
+                    mw->show();
+                    loop.exec();
+
+                    if (savedPath.isEmpty())
+                    {
+                        VAbstractValApplication::VApp()->setOpeningPattern();
+                        Clear();
+                        return false;
+                    }
+                    newPath = savedPath;
+                }
+                else if (msgBox.clickedButton() == replaceBtn)
+                {
+                    // Open dialog to pick an existing .omt/.otu
+                    DialogOpenMeasurements dlg(this);
+                    if (dlg.exec() != QDialog::Accepted)
+                    {
+                        VAbstractValApplication::VApp()->setOpeningPattern();
+                        Clear();
+                        return false;
+                    }
+                    newPath = dlg.selectedPath();
+                    if (newPath.isEmpty())
+                    {
+                        VAbstractValApplication::VApp()->setOpeningPattern();
+                        Clear();
+                        return false;
+                    }
+                }
+                else
+                {
+                    // Cancel
+                    VAbstractValApplication::VApp()->setOpeningPattern();
+                    Clear();
+                    return false;
+                }
+
+                fixedMPath = newPath;
+                doc->SetMPath(RelativeMPath(fileName, newPath));
+            }
+
             if (not LoadMeasurements(fileName, fixedMPath))
             {
                 qCCritical(vMainWindow, "%s",
@@ -4375,6 +4460,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
             ui->actionUnloadMeasurements->setEnabled(true);
             m_watcher->addPath(fixedMPath);
             ui->actionEditCurrent->setEnabled(true);
+            ui->actionEditMeasurements->setEnabled(true);
         }
 
         if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Unknown)
@@ -5107,7 +5193,7 @@ auto MainWindow::GetMeasurementFileName() -> QString
         return {};
     }
 
-    auto shownName = QStringLiteral(" [");
+    auto shownName = QStringLiteral("  —  ");
     shownName += QFileInfo(AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath())).fileName();
 
     if (m_mChanges)
@@ -5115,7 +5201,6 @@ auto MainWindow::GetMeasurementFileName() -> QString
         shownName += '*'_L1;
     }
 
-    shownName += ']'_L1;
     return shownName;
 }
 

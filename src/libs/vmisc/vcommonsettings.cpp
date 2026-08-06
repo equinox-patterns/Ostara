@@ -98,6 +98,8 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCustomImage, ("paths/custom
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsSVGFonts, ("paths/svgFonts"_L1))                       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsFontCorrections, ("paths/fontCorrections"_L1))         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsKnownMeasurements, ("paths/knownMeasurements"_L1))     // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsMeasurementLibrary, ("paths/measurementLibrary"_L1))   // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingMeasurementFavorites, ("paths/measurementFavorites"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationOsSeparator, ("configuration/osSeparator"_L1)) // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationAutosaveState, ("configuration/autosave/state"_L1))
@@ -168,6 +170,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternUseOpenGLRender, ("patter
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternGraphicalOutput, ("pattern/graphicalOutput"_L1))       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingsPatternTranslateFormula, ("pattern/translateFormula"_L1))    // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGeneralRecentFileList, ("recentFileList"_L1))                 // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGeneralRecentMeasurementFileList, ("recentMeasurementFileList"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGeneralRestoreFileList, ("restoreFileList"_L1))               // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGeneralGeometry, ("geometry"_L1))                             // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGeneralKMGeometry, ("kmGeometry"_L1))                         // NOLINT
@@ -479,6 +482,37 @@ void VCommonSettings::SetPathKnownMeasurements(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetPathMeasurementLibrary() const -> QString
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingPathsMeasurementLibrary,
+                          QDir::homePath() + QStringLiteral("/Ostara/Measurements")).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetPathMeasurementLibrary(const QString &value) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingPathsMeasurementLibrary, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetMeasurementFavorites() const -> QStringList
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingMeasurementFavorites).toStringList();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetMeasurementFavorites(const QStringList &value) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingMeasurementFavorites, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetOsSeparator() const -> bool
 {
     return value(*settingConfigurationOsSeparator, 1).toBool();
@@ -744,6 +778,29 @@ auto VCommonSettings::GetRecentFileList() const -> QStringList
 void VCommonSettings::SetRecentFileList(const QStringList &value)
 {
     setValue(*settingGeneralRecentFileList, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetRecentMeasurementFileList() const -> QStringList
+{
+    const QStringList files = value(*settingGeneralRecentMeasurementFileList).toStringList();
+    QStringList cleared;
+
+    for (const auto &f : files)
+    {
+        if (QFileInfo::exists(f))
+        {
+            cleared.append(f);
+        }
+    }
+
+    return cleared;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetRecentMeasurementFileList(const QStringList &value)
+{
+    setValue(*settingGeneralRecentMeasurementFileList, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

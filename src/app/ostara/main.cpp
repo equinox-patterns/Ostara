@@ -32,6 +32,10 @@
 #include "mainwindow.h"
 #include "StyleGuideWindow.h"
 #include "WelcomeWindow.h"
+#include "dialogs/DialogNewMeasurements.h"
+#include "dialogs/DialogOpenMeasurements.h"
+#include "widgets/MeasurementWorkspace/MeasurementWindow.h"
+#include "widgets/MeasurementWorkspace/MeasurementWorkspace.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
@@ -162,9 +166,32 @@ auto main(int argc, char *argv[]) -> int
         return mw;
     };
 
+    constexpr int MaxRecentMeasurementFiles = 5;
+
     auto showWelcome = [&]() {
         auto *welcome = new WelcomeWindow();
         welcome->setAttribute(Qt::WA_DeleteOnClose);
+
+        // Helper: add a measurement file path to the recent list and refresh the welcome screen.
+        auto addRecentMeasurement = [welcome](const QString &path) {
+            if (path.isEmpty() || !QFileInfo::exists(path))
+            {
+                return;
+            }
+            VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+            QStringList files = settings->GetRecentMeasurementFileList();
+            files.removeAll(path);
+            files.prepend(path);
+            while (files.size() > MaxRecentMeasurementFiles)
+            {
+                files.removeLast();
+            }
+            settings->SetRecentMeasurementFileList(files);
+            // Refresh the welcome screen lists
+            welcome->UpdateRecentItems(
+                VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentFileList(),
+                settings->GetRecentMeasurementFileList());
+        };
 
         // "Nouveau patron"
         QObject::connect(welcome, &WelcomeWindow::NewPatternRequested, [welcome, createMainWindow]() {
@@ -174,14 +201,14 @@ auto main(int argc, char *argv[]) -> int
 
         // "Ouvrir un patron..."
         QObject::connect(welcome, &WelcomeWindow::OpenPatternRequested, [welcome, createMainWindow]() {
-            const QString filter = QObject::tr("Fichiers patron (*.val *.ostara)");
+            const QString filter = QObject::tr("Pattern files (*.val *.ostara)");
             // Start in the folder of the most recently used pattern, like on_actionOpen_triggered().
             const QStringList recentFiles =
                 VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentFileList();
             const QString dir = recentFiles.isEmpty()
                 ? QDir::homePath()
                 : QFileInfo(recentFiles.constFirst()).absolutePath();
-            const QString path = QFileDialog::getOpenFileName(welcome, QObject::tr("Ouvrir un patron"),
+            const QString path = QFileDialog::getOpenFileName(welcome, QObject::tr("Open pattern"),
                                                               dir, filter);
             if (path.isEmpty())
             {
@@ -202,20 +229,78 @@ auto main(int argc, char *argv[]) -> int
             welcome->close();
         });
 
-        // Measurement — placeholder (pas encore implémenté)
-        auto showMeasurementPlaceholder = [welcome]() {
-            QMessageBox::information(welcome,
-                QObject::tr("Fonctionnalité à venir"),
-                QObject::tr("L'éditeur de tableaux de mesures sera disponible "
-                            "dans une prochaine mise à jour."));
-        };
-        QObject::connect(welcome, &WelcomeWindow::NewMeasurementRequested,
-                         welcome, showMeasurementPlaceholder);
-        QObject::connect(welcome, &WelcomeWindow::OpenMeasurementRequested,
-                         welcome, showMeasurementPlaceholder);
+        // Measurement — standalone MeasurementWindow (FromHome)
+        QObject::connect(welcome, &WelcomeWindow::NewMeasurementRequested, [welcome, addRecentMeasurement]() {
+            DialogNewMeasurements dlg(welcome);
+            if (dlg.exec() != QDialog::Accepted)
+            {
+                return;
+            }
+            auto *mw = new MeasurementWindow();
+            mw->SetOrigin(MeasurementWorkspace::Origin::FromHome);
+            mw->setAttribute(Qt::WA_DeleteOnClose);
+            QObject::connect(mw, &MeasurementWindow::measurementsSaved,
+                             addRecentMeasurement);
+            QObject::connect(mw, &QObject::destroyed, [welcome]() {
+                welcome->show();
+            });
+            mw->setGeometry(welcome->geometry());
+            welcome->hide();
+            mw->NewDocument(dlg.MeasurementsType(), dlg.Unit());
+            mw->SetTableName(dlg.TableName());
+            mw->show();
+        });
+
+        QObject::connect(welcome, &WelcomeWindow::OpenMeasurementRequested, [welcome, addRecentMeasurement]() {
+            DialogOpenMeasurements dlg(welcome);
+            if (dlg.exec() != QDialog::Accepted)
+            {
+                return;
+            }
+            const QString path = dlg.selectedPath();
+            if (path.isEmpty())
+            {
+                return;
+            }
+            auto *mw = new MeasurementWindow();
+            mw->SetOrigin(MeasurementWorkspace::Origin::FromHome);
+            mw->setAttribute(Qt::WA_DeleteOnClose);
+            QObject::connect(mw, &MeasurementWindow::measurementsSaved,
+                             addRecentMeasurement);
+            QObject::connect(mw, &QObject::destroyed, [welcome]() {
+                welcome->show();
+            });
+            mw->setGeometry(welcome->geometry());
+            welcome->hide();
+            mw->show();
+            mw->LoadFile(path);
+            // Also add opened legacy files to recent list
+            if (path.endsWith(QStringLiteral(".omt"), Qt::CaseInsensitive)
+                || path.endsWith(QStringLiteral(".otu"), Qt::CaseInsensitive))
+            {
+                addRecentMeasurement(path);
+            }
+        });
+
         QObject::connect(welcome, &WelcomeWindow::OpenRecentMeasurementRequested,
-                         welcome, [showMeasurementPlaceholder](const QString &) {
-            showMeasurementPlaceholder();
+                         [welcome, addRecentMeasurement](const QString &path) {
+            if (path.isEmpty())
+            {
+                return;
+            }
+            auto *mw = new MeasurementWindow();
+            mw->SetOrigin(MeasurementWorkspace::Origin::FromHome);
+            mw->setAttribute(Qt::WA_DeleteOnClose);
+            QObject::connect(mw, &MeasurementWindow::measurementsSaved,
+                             addRecentMeasurement);
+            QObject::connect(mw, &QObject::destroyed, [welcome]() {
+                welcome->show();
+            });
+            mw->setGeometry(welcome->geometry());
+            welcome->hide();
+            mw->show();
+            mw->LoadFile(path);
+            addRecentMeasurement(path);
         });
 
         // Features — modeless style-guide window (dev-only)
@@ -239,7 +324,7 @@ auto main(int argc, char *argv[]) -> int
         // Populate recent-file lists from QSettings.
         welcome->UpdateRecentItems(
             VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentFileList(),
-            QStringList()); // measurement recent files — not implemented yet
+            VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentMeasurementFileList());
 
         welcome->show();
     };

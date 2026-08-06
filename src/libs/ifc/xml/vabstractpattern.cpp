@@ -776,7 +776,7 @@ void VAbstractPattern::SetMPath(const QString &path)
         {
             SetAttribute(domElement, AttrPath, path);
 
-            if (path.endsWith(QStringLiteral(".vit")) || QFileInfo(m_MPath).fileName() != QFileInfo(path).fileName())
+            if (path.endsWith(QStringLiteral(".vit")) || path.endsWith(QStringLiteral(".otu")) || QFileInfo(m_MPath).fileName() != QFileInfo(path).fileName())
             {
                 RemoveDimensions();
             }

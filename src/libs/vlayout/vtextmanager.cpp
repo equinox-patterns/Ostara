@@ -628,7 +628,7 @@ auto PreparePlaceholders(const VPieceLabelInfo &info, const QSet<QString> &uniqu
 
     PrepareDimensionPlaceholders(info, placeholders, uniquePlaceholders);
 
-    AddPlaceholder(pl_mExt, info.measurementsType == MeasurementsType::Multisize ? QStringLiteral("vst")
+    AddPlaceholder(pl_mExt, info.measurementsType == MeasurementsType::Multisize ? QStringLiteral("omt")
                                                                                  : QStringLiteral("vit"));
 
     PrepareUserMaterialsPlaceholders(info, placeholders, uniquePlaceholders);

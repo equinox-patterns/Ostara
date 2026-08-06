@@ -1379,6 +1379,20 @@ auto MainWindowsNoGUI::LoadMeasurements(const QString &patternPath, const QStrin
 //---------------------------------------------------------------------------------------------------------------------
 auto MainWindowsNoGUI::ApplyConverter(const QSharedPointer<VMeasurements> &m, const QString &path) const -> QString
 {
+    // .omt/.otu files are already in the target Ostara format — no conversion needed.
+    // Only legacy .vst/.vit files require format upgrade through the converter.
+    const QDomElement root = m->documentElement();
+    const QString rootTag = root.tagName();
+    if (rootTag == VMeasurements::TagOMT || rootTag == VMeasurements::TagOTU)
+    {
+        // Return the version from the root element attribute (.omt/.otu format)
+        if (root.hasAttribute(QStringLiteral("version")))
+        {
+            return root.attribute(QStringLiteral("version"));
+        }
+        return QStringLiteral("0.1.0");
+    }
+
     std::unique_ptr<VAbstractMConverter> converter;
     if (m->Type() == MeasurementsType::Multisize)
     {
@@ -1437,11 +1451,11 @@ auto MainWindowsNoGUI::SelectNewFile(const QSharedPointer<VMeasurements> &m, QSt
     QString filter;
     if (m->Type() == MeasurementsType::Multisize)
     {
-        filter = tr("Multisize measurements") + " (*.vst);;"_L1 + tr("Individual measurements") + " (*.vit)"_L1;
+        filter = tr("Multisize measurements") + " (*.omt);;"_L1 + tr("Individual measurements") + " (*.otu)"_L1;
     }
     else
     {
-        filter = tr("Individual measurements") + " (*.vit);;"_L1 + tr("Multisize measurements") + " (*.vst)"_L1;
+        filter = tr("Individual measurements") + " (*.otu);;"_L1 + tr("Multisize measurements") + " (*.omt)"_L1;
     }
 
     const QString dirPath = QFileInfo(currentPath).absolutePath();

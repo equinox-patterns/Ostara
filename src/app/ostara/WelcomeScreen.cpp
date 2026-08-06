@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   01/08/2026
  **
- **  @brief  Welcome screen with three sections: Patterns, Measurements, Favorites.
+ **  @brief  Welcome screen with two sections: Patterns, Measurements.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -63,15 +63,30 @@ static auto CreateSection(QWidget *parent, const QString &titleText,
     s.openBtn->setObjectName(QStringLiteral("welcomeOpenBtn"));
     sectionLayout->addWidget(s.openBtn);
 
+    // Spacing above separator
+    sectionLayout->addSpacing(16);
+
+    // Separator (1px, 80% width) — centered via HBoxLayout with stretch
+    auto *sepLayout = new QHBoxLayout();
+    sepLayout->addStretch(1);
+    auto *separator = new QFrame();
+    separator->setObjectName(QStringLiteral("welcomeSeparator"));
+    separator->setFixedHeight(1);
+    sepLayout->addWidget(separator, 8); // 80% = 8/(1+8+1)
+    sepLayout->addStretch(1);
+    sectionLayout->addLayout(sepLayout);
+
+    // Spacing below separator
+    sectionLayout->addSpacing(16);
+
     // Recent list label — styled via QSS (#welcomeRecentLabel)
-    auto *recentLabel = new QLabel(QObject::tr("Récents :"));
+    auto *recentLabel = new QLabel(QObject::tr("Recent:"));
     recentLabel->setObjectName(QStringLiteral("welcomeRecentLabel"));
     sectionLayout->addWidget(recentLabel);
 
     // Recent list — styled via QSS (#welcomeRecentList)
     s.recentList = new QListWidget();
     s.recentList->setObjectName(QStringLiteral("welcomeRecentList"));
-    s.recentList->setMaximumHeight(120);
     s.recentList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     sectionLayout->addWidget(s.recentList, 1);
 
@@ -117,7 +132,7 @@ void WelcomeScreen::CreateHeader()
     mainLayout->addWidget(m_versionLabel);
 
     // Subtitle — styled via QSS (#welcomeSubtitle)
-    m_subtitleLabel = new QLabel(tr("Application de création de patrons de couture"));
+    m_subtitleLabel = new QLabel(tr("Sewing pattern design application"));
     m_subtitleLabel->setObjectName(QStringLiteral("welcomeSubtitle"));
     m_subtitleLabel->setAlignment(Qt::AlignCenter);
     mainLayout->addWidget(m_subtitleLabel);
@@ -132,11 +147,15 @@ void WelcomeScreen::CreateSections()
     auto *sectionsLayout = new QHBoxLayout();
     sectionsLayout->setSpacing(20);
 
+    // Center the two columns: side stretches take 17.5% each,
+    // each section takes 32.5%. Ratio = 7:13:20px:13:7.
+    sectionsLayout->addStretch(7);
+
     // --- Patterns section ---
     m_patternsSection = CreateSection(this,
-        tr("Patrons"),
-        tr("+ Nouveau patron"),
-        tr("Ouvrir un patron..."));
+        tr("Patterns"),
+        tr("+ New pattern"),
+        tr("Open pattern..."));
 
     QObject::connect(m_patternsSection.newBtn, &QPushButton::clicked,
                      this, &WelcomeScreen::NewPatternClicked);
@@ -147,13 +166,13 @@ void WelcomeScreen::CreateSections()
                          emit OpenRecentPattern(item->data(Qt::UserRole).toString());
                      });
 
-    sectionsLayout->addWidget(m_patternsSection.frame, 1);
+    sectionsLayout->addWidget(m_patternsSection.frame, 13);
 
     // --- Measurements section ---
     m_measurementsSection = CreateSection(this,
-        tr("Tableaux de mesures"),
-        tr("+ Nouveau tableau"),
-        tr("Ouvrir un tableau..."));
+        tr("Measurement tables"),
+        tr("+ New table"),
+        tr("Open table..."));
 
     QObject::connect(m_measurementsSection.newBtn, &QPushButton::clicked,
                      this, &WelcomeScreen::NewMeasurementClicked);
@@ -164,25 +183,9 @@ void WelcomeScreen::CreateSections()
                          emit OpenRecentMeasurement(item->data(Qt::UserRole).toString());
                      });
 
-    sectionsLayout->addWidget(m_measurementsSection.frame, 1);
+    sectionsLayout->addWidget(m_measurementsSection.frame, 13);
 
-    // --- Favorites section (placeholder) ---
-    m_favoritesSection = CreateSection(this,
-        tr("⭐ Favoris"),
-        QString(),
-        QString());
-    // Hide buttons for favorites — read-only display for now
-    m_favoritesSection.newBtn->hide();
-    m_favoritesSection.openBtn->hide();
-
-    auto *favPlaceholder = new QLabel(tr("Utilisez l'étoile à côté d'un fichier récent\n"
-                                          "pour l'ajouter aux favoris."));
-    favPlaceholder->setWordWrap(true);
-    favPlaceholder->setObjectName(QStringLiteral("welcomeFavPlaceholder"));
-    auto *favLayout = qobject_cast<QVBoxLayout *>(m_favoritesSection.frame->layout());
-    favLayout->insertWidget(2, favPlaceholder);
-
-    sectionsLayout->addWidget(m_favoritesSection.frame, 1);
+    sectionsLayout->addStretch(7);
 
     mainLayout->addLayout(sectionsLayout, 1);
 
@@ -196,17 +199,15 @@ void WelcomeScreen::CreateSections()
 
 void WelcomeScreen::RetranslateUI()
 {
-    m_subtitleLabel->setText(tr("Application de création de patrons de couture"));
+    m_subtitleLabel->setText(tr("Sewing pattern design application"));
 
-    m_patternsSection.title->setText(tr("Patrons"));
-    m_patternsSection.newBtn->setText(tr("+ Nouveau patron"));
-    m_patternsSection.openBtn->setText(tr("Ouvrir un patron..."));
+    m_patternsSection.title->setText(tr("Patterns"));
+    m_patternsSection.newBtn->setText(tr("+ New pattern"));
+    m_patternsSection.openBtn->setText(tr("Open pattern..."));
 
-    m_measurementsSection.title->setText(tr("Tableaux de mesures"));
-    m_measurementsSection.newBtn->setText(tr("+ Nouveau tableau"));
-    m_measurementsSection.openBtn->setText(tr("Ouvrir un tableau..."));
-
-    m_favoritesSection.title->setText(tr("⭐ Favoris"));
+    m_measurementsSection.title->setText(tr("Measurement tables"));
+    m_measurementsSection.newBtn->setText(tr("+ New table"));
+    m_measurementsSection.openBtn->setText(tr("Open table..."));
 }
 
 void WelcomeScreen::UpdateRecentItems(const QStringList &patternPaths, const QStringList &measurementPaths)

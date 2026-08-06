@@ -486,13 +486,17 @@ auto MainWindow::CheckPathToMeasurements(const QString &patternPath, const QStri
     }
 
     MeasurementsType patternType;
-    if (table.suffix() == "vst"_L1)
+    if (table.suffix() == "omt"_L1 || table.suffix() == "vst"_L1)
     {
         patternType = MeasurementsType::Multisize;
     }
+    else if (table.suffix() == "otu"_L1 || table.suffix() == "vit"_L1)
+    {
+        patternType = MeasurementsType::Individual;
+    }
     else
     {
-        patternType = MeasurementsType::Individual; // or Unknown
+        patternType = MeasurementsType::Unknown;
     }
 
     auto DirPath = [patternPath, table](const QString &defPath, QString &selectedName)
@@ -520,7 +524,7 @@ auto MainWindow::CheckPathToMeasurements(const QString &patternPath, const QStri
     if (patternType == MeasurementsType::Multisize)
     {
         const QString filter =
-            tr("Multisize measurements") + " (*.vst);;"_L1 + tr("Individual measurements") + " (*.vit)"_L1;
+            tr("Multisize measurements") + " (*.omt *.vst);;"_L1 + tr("Individual measurements") + " (*.otu *.vit)"_L1;
         // Use standard path to multisize measurements
         QString selectedName;
         const QString dirPath =
@@ -534,7 +538,7 @@ auto MainWindow::CheckPathToMeasurements(const QString &patternPath, const QStri
     else
     {
         const QString filter =
-            tr("Individual measurements") + " (*.vit);;"_L1 + tr("Multisize measurements") + " (*.vst)"_L1;
+            tr("Individual measurements") + " (*.otu *.vit);;"_L1 + tr("Multisize measurements") + " (*.omt *.vst)"_L1;
         // Use standard path to individual measurements
         QString selectedName;
         const QString dirPath = DirPath(

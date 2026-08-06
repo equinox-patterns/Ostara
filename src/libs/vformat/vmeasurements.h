@@ -157,6 +157,8 @@ public:
 
     static const QString TagVST;
     static const QString TagVIT;
+    static const QString TagOMT;
+    static const QString TagOTU;
     static const QString TagBodyMeasurements;
     static const QString TagNotes;
     static const QString TagPersonal;
@@ -236,6 +238,8 @@ private:
     // Cache data to quick access
     Unit m_units{Unit::LAST_UNIT_DO_NOT_USE};
     VDimensions m_dimensions{};
+    // .omt grid cache: measurement name → size combination (e.g. "152,32") → value
+    QMap<QString, QMap<QString, qreal>> m_gridCache{};
 
     /** @brief m_keepNames store names in container to check uniqueness. */
     bool m_keepNames{true};
@@ -252,6 +256,9 @@ private:
     auto ReadType() const -> MeasurementsType;
     auto ReadUnits() const -> Unit;
     auto ReadDimensions() const -> VDimensions;
+    auto ReadDimensionsFromSizeGroups() const -> VDimensions;
+    void BuildGridCache();
+    auto LookupGridValue(const QString &mName, const QStringList &sizeLabels) const -> qreal;
 
     void WriteCorrections(QDomElement &mElement, const QMap<QString, VMeasurementCorrection> &corrections);
 

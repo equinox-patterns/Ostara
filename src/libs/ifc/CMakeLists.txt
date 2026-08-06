@@ -4,6 +4,7 @@
 set(IFC_SOURCES
     ifcdef.h
     ifcdef.cpp
+    omeasurementtypes.h
 )
 
 # exception/
@@ -68,6 +69,12 @@ set(IFC_XML
     xml/vwatermarkconverter.cpp
     xml/vknownmeasurementsconverter.cpp
     xml/vknownmeasurementsconverter.h
+    xml/oomtdocument.h
+    xml/oomtdocument.cpp
+    xml/ootudocument.h
+    xml/ootudocument.cpp
+    xml/oomtconverter.h
+    xml/oomtconverter.cpp
 )
 
 # QRC

@@ -859,7 +859,7 @@ QWidget#welcomeScreen {
 QLabel#welcomeTitle {
     font-size: 28px;
     font-weight: bold;
-    color: $Accent;
+    color: $Text;
 }
 
 QLabel#welcomeVersion {
@@ -873,14 +873,12 @@ QLabel#welcomeSubtitle {
 }
 
 QFrame#welcomeSection {
-    background-color: $DockBody;
-    border: 1px solid $Border;
-    border-radius: 4px;
+    background-color: transparent;
+    border: none;
 }
 
 QLabel#welcomeSectionTitle {
-    font-size: 13px;
-    font-weight: bold;
+    font-weight: 500;
     color: $Text;
 }
 
@@ -890,7 +888,6 @@ QPushButton#welcomeNewBtn {
     border: 1px solid $Accent;
     border-radius: 2px;
     padding: 6px 16px;
-    font-size: 13px;
 }
 
 QPushButton#welcomeNewBtn:hover {
@@ -904,7 +901,6 @@ QPushButton#welcomeOpenBtn {
     border: 1px solid $Border;
     border-radius: 2px;
     padding: 6px 16px;
-    font-size: 13px;
 }
 
 QPushButton#welcomeOpenBtn:hover {
@@ -914,20 +910,19 @@ QPushButton#welcomeOpenBtn:hover {
 }
 
 QLabel#welcomeRecentLabel {
-    font-size: 13px;
     color: $TextSecondary;
 }
 
 QListWidget#welcomeRecentList {
-    background-color: $InputBg;
+    background-color: $WelcomeListBg;
     color: $Text;
     border: 1px solid $BorderLight;
     border-radius: 2px;
     outline: none;
-    font-size: 13px;
 }
 
 QListWidget#welcomeRecentList::item {
+    background-color: transparent;
     padding: 4px 8px;
 }
 
@@ -941,9 +936,8 @@ QListWidget#welcomeRecentList::item:selected {
     color: $AccentText;
 }
 
-QLabel#welcomeFavPlaceholder {
-    font-size: 13px;
-    color: $TextSecondary;
+QFrame#welcomeSeparator {
+    background-color: $Border;
 }
 
 /* =========================================================================

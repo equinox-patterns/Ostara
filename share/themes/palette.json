@@ -45,7 +45,8 @@
             "TableRowBg": "@Gray100",
             "TableRowAltBg": "@Gray50",
             "TableRowHoverBg": "@AccentLight",
-            "TableRowSelectedBg": "@Accent"
+            "TableRowSelectedBg": "@Accent",
+            "WelcomeListBg": "@Gray200"
         }
     },
     "dark": {
@@ -58,7 +59,7 @@
             "Gray500": "#666666",
             "Gray600": "#4c4c4c",
             "Gray700": "#333333",
-            "Gray800": "#2b2b2b",
+            "Gray800": "#232323",
             "Gray900": "#191919",
             "Gray950": "#0c0c0c",
             "Accent": "#983e60",
@@ -94,7 +95,8 @@
             "TableRowBg": "@Gray900",
             "TableRowAltBg": "@Gray800",
             "TableRowHoverBg": "@AccentLight",
-            "TableRowSelectedBg": "@Accent"
+            "TableRowSelectedBg": "@Accent",
+            "WelcomeListBg": "@Gray900"
         }
     }
 }

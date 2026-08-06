@@ -92,6 +92,12 @@ public:
     auto GetPathKnownMeasurements() const -> QString;
     void SetPathKnownMeasurements(const QString &value);
 
+    auto GetPathMeasurementLibrary() const -> QString;
+    void SetPathMeasurementLibrary(const QString &value) const;
+
+    auto GetMeasurementFavorites() const -> QStringList;
+    void SetMeasurementFavorites(const QStringList &value) const;
+
     auto GetOsSeparator() const -> bool;
     void SetOsSeparator(const bool &value);
 
@@ -147,6 +153,8 @@ public:
 
     auto GetRecentFileList() const -> QStringList;
     void SetRecentFileList(const QStringList &value);
+    auto GetRecentMeasurementFileList() const -> QStringList;
+    void SetRecentMeasurementFileList(const QStringList &value);
 
     auto GetRestoreFileList() const -> QStringList;
     void SetRestoreFileList(const QStringList &value);

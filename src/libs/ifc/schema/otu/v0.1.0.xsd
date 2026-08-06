@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:ox="urn:ostara:otu"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!--
+    Ostara Single-Size Measurements Format v0.1.0
+    Simplified subset of .omt: no size groups, no anchor, no increments, no grid.
+    Each measurement stores a single value.
+    Forward-compatible: unknown elements are preserved.
+  -->
+
+  <!-- ===== ROOT ===== -->
+  <xs:element name="otu">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="unit" type="UnitEnum" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="system" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="measurements" type="MeasurementsType" minOccurs="1" maxOccurs="1"/>
+        <!-- Forward-compat: unknown top-level elements preserved -->
+        <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="version" type="FormatVersion" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ===== MEASUREMENTS ===== -->
+  <xs:complexType name="MeasurementsType">
+    <xs:sequence>
+      <xs:element name="m" minOccurs="1" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="value" type="xs:double" minOccurs="1" maxOccurs="1"/>
+            <!-- Forward-compat per measurement -->
+            <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:attribute name="name" type="MeasurementName" use="required"/>
+          <xs:attribute name="fullName" type="xs:string" use="required"/>
+          <xs:attribute name="description" type="xs:string"/>
+          <xs:attribute name="type" type="MeasurementTypeEnum" default="measurement"/>
+          <xs:attribute name="specialUnits" type="xs:boolean" default="false"/>
+          <xs:attribute name="collapsed" type="xs:boolean" default="false"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ===== SIMPLE TYPES ===== -->
+
+  <xs:simpleType name="FormatVersion">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="UnitEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="mm"/>
+      <xs:enumeration value="cm"/>
+      <xs:enumeration value="inch"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="MeasurementTypeEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="measurement"/>
+      <xs:enumeration value="separator"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Measurement name: must start with @ -->
+  <xs:simpleType name="MeasurementName">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="@[^\p{Zs}*\\/&amp;|!&lt;&gt;^\n\()\-−+.,٫, ٬.'=?:;&quot;]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

@@ -142,6 +142,11 @@
     <addaction name="actionConnectMeasurements"/>
     <addaction name="actionSyncMeasurements"/>
     <addaction name="separator"/>
+    <addaction name="actionLoadMeasurements"/>
+    <addaction name="actionEditMeasurements"/>
+    <addaction name="separator"/>
+    <addaction name="actionCreateMeasurements"/>
+    <addaction name="separator"/>
     <addaction name="actionTable"/>
     <addaction name="separator"/>
     <addaction name="actionFinalMeasurements"/>
@@ -1297,10 +1302,10 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Load Measurements</string>
+    <string>Load Measurements (Tape)</string>
    </property>
    <property name="toolTip">
-    <string>Connect measurements file to pattern</string>
+    <string>Connect measurements file to pattern (legacy Tape)</string>
    </property>
    <property name="shortcut">
     <string notr="true"/>
@@ -1311,10 +1316,10 @@
   </action>
   <action name="actionOpenTape">
    <property name="text">
-    <string>Open Tape</string>
+    <string>Open Tape (Tape)</string>
    </property>
    <property name="toolTip">
-    <string>Open Tape app for creating or editing measurements file</string>
+    <string>Open Tape app for creating or editing measurements file (legacy Tape)</string>
    </property>
    <property name="shortcut">
     <string notr="true"/>
@@ -1328,10 +1333,10 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Edit Current</string>
+    <string>Edit Current (Tape)</string>
    </property>
    <property name="toolTip">
-    <string>Edit linked to the pattern measurements</string>
+    <string>Edit measurements linked to the pattern (legacy Tape)</string>
    </property>
    <property name="shortcut">
     <string notr="true"/>
@@ -1349,10 +1354,10 @@
      <normaloff>:/icon/32x32/syncM.png</normaloff>:/icon/32x32/syncM.png</iconset>
    </property>
    <property name="text">
-    <string>Sync</string>
+    <string>Sync (Tape)</string>
    </property>
    <property name="toolTip">
-    <string>Synchronize linked to the pattern measurements after change</string>
+    <string>Synchronize linked measurements after change (legacy Tape)</string>
    </property>
    <property name="shortcut">
     <string notr="true"/>
@@ -1366,10 +1371,10 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Unload Current</string>
+    <string>Unload Current (Tape)</string>
    </property>
    <property name="toolTip">
-    <string>Unload measurements if they were not used in a pattern file</string>
+    <string>Unload measurements if they were not used in a pattern file (legacy Tape)</string>
    </property>
    <property name="shortcut">
     <string notr="true"/>
@@ -1408,7 +1413,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Final measurements</string>
+    <string>Final Measurements (Tape)</string>
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+I</string>
@@ -1422,7 +1427,52 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Export Final Measurements to CSV</string>
+    <string>Export Final Measurements to CSV (Tape)</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionLoadMeasurements">
+   <property name="text">
+    <string>Load Measurements</string>
+   </property>
+   <property name="toolTip">
+    <string>Load a measurement table (.omt/.otu) and connect it to the pattern</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionEditMeasurements">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Edit Current</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit the measurement table currently loaded in the pattern</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionCreateMeasurements">
+   <property name="text">
+    <string>Create New</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new measurement table</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

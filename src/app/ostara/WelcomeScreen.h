@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   01/08/2026
  **
- **  @brief  Welcome screen with three sections: Patterns, Measurements, Favorites.
+ **  @brief  Welcome screen with two sections: Patterns, Measurements.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -77,7 +77,6 @@ private:
     // Sections
     Section m_patternsSection;
     Section m_measurementsSection;
-    Section m_favoritesSection;
 };
 
 #endif // WELCOMESCREEN_H
