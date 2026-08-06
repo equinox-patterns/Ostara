@@ -135,13 +135,6 @@
     <property name="title">
      <string>Measurements</string>
     </property>
-    <addaction name="actionOpenTape"/>
-    <addaction name="actionEditCurrent"/>
-    <addaction name="separator"/>
-    <addaction name="actionUnloadMeasurements"/>
-    <addaction name="actionConnectMeasurements"/>
-    <addaction name="actionSyncMeasurements"/>
-    <addaction name="separator"/>
     <addaction name="actionLoadMeasurements"/>
     <addaction name="actionEditMeasurements"/>
     <addaction name="separator"/>
@@ -221,7 +214,6 @@
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
-   <addaction name="actionSyncMeasurements"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="toolBarStages">
@@ -1289,92 +1281,6 @@
    </property>
    <property name="toolTip">
     <string>Export original layout</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true"/>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionConnectMeasurements">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Load Measurements (Tape)</string>
-   </property>
-   <property name="toolTip">
-    <string>Connect measurements file to pattern (legacy Tape)</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true"/>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionOpenTape">
-   <property name="text">
-    <string>Open Tape (Tape)</string>
-   </property>
-   <property name="toolTip">
-    <string>Open Tape app for creating or editing measurements file (legacy Tape)</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true"/>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionEditCurrent">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Edit Current (Tape)</string>
-   </property>
-   <property name="toolTip">
-    <string>Edit measurements linked to the pattern (legacy Tape)</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true"/>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionSyncMeasurements">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../libs/vmisc/share/resources/icon.qrc">
-     <normaloff>:/icon/32x32/syncM.png</normaloff>:/icon/32x32/syncM.png</iconset>
-   </property>
-   <property name="text">
-    <string>Sync (Tape)</string>
-   </property>
-   <property name="toolTip">
-    <string>Synchronize linked measurements after change (legacy Tape)</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true"/>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionUnloadMeasurements">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Unload Current (Tape)</string>
-   </property>
-   <property name="toolTip">
-    <string>Unload measurements if they were not used in a pattern file (legacy Tape)</string>
    </property>
    <property name="shortcut">
     <string notr="true"/>

@@ -547,15 +547,6 @@ auto VApplication::notify(QObject *receiver, QEvent *event) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VApplication::TapeFilePath() -> QString
-{
-#ifdef Q_OS_MACOS
-    const auto appName = QStringLiteral("Tape");
-#else
-    const auto appName = QStringLiteral("tape");
-#endif
-    return AppFilePath(appName);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VApplication::PuzzleFilePath() -> QString

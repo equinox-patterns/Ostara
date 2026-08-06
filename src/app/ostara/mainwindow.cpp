@@ -284,7 +284,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui(new Ui::MainWindow),
     m_dialogTable(nullptr),
     m_dialogFMeasurements(nullptr),
-    m_measurementsSyncTimer(new QTimer(this)),
     m_progressBar(new QProgressBar(this)),
     m_statusLabel(new QLabel(this)),
     m_gradation(new QTimer(this))
@@ -349,11 +348,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->listWidget, &QListWidget::currentRowChanged, this, &MainWindow::ShowPaper);
     ui->dockWidgetLayoutPages->setVisible(false);
 
-    connect(m_watcher, &QFileSystemWatcher::fileChanged, this, &MainWindow::MeasurementsChanged);
-
-    m_measurementsSyncTimer->setTimerType(Qt::VeryCoarseTimer);
-    connect(m_measurementsSyncTimer, &QTimer::timeout, this, &MainWindow::MeasurementsSyncTimerTimeout);
-
 #if defined(Q_OS_MAC)
     // On Mac deafault icon size is 32x32.
     ui->toolBarDraws->setIconSize(QSize(24, 24));
@@ -375,9 +369,9 @@ MainWindow::MainWindow(QWidget *parent)
     actionOpenPattern->setMenuRole(QAction::NoRole);
     connect(actionOpenPattern, &QAction::triggered, this, &MainWindow::on_actionOpen_triggered);
 
-    QAction *actionOpenTape = menu->addAction(tr("Create/Edit measurements"));
-    actionOpenTape->setMenuRole(QAction::NoRole);
-    connect(actionOpenTape, &QAction::triggered, this, &MainWindow::CreateMeasurements);
+    QAction *actionNewMeasurement = menu->addAction(tr("Create/Edit measurements"));
+    actionNewMeasurement->setMenuRole(QAction::NoRole);
+    connect(actionNewMeasurement, &QAction::triggered, this, &MainWindow::OnNewMeasurements);
 
     QAction *actionPreferences = menu->addAction(tr("Preferences"));
     actionPreferences->setMenuRole(QAction::NoRole);
@@ -2713,9 +2707,6 @@ void MainWindow::Clear()
     ui->actionShowAccuracyRadius->setEnabled(false);
     ui->actionShowMainPath->setEnabled(false);
     ui->actionBoundaryTogetherWithNotches->setEnabled(false);
-    ui->actionConnectMeasurements->setEnabled(false);
-    ui->actionUnloadMeasurements->setEnabled(false);
-    ui->actionEditCurrent->setEnabled(false);
     ui->actionEditMeasurements->setEnabled(false);
     ui->actionPreviousPatternPiece->setEnabled(false);
     ui->actionNextPatternPiece->setEnabled(false);
@@ -2746,7 +2737,6 @@ void MainWindow::Clear()
     ui->plainTextEditPatternMessages->clear();
     ui->actionLoadWatermark->setEnabled(false);
     ui->actionRemoveWatermark->setEnabled(false);
-    ui->actionEditCurrentWatermark->setEnabled(false);
     PatternChangesWereSaved(true);
 }
 // Extracted: //---------------------------------------------------------------------------------------------------------------------
@@ -2967,8 +2957,6 @@ void MainWindow::SetEnableWidgets(bool enable)
     ui->actionShowAccuracyRadius->setEnabled(enableOnDesignStage);
     ui->actionShowMainPath->setEnabled(enableOnDetailsStage);
     ui->actionBoundaryTogetherWithNotches->setEnabled(enableOnDetailsStage);
-    ui->actionConnectMeasurements->setEnabled(enableOnDesignStage);
-    ui->actionUnloadMeasurements->setEnabled(enableOnDesignStage);
     ui->actionPreviousPatternPiece->setEnabled(enableOnDrawStage);
     ui->actionNextPatternPiece->setEnabled(enableOnDrawStage);
     ui->actionAddBackgroundImage->setEnabled(enableOnDrawStage);
@@ -2983,7 +2971,6 @@ void MainWindow::SetEnableWidgets(bool enable)
 
     ui->actionLoadWatermark->setEnabled(enable);
     ui->actionRemoveWatermark->setEnabled(enable && not doc->GetWatermarkPath().isEmpty());
-    ui->actionEditCurrentWatermark->setEnabled(enable && not doc->GetWatermarkPath().isEmpty());
 
     actionDockWidgetToolOptions->setEnabled(enableOnDesignStage);
     actionDockWidgetGroups->setEnabled(enableOnDesignStage);
@@ -3242,20 +3229,6 @@ void MainWindow::ActionBoundaryTogetherWithNotches_triggered(bool checked)
         }
     }
     QGuiApplication::restoreOverrideCursor();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ActionOpenTape_triggered()
-{
-    QStringList arguments;
-    if (isNoScaling)
-    {
-        arguments.append("--"_L1 + LONG_OPTION_NO_HDPI_SCALING);
-    }
-
-    const QString path = VApplication::TapeFilePath();
-    qDebug("Opening Tape: path = %s.", qUtf8Printable(path));
-    VApplication::StartDetachedProcess(path, arguments);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -4059,9 +4032,6 @@ void MainWindow::CreateActions()
     connect(ui->actionBoundaryTogetherWithNotches, &QAction::triggered, this,
             &MainWindow::ActionBoundaryTogetherWithNotches_triggered);
 
-    connect(ui->actionConnectMeasurements, &QAction::triggered, this, &MainWindow::ConnectMeasurements);
-    connect(ui->actionOpenTape, &QAction::triggered, this, &MainWindow::ActionOpenTape_triggered);
-    connect(ui->actionEditCurrent, &QAction::triggered, this, &MainWindow::ShowMeasurements);
     // Ostara Measurement (not Tape)
     connect(ui->actionLoadMeasurements, &QAction::triggered, this, &MainWindow::OnLoadMeasurements);
     connect(ui->actionEditMeasurements, &QAction::triggered, this, &MainWindow::OnEditMeasurements);
@@ -4092,8 +4062,6 @@ void MainWindow::CreateActions()
                 });
     }
 
-    connect(ui->actionSyncMeasurements, &QAction::triggered, this, &MainWindow::SyncMeasurements);
-    connect(ui->actionUnloadMeasurements, &QAction::triggered, this, &MainWindow::UnloadMeasurements);
 
     connect(ui->actionLabelTemplateEditor, &QAction::triggered, this,
             [this]()
@@ -4103,7 +4071,6 @@ void MainWindow::CreateActions()
             });
 
     connect(ui->actionWatermarkEditor, &QAction::triggered, this, &MainWindow::CreateWatermark);
-    connect(ui->actionEditCurrentWatermark, &QAction::triggered, this, &MainWindow::EditCurrentWatermark);
     connect(ui->actionLoadWatermark, &QAction::triggered, this, &MainWindow::LoadWatermark);
     connect(ui->actionRemoveWatermark, &QAction::triggered, this, &MainWindow::RemoveWatermark);
 }
@@ -4226,11 +4193,8 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
                     arguments.append("--"_L1 + LONG_OPTION_NO_HDPI_SCALING);
                 }
 
-                const QString path = VApplication::TapeFilePath();
-                qDebug("Opening Tape: path = %s.", qUtf8Printable(path));
-                VApplication::StartDetachedProcess(path, arguments);
-                QCoreApplication::exit(V_EX_OK);
-                return false; // stop continue processing
+                // Legacy Tape external launch removed — Ostara handles .vst/.vit internally
+                return false;
             }
         }
         catch (VException &e)
@@ -4257,9 +4221,9 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
             arguments.append("--known"_L1);
         }
 
-        const QString path = VApplication::TapeFilePath();
-        qDebug("Opening Tape: path = %s.", qUtf8Printable(path));
-        VApplication::StartDetachedProcess(path, arguments);
+        const QString puzzlePath = VApplication::PuzzleFilePath();
+        qDebug("Opening Puzzle: path = %s.", qUtf8Printable(puzzlePath));
+        VApplication::StartDetachedProcess(puzzlePath, arguments);
         QCoreApplication::exit(V_EX_OK);
         return false; // stop continue processing
     }
@@ -4457,9 +4421,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
                 return false;
             }
 
-            ui->actionUnloadMeasurements->setEnabled(true);
             m_watcher->addPath(fixedMPath);
-            ui->actionEditCurrent->setEnabled(true);
             ui->actionEditMeasurements->setEnabled(true);
         }
 
@@ -4655,24 +4617,6 @@ void MainWindow::Preferences()
         }
     }
 }
-
-//---------------------------------------------------------------------------------------------------------------------
-#if defined(Q_OS_MAC)
-void MainWindow::CreateMeasurements()
-{
-    const QString tape = VApplication::VApp()->TapeFilePath();
-    const QString workingDirectory = QFileInfo(tape).absoluteDir().absolutePath();
-
-    QStringList arguments;
-    if (isNoScaling)
-    {
-        arguments.append("--"_L1 + LONG_OPTION_NO_HDPI_SCALING);
-    }
-
-    QProcess::startDetached(tape, arguments, workingDirectory);
-}
-#endif
-// Extracted: 
 
 
 // Extracted: 
@@ -5195,11 +5139,6 @@ auto MainWindow::GetMeasurementFileName() -> QString
 
     auto shownName = QStringLiteral("  —  ");
     shownName += QFileInfo(AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath())).fileName();
-
-    if (m_mChanges)
-    {
-        shownName += '*'_L1;
-    }
 
     return shownName;
 }

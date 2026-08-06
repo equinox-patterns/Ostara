@@ -151,9 +151,6 @@ private slots:
     void ToolboxIconSize();
     void ShowPaper(int index);
     void Preferences();
-#if defined(Q_OS_MAC)
-    void CreateMeasurements();
-#endif
     void ExportDrawAs(bool checked);
     void ExportLayoutAs(bool checked);
     void ExportDetailsAs(bool checked);
@@ -241,14 +238,7 @@ private slots:
     void ClosedDialogPlaceLabel(int result);
     void ClosedDialogInsertNode(int result);
 
-    void ConnectMeasurements();
-    void UnloadMeasurements();
-    void ShowMeasurements();
-    void MeasurementsChanged(const QString &path);
-    void SyncMeasurements();
-    void MeasurementsSyncTimerTimeout();
-
-    // Ostara Measurement (not Tape)
+    // Ostara Measurement
     void OnLoadMeasurements();
     void OnEditMeasurements();
     void OnNewMeasurements();
@@ -286,7 +276,6 @@ private slots:
     void ActionFinalMeasurements_triggered();
     void ActionShowMainPath_triggered(bool checked);
     void ActionBoundaryTogetherWithNotches_triggered(bool checked);
-    void ActionOpenTape_triggered();
 
     void UpdateShortcuts();
 
@@ -310,10 +299,6 @@ private:
 
     /** @brief isInitialized true after first show window. */
     bool m_isInitialized{false};
-
-    /** @brief mChanges true if measurement file was changed. */
-    bool m_mChanges{false};
-    bool m_mChangesAsked{true};
 
     bool m_patternReadOnly{false};
 
@@ -340,7 +325,6 @@ private:
     QLabel *m_leftGoToStage{nullptr};
     QLabel *m_rightGoToStage{nullptr};
     QTimer *m_autoSaveTimer{nullptr};
-    QTimer *m_measurementsSyncTimer;
     bool m_guiEnabled{true};
     QPointer<QComboBox> m_dimensionA{nullptr};
     QPointer<QComboBox> m_dimensionB{nullptr};
