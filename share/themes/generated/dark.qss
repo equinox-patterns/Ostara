@@ -3,8 +3,8 @@
 /*     Run: python3 scripts/generate_themes.py share/themes/palette.json            */
 /*          share/themes share/themes/generated                                     */
 /*                                                                                  */
-/* Icons: all indicators are drawn natively by Fusion (no SVG images in QSS).      */
-/* See design-system.md §6 for QScrollArea viewport (C++ workaround, not QSS).     */
+/* Icons: indicators and arrows use SVG images from /icons/ via dark substitution.
+   See design-system.md §6 for QScrollArea viewport (C++ workaround, not QSS). */
 
 /* =========================================================================
    GLOBAL — Police de base (Inter, 15px)
@@ -362,12 +362,34 @@ QSpinBox::up-arrow,
 QDoubleSpinBox::up-arrow {
     width: 8px;
     height: 8px;
+    image: url(:/icons/dark/caret-up_dark.svg);
+}
+
+QSpinBox::up-arrow:hover,
+QDoubleSpinBox::up-arrow:hover {
+    image: url(:/icons/dark/caret-up_accent.svg);
+}
+
+QSpinBox::up-arrow:disabled,
+QDoubleSpinBox::up-arrow:disabled {
+    image: url(:/icons/dark/caret-up_disabled.svg);
 }
 
 QSpinBox::down-arrow,
 QDoubleSpinBox::down-arrow {
     width: 8px;
     height: 8px;
+    image: url(:/icons/dark/caret-down_dark.svg);
+}
+
+QSpinBox::down-arrow:hover,
+QDoubleSpinBox::down-arrow:hover {
+    image: url(:/icons/dark/caret-down_accent.svg);
+}
+
+QSpinBox::down-arrow:disabled,
+QDoubleSpinBox::down-arrow:disabled {
+    image: url(:/icons/dark/caret-down_disabled.svg);
 }
 
 /* =========================================================================
@@ -410,6 +432,15 @@ QComboBox::drop-down {
 QComboBox::down-arrow {
     width: 12px;
     height: 12px;
+    image: url(:/icons/dark/caret-down_dark.svg);
+}
+
+QComboBox::down-arrow:hover {
+    image: url(:/icons/dark/caret-down_accent.svg);
+}
+
+QComboBox::down-arrow:disabled {
+    image: url(:/icons/dark/caret-down_disabled.svg);
 }
 
 /* Popup list */
@@ -498,7 +529,7 @@ QHeaderView::section:hover {
 
 /* =========================================================================
    QCheckBox / QRadioButton
-   Design: indicators drawn natively by Fusion — no SVG images
+   Design: SVG indicators from /icons/dark/
    ========================================================================= */
 
 QCheckBox,
@@ -517,9 +548,41 @@ QCheckBox::indicator {
     height: 16px;
 }
 
+QCheckBox::indicator:unchecked {
+    image: url(:/icons/dark/square_accent.svg);
+}
+
+QCheckBox::indicator:checked {
+    image: url(:/icons/dark/square-logo-fill_accent.svg);
+}
+
+QCheckBox::indicator:unchecked:disabled {
+    image: url(:/icons/dark/square_disabled.svg);
+}
+
+QCheckBox::indicator:checked:disabled {
+    image: url(:/icons/dark/square-logo-fill_disabled.svg);
+}
+
 QRadioButton::indicator {
     width: 16px;
     height: 16px;
+}
+
+QRadioButton::indicator:unchecked {
+    image: url(:/icons/dark/circle_accent.svg);
+}
+
+QRadioButton::indicator:checked {
+    image: url(:/icons/dark/radio-button-fill_accent.svg);
+}
+
+QRadioButton::indicator:unchecked:disabled {
+    image: url(:/icons/dark/circle_disabled.svg);
+}
+
+QRadioButton::indicator:checked:disabled {
+    image: url(:/icons/dark/radio-button-fill_disabled.svg);
 }
 
 /* =========================================================================
@@ -580,7 +643,6 @@ QGroupBox {
 }
 
 QGroupBox::title {
-    subcontrol-origin: margin;
     subcontrol-position: top center;
     padding: 0 8px;
     color: #e5e5e5;
@@ -798,6 +860,17 @@ QDateEdit::drop-down {
 }
 
 QDateEdit::down-arrow {
+    width: 12px;
+    height: 12px;
+    image: url(:/icons/dark/caret-down_dark.svg);
+}
+
+QDateEdit::down-arrow:hover {
+    image: url(:/icons/dark/caret-down_accent.svg);
+}
+
+QDateEdit::down-arrow:disabled {
+    image: url(:/icons/dark/caret-down_disabled.svg);
 }
 
 /* =========================================================================
@@ -830,6 +903,17 @@ QFontComboBox::drop-down {
 }
 
 QFontComboBox::down-arrow {
+    width: 12px;
+    height: 12px;
+    image: url(:/icons/dark/caret-down_dark.svg);
+}
+
+QFontComboBox::down-arrow:hover {
+    image: url(:/icons/dark/caret-down_accent.svg);
+}
+
+QFontComboBox::down-arrow:disabled {
+    image: url(:/icons/dark/caret-down_disabled.svg);
 }
 
 /* =========================================================================

@@ -26,8 +26,7 @@
  *************************************************************************/
 
 #include "DialogManageMeasurements.h"
-#include "widgets/OPhosphorFont.h"
-#include "widgets/PhosphorIconButton.h"
+#include "vtheme.h"
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
 #include "widgets/MeasurementWorkspace/MeasurementLibraryScanner.h"
@@ -44,10 +43,61 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QStyledItemDelegate>
 #include <QTableWidget>
 #include <QTableWidgetItem>
+#include <QTimer>
 #include <QUrl>
 #include <QVBoxLayout>
+
+namespace
+{
+    auto IconResPath(const QString &baseName, bool dark) -> QString
+    {
+        return QStringLiteral(":/icons/%1/%2_%1.svg")
+            .arg(dark ? QStringLiteral("dark") : QStringLiteral("light"), baseName);
+    }
+
+    auto AccentIconPath(const QString &baseName, bool dark) -> QString
+    {
+        return QStringLiteral(":/icons/%1/%2_accent.svg")
+            .arg(dark ? QStringLiteral("dark") : QStringLiteral("light"), baseName);
+    }
+} // anonymous namespace
+
+/// Delegate for icon-only cells: centers the icon, uses dark variant on hover/selected.
+class IconDelegate : public QStyledItemDelegate
+{
+public:
+    using QStyledItemDelegate::QStyledItemDelegate;
+
+    void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const override
+    {
+        QStyledItemDelegate::initStyleOption(option, index);
+        option->icon = QIcon(); // Prevent base paint() from drawing the icon left-aligned
+    }
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+               const QModelIndex &index) const override
+    {
+        QStyledItemDelegate::paint(painter, option, index);
+
+        QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
+        if (icon.isNull()) return;
+
+        QIcon::Mode mode = QIcon::Normal;
+        if (option.state & (QStyle::State_Selected | QStyle::State_MouseOver))
+            mode = QIcon::Selected;
+
+        QSize iconSize(20, 20);
+        QPoint center = option.rect.center();
+        QRect iconRect(center.x() - iconSize.width() / 2,
+                       center.y() - iconSize.height() / 2,
+                       iconSize.width(), iconSize.height());
+
+        icon.paint(painter, iconRect, Qt::AlignCenter, mode);
+    }
+};
 
 // --------------------------------------------------------------------------
 // Constructor / Destructor
@@ -86,13 +136,12 @@ void DialogManageMeasurements::SetupUI()
     auto *searchRow = new QHBoxLayout();
     searchRow->setSpacing(8);
 
-    auto *searchIcon = new QLabel(QString(OPhosphorFont::codepoint("magnifying-glass")));
-    searchIcon->setFont(OPhosphorFont::font(OPhosphorFont::Regular, 14));
-    searchRow->addWidget(searchIcon);
-
     m_searchEdit = new QLineEdit();
     m_searchEdit->setPlaceholderText(tr("Search tables…"));
     m_searchEdit->setClearButtonEnabled(true);
+    bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
+    m_searchEdit->addAction(QIcon(IconResPath(QStringLiteral("magnifying-glass"), dark)),
+                            QLineEdit::LeadingPosition);
     connect(m_searchEdit, &QLineEdit::textChanged, this, &DialogManageMeasurements::OnSearchChanged);
     searchRow->addWidget(m_searchEdit, 1);
 
@@ -101,21 +150,30 @@ void DialogManageMeasurements::SetupUI()
     // --- Table ---
     m_table = new QTableWidget();
     m_table->setObjectName(QStringLiteral("measurementTable"));
-    m_table->setColumnCount(5);
+    m_table->setColumnCount(7);
     m_table->setHorizontalHeaderLabels({
         QString(),                     // Column 0: star
         tr("Name"),                    // Column 1: file name
-        tr("Creation date"),           // Column 2: creation date
-        tr("Modification date"),       // Column 3: modification date
-        tr("Actions")                  // Column 4: action buttons
+        tr("Created"),                 // Column 2: creation date
+        tr("Modified"),                // Column 3: modification date
+        QString(),                     // Column 4: edit
+        QString(),                     // Column 5: export
+        QString()                      // Column 6: delete
     });
 
     m_table->setColumnWidth(0, 44);
     m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
     m_table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
-    m_table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Fixed);
-    m_table->setColumnWidth(4, 148);
+    m_table->setColumnWidth(4, 44);
+    m_table->setColumnWidth(5, 44);
+    m_table->setColumnWidth(6, 44);
+
+    m_table->setIconSize(QSize(20, 20));
+    m_table->setItemDelegateForColumn(0, new IconDelegate(this));
+    m_table->setItemDelegateForColumn(4, new IconDelegate(this));
+    m_table->setItemDelegateForColumn(5, new IconDelegate(this));
+    m_table->setItemDelegateForColumn(6, new IconDelegate(this));
 
     m_table->verticalHeader()->hide();
     m_table->verticalHeader()->setDefaultSectionSize(36);
@@ -125,6 +183,72 @@ void DialogManageMeasurements::SetupUI()
 
     connect(m_table, &QTableWidget::cellDoubleClicked,
             this, &DialogManageMeasurements::OnDoubleClick);
+    connect(m_table, &QTableWidget::cellClicked,
+            this, [this](int row, int col){
+        if (row < 0 || row >= m_entries.size()) return;
+        const QString &path = m_entries.at(row).filePath;
+        switch (col)
+        {
+        case 0: // Star — toggle favorite
+            if (m_favorites.contains(path))
+                m_favorites.removeAll(path);
+            else
+                m_favorites.append(path);
+            VAbstractApplication::VApp()->Settings()->SetMeasurementFavorites(m_favorites);
+            QTimer::singleShot(0, this, &DialogManageMeasurements::RefreshData);
+            break;
+        case 4: // Edit
+            m_selectedPath = path;
+            accept();
+            break;
+        case 5: // Export
+        {
+            QFileInfo fi(path);
+            QString ext = fi.suffix();
+            QString name = fi.completeBaseName();
+            QString dstPath = QFileDialog::getSaveFileName(this,
+                tr("Export \"%1\"").arg(name),
+                QDir::homePath() + QDir::separator() + name + QStringLiteral(".") + ext,
+                tr("Ostara files (*.%1);;All files (*)").arg(ext));
+            if (!dstPath.isEmpty())
+            {
+                if (QFile::copy(path, dstPath))
+                    QMessageBox::information(this, tr("Export successful"),
+                        tr("File exported to:\n%1").arg(dstPath));
+                else
+                    QMessageBox::warning(this, tr("Export error"),
+                        tr("Could not copy file to the selected destination."));
+            }
+            break;
+        }
+        case 6: // Delete
+        {
+            auto result = QMessageBox::question(this, tr("Confirm deletion"),
+                tr("Are you sure you want to delete \"%1\"?\n\n"
+                   "This action cannot be undone.").arg(m_entries.at(row).displayName),
+                QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+            if (result == QMessageBox::Yes)
+            {
+                if (QFile::remove(path))
+                {
+                    if (m_favorites.contains(path))
+                    {
+                        m_favorites.removeAll(path);
+                        VAbstractApplication::VApp()->Settings()->SetMeasurementFavorites(m_favorites);
+                    }
+                    QTimer::singleShot(0, this, &DialogManageMeasurements::RefreshData);
+                }
+                else
+                {
+                    QMessageBox::warning(this, tr("Error"), tr("Could not delete the file."));
+                }
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    });
 
     mainLayout->addWidget(m_table, 1);
 
@@ -172,6 +296,7 @@ void DialogManageMeasurements::RefreshData()
 
 void DialogManageMeasurements::PopulateTable()
 {
+    bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
     m_table->setRowCount(0);
     m_table->setRowCount(static_cast<int>(m_entries.size()));
 
@@ -180,29 +305,27 @@ void DialogManageMeasurements::PopulateTable()
         const LibraryFileEntry &entry = m_entries.at(i);
 
         // --- Column 0: Star (favorite toggle) ---
-        auto *starBtn = new QPushButton();
-        starBtn->setObjectName(QStringLiteral("phosphorIconBtn"));
-        starBtn->setCursor(Qt::PointingHandCursor);
-        starBtn->setAutoDefault(false);
-        starBtn->setFlat(true);
-        starBtn->setProperty("filePath", entry.filePath);
-        starBtn->setProperty("isFavorite", entry.isFavorite);
-
-        // Font: Fill for favorited, Regular for not
-        OPhosphorFont::Style starStyle = entry.isFavorite
-            ? OPhosphorFont::Fill : OPhosphorFont::Regular;
-        QFont f = OPhosphorFont::font(starStyle);
-        f.setPixelSize(20);
-        starBtn->setFont(f);
-        starBtn->setText(QString(OPhosphorFont::codepoint("star")));
-
-        starBtn->setToolTip(entry.isFavorite
-            ? tr("Remove from favorites")
-            : tr("Add to favorites"));
-
-        connect(starBtn, &QPushButton::clicked,
-                this, &DialogManageMeasurements::OnToggleFavorite);
-        m_table->setCellWidget(i, 0, starBtn);
+        {
+            QIcon starIcon;
+            if (entry.isFavorite)
+            {
+                starIcon.addFile(AccentIconPath(QStringLiteral("star-fill"), dark),
+                                 QSize(), QIcon::Normal);
+                starIcon.addFile(IconResPath(QStringLiteral("star-fill"), true),
+                                 QSize(), QIcon::Selected);
+            }
+            else
+            {
+                starIcon.addFile(AccentIconPath(QStringLiteral("star"), dark),
+                                 QSize(), QIcon::Normal);
+                starIcon.addFile(IconResPath(QStringLiteral("star"), true),
+                                 QSize(), QIcon::Selected);
+            }
+            auto *starItem = new QTableWidgetItem(starIcon, QString());
+            starItem->setToolTip(entry.isFavorite
+                ? tr("Remove from favorites") : tr("Add to favorites"));
+            m_table->setItem(i, 0, starItem);
+        }
 
         // --- Column 1: Name ---
         auto *nameItem = new QTableWidgetItem(entry.displayName);
@@ -212,7 +335,7 @@ void DialogManageMeasurements::PopulateTable()
         // --- Column 2: Creation date ---
         QString createdStr = entry.created.isValid()
             ? entry.created.toString(QStringLiteral("dd/MM/yyyy HH:mm"))
-            : QStringLiteral("—"); // em dash
+            : QStringLiteral("—");
         m_table->setItem(i, 2, new QTableWidgetItem(createdStr));
 
         // --- Column 3: Modification date ---
@@ -221,86 +344,41 @@ void DialogManageMeasurements::PopulateTable()
             : QStringLiteral("—");
         m_table->setItem(i, 3, new QTableWidgetItem(modifiedStr));
 
-        // --- Column 4: Action buttons ---
-        auto *actionWidget = new QWidget();
-        auto *actionLayout = new QHBoxLayout(actionWidget);
-        actionLayout->setSpacing(4);
-        actionLayout->setContentsMargins(4, 0, 4, 0);
+        // --- Column 4: Edit ---
+        {
+            QIcon editIcon;
+            editIcon.addFile(IconResPath(QStringLiteral("gear-six"), dark),
+                             QSize(), QIcon::Normal);
+            editIcon.addFile(IconResPath(QStringLiteral("gear-six"), true),
+                             QSize(), QIcon::Selected);
+            auto *editItem = new QTableWidgetItem(editIcon, QString());
+            editItem->setToolTip(tr("Edit"));
+            m_table->setItem(i, 4, editItem);
+        }
 
-        // Modifier
-        auto *editBtn = new PhosphorIconButton(QStringLiteral("gear"));
-        editBtn->setToolTip(tr("Edit"));
-        editBtn->setHoverStyle(OPhosphorFont::Fill);
-        connect(editBtn, &QPushButton::clicked, this, [this, path = entry.filePath]() {
-            m_selectedPath = path;
-            accept();
-        });
-        actionLayout->addWidget(editBtn);
+        // --- Column 5: Export ---
+        {
+            QIcon exportIcon;
+            exportIcon.addFile(IconResPath(QStringLiteral("floppy-disk"), dark),
+                               QSize(), QIcon::Normal);
+            exportIcon.addFile(IconResPath(QStringLiteral("floppy-disk"), true),
+                               QSize(), QIcon::Selected);
+            auto *exportItem = new QTableWidgetItem(exportIcon, QString());
+            exportItem->setToolTip(tr("Export"));
+            m_table->setItem(i, 5, exportItem);
+        }
 
-        // Exporter
-        auto *exportBtn = new PhosphorIconButton(QStringLiteral("export"));
-        exportBtn->setToolTip(tr("Export"));
-        exportBtn->setHoverStyle(OPhosphorFont::Fill);
-        connect(exportBtn, &QPushButton::clicked, this, [this, path = entry.filePath]() {
-            QFileInfo fi(path);
-            QString ext = fi.suffix();
-            QString name = fi.completeBaseName();
-            QString dstPath = QFileDialog::getSaveFileName(this,
-                tr("Export \"%1\"").arg(name),
-                QDir::homePath() + QDir::separator() + name + QStringLiteral(".") + ext,
-                tr("Ostara files (*.%1);;All files (*)").arg(ext));
-
-            if (dstPath.isEmpty()) return;
-
-            if (QFile::copy(path, dstPath))
-            {
-                QMessageBox::information(this,
-                    tr("Export successful"),
-                    tr("File exported to:\n%1").arg(dstPath));
-            }
-            else
-            {
-                QMessageBox::warning(this,
-                    tr("Export error"),
-                    tr("Could not copy file to the selected destination."));
-            }
-        });
-        actionLayout->addWidget(exportBtn);
-
-        // Supprimer
-        auto *delBtn = new PhosphorIconButton(QStringLiteral("trash"));
-        delBtn->setToolTip(tr("Delete"));
-        delBtn->setHoverStyle(OPhosphorFont::Fill);
-        connect(delBtn, &QPushButton::clicked, this, [this, path = entry.filePath, name = entry.displayName]() {
-            auto result = QMessageBox::question(this,
-                tr("Confirm deletion"),
-                tr("Are you sure you want to delete \"%1\"?\n\n"
-                   "This action cannot be undone.").arg(name),
-                QMessageBox::Yes | QMessageBox::No,
-                QMessageBox::No);
-
-            if (result != QMessageBox::Yes) return;
-
-            if (QFile::remove(path))
-            {
-                if (m_favorites.contains(path))
-                {
-                    m_favorites.removeAll(path);
-                    VAbstractApplication::VApp()->Settings()->SetMeasurementFavorites(m_favorites);
-                }
-                RefreshData();
-            }
-            else
-            {
-                QMessageBox::warning(this,
-                    tr("Error"),
-                    tr("Could not delete the file."));
-            }
-        });
-        actionLayout->addWidget(delBtn);
-
-        actionLayout->addStretch();
-        m_table->setCellWidget(i, 4, actionWidget);
+        // --- Column 6: Delete ---
+        {
+            QIcon deleteIcon;
+            deleteIcon.addFile(IconResPath(QStringLiteral("trash"), dark),
+                               QSize(), QIcon::Normal);
+            deleteIcon.addFile(IconResPath(QStringLiteral("trash"), true),
+                               QSize(), QIcon::Selected);
+            auto *deleteItem = new QTableWidgetItem(deleteIcon, QString());
+            deleteItem->setToolTip(tr("Delete"));
+            m_table->setItem(i, 6, deleteItem);
+        }
     }
 }
 
@@ -320,27 +398,6 @@ void DialogManageMeasurements::OnDoubleClick(int row, int /*column*/)
         m_selectedPath = m_entries.at(row).filePath;
         accept();
     }
-}
-
-void DialogManageMeasurements::OnToggleFavorite()
-{
-    auto *btn = qobject_cast<QPushButton *>(sender());
-    if (!btn) return;
-
-    const QString path = btn->property("filePath").toString();
-    if (path.isEmpty()) return;
-
-    if (m_favorites.contains(path))
-    {
-        m_favorites.removeAll(path);
-    }
-    else
-    {
-        m_favorites.append(path);
-    }
-
-    VAbstractApplication::VApp()->Settings()->SetMeasurementFavorites(m_favorites);
-    RefreshData();
 }
 
 void DialogManageMeasurements::OnOpenFolder()

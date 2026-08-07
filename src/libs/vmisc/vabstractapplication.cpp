@@ -96,7 +96,7 @@ auto LoadTranslationFromResource(QTranslator *translator, const QString &locale)
     QStringList filtered;
     for (const auto &candidate : candidates)
     {
-        if (not candidate.startsWith("ru"_L1) && not candidate.startsWith("ir"_L1))
+        if (not candidate.startsWith("en"_L1) && not candidate.startsWith("ru"_L1) && not candidate.startsWith("ir"_L1))
         {
             filtered.append(candidate);
         }
@@ -385,21 +385,21 @@ void VAbstractApplication::WinAttachConsole()
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractApplication::LoadTranslation(QString locale)
 {
-    if (locale.startsWith("ru"_L1) || locale.startsWith("ir"_L1))
+    if (locale.startsWith("en"_L1) || locale.startsWith("ru"_L1) || locale.startsWith("ir"_L1))
     {
         locale = QString();
     }
 
+    ClearTranslation();
+
     if (locale.isEmpty())
     {
-        qDebug() << "Default locale";
-    }
-    else
-    {
-        qDebug() << "Checked locale:" << locale;
+        qDebug() << "Default locale (English — no translation needed)";
+        InitTrVars(); // Must still be called — initializes m_trVars
+        return;
     }
 
-    ClearTranslation();
+    qDebug() << "Checked locale:" << locale;
 
     // Translations are embedded in the binary via qt_add_translations
     // with MERGE_QT_TRANSLATIONS — Qt translations are already fused

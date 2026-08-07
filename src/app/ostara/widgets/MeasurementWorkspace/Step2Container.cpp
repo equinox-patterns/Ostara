@@ -29,7 +29,7 @@
 #include "MeasurementDetailPanel.h"
 #include "MeasurementLibraryScanner.h"
 #include "dialogues/DialogImportStructure.h"
-#include "widgets/OPhosphorFont.h"
+#include "vtheme.h"
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
 
@@ -50,12 +50,61 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
+namespace
+{
+    auto IconResPath(const QString &baseName, bool dark) -> QString
+    {
+        return QStringLiteral(":/icons/%1/%2_%1.svg")
+            .arg(dark ? QStringLiteral("dark") : QStringLiteral("light"), baseName);
+    }
+
+    auto MakeToolIcon(const QString &baseName, bool dark) -> QIcon
+    {
+        return QIcon(IconResPath(baseName, dark));
+    }
+
+    auto MakeDisabledIcon(const QString &baseName, bool dark) -> QIcon
+    {
+        return QIcon(QStringLiteral(":/icons/%1/%2_disabled.svg")
+                         .arg(dark ? QStringLiteral("dark") : QStringLiteral("light"), baseName));
+    }
+} // anonymous namespace
+
 // ===== Constructor =====
 
 Step2Container::Step2Container(QWidget *parent)
     : QWidget(parent)
 {
     SetupUI();
+}
+
+bool Step2Container::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::Enter)
+    {
+        auto *btn = qobject_cast<QPushButton *>(obj);
+        if (btn && btn->isEnabled() && btn->property("hoverIcon").isValid())
+        {
+            btn->setIcon(btn->property("hoverIcon").value<QIcon>());
+        }
+    }
+    else if (event->type() == QEvent::Leave)
+    {
+        auto *btn = qobject_cast<QPushButton *>(obj);
+        if (btn && btn->property("normalIcon").isValid())
+        {
+            // When disabled, restore the disabled icon, not the normal one
+            if (btn->isEnabled())
+            {
+                btn->setIcon(btn->property("normalIcon").value<QIcon>());
+            }
+            else if (btn->property("disabledIcon").isValid())
+            {
+                btn->setIcon(btn->property("disabledIcon").value<QIcon>());
+            }
+        }
+    }
+    return QWidget::eventFilter(obj, event);
 }
 
 void Step2Container::SetupUI()
@@ -94,9 +143,19 @@ void Step2Container::SetupUI()
     auto *buttonLayout = new QHBoxLayout();
     buttonLayout->setSpacing(8);
 
-    // Import button — same pattern as Supprimer: QPushButton with Phosphor codepoint in text
-    m_importBtn = new QPushButton(OPhosphorFont::codepoint("download")
-                                  + QStringLiteral("  ") + tr("Import from table"));
+    bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
+
+    // Import button — SVG icon + hover (light → dark variant)
+    {
+        QIcon normalIcon = MakeToolIcon(QStringLiteral("download"), dark);
+        QIcon hoverIcon = dark ? normalIcon : MakeToolIcon(QStringLiteral("download"), true);
+        m_importBtn = new QPushButton(tr("Import from table"));
+        m_importBtn->setIcon(normalIcon);
+        m_importBtn->setIconSize(QSize(20, 20));
+        m_importBtn->setProperty("normalIcon", QVariant::fromValue(normalIcon));
+        m_importBtn->setProperty("hoverIcon", QVariant::fromValue(hoverIcon));
+        m_importBtn->installEventFilter(this);
+    }
     connect(m_importBtn, &QPushButton::clicked, this, &Step2Container::OnImportStructure);
     buttonLayout->addWidget(m_importBtn);
 
@@ -115,9 +174,20 @@ void Step2Container::SetupUI()
     connect(m_groupBtn, &QPushButton::clicked, this, &Step2Container::OnAddGroup);
     buttonLayout->addWidget(m_groupBtn);
 
-    m_deleteBtn = new QPushButton(OPhosphorFont::codepoint("trash")
-                                  + QStringLiteral("  ") + tr("Delete"));
-    m_deleteBtn->setEnabled(false);
+    // Delete button — SVG icon + hover (light → dark variant), disabled icon when inactive
+    {
+        QIcon normalIcon = MakeToolIcon(QStringLiteral("trash"), dark);
+        QIcon hoverIcon = dark ? normalIcon : MakeToolIcon(QStringLiteral("trash"), true);
+        QIcon disabledIcon = MakeDisabledIcon(QStringLiteral("trash"), dark);
+        m_deleteBtn = new QPushButton(tr("Delete"));
+        m_deleteBtn->setIcon(disabledIcon); // disabled by default
+        m_deleteBtn->setIconSize(QSize(20, 20));
+        m_deleteBtn->setProperty("normalIcon", QVariant::fromValue(normalIcon));
+        m_deleteBtn->setProperty("hoverIcon", QVariant::fromValue(hoverIcon));
+        m_deleteBtn->setProperty("disabledIcon", QVariant::fromValue(disabledIcon));
+        m_deleteBtn->installEventFilter(this);
+        m_deleteBtn->setEnabled(false);
+    }
     connect(m_deleteBtn, &QPushButton::clicked, this, &Step2Container::OnDeleteMeasurement);
     buttonLayout->addWidget(m_deleteBtn);
 
@@ -156,17 +226,7 @@ void Step2Container::SetupUI()
     auto *searchEdit = new QLineEdit();
     searchEdit->setPlaceholderText(tr("Search measurements…"));
     searchEdit->setClearButtonEnabled(true);
-
-    // Render the Phosphor glyph into a QIcon for the leading action
-    QPixmap pix(20, 20);
-    pix.fill(Qt::transparent);
-    {
-        QPainter p(&pix);
-        p.setFont(OPhosphorFont::font(OPhosphorFont::Regular, 14));
-        p.setPen(searchEdit->palette().color(QPalette::Text));
-        p.drawText(pix.rect(), Qt::AlignCenter, QString(OPhosphorFont::codepoint("magnifying-glass")));
-    }
-    searchEdit->addAction(QIcon(pix), QLineEdit::LeadingPosition);
+    searchEdit->addAction(MakeToolIcon(QStringLiteral("magnifying-glass"), dark), QLineEdit::LeadingPosition);
 
     connect(searchEdit, &QLineEdit::textChanged, m_tablePanel, &MeasurementTablePanel::SetFilter);
     mainLayout->addWidget(searchEdit);
@@ -640,6 +700,15 @@ void Step2Container::UpdateButtonStates()
     bool hasSelection = (row >= 0);
 
     m_deleteBtn->setEnabled(hasSelection);
+    if (hasSelection && m_deleteBtn->property("normalIcon").isValid())
+    {
+        m_deleteBtn->setIcon(m_deleteBtn->property("normalIcon").value<QIcon>());
+    }
+    else if (!hasSelection && m_deleteBtn->property("disabledIcon").isValid())
+    {
+        m_deleteBtn->setIcon(m_deleteBtn->property("disabledIcon").value<QIcon>());
+    }
+
     m_upBtn->setEnabled(hasSelection && row > 0);
     m_downBtn->setEnabled(hasSelection && row < count - 1);
 

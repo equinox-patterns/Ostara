@@ -30,7 +30,7 @@
 #include "dialogues/DialogSaveMeasurements.h"
 #include "xml/oomtdocument.h"
 #include "xml/ootudocument.h"
-#include "widgets/OPhosphorFont.h"
+#include "vtheme.h"
 
 #include <QDir>
 #include <QEvent>
@@ -48,6 +48,20 @@
 
 #include "vcommonsettings.h"
 #include "vabstractapplication.h"
+
+namespace
+{
+    auto IconResPath(const QString &baseName, bool dark) -> QString
+    {
+        return QStringLiteral(":/icons/%1/%2_%1.svg")
+            .arg(dark ? QStringLiteral("dark") : QStringLiteral("light"), baseName);
+    }
+
+    auto MakeToolIcon(const QString &baseName, bool dark) -> QIcon
+    {
+        return QIcon(IconResPath(baseName, dark));
+    }
+} // anonymous namespace
 
 MeasurementWorkspace::MeasurementWorkspace(QWidget *parent)
     : QWidget(parent)
@@ -103,64 +117,34 @@ void MeasurementWorkspace::SetupUI()
 
     titleBar->addStretch();
 
-    // Toolbar — menu-style buttons (QToolButton: icon QPixmap + text below)
+    // Toolbar — icon-only buttons with tooltips (SVG icons from QRC)
     // QToolButton avoids QPushButton's child-widget QSS limitations.
 
-    auto makeIconPixmap = [](const QString &iconName, OPhosphorFont::Style style,
-                              int size, const QColor &color) -> QPixmap
+    auto makeToolBtn = [&](const QString &baseName, const QString &tooltip) -> QToolButton *
     {
-        QPixmap pix(size, size);
-        pix.fill(Qt::transparent);
-        QPainter p(&pix);
-        QFont f = OPhosphorFont::font(style);
-        f.setPixelSize(size);
-        p.setFont(f);
-        p.setPen(color);
-        p.drawText(QRect(0, 0, size, size), Qt::AlignCenter,
-                   QString(OPhosphorFont::codepoint(iconName)));
-        p.end();
-        return pix;
-    };
+        bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
 
-    auto makeMenuBtn = [&](const QString &iconName, OPhosphorFont::Style style,
-                            const QString &label) -> QToolButton *
-    {
         auto *btn = new QToolButton();
-        btn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-        btn->setText(label);
+        btn->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        btn->setToolTip(tooltip);
         btn->setObjectName(QStringLiteral("menuBtn"));
         btn->setAutoRaise(true);
         btn->setCursor(Qt::PointingHandCursor);
-        btn->setIconSize(QSize(21, 21));
-        btn->setMinimumWidth(80);
-
-        // Read the current palette for the correct text color (gris_600)
-        QColor normalColor = qApp->palette().color(QPalette::WindowText);
-        QColor accentColor = qApp->palette().color(QPalette::Highlight);
-
-        QIcon normalIcon(makeIconPixmap(iconName, style, 21, normalColor));
-        QIcon hoverIcon(makeIconPixmap(iconName, style, 21, accentColor));
-
-        btn->setIcon(normalIcon);
-        btn->setProperty("normalIcon", QVariant::fromValue(normalIcon));
-        btn->setProperty("hoverIcon", QVariant::fromValue(hoverIcon));
-        btn->installEventFilter(this);
+        btn->setIconSize(QSize(24, 24));
+        btn->setIcon(MakeToolIcon(baseName, dark));
 
         return btn;
     };
 
-    m_saveBtn = makeMenuBtn(QStringLiteral("floppy-disk"), OPhosphorFont::Regular,
-                            tr("Save"));
+    m_saveBtn = makeToolBtn(QStringLiteral("floppy-disk"), tr("Save"));
     connect(m_saveBtn, &QToolButton::clicked, this, &MeasurementWorkspace::OnSave);
     titleBar->addWidget(m_saveBtn);
 
-    m_saveAsBtn = makeMenuBtn(QStringLiteral("floppy-disk"), OPhosphorFont::Regular,
-                              tr("Save As…"));
+    m_saveAsBtn = makeToolBtn(QStringLiteral("file-arrow-up"), tr("Save As…"));
     connect(m_saveAsBtn, &QToolButton::clicked, this, &MeasurementWorkspace::OnSaveAs);
     titleBar->addWidget(m_saveAsBtn);
 
-    m_closeBtn = makeMenuBtn(QStringLiteral("house"), OPhosphorFont::Fill,
-                             tr("Home"));
+    m_closeBtn = makeToolBtn(QStringLiteral("house-fill"), tr("Home"));
     connect(m_closeBtn, &QToolButton::clicked, this, &MeasurementWorkspace::OnClose);
     titleBar->addWidget(m_closeBtn);
 
@@ -380,17 +364,17 @@ void MeasurementWorkspace::OnSaveAs()
 void MeasurementWorkspace::SetOrigin(Origin origin)
 {
     m_origin = origin;
-    if (origin == Origin::FromDraw)
+    bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
+
+    if (origin == Origin::FromHome)
     {
-        m_closeBtn->setText(tr("Back to pattern"));
+        m_closeBtn->setIcon(MakeToolIcon(QStringLiteral("house-fill"), dark));
+        m_closeBtn->setToolTip(tr("Home"));
     }
-    else if (origin == Origin::FromWindow)
+    else // FromDraw or FromWindow
     {
-        m_closeBtn->setText(tr("Close"));
-    }
-    else
-    {
-        m_closeBtn->setText(tr("Home"));
+        m_closeBtn->setIcon(MakeToolIcon(QStringLiteral("x"), dark));
+        m_closeBtn->setToolTip(tr("Close"));
     }
 }
 

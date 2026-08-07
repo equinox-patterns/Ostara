@@ -26,8 +26,7 @@
 
 #include "DialogRangeGroups.h"
 #include "MeasurementTablePanel.h" // for MeasurementRecord, RangeGroup, RangeDef
-#include "widgets/PhosphorIconButton.h"
-#include "widgets/OPhosphorFont.h"
+#include "vtheme.h"
 
 #include <QComboBox>
 #include <QListView>
@@ -39,8 +38,54 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QStyledItemDelegate>
 #include <QTableWidget>
 #include <QVBoxLayout>
+
+namespace
+{
+    auto IconResPath(const QString &baseName, bool dark) -> QString
+    {
+        return QStringLiteral(":/icons/%1/%2_%1.svg")
+            .arg(dark ? QStringLiteral("dark") : QStringLiteral("light"), baseName);
+    }
+} // anonymous namespace
+
+/// Delegate for icon-only cells: centers the icon, uses dark variant on hover/selected.
+class IconDelegate : public QStyledItemDelegate
+{
+public:
+    using QStyledItemDelegate::QStyledItemDelegate;
+
+    void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const override
+    {
+        QStyledItemDelegate::initStyleOption(option, index);
+        option->icon = QIcon(); // Prevent base paint() from drawing the icon left-aligned
+    }
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+               const QModelIndex &index) const override
+    {
+        // Draw background and text (QSS hover/selected) — icon is null so base won't draw it
+        QStyledItemDelegate::paint(painter, option, index);
+
+        // Draw icon centered, using dark variant on hover or selected
+        QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
+        if (icon.isNull()) return;
+
+        QIcon::Mode mode = QIcon::Normal;
+        if (option.state & (QStyle::State_Selected | QStyle::State_MouseOver))
+            mode = QIcon::Selected;
+
+        QSize iconSize(20, 20);
+        QPoint center = option.rect.center();
+        QRect iconRect(center.x() - iconSize.width() / 2,
+                       center.y() - iconSize.height() / 2,
+                       iconSize.width(), iconSize.height());
+
+        icon.paint(painter, iconRect, Qt::AlignCenter, mode);
+    }
+};
 
 // ===== Constructor =====
 
@@ -54,7 +99,7 @@ DialogRangeGroups::DialogRangeGroups(const QString &axisGroupName,
     , m_groups(groups)
 {
     setWindowTitle(tr("Range groups for \"%1\"").arg(axisGroupName));
-    setMinimumSize(550, 550);
+    setMinimumSize(750, 550);
     SetupUI();
     RefreshGroupTable();
 }
@@ -82,6 +127,14 @@ void DialogRangeGroups::SetupUI()
     m_groupTable->verticalHeader()->hide();
     m_groupTable->verticalHeader()->setDefaultSectionSize(36);
     m_groupTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_groupTable->setAlternatingRowColors(true);
+    m_groupTable->setIconSize(QSize(20, 20));
+    m_groupTable->setItemDelegateForColumn(2, new IconDelegate(this));
+    m_groupTable->setItemDelegateForColumn(3, new IconDelegate(this));
+    connect(m_groupTable, &QTableWidget::cellClicked, this, [this](int row, int col){
+        if (col == 2) OnEditGroup(row);
+        else if (col == 3) OnDeleteGroup(row);
+    });
     mainLayout->addWidget(m_groupTable, 1);
 
     // Create button
@@ -101,7 +154,7 @@ void DialogRangeGroups::SetupUI()
     nameRow->addWidget(m_nameEdit, 1);
     editLayout->addLayout(nameRow);
 
-    // Ranges mini-table
+    // Ranges mini-table (combo cells — no selection, no hover)
     m_rangesTable = new QTableWidget(0, 2);
     m_rangesTable->setObjectName(QStringLiteral("rangeGroupTable"));
     m_rangesTable->setHorizontalHeaderLabels({tr("From"), tr("To")});
@@ -109,6 +162,9 @@ void DialogRangeGroups::SetupUI()
     m_rangesTable->verticalHeader()->hide();
     m_rangesTable->verticalHeader()->setDefaultSectionSize(32);
     m_rangesTable->setMinimumHeight(120);
+    m_rangesTable->setSelectionMode(QAbstractItemView::NoSelection);
+    m_rangesTable->setStyleSheet(QStringLiteral(
+        "QTableWidget::item:hover { background: none; }"));
     editLayout->addWidget(m_rangesTable);
 
     m_addRangeBtn = new QPushButton(tr("+ Add range"));
@@ -140,6 +196,7 @@ void DialogRangeGroups::SetupUI()
 
 void DialogRangeGroups::RefreshGroupTable()
 {
+    bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
     m_groupTable->setRowCount(static_cast<int>(m_groups.size()));
     for (int i = 0; i < static_cast<int>(m_groups.size()); ++i)
     {
@@ -158,19 +215,23 @@ void DialogRangeGroups::RefreshGroupTable()
         rangesItem->setFlags(rangesItem->flags() & ~Qt::ItemIsEditable);
         m_groupTable->setItem(i, 1, rangesItem);
 
-        // Edit button — gear Regular, accent on hover (QSS)
-        auto *editBtn = new PhosphorIconButton(QStringLiteral("gear"));
-        editBtn->setToolTip(tr("Edit"));
-        int row = i;
-        connect(editBtn, &QPushButton::clicked, this, [this, row](){ OnEditGroup(row); });
-        m_groupTable->setCellWidget(i, 2, editBtn);
+        // Edit icon — gear-six, QIcon::Selected = dark variant for accent bg
+        QIcon editIcon;
+        editIcon.addFile(IconResPath(QStringLiteral("gear-six"), dark), QSize(), QIcon::Normal);
+        editIcon.addFile(IconResPath(QStringLiteral("gear-six"), true), QSize(), QIcon::Selected);
+        auto *editItem = new QTableWidgetItem(editIcon, QString());
+        editItem->setFlags(editItem->flags() & ~Qt::ItemIsEditable);
+        editItem->setToolTip(tr("Edit"));
+        m_groupTable->setItem(i, 2, editItem);
 
-        // Delete button — trash Regular / Fill + accent on hover
-        auto *delBtn = new PhosphorIconButton(QStringLiteral("trash"));
-        delBtn->setToolTip(tr("Delete"));
-        delBtn->setHoverStyle(OPhosphorFont::Fill);
-        connect(delBtn, &QPushButton::clicked, this, [this, row](){ OnDeleteGroup(row); });
-        m_groupTable->setCellWidget(i, 3, delBtn);
+        // Delete icon — trash, QIcon::Selected = dark variant for accent bg
+        QIcon deleteIcon;
+        deleteIcon.addFile(IconResPath(QStringLiteral("trash"), dark), QSize(), QIcon::Normal);
+        deleteIcon.addFile(IconResPath(QStringLiteral("trash"), true), QSize(), QIcon::Selected);
+        auto *deleteItem = new QTableWidgetItem(deleteIcon, QString());
+        deleteItem->setFlags(deleteItem->flags() & ~Qt::ItemIsEditable);
+        deleteItem->setToolTip(tr("Delete"));
+        m_groupTable->setItem(i, 3, deleteItem);
         }
     }
 

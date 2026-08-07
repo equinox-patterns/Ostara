@@ -55,7 +55,6 @@ public:
 private slots:
     void OnSearchChanged(const QString &text);
     void OnDoubleClick(int row, int column);
-    void OnToggleFavorite();
     void OnOpenFolder();
 
 private:

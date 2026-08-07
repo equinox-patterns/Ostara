@@ -107,6 +107,7 @@ private:
     void UpdateButtonStates();
     void RebuildSizeSelectors();
     void RecomputeTableValues();
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
     // Hint label (updated based on solo/multi mode)
     QLabel *m_hintLabel{nullptr};
