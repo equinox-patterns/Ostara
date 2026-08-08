@@ -27,6 +27,7 @@
  *************************************************************************/
 
 #include "mainwindow.h"
+#include "widgets/DrawToolBar.h"
 
 #include <QAction>
 #include <QComboBox>
@@ -315,7 +316,61 @@ MainWindow::MainWindow(QWidget *parent)
     ToolBarDraws();
     ToolBarPenOptions();
     ToolBarStages();
-    ToolBarDrawTools();
+    m_drawToolBar = new DrawToolBar(this);
+    addDockWidget(Qt::LeftDockWidgetArea, m_drawToolBar);
+    m_drawToolBar->RestoreSavedWidth();
+    m_drawToolBar->SetActions({
+        {QStringLiteral("arrow_cursor"),                  ui->actionToolSelect},
+        {QStringLiteral("segment"),                      ui->actionEndLineTool},
+        {QStringLiteral("along_line"),                   ui->actionAlongLineTool},
+        {QStringLiteral("midpoint"),                     ui->actionMidpointTool},
+        {QStringLiteral("normal"),                       ui->actionNormalTool},
+        {QStringLiteral("bisector"),                     ui->actionBisectorTool},
+        {QStringLiteral("height"),                       ui->actionHeightTool},
+        {QStringLiteral("point_of_intersection"),        ui->actionPointOfIntersectionTool},
+        {QStringLiteral("intersect"),                    ui->actionLineIntersectTool},
+        {QStringLiteral("shoulder"),                     ui->actionShoulderPointTool},
+        {QStringLiteral("triangle"),                     ui->actionTriangleTool},
+        {QStringLiteral("line_intersect_axis"),          ui->actionLineIntersectAxisTool},
+        {QStringLiteral("curve_intersect_axis"),         ui->actionCurveIntersectAxisTool},
+        {QStringLiteral("arc_intersect_axis"),           ui->actionArcIntersectAxisTool},
+        {QStringLiteral("spline_cut_point"),             ui->actionSplineCutPointTool},
+        {QStringLiteral("splinePath_cut_point"),         ui->actionSplinePathCutPointTool},
+        {QStringLiteral("arc_cut"),                      ui->actionArcCutPointTool},
+        {QStringLiteral("arc_start"),                    ui->actionArcStartPointTool},
+        {QStringLiteral("arc_end"),                      ui->actionArcEndPointTool},
+        {QStringLiteral("intersection_curves"),          ui->actionIntersectionCurvesTool},
+        {QStringLiteral("point_of_intersection_arcs"),   ui->actionPointOfIntersectionArcsTool},
+        {QStringLiteral("point_of_intersection_circles"),ui->actionPointOfIntersectionCirclesTool},
+        {QStringLiteral("point_from_arc_and_tangent"),   ui->actionPointFromArcAndTangentTool},
+        {QStringLiteral("point_from_circle_and_tangent"),ui->actionPointFromCircleAndTangentTool},
+        {QStringLiteral("point_of_contact"),             ui->actionPointOfContactTool},
+        {QStringLiteral("line"),                         ui->actionLineTool},
+        {QStringLiteral("spline"),                       ui->actionSplineTool},
+        {QStringLiteral("cubic_bezier"),                 ui->actionCubicBezierTool},
+        {QStringLiteral("splinePath"),                   ui->actionSplinePathTool},
+        {QStringLiteral("cubic_bezier_path"),            ui->actionCubicBezierPathTool},
+        {QStringLiteral("arc"),                          ui->actionArcTool},
+        {QStringLiteral("arc_with_length"),              ui->actionArcWithLengthTool},
+        {QStringLiteral("el_arc"),                       ui->actionEllipticalArcTool},
+        {QStringLiteral("el_arc_with_length"),           ui->actionEllipticalArcWithLengthTool},
+        {QStringLiteral("parallel_curve"),               ui->actionParallelCurveTool},
+        {QStringLiteral("graduated_curve_offseting"),    ui->actionGraduatedCurveTool},
+        {QStringLiteral("group_plus"),                   ui->actionGroupTool},
+        {QStringLiteral("flipping_axis"),                ui->actionFlippingByAxisTool},
+        {QStringLiteral("flipping_line"),                ui->actionFlippingByLineTool},
+        {QStringLiteral("rotation"),                     ui->actionRotationTool},
+        {QStringLiteral("move"),                         ui->actionMoveTool},
+        {QStringLiteral("true_darts"),                   ui->actionTrueDartsTool},
+        {QStringLiteral("new_detail"),                   ui->actionNewDetailTool},
+        {QStringLiteral("path"),                         ui->actionInternalPathTool},
+        {QStringLiteral("pin"),                          ui->actionPinTool},
+        {QStringLiteral("insert_node"),                  ui->actionInsertNodeTool},
+        {QStringLiteral("place_label"),                  ui->actionPlaceLabelTool},
+        {QStringLiteral("union"),                        ui->actionUnionDetailsTool},
+        {QStringLiteral("duplicate_detail"),             ui->actionDuplicateDetailTool},
+        {QStringLiteral("detail_export"),                ui->actionDetailExportAs},
+    });
     InitToolButtons();
     InitActionShortcuts();
 
@@ -927,7 +982,7 @@ void MainWindow::changeEvent(QEvent *event)
 
         if (VApplication::VApp()->ValentinaSettings()->IsUseToolGroups())
         {
-            ToolBarDrawTools();
+            m_drawToolBar->SetMode(VApplication::VApp()->GetDrawMode());
         }
 
         UpdateWindowTitle();
@@ -940,11 +995,6 @@ void MainWindow::changeEvent(QEvent *event)
         const QString storedName = GetColorComboCurrentName(m_colorCombo);
         InitColorCombo(m_colorCombo);
         SetColorComboCurrentName(m_colorCombo, storedName);
-    }
-
-    if (event->type() == QEvent::PaletteChange)
-    {
-        SetupDrawToolsIcons();
     }
 
     if (event->type() == QEvent::ThemeChange)
@@ -2011,6 +2061,7 @@ void MainWindow::ActionDraw(bool checked)
 
         SetEnableTool(true);
         SetEnableWidgets(true);
+        m_drawToolBar->SetMode(Draw::Calculation);
 
         if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
         {
@@ -2094,6 +2145,7 @@ void MainWindow::ActionDetails(bool checked)
         VAbstractValApplication::VApp()->SetDrawMode(Draw::Modeling);
         SetEnableTool(true);
         SetEnableWidgets(true);
+        m_drawToolBar->SetMode(Draw::Modeling);
 
         if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
         {
@@ -2211,6 +2263,7 @@ void MainWindow::ActionLayout(bool checked)
     VAbstractValApplication::VApp()->SetDrawMode(Draw::Layout);
     SetEnableTool(true);
     SetEnableWidgets(true);
+    m_drawToolBar->SetMode(Draw::Layout);
 
     if (not m_mouseCoordinate.isNull())
     {
@@ -4563,12 +4616,11 @@ void MainWindow::ToolboxIconSize()
         bar->setIconSize(size);
     };
 
-    SetIconSize(ui->toolBarCurveTools);
-    SetIconSize(ui->toolBarDetailTools);
-    SetIconSize(ui->toolBarLineTools);
-    SetIconSize(ui->toolBarOperationTools);
-    SetIconSize(ui->toolBarPointTools);
-    SetIconSize(ui->toolBarSelectingTools);
+    SetIconSize(ui->toolBarDraws);
+    SetIconSize(ui->toolBarPenOptions);
+    SetIconSize(ui->toolBarStages);
+    SetIconSize(ui->toolBarTools);
+    SetIconSize(ui->mainToolBar);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -4603,7 +4655,6 @@ void MainWindow::Preferences()
                 &VToolOptionsPropertyBrowser::RefreshOptions);
         connect(dlg.data(), &DialogPreferences::UpdateProperties, this, &MainWindow::ToolBarStyles);
         connect(dlg.data(), &DialogPreferences::UpdateProperties, this, &MainWindow::ToolboxIconSize);
-        connect(dlg.data(), &DialogPreferences::UpdateProperties, this, &MainWindow::ToolBarDrawTools);
         connect(dlg.data(), &DialogPreferences::UpdateProperties, this, [this]() { emit doc->FullUpdateFromFile(); });
         connect(dlg.data(), &DialogPreferences::UpdateProperties, this, [this]() { emit doc->CheckLayout(); });
         connect(dlg.data(), &DialogPreferences::UpdateProperties, ui->view,

@@ -61,6 +61,7 @@ class Quuid;
 class VBackgroundImageItem;
 class VBackgroundImageControls;
 class VWidgetBackgroundImages;
+class DrawToolBar;
 
 /**
  * @brief The MainWindow class main windows.
@@ -311,6 +312,8 @@ private:
     QComboBox *m_comboBoxDraws{nullptr};
     QLabel *m_patternPieceLabel{nullptr};
 
+    DrawToolBar *m_drawToolBar{nullptr};
+
     QComboBox *m_comboBoxPenStyle{nullptr};
     QLabel *m_globalPenStyleLabel{nullptr};
 
@@ -383,12 +386,10 @@ private:
     void ToolBarDraws();
     void ToolBarPenOptions();
     void ToolBarTools();
-    void ToolBarDrawTools();
     void InitToolButtons();
     void InitActionShortcuts();
     void CancelTool();
 
-    void SetupDrawToolsIcons();
 
     void SetEnableWidgets(bool enable);
     void SetEnableTool(bool enable);

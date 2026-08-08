@@ -11,6 +11,7 @@ set(OSTARA_QRC
     share/resources/toolcursor.qrc
     share/resources/toolicon.qrc
     share/resources/fonts.qrc
+    share/resources/drawtool_icons.qrc
 )
 
 qt_add_executable(Ostara

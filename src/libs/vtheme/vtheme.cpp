@@ -75,42 +75,42 @@ void ApplyOstaraPalette(bool dark)
     if (dark)
     {
         // ── Dark palette (from palette.json dark semantique) ──
-        p.setColor(QPalette::Window,          QColor(0x28, 0x28, 0x2C)); // Gray800
-        p.setColor(QPalette::WindowText,      QColor(0xFA, 0xFA, 0xFA)); // Gray50
-        p.setColor(QPalette::Base,            QColor(0x28, 0x28, 0x2C)); // Gray800
-        p.setColor(QPalette::AlternateBase,   QColor(0x28, 0x28, 0x2C)); // Gray800
-        p.setColor(QPalette::Text,            QColor(0xFA, 0xFA, 0xFA)); // Gray50
-        p.setColor(QPalette::Button,          QColor(0x40, 0x40, 0x44)); // Gray700
-        p.setColor(QPalette::ButtonText,      QColor(0xFA, 0xFA, 0xFA)); // Gray50
-        p.setColor(QPalette::ToolTipBase,     QColor(0x28, 0x28, 0x2C)); // Gray800
-        p.setColor(QPalette::ToolTipText,     QColor(0xFA, 0xFA, 0xFA)); // Gray50
+        p.setColor(QPalette::Window,          QColor(0x23, 0x23, 0x23)); // Gray800 = Window
+        p.setColor(QPalette::WindowText,      QColor(0xE5, 0xE5, 0xE5)); // Gray200 = Text
+        p.setColor(QPalette::Base,            QColor(0x19, 0x19, 0x19)); // Gray900 = InputBg
+        p.setColor(QPalette::AlternateBase,   QColor(0x23, 0x23, 0x23)); // Gray800 = TableRowAltBg
+        p.setColor(QPalette::Text,            QColor(0xE5, 0xE5, 0xE5)); // Gray200 = Text
+        p.setColor(QPalette::Button,          QColor(0x23, 0x23, 0x23)); // Gray800 = Window
+        p.setColor(QPalette::ButtonText,      QColor(0xE5, 0xE5, 0xE5)); // Gray200 = Text
+        p.setColor(QPalette::ToolTipBase,     QColor(0x23, 0x23, 0x23)); // Gray800 = Window
+        p.setColor(QPalette::ToolTipText,     QColor(0xE5, 0xE5, 0xE5)); // Gray200 = Text
         p.setColor(QPalette::Highlight,       QColor(0x98, 0x3E, 0x60)); // Accent
-        p.setColor(QPalette::HighlightedText, QColor(0xFA, 0xFA, 0xFA)); // Gray50
-        p.setColor(QPalette::Light,           QColor(0x54, 0x54, 0x59)); // Gray600
-        p.setColor(QPalette::Midlight,        QColor(0x40, 0x40, 0x44)); // Gray700
-        p.setColor(QPalette::Mid,             QColor(0x54, 0x54, 0x59)); // Gray600
-        p.setColor(QPalette::Dark,            QColor(0x71, 0x71, 0x7A)); // Gray500
-        p.setColor(QPalette::Shadow,          QColor(0x1E, 0x1E, 0x22)); // Gray900
+        p.setColor(QPalette::HighlightedText, QColor(0xE5, 0xE5, 0xE5)); // Gray200 = AccentText
+        p.setColor(QPalette::Light,           QColor(0x4C, 0x4C, 0x4C)); // Gray600 = BorderLight
+        p.setColor(QPalette::Midlight,        QColor(0x33, 0x33, 0x33)); // Gray700 = Border
+        p.setColor(QPalette::Mid,             QColor(0x33, 0x33, 0x33)); // Gray700 = Border
+        p.setColor(QPalette::Dark,            QColor(0x19, 0x19, 0x19)); // Gray900
+        p.setColor(QPalette::Shadow,          QColor(0x0C, 0x0C, 0x0C)); // Gray950
     }
     else
     {
         // ── Light palette (from palette.json light semantique) ──
-        p.setColor(QPalette::Window,          QColor(0xFA, 0xFA, 0xFA)); // Gray50
-        p.setColor(QPalette::WindowText,      QColor(0x27, 0x27, 0x2A)); // Gray800
-        p.setColor(QPalette::Base,            QColor(0xFA, 0xFA, 0xFA)); // Gray50
-        p.setColor(QPalette::AlternateBase,   QColor(0xFA, 0xFA, 0xFA)); // Gray50
-        p.setColor(QPalette::Text,            QColor(0x27, 0x27, 0x2A)); // Gray800
-        p.setColor(QPalette::Button,          QColor(0xF4, 0xF4, 0xF5)); // Gray100
-        p.setColor(QPalette::ButtonText,      QColor(0x27, 0x27, 0x2A)); // Gray800
-        p.setColor(QPalette::ToolTipBase,     QColor(0xFA, 0xFA, 0xFA)); // Gray50
-        p.setColor(QPalette::ToolTipText,     QColor(0x27, 0x27, 0x2A)); // Gray800
+        p.setColor(QPalette::Window,          QColor(0xF9, 0xF9, 0xF9)); // Gray50 = Window
+        p.setColor(QPalette::WindowText,      QColor(0x2B, 0x2B, 0x2B)); // Gray800 = Text
+        p.setColor(QPalette::Base,            QColor(0xF9, 0xF9, 0xF9)); // Gray50 = InputBg
+        p.setColor(QPalette::AlternateBase,   QColor(0xF9, 0xF9, 0xF9)); // Gray50 = TableRowAltBg
+        p.setColor(QPalette::Text,            QColor(0x2B, 0x2B, 0x2B)); // Gray800 = Text
+        p.setColor(QPalette::Button,          QColor(0xF4, 0xF4, 0xF4)); // Gray100
+        p.setColor(QPalette::ButtonText,      QColor(0x2B, 0x2B, 0x2B)); // Gray800 = Text
+        p.setColor(QPalette::ToolTipBase,     QColor(0xF9, 0xF9, 0xF9)); // Gray50 = Window
+        p.setColor(QPalette::ToolTipText,     QColor(0x2B, 0x2B, 0x2B)); // Gray800 = Text
         p.setColor(QPalette::Highlight,       QColor(0x8C, 0x45, 0x60)); // Accent
-        p.setColor(QPalette::HighlightedText, QColor(0xFA, 0xFA, 0xFA)); // Gray50
-        p.setColor(QPalette::Light,           QColor(0xF4, 0xF4, 0xF5)); // Gray100
-        p.setColor(QPalette::Midlight,        QColor(0xE4, 0xE4, 0xE7)); // Gray200
-        p.setColor(QPalette::Mid,             QColor(0xD4, 0xD4, 0xD8)); // Gray300
-        p.setColor(QPalette::Dark,            QColor(0xA1, 0xA1, 0xAA)); // Gray400
-        p.setColor(QPalette::Shadow,          QColor(0x72, 0x72, 0x79)); // Gray500
+        p.setColor(QPalette::HighlightedText, QColor(0xE5, 0xE5, 0xE5)); // Gray200 = AccentText
+        p.setColor(QPalette::Light,           QColor(0xE5, 0xE5, 0xE5)); // Gray200 = BorderLight
+        p.setColor(QPalette::Midlight,        QColor(0xD6, 0xD6, 0xD6)); // Gray300 = Border
+        p.setColor(QPalette::Mid,             QColor(0xD6, 0xD6, 0xD6)); // Gray300 = Border
+        p.setColor(QPalette::Dark,            QColor(0x4C, 0x4C, 0x4C)); // Gray600
+        p.setColor(QPalette::Shadow,          QColor(0x0C, 0x0C, 0x0C)); // Gray950
     }
 
     qApp->setPalette(p); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
