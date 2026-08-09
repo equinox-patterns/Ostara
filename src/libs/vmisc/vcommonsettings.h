@@ -361,6 +361,7 @@ public:
 
     auto GetActionShortcuts(const QString &name, const QStringList &defaultShortcuts) -> QStringList;
     void SetActionShortcuts(const QString &name, const QStringList &shortcuts) const;
+    void RemoveActionShortcuts(const QString &name) const;
 
     auto GetCrashEmail() const -> QString;
     void SetCrashEmail(const QString &value) const;

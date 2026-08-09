@@ -293,8 +293,23 @@ auto PreferencesConfigurationPage::Apply() -> QStringList
         const auto &shortcutsList = manager->GetShortcutsList();
         for (int i = 0; i < m_transientShortcuts.length(); i++)
         {
-            settings->SetActionShortcuts(VAbstractShortcutManager::ShortcutActionToString(shortcutsList.value(i).type),
-                                         m_transientShortcuts.value(i));
+            const QStringList &current = m_transientShortcuts.value(i);
+            const QStringList &defaults = shortcutsList.value(i).defaultShortcuts;
+
+            // Only persist shortcuts that differ from code defaults.
+            // When a default changes (e.g. Cmd+W → Cmd+D for DrawMode), the old
+            // persisted value must not lock the user to the stale shortcut.
+            if (current != defaults)
+            {
+                settings->SetActionShortcuts(
+                    VAbstractShortcutManager::ShortcutActionToString(shortcutsList.value(i).type), current);
+            }
+            else
+            {
+                // Remove any stale persisted value so the code default applies.
+                settings->RemoveActionShortcuts(
+                    VAbstractShortcutManager::ShortcutActionToString(shortcutsList.value(i).type));
+            }
         }
 
         manager->UpdateShortcuts();

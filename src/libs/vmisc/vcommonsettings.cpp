@@ -1840,6 +1840,15 @@ void VCommonSettings::SetActionShortcuts(const QString &name, const QStringList 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::RemoveActionShortcuts(const QString &name) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.beginGroup("shortcuts"_L1);
+    settings.remove(name);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetCrashEmail() const -> QString
 {
     QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
