@@ -120,6 +120,8 @@ signals:
     void ShowSplineSegmentLabel(bool show);
     void ShowSplinePathSegmentLabel(bool show);
 
+    void patternClosed();
+
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void showEvent(QShowEvent *event) override;
@@ -212,6 +214,7 @@ private slots:
     void ActionLayout(bool checked);
 
     void on_actionNew_triggered();
+    bool hasOpenPattern() const;
     bool on_actionSaveAs_triggered(); // NOLINT(modernize-use-trailing-return-type)
     bool on_actionSave_triggered();   // NOLINT(modernize-use-trailing-return-type)
     void on_actionOpen_triggered();
@@ -231,6 +234,7 @@ private slots:
      * It supports TrueType (.ttf), OpenType (.otf), and SVG (.svg) font formats.
      */
     void ActionInstallSingleLineFont();
+    void SetupDrawToolsIcons();
 
     void ClosedDialogUnionDetails(int result);
     void ClosedDialogDuplicateDetail(int result);

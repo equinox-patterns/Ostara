@@ -155,6 +155,14 @@ auto main(int argc, char *argv[]) -> int
         {
             mw->setWindowState(Qt::WindowNoState);
             mw->setGeometry(referenceWindow->geometry());
+
+            // When the pattern is closed (via menu or New Pattern cancelled),
+            // return to WelcomeScreen instead of quitting.
+            QObject::connect(mw, &MainWindow::patternClosed, [referenceWindow, mw]() {
+                referenceWindow->show();
+                QObject::disconnect(mw, &QObject::destroyed, nullptr, nullptr);
+                mw->deleteLater();
+            });
         }
 
         VAbstractValApplication::VApp()->setMainWindow(mw);
@@ -196,7 +204,7 @@ auto main(int argc, char *argv[]) -> int
         // "Nouveau patron"
         QObject::connect(welcome, &WelcomeWindow::NewPatternRequested, [welcome, createMainWindow]() {
             auto *mw = createMainWindow({}, welcome);
-            welcome->close();
+            welcome->hide();
             // Automatically open the "New Pattern" dialog after creating the main window.
             if (mw)
             {
@@ -225,7 +233,7 @@ auto main(int argc, char *argv[]) -> int
                 return;
             }
             createMainWindow(path, welcome);
-            welcome->close();
+            welcome->hide();
         });
 
         // Double-clic sur un récent patron
@@ -236,7 +244,7 @@ auto main(int argc, char *argv[]) -> int
                 return;
             }
             createMainWindow(path, welcome);
-            welcome->close();
+            welcome->hide();
         });
 
         // Measurement — standalone MeasurementWindow (FromHome)

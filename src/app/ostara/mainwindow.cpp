@@ -3075,6 +3075,7 @@ void MainWindow::on_actionNew_triggered()
         else
         {
             qCDebug(vMainWindow, "Creation a new pattern was canceled.");
+            emit patternClosed();
             return;
         }
 
@@ -3096,6 +3097,12 @@ void MainWindow::on_actionNew_triggered()
     {
         OpenNewValentina();
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool MainWindow::hasOpenPattern() const
+{
+    return m_comboBoxDraws->count() > 0;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -4045,6 +4052,7 @@ void MainWindow::CreateActions()
                 {
                     FileClosedCorrect();
                     Clear();
+                    emit patternClosed();
                 }
             });
 
