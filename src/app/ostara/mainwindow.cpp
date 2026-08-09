@@ -28,6 +28,7 @@
 
 #include "mainwindow.h"
 #include "widgets/DrawToolBar.h"
+#include "widgets/TopBar.h"
 
 #include <QAction>
 #include <QComboBox>
@@ -313,9 +314,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     InitDocksContain();
     CreateMenus();
+
+    m_topBar = new TopBar(this);
+    ui->topBar->addWidget(m_topBar);
+
     ToolBarDraws();
-    ToolBarPenOptions();
     ToolBarStages();
+    ToolBarMeasurements();
     m_drawToolBar = new DrawToolBar(this);
     addDockWidget(Qt::LeftDockWidgetArea, m_drawToolBar);
     m_drawToolBar->RestoreSavedWidth();
@@ -404,13 +409,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->dockWidgetLayoutPages->setVisible(false);
 
 #if defined(Q_OS_MAC)
-    // On Mac deafault icon size is 32x32.
-    ui->toolBarDraws->setIconSize(QSize(24, 24));
-    ui->toolBarOption->setIconSize(QSize(24, 24));
-    ui->toolBarStages->setIconSize(QSize(24, 24));
-    ui->toolBarTools->setIconSize(QSize(24, 24));
-    ui->toolBarPenOptions->setIconSize(QSize(24, 24));
-
     setUnifiedTitleAndToolBarOnMac(true);
 
     // Mac OS Dock Menu
@@ -540,9 +538,13 @@ void MainWindow::AddPP(const QString &PPName)
     SetEnableTool(true);
     SetEnableWidgets(true);
 
-    if (const qint32 index = m_comboBoxDraws->findText(PPName); index != -1)
-    { // -1 for not found
-        m_comboBoxDraws->setCurrentIndex(index);
+    if (m_comboBoxDraws)
+    {
+        const qint32 index = m_comboBoxDraws->findText(PPName);
+        if (index != -1)
+        { // -1 for not found
+            m_comboBoxDraws->setCurrentIndex(index);
+        }
     }
     else
     {
@@ -965,7 +967,7 @@ void MainWindow::changeEvent(QEvent *event)
         undoAction->setText(tr("&Undo"));
         redoAction->setText(tr("&Redo"));
         statusBar()->showMessage(tr("Changes applied."), 5000);
-        m_patternPieceLabel->setText(tr("Pattern Piece:"));
+        m_patternPieceLabel->setText(tr("Piece:"));
 
         if (VApplication::VApp()->GetDrawMode() == Draw::Calculation)
         {
@@ -978,7 +980,8 @@ void MainWindow::changeEvent(QEvent *event)
             ui->dockWidgetGroups->setToolTip(tr("Show which details will go in layout"));
         }
 
-        ToolBarOption();
+        UpdateMeasurementState();
+
 
         if (VApplication::VApp()->ValentinaSettings()->IsUseToolGroups())
         {
@@ -988,19 +991,29 @@ void MainWindow::changeEvent(QEvent *event)
         UpdateWindowTitle();
         emit m_sceneDetails->LanguageChanged();
 
-        m_globalPenStyleLabel->setText(tr("Pen style:"));
-        m_globalColorLabel->setText(tr("Color:"));
+        if (m_globalPenStyleLabel)
+        {
+            m_globalPenStyleLabel->setText(tr("Pen style:"));
+        }
+        if (m_globalColorLabel)
+        {
+            m_globalColorLabel->setText(tr("Color:"));
+        }
 
         // Rebuild color combo for translated names.
-        const QString storedName = GetColorComboCurrentName(m_colorCombo);
-        InitColorCombo(m_colorCombo);
-        SetColorComboCurrentName(m_colorCombo, storedName);
+        if (m_colorCombo)
+        {
+            const QString storedName = GetColorComboCurrentName(m_colorCombo);
+            InitColorCombo(m_colorCombo);
+            SetColorComboCurrentName(m_colorCombo, storedName);
+        }
     }
 
     if (event->type() == QEvent::ThemeChange)
     {
         VTheme::Instance()->ResetColorScheme();
 
+        if (m_comboBoxPenStyle)
         {
             const QSignalBlocker blocker(m_comboBoxPenStyle);
             m_comboBoxPenStyle->clear();
@@ -1011,11 +1024,14 @@ void MainWindow::changeEvent(QEvent *event)
         }
 
         // Rebuild color combo icons for new theme.
+        if (m_colorCombo)
         {
             const QString storedName = GetColorComboCurrentName(m_colorCombo);
             InitColorCombo(m_colorCombo);
             SetColorComboCurrentName(m_colorCombo, storedName);
         }
+
+        UpdateTopBarIcons();
     }
 
     // remember to call base class implementation
@@ -2065,8 +2081,7 @@ void MainWindow::ActionDraw(bool checked)
 
         if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
         {
-            ui->toolBarOption->setVisible(true);
-        }
+                    }
 
         ui->dockWidgetLayoutPages->setVisible(false);
         ui->dockWidgetToolOptions->setVisible(m_toolOptionsActive);
@@ -2084,6 +2099,8 @@ void MainWindow::ActionDraw(bool checked)
         actionDockWidgetGroups->setEnabled(true);
         actionDockWidgetBackgroundImages->setEnabled(true);
         actionDockWidgetDependencies->setEnabled(true);
+
+        m_topBar->SetPatternPieceVisible(true);
     }
     else
     {
@@ -2149,8 +2166,7 @@ void MainWindow::ActionDetails(bool checked)
 
         if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
         {
-            ui->toolBarOption->setVisible(true);
-        }
+                    }
 
         ui->dockWidgetLayoutPages->setVisible(false);
 
@@ -2170,6 +2186,8 @@ void MainWindow::ActionDetails(bool checked)
 
         WarningNotUniquePieceName(pattern->DataPieces());
         RefreshPieceGeometry();
+
+        m_topBar->SetPatternPieceVisible(false);
     }
     else
     {
@@ -2268,11 +2286,6 @@ void MainWindow::ActionLayout(bool checked)
     if (not m_mouseCoordinate.isNull())
     {
         m_mouseCoordinate->setText(QString());
-    }
-
-    if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
-    {
-        ui->toolBarOption->setVisible(false);
     }
 
     ui->dockWidgetLayoutPages->setVisible(true);
@@ -2769,7 +2782,7 @@ void MainWindow::Clear()
     SetEnableTool(false);
     VAbstractValApplication::VApp()->SetPatternUnits(Unit::Cm);
     VAbstractValApplication::VApp()->SetMeasurementsType(MeasurementsType::Unknown);
-    ui->toolBarOption->clear();
+
 #ifndef QT_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
@@ -2961,7 +2974,7 @@ void MainWindow::SetEnabledGUI(bool enabled)
         m_guiEnabled = enabled;
 
         SetEnableTool(enabled);
-        ui->toolBarOption->setEnabled(enabled);
+
 #ifndef QT_NO_CURSOR
         QGuiApplication::setOverrideCursor(Qt::ArrowCursor);
 #endif
@@ -3071,14 +3084,11 @@ void MainWindow::on_actionNew_triggered()
 
         AddPP(patternPieceName);
 
-        m_mouseCoordinate = new QLabel(
-            QStringLiteral("0, 0 (%1)").arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)));
-        ui->toolBarOption->addWidget(m_mouseCoordinate);
-
         m_curFileFormatVersion = VPatternConverter::PatternMaxVer;
         m_curFileFormatVersionStr = VPatternConverter::PatternMaxVerStr;
 
-        ToolBarOption();
+        UpdateMeasurementState();
+
 
         m_sceneDraw->SetAcceptDrop(true);
     }
@@ -3607,7 +3617,6 @@ void MainWindow::CreateMenus()
     m_shortcutActions.insert(VShortcutAction::Undo, undoAction);
     undoAction->setIcon(FromTheme(VThemeIcon::EditUndo));
     ui->menuPatternPiece->insertAction(ui->actionLast_tool, undoAction);
-    ui->toolBarTools->addAction(undoAction);
 
     connect(undoStack, &QUndoStack::canUndoChanged, this, [this]()
     {
@@ -3622,7 +3631,6 @@ void MainWindow::CreateMenus()
     m_shortcutActions.insert(VShortcutAction::Redo, redoAction);
     redoAction->setIcon(FromTheme(VThemeIcon::EditRedo));
     ui->menuPatternPiece->insertAction(ui->actionLast_tool, redoAction);
-    ui->toolBarTools->addAction(redoAction);
 
     connect(undoStack, &QUndoStack::canRedoChanged, this, [this]()
     {
@@ -4481,7 +4489,8 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
 
         if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Unknown)
         { // Show toolbar only if was not uploaded any measurements.
-            ToolBarOption();
+            UpdateMeasurementState();
+
         }
 
         if (currentFormatVersion == VPatternConverter::PatternMaxVer)
@@ -4599,11 +4608,9 @@ auto MainWindow::GetUnlokedRestoreFileList() -> QStringList
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolBarStyles()
 {
-    MainWindow::ToolBarStyle(ui->toolBarDraws);
-    MainWindow::ToolBarStyle(ui->toolBarOption);
-    MainWindow::ToolBarStyle(ui->toolBarStages);
-    MainWindow::ToolBarStyle(ui->toolBarTools);
-    MainWindow::ToolBarStyle(ui->mainToolBar);
+    MainWindow::ToolBarStyle(ui->topBar);
+    ui->topBar->setMovable(false);
+    ui->topBar->toggleViewAction()->setVisible(false);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -4616,11 +4623,7 @@ void MainWindow::ToolboxIconSize()
         bar->setIconSize(size);
     };
 
-    SetIconSize(ui->toolBarDraws);
-    SetIconSize(ui->toolBarPenOptions);
-    SetIconSize(ui->toolBarStages);
-    SetIconSize(ui->toolBarTools);
-    SetIconSize(ui->mainToolBar);
+    SetIconSize(ui->topBar);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -4975,7 +4978,7 @@ auto MainWindow::SetDimensionA(int value) -> bool
         {
             if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
             {
-                const qint32 index = m_dimensionA->findData(value);
+                const qint32 index = m_dimensionA ? m_dimensionA->findData(value) : -1;
                 if (index != -1)
                 {
                     m_dimensionA->setCurrentIndex(index);
@@ -5018,7 +5021,7 @@ auto MainWindow::SetDimensionB(int value) -> bool
         {
             if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
             {
-                const qint32 index = m_dimensionB->findData(value);
+                const qint32 index = m_dimensionB ? m_dimensionB->findData(value) : -1;
                 if (index != -1)
                 {
                     m_dimensionB->setCurrentIndex(index);
@@ -5061,7 +5064,7 @@ auto MainWindow::SetDimensionC(int value) -> bool
         {
             if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
             {
-                const qint32 index = m_dimensionC->findData(value);
+                const qint32 index = m_dimensionC ? m_dimensionC->findData(value) : -1;
                 if (index != -1)
                 {
                     m_dimensionC->setCurrentIndex(index);

@@ -393,6 +393,50 @@ QDoubleSpinBox::down-arrow:disabled {
 }
 
 /* =========================================================================
+   #zoomBlock — Glued zoom control [−] [100%] [+]
+   ========================================================================= */
+
+#zoomBlockBtnLeft {
+    padding: 1px 6px;
+    border: 1px solid $InputBorder;
+    border-right: none;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    background: $InputBg;
+}
+
+#zoomBlockBtnRight {
+    padding: 1px 6px;
+    border: 1px solid $InputBorder;
+    border-left: none;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    background: $InputBg;
+}
+
+#zoomBlockBtnLeft:hover,
+#zoomBlockBtnRight:hover {
+    background: $HoverBg;
+}
+
+#zoomBlockBtnLeft:pressed,
+#zoomBlockBtnRight:pressed {
+    background: $PressedBg;
+}
+
+#zoomBlockSpin {
+    border: 1px solid $InputBorder;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    background: $InputBg;
+}
+
+#zoomBlockSpin:focus {
+    border-color: $Accent;
+}
+
+/* =========================================================================
    QComboBox — Listes déroulantes (all-or-nothing rule)
    Design: like an input + transparent drop-down + $Accent hover border
    ========================================================================= */

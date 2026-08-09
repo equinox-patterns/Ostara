@@ -67,6 +67,7 @@ void MainWindow::LoadAndConnectMeasurements(const QString &path)
     ui->actionEditMeasurements->setEnabled(true);
     doc->LiteParseTree(Document::FullLiteParse);
     UpdateWindowTitle();
+    UpdateMeasurementFileNameLabel();
     const QString msg = tr("Measurements loaded");
     statusBar()->showMessage(msg, 5000);
     VWidgetPopup::PopupMessage(this, msg);

@@ -62,6 +62,7 @@ class VBackgroundImageItem;
 class VBackgroundImageControls;
 class VWidgetBackgroundImages;
 class DrawToolBar;
+class TopBar;
 
 /**
  * @brief The MainWindow class main windows.
@@ -313,6 +314,7 @@ private:
     QLabel *m_patternPieceLabel{nullptr};
 
     DrawToolBar *m_drawToolBar{nullptr};
+    TopBar      *m_topBar{nullptr};
 
     QComboBox *m_comboBoxPenStyle{nullptr};
     QLabel *m_globalPenStyleLabel{nullptr};
@@ -336,8 +338,11 @@ private:
     QPointer<QLabel> m_dimensionALabel{nullptr};
     QPointer<QLabel> m_dimensionBLabel{nullptr};
     QPointer<QLabel> m_dimensionCLabel{nullptr};
-    QPointer<QLabel> m_zoomScale{nullptr};
     QPointer<QDoubleSpinBox> m_doubleSpinBoxScale{nullptr};
+    QPointer<QToolButton> m_btnZoomIn{nullptr};
+    QPointer<QToolButton> m_btnZoomOut{nullptr};
+    QPointer<QLabel> m_measurementFileNameLabel{nullptr};
+    QPointer<QLabel> m_measurementSeparator{nullptr};
     VToolOptionsPropertyBrowser *m_toolOptions{nullptr};
     VWidgetGroups *m_groupsWidget{nullptr};
     VWidgetDetails *m_detailsWidget{nullptr};
@@ -381,11 +386,15 @@ private:
     void InitDimensionYWZGradation(const QVector<qreal> &bases, const DimesionLabels &labels,
                                    const QPointer<QComboBox> &control, bool bodyMeasurement);
 
-    void ToolBarOption();
+    void UpdateMeasurementState();
     void ToolBarStages();
     void ToolBarDraws();
     void ToolBarPenOptions();
     void ToolBarTools();
+    void ToolBarMeasurements();
+    void UpdateMeasurementFileNameLabel();
+    void UpdateMeasurementSeparatorIcon();
+    void UpdateTopBarIcons();
     void InitToolButtons();
     void InitActionShortcuts();
     void CancelTool();

@@ -31,6 +31,8 @@
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
 #include "vtheme.h"
+#include "widgets/TopBar.h"
+#include "widgets/FactoryWidgets.h"
 #include "../vpropertyexplorer/qtcolorpicker.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
@@ -40,83 +42,72 @@
 #include "../vtools/tools/vabstracttool.h"
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../vtools/undocommands/renamepp.h"
-#include "../vwidgets/vtoolbuttonpopup.h"
 #include "../vwidgets/vwidgetpopup.h"
 #include "core/vapplication.h"
 #include <QAction>
 #include <QComboBox>
 #include <QDoubleSpinBox>
+#include <QFileInfo>
+#include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
-#include <QMenu>
+#include <QPixmap>
 #include <QToolButton>
 
 using namespace Qt::Literals::StringLiterals;
 
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolBarOption enable option toolbar.
- */
-void MainWindow::ToolBarOption()
+namespace
 {
-    ui->toolBarOption->clear();
+//---------------------------------------------------------------------------------------------------------------------
+auto FormatActionToolTip(const QAction *action) -> QString
+{
+    if (action == nullptr)
+    {
+        return {};
+    }
 
-    delete m_zoomScale.data();
-    delete m_doubleSpinBoxScale.data();
-    delete m_mouseCoordinate.data();
-    delete m_unreadPatternMessage.data();
+    auto text = action->text();
+    text.remove(u'&');
 
-    InitDimensionControls();
+    if (const auto shortcuts = action->shortcuts(); !shortcuts.isEmpty())
+    {
+        const auto sc = shortcuts.constFirst().toString(QKeySequence::NativeText).toLower();
+        return QStringLiteral("%1 (%2)").arg(text, sc);
+    }
 
-    m_zoomScale = new QLabel(tr("Scale:"), this);
-    ui->toolBarOption->addWidget(m_zoomScale);
-
-    m_doubleSpinBoxScale = new QDoubleSpinBox(this);
-    m_doubleSpinBoxScale->setDecimals(1);
-    m_doubleSpinBoxScale->setSuffix(QChar('%'));
-    ScaleChanged(ui->view->transform().m11());
-    connect(m_doubleSpinBoxScale.data(), QOverload<double>::of(&QDoubleSpinBox::valueChanged), this,
-            [this](double d) { ui->view->Zoom(d / 100.0); });
-    ui->toolBarOption->addWidget(m_doubleSpinBoxScale);
-
-    ui->toolBarOption->addSeparator();
-
-    m_mouseCoordinate =
-        new QLabel(QStringLiteral("0, 0 (%1)").arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)));
-    ui->toolBarOption->addWidget(m_mouseCoordinate);
-
-    ui->toolBarOption->addSeparator();
-    m_unreadPatternMessage = new QLabel();
-    ui->toolBarOption->addWidget(m_unreadPatternMessage);
+    return text;
 }
+} // namespace
 
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::UpdateMeasurementState()
+{
+    InitDimensionControls();
+    UpdateMeasurementFileNameLabel();
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolBarStages()
 {
-    const auto resource = QStringLiteral("icon");
-
+    // Navigation labels (used by mode-switch code, kept alive for pixmap updates)
+    // Hidden — they were previously inserted in the old QToolBar between mode buttons.
     m_leftGoToStage = new QLabel(this);
-    m_leftGoToStage->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/go-next-skip.png")));
-    ui->toolBarStages->insertWidget(ui->actionDetails, m_leftGoToStage);
-
+    m_leftGoToStage->setVisible(false);
     m_rightGoToStage = new QLabel(this);
-    m_rightGoToStage->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/go-next.png")));
-    ui->toolBarStages->insertWidget(ui->actionLayout, m_rightGoToStage);
+    m_rightGoToStage->setVisible(false);
+
+    m_topBar->SetModeActions(ui->actionDraw, ui->actionDetails, ui->actionLayout);
+
+    ui->actionDraw->setToolTip(FormatActionToolTip(ui->actionDraw));
+    ui->actionDetails->setToolTip(FormatActionToolTip(ui->actionDetails));
+    ui->actionLayout->setToolTip(FormatActionToolTip(ui->actionLayout));
 }
 
-
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ToolBarDraws enable draw toolbar.
- */
 void MainWindow::ToolBarDraws()
 {
-    m_patternPieceLabel = new QLabel(tr("Pattern Piece:"));
-    ui->toolBarDraws->addWidget(m_patternPieceLabel);
-
-    // By using Qt UI Designer we can't add QComboBox to toolbar
-    m_comboBoxDraws = new QComboBox;
-    ui->toolBarDraws->addWidget(m_comboBoxDraws);
+    m_patternPieceLabel = new QLabel(tr("Piece:"));
+    m_comboBoxDraws = MakeComboBox();
     m_comboBoxDraws->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     m_comboBoxDraws->setEnabled(false);
     connect(m_comboBoxDraws, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
@@ -132,64 +123,27 @@ void MainWindow::ToolBarDraws()
                 }
                 VAbstractApplication::VApp()->getUndoStack()->push(new RenamePP(doc, draw, m_comboBoxDraws));
             });
-}
 
+    m_topBar->SetPatternPieceWidgets(m_patternPieceLabel, m_comboBoxDraws, ui->actionNewDraw);
+    ui->actionNewDraw->setToolTip(FormatActionToolTip(ui->actionNewDraw));
+}
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolBarPenOptions()
+void MainWindow::ToolBarMeasurements()
 {
-    // Pen style
-    m_globalPenStyleLabel = new QLabel(tr("Pen style:"));
-    ui->toolBarPenOptions->addWidget(m_globalPenStyleLabel);
+    ui->actionLoadMeasurements->setToolTip(FormatActionToolTip(ui->actionLoadMeasurements));
 
-    // By using Qt UI Designer we can't add QComboBox to toolbar
-    m_comboBoxPenStyle = new QComboBox;
-    m_comboBoxPenStyle->setToolTip(tr("Sets the <b>default pen style</b> for all newly created objects. This style is "
-                                      "applied the first time an object is drawn."));
-    ui->toolBarPenOptions->addWidget(m_comboBoxPenStyle);
-    m_comboBoxPenStyle->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    m_comboBoxPenStyle->setMinimumSize(QSize(80, 0));
-    m_comboBoxPenStyle->setIconSize(QSize(80, 14));
-    FillComboBoxTypeLine(m_comboBoxPenStyle,
-                         LineStylesPics(m_comboBoxPenStyle->palette().color(QPalette::Base),
-                                        m_comboBoxPenStyle->palette().color(QPalette::Text)));
-    ChangeCurrentData(m_comboBoxPenStyle, VApplication::VApp()->ValentinaSettings()->GetGlobalPenStyle());
+    m_measurementFileNameLabel = new QLabel();
+    m_measurementSeparator = new QLabel();
+    UpdateMeasurementSeparatorIcon();
 
-    connect(m_comboBoxPenStyle, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            [this]()
-    {
-        VValentinaSettings *settings = VApplication::VApp()->ValentinaSettings();
-        settings->SetGlobalPenStyle(GetComboBoxCurrentData(m_comboBoxPenStyle, TypeLineLine));
-    });
+    ui->actionTable->setToolTip(FormatActionToolTip(ui->actionTable));
 
-    // Color
-    m_globalColorLabel = new QLabel(tr("Color:"));
-    ui->toolBarPenOptions->addWidget(m_globalColorLabel);
+    m_topBar->SetMeasurementWidgets(ui->actionLoadMeasurements, m_measurementFileNameLabel,
+                                     m_measurementSeparator, ui->actionTable);
 
-    m_colorCombo = new QComboBox(this);
-    m_colorCombo->setToolTip(tr("Defines the <b>global object color property</b>. This color is applied "
-                                "automatically the first time a new object is drawn."));
-    InitColorCombo(m_colorCombo);
-    VValentinaSettings const *settings = VApplication::VApp()->ValentinaSettings();
-    SetColorComboCurrentName(m_colorCombo, settings->GetGlobalToolColor());
-    ui->toolBarPenOptions->addWidget(m_colorCombo);
-
-    connect(m_colorCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this]()
-    {
-        VValentinaSettings *settings = VApplication::VApp()->ValentinaSettings();
-        settings->SetGlobalToolColor(GetColorComboCurrentName(m_colorCombo));
-    });
-
-    // Rebuild combo icons when theme changes (light ↔ dark).
-    connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, [this]()
-    {
-        VValentinaSettings const *settings = VApplication::VApp()->ValentinaSettings();
-        const QString storedName = settings->GetGlobalToolColor();
-        InitColorCombo(m_colorCombo);
-        SetColorComboCurrentName(m_colorCombo, storedName);
-    });
+    UpdateMeasurementFileNameLabel();
 }
-
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolBarTools()
@@ -219,8 +173,6 @@ void MainWindow::ToolBarTools()
             {
                 VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
                 settings->SetPatternLabelFontSize(settings->GetPatternLabelFontSize() + 1);
-                // Label visibility depends on the font size and is recomputed in RefreshScale(),
-                // not in paint(), so drive the existing refresh dispatch instead of a bare update().
                 ScaleChanged(ui->view->transform().m11());
             });
 
@@ -250,304 +202,129 @@ void MainWindow::ToolBarTools()
                 VAbstractValApplication::VApp()->ValentinaSettings()->SetHideLabels(checked);
                 ScaleChanged(ui->view->transform().m11());
             });
-}
 
+    ui->actionZoomIn->setToolTip(FormatActionToolTip(ui->actionZoomIn));
+    ui->actionZoomOut->setToolTip(FormatActionToolTip(ui->actionZoomOut));
+    ui->actionZoomFitBest->setToolTip(FormatActionToolTip(ui->actionZoomFitBest));
+
+    // --- Zoom block ----------------------------------------------------------
+
+    auto *zoomBlock = new QWidget();
+    zoomBlock->setObjectName(QStringLiteral("zoomBlock"));
+    auto *zoomLayout = new QHBoxLayout(zoomBlock);
+    zoomLayout->setContentsMargins(0, 0, 0, 0);
+    zoomLayout->setSpacing(0);
+
+    m_btnZoomIn = new QToolButton(zoomBlock);
+    m_btnZoomIn->setObjectName(QStringLiteral("zoomBlockBtnLeft"));
+    m_btnZoomIn->setDefaultAction(ui->actionZoomIn);
+    m_btnZoomIn->setAutoRaise(false);
+    zoomLayout->addWidget(m_btnZoomIn);
+
+    m_doubleSpinBoxScale = new QDoubleSpinBox(zoomBlock);
+    m_doubleSpinBoxScale->setObjectName(QStringLiteral("zoomBlockSpin"));
+    m_doubleSpinBoxScale->setDecimals(1);
+    m_doubleSpinBoxScale->setSuffix(QChar('%'));
+    m_doubleSpinBoxScale->setButtonSymbols(QAbstractSpinBox::NoButtons);
+    m_doubleSpinBoxScale->setAlignment(Qt::AlignCenter);
+    ScaleChanged(ui->view->transform().m11());
+    connect(m_doubleSpinBoxScale.data(), QOverload<double>::of(&QDoubleSpinBox::valueChanged), this,
+            [this](double d) { ui->view->Zoom(d / 100.0); });
+    zoomLayout->addWidget(m_doubleSpinBoxScale);
+
+    m_btnZoomOut = new QToolButton(zoomBlock);
+    m_btnZoomOut->setObjectName(QStringLiteral("zoomBlockBtnRight"));
+    m_btnZoomOut->setDefaultAction(ui->actionZoomOut);
+    m_btnZoomOut->setAutoRaise(false);
+    zoomLayout->addWidget(m_btnZoomOut);
+
+    // Force buttons to match spinbox height for the single-block look.
+    const int h = m_doubleSpinBoxScale->sizeHint().height();
+    m_btnZoomIn->setMinimumHeight(h);
+    m_btnZoomIn->setMaximumHeight(h);
+    m_btnZoomOut->setMinimumHeight(h);
+    m_btnZoomOut->setMaximumHeight(h);
+
+    m_topBar->SetZoomWidget(zoomBlock);
+
+    UpdateTopBarIcons();
+}
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolBarDrawTools()
+void MainWindow::UpdateTopBarIcons()
 {
-    SetupDrawToolsIcons();
+    const bool isDark = VTheme::ColorSheme() == VColorSheme::Dark;
+    const auto themeDir = QString(isDark ? QStringLiteral("dark") : QStringLiteral("light"));
 
-    VValentinaSettings  const*settings = VApplication::VApp()->ValentinaSettings();
+    ui->actionDraw->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/polygon-fill_%1.svg").arg(themeDir)));
+    ui->actionDetails->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/sliders-fill_%1.svg").arg(themeDir)));
+    ui->actionLayout->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/printer-fill_%1.svg").arg(themeDir)));
+    ui->actionNewDraw->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/plus-circle-fill_%1.svg").arg(themeDir)));
 
-    ui->toolBarPointTools->clear();
-    if (settings->IsUseToolGroups())
+    ui->actionZoomIn->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/magnifying-glass-plus-fill_%1.svg").arg(themeDir)));
+    ui->actionZoomOut->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/magnifying-glass-minus-fill_%1.svg").arg(themeDir)));
+
+    ui->actionLoadMeasurements->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/ruler-fill_%1.svg").arg(themeDir)));
+    ui->actionTable->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/table-fill_%1.svg").arg(themeDir)));
+
+    UpdateMeasurementSeparatorIcon();
+
+    if (m_topBar)
     {
-        // Point tools
-        {
-            auto *linePointToolMenu = new QMenu(this);
-            linePointToolMenu->addAction(ui->actionEndLineTool);
-            linePointToolMenu->addAction(ui->actionAlongLineTool);
-            linePointToolMenu->addAction(ui->actionMidpointTool);
-
-            auto *linePointTool = new VToolButtonPopup(this);
-            linePointTool->AssignMenu(linePointToolMenu);
-            linePointTool->setDefaultAction(ui->actionEndLineTool);
-            linePointTool->SetToolGroupTooltip(tr("Point at a given distance tools"));
-
-            ui->toolBarPointTools->addWidget(linePointTool);
-        }
-
-        {
-            auto *angleLinePointToolMenu = new QMenu(this);
-            angleLinePointToolMenu->addAction(ui->actionNormalTool);
-            angleLinePointToolMenu->addAction(ui->actionBisectorTool);
-            angleLinePointToolMenu->addAction(ui->actionHeightTool);
-
-            auto *angleLinePointTool = new VToolButtonPopup(this);
-            angleLinePointTool->AssignMenu(angleLinePointToolMenu);
-            angleLinePointTool->setDefaultAction(ui->actionNormalTool);
-            angleLinePointTool->SetToolGroupTooltip(tr("Perpendicular/Bisector tools"));
-
-            ui->toolBarPointTools->addWidget(angleLinePointTool);
-        }
-
-        {
-            auto *lineIntersectionPointToolMenu = new QMenu(this);
-            lineIntersectionPointToolMenu->addAction(ui->actionPointOfIntersectionTool);
-            lineIntersectionPointToolMenu->addAction(ui->actionLineIntersectTool);
-
-            auto *lineIntersectionPointTool = new VToolButtonPopup(this);
-            lineIntersectionPointTool->AssignMenu(lineIntersectionPointToolMenu);
-            lineIntersectionPointTool->setDefaultAction(ui->actionPointOfIntersectionTool);
-            lineIntersectionPointTool->SetToolGroupTooltip(tr("Point at the intersections of lines/axis tools"));
-
-            ui->toolBarPointTools->addWidget(lineIntersectionPointTool);
-        }
-
-        {
-            auto *specialPointToolMenu = new QMenu(this);
-            specialPointToolMenu->addAction(ui->actionShoulderPointTool);
-            specialPointToolMenu->addAction(ui->actionTriangleTool);
-
-            auto *specialPointTool = new VToolButtonPopup(this);
-            specialPointTool->AssignMenu(specialPointToolMenu);
-            specialPointTool->setDefaultAction(ui->actionShoulderPointTool);
-            specialPointTool->SetToolGroupTooltip(tr("Triangular tools"));
-
-            ui->toolBarPointTools->addWidget(specialPointTool);
-        }
-
-        {
-            auto *axisPointToolMenu = new QMenu(this);
-            axisPointToolMenu->addAction(ui->actionLineIntersectAxisTool);
-            axisPointToolMenu->addAction(ui->actionCurveIntersectAxisTool);
-            axisPointToolMenu->addAction(ui->actionArcIntersectAxisTool);
-
-            auto *axisPointTool = new VToolButtonPopup(this);
-            axisPointTool->AssignMenu(axisPointToolMenu);
-            axisPointTool->setDefaultAction(ui->actionLineIntersectAxisTool);
-            axisPointTool->SetToolGroupTooltip(tr("Point intersecting with axis tools"));
-
-            ui->toolBarPointTools->addWidget(axisPointTool);
-        }
-
-        {
-            auto *curveSegmentPointToolMenu = new QMenu(this);
-            curveSegmentPointToolMenu->addAction(ui->actionSplineCutPointTool);
-            curveSegmentPointToolMenu->addAction(ui->actionSplinePathCutPointTool);
-            curveSegmentPointToolMenu->addAction(ui->actionArcCutPointTool);
-            curveSegmentPointToolMenu->addAction(ui->actionArcStartPointTool);
-            curveSegmentPointToolMenu->addAction(ui->actionArcEndPointTool);
-
-            auto *curveSegmentPointTool = new VToolButtonPopup(this);
-            curveSegmentPointTool->AssignMenu(curveSegmentPointToolMenu);
-            curveSegmentPointTool->setDefaultAction(ui->actionSplineCutPointTool);
-            curveSegmentPointTool->SetToolGroupTooltip(tr("Point segmenting curves/arcs tools"));
-
-            ui->toolBarPointTools->addWidget(curveSegmentPointTool);
-        }
-
-        {
-            auto *curveIntersectionPointToolMenu = new QMenu(this);
-            curveIntersectionPointToolMenu->addAction(ui->actionIntersectionCurvesTool);
-            curveIntersectionPointToolMenu->addAction(ui->actionPointOfIntersectionArcsTool);
-            curveIntersectionPointToolMenu->addAction(ui->actionPointOfIntersectionCirclesTool);
-
-            auto *curveIntersectionPointTool = new VToolButtonPopup(this);
-            curveIntersectionPointTool->AssignMenu(curveIntersectionPointToolMenu);
-            curveIntersectionPointTool->setDefaultAction(ui->actionIntersectionCurvesTool);
-            curveIntersectionPointTool->SetToolGroupTooltip(tr("Points intersecting with 2 curves/arcs/circles tools"));
-
-            ui->toolBarPointTools->addWidget(curveIntersectionPointTool);
-        }
-
-        {
-            auto *tangentPointToolMenu = new QMenu(this);
-            tangentPointToolMenu->addAction(ui->actionPointFromArcAndTangentTool);
-            tangentPointToolMenu->addAction(ui->actionPointFromCircleAndTangentTool);
-            tangentPointToolMenu->addAction(ui->actionPointOfContactTool);
-
-            auto *tangentPointTool = new VToolButtonPopup(this);
-            tangentPointTool->AssignMenu(tangentPointToolMenu);
-            tangentPointTool->setDefaultAction(ui->actionPointFromArcAndTangentTool);
-            tangentPointTool->SetToolGroupTooltip(
-                tr("Points intersecting with arcs/curves and tangents/segments tools"));
-
-            ui->toolBarPointTools->addWidget(tangentPointTool);
-        }
-    }
-    else
-    {
-        ui->toolBarPointTools->addAction(ui->actionEndLineTool);
-        ui->toolBarPointTools->addAction(ui->actionAlongLineTool);
-        ui->toolBarPointTools->addAction(ui->actionMidpointTool);
-
-        ui->toolBarPointTools->addAction(ui->actionNormalTool);
-        ui->toolBarPointTools->addAction(ui->actionBisectorTool);
-        ui->toolBarPointTools->addAction(ui->actionHeightTool);
-
-        ui->toolBarPointTools->addAction(ui->actionPointOfIntersectionTool);
-        ui->toolBarPointTools->addAction(ui->actionLineIntersectTool);
-
-        ui->toolBarPointTools->addAction(ui->actionShoulderPointTool);
-        ui->toolBarPointTools->addAction(ui->actionTriangleTool);
-
-        ui->toolBarPointTools->addAction(ui->actionLineIntersectAxisTool);
-        ui->toolBarPointTools->addAction(ui->actionCurveIntersectAxisTool);
-        ui->toolBarPointTools->addAction(ui->actionArcIntersectAxisTool);
-
-        ui->toolBarPointTools->addAction(ui->actionSplineCutPointTool);
-        ui->toolBarPointTools->addAction(ui->actionSplinePathCutPointTool);
-        ui->toolBarPointTools->addAction(ui->actionArcCutPointTool);
-        ui->toolBarPointTools->addAction(ui->actionArcStartPointTool);
-        ui->toolBarPointTools->addAction(ui->actionArcEndPointTool);
-
-        ui->toolBarPointTools->addAction(ui->actionIntersectionCurvesTool);
-        ui->toolBarPointTools->addAction(ui->actionPointOfIntersectionArcsTool);
-        ui->toolBarPointTools->addAction(ui->actionPointOfIntersectionCirclesTool);
-
-        ui->toolBarPointTools->addAction(ui->actionPointFromArcAndTangentTool);
-        ui->toolBarPointTools->addAction(ui->actionPointFromCircleAndTangentTool);
-        ui->toolBarPointTools->addAction(ui->actionPointOfContactTool);
-    }
-
-    ui->toolBarCurveTools->clear();
-    if (settings->IsUseToolGroups())
-    {
-        // Curve tools
-        {
-            auto *curveToolMenu = new QMenu(this);
-            curveToolMenu->addAction(ui->actionSplineTool);
-            curveToolMenu->addAction(ui->actionCubicBezierTool);
-            curveToolMenu->addAction(ui->actionSplinePathTool);
-            curveToolMenu->addAction(ui->actionCubicBezierPathTool);
-            curveToolMenu->addAction(ui->actionArcTool);
-            curveToolMenu->addAction(ui->actionArcWithLengthTool);
-            curveToolMenu->addAction(ui->actionEllipticalArcTool);
-            curveToolMenu->addAction(ui->actionEllipticalArcWithLengthTool);
-            curveToolMenu->addAction(ui->actionParallelCurveTool);
-            curveToolMenu->addAction(ui->actionGraduatedCurveTool);
-
-            auto *curvePointTool = new VToolButtonPopup(this);
-            curvePointTool->AssignMenu(curveToolMenu);
-            curvePointTool->setDefaultAction(ui->actionSplineTool);
-            curvePointTool->SetToolGroupTooltip(tr("Curves and arcs tools"));
-
-            ui->toolBarCurveTools->addWidget(curvePointTool);
-        }
-    }
-    else
-    {
-        ui->toolBarCurveTools->addAction(ui->actionSplineTool);
-        ui->toolBarCurveTools->addAction(ui->actionCubicBezierTool);
-        ui->toolBarCurveTools->addAction(ui->actionSplinePathTool);
-        ui->toolBarCurveTools->addAction(ui->actionCubicBezierPathTool);
-        ui->toolBarCurveTools->addAction(ui->actionArcTool);
-        ui->toolBarCurveTools->addAction(ui->actionArcWithLengthTool);
-        ui->toolBarCurveTools->addAction(ui->actionEllipticalArcTool);
-        ui->toolBarCurveTools->addAction(ui->actionEllipticalArcWithLengthTool);
-        ui->toolBarCurveTools->addAction(ui->actionParallelCurveTool);
-        ui->toolBarCurveTools->addAction(ui->actionGraduatedCurveTool);
-    }
-
-    ui->toolBarOperationTools->clear();
-    if (settings->IsUseToolGroups())
-    {
-        // Group tools
-        ui->toolBarOperationTools->addAction(ui->actionGroupTool);
-
-        {
-            auto *symmetryToolMenu = new QMenu(this);
-            symmetryToolMenu->addAction(ui->actionFlippingByAxisTool);
-            symmetryToolMenu->addAction(ui->actionFlippingByLineTool);
-
-            auto *symmetryTool = new VToolButtonPopup(this);
-            symmetryTool->AssignMenu(symmetryToolMenu);
-            symmetryTool->setDefaultAction(ui->actionFlippingByAxisTool);
-            symmetryTool->SetToolGroupTooltip(tr("Flipping objects tools"));
-
-            ui->toolBarOperationTools->addWidget(symmetryTool);
-        }
-
-        {
-            auto *transformToolMenu = new QMenu(this);
-            transformToolMenu->addAction(ui->actionRotationTool);
-            transformToolMenu->addAction(ui->actionMoveTool);
-
-            auto *transformTool = new VToolButtonPopup(this);
-            transformTool->AssignMenu(transformToolMenu);
-            transformTool->setDefaultAction(ui->actionRotationTool);
-            transformTool->SetToolGroupTooltip(tr("Rotating/moving objects tools"));
-
-            ui->toolBarOperationTools->addWidget(transformTool);
-        }
-
-        ui->toolBarOperationTools->addAction(ui->actionTrueDartsTool);
-        ui->toolBarOperationTools->addAction(ui->actionExportDraw);
-    }
-    else
-    {
-        ui->toolBarOperationTools->addAction(ui->actionGroupTool);
-
-        ui->toolBarOperationTools->addAction(ui->actionFlippingByAxisTool);
-        ui->toolBarOperationTools->addAction(ui->actionFlippingByLineTool);
-
-        ui->toolBarOperationTools->addAction(ui->actionRotationTool);
-        ui->toolBarOperationTools->addAction(ui->actionMoveTool);
-
-        ui->toolBarOperationTools->addAction(ui->actionTrueDartsTool);
-        ui->toolBarOperationTools->addAction(ui->actionExportDraw);
-    }
-
-    ui->toolBarDetailTools->clear();
-    if (settings->IsUseToolGroups())
-    {
-        // Detail tools
-        ui->toolBarDetailTools->addAction(ui->actionNewDetailTool);
-        {
-            auto *detailToolMenu = new QMenu(this);
-            detailToolMenu->addAction(ui->actionUnionDetailsTool);
-            detailToolMenu->addAction(ui->actionDuplicateDetailTool);
-
-            auto *detailTool = new VToolButtonPopup(this);
-            detailTool->AssignMenu(detailToolMenu);
-            detailTool->setDefaultAction(ui->actionUnionDetailsTool);
-            detailTool->SetToolGroupTooltip(tr("Merge/duplicate pieces tools"));
-
-            ui->toolBarDetailTools->addWidget(detailTool);
-        }
-
-        {
-            auto *internalDetailItemToolMenu = new QMenu(this);
-            internalDetailItemToolMenu->addAction(ui->actionInternalPathTool);
-            internalDetailItemToolMenu->addAction(ui->actionPinTool);
-            internalDetailItemToolMenu->addAction(ui->actionInsertNodeTool);
-            internalDetailItemToolMenu->addAction(ui->actionPlaceLabelTool);
-
-            auto *detailTool = new VToolButtonPopup(this);
-            detailTool->AssignMenu(internalDetailItemToolMenu);
-            detailTool->setDefaultAction(ui->actionInternalPathTool);
-            detailTool->SetToolGroupTooltip(tr("Adding objects for Details mode tools"));
-
-            ui->toolBarDetailTools->addWidget(detailTool);
-        }
-
-        ui->toolBarDetailTools->addAction(ui->actionDetailExportAs);
-    }
-    else
-    {
-        ui->toolBarDetailTools->addAction(ui->actionNewDetailTool);
-
-        ui->toolBarDetailTools->addAction(ui->actionUnionDetailsTool);
-        ui->toolBarDetailTools->addAction(ui->actionDuplicateDetailTool);
-
-        ui->toolBarDetailTools->addAction(ui->actionInternalPathTool);
-        ui->toolBarDetailTools->addAction(ui->actionPinTool);
-        ui->toolBarDetailTools->addAction(ui->actionInsertNodeTool);
-        ui->toolBarDetailTools->addAction(ui->actionPlaceLabelTool);
-
-        ui->toolBarDetailTools->addAction(ui->actionDetailExportAs);
+        m_topBar->ReloadIcons();
     }
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::UpdateMeasurementFileNameLabel()
+{
+    if (m_measurementFileNameLabel)
+    {
+        const auto mpath = doc->MPath();
+        if (mpath.isEmpty())
+        {
+            const bool isDark = VTheme::ColorSheme() == VColorSheme::Dark;
+            const auto themeDir = QString(isDark ? QStringLiteral("dark") : QStringLiteral("light"));
+            const auto caretPath = QStringLiteral(":/icons/%1/caret-left_%1.svg").arg(themeDir);
+            const auto caretImg = QStringLiteral("<img src=\"%1\" width=\"12\" height=\"12\" "
+                                                   "style=\"vertical-align:middle;\">").arg(caretPath);
+            m_measurementFileNameLabel->setText(
+                caretImg + QStringLiteral(" ") + tr("Load measurements table"));
+        }
+        else
+        {
+            m_measurementFileNameLabel->setText(QFileInfo(mpath).fileName());
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::UpdateMeasurementSeparatorIcon()
+{
+    if (!m_measurementSeparator)
+    {
+        return;
+    }
+
+    const bool isDark = VTheme::ColorSheme() == VColorSheme::Dark;
+    const auto themeDir = QString(isDark ? QStringLiteral("dark") : QStringLiteral("light"));
+    const auto path = QStringLiteral(":/icons/%1/line-vertical_%1.svg").arg(themeDir);
+
+    QPixmap pix(path);
+    if (pix.isNull())
+    {
+        m_measurementSeparator->setText(QStringLiteral("|"));
+        return;
+    }
+
+    const int h = m_measurementSeparator->fontMetrics().height();
+    m_measurementSeparator->setPixmap(pix.scaledToHeight(h, Qt::SmoothTransformation));
+}

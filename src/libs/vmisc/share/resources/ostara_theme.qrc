@@ -36,6 +36,17 @@
         <file alias="arrow-u-up-left_light.svg">../../../../../share/themes/icons/light/arrow-u-up-left_light.svg</file>
         <file alias="arrow-u-up-right_light.svg">../../../../../share/themes/icons/light/arrow-u-up-right_light.svg</file>
         <file alias="x-circle-fill_light.svg">../../../../../share/themes/icons/light/x-circle-fill_light.svg</file>
+        <file alias="polygon-fill_light.svg">../../../../../share/themes/icons/light/polygon-fill_light.svg</file>
+        <file alias="sliders-fill_light.svg">../../../../../share/themes/icons/light/sliders-fill_light.svg</file>
+        <file alias="printer-fill_light.svg">../../../../../share/themes/icons/light/printer-fill_light.svg</file>
+        <file alias="plus-circle-fill_light.svg">../../../../../share/themes/icons/light/plus-circle-fill_light.svg</file>
+        <file alias="table-fill_light.svg">../../../../../share/themes/icons/light/table-fill_light.svg</file>
+        <file alias="ruler-fill_light.svg">../../../../../share/themes/icons/light/ruler-fill_light.svg</file>
+        <file alias="magnifying-glass-plus-fill_light.svg">../../../../../share/themes/icons/light/magnifying-glass-plus-fill_light.svg</file>
+        <file alias="magnifying-glass-minus-fill_light.svg">../../../../../share/themes/icons/light/magnifying-glass-minus-fill_light.svg</file>
+        <file alias="line-vertical_light.svg">../../../../../share/themes/icons/light/line-vertical_light.svg</file>
+        <file alias="caret-left_light.svg">../../../../../share/themes/icons/light/caret-left_light.svg</file>
+        <file alias="caret-right_light.svg">../../../../../share/themes/icons/light/caret-right_light.svg</file>
     </qresource>
     <qresource prefix="/icons/dark">
         <file alias="square_accent.svg">../../../../../share/themes/icons/dark/square_accent.svg</file>
@@ -70,5 +81,16 @@
         <file alias="arrow-u-up-left_dark.svg">../../../../../share/themes/icons/dark/arrow-u-up-left_dark.svg</file>
         <file alias="arrow-u-up-right_dark.svg">../../../../../share/themes/icons/dark/arrow-u-up-right_dark.svg</file>
         <file alias="x-circle-fill_dark.svg">../../../../../share/themes/icons/dark/x-circle-fill_dark.svg</file>
+        <file alias="polygon-fill_dark.svg">../../../../../share/themes/icons/dark/polygon-fill_dark.svg</file>
+        <file alias="sliders-fill_dark.svg">../../../../../share/themes/icons/dark/sliders-fill_dark.svg</file>
+        <file alias="printer-fill_dark.svg">../../../../../share/themes/icons/dark/printer-fill_dark.svg</file>
+        <file alias="plus-circle-fill_dark.svg">../../../../../share/themes/icons/dark/plus-circle-fill_dark.svg</file>
+        <file alias="table-fill_dark.svg">../../../../../share/themes/icons/dark/table-fill_dark.svg</file>
+        <file alias="ruler-fill_dark.svg">../../../../../share/themes/icons/dark/ruler-fill_dark.svg</file>
+        <file alias="magnifying-glass-plus-fill_dark.svg">../../../../../share/themes/icons/dark/magnifying-glass-plus-fill_dark.svg</file>
+        <file alias="magnifying-glass-minus-fill_dark.svg">../../../../../share/themes/icons/dark/magnifying-glass-minus-fill_dark.svg</file>
+        <file alias="line-vertical_dark.svg">../../../../../share/themes/icons/dark/line-vertical_dark.svg</file>
+        <file alias="caret-left_dark.svg">../../../../../share/themes/icons/dark/caret-left_dark.svg</file>
+        <file alias="caret-right_dark.svg">../../../../../share/themes/icons/dark/caret-right_dark.svg</file>
     </qresource>
 </RCC>

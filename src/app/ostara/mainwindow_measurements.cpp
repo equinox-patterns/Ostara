@@ -29,6 +29,8 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "widgets/TopBar.h"
+#include "widgets/FactoryWidgets.h"
 #include "mainwindow_helpers.h"
 #include "vtheme.h"
 #include "../vformat/vmeasurements.h"
@@ -78,7 +80,7 @@ auto MainWindow::LoadMeasurements(const QString &patternPath, QString &path) -> 
             m_currentDimensionB = DimensionBase(doc->GetDimensionBValue(), m_m->DimensionBBase());
             m_currentDimensionC = DimensionBase(doc->GetDimensionCValue(), m_m->DimensionCBase());
         }
-        ToolBarOption();
+        UpdateMeasurementState();
         SetDimensionBases();
         pattern->ClearVariables({VarType::Measurement, VarType::MeasurementSeparator});
         m_m->StoreNames(false);
@@ -140,7 +142,7 @@ void MainWindow::ReadMeasurements(qreal baseA, qreal baseB, qreal baseC, bool re
 
             if (control == nullptr)
             {
-                control = new QComboBox;
+                control = MakeComboBox(this);
                 control->setSizeAdjustPolicy(QComboBox::AdjustToContents);
             }
         };
@@ -378,7 +380,10 @@ void MainWindow::InitDimensionControls()
     delete m_dimensionC.data();
     delete m_dimensionCLabel.data();
 
-    if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
+    const bool multisize = m_m && VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize;
+    m_topBar->SetDimensionSeparatorVisible(multisize);
+
+    if (multisize)
     {
         const QList<MeasurementDimension_p> dimensions = m_m->Dimensions().values();
 
@@ -400,14 +405,13 @@ void MainWindow::InitDimensionControls()
 
                 if (control.isNull())
                 {
-                    control = new QComboBox;
+                    control = MakeComboBox(this);
                     control->setSizeAdjustPolicy(QComboBox::AdjustToContents);
                 }
 
                 InitDimensionGradation(index, dimension, control);
 
-                ui->toolBarOption->addWidget(name);
-                ui->toolBarOption->addWidget(control);
+                m_topBar->InsertDimensionWidgets(name, control);
             }
         };
 
@@ -432,8 +436,6 @@ void MainWindow::InitDimensionControls()
             connect(m_dimensionC.data(), QOverload<int>::of(&QComboBox::currentIndexChanged), this,
                     &MainWindow::DimensionCBaseChanged);
         }
-
-        ui->toolBarOption->addSeparator();
     }
 }
 

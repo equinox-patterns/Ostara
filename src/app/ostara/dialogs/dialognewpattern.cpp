@@ -51,7 +51,14 @@ DialogNewPattern::DialogNewPattern(VContainer *data, const QString &patternPiece
                                                                            : setLocale(QLocale::c());
 
     QRect position = this->frameGeometry();
-    position.moveCenter(QGuiApplication::primaryScreen()->availableGeometry().center());
+    if (const auto *screen = parentWidget() ? parentWidget()->screen() : QGuiApplication::primaryScreen())
+    {
+        position.moveCenter(screen->availableGeometry().center());
+    }
+    else
+    {
+        position.moveCenter(QGuiApplication::primaryScreen()->availableGeometry().center());
+    }
     move(position.topLeft());
 
     ui->lineEditName->setText(patternPieceName);

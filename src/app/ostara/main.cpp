@@ -195,8 +195,18 @@ auto main(int argc, char *argv[]) -> int
 
         // "Nouveau patron"
         QObject::connect(welcome, &WelcomeWindow::NewPatternRequested, [welcome, createMainWindow]() {
-            createMainWindow({}, welcome);
+            auto *mw = createMainWindow({}, welcome);
             welcome->close();
+            // Automatically open the "New Pattern" dialog after creating the main window.
+            if (mw)
+            {
+                QTimer::singleShot(0, mw, [mw]() {
+                    if (auto *action = mw->findChild<QAction *>(QStringLiteral("actionNew")))
+                    {
+                        action->trigger();
+                    }
+                });
+            }
         });
 
         // "Ouvrir un patron..."
