@@ -63,6 +63,8 @@ class VBackgroundImageControls;
 class VWidgetBackgroundImages;
 class DrawToolBar;
 class TopBar;
+class WelcomeScreen;
+class QStackedWidget;
 
 /**
  * @brief The MainWindow class main windows.
@@ -320,6 +322,9 @@ private:
     DrawToolBar *m_drawToolBar{nullptr};
     TopBar      *m_topBar{nullptr};
 
+    QStackedWidget *m_stackedWidget{nullptr};
+    WelcomeScreen  *m_welcomeScreen{nullptr};
+
     QComboBox *m_comboBoxPenStyle{nullptr};
     QLabel *m_globalPenStyleLabel{nullptr};
 
@@ -457,6 +462,15 @@ private:
     auto StartPositionNewPP() const -> QPointF;
 
     void InitScenes();
+    void InitWelcomePage();
+    void ShowWelcomeScreen();
+    void ShowEditor();
+
+    // Measurement slots (from embedded WelcomeScreen)
+    void WelcomeNewMeasurement();
+    void WelcomeOpenMeasurement();
+    void WelcomeOpenRecentMeasurement(const QString &path);
+    void AddRecentMeasurementAndRefresh(const QString &path);
 
     auto LoadMeasurements(const QString &patternPath, QString &path) -> bool;
     auto UpdateMeasurements(const QString &patternPath, QString &path, qreal baseA, qreal baseB, qreal baseC) -> bool;

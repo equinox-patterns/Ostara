@@ -32,6 +32,7 @@
 #include <QContextMenuEvent>
 #include <QCursor>
 #include <QEvent>
+#include <QKeyEvent>
 #include <QFlags>
 #include <QGestureEvent>
 #include <QGraphicsItem>
@@ -427,6 +428,7 @@ VMainGraphicsView::VMainGraphicsView(QWidget *parent)
   : QGraphicsView(parent)
 {
     setAcceptDrops(true);
+    setFocusPolicy(Qt::StrongFocus);
 
     VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
     if (settings && settings->IsOpenGLRender())
@@ -566,6 +568,19 @@ void VMainGraphicsView::EnsureToolVisible(const QRectF &rect)
  */
 void VMainGraphicsView::mousePressEvent(QMouseEvent *event)
 {
+    // Space + LeftButton = pan (same as middle button)
+    if (m_isSpacePanActive && event->button() == Qt::LeftButton)
+    {
+        m_ptStartPos = event->pos();
+        m_oldCursor = viewport()->cursor();
+        QGraphicsView::setDragMode(QGraphicsView::ScrollHandDrag);
+        m_isSpacePanDrag = true;
+        event->accept();
+        viewport()->setCursor(Qt::ClosedHandCursor);
+        QGraphicsView::mousePressEvent(event);
+        return;
+    }
+
     switch (event->button())
     {
         case Qt::LeftButton:
@@ -685,16 +700,64 @@ void VMainGraphicsView::mouseReleaseEvent(QMouseEvent *event)
         return;
     }
 
+    // Check before resetting drag mode
+    bool const wasSpacePanDrag = m_isSpacePanDrag && event->button() == Qt::LeftButton;
+
     QGraphicsView::mouseReleaseEvent(event); // First because need to hide a rubber band
     QGraphicsView::setDragMode(QGraphicsView::NoDrag);
     if (event->button() == Qt::MiddleButton)
     {
         viewport()->setCursor(m_oldCursor);
     }
-    if (event->button() == Qt::LeftButton)
+    if (wasSpacePanDrag)
+    {
+        m_isSpacePanDrag = false;
+        viewport()->setCursor(Qt::OpenHandCursor); // Space still held
+    }
+    else if (event->button() == Qt::LeftButton)
     {
         emit MouseRelease();
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief keyPressEvent handle key press events.
+ * @param event key event.
+ */
+void VMainGraphicsView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Space && not event->isAutoRepeat())
+    {
+        m_preSpaceCursor = viewport()->cursor();
+        viewport()->setCursor(Qt::OpenHandCursor);
+        m_isSpacePanActive = true;
+        event->accept();
+        return;
+    }
+    QGraphicsView::keyPressEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief keyReleaseEvent handle key release events.
+ * @param event key event.
+ */
+void VMainGraphicsView::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Space && not event->isAutoRepeat())
+    {
+        m_isSpacePanActive = false;
+        if (m_isSpacePanDrag)
+        {
+            QGraphicsView::setDragMode(QGraphicsView::NoDrag);
+            m_isSpacePanDrag = false;
+        }
+        viewport()->setCursor(m_preSpaceCursor);
+        event->accept();
+        return;
+    }
+    QGraphicsView::keyReleaseEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

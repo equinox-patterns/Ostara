@@ -182,6 +182,8 @@ protected:
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;
     void drawForeground(QPainter *painter, const QRectF &rect) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
     Q_DISABLE_COPY_MOVE(VMainGraphicsView) // NOLINT
@@ -195,6 +197,9 @@ private:
     QPoint m_ptStartPos{};
     QCursor m_oldCursor{};
     Qt::CursorShape m_currentCursor{Qt::ArrowCursor};
+    bool m_isSpacePanActive{false};
+    bool m_isSpacePanDrag{false};
+    QCursor m_preSpaceCursor{};
 };
 
 #endif // VMAINGRAPHICSVIEW_H

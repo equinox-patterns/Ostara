@@ -30,16 +30,6 @@
 #include "../vpatterndb/vpiecenode.h"
 #include "core/vapplication.h"
 #include "mainwindow.h"
-#include "StyleGuideWindow.h"
-#include "WelcomeWindow.h"
-#include "dialogs/DialogNewMeasurements.h"
-#include "dialogs/DialogOpenMeasurements.h"
-#include "widgets/MeasurementWorkspace/MeasurementWindow.h"
-#include "widgets/MeasurementWorkspace/MeasurementWorkspace.h"
-
-#include <QFileDialog>
-#include <QFileInfo>
-#include <QScreen>
 
 #include "vabstractapplication.h"
 #include "vvalentinasettings.h"
@@ -139,220 +129,39 @@ auto main(int argc, char *argv[]) -> int
 
     VApplication::setDesktopFileName(QStringLiteral("com.ostara.ostara"));
 
-    // === MVC Controller — main.cpp orchestrates which view is shown ===
+    // --- Single-window bootstrap ---
+    // MainWindow now hosts WelcomeScreen internally via a QStackedWidget.
+    // No separate WelcomeWindow — navigation is handled by ShowWelcomeScreen()/ShowEditor().
 
-    auto createMainWindow = [](const QString &filePath = {}, QWidget *referenceWindow = nullptr) {
-        auto *mw = new MainWindow();
-        mw->setAttribute(Qt::WA_DeleteOnClose);
-        // When MainWindow closes → quit the app (no return to Welcome)
-        QObject::connect(mw, &QObject::destroyed, []() { QApplication::quit(); });
+    auto *mw = new MainWindow();
+    mw->setAttribute(Qt::WA_DeleteOnClose);
+    QObject::connect(mw, &QObject::destroyed, []() { QApplication::quit(); });
 
-        // Inherit geometry from WelcomeWindow for seamless "same window" transition.
-        // MainWindow::ReadSettings() already restored the saved "geometry" key in the
-        // constructor, but we override it with the WelcomeWindow's actual screen position
-        // so MainWindow always replaces WelcomeWindow in-place.
-        if (referenceWindow != nullptr)
-        {
-            mw->setWindowState(Qt::WindowNoState);
-            mw->setGeometry(referenceWindow->geometry());
-
-            // When the pattern is closed (via menu or New Pattern cancelled),
-            // return to WelcomeScreen instead of quitting.
-            QObject::connect(mw, &MainWindow::patternClosed, [referenceWindow, mw]() {
-                referenceWindow->show();
-                QObject::disconnect(mw, &QObject::destroyed, nullptr, nullptr);
-                mw->deleteLater();
-            });
-        }
-
-        VAbstractValApplication::VApp()->setMainWindow(mw);
-        mw->show();
-        if (!filePath.isEmpty())
-        {
-            mw->LoadPattern(filePath);
-        }
-        return mw;
-    };
-
-    constexpr int MaxRecentMeasurementFiles = 5;
-
-    auto showWelcome = [&]() {
-        auto *welcome = new WelcomeWindow();
-        welcome->setAttribute(Qt::WA_DeleteOnClose);
-
-        // Helper: add a measurement file path to the recent list and refresh the welcome screen.
-        auto addRecentMeasurement = [welcome](const QString &path) {
-            if (path.isEmpty() || !QFileInfo::exists(path))
-            {
-                return;
-            }
-            VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-            QStringList files = settings->GetRecentMeasurementFileList();
-            files.removeAll(path);
-            files.prepend(path);
-            while (files.size() > MaxRecentMeasurementFiles)
-            {
-                files.removeLast();
-            }
-            settings->SetRecentMeasurementFileList(files);
-            // Refresh the welcome screen lists
-            welcome->UpdateRecentItems(
-                VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentFileList(),
-                settings->GetRecentMeasurementFileList());
-        };
-
-        // "Nouveau patron"
-        QObject::connect(welcome, &WelcomeWindow::NewPatternRequested, [welcome, createMainWindow]() {
-            auto *mw = createMainWindow({}, welcome);
-            welcome->hide();
-            // Automatically open the "New Pattern" dialog after creating the main window.
-            if (mw)
-            {
-                QTimer::singleShot(0, mw, [mw]() {
-                    if (auto *action = mw->findChild<QAction *>(QStringLiteral("actionNew")))
-                    {
-                        action->trigger();
-                    }
-                });
-            }
-        });
-
-        // "Ouvrir un patron..."
-        QObject::connect(welcome, &WelcomeWindow::OpenPatternRequested, [welcome, createMainWindow]() {
-            const QString filter = QObject::tr("Pattern files (*.val *.ostara)");
-            // Start in the folder of the most recently used pattern, like on_actionOpen_triggered().
-            const QStringList recentFiles =
-                VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentFileList();
-            const QString dir = recentFiles.isEmpty()
-                ? QDir::homePath()
-                : QFileInfo(recentFiles.constFirst()).absolutePath();
-            const QString path = QFileDialog::getOpenFileName(welcome, QObject::tr("Open pattern"),
-                                                              dir, filter);
-            if (path.isEmpty())
-            {
-                return;
-            }
-            createMainWindow(path, welcome);
-            welcome->hide();
-        });
-
-        // Double-clic sur un récent patron
-        QObject::connect(welcome, &WelcomeWindow::OpenRecentPatternRequested,
-                         [welcome, createMainWindow](const QString &path) {
-            if (path.isEmpty())
-            {
-                return;
-            }
-            createMainWindow(path, welcome);
-            welcome->hide();
-        });
-
-        // Measurement — standalone MeasurementWindow (FromHome)
-        QObject::connect(welcome, &WelcomeWindow::NewMeasurementRequested, [welcome, addRecentMeasurement]() {
-            DialogNewMeasurements dlg(welcome);
-            if (dlg.exec() != QDialog::Accepted)
-            {
-                return;
-            }
-            auto *mw = new MeasurementWindow();
-            mw->SetOrigin(MeasurementWorkspace::Origin::FromHome);
-            mw->setAttribute(Qt::WA_DeleteOnClose);
-            QObject::connect(mw, &MeasurementWindow::measurementsSaved,
-                             addRecentMeasurement);
-            QObject::connect(mw, &QObject::destroyed, [welcome]() {
-                welcome->show();
-            });
-            mw->setGeometry(welcome->geometry());
-            welcome->hide();
-            mw->NewDocument(dlg.MeasurementsType(), dlg.Unit());
-            mw->SetTableName(dlg.TableName());
-            mw->show();
-        });
-
-        QObject::connect(welcome, &WelcomeWindow::OpenMeasurementRequested, [welcome, addRecentMeasurement]() {
-            DialogOpenMeasurements dlg(welcome);
-            if (dlg.exec() != QDialog::Accepted)
-            {
-                return;
-            }
-            const QString path = dlg.selectedPath();
-            if (path.isEmpty())
-            {
-                return;
-            }
-            auto *mw = new MeasurementWindow();
-            mw->SetOrigin(MeasurementWorkspace::Origin::FromHome);
-            mw->setAttribute(Qt::WA_DeleteOnClose);
-            QObject::connect(mw, &MeasurementWindow::measurementsSaved,
-                             addRecentMeasurement);
-            QObject::connect(mw, &QObject::destroyed, [welcome]() {
-                welcome->show();
-            });
-            mw->setGeometry(welcome->geometry());
-            welcome->hide();
-            mw->show();
-            mw->LoadFile(path);
-            // Also add opened legacy files to recent list
-            if (path.endsWith(QStringLiteral(".omt"), Qt::CaseInsensitive)
-                || path.endsWith(QStringLiteral(".otu"), Qt::CaseInsensitive))
-            {
-                addRecentMeasurement(path);
-            }
-        });
-
-        QObject::connect(welcome, &WelcomeWindow::OpenRecentMeasurementRequested,
-                         [welcome, addRecentMeasurement](const QString &path) {
-            if (path.isEmpty())
-            {
-                return;
-            }
-            auto *mw = new MeasurementWindow();
-            mw->SetOrigin(MeasurementWorkspace::Origin::FromHome);
-            mw->setAttribute(Qt::WA_DeleteOnClose);
-            QObject::connect(mw, &MeasurementWindow::measurementsSaved,
-                             addRecentMeasurement);
-            QObject::connect(mw, &QObject::destroyed, [welcome]() {
-                welcome->show();
-            });
-            mw->setGeometry(welcome->geometry());
-            welcome->hide();
-            mw->show();
-            mw->LoadFile(path);
-            addRecentMeasurement(path);
-        });
-
-        // Features — modeless style-guide window (dev-only)
-        QObject::connect(welcome, &WelcomeWindow::FeaturesRequested, []() {
-            auto *sg = new StyleGuideWindow();
-            sg->setAttribute(Qt::WA_DeleteOnClose);
-            sg->show();
-        });
-
-        // Auto-updater
-        if (VApplication::IsGUIMode() && VAbstractApplication::VApp()->Settings()->IsAutomaticallyCheckUpdates())
-        {
-            FvUpdater::sharedUpdater()->SetFeedURL(FvUpdater::CurrentFeedURL());
-            FvUpdater::sharedUpdater()->SetMainWindow(welcome);
-            FvUpdater::sharedUpdater()->CheckForUpdatesSilent();
-        }
-
-        // Publish WelcomeWindow as the active main window (macOS sheets, getMainWindow()).
-        VAbstractValApplication::VApp()->setMainWindow(welcome);
-
-        // Populate recent-file lists from QSettings.
-        welcome->UpdateRecentItems(
-            VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentFileList(),
-            VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentMeasurementFileList());
-
-        welcome->show();
-    };
+    VAbstractValApplication::VApp()->setMainWindow(mw);
 
 #if !defined(Q_OS_MAC)
     VApplication::setWindowIcon(QIcon(":/icon/64x64/icon64x64.png"));
 #endif // !defined(Q_OS_MAC)
 
-    // === Go ===
-    QTimer::singleShot(0, showWelcome);
+    if (VApplication::IsGUIMode())
+    {
+        mw->show();
+
+        // Auto-updater
+        if (VAbstractApplication::VApp()->Settings()->IsAutomaticallyCheckUpdates())
+        {
+            FvUpdater::sharedUpdater()->SetFeedURL(FvUpdater::CurrentFeedURL());
+            FvUpdater::sharedUpdater()->SetMainWindow(mw);
+            FvUpdater::sharedUpdater()->CheckForUpdatesSilent();
+        }
+
+        // Process command-line args (crash restore, file opens)
+        QTimer::singleShot(0, mw, &MainWindow::ProcessCMD);
+    }
+    else
+    {
+        mw->ProcessCMD(); // console/export path
+    }
 
     return VApplication::exec();
 }

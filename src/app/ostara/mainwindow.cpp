@@ -215,6 +215,9 @@
 #include "dialogs/dialogpatternproperties.h"
 #include "widgets/MeasurementWorkspace/MeasurementWindow.h"
 #include "widgets/MeasurementWorkspace/MeasurementWorkspace.h"
+#include "WelcomeScreen.h"
+#include "StyleGuideWindow.h"
+#include <QStackedWidget>
 #include "dialogs/dialogpreferences.h"
 #include "../vtools/dialogs/tools/dialogparallelcurve.h"
 #include "dialogs/vwidgetbackgroundimages.h"
@@ -398,6 +401,28 @@ MainWindow::MainWindow(QWidget *parent)
     connect(VAbstractApplication::VApp()->getUndoStack(), &QUndoStack::cleanChanged, this,
             &MainWindow::PatternChangesWereSaved);
 
+    // --- WelcomeScreen integration (single-window) ---
+    // MUST run before ReadSettings() — restoreState() snapshots the layout,
+    // and the snapshot must capture the QStackedWidget as central widget,
+    // not the old central widget which takeCentralWidget() destroys.
+    m_stackedWidget = new QStackedWidget(this);
+    m_welcomeScreen = new WelcomeScreen();
+
+    QWidget *oldCentral = takeCentralWidget(); // detaches without deleting
+    m_stackedWidget->addWidget(oldCentral);      // index 0 — editor (wraps ui->view)
+    m_stackedWidget->addWidget(m_welcomeScreen); // index 1 — welcome
+    setCentralWidget(m_stackedWidget);
+    m_stackedWidget->setCurrentWidget(m_welcomeScreen); // start on welcome
+
+    InitWelcomePage();
+
+    connect(this, &MainWindow::patternClosed, this, &MainWindow::ShowWelcomeScreen);
+
+    // macOS: set MenuRoles so the app menu (About, Preferences, Quit) works
+    ui->actionExit->setMenuRole(QAction::QuitRole);
+    ui->actionAbout_Valentina->setMenuRole(QAction::AboutRole);
+    ui->actionPreferences->setMenuRole(QAction::PreferencesRole);
+
     InitAutoSave();
 
     ReadSettings();
@@ -495,6 +520,82 @@ MainWindow::MainWindow(QWidget *parent)
         connect(manager, &VAbstractShortcutManager::ShortcutsUpdated, this, &MainWindow::UpdateShortcuts);
         UpdateShortcuts();
     }
+
+    // Start in welcome state: hide all editor chrome
+    ShowWelcomeScreen();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::InitWelcomePage()
+{
+    // Pattern signals
+    connect(m_welcomeScreen, &WelcomeScreen::NewPatternClicked, this, &MainWindow::on_actionNew_triggered);
+    connect(m_welcomeScreen, &WelcomeScreen::OpenPatternClicked, this, &MainWindow::on_actionOpen_triggered);
+    connect(m_welcomeScreen, &WelcomeScreen::OpenRecentPattern, this,
+            [this](const QString &path) { LoadPattern(path); });
+
+    // Measurement signals (implemented in mainwindow_welcome.cpp)
+    connect(m_welcomeScreen, &WelcomeScreen::NewMeasurementClicked, this, &MainWindow::WelcomeNewMeasurement);
+    connect(m_welcomeScreen, &WelcomeScreen::OpenMeasurementClicked, this, &MainWindow::WelcomeOpenMeasurement);
+    connect(m_welcomeScreen, &WelcomeScreen::OpenRecentMeasurement, this, &MainWindow::WelcomeOpenRecentMeasurement);
+
+    // Features button (dev-only)
+    connect(m_welcomeScreen, &WelcomeScreen::FeaturesClicked, this,
+            []() { (new StyleGuideWindow())->show(); });
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ShowWelcomeScreen()
+{
+    m_stackedWidget->setCurrentWidget(m_welcomeScreen);
+
+    // Hide editor chrome
+    ui->topBar->setVisible(false);
+    m_drawToolBar->setVisible(false);
+    ui->dockWidgetToolOptions->setVisible(false);
+    ui->dockWidgetLayoutPages->setVisible(false);
+    ui->dockWidgetGroups->setVisible(false);
+    ui->dockWidgetMessages->setVisible(false);
+    ui->dockWidgetBackgroundImages->setVisible(false);
+    ui->dockWidgetDependencies->setVisible(false);
+    statusBar()->setVisible(false);
+
+    // Disable editor-specific actions
+    SetEnableTool(false);
+    SetEnableWidgets(false);
+    ui->actionClosePattern->setEnabled(false);
+
+    // Neutral window title
+    setWindowTitle(tr("Ostara"));
+    setWindowFilePath(QString());
+    setWindowModified(false);
+
+    // Refresh recent lists
+    VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+    m_welcomeScreen->UpdateRecentItems(settings->GetRecentFileList(),
+                                       settings->GetRecentMeasurementFileList());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ShowEditor()
+{
+    m_stackedWidget->setCurrentIndex(0); // index 0 = oldCentral (wraps ui->view)
+
+    // Show editor chrome
+    ui->topBar->setVisible(true);
+    m_drawToolBar->setVisible(true);
+    statusBar()->setVisible(true);
+    ui->actionClosePattern->setEnabled(true);
+
+    // Restore dock visibility from saved state booleans
+    ui->dockWidgetToolOptions->setVisible(m_toolOptionsActive);
+    ui->dockWidgetGroups->setVisible(m_groupsActive);
+    ui->dockWidgetMessages->setVisible(m_patternMessagesActive);
+    ui->dockWidgetBackgroundImages->setVisible(m_backgroundImagesActive);
+    ui->dockWidgetDependencies->setVisible(m_dependenciesActive);
+    // LayoutPages dock is hidden except in Layout mode
+
+    UpdateWindowTitle();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -964,6 +1065,7 @@ void MainWindow::changeEvent(QEvent *event)
     {
         // retranslate designer form (single inheritance approach)
         ui->retranslateUi(this);
+        m_welcomeScreen->RetranslateUI();
         undoAction->setText(tr("&Undo"));
         redoAction->setText(tr("&Redo"));
         statusBar()->showMessage(tr("Changes applied."), 5000);
@@ -2412,6 +2514,10 @@ auto MainWindow::on_actionSave_triggered() -> bool
  */
 void MainWindow::on_actionOpen_triggered()
 {
+    // Switch to editor first so the file dialog opens over the canvas,
+    // not over the WelcomeScreen. Idempotent if editor is already visible.
+    ShowEditor();
+
     qCDebug(vMainWindow, "Openning new file.");
     const QString filter(tr("Pattern files") + QStringLiteral(" (*.val)"));
     // Get list last open files
@@ -2431,6 +2537,11 @@ void MainWindow::on_actionOpen_triggered()
                                                           VAbstractApplication::VApp()->NativeFileDialog());
     if (filePath.isEmpty())
     {
+        // If we came from WelcomeScreen (no pattern open), return to it
+        if (not hasOpenPattern())
+        {
+            emit patternClosed();
+        }
         return;
     }
     LoadPattern(filePath);
@@ -2976,7 +3087,14 @@ void MainWindow::SetEnabledGUI(bool enabled)
         SetEnableTool(enabled);
 
 #ifndef QT_NO_CURSOR
-        QGuiApplication::setOverrideCursor(Qt::ArrowCursor);
+        if (not enabled)
+        {
+            QGuiApplication::setOverrideCursor(Qt::ArrowCursor);
+        }
+        else
+        {
+            QGuiApplication::restoreOverrideCursor();
+        }
 #endif
     }
 }
@@ -3061,6 +3179,10 @@ void MainWindow::on_actionNew_triggered()
 {
     if (m_comboBoxDraws->count() == 0)
     {
+        // Switch to editor first so the dialog opens over the canvas,
+        // not over the WelcomeScreen.
+        ShowEditor();
+
         qCDebug(vMainWindow, "New PP.");
         QString patternPieceName = tr("Pattern piece %1").arg(m_comboBoxDraws->count() + 1);
         qCDebug(vMainWindow, "Generated PP name: %s", qUtf8Printable(patternPieceName));
@@ -4558,6 +4680,10 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         SetEnableWidgets(true);
         setCurrentFile(fileName);
         qCDebug(vMainWindow, "File loaded.");
+
+        // Make the view visible BEFORE ZoomFirstShow/ActionDraw so that
+        // NewSceneRect, ZoomFitBest etc. operate with correct widget dimensions.
+        ShowEditor();
 
         // Fit scene size to best size for first show
         ZoomFirstShow();
