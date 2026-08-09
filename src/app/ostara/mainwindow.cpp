@@ -383,8 +383,6 @@ MainWindow::MainWindow(QWidget *parent)
     InitActionShortcuts();
 
     connect(ui->actionAddBackgroundImage, &QAction::triggered, this, &MainWindow::ActionAddBackgroundImage);
-    connect(ui->actionExportFontCorrections, &QAction::triggered, this, &MainWindow::ActionExportFontCorrections);
-    connect(ui->actionInstallSingleLineFont, &QAction::triggered, this, &MainWindow::ActionInstallSingleLineFont);
     connect(ui->actionReloadLabels, &QAction::triggered, this, &MainWindow::ActionReloadLabels);
     connect(ui->actionAutoArrangeLabels, &QAction::triggered, this, &MainWindow::RunAutoArrangeLabels);
 
@@ -510,10 +508,6 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     ui->actionExportFinalMeasurementsToCSV->setIcon(FromTheme(VThemeIcon::DocumentExport));
-    ui->actionExportFontCorrections->setIcon(FromTheme(VThemeIcon::DocumentExport));
-    ui->actionInstallSingleLineFont->setIcon(FromTheme(VThemeIcon::ListAddFont));
-
-    ui->actionExportFontCorrections->setEnabled(settings->GetSingleStrokeOutlineFont());
 
     if (VAbstractShortcutManager  const*manager = VAbstractValApplication::VApp()->GetShortcutManager())
     {
@@ -1134,6 +1128,7 @@ void MainWindow::changeEvent(QEvent *event)
         }
 
         UpdateTopBarIcons();
+        UpdateMenuIcons();
     }
 
     // remember to call base class implementation
@@ -1771,7 +1766,6 @@ void MainWindow::InitActionShortcuts()
     m_shortcutActions.insert(VShortcutAction::NewPatternPiece, ui->actionNewDraw);
     m_shortcutActions.insert(VShortcutAction::NextPatternPiece, ui->actionNextPatternPiece);
     m_shortcutActions.insert(VShortcutAction::PreviusPatternPiece, ui->actionPreviousPatternPiece);
-    m_shortcutActions.insert(VShortcutAction::InteractiveTools, ui->actionInteractiveTools);
     m_shortcutActions.insert(VShortcutAction::TableOfVariables, ui->actionTable);
     m_shortcutActions.insert(VShortcutAction::Quit, ui->actionExit);
     m_shortcutActions.insert(VShortcutAction::LastTool, ui->actionLast_tool);
@@ -3772,7 +3766,7 @@ void MainWindow::CreateMenus()
 
     m_separatorAct = new QAction(this);
     m_separatorAct->setSeparator(true);
-    ui->menuPatternPiece->insertAction(ui->actionPattern_properties, m_separatorAct);
+    ui->menuFile->insertAction(ui->actionPattern_properties, m_separatorAct);
 
     AddDocks();
 }
@@ -4153,10 +4147,6 @@ void MainWindow::CreateActions()
 
     connect(ui->actionLast_tool, &QAction::triggered, this, &MainWindow::LastUsedTool);
 
-    ui->actionInteractiveTools->setChecked(VAbstractValApplication::VApp()->ValentinaSettings()->IsInteractiveTools());
-    connect(ui->actionInteractiveTools, &QAction::triggered, this,
-            [](bool checked) { VAbstractValApplication::VApp()->ValentinaSettings()->SetInteractiveTools(checked); });
-
     connect(ui->actionPattern_properties, &QAction::triggered, this,
             [this]()
             {
@@ -4254,13 +4244,6 @@ void MainWindow::CreateActions()
                 });
     }
 
-
-    connect(ui->actionLabelTemplateEditor, &QAction::triggered, this,
-            [this]()
-            {
-                DialogEditLabel editor(doc, pattern);
-                editor.exec();
-            });
 
     connect(ui->actionWatermarkEditor, &QAction::triggered, this, &MainWindow::CreateWatermark);
     connect(ui->actionLoadWatermark, &QAction::triggered, this, &MainWindow::LoadWatermark);
@@ -4801,8 +4784,6 @@ void MainWindow::Preferences()
         if (guard->exec() == QDialog::Accepted)
         {
             InitAutoSave();
-            VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-            ui->actionExportFontCorrections->setEnabled(settings->GetSingleStrokeOutlineFont());
         }
     }
 }

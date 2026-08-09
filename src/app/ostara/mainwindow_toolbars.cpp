@@ -248,6 +248,7 @@ void MainWindow::ToolBarTools()
     m_topBar->SetZoomWidget(zoomBlock);
 
     UpdateTopBarIcons();
+    UpdateMenuIcons();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -281,6 +282,24 @@ void MainWindow::UpdateTopBarIcons()
     {
         m_topBar->ReloadIcons();
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::UpdateMenuIcons()
+{
+    const bool isDark = VTheme::ColorSheme() == VColorSheme::Dark;
+    const auto themeDir = QString(isDark ? QStringLiteral("dark") : QStringLiteral("light"));
+
+    ui->actionNew->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/file-plus_%1.svg").arg(themeDir)));
+    ui->actionOpen->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/folder-open_%1.svg").arg(themeDir)));
+    ui->actionSave->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/floppy-disk_%1.svg").arg(themeDir)));
+    ui->actionSaveAs->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/file-arrow-up_%1.svg").arg(themeDir)));
+    ui->actionPattern_properties->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/info_%1.svg").arg(themeDir)));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -47,6 +47,9 @@
         <file alias="line-vertical_light.svg">../../../../../share/themes/icons/light/line-vertical_light.svg</file>
         <file alias="caret-left_light.svg">../../../../../share/themes/icons/light/caret-left_light.svg</file>
         <file alias="caret-right_light.svg">../../../../../share/themes/icons/light/caret-right_light.svg</file>
+        <file alias="file-plus_light.svg">../../../../../share/themes/icons/light/file-plus_light.svg</file>
+        <file alias="folder-open_light.svg">../../../../../share/themes/icons/light/folder-open_light.svg</file>
+        <file alias="info_light.svg">../../../../../share/themes/icons/light/info_light.svg</file>
     </qresource>
     <qresource prefix="/icons/dark">
         <file alias="square_accent.svg">../../../../../share/themes/icons/dark/square_accent.svg</file>
@@ -92,5 +95,8 @@
         <file alias="line-vertical_dark.svg">../../../../../share/themes/icons/dark/line-vertical_dark.svg</file>
         <file alias="caret-left_dark.svg">../../../../../share/themes/icons/dark/caret-left_dark.svg</file>
         <file alias="caret-right_dark.svg">../../../../../share/themes/icons/dark/caret-right_dark.svg</file>
+        <file alias="file-plus_dark.svg">../../../../../share/themes/icons/dark/file-plus_dark.svg</file>
+        <file alias="folder-open_dark.svg">../../../../../share/themes/icons/dark/folder-open_dark.svg</file>
+        <file alias="info_dark.svg">../../../../../share/themes/icons/dark/info_dark.svg</file>
     </qresource>
 </RCC>

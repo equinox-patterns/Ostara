@@ -41,7 +41,6 @@
 #include <QStringList>
 
 #include "../support/dialogbulkrename.h"
-#include "../vpropertyexplorer/qtcolorpicker.h"
 #include "vlineedit.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -185,9 +184,11 @@ void DialogOperationTool::GroupNameChanged()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::ShowSourceDetails(int row)
 {
+    auto *combo = Widgets().color;
+
     Widgets().name->setDisabled(true);
     Widgets().penStyle->setDisabled(true);
-    Widgets().color->setDisabled(true);
+    combo->setDisabled(true);
 
     if (Widgets().sourceList->count() == 0)
     {
@@ -204,10 +205,10 @@ void DialogOperationTool::ShowSourceDetails(int row)
     if (data.GetGObject(sourceItem.id)->getType() == GOType::Point)
     {
         const QSignalBlocker blockerPenStyle(Widgets().penStyle);
-        const QSignalBlocker blockerColor(Widgets().color);
+        const QSignalBlocker blockerColor(combo);
 
         Widgets().penStyle->setCurrentIndex(-1);
-        Widgets().color->setCurrentColor(QColor());
+        combo->setCurrentIndex(-1);
     }
     else
     {
@@ -233,19 +234,19 @@ void DialogOperationTool::ShowSourceDetails(int row)
             Widgets().penStyle->setItemText(index, '<' + tr("Default") + '>');
         }
 
-        QSignalBlocker blockerColor(Widgets().color);
-        QColor const color(sourceItem.color);
-        Widgets().color->setCurrentColor(color.isValid() ? color : ColorDefault);
+        QSignalBlocker blockerColor(combo);
+        const QColor sourceColor(sourceItem.color);
+        SetColorComboCurrentName(combo, sourceColor.isValid() ? sourceColor.name() : ColorDefault);
         blockerColor.unblock();
 
         if (sourceItem.color.isEmpty() || sourceItem.color == ColorDefault)
         {
             const QSharedPointer<VAbstractCurve> curve = data.GeometricObject<VAbstractCurve>(sourceItem.id);
-            Widgets().color->setDefaultColor(curve->GetColor());
+            SetColorComboCurrentName(combo, curve->GetColor());
         }
 
         Widgets().penStyle->setEnabled(true);
-        Widgets().color->setEnabled(true);
+        combo->setEnabled(true);
     }
 
     const QSignalBlocker blockerName(Widgets().name);
@@ -438,7 +439,8 @@ void DialogOperationTool::ColorChanged() const
     if (auto *item = Widgets().sourceList->currentItem())
     {
         auto sourceItem = qvariant_cast<SourceItem>(item->data(Qt::UserRole));
-        QColor const color = Widgets().color->currentColor();
+        const QString colorName = GetColorComboCurrentName(Widgets().color);
+        const QColor color(colorName);
         sourceItem.color = color.isValid() ? color.name() : ColorDefault;
         item->setData(Qt::UserRole, QVariant::fromValue(sourceItem));
     }

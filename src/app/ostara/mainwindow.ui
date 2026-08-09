@@ -57,7 +57,7 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>&amp;File</string>
+     <string>&amp;Pattern</string>
     </property>
     <widget class="QMenu" name="menuLayout">
      <property name="title">
@@ -81,52 +81,43 @@
     <addaction name="actionPreferences"/>
     <addaction name="actionPattern_properties"/>
     <addaction name="separator"/>
-    <addaction name="actionLabelTemplateEditor"/>
-    <addaction name="separator"/>
-    <addaction name="actionInstallSingleLineFont"/>
-    <addaction name="actionExportFontCorrections"/>
-    <addaction name="separator"/>
+    <addaction name="actionClosePattern"/>
     <addaction name="actionExit"/>
-   </widget>
-   <widget class="QMenu" name="menuHelp">
-    <property name="title">
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionReportBug"/>
-    <addaction name="actionSettingsDirectory"/>
-    <addaction name="actionShop"/>
-    <addaction name="actionAbout_Qt"/>
-    <addaction name="actionAbout_Valentina"/>
    </widget>
    <widget class="QMenu" name="menuPatternPiece">
     <property name="title">
-     <string>&amp;Pattern piece</string>
+     <string>&amp;Piece</string>
     </property>
     <addaction name="actionNewDraw"/>
     <addaction name="actionOptionDraw"/>
+    <addaction name="separator"/>
+    <addaction name="actionPreviousPatternPiece"/>
+    <addaction name="actionNextPatternPiece"/>
+    <addaction name="separator"/>
+    <addaction name="actionLast_tool"/>
+    <addaction name="separator"/>
+    <addaction name="actionAddBackgroundImage"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>&amp;Display</string>
+    </property>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
     <addaction name="actionZoomFitBest"/>
     <addaction name="actionZoomFitBestCurrent"/>
     <addaction name="actionZoomOriginal"/>
     <addaction name="separator"/>
-    <addaction name="actionPreviousPatternPiece"/>
-    <addaction name="actionNextPatternPiece"/>
-    <addaction name="separator"/>
-    <addaction name="actionIncreaseLabelFont"/>
-    <addaction name="actionDecreaseLabelFont"/>
-    <addaction name="actionOriginalLabelFont"/>
-    <addaction name="actionHideLabels"/>
-    <addaction name="separator"/>
-    <addaction name="actionLast_tool"/>
-    <addaction name="actionInteractiveTools"/>
     <addaction name="actionShowCurveDetails"/>
     <addaction name="actionShowSegmentLabels"/>
     <addaction name="actionShowMainPath"/>
     <addaction name="actionBoundaryTogetherWithNotches"/>
     <addaction name="actionShowAccuracyRadius"/>
     <addaction name="separator"/>
-    <addaction name="actionAddBackgroundImage"/>
+    <addaction name="actionIncreaseLabelFont"/>
+    <addaction name="actionDecreaseLabelFont"/>
+    <addaction name="actionOriginalLabelFont"/>
+    <addaction name="actionHideLabels"/>
     <addaction name="separator"/>
     <addaction name="actionReloadLabels"/>
     <addaction name="actionAutoArrangeLabels"/>
@@ -155,18 +146,6 @@
     <property name="title">
      <string>Window</string>
     </property>
-    <addaction name="actionClosePattern"/>
-   </widget>
-   <widget class="QMenu" name="menuHistory">
-    <property name="title">
-     <string>History</string>
-    </property>
-    <addaction name="actionExportRecipe"/>
-   </widget>
-   <widget class="QMenu" name="menuMode">
-    <property name="title">
-     <string>Mode</string>
-    </property>
     <addaction name="actionDraw"/>
     <addaction name="actionDetails"/>
     <addaction name="actionLayout"/>
@@ -181,24 +160,13 @@
     <addaction name="actionLoadWatermark"/>
     <addaction name="actionRemoveWatermark"/>
    </widget>
-   <widget class="QMenu" name="menuManual_Layout">
-    <property name="title">
-     <string>Manual Layout</string>
-    </property>
-    <addaction name="actionOpenPuzzle"/>
-    <addaction name="actionCreateManualLayout"/>
-    <addaction name="actionUpdateManualLayout"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuPatternPiece"/>
-   <addaction name="menuMode"/>
+   <addaction name="menuView"/>
    <addaction name="menuMeasurements"/>
    <addaction name="menuLibraries"/>
    <addaction name="menuWatermark"/>
-   <addaction name="menuManual_Layout"/>
    <addaction name="menuWindow"/>
-   <addaction name="menuHistory"/>
-   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="topBar">
@@ -559,7 +527,7 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with pattern pieces. These pattern pieces are base for going to the next stage &amp;quot;Details mode&amp;quot;. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
-    <string notr="true">Ctrl+W</string>
+    <string notr="true">Ctrl+D</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -646,7 +614,7 @@
     <string>Config pattern piece</string>
    </property>
    <property name="toolTip">
-    <string>Change the label of pattern piece</string>
+    <string>Change the name of pattern piece</string>
    </property>
    <property name="shortcut">
     <string notr="true"/>
@@ -719,7 +687,7 @@
     <iconset theme="help-about"/>
    </property>
    <property name="text">
-    <string>&amp;About Valentina</string>
+    <string>&amp;About Ostara</string>
    </property>
    <property name="shortcut">
     <string notr="true"/>
@@ -818,10 +786,10 @@
     <iconset theme="zoom-original"/>
    </property>
    <property name="text">
-    <string>Original zoom</string>
+    <string>Zoom 100%</string>
    </property>
    <property name="toolTip">
-    <string>Original zoom</string>
+    <string>Zoom 100%</string>
    </property>
    <property name="shortcut">
     <string notr="true"/>
@@ -872,7 +840,7 @@
     <string>Close pattern</string>
    </property>
    <property name="shortcut">
-    <string notr="true"/>
+    <string notr="true">Ctrl+W</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -926,10 +894,10 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Show Segment Labels</string>
+    <string>Show segment point names</string>
    </property>
    <property name="toolTip">
-    <string>Allow segment labels to appear. Uncheck to hide them in all cases.</string>
+    <string>Allow segment point names to appear. Uncheck to hide them in all cases.</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -1053,14 +1021,6 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionLabelTemplateEditor">
-   <property name="text">
-    <string>Label template editor</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
   <action name="actionFinalMeasurements">
    <property name="enabled">
     <bool>false</bool>
@@ -1167,7 +1127,7 @@
     <iconset theme="zoom-in"/>
    </property>
    <property name="text">
-    <string>Increase label font</string>
+    <string>Increase point name font</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -1181,7 +1141,7 @@
     <iconset theme="zoom-out"/>
    </property>
    <property name="text">
-    <string>Decrease label font</string>
+    <string>Decrease point name font</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -1195,7 +1155,7 @@
     <iconset theme="zoom-original"/>
    </property>
    <property name="text">
-    <string>Original label font</string>
+    <string>Original point name font</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -1209,7 +1169,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Hide labels</string>
+    <string>Hide point names</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -1366,34 +1326,6 @@
    </property>
    <property name="text">
     <string>Show accuracy radius</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionInteractiveTools">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Interactive tools</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+D</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionExportFontCorrections">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Export font corrections</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -2334,10 +2266,10 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Reload labels</string>
+    <string>Reload point names</string>
    </property>
    <property name="toolTip">
-    <string>Reload piece labels</string>
+    <string>Reload piece point names</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -2351,21 +2283,10 @@
     <iconset theme="format-justify-center"/>
    </property>
    <property name="text">
-    <string>Auto-arrange labels</string>
+    <string>Auto-arrange point names</string>
    </property>
    <property name="toolTip">
-    <string>Auto-arrange point labels to reduce overlaps</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionInstallSingleLineFont">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Install single line font</string>
+    <string>Auto-arrange point names to reduce overlaps</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

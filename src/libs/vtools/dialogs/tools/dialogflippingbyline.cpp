@@ -135,7 +135,7 @@ auto DialogFlippingByLine::Widgets() const -> OperationWidgets
             .labelStatus = ui->labelStatus,
             .labelGroupName = ui->labelGroupName,
             .penStyle = ui->comboBoxPenStyle,
-            .color = ui->pushButtonColor,
+            .color = m_colorCombo,
             .objectType = ui->comboBoxObjectType,
             .newObject = ui->comboBoxNewObject,
             .addObject = ui->toolButtonNewObject,

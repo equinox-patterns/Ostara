@@ -72,7 +72,7 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
     AddShortcut({VShortcutAction::Save, KeyBindingsToStringList(QKeySequence::Save), {}});
     AddShortcut({VShortcutAction::SaveAs, KeyBindingsToStringList(QKeySequence::SaveAs), {}});
     AddShortcut(
-        {VShortcutAction::DrawMode, {QKeySequence(Qt::ControlModifier | Qt::Key_W).toString()}, {}});
+        {VShortcutAction::DrawMode, {QKeySequence(Qt::ControlModifier | Qt::Key_D).toString()}, {}});
     AddShortcut(
         {VShortcutAction::DetailsMode, {QKeySequence(Qt::ControlModifier | Qt::Key_E).toString()}, {}});
     AddShortcut(
@@ -86,9 +86,6 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
                  {}});
     AddShortcut({VShortcutAction::PreviusPatternPiece,
                  {QKeySequence(Qt::ControlModifier | Qt::Key_PageUp).toString()},
-                 {}});
-    AddShortcut({VShortcutAction::InteractiveTools,
-                 {QKeySequence(Qt::ControlModifier | Qt::Key_D).toString()},
                  {}});
     AddShortcut({VShortcutAction::TableOfVariables,
                  {QKeySequence(Qt::ControlModifier | Qt::Key_T).toString()},

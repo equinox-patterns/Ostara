@@ -404,6 +404,7 @@ private:
     void UpdateMeasurementFileNameLabel();
     void UpdateMeasurementSeparatorIcon();
     void UpdateTopBarIcons();
+    void UpdateMenuIcons();
     void InitToolButtons();
     void InitActionShortcuts();
     void CancelTool();

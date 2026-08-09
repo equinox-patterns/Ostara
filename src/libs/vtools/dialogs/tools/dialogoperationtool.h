@@ -40,10 +40,6 @@ class QGroupBox;
 class QLabel;
 class QPlainTextEdit;
 class VCompleterLineEdit;
-namespace VPE
-{
-class QtColorPicker;
-}
 
 struct OperationWidgets
 {
@@ -53,7 +49,7 @@ struct OperationWidgets
     QLabel *labelStatus{nullptr};
     QLabel *labelGroupName{nullptr};
     QComboBox *penStyle{nullptr};
-    VPE::QtColorPicker *color{nullptr};
+    QComboBox *color{nullptr};
     QComboBox *objectType{nullptr};
     QComboBox *newObject{nullptr};
     QAbstractButton *addObject{nullptr};
