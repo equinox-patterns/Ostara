@@ -681,33 +681,111 @@ QGroupBox {
     background: #232323;
     border: 1px solid #333333;
     border-radius: 4px;
-    padding: 20px 16px 16px 16px;
-    font-weight: bold;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    padding: 24px 16px 16px 16px;
     color: #e5e5e5;
 }
 
 QGroupBox::title {
+    subcontrol-origin: padding;
     subcontrol-position: top center;
-    padding: 0 8px;
+    padding: 4px 8px;
+    font-weight: bold;
     color: #e5e5e5;
+}
+
+/* QGroupBox without title — used as dock content wrapper via WrapDockContent().
+   Smaller padding since there is no title to center. */
+QGroupBox#dockContentGroupBox {
+    padding: 4px;
 }
 
 /* =========================================================================
    QDockWidget — Docks
-   Design: #191919 background on native title bar,
-           but docks will use custom title bars via setTitleBarWidget()
-           (see design-system.md §7e). This QSS is the fallback.
+   Design: custom title bar via ODockTitleBar (setTitleBarWidget),
+           #232323 background, 8px padding around content
    ========================================================================= */
 
 QDockWidget {
     background-color: #232323;
     color: #e5e5e5;
+    padding: 8px;
 }
 
+/* Native title bar — hidden, replaced by ODockTitleBar */
 QDockWidget::title {
     background: #191919;
     padding: 6px 12px;
     border-bottom: 1px solid #333333;
+}
+
+/* =========================================================================
+   ODockTitleBar — Custom dock title bar
+   Design: #191919 background, title left, 3 icon buttons right
+   Height: 32px, bottom border separator
+   ========================================================================= */
+
+QWidget#dockTitleBar {
+    background: #191919;
+    min-height: 32px;
+}
+
+QLabel#dockTitleLabel {
+    color: #e5e5e5;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+QPushButton#dockCollapseBtn,
+QPushButton#dockDetachBtn,
+QPushButton#dockCloseBtn {
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    padding: 2px;
+}
+
+QPushButton#dockCollapseBtn:hover,
+QPushButton#dockDetachBtn:hover,
+QPushButton#dockCloseBtn:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+/* Collapse — expanded (caret-up, click to collapse) */
+QPushButton#dockCollapseBtn {
+    image: url(:/icons/dark/caret-up_dark.svg);
+}
+QPushButton#dockCollapseBtn:hover {
+    image: url(:/icons/dark/caret-up_accent.svg);
+}
+/* Collapse — collapsed (caret-down, click to expand) */
+QPushButton#dockCollapseBtn[collapsed="true"] {
+    image: url(:/icons/dark/caret-down_dark.svg);
+}
+QPushButton#dockCollapseBtn[collapsed="true"]:hover {
+    image: url(:/icons/dark/caret-down_accent.svg);
+}
+
+/* Detach */
+QPushButton#dockDetachBtn {
+    image: url(:/icons/dark/copy_dark.svg);
+}
+QPushButton#dockDetachBtn:hover {
+    image: url(:/icons/dark/copy_accent.svg);
+}
+QPushButton#dockDetachBtn:disabled {
+    image: url(:/icons/dark/copy_disabled.svg);
+}
+
+/* Close */
+QPushButton#dockCloseBtn {
+    image: url(:/icons/dark/x_dark.svg);
 }
 
 QDockWidget::close-button,
@@ -842,6 +920,8 @@ QSplitter::handle:vertical {
 QGraphicsView {
     background-color: #333333;
     border: none;
+    padding: 0px;
+    margin: 0px;
 }
 
 /* =========================================================================
@@ -851,13 +931,10 @@ QGraphicsView {
    ========================================================================= */
 
 QScrollArea {
-    background-color: #232323;
     border: none;
 }
 
-QScrollArea > .QWidget {
-    background: transparent;
-}
+/* No QSS background on viewport — handled by QPalette::Window in vtheme.cpp */
 
 /* =========================================================================
    QLabel — Labels

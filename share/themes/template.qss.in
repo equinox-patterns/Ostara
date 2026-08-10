@@ -696,6 +696,12 @@ QGroupBox::title {
     color: $Text;
 }
 
+/* QGroupBox without title — used as dock content wrapper via WrapDockContent().
+   Smaller padding since there is no title to center. */
+QGroupBox#dockContentGroupBox {
+    padding: 4px;
+}
+
 /* =========================================================================
    QDockWidget — Docks
    Design: custom title bar via ODockTitleBar (setTitleBarWidget),

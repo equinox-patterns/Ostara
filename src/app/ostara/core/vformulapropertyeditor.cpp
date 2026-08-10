@@ -47,8 +47,6 @@
 VFormulaPropertyEditor::VFormulaPropertyEditor(QWidget *parent)
   : QWidget(parent)
 {
-    setAutoFillBackground(true);
-
     // Create the tool button
     m_ToolButton = new QToolButton(this);
     m_ToolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);

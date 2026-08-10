@@ -43,7 +43,7 @@
 #include <QPainter>
 #include <QPalette>
 #include <QPixmap>
-#include <QScrollArea>
+#include <QAbstractScrollArea>
 #include <QStyle>
 #include <QStyleFactory>
 #include <QTextStream>
@@ -393,11 +393,12 @@ void VTheme::ApplyThemeToWindows()
                 dock->setAutoFillBackground(true);
                 dock->update();
 
-                // QScrollArea viewport has a native macOS white background
+                // QAbstractScrollArea viewport has a native macOS white background
                 // that overrides everything (QSS global, QPalette, event filter).
                 // The ONLY thing that works is an inline dot-selector stylesheet
                 // applied directly to the viewport (SUBTILITES_CODE.md §13).
-                for (auto *scroll : dock->findChildren<QScrollArea *>())
+                // Covers QScrollArea, QTableWidget, QTreeView, QPlainTextEdit…
+                for (auto *scroll : dock->findChildren<QAbstractScrollArea *>())
                 {
                     auto *vp = scroll->viewport();
                     if (vp == nullptr)

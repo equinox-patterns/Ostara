@@ -20,8 +20,10 @@
 
 #include "vpropertyformwidget.h"
 
+#include <QApplication>
 #include <QEvent>
 #include <QFormLayout>
+#include <QFrame>
 #include <QKeyEvent>
 #include <QLayout>
 #include <QLayoutItem>
@@ -115,7 +117,19 @@ void VPE::VPropertyFormWidget::build()
             if (tmpProperty->propertyType() == Property::Complex)
             {
                 buildEditor(tmpProperty, tmpFormLayout, Property::Complex);
-                auto *group = new QWidget(this);
+                // Plain QWidget does not paint backgrounds — it lacks the
+                // paintEvent required to render QSS or autoFill (doc-rendu §05).
+                // Use QFrame (which has a proper paintEvent) instead.
+                // Force QPalette::Window to DockBody (the viewport's DockTitle
+                // palette cascades down through the parent chain).
+                auto *group = new QFrame(this);
+                group->setFrameStyle(QFrame::NoFrame);
+                {
+                    auto p = group->palette();
+                    p.setColor(QPalette::Window, qApp->palette().button().color());
+                    group->setPalette(p);
+                    group->setAutoFillBackground(true);
+                }
                 tmpFormLayout->addRow(group);
 
                 auto *subFormLayout = new QFormLayout(group);

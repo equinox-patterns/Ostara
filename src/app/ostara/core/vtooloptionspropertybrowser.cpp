@@ -100,6 +100,7 @@ using namespace VtoppbConstants;
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QObject>
+#include <QApplication>
 #include <QPalette>
 #include <QRegularExpression>
 #include <QScrollArea>

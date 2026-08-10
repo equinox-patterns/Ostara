@@ -27,6 +27,7 @@
  *************************************************************************/
 
 #include "mainwindow.h"
+#include "widgets/DockWrapper.h"
 #include "widgets/DrawToolBar.h"
 #include "widgets/TopBar.h"
 
@@ -2153,7 +2154,7 @@ void MainWindow::ActionDraw(bool checked)
         ui->dockWidgetLayoutPages->setVisible(false);
         ui->dockWidgetToolOptions->setVisible(m_toolOptionsActive);
 
-        ui->dockWidgetGroups->setWidget(m_groupsWidget);
+        WrapDockContent(ui->dockWidgetGroups, m_groupsWidget);
         ui->dockWidgetGroups->setWindowTitle(tr("Groups of visibility"));
         ui->dockWidgetGroups->setVisible(m_groupsActive);
         ui->dockWidgetGroups->setToolTip(tr("Contains all visibility groups"));
@@ -2237,7 +2238,7 @@ void MainWindow::ActionDetails(bool checked)
 
         ui->dockWidgetLayoutPages->setVisible(false);
 
-        ui->dockWidgetGroups->setWidget(m_detailsWidget);
+        WrapDockContent(ui->dockWidgetGroups, m_detailsWidget);
         ui->dockWidgetGroups->setWindowTitle(tr("Details"));
         ui->dockWidgetGroups->setVisible(m_groupsActive);
         ui->dockWidgetGroups->setToolTip(tr("Show which details will go in layout"));
@@ -3959,7 +3960,7 @@ void MainWindow::InitDocksContain()
 
     qCDebug(vMainWindow, "Initialization groups dock.");
     m_groupsWidget = new VWidgetGroups(doc, this);
-    ui->dockWidgetGroups->setWidget(m_groupsWidget);
+    WrapDockContent(ui->dockWidgetGroups, m_groupsWidget);
     connect(doc, &VAbstractPattern::UpdateGroups, this, &MainWindow::UpdateVisibilityGroups);
 
     m_detailsWidget = new VWidgetDetails(pattern, doc, this);
