@@ -381,7 +381,6 @@ void DialogOperationTool::ObjectTypeChanged(int index) const
         case GOType::CubicBezierPath:
             FillComboBoxSplinesPath(Widgets().newObject);
             break;
-        case GOType::PlaceLabel:
         case GOType::Unknown:
         default:
             return;

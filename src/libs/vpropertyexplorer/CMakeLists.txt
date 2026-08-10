@@ -62,7 +62,6 @@ set(VPROPERTY_PLUGINS
     plugins/vobjectproperty.cpp
     plugins/vlinetypeproperty.cpp
     plugins/vlinecolorproperty.cpp
-    plugins/vlabelproperty.cpp
     plugins/vtextproperty.h
     plugins/vwidgetproperty.h
     plugins/vcolorproperty.h
@@ -81,6 +80,7 @@ set(VPROPERTY_PLUGINS
     plugins/vobjectproperty.h
     plugins/vlinetypeproperty.h
     plugins/vlinecolorproperty.h
+    plugins/vlabelproperty.cpp
     plugins/vlabelproperty.h
 )
 

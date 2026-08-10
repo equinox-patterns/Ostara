@@ -41,8 +41,6 @@
 #include <QRectF>
 #include <QSharedPointer>
 
-#include "../../undocommands/label/movelabel.h"
-#include "../../undocommands/label/showlabel.h"
 #include "../ifc/ifcdef.h"
 #include "../ifc/xml/vdomdocument.h"
 #include "../ifc/xml/vpatternblockmapper.h"
@@ -56,7 +54,6 @@
 #include "../vpatterndb/vpiecenode.h"
 #include "../vtoolseamallowance.h"
 #include "../vwidgets/global.h"
-#include "../vwidgets/labelarrange/labelarrangetypes.h"
 #include "../vwidgets/scalesceneitems.h"
 #include "../vwidgets/vgraphicssimpletextitem.h"
 #include "../vwidgets/vmaingraphicsscene.h"
@@ -148,8 +145,6 @@ VNodePoint::VNodePoint(const VAbstractNodeInitData &initData, QObject *qoParent,
                 RefreshHoverPen();
             });
     m_lineName->SetColorRole(VColorRole::PieceNodeLabelLineColor);
-    QGraphicsItem::setData(LabelKindRole, static_cast<int>(LabelMoveRequest::Kind::Point));
-    QGraphicsItem::setData(LabelToolIdRole, static_cast<quint32>(m_id));
     RefreshPointGeometry(*VAbstractTool::data.GeometricObject<VPointF>(initData.id));
     ToolCreation(initData.typeCreation);
     setCursor(Qt::ArrowCursor);
@@ -354,7 +349,7 @@ void VNodePoint::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
  */
 void VNodePoint::NameChangePosition(const QPointF &pos)
 {
-    VAbstractApplication::VApp()->getUndoStack()->push(new MoveLabel(doc, pos - this->pos(), m_id));
+    Q_UNUSED(pos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -691,7 +686,6 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
             }
             return; // Leave this method immediately after call!!!
         case ContextMenuOption::ShowLabel:
-            VAbstractApplication::VApp()->getUndoStack()->push(new ShowLabel(doc, m_id, selectedAction->isChecked()));
             break;
         case ContextMenuOption::Exclude:
             emit ToggleExcludeState(m_id);

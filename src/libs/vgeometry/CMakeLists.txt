@@ -5,7 +5,6 @@ set(VGEOMETRY_SOURCES
     vgobject.cpp
     vabstractcurve.cpp
     varc.cpp
-    vlayoutplacelabel.cpp
     vpointf.cpp
     vspline.cpp
     vsplinepath.cpp
@@ -17,14 +16,12 @@ set(VGEOMETRY_SOURCES
     vcubicbezierpath.cpp
     vabstractarc.cpp
     vabstractbezier.cpp
-    vplacelabelitem.cpp
     # Headers
     vgobject.h
     vgobject_p.h
     vabstractcurve.h
     varc.h
     varc_p.h
-    vlayoutplacelabel.h
     vpointf.h
     vpointf_p.h
     vspline.h
@@ -46,8 +43,6 @@ set(VGEOMETRY_SOURCES
     vabstractarc.h
     vabstractarc_p.h
     vabstractbezier.h
-    vplacelabelitem.h
-    vplacelabelitem_p.h
     stable.h
 )
 

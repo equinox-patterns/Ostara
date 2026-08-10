@@ -52,7 +52,6 @@ class QPainterPath;
 class VGrainlineData;
 class VContainer;
 class VRawSAPoint;
-class VLayoutPlaceLabel;
 class VLayoutPoint;
 
 template <typename T> struct IsLayoutPoint
@@ -64,8 +63,6 @@ template <> struct IsLayoutPoint<VLayoutPoint>
 {
     static const bool value = true;
 };
-
-using PlaceLabelImg = QVector<QVector<VLayoutPoint>>;
 
 class VAbstractPiece
 {
@@ -188,10 +185,6 @@ public:
 
     friend auto operator<<(QDataStream &dataStream, const VAbstractPiece &piece) -> QDataStream &;
     friend auto operator>>(QDataStream &dataStream, VAbstractPiece &piece) -> QDataStream &;
-
-    static auto PlaceLabelShape(const VLayoutPlaceLabel &label) -> PlaceLabelImg;
-    static auto LabelShapePath(const VLayoutPlaceLabel &label) -> QPainterPath;
-    static auto LabelShapePath(const PlaceLabelImg &shape) -> QPainterPath;
 
     template <class T>
     static auto RemoveDublicates(const QVector<T> &points, bool removeFirstAndLast = true) -> QVector<T>;

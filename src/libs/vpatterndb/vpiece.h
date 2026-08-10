@@ -85,7 +85,6 @@ public:
     auto FullSeamAllowancePath(const VContainer *data) const -> QPainterPath;
     template <class T> auto SeamAllowancePath(const QVector<T> &points) const -> QPainterPath;
     auto PassmarksPath(const VContainer *data) const -> QPainterPath;
-    auto PlaceLabelPath(const VContainer *data) const -> QPainterPath;
 
     auto IsSeamAllowanceValid(const VContainer *data) const -> bool;
 
@@ -112,10 +111,6 @@ public:
     auto GetPins() const -> QVector<quint32>;
     auto GetPins() -> QVector<quint32> &;
     void SetPins(const QVector<quint32> &pins);
-
-    auto GetPlaceLabels() const -> QVector<quint32>;
-    auto GetPlaceLabels() -> QVector<quint32> &;
-    void SetPlaceLabels(const QVector<quint32> &labels);
 
     auto Dependencies() const -> QList<quint32>;
 

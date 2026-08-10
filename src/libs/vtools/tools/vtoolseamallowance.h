@@ -66,7 +66,6 @@ struct VToolSeamAllowanceGeometry
     bool hasSeamAllowance{false};
     bool seamAllowanceValid{true};
     QPainterPath seamAllowance{};
-    QPainterPath placeLabels{};
     QString pieceName{};
 };
 
@@ -95,7 +94,6 @@ public:
     static const QString TagRecord;
     static const QString TagIPaths;
     static const QString TagPins;
-    static const QString TagPlaceLabels;
 
     static const QString AttrSeamAllowance;
     static const QString AttrHideMainPath;
@@ -120,7 +118,6 @@ public:
     static void AddCSARecords(VAbstractPattern *doc, QDomElement &domElement, const QVector<CustomSARecord> &records);
     static void AddInternalPaths(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &paths);
     static void AddPins(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &pins);
-    static void AddPlaceLabels(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &placeLabels);
     static void AddPatternPieceData(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
     static void AddPatternInfo(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
     static void AddGrainline(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
@@ -211,7 +208,6 @@ private:
     VTextGraphicsItem *m_patternInfo;
     VGrainlineItem *m_grainLine;
     QGraphicsPathItem *m_passmarks;
-    QGraphicsPathItem *m_placeLabels;
     QGraphicsPathItem *m_mirrorLine;
     QGraphicsPathItem *m_foldLineMark;
     QGraphicsPathItem *m_foldLineLabel;
@@ -290,8 +286,6 @@ private:
                                          const QMap<quint32, quint32> &replacements) -> QVector<CustomSARecord>;
 
     static auto DuplicateInternalPaths(const QVector<quint32> &iPaths, const VToolSeamAllowanceInitData &initData)
-        -> QVector<quint32>;
-    static auto DuplicatePlaceLabels(const QVector<quint32> &placeLabels, const VToolSeamAllowanceInitData &initData)
         -> QVector<quint32>;
 
     void UpdateFoldLine(const VFoldLine &foldLine);

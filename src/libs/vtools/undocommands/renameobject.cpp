@@ -90,7 +90,7 @@ void AbstractObjectRename::RenameFormulas()
     }
 
     // Check if all tags handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
 
     const QStringList validTags = {VAbstractPattern::TagPoint,
                                    VAbstractPattern::TagOperation,
@@ -139,7 +139,7 @@ void AbstractObjectRename::ProcessElementByType(QDomElement &element) const
     }
 
     // Check if all tags handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
 
     if (const QString tagName = element.tagName(); tagName == VAbstractPattern::TagPoint)
     {
@@ -179,7 +179,7 @@ void AbstractObjectRename::ProcessElementByType(QDomElement &element) const
 void AbstractObjectRename::ProcessPointElement(QDomElement &element) const
 {
     // Check if all attributes handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
 
     // Point elements have no children with formulas, only direct attributes
     const QStringList attrs = {AttrLength,
@@ -202,7 +202,7 @@ void AbstractObjectRename::ProcessPointElement(QDomElement &element) const
 void AbstractObjectRename::ProcessOperationElement(QDomElement &element) const
 {
     // Check if all attributes handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
 
     // Formulas saved only in direct attributes
     const QStringList attrs = {AttrAngle, AttrLength, AttrRotationAngle};
@@ -217,7 +217,7 @@ void AbstractObjectRename::ProcessOperationElement(QDomElement &element) const
 void AbstractObjectRename::ProcessArcElement(QDomElement &element) const
 {
     // Check if all attributes handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
 
     // Arc elements have no children with formulas, only direct attributes
     const QStringList attrs = {AttrLength, AttrAngle1, AttrAngle2, AttrRadius};
@@ -232,7 +232,7 @@ void AbstractObjectRename::ProcessArcElement(QDomElement &element) const
 void AbstractObjectRename::ProcessElArcElement(QDomElement &element) const
 {
     // Check if all attributes handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
 
     // Elliptical arc elements have no children with formulas, only direct attributes
     const QStringList attrs = {AttrLength, AttrAngle1, AttrAngle2, AttrRadius1, AttrRadius2, AttrRotationAngle};
@@ -247,7 +247,7 @@ void AbstractObjectRename::ProcessElArcElement(QDomElement &element) const
 void AbstractObjectRename::ProcessSplineElement(QDomElement &element) const
 {
     // Check if all attributes handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
 
     // Process spline's own attributes
     const QStringList attrs = {AttrAngle1, AttrAngle2, AttrLength1, AttrLength2, AttrWidth};
@@ -282,7 +282,7 @@ void AbstractObjectRename::ProcessSplineElement(QDomElement &element) const
 void AbstractObjectRename::ProcessNodeElement(QDomElement &node) const
 {
     // Check if all attributes handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
 
     const QStringList nodeAttrs = {VAbstractPattern::AttrSABefore,
                                    VAbstractPattern::AttrSAAfter,
@@ -299,7 +299,7 @@ void AbstractObjectRename::ProcessNodeElement(QDomElement &node) const
 void AbstractObjectRename::ProcessPathElement(QDomElement &element) const
 {
     // Check if all attributes handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
 
     // Process path's own attributes
     ProcessAttribute(element, VAbstractPattern::AttrVisible);
@@ -317,7 +317,7 @@ void AbstractObjectRename::ProcessPathElement(QDomElement &element) const
 void AbstractObjectRename::ProcessToolsElement(QDomElement &element) const
 {
     // Check if all attributes handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
 
     // Process tools' own attributes
     ProcessAttribute(element, VAbstractPattern::AttrVisible);
@@ -335,7 +335,7 @@ void AbstractObjectRename::ProcessToolsElement(QDomElement &element) const
 void AbstractObjectRename::ProcessDetailElement(QDomElement &element) const
 {
     // Check if all attributes handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
 
     // Process detail's own attributes
     ProcessAttribute(element, AttrWidth);
@@ -564,7 +564,6 @@ auto RenameAlias::CurveType(GOType objType) -> CurveAliasType
         case GOType::SplinePath:
         case GOType::CubicBezierPath:
             return CurveAliasType::SplinePath;
-        case GOType::PlaceLabel:
         case GOType::Unknown:
         case GOType::Point:
         default:
@@ -685,7 +684,7 @@ void RenameSegmentCurves::redo()
     }
 
     // Check if all tags handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
 
     const QStringList validTags = {VAbstractPattern::TagPoint,
                                    VAbstractPattern::TagOperation,

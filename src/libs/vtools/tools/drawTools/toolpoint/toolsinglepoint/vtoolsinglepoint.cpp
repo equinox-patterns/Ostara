@@ -41,8 +41,6 @@
 #include <QSharedPointer>
 #include <QUndoStack>
 
-#include "../../../../undocommands/label/movelabel.h"
-#include "../../../../undocommands/label/showlabel.h"
 #include "../../../vabstracttool.h"
 #include "../../vdrawtool.h"
 #include "../ifc/ifcdef.h"
@@ -62,7 +60,6 @@
 #include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/global.h"
-#include "../vwidgets/labelarrange/labelarrangetypes.h"
 #include "../vwidgets/scalesceneitems.h"
 #include "../vwidgets/vgraphicssimpletextitem.h"
 #include "toolcut/vtoolcutsplinepath.h"
@@ -114,8 +111,6 @@ VToolSinglePoint::VToolSinglePoint(VAbstractPattern *doc, VContainer *data, quin
             });
     RefreshPointGeometry(*VAbstractTool::data.GeometricObject<VPointF>(id));
 
-    QGraphicsItem::setData(LabelKindRole, static_cast<int>(LabelMoveRequest::Kind::Point));
-    QGraphicsItem::setData(LabelToolIdRole, static_cast<quint32>(id));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -183,10 +178,8 @@ void VToolSinglePoint::NameChangePosition(const QPointF &pos)
  */
 void VToolSinglePoint::UpdateNamePosition(quint32 id, const QPointF &pos)
 {
-    if (id == m_id)
-    {
-        VAbstractApplication::VApp()->getUndoStack()->push(new MoveLabel(doc, pos, id));
-    }
+    Q_UNUSED(id)
+    Q_UNUSED(pos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -349,10 +342,8 @@ void VToolSinglePoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &o
 //---------------------------------------------------------------------------------------------------------------------
 void VToolSinglePoint::ChangeLabelVisibility(quint32 id, bool visible)
 {
-    if (id == m_id)
-    {
-        VAbstractApplication::VApp()->getUndoStack()->push(new ShowLabel(doc, id, visible));
-    }
+    Q_UNUSED(id)
+    Q_UNUSED(visible)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -416,7 +407,7 @@ void VToolSinglePoint::ToolSelectionType(const SelectionType &selectionType)
 void VToolSinglePoint::InitSegments(SegmentDetails &details)
 {
     // This check helps to find missed objects in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects were handled.");
 
     QT_WARNING_PUSH
     QT_WARNING_DISABLE_GCC("-Wswitch-default")
@@ -439,7 +430,6 @@ void VToolSinglePoint::InitSegments(SegmentDetails &details)
             InitSplinePath(details);
             break;
         case GOType::Point:
-        case GOType::PlaceLabel:
         case GOType::Unknown:
             Q_UNREACHABLE();
             break;

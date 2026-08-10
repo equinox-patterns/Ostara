@@ -194,7 +194,6 @@ void DialogInsertNode::ChosenObject(quint32 id, const SceneObject &type)
                 node = VPieceNode(id, Tool::NodeSplinePath);
                 break;
             case GOType::Unknown:
-            case GOType::PlaceLabel:
             default:
                 qDebug() << "Got unexpected object type. Ignore.";
                 return;

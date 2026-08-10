@@ -84,7 +84,6 @@
 #include "../vtools/dialogs/tools/piece/dialoginsertnode.h"
 #include "../vtools/dialogs/tools/piece/dialogpiecepath.h"
 #include "../vtools/dialogs/tools/piece/dialogpin.h"
-#include "../vtools/dialogs/tools/piece/dialogplacelabel.h"
 #include "../vtools/dialogs/tools/piece/dialogseamallowance.h"
 
 // VTool headers (one per tool)
@@ -127,7 +126,6 @@
 #include "../vtools/tools/drawTools/vtoolline.h"
 #include "../vtools/tools/nodeDetails/vtoolpiecepath.h"
 #include "../vtools/tools/nodeDetails/vtoolpin.h"
-#include "../vtools/tools/nodeDetails/vtoolplacelabel.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/tools/vtooluniondetails.h"
 
@@ -486,16 +484,6 @@ void MainWindow::ToolPin(bool checked)
 
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolPlaceLabel(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButton<DialogPlaceLabel>(checked, Tool::PlaceLabel, QStringLiteral("place_label_cursor.png"),
-                                    tr("Select placelabel center point"), &MainWindow::ClosedDialogPlaceLabel);
-    LogPatternToolUsed(checked, QStringLiteral("Place label tool"));
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief ToolHeight handler tool height.
  * @param checked true - button checked.
@@ -700,19 +688,6 @@ void MainWindow::ClosedDialogPin(int result)
     if (result == QDialog::Accepted)
     {
         VToolPin::Create(m_dialogTool, doc, pattern);
-    }
-    ArrowTool(true);
-    doc->LiteParseTree(Document::LiteParse);
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ClosedDialogPlaceLabel(int result)
-{
-    SCASSERT(m_dialogTool != nullptr);
-    if (result == QDialog::Accepted)
-    {
-        VToolPlaceLabel::Create(m_dialogTool, doc, pattern);
     }
     ArrowTool(true);
     doc->LiteParseTree(Document::LiteParse);
@@ -975,7 +950,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Check if need to extend.");
 
     switch (t)
     {
@@ -987,7 +962,6 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         case Tool::PiecePath:
         case Tool::Pin:
         case Tool::InsertNode:
-        case Tool::PlaceLabel:
             dialogTool->SetPiecesList(doc->GetActivePPPieces());
             break;
         case Tool::Rotation:

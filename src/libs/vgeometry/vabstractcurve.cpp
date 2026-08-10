@@ -337,7 +337,6 @@ auto VAbstractCurve::SceneObjectType() const -> SceneObject
         case GOType::CubicBezierPath:
             return SceneObject::SplinePath;
         case GOType::Point:
-        case GOType::PlaceLabel:
         case GOType::Unknown:
         default:
             return SceneObject::Unknown;

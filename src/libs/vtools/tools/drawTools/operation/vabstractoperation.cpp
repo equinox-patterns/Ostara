@@ -31,8 +31,6 @@
 #include <QScopeGuard>
 
 #include "../../../undocommands/deltool.h"
-#include "../../../undocommands/label/operationmovelabel.h"
-#include "../../../undocommands/label/operationshowlabel.h"
 #include "../../../undocommands/savetooloptions.h"
 #include "../../../undocommands/undogroup.h"
 #include "../ifc/xml/vpatternblockmapper.h"
@@ -40,7 +38,6 @@
 #include "../ifc/xml/vpatterngraph.h"
 #include "../vgeometry/vpointf.h"
 #include "../vmisc/compatibility.h"
-#include "../vwidgets/labelarrange/labelarrangetypes.h"
 #include "../vwidgets/vsimplepoint.h"
 #include "vtools/undocommands/renameobject.h"
 
@@ -754,7 +751,6 @@ void VAbstractOperation::ChangeLabelVisibility(quint32 id, bool visible)
         {
             dItem->showLabel = visible;
         }
-        VAbstractApplication::VApp()->getUndoStack()->push(new OperationShowLabel(doc, m_id, id, visible));
     }
 }
 
@@ -865,7 +861,6 @@ void VAbstractOperation::UpdateNamePosition(quint32 id, const QPointF &pos)
             dItem->mx = pos.x();
             dItem->my = pos.y();
         }
-        VAbstractApplication::VApp()->getUndoStack()->push(new OperationMoveLabel(m_id, doc, pos, id));
     }
 }
 
@@ -1067,7 +1062,7 @@ void VAbstractOperation::InitOperatedObjects()
         const QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(object.id);
 
         // This check helps to find missed objects in the switch
-        Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
+        Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects were handled.");
 
         QT_WARNING_PUSH
         QT_WARNING_DISABLE_GCC("-Wswitch-default")
@@ -1094,9 +1089,6 @@ void VAbstractOperation::InitOperatedObjects()
                 connect(point, &VSimplePoint::Delete, this, &VAbstractOperation::DeleteFromLabel);
                 connect(point, &VSimplePoint::NameChangedPosition, this, &VAbstractOperation::LabelChangePosition);
                 point->RefreshPointGeometry(*VAbstractTool::data.GeometricObject<VPointF>(object.id));
-                point->setData(LabelKindRole, static_cast<int>(LabelMoveRequest::Kind::Operation));
-                point->setData(LabelToolIdRole, static_cast<quint32>(m_id));
-                point->setData(LabelPointIdRole, static_cast<quint32>(object.id));
                 operatedObjects.insert(object.id, point);
                 break;
             }
@@ -1115,7 +1107,6 @@ void VAbstractOperation::InitOperatedObjects()
                 InitCurve(object.id, &(VAbstractTool::data), obj->getType(), SceneObject::SplinePath);
                 break;
             case GOType::Unknown:
-            case GOType::PlaceLabel:
                 Q_UNREACHABLE();
                 break;
         }

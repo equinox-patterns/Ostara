@@ -33,16 +33,12 @@
 #include "dialogseamallowance_helpers.h"
 #include "../../../tools/vtoolseamallowance.h"
 #include "../../../undocommands/savepiecepathoptions.h"
-#include "../../../undocommands/saveplacelabeloptions.h"
 #include "../../../visualization/path/vistoolpiece.h"
-#include "../vgeometry/vplacelabelitem.h"
 #include "../vmisc/def.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vpatterndb/vpiecepath.h"
 #include "dialogpiecepath.h"
-#include "dialogplacelabel.h"
 #include "ui_tabpaths.h"
-#include "ui_tabplacelabels.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -325,58 +321,6 @@ void DialogSeamAllowance::PathDialogClosed(int result)
             m_undoStack.append(saveCommand);
             UpdateCurrentCustomSARecord();
             UpdateCurrentInternalPathRecord();
-        }
-        catch (const VExceptionBadId &e)
-        {
-            qCritical("%s\n\n%s\n\n%s", qUtf8Printable(tr("Error. Can't save piece path.")),
-                      qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
-        }
-    }
-    delete m_dialog.data();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::PlaceLabelDialogClosed(int result)
-{
-    if (result == QDialog::Accepted)
-    {
-        SCASSERT(not m_dialog.isNull());
-        auto *dialogTool = qobject_cast<DialogPlaceLabel *>(m_dialog.data());
-        SCASSERT(dialogTool != nullptr);
-        try
-        {
-            VPlaceLabelItem const currentLabel = CurrentPlaceLabel(dialogTool->GetToolId());
-
-            const QHash<QString, QSharedPointer<VInternalVariable>> *vars = data.DataVariables();
-
-            const qreal w = qAbs(Visualization::FindLengthFromUser(dialogTool->GetWidth(), vars, false));
-            const qreal h = qAbs(Visualization::FindLengthFromUser(dialogTool->GetHeight(), vars, false));
-            const qreal a = Visualization::FindValFromUser(dialogTool->GetAngle(), vars, false);
-            const qreal v = Visualization::FindValFromUser(dialogTool->GetFormulaVisible(), vars, false);
-            qDebug() << w << h << a << v;
-
-            auto newLabel = VPlaceLabelItem();
-            newLabel.setName(currentLabel.name());
-            newLabel.setX(currentLabel.x());
-            newLabel.setY(currentLabel.y());
-            newLabel.setMx(currentLabel.mx());
-            newLabel.setMy(currentLabel.my());
-            newLabel.SetWidth(w, dialogTool->GetWidth());
-            newLabel.SetHeight(h, dialogTool->GetHeight());
-            newLabel.SetAngle(a, dialogTool->GetAngle());
-            newLabel.SetVisibilityTrigger(v, dialogTool->GetFormulaVisible());
-            newLabel.SetLabelType(dialogTool->GetLabelType());
-            newLabel.SetCenterPoint(currentLabel.GetCenterPoint());
-            newLabel.SetCorrectionAngle(currentLabel.GetCorrectionAngle());
-            newLabel.SetNotMirrored(dialogTool->IsNotMirrored());
-
-            m_newPlaceLabels.insert(dialogTool->GetToolId(), newLabel);
-
-            QPointer<VUndoCommand> const saveCommand = new SavePlaceLabelOptions(
-                toolId, currentLabel, newLabel, VAbstractValApplication::VApp()->getCurrentDocument(),
-                dialogTool->GetToolId());
-            m_undoStack.append(saveCommand);
-            UpdateCurrentPlaceLabelRecords();
         }
         catch (const VExceptionBadId &e)
         {

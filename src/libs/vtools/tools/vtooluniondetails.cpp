@@ -49,7 +49,6 @@
 #include "../vgeometry/vabstractcubicbezierpath.h"
 #include "../vgeometry/varc.h"
 #include "../vgeometry/vellipticalarc.h"
-#include "../vgeometry/vplacelabelitem.h"
 #include "../vgeometry/vpointf.h"
 #include "../vgeometry/vspline.h"
 #include "../vgeometry/vsplinepath.h"
@@ -66,7 +65,6 @@
 #include "nodeDetails/vnodesplinepath.h"
 #include "nodeDetails/vtoolpiecepath.h"
 #include "nodeDetails/vtoolpin.h"
-#include "nodeDetails/vtoolplacelabel.h"
 #include "vdatatool.h"
 #include "vtoolseamallowance.h"
 
@@ -227,35 +225,6 @@ auto GetPiece2Pins(VAbstractPattern *doc, quint32 id) -> QVector<quint32>
     return {};
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto GetPiece2PlaceLabels(VAbstractPattern *doc, quint32 id) -> QVector<quint32>
-{
-    const QDomElement tool = doc->FindElementById(id, VAbstractPattern::TagTools);
-    if (tool.isNull())
-    {
-        throw VException(QStringLiteral("Can't get tool by id='%1'.").arg(id));
-    }
-
-    const QDomNodeList nodesList = tool.childNodes();
-    for (qint32 i = 0; i < nodesList.size(); ++i)
-    {
-        if (const QDomElement element = nodesList.at(i).toElement();
-            not element.isNull() && element.tagName() == VToolUnionDetails::TagDetail && i + 1 == 2)
-        {
-            const QDomNodeList detList = element.childNodes();
-            QDOM_LOOP(detList, j)
-            {
-                if (const QDomElement element = QDOM_ELEMENT(detList, j).toElement();
-                    not element.isNull() && element.tagName() == VToolSeamAllowance::TagPlaceLabels)
-                {
-                    return VAbstractPattern::ParsePiecePointRecords(element);
-                }
-            }
-        }
-    }
-
-    return {};
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto DrawName(VAbstractPattern *doc, quint32 d1id, quint32 d2id) -> QString
@@ -466,50 +435,6 @@ auto AddPin(quint32 id, const VToolUnionDetailsInitData &initData, QVector<quint
     return idPin;
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto AddPlaceLabel(quint32 id, const VToolUnionDetailsInitData &initData, QVector<quint32> &children,
-                   const QString &drawName, qreal dx, qreal dy, quint32 pRotate, qreal angle) -> quint32
-{
-    auto label = std::make_unique<VPlaceLabelItem>(*initData.data->GeometricObject<VPlaceLabelItem>(id));
-
-    if (not qFuzzyIsNull(dx) || not qFuzzyIsNull(dy) || pRotate != NULL_ID)
-    {
-        BiasRotatePoint(label.get(), dx, dy, static_cast<QPointF>(*initData.data->GeometricObject<VPointF>(pRotate)),
-                        angle);
-    }
-
-    label->SetCorrectionAngle(label->GetCorrectionAngle() + angle);
-
-    VToolPlaceLabelInitData initNodeData;
-    initNodeData.idObject = NULL_ID;
-    initNodeData.doc = initData.doc;
-    initNodeData.data = initData.data;
-    initNodeData.parse = Document::FullParse;
-    initNodeData.typeCreation = Source::FromTool;
-    initNodeData.idTool = initData.id;
-    initNodeData.drawName = drawName;
-    initNodeData.width = label->GetWidthFormula();
-    initNodeData.height = label->GetHeightFormula();
-    initNodeData.angle = label->GetAngleFormula();
-    initNodeData.visibilityTrigger = label->GetVisibilityTrigger();
-    initNodeData.type = label->GetLabelType();
-
-    auto label1 = std::make_unique<VPlaceLabelItem>(*label);
-
-    initNodeData.centerPoint = initData.data->AddGObject(label.release());
-    children.append(initNodeData.centerPoint);
-
-    VPatternGraph *patternGraphLabel = initData.doc->PatternGraph();
-    SCASSERT(patternGraphLabel != nullptr)
-    patternGraphLabel->AddVertex(initNodeData.centerPoint, VNodeType::MODELING_OBJECT,
-                                 initData.doc->PatternBlockMapper()->GetActiveId());
-
-    const quint32 idLabel = initData.data->AddGObject(label1.release());
-    initNodeData.id = idLabel;
-
-    VToolPlaceLabel::Create(initNodeData);
-    return idLabel;
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto AddNodeArc(const VPieceNode &node, const VToolUnionDetailsInitData &initData, QVector<quint32> &children,
@@ -925,11 +850,6 @@ void SavePinsChildren(VAbstractPattern *doc, quint32 id, const QVector<quint32> 
     SaveChildren(doc, id, doc->createElement(VToolSeamAllowance::TagPins), children);
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void SavePlaceLabelsChildren(VAbstractPattern *doc, quint32 id, const QVector<quint32> &children)
-{
-    SaveChildren(doc, id, doc->createElement(VToolSeamAllowance::TagPlaceLabels), children);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto GetChildren(VAbstractPattern *doc, quint32 id, const QString &tagName) -> QVector<quint32>
@@ -990,11 +910,6 @@ auto GetPinChildren(VAbstractPattern *doc, quint32 id) -> QVector<quint32>
     return GetChildren(doc, id, VToolSeamAllowance::TagPins);
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto GetPlaceLabelChildren(VAbstractPattern *doc, quint32 id) -> QVector<quint32>
-{
-    return GetChildren(doc, id, VToolSeamAllowance::TagPlaceLabels);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto TakeNextId(QVector<quint32> &children) -> quint32
@@ -1451,25 +1366,6 @@ void CreateUnitedDetailPins(VPiece &newDetail, const VPiece &d, QVector<quint32>
     children += nodeChildren;
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void CreateUnitedDetailPlaceLabels(VPiece &newDetail, const VPiece &d, QVector<quint32> &children,
-                                   const QString &drawName, const VToolUnionDetailsInitData &initData, qreal dx,
-                                   qreal dy, quint32 pRotate, qreal angle)
-{
-    VPatternGraph *patternGraph = initData.doc->PatternGraph();
-    SCASSERT(patternGraph != nullptr)
-
-    QVector<quint32> const nodeChildren;
-    const QVector<quint32> placeLabels = d.GetPlaceLabels();
-    for (auto placeLabel : placeLabels)
-    {
-        patternGraph->AddEdge(placeLabel, initData.id);
-
-        const quint32 id = AddPlaceLabel(placeLabel, initData, children, drawName, dx, dy, pRotate, angle);
-        newDetail.GetPlaceLabels().append(id);
-    }
-    children += nodeChildren;
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void CreateUnitedPins(VPiece &newDetail, const VPiece &d1, const VPiece &d2, const QString &drawName,
@@ -1494,29 +1390,6 @@ void CreateUnitedPins(VPiece &newDetail, const VPiece &d1, const VPiece &d2, con
     }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void CreateUnitedPlaceLabels(VPiece &newDetail, const VPiece &d1, const VPiece &d2, const QString &drawName,
-                             const VToolUnionDetailsInitData &initData, qreal dx, qreal dy, quint32 pRotate,
-                             qreal angle)
-{
-    const auto labels = d1.GetPlaceLabels();
-    for (auto label : labels)
-    {
-        newDetail.GetPlaceLabels().append(label);
-    }
-
-    QVector<quint32> children;
-    CreateUnitedDetailPlaceLabels(newDetail, d2, children, drawName, initData, dx, dy, pRotate, angle);
-    SavePlaceLabelsChildren(initData.doc, initData.id, children);
-
-    VPatternGraph *patternGraph = initData.doc->PatternGraph();
-    SCASSERT(patternGraph != nullptr)
-
-    for (auto child : std::as_const(children))
-    {
-        patternGraph->AddEdge(initData.id, child);
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void UpdateUnitedNodes(const VToolUnionDetailsInitData &initData, qreal dx, qreal dy, quint32 pRotate, qreal angle)
@@ -1756,41 +1629,6 @@ void UpdateUnitedDetailPins(const VToolUnionDetailsInitData &initData, qreal dx,
     }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void UpdateUnitedDetailPlaceLabels(const VToolUnionDetailsInitData &initData, qreal dx, qreal dy, quint32 pRotate,
-                                   qreal angle, const QVector<quint32> &records)
-{
-    QVector<quint32> children = GetPlaceLabelChildren(initData.doc, initData.id);
-
-    VPatternGraph *patternGraph = initData.doc->PatternGraph();
-    SCASSERT(patternGraph != nullptr)
-
-    for (auto child : std::as_const(children))
-    {
-        patternGraph->AddVertex(child, VNodeType::MODELING_OBJECT, initData.doc->PatternBlockMapper()->GetActiveId());
-        patternGraph->AddEdge(initData.id, child);
-    }
-
-    for (auto record : records)
-    {
-        patternGraph->AddEdge(record, initData.id);
-        QSharedPointer<VPlaceLabelItem> const parentLabel = initData.data->GeometricObject<VPlaceLabelItem>(record);
-        if (not qFuzzyIsNull(dx) || not qFuzzyIsNull(dy) || pRotate != NULL_ID)
-        {
-            BiasRotatePoint(parentLabel.data(), dx, dy,
-                            static_cast<QPointF>(*initData.data->GeometricObject<VPointF>(pRotate)), angle);
-        }
-        auto label = std::make_unique<VPlaceLabelItem>();
-        label->setName(parentLabel->name());
-        label->setX(parentLabel->x());
-        label->setY(parentLabel->y());
-        label->setMx(parentLabel->mx());
-        label->setMy(parentLabel->my());
-
-        label->SetCorrectionAngle(parentLabel->GetCorrectionAngle() + angle);
-        initData.data->UpdateGObject(TakeNextId(children), label.release());
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void CreateUnitedDetail(const VToolUnionDetailsInitData &initData, qreal dx, qreal dy, quint32 pRotate, qreal angle)
@@ -1807,7 +1645,6 @@ void CreateUnitedDetail(const VToolUnionDetailsInitData &initData, qreal dx, qre
     CreateUnitedCSA(newDetail, d1, d2, drawName, initData, dx, dy, pRotate, angle);
     CreateUnitedInternalPaths(newDetail, d1, d2, drawName, initData, dx, dy, pRotate, angle);
     CreateUnitedPins(newDetail, d1, d2, drawName, initData, dx, dy, pRotate, angle);
-    CreateUnitedPlaceLabels(newDetail, d1, d2, drawName, initData, dx, dy, pRotate, angle);
 
     newDetail.SetName(QObject::tr("United detail"));
     QString const formulaSAWidth = d1.GetFormulaSAWidth();
@@ -1881,7 +1718,6 @@ void UpdateUnitedDetail(const VToolUnionDetailsInitData &initData, qreal dx, qre
     UpdateUnitedDetailInternalPaths(initData, dx, dy, pRotate, angle,
                                     GetPiece2InternalPaths(initData.doc, initData.id));
     UpdateUnitedDetailPins(initData, dx, dy, pRotate, angle, GetPiece2Pins(initData.doc, initData.id));
-    UpdateUnitedDetailPlaceLabels(initData, dx, dy, pRotate, angle, GetPiece2PlaceLabels(initData.doc, initData.id));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2061,7 +1897,6 @@ void VToolUnionDetails::AddDetail(QDomElement &domElement, const VPiece &d) cons
     VToolSeamAllowance::AddCSARecords(doc, det, d.GetCustomSARecords());
     VToolSeamAllowance::AddInternalPaths(doc, det, d.GetInternalPaths());
     VToolSeamAllowance::AddPins(doc, det, d.GetPins());
-    VToolSeamAllowance::AddPlaceLabels(doc, det, d.GetPlaceLabels());
 
     domElement.appendChild(det);
 }
@@ -2107,8 +1942,7 @@ auto VToolUnionDetails::GetReferenceObjects() const -> QVector<quint32>
     const auto parts = QStringList() << VAbstractPattern::TagNodes          /*0*/
                                      << VToolSeamAllowance::TagCSA          /*1*/
                                      << VToolSeamAllowance::TagIPaths       /*2*/
-                                     << VToolSeamAllowance::TagPins         /*3*/
-                                     << VToolSeamAllowance::TagPlaceLabels; /*4*/
+                                     << VToolSeamAllowance::TagPins         /*3*/;
 
     const QDomNodeList nodeList = tool.childNodes();
     QDOM_LOOP(nodeList, i)
@@ -2138,7 +1972,6 @@ auto VToolUnionDetails::GetReferenceObjects() const -> QVector<quint32>
                     list += ReferenceObjects(element, VToolSeamAllowance::TagRecord, VAbstractPattern::AttrPath);
                     break;
                 case 3: // VToolSeamAllowance::TagPins
-                case 4: // VToolSeamAllowance::TagPlaceLabels
                 {
                     const QDomNodeList children = element.childNodes();
                     QDOM_LOOP(children, index)

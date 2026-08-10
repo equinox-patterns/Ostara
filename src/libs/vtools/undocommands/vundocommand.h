@@ -52,7 +52,6 @@ enum class UndoCommand : qint8
     SaveDetailOptions,
     SavePieceOptions,
     SavePiecePathOptions,
-    SavePlaceLabelOptions,
     MovePiece,
     DeleteTool,
     DeletePatternPiece,

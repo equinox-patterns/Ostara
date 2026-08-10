@@ -10,8 +10,6 @@ set(VWIDGETS_SOURCES
     vmaingraphicsview.cpp
     vmousewheelwidgetadjustmentguard.cpp
     vmousewheelwidgetadjustmentguard.h
-    vsegmentlabel.cpp
-    vsegmentlabel.h
     vsponsorcredits.cpp
     vsponsorcredits.h
     vtoolbuttonpopup.cpp
@@ -40,9 +38,6 @@ set(VWIDGETS_SOURCES
     fancytabbar/fancytab.cpp
     fancytabbar/fancytabbar.cpp
     fancytabbar/stylehelper.cpp
-    # Label arrange
-    labelarrange/vlabelarrangeengine.cpp
-    labelarrange/vdrawlabelcollector.cpp
     # Headers
     vcomboboxdelegate.h
     vdecorationaligningdelegate.h
@@ -71,9 +66,8 @@ set(VWIDGETS_SOURCES
     fancytabbar/fancytab.h
     fancytabbar/fancytabbar.h
     fancytabbar/stylehelper.h
-    labelarrange/labelarrangetypes.h
-    labelarrange/vlabelarrangeengine.h
-    labelarrange/vdrawlabelcollector.h
+    vsegmentlabel.cpp
+    vsegmentlabel.h
 )
 
 add_library(VWidgetsLib STATIC ${VWIDGETS_SOURCES})

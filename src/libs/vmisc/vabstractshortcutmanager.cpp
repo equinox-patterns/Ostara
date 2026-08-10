@@ -107,7 +107,7 @@ auto VAbstractShortcutManager::GetShortcutsList() const -> QList<VAbstractShortc
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 89, "Convert all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 88, "Convert all actions.");
 
     switch (type)
     {
@@ -275,8 +275,6 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "toolpin"_L1;
         case VShortcutAction::ToolInsertNode:
             return "toolinsertnode"_L1;
-        case VShortcutAction::ToolPlaceLabel:
-            return "toolplacelabel"_L1;
         case VShortcutAction::ToolArcStart:
             return "toolarcstart"_L1;
         case VShortcutAction::ToolArcEnd:
@@ -301,7 +299,7 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 89, "Translate all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 88, "Translate all actions.");
 
     switch (type)
     {
@@ -469,8 +467,6 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Tool 'Pin'", "shortcut for action");
         case VShortcutAction::ToolInsertNode:
             return tr("Tool 'Insert node'", "shortcut for action");
-        case VShortcutAction::ToolPlaceLabel:
-            return tr("Tool 'Place label'", "shortcut for action");
         case VShortcutAction::ToolArcStart:
             return tr("Tool 'Arc start'", "shortcut for action");
         case VShortcutAction::ToolArcEnd:

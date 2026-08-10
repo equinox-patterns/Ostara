@@ -172,7 +172,6 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
                            VToolSeamAllowance::TagCSA,
                            VToolSeamAllowance::TagIPaths,
                            VToolSeamAllowance::TagPins,
-                           VToolSeamAllowance::TagPlaceLabels,
                            VAbstractPattern::TagMirrorLine};
 
     QFuture<QVector<VPieceNode>> futurePathV1;
@@ -183,7 +182,6 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
     QFuture<QVector<CustomSARecord>> futureRecords;
     QFuture<QVector<quint32>> futureIPaths;
     QFuture<QVector<quint32>> futurePins;
-    QFuture<QVector<quint32>> futurePlaceLabels;
     QFuture<VPieceFoldLineData> futureMirrorLine;
 
     const QDomNodeList nodeList = domElement.childNodes();
@@ -235,10 +233,7 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
                 case 6: // VToolSeamAllowance::TagPins
                     futurePins = QtConcurrent::run(&VPattern::ParsePiecePointRecords, element);
                     break;
-                case 7: // VToolSeamAllowance::TagPlaceLabels
-                    futurePlaceLabels = QtConcurrent::run(&VPattern::ParsePiecePointRecords, element);
-                    break;
-                case 8: // VToolSeamAllowance::TagMirrorLine
+                case 7: // VToolSeamAllowance::TagMirrorLine
                     futureMirrorLine = QtConcurrent::run(&ParsePieceMirrorLine, element);
                     break;
                 default:
@@ -284,11 +279,6 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
     if (not futurePins.isCanceled())
     {
         detail.SetPins(futurePins.result());
-    }
-
-    if (not futurePlaceLabels.isCanceled())
-    {
-        detail.SetPlaceLabels(futurePlaceLabels.result());
     }
 
     if (not futureMirrorLine.isCanceled())

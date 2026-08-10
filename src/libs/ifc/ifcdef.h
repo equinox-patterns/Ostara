@@ -139,7 +139,6 @@ extern const QString AttrShowLabel2;
 extern const QString AttrWidth;
 extern const QString AttrTrueZeroWidth;
 extern const QString AttrHeight;
-extern const QString AttrPlaceLabelType;
 extern const QString AttrVersion;
 extern const QString AttrFirstToContour;
 extern const QString AttrLastToContour;

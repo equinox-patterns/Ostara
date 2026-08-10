@@ -37,7 +37,7 @@ void MainWindow::SetupDrawToolsIcons()
     const auto resource = QStringLiteral("toolicon");
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Not all tools were handled.");
 
     ui->actionLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("line.png")));
     ui->actionEndLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("segment.png")));
@@ -91,7 +91,6 @@ void MainWindow::SetupDrawToolsIcons()
     ui->actionInternalPathTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("path.png")));
     ui->actionPinTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("pin.png")));
     ui->actionInsertNodeTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("insert_node.png")));
-    ui->actionPlaceLabelTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("place_label.png")));
     ui->actionArcStartPointTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("arc_start.png")));
     ui->actionArcEndPointTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("arc_end.png")));
     ui->actionEllipticalArcWithLengthTool->setIcon(

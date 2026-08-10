@@ -35,7 +35,6 @@ file(GLOB VTOOLS_TOOLS
 file(GLOB VTOOLS_UNDO
     undocommands/*.cpp undocommands/*.h
     undocommands/image/*.cpp undocommands/image/*.h
-    undocommands/label/*.cpp undocommands/label/*.h
 )
 
 file(GLOB VTOOLS_VIS

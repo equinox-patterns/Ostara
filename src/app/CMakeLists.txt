@@ -1,2 +1,3 @@
 add_subdirectory(ostara)
-add_subdirectory(puzzle)
+# Puzzle — conservé temporairement, désactivé (références PlaceLabel supprimées)
+# add_subdirectory(puzzle)

@@ -44,6 +44,7 @@
 #include "../vmisc/def.h"
 
 class QGraphicsItem;
+class QDomDocument;
 class VMainGraphicsScene;
 class VPiece;
 
@@ -65,5 +66,8 @@ void HandleRubberBandSelection(const VMainGraphicsScene *scene, const QRectF &sc
 
 // Accessor for autosave prefix used by AutoSavePattern and ReopenFilesAfterCrash
 auto AutosavePrefix() -> const QString &;
+
+// Strip Valentina label elements from a pattern DOM. Returns true if any labels were found.
+auto StripLabelElements(QDomDocument *doc) -> bool;
 
 #endif // MAINWINDOW_HELPERS_H

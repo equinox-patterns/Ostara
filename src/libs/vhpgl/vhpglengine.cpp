@@ -28,7 +28,6 @@
 #include "vhpglengine.h"
 
 #include "../vformat/vsinglelineoutlinechar.h"
-#include "../vgeometry/vlayoutplacelabel.h"
 #include "../vlayout/vfoldline.h"
 #include "../vlayout/vlayoutpiece.h"
 #include "../vlayout/vlayoutpiecepath.h"
@@ -354,7 +353,6 @@ void VHPGLEngine::ExportDetails(QTextStream &out, const QList<VLayoutPiece> &det
         PlotInternalPaths(out, detail);
         PlotGrainline(out, detail);
         PlotMirrorLine(out, detail);
-        PlotPlaceLabels(out, detail);
         PlotPassmarks(out, detail);
         PlotLabels(out, detail);
         PlotFoldLine(out, detail);
@@ -419,38 +417,6 @@ void VHPGLEngine::PlotInternalPaths(QTextStream &out, const VLayoutPiece &detail
             std::transform(points.begin(), points.end(), points.begin(),
                            [&matrix](const VLayoutPoint &point) { return VAbstractPiece::MapPoint(point, matrix); });
             PlotPath(out, CastToPoint(ConvertPath(points)), path.PenStyle());
-        }
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VHPGLEngine::PlotPlaceLabels(QTextStream &out, const VLayoutPiece &detail)
-{
-    auto PlotShape = [this, &out](const PlaceLabelImg &shape)
-    {
-        for (const auto &subShape : shape)
-        {
-            PlotPath(out, CastToPoint(ConvertPath(subShape)), Qt::SolidLine);
-        }
-    };
-
-    const QVector<VLayoutPlaceLabel> placeLabels = detail.GetPlaceLabels();
-    for (const auto &pLabel : placeLabels)
-    {
-        PlotShape(detail.MapPlaceLabelShape(VAbstractPiece::PlaceLabelShape(pLabel)));
-
-        if (!pLabel.IsNotMirrored() && detail.IsShowFullPiece() && !detail.GetMappedSeamMirrorLine().isNull())
-        {
-            PlaceLabelImg shape = detail.MapPlaceLabelShape(VAbstractPiece::PlaceLabelShape(pLabel));
-            const QTransform matrix = VGObject::FlippingMatrix(detail.GetMappedSeamMirrorLine());
-            for (auto &points : shape)
-            {
-                std::transform(points.begin(), points.end(), points.begin(),
-                               [&matrix](const VLayoutPoint &point)
-                               { return VAbstractPiece::MapPoint(point, matrix); });
-            }
-
-            PlotShape(shape);
         }
     }
 }

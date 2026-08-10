@@ -30,13 +30,11 @@
 #include "dialogseamallowance_helpers.h"
 #include "../../../tools/vtoolseamallowance.h"
 #include "../../../undocommands/savepiecepathoptions.h"
-#include "../../../undocommands/saveplacelabeloptions.h"
 #include "../../../visualization/path/vispiecespecialpoints.h"
 #include "../../../visualization/path/vistoolpiece.h"
 #include "../../dialogtoolbox.h"
 #include "../../support/dialogeditlabel.h"
 #include "../../support/dialogeditwrongformula.h"
-#include "../vgeometry/vplacelabelitem.h"
 #include "../vmisc/def.h"
 #include "vtheme.h"
 #include "../vmisc/typedef.h"
@@ -54,7 +52,6 @@
 #include "../vwidgets/vmousewheelwidgetadjustmentguard.h"
 #include "dialogpatternmaterials.h"
 #include "dialogpiecepath.h"
-#include "dialogplacelabel.h"
 #include "ui_dialogseamallowance.h"
 #include "ui_tabfoldline.h"
 #include "ui_tabgrainline.h"
@@ -62,7 +59,6 @@
 #include "ui_tabpassmarks.h"
 #include "ui_tabpaths.h"
 #include "ui_tabpins.h"
-#include "ui_tabplacelabels.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -90,14 +86,12 @@ DialogSeamAllowance::DialogSeamAllowance(const VContainer *data, VAbstractPatter
     uiTabGrainline(new Ui::TabGrainline),
     uiTabPins(new Ui::TabPins),
     uiTabPassmarks(new Ui::TabPassmarks),
-    uiTabPlaceLabels(new Ui::TabPlaceLabels),
     uiTabFoldLine(new Ui::TabFoldLine),
     m_tabPaths(new QWidget),
     m_tabLabels(new QWidget),
     m_tabGrainline(new QWidget),
     m_tabPins(new QWidget),
     m_tabPassmarks(new QWidget),
-    m_tabPlaceLabels(new QWidget),
     m_tabFoldLine(new QWidget),
     m_ftb(new FancyTabBar(FancyTabBar::Left, this)),
     m_timerWidth(new QTimer(this)),
@@ -129,7 +123,6 @@ DialogSeamAllowance::DialogSeamAllowance(const VContainer *data, VAbstractPatter
     InitGrainlineTab();
     InitPinsTab();
     InitPassmarksTab();
-    InitPlaceLabelsTab();
     InitFoldLineTab();
 
     InitIcons();
@@ -174,7 +167,6 @@ DialogSeamAllowance::~DialogSeamAllowance()
 {
     delete m_visSpecialPoints.data();
     delete m_tabFoldLine;
-    delete m_tabPlaceLabels;
     delete m_tabPassmarks;
     delete m_tabPins;
     delete m_tabGrainline;
@@ -207,7 +199,6 @@ void DialogSeamAllowance::EnableApply(bool enable)
     m_ftb->SetTabEnabled(TabOrder::Labels, applyAllowed);
     m_ftb->SetTabEnabled(TabOrder::Grainline, applyAllowed);
     m_ftb->SetTabEnabled(TabOrder::Passmarks, applyAllowed);
-    m_ftb->SetTabEnabled(TabOrder::PlaceLabels, applyAllowed);
     m_ftb->SetTabEnabled(TabOrder::FoldLine, applyAllowed);
 
     if (not applyAllowed && vis.isNull())
@@ -296,18 +287,6 @@ void DialogSeamAllowance::SetPiece(const VPiece &piece)
     }
 
     InitAllPinComboboxes();
-
-    uiTabPlaceLabels->listWidgetPlaceLabels->clear();
-    const QVector<quint32> labels = piece.GetPlaceLabels();
-    for (auto label : labels)
-    {
-        NewSpecialPoint(uiTabPlaceLabels->listWidgetPlaceLabels, label);
-    }
-
-    if (!piece.GetPlaceLabels().empty())
-    {
-        uiTabPlaceLabels->listWidgetPlaceLabels->setCurrentRow(0);
-    }
 
     {
         const QSignalBlocker blocker(uiTabPaths->comboBoxStartPoint);
@@ -869,7 +848,6 @@ void DialogSeamAllowance::FancyTabChanged(int index)
     m_tabGrainline->hide();
     m_tabPins->hide();
     m_tabPassmarks->hide();
-    m_tabPlaceLabels->hide();
     m_tabFoldLine->hide();
 
     QT_WARNING_PUSH
@@ -893,9 +871,6 @@ void DialogSeamAllowance::FancyTabChanged(int index)
         case TabOrder::Passmarks:
             m_tabPassmarks->show();
             break;
-        case TabOrder::PlaceLabels:
-            m_tabPlaceLabels->show();
-            break;
         case TabOrder::FoldLine:
             m_tabFoldLine->show();
             break;
@@ -910,11 +885,7 @@ void DialogSeamAllowance::FancyTabChanged(int index)
         (index == TabOrder::Labels &&
          uiTabLabels->tabWidget->currentIndex() == uiTabLabels->tabWidget->indexOf(uiTabLabels->tabLabels)))
     {
-        ShowPieceSpecialPointsWithRect(uiTabPins->listWidgetPins, false);
-    }
-    else if (index == TabOrder::PlaceLabels)
-    {
-        ShowPieceSpecialPointsWithRect(uiTabPlaceLabels->listWidgetPlaceLabels, true);
+        ShowPieceSpecialPointsWithRect(uiTabPins->listWidgetPins);
     }
     else
     {
@@ -927,7 +898,7 @@ void DialogSeamAllowance::TabChanged(int index)
 {
     if (index == uiTabLabels->tabWidget->indexOf(uiTabLabels->tabLabels))
     {
-        ShowPieceSpecialPointsWithRect(uiTabPins->listWidgetPins, false);
+        ShowPieceSpecialPointsWithRect(uiTabPins->listWidgetPins);
     }
     else
     {
@@ -1872,7 +1843,6 @@ auto DialogSeamAllowance::CreatePiece() const -> VPiece
     piece.SetCustomSARecords(GetListInternals<CustomSARecord>(uiTabPaths->listWidgetCustomSA));
     piece.SetInternalPaths(GetListInternals<quint32>(uiTabPaths->listWidgetInternalPaths));
     piece.SetPins(GetListInternals<quint32>(uiTabPins->listWidgetPins));
-    piece.SetPlaceLabels(GetListInternals<quint32>(uiTabPlaceLabels->listWidgetPlaceLabels));
     piece.SetForbidFlipping(uiTabPaths->checkBoxForbidFlipping->isChecked());
     piece.SetForceFlipping(uiTabPaths->checkBoxForceFlipping->isChecked());
     piece.SetSymmetricalCopy(uiTabPaths->checkBoxSymmetricalCopy->isChecked());
@@ -2350,7 +2320,6 @@ void DialogSeamAllowance::InitFancyTabBar()
     m_ftb->InsertTab(TabOrder::Labels, QIcon("://icon/32x32/labels.png"), tr("Labels"));
     m_ftb->InsertTab(TabOrder::Grainline, QIcon("://icon/32x32/grainline.png"), tr("Grainline"));
     m_ftb->InsertTab(TabOrder::Passmarks, QIcon("://icon/32x32/passmark.png"), tr("Passmarks"));
-    m_ftb->InsertTab(TabOrder::PlaceLabels, QIcon("://icon/32x32/button.png"), tr("Place label"));
     m_ftb->InsertTab(TabOrder::FoldLine, QIcon("://icon/32x32/fold.png"), tr("Fold line"));
 
     ui->horizontalLayout->addWidget(m_ftb, 0, Qt::AlignLeft);
@@ -2376,10 +2345,6 @@ void DialogSeamAllowance::InitFancyTabBar()
     m_tabPassmarks->hide();
     uiTabPassmarks->setupUi(m_tabPassmarks);
     ui->horizontalLayout->addWidget(m_tabPassmarks, 1);
-
-    m_tabPlaceLabels->hide();
-    uiTabPlaceLabels->setupUi(m_tabPlaceLabels);
-    ui->horizontalLayout->addWidget(m_tabPlaceLabels, 1);
 
     m_tabFoldLine->hide();
     uiTabFoldLine->setupUi(m_tabFoldLine);
@@ -2985,24 +2950,6 @@ void DialogSeamAllowance::InitPinsTab()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::InitPlaceLabelsTab()
-{
-    uiTabPlaceLabels->listWidgetPlaceLabels->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(uiTabPlaceLabels->listWidgetPlaceLabels, &QListWidget::currentRowChanged, this,
-            [this]()
-            {
-                if (not m_visSpecialPoints.isNull())
-                {
-                    m_visSpecialPoints->SetShowRect(true);
-                    m_visSpecialPoints->SetRect(CurrentRect());
-                    m_visSpecialPoints->RefreshGeometry();
-                }
-            });
-    connect(uiTabPlaceLabels->listWidgetPlaceLabels, &QListWidget::customContextMenuRequested, this,
-            &DialogSeamAllowance::ShowPlaceLabelsContextMenu);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogSeamAllowance::InitAllPinComboboxes()
 {
     InitPinPoint(uiTabGrainline->comboBoxGrainlineCenterPin);
@@ -3207,21 +3154,6 @@ void DialogSeamAllowance::UpdateCurrentInternalPathRecord()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::UpdateCurrentPlaceLabelRecords()
-{
-    const int row = uiTabPlaceLabels->listWidgetPlaceLabels->currentRow();
-    if (uiTabPlaceLabels->listWidgetPlaceLabels->count() == 0 || row == -1)
-    {
-        return;
-    }
-
-    QListWidgetItem *item = uiTabPlaceLabels->listWidgetPlaceLabels->item(row);
-    SCASSERT(item != nullptr);
-    const auto labelId = qvariant_cast<quint32>(item->data(Qt::UserRole));
-    item->setText(CurrentPlaceLabel(labelId).name());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogSeamAllowance::SetDLWidth(QString widthFormula)
 {
     if (widthFormula.isEmpty())
@@ -3348,20 +3280,7 @@ void DialogSeamAllowance::SetPLAngle(QString angleFormula)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogSeamAllowance::CurrentRect() const -> QRectF
-{
-    QRectF rect;
-    if (QListWidgetItem  const*item = uiTabPlaceLabels->listWidgetPlaceLabels->currentItem())
-    {
-        VPlaceLabelItem const label = CurrentPlaceLabel(qvariant_cast<quint32>(item->data(Qt::UserRole)));
-        rect = QRectF(QPointF(label.x() - label.GetWidth() / 2.0, label.y() - label.GetHeight() / 2.0),
-                      QPointF(label.x() + label.GetWidth() / 2.0, label.y() + label.GetHeight() / 2.0));
-    }
-    return rect;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::ShowPieceSpecialPointsWithRect(const QListWidget *list, bool showRect)
+void DialogSeamAllowance::ShowPieceSpecialPointsWithRect(const QListWidget *list)
 {
     SCASSERT(list != nullptr)
     if (m_visSpecialPoints.isNull())
@@ -3370,8 +3289,6 @@ void DialogSeamAllowance::ShowPieceSpecialPointsWithRect(const QListWidget *list
     }
 
     m_visSpecialPoints->SetSpecialPoints(GetListInternals<quint32>(list));
-    m_visSpecialPoints->SetShowRect(showRect);
-    m_visSpecialPoints->SetRect(CurrentRect());
 
     if (not VAbstractValApplication::VApp()->getCurrentScene()->items().contains(m_visSpecialPoints))
     {
@@ -3391,12 +3308,6 @@ void DialogSeamAllowance::ShowPieceSpecialPointsWithRect(const QListWidget *list
 auto DialogSeamAllowance::CurrentPath(quint32 id) const -> VPiecePath
 {
     return m_newPaths.contains(id) ? m_newPaths.value(id) : data.GetPiecePath(id);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto DialogSeamAllowance::CurrentPlaceLabel(quint32 id) const -> VPlaceLabelItem
-{
-    return m_newPlaceLabels.contains(id) ? m_newPlaceLabels.value(id) : *data.GeometricObject<VPlaceLabelItem>(id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

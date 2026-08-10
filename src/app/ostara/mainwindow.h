@@ -93,34 +93,25 @@ signals:
     void EnableItemMove(bool move);
     void ItemsSelection(SelectionType type);
 
-    void EnableLabelSelection(bool enable);
     void EnablePointSelection(bool enable);
     void EnableLineSelection(bool enable);
     void EnableArcSelection(bool enable);
     void EnableElArcSelection(bool enable);
     void EnableSplineSelection(bool enable);
     void EnableSplinePathSelection(bool enable);
-    void EnableNodeLabelSelection(bool enable);
     void EnableNodePointSelection(bool enable);
     void EnableDetailSelection(bool enable);
     void EnableBackgroundImageSelection(bool enable);
 
-    void EnableLabelHover(bool enable);
     void EnablePointHover(bool enable);
     void EnableLineHover(bool enable);
     void EnableArcHover(bool enable);
     void EnableElArcHover(bool enable);
     void EnableSplineHover(bool enable);
     void EnableSplinePathHover(bool enable);
-    void EnableNodeLabelHover(bool enable);
     void EnableNodePointHover(bool enable);
     void EnableDetailHover(bool enable);
     void EnableImageBackgroundHover(bool enable);
-
-    void ShowArcSegmentLabel(bool show);
-    void ShowElArcSegmentLabel(bool show);
-    void ShowSplineSegmentLabel(bool show);
-    void ShowSplinePathSegmentLabel(bool show);
 
     void patternClosed();
 
@@ -143,8 +134,6 @@ protected:
 private slots:
     void ScaleChanged(qreal scale);
     void MouseMove(const QPointF &scenePos);
-    void AutoArrangeLabels(QPoint globalPos);
-    void RunAutoArrangeLabels();
     void Clear();
     void PatternChangesWereSaved(bool saved);
     void LastUsedTool();
@@ -182,7 +171,6 @@ private slots:
     void ToolDetail(bool checked);
     void ToolPiecePath(bool checked);
     void ToolPin(bool checked);
-    void ToolPlaceLabel(bool checked);
     void ToolHeight(bool checked);
     void ToolTriangle(bool checked);
     void ToolPointOfIntersection(bool checked);
@@ -227,15 +215,12 @@ private slots:
 
     void ActionAddBackgroundImage();
 
-    void ActionExportFontCorrections();
-    void ActionReloadLabels();
 
     /**
      * @brief Opens a file dialog to allow the user to select one or more
      * single-line font files for installation.
      * It supports TrueType (.ttf), OpenType (.otf), and SVG (.svg) font formats.
      */
-    void ActionInstallSingleLineFont();
     void SetupDrawToolsIcons();
 
     void ClosedDialogUnionDetails(int result);
@@ -243,7 +228,6 @@ private slots:
     void ClosedDialogGroup(int result);
     void ClosedDialogPiecePath(int result);
     void ClosedDialogPin(int result);
-    void ClosedDialogPlaceLabel(int result);
     void ClosedDialogInsertNode(int result);
 
     // Ostara Measurement

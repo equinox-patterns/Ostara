@@ -44,8 +44,6 @@ public:
     void VisualMode(quint32 id) override;
 
     void SetSpecialPoints(const QVector<quint32> &pins);
-    void SetShowRect(bool show);
-    void SetRect(const QRectF &rect);
 
     auto type() const -> int override {return Type;}
     enum {Type = UserType + static_cast<int>(Vis::PieceSpecialPoints)};
@@ -53,9 +51,6 @@ private:
     Q_DISABLE_COPY_MOVE(VisPieceSpecialPoints) // NOLINT
     QVector<VSimplePoint *>  m_points{};
     QVector<quint32>         m_spoints{};
-    bool                     m_showRect{false};
-    QRectF                   m_placeLabelRect{};
-    VCurvePathItem          *m_rectItem{nullptr};
 
     auto GetPoint(quint32 i, VColorRole role) -> VSimplePoint *;
 
@@ -66,18 +61,6 @@ private:
 inline void VisPieceSpecialPoints::SetSpecialPoints(const QVector<quint32> &pins)
 {
     m_spoints = pins;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline void VisPieceSpecialPoints::SetShowRect(bool show)
-{
-    m_showRect = show;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline void VisPieceSpecialPoints::SetRect(const QRectF &rect)
-{
-    m_placeLabelRect = rect;
 }
 
 #endif // VISPIECESPECIALPOINTS_H

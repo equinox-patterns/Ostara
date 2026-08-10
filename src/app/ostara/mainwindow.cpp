@@ -98,7 +98,6 @@
 #include "../vmisc/dialogs/dialogselectmeasurementstype.h"
 #include "../vpatterndb/variables/vincrement.h"
 #include "../vpatterndb/variables/vmeasurement.h"
-#include "../vtools/dialogs/support/dialogeditlabel.h"
 #include "../vtools/dialogs/tools/dialogalongline.h"
 #include "../vtools/dialogs/tools/dialogarc.h"
 #include "../vtools/dialogs/tools/dialogarcwithlength.h"
@@ -139,7 +138,6 @@
 #include "../vtools/dialogs/tools/piece/dialoginsertnode.h"
 #include "../vtools/dialogs/tools/piece/dialogpiecepath.h"
 #include "../vtools/dialogs/tools/piece/dialogpin.h"
-#include "../vtools/dialogs/tools/piece/dialogplacelabel.h"
 #include "../vtools/dialogs/tools/piece/dialogseamallowance.h"
 #include "../vtools/tools/backgroundimage/vbackgroundimagecontrols.h"
 #include "../vtools/tools/backgroundimage/vbackgroundimageitem.h"
@@ -181,24 +179,16 @@
 #include "../vtools/tools/drawTools/vtoolline.h"
 #include "../vtools/tools/nodeDetails/vtoolpiecepath.h"
 #include "../vtools/tools/nodeDetails/vtoolpin.h"
-#include "../vtools/tools/nodeDetails/vtoolplacelabel.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/tools/vtooluniondetails.h"
 #include "../vtools/undocommands/image/addbackgroundimage.h"
 #include "../vtools/undocommands/image/deletebackgroundimage.h"
 #include "../vtools/undocommands/renamepp.h"
 #include "../vtools/undocommands/undogroup.h"
-#include "../vtools/undocommands/label/movedoublelabel.h"
-#include "../vtools/undocommands/label/movelabel.h"
-#include "../vtools/undocommands/label/movesegmentlabel.h"
-#include "../vtools/undocommands/label/operationmovelabel.h"
 #include "../vwidgets/vabstractsimple.h"
 #include "../vwidgets/vgraphicssimpletextitem.h"
-#include "../vwidgets/labelarrange/vdrawlabelcollector.h"
-#include "../vwidgets/labelarrange/vlabelarrangeengine.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vscenepoint.h"
-#include "../vwidgets/vsegmentlabel.h"
 #include "../vwidgets/vsimplecurve.h"
 #include "../vwidgets/vsimplepoint.h"
 #include "../vtools/tools/vabstracttool.h"
@@ -374,7 +364,6 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("path"),                         ui->actionInternalPathTool},
         {QStringLiteral("pin"),                          ui->actionPinTool},
         {QStringLiteral("insert_node"),                  ui->actionInsertNodeTool},
-        {QStringLiteral("place_label"),                  ui->actionPlaceLabelTool},
         {QStringLiteral("union"),                        ui->actionUnionDetailsTool},
         {QStringLiteral("duplicate_detail"),             ui->actionDuplicateDetailTool},
         {QStringLiteral("detail_export"),                ui->actionDetailExportAs},
@@ -383,8 +372,6 @@ MainWindow::MainWindow(QWidget *parent)
     InitActionShortcuts();
 
     connect(ui->actionAddBackgroundImage, &QAction::triggered, this, &MainWindow::ActionAddBackgroundImage);
-    connect(ui->actionReloadLabels, &QAction::triggered, this, &MainWindow::ActionReloadLabels);
-    connect(ui->actionAutoArrangeLabels, &QAction::triggered, this, &MainWindow::RunAutoArrangeLabels);
 
     m_progressBar->setVisible(false);
 #if defined(Q_OS_WIN32) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -685,7 +672,6 @@ void MainWindow::InitScenes()
     connect(this, &MainWindow::EnableItemMove, m_sceneDraw, &VMainGraphicsScene::EnableItemMove);
     connect(this, &MainWindow::ItemsSelection, m_sceneDraw, &VMainGraphicsScene::ItemsSelection);
 
-    connect(this, &MainWindow::EnableLabelSelection, m_sceneDraw, &VMainGraphicsScene::ToggleLabelSelection);
     connect(this, &MainWindow::EnablePointSelection, m_sceneDraw, &VMainGraphicsScene::TogglePointSelection);
     connect(this, &MainWindow::EnableLineSelection, m_sceneDraw, &VMainGraphicsScene::ToggleLineSelection);
     connect(this, &MainWindow::EnableArcSelection, m_sceneDraw, &VMainGraphicsScene::ToggleArcSelection);
@@ -693,7 +679,6 @@ void MainWindow::InitScenes()
     connect(this, &MainWindow::EnableSplineSelection, m_sceneDraw, &VMainGraphicsScene::ToggleSplineSelection);
     connect(this, &MainWindow::EnableSplinePathSelection, m_sceneDraw, &VMainGraphicsScene::ToggleSplinePathSelection);
 
-    connect(this, &MainWindow::EnableLabelHover, m_sceneDraw, &VMainGraphicsScene::ToggleLabelHover);
     connect(this, &MainWindow::EnablePointHover, m_sceneDraw, &VMainGraphicsScene::TogglePointHover);
     connect(this, &MainWindow::EnableLineHover, m_sceneDraw, &VMainGraphicsScene::ToggleLineHover);
     connect(this, &MainWindow::EnableArcHover, m_sceneDraw, &VMainGraphicsScene::ToggleArcHover);
@@ -701,23 +686,15 @@ void MainWindow::InitScenes()
     connect(this, &MainWindow::EnableSplineHover, m_sceneDraw, &VMainGraphicsScene::ToggleSplineHover);
     connect(this, &MainWindow::EnableSplinePathHover, m_sceneDraw, &VMainGraphicsScene::ToggleSplinePathHover);
 
-    connect(this, &MainWindow::ShowArcSegmentLabel, m_sceneDraw, &VMainGraphicsScene::ToggleArcSegmentVisibility);
-    connect(this, &MainWindow::ShowElArcSegmentLabel, m_sceneDraw, &VMainGraphicsScene::ToggleElArcSegmentVisibility);
-    connect(this, &MainWindow::ShowSplineSegmentLabel, m_sceneDraw, &VMainGraphicsScene::ToggleSplineSegmentVisibility);
-    connect(this, &MainWindow::ShowSplinePathSegmentLabel, m_sceneDraw,
-            &VMainGraphicsScene::ToggleSplinePathSegmentVisibility);
-
     connect(m_sceneDraw, &VMainGraphicsScene::mouseMove, this, &MainWindow::MouseMove);
     connect(m_sceneDraw, &VMainGraphicsScene::AddBackgroundImage, this, &MainWindow::PlaceBackgroundImage);
 
     m_sceneDetails = new VMainGraphicsScene(this);
     connect(this, &MainWindow::EnableItemMove, m_sceneDetails, &VMainGraphicsScene::EnableItemMove);
 
-    connect(this, &MainWindow::EnableNodeLabelSelection, m_sceneDetails, &VMainGraphicsScene::ToggleNodeLabelSelection);
     connect(this, &MainWindow::EnableNodePointSelection, m_sceneDetails, &VMainGraphicsScene::ToggleNodePointSelection);
     connect(this, &MainWindow::EnableDetailSelection, m_sceneDetails, &VMainGraphicsScene::ToggleDetailSelection);
 
-    connect(this, &MainWindow::EnableNodeLabelHover, m_sceneDetails, &VMainGraphicsScene::ToggleNodeLabelHover);
     connect(this, &MainWindow::EnableNodePointHover, m_sceneDetails, &VMainGraphicsScene::ToggleNodePointHover);
     connect(this, &MainWindow::EnableDetailHover, m_sceneDetails, &VMainGraphicsScene::ToggleDetailHover);
 
@@ -753,7 +730,6 @@ void MainWindow::InitScenes()
 
     connect(ui->view, &VMainGraphicsView::RubberBandSelectionFinished, this,
             [prevBandTriggers]() -> void { prevBandTriggers->clear(); });
-    connect(ui->view, &VMainGraphicsView::SceneContextMenuRequested, this, &MainWindow::AutoArrangeLabels);
     QSizePolicy policy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     policy.setHorizontalStretch(12);
     ui->view->setSizePolicy(policy);
@@ -1529,8 +1505,8 @@ auto MainWindow::SavePatternAs(const QString &fileName) -> bool
         QFile::remove(oldFilePath + AutosavePrefix());
     }
 
-    m_curFileFormatVersion = VPatternConverter::PatternMaxVer;
-    m_curFileFormatVersionStr = VPatternConverter::PatternMaxVerStr;
+    m_curFileFormatVersion = FormatVersion(1, 0, 0);
+    m_curFileFormatVersionStr = QStringLiteral("1.0.0");
     m_patternReadOnly = false;
 
     qCDebug(vMainWindow, "Locking file");
@@ -1678,7 +1654,7 @@ void MainWindow::InitToolButtons()
     connect(ui->actionToolSelect, &QAction::triggered, this, &MainWindow::ArrowTool);
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Check if all tools were connected.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Check if all tools were connected.");
 
     auto InitToolButton = [this](VShortcutAction type, QAction *action, void (MainWindow::*slotFunction)(bool))
     {
@@ -1744,7 +1720,6 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ToolEllipticalArc, ui->actionEllipticalArcTool, &MainWindow::ToolEllipticalArc);
     InitToolButton(VShortcutAction::ToolPin, ui->actionPinTool, &MainWindow::ToolPin);
     InitToolButton(VShortcutAction::ToolInsertNode, ui->actionInsertNodeTool, &MainWindow::ToolInsertNode);
-    InitToolButton(VShortcutAction::ToolPlaceLabel, ui->actionPlaceLabelTool, &MainWindow::ToolPlaceLabel);
     InitToolButton(VShortcutAction::ToolArcStart, ui->actionArcStartPointTool, &MainWindow::ToolArcStart);
     InitToolButton(VShortcutAction::ToolArcEnd, ui->actionArcEndPointTool, &MainWindow::ToolArcEnd);
     InitToolButton(VShortcutAction::ToolEllipticalArcWithLength, ui->actionEllipticalArcWithLengthTool,
@@ -1771,8 +1746,6 @@ void MainWindow::InitActionShortcuts()
     m_shortcutActions.insert(VShortcutAction::LastTool, ui->actionLast_tool);
     m_shortcutActions.insert(VShortcutAction::CurveDetails, ui->actionShowCurveDetails);
     m_shortcutActions.insert(VShortcutAction::FinalMeasurements, ui->actionFinalMeasurements);
-    m_shortcutActions.insert(VShortcutAction::ReloadPieceLabels, ui->actionReloadLabels);
-    m_shortcutActions.insert(VShortcutAction::AutoArrangeLabels, ui->actionAutoArrangeLabels);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1799,7 +1772,7 @@ void MainWindow::MouseMove(const QPointF &scenePos)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1977,9 +1950,6 @@ void MainWindow::CancelTool()
         case Tool::InsertNode:
             ui->actionInsertNodeTool->setChecked(false);
             break;
-        case Tool::PlaceLabel:
-            ui->actionPlaceLabelTool->setChecked(false);
-            break;
         case Tool::ArcStart:
             ui->actionArcStartPointTool->setChecked(false);
             break;
@@ -2029,35 +1999,26 @@ void MainWindow::ArrowTool(bool checked)
         VAbstractTool::m_suppressContextMenu = false;
 
         // Only true for rubber band selection
-        emit EnableLabelSelection(true);
         emit EnablePointSelection(false);
         emit EnableLineSelection(false);
         emit EnableArcSelection(false);
         emit EnableElArcSelection(false);
         emit EnableSplineSelection(false);
         emit EnableSplinePathSelection(false);
-        emit EnableNodeLabelSelection(true);
         emit EnableNodePointSelection(true);
         emit EnableDetailSelection(true); // Disable when done visualization details
         emit EnableBackgroundImageSelection(true);
 
         // Hovering
-        emit EnableLabelHover(true);
         emit EnablePointHover(true);
         emit EnableLineHover(true);
         emit EnableArcHover(true);
         emit EnableElArcHover(true);
         emit EnableSplineHover(true);
         emit EnableSplinePathHover(true);
-        emit EnableNodeLabelHover(true);
         emit EnableNodePointHover(true);
         emit EnableDetailHover(true);
         emit EnableImageBackgroundHover(true);
-
-        emit ShowArcSegmentLabel(false);
-        emit ShowElArcSegmentLabel(false);
-        emit ShowSplineSegmentLabel(false);
-        emit ShowSplinePathSegmentLabel(false);
 
         ui->view->AllowRubberBand(true);
         ui->view->viewport()->unsetCursor();
@@ -2416,13 +2377,23 @@ auto MainWindow::on_actionSaveAs_triggered() -> bool
     QString const patternPath = VAbstractValApplication::VApp()->GetPatternPath();
     QString const dir = patternPath.isEmpty() ? settings->GetPathPattern() : QFileInfo(patternPath).absolutePath();
 
-    QString newFileName = tr("pattern") + QStringLiteral(".val");
+    QString newFileName;
     if (not patternPath.isEmpty())
     {
-        newFileName = QFileInfo(patternPath).fileName();
+        // Start from the original filename but replace .val extension with .ostara
+        QString base = QFileInfo(patternPath).fileName();
+        if (base.endsWith(".val"_L1))
+        {
+            base.chop(4); // remove ".val"
+        }
+        newFileName = base + ".ostara"_L1;
+    }
+    else
+    {
+        newFileName = tr("pattern") + QStringLiteral(".ostara");
     }
 
-    QString const filters(tr("Pattern files") + QStringLiteral("(*.val)"));
+    QString const filters(tr("Pattern files") + QStringLiteral(" (*.ostara)"));
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save as"), dir + '/'_L1 + newFileName, filters, nullptr,
                                                     VAbstractApplication::VApp()->NativeFileDialog());
 
@@ -2432,9 +2403,17 @@ auto MainWindow::on_actionSaveAs_triggered() -> bool
     }
 
     QFileInfo const f(fileName);
-    if (f.suffix().isEmpty() && f.suffix() != "val"_L1)
+    if (f.suffix().isEmpty() || f.suffix() == "val"_L1)
     {
-        fileName += ".val"_L1;
+        // If the user removed the extension or left .val, ensure .ostara
+        if (not fileName.endsWith(".ostara"_L1))
+        {
+            if (f.suffix() == "val"_L1)
+            {
+                fileName.chop(4); // remove ".val"
+            }
+            fileName += ".ostara"_L1;
+        }
     }
 
     if (patternPath.isEmpty())
@@ -2470,24 +2449,32 @@ auto MainWindow::on_actionSave_triggered() -> bool
         return on_actionSaveAs_triggered();
     }
 
-    if (m_curFileFormatVersion < VPatternConverter::PatternMaxVer &&
-        not ContinueFormatRewrite(m_curFileFormatVersionStr, VPatternConverter::PatternMaxVerStr))
+    if (m_curFileFormatVersion < FormatVersion(1, 0, 0) &&
+        not ContinueFormatRewrite(m_curFileFormatVersionStr, QStringLiteral("1.0.0")))
     {
         return false;
     }
 
-    if (not CheckFilePermissions(VAbstractValApplication::VApp()->GetPatternPath(), this))
+    QString savePath = VAbstractValApplication::VApp()->GetPatternPath();
+    // If the current file is a .val, convert the path to .ostara
+    if (savePath.endsWith(".val"_L1))
+    {
+        savePath.chop(4);
+        savePath += ".ostara"_L1;
+    }
+
+    if (not CheckFilePermissions(savePath, this))
     {
         return false;
     }
 
     QString error;
-    bool const result = SavePattern(VAbstractValApplication::VApp()->GetPatternPath(), error);
+    bool const result = SavePattern(savePath, error);
     if (result)
     {
         QFile::remove(VAbstractValApplication::VApp()->GetPatternPath() + AutosavePrefix());
-        m_curFileFormatVersion = VPatternConverter::PatternMaxVer;
-        m_curFileFormatVersionStr = VPatternConverter::PatternMaxVerStr;
+        m_curFileFormatVersion = FormatVersion(1, 0, 0);
+        m_curFileFormatVersionStr = QStringLiteral("1.0.0");
     }
     else
     {
@@ -2513,7 +2500,7 @@ void MainWindow::on_actionOpen_triggered()
     ShowEditor();
 
     qCDebug(vMainWindow, "Openning new file.");
-    const QString filter(tr("Pattern files") + QStringLiteral(" (*.val)"));
+    const QString filter(tr("Pattern files") + QStringLiteral(" (*.ostara *.val)"));
     // Get list last open files
     const QStringList files = VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentFileList();
     QString dir;
@@ -2695,131 +2682,6 @@ void MainWindow::on_actionUpdateManualLayout_triggered()
 
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ActionExportFontCorrections()
-{
-    // Use standard path to manual layouts
-    const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-    const QString dirPath = settings->GetPathFontCorrections();
-
-    bool usedNotExistedDir = false;
-    if (QDir const directory(dirPath); not directory.exists())
-    {
-        usedNotExistedDir = directory.mkpath(QChar('.'));
-    }
-
-    auto RemoveUnsuded = qScopeGuard(
-        [usedNotExistedDir, dirPath]() -> void
-        {
-            if (usedNotExistedDir)
-            {
-                QDir const directory(dirPath);
-                directory.rmpath(QChar('.'));
-            }
-        });
-
-
-    if (const QString dir = QFileDialog::getExistingDirectory(
-                this, tr("Select folder"), dirPath,
-                VAbstractApplication::VApp()->NativeFileDialog(QFileDialog::ShowDirsOnly |
-                                                               QFileDialog::DontResolveSymlinks));not dir.isEmpty())
-    {
-        const QFont labelFont = settings->GetLabelFont();
-        if (const QString filePath = QStringLiteral("%1/%2.json").arg(dir, labelFont.family());
-                QFileInfo::exists(filePath) &&
-                QMessageBox::question(this, tr("Export corrections"),
-                                      tr("File '%1' already exists. Overwrite it?").arg(filePath),
-                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes)
-        {
-            return;
-        }
-
-        VSingleLineOutlineChar const corrector(labelFont);
-        corrector.ExportCorrections(dir);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ActionReloadLabels()
-{
-    VSingleLineOutlineChar corrector(VApplication::VApp()->ValentinaSettings()->GetLabelFont());
-    corrector.ClearCorrectionsCache();
-
-    emit doc->UpdatePatternLabel();
-    emit doc->UpdatePatternLabel();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief Handles selecting multiple font files and installing them one by one.
- * Uses QFileDialog with specific filters for common font types.
- */
-void MainWindow::ActionInstallSingleLineFont()
-{
-    QStringList const filters{
-        tr("All Single-Line Fonts") + " (*.ttf *.otf *.svg)"_L1,
-        tr("TrueType Fonts") + " (*.ttf)"_L1,
-        tr("OpenType Fonts") + " (*.otf)"_L1,
-        tr("SVG Fonts") + " (*.svg)"_L1,
-        tr("All Files") + " (*)"_L1,
-    };
-
-    // 1. Open file dialog to select several font files
-    QStringList const selectedFiles = QFileDialog::getOpenFileNames(this,
-                                                                    tr("Select Font Files to Install"),
-                                                                    QDir::homePath(), // Start in a common location
-                                                                    filters.join(";;"_L1),
-                                                                    nullptr,
-                                                                    VAbstractApplication::VApp()->NativeFileDialog());
-
-    if (selectedFiles.isEmpty())
-    {
-        qDebug() << "Font installation cancelled by user.";
-        return;
-    }
-
-    // 2. Initialize installer and counters
-    VFontInstaller installer(this);
-
-    // Reset the "Yes to All" / "No to All" state for this new batch.
-    installer.ResetOverwriteMode();
-
-    int successCount = 0;
-    int failCount = 0;
-
-    // 3. Loop through the list of selected files to install each one
-    for (const QString &filePath : selectedFiles)
-    {
-        // Install the font using the FontInstaller class logic
-        if (VFontInstaller::InstallError const result = installer.InstallFont(filePath, this);
-            result == VFontInstaller::InstallError::NoError)
-        {
-            successCount++;
-            qCInfo(vMainWindow) << "Successfully installed font:" << filePath;
-        }
-        else if (result != VFontInstaller::InstallError::UserCancelled)
-        {
-            failCount++;
-            qCWarning(vMainWindow) << tr("Failed to install font file: %1\n\nReason: %2")
-                                      .arg(QFileInfo(filePath).fileName(), installer.ErrorMessage());
-        }
-    }
-
-    // 4. Provide final summary to the user
-    if (QString const finalMessage = tr("Font Installation Summary:\n\n"
-                                        "Successful Installations: %1\n"
-                                        "Failed Installations: %2")
-            .arg(successCount)
-            .arg(failCount); failCount > 0)
-    {
-        QMessageBox::warning(this, tr("Installation Complete with Errors"), finalMessage);
-    }
-    else if (successCount > 0)
-    {
-        QMessageBox::information(this, tr("Installation Successful"), finalMessage);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief Clear reset to default window.
  */
@@ -2882,8 +2744,6 @@ void MainWindow::Clear()
     ui->actionPreviousPatternPiece->setEnabled(false);
     ui->actionNextPatternPiece->setEnabled(false);
     ui->actionAddBackgroundImage->setEnabled(false);
-    ui->actionReloadLabels->setEnabled(false);
-    ui->actionAutoArrangeLabels->setEnabled(false);
     SetEnableTool(false);
     VAbstractValApplication::VApp()->SetPatternUnits(Unit::Cm);
     VAbstractValApplication::VApp()->SetMeasurementsType(MeasurementsType::Unknown);
@@ -3138,8 +2998,6 @@ void MainWindow::SetEnableWidgets(bool enable)
     ui->actionPreviousPatternPiece->setEnabled(enableOnDrawStage);
     ui->actionNextPatternPiece->setEnabled(enableOnDrawStage);
     ui->actionAddBackgroundImage->setEnabled(enableOnDrawStage);
-    ui->actionReloadLabels->setEnabled(enableOnDetailsStage);
-    ui->actionAutoArrangeLabels->setEnabled(enableOnDesignStage);
     ui->actionIncreaseLabelFont->setEnabled(enable);
     ui->actionDecreaseLabelFont->setEnabled(enable);
     ui->actionOriginalLabelFont->setEnabled(enable);
@@ -3201,8 +3059,8 @@ void MainWindow::on_actionNew_triggered()
 
         AddPP(patternPieceName);
 
-        m_curFileFormatVersion = VPatternConverter::PatternMaxVer;
-        m_curFileFormatVersionStr = VPatternConverter::PatternMaxVerStr;
+        m_curFileFormatVersion = FormatVersion(1, 0, 0);
+        m_curFileFormatVersionStr = QStringLiteral("1.0.0");
 
         UpdateMeasurementState();
 
@@ -3566,7 +3424,7 @@ void MainWindow::SetEnableTool(bool enable)
     QT_WARNING_POP
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Not all tools were handled.");
 
     // Drawing Tools
     ui->actionEndLineTool->setEnabled(drawTools);
@@ -3609,7 +3467,6 @@ void MainWindow::SetEnableTool(bool enable)
     ui->actionEllipticalArcTool->setEnabled(drawTools);
     ui->actionPinTool->setEnabled(drawTools);
     ui->actionInsertNodeTool->setEnabled(drawTools);
-    ui->actionPlaceLabelTool->setEnabled(drawTools);
     ui->actionExportDraw->setEnabled(drawTools);
     ui->actionArcStartPointTool->setEnabled(drawTools);
     ui->actionArcEndPointTool->setEnabled(drawTools);
@@ -3775,7 +3632,7 @@ void MainWindow::CreateMenus()
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -3979,10 +3836,6 @@ void MainWindow::LastUsedTool()
             ui->actionInsertNodeTool->setChecked(true);
             ToolInsertNode(true);
             break;
-        case Tool::PlaceLabel:
-            ui->actionPlaceLabelTool->setChecked(true);
-            ToolPlaceLabel(true);
-            break;
         case Tool::ArcStart:
             ui->actionArcStartPointTool->setChecked(true);
             ToolArcStart(true);
@@ -4177,24 +4030,6 @@ void MainWindow::CreateActions()
                 m_sceneDraw->EnableDetailsMode(checked);
             });
 
-    ui->actionShowSegmentLabels->setChecked(
-        VAbstractValApplication::VApp()->ValentinaSettings()->IsShowSegmentLabels());
-    connect(ui->actionShowSegmentLabels, &QAction::triggered, this,
-            [this](bool checked) -> void
-            {
-                VAbstractValApplication::VApp()->ValentinaSettings()->SetShowSegmentLabels(checked);
-                if (!checked)
-                {
-                    emit ShowArcSegmentLabel(false);
-                    emit ShowElArcSegmentLabel(false);
-                    emit ShowSplineSegmentLabel(false);
-                    emit ShowSplinePathSegmentLabel(false);
-                }
-                const bool detailsMode =
-                    VAbstractValApplication::VApp()->ValentinaSettings()->IsShowCurveDetails();
-                m_sceneDraw->EnableDetailsMode(detailsMode);
-            });
-
     ui->actionShowAccuracyRadius->setChecked(
         VAbstractValApplication::VApp()->ValentinaSettings()->GetShowAccuracyRadius());
     connect(ui->actionShowAccuracyRadius, &QAction::triggered, this,
@@ -4331,12 +4166,18 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         }
     }
 
-    QFuture<VPatternConverter *> const futureConverter = QtConcurrent::run(
-        [fileName]()
-        {
-            auto converter = std::make_unique<VPatternConverter>(fileName);
-            return converter.release();
-        });
+    const bool isOstaraFile = fileName.endsWith(".ostara"_L1);
+
+    QFuture<VPatternConverter *> futureConverter;
+    if (not isOstaraFile)
+    {
+        futureConverter = QtConcurrent::run(
+            [fileName]()
+            {
+                auto converter = std::make_unique<VPatternConverter>(fileName);
+                return converter.release();
+            });
+    }
 
     // We have unsaved changes or load more then one file per time
     if (OpenNewValentina(fileName))
@@ -4444,16 +4285,38 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
     {
         // Quick reading measurements
         doc->setXMLContent(fileName);
-        const unsigned currentFormatVersion = VDomDocument::GetFormatVersion(doc->GetFormatVersionStr());
-        if (currentFormatVersion != VPatternConverter::PatternMaxVer)
-        { // Because we rely on the fact that we know where is path to measurements optimization available only for
-          // the latest format version
-            QScopedPointer<VPatternConverter> const converter(futureConverter.result());
-            m_curFileFormatVersion = converter->GetCurrentFormatVersion();
-            m_curFileFormatVersionStr = converter->GetFormatVersionStr();
-            doc->setXMLContent(converter->Convert());
 
-            // VGAnalyticsLib removed — no tracking
+        if (isOstaraFile)
+        {
+            m_curFileFormatVersion = FormatVersion(1, 0, 0);
+            m_curFileFormatVersionStr = QStringLiteral("1.0.0");
+        }
+        else
+        {
+            const unsigned currentFormatVersion = VDomDocument::GetFormatVersion(doc->GetFormatVersionStr());
+            if (currentFormatVersion != VPatternConverter::PatternMaxVer)
+            { // Because we rely on the fact that we know where is path to measurements optimization available only for
+              // the latest format version
+                QScopedPointer<VPatternConverter> const converter(futureConverter.result());
+                m_curFileFormatVersion = converter->GetCurrentFormatVersion();
+                m_curFileFormatVersionStr = converter->GetFormatVersionStr();
+                doc->setXMLContent(converter->Convert());
+            }
+            else
+            {
+                m_curFileFormatVersion = VPatternConverter::PatternMaxVer;
+                m_curFileFormatVersionStr = VPatternConverter::PatternMaxVerStr;
+            }
+
+            // Strip Valentina label elements from the DOM (Ostara does not use labels)
+            const bool hadLabels = StripLabelElements(doc);
+            if (hadLabels)
+            {
+                QMessageBox::information(this, tr("Labels not supported"),
+                    tr("This pattern contains Valentina labels. Ostara does not use them — this feature "
+                       "will be replaced by XX. Conversion is not automatic, your labels have not been "
+                       "preserved. The original .val file remains intact."));
+            }
         }
 
         if (!customMeasureFile.isEmpty())
@@ -4604,24 +4467,6 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         { // Show toolbar only if was not uploaded any measurements.
             UpdateMeasurementState();
 
-        }
-
-        if (currentFormatVersion == VPatternConverter::PatternMaxVer)
-        {
-            // Real read
-            QScopedPointer<VPatternConverter> const converter(futureConverter.result());
-            m_curFileFormatVersion = converter->GetCurrentFormatVersion();
-            m_curFileFormatVersionStr = converter->GetFormatVersionStr();
-            doc->setXMLContent(converter->Convert());
-            if (!customMeasureFile.isEmpty())
-            {
-                doc->SetMPath(RelativeMPath(fileName, customMeasureFile));
-            }
-            else if (not path.isEmpty() && fixedMPath != path)
-            {
-                doc->SetMPath(RelativeMPath(fileName, fixedMPath));
-            }
-            VAbstractValApplication::VApp()->SetPatternUnits(doc->Units());
         }
     }
     catch (VException &e)
@@ -5290,7 +5135,7 @@ void MainWindow::ProcessCMD()
 //---------------------------------------------------------------------------------------------------------------------
 auto MainWindow::GetPatternFileName() -> QString
 {
-    QString shownName = tr("untitled.val");
+    QString shownName = tr("untitled.ostara");
     if (not VAbstractValApplication::VApp()->GetPatternPath().isEmpty())
     {
         shownName = QFileInfo(VAbstractValApplication::VApp()->GetPatternPath()).fileName();
@@ -5447,24 +5292,5 @@ void MainWindow::PrintPatternMessage(QEvent *event)
 // Extracted to mainwindow_watermark.cpp: //---------------------------------------------------------------------------------------------------------------------
 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::AutoArrangeLabels(QPoint globalPos)
-{
-    if (m_currentTool != Tool::Arrow)
-    {
-        return;
-    }
-
-    QMenu menu;
-    if (QAction const *arrangeAction =
-            menu.addAction(FromTheme(VThemeIcon::FormatJustifyCenter), tr("Auto-Arrange Labels"));
-            menu.exec(globalPos) != arrangeAction)
-    {
-        return;
-    }
-
-    RunAutoArrangeLabels();
-}
-// Extracted: 
 
 

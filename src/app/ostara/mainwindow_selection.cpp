@@ -39,7 +39,6 @@ using namespace Qt::Literals::StringLiterals;
 void MainWindow::ToolSelectPoint()
 {
     // Only true for rubber band selection
-    emit EnableLabelSelection(false);
     emit EnablePointSelection(false);
     emit EnableLineSelection(false);
     emit EnableArcSelection(false);
@@ -49,7 +48,6 @@ void MainWindow::ToolSelectPoint()
     emit EnableBackgroundImageSelection(false);
 
     // Hovering
-    emit EnableLabelHover(true);
     emit EnablePointHover(true);
     emit EnableLineHover(false);
     emit EnableArcHover(false);
@@ -82,7 +80,6 @@ void MainWindow::ToolSelectPointByPress()
 void MainWindow::ToolSelectSpline()
 {
     // Only true for rubber band selection
-    emit EnableLabelSelection(false);
     emit EnablePointSelection(false);
     emit EnableLineSelection(false);
     emit EnableArcSelection(false);
@@ -92,7 +89,6 @@ void MainWindow::ToolSelectSpline()
     emit EnableBackgroundImageSelection(false);
 
     // Hovering
-    emit EnableLabelHover(false);
     emit EnablePointHover(false);
     emit EnableLineHover(false);
     emit EnableArcHover(false);
@@ -100,8 +96,6 @@ void MainWindow::ToolSelectSpline()
     emit EnableSplineHover(true);
     emit EnableSplinePathHover(false);
     emit EnableImageBackgroundHover(false);
-
-    emit ShowSplineSegmentLabel(true);
 
     emit ItemsSelection(SelectionType::ByMouseRelease);
 
@@ -113,7 +107,6 @@ void MainWindow::ToolSelectSpline()
 void MainWindow::ToolSelectSplinePath()
 {
     // Only true for rubber band selection
-    emit EnableLabelSelection(false);
     emit EnablePointSelection(false);
     emit EnableLineSelection(false);
     emit EnableArcSelection(false);
@@ -123,7 +116,6 @@ void MainWindow::ToolSelectSplinePath()
     emit EnableBackgroundImageSelection(false);
 
     // Hovering
-    emit EnableLabelHover(false);
     emit EnablePointHover(false);
     emit EnableLineHover(false);
     emit EnableArcHover(false);
@@ -131,8 +123,6 @@ void MainWindow::ToolSelectSplinePath()
     emit EnableSplineHover(false);
     emit EnableSplinePathHover(true);
     emit EnableImageBackgroundHover(false);
-
-    emit ShowSplinePathSegmentLabel(true);
 
     emit ItemsSelection(SelectionType::ByMouseRelease);
 
@@ -144,7 +134,6 @@ void MainWindow::ToolSelectSplinePath()
 void MainWindow::ToolSelectArc()
 {
     // Only true for rubber band selection
-    emit EnableLabelSelection(false);
     emit EnablePointSelection(false);
     emit EnableLineSelection(false);
     emit EnableArcSelection(false);
@@ -154,7 +143,6 @@ void MainWindow::ToolSelectArc()
     emit EnableBackgroundImageSelection(false);
 
     // Hovering
-    emit EnableLabelHover(false);
     emit EnablePointHover(false);
     emit EnableLineHover(false);
     emit EnableArcHover(true);
@@ -162,8 +150,6 @@ void MainWindow::ToolSelectArc()
     emit EnableSplineHover(false);
     emit EnableSplinePathHover(false);
     emit EnableImageBackgroundHover(false);
-
-    emit ShowArcSegmentLabel(true);
 
     emit ItemsSelection(SelectionType::ByMouseRelease);
 
@@ -175,7 +161,6 @@ void MainWindow::ToolSelectArc()
 void MainWindow::ToolSelectArcElArc()
 {
     // Only true for rubber band selection
-    emit EnableLabelSelection(false);
     emit EnablePointSelection(false);
     emit EnableLineSelection(false);
     emit EnableArcSelection(false);
@@ -185,7 +170,6 @@ void MainWindow::ToolSelectArcElArc()
     emit EnableBackgroundImageSelection(false);
 
     // Hovering
-    emit EnableLabelHover(false);
     emit EnablePointHover(false);
     emit EnableLineHover(false);
     emit EnableArcHover(true);
@@ -193,9 +177,6 @@ void MainWindow::ToolSelectArcElArc()
     emit EnableSplineHover(false);
     emit EnableSplinePathHover(false);
     emit EnableImageBackgroundHover(false);
-
-    emit ShowArcSegmentLabel(true);
-    emit ShowElArcSegmentLabel(true);
 
     emit ItemsSelection(SelectionType::ByMouseRelease);
 
@@ -214,7 +195,6 @@ void MainWindow::ToolSelectArcCurve()
 void MainWindow::ToolSelectPointArc()
 {
     // Only true for rubber band selection
-    emit EnableLabelSelection(false);
     emit EnablePointSelection(false);
     emit EnableLineSelection(false);
     emit EnableArcSelection(false);
@@ -224,7 +204,6 @@ void MainWindow::ToolSelectPointArc()
     emit EnableBackgroundImageSelection(false);
 
     // Hovering
-    emit EnableLabelHover(true);
     emit EnablePointHover(true);
     emit EnableLineHover(false);
     emit EnableArcHover(true);
@@ -232,8 +211,6 @@ void MainWindow::ToolSelectPointArc()
     emit EnableSplineHover(false);
     emit EnableSplinePathHover(false);
     emit EnableImageBackgroundHover(false);
-
-    emit ShowArcSegmentLabel(true);
 
     emit ItemsSelection(SelectionType::ByMouseRelease);
 
@@ -245,7 +222,6 @@ void MainWindow::ToolSelectPointArc()
 void MainWindow::ToolSelectCurve()
 {
     // Only true for rubber band selection
-    emit EnableLabelSelection(false);
     emit EnablePointSelection(false);
     emit EnableLineSelection(false);
     emit EnableArcSelection(false);
@@ -255,7 +231,6 @@ void MainWindow::ToolSelectCurve()
     emit EnableBackgroundImageSelection(false);
 
     // Hovering
-    emit EnableLabelHover(false);
     emit EnablePointHover(false);
     emit EnableLineHover(false);
     emit EnableArcHover(true);
@@ -263,11 +238,6 @@ void MainWindow::ToolSelectCurve()
     emit EnableSplineHover(true);
     emit EnableSplinePathHover(true);
     emit EnableImageBackgroundHover(false);
-
-    emit ShowArcSegmentLabel(true);
-    emit ShowElArcSegmentLabel(true);
-    emit ShowSplineSegmentLabel(true);
-    emit ShowSplinePathSegmentLabel(true);
 
     emit ItemsSelection(SelectionType::ByMouseRelease);
 
@@ -279,7 +249,6 @@ void MainWindow::ToolSelectCurve()
 void MainWindow::ToolSelectAllDrawObjects()
 {
     // Only true for rubber band selection
-    emit EnableLabelSelection(false);
     emit EnablePointSelection(false);
     emit EnableLineSelection(false);
     emit EnableArcSelection(false);
@@ -289,7 +258,6 @@ void MainWindow::ToolSelectAllDrawObjects()
     emit EnableBackgroundImageSelection(false);
 
     // Hovering
-    emit EnableLabelHover(true);
     emit EnablePointHover(true);
     emit EnableLineHover(false);
     emit EnableArcHover(true);
@@ -297,11 +265,6 @@ void MainWindow::ToolSelectAllDrawObjects()
     emit EnableSplineHover(true);
     emit EnableSplinePathHover(true);
     emit EnableImageBackgroundHover(false);
-
-    emit ShowArcSegmentLabel(true);
-    emit ShowElArcSegmentLabel(true);
-    emit ShowSplineSegmentLabel(true);
-    emit ShowSplinePathSegmentLabel(true);
 
     emit ItemsSelection(SelectionType::ByMouseRelease);
 
@@ -312,7 +275,6 @@ void MainWindow::ToolSelectAllDrawObjects()
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolSelectOperationObjects()
 {
-    emit EnableLabelSelection(false);
     emit EnablePointSelection(false);
     emit EnableLineSelection(false);
     emit EnableArcSelection(false);
@@ -321,7 +283,6 @@ void MainWindow::ToolSelectOperationObjects()
     emit EnableSplinePathSelection(false);
     emit EnableBackgroundImageSelection(false);
 
-    emit EnableLabelHover(true);
     emit EnablePointHover(true);
     emit EnableLineHover(false);
     emit EnableArcHover(true);
@@ -329,11 +290,6 @@ void MainWindow::ToolSelectOperationObjects()
     emit EnableSplineHover(true);
     emit EnableSplinePathHover(true);
     emit EnableImageBackgroundHover(false);
-
-    emit ShowArcSegmentLabel(true);
-    emit ShowElArcSegmentLabel(true);
-    emit ShowSplineSegmentLabel(true);
-    emit ShowSplinePathSegmentLabel(true);
 
     emit ItemsSelection(SelectionType::ByMouseRelease);
 
@@ -345,7 +301,6 @@ void MainWindow::ToolSelectOperationObjects()
 void MainWindow::ToolSelectGroupObjects()
 {
     // Only true for rubber band selection
-    emit EnableLabelSelection(true);
     emit EnablePointSelection(true);
     emit EnableLineSelection(true);
     emit EnableArcSelection(true);
@@ -355,7 +310,6 @@ void MainWindow::ToolSelectGroupObjects()
     emit EnableBackgroundImageSelection(false);
 
     // Hovering
-    emit EnableLabelHover(true);
     emit EnablePointHover(true);
     emit EnableLineHover(true);
     emit EnableArcHover(true);
@@ -363,11 +317,6 @@ void MainWindow::ToolSelectGroupObjects()
     emit EnableSplineHover(true);
     emit EnableSplinePathHover(true);
     emit EnableImageBackgroundHover(false);
-
-    emit ShowArcSegmentLabel(false);
-    emit ShowElArcSegmentLabel(false);
-    emit ShowSplineSegmentLabel(false);
-    emit ShowSplinePathSegmentLabel(false);
 
     emit ItemsSelection(SelectionType::ByMouseRelease);
 
@@ -379,12 +328,10 @@ void MainWindow::ToolSelectGroupObjects()
 void MainWindow::ToolSelectDetail()
 {
     // Only true for rubber band selection
-    emit EnableNodeLabelSelection(false);
     emit EnableNodePointSelection(false);
     emit EnableDetailSelection(true); // Disable when done visualization details
 
     // Hovering
-    emit EnableNodeLabelHover(true);
     emit EnableNodePointHover(true);
     emit EnableDetailHover(true);
 

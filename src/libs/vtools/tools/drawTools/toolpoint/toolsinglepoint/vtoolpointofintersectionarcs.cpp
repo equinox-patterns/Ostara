@@ -34,7 +34,6 @@
 
 #include "../../../../dialogs/tools/dialogpointofintersectionarcs.h"
 #include "../../../../dialogs/tools/dialogtool.h"
-#include "../../../../undocommands/label/movesegmentlabel.h"
 #include "../../../../undocommands/renameobject.h"
 #include "../../../../undocommands/savetooloptions.h"
 #include "../../../../visualization/line/vistoolpointofintersectionarcs.h"
@@ -50,7 +49,6 @@
 #include "vexception.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/vmaingraphicsscene.h"
-#include "../vwidgets/labelarrange/labelarrangetypes.h"
 #include "../vwidgets/vsegmentlabel.h"
 #include "vtoolsinglepoint.h"
 
@@ -132,21 +130,9 @@ VToolPointOfIntersectionArcs::VToolPointOfIntersectionArcs(const VToolPointOfInt
                                              &VToolPointOfIntersectionArcs::PointSelected,
                                              &VToolPointOfIntersectionArcs::Arc2Segment2LabelPositionChanged);
 
-    m_arc1Segment1Label->setData(LabelKindRole, static_cast<int>(LabelMoveRequest::Kind::Segment));
-    m_arc1Segment1Label->setData(LabelToolIdRole, static_cast<quint32>(initData.id));
-    m_arc1Segment1Label->setData(LabelExtraIdxRole, static_cast<int>(SegmentLabel::Segment1));
 
-    m_arc1Segment2Label->setData(LabelKindRole, static_cast<int>(LabelMoveRequest::Kind::Segment));
-    m_arc1Segment2Label->setData(LabelToolIdRole, static_cast<quint32>(initData.id));
-    m_arc1Segment2Label->setData(LabelExtraIdxRole, static_cast<int>(SegmentLabel::Segment2));
 
-    m_arc2Segment1Label->setData(LabelKindRole, static_cast<int>(LabelMoveRequest::Kind::Segment));
-    m_arc2Segment1Label->setData(LabelToolIdRole, static_cast<quint32>(initData.id));
-    m_arc2Segment1Label->setData(LabelExtraIdxRole, static_cast<int>(SegmentLabel::Segment3));
 
-    m_arc2Segment2Label->setData(LabelKindRole, static_cast<int>(LabelMoveRequest::Kind::Segment));
-    m_arc2Segment2Label->setData(LabelToolIdRole, static_cast<quint32>(initData.id));
-    m_arc2Segment2Label->setData(LabelExtraIdxRole, static_cast<int>(SegmentLabel::Segment4));
 
     ToolCreation(initData.typeCreation);
 }
@@ -1256,23 +1242,23 @@ void VToolPointOfIntersectionArcs::SegmentChoosed(quint32 id, SceneObject type)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolPointOfIntersectionArcs::Arc1Segment1LabelPositionChanged(const QPointF &pos)
 {
-    VAbstractApplication::VApp()->getUndoStack()->push(new MoveSegmentLabel(doc, pos, m_id, SegmentLabel::Segment1));
+    Q_UNUSED(pos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolPointOfIntersectionArcs::Arc1Segment2LabelPositionChanged(const QPointF &pos)
 {
-    VAbstractApplication::VApp()->getUndoStack()->push(new MoveSegmentLabel(doc, pos, m_id, SegmentLabel::Segment2));
+    Q_UNUSED(pos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolPointOfIntersectionArcs::Arc2Segment1LabelPositionChanged(const QPointF &pos)
 {
-    VAbstractApplication::VApp()->getUndoStack()->push(new MoveSegmentLabel(doc, pos, m_id, SegmentLabel::Segment3));
+    Q_UNUSED(pos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolPointOfIntersectionArcs::Arc2Segment2LabelPositionChanged(const QPointF &pos)
 {
-    VAbstractApplication::VApp()->getUndoStack()->push(new MoveSegmentLabel(doc, pos, m_id, SegmentLabel::Segment4));
+    Q_UNUSED(pos)
 }

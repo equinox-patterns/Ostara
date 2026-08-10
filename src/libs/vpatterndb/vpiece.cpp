@@ -31,8 +31,6 @@
 #include "../ifc/exception/vexceptionobjecterror.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vgeometry/vabstractcurve.h"
-#include "../vgeometry/vlayoutplacelabel.h"
-#include "../vgeometry/vplacelabelitem.h"
 #include "../vgeometry/vpointf.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/testpath.h"
@@ -472,49 +470,6 @@ auto VPiece::PassmarksPath(const VContainer *data) const -> QPainterPath
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VPiece::PlaceLabelPath(const VContainer *data) const -> QPainterPath
-{
-    QPainterPath path;
-    for (auto placeLabel : d->m_placeLabels)
-    {
-        try
-        {
-            const auto label = data->GeometricObject<VPlaceLabelItem>(placeLabel);
-            if (!label->IsVisible())
-            {
-                continue;
-            }
-
-            VLayoutPlaceLabel const layoutLabel(*label);
-            path.addPath(LabelShapePath(layoutLabel));
-
-            if (const QLineF mirrorLine = SeamMirrorLine(data);
-                !label->IsNotMirrored() && IsShowFullPiece() && !mirrorLine.isNull())
-            {
-                PlaceLabelImg shape = VAbstractPiece::PlaceLabelShape(layoutLabel);
-                const QTransform matrix = VGObject::FlippingMatrix(mirrorLine);
-                for (auto &points : shape)
-                {
-                    std::transform(points.begin(),
-                                   points.end(),
-                                   points.begin(),
-                                   [&matrix](const VLayoutPoint &point) -> VLayoutPoint
-                                   { return MapPoint(point, matrix); });
-                }
-
-                path.addPath(LabelShapePath(shape));
-            }
-        }
-        catch (const VExceptionBadId &e)
-        {
-            qWarning() << e.ErrorMessage();
-        }
-    }
-    path.setFillRule(Qt::WindingFill);
-    return path;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VPiece::IsSeamAllowanceValid(const VContainer *data) const -> bool
 {
     if (IsSeamAllowance() && not IsSeamAllowanceBuiltIn() && !IsTrueZeroWidth())
@@ -636,29 +591,10 @@ void VPiece::SetPins(const QVector<quint32> &pins)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VPiece::GetPlaceLabels() const -> QVector<quint32>
-{
-    return d->m_placeLabels;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VPiece::GetPlaceLabels() -> QVector<quint32> &
-{
-    return d->m_placeLabels;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VPiece::SetPlaceLabels(const QVector<quint32> &labels)
-{
-    d->m_placeLabels = labels;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VPiece::Dependencies() const -> QList<quint32>
 {
     QList<quint32> list = d->m_path.Dependencies();
-    list.reserve(list.size() + d->m_customSARecords.size() + d->m_internalPaths.size() + d->m_pins.size() +
-                 d->m_placeLabels.size());
+    list.reserve(list.size() + d->m_customSARecords.size() + d->m_internalPaths.size() + d->m_pins.size());
 
     for (const auto &record : d->m_customSARecords)
     {
@@ -671,11 +607,6 @@ auto VPiece::Dependencies() const -> QList<quint32>
     }
 
     for (const auto &value : d->m_pins)
-    {
-        list.append(value);
-    }
-
-    for (const auto &value : d->m_placeLabels)
     {
         list.append(value);
     }

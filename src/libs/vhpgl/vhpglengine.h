@@ -109,7 +109,6 @@ private:
     void PlotSewLine(QTextStream &out, const VLayoutPiece &detail);
     void PlotSeamAllowance(QTextStream &out, const VLayoutPiece &detail);
     void PlotInternalPaths(QTextStream &out, const VLayoutPiece &detail);
-    void PlotPlaceLabels(QTextStream &out, const VLayoutPiece &detail);
     void PlotPassmarks(QTextStream &out, const VLayoutPiece &detail);
     void PlotLabels(QTextStream &out, const VLayoutPiece &detail);
     void PlotGrainline(QTextStream &out, const VLayoutPiece &detail);

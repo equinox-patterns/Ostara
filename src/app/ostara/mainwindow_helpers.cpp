@@ -30,6 +30,9 @@
 #include "mainwindow_helpers.h"
 
 #include <QApplication>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNodeList>
 #include <QFileInfo>
 #include <QPointer>
 #include <QRegularExpression>
@@ -255,4 +258,157 @@ void HandleRubberBandSelection(const VMainGraphicsScene *scene, const QRectF &sc
     }
 
     *prevBandTriggers = std::move(currentTriggers);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto StripLabelElements(QDomDocument *doc) -> bool
+{
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    bool foundLabels = false;
+    QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    // 1. Remove <patternLabel> element (and its <line> children, dateFormat, timeFormat)
+    const QDomNodeList patternLabels = root.elementsByTagName(QStringLiteral("patternLabel"));
+    if (not patternLabels.isEmpty())
+    {
+        foundLabels = true;
+        // Remove all matching elements (iterate backwards to avoid index issues)
+        for (int i = patternLabels.size() - 1; i >= 0; --i)
+        {
+            QDomNode node = patternLabels.at(i);
+            if (node.parentNode() == root)
+            {
+                root.removeChild(node);
+            }
+        }
+    }
+
+    // 2. Remove <pieceLabel> element
+    const QDomNodeList pieceLabels = root.elementsByTagName(QStringLiteral("pieceLabel"));
+    if (not pieceLabels.isEmpty())
+    {
+        foundLabels = true;
+        for (int i = pieceLabels.size() - 1; i >= 0; --i)
+        {
+            QDomNode node = pieceLabels.at(i);
+            if (node.parentNode() == root)
+            {
+                root.removeChild(node);
+            }
+        }
+    }
+
+    // 3. Remove labelPrefix attribute from root
+    if (root.hasAttribute(QStringLiteral("labelPrefix")))
+    {
+        foundLabels = true;
+        root.removeAttribute(QStringLiteral("labelPrefix"));
+    }
+
+    // 4. Remove <placeLabels> elements from all <detail>, <det>, and <children> elements
+    const QStringList placeLabelContainers = {QStringLiteral("detail"), QStringLiteral("det"), QStringLiteral("children")};
+    for (const auto &containerTag : placeLabelContainers)
+    {
+        const QDomNodeList containers = root.elementsByTagName(containerTag);
+        for (int i = 0; i < containers.size(); ++i)
+        {
+            QDomElement container = containers.at(i).toElement();
+            if (container.isNull())
+            {
+                continue;
+            }
+            const QDomNodeList placeLabels = container.elementsByTagName(QStringLiteral("placeLabels"));
+            for (int j = placeLabels.size() - 1; j >= 0; --j)
+            {
+                foundLabels = true;
+                container.removeChild(placeLabels.at(j));
+            }
+        }
+    }
+
+    // 5. Remove gradationLabel attribute from <detail> elements
+    const QDomNodeList details = root.elementsByTagName(QStringLiteral("detail"));
+    for (int i = 0; i < details.size(); ++i)
+    {
+        QDomElement detail = details.at(i).toElement();
+        if (detail.isNull())
+        {
+            continue;
+        }
+        if (detail.hasAttribute(QStringLiteral("gradationLabel")))
+        {
+            foundLabels = true;
+            detail.removeAttribute(QStringLiteral("gradationLabel"));
+        }
+
+        // 6. In <data> child of <detail>: remove label-specific attributes and <line> children
+        const QDomNodeList dataElements = detail.elementsByTagName(QStringLiteral("data"));
+        for (int j = 0; j < dataElements.size(); ++j)
+        {
+            QDomElement dataEl = dataElements.at(j).toElement();
+            if (dataEl.isNull())
+            {
+                continue;
+            }
+            // Remove <line> template children
+            const QDomNodeList lines = dataEl.elementsByTagName(QStringLiteral("line"));
+            for (int k = lines.size() - 1; k >= 0; --k)
+            {
+                foundLabels = true;
+                dataEl.removeChild(lines.at(k));
+            }
+            // Remove label-specific attributes from <data>
+            static const QStringList labelAttrs = {
+                QStringLiteral("orientation"), QStringLiteral("rotationWay"),
+                QStringLiteral("tilt"), QStringLiteral("foldPosition"),
+                QStringLiteral("visible"), QStringLiteral("fontSize"),
+                QStringLiteral("mx"), QStringLiteral("my"),
+                QStringLiteral("width"), QStringLiteral("height"),
+                QStringLiteral("rotation"), QStringLiteral("centerPin"),
+                QStringLiteral("topLeftPin"), QStringLiteral("bottomRightPin")
+            };
+            for (const auto &attr : labelAttrs)
+            {
+                if (dataEl.hasAttribute(attr))
+                {
+                    foundLabels = true;
+                    dataEl.removeAttribute(attr);
+                }
+            }
+        }
+
+        // 7. Remove <patternInfo> elements (pattern info labels)
+        const QDomNodeList patternInfos = detail.elementsByTagName(QStringLiteral("patternInfo"));
+        for (int j = patternInfos.size() - 1; j >= 0; --j)
+        {
+            foundLabels = true;
+            detail.removeChild(patternInfos.at(j));
+        }
+    }
+
+    // 8. Remove placeLabelType attribute from modeling <point> elements
+    const QDomNodeList allPoints = root.elementsByTagName(QStringLiteral("point"));
+    for (int i = 0; i < allPoints.size(); ++i)
+    {
+        QDomElement point = allPoints.at(i).toElement();
+        if (point.isNull())
+        {
+            continue;
+        }
+        if (point.hasAttribute(QStringLiteral("placeLabelType")))
+        {
+            foundLabels = true;
+            point.removeAttribute(QStringLiteral("placeLabelType"));
+        }
+    }
+
+    return foundLabels;
 }

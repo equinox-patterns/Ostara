@@ -32,7 +32,6 @@
 #include <QSharedPointer>
 #include <QUndoStack>
 
-#include "../../../../../undocommands/label/movesegmentlabel.h"
 #include "../../../../../undocommands/renameobject.h"
 #include "../../../../../undocommands/savetooloptions.h"
 #include "../../../../vabstracttool.h"
@@ -46,7 +45,6 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vformula.h"
 #include "../vtoolsinglepoint.h"
-#include "../vwidgets/labelarrange/labelarrangetypes.h"
 #include "../vwidgets/vsegmentlabel.h"
 #include "xml/vpatterngraph.h"
 
@@ -107,13 +105,7 @@ VToolCut::VToolCut(const VToolCutInitData &initData, QGraphicsItem *parent)
                                          &VToolCut::PointSelected,
                                          &VToolCut::Segment2LabelPositionChanged);
 
-    m_segment1Label->setData(LabelKindRole, static_cast<int>(LabelMoveRequest::Kind::Segment));
-    m_segment1Label->setData(LabelToolIdRole, static_cast<quint32>(initData.id));
-    m_segment1Label->setData(LabelExtraIdxRole, static_cast<int>(SegmentLabel::Segment1));
 
-    m_segment2Label->setData(LabelKindRole, static_cast<int>(LabelMoveRequest::Kind::Segment));
-    m_segment2Label->setData(LabelToolIdRole, static_cast<quint32>(initData.id));
-    m_segment2Label->setData(LabelExtraIdxRole, static_cast<int>(SegmentLabel::Segment2));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -492,13 +484,13 @@ void VToolCut::SegmentChoosed(quint32 id, SceneObject type)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolCut::Segment1LabelPositionChanged(const QPointF &pos)
 {
-    VAbstractApplication::VApp()->getUndoStack()->push(new MoveSegmentLabel(doc, pos, m_id, SegmentLabel::Segment1));
+    Q_UNUSED(pos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolCut::Segment2LabelPositionChanged(const QPointF &pos)
 {
-    VAbstractApplication::VApp()->getUndoStack()->push(new MoveSegmentLabel(doc, pos, m_id, SegmentLabel::Segment2));
+    Q_UNUSED(pos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -44,7 +44,6 @@ enum class GOType : qint8
     SplinePath,
     CubicBezier,
     CubicBezierPath,
-    PlaceLabel,
     Unknown
 };
 
@@ -54,21 +53,6 @@ enum class SplinePointPosition : qint8
 {
     FirstPoint,
     LastPoint
-};
-
-// Keep synchronized with XSD schema
-enum class PlaceLabelType : quint8
-{
-    Segment = 0,
-    Rectangle = 1,
-    Cross = 2,
-    Tshaped = 3,
-    Doubletree = 4,
-    Corner = 5,
-    Triangle = 6,
-    Hshaped = 7,
-    Button = 8,
-    Circle = 9
 };
 
 struct VLayoutPassmark
