@@ -28,6 +28,7 @@
 #ifndef VTHEME_H
 #define VTHEME_H
 
+#include <QHash>
 #include <QObject>
 #include <QString>
 
@@ -38,6 +39,7 @@ enum class VColorSheme : std::uint8_t
 };
 
 class QStyle;
+class QWidget;
 
 class VTheme : public QObject
 {
@@ -49,8 +51,8 @@ public:
     static auto Instance() -> VTheme *;
 
     void SetToAutoTheme() const;
-    void ResetThemeSettings() const;
-    void ApplyThemeToWindows() const;
+    void ResetThemeSettings();
+    void ApplyThemeToWindows();
 
 public:
     static auto GetFallbackThemeIcon(const QString &iconName, QSize iconSize) -> QIcon;
@@ -72,10 +74,15 @@ public slots:
 signals:
     void ThemeSettingsChanged();
 
+protected:
+    auto eventFilter(QObject *obj, QEvent *event) -> bool override;
+
 private:
     Q_DISABLE_COPY_MOVE(VTheme) // NOLINT
 
     explicit VTheme(QObject *parent = nullptr);
+
+    QHash<QObject *, QColor> m_viewportColors;
 };
 
 #endif // VTHEME_H

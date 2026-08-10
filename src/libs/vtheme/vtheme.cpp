@@ -43,6 +43,7 @@
 #include <QPainter>
 #include <QPalette>
 #include <QPixmap>
+#include <QScrollArea>
 #include <QStyle>
 #include <QStyleFactory>
 #include <QTextStream>
@@ -312,7 +313,7 @@ void VTheme::ResetColorScheme()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VTheme::ResetThemeSettings() const
+void VTheme::ResetThemeSettings()
 {
     InitFonts();
     SetIconTheme();
@@ -361,7 +362,7 @@ void VTheme::ResetThemeSettings() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VTheme::ApplyThemeToWindows() const
+void VTheme::ApplyThemeToWindows()
 {
     // Global native title bar appearance — one call affects all windows.
     SetMacWindowAppearance(0, ColorSheme() == VColorSheme::Dark);
@@ -391,6 +392,25 @@ void VTheme::ApplyThemeToWindows() const
 
                 dock->setAutoFillBackground(true);
                 dock->update();
+
+                // QScrollArea viewport has a native macOS white background
+                // that overrides everything (QSS global, QPalette, event filter).
+                // The ONLY thing that works is an inline dot-selector stylesheet
+                // applied directly to the viewport (SUBTILITES_CODE.md §13).
+                for (auto *scroll : dock->findChildren<QScrollArea *>())
+                {
+                    auto *vp = scroll->viewport();
+                    if (vp == nullptr)
+                    {
+                        continue;
+                    }
+
+                    const auto bg = ColorSheme() == VColorSheme::Dark
+                                        ? QStringLiteral("#191919")  // Gray900 = DockTitle dark
+                                        : QStringLiteral("#e5e5e5"); // Gray200 = DockTitle light
+
+                    vp->setStyleSheet(QStringLiteral(".QWidget { background: %1; }").arg(bg));
+                }
             }
 
             if (auto *central = mw->centralWidget())
@@ -404,6 +424,25 @@ void VTheme::ApplyThemeToWindows() const
             }
         }
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VTheme::eventFilter(QObject *obj, QEvent *event) -> bool
+{
+    if (event->type() == QEvent::Paint)
+    {
+        if (auto it = m_viewportColors.find(obj); it != m_viewportColors.end())
+        {
+            auto *widget = qobject_cast<QWidget *>(obj);
+            if (widget != nullptr)
+            {
+                QPainter p(widget);
+                p.fillRect(widget->rect(), it.value());
+            }
+        }
+    }
+
+    return QObject::eventFilter(obj, event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

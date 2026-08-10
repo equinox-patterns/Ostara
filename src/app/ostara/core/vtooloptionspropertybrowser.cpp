@@ -98,6 +98,7 @@ using namespace VtoppbConstants;
 #include <QDebug>
 #include <QDockWidget>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QObject>
 #include <QPalette>
 #include <QRegularExpression>
@@ -160,9 +161,16 @@ VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QDockWidget *parent)
 
     auto *scroll = new QScrollArea(parent);
     scroll->setWidgetResizable(true);
-    scroll->setWidget(m_formView);
-    // Dot-selector: cible uniquement le viewport sans cascader aux enfants (SUBTILITES_CODE.md §13)
-    scroll->viewport()->setStyleSheet(QStringLiteral(".QWidget { background: transparent; }"));
+
+    // Wrap QGroupBox in a widget whose layout has only top margin.
+    // QSS margin-top on the QGroupBox is clipped by the scroll area's
+    // viewport (widget is at y=0), so we compensate with a top-only layout margin.
+    auto *scrollContents = new QWidget(scroll);
+    auto *scrollLayout = new QVBoxLayout(scrollContents);
+    scrollLayout->setContentsMargins(0, 8, 0, 0);
+    scrollLayout->setSpacing(0);
+    scrollLayout->addWidget(m_formView);
+    scroll->setWidget(scrollContents);
 
     parent->setWidget(scroll);
 

@@ -50,6 +50,10 @@
         <file alias="file-plus_light.svg">../../../../../share/themes/icons/light/file-plus_light.svg</file>
         <file alias="folder-open_light.svg">../../../../../share/themes/icons/light/folder-open_light.svg</file>
         <file alias="info_light.svg">../../../../../share/themes/icons/light/info_light.svg</file>
+        <file alias="copy_light.svg">../../../../../share/themes/icons/light/copy_light.svg</file>
+        <file alias="copy_accent.svg">../../../../../share/themes/icons/light/copy_accent.svg</file>
+        <file alias="copy_disabled.svg">../../../../../share/themes/icons/light/copy_disabled.svg</file>
+        <file alias="caret-right_accent.svg">../../../../../share/themes/icons/light/caret-right_accent.svg</file>
     </qresource>
     <qresource prefix="/icons/dark">
         <file alias="square_accent.svg">../../../../../share/themes/icons/dark/square_accent.svg</file>
@@ -98,5 +102,9 @@
         <file alias="file-plus_dark.svg">../../../../../share/themes/icons/dark/file-plus_dark.svg</file>
         <file alias="folder-open_dark.svg">../../../../../share/themes/icons/dark/folder-open_dark.svg</file>
         <file alias="info_dark.svg">../../../../../share/themes/icons/dark/info_dark.svg</file>
+        <file alias="copy_dark.svg">../../../../../share/themes/icons/dark/copy_dark.svg</file>
+        <file alias="copy_accent.svg">../../../../../share/themes/icons/dark/copy_accent.svg</file>
+        <file alias="copy_disabled.svg">../../../../../share/themes/icons/dark/copy_disabled.svg</file>
+        <file alias="caret-right_accent.svg">../../../../../share/themes/icons/dark/caret-right_accent.svg</file>
     </qresource>
 </RCC>

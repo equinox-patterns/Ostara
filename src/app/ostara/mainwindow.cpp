@@ -205,6 +205,7 @@
 #include "dialogs/dialogpatternproperties.h"
 #include "widgets/MeasurementWorkspace/MeasurementWindow.h"
 #include "widgets/MeasurementWorkspace/MeasurementWorkspace.h"
+#include "widgets/ODockTitleBar.h"
 #include "WelcomeScreen.h"
 #include "StyleGuideWindow.h"
 #include <QStackedWidget>
@@ -305,6 +306,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(doc, &VPattern::MadeProgress, this, &MainWindow::ShowProgress);
     VAbstractValApplication::VApp()->setCurrentDocument(doc);
 
+    ui->view->setFrameStyle(QFrame::NoFrame);
+    ui->view->viewport()->setContentsMargins(0, 0, 0, 0);
+
     InitDocksContain();
     CreateMenus();
 
@@ -394,6 +398,12 @@ MainWindow::MainWindow(QWidget *parent)
     m_welcomeScreen = new WelcomeScreen();
 
     QWidget *oldCentral = takeCentralWidget(); // detaches without deleting
+    oldCentral->setContentsMargins(0, 0, 0, 0);
+    if (auto *oldLayout = oldCentral->layout())
+    {
+        oldLayout->setContentsMargins(0, 0, 0, 0);
+        oldLayout->setSpacing(0);
+    }
     m_stackedWidget->addWidget(oldCentral);      // index 0 — editor (wraps ui->view)
     m_stackedWidget->addWidget(m_welcomeScreen); // index 1 — welcome
     setCentralWidget(m_stackedWidget);
@@ -2232,10 +2242,11 @@ void MainWindow::ActionDetails(bool checked)
         ui->dockWidgetGroups->setVisible(m_groupsActive);
         ui->dockWidgetGroups->setToolTip(tr("Show which details will go in layout"));
 
-        ui->dockWidgetToolOptions->setVisible(m_toolOptionsActive);
+        ui->dockWidgetToolOptions->setVisible(false);
         ui->dockWidgetBackgroundImages->setVisible(false);
         ui->dockWidgetDependencies->setVisible(false);
 
+        actionDockWidgetToolOptions->setDisabled(true);
         actionDockWidgetBackgroundImages->setDisabled(true);
         actionDockWidgetDependencies->setDisabled(true);
 
@@ -3626,6 +3637,7 @@ void MainWindow::CreateMenus()
     ui->menuFile->insertAction(ui->actionPattern_properties, m_separatorAct);
 
     AddDocks();
+    setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3894,8 +3906,52 @@ void MainWindow::AddDocks()
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::InitDocksContain()
 {
+    // Helper to install a custom ODockTitleBar on a dock widget
+    auto setupTitleBar = [](QDockWidget *dock)
+    {
+        auto *titleBar = new ODockTitleBar(dock->windowTitle(), dock);
+        dock->setTitleBarWidget(titleBar);
+
+        // Keep title in sync
+        QObject::connect(dock, &QDockWidget::windowTitleChanged, titleBar, &ODockTitleBar::setTitle);
+
+        // Collapse: constrain content height to 0 instead of hiding,
+        // so the dock width (and dock area width) is preserved.
+        QObject::connect(titleBar, &ODockTitleBar::collapseToggled, dock, [dock](bool collapsed)
+                         {
+                             if (auto *w = dock->widget())
+                             {
+                                 w->setVisible(true); // must stay visible for width
+                                 w->setMinimumHeight(collapsed ? 0 : 0);
+                                 w->setMaximumHeight(collapsed ? 0 : QWIDGETSIZE_MAX);
+                             }
+                         });
+
+        // Detach: toggle floating state
+        QObject::connect(titleBar, &ODockTitleBar::detachRequested, dock, [dock]() { dock->setFloating(!dock->isFloating()); });
+
+        // Track floating state — disable detach button when already floating
+        QObject::connect(dock, &QDockWidget::topLevelChanged, titleBar, &ODockTitleBar::setFloating);
+
+        // Close: hide the dock (re-open via Window menu)
+        QObject::connect(titleBar, &ODockTitleBar::closeRequested, dock, [dock]() { dock->setVisible(false); });
+    };
+
     qCDebug(vMainWindow, "Initialization property browser.");
     m_toolOptions = new VToolOptionsPropertyBrowser(ui->dockWidgetToolOptions);
+
+    // Replicate Background Image structure: root QWidget + QVBoxLayout (top margin)
+    // between the dock and the QScrollArea. The gap shows $DockBody between the
+    // title bar ($DockTitle) and the scroll area, making the spacing visible.
+    {
+        auto *scroll = ui->dockWidgetToolOptions->widget();
+        auto *root = new QWidget(ui->dockWidgetToolOptions);
+        auto *rootLayout = new QVBoxLayout(root);
+        rootLayout->setContentsMargins(0, 8, 0, 0);
+        rootLayout->setSpacing(0);
+        rootLayout->addWidget(scroll);
+        ui->dockWidgetToolOptions->setWidget(root);
+    }
 
     connect(ui->view, &VMainGraphicsView::itemClicked, m_toolOptions, &VToolOptionsPropertyBrowser::itemClicked);
     connect(doc, &VPattern::FullUpdateFromFile, m_toolOptions, &VToolOptionsPropertyBrowser::UpdateOptions,
@@ -3915,6 +3971,27 @@ void MainWindow::InitDocksContain()
 
     m_backgroundImagesWidget = new VWidgetBackgroundImages(doc, this);
     ui->dockWidgetBackgroundImages->setWidget(m_backgroundImagesWidget);
+
+    // Keep only top margin in wrapper layouts — side/bottom margins are handled
+    // by QGroupBox QSS (margin-left/right/bottom: 8px). The top margin from the
+    // layout compensates for QSS margin-top being clipped by the scroll area viewport.
+    if (auto *bgLayout = m_backgroundImagesWidget->layout())
+    {
+        const int top = bgLayout->contentsMargins().top();
+        bgLayout->setContentsMargins(0, top, 0, 0);
+    }
+    if (auto *scroll = m_backgroundImagesWidget->findChild<QScrollArea *>())
+    {
+        if (auto *contents = scroll->widget())
+        {
+            if (auto *innerLayout = contents->layout())
+            {
+                const int top = innerLayout->contentsMargins().top();
+                innerLayout->setContentsMargins(0, top, 0, 0);
+            }
+        }
+    }
+
     connect(m_backgroundImagesWidget, &VWidgetBackgroundImages::DeleteImage, this, &MainWindow::RemoveBackgroundImage);
 
     m_dependenciesWidget = new VWidgetDependencies(doc, this);
@@ -3938,6 +4015,14 @@ void MainWindow::InitDocksContain()
     connect(m_dependenciesWidget, &VWidgetDependencies::ShowTool, ui->view, &VMainGraphicsView::EnsureToolVisible,
             Qt::QueuedConnection);
     ui->dockWidgetDependencies->setWidget(m_dependenciesWidget);
+
+    // ── Custom title bars ──
+    setupTitleBar(ui->dockWidgetToolOptions);
+    setupTitleBar(ui->dockWidgetLayoutPages);
+    setupTitleBar(ui->dockWidgetGroups);
+    setupTitleBar(ui->dockWidgetMessages);
+    setupTitleBar(ui->dockWidgetBackgroundImages);
+    setupTitleBar(ui->dockWidgetDependencies);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
