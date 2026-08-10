@@ -4023,7 +4023,7 @@ void MainWindow::InitDocksContain()
             &VToolOptionsPropertyBrowser::itemClicked, Qt::QueuedConnection);
     connect(m_dependenciesWidget, &VWidgetDependencies::ShowTool, ui->view, &VMainGraphicsView::EnsureToolVisible,
             Qt::QueuedConnection);
-    ui->dockWidgetDependencies->setWidget(m_dependenciesWidget);
+    WrapDockContent(ui->dockWidgetDependencies, m_dependenciesWidget);
 
     // ── Messages dock — wrap existing .ui content ──
     {

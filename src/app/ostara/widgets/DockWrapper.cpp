@@ -67,6 +67,7 @@ void WrapDockContent(QDockWidget *dock, QWidget *content)
     auto *groupLayout = new QVBoxLayout(groupBox);
     groupLayout->setContentsMargins(0, 0, 0, 0);
     groupLayout->addWidget(content);
+    content->setVisible(true);
 
     scrollLayout->addWidget(groupBox);
     scroll->setWidget(scrollContents);
