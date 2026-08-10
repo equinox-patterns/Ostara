@@ -500,6 +500,8 @@ MainWindow::MainWindow(QWidget *parent)
                 }
             });
 
+    UpdateMessagesIcons();
+
     if (VApplication::IsGUIMode())
     {
         QTimer::singleShot(1s, this, &MainWindow::AskDefaultSettings);
@@ -1116,6 +1118,7 @@ void MainWindow::changeEvent(QEvent *event)
 
         UpdateTopBarIcons();
         UpdateMenuIcons();
+        UpdateMessagesIcons();
     }
 
     // remember to call base class implementation
@@ -2163,6 +2166,8 @@ void MainWindow::ActionDraw(bool checked)
 
         ui->dockWidgetDependencies->setVisible(m_dependenciesActive);
 
+        ui->dockWidgetMessages->setVisible(m_patternMessagesActive);
+
         actionDockWidgetToolOptions->setEnabled(true);
         actionDockWidgetGroups->setEnabled(true);
         actionDockWidgetBackgroundImages->setEnabled(true);
@@ -2246,6 +2251,8 @@ void MainWindow::ActionDetails(bool checked)
         ui->dockWidgetToolOptions->setVisible(false);
         ui->dockWidgetBackgroundImages->setVisible(false);
         ui->dockWidgetDependencies->setVisible(false);
+
+        ui->dockWidgetMessages->setVisible(m_patternMessagesActive);
 
         actionDockWidgetToolOptions->setDisabled(true);
         actionDockWidgetBackgroundImages->setDisabled(true);
@@ -2360,6 +2367,7 @@ void MainWindow::ActionLayout(bool checked)
     ui->dockWidgetLayoutPages->setVisible(true);
     ui->dockWidgetToolOptions->setVisible(false);
     ui->dockWidgetGroups->setVisible(false);
+    ui->dockWidgetMessages->setVisible(false);
     ui->dockWidgetBackgroundImages->setVisible(false);
     ui->dockWidgetDependencies->setVisible(false);
 
@@ -4016,6 +4024,19 @@ void MainWindow::InitDocksContain()
     connect(m_dependenciesWidget, &VWidgetDependencies::ShowTool, ui->view, &VMainGraphicsView::EnsureToolVisible,
             Qt::QueuedConnection);
     ui->dockWidgetDependencies->setWidget(m_dependenciesWidget);
+
+    // ── Messages dock — wrap existing .ui content ──
+    {
+        QWidget *messagesContent = ui->dockWidgetMessages->widget(); // dockWidgetContents_4
+        // dockWidgetContents_4 is a plain QWidget, so the viewport's
+        // .QWidget { background: $DockTitle } cascade colors it with the
+        // wrong background. Shield it with its own stylesheet so the
+        // QGroupBox $DockBody background shows through instead.
+        messagesContent->setObjectName(QStringLiteral("dockMessagesContent"));
+        messagesContent->setStyleSheet(
+            QStringLiteral("QWidget#dockMessagesContent { background: transparent; }"));
+        WrapDockContent(ui->dockWidgetMessages, messagesContent);
+    }
 
     // ── Custom title bars ──
     setupTitleBar(ui->dockWidgetToolOptions);

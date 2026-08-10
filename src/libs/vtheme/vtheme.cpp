@@ -44,7 +44,9 @@
 #include <QPalette>
 #include <QPixmap>
 #include <QAbstractScrollArea>
+#include <QPlainTextEdit>
 #include <QStyle>
+#include <QTextEdit>
 #include <QStyleFactory>
 #include <QTextStream>
 #include <QtDebug>
@@ -397,9 +399,17 @@ void VTheme::ApplyThemeToWindows()
                 // that overrides everything (QSS global, QPalette, event filter).
                 // The ONLY thing that works is an inline dot-selector stylesheet
                 // applied directly to the viewport (SUBTILITES_CODE.md §13).
-                // Covers QScrollArea, QTableWidget, QTreeView, QPlainTextEdit…
+                // Covers QScrollArea, QTableWidget, QTreeView.
+                // QPlainTextEdit/QTextEdit are EXCLUDED — their viewports should
+                // keep the natural Input background, not the dock TitleBar color.
                 for (auto *scroll : dock->findChildren<QAbstractScrollArea *>())
                 {
+                    // Skip text editors — their viewports are styled via QSS
+                    if (qobject_cast<QPlainTextEdit *>(scroll) || qobject_cast<QTextEdit *>(scroll))
+                    {
+                        continue;
+                    }
+
                     auto *vp = scroll->viewport();
                     if (vp == nullptr)
                     {

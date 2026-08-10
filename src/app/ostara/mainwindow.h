@@ -389,6 +389,7 @@ private:
     void UpdateMeasurementSeparatorIcon();
     void UpdateTopBarIcons();
     void UpdateMenuIcons();
+    void UpdateMessagesIcons();
     void InitToolButtons();
     void InitActionShortcuts();
     void CancelTool();

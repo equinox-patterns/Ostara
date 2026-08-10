@@ -303,6 +303,22 @@ void MainWindow::UpdateMenuIcons()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::UpdateMessagesIcons()
+{
+    const bool isDark = VTheme::ColorSheme() == VColorSheme::Dark;
+    const auto themeDir = QString(isDark ? QStringLiteral("dark") : QStringLiteral("light"));
+
+    ui->toolButtonClearMessages->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/broom_%1.svg").arg(themeDir)));
+    ui->toolButtonAutoRefresh->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/arrows-clockwise_%1.svg").arg(themeDir)));
+    ui->toolButtonMessagesZoomInFont->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/magnifying-glass-plus_%1.svg").arg(themeDir)));
+    ui->toolButtonMessagesZoomOutFont->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/magnifying-glass-minus_%1.svg").arg(themeDir)));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::UpdateMeasurementFileNameLabel()
 {
     if (m_measurementFileNameLabel)
