@@ -101,8 +101,9 @@ DialogCutSplinePath::DialogCutSplinePath(const VContainer *data, VAbstractPatter
         }
     }
 
-    connect(ui->lineEditName1, &QLineEdit::textEdited, this, &DialogCutSplinePath::ValidateCurveNames);
-    connect(ui->lineEditName2, &QLineEdit::textEdited, this, &DialogCutSplinePath::ValidateCurveNames);
+    // Name1/Name2 are auto-generated from segment points (RoleName step 4)
+    m_flagCurveName1 = true;
+    m_flagCurveName2 = true;
 
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
@@ -408,7 +409,7 @@ auto DialogCutSplinePath::GenerateDefRightSubName() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogCutSplinePath::IsValid() const -> bool
 {
-    return m_formula->isValid() && m_flagName && m_flagAlias1 && m_flagAlias2 && m_flagCurveName1 && m_flagCurveName2;
+    return m_formula->isValid() && m_flagName && m_flagAlias1 && m_flagAlias2;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
