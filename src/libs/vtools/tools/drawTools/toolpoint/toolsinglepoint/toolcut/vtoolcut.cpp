@@ -232,7 +232,7 @@ void VToolCut::ProcessToolCutOptions(const QDomElement &oldDomElement,
     if (changes.AliasSuffix2Changed())
     {
         const auto *renameAlias
-            = new RenameAlias(curveType, changes.oldAliasSuffix1, changes.newAliasSuffix1, doc, m_segment2Id, newGroup);
+            = new RenameAlias(curveType, changes.oldAliasSuffix2, changes.newAliasSuffix2, doc, m_segment2Id, newGroup);
         connect(renameAlias, &RenameLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     }
 
@@ -251,7 +251,7 @@ auto VToolCut::itemChange(GraphicsItemChange change, const QVariant &value) -> Q
             m_segment1Label->setSelected(value.toBool());
         }
 
-        if (m_segment1Id != NULL_ID)
+        if (m_segment2Id != NULL_ID)
         {
             const QSignalBlocker blockeSegment2Label(m_segment2Label);
             m_segment2Label->setSelected(value.toBool());
@@ -449,7 +449,7 @@ void VToolCut::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
     doc->SetAttribute(tag, AttrSegment1Mx, app->fromPixel(m_segment1Mx));
     doc->SetAttribute(tag, AttrSegment1My, app->fromPixel(m_segment1My));
     doc->SetAttribute(tag, AttrSegment2Mx, app->fromPixel(m_segment2Mx));
-    doc->SetAttribute(tag, AttrSegment2My, app->fromPixel(m_segment2Mx));
+    doc->SetAttribute(tag, AttrSegment2My, app->fromPixel(m_segment2My));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

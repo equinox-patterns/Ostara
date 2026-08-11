@@ -294,6 +294,7 @@ public:
     static const QString TagNotes;
     static const QString TagMeasurements;
     static const QString TagIncrements;
+    static const QString TagLineNames;
     static const QString TagPreviewCalculations;
     static const QString TagIncrement;
     static const QString TagDraw;

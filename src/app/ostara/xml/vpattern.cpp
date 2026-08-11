@@ -463,6 +463,7 @@ auto VPattern::SaveDocument(const QString &fileName, QString &error) -> bool
         comment.setData(FileComment());
     }
 
+    SyncLineNamesToDom();
     const bool saved = VAbstractPattern::SaveDocument(fileName, error);
     if (saved && QFileInfo(fileName).suffix() != "autosave"_L1)
     {
@@ -629,7 +630,7 @@ void VPattern::customEvent(QEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void VPattern::ParseRootElement(const Document &parse, const QDomNode &node)
 {
-    static const QStringList tags({TagDraw, TagIncrements, TagPreviewCalculations});
+    static const QStringList tags({TagLineNames, TagDraw, TagIncrements, TagPreviewCalculations});
 
     if (not node.isElement())
     {
@@ -644,7 +645,10 @@ void VPattern::ParseRootElement(const Document &parse, const QDomNode &node)
 
     switch (tags.indexOf(domElement.tagName()))
     {
-        case 0: // TagDraw
+        case 0: // TagLineNames
+            ParseLineNamesElement(domElement);
+            break;
+        case 1: // TagDraw
         {
             VPatternBlockMapper *blocks = PatternBlockMapper();
             if (parse == Document::FullParse)
@@ -660,13 +664,13 @@ void VPattern::ParseRootElement(const Document &parse, const QDomNode &node)
             ParseDrawElement(domElement, parse);
             break;
         }
-        case 1: // TagIncrements
+        case 2: // TagIncrements
             if (parse != Document::LiteParse)
             {
                 ParseIncrementsElement(domElement, parse);
             }
             break;
-        case 2: // TagPreviewCalculations
+        case 3: // TagPreviewCalculations
             if (parse != Document::LiteParse)
             {
                 ParseIncrementsElement(domElement, parse);
@@ -800,6 +804,9 @@ void VPattern::PrepareForParse(const Document &parse)
     SCASSERT(sceneDetail != nullptr)
 
     emit CancelLabelRendering();
+
+    // Clear line role-name cache; will be repopulated from <lineNames> during parse
+    data->ClearLineRoleNames();
 
     // We can run garbage collection only in a narrow window between first successfull parse and user change
     if (!m_garbageCollected && !IsPatternGraphComplete())

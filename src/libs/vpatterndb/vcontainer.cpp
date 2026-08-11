@@ -35,6 +35,7 @@
 #include <QVector>
 #include <QtDebug>
 
+#include "../ifc/ifcdef.h"
 #include "../vgeometry/vabstractcubicbezierpath.h"
 #include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/varc.h"
@@ -460,9 +461,57 @@ void VContainer::AddLine(quint32 firstPointId, quint32 secondPointId, quint32 ma
     const QSharedPointer<VPointF> first = GeometricObject<VPointF>(firstPointId);
     const QSharedPointer<VPointF> second = GeometricObject<VPointF>(secondPointId);
 
-    AddVariable(
-        new VLengthLine(first.data(), firstPointId, second.data(), secondPointId, *GetPatternUnit(), mainReference));
-    AddVariable(new VLineAngle(first.data(), firstPointId, second.data(), secondPointId, mainReference));
+    auto *lengthVar =
+        new VLengthLine(first.data(), firstPointId, second.data(), secondPointId, *GetPatternUnit(), mainReference);
+    auto *angleVar = new VLineAngle(first.data(), firstPointId, second.data(), secondPointId, mainReference);
+
+    const QString pairKey = first->name() + '_' + second->name();
+    if (d->lineRoleNames.contains(pairKey))
+    {
+        const QString &suffix = d->lineRoleNames[pairKey];
+        lengthVar->SetAlias(line_ + suffix);       // Line_CarrureDevant
+        angleVar->SetAlias(angleLine_ + suffix);   // AngleLine_CarrureDevant
+    }
+
+    AddVariable(lengthVar);
+    AddVariable(angleVar);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::SetLineRoleName(const QString &pairKey, const QString &suffix)
+{
+    if (suffix.isEmpty())
+    {
+        d->lineRoleNames.remove(pairKey);
+    }
+    else
+    {
+        d->lineRoleNames.insert(pairKey, suffix);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::RemoveLineRoleName(const QString &pairKey)
+{
+    d->lineRoleNames.remove(pairKey);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::ClearLineRoleNames()
+{
+    d->lineRoleNames.clear();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::LineRoleName(const QString &pairKey) const -> QString
+{
+    return d->lineRoleNames.value(pairKey);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::LineRoleNames() const -> const QHash<QString, QString> &
+{
+    return d->lineRoleNames;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

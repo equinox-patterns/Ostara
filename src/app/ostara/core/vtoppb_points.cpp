@@ -328,6 +328,32 @@ auto MakeHCrossPoint(const QString &label) -> PropertyDesc
             }};
 }
 
+template <typename Tool, typename Getter, typename Setter>
+auto MakeStringProp(const QString &attrId, const QString &label, Getter getter, Setter setter) -> PropertyDesc
+{
+    return {attrId, label, false,
+            [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new VPE::VStringProperty(label);
+                p->setClearButtonEnable(true);
+                p->setValue((t->*getter)());
+                return p;
+            },
+            [setter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                const QVariant v = prop->data(VPE::VProperty::DPC_Data, Qt::EditRole);
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    (t->*setter)(v.toString());
+                }
+            },
+            [getter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    prop->setValue((t->*getter)());
+                }
+            }};
+}
+
 } // anonymous namespace
 
 // Forward declarations (one per tool)
@@ -487,6 +513,8 @@ auto LineProperties() -> std::vector<PropertyDesc>
     return {
         MakeLineType<VToolLine>(T("Line type:")),
         MakeLineColor<VToolLine>(T("Line color:")),
+        MakeStringProp<VToolLine>(QStringLiteral("lineRoleName"), T("Name:"), &VToolLine::GetLineRoleName,
+                                  &VToolLine::SetLineRoleName),
         MakeParentPoint<VToolLine>(AttrFirstPoint, T("First point:"), &VToolLine::FirstPointName),
         MakeParentPoint<VToolLine>(AttrSecondPoint, T("Second point:"), &VToolLine::SecondPointName),
         MakeNotes<VToolLine>(T("Notes:")),

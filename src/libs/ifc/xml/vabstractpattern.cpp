@@ -78,6 +78,7 @@ const QString VAbstractPattern::TagNotes = QStringLiteral("notes");
 const QString VAbstractPattern::TagImage = QStringLiteral("image");
 const QString VAbstractPattern::TagMeasurements = QStringLiteral("measurements");
 const QString VAbstractPattern::TagIncrements = QStringLiteral("increments");
+const QString VAbstractPattern::TagLineNames = QStringLiteral("lineNames");
 const QString VAbstractPattern::TagPreviewCalculations = QStringLiteral("previewCalculations");
 const QString VAbstractPattern::TagIncrement = QStringLiteral("increment");
 const QString VAbstractPattern::TagDraw = QStringLiteral("draw");

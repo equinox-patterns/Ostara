@@ -59,17 +59,14 @@ void MainWindow::ReadSettings()
         restoreGeometry(settings->GetGeometry());
         restoreState(settings->GetToolbarsState(), kToolbarStateVersion);
 
-        m_groupsActive = settings->IsDockWidgetGroupsActive();
-        m_toolOptionsActive = settings->IsDockWidgetToolOptionsActive();
-        m_patternMessagesActive = settings->IsDockWidgetPatternMessagesActive();
-        m_backgroundImagesActive = settings->IsDockWidgetBackgroundImagesActive();
-        m_dependenciesActive = settings->IsDockWidgetDependenciesActive();
-
-        ui->dockWidgetGroups->setVisible(m_groupsActive);
-        ui->dockWidgetToolOptions->setVisible(m_toolOptionsActive);
-        ui->dockWidgetMessages->setVisible(m_patternMessagesActive);
-        ui->dockWidgetBackgroundImages->setVisible(m_backgroundImagesActive);
-        ui->dockWidgetDependencies->setVisible(m_dependenciesActive);
+        // Dock visibility is handled by saveState()/restoreState() — sync the
+        // boolean members from actual dock state so ShowEditor() can restore
+        // correctly after ShowWelcomeScreen() hides everything.
+        m_groupsActive = ui->dockWidgetGroups->isVisible();
+        m_toolOptionsActive = ui->dockWidgetToolOptions->isVisible();
+        m_patternMessagesActive = ui->dockWidgetMessages->isVisible();
+        m_backgroundImagesActive = ui->dockWidgetBackgroundImages->isVisible();
+        m_dependenciesActive = ui->dockWidgetDependencies->isVisible();
 
         // Scene antialiasing
         ui->view->SetAntialiasing(settings->GetGraphicalOutput());
@@ -104,19 +101,25 @@ void MainWindow::ReadSettings()
  */
 void MainWindow::WriteSettings()
 {
-    ActionDraw(true);
-
     VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
     settings->SetGeometry(saveGeometry());
-    settings->SetToolbarsState(saveState(kToolbarStateVersion));
 
-    settings->SetDockWidgetGroupsActive(ui->dockWidgetGroups->isVisible());
-    settings->SetDockWidgetToolOptionsActive(ui->dockWidgetToolOptions->isVisible());
-    settings->SetDockWidgetPatternMessagesActive(ui->dockWidgetMessages->isVisible());
-    settings->SetDockWidgetBackgroundImagesActive(actionDockWidgetBackgroundImages->isChecked());
-    settings->SetDockWidgetDependenciesActive(ui->dockWidgetDependencies->isVisible());
+    // Save dock state BEFORE ActionDraw(true) — ActionDraw resets dock visibility
+    // from stale boolean members, which would reopen docks the user closed.
+    // When on the WelcomeScreen all docks are hidden, so save the last known editor
+    // state instead.
+    if (m_stackedWidget->currentIndex() == 1 && !m_editorDockState.isEmpty())
+    {
+        settings->SetToolbarsState(m_editorDockState);
+    }
+    else
+    {
+        settings->SetToolbarsState(saveState(kToolbarStateVersion));
+    }
 
     settings->sync();
+
+    ActionDraw(true);
     if (settings->status() == QSettings::AccessError)
     {
         qWarning() << tr("Cannot save settings. Access denied.");

@@ -68,6 +68,9 @@ public:
     void SetNotes(const QString &notes);
     auto GetNotes() const -> QString;
 
+    void SetLineRoleName(const QString &suffix);
+    auto GetLineRoleName() const -> QString;
+
     void CheckDependencyTreeComplete() override;
 
 public slots:
@@ -76,6 +79,7 @@ public slots:
 
 private slots:
     void SwapPoints();
+    void ValidateLineRoleName();
 
 protected:
     void ShowVisualization() override;
@@ -92,6 +96,8 @@ private:
     Ui::DialogLine *ui;
 
     bool flagError;
+    bool flagRoleName{true};
+    QLabel *m_labelRoleName{nullptr};
 
     /** @brief number number of handled objects */
     qint32 number{0};
@@ -100,7 +106,7 @@ private:
 //---------------------------------------------------------------------------------------------------------------------
 inline auto DialogLine::IsValid() const -> bool
 {
-    return flagError;
+    return flagError && flagRoleName;
 }
 
 #endif // DIALOGLINE_H

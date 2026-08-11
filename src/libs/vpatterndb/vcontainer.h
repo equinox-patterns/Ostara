@@ -88,6 +88,14 @@ public:
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     QHash<QString, QSharedPointer<VInternalVariable>> variables{};
 
+    /**
+     * @brief lineRoleNames role-name suffix for lines, keyed by "P1_P2" (ordered pair of point names).
+     *        Lines have no VGObject to carry an alias; the suffix lives here.
+     *        The persistent source is the <lineNames> DOM section under <pattern>.
+     */
+    // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
+    QHash<QString, QString> lineRoleNames{};
+
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     QSharedPointer<QHash<quint32, VPiece>> pieces{QSharedPointer<QHash<quint32, VPiece>>::create()};
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
@@ -147,6 +155,11 @@ public:
     auto AddPiece(const VPiece &detail) -> quint32;
     auto AddPiecePath(const VPiecePath &path) -> quint32;
     void AddLine(quint32 firstPointId, quint32 secondPointId, quint32 mainReference = NULL_ID);
+    void SetLineRoleName(const QString &pairKey, const QString &suffix);
+    void RemoveLineRoleName(const QString &pairKey);
+    void ClearLineRoleNames();
+    auto LineRoleName(const QString &pairKey) const -> QString;
+    auto LineRoleNames() const -> const QHash<QString, QString> &;
     void AddArc(const QSharedPointer<VAbstractCurve> &arc, const quint32 &id, const quint32 &parentId = NULL_ID);
     void AddSpline(const QSharedPointer<VAbstractBezier> &curve, quint32 id, quint32 parentId = NULL_ID);
     void AddCurveWithSegments(const QSharedPointer<VAbstractCubicBezierPath> &curve, const quint32 &id,

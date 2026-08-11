@@ -173,6 +173,7 @@ extern const QString AttrSegment3Mx;
 extern const QString AttrSegment3My;
 extern const QString AttrSegment4Mx;
 extern const QString AttrSegment4My;
+extern const QString AttrPoints;
 
 extern const QString TypeLineDefault;
 extern const QString TypeLineNone;

@@ -1326,7 +1326,7 @@ void VToolPointOfIntersectionCurves::SaveOptions(QDomElement &tag, QSharedPointe
     doc->SetAttribute(tag, AttrSegment1Mx, app->fromPixel(m_curve1Segment1Mx));
     doc->SetAttribute(tag, AttrSegment1My, app->fromPixel(m_curve1Segment1My));
     doc->SetAttribute(tag, AttrSegment2Mx, app->fromPixel(m_curve1Segment2Mx));
-    doc->SetAttribute(tag, AttrSegment2My, app->fromPixel(m_curve1Segment2Mx));
+    doc->SetAttribute(tag, AttrSegment2My, app->fromPixel(m_curve1Segment2My));
     doc->SetAttribute(tag, AttrSegment3Mx, app->fromPixel(m_curve2Segment1Mx));
     doc->SetAttribute(tag, AttrSegment3My, app->fromPixel(m_curve2Segment1My));
     doc->SetAttribute(tag, AttrSegment4Mx, app->fromPixel(m_curve2Segment2Mx));

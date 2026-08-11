@@ -32,14 +32,17 @@
 #include <QComboBox>
 #include <QIcon>
 #include <QLabel>
+#include <QLineEdit>
 #include <QMap>
 #include <QPointer>
+#include <QRegularExpression>
 #include <QVariant>
 
 #include "../../visualization/line/vistoolline.h"
 #include "../../visualization/visualization.h"
 #include "../ifc/ifcdef.h"
 #include "../vmisc/vvalentinasettings.h"
+#include "../vpatterndb/variables/vlinelength.h"
 #include "dialogtool.h"
 #include "ui_dialogline.h"
 
@@ -76,6 +79,15 @@ DialogLine::DialogLine(const VContainer *data, VAbstractPattern *doc, quint32 to
     connect(ui->comboBoxFirstPoint, &QComboBox::currentTextChanged, this, &DialogLine::PointNameChanged);
     connect(ui->comboBoxSecondPoint, &QComboBox::currentTextChanged, this, &DialogLine::PointNameChanged);
     connect(ui->toolButtonSwapPoints, &QToolButton::clicked, this, &DialogLine::SwapPoints);
+
+    // Role name field (Line_CarrureDevant)
+    m_labelRoleName = new QLabel(tr("Name:"));
+    m_labelRoleName->setMinimumWidth(90);
+    auto *lineEditRoleName = new QLineEdit();
+    lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
+    ui->gridLayout->addWidget(m_labelRoleName, 4, 0);
+    ui->gridLayout->addWidget(lineEditRoleName, 4, 1);
+    connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogLine::ValidateLineRoleName);
 
     vis = new VisToolLine(&this->data);
 
@@ -270,4 +282,77 @@ void DialogLine::CheckDependencyTreeComplete()
     const bool ready = m_doc->IsPatternGraphComplete();
     ui->comboBoxFirstPoint->setEnabled(ready);
     ui->comboBoxSecondPoint->setEnabled(ready);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogLine::SetLineRoleName(const QString &suffix)
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        edit->setText(suffix);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogLine::GetLineRoleName() const -> QString
+{
+    if (const auto *edit = findChild<const QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        return edit->text().trimmed();
+    }
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogLine::ValidateLineRoleName()
+{
+    const auto *edit = findChild<const QLineEdit *>(QStringLiteral("lineEditRoleName"));
+    const QString suffix = edit ? edit->text().trimmed() : QString();
+    if (suffix.isEmpty())
+    {
+        flagRoleName = true;
+        ChangeColor(m_labelRoleName, OkColor(this));
+        CheckState();
+        return;
+    }
+
+    QRegularExpression const rx(NameRegExp());
+    if (!rx.match(suffix).hasMatch())
+    {
+        flagRoleName = false;
+        ChangeColor(m_labelRoleName, errorColor);
+        CheckState();
+        return;
+    }
+
+    // Check uniqueness: Line_<suffix> must not collide with an existing Line_ variable
+    // from a different line (OK if it's the same line)
+    const QMap<QString, QSharedPointer<VLengthLine>> lines = data.DataLengthLines();
+    const QString aliasKey = line_ + suffix;
+    if (lines.contains(aliasKey))
+    {
+        // Check if it's our own line
+        const quint32 firstId = GetFirstPoint();
+        const quint32 secondId = GetSecondPoint();
+        const QSharedPointer<VLengthLine> var = lines.value(aliasKey);
+        const QVector<quint32> refs = var->GetReferences();
+        if (refs.size() >= 2 && refs.at(0) == firstId && refs.at(1) == secondId)
+        {
+            // Same line, alias matches — OK
+            flagRoleName = true;
+            ChangeColor(m_labelRoleName, OkColor(this));
+        }
+        else
+        {
+            flagRoleName = false;
+            ChangeColor(m_labelRoleName, errorColor);
+        }
+    }
+    else
+    {
+        flagRoleName = true;
+        ChangeColor(m_labelRoleName, OkColor(this));
+    }
+
+    CheckState();
 }

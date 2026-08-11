@@ -49,6 +49,7 @@ struct VToolLineInitData : VDrawToolInitData
     quint32 secondPoint{NULL_ID};
     QString typeLine{TypeLineLine};
     QString lineColor{ColorBlack};
+    QString lineRoleName{};
 };
 
 /**
@@ -77,6 +78,9 @@ public:
 
     auto FirstPointName() const -> QString;
     auto SecondPointName() const -> QString;
+
+    auto GetLineRoleName() const -> QString;
+    void SetLineRoleName(const QString &suffix);
 
     auto GetLineColor() const -> QString;
     void SetLineColor(const QString &value);

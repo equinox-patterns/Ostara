@@ -1109,7 +1109,7 @@ void VToolPointOfIntersectionArcs::SaveOptions(QDomElement &tag, QSharedPointer<
     doc->SetAttribute(tag, AttrSegment1Mx, app->fromPixel(m_arc1Segment1Mx));
     doc->SetAttribute(tag, AttrSegment1My, app->fromPixel(m_arc1Segment1My));
     doc->SetAttribute(tag, AttrSegment2Mx, app->fromPixel(m_arc1Segment2Mx));
-    doc->SetAttribute(tag, AttrSegment2My, app->fromPixel(m_arc1Segment2Mx));
+    doc->SetAttribute(tag, AttrSegment2My, app->fromPixel(m_arc1Segment2My));
     doc->SetAttribute(tag, AttrSegment3Mx, app->fromPixel(m_arc2Segment1Mx));
     doc->SetAttribute(tag, AttrSegment3My, app->fromPixel(m_arc2Segment1My));
     doc->SetAttribute(tag, AttrSegment4Mx, app->fromPixel(m_arc2Segment2Mx));

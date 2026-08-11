@@ -41,6 +41,7 @@
 #include "../../dialogs/tools/dialogtool.h"
 #include "../../undocommands/renameobject.h"
 #include "../../undocommands/savetooloptions.h"
+#include "../../undocommands/vchangelinerolename.h"
 #include "../../visualization/line/vistoolline.h"
 #include "../../visualization/visualization.h"
 #include "../ifc/ifcdef.h"
@@ -103,6 +104,7 @@ void VToolLine::SetDialog()
     dialogTool->SetTypeLine(m_lineType);
     dialogTool->SetLineColor(lineColor);
     dialogTool->SetNotes(m_notes);
+    dialogTool->SetLineRoleName(GetLineRoleName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -131,6 +133,7 @@ auto VToolLine::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *s
     initData.parse = Document::FullParse;
     initData.typeCreation = Source::FromGui;
     initData.notes = dialogTool->GetNotes();
+    initData.lineRoleName = dialogTool->GetLineRoleName();
 
     VToolLine *line = Create(initData);
     if (line != nullptr)
@@ -163,6 +166,13 @@ auto VToolLine::Create(VToolLineInitData initData) -> VToolLine *
     SCASSERT(patternGraph != nullptr)
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
+
+    if (!initData.lineRoleName.isEmpty())
+    {
+        const QString firstPointName = initData.data->GeometricObject<VPointF>(initData.firstPoint)->name();
+        const QString secondPointName = initData.data->GeometricObject<VPointF>(initData.secondPoint)->name();
+        initData.data->SetLineRoleName(firstPointName + '_' + secondPointName, initData.lineRoleName);
+    }
 
     initData.data->AddLine(initData.firstPoint, initData.secondPoint, initData.id);
 
@@ -216,6 +226,32 @@ auto VToolLine::FirstPointName() const -> QString
 auto VToolLine::SecondPointName() const -> QString
 {
     return VAbstractTool::data.GetGObject(secondPoint)->name();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolLine::GetLineRoleName() const -> QString
+{
+    return VAbstractTool::data.LineRoleName(FirstPointName() + '_' + SecondPointName());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLine::SetLineRoleName(const QString &suffix)
+{
+    const QString pairKey = FirstPointName() + '_' + SecondPointName();
+    const QString oldSuffix = VAbstractTool::data.LineRoleName(pairKey);
+    if (oldSuffix == suffix)
+    {
+        return;
+    }
+
+    // Update the local data copy (VAbstractTool::data is a copy-on-write snapshot;
+    // undo commands only update the DOM — the reparse rebuilds the parse-time
+    // VContainer, but this tool's local copy is never touched by the reparse.)
+    VAbstractTool::data.SetLineRoleName(pairKey, suffix);
+
+    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
+    connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+    VAbstractApplication::VApp()->getUndoStack()->push(command);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -379,6 +415,9 @@ void VToolLine::SaveDialog(QDomElement &domElement)
                                          AttrNotes,
                                          dialogTool->GetNotes(),
                                          [](const QString &notes) noexcept -> bool { return notes.isEmpty(); });
+
+    // Persist the role name via the dedicated undo command (lineNames DOM section)
+    SetLineRoleName(dialogTool->GetLineRoleName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

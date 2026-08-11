@@ -230,6 +230,99 @@ void VPattern::ParseLineElement(VMainGraphicsScene *scene, const QDomElement &do
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseLineNamesElement(const QDomElement &domElement)
+{
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+
+    const QDomNodeList lineNodes = domElement.elementsByTagName(VDomDocument::TagLine);
+    for (int i = 0; i < lineNodes.count(); ++i)
+    {
+        const QDomElement lineEl = lineNodes.at(i).toElement();
+        if (lineEl.isNull())
+        {
+            continue;
+        }
+
+        const QString points = lineEl.attribute(AttrPoints);
+        const QString name = lineEl.attribute(AttrName);
+        if (points.isEmpty() || name.isEmpty())
+        {
+            continue;
+        }
+
+        const QStringList pointNames = points.split(' ', Qt::SkipEmptyParts);
+        if (pointNames.size() != 2)
+        {
+            continue;
+        }
+
+        const QString pairKey = pointNames.at(0) + '_' + pointNames.at(1);
+        data->SetLineRoleName(pairKey, name);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::SyncLineNamesToDom()
+{
+    QDomElement root = documentElement();
+    if (root.isNull())
+    {
+        return;
+    }
+
+    // Find or create the <lineNames> element
+    QDomElement lineNamesElement = root.firstChildElement(TagLineNames);
+    const bool hasNames = !data->LineRoleNames().isEmpty();
+
+    if (!hasNames)
+    {
+        // Remove existing <lineNames> if the map is empty
+        if (!lineNamesElement.isNull())
+        {
+            root.removeChild(lineNamesElement);
+        }
+        return;
+    }
+
+    // Create <lineNames> if it doesn't exist
+    if (lineNamesElement.isNull())
+    {
+        lineNamesElement = createElement(TagLineNames);
+        // Insert before the first <draw> element so it's parsed first
+        const QDomElement drawElement = root.firstChildElement(TagDraw);
+        if (!drawElement.isNull())
+        {
+            root.insertBefore(lineNamesElement, drawElement);
+        }
+        else
+        {
+            root.appendChild(lineNamesElement);
+        }
+    }
+
+    // Remove all existing <line> children
+    while (!lineNamesElement.firstChildElement(VDomDocument::TagLine).isNull())
+    {
+        lineNamesElement.removeChild(lineNamesElement.firstChildElement(VDomDocument::TagLine));
+    }
+
+    // Rebuild from the map
+    const auto &roleNames = data->LineRoleNames();
+    for (auto it = roleNames.cbegin(); it != roleNames.cend(); ++it)
+    {
+        QDomElement lineEl = createElement(VDomDocument::TagLine);
+        const QStringList pointNames = it.key().split('_');
+        if (pointNames.size() != 2)
+        {
+            continue;
+        }
+        lineEl.setAttribute(AttrPoints, pointNames.at(0) + ' ' + pointNames.at(1));
+        lineEl.setAttribute(AttrName, it.value());
+        lineNamesElement.appendChild(lineEl);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VPattern::ParseCurrentPP()
 {
     QDomElement const domElement = PatternBlockMapper()->GetActiveElement();

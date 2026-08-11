@@ -57,6 +57,7 @@ protected:
     auto ProcessType() const -> OperationType;
 
     virtual auto ProcessToken(const QString &token) const -> QString = 0;
+    virtual void ProcessLineNames();
 
     void ProcessElementByType(QDomElement &element) const;
 
@@ -106,6 +107,7 @@ public:
 
 protected:
     auto ProcessToken(const QString &token) const -> QString override;
+    void ProcessLineNames() override;
 
 private:
     Q_DISABLE_COPY_MOVE(RenameLabel) // NOLINT
@@ -143,6 +145,7 @@ public:
 
 protected:
     auto ProcessToken(const QString &token) const -> QString override;
+    void ProcessLineNames() override;
 
 private:
     Q_DISABLE_COPY_MOVE(RenamePair) // NOLINT

@@ -365,6 +365,8 @@ private:
     bool m_backgroundImagesActive{false};
     bool m_dependenciesActive{false};
 
+    QByteArray m_editorDockState{};
+
     // True while a tool options (edit) dialog is open. Undo/redo are blocked during this time because
     // running them triggers a full reparse that destroys the tool and pattern container the open dialog
     // still references, leading to a use-after-free when the dialog is accepted.

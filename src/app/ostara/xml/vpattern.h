@@ -181,6 +181,8 @@ private:
                                const QString &type);
     void ParsePathElement(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseIncrementsElement(const QDomNode &node, const Document &parse);
+    void ParseLineNamesElement(const QDomElement &domElement);
+    void SyncLineNamesToDom();
 
     void PrepareForParse(const Document &parse);
     void ToolsCommonAttributes(const QDomElement &domElement, quint32 &id);

@@ -543,6 +543,9 @@ void MainWindow::ShowWelcomeScreen()
 {
     m_stackedWidget->setCurrentWidget(m_welcomeScreen);
 
+    // Save editor dock state before hiding, so ShowEditor() can restore it
+    m_editorDockState = saveState(kToolbarStateVersion);
+
     // Hide editor chrome
     ui->topBar->setVisible(false);
     m_drawToolBar->setVisible(false);
@@ -581,12 +584,19 @@ void MainWindow::ShowEditor()
     statusBar()->setVisible(true);
     ui->actionClosePattern->setEnabled(true);
 
-    // Restore dock visibility from saved state booleans
-    ui->dockWidgetToolOptions->setVisible(m_toolOptionsActive);
-    ui->dockWidgetGroups->setVisible(m_groupsActive);
-    ui->dockWidgetMessages->setVisible(m_patternMessagesActive);
-    ui->dockWidgetBackgroundImages->setVisible(m_backgroundImagesActive);
-    ui->dockWidgetDependencies->setVisible(m_dependenciesActive);
+    // Restore dock layout saved by ShowWelcomeScreen() (or from ReadSettings at startup)
+    if (!m_editorDockState.isEmpty())
+    {
+        restoreState(m_editorDockState, kToolbarStateVersion);
+    }
+
+    // Sync boolean members with actual dock state after restore
+    m_groupsActive = ui->dockWidgetGroups->isVisible();
+    m_toolOptionsActive = ui->dockWidgetToolOptions->isVisible();
+    m_patternMessagesActive = ui->dockWidgetMessages->isVisible();
+    m_backgroundImagesActive = ui->dockWidgetBackgroundImages->isVisible();
+    m_dependenciesActive = ui->dockWidgetDependencies->isVisible();
+
     // LayoutPages dock is hidden except in Layout mode
 
     UpdateWindowTitle();

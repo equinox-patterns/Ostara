@@ -117,6 +117,8 @@ void AbstractObjectRename::RenameFormulas()
         ProcessElementByType(domElement);
     }
 
+    ProcessLineNames();
+
     if (m_operationType != OperationType::Undo)
     {
         if (!m_fullParse)
@@ -128,6 +130,13 @@ void AbstractObjectRename::RenameFormulas()
             emit NeedFullParsing();
         }
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void AbstractObjectRename::ProcessLineNames()
+{
+    // Base implementation: nothing to do. Subclasses override when they rename
+    // objects that appear as keys in the <lineNames> section.
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -472,6 +481,56 @@ auto RenameLabel::ProcessToken(const QString &token) const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void RenameLabel::ProcessLineNames()
+{
+    if (ProcessType() == OperationType::Unknown)
+    {
+        return;
+    }
+
+    QDomElement root = Doc()->documentElement();
+    if (root.isNull())
+    {
+        return;
+    }
+
+    QDomElement lineNamesElement = root.firstChildElement(VAbstractPattern::TagLineNames);
+    if (lineNamesElement.isNull())
+    {
+        return;
+    }
+
+    const QString &oldLabel = (ProcessType() == OperationType::Redo) ? m_oldLabel : m_newLabel;
+    const QString &newLabel = (ProcessType() == OperationType::Redo) ? m_newLabel : m_oldLabel;
+
+    QDomElement lineEl = lineNamesElement.firstChildElement(VDomDocument::TagLine);
+    while (!lineEl.isNull())
+    {
+        const QString points = lineEl.attribute(AttrPoints);
+        const QStringList pointNames = points.split(' ', Qt::SkipEmptyParts);
+        if (pointNames.size() == 2)
+        {
+            QString newPoints = points;
+            bool changed = false;
+            QStringList newPointNames = pointNames;
+            for (int i = 0; i < 2; ++i)
+            {
+                if (newPointNames[i] == oldLabel)
+                {
+                    newPointNames[i] = newLabel;
+                    changed = true;
+                }
+            }
+            if (changed)
+            {
+                lineEl.setAttribute(AttrPoints, newPointNames.at(0) + ' ' + newPointNames.at(1));
+            }
+        }
+        lineEl = lineEl.nextSiblingElement(VDomDocument::TagLine);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 RenamePair::RenamePair(RenameObjectType type,
                        ObjectPair_t oldPair,
                        ObjectPair_t newPair,
@@ -537,6 +596,50 @@ auto RenamePair::ProcessToken(const QString &token) const -> QString
     }
 
     return ReplaceTokenPair(token, m_type, m_newPair, m_oldPair, m_newDuplicate, m_oldDuplicate);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void RenamePair::ProcessLineNames()
+{
+    if (m_type != RenameObjectType::Line)
+    {
+        return;
+    }
+
+    if (ProcessType() == OperationType::Unknown)
+    {
+        return;
+    }
+
+    QDomElement root = Doc()->documentElement();
+    if (root.isNull())
+    {
+        return;
+    }
+
+    QDomElement lineNamesElement = root.firstChildElement(VAbstractPattern::TagLineNames);
+    if (lineNamesElement.isNull())
+    {
+        return;
+    }
+
+    const ObjectPair_t &oldPair = (ProcessType() == OperationType::Redo) ? m_oldPair : m_newPair;
+    const ObjectPair_t &newPair = (ProcessType() == OperationType::Redo) ? m_newPair : m_oldPair;
+
+    QDomElement lineEl = lineNamesElement.firstChildElement(VDomDocument::TagLine);
+    while (!lineEl.isNull())
+    {
+        const QString points = lineEl.attribute(AttrPoints);
+        if (points == (oldPair.first + ' ' + oldPair.second))
+        {
+            // Skip if the new pair would be degenerate (same point twice)
+            if (newPair.first != newPair.second)
+            {
+                lineEl.setAttribute(AttrPoints, newPair.first + ' ' + newPair.second);
+            }
+        }
+        lineEl = lineEl.nextSiblingElement(VDomDocument::TagLine);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

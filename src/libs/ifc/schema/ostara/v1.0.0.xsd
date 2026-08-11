@@ -110,6 +110,18 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="lineNames" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="line" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="points" type="xs:string" use="required"/>
+                  <xs:attribute name="name" type="nameSuffix" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="draw" minOccurs="1" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>
