@@ -29857,7 +29857,7 @@ Erreur de compatibilité du format .rld: actualFileVersion = %1 alors que fileVe
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="68"/>
         <source>AngleLine_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation>AngleLine_</translation>
+        <translation>AngleLigne_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="69"/>
@@ -30389,6 +30389,42 @@ Erreur de compatibilité du format .rld: actualFileVersion = %1 alors que fileVe
         <source>PieceSeamLineArea_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>PieceSeamLineArea_</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="102"/>
+        <source>Curve_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation>Courbe_</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="103"/>
+        <source>Angle1Curve_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation>Angle1Courbe_</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="104"/>
+        <source>Angle2Curve_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation>Angle2Courbe_</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="105"/>
+        <source>Handle1Curve_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation>Poignée1Courbe_</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="106"/>
+        <source>Handle2Curve_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation>Poignée2Courbe_</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="107"/>
+        <source>Radius_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation>Rayon_</translation>
     </message>
 </context>
 <context>

@@ -97,6 +97,14 @@ void VTranslateVars::InitVariables()
     variables.insert(pieceArea_, translate("VTranslateVars", "PieceArea_", "Left symbol _ in the name"));
     variables.insert(pieceSeamLineArea_,
                      translate("VTranslateVars", "PieceSeamLineArea_", "Left symbol _ in the name"));
+
+    // Simplified prefixes (RoleName step 1)
+    variables.insert(curve_, translate("VTranslateVars", "Curve_", "Left symbol _ in the name"));
+    variables.insert(angle1Curve_, translate("VTranslateVars", "Angle1Curve_", "Left symbol _ in the name"));
+    variables.insert(angle2Curve_, translate("VTranslateVars", "Angle2Curve_", "Left symbol _ in the name"));
+    variables.insert(handle1Curve_, translate("VTranslateVars", "Handle1Curve_", "Left symbol _ in the name"));
+    variables.insert(handle2Curve_, translate("VTranslateVars", "Handle2Curve_", "Left symbol _ in the name"));
+    variables.insert(radiusSimple_, translate("VTranslateVars", "Radius_", "Left symbol _ in the name"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

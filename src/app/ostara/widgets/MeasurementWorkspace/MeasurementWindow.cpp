@@ -230,7 +230,7 @@ bool MeasurementWindow::LoadFile(const QString &filePath)
         {
             const QDomElement mEl = mList.at(i).toElement();
             const QString name = mEl.attribute(QStringLiteral("name"));
-            const QString fullName = mEl.attribute(QStringLiteral("full_name"));
+            const QString fullName = mEl.attribute(QStringLiteral("fullName"));
             const QString description = mEl.attribute(QStringLiteral("description"));
             const QString type = mEl.attribute(QStringLiteral("type"));
             const bool specialUnits = mEl.attribute(QStringLiteral("specialUnits")) == QStringLiteral("true");

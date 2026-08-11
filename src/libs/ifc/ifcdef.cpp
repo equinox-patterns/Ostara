@@ -34,6 +34,7 @@
 #include <QPainter>
 #include <QPen>
 #include <QPixmap>
+#include <QPair>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"
@@ -440,6 +441,62 @@ const QString rotationElArc_ = rotation_V + elarc_;
 const QString pieceArea_ = QStringLiteral("PieceArea_");
 const QString pieceSeamLineArea_ = QStringLiteral("PieceSeamLineArea_");
 
+// Simplified prefixes (RoleName step 1)
+const QString curve_ = QStringLiteral("Curve_");
+const QString angle1Curve_ = QStringLiteral("Angle1Curve_");
+const QString angle2Curve_ = QStringLiteral("Angle2Curve_");
+const QString handle1Curve_ = QStringLiteral("Handle1Curve_");
+const QString handle2Curve_ = QStringLiteral("Handle2Curve_");
+const QString radiusSimple_ = QStringLiteral("Radius_");
+
+//---------------------------------------------------------------------------------------------------------------------
+QString SimplifiedName(const QString &name)
+{
+    // Ordered longest-first to avoid partial matches.
+    // Each pair: (technical_prefix, simplified_prefix)
+    // clang-format off
+    static const QList<QPair<QString, QString>> mappings = {
+        // SplPath variants (no trailing _) — before Spl variants
+        {angle1SplPath, angle1Curve_},
+        {angle2SplPath, angle2Curve_},
+        {c1LengthSplPath, handle1Curve_},
+        {c2LengthSplPath, handle2Curve_},
+        {splPath_V, curve_},
+        // Simple curve variants (trailing _)
+        {angle1Spl_, angle1Curve_},
+        {angle2Spl_, angle2Curve_},
+        {c1LengthSpl_, handle1Curve_},
+        {c2LengthSpl_, handle2Curve_},
+        // Radius variants
+        {radiusArc_, radiusSimple_},
+        {radius1ElArc_, radiusSimple_},
+        {radius2ElArc_, radiusSimple_},
+        // Simple curve
+        {spl_, curve_},
+    };
+    // clang-format on
+
+    for (const auto &[tech, simple] : mappings)
+    {
+        if (name.startsWith(tech))
+        {
+            qsizetype replaceLen = tech.length();
+            // When tech prefix doesn't end with _ but simplified does,
+            // and the next char is _, consume it to avoid double underscore.
+            // "SplPath_A_C" → consume "_" → "Curve_A_C"
+            // "SplPath EmmanchureDos" → space, not consumed → "Curve_ EmmanchureDos"
+            if (!tech.endsWith(u'_') && simple.endsWith(u'_') && name.length() > replaceLen && name[replaceLen] == u'_')
+            {
+                replaceLen++;
+            }
+            QString result = name;
+            result.replace(0, replaceLen, simple);
+            return result;
+        }
+    }
+    return name; // No simplification needed
+}
+
 auto BuilInVariables() -> QStringList
 {
     return {measurement_,
@@ -471,5 +528,11 @@ auto BuilInVariables() -> QStringList
             c2LengthSplPath,
             rotationElArc_,
             pieceArea_,
-            pieceSeamLineArea_};
+            pieceSeamLineArea_,
+            curve_,
+            angle1Curve_,
+            angle2Curve_,
+            handle1Curve_,
+            handle2Curve_,
+            radiusSimple_};
 }

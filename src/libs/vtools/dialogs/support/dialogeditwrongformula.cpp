@@ -637,14 +637,12 @@ template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &var
 
         if (!var->Filter(m_toolId))
         { // If we create this variable don't show
-            QString name = var->GetName();
+            // Prefer alias (RoleName) over technical name for display,
+            // then apply simplified prefix (Curve_ for Spl_, Radius_ for RadiusArc_, etc.).
+            QString name = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
             if (processedNames.contains(name))
             {
-                name = var->GetAlias();
-                if (name.isEmpty() || processedNames.contains(name))
-                {
-                    continue;
-                }
+                continue;
             }
 
             processedNames.insert(name);

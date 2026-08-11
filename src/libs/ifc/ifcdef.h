@@ -261,6 +261,16 @@ extern const QString rotationElArc_;
 extern const QString pieceArea_;
 extern const QString pieceSeamLineArea_;
 
+// Simplified prefixes (RoleName step 1)
+extern const QString curve_;
+extern const QString angle1Curve_;
+extern const QString angle2Curve_;
+extern const QString handle1Curve_;
+extern const QString handle2Curve_;
+extern const QString radiusSimple_;
+
+QString SimplifiedName(const QString &name);
+
 auto BuilInVariables() -> QStringList;
 
 QT_WARNING_PUSH

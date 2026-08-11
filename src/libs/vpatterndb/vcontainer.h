@@ -44,6 +44,7 @@
 #include <new>
 
 #include "../ifc/exception/vexceptionbadid.h"
+#include "../ifc/ifcdef.h"
 #include "../vgeometry/vabstractcubicbezierpath.h"
 #include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/vgobject.h"
@@ -354,9 +355,22 @@ template <typename T> void VContainer::AddVariable(const QSharedPointer<T> &var)
     SCASSERT(not var->GetName().isEmpty())
     AddVariable(var, var->GetName());
 
+    // Simplified prefix (RoleName step 1) — additional key
+    const QString simplified = SimplifiedName(var->GetName());
+    if (simplified != var->GetName())
+    {
+        AddVariable(var, simplified);
+    }
+
     if (not var->GetAlias().isEmpty())
     {
         AddVariable(var, var->GetAlias());
+
+        const QString simplifiedAlias = SimplifiedName(var->GetAlias());
+        if (simplifiedAlias != var->GetAlias())
+        {
+            AddVariable(var, simplifiedAlias);
+        }
     }
 }
 
