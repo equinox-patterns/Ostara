@@ -580,12 +580,37 @@ void VContainer::AddCurveWithSegments(const QSharedPointer<VAbstractCubicBezierP
     for (qint32 i = 1; i <= curve->CountSubSpl(); ++i)
     {
         const VSpline spl = curve->GetSpline(i);
+        const QString ptSuffix = spl.GetP1().name() + '_' + spl.GetP4().name();
 
-        AddVariable(new VCurveLength(id, parentId, curve.data(), spl, *GetPatternUnit(), i));
-        AddVariable(new VCurveAngle(id, parentId, curve.data(), spl, CurveAngle::StartAngle, i));
-        AddVariable(new VCurveAngle(id, parentId, curve.data(), spl, CurveAngle::EndAngle, i));
-        AddVariable(new VCurveCLength(id, parentId, curve.data(), spl, CurveCLength::C1, *GetPatternUnit(), i));
-        AddVariable(new VCurveCLength(id, parentId, curve.data(), spl, CurveCLength::C2, *GetPatternUnit(), i));
+        // Helper: register variable + auto-simplified point-based alias (RoleName step 3)
+        auto addWithPointKey = [&](const QSharedPointer<VInternalVariable> &var, const QString &simplifiedPrefix) {
+            QString baseKey = simplifiedPrefix + ptSuffix;
+            QString key = baseKey;
+            int n = 1;
+            while (d->variables.contains(key))
+            {
+                key = baseKey + '_' + QString::number(n++);
+            }
+            // Set point-based alias so ShowVariable() displays it (Curve_A_B instead of Curve_A_C_Seg_1)
+            var->SetAlias(key);
+            AddVariable(var);
+            uniqueNames[d->nspace].insert(key);
+        };
+
+        addWithPointKey(
+            QSharedPointer<VCurveLength>::create(id, parentId, curve.data(), spl, *GetPatternUnit(), i), curve_);
+        addWithPointKey(
+            QSharedPointer<VCurveAngle>::create(id, parentId, curve.data(), spl, CurveAngle::StartAngle, i),
+            angle1Curve_);
+        addWithPointKey(
+            QSharedPointer<VCurveAngle>::create(id, parentId, curve.data(), spl, CurveAngle::EndAngle, i),
+            angle2Curve_);
+        addWithPointKey(QSharedPointer<VCurveCLength>::create(id, parentId, curve.data(), spl, CurveCLength::C1,
+                                                               *GetPatternUnit(), i),
+                        handle1Curve_);
+        addWithPointKey(QSharedPointer<VCurveCLength>::create(id, parentId, curve.data(), spl, CurveCLength::C2,
+                                                               *GetPatternUnit(), i),
+                        handle2Curve_);
     }
 }
 
