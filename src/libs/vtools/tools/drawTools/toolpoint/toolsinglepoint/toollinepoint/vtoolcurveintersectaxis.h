@@ -104,6 +104,9 @@ public:
     auto GetAliasSuffix2() const -> QString;
     void SetAliasSuffix2(const QString &alias);
 
+    auto GetLineRoleName() const -> QString;
+    void SetLineRoleName(const QString &suffix);
+
     auto CurveName() const -> QString;
 
     void ShowVisualization(bool show) override;

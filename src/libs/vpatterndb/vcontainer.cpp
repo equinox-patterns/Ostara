@@ -469,6 +469,11 @@ void VContainer::AddLine(quint32 firstPointId, quint32 secondPointId, quint32 ma
     if (d->lineRoleNames.contains(pairKey))
     {
         const QString &suffix = d->lineRoleNames[pairKey];
+        // Register the derived aliases in uniqueNames so that IsUnique() can detect
+        // duplicate RoleNames across different lines (same mechanism as curves/increments).
+        uniqueNames[d->nspace].insert(line_ + suffix);
+        uniqueNames[d->nspace].insert(angleLine_ + suffix);
+
         lengthVar->SetAlias(line_ + suffix);       // Line_CarrureDevant
         angleVar->SetAlias(angleLine_ + suffix);   // AngleLine_CarrureDevant
     }
@@ -483,11 +488,19 @@ void VContainer::SetLineRoleName(const QString &pairKey, const QString &suffix)
     if (suffix.isEmpty())
     {
         d->lineRoleNames.remove(pairKey);
+        return;
     }
-    else
+
+    // Reject a suffix already in use by a different pairKey.
+    for (auto i = d->lineRoleNames.constBegin(); i != d->lineRoleNames.constEnd(); ++i)
     {
-        d->lineRoleNames.insert(pairKey, suffix);
+        if (i.key() != pairKey && i.value() == suffix)
+        {
+            return; // duplicate role name — silently ignored
+        }
     }
+
+    d->lineRoleNames.insert(pairKey, suffix);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -80,6 +80,9 @@ public:
     auto getPShoulder() const -> quint32;
     void setPShoulder(const quint32 &value);
 
+    auto GetLineRoleName() const -> QString;
+    void SetLineRoleName(const QString &suffix);
+
     void ShowVisualization(bool show) override;
 
 protected:

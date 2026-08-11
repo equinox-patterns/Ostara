@@ -1102,4 +1102,78 @@ void VToolOptionsPropertyBrowser::UpdateToolOptions(const std::vector<PropertyDe
     }
 }
 
+// ====== Shared Property Browser string-property factories ======
+
+// Plain string property — setter is called directly, no validation.
+template <typename Tool, typename Getter, typename Setter>
+auto MakeStringProp(const QString &attrId, const QString &label, Getter getter, Setter setter) -> PropertyDesc
+{
+    return {attrId, label, false,
+            [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new VPE::VStringProperty(label);
+                p->setClearButtonEnable(true);
+                p->setValue((t->*getter)());
+                return p;
+            },
+            [getter, setter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                const QVariant v = prop->data(VPE::VProperty::DPC_Data, Qt::EditRole);
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    const QString newValue = v.toString();
+                    if (newValue != (t->*getter)())
+                    {
+                        (t->*setter)(newValue);
+                    }
+                }
+            },
+            [getter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    prop->setValue((t->*getter)());
+                }
+            }};
+}
+
+// String property with post-setter validation.
+// The setter internally validates uniqueness/format and silently rejects
+// invalid input. After calling the setter, if the value didn't change,
+// the widget is reverted to show the rejection visually.
+template <typename Tool, typename Getter, typename Setter>
+auto MakeStringPropWithValidator(const QString &attrId, const QString &label, Getter getter, Setter setter)
+    -> PropertyDesc
+{
+    return {attrId, label, false,
+            [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new VPE::VStringProperty(label);
+                p->setClearButtonEnable(true);
+                p->setValue((t->*getter)());
+                return p;
+            },
+            [getter, setter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                const QVariant v = prop->data(VPE::VProperty::DPC_Data, Qt::EditRole);
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    const QString newValue = v.toString();
+                    if (newValue == (t->*getter)())
+                    {
+                        return; // no change
+                    }
+                    (t->*setter)(newValue);
+                    // If the setter silently rejected (didn't change the value), revert the widget
+                    if ((t->*getter)() != newValue)
+                    {
+                        prop->setValue((t->*getter)());
+                    }
+                }
+            },
+            [getter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    prop->setValue((t->*getter)());
+                }
+            }};
+}
+
 #endif // VTOPPB_TEMPLATES_H

@@ -29,8 +29,10 @@
 #include "dialogcurveintersectaxis.h"
 
 #include <QDialog>
+#include <QFormLayout>
 #include <QLineEdit>
 #include <QLineF>
+#include <QRegularExpression>
 #include <QPlainTextEdit>
 #include <QPointF>
 #include <QPointer>
@@ -50,6 +52,7 @@
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vvalentinasettings.h"
+#include "../vpatterndb/variables/vlinelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/global.h"
@@ -124,6 +127,14 @@ DialogCurveIntersectAxis::DialogCurveIntersectAxis(const VContainer *data, VAbst
             });
     connect(ui->lineEditAlias1, &QLineEdit::textEdited, this, &DialogCurveIntersectAxis::ValidateAlias);
     connect(ui->lineEditAlias2, &QLineEdit::textEdited, this, &DialogCurveIntersectAxis::ValidateAlias);
+
+    // Role name field (Line_CarrureDevant)
+    m_labelRoleName = new QLabel(tr("Name:"));
+    m_labelRoleName->setMinimumWidth(90);
+    auto *lineEditRoleName = new QLineEdit();
+    lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
+    ui->formLayout->insertRow(5, m_labelRoleName, lineEditRoleName);
+    connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogCurveIntersectAxis::ValidateLineRoleName);
 
     vis = new VisToolCurveIntersectAxis(&this->data);
 
@@ -326,7 +337,7 @@ void DialogCurveIntersectAxis::ChosenObject(quint32 id, const SceneObject &type)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogCurveIntersectAxis::IsValid() const -> bool
 {
-    return m_formula->isValid() && flagName && flagAlias1 && flagAlias2 && m_flagCurveName1 && m_flagCurveName2;
+    return m_formula->isValid() && flagName && flagAlias1 && flagAlias2 && m_flagCurveName1 && m_flagCurveName2 && flagRoleName;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -399,6 +410,7 @@ void DialogCurveIntersectAxis::ValidateAlias()
             flagAlias1 = false; // Conflicts with other identifiers
         }
     }
+    ui->lineEditAlias1->setStyleSheet(flagAlias1 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelAlias1, flagAlias1 ? OkColor(this) : errorColor);
 
     // Validate second alias
@@ -418,6 +430,7 @@ void DialogCurveIntersectAxis::ValidateAlias()
             flagAlias2 = false; // Conflicts with other identifiers
         }
     }
+    ui->lineEditAlias2->setStyleSheet(flagAlias2 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelAlias2, flagAlias2 ? OkColor(this) : errorColor);
 
     CheckState();
@@ -450,6 +463,7 @@ void DialogCurveIntersectAxis::ValidateCurveNames()
     {
         m_flagCurveName1 = false; // Conflicts with other identifiers
     }
+    ui->lineEditName1->setStyleSheet(m_flagCurveName1 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelName1, m_flagCurveName1 ? OkColor(this) : errorColor);
 
     // Validate second name
@@ -470,6 +484,7 @@ void DialogCurveIntersectAxis::ValidateCurveNames()
     {
         m_flagCurveName2 = false; // Conflicts with other identifiers
     }
+    ui->lineEditName2->setStyleSheet(m_flagCurveName2 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelName2, m_flagCurveName2 ? OkColor(this) : errorColor);
 
     CheckState();
@@ -560,4 +575,68 @@ void DialogCurveIntersectAxis::SetAliasSuffix2(const QString &alias)
 auto DialogCurveIntersectAxis::GetAliasSuffix2() const -> QString
 {
     return ui->lineEditAlias2->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogCurveIntersectAxis::SetLineRoleName(const QString &suffix)
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        edit->setText(suffix);
+    }
+}
+
+auto DialogCurveIntersectAxis::GetLineRoleName() const -> QString
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        return edit->text().trimmed();
+    }
+    return {};
+}
+
+void DialogCurveIntersectAxis::ValidateLineRoleName()
+{
+    auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName"));
+    if (edit == nullptr)
+    {
+        return;
+    }
+    const QString suffix = edit->text().trimmed();
+    if (suffix.isEmpty())
+    {
+        flagRoleName = true;
+        if (edit) { edit->setStyleSheet({}); }
+        ChangeColor(m_labelRoleName, OkColor(this));
+        CheckState();
+        return;
+    }
+    QRegularExpression const rx(NameRegExp());
+    if (!rx.match(suffix).hasMatch())
+    {
+        flagRoleName = false;
+        if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+        ChangeColor(m_labelRoleName, errorColor);
+        CheckState();
+        return;
+    }
+    // Uniqueness: Line_<suffix> must not exist on another line
+    const QString aliasKey = line_ + suffix;
+    if (data.DataLengthLines().contains(aliasKey))
+    {
+        const QSharedPointer<VLengthLine> var = data.DataLengthLines().value(aliasKey);
+        const QVector<quint32> refs = var->GetReferences();
+        if (refs.size() >= 2 && refs.at(0) != NULL_ID && refs.at(1) != NULL_ID)
+        {
+            flagRoleName = false;
+            if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+            ChangeColor(m_labelRoleName, errorColor);
+            CheckState();
+            return;
+        }
+    }
+    flagRoleName = true;
+    if (edit) { edit->setStyleSheet({}); }
+    ChangeColor(m_labelRoleName, OkColor(this));
+    CheckState();
 }

@@ -76,6 +76,9 @@ public:
     void SetNotes(const QString &notes);
     auto GetNotes() const -> QString;
 
+    void SetLineRoleName(const QString &suffix);
+    auto GetLineRoleName() const -> QString;
+
     void ShowDialog(bool click) override;
 
     void CheckDependencyTreeComplete() override;
@@ -85,13 +88,13 @@ public slots:
 
 protected:
     void ShowVisualization() override;
-    /**
-     * @brief SaveData Put dialog data in local variables
-     */
     void SaveData() override;
     void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
     auto IsValid() const -> bool override;
+
+private slots:
+    void ValidateLineRoleName();
 
 private:
     Q_DISABLE_COPY_MOVE(DialogEndLine) // NOLINT
@@ -107,6 +110,9 @@ private:
     bool m_firstRelease;
 
     bool flagName;
+
+    bool flagRoleName{true};
+    QLabel *m_labelRoleName{nullptr};
 
     void FinishCreating();
 

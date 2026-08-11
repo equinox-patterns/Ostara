@@ -235,6 +235,7 @@ void VPattern::ParseLineNamesElement(const QDomElement &domElement)
     Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
 
     const QDomNodeList lineNodes = domElement.elementsByTagName(VDomDocument::TagLine);
+    QSet<QString> seenSuffixes;
     for (int i = 0; i < lineNodes.count(); ++i)
     {
         const QDomElement lineEl = lineNodes.at(i).toElement();
@@ -249,6 +250,17 @@ void VPattern::ParseLineNamesElement(const QDomElement &domElement)
         {
             continue;
         }
+
+        // Reject duplicate line RoleNames at parse time — a suffix reused by a
+        // different pairKey would cause data corruption in d->variables.
+        if (seenSuffixes.contains(name))
+        {
+            qCCritical(vXML, "%s", qUtf8Printable(tr("Duplicate line role name '%1' in <lineNames>; "
+                                                     "second occurrence ignored.")
+                                                      .arg(name)));
+            continue;
+        }
+        seenSuffixes.insert(name);
 
         const QStringList pointNames = points.split(' ', Qt::SkipEmptyParts);
         if (pointNames.size() != 2)

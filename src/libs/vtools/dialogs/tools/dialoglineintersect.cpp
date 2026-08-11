@@ -30,6 +30,7 @@
 
 #include <QColor>
 #include <QComboBox>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QLine>
 #include <QLineEdit>
@@ -37,6 +38,7 @@
 #include <QPointF>
 #include <QPointer>
 #include <QPushButton>
+#include <QRegularExpression>
 #include <QSet>
 #include <QSharedPointer>
 
@@ -45,6 +47,7 @@
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vgeometry/vpointf.h"
 #include "../vmisc/compatibility.h"
+#include "../vpatterndb/variables/vlinelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "dialogtool.h"
 #include "ui_dialoglineintersect.h"
@@ -92,6 +95,17 @@ DialogLineIntersect::DialogLineIntersect(const VContainer *data, VAbstractPatter
     connect(ui->comboBoxP2Line1, &QComboBox::currentTextChanged, this, &DialogLineIntersect::PointNameChanged);
     connect(ui->comboBoxP1Line2, &QComboBox::currentTextChanged, this, &DialogLineIntersect::PointNameChanged);
     connect(ui->comboBoxP2Line2, &QComboBox::currentTextChanged, this, &DialogLineIntersect::PointNameChanged);
+
+    // Role name field (Line_CarrureDevant)
+    m_labelRoleName = new QLabel(tr("Name:"));
+    m_labelRoleName->setMinimumWidth(90);
+    auto *lineEditRoleName = new QLineEdit();
+    lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
+    auto *roleNameLayout = new QHBoxLayout();
+    roleNameLayout->addWidget(m_labelRoleName);
+    roleNameLayout->addWidget(lineEditRoleName);
+    ui->verticalLayout_3->insertLayout(1, roleNameLayout);
+    connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogLineIntersect::ValidateLineRoleName);
 
     vis = new VisToolLineIntersect(&this->data);
 
@@ -409,6 +423,74 @@ void DialogLineIntersect::SetNotes(const QString &notes)
 auto DialogLineIntersect::GetNotes() const -> QString
 {
     return ui->plainTextEditToolNotes->toPlainText();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogLineIntersect::SetLineRoleName(const QString &suffix)
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        edit->setText(suffix);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogLineIntersect::GetLineRoleName() const -> QString
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        return edit->text().trimmed();
+    }
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogLineIntersect::ValidateLineRoleName()
+{
+    auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName"));
+    if (!edit)
+    {
+        return;
+    }
+    const QString suffix = edit->text().trimmed();
+    if (suffix.isEmpty())
+    {
+        flagRoleName = true;
+        if (edit) { edit->setStyleSheet({}); }
+        ChangeColor(m_labelRoleName, OkColor(this));
+        CheckState();
+        return;
+    }
+
+    QRegularExpression const rx(NameRegExp());
+    if (!rx.match(suffix).hasMatch())
+    {
+        flagRoleName = false;
+        if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+        ChangeColor(m_labelRoleName, errorColor);
+        CheckState();
+        return;
+    }
+
+    // Uniqueness: Line_<suffix> must not exist on another line
+    const QString aliasKey = line_ + suffix;
+    if (data.DataLengthLines().contains(aliasKey))
+    {
+        const QSharedPointer<VLengthLine> var = data.DataLengthLines().value(aliasKey);
+        const QVector<quint32> refs = var->GetReferences();
+        if (refs.size() >= 2 && refs.at(0) != NULL_ID && refs.at(1) != NULL_ID)
+        {
+            flagRoleName = false;
+            if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+            ChangeColor(m_labelRoleName, errorColor);
+            CheckState();
+            return;
+        }
+    }
+    flagRoleName = true;
+    if (edit) { edit->setStyleSheet({}); }
+    ChangeColor(m_labelRoleName, OkColor(this));
+    CheckState();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

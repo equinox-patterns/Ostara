@@ -35,6 +35,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPointF>
+#include <QRegularExpression>
 #include <QPointer>
 #include <QPushButton>
 #include <QToolButton>
@@ -47,6 +48,7 @@
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vvalentinasettings.h"
+#include "../vpatterndb/variables/vlinelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vabstractmainwindow.h"
@@ -125,6 +127,15 @@ DialogNormal::DialogNormal(const VContainer *data, VAbstractPattern *doc, quint3
     connect(ui->comboBoxSecondPoint, &QComboBox::currentTextChanged, this, &DialogNormal::PointNameChanged);
     connect(ui->toolButtonSwapPoints, &QToolButton::clicked, this, &DialogNormal::SwapPoints);
 
+    // Role name field (Line_CarrureDevant)
+    m_labelRoleName = new QLabel(tr("Name:"));
+    m_labelRoleName->setMinimumWidth(90);
+    auto *lineEditRoleName = new QLineEdit();
+    lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
+    ui->gridLayoutPoints->addWidget(m_labelRoleName, 3, 0);
+    ui->gridLayoutPoints->addWidget(lineEditRoleName, 3, 1);
+    connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogNormal::ValidateLineRoleName);
+
     vis = new VisToolNormal(&this->data);
 
     ui->tabWidget->setCurrentIndex(0);
@@ -134,7 +145,7 @@ DialogNormal::DialogNormal(const VContainer *data, VAbstractPattern *doc, quint3
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogNormal::IsValid() const -> bool
 {
-    return m_flagName && m_formula->isValid() && m_flagError;
+    return m_flagName && m_formula->isValid() && m_flagError && flagRoleName;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -444,4 +455,70 @@ void DialogNormal::CheckDependencyTreeComplete()
     const bool ready = m_doc->IsPatternGraphComplete();
     ui->lineEditNamePoint->setEnabled(ready);
     ui->comboBoxFirstPoint->setEnabled(ready);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogNormal::SetLineRoleName(const QString &suffix)
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        edit->setText(suffix);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogNormal::GetLineRoleName() const -> QString
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        return edit->text().trimmed();
+    }
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogNormal::ValidateLineRoleName()
+{
+    auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName"));
+    if (edit == nullptr)
+    {
+        return;
+    }
+    const QString suffix = edit->text().trimmed();
+    if (suffix.isEmpty())
+    {
+        flagRoleName = true;
+        if (edit) { edit->setStyleSheet({}); }
+        ChangeColor(m_labelRoleName, OkColor(this));
+        CheckState();
+        return;
+    }
+    QRegularExpression const rx(NameRegExp());
+    if (!rx.match(suffix).hasMatch())
+    {
+        flagRoleName = false;
+        if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+        ChangeColor(m_labelRoleName, errorColor);
+        CheckState();
+        return;
+    }
+    // Uniqueness: Line_<suffix> must not exist on another line
+    const QString aliasKey = line_ + suffix;
+    if (data.DataLengthLines().contains(aliasKey))
+    {
+        const QSharedPointer<VLengthLine> var = data.DataLengthLines().value(aliasKey);
+        const QVector<quint32> refs = var->GetReferences();
+        if (refs.size() >= 2 && refs.at(0) != NULL_ID && refs.at(1) != NULL_ID)
+        {
+            flagRoleName = false;
+            if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+            ChangeColor(m_labelRoleName, errorColor);
+            CheckState();
+            return;
+        }
+    }
+    flagRoleName = true;
+    if (edit) { edit->setStyleSheet({}); }
+    ChangeColor(m_labelRoleName, OkColor(this));
+    CheckState();
 }

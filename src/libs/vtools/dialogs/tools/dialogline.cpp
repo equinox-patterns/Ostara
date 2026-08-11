@@ -296,7 +296,7 @@ void DialogLine::SetLineRoleName(const QString &suffix)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogLine::GetLineRoleName() const -> QString
 {
-    if (const auto *edit = findChild<const QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
     {
         return edit->text().trimmed();
     }
@@ -306,11 +306,12 @@ auto DialogLine::GetLineRoleName() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 void DialogLine::ValidateLineRoleName()
 {
-    const auto *edit = findChild<const QLineEdit *>(QStringLiteral("lineEditRoleName"));
+    auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName"));
     const QString suffix = edit ? edit->text().trimmed() : QString();
     if (suffix.isEmpty())
     {
         flagRoleName = true;
+        if (edit) { edit->setStyleSheet({}); }
         ChangeColor(m_labelRoleName, OkColor(this));
         CheckState();
         return;
@@ -320,6 +321,7 @@ void DialogLine::ValidateLineRoleName()
     if (!rx.match(suffix).hasMatch())
     {
         flagRoleName = false;
+        if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
         ChangeColor(m_labelRoleName, errorColor);
         CheckState();
         return;
@@ -340,17 +342,20 @@ void DialogLine::ValidateLineRoleName()
         {
             // Same line, alias matches — OK
             flagRoleName = true;
+            if (edit) { edit->setStyleSheet({}); }
             ChangeColor(m_labelRoleName, OkColor(this));
         }
         else
         {
             flagRoleName = false;
+            if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
             ChangeColor(m_labelRoleName, errorColor);
         }
     }
     else
     {
         flagRoleName = true;
+        if (edit) { edit->setStyleSheet({}); }
         ChangeColor(m_labelRoleName, OkColor(this));
     }
 

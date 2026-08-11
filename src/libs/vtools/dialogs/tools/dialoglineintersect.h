@@ -71,12 +71,18 @@ public:
     void SetNotes(const QString &notes);
     auto GetNotes() const -> QString;
 
+    void SetLineRoleName(const QString &suffix);
+    auto GetLineRoleName() const -> QString;
+
     void CheckDependencyTreeComplete() override;
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
     void PointChanged();
     void PointNameChanged() override;
+
+private slots:
+    void ValidateLineRoleName();
 
 protected:
     void ShowVisualization() override;
@@ -101,6 +107,9 @@ private:
 
     bool flagName;
 
+    bool flagRoleName{true};
+    QLabel *m_labelRoleName{nullptr};
+
     /** @brief number number of handled objects */
     qint32 number{0};
 
@@ -110,7 +119,7 @@ private:
 //---------------------------------------------------------------------------------------------------------------------
 inline auto DialogLineIntersect::IsValid() const -> bool
 {
-    return flagName && flagError && flagPoint;
+    return flagName && flagError && flagPoint && flagRoleName;
 }
 
 #endif // DIALOGLINEINTERSECT_H

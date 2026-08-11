@@ -363,9 +363,13 @@ void DialogPointOfIntersectionCurves::ValidateAlias()
                                      conflictsForCurve2Alias2);
 
     // Update UI colors
+    ui->lineEditCurve1Alias1->setStyleSheet(flagCurve1Alias1 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelCurve1Alias1, flagCurve1Alias1 ? OkColor(this) : errorColor);
+    ui->lineEditCurve1Alias2->setStyleSheet(flagCurve1Alias2 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelCurve1Alias2, flagCurve1Alias2 ? OkColor(this) : errorColor);
+    ui->lineEditCurve2Alias1->setStyleSheet(flagCurve2Alias1 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelCurve2Alias1, flagCurve2Alias1 ? OkColor(this) : errorColor);
+    ui->lineEditCurve2Alias2->setStyleSheet(flagCurve2Alias2 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelCurve2Alias2, flagCurve2Alias2 ? OkColor(this) : errorColor);
 
     CheckState();
@@ -454,9 +458,13 @@ void DialogPointOfIntersectionCurves::ValidateName()
     flagCurve2Name2 = ValidateName(curve2Name2, GetCurve2Name2(), originCurve2Name2, conflictsForCurve2Name2);
 
     // Update UI colors
+    ui->lineEditCurve1Name1->setStyleSheet(flagCurve1Name1 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelCurve1Name1, flagCurve1Name1 ? OkColor(this) : errorColor);
+    ui->lineEditCurve1Name2->setStyleSheet(flagCurve1Name2 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelCurve1Name2, flagCurve1Name2 ? OkColor(this) : errorColor);
+    ui->lineEditCurve2Name1->setStyleSheet(flagCurve2Name1 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelCurve2Name1, flagCurve2Name1 ? OkColor(this) : errorColor);
+    ui->lineEditCurve2Name2->setStyleSheet(flagCurve2Name2 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelCurve2Name2, flagCurve2Name2 ? OkColor(this) : errorColor);
 
     CheckState();

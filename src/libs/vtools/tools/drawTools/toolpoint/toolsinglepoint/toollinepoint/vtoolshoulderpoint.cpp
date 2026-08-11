@@ -38,6 +38,7 @@
 #include "../../../../../dialogs/tools/dialogtool.h"
 #include "../../../../../undocommands/renameobject.h"
 #include "../../../../../undocommands/savetooloptions.h"
+#include "../../../../../undocommands/vchangelinerolename.h"
 #include "../../../../../visualization/line/vistoolshoulderpoint.h"
 #include "../../../../../visualization/visualization.h"
 #include "../../../../vabstracttool.h"
@@ -49,6 +50,7 @@
 #include "vexception.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
+#include "../vpatterndb/variables/vlinelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vmaingraphicsscene.h"
@@ -98,6 +100,7 @@ void VToolShoulderPoint::SetDialog()
     dialogTool->SetP3(pShoulder);
     dialogTool->SetPointName(p->name());
     dialogTool->SetNotes(m_notes);
+    dialogTool->SetLineRoleName(GetLineRoleName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -175,6 +178,7 @@ auto VToolShoulderPoint::Create(const QPointer<DialogTool> &dialog, VMainGraphic
     initData.parse = Document::FullParse;
     initData.typeCreation = Source::FromGui;
     initData.notes = dialogTool->GetNotes();
+    initData.lineRoleName = dialogTool->GetLineRoleName();
 
     VToolShoulderPoint *point = Create(initData);
     if (point != nullptr)
@@ -221,6 +225,13 @@ auto VToolShoulderPoint::Create(VToolShoulderPointInitData &initData) -> VToolSh
 
     const auto varData = initData.data->DataDependencyVariables();
     initData.doc->FindFormulaDependencies(initData.formula, initData.id, varData);
+
+    if (!initData.lineRoleName.isEmpty())
+    {
+        const QString basePointNameForRole = initData.data->GeometricObject<VPointF>(initData.p1Line)->name();
+        const QString newPointNameForRole = initData.data->GeometricObject<VPointF>(initData.id)->name();
+        initData.data->SetLineRoleName(basePointNameForRole + '_' + newPointNameForRole, initData.lineRoleName);
+    }
 
     initData.data->AddLine(initData.p1Line, initData.id);
     initData.data->AddLine(initData.p2Line, initData.id);
@@ -281,6 +292,9 @@ void VToolShoulderPoint::SaveDialog(QDomElement &domElement)
                                          AttrNotes,
                                          notes,
                                          [](const QString &notes) noexcept -> bool { return notes.isEmpty(); });
+
+    // Persist the role name via the dedicated undo command (lineNames DOM section)
+    SetLineRoleName(dialogTool->GetLineRoleName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -435,4 +449,33 @@ void VToolShoulderPoint::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, 
 void VToolShoulderPoint::ShowVisualization(bool show)
 {
     ShowToolVisualization<VisToolShoulderPoint>(show);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolShoulderPoint::GetLineRoleName() const -> QString
+{
+    return VAbstractTool::data.LineRoleName(BasePointName() + '_' + VAbstractTool::data.GetGObject(m_id)->name());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolShoulderPoint::SetLineRoleName(const QString &suffix)
+{
+    const QString pairKey = BasePointName() + '_' + VAbstractTool::data.GetGObject(m_id)->name();
+    const QString oldSuffix = VAbstractTool::data.LineRoleName(pairKey);
+    // Uniqueness: same check as curves (IsUnique)
+    if (!suffix.isEmpty() && !VAbstractTool::data.IsUnique(line_ + suffix))
+    {
+        return;
+    }
+
+        if (oldSuffix == suffix)
+    {
+        return;
+    }
+
+    VAbstractTool::data.SetLineRoleName(pairKey, suffix);
+
+    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
+    connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+    VAbstractApplication::VApp()->getUndoStack()->push(command);
 }

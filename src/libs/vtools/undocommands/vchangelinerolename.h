@@ -52,6 +52,7 @@ private:
     Q_DISABLE_COPY_MOVE(VChangeLineRoleName) // NOLINT
 
     void UpdateDom(const QString &oldSuffix, const QString &newSuffix);
+    void ReplaceTokensInFormulas(const QString &oldSuffix, const QString &newSuffix);
 
     QString m_pairKey;
     QString m_oldSuffix;

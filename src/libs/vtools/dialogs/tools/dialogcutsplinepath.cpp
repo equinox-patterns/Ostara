@@ -307,11 +307,13 @@ void DialogCutSplinePath::ValidateAlias()
          path1.GetAlias() == path2.GetAlias()))
     {
         m_flagAlias1 = false;
+        ui->lineEditAlias1->setStyleSheet(QStringLiteral("border: 1px solid red;"));
         ChangeColor(ui->labelAlias1, errorColor);
     }
     else
     {
         m_flagAlias1 = true;
+        ui->lineEditAlias1->setStyleSheet({});
         ChangeColor(ui->labelAlias1, OkColor(this));
     }
 
@@ -321,11 +323,13 @@ void DialogCutSplinePath::ValidateAlias()
          path1.GetAlias() == path2.GetAlias()))
     {
         m_flagAlias2 = false;
+        ui->lineEditAlias2->setStyleSheet(QStringLiteral("border: 1px solid red;"));
         ChangeColor(ui->labelAlias2, errorColor);
     }
     else
     {
         m_flagAlias2 = true;
+        ui->lineEditAlias2->setStyleSheet({});
         ChangeColor(ui->labelAlias2, OkColor(this));
     }
 
@@ -347,11 +351,13 @@ void DialogCutSplinePath::ValidateCurveNames()
         || (m_originName1 != GetName1() && not data.IsUnique(splPath1.name())) || splPath1.name() == splPath2.name())
     {
         m_flagCurveName1 = false;
+        ui->lineEditName1->setStyleSheet(QStringLiteral("border: 1px solid red;"));
         ChangeColor(ui->labelName1, errorColor);
     }
     else
     {
         m_flagCurveName1 = true;
+        ui->lineEditName1->setStyleSheet({});
         ChangeColor(ui->labelName1, OkColor(this));
     }
 
@@ -359,11 +365,13 @@ void DialogCutSplinePath::ValidateCurveNames()
         || (m_originName2 != GetName2() && not data.IsUnique(splPath2.name())) || splPath1.name() == splPath2.name())
     {
         m_flagCurveName2 = false;
+        ui->lineEditName2->setStyleSheet(QStringLiteral("border: 1px solid red;"));
         ChangeColor(ui->labelName2, errorColor);
     }
     else
     {
         m_flagCurveName2 = true;
+        ui->lineEditName2->setStyleSheet({});
         ChangeColor(ui->labelName2, OkColor(this));
     }
 

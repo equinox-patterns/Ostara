@@ -131,6 +131,9 @@ void VToolLinePoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj
 
     doc->SetAttribute(tag, AttrTypeLine, m_lineType);
     doc->SetAttribute(tag, AttrLineColor, lineColor);
+
+    // Persist line role name to <lineNames> DOM section (equivalent to AttrAlias for curves)
+    SyncLineRoleNameToDom();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -275,4 +278,64 @@ void VToolLinePoint::ProcessLinePointToolOptions(const QDomElement &oldDomElemen
     }
 
     undoStack->push(newGroup);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::SyncLineRoleNameToDom()
+{
+    const QString pairKey = BasePointName() + '_' + VAbstractTool::data.GetGObject(m_id)->name();
+    const QString suffix = VAbstractTool::data.LineRoleName(pairKey);
+    if (suffix.isEmpty())
+    {
+        return;
+    }
+
+    QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return;
+    }
+
+    QDomElement lineNamesElement = root.firstChildElement(VAbstractPattern::TagLineNames);
+    if (lineNamesElement.isNull())
+    {
+        lineNamesElement = doc->createElement(VAbstractPattern::TagLineNames);
+        const QDomElement drawElement = root.firstChildElement(VAbstractPattern::TagDraw);
+        if (!drawElement.isNull())
+        {
+            root.insertBefore(lineNamesElement, drawElement);
+        }
+        else
+        {
+            root.appendChild(lineNamesElement);
+        }
+    }
+
+    const QStringList pointNames = pairKey.split('_', Qt::SkipEmptyParts);
+    if (pointNames.size() != 2)
+    {
+        return;
+    }
+
+    const QString points = pointNames.at(0) + ' ' + pointNames.at(1);
+    QDomElement existingLine = lineNamesElement.firstChildElement(VDomDocument::TagLine);
+    bool found = false;
+    while (!existingLine.isNull())
+    {
+        if (existingLine.attribute(AttrPoints) == points)
+        {
+            existingLine.setAttribute(AttrName, suffix);
+            found = true;
+            break;
+        }
+        existingLine = existingLine.nextSiblingElement(VDomDocument::TagLine);
+    }
+
+    if (!found)
+    {
+        QDomElement lineEl = doc->createElement(VDomDocument::TagLine);
+        lineEl.setAttribute(AttrPoints, points);
+        lineEl.setAttribute(AttrName, suffix);
+        lineNamesElement.appendChild(lineEl);
+    }
 }

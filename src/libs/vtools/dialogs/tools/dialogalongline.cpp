@@ -35,6 +35,7 @@
 #include <QLatin1String>
 #include <QLineEdit>
 #include <QPointer>
+#include <QRegularExpression>
 #include <QPushButton>
 #include <QSharedPointer>
 #include <QTimer>
@@ -124,6 +125,15 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
     connect(ui->comboBoxSecondPoint, &QComboBox::currentTextChanged, this, &DialogAlongLine::PointChanged);
     connect(ui->toolButtonSwapPoints, &QToolButton::clicked, this, &DialogAlongLine::SwapPoints);
 
+    // Role name field (Line_CarrureDevant)
+    m_labelRoleName = new QLabel(tr("Name:"));
+    m_labelRoleName->setMinimumWidth(90);
+    auto *lineEditRoleName = new QLineEdit();
+    lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
+    ui->gridLayout->addWidget(m_labelRoleName, 5, 0);
+    ui->gridLayout->addWidget(lineEditRoleName, 5, 1);
+    connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogAlongLine::ValidateLineRoleName);
+
     vis = new VisToolAlongLine(&this->data);
 
     // Call after initialization vis!!!!
@@ -136,7 +146,7 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogAlongLine::IsValid() const -> bool
 {
-    return m_flagName && m_formula->isValid() && m_flagError;
+    return m_flagName && m_formula->isValid() && m_flagError && flagRoleName;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -495,4 +505,72 @@ auto DialogAlongLine::GetFirstPointId() const -> quint32
 auto DialogAlongLine::GetSecondPointId() const -> quint32
 {
     return getCurrentObjectId(ui->comboBoxSecondPoint);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogAlongLine::SetLineRoleName(const QString &suffix)
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        edit->setText(suffix);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogAlongLine::GetLineRoleName() const -> QString
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        return edit->text().trimmed();
+    }
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogAlongLine::ValidateLineRoleName()
+{
+    auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName"));
+    if (!edit)
+    {
+        return;
+    }
+    const QString suffix = edit->text().trimmed();
+    if (suffix.isEmpty())
+    {
+        flagRoleName = true;
+        if (edit) { edit->setStyleSheet({}); }
+        ChangeColor(m_labelRoleName, OkColor(this));
+        CheckState();
+        return;
+    }
+
+    QRegularExpression const rx(NameRegExp());
+    if (!rx.match(suffix).hasMatch())
+    {
+        flagRoleName = false;
+        if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+        ChangeColor(m_labelRoleName, errorColor);
+        CheckState();
+        return;
+    }
+
+    // Uniqueness: Line_<suffix> must not exist on another line
+    const QString aliasKey = line_ + suffix;
+    if (data.DataLengthLines().contains(aliasKey))
+    {
+        const QSharedPointer<VLengthLine> var = data.DataLengthLines().value(aliasKey);
+        const QVector<quint32> refs = var->GetReferences();
+        if (refs.size() >= 2 && refs.at(0) != NULL_ID && refs.at(1) != NULL_ID)
+        {
+            flagRoleName = false;
+            if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+            ChangeColor(m_labelRoleName, errorColor);
+            CheckState();
+            return;
+        }
+    }
+    flagRoleName = true;
+    if (edit) { edit->setStyleSheet({}); }
+    ChangeColor(m_labelRoleName, OkColor(this));
+    CheckState();
 }

@@ -35,6 +35,7 @@
 #include "../../../../../dialogs/tools/dialogtool.h"
 #include "../../../../../undocommands/renameobject.h"
 #include "../../../../../undocommands/savetooloptions.h"
+#include "../../../../../undocommands/vchangelinerolename.h"
 #include "../../../../../visualization/line/vistoolheight.h"
 #include "../../../../../visualization/visualization.h"
 #include "../../../../vabstracttool.h"
@@ -44,6 +45,7 @@
 #include "../vgeometry/vgobject.h"
 #include "../vgeometry/vpointf.h"
 #include "vexception.h"
+#include "../vpatterndb/variables/vlinelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "vtoollinepoint.h"
@@ -91,6 +93,7 @@ void VToolHeight::SetDialog()
     dialogTool->SetP2LineId(p2LineId);
     dialogTool->SetPointName(p->name());
     dialogTool->SetNotes(m_notes);
+    dialogTool->SetLineRoleName(GetLineRoleName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -122,6 +125,7 @@ auto VToolHeight::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene 
     initData.parse = Document::FullParse;
     initData.typeCreation = Source::FromGui;
     initData.notes = dialogTool->GetNotes();
+    initData.lineRoleName = dialogTool->GetLineRoleName();
 
     VToolHeight *point = Create(initData);
     if (point != nullptr)
@@ -161,6 +165,13 @@ auto VToolHeight::Create(VToolHeightInitData initData) -> VToolHeight *
     SCASSERT(patternGraph != nullptr)
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
+
+    if (!initData.lineRoleName.isEmpty())
+    {
+        const QString basePointNameForRole = initData.data->GeometricObject<VPointF>(initData.basePointId)->name();
+        const QString newPointNameForRole = initData.data->GeometricObject<VPointF>(initData.id)->name();
+        initData.data->SetLineRoleName(basePointNameForRole + '_' + newPointNameForRole, initData.lineRoleName);
+    }
 
     initData.data->AddLine(initData.basePointId, initData.id);
     initData.data->AddLine(initData.p1LineId, initData.id);
@@ -231,6 +242,9 @@ void VToolHeight::SaveDialog(QDomElement &domElement)
     const QString notes = dialogTool->GetNotes();
     doc->SetAttributeOrRemoveIf<QString>(domElement, AttrNotes, notes,
                                          [](const QString &notes) noexcept { return notes.isEmpty(); });
+
+    // Persist the role name via the dedicated undo command (lineNames DOM section)
+    SetLineRoleName(dialogTool->GetLineRoleName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -404,4 +418,33 @@ void VToolHeight::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32
         Q_UNUSED(e)
         return; // Leave this method immediately!!!
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolHeight::GetLineRoleName() const -> QString
+{
+    return VAbstractTool::data.LineRoleName(BasePointName() + '_' + VAbstractTool::data.GetGObject(m_id)->name());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolHeight::SetLineRoleName(const QString &suffix)
+{
+    const QString pairKey = BasePointName() + '_' + VAbstractTool::data.GetGObject(m_id)->name();
+    const QString oldSuffix = VAbstractTool::data.LineRoleName(pairKey);
+    // Uniqueness: same check as curves (IsUnique)
+    if (!suffix.isEmpty() && !VAbstractTool::data.IsUnique(line_ + suffix))
+    {
+        return;
+    }
+
+        if (oldSuffix == suffix)
+    {
+        return;
+    }
+
+    VAbstractTool::data.SetLineRoleName(pairKey, suffix);
+
+    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
+    connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+    VAbstractApplication::VApp()->getUndoStack()->push(command);
 }

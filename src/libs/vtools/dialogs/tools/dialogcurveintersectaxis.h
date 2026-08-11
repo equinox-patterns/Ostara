@@ -85,6 +85,9 @@ public:
     void SetAliasSuffix2(const QString &alias);
     auto GetAliasSuffix2() const -> QString;
 
+    void SetLineRoleName(const QString &suffix);
+    auto GetLineRoleName() const -> QString;
+
     void ShowDialog(bool click) override;
 
     void CheckDependencyTreeComplete() override;
@@ -105,6 +108,7 @@ protected:
 private slots:
     void ValidateAlias();
     void ValidateCurveNames();
+    void ValidateLineRoleName();
 
 private:
     Q_DISABLE_COPY_MOVE(DialogCurveIntersectAxis) // NOLINT
@@ -118,6 +122,8 @@ private:
 
     bool flagName;
     bool flagAlias1{true};
+    bool flagRoleName{true};
+    QLabel *m_labelRoleName{nullptr};
     bool flagAlias2{true};
     bool m_flagCurveName1{true};
     bool m_flagCurveName2{true};

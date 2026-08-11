@@ -28,10 +28,12 @@
 #include "vchangelinerolename.h"
 
 #include <QDomElement>
+#include <QDomNamedNodeMap>
 
 #include "../ifc/ifcdef.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../ifc/xml/vdomdocument.h"
+#include "../qmuparser/qmutokenparser.h"
 #include "../tools/vabstracttool.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -48,6 +50,7 @@ VChangeLineRoleName::VChangeLineRoleName(
 void VChangeLineRoleName::undo()
 {
     UpdateDom(m_newSuffix, m_oldSuffix);
+    ReplaceTokensInFormulas(m_newSuffix, m_oldSuffix);
     emit NeedLiteParsing(Document::LiteParse);
 }
 
@@ -55,6 +58,7 @@ void VChangeLineRoleName::undo()
 void VChangeLineRoleName::redo()
 {
     UpdateDom(m_oldSuffix, m_newSuffix);
+    ReplaceTokensInFormulas(m_oldSuffix, m_newSuffix);
     emit NeedLiteParsing(Document::LiteParse);
 }
 
@@ -131,6 +135,101 @@ void VChangeLineRoleName::UpdateDom(const QString & /*oldSuffix*/, const QString
             lineEl.setAttribute(AttrPoints, points);
             lineEl.setAttribute(AttrName, newSuffix);
             lineNamesElement.appendChild(lineEl);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VChangeLineRoleName::ReplaceTokensInFormulas(const QString &oldSuffix, const QString &newSuffix)
+{
+    if (oldSuffix.isEmpty() || newSuffix.isEmpty())
+    {
+        return;
+    }
+
+    const QString oldLineToken = line_ + oldSuffix;       // e.g. "Line_Test2"
+    const QString newLineToken = line_ + newSuffix;       // e.g. "Line_MaLigne"
+    const QString oldAngleToken = angleLine_ + oldSuffix; // e.g. "AngleLine_Test2"
+    const QString newAngleToken = angleLine_ + newSuffix; // e.g. "AngleLine_MaLigne"
+
+    // Check if all tags handled when we have new tool
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63);
+
+    const QStringList validTags = {VAbstractPattern::TagPoint,
+                                   VAbstractPattern::TagOperation,
+                                   VAbstractPattern::TagArc,
+                                   VAbstractPattern::TagElArc,
+                                   VAbstractPattern::TagSpline,
+                                   VAbstractPattern::TagPath,
+                                   VAbstractPattern::TagTools,
+                                   VAbstractPattern::TagDetail};
+
+    for (const QString &tagName : validTags)
+    {
+        const QDomNodeList elements = Doc()->elementsByTagName(tagName);
+        for (int i = 0; i < elements.size(); ++i)
+        {
+            QDomElement element = elements.at(i).toElement();
+            if (element.isNull())
+            {
+                continue;
+            }
+
+            const QDomNamedNodeMap attrs = element.attributes();
+            for (int j = 0; j < attrs.size(); ++j)
+            {
+                const QDomAttr attr = attrs.item(j).toAttr();
+                if (attr.isNull())
+                {
+                    continue;
+                }
+
+                const QString formula = attr.value();
+                if (formula.isEmpty())
+                {
+                    continue;
+                }
+
+                // Tokenize and replace matching line tokens
+                QString newFormula = formula;
+                bool changed = false;
+
+                try
+                {
+                    QScopedPointer<qmu::QmuTokenParser> const parser(
+                        new qmu::QmuTokenParser(formula, false, false));
+                    const QMap<vsizetype, QString> tokens = parser->GetTokens();
+
+                    // Process tokens in reverse order to maintain correct positions during replacement
+                    QList<vsizetype> positions = tokens.keys();
+                    std::sort(positions.begin(), positions.end(), std::greater<>());
+
+                    for (const vsizetype pos : positions)
+                    {
+                        const QString &token = tokens[pos];
+                        if (token == oldLineToken)
+                        {
+                            newFormula.replace(pos, token.length(), newLineToken);
+                            changed = true;
+                        }
+                        else if (token == oldAngleToken)
+                        {
+                            newFormula.replace(pos, token.length(), newAngleToken);
+                            changed = true;
+                        }
+                    }
+                }
+                catch (qmu::QmuParserError &)
+                {
+                    // Skip formulas that can't be parsed
+                    continue;
+                }
+
+                if (changed)
+                {
+                    element.setAttribute(attr.name(), newFormula);
+                }
+            }
         }
     }
 }

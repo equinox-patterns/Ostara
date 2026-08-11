@@ -52,6 +52,7 @@
 #include "../vgeometry/vpointf.h"
 #include "vexception.h"
 #include "vscenestylesheet.h"
+#include "../vpatterndb/variables/vlinelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/global.h"
 #include "../vwidgets/vmaingraphicsscene.h"
@@ -239,7 +240,13 @@ void VToolLine::SetLineRoleName(const QString &suffix)
 {
     const QString pairKey = FirstPointName() + '_' + SecondPointName();
     const QString oldSuffix = VAbstractTool::data.LineRoleName(pairKey);
-    if (oldSuffix == suffix)
+    // Uniqueness: same check as curves (IsUnique)
+    if (!suffix.isEmpty() && !VAbstractTool::data.IsUnique(line_ + suffix))
+    {
+        return;
+    }
+
+        if (oldSuffix == suffix)
     {
         return;
     }

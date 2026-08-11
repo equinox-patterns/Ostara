@@ -74,11 +74,17 @@ public:
     void SetNotes(const QString &notes);
     auto GetNotes() const -> QString;
 
+    void SetLineRoleName(const QString &suffix);
+    auto GetLineRoleName() const -> QString;
+
     void CheckDependencyTreeComplete() override;
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
     void PointNameChanged() override;
+
+private slots:
+    void ValidateLineRoleName();
 
 protected:
     void ShowVisualization() override;
@@ -98,6 +104,8 @@ private:
 
     bool m_flagError{true};
     bool m_flagName{true};
+    bool flagRoleName{true};
+    QLabel *m_labelRoleName{nullptr};
 
     /** @brief number number of handled objects */
     qint32 m_number{0};
@@ -106,7 +114,7 @@ private:
 //---------------------------------------------------------------------------------------------------------------------
 inline auto DialogHeight::IsValid() const -> bool
 {
-    return m_flagError && m_flagName;
+    return m_flagError && m_flagName && flagRoleName;
 }
 
 #endif // DIALOGHEIGHT_H

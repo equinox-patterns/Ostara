@@ -331,9 +331,13 @@ void DialogPointOfIntersectionArcs::ValidateAlias()
                                          conflictsForArc2Alias2);
 
     // Update UI colors
+    ui->lineEditArc1Alias1->setStyleSheet(flagArc1Alias1 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelArc1Alias1, flagArc1Alias1 ? OkColor(this) : errorColor);
+    ui->lineEditArc1Alias2->setStyleSheet(flagArc1Alias2 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelArc1Alias2, flagArc1Alias2 ? OkColor(this) : errorColor);
+    ui->lineEditArc2Alias1->setStyleSheet(flagArc2Alias1 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelArc2Alias1, flagArc2Alias1 ? OkColor(this) : errorColor);
+    ui->lineEditArc2Alias2->setStyleSheet(flagArc2Alias2 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelArc2Alias2, flagArc2Alias2 ? OkColor(this) : errorColor);
 
     CheckState();
@@ -414,9 +418,13 @@ void DialogPointOfIntersectionArcs::ValidateName()
     flagArc2Name2 = ValidateSingleName(arc2Name2, GetArc2Name2(), originArc2Name2, conflictsForArc2Name2);
 
     // Update UI colors
+    ui->lineEditArc1Name1->setStyleSheet(flagArc1Name1 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelArc1Name1, flagArc1Name1 ? OkColor(this) : errorColor);
+    ui->lineEditArc1Name2->setStyleSheet(flagArc1Name2 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelArc1Name2, flagArc1Name2 ? OkColor(this) : errorColor);
+    ui->lineEditArc2Name1->setStyleSheet(flagArc2Name1 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelArc2Name1, flagArc2Name1 ? OkColor(this) : errorColor);
+    ui->lineEditArc2Name2->setStyleSheet(flagArc2Name2 ? QString() : QStringLiteral("border: 1px solid red;"));
     ChangeColor(ui->labelArc2Name2, flagArc2Name2 ? OkColor(this) : errorColor);
 
     CheckState();

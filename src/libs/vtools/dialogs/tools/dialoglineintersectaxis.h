@@ -74,6 +74,9 @@ public:
     void SetNotes(const QString &notes);
     auto GetNotes() const -> QString;
 
+    void SetLineRoleName(const QString &suffix);
+    auto GetLineRoleName() const -> QString;
+
     void ShowDialog(bool click) override;
 
     void CheckDependencyTreeComplete() override;
@@ -84,6 +87,9 @@ public slots:
     void DeployAngleTextEdit();
     void PointNameChanged() override;
     void FXAngle();
+
+private slots:
+    void ValidateLineRoleName();
 
 protected:
     void ShowVisualization() override;
@@ -112,6 +118,9 @@ private:
     bool flagError;
     bool flagName;
 
+    bool flagRoleName{true};
+    QLabel *m_labelRoleName{nullptr};
+
     /** @brief number number of handled objects */
     qint32 number{0};
 
@@ -121,7 +130,7 @@ private:
 //---------------------------------------------------------------------------------------------------------------------
 inline auto DialogLineIntersectAxis::IsValid() const -> bool
 {
-    return flagFormula && flagName;
+    return flagFormula && flagName && flagRoleName;
 }
 
 #endif // DIALOGLINEINTERSECTAXIS_H

@@ -79,6 +79,9 @@ public:
     void SetNotes(const QString &notes);
     auto GetNotes() const -> QString;
 
+    void SetLineRoleName(const QString &suffix);
+    auto GetLineRoleName() const -> QString;
+
     void ShowDialog(bool click) override;
 
     void CheckDependencyTreeComplete() override;
@@ -86,6 +89,9 @@ public:
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
     void PointNameChanged() override;
+
+private slots:
+    void ValidateLineRoleName();
 
 protected:
     void ShowVisualization() override;
@@ -109,6 +115,8 @@ private:
 
     bool m_flagName{true};
     bool m_flagError{true};
+    bool flagRoleName{true};
+    QLabel *m_labelRoleName{nullptr};
 
     bool m_firstRelease{false};
 

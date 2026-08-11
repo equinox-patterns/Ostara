@@ -37,6 +37,7 @@
 #include "../../../../../dialogs/tools/dialogtool.h"
 #include "../../../../../undocommands/renameobject.h"
 #include "../../../../../undocommands/savetooloptions.h"
+#include "../../../../../undocommands/vchangelinerolename.h"
 #include "../../../../../visualization/line/vistoolalongline.h"
 #include "../../../../../visualization/visualization.h"
 #include "../../../../vabstracttool.h"
@@ -100,6 +101,9 @@ void VToolAlongLine::SaveDialog(QDomElement &domElement)
                                          AttrNotes,
                                          notes,
                                          [](const QString &notes) noexcept -> bool { return notes.isEmpty(); });
+
+    // Persist the role name via the dedicated undo command (lineNames DOM section)
+    SetLineRoleName(dialogTool->GetLineRoleName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -272,6 +276,7 @@ void VToolAlongLine::SetDialog()
     dialogTool->SetSecondPointId(m_secondPointId);
     dialogTool->SetPointName(p->name());
     dialogTool->SetNotes(m_notes);
+    dialogTool->SetLineRoleName(GetLineRoleName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -308,6 +313,7 @@ auto VToolAlongLine::Create(const QPointer<DialogTool> &dialog, VMainGraphicsSce
     initData.parse = Document::FullParse;
     initData.typeCreation = Source::FromGui;
     initData.notes = dialogTool->GetNotes();
+    initData.lineRoleName = dialogTool->GetLineRoleName();
 
     VToolAlongLine *point = Create(initData);
     if (point != nullptr)
@@ -357,6 +363,13 @@ auto VToolAlongLine::Create(VToolAlongLineInitData &initData) -> VToolAlongLine 
     const auto varData = initData.data->DataDependencyVariables();
     initData.doc->FindFormulaDependencies(initData.formula, initData.id, varData);
 
+    if (!initData.lineRoleName.isEmpty())
+    {
+        const QString basePointNameForRole = initData.data->GeometricObject<VPointF>(initData.firstPointId)->name();
+        const QString newPointNameForRole = initData.data->GeometricObject<VPointF>(initData.id)->name();
+        initData.data->SetLineRoleName(basePointNameForRole + '_' + newPointNameForRole, initData.lineRoleName);
+    }
+
     initData.data->AddLine(initData.firstPointId, initData.id);
     initData.data->AddLine(initData.id, initData.secondPointId);
 
@@ -386,4 +399,33 @@ auto VToolAlongLine::Create(VToolAlongLineInitData &initData) -> VToolAlongLine 
 auto VToolAlongLine::SecondPointName() const -> QString
 {
     return VAbstractTool::data.GetGObject(m_secondPointId)->name();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolAlongLine::GetLineRoleName() const -> QString
+{
+    return VAbstractTool::data.LineRoleName(BasePointName() + '_' + VAbstractTool::data.GetGObject(m_id)->name());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAlongLine::SetLineRoleName(const QString &suffix)
+{
+    const QString pairKey = BasePointName() + '_' + VAbstractTool::data.GetGObject(m_id)->name();
+    const QString oldSuffix = VAbstractTool::data.LineRoleName(pairKey);
+    // Uniqueness: same check as curves (IsUnique)
+    if (!suffix.isEmpty() && !VAbstractTool::data.IsUnique(line_ + suffix))
+    {
+        return;
+    }
+
+        if (oldSuffix == suffix)
+    {
+        return;
+    }
+
+    VAbstractTool::data.SetLineRoleName(pairKey, suffix);
+
+    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
+    connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+    VAbstractApplication::VApp()->getUndoStack()->push(command);
 }

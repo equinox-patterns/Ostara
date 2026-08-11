@@ -30,12 +30,14 @@
 
 #include <QColor>
 #include <QComboBox>
+#include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QLineF>
 #include <QPoint>
 #include <QPointF>
 #include <QPointer>
+#include <QRegularExpression>
 #include <QSet>
 #include <QSharedPointer>
 
@@ -46,6 +48,7 @@
 #include "../vgeometry/vgobject.h"
 #include "../vgeometry/vpointf.h"
 #include "../vmisc/vvalentinasettings.h"
+#include "../vpatterndb/variables/vlinelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "dialogtool.h"
 #include "ui_dialogheight.h"
@@ -89,6 +92,15 @@ DialogHeight::DialogHeight(const VContainer *data, VAbstractPattern *doc, quint3
     connect(ui->comboBoxBasePoint, &QComboBox::currentTextChanged, this, &DialogHeight::PointNameChanged);
     connect(ui->comboBoxP1Line, &QComboBox::currentTextChanged, this, &DialogHeight::PointNameChanged);
     connect(ui->comboBoxP2Line, &QComboBox::currentTextChanged, this, &DialogHeight::PointNameChanged);
+
+    // Role name field (Line_CarrureDevant)
+    m_labelRoleName = new QLabel(tr("Name:"));
+    m_labelRoleName->setMinimumWidth(90);
+    auto *lineEditRoleName = new QLineEdit();
+    lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
+    ui->formLayout_2->setWidget(6, QFormLayout::LabelRole, m_labelRoleName);
+    ui->formLayout_2->setWidget(6, QFormLayout::FieldRole, lineEditRoleName);
+    connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogHeight::ValidateLineRoleName);
 
     vis = new VisToolHeight(&this->data);
 
@@ -355,6 +367,74 @@ void DialogHeight::SetNotes(const QString &notes)
 auto DialogHeight::GetNotes() const -> QString
 {
     return ui->plainTextEditToolNotes->toPlainText();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogHeight::SetLineRoleName(const QString &suffix)
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        edit->setText(suffix);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogHeight::GetLineRoleName() const -> QString
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        return edit->text().trimmed();
+    }
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogHeight::ValidateLineRoleName()
+{
+    auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName"));
+    if (!edit)
+    {
+        return;
+    }
+    const QString suffix = edit->text().trimmed();
+    if (suffix.isEmpty())
+    {
+        flagRoleName = true;
+        if (edit) { edit->setStyleSheet({}); }
+        ChangeColor(m_labelRoleName, OkColor(this));
+        CheckState();
+        return;
+    }
+
+    QRegularExpression const rx(NameRegExp());
+    if (!rx.match(suffix).hasMatch())
+    {
+        flagRoleName = false;
+        if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+        ChangeColor(m_labelRoleName, errorColor);
+        CheckState();
+        return;
+    }
+
+    // Uniqueness: Line_<suffix> must not exist on another line
+    const QString aliasKey = line_ + suffix;
+    if (data.DataLengthLines().contains(aliasKey))
+    {
+        const QSharedPointer<VLengthLine> var = data.DataLengthLines().value(aliasKey);
+        const QVector<quint32> refs = var->GetReferences();
+        if (refs.size() >= 2 && refs.at(0) != NULL_ID && refs.at(1) != NULL_ID)
+        {
+            flagRoleName = false;
+            if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+            ChangeColor(m_labelRoleName, errorColor);
+            CheckState();
+            return;
+        }
+    }
+    flagRoleName = true;
+    if (edit) { edit->setStyleSheet({}); }
+    ChangeColor(m_labelRoleName, OkColor(this));
+    CheckState();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -328,31 +328,6 @@ auto MakeHCrossPoint(const QString &label) -> PropertyDesc
             }};
 }
 
-template <typename Tool, typename Getter, typename Setter>
-auto MakeStringProp(const QString &attrId, const QString &label, Getter getter, Setter setter) -> PropertyDesc
-{
-    return {attrId, label, false,
-            [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-                auto *t = static_cast<Tool *>(tool);
-                auto *p = new VPE::VStringProperty(label);
-                p->setClearButtonEnable(true);
-                p->setValue((t->*getter)());
-                return p;
-            },
-            [setter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-                const QVariant v = prop->data(VPE::VProperty::DPC_Data, Qt::EditRole);
-                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
-                {
-                    (t->*setter)(v.toString());
-                }
-            },
-            [getter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
-                {
-                    prop->setValue((t->*getter)());
-                }
-            }};
-}
 
 } // anonymous namespace
 
@@ -407,6 +382,8 @@ auto EndLineProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolEndLine>(AttrBasePoint, T("Base point:"), &VToolEndLine::BasePointName),
         MakeLineType<VToolEndLine>(T("Line type:")),
         MakeLineColor<VToolEndLine>(T("Line color:")),
+        MakeStringPropWithValidator<VToolEndLine>(QStringLiteral("lineRoleName"), T("Name:"),
+        &VToolEndLine::GetLineRoleName, &VToolEndLine::SetLineRoleName),
         MakeFormulaLength<VToolEndLine>(T("Length:")),
         MakeFormulaAngle<VToolEndLine>(T("Angle:")),
         MakeNotes<VToolEndLine>(T("Notes:")),
@@ -422,6 +399,8 @@ auto AlongLineProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolAlongLine>(AttrSecondPoint, T("Second point:"), &VToolAlongLine::SecondPointName),
         MakeLineType<VToolAlongLine>(T("Line type:")),
         MakeLineColor<VToolAlongLine>(T("Line color:")),
+        MakeStringPropWithValidator<VToolAlongLine>(QStringLiteral("lineRoleName"), T("Name:"),
+        &VToolAlongLine::GetLineRoleName, &VToolAlongLine::SetLineRoleName),
         MakeFormulaLength<VToolAlongLine>(T("Length:")),
         MakeNotes<VToolAlongLine>(T("Notes:")),
     };
@@ -437,6 +416,8 @@ auto BisectorProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolBisector>(AttrThirdPoint, T("Third point:"), &VToolBisector::ThirdPointName),
         MakeLineType<VToolBisector>(T("Line type:")),
         MakeLineColor<VToolBisector>(T("Line color:")),
+        MakeStringPropWithValidator<VToolBisector>(QStringLiteral("lineRoleName"), T("Name:"),
+        &VToolBisector::GetLineRoleName, &VToolBisector::SetLineRoleName),
         MakeFormulaLength<VToolBisector>(T("Length:")),
         MakeNotes<VToolBisector>(T("Notes:")),
     };
@@ -503,6 +484,8 @@ auto HeightProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolHeight>(AttrP2Line, T("Second line point:"), &VToolHeight::SecondLinePointName),
         MakeLineType<VToolHeight>(T("Line type:")),
         MakeLineColor<VToolHeight>(T("Line color:")),
+        MakeStringPropWithValidator<VToolHeight>(QStringLiteral("lineRoleName"), T("Name:"),
+        &VToolHeight::GetLineRoleName, &VToolHeight::SetLineRoleName),
         MakeNotes<VToolHeight>(T("Notes:")),
     };
 }
@@ -513,8 +496,8 @@ auto LineProperties() -> std::vector<PropertyDesc>
     return {
         MakeLineType<VToolLine>(T("Line type:")),
         MakeLineColor<VToolLine>(T("Line color:")),
-        MakeStringProp<VToolLine>(QStringLiteral("lineRoleName"), T("Name:"), &VToolLine::GetLineRoleName,
-                                  &VToolLine::SetLineRoleName),
+        MakeStringPropWithValidator<VToolLine>(QStringLiteral("lineRoleName"), T("Name:"),
+        &VToolLine::GetLineRoleName, &VToolLine::SetLineRoleName),
         MakeParentPoint<VToolLine>(AttrFirstPoint, T("First point:"), &VToolLine::FirstPointName),
         MakeParentPoint<VToolLine>(AttrSecondPoint, T("Second point:"), &VToolLine::SecondPointName),
         MakeNotes<VToolLine>(T("Notes:")),
@@ -530,6 +513,8 @@ auto LineIntersectProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolLineIntersect>(AttrP2Line1, T("First line (second point):"), &VToolLineIntersect::Line1P2Name),
         MakeParentPoint<VToolLineIntersect>(AttrP1Line2, T("Second line (first point):"), &VToolLineIntersect::Line2P1Name),
         MakeParentPoint<VToolLineIntersect>(AttrP2Line2, T("Second line (second point):"), &VToolLineIntersect::Line2P2Name),
+        MakeStringPropWithValidator<VToolLineIntersect>(QStringLiteral("lineRoleName"), T("Name:"),
+        &VToolLineIntersect::GetLineRoleName, &VToolLineIntersect::SetLineRoleName),
         MakeNotes<VToolLineIntersect>(T("Notes:")),
     };
 }
@@ -543,6 +528,8 @@ auto NormalProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolNormal>(AttrSecondPoint, T("Second point:"), &VToolNormal::SecondPointName),
         MakeLineType<VToolNormal>(T("Line type:")),
         MakeLineColor<VToolNormal>(T("Line color:")),
+        MakeStringPropWithValidator<VToolNormal>(QStringLiteral("lineRoleName"), T("Name:"),
+        &VToolNormal::GetLineRoleName, &VToolNormal::SetLineRoleName),
         MakeFormulaLength<VToolNormal>(T("Length:")),
         // Custom: angle is a plain double, not a formula
         {AttrAngle, T("Additional angle degrees:"), false,
@@ -593,6 +580,8 @@ auto PointOfContactProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->getArcRadius()); prop->setValue(v);
              }
          }},
+        MakeStringPropWithValidator<VToolPointOfContact>(QStringLiteral("lineRoleName"), T("Name:"),
+        &VToolPointOfContact::GetLineRoleName, &VToolPointOfContact::SetLineRoleName),
         MakeNotes<VToolPointOfContact>(T("Notes:")),
     };
 }
@@ -618,6 +607,8 @@ auto ShoulderPointProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolShoulderPoint>(AttrThirdPoint, T("Third point:"), &VToolShoulderPoint::ShoulderPointName),
         MakeLineType<VToolShoulderPoint>(T("Line type:")),
         MakeLineColor<VToolShoulderPoint>(T("Line color:")),
+        MakeStringPropWithValidator<VToolShoulderPoint>(QStringLiteral("lineRoleName"), T("Name:"),
+        &VToolShoulderPoint::GetLineRoleName, &VToolShoulderPoint::SetLineRoleName),
         MakeFormulaLength<VToolShoulderPoint>(T("Length:")),
         MakeNotes<VToolShoulderPoint>(T("Notes:")),
     };
@@ -673,6 +664,8 @@ auto LineIntersectAxisProperties() -> std::vector<PropertyDesc>
          }},
         MakeLineType<VToolLineIntersectAxis>(T("Line type:")),
         MakeLineColor<VToolLineIntersectAxis>(T("Line color:")),
+        MakeStringPropWithValidator<VToolLineIntersectAxis>(QStringLiteral("lineRoleName"), T("Name:"),
+        &VToolLineIntersectAxis::GetLineRoleName, &VToolLineIntersectAxis::SetLineRoleName),
         MakeFormulaAngle<VToolLineIntersectAxis>(T("Angle:")),
         MakeNotes<VToolLineIntersectAxis>(T("Notes:")),
     };
@@ -769,6 +762,8 @@ auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>
          }},
         MakeLineType<VToolCurveIntersectAxis>(T("Line type:")),
         MakeLineColor<VToolCurveIntersectAxis>(T("Line color:")),
+        MakeStringPropWithValidator<VToolCurveIntersectAxis>(QStringLiteral("lineRoleName"), T("Name:"),
+        &VToolCurveIntersectAxis::GetLineRoleName, &VToolCurveIntersectAxis::SetLineRoleName),
         MakeFormulaAngle<VToolCurveIntersectAxis>(T("Angle:")),
         MakeNotes<VToolCurveIntersectAxis>(T("Notes:")),
     };

@@ -74,6 +74,9 @@ public:
     auto FirstPointName() const -> QString;
     auto ThirdPointName() const -> QString;
 
+    auto GetLineRoleName() const -> QString;
+    void SetLineRoleName(const QString &suffix);
+
     void ShowVisualization(bool show) override;
 protected slots:
     void ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id = NULL_ID) override;

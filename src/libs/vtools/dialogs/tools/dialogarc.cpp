@@ -424,11 +424,13 @@ void DialogArc::ValidateAlias()
          (m_originAliasSuffix != GetAliasSuffix() && not data.IsUnique(arc.GetAlias()))))
     {
         m_flagAlias = false;
+        ui->lineEditAlias->setStyleSheet(QStringLiteral("border: 1px solid red;"));
         ChangeColor(ui->labelAlias, errorColor);
     }
     else
     {
         m_flagAlias = true;
+        ui->lineEditAlias->setStyleSheet({});
         ChangeColor(ui->labelAlias, OkColor(this));
     }
 

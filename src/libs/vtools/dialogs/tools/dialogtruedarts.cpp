@@ -403,11 +403,13 @@ void DialogTrueDarts::CheckName(QLineEdit *edit, QLabel *labelEditNamePoint, con
         || !rx.match(name).hasMatch())
     {
         flagName = false;
+        edit->setStyleSheet(QStringLiteral("border: 1px solid red;"));
         ChangeColor(labelEditNamePoint, errorColor);
     }
     else
     {
         flagName = true;
+        edit->setStyleSheet({});
         ChangeColor(labelEditNamePoint, OkColor(this));
     }
 }

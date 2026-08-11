@@ -40,6 +40,7 @@
 #include "../../../../../dialogs/tools/dialogtool.h"
 #include "../../../../../undocommands/renameobject.h"
 #include "../../../../../undocommands/savetooloptions.h"
+#include "../../../../../undocommands/vchangelinerolename.h"
 #include "../../../../vabstracttool.h"
 #include "../ifc/exception/vexceptionobjecterror.h"
 #include "../ifc/ifcdef.h"
@@ -53,6 +54,7 @@
 #include "vexception.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
+#include "../vpatterndb/variables/vlinelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vtools/visualization/line/vistoolcurveintersectaxis.h"
@@ -353,6 +355,7 @@ void VToolCurveIntersectAxis::SetDialog()
     dialogTool->SetAliasSuffix2(m_aliasSuffix2);
     dialogTool->SetName1(GetName1());
     dialogTool->SetName2(GetName2());
+    dialogTool->SetLineRoleName(GetLineRoleName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -386,6 +389,7 @@ auto VToolCurveIntersectAxis::Create(const QPointer<DialogTool> &dialog, VMainGr
     initData.aliasSuffix2 = dialogTool->GetAliasSuffix2();
     initData.name1 = dialogTool->GetName1();
     initData.name2 = dialogTool->GetName2();
+    initData.lineRoleName = dialogTool->GetLineRoleName();
 
     VToolCurveIntersectAxis *point = Create(initData);
     if (point != nullptr)
@@ -434,6 +438,13 @@ auto VToolCurveIntersectAxis::Create(VToolCurveIntersectAxisInitData &initData) 
     SCASSERT(patternGraph != nullptr)
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
+
+    if (!initData.lineRoleName.isEmpty())
+    {
+        const QString basePointName = initData.data->GeometricObject<VPointF>(initData.basePointId)->name();
+        const QString newPointName = initData.data->GeometricObject<VPointF>(initData.id)->name();
+        initData.data->SetLineRoleName(basePointName + '_' + newPointName, initData.lineRoleName);
+    }
 
     initData.data->AddLine(initData.basePointId, initData.id);
 
@@ -681,6 +692,8 @@ void VToolCurveIntersectAxis::SaveDialog(QDomElement &domElement)
                                          AttrNotes,
                                          dialogTool->GetNotes(),
                                          [](const QString &notes) noexcept -> bool { return notes.isEmpty(); });
+
+    SetLineRoleName(dialogTool->GetLineRoleName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -923,4 +936,33 @@ void VToolCurveIntersectAxis::SetDetailsMode(bool mode)
 {
     m_segment1Label->ShowExplicitly(mode);
     m_segment2Label->ShowExplicitly(mode);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolCurveIntersectAxis::GetLineRoleName() const -> QString
+{
+    return VAbstractTool::data.LineRoleName(BasePointName() + '_' + VAbstractTool::data.GetGObject(m_id)->name());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCurveIntersectAxis::SetLineRoleName(const QString &suffix)
+{
+    const QString pairKey = BasePointName() + '_' + VAbstractTool::data.GetGObject(m_id)->name();
+    const QString oldSuffix = VAbstractTool::data.LineRoleName(pairKey);
+    // Uniqueness: same check as curves (IsUnique)
+    if (!suffix.isEmpty() && !VAbstractTool::data.IsUnique(line_ + suffix))
+    {
+        return;
+    }
+
+        if (oldSuffix == suffix)
+    {
+        return;
+    }
+
+    VAbstractTool::data.SetLineRoleName(pairKey, suffix);
+
+    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
+    connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+    VAbstractApplication::VApp()->getUndoStack()->push(command);
 }

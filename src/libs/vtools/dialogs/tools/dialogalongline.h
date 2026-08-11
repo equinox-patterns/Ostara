@@ -73,6 +73,9 @@ public:
     void SetNotes(const QString &notes);
     auto GetNotes() const -> QString;
 
+    void SetLineRoleName(const QString &suffix);
+    auto GetLineRoleName() const -> QString;
+
     void Build(const Tool &type) override;
     void ShowDialog(bool click) override;
 
@@ -84,6 +87,7 @@ public slots:
 
 private slots:
     void SwapPoints();
+    void ValidateLineRoleName();
 
 protected:
     void ShowVisualization() override;
@@ -106,6 +110,8 @@ private:
 
     bool m_flagError{true};
     bool m_flagName{true};
+    bool flagRoleName{true};
+    QLabel *m_labelRoleName{nullptr};
 
     bool m_firstRelease{false};
 

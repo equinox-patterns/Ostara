@@ -457,11 +457,13 @@ void DialogGraduatedCurve::ValidateName()
                                                    || (m_originName != namePrefix && not data.IsUnique(splPath.name())))
     {
         m_flagName = false;
+        ui->lineEditName->setStyleSheet(QStringLiteral("border: 1px solid red;"));
         ChangeColor(ui->labelName, errorColor);
     }
     else
     {
         m_flagName = true;
+        ui->lineEditName->setStyleSheet({});
         ChangeColor(ui->labelName, OkColor(this));
     }
 
@@ -481,11 +483,13 @@ void DialogGraduatedCurve::ValidateAlias()
             || (m_originAliasSuffix != GetAliasSuffix() && not data.IsUnique(splPath.GetAlias()))))
     {
         m_flagAlias = false;
+        ui->lineEditAlias->setStyleSheet(QStringLiteral("border: 1px solid red;"));
         ChangeColor(ui->labelAlias, errorColor);
     }
     else
     {
         m_flagAlias = true;
+        ui->lineEditAlias->setStyleSheet({});
         ChangeColor(ui->labelAlias, OkColor(this));
     }
 

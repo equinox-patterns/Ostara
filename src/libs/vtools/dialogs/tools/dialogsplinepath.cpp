@@ -385,11 +385,13 @@ void DialogSplinePath::ValidateAlias()
          (originAliasSuffix != ui->lineEditAlias->text() && not data.IsUnique(tempPath.GetAlias()))))
     {
         flagAlias = false;
+        ui->lineEditAlias->setStyleSheet(QStringLiteral("border: 1px solid red;"));
         ChangeColor(ui->labelAlias, errorColor);
     }
     else
     {
         flagAlias = true;
+        ui->lineEditAlias->setStyleSheet({});
         ChangeColor(ui->labelAlias, OkColor(this));
     }
 

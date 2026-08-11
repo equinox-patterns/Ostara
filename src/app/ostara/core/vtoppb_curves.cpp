@@ -219,29 +219,6 @@ auto MakeApproximationScale(const QString &label) -> PropertyDesc
             }};
 }
 
-template <typename Tool, typename Getter, typename Setter>
-auto MakeStringProp(const QString &attrId, const QString &label, Getter getter, Setter setter) -> PropertyDesc
-{
-    return {attrId, label, false,
-            [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-                auto *t = static_cast<Tool *>(tool);
-                auto *p = new VPE::VStringProperty(label);
-                p->setClearButtonEnable(true);
-                p->setValue((t->*getter)());
-                return p;
-            },
-            [getter, setter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
-                    QString const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                    if (v != (t->*getter)()) (t->*setter)(v);
-                }
-            },
-            [getter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
-                    prop->setValue((t->*getter)());
-            }};
-}
-
 } // anonymous namespace
 
 // Forward declarations
@@ -318,7 +295,7 @@ auto ArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaF2()); prop->setValue(v);
              }
          }},
-        MakeStringProp<VToolArc>(AttrAlias, T("Alias:"), &VToolArc::GetAliasSuffix, &VToolArc::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolArc>(AttrAlias, T("Alias:"), &VToolArc::GetAliasSuffix, &VToolArc::SetAliasSuffix),
         MakeCurvePenStyle<VToolArc>(T("Pen style:")),
         MakeLineColor<VToolArc>(T("Color:")),
         MakeApproximationScale<VToolArc>(T("Approximation scale:")),
@@ -383,7 +360,7 @@ auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
              }
          }},
-        MakeStringProp<VToolArcWithLength>(AttrAlias, T("Alias:"), &VToolArcWithLength::GetAliasSuffix, &VToolArcWithLength::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolArcWithLength>(AttrAlias, T("Alias:"), &VToolArcWithLength::GetAliasSuffix, &VToolArcWithLength::SetAliasSuffix),
         MakeCurvePenStyle<VToolArcWithLength>(T("Pen style:")),
         MakeLineColor<VToolArcWithLength>(T("Color:")),
         MakeApproximationScale<VToolArcWithLength>(T("Approximation scale:")),
@@ -397,10 +374,10 @@ auto CutArcProperties() -> std::vector<PropertyDesc>
     return {
         MakeObjectName<VToolCutArc>(T("Point label:")),
         MakeParentPoint<VToolCutArc>(AttrArc, T("Arc:"), &VToolCutArc::CurveName),
-        MakeStringProp<VToolCutArc>(AttrCurveName1, T("Name1:"), &VToolCutArc::GetName1, &VToolCutArc::SetName1),
-        MakeStringProp<VToolCutArc>(AttrCurveName2, T("Name2:"), &VToolCutArc::GetName2, &VToolCutArc::SetName2),
-        MakeStringProp<VToolCutArc>(AttrAlias1, T("Alias1:"), &VToolCutArc::GetAliasSuffix1, &VToolCutArc::SetAliasSuffix1),
-        MakeStringProp<VToolCutArc>(AttrAlias2, T("Alias2:"), &VToolCutArc::GetAliasSuffix2, &VToolCutArc::SetAliasSuffix2),
+        MakeStringPropWithValidator<VToolCutArc>(AttrCurveName1, T("Name1:"), &VToolCutArc::GetName1, &VToolCutArc::SetName1),
+        MakeStringPropWithValidator<VToolCutArc>(AttrCurveName2, T("Name2:"), &VToolCutArc::GetName2, &VToolCutArc::SetName2),
+        MakeStringPropWithValidator<VToolCutArc>(AttrAlias1, T("Alias1:"), &VToolCutArc::GetAliasSuffix1, &VToolCutArc::SetAliasSuffix1),
+        MakeStringPropWithValidator<VToolCutArc>(AttrAlias2, T("Alias2:"), &VToolCutArc::GetAliasSuffix2, &VToolCutArc::SetAliasSuffix2),
         {AttrLength, T("Length:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCutArc *>(tool);
@@ -428,10 +405,10 @@ auto CutSplineProperties() -> std::vector<PropertyDesc>
     return {
         MakeObjectName<VToolCutSpline>(T("Point label:")),
         MakeParentPoint<VToolCutSpline>(AttrCurve, T("Curve:"), &VToolCutSpline::CurveName),
-        MakeStringProp<VToolCutSpline>(AttrCurveName1, T("Name1:"), &VToolCutSpline::GetName1, &VToolCutSpline::SetName1),
-        MakeStringProp<VToolCutSpline>(AttrCurveName2, T("Name2:"), &VToolCutSpline::GetName2, &VToolCutSpline::SetName2),
-        MakeStringProp<VToolCutSpline>(AttrAlias1, T("Alias1:"), &VToolCutSpline::GetAliasSuffix1, &VToolCutSpline::SetAliasSuffix1),
-        MakeStringProp<VToolCutSpline>(AttrAlias2, T("Alias2:"), &VToolCutSpline::GetAliasSuffix2, &VToolCutSpline::SetAliasSuffix2),
+        MakeStringPropWithValidator<VToolCutSpline>(AttrCurveName1, T("Name1:"), &VToolCutSpline::GetName1, &VToolCutSpline::SetName1),
+        MakeStringPropWithValidator<VToolCutSpline>(AttrCurveName2, T("Name2:"), &VToolCutSpline::GetName2, &VToolCutSpline::SetName2),
+        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias1, T("Alias1:"), &VToolCutSpline::GetAliasSuffix1, &VToolCutSpline::SetAliasSuffix1),
+        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias2, T("Alias2:"), &VToolCutSpline::GetAliasSuffix2, &VToolCutSpline::SetAliasSuffix2),
         {AttrLength, T("Length:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCutSpline *>(tool);
@@ -459,10 +436,10 @@ auto CutSplinePathProperties() -> std::vector<PropertyDesc>
     return {
         MakeObjectName<VToolCutSplinePath>(T("Point label:")),
         MakeParentPoint<VToolCutSplinePath>(AttrCurve, T("Curve:"), &VToolCutSplinePath::CurveName),
-        MakeStringProp<VToolCutSplinePath>(AttrCurveName1, T("Name1:"), &VToolCutSplinePath::GetName1, &VToolCutSplinePath::SetName1),
-        MakeStringProp<VToolCutSplinePath>(AttrCurveName2, T("Name2:"), &VToolCutSplinePath::GetName2, &VToolCutSplinePath::SetName2),
-        MakeStringProp<VToolCutSplinePath>(AttrAlias1, T("Alias1:"), &VToolCutSplinePath::GetAliasSuffix1, &VToolCutSplinePath::SetAliasSuffix1),
-        MakeStringProp<VToolCutSplinePath>(AttrAlias2, T("Alias2:"), &VToolCutSplinePath::GetAliasSuffix2, &VToolCutSplinePath::SetAliasSuffix2),
+        MakeStringPropWithValidator<VToolCutSplinePath>(AttrCurveName1, T("Name1:"), &VToolCutSplinePath::GetName1, &VToolCutSplinePath::SetName1),
+        MakeStringPropWithValidator<VToolCutSplinePath>(AttrCurveName2, T("Name2:"), &VToolCutSplinePath::GetName2, &VToolCutSplinePath::SetName2),
+        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias1, T("Alias1:"), &VToolCutSplinePath::GetAliasSuffix1, &VToolCutSplinePath::SetAliasSuffix1),
+        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias2, T("Alias2:"), &VToolCutSplinePath::GetAliasSuffix2, &VToolCutSplinePath::SetAliasSuffix2),
         {AttrLength, T("Length:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCutSplinePath *>(tool);
@@ -651,7 +628,7 @@ auto CubicBezierProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolCubicBezier>(AttrPoint2, T("Second point:"), &VToolCubicBezier::SecondPointName),
         MakeParentPoint<VToolCubicBezier>(AttrPoint3, T("Third point:"), &VToolCubicBezier::ThirdPointName),
         MakeParentPoint<VToolCubicBezier>(AttrPoint4, T("Fourth point:"), &VToolCubicBezier::ForthPointName),
-        MakeStringProp<VToolCubicBezier>(AttrAlias, T("Alias:"), &VToolCubicBezier::GetAliasSuffix, &VToolCubicBezier::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolCubicBezier>(AttrAlias, T("Alias:"), &VToolCubicBezier::GetAliasSuffix, &VToolCubicBezier::SetAliasSuffix),
         MakeCurvePenStyle<VToolCubicBezier>(T("Pen style:")),
         MakeLineColor<VToolCubicBezier>(T("Color:")),
         {AttrAScale, T("Approximation scale:"), false,
@@ -686,7 +663,7 @@ auto SplinePathProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeObjectNameReadOnly<VToolSplinePath>(T("Name:")),
-        MakeStringProp<VToolSplinePath>(AttrAlias, T("Alias:"), &VToolSplinePath::GetAliasSuffix, &VToolSplinePath::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolSplinePath>(AttrAlias, T("Alias:"), &VToolSplinePath::GetAliasSuffix, &VToolSplinePath::SetAliasSuffix),
         MakeCurvePenStyle<VToolSplinePath>(T("Pen style:")),
         MakeLineColor<VToolSplinePath>(T("Color:")),
         {AttrAScale, T("Approximation scale:"), false,
@@ -721,7 +698,7 @@ auto CubicBezierPathProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeObjectNameReadOnly<VToolCubicBezierPath>(T("Name:")),
-        MakeStringProp<VToolCubicBezierPath>(AttrAlias, T("Alias:"), &VToolCubicBezierPath::GetAliasSuffix, &VToolCubicBezierPath::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolCubicBezierPath>(AttrAlias, T("Alias:"), &VToolCubicBezierPath::GetAliasSuffix, &VToolCubicBezierPath::SetAliasSuffix),
         MakeCurvePenStyle<VToolCubicBezierPath>(T("Pen style:")),
         MakeLineColor<VToolCubicBezierPath>(T("Color:")),
         {AttrAScale, T("Approximation scale:"), false,
@@ -842,7 +819,7 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaRotationAngle()); prop->setValue(v);
              }
          }},
-        MakeStringProp<VToolEllipticalArc>(AttrAlias, T("Alias:"), &VToolEllipticalArc::GetAliasSuffix, &VToolEllipticalArc::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolEllipticalArc>(AttrAlias, T("Alias:"), &VToolEllipticalArc::GetAliasSuffix, &VToolEllipticalArc::SetAliasSuffix),
         MakeCurvePenStyle<VToolEllipticalArc>(T("Pen style:")),
         MakeLineColor<VToolEllipticalArc>(T("Color:")),
         MakeApproximationScale<VToolEllipticalArc>(T("Approximation scale:")),
@@ -941,7 +918,7 @@ auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaRotationAngle()); prop->setValue(v);
              }
          }},
-        MakeStringProp<VToolEllipticalArcWithLength>(AttrAlias, T("Alias:"), &VToolEllipticalArcWithLength::GetAliasSuffix, &VToolEllipticalArcWithLength::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolEllipticalArcWithLength>(AttrAlias, T("Alias:"), &VToolEllipticalArcWithLength::GetAliasSuffix, &VToolEllipticalArcWithLength::SetAliasSuffix),
         MakeCurvePenStyle<VToolEllipticalArcWithLength>(T("Pen style:")),
         MakeLineColor<VToolEllipticalArcWithLength>(T("Color:")),
         MakeApproximationScale<VToolEllipticalArcWithLength>(T("Approximation scale:")),
@@ -983,8 +960,8 @@ auto GraduatedCurveProperties() -> std::vector<PropertyDesc>
     return {
         MakeObjectNameReadOnly<VToolGraduatedCurve>(T("Full name:")),
         MakeParentPoint<VToolGraduatedCurve>(AttrCurve, T("Curve:"), &VToolGraduatedCurve::CurveName),
-        MakeStringProp<VToolGraduatedCurve>(VtoppbConstants::AttrSubName, T("Name:"), &VToolGraduatedCurve::GetName, &VToolGraduatedCurve::SetName),
-        MakeStringProp<VToolGraduatedCurve>(AttrAlias, T("Alias:"), &VToolGraduatedCurve::GetAliasSuffix, &VToolGraduatedCurve::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolGraduatedCurve>(VtoppbConstants::AttrSubName, T("Name:"), &VToolGraduatedCurve::GetName, &VToolGraduatedCurve::SetName),
+        MakeStringPropWithValidator<VToolGraduatedCurve>(AttrAlias, T("Alias:"), &VToolGraduatedCurve::GetAliasSuffix, &VToolGraduatedCurve::SetAliasSuffix),
         MakeCurvePenStyle<VToolGraduatedCurve>(T("Pen style:")),
         MakeLineColor<VToolGraduatedCurve>(T("Color:")),
         MakeApproximationScale<VToolGraduatedCurve>(T("Approximation scale:")),

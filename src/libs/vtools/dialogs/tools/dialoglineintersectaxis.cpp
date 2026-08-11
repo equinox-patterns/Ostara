@@ -31,6 +31,7 @@
 #include <QColor>
 #include <QComboBox>
 #include <QDialog>
+#include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QLineF>
@@ -38,6 +39,7 @@
 #include <QPointF>
 #include <QPointer>
 #include <QPushButton>
+#include <QRegularExpression>
 #include <QSet>
 #include <QSharedPointer>
 #include <QTimer>
@@ -52,6 +54,7 @@
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vvalentinasettings.h"
+#include "../vpatterndb/variables/vlinelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/global.h"
@@ -115,6 +118,14 @@ DialogLineIntersectAxis::DialogLineIntersectAxis(const VContainer *data, VAbstra
     connect(ui->comboBoxSecondLinePoint, &QComboBox::currentTextChanged, this,
             &DialogLineIntersectAxis::PointNameChanged);
     connect(ui->comboBoxAxisPoint, &QComboBox::currentTextChanged, this, &DialogLineIntersectAxis::PointNameChanged);
+
+    // Role name field (Line_CarrureDevant)
+    m_labelRoleName = new QLabel(tr("Name:"));
+    m_labelRoleName->setMinimumWidth(90);
+    auto *lineEditRoleName = new QLineEdit();
+    lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
+    ui->formLayout->addRow(m_labelRoleName, lineEditRoleName);
+    connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogLineIntersectAxis::ValidateLineRoleName);
 
     vis = new VisToolLineIntersectAxis(&this->data);
 
@@ -473,4 +484,72 @@ void DialogLineIntersectAxis::SetNotes(const QString &notes)
 auto DialogLineIntersectAxis::GetNotes() const -> QString
 {
     return ui->plainTextEditToolNotes->toPlainText();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogLineIntersectAxis::SetLineRoleName(const QString &suffix)
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        edit->setText(suffix);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogLineIntersectAxis::GetLineRoleName() const -> QString
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
+    {
+        return edit->text().trimmed();
+    }
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogLineIntersectAxis::ValidateLineRoleName()
+{
+    auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName"));
+    if (!edit)
+    {
+        return;
+    }
+    const QString suffix = edit->text().trimmed();
+    if (suffix.isEmpty())
+    {
+        flagRoleName = true;
+        if (edit) { edit->setStyleSheet({}); }
+        ChangeColor(m_labelRoleName, OkColor(this));
+        CheckState();
+        return;
+    }
+
+    QRegularExpression const rx(NameRegExp());
+    if (!rx.match(suffix).hasMatch())
+    {
+        flagRoleName = false;
+        if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+        ChangeColor(m_labelRoleName, errorColor);
+        CheckState();
+        return;
+    }
+
+    // Uniqueness: Line_<suffix> must not exist on another line
+    const QString aliasKey = line_ + suffix;
+    if (data.DataLengthLines().contains(aliasKey))
+    {
+        const QSharedPointer<VLengthLine> var = data.DataLengthLines().value(aliasKey);
+        const QVector<quint32> refs = var->GetReferences();
+        if (refs.size() >= 2 && refs.at(0) != NULL_ID && refs.at(1) != NULL_ID)
+        {
+            flagRoleName = false;
+            if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+            ChangeColor(m_labelRoleName, errorColor);
+            CheckState();
+            return;
+        }
+    }
+    flagRoleName = true;
+    if (edit) { edit->setStyleSheet({}); }
+    ChangeColor(m_labelRoleName, OkColor(this));
+    CheckState();
 }

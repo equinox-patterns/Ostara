@@ -228,33 +228,6 @@ auto MakeHCrossPoint(const QString &label) -> PropertyDesc
             }};
 }
 
-template <typename Tool, typename Getter, typename Setter>
-auto MakeStringProp(const QString &attrId, const QString &label, Getter getter, Setter setter) -> PropertyDesc
-{
-    return {attrId, label, false,
-            [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
-            {
-                auto *t = static_cast<Tool *>(tool);
-                auto *prop = new VPE::VStringProperty(label);
-                prop->setClearButtonEnable(true);
-                prop->setValue((t->*getter)());
-                return prop;
-            },
-            [getter, setter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-            {
-                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
-                {
-                    QString const val = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                    if (val != (t->*getter)()) (t->*setter)(val);
-                }
-            },
-            [getter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-            {
-                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
-                    prop->setValue((t->*getter)());
-            }};
-}
-
 template <typename Tool>
 auto MakeObjectName(const QString &label) -> PropertyDesc
 {
@@ -301,14 +274,14 @@ auto PointOfIntersectionArcsProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolPointOfIntersectionArcs>(AttrFirstArc, T("First arc:"), &VToolPointOfIntersectionArcs::FirstArcName),
         MakeParentPoint<VToolPointOfIntersectionArcs>(AttrSecondArc, T("Second arc:"), &VToolPointOfIntersectionArcs::SecondArcName),
         MakeCrossPoint<VToolPointOfIntersectionArcs>(T("Take:")),
-        MakeStringProp<VToolPointOfIntersectionArcs>(AttrCurve1Name1, T("First arc. Left sub arc name:"), &VToolPointOfIntersectionArcs::GetArc1Name1, &VToolPointOfIntersectionArcs::SetArc1Name1),
-        MakeStringProp<VToolPointOfIntersectionArcs>(AttrCurve1Name2, T("First arc. Right sub arc name:"), &VToolPointOfIntersectionArcs::GetArc1Name2, &VToolPointOfIntersectionArcs::SetArc1Name2),
-        MakeStringProp<VToolPointOfIntersectionArcs>(AttrCurve1Alias1, T("First arc. Left sub arc alias:"), &VToolPointOfIntersectionArcs::GetArc1AliasSuffix1, &VToolPointOfIntersectionArcs::SetArc1AliasSuffix1),
-        MakeStringProp<VToolPointOfIntersectionArcs>(AttrCurve1Alias2, T("First arc. Right sub arc alias:"), &VToolPointOfIntersectionArcs::GetArc1AliasSuffix2, &VToolPointOfIntersectionArcs::SetArc1AliasSuffix2),
-        MakeStringProp<VToolPointOfIntersectionArcs>(AttrCurve2Name1, T("Second arc. Left sub arc name:"), &VToolPointOfIntersectionArcs::GetArc2Name1, &VToolPointOfIntersectionArcs::SetArc2Name1),
-        MakeStringProp<VToolPointOfIntersectionArcs>(AttrCurve2Name2, T("Second arc. Right sub arc name:"), &VToolPointOfIntersectionArcs::GetArc2Name2, &VToolPointOfIntersectionArcs::SetArc2Name2),
-        MakeStringProp<VToolPointOfIntersectionArcs>(AttrCurve2Alias1, T("Second arc. Left sub arc alias:"), &VToolPointOfIntersectionArcs::GetArc2AliasSuffix1, &VToolPointOfIntersectionArcs::SetArc2AliasSuffix1),
-        MakeStringProp<VToolPointOfIntersectionArcs>(AttrCurve2Alias2, T("Second arc. Right sub arc alias:"), &VToolPointOfIntersectionArcs::GetArc2AliasSuffix2, &VToolPointOfIntersectionArcs::SetArc2AliasSuffix2),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Name1, T("First arc. Left sub arc name:"), &VToolPointOfIntersectionArcs::GetArc1Name1, &VToolPointOfIntersectionArcs::SetArc1Name1),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Name2, T("First arc. Right sub arc name:"), &VToolPointOfIntersectionArcs::GetArc1Name2, &VToolPointOfIntersectionArcs::SetArc1Name2),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Alias1, T("First arc. Left sub arc alias:"), &VToolPointOfIntersectionArcs::GetArc1AliasSuffix1, &VToolPointOfIntersectionArcs::SetArc1AliasSuffix1),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Alias2, T("First arc. Right sub arc alias:"), &VToolPointOfIntersectionArcs::GetArc1AliasSuffix2, &VToolPointOfIntersectionArcs::SetArc1AliasSuffix2),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Name1, T("Second arc. Left sub arc name:"), &VToolPointOfIntersectionArcs::GetArc2Name1, &VToolPointOfIntersectionArcs::SetArc2Name1),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Name2, T("Second arc. Right sub arc name:"), &VToolPointOfIntersectionArcs::GetArc2Name2, &VToolPointOfIntersectionArcs::SetArc2Name2),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Alias1, T("Second arc. Left sub arc alias:"), &VToolPointOfIntersectionArcs::GetArc2AliasSuffix1, &VToolPointOfIntersectionArcs::SetArc2AliasSuffix1),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Alias2, T("Second arc. Right sub arc alias:"), &VToolPointOfIntersectionArcs::GetArc2AliasSuffix2, &VToolPointOfIntersectionArcs::SetArc2AliasSuffix2),
         MakeNotes<VToolPointOfIntersectionArcs>(T("Notes:")),
     };
 }
@@ -372,14 +345,14 @@ auto PointOfIntersectionCurvesProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolPointOfIntersectionCurves>(AttrCurve2, T("Second curve:"), &VToolPointOfIntersectionCurves::SecondCurveName),
         MakeVCrossPoint<VToolPointOfIntersectionCurves>(T("Vertical correction:")),
         MakeHCrossPoint<VToolPointOfIntersectionCurves>(T("Horizontal correction:")),
-        MakeStringProp<VToolPointOfIntersectionCurves>(AttrCurve1Name1, T("First curve. Left sub curve name:"), &VToolPointOfIntersectionCurves::GetCurve1Name1, &VToolPointOfIntersectionCurves::SetCurve1Name1),
-        MakeStringProp<VToolPointOfIntersectionCurves>(AttrCurve1Name2, T("First curve. Right sub curve name:"), &VToolPointOfIntersectionCurves::GetCurve1Name2, &VToolPointOfIntersectionCurves::SetCurve1Name2),
-        MakeStringProp<VToolPointOfIntersectionCurves>(AttrCurve1Alias1, T("First curve. Left sub curve alias:"), &VToolPointOfIntersectionCurves::GetCurve1AliasSuffix1, &VToolPointOfIntersectionCurves::SetCurve1AliasSuffix1),
-        MakeStringProp<VToolPointOfIntersectionCurves>(AttrCurve1Alias2, T("First curve. Right sub curve alias:"), &VToolPointOfIntersectionCurves::GetCurve1AliasSuffix2, &VToolPointOfIntersectionCurves::SetCurve1AliasSuffix2),
-        MakeStringProp<VToolPointOfIntersectionCurves>(AttrCurve2Name1, T("Second curve. Left sub curve name:"), &VToolPointOfIntersectionCurves::GetCurve2Name1, &VToolPointOfIntersectionCurves::SetCurve2Name1),
-        MakeStringProp<VToolPointOfIntersectionCurves>(AttrCurve2Name2, T("Second curve. Right sub curve name:"), &VToolPointOfIntersectionCurves::GetCurve2Name2, &VToolPointOfIntersectionCurves::SetCurve2Name2),
-        MakeStringProp<VToolPointOfIntersectionCurves>(AttrCurve2Alias1, T("Second curve. Left sub curve alias:"), &VToolPointOfIntersectionCurves::GetCurve2AliasSuffix1, &VToolPointOfIntersectionCurves::SetCurve2AliasSuffix1),
-        MakeStringProp<VToolPointOfIntersectionCurves>(AttrCurve2Alias2, T("Second curve. Right sub curve alias:"), &VToolPointOfIntersectionCurves::GetCurve2AliasSuffix2, &VToolPointOfIntersectionCurves::SetCurve2AliasSuffix2),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Name1, T("First curve. Left sub curve name:"), &VToolPointOfIntersectionCurves::GetCurve1Name1, &VToolPointOfIntersectionCurves::SetCurve1Name1),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Name2, T("First curve. Right sub curve name:"), &VToolPointOfIntersectionCurves::GetCurve1Name2, &VToolPointOfIntersectionCurves::SetCurve1Name2),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Alias1, T("First curve. Left sub curve alias:"), &VToolPointOfIntersectionCurves::GetCurve1AliasSuffix1, &VToolPointOfIntersectionCurves::SetCurve1AliasSuffix1),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Alias2, T("First curve. Right sub curve alias:"), &VToolPointOfIntersectionCurves::GetCurve1AliasSuffix2, &VToolPointOfIntersectionCurves::SetCurve1AliasSuffix2),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Name1, T("Second curve. Left sub curve name:"), &VToolPointOfIntersectionCurves::GetCurve2Name1, &VToolPointOfIntersectionCurves::SetCurve2Name1),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Name2, T("Second curve. Right sub curve name:"), &VToolPointOfIntersectionCurves::GetCurve2Name2, &VToolPointOfIntersectionCurves::SetCurve2Name2),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Alias1, T("Second curve. Left sub curve alias:"), &VToolPointOfIntersectionCurves::GetCurve2AliasSuffix1, &VToolPointOfIntersectionCurves::SetCurve2AliasSuffix1),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Alias2, T("Second curve. Right sub curve alias:"), &VToolPointOfIntersectionCurves::GetCurve2AliasSuffix2, &VToolPointOfIntersectionCurves::SetCurve2AliasSuffix2),
         MakeNotes<VToolPointOfIntersectionCurves>(T("Notes:")),
     };
 }

@@ -47,6 +47,7 @@ template <class T> class QSharedPointer;
 struct VToolSinglePointInitData : VDrawToolInitData
 {
     QString name{};
+    QString lineRoleName{};
     qreal mx{labelMX};
     qreal my{labelMY};
     bool showLabel{true};

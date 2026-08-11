@@ -408,11 +408,13 @@ void CheckPointLabel(QDialog *dialog, QLineEdit *edit, QLabel *labelEditNamePoin
         name.isEmpty() || (pointName != name && not data->IsUnique(name)) || not rx.match(name).hasMatch())
     {
         flag = false;
+        edit->setStyleSheet(QStringLiteral("border: 1px solid red;"));
         ChangeColor(labelEditNamePoint, errorColor);
     }
     else
     {
         flag = true;
+        edit->setStyleSheet({});
         ChangeColor(labelEditNamePoint, OkColor(dialog));
     }
 }
