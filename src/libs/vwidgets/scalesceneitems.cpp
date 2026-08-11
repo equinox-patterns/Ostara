@@ -29,8 +29,11 @@
 #include "scalesceneitems.h"
 #include "vscenestylesheet.h"
 #include "../vmisc/vabstractapplication.h"
+#include "../vbackport/qpainterstateguard.h"
 #include "global.h"
 
+#include <QGraphicsSceneHoverEvent>
+#include <QPainterPath>
 #include <QPen>
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -64,6 +67,62 @@ void VScaledLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     setPen(lPen);
 
     PaintWithFixItemHighlightSelected<QGraphicsLineItem>(this, painter, option, widget);
+
+    // Draw direction arrows when bold (hovered or active with visualization)
+    if (m_showArrows && m_isBoldLine)
+    {
+        const QLineF l = line();
+        const qreal len = l.length();
+        if (len > 0)
+        {
+            const QPointF mid = l.pointAt(0.5);
+            const qreal angle = l.angle();
+            const qreal arrowLen = ScaleWidth(
+                VAbstractApplication::VApp()->Settings()->GetLineWidth() * 8.0, SceneScale(scene()));
+
+            QPainterPath arrowPath;
+            // Arrow fans open backward (toward A), tip points forward (toward B)
+            // l.angle() = A→B direction. Add 180° so branches fan toward A.
+            const qreal fanBase = angle + 180;
+            auto addBranch = [mid, &arrowPath](qreal a, qreal length) {
+                QLineF branch(mid, QPointF(mid.x() + 1, mid.y())); // non-zero init for setAngle
+                branch.setAngle(a);
+                branch.setLength(length);
+                arrowPath.moveTo(branch.p1());
+                arrowPath.lineTo(branch.p2());
+            };
+            addBranch(fanBase - 35, arrowLen);
+            addBranch(fanBase + 35, arrowLen);
+
+            QPainterStateGuard const guard(painter);
+
+            QPen arrowPen(lPen);
+            arrowPen.setStyle(Qt::SolidLine);
+            painter->setPen(arrowPen);
+            painter->setBrush(Qt::NoBrush);
+            painter->drawPath(arrowPath);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    if (m_showArrows)
+    {
+        SetBoldLine(true);
+    }
+    QGraphicsLineItem::hoverEnterEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    if (m_showArrows)
+    {
+        SetBoldLine(false);
+    }
+    QGraphicsLineItem::hoverLeaveEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

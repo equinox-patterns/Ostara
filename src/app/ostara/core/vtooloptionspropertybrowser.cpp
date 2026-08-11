@@ -49,6 +49,7 @@ using namespace VtoppbConstants;
 #include "../vtools/tools/backgroundimage/vbackgroundsvgitem.h"
 #include "../vwidgets/vcontrolpointspline.h"
 #include "../vwidgets/vgraphicssimpletextitem.h"
+#include "../vwidgets/scalesceneitems.h"
 #include "../vwidgets/vsegmentlabel.h"
 #include "../vwidgets/vsimplecurve.h"
 #include "../vwidgets/vsimplepoint.h"
@@ -274,6 +275,7 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
         case VSimplePoint::Type:
         case VSimpleCurve::Type:
         case VSegmentLabel::Type:
+        case VScaledLine::Type: // line child of point tools (EndLine, Bisector…)
             m_currentItem = item->parentItem();
             m_currentObject = dynamic_cast<QObject *>(m_currentItem);
             ShowItemOptions(m_currentItem);

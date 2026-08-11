@@ -81,6 +81,7 @@ VToolLine::VToolLine(const VToolLineInitData &initData, QGraphicsItem *parent)
     m_acceptHoverEvents(true)
 {
     SetBoldLine(false);
+    SetShowArrows(true);
     this->m_lineType = initData.typeLine;
     // Line
     RefreshGeometry();

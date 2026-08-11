@@ -73,6 +73,7 @@
 #include "global.h"
 #include "vcontrolpointspline.h"
 #include "vmaingraphicsscene.h"
+#include "scalesceneitems.h"
 #include "vsimplecurve.h"
 
 namespace
@@ -601,7 +602,7 @@ void VMainGraphicsView::mousePressEvent(QMouseEvent *event)
                 const QList<QGraphicsItem *> list = PrioritizeItems(items(event->pos()));
                 for (auto *item : list)
                 {
-                    if (item != nullptr && item->type() > QGraphicsItem::UserType && item->type() <= VSimpleCurve::Type)
+                    if (item != nullptr && item->type() > QGraphicsItem::UserType && item->type() <= VScaledLine::Type)
                     {
                         emit itemClicked(item);
                         success = true;

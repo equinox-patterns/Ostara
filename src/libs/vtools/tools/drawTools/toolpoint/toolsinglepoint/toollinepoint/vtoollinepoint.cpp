@@ -88,6 +88,8 @@ VToolLinePoint::VToolLinePoint(VAbstractPattern *doc, VContainer *data, const qu
     QLineF const line(point1 - point2, QPointF());
     mainLine = new VScaledLine(line, VColorRole::CustomColor, this);
     mainLine->SetBoldLine(false);
+    mainLine->SetShowArrows(true);
+    mainLine->setAcceptHoverEvents(true);
     mainLine->setFlag(QGraphicsItem::ItemStacksBehindParent, true);
     mainLine->setVisible(not line.isNull());
 }

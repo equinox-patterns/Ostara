@@ -48,9 +48,14 @@ public:
     };
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
     auto IsBoldLine() const -> bool;
     void SetBoldLine(bool bold);
+
+    auto IsShowArrows() const -> bool;
+    void SetShowArrows(bool show);
 
     auto GetColorRole() const -> VColorRole;
     void SetColorRole(VColorRole role);
@@ -59,6 +64,7 @@ private:
     Q_DISABLE_COPY_MOVE(VScaledLine) // NOLINT
 
     bool m_isBoldLine{true};
+    bool m_showArrows{false};
     VColorRole m_role;
 };
 
@@ -84,6 +90,18 @@ inline auto VScaledLine::IsBoldLine() const -> bool
 inline void VScaledLine::SetBoldLine(bool bold)
 {
     m_isBoldLine = bold;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+inline auto VScaledLine::IsShowArrows() const -> bool
+{
+    return m_showArrows;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+inline void VScaledLine::SetShowArrows(bool show)
+{
+    m_showArrows = show;
 }
 
 class VScaledEllipse : public QGraphicsEllipseItem
