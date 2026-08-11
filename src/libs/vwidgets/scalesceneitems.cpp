@@ -76,7 +76,9 @@ void VScaledLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         const qreal len = l.length();
         if (len > 0)
         {
-            const QPointF mid = l.pointAt(0.5);
+            // Dual arrows at 25% and 75% — avoids collision with a midpoint created by the user
+            const QPointF mid1 = l.pointAt(0.25);
+            const QPointF mid2 = l.pointAt(0.75);
             const qreal angle = l.angle();
             const qreal arrowLen = ScaleWidth(
                 VAbstractApplication::VApp()->Settings()->GetLineWidth() * 8.0, SceneScale(scene()));
@@ -85,15 +87,17 @@ void VScaledLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
             // Arrow fans open backward (toward A), tip points forward (toward B)
             // l.angle() = A→B direction. Add 180° so branches fan toward A.
             const qreal fanBase = angle + 180;
-            auto addBranch = [mid, &arrowPath](qreal a, qreal length) {
-                QLineF branch(mid, QPointF(mid.x() + 1, mid.y())); // non-zero init for setAngle
+            auto addBranch = [&arrowPath](const QPointF &origin, qreal a, qreal length) {
+                QLineF branch(origin, QPointF(origin.x() + 1, origin.y())); // non-zero init for setAngle
                 branch.setAngle(a);
                 branch.setLength(length);
                 arrowPath.moveTo(branch.p1());
                 arrowPath.lineTo(branch.p2());
             };
-            addBranch(fanBase - 35, arrowLen);
-            addBranch(fanBase + 35, arrowLen);
+            addBranch(mid1, fanBase - 35, arrowLen);
+            addBranch(mid1, fanBase + 35, arrowLen);
+            addBranch(mid2, fanBase - 35, arrowLen);
+            addBranch(mid2, fanBase + 35, arrowLen);
 
             QPainterStateGuard const guard(painter);
 

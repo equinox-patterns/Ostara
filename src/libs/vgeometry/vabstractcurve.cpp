@@ -600,38 +600,47 @@ auto VAbstractCurve::DirectionArrows() const -> QVector<DirectionArrow>
 {
     if (const QVector<QPointF> points = GetPoints(); points.count() >= 2)
     {
-        /*Need find coordinate midle of curve.
-          Universal way is take all points and find sum.*/
-        const qreal seek_length = qAbs(GetLength()) / 2.0;
-        qreal found_length = 0;
-        QLineF arrow;
-        for (qint32 i = 1; i <= points.size() - 1; ++i)
-        {
-            arrow = QLineF(points.at(i - 1), points.at(i));
-            found_length += arrow.length(); // Length that we aready find
+        const qreal totalLength = qAbs(GetLength());
 
-            if (seek_length <= found_length) // if have found more that need stop.
+        // Find the QLineF at a given seek position along the polyline
+        auto findAt = [&](qreal seek_length) -> QLineF {
+            qreal found_length = 0;
+            QLineF arrow;
+            for (qint32 i = 1; i <= points.size() - 1; ++i)
             {
-                // subtract length in last line and you will find position of the middle point.
-                arrow.setLength(arrow.length() - (found_length - seek_length));
-                break;
+                arrow = QLineF(points.at(i - 1), points.at(i));
+                found_length += arrow.length();
+                if (seek_length <= found_length)
+                {
+                    arrow.setLength(arrow.length() - (found_length - seek_length));
+                    return arrow;
+                }
             }
+            return arrow;
+        };
+
+        QVector<DirectionArrow> result;
+
+        // Dual arrows at 25% and 75% — avoids collision with a midpoint created by the user
+        for (const qreal seek : {totalLength / 4.0, totalLength * 3.0 / 4.0})
+        {
+            QLineF arrow = findAt(seek);
+            Swap(arrow);
+            const qreal angle = arrow.angle(); // we each time change line angle, better save original angle value
+            arrow.setLength(VAbstractCurve::LengthCurveDirectionArrow());
+
+            DirectionArrow dArrow;
+
+            arrow.setAngle(angle - 35);
+            dArrow.first = arrow;
+
+            arrow.setAngle(angle + 35);
+            dArrow.second = arrow;
+
+            result.append(dArrow);
         }
 
-        // Reverse line because we want start arrow from this point
-        Swap(arrow);
-        const qreal angle = arrow.angle(); // we each time change line angle, better save original angle value
-        arrow.setLength(VAbstractCurve::LengthCurveDirectionArrow());
-
-        DirectionArrow dArrow;
-
-        arrow.setAngle(angle - 35);
-        dArrow.first = arrow;
-
-        arrow.setAngle(angle + 35);
-        dArrow.second = arrow;
-
-        return {dArrow};
+        return result;
     }
     return {};
 }
