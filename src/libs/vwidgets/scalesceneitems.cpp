@@ -69,7 +69,8 @@ void VScaledLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     PaintWithFixItemHighlightSelected<QGraphicsLineItem>(this, painter, option, widget);
 
     // Draw direction arrows when bold (hovered or active with visualization)
-    if (m_showArrows && m_isBoldLine)
+    // Skip if line style is NoPen (invisible/transparent)
+    if (m_showArrows && m_isBoldLine && lPen.style() != Qt::NoPen)
     {
         const QLineF l = line();
         const qreal len = l.length();
@@ -103,26 +104,6 @@ void VScaledLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
             painter->drawPath(arrowPath);
         }
     }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VScaledLine::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
-{
-    if (m_showArrows)
-    {
-        SetBoldLine(true);
-    }
-    QGraphicsLineItem::hoverEnterEvent(event);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VScaledLine::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
-{
-    if (m_showArrows)
-    {
-        SetBoldLine(false);
-    }
-    QGraphicsLineItem::hoverLeaveEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

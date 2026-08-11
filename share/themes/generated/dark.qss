@@ -287,7 +287,7 @@ QPlainTextEdit:focus {
 
 QLineEdit:read-only,
 QPlainTextEdit:read-only {
-    background-color: #232323;
+    background-color: #191919;
 }
 
 QLineEdit:disabled,

@@ -48,8 +48,6 @@ public:
     };
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
     auto IsBoldLine() const -> bool;
     void SetBoldLine(bool bold);
