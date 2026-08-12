@@ -215,7 +215,7 @@ void VScenePoint::RefreshHoverPen()
 //---------------------------------------------------------------------------------------------------------------------
 void VScenePoint::RefreshLine()
 {
-    if (m_onlyPoint)
+    if (m_onlyPoint || VAbstractApplication::VApp()->Settings()->GetHideLabels())
     {
         if (m_lineName != nullptr)
         {

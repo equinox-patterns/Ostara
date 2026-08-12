@@ -121,6 +121,7 @@ private:
     QPointF m_realPos{};
     QPointF m_destination{};
     bool m_hoverFlag{false};
+    bool m_changeFinished{true}; // Re-entrancy guard for ItemPositionChange
     VColorRole m_textColor;
     VColorRole m_textHoverColor;
     qreal m_fontAdjustRatio{1.0}; // 1.0 = same size, 0.6 = 60% of primary

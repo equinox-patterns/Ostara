@@ -155,10 +155,9 @@ auto VGraphicsSimpleTextItem::itemChange(GraphicsItemChange change, const QVaria
     {
         // Each time we move something we call recalculation scene rect. In some cases this can cause moving
         // objects positions. And this cause infinite redrawing. That's why we wait the finish of saving the last move.
-        static bool changeFinished = true;
-        if (changeFinished)
+        if (m_changeFinished)
         {
-            changeFinished = false;
+            m_changeFinished = false;
             if (scene() != nullptr)
             {
                 const QList<QGraphicsView *> viewList = scene()->views();
@@ -181,7 +180,7 @@ auto VGraphicsSimpleTextItem::itemChange(GraphicsItemChange change, const QVaria
             }
             emit NameChangePosition(m_realPos + this->parentItem()->pos());
 
-            changeFinished = true;
+            m_changeFinished = true;
         }
     }
     else if (change == QGraphicsItem::ItemSelectedHasChanged)
@@ -347,17 +346,21 @@ void VGraphicsSimpleTextItem::RefreshScale()
     const qreal scale = SceneScale(scene);
     if (scale > 1 && not VFuzzyComparePossibleNulls(m_oldScale, scale))
     {
+        m_oldScale = scale;
+        setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
         setScale(1 / scale);
+        setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
         CorrectLabelPosition();
         emit UpdateLine();
-        m_oldScale = scale;
     }
     else if (scale <= 1 && not VFuzzyComparePossibleNulls(m_oldScale, 1.0))
     {
+        m_oldScale = 1;
+        setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
         setScale(1);
+        setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
         CorrectLabelPosition();
         emit UpdateLine();
-        m_oldScale = 1;
     }
 
     // Update scene rect
