@@ -910,6 +910,12 @@
       <xs:enumeration value="lime"/>
       <xs:enumeration value="deepskyblue"/>
       <xs:enumeration value="cornflowerblue"/>
+      <!-- New Ostara palette -->
+      <xs:enumeration value="pink"/>
+      <xs:enumeration value="purple"/>
+      <xs:enumeration value="brown"/>
+      <xs:enumeration value="lightBlue"/>
+      <xs:enumeration value="lightGreen"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="colors">
@@ -936,6 +942,12 @@
       <xs:enumeration value="lime"/>
       <xs:enumeration value="deepskyblue"/>
       <xs:enumeration value="cornflowerblue"/>
+      <!-- New Ostara palette -->
+      <xs:enumeration value="pink"/>
+      <xs:enumeration value="purple"/>
+      <xs:enumeration value="brown"/>
+      <xs:enumeration value="lightBlue"/>
+      <xs:enumeration value="lightGreen"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="operationColors">
