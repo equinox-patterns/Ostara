@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/tools/light">
+        <file alias="armhole_curve.svg">../../../../../share/icons/tools/light/armhole_curve.svg</file>
         <file alias="along_line.svg">../../../../../share/icons/tools/light/along_line.svg</file>
         <file alias="arc.svg">../../../../../share/icons/tools/light/arc.svg</file>
         <file alias="arc_cut.svg">../../../../../share/icons/tools/light/arc_cut.svg</file>
@@ -51,6 +52,7 @@
         <file alias="union.svg">../../../../../share/icons/tools/light/union.svg</file>
     </qresource>
     <qresource prefix="/tools/dark">
+        <file alias="armhole_curve.svg">../../../../../share/icons/tools/dark/armhole_curve.svg</file>
         <file alias="along_line.svg">../../../../../share/icons/tools/dark/along_line.svg</file>
         <file alias="arc.svg">../../../../../share/icons/tools/dark/arc.svg</file>
         <file alias="arc_cut.svg">../../../../../share/icons/tools/dark/arc_cut.svg</file>

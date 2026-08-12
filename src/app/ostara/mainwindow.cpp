@@ -351,6 +351,7 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("line"),                         ui->actionLineTool},
         {QStringLiteral("spline"),                       ui->actionSplineTool},
         {QStringLiteral("cubic_bezier"),                 ui->actionCubicBezierTool},
+        {QStringLiteral("armhole_curve"),               ui->actionArmholeCurveTool},
         {QStringLiteral("splinePath"),                   ui->actionSplinePathTool},
         {QStringLiteral("cubic_bezier_path"),            ui->actionCubicBezierPathTool},
         {QStringLiteral("arc"),                          ui->actionArcTool},
@@ -1678,7 +1679,7 @@ void MainWindow::InitToolButtons()
     connect(ui->actionToolSelect, &QAction::triggered, this, &MainWindow::ArrowTool);
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Check if all tools were connected.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Check if all tools were connected.");
 
     auto InitToolButton = [this](VShortcutAction type, QAction *action, void (MainWindow::*slotFunction)(bool))
     {
@@ -1750,6 +1751,7 @@ void MainWindow::InitToolButtons()
                    &MainWindow::ToolEllipticalArcWithLength);
     InitToolButton(VShortcutAction::ToolParallelCurve, ui->actionParallelCurveTool, &MainWindow::ToolParallelCurve);
     InitToolButton(VShortcutAction::ToolGraduatedCurve, ui->actionGraduatedCurveTool, &MainWindow::ToolGraduatedCurve);
+    InitToolButton(VShortcutAction::ToolArmholeCurve, ui->actionArmholeCurveTool, &MainWindow::ToolArmholeCurve);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1796,7 +1798,7 @@ void MainWindow::MouseMove(const QPointF &scenePos)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1877,6 +1879,9 @@ void MainWindow::CancelTool()
             break;
         case Tool::CubicBezier:
             ui->actionCubicBezierTool->setChecked(false);
+            break;
+        case Tool::ArmholeCurve:
+            ui->actionArmholeCurveTool->setChecked(false);
             break;
         case Tool::Arc:
             ui->actionArcTool->setChecked(false);
@@ -3454,7 +3459,7 @@ void MainWindow::SetEnableTool(bool enable)
     QT_WARNING_POP
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were handled.");
 
     // Drawing Tools
     ui->actionEndLineTool->setEnabled(drawTools);
@@ -3466,6 +3471,7 @@ void MainWindow::SetEnableTool(bool enable)
     ui->actionLineIntersectTool->setEnabled(drawTools);
     ui->actionSplineTool->setEnabled(drawTools);
     ui->actionCubicBezierTool->setEnabled(drawTools);
+    ui->actionArmholeCurveTool->setEnabled(drawTools);
     ui->actionArcTool->setEnabled(drawTools);
     ui->actionSplinePathTool->setEnabled(drawTools);
     ui->actionCubicBezierPathTool->setEnabled(drawTools);
@@ -3663,7 +3669,7 @@ void MainWindow::CreateMenus()
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -3738,6 +3744,10 @@ void MainWindow::LastUsedTool()
         case Tool::CubicBezier:
             ui->actionCubicBezierTool->setChecked(true);
             ToolCubicBezier(true);
+            break;
+        case Tool::ArmholeCurve:
+            ui->actionArmholeCurveTool->setChecked(true);
+            ToolArmholeCurve(true);
             break;
         case Tool::Arc:
             ui->actionArcTool->setChecked(true);

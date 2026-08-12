@@ -37,6 +37,7 @@
 #include "../vmisc/vvalentinasettings.h"
 #include "../qmuparser/qmuparsererror.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolarmholecurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolspline.h"
@@ -227,6 +228,75 @@ void VPattern::ParseToolCubicBezier(VMainGraphicsScene *scene, const QDomElement
     catch (const VExceptionBadId &e)
     {
         VExceptionObjectError excep(tr("Error creating or updating cubic bezier curve"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseToolArmholeCurve(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse)
+{
+    SCASSERT(scene != nullptr)
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        VToolArmholeCurveInitData initData;
+        initData.scene = scene;
+        initData.doc = this;
+        initData.data = data;
+        initData.parse = parse;
+        initData.typeCreation = Source::FromFile;
+
+        DrawToolsCommonAttributes(domElement, initData.id, initData.notes);
+
+        const quint32 point1 = GetParametrUInt(domElement, AttrPoint1, NULL_ID_STR); // armhole (path[0])
+        const quint32 point4 = GetParametrUInt(domElement, AttrPoint4, NULL_ID_STR); // chest/back width (path[3])
+        const quint32 point6 = GetParametrUInt(domElement, AttrPoint6, NULL_ID_STR); // perpendicular (path[5])
+        const quint32 point7 = GetParametrUInt(domElement, AttrPoint7, NULL_ID_STR); // shoulder (path[6])
+
+        const QString color = GetParametrString(domElement, AttrColor, ColorBlack);
+        const QString penStyle = GetParametrString(domElement, AttrPenStyle, TypeLineLine);
+        const quint32 duplicate = GetParametrUInt(domElement, AttrDuplicate, QChar('0'));
+        const qreal approximationScale = GetParametrDouble(domElement, AttrAScale, QChar('0'));
+        const QString alias = GetParametrEmptyString(domElement, AttrAlias);
+
+        auto p1 = data->GeometricObject<VPointF>(point1); // armhole
+        auto pCarrure = data->GeometricObject<VPointF>(point4); // chest/back width
+        auto pPerp = data->GeometricObject<VPointF>(point6); // perpendicular
+        auto pEpaule = data->GeometricObject<VPointF>(point7); // shoulder
+
+        // Recompute the 3 control handles. They are derived from the 4 user points and
+        // are NOT container GObjects (no graph vertices), so their IDs stay stable across
+        // delete/undo cycles — mirroring VToolCubicBezierPath.
+        const double t = 0.30; // default; could be stored as attribute in future
+        const ArmholeHandles handles = VToolArmholeCurve::SolveHandles(*p1, *pCarrure, t);
+
+        // Build the 7-point path: armhole, V, V1, chest/back width, h2a, perpendicular, shoulder
+        QVector<VPointF> pathPoints;
+        pathPoints.append(*p1);
+        pathPoints.append(handles.h1a);
+        pathPoints.append(handles.h1b);
+        pathPoints.append(*pCarrure);
+        pathPoints.append(handles.h2a);
+        pathPoints.append(*pPerp);
+        pathPoints.append(*pEpaule);
+
+        initData.path = new VCubicBezierPath(pathPoints);
+        if (duplicate > 0)
+        {
+            initData.path->SetDuplicate(duplicate);
+        }
+        initData.path->SetColor(color);
+        initData.path->SetPenStyle(penStyle);
+        initData.path->SetApproximationScale(approximationScale);
+        initData.path->SetAliasSuffix(alias);
+
+        VToolArmholeCurve::Create(initData);
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating armhole curve"), domElement);
         excep.AddMoreInformation(e.ErrorMessage());
         throw excep;
     }
@@ -649,7 +719,8 @@ void VPattern::ParseSplineElement(VMainGraphicsScene *scene, QDomElement &domEle
                                       VToolCubicBezier::ToolType,      /*6*/
                                       VToolCubicBezierPath::ToolType,  /*7*/
                                       VToolParallelCurve::ToolType,    /*8*/
-                                      VToolGraduatedCurve::ToolType}); /*9*/
+                                      VToolGraduatedCurve::ToolType,   /*9*/
+                                      VToolArmholeCurve::ToolType});   /*10*/
     switch (splines.indexOf(type))
     {
         case 0: // VToolSpline::OldToolType
@@ -686,6 +757,9 @@ void VPattern::ParseSplineElement(VMainGraphicsScene *scene, QDomElement &domEle
             break;
         case 9: // VToolGraduatedCurve::ToolType
             ParseToolGraduatedCurve(scene, domElement, parse);
+            break;
+        case 10: // VToolArmholeCurve::ToolType
+            ParseToolArmholeCurve(scene, domElement, parse);
             break;
         default:
             throw VException(tr("Unknown spline type '%1'.").arg(type));

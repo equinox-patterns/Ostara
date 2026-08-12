@@ -1807,6 +1807,24 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
+  <action name="actionArmholeCurveTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="share/resources/toolicon.qrc">
+     <normaloff>:/toolicon/light/cubic_bezier.png</normaloff>:/toolicon/light/cubic_bezier.png</iconset>
+   </property>
+   <property name="text">
+    <string>Armhole curve passing through 3 points</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
   <action name="actionSplinePathTool">
    <property name="checkable">
     <bool>true</bool>

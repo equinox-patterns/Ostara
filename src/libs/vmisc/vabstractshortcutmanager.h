@@ -83,6 +83,7 @@ enum class VShortcutAction : quint8
     ToolLineIntersect,
     ToolSpline,
     ToolCubicBezier,
+    ToolArmholeCurve,
     ToolArc,
     ToolSplinePath,
     ToolCubicBezierPath,

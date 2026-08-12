@@ -63,6 +63,7 @@ using namespace VtoppbConstants;
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolarmholecurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarc.h"
@@ -146,6 +147,7 @@ auto CutSplineProperties() -> std::vector<PropertyDesc>;
 auto CutSplinePathProperties() -> std::vector<PropertyDesc>;
 auto SplineProperties() -> std::vector<PropertyDesc>;
 auto CubicBezierProperties() -> std::vector<PropertyDesc>;
+auto ArmholeCurveProperties() -> std::vector<PropertyDesc>;
 auto SplinePathProperties() -> std::vector<PropertyDesc>;
 auto CubicBezierPathProperties() -> std::vector<PropertyDesc>;
 auto EllipticalArcProperties() -> std::vector<PropertyDesc>;
@@ -194,7 +196,7 @@ void VToolOptionsPropertyBrowser::ClearPropertyBrowser()
 void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were used in switch.");
 
     switch (item->type())
     {
@@ -260,6 +262,9 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
             break;
         case VToolCubicBezier::Type:
             ShowToolOptions<VToolCubicBezier>(item, tr("Cubic bezier curve"), CubicBezierProperties());
+            break;
+        case VToolArmholeCurve::Type:
+            ShowToolOptions<VToolArmholeCurve>(item, tr("Armhole curve"), ArmholeCurveProperties());
             break;
         case VToolSplinePath::Type:
             ShowToolOptions<VToolSplinePath>(item, tr("Tool for path curve"), SplinePathProperties());
@@ -339,7 +344,7 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
@@ -405,6 +410,9 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
             break;
         case VToolCubicBezier::Type:
             UpdateToolOptions<VToolCubicBezier>(CubicBezierProperties());
+            break;
+        case VToolArmholeCurve::Type:
+            UpdateToolOptions<VToolArmholeCurve>(ArmholeCurveProperties());
             break;
         case VToolSplinePath::Type:
             UpdateToolOptions<VToolSplinePath>(SplinePathProperties());
@@ -501,7 +509,7 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
@@ -567,6 +575,9 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
             break;
         case VToolCubicBezier::Type:
             ChangeToolData<VToolCubicBezier>(prop, CubicBezierProperties());
+            break;
+        case VToolArmholeCurve::Type:
+            ChangeToolData<VToolArmholeCurve>(prop, ArmholeCurveProperties());
             break;
         case VToolSplinePath::Type:
             ChangeToolData<VToolSplinePath>(prop, SplinePathProperties());

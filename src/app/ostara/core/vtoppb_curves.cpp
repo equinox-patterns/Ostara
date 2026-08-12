@@ -31,6 +31,7 @@
 #include "vtoppb_templates.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolarmholecurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarc.h"
@@ -236,6 +237,7 @@ auto CutSplineProperties() -> std::vector<PropertyDesc>;
 auto CutSplinePathProperties() -> std::vector<PropertyDesc>;
 auto SplineProperties() -> std::vector<PropertyDesc>;
 auto CubicBezierProperties() -> std::vector<PropertyDesc>;
+auto ArmholeCurveProperties() -> std::vector<PropertyDesc>;
 auto SplinePathProperties() -> std::vector<PropertyDesc>;
 auto CubicBezierPathProperties() -> std::vector<PropertyDesc>;
 auto EllipticalArcProperties() -> std::vector<PropertyDesc>;
@@ -668,6 +670,45 @@ auto CubicBezierProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->getSpline().GetApproximationScale());
          }},
         MakeNotes<VToolCubicBezier>(T("Notes:")),
+    };
+}
+
+// --- VToolArmholeCurve ---
+auto ArmholeCurveProperties() -> std::vector<PropertyDesc>
+{
+    return {
+        MakeObjectNameReadOnly<VToolArmholeCurve>(T("Name:")),
+        MakeParentPoint<VToolArmholeCurve>(AttrPoint1, T("Armhole:"), &VToolArmholeCurve::FirstPointName),
+        MakeParentPoint<VToolArmholeCurve>(AttrPoint4, T("Chest/back width:"), &VToolArmholeCurve::SecondPointName),
+        MakeParentPoint<VToolArmholeCurve>(AttrPoint6, T("Perpendicular:"), &VToolArmholeCurve::ThirdPointName),
+        MakeParentPoint<VToolArmholeCurve>(AttrPoint7, T("Shoulder:"), &VToolArmholeCurve::FourthPointName),
+        MakeStringPropWithValidator<VToolArmholeCurve>(AttrAlias, T("Alias:"), &VToolArmholeCurve::GetAliasSuffix, &VToolArmholeCurve::SetAliasSuffix),
+        MakeCurvePenStyle<VToolArmholeCurve>(T("Pen style:")),
+        MakeLineColor<VToolArmholeCurve>(T("Color:")),
+        {AttrAScale, T("Approximation scale:"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolArmholeCurve *>(tool);
+             QMap<QString, QVariant> s{{QStringLiteral("Min"), 0}, {QStringLiteral("Max"), maxCurveApproximationScale},
+                                        {QStringLiteral("Step"), 0.1}, {QStringLiteral("Precision"), 1}};
+             auto *p = new VPE::VDoubleProperty(T("Approximation scale:"), s);
+             p->setValue(t->GetPath().GetApproximationScale());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArmholeCurve *>(b->currentItem())) {
+                 double const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toDouble();
+                 VCubicBezierPath path = t->GetPath();
+                 if (!VFuzzyComparePossibleNulls(v, path.GetApproximationScale())) {
+                     path.SetApproximationScale(v);
+                     t->SetPath(path);
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArmholeCurve *>(b->currentItem()))
+                 prop->setValue(t->GetPath().GetApproximationScale());
+         }},
+        MakeNotes<VToolArmholeCurve>(T("Notes:")),
     };
 }
 

@@ -352,6 +352,9 @@
                           <xs:attribute name="point2" type="xs:unsignedInt"/>
                           <xs:attribute name="point3" type="xs:unsignedInt"/>
                           <xs:attribute name="point4" type="xs:unsignedInt"/>
+                          <xs:attribute name="point5" type="xs:unsignedInt"/>
+                          <xs:attribute name="point6" type="xs:unsignedInt"/>
+                          <xs:attribute name="point7" type="xs:unsignedInt"/>
                           <xs:attribute name="color" type="colors"/>
                           <xs:attribute name="penStyle" type="curvePenStyle"/>
                           <xs:attribute name="duplicate" type="xs:unsignedInt"/>

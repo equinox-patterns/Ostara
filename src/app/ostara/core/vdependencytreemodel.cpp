@@ -77,7 +77,7 @@ auto GetObjectName(vidtype id, const VContainer &patternData, const QString &def
 //---------------------------------------------------------------------------------------------------------------------
 auto IsGeometricTool(Tool toolType) -> bool
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "List of tools changed.");
 
     switch (toolType)
     {
@@ -90,6 +90,7 @@ auto IsGeometricTool(Tool toolType) -> bool
         case Tool::LineIntersect:
         case Tool::Spline:
         case Tool::CubicBezier:
+        case Tool::ArmholeCurve:
         case Tool::Arc:
         case Tool::ArcWithLength:
         case Tool::ParallelCurve:
@@ -979,7 +980,7 @@ auto VDependencyTreeModel::GetToolName(vidtype id, const VContainer &patternData
 //---------------------------------------------------------------------------------------------------------------------
 auto VDependencyTreeModel::GetOperationToolName(Tool toolType, const QString &defaultName) const -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "List of tools changed.");
 
     switch (toolType)
     {
@@ -1005,7 +1006,7 @@ auto VDependencyTreeModel::GetToolToolTip(vidtype id) const -> QString
 {
     const VToolRecord tool = FindToolRecord(id);
 
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "List of tools changed.");
 
     switch (tool.GetToolType())
     {
@@ -1025,6 +1026,7 @@ auto VDependencyTreeModel::GetToolToolTip(vidtype id) const -> QString
             return tr("Point at line intersection");
         case Tool::Spline:
         case Tool::CubicBezier:
+        case Tool::ArmholeCurve:
             return tr("Spline");
         case Tool::Arc:
             return tr("Arc");

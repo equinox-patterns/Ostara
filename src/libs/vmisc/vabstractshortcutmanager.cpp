@@ -107,7 +107,7 @@ auto VAbstractShortcutManager::GetShortcutsList() const -> QList<VAbstractShortc
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 88, "Convert all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 89, "Convert all actions.");
 
     switch (type)
     {
@@ -201,6 +201,8 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "toolspline"_L1;
         case VShortcutAction::ToolCubicBezier:
             return "toolcubicbezier"_L1;
+        case VShortcutAction::ToolArmholeCurve:
+            return "toolarmholecurve"_L1;
         case VShortcutAction::ToolArc:
             return "toolarc"_L1;
         case VShortcutAction::ToolSplinePath:
@@ -299,7 +301,7 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 88, "Translate all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 89, "Translate all actions.");
 
     switch (type)
     {
@@ -393,6 +395,8 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Tool 'Simple curve'", "shortcut for action");
         case VShortcutAction::ToolCubicBezier:
             return tr("Tool 'Curve which uses point as control handle'", "shortcut for action");
+        case VShortcutAction::ToolArmholeCurve:
+            return tr("Tool 'Armhole curve through 3 points'", "shortcut for action");
         case VShortcutAction::ToolArc:
             return tr("Tool 'Arc'", "shortcut for action");
         case VShortcutAction::ToolSplinePath:

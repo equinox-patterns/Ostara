@@ -46,6 +46,7 @@
 #include "../vtools/dialogs/tools/dialogarc.h"
 #include "../vtools/dialogs/tools/dialogarcwithlength.h"
 #include "../vtools/dialogs/tools/dialogbisector.h"
+#include "../vtools/dialogs/tools/dialogarmholecurve.h"
 #include "../vtools/dialogs/tools/dialogcubicbezier.h"
 #include "../vtools/dialogs/tools/dialogcubicbezierpath.h"
 #include "../vtools/dialogs/tools/dialogcurveintersectaxis.h"
@@ -93,6 +94,7 @@
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolarmholecurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarc.h"
@@ -917,6 +919,18 @@ void MainWindow::ToolGraduatedCurve(bool checked)
     LogPatternToolUsed(checked, QStringLiteral("Graduated curve tool"));
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolArmholeCurve(bool checked)
+{
+    ToolSelectPointByRelease();
+    SetToolButtonWithApply<DialogArmholeCurve>(
+        checked, Tool::ArmholeCurve, QStringLiteral("cubic_bezier_cursor.png"),
+        tr("⚠ Perpendicular to the shoulder line required — Select the armhole point"),
+        &MainWindow::ClosedDrawDialogWithApply<VToolArmholeCurve>,
+        &MainWindow::ApplyDrawDialog<VToolArmholeCurve>);
+    LogPatternToolUsed(checked, QStringLiteral("Armhole curve tool"));
+}
+
 
 template <typename Dialog, typename Func>
 void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, const QString &toolTip,
@@ -950,7 +964,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Check if need to extend.");
 
     switch (t)
     {
@@ -999,7 +1013,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         dialogTool->SetColor(settings->GetGlobalToolColor());
     }
 
-    if constexpr (std::is_same_v<Dialog,DialogCubicBezier> || std::is_same_v<Dialog,DialogCubicBezierPath> ||
+    if constexpr (std::is_same_v<Dialog,DialogArmholeCurve> || std::is_same_v<Dialog,DialogCubicBezier> || std::is_same_v<Dialog,DialogCubicBezierPath> ||
                   std::is_same_v<Dialog,DialogSpline> || std::is_same_v<Dialog,DialogSplinePath>)
     {
         dialogTool->SetDefPenStyle(settings->GetGlobalPenStyle());

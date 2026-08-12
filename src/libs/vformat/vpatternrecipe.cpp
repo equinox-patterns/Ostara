@@ -360,7 +360,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 63, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -411,6 +411,7 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
             case Tool::Spline:
                 return Spline(tool);
             case Tool::CubicBezier:
+            case Tool::ArmholeCurve:
                 return CubicBezier(tool);
             case Tool::Arc:
                 return Arc(tool);

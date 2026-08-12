@@ -237,6 +237,7 @@ private:
     void ParseToolSplinePath(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
     void ParseToolParallelCurve(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolGraduatedCurve(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
+    void ParseToolArmholeCurve(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
     void ParseToolCubicBezierPath(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
     void ParseNodeSpline(const QDomElement &domElement, const Document &parse);
     void ParseNodeSplinePath(const QDomElement &domElement, const Document &parse);
