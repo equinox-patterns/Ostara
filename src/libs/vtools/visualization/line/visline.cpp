@@ -44,7 +44,6 @@ VisLine::VisLine(const VContainer *data, QGraphicsItem *parent)
     VScaledLine(VColorRole::VisMainColor, parent)
 {
     this->setZValue(1); // Show on top of a real tool
-    SetShowArrows(true);
     VisLine::InitPen();
 }
 
