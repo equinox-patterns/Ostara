@@ -201,7 +201,10 @@ void VPE::VPropertyFormWidget::buildEditor(VProperty *property, QFormLayout *for
     }
     else if (not property->getNameDecoration().isNull())
     {
-        auto *labelWidget = new QWidget(this);
+        // QFrame instead of QWidget — plain QWidget has no paintEvent
+        // and does not render backgrounds (SUBTILITES_CODE.md §14).
+        auto *labelWidget = new QFrame(this);
+        static_cast<QFrame *>(labelWidget)->setFrameStyle(QFrame::NoFrame);
         auto *labelLayout = new QHBoxLayout(labelWidget);
         labelLayout->setContentsMargins(0, 0, 0, 0);
         labelLayout->setSpacing(4);
