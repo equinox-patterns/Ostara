@@ -199,6 +199,20 @@ void VPE::VPropertyFormWidget::buildEditor(VProperty *property, QFormLayout *for
         QString const name = "<b>" + property->getName() + "</b>";
         formLayout->addRow(name, tmpEditor);
     }
+    else if (not property->getNameDecoration().isNull())
+    {
+        auto *labelWidget = new QWidget(this);
+        auto *labelLayout = new QHBoxLayout(labelWidget);
+        labelLayout->setContentsMargins(0, 0, 0, 0);
+        labelLayout->setSpacing(4);
+        auto *dotLabel = new QLabel(labelWidget);
+        dotLabel->setPixmap(property->getNameDecoration());
+        auto *textLabel = new QLabel(property->getName(), labelWidget);
+        labelLayout->addWidget(dotLabel);
+        labelLayout->addWidget(textLabel);
+        labelLayout->addStretch();
+        formLayout->addRow(labelWidget, tmpEditor);
+    }
     else
     {
         formLayout->addRow(property->getName(), tmpEditor);
