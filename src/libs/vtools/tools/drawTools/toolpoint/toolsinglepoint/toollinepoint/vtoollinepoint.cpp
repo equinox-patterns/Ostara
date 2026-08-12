@@ -302,7 +302,12 @@ void VToolLinePoint::ProcessLinePointToolOptions(const QDomElement &oldDomElemen
 //---------------------------------------------------------------------------------------------------------------------
 void VToolLinePoint::SyncLineRoleNameToDom()
 {
-    const QString pairKey = BasePointName() + '_' + VAbstractTool::data.GetGObject(m_id)->name();
+    SyncLineRoleNameToDom(BasePointName() + '_' + VAbstractTool::data.GetGObject(m_id)->name());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::SyncLineRoleNameToDom(const QString &pairKey)
+{
     const QString suffix = VAbstractTool::data.LineRoleName(pairKey);
     if (suffix.isEmpty())
     {

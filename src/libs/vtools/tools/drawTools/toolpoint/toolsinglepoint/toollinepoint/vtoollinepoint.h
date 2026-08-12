@@ -112,6 +112,7 @@ protected:
                                      const QString &newBasePointLabel);
 
     void SyncLineRoleNameToDom();
+    void SyncLineRoleNameToDom(const QString &pairKey);
 
 private:
     Q_DISABLE_COPY_MOVE(VToolLinePoint) // NOLINT

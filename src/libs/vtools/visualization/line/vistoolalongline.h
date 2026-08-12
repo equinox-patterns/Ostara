@@ -53,6 +53,7 @@ public:
     void SetPoint2Id(quint32 value);
     void SetLength(const QString &expression);
     void SetMidPointMode(bool midPointMode);
+    void SetToolPointId(quint32 value);
 
     auto type() const -> int override {return Type;}
     enum {Type = UserType + static_cast<int>(Vis::ToolAlongLine)};
@@ -65,6 +66,9 @@ private:
     VScaledEllipse *m_lineP1{nullptr};
     VScaledEllipse *m_lineP2{nullptr};
     VScaledLine    *m_line{nullptr};
+    VScaledLine    *m_line1{nullptr};
+    VScaledLine    *m_line2{nullptr};
+    quint32         m_toolPointId{NULL_ID};
     qreal           m_length{0};
     bool            m_midPointMode{false};
 };
@@ -85,6 +89,12 @@ inline void VisToolAlongLine::SetPoint2Id(quint32 value)
 inline void VisToolAlongLine::SetMidPointMode(bool midPointMode)
 {
     m_midPointMode = midPointMode;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+inline void VisToolAlongLine::SetToolPointId(quint32 value)
+{
+    m_toolPointId = value;
 }
 
 #endif // VISTOOLALONGLINE_H

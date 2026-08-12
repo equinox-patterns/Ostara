@@ -36,13 +36,16 @@
 #include <QLineEdit>
 #include <QPointer>
 #include <QRegularExpression>
+#include <QHBoxLayout>
 #include <QPushButton>
 #include <QSharedPointer>
 #include <QTimer>
 #include <QToolButton>
 
+#include "../../dialogs/dialogtoolbox.h"
 #include "../../visualization/line/vistoolalongline.h"
 #include "../../visualization/visualization.h"
+#include "../../../../vtheme/vscenestylesheet.h"
 #include "../ifc/ifcdef.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vgeometry/vpointf.h"
@@ -125,14 +128,43 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
     connect(ui->comboBoxSecondPoint, &QComboBox::currentTextChanged, this, &DialogAlongLine::PointChanged);
     connect(ui->toolButtonSwapPoints, &QToolButton::clicked, this, &DialogAlongLine::SwapPoints);
 
-    // Role name field (Line_CarrureDevant)
+    // Role name field A→C
+    auto *containerRoleName = new QWidget();
+    auto *layoutRoleName = new QHBoxLayout(containerRoleName);
+    layoutRoleName->setContentsMargins(0, 0, 0, 0);
+    layoutRoleName->setSpacing(4);
+    auto *labelRoleNameDot = new QLabel();
+    labelRoleNameDot->setObjectName(QStringLiteral("labelRoleNameDot"));
+    labelRoleNameDot->setFixedSize(12, 12);
     m_labelRoleName = new QLabel(tr("Name:"));
-    m_labelRoleName->setMinimumWidth(90);
+    m_labelRoleName->setMinimumWidth(80);
+    layoutRoleName->addWidget(labelRoleNameDot);
+    layoutRoleName->addWidget(m_labelRoleName);
+    layoutRoleName->addStretch();
     auto *lineEditRoleName = new QLineEdit();
     lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
-    ui->gridLayout->addWidget(m_labelRoleName, 5, 0);
+    ui->gridLayout->addWidget(containerRoleName, 5, 0);
     ui->gridLayout->addWidget(lineEditRoleName, 5, 1);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogAlongLine::ValidateLineRoleName);
+
+    // Role name field C→B
+    auto *containerSecondRoleName = new QWidget();
+    auto *layoutSecondRoleName = new QHBoxLayout(containerSecondRoleName);
+    layoutSecondRoleName->setContentsMargins(0, 0, 0, 0);
+    layoutSecondRoleName->setSpacing(4);
+    auto *labelSecondRoleNameDot = new QLabel();
+    labelSecondRoleNameDot->setObjectName(QStringLiteral("labelSecondRoleNameDot"));
+    labelSecondRoleNameDot->setFixedSize(12, 12);
+    m_labelSecondRoleName = new QLabel(tr("Name 2:"));
+    m_labelSecondRoleName->setMinimumWidth(80);
+    layoutSecondRoleName->addWidget(labelSecondRoleNameDot);
+    layoutSecondRoleName->addWidget(m_labelSecondRoleName);
+    layoutSecondRoleName->addStretch();
+    auto *lineEditSecondRoleName = new QLineEdit();
+    lineEditSecondRoleName->setObjectName(QStringLiteral("lineEditSecondRoleName"));
+    ui->gridLayout->addWidget(containerSecondRoleName, 6, 0);
+    ui->gridLayout->addWidget(lineEditSecondRoleName, 6, 1);
+    connect(lineEditSecondRoleName, &QLineEdit::textEdited, this, &DialogAlongLine::ValidateSecondLineRoleName);
 
     vis = new VisToolAlongLine(&this->data);
 
@@ -146,7 +178,7 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogAlongLine::IsValid() const -> bool
 {
-    return m_flagName && m_formula->isValid() && m_flagError && flagRoleName;
+    return m_flagName && m_formula->isValid() && m_flagError && flagRoleName && flagSecondRoleName;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -251,6 +283,7 @@ void DialogAlongLine::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
+        InitIcons();
         InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
@@ -334,6 +367,16 @@ void DialogAlongLine::FinishCreating()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogAlongLine::InitIcons()
 {
+    if (auto *dot = findChild<QLabel *>(QStringLiteral("labelRoleNameDot")))
+    {
+        dot->setPixmap(
+            GetColorDotPixmap(VSceneStylesheet::Color(VColorRole::VisSupportColor2), 10));
+    }
+    if (auto *dot = findChild<QLabel *>(QStringLiteral("labelSecondRoleNameDot")))
+    {
+        dot->setPixmap(
+            GetColorDotPixmap(VSceneStylesheet::Color(VColorRole::VisSupportColor4), 10));
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -572,5 +615,73 @@ void DialogAlongLine::ValidateLineRoleName()
     flagRoleName = true;
     if (edit) { edit->setStyleSheet({}); }
     ChangeColor(m_labelRoleName, OkColor(this));
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogAlongLine::SetSecondLineRoleName(const QString &suffix)
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditSecondRoleName")))
+    {
+        edit->setText(suffix);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogAlongLine::GetSecondLineRoleName() const -> QString
+{
+    if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditSecondRoleName")))
+    {
+        return edit->text().trimmed();
+    }
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogAlongLine::ValidateSecondLineRoleName()
+{
+    auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditSecondRoleName"));
+    if (!edit)
+    {
+        return;
+    }
+    const QString suffix = edit->text().trimmed();
+    if (suffix.isEmpty())
+    {
+        flagSecondRoleName = true;
+        edit->setStyleSheet({});
+        ChangeColor(m_labelSecondRoleName, OkColor(this));
+        CheckState();
+        return;
+    }
+
+    QRegularExpression const rx(NameRegExp());
+    if (!rx.match(suffix).hasMatch())
+    {
+        flagSecondRoleName = false;
+        edit->setStyleSheet(QStringLiteral("border: 1px solid red;"));
+        ChangeColor(m_labelSecondRoleName, errorColor);
+        CheckState();
+        return;
+    }
+
+    // Uniqueness: Line_<suffix> must not exist on another line
+    const QString aliasKey = line_ + suffix;
+    if (data.DataLengthLines().contains(aliasKey))
+    {
+        const QSharedPointer<VLengthLine> var = data.DataLengthLines().value(aliasKey);
+        const QVector<quint32> refs = var->GetReferences();
+        if (refs.size() >= 2 && refs.at(0) != NULL_ID && refs.at(1) != NULL_ID)
+        {
+            flagSecondRoleName = false;
+            edit->setStyleSheet(QStringLiteral("border: 1px solid red;"));
+            ChangeColor(m_labelSecondRoleName, errorColor);
+            CheckState();
+            return;
+        }
+    }
+    flagSecondRoleName = true;
+    edit->setStyleSheet({});
+    ChangeColor(m_labelSecondRoleName, OkColor(this));
     CheckState();
 }

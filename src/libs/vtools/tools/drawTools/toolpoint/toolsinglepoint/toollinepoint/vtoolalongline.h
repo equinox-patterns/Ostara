@@ -48,6 +48,7 @@ struct VToolAlongLineInitData : VToolLinePointInitData
     QString formula{QStringLiteral("100.0")}; // NOLINT(misc-non-private-member-variables-in-classes)
     quint32 firstPointId{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
     quint32 secondPointId{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
+    QString secondLineRoleName{}; // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
 /**
@@ -71,6 +72,9 @@ public:
 
     auto GetLineRoleName() const -> QString;
     void SetLineRoleName(const QString &suffix);
+
+    auto GetSecondLineRoleName() const -> QString;
+    void SetSecondLineRoleName(const QString &suffix);
 
     void ShowVisualization(bool show) override;
 protected slots:

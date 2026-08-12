@@ -76,6 +76,9 @@ public:
     void SetLineRoleName(const QString &suffix);
     auto GetLineRoleName() const -> QString;
 
+    void SetSecondLineRoleName(const QString &suffix);
+    auto GetSecondLineRoleName() const -> QString;
+
     void Build(const Tool &type) override;
     void ShowDialog(bool click) override;
 
@@ -88,6 +91,7 @@ public slots:
 private slots:
     void SwapPoints();
     void ValidateLineRoleName();
+    void ValidateSecondLineRoleName();
 
 protected:
     void ShowVisualization() override;
@@ -112,6 +116,8 @@ private:
     bool m_flagName{true};
     bool flagRoleName{true};
     QLabel *m_labelRoleName{nullptr};
+    bool flagSecondRoleName{true};
+    QLabel *m_labelSecondRoleName{nullptr};
 
     bool m_firstRelease{false};
 

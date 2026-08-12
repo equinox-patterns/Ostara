@@ -51,6 +51,10 @@ VisToolAlongLine::VisToolAlongLine(const VContainer *data, QGraphicsItem *parent
     m_lineP1 = InitPoint(VColorRole::VisSupportColor, this);
     m_lineP2 = InitPoint(VColorRole::VisSupportColor, this); //-V656
     m_line = InitItem<VScaledLine>(VColorRole::VisSupportColor, this);
+    m_line1 = InitItem<VScaledLine>(VColorRole::VisSupportColor2, this);
+    m_line1->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
+    m_line2 = InitItem<VScaledLine>(VColorRole::VisSupportColor4, this);
+    m_line2->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
     m_point = InitPoint(VColorRole::VisMainColor, this);
 }
 
@@ -87,11 +91,24 @@ void VisToolAlongLine::RefreshGeometry()
             QLineF const baseLine(static_cast<QPointF>(*first), static_cast<QPointF>(*second));
             DrawLine(m_line, baseLine);
 
-            if (not qFuzzyIsNull(m_length))
+            if (m_toolPointId > NULL_ID)
+            {
+                // Show mode: use the real point C position
+                // Use Qt::SolidLine for highlights, not the tool's LineStyle (which may be NoPen)
+                const QSharedPointer<VPointF> toolPoint = GetData()->GeometricObject<VPointF>(m_toolPointId);
+                QPointF const c = static_cast<QPointF>(*toolPoint);
+                DrawLine(m_line1, QLineF(static_cast<QPointF>(*first), c), Qt::SolidLine);
+                DrawLine(m_line2, QLineF(c, static_cast<QPointF>(*second)), Qt::SolidLine);
+                DrawPoint(m_point, c);
+            }
+            else if (not qFuzzyIsNull(m_length))
             {
                 QLineF const mainLine =
                     VGObject::BuildLine(static_cast<QPointF>(*first), m_length, m_line->line().angle());
-                DrawLine(this, mainLine, LineStyle());
+                DrawLine(m_line1, mainLine, Qt::SolidLine);
+
+                // Segment C→B in red
+                DrawLine(m_line2, QLineF(mainLine.p2(), static_cast<QPointF>(*second)), Qt::SolidLine);
 
                 DrawPoint(m_point, mainLine.p2());
             }
@@ -107,7 +124,14 @@ void VisToolAlongLine::RefreshGeometry()
                 }
 
                 QLineF const mainLine = VGObject::BuildLine(static_cast<QPointF>(*first), len, m_line->line().angle());
-                DrawLine(this, mainLine, LineStyle());
+                DrawLine(m_line1, mainLine, Qt::SolidLine);
+
+                // Segment C→B in red
+                if (m_point2Id > NULL_ID)
+                {
+                    const QSharedPointer<VPointF> second = GetData()->GeometricObject<VPointF>(m_point2Id);
+                    DrawLine(m_line2, QLineF(mainLine.p2(), static_cast<QPointF>(*second)), Qt::SolidLine);
+                }
 
                 DrawPoint(m_point, mainLine.p2());
 

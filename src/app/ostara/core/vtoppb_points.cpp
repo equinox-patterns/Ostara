@@ -45,6 +45,8 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolendline.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolbisector.h"
+#include "../vpropertyexplorer/plugins/vcolorpropertyeditor.h"
+#include "../vtheme/vscenestylesheet.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolalongline.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.h"
@@ -329,6 +331,11 @@ auto MakeHCrossPoint(const QString &label) -> PropertyDesc
 }
 
 
+static auto SegmentDotPixmap(VColorRole role) -> QPixmap
+{
+    return VPE::VColorPropertyEditor::GetColorPixmap(VSceneStylesheet::Color(role), 16);
+}
+
 } // anonymous namespace
 
 // Forward declarations (one per tool)
@@ -400,7 +407,11 @@ auto AlongLineProperties() -> std::vector<PropertyDesc>
         MakeLineType<VToolAlongLine>(T("Line type:")),
         MakeLineColor<VToolAlongLine>(T("Line color:")),
         MakeStringPropWithValidator<VToolAlongLine>(QStringLiteral("lineRoleName"), T("Name:"),
-        &VToolAlongLine::GetLineRoleName, &VToolAlongLine::SetLineRoleName),
+        &VToolAlongLine::GetLineRoleName, &VToolAlongLine::SetLineRoleName,
+        SegmentDotPixmap(VColorRole::VisSupportColor2)),
+        MakeStringPropWithValidator<VToolAlongLine>(QStringLiteral("secondLineRoleName"), T("Name 2:"),
+        &VToolAlongLine::GetSecondLineRoleName, &VToolAlongLine::SetSecondLineRoleName,
+        SegmentDotPixmap(VColorRole::VisSupportColor4)),
         MakeFormulaLength<VToolAlongLine>(T("Length:")),
         MakeNotes<VToolAlongLine>(T("Notes:")),
     };
