@@ -85,7 +85,7 @@ auto VPE::VProperty::data(int column, int role) const -> QVariant
     }
     else if (column == DPC_Name && role == Qt::DecorationRole && not vproperty_d_ptr->NameDecoration.isNull())
     {
-        return vproperty_d_ptr->NameDecoration;
+        return QIcon(vproperty_d_ptr->NameDecoration);
     }
     else
         return QVariant();
