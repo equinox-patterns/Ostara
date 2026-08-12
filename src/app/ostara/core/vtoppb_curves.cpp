@@ -52,6 +52,8 @@
 #include "vformulaproperty.h"
 #include "ifcdef.h"
 #include "../vmisc/def.h"
+#include "../vtheme/vscenestylesheet.h"
+#include "../vpropertyexplorer/plugins/vcolorpropertyeditor.h"
 #include "../vgeometry/vsplinepath.h"
 #include "../vgeometry/vcubicbezierpath.h"
 #include "../vgeometry/vcubicbezier.h"
@@ -59,6 +61,11 @@
 namespace
 {
 auto T(const char *s) -> QString { return VToolOptionsPropertyBrowser::tr(s); }
+
+auto SegmentDotPixmap(VColorRole role) -> QPixmap
+{
+    return VPE::VColorPropertyEditor::GetColorPixmap(VSceneStylesheet::Color(role), 16);
+}
 
 // --- Helpers ---
 
@@ -376,8 +383,10 @@ auto CutArcProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolCutArc>(AttrArc, T("Arc:"), &VToolCutArc::CurveName),
         MakeStringPropWithValidator<VToolCutArc>(AttrCurveName1, T("Name1:"), &VToolCutArc::GetName1, &VToolCutArc::SetName1),
         MakeStringPropWithValidator<VToolCutArc>(AttrCurveName2, T("Name2:"), &VToolCutArc::GetName2, &VToolCutArc::SetName2),
-        MakeStringPropWithValidator<VToolCutArc>(AttrAlias1, T("Alias1:"), &VToolCutArc::GetAliasSuffix1, &VToolCutArc::SetAliasSuffix1),
-        MakeStringPropWithValidator<VToolCutArc>(AttrAlias2, T("Alias2:"), &VToolCutArc::GetAliasSuffix2, &VToolCutArc::SetAliasSuffix2),
+        MakeStringPropWithValidator<VToolCutArc>(AttrAlias1, T("Alias1:"), &VToolCutArc::GetAliasSuffix1, &VToolCutArc::SetAliasSuffix1,
+                                             SegmentDotPixmap(VColorRole::VisSupportColor2)),
+        MakeStringPropWithValidator<VToolCutArc>(AttrAlias2, T("Alias2:"), &VToolCutArc::GetAliasSuffix2, &VToolCutArc::SetAliasSuffix2,
+                                             SegmentDotPixmap(VColorRole::VisSupportColor4)),
         {AttrLength, T("Length:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCutArc *>(tool);
@@ -407,8 +416,10 @@ auto CutSplineProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolCutSpline>(AttrCurve, T("Curve:"), &VToolCutSpline::CurveName),
         MakeStringPropWithValidator<VToolCutSpline>(AttrCurveName1, T("Name1:"), &VToolCutSpline::GetName1, &VToolCutSpline::SetName1),
         MakeStringPropWithValidator<VToolCutSpline>(AttrCurveName2, T("Name2:"), &VToolCutSpline::GetName2, &VToolCutSpline::SetName2),
-        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias1, T("Alias1:"), &VToolCutSpline::GetAliasSuffix1, &VToolCutSpline::SetAliasSuffix1),
-        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias2, T("Alias2:"), &VToolCutSpline::GetAliasSuffix2, &VToolCutSpline::SetAliasSuffix2),
+        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias1, T("Alias1:"), &VToolCutSpline::GetAliasSuffix1, &VToolCutSpline::SetAliasSuffix1,
+                                                SegmentDotPixmap(VColorRole::VisSupportColor2)),
+        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias2, T("Alias2:"), &VToolCutSpline::GetAliasSuffix2, &VToolCutSpline::SetAliasSuffix2,
+                                                SegmentDotPixmap(VColorRole::VisSupportColor4)),
         {AttrLength, T("Length:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCutSpline *>(tool);
@@ -438,8 +449,10 @@ auto CutSplinePathProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolCutSplinePath>(AttrCurve, T("Curve:"), &VToolCutSplinePath::CurveName),
         MakeStringPropWithValidator<VToolCutSplinePath>(AttrCurveName1, T("Name1:"), &VToolCutSplinePath::GetName1, &VToolCutSplinePath::SetName1),
         MakeStringPropWithValidator<VToolCutSplinePath>(AttrCurveName2, T("Name2:"), &VToolCutSplinePath::GetName2, &VToolCutSplinePath::SetName2),
-        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias1, T("Alias1:"), &VToolCutSplinePath::GetAliasSuffix1, &VToolCutSplinePath::SetAliasSuffix1),
-        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias2, T("Alias2:"), &VToolCutSplinePath::GetAliasSuffix2, &VToolCutSplinePath::SetAliasSuffix2),
+        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias1, T("Alias1:"), &VToolCutSplinePath::GetAliasSuffix1, &VToolCutSplinePath::SetAliasSuffix1,
+                                                   SegmentDotPixmap(VColorRole::VisSupportColor2)),
+        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias2, T("Alias2:"), &VToolCutSplinePath::GetAliasSuffix2, &VToolCutSplinePath::SetAliasSuffix2,
+                                                   SegmentDotPixmap(VColorRole::VisSupportColor4)),
         {AttrLength, T("Length:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCutSplinePath *>(tool);

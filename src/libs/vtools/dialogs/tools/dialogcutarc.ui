@@ -76,10 +76,26 @@
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="labelAlias1">
-           <property name="text">
-            <string>Name:</string>
-           </property>
+          <widget class="QWidget" name="widgetAlias1Label" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayoutAlias1">
+            <property name="spacing"><number>4</number></property>
+            <property name="leftMargin"><number>0</number></property>
+            <property name="topMargin"><number>0</number></property>
+            <property name="rightMargin"><number>0</number></property>
+            <property name="bottomMargin"><number>0</number></property>
+            <item>
+             <widget class="QLabel" name="labelAlias1Dot">
+              <property name="text"><string/></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelAlias1">
+              <property name="text">
+               <string>Name:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item row="2" column="1">
@@ -90,10 +106,26 @@
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="labelAlias2">
-           <property name="text">
-            <string>Name 2:</string>
-           </property>
+          <widget class="QWidget" name="widgetAlias2Label" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayoutAlias2">
+            <property name="spacing"><number>4</number></property>
+            <property name="leftMargin"><number>0</number></property>
+            <property name="topMargin"><number>0</number></property>
+            <property name="rightMargin"><number>0</number></property>
+            <property name="bottomMargin"><number>0</number></property>
+            <item>
+             <widget class="QLabel" name="labelAlias2Dot">
+              <property name="text"><string/></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelAlias2">
+              <property name="text">
+               <string>Name 2:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item row="3" column="1">

@@ -23,6 +23,7 @@
 
 #include <QAbstractItemDelegate>
 #include <QEvent>
+#include <QPixmap>
 #include <QMap>
 #include <QMetaObject>
 #include <QObject>
@@ -150,6 +151,12 @@ public:
 
     //! Gets the name of the property
     virtual auto getName() const -> QString;
+
+    //! Sets the decoration (pixmap) displayed left of the property name
+    void setNameDecoration(const QPixmap &pixmap);
+
+    //! Gets the decoration (pixmap) displayed left of the property name
+    auto getNameDecoration() const -> QPixmap;
 
     //! Sets the name of the property
     virtual void setDescription(const QString &desc);

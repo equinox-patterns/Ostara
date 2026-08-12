@@ -34,6 +34,8 @@
 #include <functional>
 #include <vector>
 
+#include <QPixmap>
+
 #include "vtooloptionspropertybrowser.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vpropertyexplorer/plugins/vboolproperty.h"
@@ -1140,14 +1142,16 @@ auto MakeStringProp(const QString &attrId, const QString &label, Getter getter, 
 // invalid input. After calling the setter, if the value didn't change,
 // the widget is reverted to show the rejection visually.
 template <typename Tool, typename Getter, typename Setter>
-auto MakeStringPropWithValidator(const QString &attrId, const QString &label, Getter getter, Setter setter)
+auto MakeStringPropWithValidator(const QString &attrId, const QString &label, Getter getter, Setter setter,
+                                 const QPixmap &nameDecoration = QPixmap())
     -> PropertyDesc
 {
     return {attrId, label, false,
-            [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+            [getter, label, nameDecoration](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VStringProperty(label);
                 p->setClearButtonEnable(true);
+                p->setNameDecoration(nameDecoration);
                 p->setValue((t->*getter)());
                 return p;
             },

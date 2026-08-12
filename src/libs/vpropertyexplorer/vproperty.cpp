@@ -83,6 +83,10 @@ auto VPE::VProperty::data(int column, int role) const -> QVariant
     {
         return QVariant(vproperty_d_ptr->Description);
     }
+    else if (column == DPC_Name && role == Qt::DecorationRole && not vproperty_d_ptr->NameDecoration.isNull())
+    {
+        return vproperty_d_ptr->NameDecoration;
+    }
     else
         return QVariant();
 }
@@ -221,6 +225,15 @@ auto VPE::VProperty::getName() const -> QString
     return vproperty_d_ptr->Name;
 }
 
+void VPE::VProperty::setNameDecoration(const QPixmap &pixmap)
+{
+    vproperty_d_ptr->NameDecoration = pixmap;
+}
+
+auto VPE::VProperty::getNameDecoration() const -> QPixmap
+{
+    return vproperty_d_ptr->NameDecoration;
+}
 
 void VPE::VProperty::setDescription(const QString& desc)
 {
@@ -398,6 +411,7 @@ auto VPE::VProperty::clone(bool include_children, VProperty *container) const ->
     container->setSettings(getSettings());
     container->setUpdateBehaviour(getUpdateParent(), getUpdateChildren());
     container->setPropertyType(propertyType());
+    container->setNameDecoration(getNameDecoration());
 
     if (include_children)
     {

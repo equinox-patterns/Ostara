@@ -86,6 +86,7 @@ auto FilterObject(QObject *object, QEvent *event) -> bool;
 auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qreal;
 void ChangeColor(QWidget *widget, const QColor &color);
 auto OkColor(const QWidget *widget) -> QColor;
+auto GetColorDotPixmap(const QColor &color, int diameter = 10) -> QPixmap;
 void CheckPointLabel(QDialog *dialog, QLineEdit *edit, QLabel *labelEditNamePoint, const QString &pointName,
                      const VContainer *data, bool &flag);
 auto FindNotExcludedNeighborNodeDown(QListWidget *listWidget, int candidate) -> int;

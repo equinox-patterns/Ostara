@@ -23,6 +23,7 @@
 
 // ONLY INCLUDE THIS IN .CPP FILES
 
+#include <QPixmap>
 #include <QVariant>
 #include <QString>
 #include "vproperty.h"
@@ -69,6 +70,8 @@ public:
     VProperty* Parent{nullptr}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     QWidget* editor{nullptr}; // NOLINT(misc-non-private-member-variables-in-classes)
+
+    QPixmap NameDecoration{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     Property type{Property::Simple}; // NOLINT(misc-non-private-member-variables-in-classes)
 

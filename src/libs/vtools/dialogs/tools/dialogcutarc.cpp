@@ -40,6 +40,7 @@
 #include "../support/dialogeditwrongformula.h"
 #include "../vgeometry/varc.h"
 #include "vtheme.h"
+#include "../vtheme/vscenestylesheet.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/vcontainer.h"
@@ -225,6 +226,7 @@ void DialogCutArc::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
+        InitIcons();
         InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
@@ -345,8 +347,8 @@ void DialogCutArc::FinishCreating()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogCutArc::InitIcons()
 {
-    // Formula-related icons are now managed by FormulaInputWidget.
-    // PaletteChange re-initialization is handled by FormulaInputWidget internally.
+    ui->labelAlias1Dot->setPixmap(GetColorDotPixmap(VSceneStylesheet::Color(VColorRole::VisSupportColor2)));
+    ui->labelAlias2Dot->setPixmap(GetColorDotPixmap(VSceneStylesheet::Color(VColorRole::VisSupportColor4)));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

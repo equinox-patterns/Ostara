@@ -42,6 +42,7 @@
 #include "../qmuparser/qmudef.h"
 #include "../vgeometry/vsplinepath.h"
 #include "vtheme.h"
+#include "../vtheme/vscenestylesheet.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/vcontainer.h"
@@ -392,6 +393,8 @@ void DialogCutSplinePath::FinishCreating()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogCutSplinePath::InitIcons()
 {
+    ui->labelAlias1Dot->setPixmap(GetColorDotPixmap(VSceneStylesheet::Color(VColorRole::VisSupportColor2)));
+    ui->labelAlias2Dot->setPixmap(GetColorDotPixmap(VSceneStylesheet::Color(VColorRole::VisSupportColor4)));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

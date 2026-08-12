@@ -396,6 +396,20 @@ auto OkColor(const QWidget *widget) -> QColor
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto GetColorDotPixmap(const QColor &color, int diameter) -> QPixmap
+{
+    QPixmap pix(diameter, diameter);
+    pix.fill(Qt::transparent);
+    QPainter painter(&pix);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setBrush(color);
+    painter.setPen(Qt::NoPen);
+    painter.drawEllipse(1, 1, diameter - 2, diameter - 2);
+    painter.end();
+    return pix;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void CheckPointLabel(QDialog *dialog, QLineEdit *edit, QLabel *labelEditNamePoint, const QString &pointName,
                      const VContainer *data, bool &flag)
 {
