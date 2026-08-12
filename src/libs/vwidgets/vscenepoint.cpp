@@ -63,6 +63,7 @@ VScenePoint::VScenePoint(VColorRole role, QGraphicsItem *parent)
     setBrush(QBrush(Qt::NoBrush));
     setAcceptHoverEvents(true);
     setFlag(QGraphicsItem::ItemIsFocusable, true); // For keyboard input focus
+    setZValue(1); // Points above curves/lines (Z=0) for hit-test priority
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -144,6 +145,19 @@ auto VScenePoint::boundingRect() const -> QRectF
     }
 
     return rect;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VScenePoint::shape() const -> QPainterPath
+{
+    QPainterPath path;
+    const qreal scale = SceneScale(scene());
+    qreal radius = ScaledRadius(scale);
+    // Minimum hit-target radius in screen pixels for comfortable interaction
+    constexpr qreal minScreenPixels = 6.0;
+    radius = qMax(radius, minScreenPixels / qMax(scale, 0.01));
+    path.addEllipse(PointRect(radius));
+    return path;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

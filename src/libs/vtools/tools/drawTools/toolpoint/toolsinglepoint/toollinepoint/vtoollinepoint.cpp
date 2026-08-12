@@ -92,6 +92,7 @@ VToolLinePoint::VToolLinePoint(VAbstractPattern *doc, VContainer *data, const qu
     mainLine->SetBoldLine(false);
     mainLine->SetShowArrows(true);
     mainLine->setFlag(QGraphicsItem::ItemStacksBehindParent, true);
+    mainLine->setZValue(-0.5); // Child line below parent point (Z=0.5 effective vs Z=1)
     mainLine->setVisible(not line.isNull());
 }
 
@@ -125,22 +126,6 @@ void VToolLinePoint::RefreshGeometry()
     QLineF const line(basePoint - point, QPointF());
     mainLine->setLine(line);
     mainLine->setVisible(not line.isNull());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VToolLinePoint::shape() const -> QPainterPath
-{
-    QPainterPath path = VToolSinglePoint::shape();
-    if (mainLine && mainLine->isVisible())
-    {
-        QPainterPathStroker stroker;
-        stroker.setWidth(VAbstractApplication::VApp()->Settings()->WidthMainLine() * 2.0);
-        QPainterPath linePath;
-        linePath.moveTo(mainLine->line().p1());
-        linePath.lineTo(mainLine->line().p2());
-        path.addPath(stroker.createStroke(linePath));
-    }
-    return path;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

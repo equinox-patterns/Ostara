@@ -58,6 +58,8 @@
 #include <QWidget>
 #include <QtMath>
 
+#include <algorithm>
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 9, 0)
 #include "../vmisc/backport/qpainterstateguard.h"
 #else
@@ -130,17 +132,37 @@ auto PrepareScrolling(qreal scheduledScrollings, QWheelEvent *wheel_event) -> qr
  * @brief PrioritizeItems helps prioritize some items over others.
  *
  * In some cases we want items like curve handle points to be selected over other items on scene.
+ * Among items of equal priority, the one closest to the mouse position wins.
  * @param list list of scene items under a mouse pointer
- * @return prioritized list where prioritized items goes first
+ * @param scenePos mouse position in scene coordinates
+ * @return prioritized list where prioritized items go first, then by proximity
  */
-auto PrioritizeItems(const QList<QGraphicsItem *> &list) -> QList<QGraphicsItem *>
+auto PrioritizeItems(const QList<QGraphicsItem *> &list, const QPointF &scenePos) -> QList<QGraphicsItem *>
 {
     QList<QGraphicsItem *> prioritized;
     QList<QGraphicsItem *> nonPrioritized;
     for (auto *item : list)
     {
-        item && item->type() == VControlPointSpline::Type ? prioritized.append(item) : nonPrioritized.append(item);
+        if (item && item->type() == VControlPointSpline::Type)
+        {
+            prioritized.append(item);
+        }
+        else
+        {
+            nonPrioritized.append(item);
+        }
     }
+
+    // Sort each group by distance to mouse position (closest first)
+    const auto byProximity = [&scenePos](QGraphicsItem *a, QGraphicsItem *b) -> bool
+    {
+        const qreal distA = (scenePos - a->sceneBoundingRect().center()).manhattanLength();
+        const qreal distB = (scenePos - b->sceneBoundingRect().center()).manhattanLength();
+        return distA < distB;
+    };
+
+    std::sort(prioritized.begin(), prioritized.end(), byProximity);
+    std::sort(nonPrioritized.begin(), nonPrioritized.end(), byProximity);
 
     return prioritized + nonPrioritized;
 }
@@ -599,7 +621,7 @@ void VMainGraphicsView::mousePressEvent(QMouseEvent *event)
             if (showToolOptions)
             {
                 bool success = false;
-                const QList<QGraphicsItem *> list = PrioritizeItems(items(event->pos()));
+                const QList<QGraphicsItem *> list = PrioritizeItems(items(event->pos()), mapToScene(event->pos()));
                 for (auto *item : list)
                 {
                     if (item != nullptr && item->type() > QGraphicsItem::UserType && item->type() <= VScaledLine::Type)

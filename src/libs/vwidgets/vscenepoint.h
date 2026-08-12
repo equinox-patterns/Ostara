@@ -55,6 +55,7 @@ public:
     virtual void RefreshPointGeometry(const VPointF &point);
     void RefreshScale();
     auto boundingRect() const -> QRectF override;
+    auto shape() const -> QPainterPath override;
 
     auto GetColorRole() const -> VColorRole;
     void SetColorRole(VColorRole role);
