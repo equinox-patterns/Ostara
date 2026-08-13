@@ -1,2 +1,0 @@
-/usr/bin/ar qc libVCrashHandlerLib.a CMakeFiles/VCrashHandlerLib.dir/VCrashHandlerLib_autogen/mocs_compilation.cpp.o CMakeFiles/VCrashHandlerLib.dir/crashhandler.cpp.o CMakeFiles/VCrashHandlerLib.dir/vcrashpaths.cpp.o
-/usr/bin/ranlib libVCrashHandlerLib.a

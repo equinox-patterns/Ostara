@@ -43,6 +43,7 @@ uic/
 rcc/
 man/
 build/
+build_cmake/
 .vscode/
 
 # Ignore Coverity Scan Build Tool

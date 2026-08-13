@@ -1,2 +1,0 @@
-/usr/bin/ar qc libVHPGLLib.a CMakeFiles/VHPGLLib.dir/VHPGLLib_autogen/mocs_compilation.cpp.o CMakeFiles/VHPGLLib.dir/vhpglengine.cpp.o CMakeFiles/VHPGLLib.dir/vhpglpaintdevice.cpp.o
-/usr/bin/ranlib libVHPGLLib.a

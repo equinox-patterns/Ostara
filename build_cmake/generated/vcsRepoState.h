@@ -1,7 +1,0 @@
-#ifndef VCS_REPO_STATE_H
-#define VCS_REPO_STATE_H
-#define VCS_REPO_STATE "da66209"
-#define VCS_REPO_STATE_TAG "none"
-#define VCS_REPO_STATE_DISTANCE "none"
-#define VCS_REPO_STATE_REVISION "da66209"
-#endif

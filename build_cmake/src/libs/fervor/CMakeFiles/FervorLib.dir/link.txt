@@ -1,2 +1,0 @@
-/usr/bin/ar qc libFervorLib.a CMakeFiles/FervorLib.dir/FervorLib_autogen/mocs_compilation.cpp.o CMakeFiles/FervorLib.dir/fvupdatewindow.cpp.o CMakeFiles/FervorLib.dir/fvupdater.cpp.o CMakeFiles/FervorLib.dir/fvavailableupdate.cpp.o
-/usr/bin/ranlib libFervorLib.a
