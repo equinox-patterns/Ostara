@@ -154,6 +154,7 @@ void DialogTool::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
         case Qt::Key_Escape:
+        case Qt::Key_V:
             DialogRejected();
             return; // After reject the dialog will be destroyed, exit imidiately
         default:

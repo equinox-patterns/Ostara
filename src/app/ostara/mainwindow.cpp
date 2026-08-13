@@ -1676,8 +1676,6 @@ void MainWindow::OpenAt(QAction *where)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::InitToolButtons()
 {
-    connect(ui->actionToolSelect, &QAction::triggered, this, &MainWindow::ArrowTool);
-
     // This check helps to find missed tools
     Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Check if all tools were connected.");
 
@@ -1687,6 +1685,9 @@ void MainWindow::InitToolButtons()
         connect(action, &QAction::triggered, this, slotFunction);
     };
 
+    InitToolButton(VShortcutAction::ToolArrow, ui->actionToolSelect, &MainWindow::ArrowTool);
+    // ApplicationShortcut so "V" also fires while a tool dialog (a separate window) has focus.
+    ui->actionToolSelect->setShortcutContext(Qt::ApplicationShortcut);
     InitToolButton(VShortcutAction::ToolEndLine, ui->actionEndLineTool, &MainWindow::ToolEndLine);
     InitToolButton(VShortcutAction::ToolLine, ui->actionLineTool, &MainWindow::ToolLine);
     InitToolButton(VShortcutAction::ToolAlongLine, ui->actionAlongLineTool, &MainWindow::ToolAlongLine);
@@ -2073,6 +2074,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
         case Qt::Key_Escape:
+        case Qt::Key_V:
             ArrowTool(true);
             break;
         case Qt::Key_Return:

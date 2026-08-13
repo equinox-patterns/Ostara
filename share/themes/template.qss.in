@@ -137,6 +137,7 @@ QStatusBar::item {
 QStatusBar QLabel {
     color: $TextSecondary;
     font-size: 13px;
+    padding-left: 30px;
 }
 
 /* =========================================================================
