@@ -140,7 +140,6 @@ void DeletePiece::redo()
         m_tool->DisconnectOutsideSignals();
         m_tool->EnableToolMove(true);
         m_tool->hide();
-        m_tool->CancelLabelRendering();
 
         m_scene->removeItem(m_tool);
     }

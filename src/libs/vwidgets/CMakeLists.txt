@@ -22,7 +22,6 @@ set(VWIDGETS_SOURCES
     vnobrushscalepathitem.cpp
     vsimplecurve.cpp
     vabstractmainwindow.cpp
-    vtextgraphicsitem.cpp
     vgrainlineitem.cpp
     vpieceitem.cpp
     vcurvepathitem.cpp
@@ -52,7 +51,6 @@ set(VWIDGETS_SOURCES
     vnobrushscalepathitem.h
     vsimplecurve.h
     vabstractmainwindow.h
-    vtextgraphicsitem.h
     vgrainlineitem.h
     vpieceitem.h
     vcurvepathitem.h

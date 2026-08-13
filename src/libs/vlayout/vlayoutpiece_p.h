@@ -41,7 +41,6 @@
 #include "../vwidgets/vpiecegrainline.h"
 #include "vlayoutpiecepath.h"
 #include "vlayoutpoint.h"
-#include "vtextmanager.h"
 
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_GCC("-Weffc++")
@@ -81,19 +80,7 @@ public:
     bool m_verticallyFlipped{false};   // NOLINT(misc-non-private-member-variables-in-classes)
     bool m_horizontallyFlipped{false}; // NOLINT(misc-non-private-member-variables-in-classes)
 
-    /** @brief detailLabel detail label rectangle */
-    QVector<QPointF> m_detailLabel{}; // NOLINT(misc-non-private-member-variables-in-classes)
-
-    /** @brief patternInfo pattern info rectangle */
-    QVector<QPointF> m_patternInfo{}; // NOLINT(misc-non-private-member-variables-in-classes)
-
     VPieceGrainline m_grainline{}; // NOLINT(misc-non-private-member-variables-in-classes)
-
-    /** @brief m_tmDetail text manager for laying out detail info */
-    VTextManager m_tmDetail{}; // NOLINT(misc-non-private-member-variables-in-classes)
-
-    /** @brief m_tmPattern text manager for laying out pattern info */
-    VTextManager m_tmPattern{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     /** @brief m_placeLabels list of place labels. */
     QVector<VLayoutPlaceLabel> m_placeLabels{}; // NOLINT(misc-non-private-member-variables-in-classes)
@@ -143,14 +130,10 @@ inline auto operator<<(QDataStream &dataStream, const VLayoutPieceData &piece) -
     dataStream << piece.m_matrix;
     dataStream << piece.m_layoutWidth;
     dataStream << piece.m_verticallyFlipped;
-    dataStream << piece.m_detailLabel;
-    dataStream << piece.m_patternInfo;
     dataStream << piece.m_placeLabels;
     dataStream << piece.m_square;
     dataStream << piece.m_quantity;
     dataStream << piece.m_id;
-    dataStream << piece.m_tmDetail;
-    dataStream << piece.m_tmPattern;
     dataStream << piece.m_gradationId;
     dataStream << piece.m_xScale;
     dataStream << piece.m_yScale;
@@ -220,8 +203,6 @@ inline auto operator>>(QDataStream &dataStream, VLayoutPieceData &piece) -> QDat
     dataStream >> piece.m_matrix;
     dataStream >> piece.m_layoutWidth;
     dataStream >> piece.m_verticallyFlipped;
-    dataStream >> piece.m_detailLabel;
-    dataStream >> piece.m_patternInfo;
 
     QVector<QPointF> shape;
     GrainlineArrowDirection arrowType = GrainlineArrowDirection::oneWayUp;
@@ -250,8 +231,6 @@ inline auto operator>>(QDataStream &dataStream, VLayoutPieceData &piece) -> QDat
 
     if (actualClassVersion >= 3)
     {
-        dataStream >> piece.m_tmDetail;
-        dataStream >> piece.m_tmPattern;
         dataStream >> piece.m_gradationId;
         dataStream >> piece.m_xScale;
         dataStream >> piece.m_yScale;

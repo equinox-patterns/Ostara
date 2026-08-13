@@ -63,8 +63,6 @@ void SavePieceOptions::undo()
 
     VToolSeamAllowance::AddAttributes(Doc(), domElement, ElementId(), m_oldDet);
     VAbstractPattern::RemoveAllChildren(domElement); // Very important to clear before rewrite
-    VToolSeamAllowance::AddPatternPieceData(Doc(), domElement, m_oldDet);
-    VToolSeamAllowance::AddPatternInfo(Doc(), domElement, m_oldDet);
     VToolSeamAllowance::AddGrainline(Doc(), domElement, m_oldDet);
     VToolSeamAllowance::AddNodes(Doc(), domElement, m_oldDet);
     VToolSeamAllowance::AddCSARecords(Doc(), domElement, m_oldDet.GetCustomSARecords());
@@ -113,8 +111,6 @@ void SavePieceOptions::redo()
 
     VToolSeamAllowance::AddAttributes(Doc(), domElement, ElementId(), m_newDet);
     VAbstractPattern::RemoveAllChildren(domElement); // Very important to clear before rewrite
-    VToolSeamAllowance::AddPatternPieceData(Doc(), domElement, m_newDet);
-    VToolSeamAllowance::AddPatternInfo(Doc(), domElement, m_newDet);
     VToolSeamAllowance::AddGrainline(Doc(), domElement, m_newDet);
     VToolSeamAllowance::AddNodes(Doc(), domElement, m_newDet);
     VToolSeamAllowance::AddCSARecords(Doc(), domElement, m_newDet.GetCustomSARecords());

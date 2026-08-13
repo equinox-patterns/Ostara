@@ -52,7 +52,6 @@ extern const QString AttrMy;
 extern const QString AttrName;
 extern const QString AttrShortName;
 extern const QString AttrUUID;
-extern const QString AttrGradationLabel;
 extern const QString AttrMx1;
 extern const QString AttrMy1;
 extern const QString AttrName1;
@@ -280,15 +279,6 @@ auto BuilInVariables() -> QStringList;
 
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_GCC("-Weffc++")
-
-struct VLabelTemplateLine
-{
-    QString line{};
-    bool bold{false};
-    bool italic{false};
-    int alignment{0};
-    int fontSizeIncrement{0};
-};
 
 struct VWatermarkData
 {

@@ -52,19 +52,6 @@
 
 namespace
 {
-auto ComboBoxAllStrings(QComboBox *combo) -> QStringList
-{
-    SCASSERT(combo != nullptr)
-
-    QStringList itemsInComboBox;
-    itemsInComboBox.reserve(combo->count());
-    for (int index = 0; index < combo->count(); ++index)
-    {
-        itemsInComboBox << combo->itemText(index);
-    }
-
-    return itemsInComboBox;
-}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -80,11 +67,8 @@ PreferencesPatternPage::PreferencesPatternPage(QWidget *parent)
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->doubleSpinBoxLineWidth);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->comboBoxLineWidthUnit);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->defaultSeamAllowance);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->comboBoxLabelFontSize);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->fontComboBoxLabelFont);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->comboBoxSingleLineFont);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->comboBoxDateFormats);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->comboBoxTimeFormats);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->spinBoxOpacity);
 
     VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
@@ -138,24 +122,13 @@ PreferencesPatternPage::PreferencesPatternPage(QWidget *parent)
     ui->doubleSpinBoxLineWidth->setValue(UnitConvertor(settings->GetLineWidth(), Unit::Mm, m_oldLineUnit));
 
     InitDefaultSeamAllowance();
-    InitLabelDateTimeFormats();
 
     ui->forbidFlippingCheck->setChecked(settings->GetForbidWorkpieceFlipping());
     ui->checkBoxSewLineOnDrawing->setChecked(settings->GetSewLineOnDrawing());
     ui->doublePassmarkCheck->setChecked(settings->IsDoublePassmark());
     ui->checkBoxHideMainPath->setChecked(settings->IsHideMainPath());
 
-    QFont labelFont = settings->GetLabelFont();
-    int const pointSize = settings->GetPieceLabelFontPointSize();
-    labelFont.setPointSize(qMax(pointSize, 1));
-
-    ui->fontComboBoxLabelFont->setCurrentFont(labelFont);
-
-    InitLabelFontSizes();
-    if (const qint32 indexSize = ui->comboBoxLabelFontSize->findData(pointSize); indexSize != -1)
-    {
-        ui->comboBoxLabelFontSize->setCurrentIndex(indexSize);
-    }
+    ui->fontComboBoxLabelFont->setCurrentFont(settings->GetLabelFont());
 
     InitSingleLineFonts();
     if (const qint32 indexFont = ui->comboBoxSingleLineFont->findData(settings->GetLabelSVGFont()); indexFont != -1)
@@ -219,7 +192,6 @@ auto PreferencesPatternPage::Apply() -> QStringList
     settings->SetSewLineOnDrawing(ui->checkBoxSewLineOnDrawing->isChecked());
     settings->SetHideMainPath(ui->checkBoxHideMainPath->isChecked());
     settings->SetLabelFont(ui->fontComboBoxLabelFont->currentFont());
-    settings->SetPieceLabelFontPointSize(ui->comboBoxLabelFontSize->currentData().toInt());
     settings->SetLabelSVGFont(ui->comboBoxSingleLineFont->currentData().toString());
 
     if (settings->GetSingleStrokeOutlineFont() != ui->checkBoxSingleStrokeOutlineFont->isChecked())
@@ -243,12 +215,6 @@ auto PreferencesPatternPage::Apply() -> QStringList
         settings->SetDoublePassmark(ui->doublePassmarkCheck->isChecked());
         VAbstractValApplication::VApp()->getCurrentDocument()->LiteParseTree(Document::LiteParse);
     }
-
-    settings->SetLabelDateFormat(ui->comboBoxDateFormats->currentText());
-    settings->SetLabelTimeFormat(ui->comboBoxTimeFormats->currentText());
-
-    settings->SetUserDefinedDateFormats(ComboBoxAllStrings(ui->comboBoxDateFormats));
-    settings->SetUserDefinedTimeFormats(ComboBoxAllStrings(ui->comboBoxTimeFormats));
 
     settings->SetKnownMaterials(m_knownMaterials);
     settings->SetRememberPatternMaterials(ui->checkBoxRemeberPatternMaterials->isChecked());
@@ -291,23 +257,6 @@ void PreferencesPatternPage::changeEvent(QEvent *event)
     QWidget::changeEvent(event);
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void PreferencesPatternPage::EditDateTimeFormats()
-{
-    VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-
-    auto *button = qobject_cast<QPushButton *>(sender());
-    if (button == ui->pushButtonEditDateFormats)
-    {
-        CallDateTimeFormatEditor(QDate::currentDate(), VCommonSettings::PredefinedDateFormats(),
-                                 settings->GetUserDefinedDateFormats(), ui->comboBoxDateFormats);
-    }
-    else if (button == ui->pushButtonEditTimeFormats)
-    {
-        CallDateTimeFormatEditor(QTime::currentTime(), VCommonSettings::PredefinedTimeFormats(),
-                                 settings->GetUserDefinedTimeFormats(), ui->comboBoxTimeFormats);
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void PreferencesPatternPage::ManageKnownMaterials()
@@ -318,38 +267,6 @@ void PreferencesPatternPage::ManageKnownMaterials()
     if (QDialog::Accepted == editor.exec())
     {
         m_knownMaterials = editor.GetList();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void PreferencesPatternPage::InitLabelDateTimeFormats()
-{
-    VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-
-    InitComboBoxFormats(ui->comboBoxDateFormats,
-                        VCommonSettings::PredefinedDateFormats() + settings->GetUserDefinedDateFormats(),
-                        settings->GetLabelDateFormat());
-    InitComboBoxFormats(ui->comboBoxTimeFormats,
-                        VCommonSettings::PredefinedTimeFormats() + settings->GetUserDefinedTimeFormats(),
-                        settings->GetLabelTimeFormat());
-
-    connect(ui->pushButtonEditDateFormats, &QPushButton::clicked, this, &PreferencesPatternPage::EditDateTimeFormats);
-    connect(ui->pushButtonEditTimeFormats, &QPushButton::clicked, this, &PreferencesPatternPage::EditDateTimeFormats);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void PreferencesPatternPage::InitLabelFontSizes()
-{
-    ui->comboBoxLabelFontSize->clear();
-
-    // Get the available font sizes
-    QList<int> const sizes = QFontDatabase::standardSizes();
-    for (auto size : sizes)
-    {
-        if (size >= VCommonSettings::MinPieceLabelFontPointSize())
-        {
-            ui->comboBoxLabelFontSize->addItem(QString::number(size), size);
-        }
     }
 }
 
@@ -433,23 +350,6 @@ void PreferencesPatternPage::InitSingleLineFonts()
     }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void PreferencesPatternPage::InitComboBoxFormats(QComboBox *box, const QStringList &items, const QString &currentFormat)
-{
-    // cppcheck-suppress unknownMacro
-    SCASSERT(box != nullptr)
-
-    box->addItems(items);
-    int const index = box->findText(currentFormat);
-    if (index != -1)
-    {
-        box->setCurrentIndex(index);
-    }
-    else
-    {
-        box->setCurrentIndex(0);
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void PreferencesPatternPage::InitUnits()
@@ -468,29 +368,3 @@ void PreferencesPatternPage::RetranslateUi()
     ui->comboBoxLineWidthUnit->setCurrentIndex(ui->comboBoxLineWidthUnit->findData(unit));
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-template <typename T>
-void PreferencesPatternPage::CallDateTimeFormatEditor(const T &type, const QStringList &predefinedFormats,
-                                                      const QStringList &userDefinedFormats, QComboBox *box)
-{
-    SCASSERT(box != nullptr)
-
-    DialogDateTimeFormats dialog(type, predefinedFormats, userDefinedFormats);
-
-    if (QDialog::Accepted == dialog.exec())
-    {
-        const QString currentFormat = box->currentText();
-        box->clear();
-        box->addItems(dialog.GetFormats());
-
-        int const index = box->findText(currentFormat);
-        if (index != -1)
-        {
-            box->setCurrentIndex(index);
-        }
-        else
-        {
-            box->setCurrentIndex(0);
-        }
-    }
-}

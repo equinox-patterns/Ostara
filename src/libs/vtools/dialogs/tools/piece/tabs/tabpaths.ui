@@ -434,13 +434,6 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string>Gradation label:</string>
-               </property>
-              </widget>
-             </item>
              <item row="3" column="0">
               <widget class="QLabel" name="labelEditUUID">
                <property name="text">
@@ -454,27 +447,6 @@
                 <string>Controls priority in layout. 0 - no priority.</string>
                </property>
               </widget>
-             </item>
-             <item row="4" column="1">
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <widget class="QLineEdit" name="lineEditGradationLabel">
-                 <property name="placeholderText">
-                  <string notr="true">%size%_%height%</string>
-                 </property>
-                 <property name="clearButtonEnabled">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButtonGradationPlaceholder">
-                 <property name="text">
-                  <string>Insert…</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="label_7">

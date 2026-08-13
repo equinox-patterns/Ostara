@@ -684,59 +684,6 @@ auto VPiece::Dependencies() const -> QList<quint32>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VPiece::SetPieceLabelData(const VPieceLabelData &data)
-{
-    d->m_ppData = data;
-    d->m_ppData.SetAreaShortName(VPieceArea::PieceShortName(*this));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief Returns full access to the pattern piece data object
- * @return pattern piece data object
- */
-auto VPiece::GetPieceLabelData() -> VPieceLabelData &
-{
-    return d->m_ppData;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief Returns the read only reference to the pattern piece data object
- * @return pattern piece data object
- */
-auto VPiece::GetPieceLabelData() const -> const VPieceLabelData &
-{
-    return d->m_ppData;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VPiece::SetPatternLabelData(const VPatternLabelData &info)
-{
-    d->m_piPatternInfo = info;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief Returns full access to the pattern info geometry object
- * @return pattern info geometry object
- */
-auto VPiece::GetPatternLabelData() -> VPatternLabelData &
-{
-    return d->m_piPatternInfo;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief Returns the read only reference to the pattern info geometry object
- * @return pattern info geometry object
- */
-auto VPiece::GetPatternLabelData() const -> const VPatternLabelData &
-{
-    return d->m_piPatternInfo;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VPiece::SetGrainlineGeometry(const VGrainlineData &data)
 {
     d->m_glGrainline = data;
@@ -828,18 +775,6 @@ auto VPiece::FullSeamAllowancePointsWithRotation(const VContainer *data, vsizety
     }
 
     return points;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VPiece::SetGradationLabel(const QString &label)
-{
-    d->m_gradationLabel = label;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VPiece::GetGradationLabel() const -> QString
-{
-    return d->m_gradationLabel;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

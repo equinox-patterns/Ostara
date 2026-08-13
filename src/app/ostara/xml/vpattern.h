@@ -162,8 +162,6 @@ private:
     void ParseDetailElement(QDomElement &domElement, const Document &parse);
     void ParseDetailInternals(const QDomElement &domElement, VPiece &detail) const;
     auto ParseDetailNodes(const QDomElement &domElement, qreal width, bool closed) const -> QVector<VPieceNode>;
-    auto ParsePieceDataTag(const QDomElement &domElement, VPieceLabelData ppData) const -> VPieceLabelData;
-    auto ParsePiecePatternInfo(const QDomElement &domElement, VPatternLabelData patternInfo) const -> VPatternLabelData;
     auto ParsePieceGrainline(const QDomElement &domElement, VGrainlineData gGeometry) const -> VGrainlineData;
     void ParseDetails(const QDomElement &domElement, const Document &parse);
     void ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse,

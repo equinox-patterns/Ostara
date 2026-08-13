@@ -38,7 +38,6 @@ namespace Ui
 {
 class DialogSeamAllowance;
 class TabPaths;
-class TabLabels;
 class TabGrainline;
 class TabPins;
 class TabPassmarks;
@@ -101,7 +100,6 @@ private slots:
     void PathDialogClosed(int result);
     void PlaceLabelDialogClosed(int result);
     void FancyTabChanged(int index);
-    void TabChanged(int index);
     void PassmarkLineTypeChanged(int id);
     void PassmarkAngleTypeChanged(int id);
     void PassmarkShowSecondChanged(int state);
@@ -109,30 +107,15 @@ private slots:
     void PassmarkNotMirroredStateChanged(int state);
 
     void UpdateGrainlineValues();
-    void UpdateDetailLabelValues();
-    void UpdatePatternLabelValues();
 
     void EditGrainlineFormula();
-    void EditDLFormula();
-    void EditPLFormula();
 
     void DeployGrainlineRotation();
     void DeployGrainlineLength();
 
-    void DeployDLWidth();
-    void DeployDLHeight();
-    void DeployDLAngle();
-
-    void DeployPLWidth();
-    void DeployPLHeight();
-    void DeployPLAngle();
-
     void ResetGrainlineWarning();
-    void ResetLabelsWarning();
 
     void EnabledGrainline();
-    void EnabledDetailLabel();
-    void EnabledPatternLabel();
     void EnabledManualPassmarkLength();
     void EnabledManualPassmarkWidth();
     void EnabledManualPassmarkAngle();
@@ -174,25 +157,15 @@ private slots:
     void DeployFoldCenter();
 
     void GrainlinePinPointChanged();
-    void DetailPinPointChanged();
-    void PatternPinPointChanged();
 
-    void EditPieceLabel();
     void SetMoveControls();
     void SetOptionControls();
-
-    void PatternLabelDataChanged();
-    void EditPatternLabel();
-    void ManagePatternMaterials();
-
-    void InsertGradationPlaceholder();
 
 private:
     Q_DISABLE_COPY_MOVE(DialogSeamAllowance) // NOLINT
 
     Ui::DialogSeamAllowance *ui;
     Ui::TabPaths *uiTabPaths;
-    Ui::TabLabels *uiTabLabels;
     Ui::TabGrainline *uiTabGrainline;
     Ui::TabPins *uiTabPins;
     Ui::TabPassmarks *uiTabPassmarks;
@@ -200,7 +173,6 @@ private:
     Ui::TabFoldLine *uiTabFoldLine;
 
     QWidget *m_tabPaths{nullptr};
-    QWidget *m_tabLabels{nullptr};
     QWidget *m_tabGrainline{nullptr};
     QWidget *m_tabPins{nullptr};
     QWidget *m_tabPassmarks{nullptr};
@@ -211,13 +183,7 @@ private:
 
     bool applyAllowed{false}; // By default disabled
     bool flagGPin{false};
-    bool flagDPin{false};
-    bool flagPPin{false};
     bool flagGFormulas{true};
-    bool flagDLAngle{true};
-    bool flagDLFormulas{true};
-    bool flagPLAngle{true};
-    bool flagPLFormulas{true};
     bool flagFormulaBefore{true};
     bool flagFormulaAfter{true};
     bool flagFormulaPassmarkLength{true};
@@ -232,27 +198,13 @@ private:
     bool flagUUID{true};
     bool flagFormula{true};
     bool m_bAddMode{true};
-    bool m_patternLabelDataChanged{false};
-    bool m_askSavePatternLabelData{false};
-    bool m_patternTemplateDataChanged{false};
-    bool m_patternMaterialsChanged{false};
     bool flagMirrorLineIsValid{true};
 
     QPointer<DialogTool> m_dialog{};
     QPointer<VisPieceSpecialPoints> m_visSpecialPoints{};
 
-    QVector<VLabelTemplateLine> m_patternTemplateLines{};
-
-    QMap<int, QString> m_patternMaterials{};
-
     int m_iRotBaseHeight{0};
     int m_iLenBaseHeight{0};
-    int m_DLWidthBaseHeight{0};
-    int m_DLHeightBaseHeight{0};
-    int m_DLAngleBaseHeight{0};
-    int m_PLWidthBaseHeight{0};
-    int m_PLHeightBaseHeight{0};
-    int m_PLAngleBaseHeight{0};
     int m_formulaBaseWidth{0};
     int m_formulaBaseWidthBefore{0};
     int m_formulaBaseWidthAfter{0};
@@ -276,17 +228,9 @@ private:
     QTimer *m_timerFoldCenter{nullptr};
     qreal m_saWidth{0};
 
-    QVector<VLabelTemplateLine> m_templateLines{};
-
     QVector<QPointer<VUndoCommand>> m_undoStack{};
     QHash<quint32, VPlaceLabelItem> m_newPlaceLabels{};
     QHash<quint32, VPiecePath> m_newPaths{};
-
-    QString m_defLabelValue{};
-
-    QMenu *m_placeholdersMenu;
-
-    QMap<QString, QPair<QString, QString>> m_gradationPlaceholders{};
 
     auto CreatePiece() const -> VPiece;
 
@@ -326,8 +270,6 @@ private:
     void InitMirrorLinePoint(QComboBox *box);
     void InitSAIncludeType();
     void InitInternalPathsTab();
-    void InitPatternPieceDataTab();
-    void InitLabelsTab();
     void InitGrainlineTab();
     void InitPinsTab();
     void InitPassmarksTab();
@@ -336,7 +278,6 @@ private:
     void InitAllPinComboboxes();
     void InitFoldLineType();
     void InitFoldLabelFontSizes();
-    static void InitLabelFontSize(QComboBox *box);
 
     void SetFormulaSAWidth(const QString &formula);
     void SetFormulaPassmarkLength(const QString &formula);
@@ -350,14 +291,6 @@ private:
     void SetGrainlineAngle(QString angleFormula);
     void SetGrainlineLength(QString lengthFormula);
 
-    void SetDLWidth(QString widthFormula);
-    void SetDLHeight(QString heightFormula);
-    void SetDLAngle(QString angleFormula);
-
-    void SetPLWidth(QString widthFormula);
-    void SetPLHeight(QString heightFormula);
-    void SetPLAngle(QString angleFormula);
-
     auto CurrentRect() const -> QRectF;
     void ShowPieceSpecialPointsWithRect(const QListWidget *list, bool showRect);
 
@@ -367,15 +300,6 @@ private:
     auto GetDefaultPieceName() const -> QString;
 
     void EnableGrainlineFormulaControls(bool enable);
-    void EnableDetailLabelFormulaControls(bool enable);
-    void EnablePatternLabelFormulaControls(bool enable);
-
-    void SavePatternLabelData();
-    void SavePatternTemplateData();
-    void SavePatternMaterialData();
-
-    void InitGradationPlaceholdersMenu();
-    void InitGradationPlaceholders();
 
     void InitPassmarkLengthFormula(const VPieceNode &node);
     void InitPassmarkWidthFormula(const VPieceNode &node);
@@ -414,8 +338,7 @@ private:
 inline auto DialogSeamAllowance::IsValid() const -> bool
 {
     return flagName && flagUUID && flagMainPathIsValid && flagFormula && flagFormulaBefore && flagFormulaAfter
-           && (flagGFormulas || flagGPin) && flagDLAngle && (flagDLFormulas || flagDPin) && flagPLAngle
-           && (flagPLFormulas || flagPPin) && flagFormulaPassmarkLength && flagFormulaPassmarkWidth
+           && (flagGFormulas || flagGPin) && flagFormulaPassmarkLength && flagFormulaPassmarkWidth
            && flagFormulaPassmarkAngle && flagMirrorLineIsValid && flagFormulaFoldHeight && flagFormulaFoldWidth
            && flagFormulaFoldCenter && flagFormulaPassmarkVisible;
 }

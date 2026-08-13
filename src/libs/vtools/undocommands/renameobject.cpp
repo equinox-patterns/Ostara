@@ -349,28 +349,6 @@ void AbstractObjectRename::ProcessDetailElement(QDomElement &element) const
     // Process detail's own attributes
     ProcessAttribute(element, AttrWidth);
 
-    // Process data child - can use firstChildElement for single elements
-    QDomElement data = element.firstChildElement(VAbstractPattern::TagData);
-    if (!data.isNull())
-    {
-        const QStringList dataAttrs = {AttrWidth, AttrHeight, VAbstractPattern::AttrRotation};
-        for (const auto &attr : dataAttrs)
-        {
-            ProcessAttribute(data, attr);
-        }
-    }
-
-    // Process patternInfo child
-    QDomElement patternInfo = element.firstChildElement(VAbstractPattern::TagPatternInfo);
-    if (!patternInfo.isNull())
-    {
-        const QStringList patternInfoAttrs = {AttrWidth, AttrHeight, VAbstractPattern::AttrRotation};
-        for (const auto &attr : patternInfoAttrs)
-        {
-            ProcessAttribute(patternInfo, attr);
-        }
-    }
-
     // Process grainline child
     QDomElement grainline = element.firstChildElement(VAbstractPattern::TagGrainline);
     if (!grainline.isNull())

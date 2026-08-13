@@ -88,7 +88,6 @@ public:
     static const QString AttrBold;
     static const QString AttrItalic;
     static const QString AttrAlignment;
-    static const QString AttrFSIncrement;
 
     static const QString TagVersion;
     static const QString TagUnit;
@@ -136,9 +135,6 @@ public:
     auto NodeById(const quint32 &nodeId, const QString &tagName = QString()) -> QDomElement;
 
     static auto SafeCopy(const QString &source, const QString &destination, QString &error) -> bool;
-
-    auto GetLabelTemplate(const QDomElement &element) const -> QVector<VLabelTemplateLine>;
-    void SetLabelTemplate(QDomElement &element, const QVector<VLabelTemplateLine> &lines);
 
     void TestUniqueId() const;
 

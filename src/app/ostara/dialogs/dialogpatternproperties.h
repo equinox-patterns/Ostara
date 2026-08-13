@@ -63,8 +63,6 @@ private slots:
     void ChangeImage();
     void SaveImage();
     void ShowImage();
-    void BrowseLabelPath();
-    void LabelPathChanged(const QString &text);
 
 private:
     // cppcheck-suppress unknownMacro

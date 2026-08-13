@@ -32,7 +32,6 @@
 #include "dialogseamallowance.h"
 #include "dialogseamallowance_helpers.h"
 #include "ui_tabgrainline.h"
-#include "ui_tablabels.h"
 #include "ui_tabpassmarks.h"
 #include "ui_tabpaths.h"
 #include "ui_tabpins.h"
@@ -43,7 +42,6 @@
 #include "../vmisc/def.h"
 #include "vtheme.h"
 #include "../vmisc/vabstractvalapplication.h"
-#include "../vpatterndb/floatItemData/vpiecelabeldata.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vpatterndb/vpiecepath.h"
 #include "../vwidgets/fancytabbar/fancytabbar.h"
@@ -410,12 +408,6 @@ void DialogSeamAllowance::InitIcons()
     const auto fxIcon = QStringLiteral("24x24/fx.png");
     uiTabGrainline->pushButtonRot->setIcon(VTheme::GetIconResource(resource, fxIcon));
     uiTabGrainline->pushButtonLen->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    uiTabLabels->pushButtonDLWidth->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    uiTabLabels->pushButtonDLHeight->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    uiTabLabels->pushButtonDLAngle->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    uiTabLabels->pushButtonPLWidth->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    uiTabLabels->pushButtonPLHeight->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    uiTabLabels->pushButtonPLAngle->setIcon(VTheme::GetIconResource(resource, fxIcon));
     uiTabPassmarks->toolButtonExprLength->setIcon(VTheme::GetIconResource(resource, fxIcon));
     uiTabPassmarks->toolButtonExprWidth->setIcon(VTheme::GetIconResource(resource, fxIcon));
     uiTabPassmarks->toolButtonExprAngle->setIcon(VTheme::GetIconResource(resource, fxIcon));
@@ -427,12 +419,6 @@ void DialogSeamAllowance::InitIcons()
     const auto equalIcon = QStringLiteral("24x24/equal.png");
     uiTabGrainline->labelEqual->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
     uiTabGrainline->labelEqual_2->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    uiTabLabels->labelEqual_3->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    uiTabLabels->labelEqual_4->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    uiTabLabels->labelEqual_5->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    uiTabLabels->labelEqual_7->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    uiTabLabels->labelEqual_6->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    uiTabLabels->labelEqual_8->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
     uiTabPaths->label_2->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
     uiTabPaths->label_6->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
     uiTabPaths->label_10->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));

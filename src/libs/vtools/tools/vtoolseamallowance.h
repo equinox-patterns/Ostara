@@ -35,7 +35,6 @@
 
 #include "../vlayout/vfoldline.h"
 #include "../vwidgets/vgrainlineitem.h"
-#include "../vwidgets/vtextgraphicsitem.h"
 #include "vinteractivetool.h"
 
 class DialogTool;
@@ -121,8 +120,6 @@ public:
     static void AddInternalPaths(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &paths);
     static void AddPins(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &pins);
     static void AddPlaceLabels(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &placeLabels);
-    static void AddPatternPieceData(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
-    static void AddPatternInfo(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
     static void AddGrainline(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
     static void AddMirrorLine(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
 
@@ -164,22 +161,13 @@ public slots:
     void UpdateAll();
     void retranslateUi();
     void Highlight(quint32 id);
-    void UpdateDetailLabel();
-    void UpdatePatternInfo();
     void UpdatePassmarks();
     void ShowOptions();
     void DeleteFromMenu();
-    void CancelLabelRendering();
 
 private slots:
     void UpdateGrainline();
     void RefreshFoldLine();
-    void SaveMoveDetail(const QPointF &ptPos);
-    void SaveResizeDetail(qreal dLabelW);
-    void SaveRotationDetail(qreal dRot);
-    void SaveMovePattern(const QPointF &ptPos);
-    void SaveResizePattern(qreal dLabelW);
-    void SaveRotationPattern(qreal dRot);
     void SaveMoveGrainline(const QPointF &ptPos);
     void SaveResizeGrainline(qreal dLength);
     void SaveRotateGrainline(qreal dRot, const QPointF &ptPos);
@@ -194,7 +182,6 @@ private slots:
     void ToggleNodePointPassmark(quint32 id, bool toggle);
     void TogglePassmarkAngleType(quint32 id, PassmarkAngleType type);
     void TogglePassmarkLineType(quint32 id, PassmarkLineType type);
-    void ResetPieceLabelTemplate();
 
 private:
     Q_DISABLE_COPY_MOVE(VToolSeamAllowance) // NOLINT
@@ -207,8 +194,6 @@ private:
     QString m_drawName;
 
     VNoBrushScalePathItem *m_seamAllowance;
-    VTextGraphicsItem *m_dataLabel;
-    VTextGraphicsItem *m_patternInfo;
     VGrainlineItem *m_grainLine;
     QGraphicsPathItem *m_passmarks;
     QGraphicsPathItem *m_placeLabels;
@@ -221,18 +206,6 @@ private:
 
     /** @brief m_geometryIsReady is true when a piece's geometry is ready and checks for validity can be enabled. */
     bool m_geometryIsReady{false};
-
-    QPointF m_patternLabelPos{};
-    qreal m_patternLabelAngle{0};
-
-    QPointF m_pieceLabelPos{};
-    qreal m_pieceLabelAngle{0};
-
-    QFutureWatcher<void> *m_patternUpdateInfoWatcher;
-    QFutureWatcher<void> *m_pieceUpdateInfoWatcher;
-
-    bool m_patternLabelInfoStale{false};
-    bool m_pieceLabelInfoStale{false};
 
     /** @brief Geometry computed by PrepareRefreshGeometry() (off the GUI thread) and consumed by
      * ApplyBatchGeometry() (on the GUI thread). */
@@ -258,8 +231,6 @@ private:
     void UpdateExcludeState();
     void UpdateInternalPaths();
 
-    auto FindLabelGeometry(const VPatternLabelData &labelData, const QVector<quint32> &pins, qreal &rotationAngle,
-                           qreal &labelWidth, qreal &labelHeight, QPointF &pos) -> VPieceItem::MoveTypes;
     auto FindGrainlineGeometry(const VGrainlineData &geom, const QVector<quint32> &pins, qreal &length,
                                qreal &rotationAngle, QPointF &pos) -> VPieceItem::MoveTypes;
 
@@ -267,9 +238,6 @@ private:
     static void InitNode(const VPieceNode &node, VMainGraphicsScene *scene, VToolSeamAllowance *parent);
     static void InitInternalNode(const VPieceNode &node, VToolSeamAllowance *parent);
     void InitInternalPaths(const VPiece &detail);
-
-    auto PrepareLabelData(const VPatternLabelData &labelData, const QVector<quint32> &pins,
-                          VTextGraphicsItem *labelItem, QPointF &pos, qreal &labelAngle) -> bool;
 
     auto SelectedTools() const -> QList<VToolSeamAllowance *>;
 

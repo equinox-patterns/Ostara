@@ -263,7 +263,6 @@ const QString VDomDocument::AttrText = QStringLiteral("text");
 const QString VDomDocument::AttrBold = QStringLiteral("bold");
 const QString VDomDocument::AttrItalic = QStringLiteral("italic");
 const QString VDomDocument::AttrAlignment = QStringLiteral("alignment");
-const QString VDomDocument::AttrFSIncrement = QStringLiteral("sfIncrement");
 
 const QString VDomDocument::TagVersion = QStringLiteral("version");
 const QString VDomDocument::TagUnit = QStringLiteral("unit");
@@ -1198,57 +1197,6 @@ auto VDomDocument::SafeCopy(const QString &source, const QString &destination, Q
     // #endif /*Q_OS_WIN32*/
 
     return result;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VDomDocument::GetLabelTemplate(const QDomElement &element) const -> QVector<VLabelTemplateLine>
-{
-    // We use implicit conversion. That's why check if values are still the same as excpected.
-    Q_STATIC_ASSERT(Qt::AlignLeft == 1);
-    Q_STATIC_ASSERT(Qt::AlignRight == 2);
-    Q_STATIC_ASSERT(Qt::AlignHCenter == 4);
-
-    QVector<VLabelTemplateLine> lines;
-
-    if (not element.isNull())
-    {
-        QDomElement tagLine = element.firstChildElement();
-        while (tagLine.isNull() == false)
-        {
-            if (tagLine.tagName() == TagLine)
-            {
-                lines.append(
-                    {.line = GetParametrString(tagLine, AttrText, QCoreApplication::translate("VDomDocument", "<empty>")),
-                     .bold = GetParametrBool(tagLine, AttrBold, falseStr),
-                     .italic = GetParametrBool(tagLine, AttrItalic, falseStr),
-                     .alignment = static_cast<int>(GetParametrUInt(tagLine, AttrAlignment, QChar('0'))),
-                     .fontSizeIncrement = static_cast<int>(GetParametrUInt(tagLine, AttrFSIncrement, QChar('0')))});
-            }
-            tagLine = tagLine.nextSiblingElement(TagLine);
-        }
-    }
-
-    return lines;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VDomDocument::SetLabelTemplate(QDomElement &element, const QVector<VLabelTemplateLine> &lines)
-{
-    if (not element.isNull())
-    {
-        for (const auto &line : lines)
-        {
-            QDomElement tagLine = createElement(TagLine);
-
-            SetAttribute(tagLine, AttrText, line.line);
-            SetAttribute(tagLine, AttrBold, line.bold);
-            SetAttribute(tagLine, AttrItalic, line.italic);
-            SetAttribute(tagLine, AttrAlignment, line.alignment);
-            SetAttribute(tagLine, AttrFSIncrement, line.fontSizeIncrement);
-
-            element.appendChild(tagLine);
-        }
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -30,7 +30,6 @@
 #include "../dialogs/tools/piece/dialogduplicatedetail.h"
 #include "../dialogs/tools/piece/dialogseamallowance.h"
 #include "../ifc/exception/vexceptionwrongid.h"
-#include "../ifc/xml/vlabeltemplateconverter.h"
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../ifc/xml/vpatternconverter.h"
 #include "../ifc/xml/vpatterngraph.h"
@@ -41,7 +40,6 @@
 #include "../undocommands/savepieceoptions.h"
 #include "../undocommands/savepiecepathoptions.h"
 #include "../undocommands/togglepiecestate.h"
-#include "../vformat/vlabeltemplate.h"
 #include "../vgeometry/varc.h"
 #include "../vgeometry/vellipticalarc.h"
 #include "../vgeometry/vplacelabelitem.h"
@@ -56,8 +54,6 @@
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
-#include "../vpatterndb/floatItemData/vpatternlabeldata.h"
-#include "../vpatterndb/floatItemData/vpiecelabeldata.h"
 #include "../vpatterndb/variables/vincrement.h"
 #include "../vpatterndb/vformula.h"
 #include "../vpatterndb/vpiecenode.h"
@@ -122,15 +118,6 @@ const QString VToolSeamAllowance::AttrPiecePriority = QStringLiteral("priority")
 namespace
 {
 //---------------------------------------------------------------------------------------------------------------------
-template <typename T> auto FixLabelPins(T itemData, const QMap<quint32, quint32> &mappedPins) -> T
-{
-    itemData.SetCenterPin(mappedPins.value(itemData.CenterPin(), NULL_ID));
-    itemData.SetTopLeftPin(mappedPins.value(itemData.TopLeftPin(), NULL_ID));
-    itemData.SetBottomRightPin(mappedPins.value(itemData.BottomRightPin(), NULL_ID));
-    return itemData;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 template <typename T> auto FixGrainlinePins(T itemData, const QMap<quint32, quint32> &mappedPins) -> T
 {
     itemData.SetCenterPin(mappedPins.value(itemData.CenterPin(), NULL_ID));
@@ -165,29 +152,6 @@ auto DuplicatePins(const QVector<quint32> &pins, const VToolSeamAllowanceInitDat
         newPins.insert(p, initNodeData.id);
     }
     return newPins;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void UpdateLabelItem(VTextGraphicsItem *labelItem, QPointF pos, qreal labelAngle)
-{
-    SCASSERT(labelItem != nullptr)
-
-    QRectF rectBB;
-    rectBB.setTopLeft(pos);
-    rectBB.setWidth(labelItem->boundingRect().width());
-    rectBB.setHeight(labelItem->boundingRect().height());
-    qreal dX;
-    qreal dY;
-    if (!labelItem->IsContained(rectBB, labelAngle, dX, dY))
-    {
-        pos.setX(pos.x() + dX);
-        pos.setY(pos.y() + dY);
-    }
-
-    labelItem->setPos(pos);
-    labelItem->setRotation(-labelAngle); // expects clockwise direction
-    labelItem->Update();
-    labelItem->GetTextLines() > 0 ? labelItem->show() : labelItem->hide();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -521,10 +485,7 @@ void UpdatePathExcludeState(const VPiecePath &path)
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-VToolSeamAllowance::~VToolSeamAllowance()
-{
-    CancelLabelRendering();
-}
+VToolSeamAllowance::~VToolSeamAllowance() = default;
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolSeamAllowance::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *scene, VAbstractPattern *doc,
@@ -543,30 +504,6 @@ auto VToolSeamAllowance::Create(const QPointer<DialogTool> &dialog, VMainGraphic
     initData.parse = Document::FullParse;
     initData.typeCreation = Source::FromGui;
 
-    auto LoadLabelTemplate = [&initData](const QString &path) -> QVector<VLabelTemplateLine>
-    {
-        if (not path.isEmpty())
-        {
-            try
-            {
-                VLabelTemplate ltemplate;
-                ltemplate.setXMLContent(VLabelTemplateConverter(path).Convert());
-                return ltemplate.ReadLines();
-            }
-            catch (VException &e)
-            {
-                const QString errorMsg = QObject::tr("Piece '%1'. Unable to load default piece label template.\n%2\n%3")
-                                             .arg(initData.detail.GetName(), e.ErrorMessage(), e.DetailedInformation());
-                VAbstractApplication::VApp()->IsPedantic()
-                    ? throw VException(errorMsg)
-                    : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
-            }
-        }
-
-        return {};
-    };
-
-    initData.detail.GetPieceLabelData().SetLabelTemplate(LoadLabelTemplate(doc->GetDefaultPieceLabelPath()));
     initData.detail.GetPath().SetNodes(PrepareNodes(initData.detail.GetPath(), scene, doc, data));
 
     VToolSeamAllowance *piece = Create(initData);
@@ -679,8 +616,6 @@ auto VToolSeamAllowance::Duplicate(VToolSeamAllowanceInitData &initData) -> VToo
 
     const QMap<quint32, quint32> mappedPins = DuplicatePins(initData.detail.GetPins(), initData);
     dupDetail.SetPins(ConvertToVector(mappedPins.values()));
-    dupDetail.SetPieceLabelData(FixLabelPins(initData.detail.GetPieceLabelData(), mappedPins));
-    dupDetail.SetPatternLabelData(FixLabelPins(initData.detail.GetPatternLabelData(), mappedPins));
     dupDetail.SetGrainlineGeometry(FixGrainlinePins(initData.detail.GetGrainlineGeometry(), mappedPins));
 
     if (replacements.contains(dupDetail.GetMirrorLineStartPoint()))
@@ -724,16 +659,6 @@ void VToolSeamAllowance::AddPieceDependencies(quint32 id,
     {
         doc->FindFormulaDependencies(piece.GetFormulaFoldCenter(), id, variables);
     }
-
-    const VPieceLabelData &pieceLabelData = piece.GetPieceLabelData();
-    doc->FindFormulaDependencies(pieceLabelData.GetLabelWidth(), id, variables);
-    doc->FindFormulaDependencies(pieceLabelData.GetLabelHeight(), id, variables);
-    doc->FindFormulaDependencies(pieceLabelData.GetRotation(), id, variables);
-
-    const VPatternLabelData &patternLabelData = piece.GetPatternLabelData();
-    doc->FindFormulaDependencies(patternLabelData.GetLabelWidth(), id, variables);
-    doc->FindFormulaDependencies(patternLabelData.GetLabelHeight(), id, variables);
-    doc->FindFormulaDependencies(patternLabelData.GetRotation(), id, variables);
 
     const VGrainlineData &grainlineData = piece.GetGrainlineGeometry();
     doc->FindFormulaDependencies(grainlineData.GetLength(), id, variables);
@@ -859,8 +784,6 @@ void VToolSeamAllowance::AddAttributes(VAbstractPattern *doc, QDomElement &domEl
     doc->SetAttributeOrRemoveIf<QString>(domElement, AttrShortName, piece.GetShortName(),
                                          [](const QString &name) noexcept { return name.isEmpty(); });
     doc->SetAttribute(domElement, AttrUUID, piece.GetUUID().toString());
-    doc->SetAttributeOrRemoveIf<QString>(domElement, AttrGradationLabel, piece.GetGradationLabel(),
-                                         [](const QString &label) noexcept { return label.isEmpty(); });
     doc->SetAttribute(domElement, AttrVersion, QString().setNum(pieceVersion));
     doc->SetAttribute(domElement, AttrMx, VAbstractValApplication::VApp()->fromPixel(piece.GetMx()));
     doc->SetAttribute(domElement, AttrMy, VAbstractValApplication::VApp()->fromPixel(piece.GetMy()));
@@ -948,61 +871,6 @@ void VToolSeamAllowance::AddPlaceLabels(VAbstractPattern *doc, QDomElement &domE
                                         const QVector<quint32> &placeLabels)
 {
     AddPointRecords(doc, domElement, placeLabels, VToolSeamAllowance::TagPlaceLabels);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::AddPatternPieceData(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece)
-{
-    QDomElement domData = doc->createElement(VAbstractPattern::TagData);
-    const VPieceLabelData &data = piece.GetPieceLabelData();
-    doc->SetAttribute(domData, VAbstractPattern::AttrLetter, data.GetLetter());
-    doc->SetAttribute(domData, VAbstractPattern::AttrAnnotation, data.GetAnnotation());
-    doc->SetAttribute(domData, VAbstractPattern::AttrOrientation, data.GetOrientation());
-    doc->SetAttribute(domData, VAbstractPattern::AttrRotationWay, data.GetRotationWay());
-    doc->SetAttribute(domData, VAbstractPattern::AttrTilt, data.GetTilt());
-    doc->SetAttribute(domData, VAbstractPattern::AttrFoldPosition, data.GetFoldPosition());
-    doc->SetAttribute(domData, VAbstractPattern::AttrQuantity, data.GetQuantity());
-    doc->SetAttribute(domData, VAbstractPattern::AttrVisible, data.IsEnabled());
-    doc->SetAttribute(domData, VAbstractPattern::AttrOnFold, data.IsOnFold());
-    doc->SetAttribute(domData, AttrMx, data.GetPos().x());
-    doc->SetAttribute(domData, AttrMy, data.GetPos().y());
-    doc->SetAttribute(domData, AttrWidth, data.GetLabelWidth());
-    doc->SetAttribute(domData, AttrHeight, data.GetLabelHeight());
-    doc->SetAttributeOrRemoveIf<int>(domData, AttrFont, data.GetFontSize(),
-                                     [](int size) noexcept { return size == 0; });
-    doc->SetAttribute(domData, VAbstractPattern::AttrRotation, data.GetRotation());
-    doc->SetAttributeOrRemoveIf<quint32>(domData, AttrCenterPin, data.CenterPin(),
-                                         [](quint32 pin) noexcept { return pin == NULL_ID; });
-    doc->SetAttributeOrRemoveIf<quint32>(domData, AttrTopLeftPin, data.TopLeftPin(),
-                                         [](quint32 leftPin) noexcept { return leftPin == NULL_ID; });
-    doc->SetAttributeOrRemoveIf<quint32>(domData, AttrBottomRightPin, data.BottomRightPin(),
-                                         [](quint32 rightPin) noexcept { return rightPin == NULL_ID; });
-    doc->SetLabelTemplate(domData, data.GetLabelTemplate());
-
-    domElement.appendChild(domData);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::AddPatternInfo(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece)
-{
-    QDomElement domData = doc->createElement(VAbstractPattern::TagPatternInfo);
-    const VPatternLabelData &geom = piece.GetPatternLabelData();
-    doc->SetAttribute(domData, VAbstractPattern::AttrVisible, geom.IsEnabled());
-    doc->SetAttribute(domData, AttrMx, geom.GetPos().x());
-    doc->SetAttribute(domData, AttrMy, geom.GetPos().y());
-    doc->SetAttribute(domData, AttrWidth, geom.GetLabelWidth());
-    doc->SetAttribute(domData, AttrHeight, geom.GetLabelHeight());
-    doc->SetAttributeOrRemoveIf<int>(domData, AttrFont, geom.GetFontSize(),
-                                     [](int size) noexcept { return size == 0; });
-    doc->SetAttribute(domData, VAbstractPattern::AttrRotation, geom.GetRotation());
-    doc->SetAttributeOrRemoveIf<quint32>(domData, AttrCenterPin, geom.CenterPin(),
-                                         [](quint32 pin) noexcept { return pin <= NULL_ID; });
-    doc->SetAttributeOrRemoveIf<quint32>(domData, AttrTopLeftPin, geom.TopLeftPin(),
-                                         [](quint32 pin) noexcept { return pin <= NULL_ID; });
-    doc->SetAttributeOrRemoveIf<quint32>(domData, AttrBottomRightPin, geom.BottomRightPin(),
-                                         [](quint32 pin) noexcept { return pin <= NULL_ID; });
-
-    domElement.appendChild(domData);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1121,8 +989,6 @@ void VToolSeamAllowance::DisconnectOutsideSignals()
     {
         disconnect(toolScene, nullptr, this, nullptr);
     }
-    disconnect(m_dataLabel, nullptr, this, nullptr);
-    disconnect(m_patternInfo, nullptr, this, nullptr);
     disconnect(m_grainLine, nullptr, this, nullptr);
     disconnect(m_sceneDetails, nullptr, this, nullptr);
 }
@@ -1130,29 +996,15 @@ void VToolSeamAllowance::DisconnectOutsideSignals()
 //---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::ConnectOutsideSignals()
 {
-    connect(m_dataLabel, &VTextGraphicsItem::SignalMoved, this, &VToolSeamAllowance::SaveMoveDetail);
-    connect(m_dataLabel, &VTextGraphicsItem::SignalResized, this, &VToolSeamAllowance::SaveResizeDetail);
-    connect(m_dataLabel, &VTextGraphicsItem::SignalRotated, this, &VToolSeamAllowance::SaveRotationDetail);
-
-    connect(m_patternInfo, &VTextGraphicsItem::SignalMoved, this, &VToolSeamAllowance::SaveMovePattern);
-    connect(m_patternInfo, &VTextGraphicsItem::SignalResized, this, &VToolSeamAllowance::SaveResizePattern);
-    connect(m_patternInfo, &VTextGraphicsItem::SignalRotated, this, &VToolSeamAllowance::SaveRotationPattern);
-
     connect(m_grainLine, &VGrainlineItem::SignalMoved, this, &VToolSeamAllowance::SaveMoveGrainline);
     connect(m_grainLine, &VGrainlineItem::SignalResized, this, &VToolSeamAllowance::SaveResizeGrainline);
     connect(m_grainLine, &VGrainlineItem::SignalRotated, this, &VToolSeamAllowance::SaveRotateGrainline);
 
-    connect(doc, &VAbstractPattern::UpdatePatternLabel, this, &VToolSeamAllowance::UpdatePatternInfo);
-    connect(doc, &VAbstractPattern::UpdatePatternLabel, this, &VToolSeamAllowance::UpdateDetailLabel);
-    connect(doc, &VAbstractPattern::CheckLayout, this, &VToolSeamAllowance::UpdateDetailLabel);
-    connect(doc, &VAbstractPattern::CheckLayout, this, &VToolSeamAllowance::UpdatePatternInfo);
     connect(doc, &VAbstractPattern::CheckLayout, this, &VToolSeamAllowance::UpdateGrainline);
     connect(doc, &VAbstractPattern::CheckLayout, this, &VToolSeamAllowance::RefreshFoldLine);
 
     connect(m_sceneDetails, &VMainGraphicsScene::EnableToolMove, this, &VToolSeamAllowance::EnableToolMove);
     connect(m_sceneDetails, &VMainGraphicsScene::ItemByMousePress, this, &VToolSeamAllowance::ResetChildren);
-    connect(m_sceneDetails, &VMainGraphicsScene::DimensionsChanged, this, &VToolSeamAllowance::UpdateDetailLabel);
-    connect(m_sceneDetails, &VMainGraphicsScene::DimensionsChanged, this, &VToolSeamAllowance::UpdatePatternInfo);
     connect(m_sceneDetails, &VMainGraphicsScene::LanguageChanged, this, &VToolSeamAllowance::retranslateUi);
     connect(m_sceneDetails, &VMainGraphicsScene::EnableDetailItemHover, this, &VToolSeamAllowance::AllowHover);
     connect(m_sceneDetails, &VMainGraphicsScene::EnableDetailItemSelection, this, &VToolSeamAllowance::AllowSelecting);
@@ -1196,8 +1048,6 @@ void VToolSeamAllowance::EnableToolMove(bool move)
 {
     setFlag(QGraphicsItem::ItemIsMovable, move);
 
-    m_dataLabel->setFlag(QGraphicsItem::ItemIsMovable, move);
-    m_patternInfo->setFlag(QGraphicsItem::ItemIsMovable, move);
     m_grainLine->setFlag(QGraphicsItem::ItemIsMovable, move);
 }
 
@@ -1206,8 +1056,6 @@ void VToolSeamAllowance::AllowHover(bool enabled)
 {
     // Manually handle hover events. Need for setting cursor for not selectable paths.
     m_acceptHoverEvents = enabled;
-    m_dataLabel->setAcceptHoverEvents(enabled);
-    m_patternInfo->setAcceptHoverEvents(enabled);
     m_grainLine->setAcceptHoverEvents(enabled);
 }
 
@@ -1221,24 +1069,13 @@ void VToolSeamAllowance::AllowSelecting(bool enabled)
 void VToolSeamAllowance::ResetChildren(QGraphicsItem *pItem)
 {
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
-    auto *pVGI = qgraphicsitem_cast<VTextGraphicsItem *>(pItem);
     const auto *pGLI = qgraphicsitem_cast<VGrainlineItem *>(pItem);
 
-    // If the pressed item is one of this piece's labels or grainline, keep the piece selected
+    // If the pressed item is one of this piece's children (grainline), keep the piece selected
     // so the child stays interactive. This used to be polled via IsIdle() inside paint(), which
     // mutates selection state during paint and crashes on Windows under Qt 6.
-    const bool myChildPressed =
-        (pVGI != nullptr && (pVGI == m_dataLabel || pVGI == m_patternInfo)) || (pGLI != nullptr && pGLI == m_grainLine);
+    const bool myChildPressed = pGLI != nullptr && pGLI == m_grainLine;
     const bool selected = isSelected() || myChildPressed;
-
-    if (pVGI != m_dataLabel && detail.GetPieceLabelData().IsEnabled())
-    {
-        m_dataLabel->Reset();
-    }
-    if (pVGI != m_patternInfo && detail.GetPatternLabelData().IsEnabled())
-    {
-        m_patternInfo->Reset();
-    }
 
     if (pGLI != m_grainLine && detail.GetGrainlineGeometry().IsEnabled())
     {
@@ -1259,98 +1096,13 @@ void VToolSeamAllowance::UpdateAll()
 //---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::retranslateUi()
 {
-    UpdateDetailLabel();
-    UpdatePatternInfo();
+    // No label text to retranslate anymore.
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::Highlight(quint32 id)
 {
     setSelected(m_id == id);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief UpdateLabel updates the text label, making it just big enough for the text to fit it
- */
-void VToolSeamAllowance::UpdateDetailLabel()
-{
-    if (m_pieceUpdateInfoWatcher->isFinished())
-    {
-        VPiece detail = VAbstractTool::data.GetPiece(m_id);
-        detail.SetPieceLabelData(detail.GetPieceLabelData()); // Refresh translation
-        const VPieceLabelData &labelData = detail.GetPieceLabelData();
-        const QVector<quint32> &pins = detail.GetPins();
-
-        if (labelData.IsEnabled())
-        {
-            m_pieceLabelPos = QPointF();
-            m_pieceLabelAngle = 0;
-            if (PrepareLabelData(labelData, pins, m_dataLabel, m_pieceLabelPos, m_pieceLabelAngle))
-            {
-
-                VPieceLabelInfo info = VTextManager::PrepareLabelInfo(doc, getData(), true);
-                info.pieceName = detail.GetName();
-                info.labelData = detail.GetPieceLabelData();
-
-                m_pieceLabelInfoStale = false;
-                m_pieceUpdateInfoWatcher->setFuture(QtConcurrent::run(
-                    [this, info, detail]()
-                    {
-                        m_dataLabel->SetPieceName(detail.GetName());
-                        m_dataLabel->UpdatePieceLabelData(info);
-                    }));
-            }
-        }
-        else
-        {
-            m_dataLabel->hide();
-        }
-    }
-    else
-    {
-        m_pieceLabelInfoStale = true;
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief UpdatePatternInfo updates the pattern info label
- */
-void VToolSeamAllowance::UpdatePatternInfo()
-{
-    if (m_patternUpdateInfoWatcher->isFinished())
-    {
-        const VPiece detail = VAbstractTool::data.GetPiece(m_id);
-        const VPatternLabelData &geom = detail.GetPatternLabelData();
-        const QVector<quint32> &pins = detail.GetPins();
-
-        if (geom.IsEnabled())
-        {
-            m_patternLabelPos = QPointF();
-            m_patternLabelAngle = 0;
-            if (PrepareLabelData(geom, pins, m_patternInfo, m_patternLabelPos, m_patternLabelAngle))
-            {
-                VPieceLabelInfo const info = VTextManager::PrepareLabelInfo(doc, getData(), false);
-
-                m_patternLabelInfoStale = false;
-                m_patternUpdateInfoWatcher->setFuture(QtConcurrent::run(
-                    [this, info, detail]()
-                    {
-                        m_patternInfo->SetPieceName(detail.GetName());
-                        m_patternInfo->UpdatePatternLabelData(info);
-                    }));
-            }
-        }
-        else
-        {
-            m_patternInfo->hide();
-        }
-    }
-    else
-    {
-        m_patternLabelInfoStale = true;
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1400,112 +1152,6 @@ void VToolSeamAllowance::UpdateGrainline()
     {
         m_grainLine->hide();
     }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief SaveMoveDetail saves the move detail operation to the undo stack
- */
-void VToolSeamAllowance::SaveMoveDetail(const QPointF &ptPos)
-{
-    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
-    VPiece newDet = oldDet;
-    newDet.GetPieceLabelData().SetPos(ptPos);
-
-    auto *moveCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    moveCommand->setText(tr("move pattern piece label"));
-    VAbstractApplication::VApp()->getUndoStack()->push(moveCommand);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief SaveResizeDetail saves the resize detail label operation to the undo stack
- */
-void VToolSeamAllowance::SaveResizeDetail(qreal dLabelW)
-{
-    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
-    VPiece newDet = oldDet;
-
-    dLabelW = FromPixel(dLabelW, *VDataTool::data.GetPatternUnit());
-    newDet.GetPieceLabelData().SetLabelWidth(QString().setNum(dLabelW));
-    const qreal height = FromPixel(m_dataLabel->boundingRect().height(), *VDataTool::data.GetPatternUnit());
-    newDet.GetPieceLabelData().SetLabelHeight(QString().setNum(height));
-
-    auto *resizeCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    resizeCommand->setText(tr("resize pattern piece label"));
-    VAbstractApplication::VApp()->getUndoStack()->push(resizeCommand);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief SaveRotationDetail saves the rotation detail label operation to the undo stack
- */
-void VToolSeamAllowance::SaveRotationDetail(qreal dRot)
-{
-    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
-    VPiece newDet = oldDet;
-    newDet.GetPieceLabelData().SetPos(m_dataLabel->pos());
-
-    // Tranform angle to anticlockwise
-    QLineF line(0, 0, 100, 0);
-    line.setAngle(-dRot);
-    newDet.GetPieceLabelData().SetRotation(QString().setNum(line.angle()));
-
-    auto *rotateCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    rotateCommand->setText(tr("rotate pattern piece label"));
-    VAbstractApplication::VApp()->getUndoStack()->push(rotateCommand);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief SaveMovePattern saves the pattern label position
- */
-void VToolSeamAllowance::SaveMovePattern(const QPointF &ptPos)
-{
-    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
-    VPiece newDet = oldDet;
-    newDet.GetPatternLabelData().SetPos(ptPos);
-
-    auto *moveCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    moveCommand->setText(tr("move pattern info label"));
-    VAbstractApplication::VApp()->getUndoStack()->push(moveCommand);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief: SaveResizePattern saves the pattern label width and font size
- */
-void VToolSeamAllowance::SaveResizePattern(qreal dLabelW)
-{
-    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
-    VPiece newDet = oldDet;
-
-    dLabelW = FromPixel(dLabelW, *VDataTool::data.GetPatternUnit());
-    newDet.GetPatternLabelData().SetLabelWidth(QString().setNum(dLabelW));
-    qreal const height = FromPixel(m_patternInfo->boundingRect().height(), *VDataTool::data.GetPatternUnit());
-    newDet.GetPatternLabelData().SetLabelHeight(QString().setNum(height));
-
-    auto *resizeCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    resizeCommand->setText(tr("resize pattern info label"));
-    VAbstractApplication::VApp()->getUndoStack()->push(resizeCommand);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::SaveRotationPattern(qreal dRot)
-{
-    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
-    VPiece newDet = oldDet;
-
-    newDet.GetPatternLabelData().SetPos(m_patternInfo->pos());
-
-    // Tranform angle to anticlockwise
-    QLineF line(0, 0, 100, 0);
-    line.setAngle(-dRot);
-    newDet.GetPatternLabelData().SetRotation(QString().setNum(line.angle()));
-
-    auto *rotateCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    rotateCommand->setText(tr("rotate pattern info label"));
-    VAbstractApplication::VApp()->getUndoStack()->push(rotateCommand);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1615,16 +1261,6 @@ auto VToolSeamAllowance::shape() const -> QPainterPath
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::CancelLabelRendering()
-{
-    m_patternUpdateInfoWatcher->cancel();
-    m_pieceUpdateInfoWatcher->cancel();
-
-    m_patternUpdateInfoWatcher->waitForFinished();
-    m_pieceUpdateInfoWatcher->waitForFinished();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::FullUpdateFromGuiApply()
 {
     SaveDialogChange(tr("apply save detail options"));
@@ -1644,8 +1280,6 @@ void VToolSeamAllowance::AddToFile()
     QDomElement domElement = doc->createElement(VToolSeamAllowance::getTagName());
 
     AddAttributes(doc, domElement, m_id, piece);
-    AddPatternPieceData(doc, domElement, piece);
-    AddPatternInfo(doc, domElement, piece);
     AddGrainline(doc, domElement, piece);
 
     // nodes
@@ -1683,8 +1317,6 @@ void VToolSeamAllowance::RefreshDataInFile()
         doc->SetAttribute(domElement, AttrVersion, QString().setNum(pieceVersion));
 
         VAbstractPattern::RemoveAllChildren(domElement); // Very important to clear before rewrite
-        AddPatternPieceData(doc, domElement, piece);
-        AddPatternInfo(doc, domElement, piece);
         AddGrainline(doc, domElement, piece);
         AddNodes(doc, domElement, piece);
         AddCSARecords(doc, domElement, piece.GetCustomSARecords());
@@ -1863,9 +1495,6 @@ void VToolSeamAllowance::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         }
     }
 
-    QAction *reseteLabelTemplateOption = menu.addAction(tr("Reset piece label template"));
-    reseteLabelTemplateOption->setEnabled(not doc->GetDefaultPieceLabelPath().isEmpty());
-
     QAction *actionRemove = menu.addAction(FromTheme(VThemeIcon::EditDelete), tr("Delete"));
     actionRemove->setEnabled(IsRemovable() == RemoveStatus::Removable);
 
@@ -1889,10 +1518,6 @@ void VToolSeamAllowance::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     else if (selectedAction == forceFlippingOption)
     {
         ToggleForceFlipping(selectedAction->isChecked());
-    }
-    else if (selectedAction == reseteLabelTemplateOption)
-    {
-        ResetPieceLabelTemplate();
     }
     else if (selectedAction == showFullPiece)
     {
@@ -1971,21 +1596,14 @@ VToolSeamAllowance::VToolSeamAllowance(const VToolSeamAllowanceInitData &initDat
     m_sceneDetails(initData.scene),
     m_drawName(initData.drawName),
     m_seamAllowance(new VNoBrushScalePathItem(this)),
-    m_dataLabel(new VTextGraphicsItem(VTextGraphicsItem::ItemType::PieceLabel, this)),
-    m_patternInfo(new VTextGraphicsItem(VTextGraphicsItem::ItemType::PatternLabel, this)),
     m_grainLine(new VGrainlineItem(VColorRole::PieceColor, this)),
     m_passmarks(new QGraphicsPathItem(this)),
     m_placeLabels(new QGraphicsPathItem(this)),
     m_mirrorLine(new QGraphicsPathItem(this)),
     m_foldLineMark(new QGraphicsPathItem(this)),
     m_foldLineLabel(new QGraphicsPathItem(this)),
-    m_foldLineLabelText(new QGraphicsSimpleTextItem(this)),
-    m_patternUpdateInfoWatcher(new QFutureWatcher<void>(this)),
-    m_pieceUpdateInfoWatcher(new QFutureWatcher<void>(this))
+    m_foldLineLabelText(new QGraphicsSimpleTextItem(this))
 {
-    m_dataLabel->setVisible(false);
-    m_patternInfo->setVisible(false);
-
     VPiece const detail = initData.data->GetPiece(initData.id);
     ReinitInternals(detail, m_sceneDetails);
     VToolSeamAllowance::AllowSelecting(true);
@@ -2002,64 +1620,10 @@ VToolSeamAllowance::VToolSeamAllowance(const VToolSeamAllowanceInitData &initDat
     connect(m_sceneDetails, &VMainGraphicsScene::EnableToolMove, this, &VToolSeamAllowance::EnableToolMove);
     connect(m_sceneDetails, &VMainGraphicsScene::ItemSelection, this, &VToolSeamAllowance::ToolSelectionType);
     connect(m_sceneDetails, &VMainGraphicsScene::UpdatePassmarks, this, &VToolSeamAllowance::UpdatePassmarks);
-    connect(doc, &VAbstractPattern::CancelLabelRendering, this, &VToolSeamAllowance::CancelLabelRendering);
 
     ConnectOutsideSignals();
 
     m_foldLineMark->setBrush(Qt::SolidPattern);
-
-    connect(qApp,
-            &QCoreApplication::aboutToQuit,
-            m_patternUpdateInfoWatcher,
-            [this]() -> void
-            {
-                m_patternUpdateInfoWatcher->cancel();
-                m_patternUpdateInfoWatcher->waitForFinished();
-            });
-    connect(m_patternUpdateInfoWatcher,
-            &QFutureWatcher<void>::finished,
-            this,
-            [this]()
-            {
-                if (m_patternUpdateInfoWatcher->isCanceled())
-                {
-                    return;
-                }
-
-                setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
-                m_patternInfo->show();
-                UpdateLabelItem(m_patternInfo, m_patternLabelPos, m_patternLabelAngle);
-                setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-                if (m_patternLabelInfoStale)
-                {
-                    m_patternLabelInfoStale = false;
-                    UpdatePatternInfo();
-                }
-            });
-    connect(qApp, &QCoreApplication::aboutToQuit, m_pieceUpdateInfoWatcher,
-            [this]()
-            {
-                m_pieceUpdateInfoWatcher->cancel();
-                m_pieceUpdateInfoWatcher->waitForFinished();
-            });
-    connect(m_pieceUpdateInfoWatcher, &QFutureWatcher<void>::finished, this,
-            [this]()
-            {
-                if (m_pieceUpdateInfoWatcher->isCanceled())
-                {
-                    return;
-                }
-
-                setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
-                m_dataLabel->show();
-                UpdateLabelItem(m_dataLabel, m_pieceLabelPos, m_pieceLabelAngle);
-                setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-                if (m_pieceLabelInfoStale)
-                {
-                    m_pieceLabelInfoStale = false;
-                    UpdateDetailLabel();
-                }
-            });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2238,8 +1802,6 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
                            [this, updateChildren]() -> void
                            {
                                this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
-                               UpdateDetailLabel();
-                               UpdatePatternInfo();
                                UpdateGrainline();
                                UpdateExcludeState();
                                if (updateChildren)
@@ -2251,8 +1813,6 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
     }
     else
     {
-        UpdateDetailLabel();
-        UpdatePatternInfo();
         UpdateGrainline();
         UpdateExcludeState();
         if (updateChildren)
@@ -2279,8 +1839,6 @@ void VToolSeamAllowance::SaveDialogChange(const QString &undoText)
     SCASSERT(dialogTool != nullptr);
     const VPiece newDet = dialogTool->GetPiece();
     const VPiece oldDet = VAbstractTool::data.GetPiece(m_id);
-
-    CancelLabelRendering();
 
     QVector<QPointer<VUndoCommand>> &undocommands = dialogTool->UndoStack();
     const bool groupChange = not undocommands.isEmpty();
@@ -2512,135 +2070,6 @@ void VToolSeamAllowance::TogglePassmarkLineType(quint32 id, PassmarkLineType typ
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::ResetPieceLabelTemplate()
-{
-    const VPiece oldDet = VAbstractTool::data.GetPiece(m_id);
-    VPiece newDet = oldDet;
-
-    if (const QString path = doc->GetDefaultPieceLabelPath(); not path.isEmpty())
-    {
-        QVector<VLabelTemplateLine> lines;
-        try
-        {
-            VLabelTemplate ltemplate;
-            ltemplate.setXMLContent(VLabelTemplateConverter(path).Convert());
-            lines = ltemplate.ReadLines();
-            newDet.GetPieceLabelData().SetLabelTemplate(lines);
-            VAbstractApplication::VApp()->getUndoStack()->push(new SavePieceOptions(oldDet, newDet, doc, m_id));
-        }
-        catch (VException &e)
-        {
-            const QString errorMsg = QObject::tr("Piece '%1'. Unable to load default piece label template.\n%2\n%3")
-                                         .arg(newDet.GetName(), e.ErrorMessage(), e.DetailedInformation());
-            VAbstractApplication::VApp()->IsPedantic()
-                ? throw VException(errorMsg)
-                : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
-        }
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VToolSeamAllowance::FindLabelGeometry(const VPatternLabelData &labelData, const QVector<quint32> &pins,
-                                           qreal &rotationAngle, qreal &labelWidth, qreal &labelHeight, QPointF &pos)
-    -> VPieceItem::MoveTypes
-{
-
-    VPieceItem::MoveTypes restrictions = VPieceItem::AllModifications;
-    try
-    {
-        if (not qmu::QmuTokenParser::IsSingle(labelData.GetRotation()))
-        {
-            restrictions &= ~VPieceItem::IsRotatable;
-        }
-
-        Calculator cal1;
-        rotationAngle = cal1.EvalFormula(VAbstractTool::data.DataVariables(), labelData.GetRotation());
-    }
-    catch (qmu::QmuParserError &e)
-    {
-        Q_UNUSED(e);
-        return VPieceItem::Error;
-    }
-
-    const quint32 topLeftPin = labelData.TopLeftPin();
-    const quint32 bottomRightPin = labelData.BottomRightPin();
-
-    if (topLeftPin != NULL_ID && pins.contains(topLeftPin) && bottomRightPin != NULL_ID &&
-        pins.contains(bottomRightPin))
-    {
-        try
-        {
-            const auto topLeftPinPoint = VAbstractTool::data.GeometricObject<VPointF>(topLeftPin);
-            const auto bottomRightPinPoint = VAbstractTool::data.GeometricObject<VPointF>(bottomRightPin);
-
-            const auto labelRect =
-                QRectF(static_cast<QPointF>(*topLeftPinPoint), static_cast<QPointF>(*bottomRightPinPoint));
-            labelWidth = FromPixel(qAbs(labelRect.width()), *VDataTool::data.GetPatternUnit());
-            labelHeight = FromPixel(qAbs(labelRect.height()), *VDataTool::data.GetPatternUnit());
-
-            pos = labelRect.topLeft();
-
-            restrictions &= ~VPieceItem::IsMovable;
-            restrictions &= ~VPieceItem::IsResizable;
-
-            return restrictions;
-        }
-        catch (const VExceptionBadId &)
-        {
-            // do nothing.
-        }
-    }
-
-    try
-    {
-        const bool widthIsSingle = qmu::QmuTokenParser::IsSingle(labelData.GetLabelWidth());
-
-        Calculator cal1;
-        labelWidth = cal1.EvalFormula(VAbstractTool::data.DataVariables(), labelData.GetLabelWidth());
-
-        const bool heightIsSingle = qmu::QmuTokenParser::IsSingle(labelData.GetLabelHeight());
-
-        Calculator cal2;
-        labelHeight = cal2.EvalFormula(VAbstractTool::data.DataVariables(), labelData.GetLabelHeight());
-
-        if (not widthIsSingle || not heightIsSingle)
-        {
-            restrictions &= ~VPieceItem::IsResizable;
-        }
-    }
-    catch (qmu::QmuParserError &e)
-    {
-        Q_UNUSED(e);
-        return VPieceItem::Error;
-    }
-
-    const quint32 centerPin = labelData.CenterPin();
-    if (centerPin != NULL_ID && pins.contains(centerPin))
-    {
-        try
-        {
-            const auto centerPinPoint = VAbstractTool::data.GeometricObject<VPointF>(centerPin);
-
-            const qreal lWidth = ToPixel(labelWidth, *VDataTool::data.GetPatternUnit());
-            const qreal lHeight = ToPixel(labelHeight, *VDataTool::data.GetPatternUnit());
-
-            pos = static_cast<QPointF>(*centerPinPoint) - QRectF(0, 0, lWidth, lHeight).center();
-            restrictions &= ~VPieceItem::IsMovable;
-        }
-        catch (const VExceptionBadId &)
-        {
-            pos = labelData.GetPos();
-        }
-    }
-    else
-    {
-        pos = labelData.GetPos();
-    }
-
-    return restrictions;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VToolSeamAllowance::FindGrainlineGeometry(const VGrainlineData &geom, const QVector<quint32> &pins, qreal &length,
                                                qreal &rotationAngle, QPointF &pos) -> VPieceItem::MoveTypes
 {
@@ -2776,8 +2205,6 @@ void VToolSeamAllowance::InitNode(const VPieceNode &node, VMainGraphicsScene *sc
                         &VToolSeamAllowance::TogglePassmarkAngleType, Qt::UniqueConnection);
                 connect(tool, &VNodePoint::TogglePassmarkLineType, parent, &VToolSeamAllowance::TogglePassmarkLineType,
                         Qt::UniqueConnection);
-                connect(tool, &VNodePoint::ResetPieceLabelTemplate, parent,
-                        &VToolSeamAllowance::ResetPieceLabelTemplate, Qt::UniqueConnection);
                 tool->setParentItem(parent);
                 tool->SetParentType(ParentType::Item);
                 tool->SetExluded(node.IsExcluded());
@@ -2833,11 +2260,6 @@ void VToolSeamAllowance::InitInternalNode(const VPieceNode &node, VToolSeamAllow
                         &VToolSeamAllowance::ToggleShowFullPiece,
                         Qt::UniqueConnection);
                 connect(tool, &VNodePoint::Delete, parent, &VToolSeamAllowance::DeleteFromMenu, Qt::UniqueConnection);
-                connect(tool,
-                        &VNodePoint::ResetPieceLabelTemplate,
-                        parent,
-                        &VToolSeamAllowance::ResetPieceLabelTemplate,
-                        Qt::UniqueConnection);
                 connect(tool,
                         &VNodePoint::ToggleExcludeState,
                         parent,
@@ -2914,40 +2336,6 @@ void VToolSeamAllowance::ToolCreation(const Source &typeCreation)
     {
         VToolSeamAllowance::RefreshDataInFile();
     }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VToolSeamAllowance::PrepareLabelData(const VPatternLabelData &labelData, const QVector<quint32> &pins,
-                                          VTextGraphicsItem *labelItem, QPointF &pos, qreal &labelAngle) -> bool
-{
-    SCASSERT(labelItem != nullptr)
-
-    qreal labelWidth = 0;
-    qreal labelHeight = 0;
-    const VTextGraphicsItem::MoveTypes type =
-        FindLabelGeometry(labelData, pins, labelAngle, labelWidth, labelHeight, pos);
-    if (type & VGrainlineItem::Error)
-    {
-        labelItem->hide();
-        return false;
-    }
-    labelItem->SetMoveType(type);
-
-    VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-    QFont fnt = settings->GetLabelFont();
-    {
-        const int iFS = labelData.GetFontSize() < VCommonSettings::MinPieceLabelFontPointSize()
-                            ? settings->GetPieceLabelFontPointSize()
-                            : labelData.GetFontSize();
-        fnt.setPointSize(qMax(iFS, 1));
-        labelItem->SetSVGFontPointSize(iFS);
-    }
-    labelItem->SetFont(fnt);
-    labelItem->SetSVGFontFamily(settings->GetLabelSVGFont());
-    labelItem->SetSize(ToPixel(labelWidth, *VDataTool::data.GetPatternUnit()),
-                       ToPixel(labelHeight, *VDataTool::data.GetPatternUnit()));
-
-    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -61,7 +61,6 @@ using QTextCodec = VTextCodec;
 #include "../vlayout/vlayoutpiece.h"
 #include "../vlayout/vlayoutpiecepath.h"
 #include "../vlayout/vlayoutpoint.h"
-#include "../vlayout/vtextmanager.h"
 #include "../vmisc/def.h"
 #include "dxiface.h"
 #include "libdxfrw/drw_entities.h"
@@ -115,37 +114,6 @@ Q_GLOBAL_STATIC_WITH_ARGS(const UTF8STRING, layer86, (UTF8STRING("86"))) // NOLI
 Q_GLOBAL_STATIC_WITH_ARGS(const UTF8STRING, layer87, (UTF8STRING("87"))) // NOLINT
 
 QT_WARNING_POP
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto LineFont(const TextLine &tl, const QFont &base) -> QFont
-{
-    QFont fnt = base;
-    fnt.setPointSize(qMax(base.pointSize() + tl.iFontSize, 1));
-    if (!VAbstractApplication::VApp()->Settings()->GetSingleStrokeOutlineFont())
-    {
-        fnt.setBold(tl.bold);
-    }
-    fnt.setItalic(tl.italic);
-    return fnt;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto LineAlign(const TextLine &tl, const QString &text, const QFontMetrics &fm, qreal width) -> qreal
-{
-    const int lineWidth = fm.horizontalAdvance(text);
-
-    qreal dX = 0;
-    if ((tl.eAlign & Qt::AlignHCenter) > 0)
-    {
-        dX = (width - lineWidth) / 2;
-    }
-    else if ((tl.eAlign & Qt::AlignRight) > 0)
-    {
-        dX = width - lineWidth;
-    }
-
-    return dX;
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 inline auto svgEngineFeatures() -> QPaintEngine::PaintEngineFeatures
@@ -758,8 +726,6 @@ auto VDxfEngine::ExportToAAMA(const QVector<VLayoutPiece> &details) -> bool
     }
     m_input->AddAAMALayers();
 
-    ExportStyleSystemText(m_input, details);
-
     for (auto detail : details)
     {
         // Use custom deleter function to lose ownership after adding the block
@@ -791,7 +757,6 @@ auto VDxfEngine::ExportToAAMA(const QVector<VLayoutPiece> &details) -> bool
         ExportAAMAIntcut(detailBlock, detail);
         ExportAAMANotch(detailBlock, detail);
         ExportAAMAGrainline(detailBlock, detail);
-        ExportPieceText(detailBlock, detail);
         ExportAAMADrill(detailBlock, detail);
         ExportAnnotationText(detailBlock, detail, *layer19);
 
@@ -1029,95 +994,6 @@ void VDxfEngine::ExportAAMAGrainline(const QSharedPointer<dx_ifaceBlock> &detail
     }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void VDxfEngine::ExportPieceText(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
-{
-    QVector<QPointF> const labelShape = detail.GetPieceLabelRect();
-    if (labelShape.count() != 4)
-    {
-        if (m_compatibilityMode == DXFApparelCompatibility::STANDARD)
-        {
-            qCWarning(vDxf) << qUtf8Printable(
-                QApplication::translate("VDxfEngine", "Piece '%1'. Piece System Text is missing.")
-                    .arg(detail.GetName()));
-        }
-        return;
-    }
-
-    if (m_compatibilityMode == DXFApparelCompatibility::RPCADV08)
-    {
-        CheckLabelCompatibilityRPCADV08(detail);
-    }
-    else if (m_compatibilityMode == DXFApparelCompatibility::RPCADV09)
-    {
-        CheckLabelCompatibilityRPCADV09(detail);
-    }
-
-    const qreal scale = qMin(detail.GetXScale(), detail.GetYScale());
-    const qreal dW = QLineF(labelShape.at(0), labelShape.at(1)).length();
-    const qreal dH = QLineF(labelShape.at(1), labelShape.at(2)).length();
-    const qreal angle = QLineF(labelShape.at(0), labelShape.at(1)).angle();
-    qreal dY = 0;
-
-    VTextManager const tm = detail.GetPieceLabelData();
-    const QVector<TextLine> labelLines = tm.GetLabelSourceLines(qFloor(dW), tm.GetFont());
-
-    for (const auto &tl : labelLines)
-    {
-        const QFont fnt = LineFont(tl, tm.GetFont());
-        QFontMetrics const fm(fnt);
-
-        if (dY + fm.height() * scale / 2 > dH)
-        {
-            break;
-        }
-
-        dY += fm.height() * scale / 2;
-
-        const qreal dX = LineAlign(tl, tl.qsText, fm, dW);
-        QTransform const lineMatrix = detail.LineMatrix(labelShape.at(0), angle, QPointF(dX, dY), dW);
-
-        QPointF const pos = lineMatrix.map(QPointF());
-
-        auto *textLine = new DRW_Text();
-        textLine->basePoint =
-            DRW_Coord(FromPixel(pos.x(), m_varInsunits), FromPixel(GetSize().height() - pos.y(), m_varInsunits), 0);
-        textLine->secPoint =
-            DRW_Coord(FromPixel(pos.x(), m_varInsunits), FromPixel(GetSize().height() - pos.y(), m_varInsunits), 0);
-        textLine->height = FromPixel(fm.ascent() * scale / 2, m_varInsunits);
-        textLine->layer = *layer1;
-        textLine->text = tl.qsText.toStdString();
-        textLine->style = m_input->AddFont(fnt);
-
-        QLineF string(0, 0, 100, 0);
-        string.setAngle(angle);
-        string = lineMatrix.map(string);
-        const qreal labelAngle = string.angle();
-
-        if (detail.IsVerticallyFlipped() && detail.IsHorizontallyFlipped())
-        {
-            textLine->angle = labelAngle + 180;
-        }
-        else if (detail.IsVerticallyFlipped())
-        {
-            textLine->angle = -labelAngle;
-        }
-        else if (detail.IsHorizontallyFlipped())
-        {
-            textLine->angle = -labelAngle - 180;
-        }
-        else
-        {
-            textLine->angle = labelAngle;
-        }
-
-        detailBlock->ent.push_back(textLine);
-
-        dY += MmToPixel(1.5);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VDxfEngine::ExportAnnotationText(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail,
                                       const UTF8STRING &layer)
 {
@@ -1170,32 +1046,6 @@ void VDxfEngine::ExportAnnotationText(const QSharedPointer<dx_ifaceBlock> &detai
     text->angle = angleLine.angle();
 
     detailBlock->ent.push_back(text);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VDxfEngine::ExportStyleSystemText(const QSharedPointer<dx_iface> &input, const QVector<VLayoutPiece> &details)
-{
-    for (const auto &detail : details)
-    {
-        const QStringList strings = detail.GetPatternText();
-        if (not strings.isEmpty())
-        {
-            for (int j = 0; j < strings.size(); ++j)
-            {
-                const qreal height = ToPixel(AAMATextHeight * m_yscale, m_varInsunits);
-                QPointF const pos(0, GetSize().height() - height * (static_cast<int>(strings.size()) - j - 1));
-                input->AddEntity(AAMAText(pos, strings.at(j), *layer1));
-            }
-            return;
-        }
-    }
-
-    if (m_compatibilityMode == DXFApparelCompatibility::STANDARD)
-    {
-        // According to ASTM standard Style System Text is mandatory.
-        // Some applications may refuse file without Style System Text.
-        qCWarning(vDxf) << qUtf8Printable(QApplication::translate("VDxfEngine", "Style System Text is missing."));
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1279,8 +1129,6 @@ auto VDxfEngine::ExportToASTM(const QVector<VLayoutPiece> &details) -> bool
     }
     m_input->AddASTMLayers();
 
-    ExportStyleSystemText(m_input, details);
-
     for (auto detail : details)
     {
         // Use custom deleter function to lose ownership after adding the block
@@ -1312,7 +1160,6 @@ auto VDxfEngine::ExportToASTM(const QVector<VLayoutPiece> &details) -> bool
         ExportASTMInternalCutout(detailBlock, detail);
         ExportASTMNotches(detailBlock, detail);
         ExportAAMAGrainline(detailBlock, detail);
-        ExportPieceText(detailBlock, detail);
         ExportASTMDrill(detailBlock, detail);
         ExportASTMAnnotationText(detailBlock, detail);
         ExportASTMMirrorLine(detailBlock, detail);
@@ -2037,76 +1884,6 @@ void VDxfEngine::ASTMDrawFoldLineTwoArrows(const QVector<QVector<QPointF>> &poin
     }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void VDxfEngine::CheckLabelCompatibilityRPCADV09(const VLayoutPiece &detail)
-{
-    // According to ASTM standard Piece System Text is mandatory.
-    // Richpeace CAD V9. At least 'Piece Name:' or 'Size:' identifiers must be present.
-    const QStringList strings = detail.GetPieceText();
-    bool pieceNameFound = false;
-    bool sizeFound = false;
-
-    for (const QString &line : strings)
-    {
-        if (line.startsWith("Piece Name:"_L1))
-        {
-            pieceNameFound = true;
-        }
-        else if (line.startsWith("Size:"_L1))
-        {
-            sizeFound = true;
-        }
-
-        // Break the loop early if both conditions are met
-        if (pieceNameFound || sizeFound)
-        {
-            break;
-        }
-    }
-
-    if (!pieceNameFound && !sizeFound)
-    {
-        qCWarning(vDxf) << qUtf8Printable(
-            QApplication::translate("VDxfEngine", "Piece '%1'. 'Piece Name:' or 'Size:' identifier is missing.")
-                .arg(detail.GetName()));
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VDxfEngine::CheckLabelCompatibilityRPCADV08(const VLayoutPiece &detail)
-{
-    // According to ASTM standard Piece System Text is mandatory.
-    // Richpeace CAD V8. If present 'Piece Name:' identifier, 'Size:' identifier must also be present.
-    const QStringList strings = detail.GetPieceText();
-    bool pieceNameFound = false;
-    bool sizeFound = false;
-
-    for (const QString &line : strings)
-    {
-        if (line.startsWith("Piece Name:"_L1))
-        {
-            pieceNameFound = true;
-        }
-        else if (line.startsWith("Size:"_L1))
-        {
-            sizeFound = true;
-        }
-
-        // Break the loop early if both conditions are met
-        if (pieceNameFound && sizeFound)
-        {
-            break;
-        }
-    }
-
-    if (pieceNameFound && !sizeFound)
-    {
-        qCWarning(vDxf) << qUtf8Printable(
-            QApplication::translate("VDxfEngine",
-                                    "Piece '%1'. 'Piece Name:' identifier requires 'Size:' identifier to be present.")
-                .arg(detail.GetName()));
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 template <class P, class V, class C>

@@ -36,7 +36,6 @@
 class VLayoutPiece;
 class VLayoutPoint;
 class QTextStream;
-class VTextManager;
 class QPainterPath;
 class VFoldLine;
 
@@ -111,7 +110,6 @@ private:
     void PlotInternalPaths(QTextStream &out, const VLayoutPiece &detail);
     void PlotPlaceLabels(QTextStream &out, const VLayoutPiece &detail);
     void PlotPassmarks(QTextStream &out, const VLayoutPiece &detail);
-    void PlotLabels(QTextStream &out, const VLayoutPiece &detail);
     void PlotGrainline(QTextStream &out, const VLayoutPiece &detail);
     void PlotMirrorLine(QTextStream &out, const VLayoutPiece &detail);
     void PlotFoldLine(QTextStream &out, const VLayoutPiece &detail);
@@ -120,13 +118,6 @@ private:
     void PlotFoldThreeX(QTextStream &out, const VFoldLine &fLine);
     void PlotFoldTwoArrowsText(QTextStream &out, const VFoldLine &fLine);
     void PlotFoldThreeDots(QTextStream &out, const VFoldLine &fLine);
-
-    void PlotLabel(QTextStream &out, const VLayoutPiece &detail, const QVector<QPointF> &labelShape,
-                   const VTextManager &tm);
-    void PlotLabelSVGFont(QTextStream &out, const VLayoutPiece &detail, const QVector<QPointF> &labelShape,
-                          const VTextManager &tm);
-    void PlotLabelOutlineFont(QTextStream &out, const VLayoutPiece &detail, const QVector<QPointF> &labelShape,
-                              const VTextManager &tm);
 
     template <class T> auto ConvertPath(const QVector<T> &path) const -> QVector<T>;
     template <class T> auto ConvertPoint(T point) const -> T;

@@ -33,7 +33,6 @@
 #include "../vlayout/vlayoutpiece.h"
 #include "../vlayout/vlayoutpiecepath.h"
 #include "../vlayout/vlayoutpoint.h"
-#include "../vlayout/vtextmanager.h"
 #include "../vmisc/def.h"
 #include "../vmisc/defglobal.h"
 #include "../vmisc/svgfont/vsvgfont.h"
@@ -90,74 +89,6 @@ template <class T> inline auto CastToPoint(const QVector<T> &points) -> QVector<
     }
 
     return casted;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto LineFont(const TextLine &tl, const VSvgFont &base) -> VSvgFont
-{
-    VSvgFont fnt = base;
-    fnt.SetPointSize(base.PointSize() + tl.iFontSize);
-    fnt.SetBold(tl.bold);
-    fnt.SetItalic(tl.italic);
-    return fnt;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto LineFont(const TextLine &tl, const QFont &base) -> QFont
-{
-    QFont fnt = base;
-    fnt.setPointSize(qMax(base.pointSize() + tl.iFontSize, 1));
-    if (!VAbstractApplication::VApp()->Settings()->GetSingleStrokeOutlineFont())
-    {
-        fnt.setBold(tl.bold);
-    }
-    fnt.setItalic(tl.italic);
-    return fnt;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto LineAlign(const TextLine &tl, const QString &text, const VSvgFontEngine &engine, qreal width, qreal penWidth)
-    -> qreal
-{
-    const int lineWidth = qRound(engine.TextWidth(text, penWidth));
-
-    qreal dX = 0;
-    if (tl.eAlign == 0 || (tl.eAlign & Qt::AlignLeft) > 0)
-    {
-        dX = 0;
-    }
-    else if ((tl.eAlign & Qt::AlignHCenter) > 0)
-    {
-        dX = (width - lineWidth) / 2;
-    }
-    else if ((tl.eAlign & Qt::AlignRight) > 0)
-    {
-        dX = width - lineWidth;
-    }
-
-    return dX;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto LineAlign(const TextLine &tl, const QString &text, const QFontMetrics &fm, qreal width) -> qreal
-{
-    const int lineWidth = fm.horizontalAdvance(text);
-
-    qreal dX = 0;
-    if (tl.eAlign == 0 || (tl.eAlign & Qt::AlignLeft) > 0)
-    {
-        dX = 0;
-    }
-    else if ((tl.eAlign & Qt::AlignHCenter) > 0)
-    {
-        dX = (width - lineWidth) / 2;
-    }
-    else if ((tl.eAlign & Qt::AlignRight) > 0)
-    {
-        dX = width - lineWidth;
-    }
-
-    return dX;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -356,7 +287,6 @@ void VHPGLEngine::ExportDetails(QTextStream &out, const QList<VLayoutPiece> &det
         PlotMirrorLine(out, detail);
         PlotPlaceLabels(out, detail);
         PlotPassmarks(out, detail);
-        PlotLabels(out, detail);
         PlotFoldLine(out, detail);
     }
 }
@@ -487,13 +417,6 @@ void VHPGLEngine::PlotPassmarks(QTextStream &out, const VLayoutPiece &detail)
             PlotPassmark(mirroredPassmark);
         }
     }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VHPGLEngine::PlotLabels(QTextStream &out, const VLayoutPiece &detail)
-{
-    PlotLabel(out, detail, detail.GetPieceLabelRect(), detail.GetPieceLabelData());
-    PlotLabel(out, detail, detail.GetPatternLabelRect(), detail.GetPatternLabelData());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -632,141 +555,6 @@ void VHPGLEngine::PlotFoldThreeDots(QTextStream &out, const VFoldLine &fLine)
         PlotCircle(out, center, radius);
     }
 }
-
-//---------------------------------------------------------------------------------------------------------------------
-void VHPGLEngine::PlotLabel(QTextStream &out, const VLayoutPiece &detail, const QVector<QPointF> &labelShape,
-                            const VTextManager &tm)
-{
-    if (m_singleLineFont)
-    {
-        PlotLabelSVGFont(out, detail, labelShape, tm);
-    }
-    else
-    {
-        PlotLabelOutlineFont(out, detail, labelShape, tm);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VHPGLEngine::PlotLabelSVGFont(QTextStream &out, const VLayoutPiece &detail, const QVector<QPointF> &labelShape,
-                                   const VTextManager &tm)
-{
-    if (labelShape.count() <= 2)
-    {
-        return;
-    }
-
-    VSvgFontDatabase  const*db = VAbstractApplication::VApp()->SVGFontDatabase();
-    VSvgFontEngine engine =
-        db->FontEngine(tm.GetSVGFontFamily(), SVGFontStyle::Normal, SVGFontWeight::Normal, tm.GetSVGFontPointSize());
-
-    VSvgFont const svgFont = engine.Font();
-    if (!svgFont.IsValid())
-    {
-        qDebug() << QStringLiteral("Invalid SVG font '%1'. Fallback to outline font.").arg(svgFont.Name());
-        PlotLabelOutlineFont(out, detail, labelShape, tm);
-        return;
-    }
-
-    const qreal dW = QLineF(labelShape.at(0), labelShape.at(1)).length();
-    const qreal dH = QLineF(labelShape.at(1), labelShape.at(2)).length();
-    const qreal angle = -QLineF(labelShape.at(0), labelShape.at(1)).angle();
-
-    qreal dY = m_penWidthPx;
-
-    const QVector<TextLine> labelLines = tm.GetLabelSourceLines(qFloor(dW), svgFont, m_penWidthPx);
-
-    for (const auto &tl : labelLines)
-    {
-        const VSvgFont fnt = LineFont(tl, svgFont);
-        engine = db->FontEngine(fnt);
-
-        if (dY + engine.FontHeight() + m_penWidthPx > dH)
-        {
-            break;
-        }
-
-        const QString qsText = tl.qsText;
-        const qreal dX = LineAlign(tl, qsText, engine, dW, m_penWidthPx);
-        // set up the rotation around top-left corner matrix
-        const QTransform lineMatrix = detail.LineMatrix(labelShape.at(0), angle, QPointF(dX, dY), dW);
-
-        QPainterPath const path = lineMatrix.map(engine.DrawPath(QPointF(), qsText));
-        PlotPainterPath(out, path, Qt::SolidLine);
-
-        dY += engine.FontHeight() + m_penWidthPx + tm.GetSpacing();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VHPGLEngine::PlotLabelOutlineFont(QTextStream &out, const VLayoutPiece &detail, const QVector<QPointF> &labelShape,
-                                       const VTextManager &tm)
-{
-    if (labelShape.count() <= 2)
-    {
-        return;
-    }
-
-    const qreal dW = QLineF(labelShape.at(0), labelShape.at(1)).length();
-    const qreal dH = QLineF(labelShape.at(1), labelShape.at(2)).length();
-    const qreal angle = -QLineF(labelShape.at(0), labelShape.at(1)).angle();
-
-    qreal dY = 0;
-
-    VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-
-    if (m_singleStrokeOutlineFont)
-    {
-        dY += m_penWidthPx;
-    }
-
-    const QVector<TextLine> labelLines = tm.GetLabelSourceLines(qFloor(dW), tm.GetFont());
-
-    for (const auto &tl : labelLines)
-    {
-        const QFont fnt = LineFont(tl, tm.GetFont());
-
-        VSingleLineOutlineChar const corrector(fnt);
-        if (m_singleStrokeOutlineFont && !corrector.IsPopulated())
-        {
-            corrector.LoadCorrections(settings->GetPathFontCorrections());
-        }
-
-        QFontMetrics const fm(fnt);
-
-        if (dY + fm.height() > dH)
-        {
-            break;
-        }
-
-        const QString qsText = tl.qsText;
-        const qreal dX = LineAlign(tl, qsText, fm, dW);
-        // set up the rotation around top-left corner matrix
-        const QTransform lineMatrix = detail.LineMatrix(labelShape.at(0), angle, QPointF(dX, dY), dW);
-
-        QPainterPath path;
-
-        if (m_singleStrokeOutlineFont)
-        {
-            int w = 0;
-            for (auto c : std::as_const(qsText))
-            {
-                path.addPath(corrector.DrawChar(w, static_cast<qreal>(fm.ascent()), c));
-                w += fm.horizontalAdvance(c);
-            }
-        }
-        else
-        {
-            path.addText(0, static_cast<qreal>(fm.ascent()), fnt, qsText);
-        }
-
-        PlotPainterPath(out, lineMatrix.map(path), Qt::SolidLine);
-
-        dY += fm.height() + m_penWidthPx + tm.GetSpacing();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 template <class T> auto VHPGLEngine::ConvertPath(const QVector<T> &path) const -> QVector<T>
 {
     QVector<T> convertedPath;

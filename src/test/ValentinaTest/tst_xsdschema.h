@@ -41,8 +41,6 @@ public:
 private slots:
     void TestPatternSchema_data();
     void TestPatternSchema();
-    void TestPatternLabelSchema_data();
-    void TestPatternLabelSchema();
     void TestLayoutSchema_data();
     void TestLayoutSchema();
     void TestVITSchema_data();

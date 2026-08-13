@@ -180,43 +180,16 @@ public:
     void SetNotes(const QString &text);
 
     auto GetPatternName() const -> QString;
-    void SetPatternName(const QString &qsName);
 
     auto GetCompanyName() const -> QString;
-    void SetCompanyName(const QString &qsName);
 
     auto GetPatternNumber() const -> QString;
-    void SetPatternNumber(const QString &qsNum);
-
-    auto GetCustomerName() const -> QString;
-    void SetCustomerName(const QString &qsName);
-
-    auto GetCustomerBirthDate() const -> QDate;
-    void SetCustomerBirthDate(const QDate &date);
-
-    auto GetCustomerEmail() const -> QString;
-    void SetCustomerEmail(const QString &email);
-
-    auto GetLabelDateFormat() const -> QString;
-    void SetLabelDateFormat(const QString &format);
-
-    auto GetLabelTimeFormat() const -> QString;
-    void SetLabelTimeFormat(const QString &format);
-
-    void SetPatternLabelTemplate(const QVector<VLabelTemplateLine> &lines);
-    auto GetPatternLabelTemplate() const -> QVector<VLabelTemplateLine>;
 
     auto SetWatermarkPath(const QString &path) -> bool;
     auto GetWatermarkPath() const -> QString;
 
-    void SetPatternMaterials(const QMap<int, QString> &materials);
-    auto GetPatternMaterials() const -> QMap<int, QString>;
-
     auto GetFinalMeasurements() const -> QVector<VFinalMeasurement>;
     void SetFinalMeasurements(const QVector<VFinalMeasurement> &measurements);
-
-    auto GetDefaultPieceLabelPath() const -> QString;
-    void SetDefaultPieceLabelPath(const QString &path);
 
     void SetPatternWasChanged(bool changed);
     auto GetPatternWasChanged() const -> bool;
@@ -307,17 +280,13 @@ public:
     static const QString TagElArc;
     static const QString TagTools;
     static const QString TagOperation;
-    static const QString TagData;
-    static const QString TagPatternInfo;
     static const QString TagPatternName;
     static const QString TagPatternNum;
     static const QString TagCompanyName;
     static const QString TagCustomerName;
     static const QString TagCustomerBirthDate;
     static const QString TagCustomerEmail;
-    static const QString TagPatternLabel;
     static const QString TagWatermark;
-    static const QString TagPatternMaterials;
     static const QString TagFinalMeasurements;
     static const QString TagMaterial;
     static const QString TagFMeasurement;
@@ -327,7 +296,6 @@ public:
     static const QString TagNode;
     static const QString TagBackgroundImages;
     static const QString TagBackgroundImage;
-    static const QString TagPieceLabel;
     static const QString TagOffset;
     static const QString TagMirrorLine;
 
@@ -337,16 +305,6 @@ public:
     static const QString AttrObject;
     static const QString AttrTool;
     static const QString AttrType;
-    static const QString AttrLetter;
-    static const QString AttrAnnotation;
-    static const QString AttrOrientation;
-    static const QString AttrRotationWay;
-    static const QString AttrTilt;
-    static const QString AttrFoldPosition;
-    static const QString AttrQuantity;
-    static const QString AttrOnFold;
-    static const QString AttrDateFormat;
-    static const QString AttrTimeFormat;
     static const QString AttrArrows;
     static const QString AttrNodeReverse;
     static const QString AttrNodeExcluded;
@@ -475,7 +433,6 @@ protected:
 
     Unit m_units{Unit::LAST_UNIT_DO_NOT_USE};
     QString m_patternNumber{};
-    QString m_labelDateFormat{};
     QString m_patternName{};
     QString m_MPath{};
     QString m_watermarkPath{};
@@ -485,10 +442,6 @@ protected:
 
     /** @brief tools list with pointer on tools. */
     static QHash<quint32, VDataTool *> tools;
-    /** @brief patternLabelLines list to speed up reading a template by many pieces. */
-    static QVector<VLabelTemplateLine> patternLabelLines;
-    /** @brief patternMaterials list to speed up reading materials by many pieces. */
-    static QMap<int, QString> patternMaterials;
     static bool patternLabelWasChanged;
 
     static void ToolExists(const quint32 &id);
@@ -506,7 +459,6 @@ protected:
 
     auto ReadUnits() const -> Unit;
     auto ReadPatternNumber() const -> QString;
-    auto ReadLabelDateFormat() const -> QString;
     auto ReadPatternName() const -> QString;
     auto ReadMPath() const -> QString;
     auto ReadWatermarkPath() const -> QString;
@@ -545,9 +497,6 @@ private:
     static auto IsFunction(const QString &token) -> bool;
 
     auto ParseItemElement(const QDomElement &domElement) -> QPair<bool, QMap<quint32, quint32>>;
-
-    auto GetMaterials(const QDomElement &element) const -> QMap<int, QString>;
-    void SetMaterials(QDomElement &element, const QMap<int, QString> &materials);
 
     auto GetFMeasurements(const QDomElement &element) const -> QVector<VFinalMeasurement>;
     void SetFMeasurements(QDomElement &element, const QVector<VFinalMeasurement> &measurements);

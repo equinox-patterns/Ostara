@@ -91,17 +91,13 @@ const QString VAbstractPattern::TagArc = QStringLiteral("arc");
 const QString VAbstractPattern::TagElArc = QStringLiteral("elArc");
 const QString VAbstractPattern::TagTools = QStringLiteral("tools");
 const QString VAbstractPattern::TagOperation = QStringLiteral("operation");
-const QString VAbstractPattern::TagData = QStringLiteral("data");
-const QString VAbstractPattern::TagPatternInfo = QStringLiteral("patternInfo");
 const QString VAbstractPattern::TagPatternName = QStringLiteral("patternName");
 const QString VAbstractPattern::TagPatternNum = QStringLiteral("patternNumber");
 const QString VAbstractPattern::TagCustomerName = QStringLiteral("customer");
 const QString VAbstractPattern::TagCustomerBirthDate = QStringLiteral("birthDate");
 const QString VAbstractPattern::TagCustomerEmail = QStringLiteral("email");
 const QString VAbstractPattern::TagCompanyName = QStringLiteral("company");
-const QString VAbstractPattern::TagPatternLabel = QStringLiteral("patternLabel");
 const QString VAbstractPattern::TagWatermark = QStringLiteral("watermark");
-const QString VAbstractPattern::TagPatternMaterials = QStringLiteral("patternMaterials");
 const QString VAbstractPattern::TagFinalMeasurements = QStringLiteral("finalMeasurements");
 const QString VAbstractPattern::TagMaterial = QStringLiteral("material");
 const QString VAbstractPattern::TagFMeasurement = QStringLiteral("finalMeasurment");
@@ -111,7 +107,6 @@ const QString VAbstractPattern::TagNodes = QStringLiteral("nodes");
 const QString VAbstractPattern::TagNode = QStringLiteral("node");
 const QString VAbstractPattern::TagBackgroundImages = QStringLiteral("backgroudImages");
 const QString VAbstractPattern::TagBackgroundImage = QStringLiteral("backgroudImage");
-const QString VAbstractPattern::TagPieceLabel = QStringLiteral("pieceLabel");
 const QString VAbstractPattern::TagOffset = QStringLiteral("offset");
 const QString VAbstractPattern::TagMirrorLine = QStringLiteral("mirrorLine"); // NOLINT(cert-err58-cpp)
 
@@ -121,16 +116,6 @@ const QString VAbstractPattern::AttrVisible = QStringLiteral("visible");
 const QString VAbstractPattern::AttrObject = QStringLiteral("object");
 const QString VAbstractPattern::AttrTool = QStringLiteral("tool");
 const QString VAbstractPattern::AttrType = QStringLiteral("type");
-const QString VAbstractPattern::AttrLetter = QStringLiteral("letter");
-const QString VAbstractPattern::AttrAnnotation = QStringLiteral("annotation");
-const QString VAbstractPattern::AttrOrientation = QStringLiteral("orientation");
-const QString VAbstractPattern::AttrRotationWay = QStringLiteral("rotationWay");
-const QString VAbstractPattern::AttrTilt = QStringLiteral("tilt");
-const QString VAbstractPattern::AttrFoldPosition = QStringLiteral("foldPosition");
-const QString VAbstractPattern::AttrQuantity = QStringLiteral("quantity");
-const QString VAbstractPattern::AttrOnFold = QStringLiteral("onFold");
-const QString VAbstractPattern::AttrDateFormat = QStringLiteral("dateFormat");
-const QString VAbstractPattern::AttrTimeFormat = QStringLiteral("timeFormat");
 const QString VAbstractPattern::AttrArrows = QStringLiteral("arrows");
 const QString VAbstractPattern::AttrNodeReverse = QStringLiteral("reverse");
 const QString VAbstractPattern::AttrNodeExcluded = QStringLiteral("excluded");
@@ -191,8 +176,6 @@ const QString VAbstractPattern::NodeSpline = QStringLiteral("NodeSpline");
 const QString VAbstractPattern::NodeSplinePath = QStringLiteral("NodeSplinePath");
 
 QHash<quint32, VDataTool *> VAbstractPattern::tools = QHash<quint32, VDataTool *>();
-QVector<VLabelTemplateLine> VAbstractPattern::patternLabelLines = QVector<VLabelTemplateLine>();
-QMap<int, QString> VAbstractPattern::patternMaterials = QMap<int, QString>();
 bool VAbstractPattern::patternLabelWasChanged = false;
 
 namespace
@@ -242,30 +225,6 @@ auto GetTokens(const VFormulaField &formula) -> QList<QString>
 void GatherTokens(QSet<QString> &tokens, const QList<QString> &tokenList)
 {
     tokens = tokens.unite(ConvertToSet(tokenList));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief AdjustMaterials help function that combine user materials from pattern and cli.
- * @param materials materials from pattern
- * @return combined list
- */
-auto AdjustMaterials(QMap<int, QString> materials) -> QMap<int, QString>
-{
-    const QMap<int, QString> cliMaterials = VAbstractValApplication::VApp()->GetUserMaterials();
-    QMap<int, QString>::const_iterator i = cliMaterials.constBegin();
-    while (i != cliMaterials.constEnd())
-    {
-        if (not materials.contains(i.key()))
-        {
-            qWarning() << QObject::tr("User material number %1 was not defined in this pattern.").arg(i.key());
-        }
-
-        materials.insert(i.key(), i.value());
-        ++i;
-    }
-
-    return materials;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -473,7 +432,6 @@ void VAbstractPattern::setXMLContent(const QString &fileName)
     Clear();
     VDomDocument::setXMLContent(fileName);
     m_patternNumber = ReadPatternNumber();
-    m_labelDateFormat = ReadLabelDateFormat();
     m_patternName = ReadPatternName();
     m_MPath = ReadMPath();
     m_watermarkPath = ReadWatermarkPath();
@@ -487,7 +445,6 @@ void VAbstractPattern::Clear()
     CancelFormulaDependencyChecks();
     VDomDocument::Clear();
     m_patternNumber.clear();
-    m_labelDateFormat.clear();
     m_patternName.clear();
     m_MPath.clear();
     m_watermarkPath.clear();
@@ -890,167 +847,15 @@ auto VAbstractPattern::GetPatternName() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetPatternName(const QString &qsName)
-{
-    m_patternName = qsName;
-    CheckTagExists(TagPatternName);
-    setTagText(TagPatternName, m_patternName);
-    SetPatternWasChanged(true);
-    modified = true;
-    emit patternChanged(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GetCompanyName() const -> QString
 {
     return m_companyName;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetCompanyName(const QString &qsName)
-{
-    m_companyName = qsName;
-    CheckTagExists(TagCompanyName);
-    setTagText(TagCompanyName, m_companyName);
-    SetPatternWasChanged(true);
-    modified = true;
-    emit patternChanged(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GetPatternNumber() const -> QString
 {
     return m_patternNumber;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetPatternNumber(const QString &qsNum)
-{
-    m_patternNumber = qsNum;
-    CheckTagExists(TagPatternNum);
-    setTagText(TagPatternNum, m_patternNumber);
-    SetPatternWasChanged(true);
-    modified = true;
-    emit patternChanged(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::GetCustomerName() const -> QString
-{
-    return UniqueTagText(TagCustomerName);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetCustomerName(const QString &qsName)
-{
-    CheckTagExists(TagCustomerName);
-    setTagText(TagCustomerName, qsName);
-    SetPatternWasChanged(true);
-    modified = true;
-    emit patternChanged(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::GetCustomerBirthDate() const -> QDate
-{
-    return QDate::fromString(UniqueTagText(TagCustomerBirthDate), "yyyy-MM-dd");
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetCustomerBirthDate(const QDate &date)
-{
-    CheckTagExists(TagCustomerBirthDate);
-    setTagText(TagCustomerBirthDate, date.toString("yyyy-MM-dd"));
-    SetPatternWasChanged(true);
-    modified = true;
-    emit patternChanged(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::GetCustomerEmail() const -> QString
-{
-    return UniqueTagText(TagCustomerEmail);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetCustomerEmail(const QString &email)
-{
-    CheckTagExists(TagCustomerEmail);
-    setTagText(TagCustomerEmail, email);
-    SetPatternWasChanged(true);
-    modified = true;
-    emit patternChanged(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::GetLabelDateFormat() const -> QString
-{
-    return m_labelDateFormat;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetLabelDateFormat(const QString &format)
-{
-    m_labelDateFormat = format;
-    QDomElement tag = CheckTagExists(TagPatternLabel);
-    SetAttribute(tag, AttrDateFormat, m_labelDateFormat);
-    SetPatternWasChanged(true);
-    modified = true;
-    emit patternChanged(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::GetLabelTimeFormat() const -> QString
-{
-    QString globalLabelTimeFormat = VAbstractApplication::VApp()->Settings()->GetLabelTimeFormat();
-
-    const QDomNodeList list = elementsByTagName(TagPatternLabel);
-    if (list.isEmpty())
-    {
-        return globalLabelTimeFormat;
-    }
-
-    QDomElement const tag = list.at(0).toElement();
-    return GetParametrString(tag, AttrTimeFormat, globalLabelTimeFormat);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetLabelTimeFormat(const QString &format)
-{
-    QDomElement tag = CheckTagExists(TagPatternLabel);
-    SetAttribute(tag, AttrTimeFormat, format);
-    SetPatternWasChanged(true);
-    modified = true;
-    emit patternChanged(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetPatternLabelTemplate(const QVector<VLabelTemplateLine> &lines)
-{
-    QDomElement tag = CheckTagExists(TagPatternLabel);
-    RemoveAllChildren(tag);
-    SetLabelTemplate(tag, lines);
-    patternLabelLines = lines;
-    SetPatternWasChanged(true);
-    modified = true;
-    emit patternChanged(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::GetPatternLabelTemplate() const -> QVector<VLabelTemplateLine>
-{
-    if (patternLabelLines.isEmpty())
-    {
-        const QDomNodeList list = elementsByTagName(TagPatternLabel);
-        if (list.isEmpty() || list.at(0).childNodes().isEmpty())
-        {
-            return {};
-        }
-
-        patternLabelLines = GetLabelTemplate(list.at(0).toElement());
-    }
-
-    return patternLabelLines;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1092,35 +897,6 @@ auto VAbstractPattern::GetWatermarkPath() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetPatternMaterials(const QMap<int, QString> &materials)
-{
-    QDomElement tag = CheckTagExists(TagPatternMaterials);
-    RemoveAllChildren(tag);
-    SetMaterials(tag, materials);
-    patternMaterials = materials;
-    SetPatternWasChanged(true);
-    modified = true;
-    emit patternChanged(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::GetPatternMaterials() const -> QMap<int, QString>
-{
-    if (patternMaterials.isEmpty())
-    {
-        const QDomNodeList list = elementsByTagName(TagPatternMaterials);
-        if (list.isEmpty() || list.at(0).childNodes().isEmpty())
-        {
-            return {};
-        }
-
-        patternMaterials = GetMaterials(list.at(0).toElement());
-    }
-
-    return AdjustMaterials(patternMaterials);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GetFinalMeasurements() const -> QVector<VFinalMeasurement>
 {
     const QDomNodeList list = elementsByTagName(TagFinalMeasurements);
@@ -1138,21 +914,6 @@ void VAbstractPattern::SetFinalMeasurements(const QVector<VFinalMeasurement> &me
     QDomElement tag = CheckTagExists(TagFinalMeasurements);
     RemoveAllChildren(tag);
     SetFMeasurements(tag, measurements);
-    modified = true;
-    emit patternChanged(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::GetDefaultPieceLabelPath() const -> QString
-{
-    return UniqueTagText(TagPieceLabel);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetDefaultPieceLabelPath(const QString &path)
-{
-    CheckTagExists(TagPieceLabel);
-    setTagText(TagPieceLabel, path);
     modified = true;
     emit patternChanged(false);
 }
@@ -1550,12 +1311,9 @@ auto VAbstractPattern::CheckTagExists(const QString &tag) -> QDomElement
             TagCustomerName,      // 7
             TagCustomerBirthDate, // 8
             TagCustomerEmail,     // 9
-            TagPatternLabel,      // 10
-            TagPieceLabel,        // 11
-            TagWatermark,         // 12
-            TagPatternMaterials,  // 13
-            TagFinalMeasurements, // 14
-            TagBackgroundImages   // 15
+            TagWatermark,         // 10
+            TagFinalMeasurements, // 11
+            TagBackgroundImages   // 12
         };
 
         switch (tags.indexOf(tag))
@@ -1587,22 +1345,13 @@ auto VAbstractPattern::CheckTagExists(const QString &tag) -> QDomElement
             case 9: // TagCustomerEmail
                 element = createElement(TagCustomerEmail);
                 break;
-            case 10: // TagPatternLabel
-                element = createElement(TagPatternLabel);
-                break;
-            case 11: // TagPieceLabel
-                element = createElement(TagPieceLabel);
-                break;
-            case 12: // TagWatermark
+            case 10: // TagWatermark
                 element = createElement(TagWatermark);
                 break;
-            case 13: // TagPatternMaterials
-                element = createElement(TagPatternMaterials);
-                break;
-            case 14: // TagFinalMeasurements
+            case 11: // TagFinalMeasurements
                 element = createElement(TagFinalMeasurements);
                 break;
-            case 15: // TagBackgroundImages
+            case 12: // TagBackgroundImages
                 element = createElement(TagBackgroundImages);
                 break;
             case 0: // TagUnit (Mandatory tag)
@@ -2025,52 +1774,6 @@ auto VAbstractPattern::ParseItemElement(const QDomElement &domElement) -> QPair<
                                     domElement);
         excep.AddMoreInformation(e.ErrorMessage());
         throw excep;
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::GetMaterials(const QDomElement &element) const -> QMap<int, QString>
-{
-    QMap<int, QString> materials;
-
-    if (not element.isNull())
-    {
-        QDomElement tagMaterial = element.firstChildElement();
-        while (tagMaterial.isNull() == false)
-        {
-            if (tagMaterial.tagName() == TagMaterial)
-            {
-                const auto number = static_cast<int>(GetParametrUInt(tagMaterial, AttrNumber, QChar('0')));
-                const QString name = GetParametrEmptyString(tagMaterial, AttrName);
-
-                if (number > 0 && number <= userMaterialPlaceholdersQuantity)
-                {
-                    materials.insert(number, name);
-                }
-            }
-            tagMaterial = tagMaterial.nextSiblingElement(TagMaterial);
-        }
-    }
-
-    return materials;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetMaterials(QDomElement &element, const QMap<int, QString> &materials)
-{
-    if (not element.isNull())
-    {
-        QMap<int, QString>::const_iterator i = materials.constBegin();
-        while (i != materials.constEnd())
-        {
-            QDomElement tagMaterial = createElement(TagMaterial);
-
-            SetAttribute(tagMaterial, AttrNumber, i.key());
-            SetAttribute(tagMaterial, AttrName, i.value());
-
-            element.appendChild(tagMaterial);
-            ++i;
-        }
     }
 }
 
@@ -2665,30 +2368,6 @@ auto VAbstractPattern::ReadUnits() const -> Unit
 auto VAbstractPattern::ReadPatternNumber() const -> QString
 {
     return UniqueTagText(TagPatternNum);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::ReadLabelDateFormat() const -> QString
-{
-    QString globalLabelDateFormat = VAbstractApplication::VApp()->Settings()->GetLabelDateFormat();
-
-    const QDomNodeList list = elementsByTagName(TagPatternLabel);
-    if (list.isEmpty())
-    {
-        return globalLabelDateFormat;
-    }
-
-    QString labelDateFormat;
-
-    try
-    {
-        labelDateFormat = GetParametrString(list.at(0).toElement(), AttrDateFormat);
-    }
-    catch (const VExceptionEmptyParameter &)
-    {
-        return globalLabelDateFormat;
-    }
-    return labelDateFormat;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

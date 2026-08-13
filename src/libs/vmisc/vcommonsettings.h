@@ -243,8 +243,6 @@ public:
     auto GetSingleLineFonts() const -> bool;
     void SetSingleLineFonts(bool value);
 
-    auto GetPieceLabelFontPointSize() const -> int;
-    void SetPieceLabelFontPointSize(int size);
     static auto MinPieceLabelFontPointSize() -> int;
 
     auto GetPatternLabelFontSize() const -> int;
@@ -260,20 +258,6 @@ public:
 #if !defined(Q_OS_WIN)
     static const QString unixStandardSharePath;
 #endif
-
-    auto GetLabelDateFormat() const -> QString;
-    void SetLabelDateFormat(const QString &format);
-
-    static auto PredefinedDateFormats() -> QStringList;
-    auto GetUserDefinedDateFormats() const -> QStringList;
-    void SetUserDefinedDateFormats(const QStringList &formats);
-
-    auto GetLabelTimeFormat() const -> QString;
-    void SetLabelTimeFormat(const QString &format);
-
-    static auto PredefinedTimeFormats() -> QStringList;
-    auto GetUserDefinedTimeFormats() const -> QStringList;
-    void SetUserDefinedTimeFormats(const QStringList &formats);
 
     auto GetCurveApproximationScale() const -> qreal;
     void SetCurveApproximationScale(qreal value);

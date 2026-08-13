@@ -37,8 +37,6 @@
 class VPieceData;
 class VPieceNode;
 class VPiecePath;
-class VPatternLabelData;
-class VPieceLabelData;
 class VGrainlineData;
 class VContainer;
 class QPainterPath;
@@ -119,14 +117,6 @@ public:
 
     auto Dependencies() const -> QList<quint32>;
 
-    void SetPieceLabelData(const VPieceLabelData &data);
-    auto GetPieceLabelData() -> VPieceLabelData &;
-    auto GetPieceLabelData() const -> const VPieceLabelData &;
-
-    void SetPatternLabelData(const VPatternLabelData &info);
-    auto GetPatternLabelData() -> VPatternLabelData &;
-    auto GetPatternLabelData() const -> const VPatternLabelData &;
-
     void SetGrainlineGeometry(const VGrainlineData &data);
     auto GetGrainlineGeometry() -> VGrainlineData &;
     auto GetGrainlineGeometry() const -> const VGrainlineData &;
@@ -142,9 +132,6 @@ public:
     auto SeamAllowancePointsWithRotation(const VContainer *data, vsizetype makeFirst) const -> QVector<VLayoutPoint>;
     auto FullSeamAllowancePointsWithRotation(const VContainer *data, vsizetype makeFirst) const
         -> QVector<VLayoutPoint>;
-
-    void SetGradationLabel(const QString &label);
-    auto GetGradationLabel() const -> QString;
 
     auto IsManualFoldHeight() const -> bool;
     void SetManualFoldHeight(bool value);

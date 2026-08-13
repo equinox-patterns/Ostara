@@ -35,8 +35,6 @@
 #include "../vmisc/def.h"
 #include "../vmisc/typedef.h"
 #include "floatItemData/vgrainlinedata.h"
-#include "floatItemData/vpatternlabeldata.h"
-#include "floatItemData/vpiecelabeldata.h"
 #include "vpiecepath.h"
 
 QT_WARNING_PUSH
@@ -61,18 +59,10 @@ public:
     QVector<quint32> m_pins{};                   // NOLINT(misc-non-private-member-variables-in-classes)
     QVector<quint32> m_placeLabels{};            // NOLINT(misc-non-private-member-variables-in-classes)
 
-    /** @brief Pattern piece data */
-    VPieceLabelData m_ppData{}; // NOLINT(misc-non-private-member-variables-in-classes)
-
-    /** @brief Pattern info coordinates */
-    VPatternLabelData m_piPatternInfo{}; // NOLINT(misc-non-private-member-variables-in-classes)
-
     /** @brief m_glGrainline grainline geometry object*/
     VGrainlineData m_glGrainline{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     QString m_formulaWidth{'0'}; // NOLINT(misc-non-private-member-variables-in-classes)
-
-    QString m_gradationLabel{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     QString m_shortName{}; // NOLINT(misc-non-private-member-variables-in-classes)
 

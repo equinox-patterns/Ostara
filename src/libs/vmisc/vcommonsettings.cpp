@@ -153,8 +153,6 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternDefaultSeamAllowance, ("p
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelFont, ("pattern/labelFont"_L1))       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelSVGFont, ("pattern/labelSVGFont"_L1)) // NOLINT
 // NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPieceLabelFontPointSize, ("pattern/pieceLabelFontPointSize"_L1))
-// NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSingleStrokeOutlineFont, ("pattern/singleStrokeOutlineFont"_L1))
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSingleLineFonts, ("pattern/singleLineFonts"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLineWidth, ("pattern/lineWidth"_L1))             // NOLINT
@@ -194,11 +192,6 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCSVWithHeader, ("csv/withHeader"
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCSVCodec, ("csv/withCodec"_L1))         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCSVSeparator, ("csv/withSeparator"_L1)) // NOLINT
 
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLabelDateFormat, ("label/dateFormat"_L1))           // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLabelUserDateFormats, ("label/userDateFormats"_L1)) // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLabelTimeFormat, ("label/timeFormat"_L1))           // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLabelUserTimeFormats, ("label/userTimeFormats"_L1)) // NOLINT
-
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingScrollingDuration, ("scrolling/duration"_L1))                 // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingScrollingUpdateInterval, ("scrolling/updateInterval"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingScrollingSensorMouseScale, ("scrolling/sensorMouseScale"_L1)) // NOLINT
@@ -228,15 +221,6 @@ qreal scrollingWheelMouseScaleCached = -1;  // NOLINT(cppcoreguidelines-avoid-no
 qreal scrollingAccelerationCached = -1;     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 int patternTranslateFormulaCached = -1;     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
-//---------------------------------------------------------------------------------------------------------------------
-auto ClearFormats(const QStringList &predefinedFormats, QStringList formats) -> QStringList
-{
-    for (const auto &f : predefinedFormats)
-    {
-        formats.removeAll(f);
-    }
-    return formats;
-}
 } // namespace
 
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, commonIniFilename, ("common"_L1)) // NOLINT
@@ -1248,34 +1232,6 @@ void VCommonSettings::SetSingleLineFonts(bool value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetPieceLabelFontPointSize() const -> int
-{
-    bool ok = false;
-    int val = value(*settingPieceLabelFontPointSize, VCommonSettings::MinPieceLabelFontPointSize()).toInt(&ok);
-    if (not ok)
-    {
-        qDebug() << "Could not convert value"
-                 << value(*settingPieceLabelFontPointSize, VCommonSettings::MinPieceLabelFontPointSize())
-                 << "to int. Return default value for label font size.";
-        val = 12;
-    }
-    else
-    {
-        if (val < VCommonSettings::MinPieceLabelFontPointSize())
-        {
-            return VCommonSettings::MinPieceLabelFontPointSize();
-        }
-    }
-    return val;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPieceLabelFontPointSize(int size)
-{
-    setValue(*settingPieceLabelFontPointSize, size);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::MinPieceLabelFontPointSize() -> int
 {
     return 5;
@@ -1336,92 +1292,6 @@ void VCommonSettings::SetShowAccuracyRadius(bool value)
     setValue(*settingPatternShowAccuracyRadius, value);
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetLabelDateFormat() const -> QString
-{
-    const QString format =
-        value(*settingLabelDateFormat, VCommonSettings::PredefinedDateFormats().constFirst()).toString();
-    const QStringList allFormats = VCommonSettings::PredefinedDateFormats() + GetUserDefinedDateFormats();
-
-    return allFormats.contains(format) ? format : VCommonSettings::PredefinedDateFormats().constFirst();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetLabelDateFormat(const QString &format)
-{
-    setValue(*settingLabelDateFormat, format);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::PredefinedDateFormats() -> QStringList
-{
-    return QStringList{"MM-dd-yyyy",
-                       "d/M/yy",
-                       "ddddMMMM dd, yyyy",
-                       "dd/MM/yy",
-                       "dd/MM/yyyy",
-                       "MMM d, yy",
-                       "MMM d, yyyy",
-                       "d. MMM. yyyy",
-                       "MMMM d, yyyy",
-                       "d. MMMM yyyy",
-                       "ddd, MMM d, yy",
-                       "ddd dd/MMM yy",
-                       "ddd, MMMM d, yyyy",
-                       "ddddMMMM d, yyyy",
-                       "MM-dd",
-                       "yy-MM-dd",
-                       "yyyy-MM-dd",
-                       "MM/yy",
-                       "MMM dd",
-                       "MMMM"};
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetUserDefinedDateFormats() const -> QStringList
-{
-    return value(*settingLabelUserDateFormats, QStringList()).toStringList();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetUserDefinedDateFormats(const QStringList &formats)
-{
-    setValue(*settingLabelUserDateFormats, ClearFormats(VCommonSettings::PredefinedDateFormats(), formats));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetLabelTimeFormat() const -> QString
-{
-    const QString format =
-        value(*settingLabelTimeFormat, VCommonSettings::PredefinedTimeFormats().constFirst()).toString();
-    const QStringList allFormats = VCommonSettings::PredefinedTimeFormats() + GetUserDefinedTimeFormats();
-
-    return allFormats.contains(format) ? format : VCommonSettings::PredefinedTimeFormats().constFirst();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetLabelTimeFormat(const QString &format)
-{
-    setValue(*settingLabelTimeFormat, format);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::PredefinedTimeFormats() -> QStringList
-{
-    return QStringList{"hh:mm:ss", "hh:mm:ss AP", "hh:mm", "hh:mm AP"};
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetUserDefinedTimeFormats() const -> QStringList
-{
-    return value(*settingLabelUserTimeFormats, QStringList()).toStringList();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetUserDefinedTimeFormats(const QStringList &formats)
-{
-    setValue(*settingLabelUserTimeFormats, ClearFormats(VCommonSettings::PredefinedTimeFormats(), formats));
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetCurveApproximationScale() const -> qreal

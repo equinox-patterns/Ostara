@@ -52,11 +52,8 @@ class VLayoutPieceData;
 class VLayoutPiecePath;
 class QGraphicsItem;
 class QGraphicsPathItem;
-class VTextManager;
 class VPiece;
-class VPieceLabelData;
 class VAbstractPattern;
-class VPatternLabelData;
 class VLayoutPoint;
 class VFoldLine;
 
@@ -123,14 +120,6 @@ public:
     auto GetInternalPaths() const -> QVector<VLayoutPiecePath>;
     void SetInternalPaths(const QVector<VLayoutPiecePath> &internalPaths);
 
-    auto GetPieceText() const -> QStringList;
-    void SetPieceText(const VAbstractPattern *pDoc, const QString &qsName, const VPieceLabelData &data,
-                      const QFont &font, const QString &SVGFontFamily, const VContainer *pattern);
-
-    auto GetPatternText() const -> QStringList;
-    void SetPatternInfo(const VAbstractPattern *pDoc, const VPatternLabelData &geom, const QFont &font,
-                        const QString &SVGFontFamily, const VContainer *pattern);
-
     void SetGrainline(const VGrainlineData &geom, const VContainer *pattern);
     auto GetGrainline() const -> VPieceGrainline;
     auto GetGrainline() -> VPieceGrainline &;
@@ -167,18 +156,6 @@ public:
 
     auto GetYScale() const -> qreal;
     void SetYScale(qreal ys);
-
-    auto GetPieceLabelRect() const -> QVector<QPointF>;
-    void SetPieceLabelRect(const QVector<QPointF> &rect);
-
-    auto GetPieceLabelData() const -> VTextManager;
-    void SetPieceLabelData(const VTextManager &data);
-
-    auto GetPatternLabelRect() const -> QVector<QPointF>;
-    void SetPatternLabelRect(const QVector<QPointF> &rect);
-
-    auto GetPatternLabelData() const -> VTextManager;
-    void SetPatternLabelData(const VTextManager &data);
 
     auto GetMappedCorrectedMirrorLine(bool togetherWithNotches = false) const -> QLineF;
     auto GetCorrectedMirrorLine(bool togetherWithNotches = false) const -> QLineF;
@@ -267,13 +244,6 @@ private:
     Q_REQUIRED_RESULT auto GetMainItem(bool togetherWithNotches, bool showLayoutAllowance) const -> QGraphicsPathItem *;
     Q_REQUIRED_RESULT auto GetExternalContourPathItem() const -> QGraphicsPathItem *;
 
-    void LabelStringsSVGFont(QGraphicsItem *parent, const QVector<QPointF> &labelShape, const VTextManager &tm,
-                             bool textAsPaths) const;
-    void LabelStringsOutlineFont(QGraphicsItem *parent, const QVector<QPointF> &labelShape, const VTextManager &tm,
-                                 bool textAsPaths) const;
-
-    void CreateLabelStrings(QGraphicsItem *parent, const QVector<QPointF> &labelShape, const VTextManager &tm,
-                            bool textAsPaths) const;
     void CreateGrainlineItem(QGraphicsItem *parent) const;
     void CreateFoldLineItem(QGraphicsItem *parent, bool textAsPaths) const;
 

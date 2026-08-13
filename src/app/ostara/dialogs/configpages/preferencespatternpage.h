@@ -54,7 +54,6 @@ protected:
     void changeEvent(QEvent *event) override;
 
 private slots:
-    void EditDateTimeFormats();
     void ManageKnownMaterials();
 
 private:
@@ -64,16 +63,9 @@ private:
     QStringList m_knownMaterials{};
     Unit m_oldLineUnit{Unit::Mm};
 
-    void InitLabelDateTimeFormats();
-    void InitLabelFontSizes();
     void InitSingleLineFonts();
-    static void InitComboBoxFormats(QComboBox *box, const QStringList &items, const QString &currentFormat);
     void InitUnits();
     void RetranslateUi();
-
-    template <typename T>
-    void CallDateTimeFormatEditor(const T &type, const QStringList &predefinedFormats,
-                                  const QStringList &userDefinedFormats, QComboBox *box);
 };
 
 #endif // PREFERENCESPATTERNPAGE_H

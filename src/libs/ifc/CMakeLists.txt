@@ -51,7 +51,6 @@ set(IFC_XML
     xml/vvstconverter.h
     xml/vvitconverter.h
     xml/vabstractmconverter.h
-    xml/vlabeltemplateconverter.h
     xml/vwatermarkconverter.h
     xml/utils.cpp
     xml/vabstractconverter.cpp
@@ -65,7 +64,6 @@ set(IFC_XML
     xml/vvstconverter.cpp
     xml/vvitconverter.cpp
     xml/vabstractmconverter.cpp
-    xml/vlabeltemplateconverter.cpp
     xml/vwatermarkconverter.cpp
     xml/vknownmeasurementsconverter.cpp
     xml/vknownmeasurementsconverter.h

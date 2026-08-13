@@ -65,19 +65,13 @@ set(VPATTERN_VARIABLES
 )
 
 set(VPATTERN_FLOATITEM
-    floatItemData/vpiecelabeldata.cpp
-    floatItemData/vpatternlabeldata.cpp
     floatItemData/vgrainlinedata.cpp
     floatItemData/vabstractfloatitemdata.cpp
-    floatItemData/vpiecelabeldata.h
-    floatItemData/vpatternlabeldata.h
     floatItemData/vgrainlinedata.h
     floatItemData/vabstractfloatitemdata.h
     floatItemData/vabstractfloatitemdata_p.h
     floatItemData/vgrainlinedata_p.h
     floatItemData/floatitemdef.h
-    floatItemData/vpatternlabeldata_p.h
-    floatItemData/vpiecelabeldata_p.h
 )
 
 add_library(VPatternDBLib STATIC

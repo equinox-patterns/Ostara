@@ -42,7 +42,6 @@
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vmisc/def.h"
 #include "../vmisc/defglobal.h"
-#include "../vpatterndb/floatItemData/vpiecelabeldata.h"
 #include "../vpatterndb/vcontainer.h"
 
 class VAbstractPattern;
@@ -68,54 +67,6 @@ private:
     static const quint32 streamHeader;
     static const quint16 classVersion;
 };
-
-struct VPieceLabelInfo
-{
-    explicit VPieceLabelInfo(VContainer data)
-      : completeData(std::move(data))
-    {
-    }
-
-    ~VPieceLabelInfo() = default;
-
-    VPieceLabelInfo(const VPieceLabelInfo &) = default;
-    VPieceLabelInfo(VPieceLabelInfo &&) noexcept = default;
-
-    auto operator=(const VPieceLabelInfo &) -> VPieceLabelInfo & = default;
-    auto operator=(VPieceLabelInfo &&) noexcept -> VPieceLabelInfo & = default;
-
-    QString pieceName{};                                        // NOLINT(misc-non-private-member-variables-in-classes)
-    VPieceLabelData labelData{};                                // NOLINT(misc-non-private-member-variables-in-classes)
-    QMap<QString, QSharedPointer<VMeasurement>> measurements{}; // NOLINT(misc-non-private-member-variables-in-classes)
-    VContainer completeData;                                    // NOLINT(misc-non-private-member-variables-in-classes)
-    QVector<VFinalMeasurement> finalMeasurements{};             // NOLINT(misc-non-private-member-variables-in-classes)
-    QLocale locale{};                                           // NOLINT(misc-non-private-member-variables-in-classes)
-    QString labelDateFormat{};                                  // NOLINT(misc-non-private-member-variables-in-classes)
-    QString LabelTimeFormat{};                                  // NOLINT(misc-non-private-member-variables-in-classes)
-    QString patternName{};                                      // NOLINT(misc-non-private-member-variables-in-classes)
-    QString patternNumber{};                                    // NOLINT(misc-non-private-member-variables-in-classes)
-    QString companyName{};                                      // NOLINT(misc-non-private-member-variables-in-classes)
-    QString customerName{};                                     // NOLINT(misc-non-private-member-variables-in-classes)
-    QString customerEmail{};                                    // NOLINT(misc-non-private-member-variables-in-classes)
-    Unit measurementsUnits{Unit::Cm};                           // NOLINT(misc-non-private-member-variables-in-classes)
-    Unit dimensionSizeUnits{Unit::Cm};                          // NOLINT(misc-non-private-member-variables-in-classes)
-    QString measurementsPath{};                                 // NOLINT(misc-non-private-member-variables-in-classes)
-    // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
-    MeasurementsType measurementsType{MeasurementsType::Individual};
-    QSharedPointer<VTranslator> placeholderTranslator{}; // NOLINT(misc-non-private-member-variables-in-classes)
-    QDate customerBirthDate{};                           // NOLINT(misc-non-private-member-variables-in-classes)
-    QString dimensionHeight{};                           // NOLINT(misc-non-private-member-variables-in-classes)
-    QString dimensionSize{};                             // NOLINT(misc-non-private-member-variables-in-classes)
-    QString dimensionHip{};                              // NOLINT(misc-non-private-member-variables-in-classes)
-    QString dimensionWaist{};                            // NOLINT(misc-non-private-member-variables-in-classes)
-    QString dimensionHeightLabel{};                      // NOLINT(misc-non-private-member-variables-in-classes)
-    QString dimensionSizeLabel{};                        // NOLINT(misc-non-private-member-variables-in-classes)
-    QString dimensionHipLabel{};                         // NOLINT(misc-non-private-member-variables-in-classes)
-    QString dimensionWaistLabel{};                       // NOLINT(misc-non-private-member-variables-in-classes)
-    QMap<int, QString> patternMaterials{};               // NOLINT(misc-non-private-member-variables-in-classes)
-    QVector<VLabelTemplateLine> patternLabelTemplate{};  // NOLINT(misc-non-private-member-variables-in-classes)
-};
-
 /**
  * @brief The VTextManager class this class is used to determine whether a collection of
  * text lines can fit into specified bounding box and with what font size
@@ -155,14 +106,8 @@ public:
     auto GetLabelSourceLines(int width, const QFont &font) const -> QVector<TextLine>;
     auto GetLabelSourceLines(int width, const VSvgFont &font, qreal penWidth) const -> QVector<TextLine>;
 
-    void UpdatePieceLabelInfo(const VPieceLabelInfo &info);
-    void UpdatePatternLabelInfo(const VPieceLabelInfo &info);
-
     friend auto operator<<(QDataStream &dataStream, const VTextManager &data) -> QDataStream &;
     friend auto operator>>(QDataStream &dataStream, VTextManager &data) -> QDataStream &;
-
-    static auto PrepareLabelInfo(const VAbstractPattern *doc, const VContainer *pattern, bool pieceLabel)
-        -> VPieceLabelInfo;
 
     static auto HorizontalAdvance(const QString &text, const QFont &font) -> int;
 

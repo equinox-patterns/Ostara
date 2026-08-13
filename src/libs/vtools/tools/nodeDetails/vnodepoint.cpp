@@ -104,7 +104,6 @@ enum class ContextMenuOption : std::uint8_t
     ForbidFlipping,
     ForceFlipping,
     ShowFullPiece,
-    ResetLabelTemplate,
     Remove,
     TurnPoint,
     LAST_ONE_DO_NOT_USE
@@ -420,11 +419,6 @@ auto VNodePoint::InitContextMenu(QMenu *menu, vidtype pieceId, RemoveStatus stat
     }
     contextMenu.insert(static_cast<int>(ContextMenuOption::ShowFullPiece), showFullPieceOption);
 
-    QAction *reseteLabelTemplateOption =
-        menu->addAction(QCoreApplication::translate("VNodePoint", "Reset piece label template"));
-    reseteLabelTemplateOption->setEnabled(not doc->GetDefaultPieceLabelPath().isEmpty());
-    contextMenu.insert(static_cast<int>(ContextMenuOption::ResetLabelTemplate), reseteLabelTemplateOption);
-
     QAction *actionRemove =
         menu->addAction(FromTheme(VThemeIcon::EditDelete), QCoreApplication::translate("VNodePoint", "Delete"));
     actionRemove->setEnabled(status == RemoveStatus::Removable);
@@ -643,7 +637,7 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     auto const selectedOption = static_cast<ContextMenuOption>(
         contextMenu.key(selectedAction, static_cast<int>(ContextMenuOption::NoSelection)));
 
-    Q_STATIC_ASSERT_X(static_cast<int>(ContextMenuOption::LAST_ONE_DO_NOT_USE) == 35, "Not all options were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(ContextMenuOption::LAST_ONE_DO_NOT_USE) == 34, "Not all options were handled.");
 
     QT_WARNING_PUSH
     QT_WARNING_DISABLE_GCC("-Wswitch-default")
@@ -670,9 +664,6 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
             break;
         case ContextMenuOption::ShowFullPiece:
             emit ToggleShowFullPiece(selectedAction->isChecked());
-            break;
-        case ContextMenuOption::ResetLabelTemplate:
-            emit ResetPieceLabelTemplate();
             break;
         case ContextMenuOption::Remove:
             try

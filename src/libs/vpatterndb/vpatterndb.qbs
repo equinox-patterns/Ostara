@@ -80,19 +80,13 @@ VLib {
         name: "floatItemData"
         prefix: "floatItemData/"
         files: [
-            "vpiecelabeldata.cpp",
-            "vpatternlabeldata.cpp",
             "vgrainlinedata.cpp",
             "vabstractfloatitemdata.cpp",
-            "vpiecelabeldata.h",
-            "vpatternlabeldata.h",
             "vgrainlinedata.h",
             "vabstractfloatitemdata.h",
             "vabstractfloatitemdata_p.h",
             "vgrainlinedata_p.h",
             "floatitemdef.h",
-            "vpatternlabeldata_p.h",
-            "vpiecelabeldata_p.h",
         ]
     }
 

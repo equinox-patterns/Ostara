@@ -34,7 +34,6 @@
 #include "../../../visualization/path/vispiecespecialpoints.h"
 #include "../../../visualization/path/vistoolpiece.h"
 #include "../../dialogtoolbox.h"
-#include "../../support/dialogeditlabel.h"
 #include "../../support/dialogeditwrongformula.h"
 #include "../vgeometry/vplacelabelitem.h"
 #include "../vmisc/def.h"
@@ -42,36 +41,26 @@
 #include "../vmisc/typedef.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vmodifierkey.h"
-#include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
-#include "../vpatterndb/floatItemData/vpiecelabeldata.h"
 #include "../vpatterndb/variables/vincrement.h"
 #include "../vpatterndb/variables/vmeasurement.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vpatterndb/vpiecepath.h"
 #include "../vwidgets/fancytabbar/fancytabbar.h"
 #include "../vwidgets/vmousewheelwidgetadjustmentguard.h"
-#include "dialogpatternmaterials.h"
 #include "dialogpiecepath.h"
 #include "dialogplacelabel.h"
 #include "ui_dialogseamallowance.h"
 #include "ui_tabfoldline.h"
 #include "ui_tabgrainline.h"
-#include "ui_tablabels.h"
 #include "ui_tabpassmarks.h"
 #include "ui_tabpaths.h"
 #include "ui_tabpins.h"
 #include "ui_tabplacelabels.h"
 
-#include <QMenu>
-#include <QMessageBox>
-#include <QScopeGuard>
 #include <QTimer>
 #include <QUuid>
-#include <QtNumeric>
-#include <array>
-#include <cstddef>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"
@@ -86,14 +75,12 @@ DialogSeamAllowance::DialogSeamAllowance(const VContainer *data, VAbstractPatter
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogSeamAllowance),
     uiTabPaths(new Ui::TabPaths),
-    uiTabLabels(new Ui::TabLabels),
     uiTabGrainline(new Ui::TabGrainline),
     uiTabPins(new Ui::TabPins),
     uiTabPassmarks(new Ui::TabPassmarks),
     uiTabPlaceLabels(new Ui::TabPlaceLabels),
     uiTabFoldLine(new Ui::TabFoldLine),
     m_tabPaths(new QWidget),
-    m_tabLabels(new QWidget),
     m_tabGrainline(new QWidget),
     m_tabPins(new QWidget),
     m_tabPassmarks(new QWidget),
@@ -109,12 +96,9 @@ DialogSeamAllowance::DialogSeamAllowance(const VContainer *data, VAbstractPatter
     m_timerPassmarkVisible(new QTimer(this)),
     m_timerFoldHeight(new QTimer(this)),
     m_timerFoldWidth(new QTimer(this)),
-    m_timerFoldCenter(new QTimer(this)),
-    m_placeholdersMenu(new QMenu(this))
+    m_timerFoldCenter(new QTimer(this))
 {
     ui->setupUi(this);
-
-    m_defLabelValue = QString().setNum(UnitConvertor(10, Unit::Cm, *data->GetPatternUnit()));
 
     InitOkCancelApply(ui);
     InitFancyTabBar();
@@ -124,8 +108,6 @@ DialogSeamAllowance::DialogSeamAllowance(const VContainer *data, VAbstractPatter
     InitPieceTab();
     InitSeamAllowanceTab();
     InitInternalPathsTab();
-    InitPatternPieceDataTab();
-    InitLabelsTab();
     InitGrainlineTab();
     InitPinsTab();
     InitPassmarksTab();
@@ -139,18 +121,6 @@ DialogSeamAllowance::DialogSeamAllowance(const VContainer *data, VAbstractPatter
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabGrainline->comboBoxGrainlineTopPin);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabGrainline->comboBoxGrainlineBottomPin);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabGrainline->comboBoxArrow);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabLabels->comboBoxPieceLabelSize);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabLabels->comboBoxDLCenterPin);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabLabels->comboBoxDLTopLeftPin);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabLabels->comboBoxDLBottomRightPin);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabLabels->comboBoxPatternLabelSize);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabLabels->comboBoxPLCenterPin);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabLabels->comboBoxPLTopLeftPin);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabLabels->comboBoxPLBottomRightPin);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabLabels->dateEditCustomerBirthDate);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabLabels->comboBoxDateFormat);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabLabels->comboBoxTimeFormat);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabLabels->spinBoxQuantity);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabPassmarks->comboBoxPassmarks);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabPaths->comboBoxMLStartPoint);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(uiTabPaths->comboBoxMLEndPoint);
@@ -165,8 +135,6 @@ DialogSeamAllowance::DialogSeamAllowance(const VContainer *data, VAbstractPatter
     flagMainPathIsValid = MainPathIsValid();
 
     m_ftb->SetCurrentIndex(TabOrder::Paths); // Show always first tab active on start.
-
-    uiTabLabels->groupBoxPatternLabel->setEnabled(not m_doc->GetPatternLabelTemplate().isEmpty());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -178,12 +146,10 @@ DialogSeamAllowance::~DialogSeamAllowance()
     delete m_tabPassmarks;
     delete m_tabPins;
     delete m_tabGrainline;
-    delete m_tabLabels;
     delete m_tabPaths;
     delete uiTabPassmarks;
     delete uiTabPins;
     delete uiTabGrainline;
-    delete uiTabLabels;
     delete uiTabPaths;
     delete ui;
 
@@ -204,7 +170,6 @@ void DialogSeamAllowance::EnableApply(bool enable)
     uiTabPaths->tabInternalPaths->setEnabled(applyAllowed);
     uiTabPaths->groupBoxMirrorLine->setEnabled(applyAllowed);
     m_ftb->SetTabEnabled(TabOrder::Pins, applyAllowed);
-    m_ftb->SetTabEnabled(TabOrder::Labels, applyAllowed);
     m_ftb->SetTabEnabled(TabOrder::Grainline, applyAllowed);
     m_ftb->SetTabEnabled(TabOrder::Passmarks, applyAllowed);
     m_ftb->SetTabEnabled(TabOrder::PlaceLabels, applyAllowed);
@@ -331,7 +296,6 @@ void DialogSeamAllowance::SetPiece(const VPiece &piece)
     uiTabPaths->lineEditName->setText(piece.GetName());
     uiTabPaths->lineEditUUID->setText(piece.GetUUID().toString());
     uiTabPaths->lineEditShortName->setText(piece.GetShortName());
-    uiTabPaths->lineEditGradationLabel->setText(piece.GetGradationLabel());
     uiTabPaths->spinBoxPriority->setValue(static_cast<int>(piece.GetPriority()));
 
     InitFold(piece);
@@ -341,53 +305,12 @@ void DialogSeamAllowance::SetPiece(const VPiece &piece)
         piece.GetFormulaSAWidth(), VAbstractApplication::VApp()->Settings()->GetOsSeparator()));
     m_saWidth = piece.GetSAWidth();
 
-    const VPieceLabelData &ppData = piece.GetPieceLabelData();
-    uiTabLabels->lineEditLetter->setText(ppData.GetLetter());
-    uiTabLabels->lineEditAnnotation->setText(ppData.GetAnnotation());
-    uiTabLabels->lineEditOrientation->setText(ppData.GetOrientation());
-    uiTabLabels->lineEditRotation->setText(ppData.GetRotationWay());
-    uiTabLabels->lineEditTilt->setText(ppData.GetTilt());
-    uiTabLabels->lineEditFoldPosition->setText(ppData.GetFoldPosition());
-    uiTabLabels->spinBoxQuantity->setValue(ppData.GetQuantity());
-    uiTabLabels->checkBoxFold->setChecked(ppData.IsOnFold());
-    m_templateLines = ppData.GetLabelTemplate();
-
-    {
-        const int piceFontSizeIndex = uiTabLabels->comboBoxPieceLabelSize->findData(ppData.GetFontSize());
-        uiTabLabels->comboBoxPieceLabelSize->setCurrentIndex(piceFontSizeIndex != -1 ? piceFontSizeIndex : 0);
-    }
-
-    uiTabLabels->groupBoxDetailLabel->setEnabled(not m_templateLines.isEmpty());
-
     int index = uiTabGrainline->comboBoxArrow->findData(static_cast<int>(piece.GetGrainlineGeometry().GetArrowType()));
     if (index == -1)
     {
         index = 0;
     }
     uiTabGrainline->comboBoxArrow->setCurrentIndex(index);
-
-    uiTabLabels->groupBoxDetailLabel->setChecked(ppData.IsEnabled());
-    ChangeCurrentData(uiTabLabels->comboBoxDLCenterPin, ppData.CenterPin());
-    ChangeCurrentData(uiTabLabels->comboBoxDLTopLeftPin, ppData.TopLeftPin());
-    ChangeCurrentData(uiTabLabels->comboBoxDLBottomRightPin, ppData.BottomRightPin());
-    SetDLWidth(ppData.GetLabelWidth());
-    SetDLHeight(ppData.GetLabelHeight());
-    SetDLAngle(ppData.GetRotation());
-
-    const VPatternLabelData &patternInfo = piece.GetPatternLabelData();
-    uiTabLabels->groupBoxPatternLabel->setEnabled(not m_doc->GetPatternLabelTemplate().isEmpty());
-    uiTabLabels->groupBoxPatternLabel->setChecked(patternInfo.IsEnabled());
-    ChangeCurrentData(uiTabLabels->comboBoxPLCenterPin, patternInfo.CenterPin());
-    ChangeCurrentData(uiTabLabels->comboBoxPLTopLeftPin, patternInfo.TopLeftPin());
-    ChangeCurrentData(uiTabLabels->comboBoxPLBottomRightPin, patternInfo.BottomRightPin());
-    SetPLWidth(patternInfo.GetLabelWidth());
-    SetPLHeight(patternInfo.GetLabelHeight());
-    SetPLAngle(patternInfo.GetRotation());
-
-    {
-        const int patternFontSizeIndex = uiTabLabels->comboBoxPatternLabelSize->findData(patternInfo.GetFontSize());
-        uiTabLabels->comboBoxPatternLabelSize->setCurrentIndex(patternFontSizeIndex != -1 ? patternFontSizeIndex : 0);
-    }
 
     const VGrainlineData &grainlineGeometry = piece.GetGrainlineGeometry();
     uiTabGrainline->groupBoxGrainline->setChecked(grainlineGeometry.IsEnabled());
@@ -400,8 +323,6 @@ void DialogSeamAllowance::SetPiece(const VPiece &piece)
 
     ValidObjects(MainPathIsValid());
     EnabledGrainline();
-    EnabledDetailLabel();
-    EnabledPatternLabel();
 
     ListChanged();
 }
@@ -533,10 +454,6 @@ auto DialogSeamAllowance::eventFilter(QObject* obj, QEvent* event) -> bool
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSeamAllowance::SaveData()
 {
-    SavePatternLabelData();
-    SavePatternTemplateData();
-    SavePatternMaterialData();
-
     if (m_doc != nullptr)
     {
         emit m_doc->UpdatePatternLabel();
@@ -743,23 +660,6 @@ void DialogSeamAllowance::showEvent(QShowEvent *event)
     }
     // do your init stuff here
 
-    if (m_doc != nullptr)
-    {
-        uiTabLabels->lineEditPatternName->setText(m_doc->GetPatternName());
-        uiTabLabels->lineEditPatternNumber->setText(m_doc->GetPatternNumber());
-        uiTabLabels->lineEditCompanyName->setText(m_doc->GetCompanyName());
-
-        VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-        m_patternMaterials = m_doc->GetPatternMaterials();
-
-        InitComboBoxFormats(uiTabLabels->comboBoxDateFormat,
-                            VCommonSettings::PredefinedDateFormats() + settings->GetUserDefinedDateFormats(),
-                            m_doc->GetLabelDateFormat());
-        InitComboBoxFormats(uiTabLabels->comboBoxTimeFormat,
-                            VCommonSettings::PredefinedTimeFormats() + settings->GetUserDefinedTimeFormats(),
-                            m_doc->GetLabelTimeFormat());
-    }
-
     const QSize sz = VAbstractApplication::VApp()->Settings()->GetToolSeamAllowanceDialogSize();
     if (not sz.isEmpty())
     {
@@ -865,7 +765,6 @@ void DialogSeamAllowance::FancyTabChanged(int index)
     }
 
     m_tabPaths->hide();
-    m_tabLabels->hide();
     m_tabGrainline->hide();
     m_tabPins->hide();
     m_tabPassmarks->hide();
@@ -883,9 +782,6 @@ void DialogSeamAllowance::FancyTabChanged(int index)
             break;
         case TabOrder::Pins:
             m_tabPins->show();
-            break;
-        case TabOrder::Labels:
-            m_tabLabels->show();
             break;
         case TabOrder::Grainline:
             m_tabGrainline->show();
@@ -906,9 +802,7 @@ void DialogSeamAllowance::FancyTabChanged(int index)
 
     QT_WARNING_POP
 
-    if (index == TabOrder::Pins || index == TabOrder::Grainline ||
-        (index == TabOrder::Labels &&
-         uiTabLabels->tabWidget->currentIndex() == uiTabLabels->tabWidget->indexOf(uiTabLabels->tabLabels)))
+    if (index == TabOrder::Pins || index == TabOrder::Grainline)
     {
         ShowPieceSpecialPointsWithRect(uiTabPins->listWidgetPins, false);
     }
@@ -919,220 +813,6 @@ void DialogSeamAllowance::FancyTabChanged(int index)
     else
     {
         delete m_visSpecialPoints.data();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::TabChanged(int index)
-{
-    if (index == uiTabLabels->tabWidget->indexOf(uiTabLabels->tabLabels))
-    {
-        ShowPieceSpecialPointsWithRect(uiTabPins->listWidgetPins, false);
-    }
-    else
-    {
-        delete m_visSpecialPoints.data();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::UpdateDetailLabelValues()
-{
-    std::array<const QPlainTextEdit *, 3> apleSender = {
-        uiTabLabels->lineEditDLWidthFormula, uiTabLabels->lineEditDLHeightFormula, uiTabLabels->lineEditDLAngleFormula};
-    std::array<bool, 3> bFormulasOK = {true, true, true};
-
-    for (std::size_t i = 0; i < 3; ++i)
-    {
-        QLabel *plbVal;
-        QLabel *plbText;
-        QString qsUnit;
-        if (i == 0)
-        {
-            plbVal = uiTabLabels->labelDLWidth;
-            plbText = uiTabLabels->labelEditDLWidth;
-            qsUnit = QChar(QChar::Space) + UnitsToStr(VAbstractValApplication::VApp()->patternUnits());
-        }
-        else if (i == 1)
-        {
-            plbVal = uiTabLabels->labelDLHeight;
-            plbText = uiTabLabels->labelEditDLHeight;
-            qsUnit = QChar(QChar::Space) + UnitsToStr(VAbstractValApplication::VApp()->patternUnits());
-        }
-        else
-        {
-            plbVal = uiTabLabels->labelDLAngle;
-            plbText = uiTabLabels->labelEditDLAngle;
-            qsUnit = degreeSymbol;
-        }
-
-        plbVal->setToolTip(tr("Value"));
-
-        QString qsFormula = apleSender.at(i)->toPlainText().simplified();
-        QString qsVal;
-        try
-        {
-
-            qsFormula = VAbstractApplication::VApp()->TrVars()->FormulaFromUser(
-                qsFormula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-            Calculator cal;
-            qreal const dVal = cal.EvalFormula(data.DataVariables(), qsFormula);
-            if (qIsInf(dVal) || qIsNaN(dVal))
-            {
-                throw qmu::QmuParserError(tr("Infinite/undefined result"));
-            }
-            if ((i == 0 || i == 1) && dVal <= 0.0)
-            {
-                throw qmu::QmuParserError(tr("Length should be positive"));
-            }
-
-            qsVal.setNum(dVal, 'f', 2);
-            ChangeColor(plbText, OkColor(this));
-        }
-        catch (qmu::QmuParserError &e)
-        {
-            qsVal = tr("Error");
-            not flagDPin ? ChangeColor(plbText, errorColor) : ChangeColor(plbText, OkColor(this));
-            bFormulasOK.at(i) = false;
-            plbVal->setToolTip(tr("Parser error: %1").arg(e.GetMsg()));
-        }
-
-        if (bFormulasOK.at(i) && not qsVal.isEmpty())
-        {
-            qsVal += qsUnit;
-        }
-        plbVal->setText(qsVal);
-    }
-
-    flagDLAngle = bFormulasOK[2];
-    flagDLFormulas = bFormulasOK[0] && bFormulasOK[1];
-    if (not flagDLAngle || not(flagDLFormulas || flagDPin) || not flagPLAngle || not(flagPLFormulas || flagPPin))
-    {
-        m_ftb->SetTabText(TabOrder::Labels, tr("Labels") + '*');
-        const QIcon icon = FromTheme(VThemeIcon::DialogWarning);
-        uiTabLabels->tabWidget->setTabIcon(uiTabLabels->tabWidget->indexOf(uiTabLabels->tabLabels), icon);
-    }
-    else
-    {
-        ResetLabelsWarning();
-    }
-    CheckState();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::UpdatePatternLabelValues()
-{
-    std::array<const QPlainTextEdit *, 3> apleSender = {
-        uiTabLabels->lineEditPLWidthFormula, uiTabLabels->lineEditPLHeightFormula, uiTabLabels->lineEditPLAngleFormula};
-    std::array<bool, 3> bFormulasOK = {true, true, true};
-
-    for (std::size_t i = 0; i < 3; ++i)
-    {
-        QLabel *plbVal;
-        QLabel *plbText;
-        QString qsUnit;
-        if (i == 0)
-        {
-            plbVal = uiTabLabels->labelPLWidth;
-            plbText = uiTabLabels->labelEditPLWidth;
-            qsUnit = QChar(QChar::Space) + UnitsToStr(VAbstractValApplication::VApp()->patternUnits());
-        }
-        else if (i == 1)
-        {
-            plbVal = uiTabLabels->labelPLHeight;
-            plbText = uiTabLabels->labelEditPLHeight;
-            qsUnit = QChar(QChar::Space) + UnitsToStr(VAbstractValApplication::VApp()->patternUnits());
-        }
-        else
-        {
-            plbVal = uiTabLabels->labelPLAngle;
-            plbText = uiTabLabels->labelEditPLAngle;
-            qsUnit = degreeSymbol;
-        }
-
-        plbVal->setToolTip(tr("Value"));
-
-        QString qsFormula = apleSender.at(i)->toPlainText().simplified();
-        QString qsVal;
-        try
-        {
-            qsFormula = VAbstractApplication::VApp()->TrVars()->FormulaFromUser(
-                qsFormula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-            Calculator cal;
-            qreal const dVal = cal.EvalFormula(data.DataVariables(), qsFormula);
-            if (qIsInf(dVal) || qIsNaN(dVal))
-            {
-                throw qmu::QmuParserError(tr("Infinite/undefined result"));
-            }
-            if ((i == 0 || i == 1) && dVal <= 0.0)
-            {
-                throw qmu::QmuParserError(tr("Length should be positive"));
-            }
-
-            qsVal.setNum(dVal, 'f', 2);
-            ChangeColor(plbText, OkColor(this));
-        }
-        catch (qmu::QmuParserError &e)
-        {
-            qsVal = tr("Error");
-            not flagPPin ? ChangeColor(plbText, errorColor) : ChangeColor(plbText, OkColor(this));
-            bFormulasOK.at(i) = false;
-            plbVal->setToolTip(tr("Parser error: %1").arg(e.GetMsg()));
-        }
-
-        if (bFormulasOK.at(i) && not qsVal.isEmpty())
-        {
-            qsVal += qsUnit;
-        }
-        plbVal->setText(qsVal);
-    }
-
-    flagPLAngle = bFormulasOK[2];
-    flagPLFormulas = bFormulasOK[0] && bFormulasOK[1];
-    if (not flagDLAngle || not(flagDLFormulas || flagDPin) || not flagPLAngle || not(flagPLFormulas || flagPPin))
-    {
-        m_ftb->SetTabText(TabOrder::Labels, tr("Labels") + '*');
-        const QIcon icon = FromTheme(VThemeIcon::DialogWarning);
-        uiTabLabels->tabWidget->setTabIcon(uiTabLabels->tabWidget->indexOf(uiTabLabels->tabLabels), icon);
-    }
-    else
-    {
-        ResetLabelsWarning();
-    }
-    CheckState();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::EnabledDetailLabel()
-{
-    if (uiTabLabels->groupBoxDetailLabel->isChecked())
-    {
-        UpdateDetailLabelValues();
-        DetailPinPointChanged();
-    }
-    else
-    {
-        flagDLAngle = true;
-        flagDLFormulas = true;
-        ResetLabelsWarning();
-        CheckState();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::EnabledPatternLabel()
-{
-    if (uiTabLabels->groupBoxPatternLabel->isChecked())
-    {
-        UpdatePatternLabelValues();
-        PatternPinPointChanged();
-    }
-    else
-    {
-        flagPLAngle = true;
-        flagPLFormulas = true;
-        ResetLabelsWarning();
-        CheckState();
     }
 }
 
@@ -1170,174 +850,6 @@ void DialogSeamAllowance::EnabledManualFoldCenter()
     uiTabFoldLine->label_5->setEnabled(uiTabFoldLine->groupBoxManualCenter->isChecked());
 
     EvalFoldCenter();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::EditDLFormula()
-{
-    QPlainTextEdit *pleFormula;
-    bool bCheckZero;
-    QString title;
-
-    if (sender() == uiTabLabels->pushButtonDLHeight)
-    {
-        pleFormula = uiTabLabels->lineEditDLHeightFormula;
-        bCheckZero = true;
-        title = tr("Edit height");
-    }
-    else if (sender() == uiTabLabels->pushButtonDLWidth)
-    {
-        pleFormula = uiTabLabels->lineEditDLWidthFormula;
-        bCheckZero = true;
-        title = tr("Edit width");
-    }
-    else if (sender() == uiTabLabels->pushButtonDLAngle)
-    {
-        pleFormula = uiTabLabels->lineEditDLAngleFormula;
-        bCheckZero = false;
-        title = tr("Edit angle");
-    }
-    else
-    {
-        // should not get here!
-        return;
-    }
-
-    DialogEditWrongFormula dlg(&data, NULL_ID, this);
-    dlg.setWindowTitle(title);
-    dlg.SetFormula(VTranslateVars::TryFormulaFromUser(pleFormula->toPlainText(),
-                                                      VAbstractApplication::VApp()->Settings()->GetOsSeparator()));
-    dlg.setCheckZero(bCheckZero);
-    if (dlg.exec() == QDialog::Accepted)
-    {
-        QString const qsFormula = dlg.GetFormula();
-        if (sender() == uiTabLabels->pushButtonDLHeight)
-        {
-            SetDLHeight(qsFormula);
-        }
-        else if (sender() == uiTabLabels->pushButtonDLWidth)
-        {
-            SetDLWidth(qsFormula);
-        }
-        else if (sender() == uiTabLabels->pushButtonDLAngle)
-        {
-            SetDLAngle(qsFormula);
-        }
-        else
-        {
-            // should not get here!
-            pleFormula->setPlainText(qsFormula);
-        }
-        UpdateDetailLabelValues();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::EditPLFormula()
-{
-    QPlainTextEdit *pleFormula;
-    bool bCheckZero;
-    QString title;
-
-    if (sender() == uiTabLabels->pushButtonPLHeight)
-    {
-        pleFormula = uiTabLabels->lineEditPLHeightFormula;
-        bCheckZero = true;
-        title = tr("Edit height");
-    }
-    else if (sender() == uiTabLabels->pushButtonPLWidth)
-    {
-        pleFormula = uiTabLabels->lineEditPLWidthFormula;
-        bCheckZero = true;
-        title = tr("Edit width");
-    }
-    else if (sender() == uiTabLabels->pushButtonPLAngle)
-    {
-        pleFormula = uiTabLabels->lineEditPLAngleFormula;
-        bCheckZero = false;
-        title = tr("Edit angle");
-    }
-    else
-    {
-        // should not get here!
-        return;
-    }
-
-    DialogEditWrongFormula dlg(&data, NULL_ID, this);
-    dlg.setWindowTitle(title);
-    dlg.SetFormula(VTranslateVars::TryFormulaFromUser(pleFormula->toPlainText(),
-                                                      VAbstractApplication::VApp()->Settings()->GetOsSeparator()));
-    dlg.setCheckZero(bCheckZero);
-    if (dlg.exec() == QDialog::Accepted)
-    {
-        QString const qsFormula = dlg.GetFormula();
-        if (sender() == uiTabLabels->pushButtonPLHeight)
-        {
-            SetPLHeight(qsFormula);
-        }
-        else if (sender() == uiTabLabels->pushButtonPLWidth)
-        {
-            SetPLWidth(qsFormula);
-        }
-        else if (sender() == uiTabLabels->pushButtonPLAngle)
-        {
-            SetPLAngle(qsFormula);
-        }
-        else
-        {
-            // should not get here!
-            pleFormula->setPlainText(qsFormula);
-        }
-        UpdatePatternLabelValues();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::DeployDLWidth()
-{
-    DeployFormula(this, uiTabLabels->lineEditDLWidthFormula, uiTabLabels->pushButtonShowDLWidth, m_DLWidthBaseHeight);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::DeployDLHeight()
-{
-    DeployFormula(this, uiTabLabels->lineEditDLHeightFormula, uiTabLabels->pushButtonShowDLHeight,
-                  m_DLHeightBaseHeight);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::DeployDLAngle()
-{
-    DeployFormula(this, uiTabLabels->lineEditDLAngleFormula, uiTabLabels->pushButtonShowDLAngle, m_DLAngleBaseHeight);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::DeployPLWidth()
-{
-    DeployFormula(this, uiTabLabels->lineEditPLWidthFormula, uiTabLabels->pushButtonShowPLWidth, m_PLWidthBaseHeight);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::DeployPLHeight()
-{
-    DeployFormula(this, uiTabLabels->lineEditPLHeightFormula, uiTabLabels->pushButtonShowPLHeight,
-                  m_PLHeightBaseHeight);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::DeployPLAngle()
-{
-    DeployFormula(this, uiTabLabels->lineEditPLAngleFormula, uiTabLabels->pushButtonShowPLAngle, m_PLAngleBaseHeight);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::ResetLabelsWarning()
-{
-    if (flagDLAngle && (flagDLFormulas || flagDPin) && flagPLAngle && (flagPLFormulas || flagPPin))
-    {
-        m_ftb->SetTabText(TabOrder::Labels, tr("Labels"));
-        uiTabLabels->tabWidget->setTabIcon(uiTabLabels->tabWidget->indexOf(uiTabLabels->tabLabels), QIcon());
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1785,86 +1297,6 @@ void DialogSeamAllowance::DeployFoldCenter()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::DetailPinPointChanged()
-{
-    QColor color;
-    const quint32 topPinId = getCurrentObjectId(uiTabLabels->comboBoxDLTopLeftPin);
-    const quint32 bottomPinId = getCurrentObjectId(uiTabLabels->comboBoxDLBottomRightPin);
-    if (topPinId != NULL_ID && bottomPinId != NULL_ID && topPinId != bottomPinId)
-    {
-        flagDPin = true;
-        color = OkColor(this);
-
-        if (flagPPin)
-        {
-            m_ftb->SetTabText(TabOrder::Labels, tr("Labels"));
-            uiTabLabels->tabWidget->setTabIcon(uiTabLabels->tabWidget->indexOf(uiTabLabels->tabLabels), QIcon());
-        }
-    }
-    else
-    {
-        flagDPin = false;
-        topPinId == NULL_ID &&bottomPinId == NULL_ID ? color = OkColor(this) : color = errorColor;
-
-        m_ftb->SetTabText(TabOrder::Labels, tr("Labels") + '*');
-        const QIcon icon = FromTheme(VThemeIcon::DialogWarning);
-        uiTabLabels->tabWidget->setTabIcon(uiTabLabels->tabWidget->indexOf(uiTabLabels->tabLabels), icon);
-    }
-    EnableDetailLabelFormulaControls(not flagDPin);
-    UpdateDetailLabelValues();
-    ChangeColor(uiTabLabels->labelDLTopLeftPin, color);
-    ChangeColor(uiTabLabels->labelDLBottomRightPin, color);
-    CheckState();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::PatternPinPointChanged()
-{
-    QColor color;
-    const quint32 topPinId = getCurrentObjectId(uiTabLabels->comboBoxPLTopLeftPin);
-    const quint32 bottomPinId = getCurrentObjectId(uiTabLabels->comboBoxPLBottomRightPin);
-    if (topPinId != NULL_ID && bottomPinId != NULL_ID && topPinId != bottomPinId)
-    {
-        flagPPin = true;
-        color = OkColor(this);
-
-        if (flagDPin)
-        {
-            m_ftb->SetTabText(TabOrder::Labels, tr("Labels"));
-            uiTabLabels->tabWidget->setTabIcon(uiTabLabels->tabWidget->indexOf(uiTabLabels->tabLabels), QIcon());
-        }
-    }
-    else
-    {
-        flagPPin = false;
-        topPinId == NULL_ID &&bottomPinId == NULL_ID ? color = OkColor(this) : color = errorColor;
-
-        m_ftb->SetTabText(TabOrder::Labels, tr("Labels") + '*');
-        const QIcon icon = FromTheme(VThemeIcon::DialogWarning);
-        uiTabLabels->tabWidget->setTabIcon(uiTabLabels->tabWidget->indexOf(uiTabLabels->tabLabels), icon);
-    }
-    EnablePatternLabelFormulaControls(not flagPPin);
-    UpdatePatternLabelValues();
-    ChangeColor(uiTabLabels->labelPLTopLeftPin, color);
-    ChangeColor(uiTabLabels->labelPLBottomRightPin, color);
-    CheckState();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::EditPieceLabel()
-{
-    DialogEditLabel editor(VAbstractValApplication::VApp()->getCurrentDocument(), &data);
-    editor.SetTemplate(m_templateLines);
-    editor.SetPiece(GetPiece());
-
-    if (QDialog::Accepted == editor.exec())
-    {
-        m_templateLines = editor.GetTemplate();
-        uiTabLabels->groupBoxDetailLabel->setEnabled(not m_templateLines.isEmpty());
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto DialogSeamAllowance::CreatePiece() const -> VPiece
 {
     VPiece piece = data.DataPieces()->value(toolId); // Get options we do not control with the dialog
@@ -1884,22 +1316,9 @@ auto DialogSeamAllowance::CreatePiece() const -> VPiece
     piece.SetName(uiTabPaths->lineEditName->text());
     piece.SetUUID(uiTabPaths->lineEditUUID->text());
     piece.SetShortName(uiTabPaths->lineEditShortName->text());
-    piece.SetGradationLabel(uiTabPaths->lineEditGradationLabel->text());
     piece.SetPriority(static_cast<uint>(uiTabPaths->spinBoxPriority->value()));
     piece.SetTrueZeroWidth(uiTabPaths->checkBoxTrueZeroWidth->isChecked());
     piece.SetFormulaSAWidth(GetFormulaFromUser(uiTabPaths->plainTextEditFormulaWidth), m_saWidth);
-    piece.GetPieceLabelData().SetLetter(uiTabLabels->lineEditLetter->text());
-    piece.GetPieceLabelData().SetAnnotation(uiTabLabels->lineEditAnnotation->text());
-    piece.GetPieceLabelData().SetOrientation(uiTabLabels->lineEditOrientation->text());
-    piece.GetPieceLabelData().SetRotationWay(uiTabLabels->lineEditRotation->text());
-    piece.GetPieceLabelData().SetTilt(uiTabLabels->lineEditTilt->text());
-    piece.GetPieceLabelData().SetFoldPosition(uiTabLabels->lineEditFoldPosition->text());
-    piece.GetPieceLabelData().SetQuantity(static_cast<quint16>(uiTabLabels->spinBoxQuantity->value()));
-    piece.GetPieceLabelData().SetOnFold(uiTabLabels->checkBoxFold->isChecked());
-    piece.GetPieceLabelData().SetLabelTemplate(m_templateLines);
-    piece.GetPieceLabelData().SetRotation(GetFormulaFromUser(uiTabLabels->lineEditDLAngleFormula));
-    piece.GetPieceLabelData().SetEnabled(uiTabLabels->groupBoxDetailLabel->isChecked());
-    piece.GetPieceLabelData().SetFontSize(uiTabLabels->comboBoxPieceLabelSize->currentData().toInt());
     piece.SetMirrorLineStartPoint(GetMirrorLineStartPoint());
     piece.SetMirrorLineEndPoint(GetMirrorLineEndPoint());
     piece.SetShowMirrorLine(uiTabPaths->checkBoxShowMirrorLine->isChecked());
@@ -1936,44 +1355,6 @@ auto DialogSeamAllowance::CreatePiece() const -> VPiece
         piece.SetFoldLineLabelAlignment(Qt::AlignRight);
     }
 
-    if (not flagDPin)
-    {
-        piece.GetPieceLabelData().SetLabelWidth(GetFormulaFromUser(uiTabLabels->lineEditDLWidthFormula));
-        piece.GetPieceLabelData().SetLabelHeight(GetFormulaFromUser(uiTabLabels->lineEditDLHeightFormula));
-        piece.GetPieceLabelData().SetCenterPin(getCurrentObjectId(uiTabLabels->comboBoxDLCenterPin));
-        piece.GetPieceLabelData().SetTopLeftPin(NULL_ID);
-        piece.GetPieceLabelData().SetBottomRightPin(NULL_ID);
-    }
-    else
-    {
-        piece.GetPieceLabelData().SetLabelWidth(m_defLabelValue);
-        piece.GetPieceLabelData().SetLabelHeight(m_defLabelValue);
-        piece.GetPieceLabelData().SetCenterPin(NULL_ID);
-        piece.GetPieceLabelData().SetTopLeftPin(getCurrentObjectId(uiTabLabels->comboBoxDLTopLeftPin));
-        piece.GetPieceLabelData().SetBottomRightPin(getCurrentObjectId(uiTabLabels->comboBoxDLBottomRightPin));
-    }
-
-    piece.GetPatternLabelData().SetEnabled(uiTabLabels->groupBoxPatternLabel->isChecked());
-    piece.GetPatternLabelData().SetRotation(GetFormulaFromUser(uiTabLabels->lineEditPLAngleFormula));
-    piece.GetPatternLabelData().SetFontSize(uiTabLabels->comboBoxPatternLabelSize->currentData().toInt());
-
-    if (not flagPPin)
-    {
-        piece.GetPatternLabelData().SetCenterPin(getCurrentObjectId(uiTabLabels->comboBoxPLCenterPin));
-        piece.GetPatternLabelData().SetTopLeftPin(NULL_ID);
-        piece.GetPatternLabelData().SetBottomRightPin(NULL_ID);
-        piece.GetPatternLabelData().SetLabelWidth(GetFormulaFromUser(uiTabLabels->lineEditPLWidthFormula));
-        piece.GetPatternLabelData().SetLabelHeight(GetFormulaFromUser(uiTabLabels->lineEditPLHeightFormula));
-    }
-    else
-    {
-        piece.GetPatternLabelData().SetCenterPin(NULL_ID);
-        piece.GetPatternLabelData().SetTopLeftPin(getCurrentObjectId(uiTabLabels->comboBoxPLTopLeftPin));
-        piece.GetPatternLabelData().SetBottomRightPin(getCurrentObjectId(uiTabLabels->comboBoxPLBottomRightPin));
-        piece.GetPatternLabelData().SetLabelWidth(m_defLabelValue);
-        piece.GetPatternLabelData().SetLabelHeight(m_defLabelValue);
-    }
-
     piece.GetGrainlineGeometry().SetEnabled(uiTabGrainline->groupBoxGrainline->isChecked());
     piece.GetGrainlineGeometry().SetArrowType(
         static_cast<GrainlineArrowDirection>(uiTabGrainline->comboBoxArrow->currentData().toInt()));
@@ -1990,7 +1371,7 @@ auto DialogSeamAllowance::CreatePiece() const -> VPiece
     else
     {
         piece.GetGrainlineGeometry().SetRotation(QString::number(90));
-        piece.GetGrainlineGeometry().SetLength(m_defLabelValue);
+        piece.GetGrainlineGeometry().SetLength(QString().setNum(UnitConvertor(10, Unit::Cm, *data.GetPatternUnit())));
         piece.GetGrainlineGeometry().SetCenterPin(NULL_ID);
         piece.GetGrainlineGeometry().SetTopPin(getCurrentObjectId(uiTabGrainline->comboBoxGrainlineTopPin));
         piece.GetGrainlineGeometry().SetBottomPin(getCurrentObjectId(uiTabGrainline->comboBoxGrainlineBottomPin));
@@ -2347,7 +1728,6 @@ void DialogSeamAllowance::InitFancyTabBar()
 {
     m_ftb->InsertTab(TabOrder::Paths, QIcon("://icon/32x32/paths.png"), tr("Paths"));
     m_ftb->InsertTab(TabOrder::Pins, QIcon("://icon/32x32/pins.png"), tr("Pins"));
-    m_ftb->InsertTab(TabOrder::Labels, QIcon("://icon/32x32/labels.png"), tr("Labels"));
     m_ftb->InsertTab(TabOrder::Grainline, QIcon("://icon/32x32/grainline.png"), tr("Grainline"));
     m_ftb->InsertTab(TabOrder::Passmarks, QIcon("://icon/32x32/passmark.png"), tr("Passmarks"));
     m_ftb->InsertTab(TabOrder::PlaceLabels, QIcon("://icon/32x32/button.png"), tr("Place label"));
@@ -2360,10 +1740,6 @@ void DialogSeamAllowance::InitFancyTabBar()
     m_tabPaths->hide();
     uiTabPaths->setupUi(m_tabPaths);
     ui->horizontalLayout->addWidget(m_tabPaths, 1);
-
-    m_tabLabels->hide();
-    uiTabLabels->setupUi(m_tabLabels);
-    ui->horizontalLayout->addWidget(m_tabLabels, 1);
 
     m_tabGrainline->hide();
     uiTabGrainline->setupUi(m_tabGrainline);
@@ -2386,7 +1762,6 @@ void DialogSeamAllowance::InitFancyTabBar()
     ui->horizontalLayout->addWidget(m_tabFoldLine, 1);
 
     connect(m_ftb, &FancyTabBar::CurrentChanged, this, &DialogSeamAllowance::FancyTabChanged);
-    connect(uiTabLabels->tabWidget, &QTabWidget::currentChanged, this, &DialogSeamAllowance::TabChanged);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2628,15 +2003,6 @@ void DialogSeamAllowance::InitPieceTab()
     uiTabPaths->checkBoxOnDrawing->setChecked(settings->GetSewLineOnDrawing());
 
     connect(uiTabPaths->lineEditUUID, &QLineEdit::textChanged, this, &DialogSeamAllowance::DetailUUIDChanged);
-
-    InitGradationPlaceholders();
-    InitGradationPlaceholdersMenu();
-
-    m_placeholdersMenu->setStyleSheet(QStringLiteral("QMenu { menu-scrollable: 1; }"));
-    uiTabPaths->pushButtonGradationPlaceholder->setMenu(m_placeholdersMenu);
-    uiTabPaths->pushButtonGradationPlaceholder->setProperty("hasMenu", true);
-    uiTabPaths->pushButtonGradationPlaceholder->style()->unpolish(uiTabPaths->pushButtonGradationPlaceholder);
-    uiTabPaths->pushButtonGradationPlaceholder->style()->polish(uiTabPaths->pushButtonGradationPlaceholder);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2843,140 +2209,6 @@ void DialogSeamAllowance::InitInternalPathsTab()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::InitPatternPieceDataTab()
-{
-    uiTabLabels->lineEditLetter->setClearButtonEnabled(true);
-    uiTabLabels->lineEditAnnotation->setClearButtonEnabled(true);
-    uiTabLabels->lineEditOrientation->setClearButtonEnabled(true);
-    uiTabLabels->lineEditRotation->setClearButtonEnabled(true);
-    uiTabLabels->lineEditTilt->setClearButtonEnabled(true);
-    uiTabLabels->lineEditFoldPosition->setClearButtonEnabled(true);
-
-    connect(uiTabLabels->pushButtonEditPieceLabel, &QPushButton::clicked, this, &DialogSeamAllowance::EditPieceLabel);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::InitLabelsTab()
-{
-    InitLabelFontSize(uiTabLabels->comboBoxPatternLabelSize);
-    InitLabelFontSize(uiTabLabels->comboBoxPieceLabelSize);
-
-    uiTabLabels->lineEditDLWidthFormula->setPlainText(m_defLabelValue);
-    uiTabLabels->lineEditDLHeightFormula->setPlainText(m_defLabelValue);
-    uiTabLabels->lineEditPLWidthFormula->setPlainText(m_defLabelValue);
-    uiTabLabels->lineEditPLHeightFormula->setPlainText(m_defLabelValue);
-
-    m_DLWidthBaseHeight = uiTabLabels->lineEditDLWidthFormula->height();
-    m_DLHeightBaseHeight = uiTabLabels->lineEditDLHeightFormula->height();
-    m_DLAngleBaseHeight = uiTabLabels->lineEditDLAngleFormula->height();
-
-    connect(uiTabLabels->groupBoxDetailLabel, &QGroupBox::toggled, this, &DialogSeamAllowance::EnabledDetailLabel);
-    InitPinPoint(uiTabLabels->comboBoxDLCenterPin);
-    InitPinPoint(uiTabLabels->comboBoxDLTopLeftPin);
-    InitPinPoint(uiTabLabels->comboBoxDLBottomRightPin);
-
-    connect(uiTabLabels->comboBoxDLTopLeftPin, &QComboBox::currentTextChanged, this,
-            &DialogSeamAllowance::DetailPinPointChanged);
-    connect(uiTabLabels->comboBoxDLBottomRightPin, &QComboBox::currentTextChanged, this,
-            &DialogSeamAllowance::DetailPinPointChanged);
-
-    connect(uiTabLabels->pushButtonDLWidth, &QPushButton::clicked, this, &DialogSeamAllowance::EditDLFormula);
-    connect(uiTabLabels->pushButtonDLHeight, &QPushButton::clicked, this, &DialogSeamAllowance::EditDLFormula);
-    connect(uiTabLabels->pushButtonDLAngle, &QPushButton::clicked, this, &DialogSeamAllowance::EditDLFormula);
-
-    connect(uiTabLabels->lineEditDLWidthFormula, &QPlainTextEdit::textChanged, this,
-            &DialogSeamAllowance::UpdateDetailLabelValues);
-    connect(uiTabLabels->lineEditDLHeightFormula, &QPlainTextEdit::textChanged, this,
-            &DialogSeamAllowance::UpdateDetailLabelValues);
-    connect(uiTabLabels->lineEditDLAngleFormula, &QPlainTextEdit::textChanged, this,
-            &DialogSeamAllowance::UpdateDetailLabelValues);
-
-    connect(uiTabLabels->pushButtonShowDLWidth, &QPushButton::clicked, this, &DialogSeamAllowance::DeployDLWidth);
-    connect(uiTabLabels->pushButtonShowDLHeight, &QPushButton::clicked, this, &DialogSeamAllowance::DeployDLHeight);
-    connect(uiTabLabels->pushButtonShowDLAngle, &QPushButton::clicked, this, &DialogSeamAllowance::DeployDLAngle);
-
-    EnabledDetailLabel();
-
-    m_PLWidthBaseHeight = uiTabLabels->lineEditPLWidthFormula->height();
-    m_PLHeightBaseHeight = uiTabLabels->lineEditPLHeightFormula->height();
-    m_PLAngleBaseHeight = uiTabLabels->lineEditPLAngleFormula->height();
-
-    connect(uiTabLabels->groupBoxPatternLabel, &QGroupBox::toggled, this, &DialogSeamAllowance::EnabledPatternLabel);
-    InitPinPoint(uiTabLabels->comboBoxPLCenterPin);
-    InitPinPoint(uiTabLabels->comboBoxPLTopLeftPin);
-    InitPinPoint(uiTabLabels->comboBoxPLBottomRightPin);
-
-    connect(uiTabLabels->comboBoxPLTopLeftPin, &QComboBox::currentTextChanged, this,
-            &DialogSeamAllowance::PatternPinPointChanged);
-    connect(uiTabLabels->comboBoxPLBottomRightPin, &QComboBox::currentTextChanged, this,
-            &DialogSeamAllowance::PatternPinPointChanged);
-
-    connect(uiTabLabels->pushButtonPLWidth, &QPushButton::clicked, this, &DialogSeamAllowance::EditPLFormula);
-    connect(uiTabLabels->pushButtonPLHeight, &QPushButton::clicked, this, &DialogSeamAllowance::EditPLFormula);
-    connect(uiTabLabels->pushButtonPLAngle, &QPushButton::clicked, this, &DialogSeamAllowance::EditPLFormula);
-
-    connect(uiTabLabels->lineEditPLWidthFormula, &QPlainTextEdit::textChanged, this,
-            &DialogSeamAllowance::UpdatePatternLabelValues);
-    connect(uiTabLabels->lineEditPLHeightFormula, &QPlainTextEdit::textChanged, this,
-            &DialogSeamAllowance::UpdatePatternLabelValues);
-    connect(uiTabLabels->lineEditPLAngleFormula, &QPlainTextEdit::textChanged, this,
-            &DialogSeamAllowance::UpdatePatternLabelValues);
-
-    connect(uiTabLabels->pushButtonShowPLWidth, &QPushButton::clicked, this, &DialogSeamAllowance::DeployPLWidth);
-    connect(uiTabLabels->pushButtonShowPLHeight, &QPushButton::clicked, this, &DialogSeamAllowance::DeployPLHeight);
-    connect(uiTabLabels->pushButtonShowPLAngle, &QPushButton::clicked, this, &DialogSeamAllowance::DeployPLAngle);
-
-    EnabledPatternLabel();
-
-    // Pattern label data
-    uiTabLabels->lineEditCustomerEmail->setClearButtonEnabled(true);
-
-    if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Individual)
-    {
-        uiTabLabels->lineEditCustomerName->setText(VAbstractValApplication::VApp()->GetCustomerName());
-        uiTabLabels->lineEditCustomerName->setDisabled(true);
-        uiTabLabels->lineEditCustomerName->setToolTip(tr("The customer name from individual measurements"));
-
-        uiTabLabels->lineEditCustomerEmail->setText(VAbstractValApplication::VApp()->CustomerEmail());
-        uiTabLabels->lineEditCustomerEmail->setDisabled(true);
-        uiTabLabels->lineEditCustomerEmail->setToolTip(tr("The customer email from individual measurements"));
-
-        uiTabLabels->dateEditCustomerBirthDate->setDate(VAbstractValApplication::VApp()->GetCustomerBirthDate());
-        uiTabLabels->dateEditCustomerBirthDate->setDisabled(true);
-        uiTabLabels->dateEditCustomerBirthDate->setToolTip(tr("The customer birth date from individual measurements"));
-    }
-    else
-    {
-        uiTabLabels->lineEditCustomerName->setText(m_doc->GetCustomerName());
-        uiTabLabels->lineEditCustomerEmail->setText(m_doc->GetCustomerEmail());
-        uiTabLabels->dateEditCustomerBirthDate->setDate(m_doc->GetCustomerBirthDate());
-    }
-
-    connect(uiTabLabels->lineEditPatternName, &QLineEdit::editingFinished, this,
-            &DialogSeamAllowance::PatternLabelDataChanged);
-    connect(uiTabLabels->lineEditPatternNumber, &QLineEdit::editingFinished, this,
-            &DialogSeamAllowance::PatternLabelDataChanged);
-    connect(uiTabLabels->lineEditCompanyName, &QLineEdit::editingFinished, this,
-            &DialogSeamAllowance::PatternLabelDataChanged);
-    connect(uiTabLabels->lineEditCustomerName, &QLineEdit::editingFinished, this,
-            &DialogSeamAllowance::PatternLabelDataChanged);
-    connect(uiTabLabels->lineEditCustomerEmail, &QLineEdit::editingFinished, this,
-            &DialogSeamAllowance::PatternLabelDataChanged);
-    connect(uiTabLabels->dateEditCustomerBirthDate, &QDateEdit::editingFinished, this,
-            &DialogSeamAllowance::PatternLabelDataChanged);
-
-    connect(uiTabLabels->pushButtonEditPatternLabel, &QPushButton::clicked, this,
-            &DialogSeamAllowance::EditPatternLabel);
-    connect(uiTabLabels->pushButtonPatternMaterials, &QPushButton::clicked, this,
-            &DialogSeamAllowance::ManagePatternMaterials);
-
-    connect(uiTabLabels->comboBoxDateFormat, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            &DialogSeamAllowance::PatternLabelDataChanged);
-    connect(uiTabLabels->comboBoxTimeFormat, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            &DialogSeamAllowance::PatternLabelDataChanged);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogSeamAllowance::InitPinsTab()
 {
     uiTabPins->listWidgetPins->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -3008,31 +2240,6 @@ void DialogSeamAllowance::InitAllPinComboboxes()
     InitPinPoint(uiTabGrainline->comboBoxGrainlineCenterPin);
     InitPinPoint(uiTabGrainline->comboBoxGrainlineTopPin);
     InitPinPoint(uiTabGrainline->comboBoxGrainlineBottomPin);
-
-    InitPinPoint(uiTabLabels->comboBoxDLCenterPin);
-    InitPinPoint(uiTabLabels->comboBoxDLTopLeftPin);
-    InitPinPoint(uiTabLabels->comboBoxDLBottomRightPin);
-
-    InitPinPoint(uiTabLabels->comboBoxPLCenterPin);
-    InitPinPoint(uiTabLabels->comboBoxPLTopLeftPin);
-    InitPinPoint(uiTabLabels->comboBoxPLBottomRightPin);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::InitLabelFontSize(QComboBox *box)
-{
-    SCASSERT(box != nullptr);
-    box->clear();
-    box->addItem(tr("Default"), 0);
-
-    // Get the available font sizes
-    for (auto size : QFontDatabase::standardSizes())
-    {
-        if (size >= VCommonSettings::MinPieceLabelFontPointSize())
-        {
-            box->addItem(QString::number(size), size);
-        }
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3222,132 +2429,6 @@ void DialogSeamAllowance::UpdateCurrentPlaceLabelRecords()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::SetDLWidth(QString widthFormula)
-{
-    if (widthFormula.isEmpty())
-    {
-        widthFormula = QString().setNum(UnitConvertor(10, Unit::Cm, *data.GetPatternUnit()));
-    }
-
-    const QString formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        widthFormula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (formula.length() > 80)
-    {
-        this->DeployDLWidth();
-    }
-
-    uiTabLabels->lineEditDLWidthFormula->setPlainText(formula);
-
-    MoveCursorToEnd(uiTabLabels->lineEditDLWidthFormula);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::SetDLHeight(QString heightFormula)
-{
-    if (heightFormula.isEmpty())
-    {
-        heightFormula = QString().setNum(UnitConvertor(10, Unit::Cm, *data.GetPatternUnit()));
-    }
-
-    const QString formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        heightFormula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (formula.length() > 80)
-    {
-        this->DeployDLHeight();
-    }
-
-    uiTabLabels->lineEditDLHeightFormula->setPlainText(formula);
-
-    MoveCursorToEnd(uiTabLabels->lineEditDLHeightFormula);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::SetDLAngle(QString angleFormula)
-{
-    if (angleFormula.isEmpty())
-    {
-        angleFormula = '0';
-    }
-
-    const QString formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        angleFormula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (formula.length() > 80)
-    {
-        this->DeployDLAngle();
-    }
-
-    uiTabLabels->lineEditDLAngleFormula->setPlainText(formula);
-
-    MoveCursorToEnd(uiTabLabels->lineEditDLAngleFormula);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::SetPLWidth(QString widthFormula)
-{
-    if (widthFormula.isEmpty())
-    {
-        widthFormula = QString().setNum(UnitConvertor(10, Unit::Cm, *data.GetPatternUnit()));
-    }
-
-    const QString formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        widthFormula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (formula.length() > 80)
-    {
-        this->DeployPLWidth();
-    }
-
-    uiTabLabels->lineEditPLWidthFormula->setPlainText(formula);
-
-    MoveCursorToEnd(uiTabLabels->lineEditPLWidthFormula);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::SetPLHeight(QString heightFormula)
-{
-    if (heightFormula.isEmpty())
-    {
-        heightFormula = QString().setNum(UnitConvertor(10, Unit::Cm, *data.GetPatternUnit()));
-    }
-
-    const QString formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        heightFormula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (formula.length() > 80)
-    {
-        this->DeployPLHeight();
-    }
-
-    uiTabLabels->lineEditPLHeightFormula->setPlainText(formula);
-
-    MoveCursorToEnd(uiTabLabels->lineEditPLHeightFormula);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::SetPLAngle(QString angleFormula)
-{
-    if (angleFormula.isEmpty())
-    {
-        angleFormula = '0';
-    }
-
-    const QString formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        angleFormula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (formula.length() > 80)
-    {
-        this->DeployPLAngle();
-    }
-
-    uiTabLabels->lineEditPLAngleFormula->setPlainText(formula);
-
-    MoveCursorToEnd(uiTabLabels->lineEditPLAngleFormula);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto DialogSeamAllowance::CurrentRect() const -> QRectF
 {
     QRectF rect;
@@ -3419,76 +2500,6 @@ auto DialogSeamAllowance::GetDefaultPieceName() const -> QString
         name = defName + QStringLiteral("_%1").arg(++i);
     }
     return name;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::EnableDetailLabelFormulaControls(bool enable)
-{
-    uiTabLabels->pushButtonDLWidth->setEnabled(enable);
-    uiTabLabels->lineEditDLWidthFormula->setEnabled(enable);
-    uiTabLabels->pushButtonShowDLWidth->setEnabled(enable);
-
-    uiTabLabels->pushButtonDLHeight->setEnabled(enable);
-    uiTabLabels->lineEditDLHeightFormula->setEnabled(enable);
-    uiTabLabels->pushButtonShowDLHeight->setEnabled(enable);
-
-    uiTabLabels->comboBoxDLCenterPin->setEnabled(enable);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::EnablePatternLabelFormulaControls(bool enable)
-{
-    uiTabLabels->pushButtonPLWidth->setEnabled(enable);
-    uiTabLabels->lineEditPLWidthFormula->setEnabled(enable);
-    uiTabLabels->pushButtonShowPLWidth->setEnabled(enable);
-
-    uiTabLabels->pushButtonPLHeight->setEnabled(enable);
-    uiTabLabels->lineEditPLHeightFormula->setEnabled(enable);
-    uiTabLabels->pushButtonShowPLHeight->setEnabled(enable);
-
-    uiTabLabels->comboBoxPLCenterPin->setEnabled(enable);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::SavePatternLabelData()
-{
-    if (m_patternLabelDataChanged && m_doc != nullptr)
-    {
-        m_doc->SetPatternName(uiTabLabels->lineEditPatternName->text());
-        m_doc->SetPatternNumber(uiTabLabels->lineEditPatternNumber->text());
-        m_doc->SetCompanyName(uiTabLabels->lineEditCompanyName->text());
-        if (VAbstractValApplication::VApp()->GetMeasurementsType() != MeasurementsType::Individual)
-        {
-            m_doc->SetCustomerName(uiTabLabels->lineEditCustomerName->text());
-            m_doc->SetCustomerBirthDate(uiTabLabels->dateEditCustomerBirthDate->date());
-            m_doc->SetCustomerEmail(uiTabLabels->lineEditCustomerEmail->text());
-        }
-        m_doc->SetLabelDateFormat(uiTabLabels->comboBoxDateFormat->currentText());
-        m_doc->SetLabelTimeFormat(uiTabLabels->comboBoxTimeFormat->currentText());
-
-        m_patternLabelDataChanged = false;
-        m_askSavePatternLabelData = false;
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::SavePatternTemplateData()
-{
-    if (m_patternTemplateDataChanged && m_doc != nullptr)
-    {
-        m_doc->SetPatternLabelTemplate(m_patternTemplateLines);
-        m_patternTemplateDataChanged = false;
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::SavePatternMaterialData()
-{
-    if (m_patternMaterialsChanged && m_doc != nullptr)
-    {
-        m_doc->SetPatternMaterials(m_patternMaterials);
-        m_patternMaterialsChanged = false;
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3578,68 +2589,5 @@ void DialogSeamAllowance::SetOptionControls()
     SetChecked(uiTabPaths->toolButtonExcluded, rowNode.IsExcluded());
 
     uiTabPaths->toolButtonDelete->setEnabled(true);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::PatternLabelDataChanged()
-{
-    m_patternLabelDataChanged = true;
-    m_askSavePatternLabelData = true;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::EditPatternLabel()
-{
-    if (m_patternLabelDataChanged && m_askSavePatternLabelData)
-    {
-        if (QMessageBox::StandardButton const answer = QMessageBox::question(
-                this, tr("Save label data."),
-                tr("Label data were changed. Do you want to save them before editing label template?"),
-                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-            answer == QMessageBox::Yes)
-        {
-            SavePatternLabelData();
-        }
-        else
-        {
-            m_askSavePatternLabelData = false;
-        }
-    }
-
-    if (m_doc == nullptr)
-    {
-        return;
-    }
-
-    DialogEditLabel editor(m_doc, &data);
-
-    m_patternTemplateDataChanged ? editor.SetTemplate(m_patternTemplateLines)
-                                 : editor.SetTemplate(m_doc->GetPatternLabelTemplate());
-
-    if (QDialog::Accepted == editor.exec())
-    {
-        m_patternTemplateLines = editor.GetTemplate();
-        uiTabLabels->groupBoxPatternLabel->setEnabled(not m_patternTemplateLines.isEmpty());
-        m_patternTemplateDataChanged = true;
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::ManagePatternMaterials()
-{
-    VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-
-    DialogPatternMaterials editor(m_patternMaterials, settings->IsRememberPatternMaterials());
-
-    if (QDialog::Accepted == editor.exec())
-    {
-        m_patternMaterials = editor.GetPatternMaterials();
-        m_patternMaterialsChanged = true;
-
-        if (settings->IsRememberPatternMaterials())
-        {
-            settings->SetKnownMaterials(editor.GetKnownMaterials());
-        }
-    }
 }
 

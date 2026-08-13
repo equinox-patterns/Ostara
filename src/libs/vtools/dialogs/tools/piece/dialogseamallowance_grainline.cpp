@@ -32,7 +32,6 @@
 #include "dialogseamallowance.h"
 #include "dialogseamallowance_helpers.h"
 #include "ui_tabgrainline.h"
-#include "ui_tablabels.h"
 #include "../vpatterndb/floatItemData/floatitemdef.h"
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractvalapplication.h"

@@ -52,7 +52,6 @@ const QString AttrName = QStringLiteral("name");
 const QString AttrPoints = QStringLiteral("points");
 const QString AttrShortName = QStringLiteral("shortName");
 const QString AttrUUID = QStringLiteral("uuid");
-const QString AttrGradationLabel = QStringLiteral("gradationLabel");
 const QString AttrMx1 = QStringLiteral("mx1");
 const QString AttrMy1 = QStringLiteral("my1");
 const QString AttrName1 = QStringLiteral("name1");

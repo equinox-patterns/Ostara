@@ -306,13 +306,6 @@ auto StripLabelElements(QDomDocument *doc) -> bool
         }
     }
 
-    // 3. Remove labelPrefix attribute from root
-    if (root.hasAttribute(QStringLiteral("labelPrefix")))
-    {
-        foundLabels = true;
-        root.removeAttribute(QStringLiteral("labelPrefix"));
-    }
-
     // 5. Remove gradationLabel attribute from <detail> elements
     const QDomNodeList details = root.elementsByTagName(QStringLiteral("detail"));
     for (int i = 0; i < details.size(); ++i)
@@ -328,40 +321,12 @@ auto StripLabelElements(QDomDocument *doc) -> bool
             detail.removeAttribute(QStringLiteral("gradationLabel"));
         }
 
-        // 6. In <data> child of <detail>: remove label-specific attributes and <line> children
+        // 6. Remove <data> elements (piece label data)
         const QDomNodeList dataElements = detail.elementsByTagName(QStringLiteral("data"));
-        for (int j = 0; j < dataElements.size(); ++j)
+        for (int j = dataElements.size() - 1; j >= 0; --j)
         {
-            QDomElement dataEl = dataElements.at(j).toElement();
-            if (dataEl.isNull())
-            {
-                continue;
-            }
-            // Remove <line> template children
-            const QDomNodeList lines = dataEl.elementsByTagName(QStringLiteral("line"));
-            for (int k = lines.size() - 1; k >= 0; --k)
-            {
-                foundLabels = true;
-                dataEl.removeChild(lines.at(k));
-            }
-            // Remove label-specific attributes from <data>
-            static const QStringList labelAttrs = {
-                QStringLiteral("orientation"), QStringLiteral("rotationWay"),
-                QStringLiteral("tilt"), QStringLiteral("foldPosition"),
-                QStringLiteral("visible"), QStringLiteral("fontSize"),
-                QStringLiteral("mx"), QStringLiteral("my"),
-                QStringLiteral("width"), QStringLiteral("height"),
-                QStringLiteral("rotation"), QStringLiteral("centerPin"),
-                QStringLiteral("topLeftPin"), QStringLiteral("bottomRightPin")
-            };
-            for (const auto &attr : labelAttrs)
-            {
-                if (dataEl.hasAttribute(attr))
-                {
-                    foundLabels = true;
-                    dataEl.removeAttribute(attr);
-                }
-            }
+            foundLabels = true;
+            detail.removeChild(dataElements.at(j));
         }
 
         // 7. Remove <patternInfo> elements (pattern info labels)

@@ -146,8 +146,6 @@ private:
     void ExportAAMAIntcut(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail);
     void ExportAAMANotch(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail);
     void ExportAAMAGrainline(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail);
-    void ExportPieceText(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail);
-    void ExportStyleSystemText(const QSharedPointer<dx_iface> &input, const QVector<VLayoutPiece> &details);
     void ExportAAMADrill(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail);
     void ExportAAMADrawFoldLine(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail);
 
@@ -195,9 +193,6 @@ private:
 
     void ASTMDrawFoldLineTwoArrows(const QVector<QVector<QPointF>> &points,
                                    const QSharedPointer<dx_ifaceBlock> &detailBlock);
-
-    static void CheckLabelCompatibilityRPCADV09(const VLayoutPiece &detail);
-    static void CheckLabelCompatibilityRPCADV08(const VLayoutPiece &detail);
 
     auto PieceOutline(const VLayoutPiece &detail) const -> QVector<VLayoutPoint>;
 };

@@ -3,14 +3,12 @@
 set(VFORMAT_SOURCES
     vdimensions.cpp
     vmeasurements.cpp
-    vlabeltemplate.cpp
     vpatternrecipe.cpp
     vsinglelineoutlinechar.cpp
     vsinglelineoutlinechar.h
     vwatermark.cpp
     vdimensions.h
     vmeasurements.h
-    vlabeltemplate.h
     vpatternrecipe.h
     vwatermark.h
 )
