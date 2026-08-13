@@ -37,7 +37,7 @@ void MainWindow::SetupDrawToolsIcons()
     const auto resource = QStringLiteral("toolicon");
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 65, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 66, "Not all tools were handled.");
 
     ui->actionLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("line.png")));
     ui->actionEndLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("segment.png")));
@@ -57,6 +57,7 @@ void MainWindow::SetupDrawToolsIcons()
         VTheme::GetIconResource(resource, QStringLiteral("curve_intersect_axis.png")));
     ui->actionArcIntersectAxisTool->setIcon(
         VTheme::GetIconResource(resource, QStringLiteral("arc_intersect_axis.png")));
+    ui->actionCutCurveTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("spline_cut_point.png")));
     ui->actionSplineCutPointTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("spline_cut_point.png")));
     ui->actionSplinePathCutPointTool->setIcon(
         VTheme::GetIconResource(resource, QStringLiteral("splinePath_cut_point.png")));

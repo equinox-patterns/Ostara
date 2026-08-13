@@ -131,6 +131,33 @@ void MainWindow::ToolSelectSplinePath()
 
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectCutCurve()
+{
+    // Only true for rubber band selection
+    emit EnablePointSelection(false);
+    emit EnableLineSelection(false);
+    emit EnableArcSelection(false);
+    emit EnableElArcSelection(false);
+    emit EnableSplineSelection(false);
+    emit EnableSplinePathSelection(false);
+    emit EnableBackgroundImageSelection(false);
+
+    // Hovering
+    emit EnablePointHover(false);
+    emit EnableLineHover(false);
+    emit EnableArcHover(false);
+    emit EnableElArcHover(false);
+    emit EnableSplineHover(true);
+    emit EnableSplinePathHover(true);
+    emit EnableImageBackgroundHover(false);
+
+    emit ItemsSelection(SelectionType::ByMouseRelease);
+
+    ui->view->AllowRubberBand(false);
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolSelectArc()
 {
     // Only true for rubber band selection

@@ -369,8 +369,7 @@ void DrawToolBar::InitializeGroups()
         }, kModeDraw},
         {tr("Curves"), {
             {QStringLiteral("curve"),                    tr("Curve"),                                            nullptr, makeBtn("curve")},
-            {QStringLiteral("spline_cut_point"),         tr("Segmenting a simple curve"),                       nullptr, makeBtn("spline_cut_point")},
-            {QStringLiteral("splinePath_cut_point"),     tr("Segment a curved path"),                           nullptr, makeBtn("splinePath_cut_point")},
+            {QStringLiteral("curve_cut_point"),          tr("Segment a curve"),                                 nullptr, makeBtn("curve_cut_point")},
             {QStringLiteral("cubic_bezier"),             tr("Curve tool which uses point as control handle"),    nullptr, makeBtn("cubic_bezier")},
             {QStringLiteral("cubic_bezier_path"),        tr("Curved path tool which uses point as control handle"), nullptr, makeBtn("cubic_bezier_path")},
             {QStringLiteral("curve_intersect_axis"),     tr("Point intersect curve and axis"),                  nullptr, makeBtn("curve_intersect_axis")},

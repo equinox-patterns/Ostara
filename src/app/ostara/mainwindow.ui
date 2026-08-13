@@ -1807,6 +1807,24 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
+  <action name="actionCutCurveTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="share/resources/toolicon.qrc">
+     <normaloff>:/toolicon/light/spline_cut_point.png</normaloff>:/toolicon/light/spline_cut_point.png</iconset>
+   </property>
+   <property name="text">
+    <string>Segment a curve</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
   <action name="actionCubicBezierTool">
    <property name="checkable">
     <bool>true</bool>

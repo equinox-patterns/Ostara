@@ -337,8 +337,7 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("line_intersect_axis"),          ui->actionLineIntersectAxisTool},
         {QStringLiteral("curve_intersect_axis"),         ui->actionCurveIntersectAxisTool},
         {QStringLiteral("arc_intersect_axis"),           ui->actionArcIntersectAxisTool},
-        {QStringLiteral("spline_cut_point"),             ui->actionSplineCutPointTool},
-        {QStringLiteral("splinePath_cut_point"),         ui->actionSplinePathCutPointTool},
+        {QStringLiteral("curve_cut_point"),              ui->actionCutCurveTool},
         {QStringLiteral("arc_cut"),                      ui->actionArcCutPointTool},
         {QStringLiteral("arc_start"),                    ui->actionArcStartPointTool},
         {QStringLiteral("arc_end"),                      ui->actionArcEndPointTool},
@@ -1676,7 +1675,7 @@ void MainWindow::OpenAt(QAction *where)
 void MainWindow::InitToolButtons()
 {
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 65, "Check if all tools were connected.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 66, "Check if all tools were connected.");
 
     auto InitToolButton = [this](VShortcutAction type, QAction *action, void (MainWindow::*slotFunction)(bool))
     {
@@ -1711,6 +1710,7 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ToolCutSpline, ui->actionSplineCutPointTool, &MainWindow::ToolCutSpline);
     InitToolButton(VShortcutAction::ToolCutSplinePath, ui->actionSplinePathCutPointTool,
                    &MainWindow::ToolCutSplinePath);
+    InitToolButton(VShortcutAction::ToolCutCurve, ui->actionCutCurveTool, &MainWindow::ToolCutCurve);
     InitToolButton(VShortcutAction::ToolUnionDetails, ui->actionUnionDetailsTool, &MainWindow::ToolUnionDetails);
     InitToolButton(VShortcutAction::ToolDuplicateDetail, ui->actionDuplicateDetailTool,
                    &MainWindow::ToolDuplicateDetail);
@@ -1799,7 +1799,7 @@ void MainWindow::MouseMove(const QPointF &scenePos)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 65, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 66, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1916,6 +1916,9 @@ void MainWindow::CancelTool()
             break;
         case Tool::PointOfIntersection:
             ui->actionPointOfIntersectionTool->setChecked(false);
+            break;
+        case Tool::CutCurve:
+            ui->actionCutCurveTool->setChecked(false);
             break;
         case Tool::CutSpline:
             ui->actionSplineCutPointTool->setChecked(false);
@@ -3464,7 +3467,7 @@ void MainWindow::SetEnableTool(bool enable)
     QT_WARNING_POP
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 65, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 66, "Not all tools were handled.");
 
     // Drawing Tools
     ui->actionEndLineTool->setEnabled(drawTools);
@@ -3487,6 +3490,7 @@ void MainWindow::SetEnableTool(bool enable)
     ui->actionHeightTool->setEnabled(drawTools);
     ui->actionTriangleTool->setEnabled(drawTools);
     ui->actionPointOfIntersectionTool->setEnabled(drawTools);
+    ui->actionCutCurveTool->setEnabled(drawTools);
     ui->actionSplineCutPointTool->setEnabled(drawTools);
     ui->actionSplinePathCutPointTool->setEnabled(drawTools);
     ui->actionArcCutPointTool->setEnabled(drawTools);
@@ -3675,7 +3679,7 @@ void MainWindow::CreateMenus()
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 65, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 66, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -3798,6 +3802,10 @@ void MainWindow::LastUsedTool()
         case Tool::PointOfIntersectionArcs:
             ui->actionPointOfIntersectionArcsTool->setChecked(true);
             ToolPointOfIntersectionArcs(true);
+            break;
+        case Tool::CutCurve:
+            ui->actionCutCurveTool->setChecked(true);
+            ToolCutCurve(true);
             break;
         case Tool::CutSpline:
             ui->actionSplineCutPointTool->setChecked(true);

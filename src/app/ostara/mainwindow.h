@@ -168,6 +168,7 @@ private slots:
     void ToolCurve(bool checked);
     void ToolCubicBezierPath(bool checked);
     void ToolCutSplinePath(bool checked);
+    void ToolCutCurve(bool checked);
     void ToolPointOfContact(bool checked);
     void ToolDetail(bool checked);
     void ToolPiecePath(bool checked);
@@ -231,6 +232,7 @@ private slots:
     void ClosedDialogPiecePath(int result);
     void ClosedDialogPin(int result);
     void ClosedDialogInsertNode(int result);
+    void ClosedCutCurveDialog(int result);
     void ClosedCurveDialog(int result);
 
     // Ostara Measurement
@@ -488,6 +490,7 @@ private:
     void ToolSelectPointByRelease();
     void ToolSelectSpline();
     void ToolSelectSplinePath();
+    void ToolSelectCutCurve();
     void ToolSelectArc();
     void ToolSelectArcElArc();
     void ToolSelectArcCurve();

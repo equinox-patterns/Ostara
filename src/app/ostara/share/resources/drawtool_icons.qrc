@@ -48,6 +48,7 @@
         <file alias="splinePath.svg">../../../../../share/icons/tools/light/splinePath.svg</file>
         <file alias="splinePath_cut_point.svg">../../../../../share/icons/tools/light/splinePath_cut_point.svg</file>
         <file alias="spline_cut_point.svg">../../../../../share/icons/tools/light/spline_cut_point.svg</file>
+        <file alias="curve_cut_point.svg">../../../../../share/icons/tools/light/spline_cut_point.svg</file>
         <file alias="triangle.svg">../../../../../share/icons/tools/light/triangle.svg</file>
         <file alias="true_darts.svg">../../../../../share/icons/tools/light/true_darts.svg</file>
         <file alias="union.svg">../../../../../share/icons/tools/light/union.svg</file>
@@ -101,6 +102,7 @@
         <file alias="splinePath.svg">../../../../../share/icons/tools/dark/splinePath.svg</file>
         <file alias="splinePath_cut_point.svg">../../../../../share/icons/tools/dark/splinePath_cut_point.svg</file>
         <file alias="spline_cut_point.svg">../../../../../share/icons/tools/dark/spline_cut_point.svg</file>
+        <file alias="curve_cut_point.svg">../../../../../share/icons/tools/dark/spline_cut_point.svg</file>
         <file alias="triangle.svg">../../../../../share/icons/tools/dark/triangle.svg</file>
         <file alias="true_darts.svg">../../../../../share/icons/tools/dark/true_darts.svg</file>
         <file alias="union.svg">../../../../../share/icons/tools/dark/union.svg</file>

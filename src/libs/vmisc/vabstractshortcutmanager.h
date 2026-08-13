@@ -129,6 +129,7 @@ enum class VShortcutAction : quint8
     AutoArrangeLabels,
     ToolArrow,
     ToolCurve,
+    ToolCutCurve,
     LAST_ONE_DO_NOT_USE
 };
 

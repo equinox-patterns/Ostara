@@ -53,6 +53,7 @@
 #include "../vtools/dialogs/tools/dialogcutarc.h"
 #include "../vtools/dialogs/tools/dialogcutspline.h"
 #include "../vtools/dialogs/tools/dialogcutsplinepath.h"
+#include "../vtools/dialogs/tools/dialogcutcurve.h"
 #include "../vtools/dialogs/tools/dialogellipticalarc.h"
 #include "../vtools/dialogs/tools/dialogellipticalarcwithlength.h"
 #include "../vtools/dialogs/tools/dialogendline.h"
@@ -440,6 +441,20 @@ void MainWindow::ToolCutSplinePath(bool checked)
         checked, Tool::CutSplinePath, QStringLiteral("splinePath_cut_point_cursor.png"), tr("Select curve path"),
         &MainWindow::ClosedDrawDialogWithApply<VToolCutSplinePath>, &MainWindow::ApplyDrawDialog<VToolCutSplinePath>);
     LogPatternToolUsed(checked, QStringLiteral("Cut spline path tool"));
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ToolCutCurve handler tool CutCurve (unified: Spline + SplinePath).
+ * @param checked true - button is checked
+ */
+void MainWindow::ToolCutCurve(bool checked)
+{
+    ToolSelectCutCurve();
+    SetToolButton<DialogCutCurve>(checked, Tool::CutCurve, QStringLiteral("spline_cut_point_cursor.png"),
+                                  tr("Select a curve"), &MainWindow::ClosedCutCurveDialog);
+    LogPatternToolUsed(checked, QStringLiteral("Cut curve tool"));
 }
 
 
@@ -975,7 +990,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 65, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 66, "Check if need to extend.");
 
     switch (t)
     {
@@ -1135,6 +1150,39 @@ template <typename DrawTool> void MainWindow::ClosedDetailsDialogWithApply(int r
 template <typename DrawTool> void MainWindow::ApplyDetailsDialog()
 {
     ApplyDialog<DrawTool>(m_sceneDetails);
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ClosedCutCurveDialog routes the unified "Segment a curve" click to the existing
+ *        ToolCutSpline / ToolCutSplinePath and forwards the click.
+ * @param result result working dialog.
+ */
+void MainWindow::ClosedCutCurveDialog(int result)
+{
+    SCASSERT(not m_dialogTool.isNull())
+    if (result == QDialog::Accepted)
+    {
+        auto *curveDialog = qobject_cast<DialogCutCurve *>(m_dialogTool.data());
+        SCASSERT(curveDialog != nullptr)
+
+        const quint32 curveId = curveDialog->getCurveId();
+        const bool isPath = curveDialog->IsSplinePath();
+
+        CancelTool();
+
+        if (isPath)
+        {
+            ToolCutSplinePath(true);
+        }
+        else
+        {
+            ToolCutSpline(true);
+        }
+
+        m_dialogTool->ChosenObject(curveId, isPath ? SceneObject::SplinePath : SceneObject::Spline);
+    }
 }
 
 
