@@ -159,7 +159,7 @@ void VisToolRotation::CreateRotatedObjects(int &iPoint, int &iCurve, qreal angle
         const QSharedPointer<VGObject> obj = GetData()->GetGObject(id);
 
         // This check helps to find missed objects in the switch
-        Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects was handled.");
+        Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects was handled.");
 
         QT_WARNING_PUSH
         QT_WARNING_DISABLE_GCC("-Wswitch-default")
@@ -188,6 +188,7 @@ void VisToolRotation::CreateRotatedObjects(int &iPoint, int &iCurve, qreal angle
             case GOType::CubicBezierPath:
                 iCurve = AddRotatedCurve<VCubicBezierPath>(angle, id, iCurve);
                 break;
+            case GOType::PlaceLabel:
             case GOType::Unknown:
                 Q_UNREACHABLE();
                 break;

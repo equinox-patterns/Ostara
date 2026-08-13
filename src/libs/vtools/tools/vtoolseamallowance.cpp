@@ -44,6 +44,7 @@
 #include "../vformat/vlabeltemplate.h"
 #include "../vgeometry/varc.h"
 #include "../vgeometry/vellipticalarc.h"
+#include "../vgeometry/vplacelabelitem.h"
 #include "../vgeometry/vpointf.h"
 #include "../vlayout/vboundary.h"
 #include "../vlayout/vfoldline.h"
@@ -73,6 +74,7 @@
 #include "nodeDetails/vnodesplinepath.h"
 #include "nodeDetails/vtoolpiecepath.h"
 #include "nodeDetails/vtoolpin.h"
+#include "nodeDetails/vtoolplacelabel.h"
 #include "qpainterpath.h"
 #include "toolsdef.h"
 #include "vinteractivetool.h"
@@ -101,6 +103,7 @@ const QString VToolSeamAllowance::TagCSA = QStringLiteral("csa");               
 const QString VToolSeamAllowance::TagRecord = QStringLiteral("record");           // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagIPaths = QStringLiteral("iPaths");           // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagPins = QStringLiteral("pins");               // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagPlaceLabels = QStringLiteral("placeLabels"); // NOLINT(cert-err58-cpp)
 
 const QString VToolSeamAllowance::AttrSeamAllowance = QStringLiteral("seamAllowance"); // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrHideMainPath = QStringLiteral("hideMainPath");   // NOLINT(cert-err58-cpp)
@@ -671,6 +674,7 @@ auto VToolSeamAllowance::Duplicate(VToolSeamAllowanceInitData &initData) -> VToo
     dupDetail.SetCustomSARecords(
         DuplicateCustomSARecords(initData.detail.GetCustomSARecords(), initData, replacements));
     dupDetail.SetInternalPaths(DuplicateInternalPaths(initData.detail.GetInternalPaths(), initData));
+    dupDetail.SetPlaceLabels(DuplicatePlaceLabels(initData.detail.GetPlaceLabels(), initData));
     dupDetail.SetUUID(QUuid::createUuid());
 
     const QMap<quint32, quint32> mappedPins = DuplicatePins(initData.detail.GetPins(), initData);
@@ -775,6 +779,11 @@ void VToolSeamAllowance::AddPieceDependencies(quint32 id,
     }
 
     for (auto point : piece.GetPins())
+    {
+        patternGraph->AddEdge(point, id);
+    }
+
+    for (auto point : piece.GetPlaceLabels())
     {
         patternGraph->AddEdge(point, id);
     }
@@ -932,6 +941,13 @@ void VToolSeamAllowance::AddInternalPaths(VAbstractPattern *doc, QDomElement &do
 void VToolSeamAllowance::AddPins(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &pins)
 {
     AddPointRecords(doc, domElement, pins, VToolSeamAllowance::TagPins);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::AddPlaceLabels(VAbstractPattern *doc, QDomElement &domElement,
+                                        const QVector<quint32> &placeLabels)
+{
+    AddPointRecords(doc, domElement, placeLabels, VToolSeamAllowance::TagPlaceLabels);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1557,6 +1573,7 @@ void VToolSeamAllowance::RefreshScale()
     setPen(toolPen);
     m_seamAllowance->setPen(toolPen);
     m_passmarks->setPen(toolPen);
+    m_placeLabels->setPen(toolPen);
     m_foldLineMark->setPen(toolPen);
     m_foldLineLabel->setPen(toolPen);
 
@@ -1637,6 +1654,7 @@ void VToolSeamAllowance::AddToFile()
     AddCSARecords(doc, domElement, piece.GetCustomSARecords());
     AddInternalPaths(doc, domElement, piece.GetInternalPaths());
     AddPins(doc, domElement, piece.GetPins());
+    AddPlaceLabels(doc, domElement, piece.GetPlaceLabels());
     AddMirrorLine(doc, domElement, piece);
 
     VAbstractApplication::VApp()->getUndoStack()->push(
@@ -1672,6 +1690,7 @@ void VToolSeamAllowance::RefreshDataInFile()
         AddCSARecords(doc, domElement, piece.GetCustomSARecords());
         AddInternalPaths(doc, domElement, piece.GetInternalPaths());
         AddPins(doc, domElement, piece.GetPins());
+        AddPlaceLabels(doc, domElement, piece.GetPlaceLabels());
         AddMirrorLine(doc, domElement, piece);
     }
 }
@@ -1956,6 +1975,7 @@ VToolSeamAllowance::VToolSeamAllowance(const VToolSeamAllowanceInitData &initDat
     m_patternInfo(new VTextGraphicsItem(VTextGraphicsItem::ItemType::PatternLabel, this)),
     m_grainLine(new VGrainlineItem(VColorRole::PieceColor, this)),
     m_passmarks(new QGraphicsPathItem(this)),
+    m_placeLabels(new QGraphicsPathItem(this)),
     m_mirrorLine(new QGraphicsPathItem(this)),
     m_foldLineMark(new QGraphicsPathItem(this)),
     m_foldLineLabel(new QGraphicsPathItem(this)),
@@ -2149,6 +2169,8 @@ auto VToolSeamAllowance::ComputePieceGeometry(bool combineTogether, bool pieceSh
     geom.showMainPath = pieceShowMainPath || not detail.IsHideMainPath() || not detail.IsSeamAllowance() ||
                         detail.IsSeamAllowanceBuiltIn();
 
+    geom.placeLabels = detail.PlaceLabelPath(containerData);
+
     geom.valid = true;
     return geom;
 }
@@ -2178,6 +2200,8 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
     }
 
     this->setPath(path);
+
+    m_placeLabels->setPath(geom.placeLabels);
 
     if (geom.hasSeamAllowance)
     {
@@ -3114,6 +3138,41 @@ auto VToolSeamAllowance::DuplicateInternalPaths(const QVector<quint32> &iPaths,
         newPaths.append(DuplicatePiecePath(iPath, initData));
     }
     return newPaths;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::DuplicatePlaceLabels(const QVector<quint32> &placeLabels,
+                                              const VToolSeamAllowanceInitData &initData) -> QVector<quint32>
+{
+    QVector<quint32> newPlaceLabels;
+    newPlaceLabels.reserve(placeLabels.size());
+    for (auto placeLabel : placeLabels)
+    {
+        QSharedPointer<VPlaceLabelItem> const label = initData.data->GeometricObject<VPlaceLabelItem>(placeLabel);
+        auto *tool = qobject_cast<VAbstractNode *>(VAbstractPattern::getTool(placeLabel));
+        SCASSERT(tool != nullptr)
+
+        VToolPlaceLabelInitData initNodeData;
+        initNodeData.idObject = NULL_ID; // piece id
+        initNodeData.doc = initData.doc;
+        initNodeData.data = initData.data;
+        initNodeData.parse = Document::FullParse;
+        initNodeData.typeCreation = Source::FromTool;
+        initNodeData.drawName = initData.drawName;
+        initNodeData.width = label->GetWidthFormula();
+        initNodeData.height = label->GetHeightFormula();
+        initNodeData.angle = label->GetAngleFormula();
+        initNodeData.visibilityTrigger = label->GetVisibilityTrigger();
+        initNodeData.type = label->GetLabelType();
+        initNodeData.centerPoint = label->GetCenterPoint();
+        initNodeData.notMirrored = label->IsNotMirrored();
+        initNodeData.id = initNodeData.data->AddGObject(new VPlaceLabelItem(*label));
+        initNodeData.idTool = tool->GetIdTool();
+
+        VToolPlaceLabel::Create(initNodeData);
+        newPlaceLabels.append(initNodeData.id);
+    }
+    return newPlaceLabels;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

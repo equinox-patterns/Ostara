@@ -193,6 +193,7 @@ void DialogInsertNode::ChosenObject(quint32 id, const SceneObject &type)
             case GOType::CubicBezierPath:
                 node = VPieceNode(id, Tool::NodeSplinePath);
                 break;
+            case GOType::PlaceLabel:
             case GOType::Unknown:
             default:
                 qDebug() << "Got unexpected object type. Ignore.";

@@ -35,6 +35,7 @@
 #include <QVector>
 
 #include "../vgeometry/vgeometrydef.h"
+#include "../vgeometry/vlayoutplacelabel.h"
 #include "vexception.h"
 #include "../vpatterndb/floatItemData/floatitemdef.h"
 #include "../vwidgets/vpiecegrainline.h"
@@ -94,6 +95,9 @@ public:
     /** @brief m_tmPattern text manager for laying out pattern info */
     VTextManager m_tmPattern{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
+    /** @brief m_placeLabels list of place labels. */
+    QVector<VLayoutPlaceLabel> m_placeLabels{}; // NOLINT(misc-non-private-member-variables-in-classes)
+
     qint64 m_square{0}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     quint16 m_quantity{1}; // NOLINT(misc-non-private-member-variables-in-classes)
@@ -141,6 +145,7 @@ inline auto operator<<(QDataStream &dataStream, const VLayoutPieceData &piece) -
     dataStream << piece.m_verticallyFlipped;
     dataStream << piece.m_detailLabel;
     dataStream << piece.m_patternInfo;
+    dataStream << piece.m_placeLabels;
     dataStream << piece.m_square;
     dataStream << piece.m_quantity;
     dataStream << piece.m_id;
@@ -234,6 +239,7 @@ inline auto operator>>(QDataStream &dataStream, VLayoutPieceData &piece) -> QDat
         dataStream >> grainlineEnabled;
     }
 
+    dataStream >> piece.m_placeLabels;
     dataStream >> piece.m_square;
 
     if (actualClassVersion >= 2)

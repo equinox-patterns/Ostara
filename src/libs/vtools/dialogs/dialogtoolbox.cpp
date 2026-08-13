@@ -727,7 +727,7 @@ void SetTabStopDistance(QPlainTextEdit *edit, int tabWidthChar)
 auto SegmentAliases(GOType curveType, const QString &alias1, const QString &alias2) -> QPair<QString, QString>
 {
     // This check helps to find missed objects in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
 
     switch (curveType)
     {
@@ -744,6 +744,7 @@ auto SegmentAliases(GOType curveType, const QString &alias1, const QString &alia
         case GOType::SplinePath:
             return CurveAliases<VSplinePath>(alias1, alias2);
         case GOType::Point:
+        case GOType::PlaceLabel:
         case GOType::Unknown:
             Q_UNREACHABLE();
             break;
@@ -756,7 +757,7 @@ auto SegmentAliases(GOType curveType, const QString &alias1, const QString &alia
 auto SegmentNames(GOType curveType, const QString &name1, const QString &name2) -> QPair<QString, QString>
 {
     // This check helps to find missed objects in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
 
     switch (curveType)
     {
@@ -773,6 +774,7 @@ auto SegmentNames(GOType curveType, const QString &name1, const QString &name2) 
         case GOType::SplinePath:
             return CurveNames<VSplinePath>(name1, name2);
         case GOType::Point:
+        case GOType::PlaceLabel:
         case GOType::Unknown:
             Q_UNREACHABLE();
             break;

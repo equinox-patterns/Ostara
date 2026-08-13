@@ -28,6 +28,7 @@
 
 #include "vabstractpiece.h"
 #include "../vgeometry/varc.h"
+#include "../vgeometry/vlayoutplacelabel.h"
 #include "../vgeometry/vpointf.h"
 #include "../vmisc/compatibility.h"
 #include "vexception.h"
@@ -2293,6 +2294,226 @@ auto VAbstractPiece::GrainlineMainLine(const VGrainlineData &geom, const VContai
     }
 
     return {pt1, pt2};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPiece::PlaceLabelShape(const VLayoutPlaceLabel &label) -> PlaceLabelImg
+{
+    auto LayoutPoint = [&label](QPointF p, bool turnPoint = false, bool curvePoint = false)
+    {
+        VLayoutPoint point(label.RotationMatrix().map(p));
+        point.SetTurnPoint(turnPoint);
+        point.SetCurvePoint(curvePoint);
+        return point;
+    };
+
+    const QPointF pos = label.Center();
+    const QRectF box = label.Box();
+
+    auto SegmentShape = [pos, &box, &LayoutPoint]()
+    {
+        QVector<VLayoutPoint> const shape{LayoutPoint(QPointF(pos.x(), pos.y() - box.height() / 2.0), true),
+                                          LayoutPoint(QPointF(pos.x(), pos.y() + box.height() / 2.0), true)};
+
+        return PlaceLabelImg{shape};
+    };
+
+    auto RectangleShape = [pos, &box, &LayoutPoint]()
+    {
+        QRectF const rect(QPointF(pos.x() - box.width() / 2.0, pos.y() - box.height() / 2.0),
+                          QPointF(pos.x() + box.width() / 2.0, pos.y() + box.height() / 2.0));
+
+        QVector<VLayoutPoint> const shape{LayoutPoint(rect.topLeft(), true), LayoutPoint(rect.topRight(), true),
+                                          LayoutPoint(rect.bottomRight(), true), LayoutPoint(rect.bottomLeft(), true),
+                                          LayoutPoint(rect.topLeft(), true)};
+
+        return PlaceLabelImg{shape};
+    };
+
+    auto CrossShape = [pos, &box, &LayoutPoint]()
+    {
+        QVector<VLayoutPoint> const shape1{LayoutPoint(QPointF(pos.x(), pos.y() - box.height() / 2.0), true),
+                                           LayoutPoint(QPointF(pos.x(), pos.y() + box.height() / 2.0), true)};
+
+        QVector<VLayoutPoint> const shape2{LayoutPoint(QPointF(pos.x() - box.width() / 2.0, pos.y()), true),
+                                           LayoutPoint(QPointF(pos.x() + box.width() / 2.0, pos.y()), true)};
+
+        return PlaceLabelImg{shape1, shape2};
+    };
+
+    auto TshapedShape = [pos, &box, &LayoutPoint]()
+    {
+        QPointF const center2(pos.x(), pos.y() + box.height() / 2.0);
+
+        QVector<VLayoutPoint> const shape1{LayoutPoint(QPointF(pos.x(), pos.y()), true), LayoutPoint(center2, true)};
+
+        QVector<VLayoutPoint> const shape2{LayoutPoint(QPointF(center2.x() - box.width() / 2.0, center2.y()), true),
+                                           LayoutPoint(QPointF(center2.x() + box.width() / 2.0, center2.y()), true)};
+
+        return PlaceLabelImg{shape1, shape2};
+    };
+
+    auto DoubletreeShape = [pos, &box, &LayoutPoint]()
+    {
+        QRectF const rect(QPointF(pos.x() - box.width() / 2.0, pos.y() - box.height() / 2.0),
+                          QPointF(pos.x() + box.width() / 2.0, pos.y() + box.height() / 2.0));
+
+        QVector<VLayoutPoint> const shape1{LayoutPoint(rect.topLeft(), true), LayoutPoint(rect.bottomRight(), true)};
+
+        QVector<VLayoutPoint> const shape2{LayoutPoint(rect.topRight(), true), LayoutPoint(rect.bottomLeft(), true)};
+
+        return PlaceLabelImg{shape1, shape2};
+    };
+
+    auto CornerShape = [pos, &box, &LayoutPoint]()
+    {
+        QVector<VLayoutPoint> const shape1{LayoutPoint(QPointF(pos.x(), pos.y()), true),
+                                           LayoutPoint(QPointF(pos.x(), pos.y() + box.height() / 2.0), true)};
+
+        QVector<VLayoutPoint> const shape2{LayoutPoint(QPointF(pos.x() - box.width() / 2.0, pos.y()), true),
+                                           LayoutPoint(QPointF(pos.x(), pos.y()), true)};
+
+        return PlaceLabelImg{shape1, shape2};
+    };
+
+    auto TriangleShape = [pos, &box, &LayoutPoint]()
+    {
+        QRectF const rect(QPointF(pos.x() - box.width() / 2.0, pos.y() - box.height() / 2.0),
+                          QPointF(pos.x() + box.width() / 2.0, pos.y() + box.height() / 2.0));
+
+        QVector<VLayoutPoint> const shape{LayoutPoint(rect.topLeft(), true), LayoutPoint(rect.topRight(), true),
+                                          LayoutPoint(rect.bottomRight(), true), LayoutPoint(rect.topLeft(), true)};
+
+        return PlaceLabelImg{shape};
+    };
+
+    auto HshapedShape = [pos, &box, &LayoutPoint]()
+    {
+        const QPointF center1(pos.x(), pos.y() - box.height() / 2.0);
+        const QPointF center2(pos.x(), pos.y() + box.height() / 2.0);
+
+        QVector<VLayoutPoint> const shape1{LayoutPoint(center1, true), LayoutPoint(center2, true)};
+
+        QVector<VLayoutPoint> const shape2{LayoutPoint(QPointF(center1.x() - box.width() / 2.0, center1.y()), true),
+                                           LayoutPoint(QPointF(center1.x() + box.width() / 2.0, center1.y()), true)};
+
+        QVector<VLayoutPoint> const shape3{LayoutPoint(QPointF(center2.x() - box.width() / 2.0, center2.y()), true),
+                                           LayoutPoint(QPointF(center2.x() + box.width() / 2.0, center2.y()), true)};
+
+        return PlaceLabelImg{shape1, shape2, shape3};
+    };
+
+    auto ButtonShape = [pos, &box, &LayoutPoint]()
+    {
+        const qreal radius = qMin(box.width() / 2.0, box.height() / 2.0);
+        QVector<VLayoutPoint> const shape1{LayoutPoint(QPointF(pos.x(), pos.y() - radius), true),
+                                           LayoutPoint(QPointF(pos.x(), pos.y() + radius), true)};
+
+        QVector<VLayoutPoint> const shape2{LayoutPoint(QPointF(pos.x() - radius, pos.y()), true),
+                                           LayoutPoint(QPointF(pos.x() + radius, pos.y()), true)};
+
+        const qreal circleSize = 0.85;
+        VArc arc(VPointF(pos), radius * circleSize, 0, 360);
+        arc.SetApproximationScale(10);
+
+        QVector<QPointF> points = arc.GetPoints();
+        if (not points.isEmpty() && points.constFirst() != points.constLast())
+        {
+            points.append(points.constFirst());
+        }
+
+        QVector<VLayoutPoint> shape3;
+        shape3.reserve(points.size());
+        for (int i = 0; i < points.size(); ++i)
+        {
+            bool turnPoint = false;
+            if (i == 0 || i == points.size() - 1)
+            {
+                turnPoint = true;
+            }
+            shape3.append(LayoutPoint(points.at(i), turnPoint, true));
+        }
+
+        return PlaceLabelImg{shape1, shape2, shape3};
+    };
+
+    auto CircleShape = [pos, &box, &LayoutPoint]()
+    {
+        const qreal radius = qMin(box.width() / 2.0, box.height() / 2.0);
+        VArc arc(VPointF(pos), radius, 0, 360);
+        arc.SetApproximationScale(10);
+
+        QVector<QPointF> points = arc.GetPoints();
+        if (not points.isEmpty() && points.constFirst() != points.constLast())
+        {
+            points.append(points.constFirst());
+        }
+
+        QVector<VLayoutPoint> circle;
+        circle.reserve(points.size());
+        for (int i = 0; i < points.size(); ++i)
+        {
+            bool turnPoint = false;
+            if (i == 0 || i == points.size() - 1)
+            {
+                turnPoint = true;
+            }
+            circle.append(LayoutPoint(points.at(i), turnPoint, true));
+        }
+
+        return PlaceLabelImg{circle};
+    };
+
+    switch (label.Type())
+    {
+        case PlaceLabelType::Segment:
+            return SegmentShape();
+        case PlaceLabelType::Rectangle:
+            return RectangleShape();
+        case PlaceLabelType::Cross:
+            return CrossShape();
+        case PlaceLabelType::Tshaped:
+            return TshapedShape();
+        case PlaceLabelType::Doubletree:
+            return DoubletreeShape();
+        case PlaceLabelType::Corner:
+            return CornerShape();
+        case PlaceLabelType::Triangle:
+            return TriangleShape();
+        case PlaceLabelType::Hshaped:
+            return HshapedShape();
+        case PlaceLabelType::Button:
+            return ButtonShape();
+        case PlaceLabelType::Circle:
+            return CircleShape();
+        default:
+            return {};
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPiece::LabelShapePath(const VLayoutPlaceLabel &label) -> QPainterPath
+{
+    return LabelShapePath(PlaceLabelShape(label));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPiece::LabelShapePath(const PlaceLabelImg &shape) -> QPainterPath
+{
+    QPainterPath path;
+    for (const auto &p : shape)
+    {
+        if (not p.isEmpty())
+        {
+            path.moveTo(p.constFirst());
+            QVector<QPointF> polygon;
+            CastTo(p, polygon);
+            path.addPolygon(polygon);
+        }
+    }
+    return path;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

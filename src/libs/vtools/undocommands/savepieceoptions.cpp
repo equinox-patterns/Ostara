@@ -70,6 +70,7 @@ void SavePieceOptions::undo()
     VToolSeamAllowance::AddCSARecords(Doc(), domElement, m_oldDet.GetCustomSARecords());
     VToolSeamAllowance::AddInternalPaths(Doc(), domElement, m_oldDet.GetInternalPaths());
     VToolSeamAllowance::AddPins(Doc(), domElement, m_oldDet.GetPins());
+    VToolSeamAllowance::AddPlaceLabels(Doc(), domElement, m_oldDet.GetPlaceLabels());
     VToolSeamAllowance::AddMirrorLine(Doc(), domElement, m_oldDet);
     qCDebug(vUndo, "Undo: dom element for id = %u rewritten.", ElementId());
 
@@ -119,6 +120,7 @@ void SavePieceOptions::redo()
     VToolSeamAllowance::AddCSARecords(Doc(), domElement, m_newDet.GetCustomSARecords());
     VToolSeamAllowance::AddInternalPaths(Doc(), domElement, m_newDet.GetInternalPaths());
     VToolSeamAllowance::AddPins(Doc(), domElement, m_newDet.GetPins());
+    VToolSeamAllowance::AddPlaceLabels(Doc(), domElement, m_newDet.GetPlaceLabels());
     VToolSeamAllowance::AddMirrorLine(Doc(), domElement, m_newDet);
     qCDebug(vUndo, "Redo: dom element for id = %u rewritten.", ElementId());
 

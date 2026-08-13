@@ -56,6 +56,7 @@ using QTextCodec = VTextCodec;
 #endif // QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 
 #include "../vgeometry/vgeometrydef.h"
+#include "../vgeometry/vlayoutplacelabel.h"
 #include "../vlayout/vfoldline.h"
 #include "../vlayout/vlayoutpiece.h"
 #include "../vlayout/vlayoutpiecepath.h"
@@ -99,6 +100,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const UTF8STRING, layer8, (UTF8STRING("8"))) // NOLINT
 // Q_GLOBAL_STATIC_WITH_ARGS(const UTF8STRING, layer10, (UTF8STRING("10"))) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const UTF8STRING, layer11, (UTF8STRING("11"))) // NOLINT
 // Q_GLOBAL_STATIC_WITH_ARGS(const UTF8STRING, layer12, (UTF8STRING("12"))) // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const UTF8STRING, layer13, (UTF8STRING("13"))) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const UTF8STRING, layer14, (UTF8STRING("14"))) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const UTF8STRING, layer15, (UTF8STRING("15"))) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const UTF8STRING, layer19, (UTF8STRING("19"))) // NOLINT
@@ -790,6 +792,7 @@ auto VDxfEngine::ExportToAAMA(const QVector<VLayoutPiece> &details) -> bool
         ExportAAMANotch(detailBlock, detail);
         ExportAAMAGrainline(detailBlock, detail);
         ExportPieceText(detailBlock, detail);
+        ExportAAMADrill(detailBlock, detail);
         ExportAnnotationText(detailBlock, detail, *layer19);
 
         m_input->AddBlock(detailBlock.data());
@@ -830,6 +833,7 @@ void VDxfEngine::ExportAAMADraw(const QSharedPointer<dx_ifaceBlock> &detailBlock
 {
     ExportAAMADrawSewLine(detailBlock, detail);
     ExportAAMADrawInternalPaths(detailBlock, detail);
+    ExportAAMADrawPlaceLabels(detailBlock, detail);
     ExportAAMADrawFoldLine(detailBlock, detail);
 
     if (!detail.IsShowFullPiece())
@@ -900,6 +904,48 @@ void VDxfEngine::ExportAAMADrawInternalPaths(const QSharedPointer<dx_ifaceBlock>
             std::transform(points.begin(), points.end(), points.begin(),
                            [&matrix](const VLayoutPoint &point) { return VAbstractPiece::MapPoint(point, matrix); });
             DrawPolygon(points, iPath.PenStyle(), false);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VDxfEngine::ExportAAMADrawPlaceLabels(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
+{
+    auto DrawShape = [this, detailBlock](const PlaceLabelImg &shape, bool forceClosed)
+    {
+        for (const auto &points : shape)
+        {
+            if (DRW_Entity *e = AAMAPolygon(points, *layer8, forceClosed))
+            {
+                detailBlock->ent.push_back(e);
+            }
+
+            ExportTurnPoints(detailBlock, points);
+            ExportCurvePoints(detailBlock, points);
+        }
+    };
+
+    const QVector<VLayoutPlaceLabel> labels = detail.GetPlaceLabels();
+    for (const auto &label : labels)
+    {
+        if (label.Type() != PlaceLabelType::Doubletree && label.Type() != PlaceLabelType::Button &&
+            label.Type() != PlaceLabelType::Circle)
+        {
+            DrawShape(detail.MapPlaceLabelShape(VAbstractPiece::PlaceLabelShape(label)), false);
+
+            if (!label.IsNotMirrored() && detail.IsShowFullPiece() && !detail.GetMappedSeamMirrorLine().isNull())
+            {
+                PlaceLabelImg shape = detail.MapPlaceLabelShape(VAbstractPiece::PlaceLabelShape(label));
+                const QTransform matrix = VGObject::FlippingMatrix(detail.GetMappedSeamMirrorLine());
+                for (auto &points : shape)
+                {
+                    std::transform(points.begin(), points.end(), points.begin(),
+                                   [&matrix](const VLayoutPoint &point)
+                                   { return VAbstractPiece::MapPoint(point, matrix); });
+                }
+
+                DrawShape(shape, false);
+            }
         }
     }
 }
@@ -1153,6 +1199,29 @@ void VDxfEngine::ExportStyleSystemText(const QSharedPointer<dx_iface> &input, co
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VDxfEngine::ExportAAMADrill(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
+{
+    const QVector<VLayoutPlaceLabel> labels = detail.GetPlaceLabels();
+
+    for (const auto &label : labels)
+    {
+        if (label.Type() == PlaceLabelType::Doubletree || label.Type() == PlaceLabelType::Button ||
+            label.Type() == PlaceLabelType::Circle)
+        {
+            QPointF center = detail.GetMatrix().map(label.Center());
+            detailBlock->ent.push_back(AAMAPoint(center, *layer13));
+
+            if (!label.IsNotMirrored() && detail.IsShowFullPiece() && !detail.GetMappedSeamMirrorLine().isNull())
+            {
+                const QTransform matrix = VGObject::FlippingMatrix(detail.GetMappedSeamMirrorLine());
+                center = VAbstractPiece::MapPoint(center, matrix);
+                detailBlock->ent.push_back(AAMAPoint(center, *layer13));
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VDxfEngine::ExportAAMADrawFoldLine(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
 {
     if (detail.IsShowFullPiece() && !detail.IsShowMirrorLine())
@@ -1239,10 +1308,12 @@ auto VDxfEngine::ExportToASTM(const QVector<VLayoutPiece> &details) -> bool
         ExportASTMPieceBoundary(detailBlock, detail);
         ExportASTMSewLine(detailBlock, detail);
         ExportASTMDrawInternalPaths(detailBlock, detail);
+        ExportASTMDrawPlaceLabels(detailBlock, detail);
         ExportASTMInternalCutout(detailBlock, detail);
         ExportASTMNotches(detailBlock, detail);
         ExportAAMAGrainline(detailBlock, detail);
         ExportPieceText(detailBlock, detail);
+        ExportASTMDrill(detailBlock, detail);
         ExportASTMAnnotationText(detailBlock, detail);
         ExportASTMMirrorLine(detailBlock, detail);
         ExportASTMDrawFoldLine(detailBlock, detail);
@@ -1361,6 +1432,62 @@ void VDxfEngine::ExportASTMDrawInternalPaths(const QSharedPointer<dx_ifaceBlock>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VDxfEngine::ExportASTMDrawPlaceLabels(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
+{
+    auto DrawShape = [this, detailBlock](const PlaceLabelImg &shape, bool notMirrored, bool forceClosed)
+    {
+        for (const auto &points : shape)
+        {
+            // Internal line (placelabel)
+            if (DRW_Entity *e = AAMAPolygon(points, *layer8, forceClosed))
+            {
+                detailBlock->ent.push_back(e);
+            }
+
+            if (notMirrored && !points.isEmpty())
+            {
+                QPointF const pos(points.constFirst().x(),
+                                  points.constFirst().y() - ToPixel(AAMATextHeight, m_varInsunits));
+                detailBlock->ent.push_back(AAMAText(pos, QStringLiteral("NM"), *layer8));
+            }
+
+            ExportTurnPoints(detailBlock, points);
+            ExportCurvePoints(detailBlock, points);
+
+            // Internal lines quality validation curves
+            if (DRW_Entity *e = AAMAPolygon(points, *layer85, false))
+            {
+                detailBlock->ent.push_back(e);
+            }
+        }
+    };
+
+    const QVector<VLayoutPlaceLabel> labels = detail.GetPlaceLabels();
+    for (const auto &label : labels)
+    {
+        if (label.Type() != PlaceLabelType::Doubletree && label.Type() != PlaceLabelType::Button &&
+            label.Type() != PlaceLabelType::Circle)
+        {
+            PlaceLabelImg shape = detail.MapPlaceLabelShape(VAbstractPiece::PlaceLabelShape(label));
+            DrawShape(shape, label.IsNotMirrored(), false);
+
+            if (!label.IsNotMirrored() && detail.IsShowFullPiece() && !detail.GetMappedSeamMirrorLine().isNull())
+            {
+                const QTransform matrix = VGObject::FlippingMatrix(detail.GetMappedSeamMirrorLine());
+                for (auto &points : shape)
+                {
+                    std::transform(points.begin(), points.end(), points.begin(),
+                                   [&matrix](const VLayoutPoint &point)
+                                   { return VAbstractPiece::MapPoint(point, matrix); });
+                }
+
+                DrawShape(shape, label.IsNotMirrored(), false);
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VDxfEngine::ExportASTMInternalCutout(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
 {
     auto DrawPolygon = [this, detailBlock](const QVector<VLayoutPoint> &points, bool notMirrored, bool forceClosed)
@@ -1412,6 +1539,45 @@ void VDxfEngine::ExportASTMAnnotationText(const QSharedPointer<dx_ifaceBlock> &d
 
     QPointF const pos(textPos.x(), textPos.y() - ToPixel(AAMATextHeight, m_varInsunits));
     detailBlock->ent.push_back(AAMAText(pos, name, *layer15));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VDxfEngine::ExportASTMDrill(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
+{
+    const QVector<VLayoutPlaceLabel> labels = detail.GetPlaceLabels();
+
+    auto ExportPoint = [this, detailBlock](QPointF center, qreal diameter)
+    {
+        auto point = std::make_unique<DRW_Point>();
+        point->basePoint =
+            DRW_Coord(FromPixel(center.x(), m_varInsunits), FromPixel(GetSize().height() - center.y(), m_varInsunits),
+                      FromPixel(diameter, m_varInsunits));
+        point->layer = *layer13;
+        detailBlock->ent.push_back(point.release());
+
+        // TODO. Investigate drill category
+        // QPointF pos(center.x(), center.y() - ToPixel(AAMATextHeight, m_varInsunits));
+        // detailBlock->ent.push_back(AAMAText(pos, category, *layer13));
+    };
+
+    for (const auto &label : labels)
+    {
+        if (label.Type() == PlaceLabelType::Doubletree || label.Type() == PlaceLabelType::Button ||
+            label.Type() == PlaceLabelType::Circle)
+        {
+            QPointF center = detail.GetMatrix().map(label.Center());
+            const QLineF diameter(label.Box().bottomLeft(), label.Box().topRight());
+
+            ExportPoint(center, diameter.length());
+
+            if (!label.IsNotMirrored() && detail.IsShowFullPiece() && !detail.GetMappedSeamMirrorLine().isNull())
+            {
+                const QTransform matrix = VGObject::FlippingMatrix(detail.GetMappedSeamMirrorLine());
+                center = VAbstractPiece::MapPoint(center, matrix);
+                ExportPoint(center, diameter.length());
+            }
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

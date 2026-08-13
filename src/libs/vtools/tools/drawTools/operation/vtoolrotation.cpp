@@ -146,7 +146,7 @@ auto CreateDestinationObject(
     -> DestinationItem
 {
     // This check helps to find missed objects in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
 
     QT_WARNING_PUSH
     QT_WARNING_DISABLE_GCC("-Wswitch-default")
@@ -168,6 +168,7 @@ auto CreateDestinationObject(
             return CreateCurve<VCubicBezier>(id, object, oPoint, calcAngle, data);
         case GOType::CubicBezierPath:
             return CreateCurveWithSegments<VCubicBezierPath>(id, object, oPoint, calcAngle, data);
+        case GOType::PlaceLabel:
         case GOType::Unknown:
             Q_UNREACHABLE();
             break;
@@ -267,7 +268,7 @@ void UpdateDestinationObject(quint32 id,
                              const DestinationItem &destination)
 {
     // This check helps to find missed objects in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
 
     QT_WARNING_PUSH
     QT_WARNING_DISABLE_GCC("-Wswitch-default")
@@ -296,6 +297,7 @@ void UpdateDestinationObject(quint32 id,
         case GOType::CubicBezierPath:
             UpdateCurveWithSegments<VCubicBezierPath>(id, object, oPoint, calcAngle, data, destination.id);
             break;
+        case GOType::PlaceLabel:
         case GOType::Unknown:
             Q_UNREACHABLE();
             break;

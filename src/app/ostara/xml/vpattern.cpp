@@ -100,6 +100,7 @@
 #include "../vtools/tools/nodeDetails/vnodesplinepath.h"
 #include "../vtools/tools/nodeDetails/vtoolpiecepath.h"
 #include "../vtools/tools/nodeDetails/vtoolpin.h"
+#include "../vtools/tools/nodeDetails/vtoolplacelabel.h"
 #include "../vtools/tools/vdatatool.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/tools/vtooluniondetails.h"
@@ -886,7 +887,7 @@ void VPattern::DrawToolsCommonAttributes(const QDomElement &domElement, quint32 
 auto VPattern::ActiveDrawBoundingRect() const -> QRectF
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 66, "Not all tools were used.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 67, "Not all tools were used.");
 
     QRectF rec;
 
@@ -980,6 +981,7 @@ auto VPattern::ActiveDrawBoundingRect() const -> QRectF
             case Tool::PiecePath:
             case Tool::Pin:
             case Tool::InsertNode:
+            case Tool::PlaceLabel:
             case Tool::DuplicateDetail:
             default:
                 break;

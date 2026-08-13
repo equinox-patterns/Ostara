@@ -49,6 +49,8 @@
 
 #include "../vformat/vsinglelineoutlinechar.h"
 #include "../vgeometry/vgobject.h"
+#include "../vgeometry/vlayoutplacelabel.h"
+#include "../vgeometry/vplacelabelitem.h"
 #include "../vgeometry/vpointf.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/def.h"
@@ -225,6 +227,29 @@ auto PieceLabelText(const QVector<QPointF> &labelShape, const VTextManager &tm) 
     }
 
     return text;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ConvertPlaceLabels(const VPiece &piece, const VContainer *pattern) -> QVector<VLayoutPlaceLabel>
+{
+    QVector<VLayoutPlaceLabel> labels;
+    const auto placeLabels = piece.GetPlaceLabels();
+    labels.reserve(placeLabels.size());
+    for (const auto &placeLabel : placeLabels)
+    {
+        const auto label = pattern->GeometricObject<VPlaceLabelItem>(placeLabel);
+        if (label->IsVisible())
+        {
+            QT_WARNING_PUSH
+            QT_WARNING_DISABLE_GCC("-Wnoexcept")
+            // noexcept-expression evaluates to 'false' because of a call to 'constexpr QPointF::QPointF()'
+
+            labels.append(VLayoutPlaceLabel(*label));
+
+            QT_WARNING_POP
+        }
+    }
+    return labels;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -614,6 +639,7 @@ auto VLayoutPiece::Create(const VPiece &piece, vidtype id, const VContainer *pat
         QtConcurrent::run(ConvertInternalPaths, piece, pattern);
     QFuture<QVector<VLayoutPassmark>> const futurePassmarks =
         QtConcurrent::run(VLayoutPiece::ConvertPassmarks, piece, pattern);
+    QFuture<QVector<VLayoutPlaceLabel>> const futurePlaceLabels = QtConcurrent::run(ConvertPlaceLabels, piece, pattern);
 
     VLayoutPiece det;
 
@@ -649,6 +675,7 @@ auto VLayoutPiece::Create(const VPiece &piece, vidtype id, const VContainer *pat
     det.SetSeamAllowancePoints(futureSeamAllowance.result(), piece.IsSeamAllowance(), piece.IsSeamAllowanceBuiltIn());
     det.SetInternalPaths(futureInternalPaths.result());
     det.SetPassmarks(futurePassmarks.result());
+    det.SetPlaceLabels(futurePlaceLabels.result());
     det.SetPriority(piece.GetPriority());
 
     // Very important to set main path first!
@@ -1570,6 +1597,18 @@ void VLayoutPiece::SetPassmarks(const QVector<VLayoutPassmark> &passmarks)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VLayoutPiece::GetPlaceLabels() const -> QVector<VLayoutPlaceLabel>
+{
+    return d->m_placeLabels;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VLayoutPiece::SetPlaceLabels(const QVector<VLayoutPlaceLabel> &labels)
+{
+    d->m_placeLabels = labels;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VLayoutPiece::MappedInternalPathsForCut(bool cut) const -> QVector<VLayoutPiecePath>
 {
     QVector<VLayoutPiecePath> paths;
@@ -1708,6 +1747,11 @@ void VLayoutPiece::DrawMiniature(QPainter &painter, bool togetherWithNotches) co
         painter.drawPath(m.map(path.GetPainterPath()));
     }
 
+    for (const auto &label : d->m_placeLabels)
+    {
+        painter.drawPath(m.map(LabelShapePath(label)));
+    }
+
     painter.drawPath(m.map(VLayoutPiece::GrainlinePath(GetGrainlineShape())));
 }
 
@@ -1740,6 +1784,32 @@ auto VLayoutPiece::GetItem(bool textAsPaths, bool togetherWithNotches, bool show
         pen.setStyle(path.PenStyle());
         pen.setWidthF(VAbstractApplication::VApp()->Settings()->WidthHairLine());
         pathItem->setPen(pen);
+    }
+
+    for (const auto &label : d->m_placeLabels)
+    {
+        auto *pathItem = new QGraphicsPathItem(item);
+        QPen pen = pathItem->pen();
+        pen.setWidthF(VAbstractApplication::VApp()->Settings()->WidthHairLine());
+        pathItem->setPen(pen);
+
+        QPainterPath path;
+        path.addPath(d->m_matrix.map(LabelShapePath(label)));
+
+        if (!label.IsNotMirrored() && IsShowFullPiece() && !d->m_seamMirrorLine.isNull())
+        {
+            PlaceLabelImg shape = VAbstractPiece::PlaceLabelShape(label);
+            const QTransform matrix = VGObject::FlippingMatrix(d->m_seamMirrorLine);
+            for (auto &points : shape)
+            {
+                std::transform(points.begin(), points.end(), points.begin(),
+                               [&matrix](const VLayoutPoint &point) { return MapPoint(point, matrix); });
+            }
+
+            path.addPath(d->m_matrix.map(LabelShapePath(shape)));
+        }
+
+        pathItem->setPath(path);
     }
 
     CreateLabelStrings(item, d->m_detailLabel, d->m_tmDetail, textAsPaths);
@@ -1804,6 +1874,17 @@ auto VLayoutPiece::BiggestEdge() const -> qreal
     }
 
     return edge;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VLayoutPiece::MapPlaceLabelShape(PlaceLabelImg shape) const -> PlaceLabelImg
+{
+    for (auto &i : shape)
+    {
+        i = Map(i);
+    }
+
+    return shape;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

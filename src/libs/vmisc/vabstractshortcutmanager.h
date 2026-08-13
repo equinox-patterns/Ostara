@@ -121,6 +121,7 @@ enum class VShortcutAction : quint8
     ToolEllipticalArc,
     ToolPin,
     ToolInsertNode,
+    ToolPlaceLabel,
     ToolArcStart,
     ToolArcEnd,
     ToolEllipticalArcWithLength,

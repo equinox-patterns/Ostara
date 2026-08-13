@@ -313,27 +313,6 @@ auto StripLabelElements(QDomDocument *doc) -> bool
         root.removeAttribute(QStringLiteral("labelPrefix"));
     }
 
-    // 4. Remove <placeLabels> elements from all <detail>, <det>, and <children> elements
-    const QStringList placeLabelContainers = {QStringLiteral("detail"), QStringLiteral("det"), QStringLiteral("children")};
-    for (const auto &containerTag : placeLabelContainers)
-    {
-        const QDomNodeList containers = root.elementsByTagName(containerTag);
-        for (int i = 0; i < containers.size(); ++i)
-        {
-            QDomElement container = containers.at(i).toElement();
-            if (container.isNull())
-            {
-                continue;
-            }
-            const QDomNodeList placeLabels = container.elementsByTagName(QStringLiteral("placeLabels"));
-            for (int j = placeLabels.size() - 1; j >= 0; --j)
-            {
-                foundLabels = true;
-                container.removeChild(placeLabels.at(j));
-            }
-        }
-    }
-
     // 5. Remove gradationLabel attribute from <detail> elements
     const QDomNodeList details = root.elementsByTagName(QStringLiteral("detail"));
     for (int i = 0; i < details.size(); ++i)
@@ -391,22 +370,6 @@ auto StripLabelElements(QDomDocument *doc) -> bool
         {
             foundLabels = true;
             detail.removeChild(patternInfos.at(j));
-        }
-    }
-
-    // 8. Remove placeLabelType attribute from modeling <point> elements
-    const QDomNodeList allPoints = root.elementsByTagName(QStringLiteral("point"));
-    for (int i = 0; i < allPoints.size(); ++i)
-    {
-        QDomElement point = allPoints.at(i).toElement();
-        if (point.isNull())
-        {
-            continue;
-        }
-        if (point.hasAttribute(QStringLiteral("placeLabelType")))
-        {
-            foundLabels = true;
-            point.removeAttribute(QStringLiteral("placeLabelType"));
         }
     }
 

@@ -42,7 +42,7 @@
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractapplication.h"
 
-enum TabOrder { Paths = 0, Pins = 1, Labels = 2, Grainline = 3, Passmarks = 4, FoldLine = 5, Count = 6 };
+enum TabOrder { Paths = 0, Pins = 1, Labels = 2, Grainline = 3, Passmarks = 4, PlaceLabels = 5, FoldLine = 6, Count = 7 };
 
 enum class MainPathContextMenuOption : int
 {

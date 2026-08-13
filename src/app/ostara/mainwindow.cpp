@@ -139,6 +139,7 @@
 #include "../vtools/dialogs/tools/piece/dialoginsertnode.h"
 #include "../vtools/dialogs/tools/piece/dialogpiecepath.h"
 #include "../vtools/dialogs/tools/piece/dialogpin.h"
+#include "../vtools/dialogs/tools/piece/dialogplacelabel.h"
 #include "../vtools/dialogs/tools/piece/dialogseamallowance.h"
 #include "../vtools/tools/backgroundimage/vbackgroundimagecontrols.h"
 #include "../vtools/tools/backgroundimage/vbackgroundimageitem.h"
@@ -180,6 +181,7 @@
 #include "../vtools/tools/drawTools/vtoolline.h"
 #include "../vtools/tools/nodeDetails/vtoolpiecepath.h"
 #include "../vtools/tools/nodeDetails/vtoolpin.h"
+#include "../vtools/tools/nodeDetails/vtoolplacelabel.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/tools/vtooluniondetails.h"
 #include "../vtools/undocommands/image/addbackgroundimage.h"
@@ -368,6 +370,7 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("path"),                         ui->actionInternalPathTool},
         {QStringLiteral("pin"),                          ui->actionPinTool},
         {QStringLiteral("insert_node"),                  ui->actionInsertNodeTool},
+        {QStringLiteral("place_label"),                  ui->actionPlaceLabelTool},
         {QStringLiteral("union"),                        ui->actionUnionDetailsTool},
         {QStringLiteral("duplicate_detail"),             ui->actionDuplicateDetailTool},
         {QStringLiteral("detail_export"),                ui->actionDetailExportAs},
@@ -1675,7 +1678,7 @@ void MainWindow::OpenAt(QAction *where)
 void MainWindow::InitToolButtons()
 {
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 66, "Check if all tools were connected.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 67, "Check if all tools were connected.");
 
     auto InitToolButton = [this](VShortcutAction type, QAction *action, void (MainWindow::*slotFunction)(bool))
     {
@@ -1746,6 +1749,7 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ToolEllipticalArc, ui->actionEllipticalArcTool, &MainWindow::ToolEllipticalArc);
     InitToolButton(VShortcutAction::ToolPin, ui->actionPinTool, &MainWindow::ToolPin);
     InitToolButton(VShortcutAction::ToolInsertNode, ui->actionInsertNodeTool, &MainWindow::ToolInsertNode);
+    InitToolButton(VShortcutAction::ToolPlaceLabel, ui->actionPlaceLabelTool, &MainWindow::ToolPlaceLabel);
     InitToolButton(VShortcutAction::ToolArcStart, ui->actionArcStartPointTool, &MainWindow::ToolArcStart);
     InitToolButton(VShortcutAction::ToolArcEnd, ui->actionArcEndPointTool, &MainWindow::ToolArcEnd);
     InitToolButton(VShortcutAction::ToolEllipticalArcWithLength, ui->actionEllipticalArcWithLengthTool,
@@ -1799,7 +1803,7 @@ void MainWindow::MouseMove(const QPointF &scenePos)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 66, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 67, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1985,6 +1989,9 @@ void MainWindow::CancelTool()
             break;
         case Tool::InsertNode:
             ui->actionInsertNodeTool->setChecked(false);
+            break;
+        case Tool::PlaceLabel:
+            ui->actionPlaceLabelTool->setChecked(false);
             break;
         case Tool::ArcStart:
             ui->actionArcStartPointTool->setChecked(false);
@@ -3467,7 +3474,7 @@ void MainWindow::SetEnableTool(bool enable)
     QT_WARNING_POP
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 66, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 67, "Not all tools were handled.");
 
     // Drawing Tools
     ui->actionEndLineTool->setEnabled(drawTools);
@@ -3513,6 +3520,7 @@ void MainWindow::SetEnableTool(bool enable)
     ui->actionEllipticalArcTool->setEnabled(drawTools);
     ui->actionPinTool->setEnabled(drawTools);
     ui->actionInsertNodeTool->setEnabled(drawTools);
+    ui->actionPlaceLabelTool->setEnabled(drawTools);
     ui->actionExportDraw->setEnabled(drawTools);
     ui->actionArcStartPointTool->setEnabled(drawTools);
     ui->actionArcEndPointTool->setEnabled(drawTools);
@@ -3679,7 +3687,7 @@ void MainWindow::CreateMenus()
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 66, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 67, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -3894,6 +3902,10 @@ void MainWindow::LastUsedTool()
         case Tool::InsertNode:
             ui->actionInsertNodeTool->setChecked(true);
             ToolInsertNode(true);
+            break;
+        case Tool::PlaceLabel:
+            ui->actionPlaceLabelTool->setChecked(true);
+            ToolPlaceLabel(true);
             break;
         case Tool::ArcStart:
             ui->actionArcStartPointTool->setChecked(true);

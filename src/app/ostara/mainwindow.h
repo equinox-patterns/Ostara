@@ -195,6 +195,7 @@ private slots:
     void ToolArcWithLength(bool checked);
     void ToolTrueDarts(bool checked);
     void ToolInsertNode(bool checked);
+    void ToolPlaceLabel(bool checked);
     void ToolArcStart(bool checked);
     void ToolArcEnd(bool checked);
     void ToolEllipticalArcWithLength(bool checked);
@@ -232,6 +233,7 @@ private slots:
     void ClosedDialogPiecePath(int result);
     void ClosedDialogPin(int result);
     void ClosedDialogInsertNode(int result);
+    void ClosedDialogPlaceLabel(int result);
     void ClosedCutCurveDialog(int result);
     void ClosedCurveDialog(int result);
 

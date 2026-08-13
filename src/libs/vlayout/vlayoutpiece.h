@@ -116,6 +116,9 @@ public:
     auto GetPassmarks() const -> QVector<VLayoutPassmark>;
     void SetPassmarks(const QVector<VLayoutPassmark> &passmarks);
 
+    auto GetPlaceLabels() const -> QVector<VLayoutPlaceLabel>;
+    void SetPlaceLabels(const QVector<VLayoutPlaceLabel> &labels);
+
     auto MappedInternalPathsForCut(bool cut) const -> QVector<VLayoutPiecePath>;
     auto GetInternalPaths() const -> QVector<VLayoutPiecePath>;
     void SetInternalPaths(const QVector<VLayoutPiecePath> &internalPaths);
@@ -245,6 +248,8 @@ public:
 
     friend auto operator<<(QDataStream &dataStream, const VLayoutPiece &piece) -> QDataStream &;
     friend auto operator>>(QDataStream &dataStream, VLayoutPiece &piece) -> QDataStream &;
+
+    auto MapPlaceLabelShape(PlaceLabelImg shape) const -> PlaceLabelImg;
 
     static auto MapPassmark(VLayoutPassmark passmark, const QTransform &matrix, bool mirror) -> VLayoutPassmark;
 

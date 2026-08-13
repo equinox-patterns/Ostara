@@ -61,7 +61,7 @@ void VisToolInsertNode::RefreshGeometry()
         const QSharedPointer<VGObject> obj = GetData()->GetGObject(id);
 
         // This check helps to find missed objects in the switch
-        Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects were handled.");
+        Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
 
         switch (obj->getType())
         {
@@ -76,6 +76,7 @@ void VisToolInsertNode::RefreshGeometry()
             case GOType::CubicBezierPath:
                 CreateNodeCurve(id, iCurve);
                 break;
+            case GOType::PlaceLabel:
             case GOType::Unknown:
                 Q_UNREACHABLE();
                 break;

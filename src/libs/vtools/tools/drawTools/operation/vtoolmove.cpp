@@ -80,7 +80,7 @@ auto GetOriginPoint(const QVector<SourceItem> &objects, const VContainer *data, 
         const QSharedPointer<VGObject> obj = data->GetGObject(object.id);
 
         // This check helps to find missed objects in the switch
-        Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects were handled.");
+        Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
 
         switch (obj->getType())
         {
@@ -95,6 +95,7 @@ auto GetOriginPoint(const QVector<SourceItem> &objects, const VContainer *data, 
             case GOType::CubicBezierPath:
                 originObjects.append(data->GeometricObject<VAbstractCurve>(object.id)->GetPoints());
                 break;
+            case GOType::PlaceLabel:
             case GOType::Unknown:
                 Q_UNREACHABLE();
                 break;
@@ -211,7 +212,7 @@ auto CreateDestinationObject(quint32 id,
                              QPointF rotationOrigin,
                              VContainer *data) -> DestinationItem
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
 
     QT_WARNING_PUSH
     QT_WARNING_DISABLE_GCC("-Wswitch-default")
@@ -245,6 +246,7 @@ auto CreateDestinationObject(quint32 id,
                                                              calcRotationAngle,
                                                              rotationOrigin,
                                                              data);
+        case GOType::PlaceLabel:
         case GOType::Unknown:
             Q_UNREACHABLE();
             break;
@@ -378,7 +380,7 @@ void UpdateDestinationObject(quint32 id,
                              VContainer *data,
                              const DestinationItem &destination)
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
 
     QT_WARNING_PUSH
     QT_WARNING_DISABLE_GCC("-Wswitch-default")
@@ -442,6 +444,7 @@ void UpdateDestinationObject(quint32 id,
                                                       data,
                                                       destination.id);
             break;
+        case GOType::PlaceLabel:
         case GOType::Unknown:
             Q_UNREACHABLE();
             break;

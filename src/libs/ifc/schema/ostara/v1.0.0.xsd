@@ -23,6 +23,17 @@
         <xs:element name="customer" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="birthDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="patternLabel" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="line" type="templateLine" minOccurs="0" maxOccurs="unbounded">
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="dateFormat" type="xs:string"/>
+            <xs:attribute name="timeFormat" type="xs:string"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="pieceLabel" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="watermark" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="patternMaterials" minOccurs="0" maxOccurs="1">
           <xs:complexType>
@@ -397,6 +408,7 @@
                           <xs:attribute name="cuttingMode" type="cuttingMode"/>
                           <xs:attribute name="cuttingVelocityReduction" type="velocityReduction"/> 
                           <xs:attribute name="notMirrored" type="xs:boolean"/>
+                          <xs:attribute name="placeLabelType" type="placeLabelType"/>
                         </xs:complexType>
                       </xs:element>
                       <xs:element name="arc" minOccurs="0" maxOccurs="unbounded">
@@ -576,6 +588,13 @@
                                       </xs:sequence>
                                     </xs:complexType>
                                   </xs:element>
+                                  <xs:element name="placeLabels" minOccurs="0" maxOccurs="1">
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="record" type="xs:unsignedInt" minOccurs="0" maxOccurs="unbounded"/>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
                                 </xs:sequence>
                               </xs:complexType>
                             </xs:element>
@@ -610,6 +629,13 @@
                                       </xs:sequence>
                                     </xs:complexType>
                                   </xs:element>
+                                  <xs:element name="placeLabels" minOccurs="0" maxOccurs="1">
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="child" type="xs:unsignedInt" minOccurs="0" maxOccurs="unbounded"/>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
                                 </xs:sequence>
                               </xs:complexType>
                             </xs:element>
@@ -633,13 +659,44 @@
                         <xs:sequence>
                           <xs:element name="data" minOccurs="0" maxOccurs="1">
                             <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="line" type="templateLine" minOccurs="0" maxOccurs="unbounded"/>
+                              </xs:sequence>
                               <xs:attribute name="letter" type="xs:string"/>
                               <xs:attribute name="annotation" type="xs:string"/>
-                              <xs:attribute name="quantity" type="xs:unsignedInt"/>
+                              <xs:attribute name="orientation" type="xs:string"/>
+                              <xs:attribute name="rotationWay" type="xs:string"/>
+                              <xs:attribute name="tilt" type="xs:string"/>
+                              <xs:attribute name="foldPosition" type="xs:string"/>
+                              <xs:attribute name="visible" type="xs:boolean"/>
                               <xs:attribute name="onFold" type="xs:boolean"/>
+                              <xs:attribute name="fontSize" type="xs:unsignedInt"/>
+                              <xs:attribute name="mx" type="xs:double"/>
+                              <xs:attribute name="my" type="xs:double"/>
+                              <xs:attribute name="width" type="xs:string"/>
+                              <xs:attribute name="height" type="xs:string"/>
+                              <xs:attribute name="rotation" type="xs:string"/>
+                              <xs:attribute name="centerPin" type="xs:unsignedInt"/>
+                              <xs:attribute name="topLeftPin" type="xs:unsignedInt"/>
+                              <xs:attribute name="quantity" type="xs:unsignedInt"/>
+                              <xs:attribute name="bottomRightPin" type="xs:unsignedInt"/>
                               <xs:attribute name="noBufferMaterial" type="pieceMaterialType"/>
                               <xs:attribute name="withBufferMaterial" type="pieceMaterialType"/>
                               <xs:attribute name="bufferMaterial" type="pieceMaterialType"/>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="patternInfo" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:attribute name="visible" type="xs:boolean"/>
+                              <xs:attribute name="fontSize" type="xs:unsignedInt"/>
+                              <xs:attribute name="mx" type="xs:double"/>
+                              <xs:attribute name="my" type="xs:double"/>
+                              <xs:attribute name="width" type="xs:string"/>
+                              <xs:attribute name="height" type="xs:string"/>
+                              <xs:attribute name="rotation" type="xs:string"/>
+                              <xs:attribute name="centerPin" type="xs:unsignedInt"/>
+                              <xs:attribute name="topLeftPin" type="xs:unsignedInt"/>
+                              <xs:attribute name="bottomRightPin" type="xs:unsignedInt"/>
                             </xs:complexType>
                           </xs:element>
                           <xs:element name="grainline" minOccurs="0" maxOccurs="1">
@@ -743,6 +800,13 @@
                               </xs:sequence>
                             </xs:complexType>
                           </xs:element>
+                          <xs:element name="placeLabels" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="record" type="xs:unsignedInt" minOccurs="0" maxOccurs="unbounded"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
                           <xs:element name="mirrorLine" minOccurs="0" maxOccurs="1">
                             <xs:complexType>
                               <xs:attribute name="p1" type="xs:unsignedInt"/>
@@ -770,6 +834,7 @@
                         <xs:attribute name="name" type="xs:string"/>
                         <xs:attribute name="shortName" type="pieceShortName"/>
                         <xs:attribute name="uuid" type="uuid"/>
+                        <xs:attribute name="gradationLabel" type="xs:string"/>
                         <xs:attribute name="bufferName" type="xs:string"/>
                         <xs:attribute name="inLayout" type="xs:boolean"/>
                         <xs:attribute name="bufferInLayout" type="xs:boolean"/>
@@ -826,6 +891,7 @@
         </xs:element>
       </xs:sequence>
       <xs:attribute name="readOnly" type="xs:boolean"/>
+      <xs:attribute name="labelPrefix" type="labelPrefixType"/>
       <xs:attribute name="passmarkLength" type="xs:string"/>
       <xs:attribute name="passmarkWidth" type="xs:string"/>
     </xs:complexType>
@@ -999,6 +1065,34 @@
       <xs:enumeration value="2"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:complexType name="templateLine">
+    <xs:attribute name="text" type="xs:string" use="required"/>
+    <xs:attribute name="bold" type="xs:boolean"/>
+    <xs:attribute name="italic" type="xs:boolean"/>
+    <xs:attribute name="alignment" type="alignmentType"/>
+    <xs:attribute name="sfIncrement" type="xs:unsignedInt"/>
+  </xs:complexType>
+  <xs:simpleType name="labelPrefixType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="de"/>
+      <xs:enumeration value="en"/>
+      <xs:enumeration value="fr"/>
+      <xs:enumeration value="ru"/>
+      <xs:enumeration value="uk"/>
+      <xs:enumeration value="hr"/>
+      <xs:enumeration value="sr"/>
+      <xs:enumeration value="bs"/>
+      <xs:enumeration value="cs"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="alignmentType">
+    <xs:restriction base="xs:unsignedInt">
+      <xs:enumeration value="0"/><!--default (no aligns)-->
+      <xs:enumeration value="1"/><!--aligns with the left edge-->
+      <xs:enumeration value="2"/><!--aligns with the right edge-->
+      <xs:enumeration value="4"/><!--Centers horizontally in the available space-->
+    </xs:restriction>
+  </xs:simpleType>
   <xs:simpleType name="arrowType">
     <xs:restriction base="xs:integer">
       <xs:enumeration value="0"/>
@@ -1049,6 +1143,20 @@
       <!--by first edge right angle-->
       <xs:enumeration value="5"/>
       <!--by second edge right angle-->
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="placeLabelType">
+    <xs:restriction base="xs:unsignedInt">
+      <xs:enumeration value="0"/><!--Segment-->
+      <xs:enumeration value="1"/><!--Rectangle-->
+      <xs:enumeration value="2"/><!--Cross-->
+      <xs:enumeration value="3"/><!--Tshaped-->
+      <xs:enumeration value="4"/><!--Doubletree-->
+      <xs:enumeration value="5"/><!--Corner-->
+      <xs:enumeration value="6"/><!--Triangle-->
+      <xs:enumeration value="7"/><!--Hshaped-->
+      <xs:enumeration value="8"/><!--Button-->
+      <xs:enumeration value="9"/><!--Circle-->
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="piecePathType">

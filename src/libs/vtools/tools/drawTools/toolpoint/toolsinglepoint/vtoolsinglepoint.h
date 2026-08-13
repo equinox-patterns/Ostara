@@ -156,7 +156,7 @@ inline void VToolSinglePoint::InitUniqueSegmentConnections(VMainGraphicsScene *s
     SCASSERT(tool != nullptr)
 
     // This check helps to find missed objects in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
 
     switch (type)
     {
@@ -211,6 +211,7 @@ inline void VToolSinglePoint::InitUniqueSegmentConnections(VMainGraphicsScene *s
                              Qt::UniqueConnection);
             break;
         case GOType::Point:
+        case GOType::PlaceLabel:
         case GOType::Unknown:
         default:
             break;
@@ -225,7 +226,7 @@ inline void VToolSinglePoint::InitSegmentConnections(VMainGraphicsScene *scene, 
     SCASSERT(tool != nullptr)
 
     // This check helps to find missed objects in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 7, "Not all objects were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
 
     switch (type)
     {
@@ -248,6 +249,7 @@ inline void VToolSinglePoint::InitSegmentConnections(VMainGraphicsScene *scene, 
             QObject::connect(scene, &VMainGraphicsScene::EnableSplinePathItemHover, tool, &T::AllowSegmentHover);
             break;
         case GOType::Point:
+        case GOType::PlaceLabel:
         case GOType::Unknown:
         default:
             break;

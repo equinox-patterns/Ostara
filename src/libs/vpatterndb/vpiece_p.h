@@ -59,6 +59,7 @@ public:
     QVector<CustomSARecord> m_customSARecords{}; // NOLINT(misc-non-private-member-variables-in-classes)
     QVector<quint32> m_internalPaths{};          // NOLINT(misc-non-private-member-variables-in-classes)
     QVector<quint32> m_pins{};                   // NOLINT(misc-non-private-member-variables-in-classes)
+    QVector<quint32> m_placeLabels{};            // NOLINT(misc-non-private-member-variables-in-classes)
 
     /** @brief Pattern piece data */
     VPieceLabelData m_ppData{}; // NOLINT(misc-non-private-member-variables-in-classes)

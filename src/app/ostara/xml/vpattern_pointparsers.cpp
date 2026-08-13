@@ -70,6 +70,7 @@
 #include "../vtools/tools/nodeDetails/vabstractnode.h"
 #include "../vtools/tools/nodeDetails/vnodepoint.h"
 #include "../vtools/tools/nodeDetails/vtoolpin.h"
+#include "../vtools/tools/nodeDetails/vtoolplacelabel.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/tools/vtooluniondetails.h"
 
@@ -114,7 +115,8 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
                                      VToolPointFromArcAndTangent::ToolType,     /*20*/
                                      VToolTrueDarts::ToolType,                  /*21*/
                                      VToolPointOfIntersectionCurves::ToolType,  /*22*/
-                                     VToolPin::ToolType});                      /*23*/
+                                     VToolPin::ToolType,                         /*23*/
+                                     VToolPlaceLabel::ToolType});               /*24*/
     switch (points.indexOf(type))
     {
         case 0: // VToolBasePoint::ToolType
@@ -188,6 +190,9 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
             break;
         case 23: // VToolPin::ToolType
             ParsePinPoint(domElement, parse);
+            break;
+        case 24: // VToolPlaceLabel::ToolType
+            ParsePlaceLabel(domElement, parse);
             break;
         default:
             throw VException(tr("Unknown point type '%1'.").arg(type));
@@ -744,6 +749,82 @@ void VPattern::ParsePinPoint(const QDomElement &domElement, const Document &pars
     {
         VExceptionObjectError excep(tr("Error creating or updating pin point"), domElement);
         excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParsePlaceLabel(QDomElement &domElement, const Document &parse)
+{
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        VToolPlaceLabelInitData initData;
+        initData.doc = this;
+        initData.data = data;
+        initData.parse = parse;
+        initData.typeCreation = Source::FromFile;
+
+        ToolsCommonAttributes(domElement, initData.id);
+        initData.centerPoint = GetParametrUInt(domElement, AttrIdObject, NULL_ID_STR);
+
+        try
+        {
+            initData.data->GeometricObject<VPointF>(initData.centerPoint);
+        }
+        catch (const VExceptionBadId &)
+        { // Possible case. Parent was deleted, but the node object is still here.
+            qDebug() << "Broken relation. Parent was deleted, but the place label object is still here. Place label "
+                        "id ="
+                     << initData.id << ".";
+            return; // Just ignore
+        }
+
+        initData.idTool = GetParametrUInt(domElement, VAbstractNode::AttrIdTool, NULL_ID_STR);
+
+        initData.width = GetParametrString(domElement, AttrWidth, QStringLiteral("1.0"));
+        const QString w = initData.width; // need for saving fixed formula;
+
+        initData.height = GetParametrString(domElement, AttrHeight, QStringLiteral("1.0"));
+        const QString h = initData.height; // need for saving fixed formula;
+
+        initData.angle = GetParametrString(domElement, AttrAngle, QStringLiteral("0.0"));
+        const QString angle = initData.angle; // need for saving fixed formula;
+
+        initData.visibilityTrigger =
+            GetParametrString(domElement, VAbstractPattern::AttrVisible, QStringLiteral("1.0"));
+        const QString visibility = initData.visibilityTrigger; // need for saving fixed formula;
+
+        initData.type = static_cast<PlaceLabelType>(GetParametrUInt(domElement, AttrPlaceLabelType, QChar('0')));
+
+        initData.notMirrored = GetParametrBool(domElement, AttrNotMirrored, falseStr);
+
+        VToolPlaceLabel::Create(initData);
+
+        // Rewrite attribute formula. Need for situation when we have wrong formula.
+        if (w != initData.width || h != initData.height || angle != initData.angle ||
+            visibility != initData.visibilityTrigger)
+        {
+            SetAttribute(domElement, AttrWidth, initData.width);
+            SetAttribute(domElement, AttrHeight, initData.height);
+            SetAttribute(domElement, AttrAngle, initData.angle);
+            SetAttribute(domElement, VAbstractPattern::AttrVisible, initData.visibilityTrigger);
+            modified = true;
+            haveLiteChange();
+        }
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating place label"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+    catch (qmu::QmuParserError &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating place label"), domElement);
+        excep.AddMoreInformation("Message:     "_L1 + e.GetMsg() + '\n'_L1 + "Expression:  "_L1 + e.GetExpr());
         throw excep;
     }
 }

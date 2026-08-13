@@ -36,6 +36,8 @@
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vmodifierkey.h"
 #include "../vtools/dialogs/dialogtoolbox.h"
+#include "../vtools/dialogs/tools/piece/dialogplacelabel.h"
+#include "../vtools/tools/nodeDetails/vtoolplacelabel.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vtoolbuttonpopup.h"
 #include "../vwidgets/vwidgetpopup.h"
@@ -512,6 +514,16 @@ void MainWindow::ToolPin(bool checked)
 
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolPlaceLabel(bool checked)
+{
+    ToolSelectPointByRelease();
+    SetToolButton<DialogPlaceLabel>(checked, Tool::PlaceLabel, QStringLiteral("place_label_cursor.png"),
+                                    tr("Select placelabel center point"), &MainWindow::ClosedDialogPlaceLabel);
+    LogPatternToolUsed(checked, QStringLiteral("Place label tool"));
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief ToolHeight handler tool height.
  * @param checked true - button checked.
@@ -703,6 +715,19 @@ void MainWindow::ClosedDialogPiecePath(int result)
     if (result == QDialog::Accepted)
     {
         VToolPiecePath::Create(m_dialogTool, m_sceneDetails, doc, pattern);
+    }
+    ArrowTool(true);
+    doc->LiteParseTree(Document::LiteParse);
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ClosedDialogPlaceLabel(int result)
+{
+    SCASSERT(m_dialogTool != nullptr);
+    if (result == QDialog::Accepted)
+    {
+        VToolPlaceLabel::Create(m_dialogTool, doc, pattern);
     }
     ArrowTool(true);
     doc->LiteParseTree(Document::LiteParse);
@@ -990,7 +1015,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 66, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 67, "Check if need to extend.");
 
     switch (t)
     {
@@ -1002,6 +1027,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         case Tool::PiecePath:
         case Tool::Pin:
         case Tool::InsertNode:
+        case Tool::PlaceLabel:
             dialogTool->SetPiecesList(doc->GetActivePPPieces());
             break;
         case Tool::Rotation:

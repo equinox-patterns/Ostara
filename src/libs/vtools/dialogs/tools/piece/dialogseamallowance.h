@@ -30,6 +30,7 @@
 #define DIALOGSEAMALLOWANCE_H
 
 #include "../dialogtool.h"
+#include "../vgeometry/vplacelabelitem.h"
 #include "../vpatterndb/vpiece.h"
 #include "../vpatterndb/vpiecepath.h"
 
@@ -41,6 +42,7 @@ class TabLabels;
 class TabGrainline;
 class TabPins;
 class TabPassmarks;
+class TabPlaceLabels;
 class TabFoldLine;
 } // namespace Ui
 
@@ -83,6 +85,7 @@ private slots:
     void ShowCustomSAContextMenu(const QPoint &pos);
     void ShowInternalPathsContextMenu(const QPoint &pos);
     void ShowPinsContextMenu(const QPoint &pos);
+    void ShowPlaceLabelsContextMenu(const QPoint &pos);
 
     void ListChanged();
     void NodeChanged(int index);
@@ -96,6 +99,7 @@ private slots:
     void ReturnDefAfter();
     void CustomSAChanged(int row);
     void PathDialogClosed(int result);
+    void PlaceLabelDialogClosed(int result);
     void FancyTabChanged(int index);
     void TabChanged(int index);
     void PassmarkLineTypeChanged(int id);
@@ -192,6 +196,7 @@ private:
     Ui::TabGrainline *uiTabGrainline;
     Ui::TabPins *uiTabPins;
     Ui::TabPassmarks *uiTabPassmarks;
+    Ui::TabPlaceLabels *uiTabPlaceLabels;
     Ui::TabFoldLine *uiTabFoldLine;
 
     QWidget *m_tabPaths{nullptr};
@@ -199,6 +204,7 @@ private:
     QWidget *m_tabGrainline{nullptr};
     QWidget *m_tabPins{nullptr};
     QWidget *m_tabPassmarks{nullptr};
+    QWidget *m_tabPlaceLabels{nullptr};
     QWidget *m_tabFoldLine{nullptr};
 
     FancyTabBar *m_ftb{nullptr};
@@ -273,6 +279,7 @@ private:
     QVector<VLabelTemplateLine> m_templateLines{};
 
     QVector<QPointer<VUndoCommand>> m_undoStack{};
+    QHash<quint32, VPlaceLabelItem> m_newPlaceLabels{};
     QHash<quint32, VPiecePath> m_newPaths{};
 
     QString m_defLabelValue{};
@@ -291,6 +298,7 @@ private:
     auto MainPathIsClockwise() const -> bool;
     void UpdateCurrentCustomSARecord();
     void UpdateCurrentInternalPathRecord();
+    void UpdateCurrentPlaceLabelRecords();
 
     auto GetItemById(quint32 id) -> QListWidgetItem *;
 
@@ -323,6 +331,7 @@ private:
     void InitGrainlineTab();
     void InitPinsTab();
     void InitPassmarksTab();
+    void InitPlaceLabelsTab();
     void InitFoldLineTab();
     void InitAllPinComboboxes();
     void InitFoldLineType();
@@ -349,9 +358,11 @@ private:
     void SetPLHeight(QString heightFormula);
     void SetPLAngle(QString angleFormula);
 
-    void ShowPieceSpecialPointsWithRect(const QListWidget *list);
+    auto CurrentRect() const -> QRectF;
+    void ShowPieceSpecialPointsWithRect(const QListWidget *list, bool showRect);
 
     auto CurrentPath(quint32 id) const -> VPiecePath;
+    auto CurrentPlaceLabel(quint32 id) const -> VPlaceLabelItem;
 
     auto GetDefaultPieceName() const -> QString;
 

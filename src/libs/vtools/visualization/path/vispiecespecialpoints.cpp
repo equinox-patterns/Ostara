@@ -31,10 +31,25 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/vsimplepoint.h"
 
+namespace
+{
+auto RectPath(const QRectF &rect) -> QPainterPath
+{
+    QPainterPath path;
+    if (not rect.isNull())
+    {
+        path.addRect(rect);
+    }
+    return path;
+}
+} // namespace
+
 //---------------------------------------------------------------------------------------------------------------------
 VisPieceSpecialPoints::VisPieceSpecialPoints(const VContainer *data, QGraphicsItem *parent)
   : VisPath(data, parent)
 {
+    m_rectItem = InitItem<VCurvePathItem>(VColorRole::VisSupportColor2, this);
+    m_rectItem->SetWidth(VAbstractApplication::VApp()->Settings()->WidthHairLine());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -49,6 +64,11 @@ void VisPieceSpecialPoints::RefreshGeometry()
         point->RefreshPointGeometry(*GetData()->GeometricObject<VPointF>(m_spoints.at(i)));
         point->SetOnlyPoint(false);
         point->setVisible(true);
+
+        if (m_showRect)
+        {
+            DrawPath(m_rectItem, RectPath(m_placeLabelRect), Qt::SolidLine, Qt::RoundCap);
+        }
     }
 }
 

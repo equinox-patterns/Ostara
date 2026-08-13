@@ -36,7 +36,10 @@
 #include "ui_tabpassmarks.h"
 #include "ui_tabpaths.h"
 #include "ui_tabpins.h"
+#include "ui_tabplacelabels.h"
+#include "../../../undocommands/saveplacelabeloptions.h"
 #include "../../../visualization/path/vistoolpiece.h"
+#include "../vgeometry/vplacelabelitem.h"
 #include "../vmisc/def.h"
 #include "vtheme.h"
 #include "../vmisc/vabstractvalapplication.h"
@@ -45,6 +48,7 @@
 #include "../vpatterndb/vpiecepath.h"
 #include "../vwidgets/fancytabbar/fancytabbar.h"
 #include "dialogpiecepath.h"
+#include "dialogplacelabel.h"
 
 #include <QMenu>
 #include <QScopedPointer>
@@ -277,6 +281,124 @@ void DialogSeamAllowance::ShowPinsContextMenu(const QPoint &pos)
         delete uiTabPins->listWidgetPins->item(row);
         FancyTabChanged(m_ftb->CurrentIndex());
         InitAllPinComboboxes();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogSeamAllowance::ShowPlaceLabelsContextMenu(const QPoint &pos)
+{
+    const int row = uiTabPlaceLabels->listWidgetPlaceLabels->currentRow();
+    if (uiTabPlaceLabels->listWidgetPlaceLabels->count() == 0 || row == -1 ||
+        row >= uiTabPlaceLabels->listWidgetPlaceLabels->count())
+    {
+        return;
+    }
+
+    QListWidgetItem  const*rowItem = uiTabPlaceLabels->listWidgetPlaceLabels->item(row);
+    SCASSERT(rowItem != nullptr)
+    const auto labelId = qvariant_cast<quint32>(rowItem->data(Qt::UserRole));
+    VPlaceLabelItem currentLabel = CurrentPlaceLabel(labelId);
+
+    QScopedPointer<QMenu> menu(new QMenu());
+
+    auto InitAction = [&currentLabel, &menu](const QString &text, PlaceLabelType type)
+    {
+        QAction *action = menu->addAction(text);
+        action->setCheckable(true);
+        action->setChecked(currentLabel.GetLabelType() == type);
+        return action;
+    };
+
+    auto SaveType = [this, &currentLabel, labelId](PlaceLabelType type)
+    {
+        auto newLabel = VPlaceLabelItem(currentLabel);
+        newLabel.SetLabelType(type);
+        m_newPlaceLabels.insert(labelId, newLabel);
+
+        QPointer<VUndoCommand> const saveCommand = new SavePlaceLabelOptions(
+            toolId, currentLabel, newLabel, VAbstractValApplication::VApp()->getCurrentDocument(),
+            labelId);
+        m_undoStack.append(saveCommand);
+        UpdateCurrentPlaceLabelRecords();
+    };
+
+    QAction  const*actionOption = menu->addAction(FromTheme(VThemeIcon::PreferencesOther), tr("Options"));
+    menu->addSeparator();
+    QAction  const*actionSegment = InitAction(tr("Segment"), PlaceLabelType::Segment);
+    QAction  const*actionRectangle = InitAction(tr("Rectangle"), PlaceLabelType::Rectangle);
+    QAction  const*actionCross = InitAction(tr("Cross"), PlaceLabelType::Cross);
+    QAction  const*actionTshaped = InitAction(tr("T-shaped"), PlaceLabelType::Tshaped);
+    QAction  const*actionDoubletree = InitAction(tr("Doubletree"), PlaceLabelType::Doubletree);
+    QAction  const*actionCorner = InitAction(tr("Corner"), PlaceLabelType::Corner);
+    QAction  const*actionTriangle = InitAction(tr("Triangle"), PlaceLabelType::Triangle);
+    QAction  const*actionHshaped = InitAction(tr("H-shaped"), PlaceLabelType::Hshaped);
+    QAction  const*actionButton = InitAction(tr("Button"), PlaceLabelType::Button);
+    QAction  const*actionCircle = InitAction(tr("Circle"), PlaceLabelType::Circle);
+    menu->addSeparator();
+    QAction  const*actionDelete = menu->addAction(FromTheme(VThemeIcon::EditDelete), tr("Delete"));
+
+    QAction  const*selectedAction = menu->exec(uiTabPlaceLabels->listWidgetPlaceLabels->viewport()->mapToGlobal(pos));
+    if (selectedAction == actionDelete)
+    {
+        delete uiTabPlaceLabels->listWidgetPlaceLabels->item(row);
+        FancyTabChanged(m_ftb->CurrentIndex());
+    }
+    else if (selectedAction == actionOption)
+    {
+        auto *dialog = new DialogPlaceLabel(&data, m_doc, labelId, this);
+        dialog->EnbleShowMode(true);
+        dialog->SetLabelType(currentLabel.GetLabelType());
+        dialog->SetWidth(currentLabel.GetWidthFormula());
+        dialog->SetHeight(currentLabel.GetHeightFormula());
+        dialog->SetAngle(currentLabel.GetAngleFormula());
+        dialog->SetFormulaVisible(currentLabel.GetVisibilityTrigger());
+        dialog->SetPieceId(toolId);
+        dialog->SetCenterPoint(currentLabel.GetCenterPoint());
+        dialog->SetNotMirrored(currentLabel.IsNotMirrored());
+        m_dialog = dialog;
+        m_dialog->setModal(true);
+        connect(m_dialog.data(), &DialogTool::DialogClosed, this, &DialogSeamAllowance::PlaceLabelDialogClosed);
+        m_dialog->show();
+    }
+    else if (selectedAction == actionSegment)
+    {
+        SaveType(PlaceLabelType::Segment);
+    }
+    else if (selectedAction == actionRectangle)
+    {
+        SaveType(PlaceLabelType::Rectangle);
+    }
+    else if (selectedAction == actionCross)
+    {
+        SaveType(PlaceLabelType::Cross);
+    }
+    else if (selectedAction == actionTshaped)
+    {
+        SaveType(PlaceLabelType::Tshaped);
+    }
+    else if (selectedAction == actionDoubletree)
+    {
+        SaveType(PlaceLabelType::Doubletree);
+    }
+    else if (selectedAction == actionCorner)
+    {
+        SaveType(PlaceLabelType::Corner);
+    }
+    else if (selectedAction == actionTriangle)
+    {
+        SaveType(PlaceLabelType::Triangle);
+    }
+    else if (selectedAction == actionHshaped)
+    {
+        SaveType(PlaceLabelType::Hshaped);
+    }
+    else if (selectedAction == actionButton)
+    {
+        SaveType(PlaceLabelType::Button);
+    }
+    else if (selectedAction == actionCircle)
+    {
+        SaveType(PlaceLabelType::Circle);
     }
 }
 
