@@ -368,8 +368,6 @@ void DrawToolBar::InitializeGroups()
             {QStringLiteral("line"), tr("Line between points"), nullptr, makeBtn("line")},
         }, kModeDraw},
         {tr("Curves"), {
-            {QStringLiteral("curve"),                    tr("Curve"),                                            nullptr, makeBtn("curve")},
-            {QStringLiteral("curve_cut_point"),          tr("Segment a curve"),                                 nullptr, makeBtn("curve_cut_point")},
             {QStringLiteral("cubic_bezier"),             tr("Curve tool which uses point as control handle"),    nullptr, makeBtn("cubic_bezier")},
             {QStringLiteral("cubic_bezier_path"),        tr("Curved path tool which uses point as control handle"), nullptr, makeBtn("cubic_bezier_path")},
             {QStringLiteral("curve_intersect_axis"),     tr("Point intersect curve and axis"),                  nullptr, makeBtn("curve_intersect_axis")},
@@ -415,6 +413,8 @@ void DrawToolBar::InitializeGroups()
             {QStringLiteral("detail_export"),            tr("Export"),                            nullptr, nullptr},
         }, kModeDetail},
         {tr("New"), {
+            {QStringLiteral("curve"),                    tr("Curve"),                                            nullptr, makeBtn("curve")},
+            {QStringLiteral("curve_cut_point"),          tr("Segment a curve"),                                 nullptr, makeBtn("curve_cut_point")},
             {QStringLiteral("armhole_curve"),            tr("Armhole curve passing through 4 points"),          nullptr, makeBtn("armhole_curve")},
         }, kModeDraw},
     };
