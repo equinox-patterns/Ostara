@@ -56,7 +56,7 @@ const QString VToolArmholeCurve::ToolType = QStringLiteral("armholeCurve");
 VToolArmholeCurve::VToolArmholeCurve(const VToolArmholeCurveInitData &initData, QGraphicsItem *parent)
   : VToolAbstractBezier(initData.doc, initData.data, initData.id, initData.notes, parent)
 {
-    SetSceneType(SceneObject::Spline);
+    SetSceneType(SceneObject::SplinePath);
 
     this->setFlag(QGraphicsItem::ItemIsFocusable, true); // For keyboard input focus
 
