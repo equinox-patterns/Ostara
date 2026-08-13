@@ -132,7 +132,8 @@ auto VToolArmholeCurve::Create(VToolArmholeCurveInitData initData) -> VToolArmho
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    initData.data->AddSpline(initData.data->GeometricObject<VAbstractBezier>(initData.id), initData.id);
+    initData.data->AddCurveWithSegments(initData.data->GeometricObject<VAbstractCubicBezierPath>(initData.id),
+                                        initData.id);
 
     // Graph edges from the 4 user-selected points only. The 3 control handles are
     // derived from these points, so they carry no vertices or edges of their own.
