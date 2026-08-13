@@ -809,7 +809,7 @@ QMainWindow::separator {
 
 /* =========================================================================
    QScrollBar — Vertical + Horizontal (all-or-nothing rule)
-   Design: fine (0.65em), $ToolBar background, $Accent handle, no arrows
+   Design: fine (0.65em), $ToolBar background, $ScrollBarHandle handle, no arrows
    ========================================================================= */
 
 QScrollBar:vertical {
@@ -820,7 +820,7 @@ QScrollBar:vertical {
 }
 
 QScrollBar::handle:vertical {
-    background-color: $Accent;
+    background-color: $ScrollBarHandle;
     min-height: 1.5em;
     border-radius: 0.17em;
 }
@@ -853,7 +853,7 @@ QScrollBar:horizontal {
 }
 
 QScrollBar::handle:horizontal {
-    background-color: $Accent;
+    background-color: $ScrollBarHandle;
     min-width: 1.5em;
     border-radius: 0.17em;
 }
