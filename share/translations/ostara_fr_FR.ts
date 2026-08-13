@@ -13331,6 +13331,10 @@ Appliquer quand même les réglages ?</translation>
         <translation>Sélectionner le premier point de la courbe</translation>
     </message>
     <message>
+        <source>Select the first point of the curve</source>
+        <translation>Sélectionner le premier point de la courbe</translation>
+    </message>
+    <message>
         <location filename="../../src/app/valentina/mainwindow.cpp" line="1397"/>
         <source>Select simple curve</source>
         <translation>Sélectionner la courbe simple</translation>
@@ -31639,6 +31643,17 @@ Erreur de compatibilité du format .rld: actualFileVersion = %1 alors que fileVe
         <location filename="../../src/app/valentina/core/vapplication.cpp" line="325"/>
         <source>Information</source>
         <translation>Information</translation>
+    </message>
+</context>
+<context>
+    <name>OToolCurve</name>
+    <message>
+        <source>Select the second point of the curve</source>
+        <translation>Sélectionner le deuxième point de la courbe</translation>
+    </message>
+    <message>
+        <source>Select an additional point or press Enter to finish</source>
+        <translation>Sélectionner un point supplémentaire ou appuyer sur Entrée pour terminer</translation>
     </message>
 </context>
 </TS>

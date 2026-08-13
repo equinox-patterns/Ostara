@@ -44,6 +44,7 @@
         <file alias="segment.svg">../../../../../share/icons/tools/light/segment.svg</file>
         <file alias="shoulder.svg">../../../../../share/icons/tools/light/shoulder.svg</file>
         <file alias="spline.svg">../../../../../share/icons/tools/light/spline.svg</file>
+        <file alias="curve.svg">../../../../../share/icons/tools/light/spline.svg</file>
         <file alias="splinePath.svg">../../../../../share/icons/tools/light/splinePath.svg</file>
         <file alias="splinePath_cut_point.svg">../../../../../share/icons/tools/light/splinePath_cut_point.svg</file>
         <file alias="spline_cut_point.svg">../../../../../share/icons/tools/light/spline_cut_point.svg</file>
@@ -96,6 +97,7 @@
         <file alias="segment.svg">../../../../../share/icons/tools/dark/segment.svg</file>
         <file alias="shoulder.svg">../../../../../share/icons/tools/dark/shoulder.svg</file>
         <file alias="spline.svg">../../../../../share/icons/tools/dark/spline.svg</file>
+        <file alias="curve.svg">../../../../../share/icons/tools/dark/spline.svg</file>
         <file alias="splinePath.svg">../../../../../share/icons/tools/dark/splinePath.svg</file>
         <file alias="splinePath_cut_point.svg">../../../../../share/icons/tools/dark/splinePath_cut_point.svg</file>
         <file alias="spline_cut_point.svg">../../../../../share/icons/tools/dark/spline_cut_point.svg</file>

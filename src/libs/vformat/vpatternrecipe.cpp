@@ -360,7 +360,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 65, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -389,6 +389,7 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
             case Tool::BackgroundSVGImage:
             case Tool::ArcStart: // Same as Tool::CutArc, but tool will never has such type
             case Tool::ArcEnd:   // Same as Tool::CutArc, but tool will never has such type
+            case Tool::Curve:    // Frontend-only: never persisted as a tool type
             case Tool::LAST_ONE_DO_NOT_USE:
                 Q_UNREACHABLE(); //-V501
                 break;

@@ -277,6 +277,7 @@ enum class Tool : ToolVisHolderType
     ParallelCurve,
     GraduatedCurve,
     ArmholeCurve,
+    Curve,
     LAST_ONE_DO_NOT_USE // add new stuffs above this, this constant must be last and never used
 };
 

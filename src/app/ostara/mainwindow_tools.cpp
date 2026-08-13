@@ -76,6 +76,7 @@
 #include "../vtools/dialogs/tools/dialogshoulderpoint.h"
 #include "../vtools/dialogs/tools/dialogspline.h"
 #include "../vtools/dialogs/tools/dialogsplinepath.h"
+#include "../vtools/dialogs/tools/otoolcurve.h"
 #include "../vtools/dialogs/tools/dialogtriangle.h"
 #include "../vtools/dialogs/tools/dialogtruedarts.h"
 #include "../vtools/dialogs/tools/dialoguniondetails.h"
@@ -402,6 +403,16 @@ void MainWindow::ToolSplinePath(bool checked)
         checked, Tool::SplinePath, QStringLiteral("splinePath_cursor.png"), tr("Select point of curve path"),
         &MainWindow::ClosedDrawDialogWithApply<VToolSplinePath>, &MainWindow::ApplyDrawDialog<VToolSplinePath>);
     LogPatternToolUsed(checked, QStringLiteral("Spline path tool"));
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolCurve(bool checked)
+{
+    ToolSelectPointByPress();
+    SetToolButton<OToolCurve>(checked, Tool::Curve, QStringLiteral("spline_cursor.png"),
+                              tr("Select the first point of the curve"), &MainWindow::ClosedCurveDialog);
+    LogPatternToolUsed(checked, QStringLiteral("Curve tool"));
 }
 
 
@@ -964,7 +975,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 65, "Check if need to extend.");
 
     switch (t)
     {
@@ -1124,5 +1135,64 @@ template <typename DrawTool> void MainWindow::ClosedDetailsDialogWithApply(int r
 template <typename DrawTool> void MainWindow::ApplyDetailsDialog()
 {
     ApplyDialog<DrawTool>(m_sceneDetails);
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ClosedCurveDialog routes the unified "Curve" creation to a Spline (2 points) or a SplinePath (3+ points).
+ * @param result result working dialog.
+ */
+void MainWindow::ClosedCurveDialog(int result)
+{
+    SCASSERT(not m_dialogTool.isNull())
+    QGraphicsItem *tool = nullptr;
+    if (result == QDialog::Accepted)
+    {
+        auto *curveDialog = qobject_cast<OToolCurve *>(m_dialogTool.data());
+        SCASSERT(curveDialog != nullptr)
+
+        const QVector<quint32> pointIds = curveDialog->GetPointIds();
+        auto *scene = qobject_cast<VMainGraphicsScene *>(currentScene);
+        SCASSERT(scene != nullptr)
+
+        if (pointIds.size() == 2)
+        {
+            VToolSplineInitData initData;
+            initData.scene = scene;
+            initData.doc = doc;
+            initData.data = pattern;
+            initData.parse = Document::FullParse;
+            initData.typeCreation = Source::FromGui;
+            initData.point1 = pointIds.at(0);
+            initData.point4 = pointIds.at(1);
+
+            const auto p1 = pattern->GeometricObject<VPointF>(pointIds.at(0));
+            const auto p4 = pattern->GeometricObject<VPointF>(pointIds.at(1));
+            auto *spl = new VSpline(*p1, static_cast<QPointF>(*p1), static_cast<QPointF>(*p4), *p4);
+
+            tool = VToolSpline::Create(initData, spl);
+        }
+        else
+        {
+            VToolSplinePathInitData initData;
+            initData.scene = scene;
+            initData.doc = doc;
+            initData.data = pattern;
+            initData.parse = Document::FullParse;
+            initData.typeCreation = Source::FromGui;
+            initData.points = pointIds;
+
+            auto *path = new VSplinePath(curveDialog->GetPath());
+
+            tool = VToolSplinePath::Create(initData, path);
+        }
+    }
+    ArrowTool(true);
+    if (tool != nullptr)
+    {
+        emit ui->view->itemClicked(tool);
+        tool->setFocus();
+    }
 }
 

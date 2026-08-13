@@ -37,7 +37,7 @@ void MainWindow::SetupDrawToolsIcons()
     const auto resource = QStringLiteral("toolicon");
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 64, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 65, "Not all tools were handled.");
 
     ui->actionLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("line.png")));
     ui->actionEndLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("segment.png")));
@@ -72,6 +72,7 @@ void MainWindow::SetupDrawToolsIcons()
     ui->actionPointFromCircleAndTangentTool->setIcon(
         VTheme::GetIconResource(resource, QStringLiteral("point_from_circle_and_tangent.png")));
     ui->actionPointOfContactTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("point_of_contact.png")));
+    ui->actionCurveTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("spline.png")));
     ui->actionSplineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("spline.png")));
     ui->actionCubicBezierTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("cubic_bezier.png")));
     ui->actionArmholeCurveTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("cubic_bezier.png")));
