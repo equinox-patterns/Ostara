@@ -184,6 +184,13 @@ auto VScenePoint::itemChange(GraphicsItemChange change, const QVariant &value) -
     {
         RefreshScale();
     }
+    else if (change == ItemEnabledHasChanged)
+    {
+        // CorrectToolColor() depends on isEnabled(); re-resolve the pen now that the enabled state
+        // is final, otherwise a point disabled at refresh time (e.g. while switching draw/details
+        // mode) keeps its DisabledColor until the next hover/zoom.
+        ScaleMainPenWidth(SceneScale(scene()));
+    }
     return QGraphicsEllipseItem::itemChange(change, value);
 }
 
