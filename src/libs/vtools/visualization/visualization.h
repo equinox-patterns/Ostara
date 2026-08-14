@@ -29,6 +29,8 @@
 #ifndef VISUALIZATION_H
 #define VISUALIZATION_H
 
+#include <type_traits>
+
 #include <QGraphicsItem>
 #include <QLoggingCategory>
 #include <QObject>
@@ -159,6 +161,10 @@ template <class Item> inline auto Visualization::InitItem(VColorRole role, QGrap
     item->setZValue(1);
     item->setFlags(QGraphicsItem::ItemStacksBehindParent);
     item->setVisible(false);
+    if constexpr (std::is_same_v<Item, VScaledLine>)
+    {
+        item->SetShowArrows(true);
+    }
     return item;
 }
 
