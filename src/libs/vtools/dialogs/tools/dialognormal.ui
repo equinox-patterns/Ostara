@@ -40,29 +40,6 @@
           <number>1</number>
          </property>
          <item row="0" column="0">
-          <widget class="QLabel" name="labelEditNamePoint">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Point label:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="lineEditNamePoint">
-           <property name="toolTip">
-            <string>Unique label</string>
-           </property>
-           <property name="placeholderText">
-            <string>Choose unique label.</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
           <widget class="QLabel" name="labelFirstPoint">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -75,10 +52,10 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
+         <item row="0" column="1">
           <widget class="QComboBox" name="comboBoxFirstPoint"/>
          </item>
-         <item row="1" column="2">
+         <item row="0" column="2">
           <layout class="QVBoxLayout" name="verticalLayoutSwap">
            <property name="spacing">
             <number>1</number>
@@ -129,7 +106,7 @@
            </item>
           </layout>
          </item>
-         <item row="2" column="0">
+         <item row="1" column="0">
           <widget class="QLabel" name="labelSecondPoint">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -142,7 +119,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="1" column="1">
           <widget class="QComboBox" name="comboBoxSecondPoint"/>
          </item>
         </layout>
@@ -413,15 +390,56 @@
          </property>
         </spacer>
        </item>
+       <item>
+        <layout class="QHBoxLayout" name="notesSeparatorLayout">
+         <property name="leftMargin"><number>33</number></property>
+         <property name="rightMargin"><number>33</number></property>
+         <item>
+          <widget class="QFrame" name="notesSeparator">
+           <property name="minimumSize"><size><width>0</width><height>1</height></size></property>
+           <property name="maximumSize"><size><width>16777215</width><height>1</height></size></property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPlainTextEdit" name="plainTextEditToolNotes">
+         <property name="placeholderText"><string>You can add a note here…</string></property>
+         <property name="maximumSize"><size><width>16777215</width><height>100</height></size></property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
-       <string>Notes</string>
+       <string>Point</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QPlainTextEdit" name="plainTextEditToolNotes"/>
+      <layout class="QFormLayout" name="formLayoutPoint">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::ExpandingFieldsGrow</enum>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelEditNamePoint">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Point name:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="lineEditNamePoint">
+         <property name="toolTip">
+          <string>Unique label</string>
+         </property>
+         <property name="placeholderText">
+          <string>Choose unique label.</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

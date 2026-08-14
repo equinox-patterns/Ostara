@@ -407,7 +407,6 @@ void DialogArc::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
-        InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
     DialogTool::changeEvent(event);

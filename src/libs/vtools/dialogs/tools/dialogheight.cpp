@@ -65,7 +65,6 @@ DialogHeight::DialogHeight(const VContainer *data, VAbstractPattern *doc, quint3
 {
     ui->setupUi(this);
 
-    MakeFilterableComboBox(ui->comboBoxBasePoint);
     MakeFilterableComboBox(ui->comboBoxP1Line);
     MakeFilterableComboBox(ui->comboBoxP2Line);
 
@@ -75,7 +74,6 @@ DialogHeight::DialogHeight(const VContainer *data, VAbstractPattern *doc, quint3
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
     InitOkCancelApply(ui);
 
-    FillComboBoxPoints(ui->comboBoxBasePoint);
     FillComboBoxPoints(ui->comboBoxP1Line);
     FillComboBoxPoints(ui->comboBoxP2Line);
     FillComboBoxTypeLine(ui->comboBoxLineType, LineStylesPics(ui->comboBoxLineType->palette().color(QPalette::Base),
@@ -89,7 +87,6 @@ DialogHeight::DialogHeight(const VContainer *data, VAbstractPattern *doc, quint3
                                 m_flagName);
                 CheckState();
             });
-    connect(ui->comboBoxBasePoint, &QComboBox::currentTextChanged, this, &DialogHeight::PointNameChanged);
     connect(ui->comboBoxP1Line, &QComboBox::currentTextChanged, this, &DialogHeight::PointNameChanged);
     connect(ui->comboBoxP2Line, &QComboBox::currentTextChanged, this, &DialogHeight::PointNameChanged);
 
@@ -98,8 +95,8 @@ DialogHeight::DialogHeight(const VContainer *data, VAbstractPattern *doc, quint3
     m_labelRoleName->setMinimumWidth(90);
     auto *lineEditRoleName = new QLineEdit();
     lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
-    ui->formLayout_2->setWidget(6, QFormLayout::LabelRole, m_labelRoleName);
-    ui->formLayout_2->setWidget(6, QFormLayout::FieldRole, lineEditRoleName);
+    ui->formLayout_2->setWidget(4, QFormLayout::LabelRole, m_labelRoleName);
+    ui->formLayout_2->setWidget(4, QFormLayout::FieldRole, lineEditRoleName);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogHeight::ValidateLineRoleName);
 
     vis = new VisToolHeight(&this->data);
@@ -148,7 +145,7 @@ void DialogHeight::SetTypeLine(const QString &value)
  */
 void DialogHeight::SetBasePointId(const quint32 &value)
 {
-    setCurrentPointId(ui->comboBoxBasePoint, value);
+    m_basePointId = value;
 
     auto *line = qobject_cast<VisToolHeight *>(vis);
     SCASSERT(line != nullptr)
@@ -216,14 +213,13 @@ void DialogHeight::ChosenObject(quint32 id, const SceneObject &type)
         switch (m_number)
         {
             case 0:
-                if (SetObject(id, ui->comboBoxBasePoint, tr("Select first point of line")))
-                {
-                    m_number++;
-                    line->VisualMode(id);
-                }
+                m_basePointId = id;
+                PointNameChanged();
+                m_number++;
+                line->VisualMode(id);
                 break;
             case 1:
-                if (getCurrentObjectId(ui->comboBoxBasePoint) != id &&
+                if (m_basePointId != id &&
                     SetObject(id, ui->comboBoxP1Line, tr("Select second point of line")))
                 {
                     m_number++;
@@ -234,7 +230,7 @@ void DialogHeight::ChosenObject(quint32 id, const SceneObject &type)
             case 2:
             {
                 QSet<quint32> set;
-                set.insert(getCurrentObjectId(ui->comboBoxBasePoint));
+                set.insert(m_basePointId);
                 set.insert(getCurrentObjectId(ui->comboBoxP1Line));
                 set.insert(id);
 
@@ -272,7 +268,7 @@ void DialogHeight::SaveData()
 void DialogHeight::PointNameChanged()
 {
     QSet<quint32> set;
-    const quint32 basePointId = getCurrentObjectId(ui->comboBoxBasePoint);
+    const quint32 basePointId = m_basePointId;
     const quint32 p1LineId = getCurrentObjectId(ui->comboBoxP1Line);
     const quint32 p2LineId = getCurrentObjectId(ui->comboBoxP2Line);
 
@@ -305,7 +301,6 @@ void DialogHeight::PointNameChanged()
         color = errorColor;
     }
 
-    ChangeColor(ui->labelBasePoint, color);
     ChangeColor(ui->labelFirstLinePoint, color);
     ChangeColor(ui->labelSecondLinePoint, color);
     CheckState();
@@ -334,7 +329,7 @@ auto DialogHeight::GetTypeLine() const -> QString
  */
 auto DialogHeight::GetBasePointId() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxBasePoint);
+    return m_basePointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -442,7 +437,6 @@ void DialogHeight::CheckDependencyTreeComplete()
 {
     const bool ready = m_doc->IsPatternGraphComplete();
     ui->lineEditNamePoint->setEnabled(ready);
-    ui->comboBoxBasePoint->setEnabled(ready);
     ui->comboBoxP1Line->setEnabled(ready);
     ui->comboBoxP2Line->setEnabled(ready);
 }

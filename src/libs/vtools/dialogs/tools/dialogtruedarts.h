@@ -100,6 +100,9 @@ private:
     quint32 ch1;
     quint32 ch2;
 
+    quint32 m_firstBasePointId{NULL_ID};
+    quint32 m_secondBasePointId{NULL_ID};
+
     bool flagName1;
     bool flagName2;
     bool flagError;

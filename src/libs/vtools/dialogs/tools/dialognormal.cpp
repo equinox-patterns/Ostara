@@ -65,8 +65,8 @@ DialogNormal::DialogNormal(const VContainer *data, VAbstractPattern *doc, quint3
     ui->setupUi(this);
 
     // Re-add spanning 2 rows
-    ui->gridLayoutPoints->removeItem(ui->gridLayoutPoints->itemAtPosition(1, 2));
-    ui->gridLayoutPoints->addLayout(ui->verticalLayoutSwap, 1, 2, 2, 1);
+    ui->gridLayoutPoints->removeItem(ui->gridLayoutPoints->itemAtPosition(0, 2));
+    ui->gridLayoutPoints->addLayout(ui->verticalLayoutSwap, 0, 2, 2, 1);
 
     MakeFilterableComboBox(ui->comboBoxFirstPoint);
     MakeFilterableComboBox(ui->comboBoxSecondPoint);
@@ -132,8 +132,8 @@ DialogNormal::DialogNormal(const VContainer *data, VAbstractPattern *doc, quint3
     m_labelRoleName->setMinimumWidth(90);
     auto *lineEditRoleName = new QLineEdit();
     lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
-    ui->gridLayoutPoints->addWidget(m_labelRoleName, 3, 0);
-    ui->gridLayoutPoints->addWidget(lineEditRoleName, 3, 1);
+    ui->gridLayoutPoints->addWidget(m_labelRoleName, 2, 0);
+    ui->gridLayoutPoints->addWidget(lineEditRoleName, 2, 1);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogNormal::ValidateLineRoleName);
 
     vis = new VisToolNormal(&this->data);
@@ -266,7 +266,6 @@ void DialogNormal::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
-        InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
     DialogTool::changeEvent(event);

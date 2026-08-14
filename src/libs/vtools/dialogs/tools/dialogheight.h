@@ -102,6 +102,8 @@ private:
 
     QString m_pointName{};
 
+    quint32 m_basePointId{NULL_ID};
+
     bool m_flagError{true};
     bool m_flagName{true};
     bool flagRoleName{true};

@@ -104,7 +104,7 @@ DialogLineIntersect::DialogLineIntersect(const VContainer *data, VAbstractPatter
     auto *roleNameLayout = new QHBoxLayout();
     roleNameLayout->addWidget(m_labelRoleName);
     roleNameLayout->addWidget(lineEditRoleName);
-    ui->verticalLayout_3->insertLayout(1, roleNameLayout);
+    ui->verticalLayout_3->insertLayout(0, roleNameLayout);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogLineIntersect::ValidateLineRoleName);
 
     vis = new VisToolLineIntersect(&this->data);

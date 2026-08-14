@@ -109,6 +109,8 @@ private:
 
     bool m_firstRelease;
 
+    quint32 m_basePointId{NULL_ID};
+
     bool flagName;
 
     bool flagRoleName{true};

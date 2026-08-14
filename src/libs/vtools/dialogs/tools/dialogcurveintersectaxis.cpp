@@ -133,7 +133,7 @@ DialogCurveIntersectAxis::DialogCurveIntersectAxis(const VContainer *data, VAbst
     m_labelRoleName->setMinimumWidth(90);
     auto *lineEditRoleName = new QLineEdit();
     lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
-    ui->formLayout->insertRow(5, m_labelRoleName, lineEditRoleName);
+    ui->formLayout->insertRow(4, m_labelRoleName, lineEditRoleName);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogCurveIntersectAxis::ValidateLineRoleName);
 
     vis = new VisToolCurveIntersectAxis(&this->data);
@@ -377,7 +377,6 @@ void DialogCurveIntersectAxis::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
-        InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
     // remember to call base class implementation

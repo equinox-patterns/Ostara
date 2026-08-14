@@ -180,15 +180,48 @@
          </property>
         </widget>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>Notes</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QPlainTextEdit" name="plainTextEditToolNotes"/>
+       <item row="9" column="0" colspan="2">
+        <layout class="QVBoxLayout" name="notesAreaLayout">
+         <item>
+          <layout class="QHBoxLayout" name="notesSeparatorLayout">
+           <property name="leftMargin">
+            <number>33</number>
+           </property>
+           <property name="rightMargin">
+            <number>33</number>
+           </property>
+           <item>
+            <widget class="QFrame" name="notesSeparator">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>1</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>1</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPlainTextEdit" name="plainTextEditToolNotes">
+           <property name="placeholderText">
+            <string>You can add a note here…</string>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>100</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

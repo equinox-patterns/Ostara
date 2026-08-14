@@ -32,9 +32,12 @@ QToolTip {
    MAIN WINDOW / DIALOG — Fond principal
    ========================================================================= */
 
-QMainWindow,
-QDialog {
+QMainWindow {
     background-color: #232323;
+}
+
+QDialog {
+    background-color: #333333;
 }
 
 /* =========================================================================
@@ -674,6 +677,25 @@ QTabBar::close-button:hover {
 }
 
 /* =========================================================================
+   Dialog tabs — fond spécifique (panneau + onglets)
+   Design: #232323 (Gray800 dark / Gray100 light), distinct des tabs
+           générales (docks du main window)
+   ========================================================================= */
+
+QDialog QTabWidget::pane {
+    background: #232323;
+}
+
+QDialog QTabBar::tab {
+    background: #232323;
+}
+
+QDialog QTabBar::tab:selected {
+    background: #232323;
+    border-bottom-color: #232323;
+}
+
+/* =========================================================================
    QGroupBox
    Design: #232323 background, #333333 border, bold title centered at top
    ========================================================================= */
@@ -1143,6 +1165,10 @@ QListWidget#welcomeRecentList::item:selected {
 }
 
 QFrame#welcomeSeparator {
+    background-color: #333333;
+}
+
+QFrame#notesSeparator {
     background-color: #333333;
 }
 

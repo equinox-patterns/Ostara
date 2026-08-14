@@ -71,8 +71,6 @@ DialogEndLine::DialogEndLine(const VContainer *data, VAbstractPattern *doc, quin
 {
     ui->setupUi(this);
 
-    MakeFilterableComboBox(ui->comboBoxBasePoint);
-
     ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     ui->lineEditNamePoint->setText(
@@ -121,7 +119,6 @@ DialogEndLine::DialogEndLine(const VContainer *data, VAbstractPattern *doc, quin
 
     InitOkCancelApply(ui);
 
-    FillComboBoxPoints(ui->comboBoxBasePoint);
     FillComboBoxTypeLine(ui->comboBoxLineType, LineStylesPics(ui->comboBoxLineType->palette().color(QPalette::Base),
                                                               ui->comboBoxLineType->palette().color(QPalette::Text)));
     m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonLineColor);
@@ -138,8 +135,8 @@ DialogEndLine::DialogEndLine(const VContainer *data, VAbstractPattern *doc, quin
     m_labelRoleName->setMinimumWidth(90);
     auto *lineEditRoleName = new QLineEdit();
     lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
-    ui->formLayout->setWidget(4, QFormLayout::LabelRole, m_labelRoleName);
-    ui->formLayout->setWidget(4, QFormLayout::FieldRole, lineEditRoleName);
+    ui->formLayout->setWidget(2, QFormLayout::LabelRole, m_labelRoleName);
+    ui->formLayout->setWidget(2, QFormLayout::FieldRole, lineEditRoleName);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogEndLine::ValidateLineRoleName);
 
     vis = new VisToolEndLine(&this->data);
@@ -162,9 +159,10 @@ auto DialogEndLine::IsValid() const -> bool
  */
 void DialogEndLine::ChosenObject(quint32 id, const SceneObject &type)
 {
-    if (not prepare && type == SceneObject::Point &&
-        SetObject(id, ui->comboBoxBasePoint, QString())) // After first choose we ignore all objects
+    if (not prepare && type == SceneObject::Point) // After first choose we ignore all objects
     {
+        m_basePointId = id;
+
         if (vis != nullptr)
         {
             vis->VisualMode(id);
@@ -248,7 +246,7 @@ void DialogEndLine::SetAngle(const QString &value)
  */
 void DialogEndLine::SetBasePointId(const quint32 &value)
 {
-    setCurrentPointId(ui->comboBoxBasePoint, value);
+    m_basePointId = value;
 
     auto *line = qobject_cast<VisToolEndLine *>(vis);
     SCASSERT(line != nullptr)
@@ -311,7 +309,6 @@ void DialogEndLine::ShowDialog(bool click)
 void DialogEndLine::CheckDependencyTreeComplete()
 {
     const bool ready = m_doc->IsPatternGraphComplete();
-    ui->comboBoxBasePoint->setEnabled(ready);
     ui->lineEditNamePoint->setEnabled(ready);
 }
 
@@ -355,7 +352,6 @@ void DialogEndLine::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
-        InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
     // remember to call base class implementation
@@ -425,7 +421,7 @@ auto DialogEndLine::GetAngle() const -> QString
  */
 auto DialogEndLine::GetBasePointId() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxBasePoint);
+    return m_basePointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

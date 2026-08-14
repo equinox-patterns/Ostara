@@ -156,7 +156,6 @@ void DialogFinalMeasurements::changeEvent(QEvent *event)
     if (event->type() == QEvent::PaletteChange)
     {
         InitIcons();
-        InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
     // remember to call base class implementation

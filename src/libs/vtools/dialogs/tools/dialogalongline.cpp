@@ -77,8 +77,8 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
     InitIcons();
 
     // Re-add spanning 2 rows
-    ui->gridLayout->removeItem(ui->gridLayout->itemAtPosition(1, 2));
-    ui->gridLayout->addLayout(ui->verticalLayoutSwap, 1, 2, 2, 1);
+    ui->gridLayout->removeItem(ui->gridLayout->itemAtPosition(0, 2));
+    ui->gridLayout->addLayout(ui->verticalLayoutSwap, 0, 2, 2, 1);
 
     MakeFilterableComboBox(ui->comboBoxFirstPoint);
     MakeFilterableComboBox(ui->comboBoxSecondPoint);
@@ -143,8 +143,8 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
     layoutRoleName->addStretch();
     auto *lineEditRoleName = new QLineEdit();
     lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
-    ui->gridLayout->addWidget(containerRoleName, 5, 0);
-    ui->gridLayout->addWidget(lineEditRoleName, 5, 1);
+    ui->gridLayout->addWidget(containerRoleName, 4, 0);
+    ui->gridLayout->addWidget(lineEditRoleName, 4, 1);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogAlongLine::ValidateLineRoleName);
 
     // Role name field C→B
@@ -162,8 +162,8 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
     layoutSecondRoleName->addStretch();
     auto *lineEditSecondRoleName = new QLineEdit();
     lineEditSecondRoleName->setObjectName(QStringLiteral("lineEditSecondRoleName"));
-    ui->gridLayout->addWidget(containerSecondRoleName, 6, 0);
-    ui->gridLayout->addWidget(lineEditSecondRoleName, 6, 1);
+    ui->gridLayout->addWidget(containerSecondRoleName, 5, 0);
+    ui->gridLayout->addWidget(lineEditSecondRoleName, 5, 1);
     connect(lineEditSecondRoleName, &QLineEdit::textEdited, this, &DialogAlongLine::ValidateSecondLineRoleName);
 
     vis = new VisToolAlongLine(&this->data);
@@ -284,7 +284,6 @@ void DialogAlongLine::changeEvent(QEvent *event)
     if (event->type() == QEvent::PaletteChange)
     {
         InitIcons();
-        InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
     DialogTool::changeEvent(event);

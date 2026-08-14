@@ -1004,29 +1004,6 @@ auto InvalidSegment(QListWidget *listWidget, const VContainer *data, QString &er
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void InitDialogButtonBoxIcons(QDialogButtonBox *buttonBox)
-{
-    SCASSERT(buttonBox != nullptr)
-
-    QStyle  const*style = QApplication::style();
-
-    if (QPushButton *bOk = buttonBox->button(QDialogButtonBox::Ok))
-    {
-        bOk->setIcon(style->standardIcon(QStyle::SP_DialogOkButton));
-    }
-
-    if (QPushButton *bApply = buttonBox->button(QDialogButtonBox::Apply))
-    {
-        bApply->setIcon(style->standardIcon(QStyle::SP_DialogApplyButton));
-    }
-
-    if (QPushButton *bCancel = buttonBox->button(QDialogButtonBox::Cancel))
-    {
-        bCancel->setIcon(style->standardIcon(QStyle::SP_DialogCancelButton));
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto MirrorLinePointsNeighbors(QListWidget *listWidget, quint32 startPoint, quint32 endPoint) -> bool
 {
     SCASSERT(listWidget != nullptr)

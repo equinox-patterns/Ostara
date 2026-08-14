@@ -363,7 +363,6 @@ void DialogSplinePath::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
-        InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
     // remember to call base class implementation

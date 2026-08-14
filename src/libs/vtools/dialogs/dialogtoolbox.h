@@ -107,7 +107,6 @@ void SetTabStopDistance(QPlainTextEdit *edit, int tabWidthChar = 4);
 auto SegmentAliases(GOType curveType, const QString &alias1, const QString &alias2) -> QPair<QString, QString>;
 auto SegmentNames(GOType curveType, const QString &name1, const QString &name2) -> QPair<QString, QString>;
 auto GetNodeName(const VContainer *data, const VPieceNode &node, bool showPassmarkDetails = false) -> QString;
-void InitDialogButtonBoxIcons(QDialogButtonBox *buttonBox);
 auto MirrorLinePointsNeighbors(QListWidget *listWidget, quint32 startPoint, quint32 endPoint) -> bool;
 void InitColorPicker(VPE::QtColorPicker *button);
 void InitOperationColorPicker(VPE::QtColorPicker *button);

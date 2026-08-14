@@ -128,8 +128,8 @@ DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, qu
     m_labelRoleName->setMinimumWidth(90);
     auto *lineEditRoleName = new QLineEdit();
     lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
-    ui->formLayout->setWidget(6, QFormLayout::LabelRole, m_labelRoleName);
-    ui->formLayout->setWidget(6, QFormLayout::FieldRole, lineEditRoleName);
+    ui->formLayout->setWidget(5, QFormLayout::LabelRole, m_labelRoleName);
+    ui->formLayout->setWidget(5, QFormLayout::FieldRole, lineEditRoleName);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogBisector::ValidateLineRoleName);
 
     ui->tabWidget->setCurrentIndex(0);
@@ -422,7 +422,6 @@ void DialogBisector::changeEvent(QEvent *event)
 
     if (event->type() == QEvent::PaletteChange)
     {
-        InitDialogButtonBoxIcons(ui->buttonBox);
     }
 
     // remember to call base class implementation
