@@ -60,7 +60,6 @@ public:
     VToolLinePoint(VAbstractPattern *doc, VContainer *data, const quint32 &id, const QString &typeLine,
                    const QString &lineColor, const QString &formula, const quint32 &basePointId, const qreal &angle,
                    const QString &notes, QGraphicsItem *parent = nullptr);
-    ~VToolLinePoint() override;
     auto type() const -> int override { return Type; }
     enum
     {

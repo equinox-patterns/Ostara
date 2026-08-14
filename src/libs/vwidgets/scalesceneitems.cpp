@@ -111,6 +111,50 @@ void VScaledLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VScaledLine::shape() const -> QPainterPath
+{
+    if (pen().style() == Qt::NoPen)
+    {
+        // Invisible line (type "none"): not hit-testable, so it neither captures hover nor
+        // clicks. The parent point stays fully interactive.
+        return {};
+    }
+
+    QPainterPath itemPath;
+    itemPath.moveTo(line().p1());
+    itemPath.lineTo(line().p2());
+
+    // Comfortable hit area: at least 6 screen pixels wide regardless of zoom, so a hairline
+    // (WidthHairLine) is still easy to hover/click. Same philosophy as VScenePoint::shape().
+    QPen shapePen = pen();
+    const qreal scale = SceneScale(scene());
+    constexpr qreal minScreenPixels = 6.0;
+    const qreal minWidth = minScreenPixels / qMax(scale, 0.01);
+    if (shapePen.widthF() < minWidth)
+    {
+        shapePen.setWidthF(minWidth);
+    }
+
+    return ItemShapeFromPath(itemPath, shapePen);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    SetBoldLine(true);
+    update();
+    QGraphicsLineItem::hoverEnterEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    SetBoldLine(false);
+    update();
+    QGraphicsLineItem::hoverLeaveEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 VScaledEllipse::VScaledEllipse(VColorRole role, QGraphicsItem *parent)
   : QGraphicsEllipseItem(parent),
     m_role(role)

@@ -91,15 +91,10 @@ VToolLinePoint::VToolLinePoint(VAbstractPattern *doc, VContainer *data, const qu
     mainLine = new VScaledLine(line, VColorRole::CustomColor, this);
     mainLine->SetBoldLine(false);
     mainLine->SetShowArrows(true);
+    mainLine->setAcceptHoverEvents(true);
     mainLine->setFlag(QGraphicsItem::ItemStacksBehindParent, true);
     mainLine->setZValue(-0.5); // Child line below parent point (Z=0.5 effective vs Z=1)
     mainLine->setVisible(not line.isNull());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-VToolLinePoint::~VToolLinePoint()
-{
-    delete mainLine;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

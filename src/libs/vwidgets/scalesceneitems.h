@@ -48,6 +48,7 @@ public:
     };
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+    auto shape() const -> QPainterPath override;
 
     auto IsBoldLine() const -> bool;
     void SetBoldLine(bool bold);
@@ -57,6 +58,10 @@ public:
 
     auto GetColorRole() const -> VColorRole;
     void SetColorRole(VColorRole role);
+
+protected:
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
     Q_DISABLE_COPY_MOVE(VScaledLine) // NOLINT
