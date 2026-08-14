@@ -1,6 +1,6 @@
 {
   "ToolStyle": {
-    "PatternColor": "black",
+    "PatternColor": "#666666",
     "DisabledColor": "dimgray",
     "PointColor": "black",
     "LabelColor": "black",
