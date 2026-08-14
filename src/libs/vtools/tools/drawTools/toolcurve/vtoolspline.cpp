@@ -186,7 +186,8 @@ auto VToolSpline::Create(VToolSplineInitData &initData, VSpline *spline) -> VToo
         initData.data->UpdateGObject(initData.id, spline);
     }
 
-    if (!curveUnique)
+    // Re-parsing recreates the same objects with the same names, so a duplicate here is a false positive.
+    if (!curveUnique && (initData.typeCreation != Source::FromFile || initData.parse == Document::FullParse))
     {
         const QString errorMsg
             = QObject::tr("Curve '%1' with id %2 has not unique name.").arg(spline->name()).arg(initData.id);

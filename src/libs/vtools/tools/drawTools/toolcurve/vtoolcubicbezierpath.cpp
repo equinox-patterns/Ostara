@@ -114,7 +114,8 @@ auto VToolCubicBezierPath::Create(VToolCubicBezierPathInitData initData) -> VToo
         initData.data->UpdateGObject(initData.id, initData.path);
     }
 
-    if (!curveUnique)
+    // Re-parsing recreates the same objects with the same names, so a duplicate here is a false positive.
+    if (!curveUnique && (initData.typeCreation != Source::FromFile || initData.parse == Document::FullParse))
     {
         const QString errorMsg
             = QObject::tr("Curve '%1' with id %2 has not unique name.").arg(initData.path->name()).arg(initData.id);
