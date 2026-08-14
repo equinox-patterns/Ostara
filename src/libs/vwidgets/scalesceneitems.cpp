@@ -33,6 +33,7 @@
 #include "global.h"
 
 #include <QGraphicsSceneHoverEvent>
+#include <QGraphicsSceneMouseEvent>
 #include <QPainterPath>
 #include <QPen>
 
@@ -152,6 +153,29 @@ void VScaledLine::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     SetBoldLine(false);
     update();
     QGraphicsLineItem::hoverLeaveEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    // Clicking a child line acts like clicking its parent (e.g. a point tool's
+    // child line): select and focus the parent so it reacts (PropertyBrowser +
+    // Delete key). A line with no selectable parent (e.g. a visualization
+    // preview, or a top-level line tool) falls through to the default handler.
+    if (QGraphicsItem *parent = parentItem())
+    {
+        if (parent->flags() & QGraphicsItem::ItemIsSelectable)
+        {
+            parent->setSelected(true);
+        }
+        if (parent->flags() & QGraphicsItem::ItemIsFocusable)
+        {
+            parent->setFocus(Qt::MouseFocusReason);
+        }
+        event->accept();
+        return;
+    }
+    QGraphicsLineItem::mousePressEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -373,6 +373,11 @@ auto VToolLine::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 {
     if (change == QGraphicsItem::ItemSelectedHasChanged)
     {
+        if (value.toBool())
+        {
+            setFocus();
+        }
+
         emit ChangedToolSelection(value.toBool(), m_id, m_id);
     }
 

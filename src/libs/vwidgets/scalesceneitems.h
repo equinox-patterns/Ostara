@@ -62,6 +62,7 @@ public:
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
     Q_DISABLE_COPY_MOVE(VScaledLine) // NOLINT

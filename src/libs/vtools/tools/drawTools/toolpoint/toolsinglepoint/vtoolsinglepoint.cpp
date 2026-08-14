@@ -281,6 +281,11 @@ auto VToolSinglePoint::itemChange(QGraphicsItem::GraphicsItemChange change, cons
 {
     if (change == QGraphicsItem::ItemSelectedHasChanged)
     {
+        if (value.toBool())
+        {
+            setFocus();
+        }
+
         if (not m_selectedFromChild)
         {
             const QSignalBlocker blocker(m_namePoint);
