@@ -103,7 +103,6 @@ private:
     Q_DISABLE_COPY_MOVE(VSimplePoint) // NOLINT
 
     bool m_visualizationMode;
-    bool m_alwaysHovered;
 };
 
 #endif // VSIMPLEPOINT_H

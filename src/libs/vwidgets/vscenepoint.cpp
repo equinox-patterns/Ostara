@@ -304,7 +304,9 @@ void VScenePoint::ScaleMainPenWidth(qreal scale)
     QPen pointPen = pen();
     if (m_role != VColorRole::CustomColor)
     {
-        const QColor color = VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::Color(m_role));
+        const bool hoverColorActive = m_isHovered && not m_alwaysHovered;
+        const VColorRole colorRole = hoverColorActive ? VColorRole::VisSupportColor : m_role;
+        const QColor color = VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::Color(colorRole));
         pointPen.setColor(color);
         setBrush(QBrush(color)); // Fill inherits the role color (outline + fill = same color)
     }

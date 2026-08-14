@@ -171,7 +171,9 @@ void VScaledEllipse::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
     if (m_role != VColorRole::CustomColor)
     {
-        visPen.setColor(VSceneStylesheet::Color(m_role));
+        const QColor color = VSceneStylesheet::Color(m_role);
+        visPen.setColor(color);
+        setBrush(QBrush(color)); // Fill follows the outline (active state = whole point, not just contour)
     }
 
     visPen.setWidthF(width);

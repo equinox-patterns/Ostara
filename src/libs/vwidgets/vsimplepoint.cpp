@@ -47,8 +47,7 @@
 VSimplePoint::VSimplePoint(quint32 id, VColorRole role, QObject *parent)
   : VAbstractSimple(id, parent),
     VScenePoint(role),
-    m_visualizationMode(false),
-    m_alwaysHovered(false)
+    m_visualizationMode(false)
 {
     connect(m_namePoint, &VGraphicsSimpleTextItem::ShowContextMenu, this, &VSimplePoint::contextMenuEvent);
     connect(m_namePoint, &VGraphicsSimpleTextItem::DeleteTool, this, &VSimplePoint::DeleteFromLabel);
