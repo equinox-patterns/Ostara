@@ -161,6 +161,7 @@ template <class Item> inline auto Visualization::InitItem(VColorRole role, QGrap
     item->setZValue(1);
     item->setFlags(QGraphicsItem::ItemStacksBehindParent);
     item->setVisible(false);
+    item->setAcceptedMouseButtons(Qt::NoButton);
     if constexpr (std::is_same_v<Item, VScaledLine>)
     {
         item->SetShowArrows(true);

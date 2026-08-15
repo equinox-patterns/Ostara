@@ -57,8 +57,8 @@ DialogPointOfIntersection::DialogPointOfIntersection(const VContainer *data, VAb
     ui->setupUi(this);
 
     // Re-add spanning 2 rows
-    ui->gridLayout->removeItem(ui->gridLayout->itemAtPosition(1, 2));
-    ui->gridLayout->addLayout(ui->verticalLayoutSwap, 1, 2, 2, 1);
+    ui->gridLayout->removeItem(ui->gridLayout->itemAtPosition(0, 2));
+    ui->gridLayout->addLayout(ui->verticalLayoutSwap, 0, 2, 2, 1);
 
     MakeFilterableComboBox(ui->comboBoxFirstPoint);
     MakeFilterableComboBox(ui->comboBoxSecondPoint);

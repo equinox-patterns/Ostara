@@ -84,7 +84,45 @@ void VMainGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     scenePos = event->scenePos();
     emit mouseMove(event->scenePos());
+
+    // A point must win the hover over any overlapping line/curve/arc, like the click already
+    // does (VMainGraphicsView::PrioritizeItems picks the item whose center is closest to the
+    // cursor). Temporarily raise the hover-accepting item closest to the cursor so it becomes
+    // topmost for the hover dispatch, then restore its Z.
+    QGraphicsItem *raisedItem = nullptr;
+    qreal raisedItemZ = 0;
+    const QList<QGraphicsItem *> under = items(event->scenePos());
+    if (under.size() > 1)
+    {
+        QGraphicsItem *closest = nullptr;
+        qreal closestDist = 0;
+        for (auto *item : under)
+        {
+            if (not item->acceptHoverEvents())
+            {
+                continue;
+            }
+            const qreal d = (event->scenePos() - item->sceneBoundingRect().center()).manhattanLength();
+            if (closest == nullptr || d < closestDist)
+            {
+                closestDist = d;
+                closest = item;
+            }
+        }
+        if (closest != nullptr && closest != under.constFirst())
+        {
+            raisedItem = closest;
+            raisedItemZ = closest->zValue();
+            closest->setZValue(closest->zValue() + 2.0);
+        }
+    }
+
     QGraphicsScene::mouseMoveEvent(event);
+
+    if (raisedItem != nullptr)
+    {
+        raisedItem->setZValue(raisedItemZ);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
