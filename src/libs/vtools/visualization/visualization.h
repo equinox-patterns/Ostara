@@ -165,7 +165,20 @@ template <class Item> inline auto Visualization::InitItem(VColorRole role, QGrap
     if constexpr (std::is_same_v<Item, VScaledLine>)
     {
         item->SetShowArrows(true);
+        item->RefreshPen();
     }
+    else if constexpr (std::is_same_v<Item, VScaledEllipse>)
+    {
+        item->RefreshScale();
+    }
+    else if constexpr (std::is_same_v<Item, VCurvePathItem>)
+    {
+        item->RefreshScale();
+    }
+    // Note: the refresh above is required because items created after their parent is already in the
+    // scene never receive ItemSceneHasChanged (the base QGraphicsItem constructor consumes it), so the
+    // derived itemChange() would never run RefreshPen()/RefreshScale() and the item would keep the
+    // default black pen.
     return item;
 }
 

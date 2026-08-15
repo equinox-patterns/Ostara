@@ -1055,6 +1055,11 @@ void MainWindow::paintEvent(QPaintEvent * /*event*/)
     painter.fillRect(rect(), palette().window().color());
 }
 
+namespace
+{
+void RefreshSceneItemPens(const VMainGraphicsScene *scene);
+} // namespace
+
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::changeEvent(QEvent *event)
 {
@@ -1133,6 +1138,10 @@ void MainWindow::changeEvent(QEvent *event)
         UpdateTopBarIcons();
         UpdateMenuIcons();
         UpdateMessagesIcons();
+
+        // Re-resolve the color of every canvas item from the freshly loaded theme tables.
+        RefreshSceneItemPens(m_sceneDraw);
+        RefreshSceneItemPens(m_sceneDetails);
     }
 
     // remember to call base class implementation
@@ -1292,34 +1301,12 @@ void MainWindow::ToolBarStyle(QToolBar *bar) const
 #endif
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ScaleChanged(qreal scale)
+namespace
 {
-    VMainGraphicsScene const *scene = nullptr;
-    if (ui->view->scene() == m_sceneDraw)
-    {
-        scene = m_sceneDraw;
-    }
-    else if (ui->view->scene() == m_sceneDetails)
-    {
-        scene = m_sceneDetails;
-    }
-    else
-    {
-        return;
-    }
-
-    if (not m_doubleSpinBoxScale.isNull())
-    {
-        const QSignalBlocker blocker(m_doubleSpinBoxScale);
-        m_doubleSpinBoxScale->setMaximum(qFloor(VMainGraphicsView::MaxScale() * 1000) / 10.0);
-        m_doubleSpinBoxScale->setMinimum(qFloor(VMainGraphicsView::MinScale() * 1000) / 10.0);
-        m_doubleSpinBoxScale->setValue(qFloor(scale * 1000) / 10.0);
-        m_doubleSpinBoxScale->setSingleStep(1);
-    }
-
-    // Scale-dependent item state must be refreshed here, not inside paint(). Since Qt 6
-    // mutating geometry/visibility/selection during paint() crashes the paint pipeline on
-    // Windows.
+void RefreshSceneItemPens(const VMainGraphicsScene *scene)
+{
+    // Scale- and theme-dependent item state must be refreshed here, not inside paint(). Since Qt 6
+    // mutating geometry/visibility/selection during paint() crashes the paint pipeline on Windows.
     for (QGraphicsItem *item : scene->items())
     {
         // VGraphicsSimpleTextItem and VToolSeamAllowance have a single fixed type(), so a cheap
@@ -1352,6 +1339,36 @@ void MainWindow::ScaleChanged(qreal scale)
             point->RefreshScale();
         }
     }
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ScaleChanged(qreal scale)
+{
+    VMainGraphicsScene const *scene = nullptr;
+    if (ui->view->scene() == m_sceneDraw)
+    {
+        scene = m_sceneDraw;
+    }
+    else if (ui->view->scene() == m_sceneDetails)
+    {
+        scene = m_sceneDetails;
+    }
+    else
+    {
+        return;
+    }
+
+    if (not m_doubleSpinBoxScale.isNull())
+    {
+        const QSignalBlocker blocker(m_doubleSpinBoxScale);
+        m_doubleSpinBoxScale->setMaximum(qFloor(VMainGraphicsView::MaxScale() * 1000) / 10.0);
+        m_doubleSpinBoxScale->setMinimum(qFloor(VMainGraphicsView::MinScale() * 1000) / 10.0);
+        m_doubleSpinBoxScale->setValue(qFloor(scale * 1000) / 10.0);
+        m_doubleSpinBoxScale->setSingleStep(1);
+    }
+
+    RefreshSceneItemPens(scene);
 }
 // Extracted: 
 

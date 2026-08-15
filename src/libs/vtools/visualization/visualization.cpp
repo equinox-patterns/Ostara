@@ -78,6 +78,7 @@ auto InitPointItem(VColorRole role, QGraphicsItem *parent, qreal z = 0) -> VScal
     point->setZValue(z);
     point->setVisible(false);
     point->setAcceptedMouseButtons(Qt::NoButton);
+    point->RefreshScale();
     return point;
 }
 
@@ -90,6 +91,7 @@ auto InitCurveItem(VColorRole role, QGraphicsItem *parent, qreal z = 0) -> VCurv
     curve->setZValue(z);
     curve->setVisible(false);
     curve->setAcceptedMouseButtons(Qt::NoButton);
+    curve->RefreshScale();
     return curve;
 }
 } // namespace
