@@ -49,6 +49,7 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     auto shape() const -> QPainterPath override;
+    auto boundingRect() const -> QRectF override;
 
     auto IsBoldLine() const -> bool;
     void SetBoldLine(bool bold);
@@ -59,12 +60,18 @@ public:
     auto GetColorRole() const -> VColorRole;
     void SetColorRole(VColorRole role);
 
+    virtual void RefreshPen();
+
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    auto itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant override;
 
 private:
+    auto ScaledPenWidth() const -> qreal;
+    auto ArrowsPath() const -> QPainterPath;
+
     Q_DISABLE_COPY_MOVE(VScaledLine) // NOLINT
 
     bool m_isBoldLine{true};
@@ -124,6 +131,11 @@ public:
 
     auto PointMode() const -> bool;
     void SetPointMode(bool newPointMode);
+
+    void RefreshScale();
+
+protected:
+    auto itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant override;
 
 private:
     Q_DISABLE_COPY_MOVE(VScaledEllipse) // NOLINT

@@ -93,12 +93,6 @@ VControlPointSpline::VControlPointSpline(const vsizetype &indexSpline, SplinePoi
 //---------------------------------------------------------------------------------------------------------------------
 void VControlPointSpline::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QPointF p1, p2;
-    VGObject::LineIntersectCircle(QPointF(), ScaledRadius(SceneScale(scene())),
-                                  QLineF(QPointF(), controlLine->line().p1()), p1, p2);
-    QLineF const line(controlLine->line().p1(), p1);
-    controlLine->setLine(line);
-
     VScenePoint::paint(painter, option, widget);
 }
 
@@ -240,12 +234,20 @@ void VControlPointSpline::Init()
 //---------------------------------------------------------------------------------------------------------------------
 void VControlPointSpline::SetCtrlLine(const QPointF &controlPoint, const QPointF &splinePoint)
 {
-    QLineF const circleLine(QPointF(), splinePoint - controlPoint);
+    m_splineOffset = splinePoint - controlPoint;
+    RefreshScale();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VControlPointSpline::RefreshScale()
+{
+    VScenePoint::RefreshScale();
+
     const qreal radius = ScaledRadius(SceneScale(scene()));
 
     QPointF p1, p2;
-    VGObject::LineIntersectCircle(QPointF(), radius, circleLine, p1, p2);
-    QLineF const line(splinePoint - controlPoint, p1);
+    VGObject::LineIntersectCircle(QPointF(), radius, QLineF(QPointF(), m_splineOffset), p1, p2);
+    QLineF const line(m_splineOffset, p1);
     controlLine->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
     controlLine->setLine(line);
     controlLine->setVisible(not line.isNull());

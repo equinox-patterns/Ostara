@@ -209,13 +209,18 @@ auto VToolLine::getTagName() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 void VToolLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    // Don't set pen width. Parent should take care of it.
+    PaintWithFixItemHighlightSelected<VScaledLine>(this, painter, option, widget);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLine::RefreshPen()
+{
+    VScaledLine::RefreshPen();
+
     QPen lPen = pen();
     lPen.setColor(VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::CorrectToolColorForDarkTheme(lineColor)));
     lPen.setStyle(LineStyleToPenStyle(m_lineType));
     setPen(lPen);
-
-    PaintWithFixItemHighlightSelected<VScaledLine>(this, painter, option, widget);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -371,7 +376,15 @@ void VToolLine::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
  */
 auto VToolLine::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value) -> QVariant
 {
-    if (change == QGraphicsItem::ItemSelectedHasChanged)
+    if (change == QGraphicsItem::ItemSceneHasChanged && value.value<QGraphicsScene *>() != nullptr)
+    {
+        RefreshPen();
+    }
+    else if (change == QGraphicsItem::ItemEnabledHasChanged)
+    {
+        RefreshPen();
+    }
+    else if (change == QGraphicsItem::ItemSelectedHasChanged)
     {
         if (value.toBool())
         {
@@ -569,6 +582,7 @@ void VToolLine::ShowVisualization(bool show)
 void VToolLine::SetLineType(const QString &value)
 {
     m_lineType = value;
+    RefreshPen();
 
     QSharedPointer<VGObject> obj; // We don't have object for line in data container. Just will send an empty object.
     SaveOption(obj);
@@ -584,6 +598,7 @@ auto VToolLine::GetLineColor() const -> QString
 void VToolLine::SetLineColor(const QString &value)
 {
     lineColor = value;
+    RefreshPen();
 
     QSharedPointer<VGObject> obj; // We don't have object for line in data container. Just will send an empty object.
     SaveOption(obj);

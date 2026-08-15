@@ -58,9 +58,11 @@ public:
     void SetDirectionArrows(const QVector<QPair<QLineF, QLineF>> &arrows);
     void SetPoints(const QVector<QPointF> &points);
     void SetWidth(qreal width);
+    void RefreshScale();
 
 protected:
     virtual void ScalePenWidth();
+    auto itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant override;
 
     auto GetColorRole() const -> VColorRole;
     void SetColorRole(VColorRole role);

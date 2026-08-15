@@ -95,17 +95,13 @@ VToolLinePoint::VToolLinePoint(VAbstractPattern *doc, VContainer *data, const qu
     mainLine->setFlag(QGraphicsItem::ItemStacksBehindParent, true);
     mainLine->setZValue(-0.5); // Child line below parent point (Z=0.5 effective vs Z=1)
     mainLine->setVisible(not line.isNull());
+
+    RefreshMainLinePen();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolLinePoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QPen mPen = mainLine->pen();
-    mPen.setColor(VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::CorrectToolColorForDarkTheme(lineColor)));
-    mPen.setStyle(LineStyleToPenStyle(m_lineType));
-
-    mainLine->setPen(mPen);
-
     VToolSinglePoint::paint(painter, option, widget);
 }
 
@@ -121,6 +117,16 @@ void VToolLinePoint::RefreshGeometry()
     QLineF const line(basePoint - point, QPointF());
     mainLine->setLine(line);
     mainLine->setVisible(not line.isNull());
+    RefreshMainLinePen();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::RefreshMainLinePen()
+{
+    QPen mPen = mainLine->pen();
+    mPen.setColor(VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::CorrectToolColorForDarkTheme(lineColor)));
+    mPen.setStyle(LineStyleToPenStyle(m_lineType));
+    mainLine->setPen(mPen);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -174,6 +180,7 @@ void VToolLinePoint::Enable()
 {
     VToolSinglePoint::Enable();
     mainLine->setEnabled(isEnabled());
+    RefreshMainLinePen();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

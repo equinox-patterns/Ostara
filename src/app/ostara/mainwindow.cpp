@@ -192,6 +192,8 @@
 #include "../vwidgets/vgraphicssimpletextitem.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vscenepoint.h"
+#include "../vwidgets/scalesceneitems.h"
+#include "../vwidgets/vcurvepathitem.h"
 #include "../vwidgets/vsimplecurve.h"
 #include "../vwidgets/vsimplepoint.h"
 #include "../vtools/tools/vabstracttool.h"
@@ -1332,6 +1334,18 @@ void MainWindow::ScaleChanged(qreal scale)
         {
             // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
             static_cast<VToolSeamAllowance *>(item)->RefreshScale();
+        }
+        else if (auto *line = dynamic_cast<VScaledLine *>(item))
+        {
+            line->RefreshPen();
+        }
+        else if (auto *ellipse = dynamic_cast<VScaledEllipse *>(item))
+        {
+            ellipse->RefreshScale();
+        }
+        else if (auto *curve = dynamic_cast<VCurvePathItem *>(item))
+        {
+            curve->RefreshScale();
         }
         else if (auto *point = dynamic_cast<VScenePoint *>(item))
         {

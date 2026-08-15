@@ -32,6 +32,7 @@
 #include "../vbackport/qpainterstateguard.h"
 #include "global.h"
 
+#include <QGraphicsScene>
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainterPath>
@@ -52,7 +53,58 @@ VScaledLine::VScaledLine(const QLineF &line, VColorRole role, QGraphicsItem *par
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VScaledLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+auto VScaledLine::ScaledPenWidth() const -> qreal
+{
+    const qreal width = ScaleWidth(m_isBoldLine ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
+                                                : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
+                                   SceneScale(scene()));
+    return qRound(width * 100.) / 100.;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VScaledLine::ArrowsPath() const -> QPainterPath
+{
+    QPainterPath arrowPath;
+
+    if (!m_showArrows || !m_isBoldLine || pen().style() == Qt::NoPen)
+    {
+        return arrowPath;
+    }
+
+    const QLineF l = line();
+    const qreal len = l.length();
+    if (len <= 0)
+    {
+        return arrowPath;
+    }
+
+    // Dual arrows at 25% and 75% — avoids collision with a midpoint created by the user
+    const QPointF mid1 = l.pointAt(0.25);
+    const QPointF mid2 = l.pointAt(0.75);
+    const qreal angle = l.angle();
+    const qreal arrowLen = ScaleWidth(
+        VAbstractApplication::VApp()->Settings()->GetLineWidth() * 8.0, SceneScale(scene()));
+
+    // Arrow fans open backward (toward A), tip points forward (toward B)
+    // l.angle() = A→B direction. Add 180° so branches fan toward A.
+    const qreal fanBase = angle + 180;
+    auto addBranch = [&arrowPath](const QPointF &origin, qreal a, qreal length) {
+        QLineF branch(origin, QPointF(origin.x() + 1, origin.y())); // non-zero init for setAngle
+        branch.setAngle(a);
+        branch.setLength(length);
+        arrowPath.moveTo(branch.p1());
+        arrowPath.lineTo(branch.p2());
+    };
+    addBranch(mid1, fanBase - 35, arrowLen);
+    addBranch(mid1, fanBase + 35, arrowLen);
+    addBranch(mid2, fanBase - 35, arrowLen);
+    addBranch(mid2, fanBase + 35, arrowLen);
+
+    return arrowPath;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::RefreshPen()
 {
     QPen lPen = pen();
 
@@ -61,53 +113,26 @@ void VScaledLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         lPen.setColor(VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::Color(m_role)));
     }
 
-    const qreal width = ScaleWidth(m_isBoldLine ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
-                                                : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
-                                   SceneScale(scene()));
-    lPen.setWidthF(qRound(width * 100.) / 100.);
+    lPen.setWidthF(ScaledPenWidth());
     setPen(lPen);
+}
 
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
     PaintWithFixItemHighlightSelected<QGraphicsLineItem>(this, painter, option, widget);
 
     // Draw direction arrows when bold (hovered or active with visualization)
-    // Skip if line style is NoPen (invisible/transparent)
-    if (m_showArrows && m_isBoldLine && lPen.style() != Qt::NoPen)
+    const QPainterPath arrowPath = ArrowsPath();
+    if (!arrowPath.isEmpty())
     {
-        const QLineF l = line();
-        const qreal len = l.length();
-        if (len > 0)
-        {
-            // Dual arrows at 25% and 75% — avoids collision with a midpoint created by the user
-            const QPointF mid1 = l.pointAt(0.25);
-            const QPointF mid2 = l.pointAt(0.75);
-            const qreal angle = l.angle();
-            const qreal arrowLen = ScaleWidth(
-                VAbstractApplication::VApp()->Settings()->GetLineWidth() * 8.0, SceneScale(scene()));
+        QPainterStateGuard const guard(painter);
 
-            QPainterPath arrowPath;
-            // Arrow fans open backward (toward A), tip points forward (toward B)
-            // l.angle() = A→B direction. Add 180° so branches fan toward A.
-            const qreal fanBase = angle + 180;
-            auto addBranch = [&arrowPath](const QPointF &origin, qreal a, qreal length) {
-                QLineF branch(origin, QPointF(origin.x() + 1, origin.y())); // non-zero init for setAngle
-                branch.setAngle(a);
-                branch.setLength(length);
-                arrowPath.moveTo(branch.p1());
-                arrowPath.lineTo(branch.p2());
-            };
-            addBranch(mid1, fanBase - 35, arrowLen);
-            addBranch(mid1, fanBase + 35, arrowLen);
-            addBranch(mid2, fanBase - 35, arrowLen);
-            addBranch(mid2, fanBase + 35, arrowLen);
-
-            QPainterStateGuard const guard(painter);
-
-            QPen arrowPen(lPen);
-            arrowPen.setStyle(Qt::SolidLine);
-            painter->setPen(arrowPen);
-            painter->setBrush(Qt::NoBrush);
-            painter->drawPath(arrowPath);
-        }
+        QPen arrowPen(pen());
+        arrowPen.setStyle(Qt::SolidLine);
+        painter->setPen(arrowPen);
+        painter->setBrush(Qt::NoBrush);
+        painter->drawPath(arrowPath);
     }
 }
 
@@ -140,9 +165,27 @@ auto VScaledLine::shape() const -> QPainterPath
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VScaledLine::boundingRect() const -> QRectF
+{
+    QRectF rect = QGraphicsLineItem::boundingRect();
+
+    const QPainterPath arrowPath = ArrowsPath();
+    if (!arrowPath.isEmpty())
+    {
+        QPainterPathStroker stroker;
+        stroker.setWidth(ScaledPenWidth());
+        rect = rect.united(stroker.createStroke(arrowPath).boundingRect());
+    }
+
+    return rect;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VScaledLine::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
+    prepareGeometryChange();
     SetBoldLine(true);
+    RefreshPen();
     update();
     QGraphicsLineItem::hoverEnterEvent(event);
 }
@@ -150,7 +193,9 @@ void VScaledLine::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void VScaledLine::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
+    prepareGeometryChange();
     SetBoldLine(false);
+    RefreshPen();
     update();
     QGraphicsLineItem::hoverLeaveEvent(event);
 }
@@ -179,6 +224,20 @@ void VScaledLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VScaledLine::itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant
+{
+    if (change == ItemSceneHasChanged && value.value<QGraphicsScene *>() != nullptr)
+    {
+        RefreshPen();
+    }
+    else if (change == ItemEnabledHasChanged)
+    {
+        RefreshPen();
+    }
+    return QGraphicsLineItem::itemChange(change, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 VScaledEllipse::VScaledEllipse(VColorRole role, QGraphicsItem *parent)
   : QGraphicsEllipseItem(parent),
     m_role(role)
@@ -186,7 +245,7 @@ VScaledEllipse::VScaledEllipse(VColorRole role, QGraphicsItem *parent)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VScaledEllipse::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void VScaledEllipse::RefreshScale()
 {
     const qreal scale = SceneScale(scene());
     const qreal width = ScaleWidth(VAbstractApplication::VApp()->Settings()->WidthMainLine(), scale);
@@ -207,6 +266,20 @@ void VScaledEllipse::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     {
         ScaleCircleSize(this, scale);
     }
+}
 
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledEllipse::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
     PaintWithFixItemHighlightSelected<QGraphicsEllipseItem>(this, painter, option, widget);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VScaledEllipse::itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant
+{
+    if (change == ItemSceneHasChanged && value.value<QGraphicsScene *>() != nullptr)
+    {
+        RefreshScale();
+    }
+    return QGraphicsEllipseItem::itemChange(change, value);
 }

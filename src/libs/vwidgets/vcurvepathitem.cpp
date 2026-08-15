@@ -32,6 +32,7 @@
 #include "../vmisc/vabstractapplication.h"
 #include "global.h"
 
+#include <QGraphicsScene>
 #include <QPainter>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 9, 0)
@@ -80,8 +81,6 @@ auto VCurvePathItem::shape() const -> QPainterPath
 //---------------------------------------------------------------------------------------------------------------------
 void VCurvePathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    ScalePenWidth();
-
     const QPainterPath arrowsPath = VAbstractCurve::ShowDirection(
         m_directionArrows, ScaleWidth(VAbstractCurve::LengthCurveDirectionArrow(), SceneScale(scene())));
 
@@ -138,4 +137,20 @@ void VCurvePathItem::ScalePenWidth()
     }
 
     setPen(toolPen);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCurvePathItem::RefreshScale()
+{
+    ScalePenWidth();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCurvePathItem::itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant
+{
+    if (change == ItemSceneHasChanged && value.value<QGraphicsScene *>() != nullptr)
+    {
+        ScalePenWidth();
+    }
+    return QGraphicsPathItem::itemChange(change, value);
 }

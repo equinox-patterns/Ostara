@@ -99,6 +99,7 @@ protected:
     QString lineColor;
 
     void RefreshGeometry() override;
+    void RefreshMainLinePen();
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;

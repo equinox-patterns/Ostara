@@ -89,6 +89,7 @@ protected:
 
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     auto itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant override;
+    void RefreshScale() override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
@@ -103,6 +104,8 @@ private:
 
     bool freeAngle;
     bool freeLength;
+
+    QPointF m_splineOffset{};
 
     void Init();
     void SetCtrlLine(const QPointF &controlPoint, const QPointF &splinePoint);

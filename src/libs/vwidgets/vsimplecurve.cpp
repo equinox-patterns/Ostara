@@ -68,6 +68,7 @@ void VSimpleCurve::RefreshGeometry(const QSharedPointer<VAbstractCurve> &curve)
         m_isHovered ? SetDirectionArrows(m_curve->DirectionArrows()) : SetDirectionArrows(QVector<DirectionArrow>());
         setPath(m_curve->GetPath());
         SetPoints(m_curve->GetPoints());
+        ScalePenWidth();
     }
     else
     {
@@ -138,6 +139,7 @@ void VSimpleCurve::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     {
         SetDirectionArrows(m_curve->DirectionArrows());
     }
+    ScalePenWidth();
     QGraphicsPathItem::hoverEnterEvent(event);
 }
 
@@ -146,13 +148,18 @@ void VSimpleCurve::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     m_isHovered = false;
     SetDirectionArrows(QVector<DirectionArrow>());
+    ScalePenWidth();
     QGraphicsPathItem::hoverLeaveEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VSimpleCurve::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value) -> QVariant
 {
-    if (change == QGraphicsItem::ItemSelectedHasChanged)
+    if (change == QGraphicsItem::ItemSceneHasChanged && value.value<QGraphicsScene *>() != nullptr)
+    {
+        ScalePenWidth();
+    }
+    else if (change == QGraphicsItem::ItemSelectedHasChanged)
     {
         emit Selected(value.toBool(), id);
     }

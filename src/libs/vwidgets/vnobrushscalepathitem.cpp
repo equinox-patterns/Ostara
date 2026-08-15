@@ -65,9 +65,5 @@ void VNoBrushScalePathItem::paint(QPainter *painter, const QStyleOptionGraphicsI
     brush.setTransform(painter->combinedTransform().inverted());
     this->setBrush(brush);
 
-    QPen toolPen = pen();
-    toolPen.setWidthF(ScaleWidth(m_defaultWidth, SceneScale(scene())));
-    setPen(toolPen);
-
     PaintWithFixItemHighlightSelected<QGraphicsPathItem>(this, painter, option, widget);
 }
