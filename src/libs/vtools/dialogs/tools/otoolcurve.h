@@ -64,10 +64,14 @@ protected:
     void ShowVisualization() override;
     auto IsValid() const -> bool override;
 
+private slots:
+    void PathUpdated(const VSplinePath &path);
+
 private:
     Q_DISABLE_COPY_MOVE(OToolCurve) // NOLINT
 
     QVector<quint32> m_pointIds{};
+    VSplinePath m_path{};
 };
 
 #endif // OTOOLCURVE_H

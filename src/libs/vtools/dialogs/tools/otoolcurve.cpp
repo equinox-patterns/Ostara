@@ -49,6 +49,7 @@ OToolCurve::OToolCurve(const VContainer *data, VAbstractPattern *doc, quint32 to
     SCASSERT(scene != nullptr)
     connect(scene, &VMainGraphicsScene::MouseLeftPressed, path, &VisToolSplinePath::MouseLeftPressed);
     connect(scene, &VMainGraphicsScene::MouseLeftReleased, path, &VisToolSplinePath::MouseLeftReleased);
+    connect(path, &VisToolSplinePath::PathChanged, this, &OToolCurve::PathUpdated);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -63,15 +64,13 @@ auto OToolCurve::GetPointIds() const -> QVector<quint32>
 //---------------------------------------------------------------------------------------------------------------------
 auto OToolCurve::GetPath() const -> VSplinePath
 {
-    QVector<VSplinePoint> points;
-    points.reserve(m_pointIds.size());
-    for (const quint32 id : m_pointIds)
-    {
-        VSplinePoint p;
-        p.SetP(*data.GeometricObject<VPointF>(id));
-        points.append(p);
-    }
-    return VSplinePath(points);
+    return m_path;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OToolCurve::PathUpdated(const VSplinePath &path)
+{
+    m_path = path;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -90,9 +89,13 @@ void OToolCurve::ChosenObject(quint32 id, const SceneObject &type)
 
     m_pointIds.append(id);
 
+    VSplinePoint p;
+    p.SetP(*data.GeometricObject<VPointF>(id));
+    m_path.append(p);
+
     auto *visPath = qobject_cast<VisToolSplinePath *>(vis);
     SCASSERT(visPath != nullptr)
-    visPath->SetPath(GetPath());
+    visPath->SetPath(m_path);
 
     if (m_pointIds.size() == 1)
     {

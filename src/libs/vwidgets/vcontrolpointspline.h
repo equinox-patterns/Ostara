@@ -63,6 +63,7 @@ public:
     };
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+    void RefreshScale() override;
 signals:
     /**
      * @brief ControlPointChangePosition emit when control point change position.
@@ -89,7 +90,6 @@ protected:
 
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     auto itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant override;
-    void RefreshScale() override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;

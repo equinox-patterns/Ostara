@@ -178,16 +178,19 @@ auto VisToolSplinePath::GetPoint(quint32 i) -> VScaledEllipse *
     if (m_points.size() == 1)
     {
         auto *controlPoint1 = new VControlPointSpline(m_points.size(), SplinePointPosition::FirstPoint, this);
+        controlPoint1->RefreshScale();
         controlPoint1->hide();
         m_ctrlPoints.append(controlPoint1);
     }
     else
     {
         auto *controlPoint1 = new VControlPointSpline(m_points.size() - 1, SplinePointPosition::LastPoint, this);
+        controlPoint1->RefreshScale();
         controlPoint1->hide();
         m_ctrlPoints.append(controlPoint1);
 
         auto *controlPoint2 = new VControlPointSpline(m_points.size(), SplinePointPosition::FirstPoint, this);
+        controlPoint2->RefreshScale();
         controlPoint2->hide();
         m_ctrlPoints.append(controlPoint2);
     }

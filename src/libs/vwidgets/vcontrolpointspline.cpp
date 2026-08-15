@@ -252,6 +252,7 @@ void VControlPointSpline::RefreshScale()
     controlLine->setLine(line);
     controlLine->setVisible(not line.isNull());
     controlLine->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+    controlLine->RefreshPen();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

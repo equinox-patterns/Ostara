@@ -1241,9 +1241,8 @@ void MainWindow::ClosedCurveDialog(int result)
             initData.point1 = pointIds.at(0);
             initData.point4 = pointIds.at(1);
 
-            const auto p1 = pattern->GeometricObject<VPointF>(pointIds.at(0));
-            const auto p4 = pattern->GeometricObject<VPointF>(pointIds.at(1));
-            auto *spl = new VSpline(*p1, static_cast<QPointF>(*p1), static_cast<QPointF>(*p4), *p4);
+            const auto path = curveDialog->GetPath();
+            auto *spl = new VSpline(path.GetSpline(1));
 
             tool = VToolSpline::Create(initData, spl);
         }
