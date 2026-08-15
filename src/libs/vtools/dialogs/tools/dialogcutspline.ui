@@ -68,7 +68,7 @@
             <item>
              <widget class="QLabel" name="labelAlias1">
               <property name="text">
-               <string>Name:</string>
+               <string>Curve:</string>
               </property>
              </widget>
             </item>
@@ -94,7 +94,7 @@
             <item>
              <widget class="QLabel" name="labelAlias2">
               <property name="text">
-               <string>Name 2:</string>
+               <string>Curve:</string>
               </property>
              </widget>
             </item>

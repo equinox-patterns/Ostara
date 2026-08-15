@@ -38,6 +38,8 @@
 #include "../widgets/formulainputwidget.h"
 #include "ui_dialogparallelcurve.h"
 
+#include <QFrame>
+#include <QHBoxLayout>
 #include <QTimer>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -92,6 +94,31 @@ DialogParallelCurve::DialogParallelCurve(const VContainer *data, VAbstractPatter
 
     connect(ui->lineEditName, &QLineEdit::textEdited, this, &DialogParallelCurve::ValidateName);
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogParallelCurve::ValidateAlias);
+
+    // Move the curve-name field (Alias) to the top of the Tool tab (above the formula)
+    ui->labelAlias->setMinimumWidth(90);
+
+    auto aliasRow = ui->formLayout_2->takeRow(5);
+
+    QWidget *aliasLabel = aliasRow.labelItem->widget();
+    QWidget *aliasField = aliasRow.fieldItem->widget();
+    delete aliasRow.labelItem;
+    delete aliasRow.fieldItem;
+
+    auto *aliasLayout = new QHBoxLayout;
+    aliasLayout->setContentsMargins(0, 0, 0, 0);
+    aliasLayout->addWidget(aliasLabel);
+    aliasLayout->addWidget(aliasField);
+    ui->verticalLayout->insertLayout(0, aliasLayout);
+
+    // Separator between the curve-name field and the formula
+    auto *lineSeparator = new QFrame();
+    lineSeparator->setObjectName(QStringLiteral("notesSeparator"));
+    lineSeparator->setFixedHeight(1);
+    auto *lineSeparatorLayout = new QHBoxLayout;
+    lineSeparatorLayout->setContentsMargins(33, 0, 33, 0);
+    lineSeparatorLayout->addWidget(lineSeparator);
+    ui->verticalLayout->insertLayout(1, lineSeparatorLayout);
 
     vis = new VisToolParallelCurve(&this->data);
 

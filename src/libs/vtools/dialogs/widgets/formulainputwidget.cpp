@@ -235,7 +235,7 @@ void FormulaInputWidget::deploy()
 //---------------------------------------------------------------------------------------------------------------------
 void FormulaInputWidget::openFxDialog()
 {
-    if (m_data == nullptr || m_toolId == NULL_ID)
+    if (m_data == nullptr)
     {
         return;
     }

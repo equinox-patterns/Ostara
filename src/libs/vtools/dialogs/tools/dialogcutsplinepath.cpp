@@ -31,6 +31,8 @@
 #include "../widgets/formulainputwidget.h"
 
 #include <QDialog>
+#include <QFrame>
+#include <QHBoxLayout>
 #include <QLineEdit>
 #include <QPointer>
 #include <QPushButton>
@@ -117,6 +119,43 @@ DialogCutSplinePath::DialogCutSplinePath(const VContainer *data, VAbstractPatter
 
     connect(ui->lineEditAlias1, &QLineEdit::textEdited, this, &DialogCutSplinePath::ValidateAlias);
     connect(ui->lineEditAlias2, &QLineEdit::textEdited, this, &DialogCutSplinePath::ValidateAlias);
+
+    // Move the two curve-name fields to the top of the Tool tab (above the formula)
+    ui->labelAlias1->setMinimumWidth(80);
+    ui->labelAlias2->setMinimumWidth(80);
+
+    auto alias1Row = ui->formLayout->takeRow(1);
+    auto alias2Row = ui->formLayout->takeRow(1);
+
+    QWidget *alias1Label = alias1Row.labelItem->widget();
+    QWidget *alias1Field = alias1Row.fieldItem->widget();
+    QWidget *alias2Label = alias2Row.labelItem->widget();
+    QWidget *alias2Field = alias2Row.fieldItem->widget();
+    delete alias1Row.labelItem;
+    delete alias1Row.fieldItem;
+    delete alias2Row.labelItem;
+    delete alias2Row.fieldItem;
+
+    auto *alias1Layout = new QHBoxLayout;
+    alias1Layout->setContentsMargins(0, 0, 0, 0);
+    alias1Layout->addWidget(alias1Label);
+    alias1Layout->addWidget(alias1Field);
+    ui->verticalLayout->insertLayout(0, alias1Layout);
+
+    auto *alias2Layout = new QHBoxLayout;
+    alias2Layout->setContentsMargins(0, 0, 0, 0);
+    alias2Layout->addWidget(alias2Label);
+    alias2Layout->addWidget(alias2Field);
+    ui->verticalLayout->insertLayout(1, alias2Layout);
+
+    // Separator between the curve-name fields and the formula
+    auto *lineSeparator = new QFrame();
+    lineSeparator->setObjectName(QStringLiteral("notesSeparator"));
+    lineSeparator->setFixedHeight(1);
+    auto *lineSeparatorLayout = new QHBoxLayout;
+    lineSeparatorLayout->setContentsMargins(33, 0, 33, 0);
+    lineSeparatorLayout->addWidget(lineSeparator);
+    ui->verticalLayout->insertLayout(2, lineSeparatorLayout);
 
     vis = new VisToolCutSplinePath(&this->data);
 

@@ -31,6 +31,7 @@
 #include <QColor>
 #include <QComboBox>
 #include <QDialog>
+#include <QFrame>
 #include <QLabel>
 #include <QLatin1String>
 #include <QLineEdit>
@@ -136,18 +137,21 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
     auto *labelRoleNameDot = new QLabel();
     labelRoleNameDot->setObjectName(QStringLiteral("labelRoleNameDot"));
     labelRoleNameDot->setFixedSize(12, 12);
-    m_labelRoleName = new QLabel(tr("Name:"));
+    m_labelRoleName = new QLabel(tr("Line:"));
     m_labelRoleName->setMinimumWidth(80);
     layoutRoleName->addWidget(labelRoleNameDot);
     layoutRoleName->addWidget(m_labelRoleName);
     layoutRoleName->addStretch();
     auto *lineEditRoleName = new QLineEdit();
     lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
-    ui->gridLayout->addWidget(containerRoleName, 4, 0);
-    ui->gridLayout->addWidget(lineEditRoleName, 4, 1);
+    auto *roleNameLayout = new QHBoxLayout;
+    roleNameLayout->setContentsMargins(0, 0, 0, 0);
+    roleNameLayout->addWidget(containerRoleName);
+    roleNameLayout->addWidget(lineEditRoleName);
+    ui->verticalLayout->insertLayout(0, roleNameLayout);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogAlongLine::ValidateLineRoleName);
 
-    // Role name field C→B
+    // Role name field C→B (just below A→C)
     auto *containerSecondRoleName = new QWidget();
     auto *layoutSecondRoleName = new QHBoxLayout(containerSecondRoleName);
     layoutSecondRoleName->setContentsMargins(0, 0, 0, 0);
@@ -155,16 +159,28 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
     auto *labelSecondRoleNameDot = new QLabel();
     labelSecondRoleNameDot->setObjectName(QStringLiteral("labelSecondRoleNameDot"));
     labelSecondRoleNameDot->setFixedSize(12, 12);
-    m_labelSecondRoleName = new QLabel(tr("Name 2:"));
+    m_labelSecondRoleName = new QLabel(tr("Line:"));
     m_labelSecondRoleName->setMinimumWidth(80);
     layoutSecondRoleName->addWidget(labelSecondRoleNameDot);
     layoutSecondRoleName->addWidget(m_labelSecondRoleName);
     layoutSecondRoleName->addStretch();
     auto *lineEditSecondRoleName = new QLineEdit();
     lineEditSecondRoleName->setObjectName(QStringLiteral("lineEditSecondRoleName"));
-    ui->gridLayout->addWidget(containerSecondRoleName, 5, 0);
-    ui->gridLayout->addWidget(lineEditSecondRoleName, 5, 1);
+    auto *secondRoleNameLayout = new QHBoxLayout;
+    secondRoleNameLayout->setContentsMargins(0, 0, 0, 0);
+    secondRoleNameLayout->addWidget(containerSecondRoleName);
+    secondRoleNameLayout->addWidget(lineEditSecondRoleName);
+    ui->verticalLayout->insertLayout(1, secondRoleNameLayout);
     connect(lineEditSecondRoleName, &QLineEdit::textEdited, this, &DialogAlongLine::ValidateSecondLineRoleName);
+
+    // Separator between the line name fields and Length
+    auto *lineSeparator = new QFrame();
+    lineSeparator->setObjectName(QStringLiteral("notesSeparator"));
+    lineSeparator->setFixedHeight(1);
+    auto *lineSeparatorLayout = new QHBoxLayout;
+    lineSeparatorLayout->setContentsMargins(33, 0, 33, 0);
+    lineSeparatorLayout->addWidget(lineSeparator);
+    ui->verticalLayout->insertLayout(2, lineSeparatorLayout);
 
     vis = new VisToolAlongLine(&this->data);
 

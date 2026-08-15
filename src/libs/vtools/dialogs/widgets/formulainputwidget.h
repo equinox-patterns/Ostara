@@ -52,7 +52,8 @@ public:
     /// Set the data container for variable resolution (required before use)
     void setData(const VContainer *data);
 
-    /// Set the tool ID for DialogEditWrongFormula (required before FX button works)
+    /// Set the tool ID used by DialogEditWrongFormula to filter out self-referencing variables
+    /// (0 / NULL_ID = no filtering, e.g. during creation).
     void setToolId(quint32 id);
 
     /// Unit postfix shown after the result value (e.g. "mm", "°")

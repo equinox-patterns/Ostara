@@ -30,6 +30,8 @@
 
 #include <QColor>
 #include <QComboBox>
+#include <QFrame>
+#include <QHBoxLayout>
 #include <QIcon>
 #include <QLabel>
 #include <QLineEdit>
@@ -61,8 +63,8 @@ DialogLine::DialogLine(const VContainer *data, VAbstractPattern *doc, quint32 to
     InitOkCancelApply(ui);
 
     // Re-add spanning 2 rows
-    ui->gridLayout->removeItem(ui->gridLayout->itemAtPosition(0, 2));
-    ui->gridLayout->addLayout(ui->verticalLayoutSwap, 0, 2, 2, 1);
+    ui->gridLayout->removeItem(ui->gridLayout->itemAtPosition(2, 2));
+    ui->gridLayout->addLayout(ui->verticalLayoutSwap, 2, 2, 2, 1);
 
     MakeFilterableComboBox(ui->comboBoxFirstPoint);
     MakeFilterableComboBox(ui->comboBoxSecondPoint);
@@ -81,13 +83,22 @@ DialogLine::DialogLine(const VContainer *data, VAbstractPattern *doc, quint32 to
     connect(ui->toolButtonSwapPoints, &QToolButton::clicked, this, &DialogLine::SwapPoints);
 
     // Role name field (Line_CarrureDevant)
-    m_labelRoleName = new QLabel(tr("Name:"));
+    m_labelRoleName = new QLabel(tr("Line:"));
     m_labelRoleName->setMinimumWidth(90);
     auto *lineEditRoleName = new QLineEdit();
     lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
-    ui->gridLayout->addWidget(m_labelRoleName, 4, 0);
-    ui->gridLayout->addWidget(lineEditRoleName, 4, 1);
+    ui->gridLayout->addWidget(m_labelRoleName, 0, 0);
+    ui->gridLayout->addWidget(lineEditRoleName, 0, 1);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogLine::ValidateLineRoleName);
+
+    // Separator between the line name field and the next field
+    auto *lineSeparator = new QFrame();
+    lineSeparator->setObjectName(QStringLiteral("notesSeparator"));
+    lineSeparator->setFixedHeight(1);
+    auto *lineSeparatorLayout = new QHBoxLayout;
+    lineSeparatorLayout->setContentsMargins(33, 0, 33, 0);
+    lineSeparatorLayout->addWidget(lineSeparator);
+    ui->gridLayout->addLayout(lineSeparatorLayout, 1, 0, 1, 3);
 
     vis = new VisToolLine(&this->data);
 

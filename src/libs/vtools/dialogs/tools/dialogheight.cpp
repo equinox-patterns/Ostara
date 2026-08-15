@@ -31,6 +31,8 @@
 #include <QColor>
 #include <QComboBox>
 #include <QFormLayout>
+#include <QFrame>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QLineF>
@@ -91,13 +93,21 @@ DialogHeight::DialogHeight(const VContainer *data, VAbstractPattern *doc, quint3
     connect(ui->comboBoxP2Line, &QComboBox::currentTextChanged, this, &DialogHeight::PointNameChanged);
 
     // Role name field (Line_CarrureDevant)
-    m_labelRoleName = new QLabel(tr("Name:"));
+    m_labelRoleName = new QLabel(tr("Line:"));
     m_labelRoleName->setMinimumWidth(90);
     auto *lineEditRoleName = new QLineEdit();
     lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
-    ui->formLayout_2->setWidget(4, QFormLayout::LabelRole, m_labelRoleName);
-    ui->formLayout_2->setWidget(4, QFormLayout::FieldRole, lineEditRoleName);
+    ui->formLayout_2->insertRow(0, m_labelRoleName, lineEditRoleName);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogHeight::ValidateLineRoleName);
+
+    // Separator between the line name field and the next field
+    auto *lineSeparator = new QFrame();
+    lineSeparator->setObjectName(QStringLiteral("notesSeparator"));
+    lineSeparator->setFixedHeight(1);
+    auto *lineSeparatorLayout = new QHBoxLayout;
+    lineSeparatorLayout->setContentsMargins(33, 0, 33, 0);
+    lineSeparatorLayout->addWidget(lineSeparator);
+    ui->formLayout_2->insertRow(1, lineSeparatorLayout);
 
     vis = new VisToolHeight(&this->data);
 

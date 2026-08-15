@@ -114,7 +114,7 @@
          <item row="5" column="0">
           <widget class="QLabel" name="labelAlias">
            <property name="text">
-            <string>Alias:</string>
+            <string>Curve:</string>
            </property>
           </widget>
          </item>
@@ -134,13 +134,20 @@
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="labelName">
+           <property name="visible">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Name:</string>
            </property>
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QLineEdit" name="lineEditName"/>
+          <widget class="QLineEdit" name="lineEditName">
+           <property name="visible">
+            <bool>false</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

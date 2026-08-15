@@ -32,6 +32,8 @@
 #include <QComboBox>
 #include <QDialog>
 #include <QDoubleSpinBox>
+#include <QFrame>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPointF>
@@ -128,13 +130,25 @@ DialogNormal::DialogNormal(const VContainer *data, VAbstractPattern *doc, quint3
     connect(ui->toolButtonSwapPoints, &QToolButton::clicked, this, &DialogNormal::SwapPoints);
 
     // Role name field (Line_CarrureDevant)
-    m_labelRoleName = new QLabel(tr("Name:"));
+    m_labelRoleName = new QLabel(tr("Line:"));
     m_labelRoleName->setMinimumWidth(90);
     auto *lineEditRoleName = new QLineEdit();
     lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
-    ui->gridLayoutPoints->addWidget(m_labelRoleName, 2, 0);
-    ui->gridLayoutPoints->addWidget(lineEditRoleName, 2, 1);
+    auto *roleNameLayout = new QHBoxLayout;
+    roleNameLayout->setContentsMargins(0, 0, 0, 0);
+    roleNameLayout->addWidget(m_labelRoleName);
+    roleNameLayout->addWidget(lineEditRoleName);
+    ui->verticalLayout->insertLayout(0, roleNameLayout);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogNormal::ValidateLineRoleName);
+
+    // Separator between the line name field and the formula
+    auto *lineSeparator = new QFrame();
+    lineSeparator->setObjectName(QStringLiteral("notesSeparator"));
+    lineSeparator->setFixedHeight(1);
+    auto *lineSeparatorLayout = new QHBoxLayout;
+    lineSeparatorLayout->setContentsMargins(33, 0, 33, 0);
+    lineSeparatorLayout->addWidget(lineSeparator);
+    ui->verticalLayout->insertLayout(1, lineSeparatorLayout);
 
     vis = new VisToolNormal(&this->data);
 

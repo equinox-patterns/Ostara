@@ -30,6 +30,7 @@
 
 #include <QColor>
 #include <QComboBox>
+#include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLine>
@@ -97,7 +98,7 @@ DialogLineIntersect::DialogLineIntersect(const VContainer *data, VAbstractPatter
     connect(ui->comboBoxP2Line2, &QComboBox::currentTextChanged, this, &DialogLineIntersect::PointNameChanged);
 
     // Role name field (Line_CarrureDevant)
-    m_labelRoleName = new QLabel(tr("Name:"));
+    m_labelRoleName = new QLabel(tr("Line:"));
     m_labelRoleName->setMinimumWidth(90);
     auto *lineEditRoleName = new QLineEdit();
     lineEditRoleName->setObjectName(QStringLiteral("lineEditRoleName"));
@@ -106,6 +107,15 @@ DialogLineIntersect::DialogLineIntersect(const VContainer *data, VAbstractPatter
     roleNameLayout->addWidget(lineEditRoleName);
     ui->verticalLayout_3->insertLayout(0, roleNameLayout);
     connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogLineIntersect::ValidateLineRoleName);
+
+    // Separator between the line name field and the next field
+    auto *lineSeparator = new QFrame();
+    lineSeparator->setObjectName(QStringLiteral("notesSeparator"));
+    lineSeparator->setFixedHeight(1);
+    auto *lineSeparatorLayout = new QHBoxLayout;
+    lineSeparatorLayout->setContentsMargins(33, 0, 33, 0);
+    lineSeparatorLayout->addWidget(lineSeparator);
+    ui->verticalLayout_3->insertLayout(1, lineSeparatorLayout);
 
     vis = new VisToolLineIntersect(&this->data);
 
