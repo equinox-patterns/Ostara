@@ -40,7 +40,6 @@
 #include <QListWidgetItem>
 #include <QPointer>
 #include <QPushButton>
-#include <QSharedPointer>
 #include <QToolButton>
 #include <QVariant>
 
@@ -67,6 +66,32 @@
 #endif
 
 using namespace Qt::Literals::StringLiterals;
+
+namespace
+{
+// Per-item handle validity bitmask, stored in QListWidgetItem under this role.
+// A set bit means the corresponding control-handle field is valid.
+constexpr int validityRole = Qt::UserRole + 1;
+constexpr int flagLength1 = 0x1;
+constexpr int flagAngle1 = 0x2;
+constexpr int flagLength2 = 0x4;
+constexpr int flagAngle2 = 0x8;
+constexpr int allHandleFlags = flagLength1 | flagAngle1 | flagLength2 | flagAngle2;
+
+void SetPointValidity(QListWidgetItem *item, int flag, bool valid)
+{
+    int validity = item->data(validityRole).toInt();
+    if (valid)
+    {
+        validity |= flag;
+    }
+    else
+    {
+        validity &= ~flag;
+    }
+    item->setData(validityRole, validity);
+}
+} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -107,48 +132,7 @@ DialogSplinePath::DialogSplinePath(const VContainer *data, VAbstractPattern *doc
     m_formulaLength1->setDialogTitle(tr("Edit first control point length"));
     m_formulaLength1->setCheckLessThanZero(true);
 
-    const auto saveCurrentFormulas = [this]()
-    {
-        const int row = ui->listWidget->currentRow();
-        if (row < 0 || row >= ui->listWidget->count())
-        {
-            return;
-        }
-
-        QListWidgetItem *item = ui->listWidget->item(row);
-        SCASSERT(item != nullptr)
-        auto p = qvariant_cast<VSplinePoint>(item->data(Qt::UserRole));
-
-        if (m_formulaLength1->isEnabled())
-        {
-            const QString f = m_formulaLength1->formula();
-            p.SetLength1(Visualization::FindLengthFromUser(f, this->data.DataVariables()),
-                VTranslateVars::TryFormulaFromUser(f, VAbstractApplication::VApp()->Settings()->GetOsSeparator()));
-        }
-        if (m_formulaAngle1->isEnabled())
-        {
-            const QString f = m_formulaAngle1->formula();
-            p.SetAngle1(Visualization::FindValFromUser(f, this->data.DataVariables()),
-                VTranslateVars::TryFormulaFromUser(f, VAbstractApplication::VApp()->Settings()->GetOsSeparator()));
-        }
-        if (m_formulaLength2->isEnabled())
-        {
-            const QString f = m_formulaLength2->formula();
-            p.SetLength2(Visualization::FindLengthFromUser(f, this->data.DataVariables()),
-                VTranslateVars::TryFormulaFromUser(f, VAbstractApplication::VApp()->Settings()->GetOsSeparator()));
-        }
-        if (m_formulaAngle2->isEnabled())
-        {
-            const QString f = m_formulaAngle2->formula();
-            p.SetAngle2(Visualization::FindValFromUser(f, this->data.DataVariables()),
-                VTranslateVars::TryFormulaFromUser(f, VAbstractApplication::VApp()->Settings()->GetOsSeparator()));
-        }
-
-        item->setData(Qt::UserRole, QVariant::fromValue(p));
-        ShowPointIssue(p.P().name());
-    };
-
-    connect(m_formulaLength1, &FormulaInputWidget::valueChanged, this, [this, saveCurrentFormulas]() { saveCurrentFormulas(); CheckState(); });
+    connect(m_formulaLength1, &FormulaInputWidget::valueChanged, this, [this]() { Length1Changed(); });
 
     m_formulaAngle1 = new FormulaInputWidget(this);
     m_formulaAngle1->setData(&this->data);
@@ -156,7 +140,7 @@ DialogSplinePath::DialogSplinePath(const VContainer *data, VAbstractPattern *doc
     m_formulaAngle1->setLabelText(tr("Angle:"));
     m_formulaAngle1->setPostfix(degreeSymbol);
     m_formulaAngle1->setDialogTitle(tr("Edit first control point angle"));
-    connect(m_formulaAngle1, &FormulaInputWidget::valueChanged, this, [this, saveCurrentFormulas]() { saveCurrentFormulas(); CheckState(); });
+    connect(m_formulaAngle1, &FormulaInputWidget::valueChanged, this, [this]() { Angle1Changed(); });
 
     m_formulaLength2 = new FormulaInputWidget(this);
     m_formulaLength2->setData(&this->data);
@@ -165,7 +149,7 @@ DialogSplinePath::DialogSplinePath(const VContainer *data, VAbstractPattern *doc
     m_formulaLength2->setPostfix(lengthPostfix);
     m_formulaLength2->setDialogTitle(tr("Edit second control point length"));
     m_formulaLength2->setCheckLessThanZero(true);
-    connect(m_formulaLength2, &FormulaInputWidget::valueChanged, this, [this, saveCurrentFormulas]() { saveCurrentFormulas(); CheckState(); });
+    connect(m_formulaLength2, &FormulaInputWidget::valueChanged, this, [this]() { Length2Changed(); });
 
     m_formulaAngle2 = new FormulaInputWidget(this);
     m_formulaAngle2->setData(&this->data);
@@ -173,7 +157,7 @@ DialogSplinePath::DialogSplinePath(const VContainer *data, VAbstractPattern *doc
     m_formulaAngle2->setLabelText(tr("Angle:"));
     m_formulaAngle2->setPostfix(degreeSymbol);
     m_formulaAngle2->setDialogTitle(tr("Edit second control point angle"));
-    connect(m_formulaAngle2, &FormulaInputWidget::valueChanged, this, [this, saveCurrentFormulas]() { saveCurrentFormulas(); CheckState(); });
+    connect(m_formulaAngle2, &FormulaInputWidget::valueChanged, this, [this]() { Angle2Changed(); });
 
     // Replace placeholders
     auto replacePlaceholder = [this](const char *name, FormulaInputWidget *widget)
@@ -306,8 +290,9 @@ void DialogSplinePath::ChosenObject(quint32 id, const SceneObject &type)
         SCASSERT(visPath != nullptr)
         visPath->SetPath(path);
 
-        if (path.CountPoints() == 1)
+        if (path.CountPoints() == 1 && not m_visConnected)
         {
+            m_visConnected = true;
             visPath->VisualMode(NULL_ID);
             auto *window = qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
             SCASSERT(window != nullptr)
@@ -405,7 +390,7 @@ void DialogSplinePath::ValidateAlias()
  */
 void DialogSplinePath::PointChanged(int row)
 {
-    if (ui->listWidget->count() == 0)
+    if (ui->listWidget->count() == 0 || row < 0)
     {
         ui->toolButtonTop->setEnabled(false);
         ui->toolButtonUp->setEnabled(false);
@@ -429,6 +414,11 @@ void DialogSplinePath::currentPointChanged(int index)
 {
     const auto id = qvariant_cast<quint32>(ui->comboBoxPoint->itemData(index));
     QColor color;
+
+    if (ui->listWidget->currentRow() < 0)
+    {
+        return;
+    }
 
     try
     {
@@ -591,6 +581,7 @@ void DialogSplinePath::NewItem(const VSplinePoint &point)
     auto *item = new QListWidgetItem(point.P().name());
     item->setFont(NodeFont(item->font()));
     item->setData(Qt::UserRole, QVariant::fromValue(point));
+    item->setData(validityRole, allHandleFlags);
 
     ui->listWidget->addItem(item);
     ui->listWidget->setCurrentItem(item);
@@ -668,8 +659,169 @@ void DialogSplinePath::DataPoint(const VSplinePoint &p)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void DialogSplinePath::Angle1Changed()
+{
+    if (m_formulaAngle1 == nullptr || not m_formulaAngle1->isEnabled())
+    {
+        return;
+    }
+
+    const int row = ui->listWidget->currentRow();
+    if (row < 0 || row >= ui->listWidget->count())
+    {
+        return;
+    }
+
+    QListWidgetItem *item = ui->listWidget->item(row);
+    SCASSERT(item != nullptr)
+    auto p = qvariant_cast<VSplinePoint>(item->data(Qt::UserRole));
+
+    const bool valid = m_formulaAngle1->isValid();
+    SetPointValidity(item, flagAngle1, valid);
+
+    if (valid)
+    {
+        const QString f = m_formulaAngle1->formula();
+        const qreal value = Visualization::FindValFromUser(f, data.DataVariables(), false);
+        if (not VFuzzyComparePossibleNulls(value, p.Angle1()))
+        {
+            p.SetAngle1(value, f);
+            item->setData(Qt::UserRole, QVariant::fromValue(p));
+
+            // Strict coupling: the opposite angle follows. Reflect it in the UI.
+            if (row != ui->listWidget->count() - 1)
+            {
+                m_formulaAngle2->setFormula(p.Angle2Formula());
+                SetPointValidity(item, flagAngle2, true);
+            }
+        }
+    }
+
+    ShowPointIssue(p.P().name());
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogSplinePath::Angle2Changed()
+{
+    if (m_formulaAngle2 == nullptr || not m_formulaAngle2->isEnabled())
+    {
+        return;
+    }
+
+    const int row = ui->listWidget->currentRow();
+    if (row < 0 || row >= ui->listWidget->count())
+    {
+        return;
+    }
+
+    QListWidgetItem *item = ui->listWidget->item(row);
+    SCASSERT(item != nullptr)
+    auto p = qvariant_cast<VSplinePoint>(item->data(Qt::UserRole));
+
+    const bool valid = m_formulaAngle2->isValid();
+    SetPointValidity(item, flagAngle2, valid);
+
+    if (valid)
+    {
+        const QString f = m_formulaAngle2->formula();
+        const qreal value = Visualization::FindValFromUser(f, data.DataVariables(), false);
+        if (not VFuzzyComparePossibleNulls(value, p.Angle2()))
+        {
+            p.SetAngle2(value, f);
+            item->setData(Qt::UserRole, QVariant::fromValue(p));
+
+            if (row != 0)
+            {
+                m_formulaAngle1->setFormula(p.Angle1Formula());
+                SetPointValidity(item, flagAngle1, true);
+            }
+        }
+    }
+
+    ShowPointIssue(p.P().name());
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogSplinePath::Length1Changed()
+{
+    if (m_formulaLength1 == nullptr || not m_formulaLength1->isEnabled())
+    {
+        return;
+    }
+
+    const int row = ui->listWidget->currentRow();
+    if (row < 0 || row >= ui->listWidget->count())
+    {
+        return;
+    }
+
+    QListWidgetItem *item = ui->listWidget->item(row);
+    SCASSERT(item != nullptr)
+    auto p = qvariant_cast<VSplinePoint>(item->data(Qt::UserRole));
+
+    const bool valid = m_formulaLength1->isValid();
+    SetPointValidity(item, flagLength1, valid);
+
+    if (valid)
+    {
+        const QString f = m_formulaLength1->formula();
+        p.SetLength1(Visualization::FindLengthFromUser(f, data.DataVariables(), false), f);
+        item->setData(Qt::UserRole, QVariant::fromValue(p));
+    }
+
+    ShowPointIssue(p.P().name());
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogSplinePath::Length2Changed()
+{
+    if (m_formulaLength2 == nullptr || not m_formulaLength2->isEnabled())
+    {
+        return;
+    }
+
+    const int row = ui->listWidget->currentRow();
+    if (row < 0 || row >= ui->listWidget->count())
+    {
+        return;
+    }
+
+    QListWidgetItem *item = ui->listWidget->item(row);
+    SCASSERT(item != nullptr)
+    auto p = qvariant_cast<VSplinePoint>(item->data(Qt::UserRole));
+
+    const bool valid = m_formulaLength2->isValid();
+    SetPointValidity(item, flagLength2, valid);
+
+    if (valid)
+    {
+        const QString f = m_formulaLength2->formula();
+        p.SetLength2(Visualization::FindLengthFromUser(f, data.DataVariables(), false), f);
+        item->setData(Qt::UserRole, QVariant::fromValue(p));
+    }
+
+    ShowPointIssue(p.P().name());
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogSplinePath::SaveCurrentPoint()
+{
+    // Flush any still-debounced edits from the widgets into the current list item.
+    Length1Changed();
+    Angle1Changed();
+    Length2Changed();
+    Angle2Changed();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogSplinePath::SavePath()
 {
+    SaveCurrentPoint();
+
     const quint32 d = path.GetDuplicate(); // Save previous value
     path.Clear();
     path = ExtractPath();
@@ -727,8 +879,7 @@ void DialogSplinePath::ShowPointIssue(const QString &pName)
     QListWidgetItem *item = ui->listWidget->item(row);
     SCASSERT(item != nullptr)
 
-    if (m_formulaLength1->isValid() && m_formulaAngle1->isValid() &&
-        m_formulaLength2->isValid() && m_formulaAngle2->isValid())
+    if ((item->data(validityRole).toInt() & allHandleFlags) == allHandleFlags)
     {
         item->setText(pName);
     }
@@ -753,9 +904,21 @@ void DialogSplinePath::MoveControls()
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogSplinePath::IsValid() const -> bool
 {
-    return flagError && flagAlias &&
-           m_formulaLength1->isValid() && m_formulaAngle1->isValid() &&
-           m_formulaLength2->isValid() && m_formulaAngle2->isValid();
+    if (not flagError || not flagAlias)
+    {
+        return false;
+    }
+
+    for (qint32 i = 0; i < ui->listWidget->count(); ++i)
+    {
+        QListWidgetItem const *item = ui->listWidget->item(i);
+        if (item != nullptr && (item->data(validityRole).toInt() & allHandleFlags) != allHandleFlags)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

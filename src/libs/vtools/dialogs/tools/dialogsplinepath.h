@@ -116,14 +116,21 @@ private:
 
     QString m_oldName{};
 
-    FormulaInputWidget *m_formulaLength1;
-    FormulaInputWidget *m_formulaAngle1;
-    FormulaInputWidget *m_formulaLength2;
-    FormulaInputWidget *m_formulaAngle2;
+    FormulaInputWidget *m_formulaLength1{nullptr};
+    FormulaInputWidget *m_formulaAngle1{nullptr};
+    FormulaInputWidget *m_formulaLength2{nullptr};
+    FormulaInputWidget *m_formulaAngle2{nullptr};
+
+    bool m_visConnected{false};
 
     void NewItem(const VSplinePoint &point);
     void DataPoint(const VSplinePoint &p);
     void SavePath();
+    void SaveCurrentPoint();
+    void Angle1Changed();
+    void Angle2Changed();
+    void Length1Changed();
+    void Length2Changed();
     auto AllIds() const -> QSet<quint32>;
     auto IsPathValid() const -> bool;
     auto ExtractPath() const -> VSplinePath;
