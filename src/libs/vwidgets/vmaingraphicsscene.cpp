@@ -76,6 +76,28 @@ VMainGraphicsScene::VMainGraphicsScene(const QRectF &sceneRect, QObject *parent)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VMainGraphicsScene::ClosestHoverItem(const QPointF &scenePos) const -> QGraphicsItem *
+{
+    QGraphicsItem *closest = nullptr;
+    qreal closestDist = 0;
+    const QList<QGraphicsItem *> under = items(scenePos);
+    for (auto *item : under)
+    {
+        if (not item->acceptHoverEvents())
+        {
+            continue;
+        }
+        const qreal d = (scenePos - item->sceneBoundingRect().center()).manhattanLength();
+        if (closest == nullptr || d < closestDist)
+        {
+            closestDist = d;
+            closest = item;
+        }
+    }
+    return closest;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief mouseMoveEvent handle mouse move events.
  * @param event mouse move event.
@@ -94,21 +116,7 @@ void VMainGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     const QList<QGraphicsItem *> under = items(event->scenePos());
     if (under.size() > 1)
     {
-        QGraphicsItem *closest = nullptr;
-        qreal closestDist = 0;
-        for (auto *item : under)
-        {
-            if (not item->acceptHoverEvents())
-            {
-                continue;
-            }
-            const qreal d = (event->scenePos() - item->sceneBoundingRect().center()).manhattanLength();
-            if (closest == nullptr || d < closestDist)
-            {
-                closestDist = d;
-                closest = item;
-            }
-        }
+        QGraphicsItem *closest = ClosestHoverItem(event->scenePos());
         if (closest != nullptr && closest != under.constFirst())
         {
             raisedItem = closest;
@@ -145,7 +153,31 @@ void VMainGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         emit ItemByMousePress(itemAt(event->scenePos(), deviceTransform));
     }
 
+    // Mirror the hover dispatch (mouseMoveEvent): when several items overlap, a point must win
+    // the click over an overlapping line/curve/arc. Temporarily raise the hover-accepting item
+    // closest to the cursor so it becomes topmost for the press dispatch, then restore its Z.
+    // Without this, a child line that ends up topmost swallows the click (it emits no Choosed
+    // signal), so the active tool never fires on the point.
+    QGraphicsItem *raisedItem = nullptr;
+    qreal raisedItemZ = 0;
+    const QList<QGraphicsItem *> under = items(event->scenePos());
+    if (under.size() > 1)
+    {
+        QGraphicsItem *closest = ClosestHoverItem(event->scenePos());
+        if (closest != nullptr && closest != under.constFirst())
+        {
+            raisedItem = closest;
+            raisedItemZ = closest->zValue();
+            closest->setZValue(closest->zValue() + 2.0);
+        }
+    }
+
     QGraphicsScene::mousePressEvent(event);
+
+    if (raisedItem != nullptr)
+    {
+        raisedItem->setZValue(raisedItemZ);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

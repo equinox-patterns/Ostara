@@ -168,6 +168,10 @@ signals:
 
 private:
     Q_DISABLE_COPY_MOVE(VMainGraphicsScene) // NOLINT
+
+    /** @brief Item under scenePos (accepting hover) whose center is closest to it. */
+    auto ClosestHoverItem(const QPointF &scenePos) const -> QGraphicsItem *;
+
     /** @brief horScrollBar value horizontal scroll bar. */
     qint32        horScrollBar;
 
