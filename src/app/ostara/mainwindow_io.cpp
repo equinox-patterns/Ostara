@@ -205,7 +205,7 @@ void MainWindow::setCurrentFile(const QString &fileName)
         QStringList files = settings->GetRecentFileList();
         files.removeAll(fileName);
         files.prepend(fileName);
-        while (files.size() > MaxRecentFiles)
+        while (files.size() > MaxRecentFilesStored)
         {
             files.removeLast();
         }

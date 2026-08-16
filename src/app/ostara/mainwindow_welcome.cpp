@@ -48,7 +48,7 @@ void MainWindow::AddRecentMeasurementAndRefresh(const QString &path)
     QStringList files = settings->GetRecentMeasurementFileList();
     files.removeAll(path);
     files.prepend(path);
-    while (files.size() > 5)
+    while (files.size() > MaxRecentFilesStored)
     {
         files.removeLast();
     }

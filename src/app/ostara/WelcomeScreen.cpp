@@ -33,6 +33,8 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QPushButton>
+#include <QResizeEvent>
+#include <QTimer>
 #include <QVBoxLayout>
 
 // ===== Helper to create a section frame =====
@@ -212,10 +214,14 @@ void WelcomeScreen::RetranslateUI()
 
 void WelcomeScreen::UpdateRecentItems(const QStringList &patternPaths, const QStringList &measurementPaths)
 {
-    // Patterns
+    // Patterns — only .ostara files (exclude .val)
     m_patternsSection.recentList->clear();
     for (const QString &path : patternPaths)
     {
+        if (!path.endsWith(QStringLiteral(".ostara"), Qt::CaseInsensitive))
+        {
+            continue;
+        }
         QFileInfo fi(path);
         auto *item = new QListWidgetItem(fi.fileName());
         item->setToolTip(path);
@@ -232,5 +238,51 @@ void WelcomeScreen::UpdateRecentItems(const QStringList &patternPaths, const QSt
         item->setToolTip(path);
         item->setData(Qt::UserRole, path);
         m_measurementsSection.recentList->addItem(item);
+    }
+
+    // Defer the trim until the layout has settled so the viewport height is known.
+    QTimer::singleShot(0, this, [this]()
+    {
+        TrimListToFit(m_patternsSection.recentList);
+        TrimListToFit(m_measurementsSection.recentList);
+    });
+}
+
+void WelcomeScreen::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    if (m_patternsSection.recentList != nullptr)
+    {
+        TrimListToFit(m_patternsSection.recentList);
+    }
+    if (m_measurementsSection.recentList != nullptr)
+    {
+        TrimListToFit(m_measurementsSection.recentList);
+    }
+}
+
+void WelcomeScreen::TrimListToFit(QListWidget *list)
+{
+    if (list->count() <= 1)
+    {
+        return;
+    }
+
+    const int itemHeight = list->sizeHintForRow(0);
+    const int viewportHeight = list->viewport()->height();
+    if (itemHeight <= 0 || viewportHeight <= 0)
+    {
+        return;
+    }
+
+    const int maxVisible = viewportHeight / itemHeight;
+    if (maxVisible <= 0)
+    {
+        return;
+    }
+
+    while (list->count() > maxVisible)
+    {
+        delete list->takeItem(list->count() - 1);
     }
 }

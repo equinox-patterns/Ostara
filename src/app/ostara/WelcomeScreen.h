@@ -33,6 +33,7 @@ class QFrame;
 class QLabel;
 class QListWidget;
 class QPushButton;
+class QResizeEvent;
 
 class WelcomeScreen : public QWidget
 {
@@ -65,9 +66,13 @@ signals:
     void OpenRecentMeasurement(const QString &path);
     void FeaturesClicked();
 
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+
 private:
     void CreateHeader();
     void CreateSections();
+    void TrimListToFit(QListWidget *list);
 
     // Header
     QLabel *m_titleLabel{nullptr};

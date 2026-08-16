@@ -65,7 +65,8 @@ protected:
     QString m_curFileFormatVersionStr;
     enum
     {
-        MaxRecentFiles = 5
+        MaxRecentFiles = 5,
+        MaxRecentFilesStored = 50
     };
     QVector<QAction *> m_recentFileActs{QVector<QAction *>(MaxRecentFiles)};
     QAction *m_separatorAct{nullptr};
