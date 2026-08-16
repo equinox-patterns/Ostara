@@ -144,14 +144,14 @@ void VToolLinePoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj
 //---------------------------------------------------------------------------------------------------------------------
 void VToolLinePoint::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    mainLine->SetBoldLine(true);
+    mainLine->SetHighlighted(true);
     VToolSinglePoint::hoverEnterEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolLinePoint::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    mainLine->SetBoldLine(false);
+    mainLine->SetHighlighted(false);
     VToolSinglePoint::hoverLeaveEvent(event);
 }
 

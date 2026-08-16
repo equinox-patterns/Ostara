@@ -84,6 +84,8 @@ protected:
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
     void ReadToolAttributes(const QDomElement &domElement) override;
     void SetVisualization() override;
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     auto MakeToolTip() const -> QString override;
     void ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement) override;
 
@@ -92,6 +94,8 @@ private:
 
     /** @brief secondPointId id second point of line. */
     quint32 m_secondPointId;
+
+    bool m_hoverOwnsVisualization{false};
 
     explicit VToolAlongLine(const VToolAlongLineInitData &initData, QGraphicsItem *parent = nullptr);
 };

@@ -53,6 +53,7 @@ public:
 
     auto IsBoldLine() const -> bool;
     void SetBoldLine(bool bold);
+    void SetHighlighted(bool on);
 
     auto IsShowArrows() const -> bool;
     void SetShowArrows(bool show);

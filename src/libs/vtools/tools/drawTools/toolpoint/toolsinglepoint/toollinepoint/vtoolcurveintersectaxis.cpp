@@ -808,7 +808,7 @@ auto VToolCurveIntersectAxis::MakeToolTip() const -> QString
 void VToolCurveIntersectAxis::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     VToolLinePoint::hoverEnterEvent(event);
-    mainLine->SetBoldLine(false);
+    mainLine->SetHighlighted(false);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

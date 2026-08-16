@@ -341,8 +341,33 @@ auto VToolCut::CurveName() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 void VToolCut::ShowVisualization(bool show)
 {
+    if (show)
+    {
+        // A persistent show (click, options panel) takes over from a transient hover show.
+        m_hoverOwnsVisualization = false;
+    }
     m_segment1Label->SetLabelVisible(show);
     m_segment2Label->SetLabelVisible(show);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCut::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    const bool wasShown = not vis.isNull();
+    ShowVisualization(true);
+    m_hoverOwnsVisualization = not wasShown; // We own the visualization only if the hover created it.
+    VToolSinglePoint::hoverEnterEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCut::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    if (m_hoverOwnsVisualization)
+    {
+        ShowVisualization(false);
+        m_hoverOwnsVisualization = false;
+    }
+    VToolSinglePoint::hoverLeaveEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

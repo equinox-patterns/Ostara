@@ -65,7 +65,9 @@ void VisToolCutArc::RefreshGeometry()
     if (m_arcId > NULL_ID)
     {
         const QSharedPointer<VAbstractArc> arc = GetData()->GeometricObject<VAbstractArc>(m_arcId);
-        DrawPath(this, arc->GetPath(), arc->DirectionArrows(), LineStyle(), Qt::RoundCap);
+        // Hide the parent's magenta direction arrows once the split (green/red) is shown.
+        DrawPath(this, arc->GetPath(), qIsInf(m_length) ? arc->DirectionArrows() : QVector<DirectionArrow>(),
+                 LineStyle(), Qt::RoundCap);
 
         if (!qIsInf(m_length))
         {

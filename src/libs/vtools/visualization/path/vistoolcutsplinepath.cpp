@@ -66,7 +66,9 @@ void VisToolCutSplinePath::RefreshGeometry()
     if (m_splinePathId > NULL_ID)
     {
         const auto splPath = GetData()->GeometricObject<VAbstractCubicBezierPath>(m_splinePathId);
-        DrawPath(this, splPath->GetPath(), splPath->DirectionArrows(), LineStyle(), Qt::RoundCap);
+        // Hide the parent's magenta direction arrows once the split (green/red) is shown.
+        DrawPath(this, splPath->GetPath(), qIsInf(m_length) ? splPath->DirectionArrows() : QVector<DirectionArrow>(),
+                 LineStyle(), Qt::RoundCap);
 
         if (!qIsInf(m_length))
         {

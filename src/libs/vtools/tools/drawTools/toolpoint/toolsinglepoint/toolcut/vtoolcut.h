@@ -173,6 +173,8 @@ protected:
                                const ToolChanges &changes);
 
     auto itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant override;
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     void RefreshGeometry() override;
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
     void ReadToolAttributes(const QDomElement &domElement) override;
@@ -192,6 +194,8 @@ private slots:
 
 private:
     Q_DISABLE_COPY_MOVE(VToolCut) // NOLINT
+
+    bool m_hoverOwnsVisualization{false};
 
     void UpdateNameField(VToolCutNameField field, const QString &value);
     auto HasConflict(const QString &value, VToolCutNameField currentField) const -> bool;

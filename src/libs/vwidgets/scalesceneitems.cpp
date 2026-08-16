@@ -118,6 +118,15 @@ void VScaledLine::RefreshPen()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::SetHighlighted(bool on)
+{
+    prepareGeometryChange();
+    SetBoldLine(on);
+    RefreshPen();
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VScaledLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     PaintWithFixItemHighlightSelected<QGraphicsLineItem>(this, painter, option, widget);
@@ -183,20 +192,14 @@ auto VScaledLine::boundingRect() const -> QRectF
 //---------------------------------------------------------------------------------------------------------------------
 void VScaledLine::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    prepareGeometryChange();
-    SetBoldLine(true);
-    RefreshPen();
-    update();
+    SetHighlighted(true);
     QGraphicsLineItem::hoverEnterEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VScaledLine::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    prepareGeometryChange();
-    SetBoldLine(false);
-    RefreshPen();
-    update();
+    SetHighlighted(false);
     QGraphicsLineItem::hoverLeaveEvent(event);
 }
 

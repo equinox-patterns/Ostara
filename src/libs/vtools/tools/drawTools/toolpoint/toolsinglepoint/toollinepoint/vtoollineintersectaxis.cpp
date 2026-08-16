@@ -379,7 +379,7 @@ auto VToolLineIntersectAxis::MakeToolTip() const -> QString
 void VToolLineIntersectAxis::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     VToolLinePoint::hoverEnterEvent(event);
-    mainLine->SetBoldLine(false);
+    mainLine->SetHighlighted(false);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

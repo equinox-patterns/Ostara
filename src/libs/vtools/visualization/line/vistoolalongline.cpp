@@ -89,6 +89,7 @@ void VisToolAlongLine::RefreshGeometry()
             DrawPoint(m_lineP2, static_cast<QPointF>(*second));
 
             QLineF const baseLine(static_cast<QPointF>(*first), static_cast<QPointF>(*second));
+            m_line->SetHighlighted(m_toolPointId <= NULL_ID); // Hide the parent A_B arrows when the split is shown
             DrawLine(m_line, baseLine);
 
             if (m_toolPointId > NULL_ID)

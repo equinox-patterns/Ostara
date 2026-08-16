@@ -255,7 +255,32 @@ void VToolAlongLine::ApplyToolOptions(const QDomElement &oldDomElement, const QD
 //---------------------------------------------------------------------------------------------------------------------
 void VToolAlongLine::ShowVisualization(bool show)
 {
+    if (show)
+    {
+        // A persistent show (click, options panel) takes over from a transient hover show.
+        m_hoverOwnsVisualization = false;
+    }
     ShowToolVisualization<VisToolAlongLine>(show);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAlongLine::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    const bool wasShown = not vis.isNull();
+    ShowVisualization(true);
+    m_hoverOwnsVisualization = not wasShown; // We own the visualization only if the hover created it.
+    VToolLinePoint::hoverEnterEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAlongLine::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    if (m_hoverOwnsVisualization)
+    {
+        ShowVisualization(false);
+        m_hoverOwnsVisualization = false;
+    }
+    VToolLinePoint::hoverLeaveEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
