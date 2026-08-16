@@ -34,6 +34,7 @@
 #include <QSize>
 #include <QWidget>
 
+#include "../../vmisc/FactoryWidgets.h"
 #include "../vproperty_p.h"
 
 // Out-of-line destructor: keeps the scalar deleting destructor inside the DLL on MSVC,
@@ -89,7 +90,7 @@ auto VPE::VLineTypeProperty::createEditor(QWidget *parent, const QStyleOptionVie
 {
     Q_UNUSED(options)
     Q_UNUSED(delegate)
-    auto *tmpEditor = new QComboBox(parent);
+    auto *tmpEditor = MakeComboBox(parent);
     tmpEditor->clear();
     tmpEditor->setLocale(parent->locale());
     tmpEditor->setIconSize(QSize(80, 14));

@@ -39,6 +39,7 @@
 #include "../vgeometry/vspline.h"
 #include "../vgeometry/vsplinepath.h"
 #include "../vmisc/def.h"
+#include "../vmisc/FactoryWidgets.h"
 #include "themeDef.h"
 #include "../vtheme/vscenestylesheet.h"
 #include "../vtheme/vtheme.h"
@@ -1187,7 +1188,7 @@ auto GetColorComboCurrentName(const QComboBox *combo) -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto ReplaceColorPickerWithCombo(QWidget *parent, VPE::QtColorPicker *oldPicker) -> QComboBox *
 {
-    auto *combo = new QComboBox(parent);
+    auto *combo = MakeComboBox(parent);
     combo->setSizePolicy(oldPicker->sizePolicy());
 
     QWidget *pw = oldPicker->parentWidget();
@@ -1205,6 +1206,7 @@ auto ReplaceColorPickerWithCombo(QWidget *parent, VPE::QtColorPicker *oldPicker)
 void FillComboBoxTypeLine(QComboBox *box, const QMap<QString, QIcon> &stylesPics, const QString &def)
 {
     SCASSERT(box != nullptr)
+    ApplyComboBoxView(box);
     QMap<QString, QIcon>::const_iterator i = stylesPics.constBegin();
     while (i != stylesPics.constEnd())
     {

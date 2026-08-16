@@ -32,7 +32,7 @@
 #include "mainwindow_helpers.h"
 #include "vtheme.h"
 #include "widgets/TopBar.h"
-#include "widgets/FactoryWidgets.h"
+#include "vmisc/FactoryWidgets.h"
 #include "../vpropertyexplorer/qtcolorpicker.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"

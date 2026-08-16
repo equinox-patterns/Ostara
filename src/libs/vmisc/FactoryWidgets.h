@@ -38,6 +38,19 @@
 #include <QComboBox>
 #include <QListView>
 
+/// Applies the Qt-styled QListView dropdown to an existing QComboBox (e.g. one
+/// created by Qt Designer's setupUi).  The native macOS popup ignores QSS
+/// entirely (hover, selection colours, borders) — this ensures the global
+/// stylesheet is respected.
+inline void ApplyComboBoxView(QComboBox *combo)
+{
+    auto *view = new QListView();
+    combo->setView(view);
+    // Keep the dropdown icons the same size as the closed-field icons (e.g. the
+    // line-style swatches, which are 80x14 in the dialogs' .ui).
+    view->setIconSize(combo->iconSize());
+}
+
 /// Creates a QComboBox whose dropdown uses a Qt-styled QListView instead of
 /// the native macOS popup.  The native popup ignores QSS entirely (hover,
 /// selection colours, borders) — this factory ensures the global stylesheet
@@ -45,7 +58,7 @@
 inline auto MakeComboBox(QWidget *parent = nullptr) -> QComboBox *
 {
     auto *combo = new QComboBox(parent);
-    combo->setView(new QListView());
+    ApplyComboBoxView(combo);
     return combo;
 }
 

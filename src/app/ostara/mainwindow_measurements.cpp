@@ -30,7 +30,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "widgets/TopBar.h"
-#include "widgets/FactoryWidgets.h"
+#include "vmisc/FactoryWidgets.h"
 #include "mainwindow_helpers.h"
 #include "vtheme.h"
 #include "../vformat/vmeasurements.h"

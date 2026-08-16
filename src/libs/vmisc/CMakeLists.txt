@@ -33,6 +33,7 @@ set(VMISC_SOURCES
     vcommonsettings.h
     vvalentinasettings.h
     debugbreak.h
+    FactoryWidgets.h
     vlockguard.h
     vsysexits.h
     commandoptions.h

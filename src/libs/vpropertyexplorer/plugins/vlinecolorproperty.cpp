@@ -37,6 +37,7 @@
 #include <QStyle>
 
 #include "../../ifc/ifcdef.h"
+#include "../../vmisc/FactoryWidgets.h"
 #include "../vproperty_p.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -94,7 +95,7 @@ auto VPE::VLineColorProperty::createEditor(QWidget *parent, const QStyleOptionVi
     Q_UNUSED(options)
     Q_UNUSED(delegate)
 
-    auto *combo = new QComboBox(parent);
+    auto *combo = MakeComboBox(parent);
     const bool dark = IsDarkMode();
     const int iconSize = combo->style()->pixelMetric(QStyle::PM_SmallIconSize);
 

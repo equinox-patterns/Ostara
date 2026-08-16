@@ -29,7 +29,7 @@
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
 #include "vtheme.h"
-#include "widgets/FactoryWidgets.h"
+#include "vmisc/FactoryWidgets.h"
 
 #include <QCheckBox>
 #include <QComboBox>
