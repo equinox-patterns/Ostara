@@ -1168,7 +1168,8 @@ QFrame#welcomeSeparator {
     background-color: #d6d6d6;
 }
 
-QFrame#notesSeparator {
+QFrame#notesSeparator,
+QFrame#formulaSeparator {
     background-color: #d6d6d6;
 }
 

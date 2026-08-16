@@ -27,9 +27,12 @@
 
 #include <QDialog>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
+#include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QTextDocument>
 #include <QTimer>
 #include <QToolButton>
 #include <QVBoxLayout>
@@ -44,6 +47,14 @@
 #include "themeDef.h"
 #include "vtheme.h"
 
+namespace
+{
+// Number of visible lines for each field state.
+constexpr int kCollapsedLines = 1;
+constexpr int kMinExpandedLines = 2; // floor: an empty / 1-line field stays at 2 lines
+constexpr int kMaxLines = 10;        // ceiling: beyond this, the field scrolls
+} // namespace
+
 //---------------------------------------------------------------------------------------------------------------------
 FormulaInputWidget::FormulaInputWidget(QWidget *parent)
   : QWidget(parent)
@@ -54,7 +65,7 @@ FormulaInputWidget::FormulaInputWidget(QWidget *parent)
 
     connect(m_timer, &QTimer::timeout, this, &FormulaInputWidget::evaluate);
     connect(m_fxButton, &QPushButton::clicked, this, &FormulaInputWidget::openFxDialog);
-    connect(m_growButton, &QPushButton::clicked, this, &FormulaInputWidget::deploy);
+    connect(m_growButton, &QPushButton::clicked, this, &FormulaInputWidget::toggleExpanded);
     connect(m_textEdit, &QPlainTextEdit::textChanged, this, &FormulaInputWidget::onTextChanged);
 
     m_textEdit->installEventFilter(this);
@@ -74,32 +85,32 @@ void FormulaInputWidget::buildUi()
 
     m_fxButton = new QToolButton(this);
     m_fxButton->setFixedSize(24, 24);
-    m_fxButton->setIcon(VTheme::GetIconResource(QStringLiteral("icon"), QStringLiteral("24x24/fx.png")));
-
-    auto *equalsLabel = new QLabel(this);
-    equalsLabel->setPixmap(
-        VTheme::GetPixmapResource(QStringLiteral("icon"), QStringLiteral("24x24/equal.png")));
+    const bool isDark = VTheme::ColorSheme() == VColorSheme::Dark;
+    m_fxButton->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/function_%1.svg")
+                  .arg(isDark ? QStringLiteral("dark") : QStringLiteral("light"))));
 
     m_resultLabel = new QLabel(QStringLiteral("_"), this);
     m_resultLabel->setMinimumWidth(60);
     m_resultLabel->setToolTip(tr("Value"));
 
     m_textEdit = new VPlainTextEdit(this);
-    m_textEdit->setMaximumHeight(28);
-    m_baseHeight = m_textEdit->height();
+
+    QLineEdit reference;
+    reference.setFont(m_textEdit->font());
+    m_lineHeight = reference.sizeHint().height();
 
     m_growButton = new QPushButton(this);
     m_growButton->setFixedSize(16, 16);
     m_growButton->setFlat(true);
-    m_growButton->setIcon(FromTheme(VThemeIcon::GoDown));
+    updateExpandIcon();
 
     // --- Layout ---
     auto *row1 = new QHBoxLayout;
     row1->addWidget(m_label);
+    row1->addWidget(m_resultLabel);
     row1->addStretch();
     row1->addWidget(m_fxButton);
-    row1->addWidget(equalsLabel);
-    row1->addWidget(m_resultLabel);
 
     auto *row2 = new QHBoxLayout;
     row2->addWidget(m_textEdit);
@@ -110,6 +121,10 @@ void FormulaInputWidget::buildUi()
     mainLayout->addLayout(row1);
     mainLayout->addLayout(row2);
     setLayout(mainLayout);
+    // Keep the composite's height exactly at its content (label + field), so it
+    // never stretches and leaves the leftover space to the notes field.
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    updateHeight();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -160,14 +175,9 @@ void FormulaInputWidget::setFormula(const QString &formula)
     const QString userFormula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
         formula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
 
-    if (userFormula.length() > 80)
-    {
-        deploy();
-    }
-
     m_textEdit->setPlainText(userFormula);
     MoveCursorToEnd(m_textEdit);
-    // Evaluation is triggered automatically by the textChanged → timer chain
+    // Evaluation and height update are triggered automatically by the textChanged → timer chain
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -223,13 +233,11 @@ void FormulaInputWidget::evaluate()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void FormulaInputWidget::deploy()
+void FormulaInputWidget::toggleExpanded()
 {
-    auto *dlg = qobject_cast<QDialog *>(window());
-    if (dlg != nullptr)
-    {
-        DeployFormula(dlg, m_textEdit, m_growButton, m_baseHeight);
-    }
+    m_expanded = !m_expanded;
+    updateExpandIcon();
+    updateHeight();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -256,5 +264,38 @@ void FormulaInputWidget::openFxDialog()
 //---------------------------------------------------------------------------------------------------------------------
 void FormulaInputWidget::onTextChanged()
 {
+    updateHeight();
     m_timer->start(formulaTimerTimeout);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void FormulaInputWidget::updateHeight()
+{
+    const int lineCount = m_textEdit->document()->lineCount();
+
+    int visibleLines = kCollapsedLines;
+    if (m_expanded)
+    {
+        visibleLines = qBound(kMinExpandedLines, lineCount + 1, kMaxLines);
+    }
+
+    m_textEdit->setFixedHeight(heightForLines(visibleLines));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void FormulaInputWidget::updateExpandIcon()
+{
+    const bool dark = VTheme::ColorSheme() == VColorSheme::Dark;
+    const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
+    const QString iconName = m_expanded ? QStringLiteral("caret-up") : QStringLiteral("caret-down");
+
+    m_growButton->setIcon(QIcon(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, iconName)));
+    m_growButton->setToolTip(m_expanded ? tr("Collapse") : tr("Expand"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto FormulaInputWidget::heightForLines(int lineCount) const -> int
+{
+    const int lineSpacing = m_textEdit->fontMetrics().lineSpacing();
+    return m_lineHeight + (lineCount - 1) * lineSpacing;
 }

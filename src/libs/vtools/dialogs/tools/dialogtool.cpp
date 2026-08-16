@@ -44,9 +44,11 @@
 #include <QPixmap>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QRect>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 #include <QScopedPointer>
+#include <QScreen>
 #include <QSharedPointer>
 #include <QShowEvent>
 #include <QSize>
@@ -101,6 +103,7 @@ DialogTool::DialogTool(const VContainer *patternData, VAbstractPattern *doc, qui
 {
     SCASSERT(patternData != nullptr);
     SCASSERT(doc != nullptr);
+    setMinimumWidth(575);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -138,14 +141,29 @@ void DialogTool::showEvent(QShowEvent *event)
     {
         return;
     }
-    // do your init stuff here
-
-    setMaximumSize(size());
-    setMinimumSize(size());
-
-    isInitialized = true; // first show windows are held
+    isInitialized = true; // one-time init on first show
     ShowVisualization();
     CheckState();
+
+    // Let the notes field absorb the leftover vertical space (when the formula
+    // fields collapse) instead of leaving empty gaps around them.
+    if (auto *notes = findChild<QPlainTextEdit *>(QStringLiteral("plainTextEditToolNotes")))
+    {
+        notes->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        notes->setMaximumHeight(QWIDGETSIZE_MAX);
+    }
+
+    // Open in the upper third of the screen so the dialog can grow downward and
+    // still keep its OK/Cancel/Apply buttons visible.
+    QTimer::singleShot(0, this, [this]() {
+        if (auto *screen = this->screen())
+        {
+            const QRect available = screen->availableGeometry();
+            const int x = available.x() + (available.width() - frameGeometry().width()) / 2;
+            const int y = available.y() + (available.height() - frameGeometry().height()) * 15 / 100;
+            move(x, y);
+        }
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

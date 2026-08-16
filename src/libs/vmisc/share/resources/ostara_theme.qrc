@@ -56,6 +56,7 @@
         <file alias="caret-right_accent.svg">../../../../../share/themes/icons/light/caret-right_accent.svg</file>
         <file alias="broom_light.svg">../../../../../share/themes/icons/light/broom_light.svg</file>
         <file alias="arrows-clockwise_light.svg">../../../../../share/themes/icons/light/arrows-clockwise_light.svg</file>
+        <file alias="function_light.svg">../../../../../share/themes/icons/light/function_light.svg</file>
     </qresource>
     <qresource prefix="/icons/dark">
         <file alias="square_accent.svg">../../../../../share/themes/icons/dark/square_accent.svg</file>
@@ -110,5 +111,6 @@
         <file alias="caret-right_accent.svg">../../../../../share/themes/icons/dark/caret-right_accent.svg</file>
         <file alias="broom_dark.svg">../../../../../share/themes/icons/dark/broom_dark.svg</file>
         <file alias="arrows-clockwise_dark.svg">../../../../../share/themes/icons/dark/arrows-clockwise_dark.svg</file>
+        <file alias="function_dark.svg">../../../../../share/themes/icons/dark/function_dark.svg</file>
     </qresource>
 </RCC>

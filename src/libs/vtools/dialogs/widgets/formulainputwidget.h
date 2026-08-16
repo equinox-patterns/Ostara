@@ -84,10 +84,6 @@ public:
     /// Whether the last evaluation was successful.
     [[nodiscard]] auto isValid() const -> bool;
 
-    /// Programmatic deploy toggle (for dialogs that need to call it directly,
-    /// e.g. from SetFormula auto-deploy logic).
-    void deploy();
-
 signals:
     /// Emitted after each debounced evaluation completes.
     /// Connect to CheckState() in the parent dialog.
@@ -99,10 +95,14 @@ protected:
 private slots:
     void evaluate();
     void openFxDialog();
+    void toggleExpanded();
 
 private:
     void onTextChanged();
     void buildUi();
+    void updateHeight();
+    void updateExpandIcon();
+    auto heightForLines(int lineCount) const -> int;
 
     QLabel *m_label{nullptr};
     VPlainTextEdit *m_textEdit{nullptr};
@@ -111,7 +111,8 @@ private:
     QLabel *m_resultLabel{nullptr};
 
     QTimer *m_timer{nullptr};
-    int m_baseHeight{0};
+    bool m_expanded{true};
+    int m_lineHeight{0};
     quint32 m_toolId{NULL_ID};
     const VContainer *m_data{nullptr};
     QString m_postfix{};
