@@ -155,6 +155,11 @@ void VToolSinglePoint::SetLabelVisible(quint32 id, bool visible)
         const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(id);
         point->SetShowLabel(visible);
         RefreshPointGeometry(*point);
+        QDomElement element = doc->FindElementById(m_id, getTagName());
+        if (element.isElement())
+        {
+            doc->SetAttribute<bool>(element, AttrShowLabel, visible);
+        }
         if (QGraphicsScene *sc = scene())
         {
             VMainGraphicsView::NewSceneRect(sc, VAbstractValApplication::VApp()->getSceneView(), this);
@@ -347,8 +352,7 @@ void VToolSinglePoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &o
 //---------------------------------------------------------------------------------------------------------------------
 void VToolSinglePoint::ChangeLabelVisibility(quint32 id, bool visible)
 {
-    Q_UNUSED(id)
-    Q_UNUSED(visible)
+    SetLabelVisible(id, visible);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

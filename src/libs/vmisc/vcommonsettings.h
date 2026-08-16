@@ -249,8 +249,8 @@ public:
     void SetPatternLabelFontSize(int size);
     static auto GetDefPatternLabelFontSize() -> int;
 
-    auto GetHideLabels() const -> bool;
-    void SetHideLabels(bool value);
+    auto GetShowAllLabels() const -> bool;
+    void SetShowAllLabels(bool value);
 
     auto GetShowAccuracyRadius() const -> bool;
     void SetShowAccuracyRadius(bool value);

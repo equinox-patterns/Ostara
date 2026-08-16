@@ -98,18 +98,15 @@ void VScenePoint::RefreshScale()
     ScaleCircleSize(this, scale);
 
     if (const VCommonSettings *settings = VAbstractApplication::VApp()->Settings();
-        settings->GetPatternLabelFontSize() * scale < minVisibleFontSize || settings->GetHideLabels())
+        settings->GetPatternLabelFontSize() * scale < minVisibleFontSize)
     {
         m_namePoint->setVisible(false);
         m_lineName->setVisible(false);
     }
-    else
+    else if (not m_onlyPoint)
     {
-        if (not m_onlyPoint)
-        {
-            m_namePoint->setVisible(m_showLabel);
-            RefreshLine();
-        }
+        m_namePoint->setVisible(settings->GetShowAllLabels() || m_showLabel);
+        RefreshLine();
     }
 }
 
@@ -222,7 +219,7 @@ void VScenePoint::RefreshHoverPen()
 //---------------------------------------------------------------------------------------------------------------------
 void VScenePoint::RefreshLine()
 {
-    if (m_onlyPoint || VAbstractApplication::VApp()->Settings()->GetHideLabels())
+    if (m_onlyPoint)
     {
         if (m_lineName != nullptr)
         {
@@ -249,7 +246,7 @@ void VScenePoint::RefreshLine()
         else
         {
             m_lineName->setLine(QLineF(p1, pRec - scenePos()));
-            m_lineName->setVisible(m_showLabel);
+            m_lineName->setVisible(VAbstractApplication::VApp()->Settings()->GetShowAllLabels() || m_showLabel);
         }
     }
     else

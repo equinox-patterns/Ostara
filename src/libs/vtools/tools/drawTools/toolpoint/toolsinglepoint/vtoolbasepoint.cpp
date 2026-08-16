@@ -388,7 +388,7 @@ auto VToolBasePoint::MakeToolTip() const -> QString
 
     const QString toolTip = u"<table>"
                             u"<tr> <td><b>%1:</b> %2</td> </tr>"
-                            u"</table>"_s.arg(tr("Label"), point->name());
+                            u"</table>"_s.arg(tr("Point name"), point->name());
     return toolTip;
 }
 

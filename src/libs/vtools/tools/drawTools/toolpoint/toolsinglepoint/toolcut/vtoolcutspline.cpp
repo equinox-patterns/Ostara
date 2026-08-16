@@ -135,6 +135,7 @@ auto VToolCutSpline::Create(const QPointer<DialogTool> &dialog, VMainGraphicsSce
     initData.formula = dialogTool->GetFormula();
     initData.baseCurveId = dialogTool->getSplineId();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;

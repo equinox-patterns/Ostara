@@ -2839,7 +2839,7 @@ void MainWindow::Clear()
     ui->actionIncreaseLabelFont->setEnabled(false);
     ui->actionDecreaseLabelFont->setEnabled(false);
     ui->actionOriginalLabelFont->setEnabled(false);
-    ui->actionHideLabels->setEnabled(false);
+    ui->actionShowAllLabels->setEnabled(false);
     ui->plainTextEditPatternMessages->clear();
     ui->actionLoadWatermark->setEnabled(false);
     ui->actionRemoveWatermark->setEnabled(false);
@@ -3076,7 +3076,7 @@ void MainWindow::SetEnableWidgets(bool enable)
     ui->actionIncreaseLabelFont->setEnabled(enable);
     ui->actionDecreaseLabelFont->setEnabled(enable);
     ui->actionOriginalLabelFont->setEnabled(enable);
-    ui->actionHideLabels->setEnabled(enable);
+    ui->actionShowAllLabels->setEnabled(enable);
     ui->actionCreateManualLayout->setEnabled(enableOnPiecesStage);
     ui->actionUpdateManualLayout->setEnabled(enableOnPiecesStage);
 

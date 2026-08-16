@@ -184,6 +184,7 @@ auto VToolPointOfContact::Create(const QPointer<DialogTool> &dialog, VMainGraphi
     initData.firstPointId = dialogTool->GetFirstPoint();
     initData.secondPointId = dialogTool->GetSecondPoint();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;
@@ -389,7 +390,7 @@ auto VToolPointOfContact::MakeToolTip() const -> QString
                                 .arg(VAbstractValApplication::VApp()->fromPixel(centerToCur.length()))
                                 .arg(u"%1 %2->%3"_s.arg(tr("Angle"), centerP->name(), current->name()))
                                 .arg(centerToCur.angle())
-                                .arg(tr("Label"), current->name());
+                                .arg(tr("Point name"), current->name());
     return toolTip;
 }
 

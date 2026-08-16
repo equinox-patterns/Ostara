@@ -134,6 +134,7 @@ auto VToolCutArc::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene 
     initData.formula = dialogTool->GetFormula();
     initData.baseCurveId = dialogTool->getArcId();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;

@@ -119,6 +119,7 @@ auto VToolHeight::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene 
     initData.typeLine = dialogTool->GetTypeLine();
     initData.lineColor = dialogTool->GetLineColor();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;
@@ -313,7 +314,7 @@ auto VToolHeight::MakeToolTip() const -> QString
                                 .arg(VAbstractValApplication::VApp()->fromPixel(p1ToCur.length()))
                                 .arg(u"%1->%2"_s.arg(p2Line->name(), current->name()))
                                 .arg(VAbstractValApplication::VApp()->fromPixel(p2ToCur.length()))
-                                .arg(tr("Label"), current->name());
+                                .arg(tr("Point name"), current->name());
     return toolTip;
 }
 

@@ -257,6 +257,14 @@ void VNodePoint::SetLabelVisible(quint32 id, bool visible)
         }
 
         RefreshPointGeometry(*point);
+        QDomElement element = doc->FindElementById(m_id, getTagName());
+        if (element.isElement())
+        {
+            doc->SetAttributeOrRemoveIf<bool>(element,
+                                              AttrShowLabel,
+                                              visible,
+                                              [](bool show) noexcept -> bool { return show; });
+        }
         if (QGraphicsScene *sc = scene())
         {
             VMainGraphicsView::NewSceneRect(sc, VAbstractValApplication::VApp()->getSceneView(), this);
@@ -358,7 +366,7 @@ auto VNodePoint::InitContextMenu(QMenu *menu, vidtype pieceId, RemoveStatus stat
 
     QHash<int, QAction *> contextMenu;
 
-    QAction *actionShowLabel = menu->addAction(QCoreApplication::translate("VNodePoint", "Show label"));
+    QAction *actionShowLabel = menu->addAction(QCoreApplication::translate("VNodePoint", "Show Point name"));
     actionShowLabel->setCheckable(true);
 
     if (const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(m_id); !m_internalPathNode)
@@ -677,6 +685,7 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
             }
             return; // Leave this method immediately after call!!!
         case ContextMenuOption::ShowLabel:
+            SetLabelVisible(m_id, selectedAction->isChecked());
             break;
         case ContextMenuOption::Exclude:
             emit ToggleExcludeState(m_id);

@@ -101,6 +101,10 @@ public:
     auto GetToolId() const -> quint32;
     void SetToolId(const quint32 &value);
 
+    /** @brief "Show Point name" checkbox state at creation ("Label" = point name shown as exception). */
+    auto GetShowLabel() const -> bool { return m_showLabel; }
+    void SetShowLabel(bool value) { m_showLabel = value; }
+
     virtual void CheckDependencyTreeComplete() = 0;
 
     virtual void SetGroupCategories(const QStringList &categories);
@@ -249,6 +253,8 @@ protected:
 
 private:
     Q_DISABLE_COPY_MOVE(DialogTool) // NOLINT
+
+    bool m_showLabel{false};
 
     template <typename T> void PrepareList(QMap<QString, quint32> &list, quint32 id) const;
 

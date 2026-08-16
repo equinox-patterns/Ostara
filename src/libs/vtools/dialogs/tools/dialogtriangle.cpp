@@ -55,6 +55,8 @@ DialogTriangle::DialogTriangle(const VContainer *data, VAbstractPattern *doc, qu
     flagError(false)
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     MakeFilterableComboBox(ui->comboBoxAxisP1);
     MakeFilterableComboBox(ui->comboBoxAxisP2);

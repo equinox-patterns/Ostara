@@ -48,7 +48,7 @@ void VPattern::PointsCommonAttributes(const QDomElement &domElement, VToolSingle
 {
     DrawPointsCommonAttributes(domElement, initData.id, initData.mx, initData.my, initData.notes);
     initData.name = GetParametrString(domElement, AttrName, QChar('A'));
-    initData.showLabel = GetParametrBool(domElement, AttrShowLabel, trueStr);
+    initData.showLabel = GetParametrBool(domElement, AttrShowLabel, falseStr);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

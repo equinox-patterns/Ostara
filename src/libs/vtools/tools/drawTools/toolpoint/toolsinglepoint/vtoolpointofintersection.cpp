@@ -112,6 +112,7 @@ auto VToolPointOfIntersection::Create(const QPointer<DialogTool> &dialog, VMainG
     initData.firstPointId = dialogTool->GetFirstPointId();
     initData.secondPointId = dialogTool->GetSecondPointId();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;

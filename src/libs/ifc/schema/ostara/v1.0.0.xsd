@@ -190,9 +190,9 @@
                           <xs:attribute name="dartP3" type="xs:unsignedInt"/>
                           <xs:attribute name="baseLineP1" type="xs:unsignedInt"/>
                           <xs:attribute name="baseLineP2" type="xs:unsignedInt"/>
-                          <xs:attribute name="showLabel" type="xs:boolean"/>
-                          <xs:attribute name="showLabel1" type="xs:boolean"/>
-                          <xs:attribute name="showLabel2" type="xs:boolean"/>
+                          <xs:attribute name="showPointName" type="xs:boolean"/>
+                          <xs:attribute name="showPointName1" type="xs:boolean"/>
+                          <xs:attribute name="showPointName2" type="xs:boolean"/>
                           <xs:attribute name="notes" type="xs:string"/>
                           <xs:attribute name="alias1" type="nameSuffix"/>
                           <xs:attribute name="alias2" type="nameSuffix"/>
@@ -256,7 +256,7 @@
                                       <xs:attribute name="idObject" type="xs:unsignedInt" use="required"/>
                                       <xs:attribute name="mx" type="xs:double"/>
                                       <xs:attribute name="my" type="xs:double"/>
-                                      <xs:attribute name="showLabel" type="xs:boolean"/>
+                                      <xs:attribute name="showPointName" type="xs:boolean"/>
                                     </xs:complexType>
                                   </xs:element>
                                 </xs:sequence>
@@ -386,7 +386,7 @@
                           <xs:attribute name="angle" type="xs:string"/>
                           <xs:attribute name="width" type="xs:string"/>
                           <xs:attribute name="height" type="xs:string"/>
-                          <xs:attribute name="showLabel" type="xs:boolean"/>
+                          <xs:attribute name="showPointName" type="xs:boolean"/>
                           <xs:attribute name="visible" type="xs:string"/>
                           <xs:attribute name="checkWidth" type="xs:string"/>
                           <xs:attribute name="checkHeight" type="xs:string"/>

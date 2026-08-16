@@ -338,5 +338,27 @@ auto StripLabelElements(QDomDocument *doc) -> bool
         }
     }
 
+    // 8. Remove obsolete "showLabel"/"showLabel1"/"showLabel2" attributes (renamed to "showPointName" in Ostara)
+    for (const QString &tag : {QStringLiteral("point"), QStringLiteral("item")})
+    {
+        const QDomNodeList nodes = root.elementsByTagName(tag);
+        for (int i = 0; i < nodes.size(); ++i)
+        {
+            QDomElement elem = nodes.at(i).toElement();
+            if (elem.isNull())
+            {
+                continue;
+            }
+            if (elem.hasAttribute(QStringLiteral("showLabel")) || elem.hasAttribute(QStringLiteral("showLabel1")) ||
+                elem.hasAttribute(QStringLiteral("showLabel2")))
+            {
+                foundLabels = true;
+                elem.removeAttribute(QStringLiteral("showLabel"));
+                elem.removeAttribute(QStringLiteral("showLabel1"));
+                elem.removeAttribute(QStringLiteral("showLabel2"));
+            }
+        }
+    }
+
     return foundLabels;
 }

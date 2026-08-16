@@ -171,7 +171,7 @@ auto VToolLinePoint::MakeToolTip() const -> QString
                                 .arg(VAbstractValApplication::VApp()->fromPixel(line.length()))
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
                                 .arg(line.angle())
-                                .arg(tr("Label"), second->name());
+                                .arg(tr("Point name"), second->name());
     return toolTip;
 }
 

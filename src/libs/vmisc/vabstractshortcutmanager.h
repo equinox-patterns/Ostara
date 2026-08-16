@@ -46,7 +46,7 @@ enum class VShortcutAction : quint8
     IncreaseLabelFont,
     DecreaseLabelFont,
     OriginalLabelFont,
-    HideLabels,
+    ShowAllLabels,
     Undo,
     Redo,
     New,

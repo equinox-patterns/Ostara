@@ -127,8 +127,8 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "decreaselabelfont"_L1;
         case VShortcutAction::OriginalLabelFont:
             return "originallabelfont"_L1;
-        case VShortcutAction::HideLabels:
-            return "hidelabels"_L1;
+        case VShortcutAction::ShowAllLabels:
+            return "showalllabels"_L1;
         case VShortcutAction::Undo:
             return "undo"_L1;
         case VShortcutAction::Redo:
@@ -324,13 +324,13 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
         case VShortcutAction::ZoomFitBestCurrent:
             return tr("Zoom fit best current", "shortcut for action");
         case VShortcutAction::IncreaseLabelFont:
-            return tr("Increase point label font size", "shortcut for action");
+            return tr("Increase point name font size", "shortcut for action");
         case VShortcutAction::DecreaseLabelFont:
-            return tr("Decrease point label font size", "shortcut for action");
+            return tr("Decrease point name font size", "shortcut for action");
         case VShortcutAction::OriginalLabelFont:
-            return tr("Original point label font size", "shortcut for action");
-        case VShortcutAction::HideLabels:
-            return tr("Hide point labels", "shortcut for action");
+            return tr("Original point name font size", "shortcut for action");
+        case VShortcutAction::ShowAllLabels:
+            return tr("Show all point names", "shortcut for action");
         case VShortcutAction::Undo:
             return tr("Undo", "shortcut for action");
         case VShortcutAction::Redo:
@@ -492,7 +492,7 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
         case VShortcutAction::ToolGraduatedCurve:
             return tr("Tool 'Graduated curve'", "shortcut for action");
         case VShortcutAction::AutoArrangeLabels:
-            return tr("Auto-arrange labels", "shortcut for action");
+            return tr("Auto-arrange point names", "shortcut for action");
         case VShortcutAction::ToolArrow:
             return tr("Tool 'Select'", "shortcut for action");
         case VShortcutAction::ToolCurve:

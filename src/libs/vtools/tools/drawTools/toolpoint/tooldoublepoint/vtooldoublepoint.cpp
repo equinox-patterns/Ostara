@@ -170,6 +170,11 @@ void VToolDoublePoint::SetLabelVisible(quint32 id, bool visible)
         const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(p1id);
         point->SetShowLabel(visible);
         firstPoint->RefreshPointGeometry(*point);
+        QDomElement element = doc->FindElementById(m_id, getTagName());
+        if (element.isElement())
+        {
+            doc->SetAttribute<bool>(element, AttrShowLabel1, visible);
+        }
         if (QGraphicsScene *sc = firstPoint->scene())
         {
             VMainGraphicsView::NewSceneRect(sc, VAbstractValApplication::VApp()->getSceneView(), firstPoint);
@@ -180,6 +185,11 @@ void VToolDoublePoint::SetLabelVisible(quint32 id, bool visible)
         const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(p2id);
         point->SetShowLabel(visible);
         secondPoint->RefreshPointGeometry(*point);
+        QDomElement element = doc->FindElementById(m_id, getTagName());
+        if (element.isElement())
+        {
+            doc->SetAttribute<bool>(element, AttrShowLabel2, visible);
+        }
         if (QGraphicsScene *sc = secondPoint->scene())
         {
             VMainGraphicsView::NewSceneRect(sc, VAbstractValApplication::VApp()->getSceneView(), secondPoint);
@@ -475,8 +485,7 @@ void VToolDoublePoint::AddToFile()
 //---------------------------------------------------------------------------------------------------------------------
 void VToolDoublePoint::ChangeLabelVisibility(quint32 id, bool visible)
 {
-    Q_UNUSED(id)
-    Q_UNUSED(visible)
+    SetLabelVisible(id, visible);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -487,7 +496,7 @@ auto VToolDoublePoint::ComplexToolTip(quint32 itemId) const -> QString
     const QString toolTip = u"<table>"
                             u"<tr> <td><b>%1:</b> %2</td> </tr>"
                             u"%3"
-                            u"</table>"_s.arg(tr("Label"), point->name(), MakeToolTip());
+                            u"</table>"_s.arg(tr("Point name"), point->name(), MakeToolTip());
     return toolTip;
 }
 

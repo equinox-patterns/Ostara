@@ -58,6 +58,8 @@ DialogPointOfIntersectionCurves::DialogPointOfIntersectionCurves(const VContaine
     flagError(false)
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     MakeFilterableComboBox(ui->comboBoxCurve1);
     MakeFilterableComboBox(ui->comboBoxCurve2);

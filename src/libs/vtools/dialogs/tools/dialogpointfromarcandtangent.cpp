@@ -46,6 +46,8 @@ DialogPointFromArcAndTangent::DialogPointFromArcAndTangent(const VContainer *dat
     flagName(true)
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     MakeFilterableComboBox(ui->comboBoxTangentPoint);
     MakeFilterableComboBox(ui->comboBoxArc);

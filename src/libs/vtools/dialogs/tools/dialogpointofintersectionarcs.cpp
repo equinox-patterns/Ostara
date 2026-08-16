@@ -57,6 +57,8 @@ DialogPointOfIntersectionArcs::DialogPointOfIntersectionArcs(const VContainer *d
     flagError(true)
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     MakeFilterableComboBox(ui->comboBoxArc1);
     MakeFilterableComboBox(ui->comboBoxArc2);

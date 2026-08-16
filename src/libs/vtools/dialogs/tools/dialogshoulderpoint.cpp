@@ -72,6 +72,8 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, VAbstractPatter
     m_formula(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     InitIcons();
 

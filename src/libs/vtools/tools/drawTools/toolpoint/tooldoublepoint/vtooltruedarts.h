@@ -55,11 +55,11 @@ struct VToolTrueDartsInitData : VDrawToolInitData
     QString name1{};               // NOLINT(misc-non-private-member-variables-in-classes)
     qreal mx1{labelMX};            // NOLINT(misc-non-private-member-variables-in-classes)
     qreal my1{labelMY};            // NOLINT(misc-non-private-member-variables-in-classes)
-    bool showLabel1{true};         // NOLINT(misc-non-private-member-variables-in-classes)
+    bool showLabel1{false};         // NOLINT(misc-non-private-member-variables-in-classes)
     QString name2{};               // NOLINT(misc-non-private-member-variables-in-classes)
     qreal mx2{10};                 // NOLINT(misc-non-private-member-variables-in-classes)
     qreal my2{15};                 // NOLINT(misc-non-private-member-variables-in-classes)
-    bool showLabel2{true};         // NOLINT(misc-non-private-member-variables-in-classes)
+    bool showLabel2{false};         // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
 class VToolTrueDarts : public VToolDoublePoint

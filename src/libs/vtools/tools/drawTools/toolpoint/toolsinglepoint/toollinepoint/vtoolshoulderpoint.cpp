@@ -172,6 +172,7 @@ auto VToolShoulderPoint::Create(const QPointer<DialogTool> &dialog, VMainGraphic
     initData.typeLine = dialogTool->GetTypeLine();
     initData.lineColor = dialogTool->GetLineColor();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;
@@ -362,7 +363,7 @@ auto VToolShoulderPoint::MakeToolTip() const -> QString
                                 .arg(firstToCur.angle())
                                 .arg(u"%1->%2"_s.arg(second->name(), current->name()))
                                 .arg(VAbstractValApplication::VApp()->fromPixel(secondToCur.length()))
-                                .arg(tr("Label"), current->name());
+                                .arg(tr("Point name"), current->name());
     return toolTip;
 }
 

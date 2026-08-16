@@ -98,6 +98,28 @@ auto MakePointName(const QString &label) -> PropertyDesc
             }};
 }
 
+template <typename Tool>
+auto MakeShowPointName(const QString &label) -> PropertyDesc
+{
+    return {AttrShowLabel, label, false,
+            [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new VPE::VBoolProperty(label);
+                p->setValue(t->IsLabelVisible(t->getId()));
+                return p;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    t->SetLabelVisible(t->getId(), prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    prop->setValue(t->IsLabelVisible(t->getId()));
+                }
+            }};
+}
+
 template <typename Tool, typename Getter>
 auto MakeParentPoint(const QString &attrId, const QString &label, Getter getter) -> PropertyDesc
 {
@@ -361,7 +383,8 @@ auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>;
 auto SinglePointProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolBasePoint>(T("Point label:")),
+        MakePointName<VToolBasePoint>(T("Point name:")),
+        MakeShowPointName<VToolBasePoint>(T("Show Point name")),
         {QStringLiteral("position"), T("Position:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolBasePoint *>(tool);
@@ -385,7 +408,8 @@ auto SinglePointProperties() -> std::vector<PropertyDesc>
 auto EndLineProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolEndLine>(T("Point label:")),
+        MakePointName<VToolEndLine>(T("Point name:")),
+        MakeShowPointName<VToolEndLine>(T("Show Point name")),
         MakeParentPoint<VToolEndLine>(AttrBasePoint, T("Base point:"), &VToolEndLine::BasePointName),
         MakeLineType<VToolEndLine>(T("Line type:")),
         MakeLineColor<VToolEndLine>(T("Line color:")),
@@ -401,7 +425,8 @@ auto EndLineProperties() -> std::vector<PropertyDesc>
 auto AlongLineProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolAlongLine>(T("Point label:")),
+        MakePointName<VToolAlongLine>(T("Point name:")),
+        MakeShowPointName<VToolAlongLine>(T("Show Point name")),
         MakeParentPoint<VToolAlongLine>(AttrBasePoint, T("First point:"), &VToolAlongLine::BasePointName),
         MakeParentPoint<VToolAlongLine>(AttrSecondPoint, T("Second point:"), &VToolAlongLine::SecondPointName),
         MakeLineType<VToolAlongLine>(T("Line type:")),
@@ -421,7 +446,8 @@ auto AlongLineProperties() -> std::vector<PropertyDesc>
 auto BisectorProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolBisector>(T("Point label:")),
+        MakePointName<VToolBisector>(T("Point name:")),
+        MakeShowPointName<VToolBisector>(T("Show Point name")),
         MakeParentPoint<VToolBisector>(AttrFirstPoint, T("First point:"), &VToolBisector::FirstPointName),
         MakeParentPoint<VToolBisector>(AttrBasePoint, T("Second point:"), &VToolBisector::BasePointName),
         MakeParentPoint<VToolBisector>(AttrThirdPoint, T("Third point:"), &VToolBisector::ThirdPointName),
@@ -489,7 +515,8 @@ auto TrueDartsProperties() -> std::vector<PropertyDesc>
 auto HeightProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolHeight>(T("Point label:")),
+        MakePointName<VToolHeight>(T("Point name:")),
+        MakeShowPointName<VToolHeight>(T("Show Point name")),
         MakeParentPoint<VToolHeight>(AttrBasePoint, T("Base point:"), &VToolHeight::BasePointName),
         MakeParentPoint<VToolHeight>(AttrP1Line, T("First line point:"), &VToolHeight::FirstLinePointName),
         MakeParentPoint<VToolHeight>(AttrP2Line, T("Second line point:"), &VToolHeight::SecondLinePointName),
@@ -519,7 +546,8 @@ auto LineProperties() -> std::vector<PropertyDesc>
 auto LineIntersectProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolLineIntersect>(T("Point label:")),
+        MakePointName<VToolLineIntersect>(T("Point name:")),
+        MakeShowPointName<VToolLineIntersect>(T("Show Point name")),
         MakeParentPoint<VToolLineIntersect>(AttrP1Line1, T("First line (first point):"), &VToolLineIntersect::Line1P1Name),
         MakeParentPoint<VToolLineIntersect>(AttrP2Line1, T("First line (second point):"), &VToolLineIntersect::Line1P2Name),
         MakeParentPoint<VToolLineIntersect>(AttrP1Line2, T("Second line (first point):"), &VToolLineIntersect::Line2P1Name),
@@ -534,7 +562,8 @@ auto LineIntersectProperties() -> std::vector<PropertyDesc>
 auto NormalProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolNormal>(T("Point label:")),
+        MakePointName<VToolNormal>(T("Point name:")),
+        MakeShowPointName<VToolNormal>(T("Show Point name")),
         MakeParentPoint<VToolNormal>(AttrBasePoint, T("First point:"), &VToolNormal::BasePointName),
         MakeParentPoint<VToolNormal>(AttrSecondPoint, T("Second point:"), &VToolNormal::SecondPointName),
         MakeLineType<VToolNormal>(T("Line type:")),
@@ -568,7 +597,8 @@ auto NormalProperties() -> std::vector<PropertyDesc>
 auto PointOfContactProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolPointOfContact>(T("Point label:")),
+        MakePointName<VToolPointOfContact>(T("Point name:")),
+        MakeShowPointName<VToolPointOfContact>(T("Show Point name")),
         MakeParentPoint<VToolPointOfContact>(AttrCenter, T("Center of arc:"), &VToolPointOfContact::ArcCenterPointName),
         MakeParentPoint<VToolPointOfContact>(AttrFirstPoint, T("Top of the line:"), &VToolPointOfContact::FirstPointName),
         MakeParentPoint<VToolPointOfContact>(AttrSecondPoint, T("End of the line:"), &VToolPointOfContact::SecondPointName),
@@ -601,7 +631,8 @@ auto PointOfContactProperties() -> std::vector<PropertyDesc>
 auto PointOfIntersectionProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolPointOfIntersection>(T("Point label:")),
+        MakePointName<VToolPointOfIntersection>(T("Point name:")),
+        MakeShowPointName<VToolPointOfIntersection>(T("Show Point name")),
         MakeParentPoint<VToolPointOfIntersection>(AttrFirstPoint, T("X: vertical point:"), &VToolPointOfIntersection::FirstPointName),
         MakeParentPoint<VToolPointOfIntersection>(AttrSecondPoint, T("Y: horizontal point:"), &VToolPointOfIntersection::SecondPointName),
         MakeNotes<VToolPointOfIntersection>(T("Notes:")),
@@ -612,7 +643,8 @@ auto PointOfIntersectionProperties() -> std::vector<PropertyDesc>
 auto ShoulderPointProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolShoulderPoint>(T("Point label:")),
+        MakePointName<VToolShoulderPoint>(T("Point name:")),
+        MakeShowPointName<VToolShoulderPoint>(T("Show Point name")),
         MakeParentPoint<VToolShoulderPoint>(AttrBasePoint, T("First point:"), &VToolShoulderPoint::BasePointName),
         MakeParentPoint<VToolShoulderPoint>(AttrSecondPoint, T("Second point:"), &VToolShoulderPoint::SecondPointName),
         MakeParentPoint<VToolShoulderPoint>(AttrThirdPoint, T("Third point:"), &VToolShoulderPoint::ShoulderPointName),
@@ -629,7 +661,8 @@ auto ShoulderPointProperties() -> std::vector<PropertyDesc>
 auto TriangleProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolTriangle>(T("Point label:")),
+        MakePointName<VToolTriangle>(T("Point name:")),
+        MakeShowPointName<VToolTriangle>(T("Show Point name")),
         MakeParentPoint<VToolTriangle>(AttrAxisP1, T("First point of axis:"), &VToolTriangle::AxisP1Name),
         MakeParentPoint<VToolTriangle>(AttrAxisP2, T("Second point of axis:"), &VToolTriangle::AxisP2Name),
         MakeParentPoint<VToolTriangle>(AttrFirstPoint, T("First point:"), &VToolTriangle::FirstPointName),
@@ -642,7 +675,8 @@ auto TriangleProperties() -> std::vector<PropertyDesc>
 auto LineIntersectAxisProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolLineIntersectAxis>(T("Point label:")),
+        MakePointName<VToolLineIntersectAxis>(T("Point name:")),
+        MakeShowPointName<VToolLineIntersectAxis>(T("Show Point name")),
         {AttrBasePoint, T("Axis point:"), true,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolLineIntersectAxis *>(tool);
@@ -686,7 +720,8 @@ auto LineIntersectAxisProperties() -> std::vector<PropertyDesc>
 auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolCurveIntersectAxis>(T("Point label:")),
+        MakePointName<VToolCurveIntersectAxis>(T("Point name:")),
+        MakeShowPointName<VToolCurveIntersectAxis>(T("Show Point name")),
         {AttrBasePoint, T("Axis point:"), true,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCurveIntersectAxis *>(tool);

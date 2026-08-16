@@ -108,6 +108,7 @@ auto VToolLineIntersectAxis::Create(const QPointer<DialogTool> &dialog, VMainGra
     initData.typeLine = dialogTool->GetTypeLine();
     initData.lineColor = dialogTool->GetLineColor();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;
@@ -370,7 +371,7 @@ auto VToolLineIntersectAxis::MakeToolTip() const -> QString
                                 .arg(VAbstractValApplication::VApp()->fromPixel(firstToCur.length()))
                                 .arg(u"%1->%2"_s.arg(current->name(), secondPoint->name()))
                                 .arg(VAbstractValApplication::VApp()->fromPixel(curToSecond.length()))
-                                .arg(tr("Label"), current->name());
+                                .arg(tr("Point name"), current->name());
     return toolTip;
 }
 

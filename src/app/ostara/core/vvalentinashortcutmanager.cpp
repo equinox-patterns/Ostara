@@ -64,7 +64,7 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
                  {QKeySequence(Qt::ShiftModifier | Qt::Key_0).toString()},
                  {}});
     AddShortcut(
-        {VShortcutAction::HideLabels, {QKeySequence(Qt::AltModifier | Qt::Key_L).toString()}, {}});
+        {VShortcutAction::ShowAllLabels, {QKeySequence(Qt::AltModifier | Qt::Key_L).toString()}, {}});
     AddShortcut({VShortcutAction::Undo, KeyBindingsToStringList(QKeySequence::Undo), {}});
     AddShortcut({VShortcutAction::Redo, KeyBindingsToStringList(QKeySequence::Redo), {}});
     AddShortcut({VShortcutAction::New, KeyBindingsToStringList(QKeySequence::New), {}});

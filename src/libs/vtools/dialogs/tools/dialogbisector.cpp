@@ -70,6 +70,8 @@ DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, qu
     m_formula(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     InitIcons();
 

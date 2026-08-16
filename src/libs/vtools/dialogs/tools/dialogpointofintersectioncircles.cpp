@@ -54,6 +54,8 @@ DialogPointOfIntersectionCircles::DialogPointOfIntersectionCircles(const VContai
     m_formulaCircle2(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     InitIcons();
 

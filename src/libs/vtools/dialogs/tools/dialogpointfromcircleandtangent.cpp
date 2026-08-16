@@ -56,6 +56,8 @@ DialogPointFromCircleAndTangent::DialogPointFromCircleAndTangent(const VContaine
     m_formula(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     const QString postfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
     m_formula->setData(&this->data);

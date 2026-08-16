@@ -578,6 +578,7 @@ auto VToolPointOfIntersectionCurves::Create(const QPointer<DialogTool> &dialog, 
     initData.vCrossPoint = dialogTool->GetVCrossPoint();
     initData.hCrossPoint = dialogTool->GetHCrossPoint();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;
@@ -1406,7 +1407,7 @@ auto VToolPointOfIntersectionCurves::MakeToolTip() const -> QString
                             u"<tr> <td><b>%7:</b> %8</td> </tr>"
                             u"<tr> <td><b>%9:</b> %10</td> </tr>"
                             u"</table>"_s
-                                .arg(tr("Label"),
+                                .arg(tr("Point name"),
                                      p->name(), /* 1, 2 */
                                      tr("Curve 1 segment 1"),
                                      curve1Segment1->ObjectName(), /* 3, 4 */

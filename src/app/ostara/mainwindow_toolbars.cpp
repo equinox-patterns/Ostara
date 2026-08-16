@@ -194,12 +194,23 @@ void MainWindow::ToolBarTools()
                 ScaleChanged(ui->view->transform().m11());
             });
 
-    m_shortcutActions.insert(VShortcutAction::HideLabels, ui->actionHideLabels);
-    ui->actionHideLabels->setChecked(VAbstractValApplication::VApp()->ValentinaSettings()->GetHideLabels());
-    connect(ui->actionHideLabels, &QAction::triggered, this,
-            [this](bool checked)
+    m_shortcutActions.insert(VShortcutAction::ShowAllLabels, ui->actionShowAllLabels);
+    ui->actionShowAllLabels->setCheckable(true);
+    ui->actionShowAllLabels->setChecked(true); // check always visible; the text reflects the state
+    const auto syncShowAllLabelsText = [this]()
+    {
+        ui->actionShowAllLabels->setText(VAbstractValApplication::VApp()->ValentinaSettings()->GetShowAllLabels()
+                                             ? tr("Show all point names")
+                                             : tr("Hide point names"));
+    };
+    syncShowAllLabelsText();
+    connect(ui->actionShowAllLabels, &QAction::triggered, this,
+            [this, syncShowAllLabelsText]()
             {
-                VAbstractValApplication::VApp()->ValentinaSettings()->SetHideLabels(checked);
+                auto *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+                settings->SetShowAllLabels(not settings->GetShowAllLabels());
+                syncShowAllLabelsText();
+                ui->actionShowAllLabels->setChecked(true); // keep the check visible
                 ScaleChanged(ui->view->transform().m11());
             });
 

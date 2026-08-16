@@ -128,7 +128,6 @@ private:
     auto CreateAddToGroupMenu(QMenu &menu, quint32 itemId) -> QActionGroup *;
     auto CreateRemoveFromGroupMenu(QMenu &menu, quint32 itemId) -> QActionGroup *;
     auto CreateShowLabelAction(QMenu &menu, GOType itemType, quint32 itemId) -> QAction *;
-    auto CreateRestoreLabelAction(QMenu &menu, GOType itemType) -> QAction *;
     auto CreateRemoveAction(QMenu &menu) -> QAction *;
 
     struct MenuActions
@@ -136,7 +135,6 @@ private:
         const QAction *option{nullptr};
         QAction *remove{nullptr};
         QAction *showLabel{nullptr};
-        QAction *restoreLabelPosition{nullptr};
         QActionGroup *addToGroup{nullptr};
         QActionGroup *removeFromGroup{nullptr};
     };
@@ -161,7 +159,6 @@ template<class Dialog>
  * - Options dialog for tool configuration
  * - Add/remove items to/from groups
  * - Show/hide point labels (points only)
- * - Restore label positions (points only)
  * - Delete tool or item
  * 
  * @param event The context menu event containing position and triggering information
@@ -191,7 +188,6 @@ void VDrawTool::ContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 itemI
     auto *actionsRemoveFromGroup = CreateRemoveFromGroupMenu(menu, itemId);
 
     QAction *actionShowLabel = CreateShowLabelAction(menu, itemType, itemId);
-    QAction *actionRestoreLabelPosition = CreateRestoreLabelAction(menu, itemType);
     QAction *actionRemove = CreateRemoveAction(menu);
 
     // Execute menu and handle selection
@@ -206,7 +202,6 @@ void VDrawTool::ContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 itemI
                                 {.option = actionOption,
                                  .remove = actionRemove,
                                  .showLabel = actionShowLabel,
-                                 .restoreLabelPosition = actionRestoreLabelPosition,
                                  .addToGroup = actionsAddToGroup,
                                  .removeFromGroup = actionsRemoveFromGroup},
                                 itemId);
@@ -234,10 +229,6 @@ void VDrawTool::HandleMenuSelection(const QAction *selectedAction, const MenuAct
     else if (selectedAction == actions.showLabel)
     {
         ChangeLabelVisibility(itemId, selectedAction->isChecked());
-    }
-    else if (selectedAction == actions.restoreLabelPosition)
-    {
-        UpdateNamePosition(itemId, QPointF(labelMX, labelMY));
     }
     else if (selectedAction->actionGroup() == actions.addToGroup)
     {

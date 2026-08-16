@@ -293,7 +293,7 @@ auto VDrawTool::CreateRemoveFromGroupMenu(QMenu &menu, quint32 itemId) -> QActio
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief Creates the "Show label" toggle action for point items.
+ * @brief Creates the "Show Point name" toggle action for point items.
  * 
  * @param menu The parent menu to add the action to
  * @param itemType The type of the geometric object
@@ -302,7 +302,7 @@ auto VDrawTool::CreateRemoveFromGroupMenu(QMenu &menu, quint32 itemId) -> QActio
  */
 auto VDrawTool::CreateShowLabelAction(QMenu &menu, GOType itemType, quint32 itemId) -> QAction *
 {
-    QAction *actionShowLabel = menu.addAction(tr("Show label"));
+    QAction *actionShowLabel = menu.addAction(tr("Show Point name"));
     actionShowLabel->setCheckable(true);
 
     if (itemType == GOType::Point)
@@ -315,21 +315,6 @@ auto VDrawTool::CreateShowLabelAction(QMenu &menu, GOType itemType, quint32 item
     }
 
     return actionShowLabel;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief Creates the "Restore label position" action for point items.
- * 
- * @param menu The parent menu to add the action to
- * @param itemType The type of the geometric object
- * @return Action for restoring label position, visible only for points
- */
-auto VDrawTool::CreateRestoreLabelAction(QMenu &menu, GOType itemType) -> QAction *
-{
-    QAction *actionRestoreLabelPosition = menu.addAction(VDrawTool::tr("Restore label position"));
-    actionRestoreLabelPosition->setVisible(itemType == GOType::Point);
-    return actionRestoreLabelPosition;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

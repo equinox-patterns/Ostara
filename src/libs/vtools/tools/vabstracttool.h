@@ -105,6 +105,7 @@ public:
     virtual void TriggerChoosed() {}
     virtual void ChangeLabelPosition(quint32 id, const QPointF &pos);
     virtual void ChangeSegmentLabelPosition(SegmentLabel segment, const QPointF &pos);
+    /** @brief Toggle the point name visibility ("Label" = point name). Distinct from VSegmentLabel::SetLabelVisible. */
     virtual void SetLabelVisible(quint32 id, bool visible);
 public slots:
     /**

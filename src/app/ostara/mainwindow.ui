@@ -117,7 +117,7 @@
     <addaction name="actionIncreaseLabelFont"/>
     <addaction name="actionDecreaseLabelFont"/>
     <addaction name="actionOriginalLabelFont"/>
-    <addaction name="actionHideLabels"/>
+    <addaction name="actionShowAllLabels"/>
     <addaction name="separator"/>
     <addaction name="actionReloadLabels"/>
     <addaction name="actionAutoArrangeLabels"/>
@@ -1161,7 +1161,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionHideLabels">
+  <action name="actionShowAllLabels">
    <property name="checkable">
     <bool>true</bool>
    </property>

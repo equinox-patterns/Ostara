@@ -591,24 +591,29 @@ QRadioButton:disabled {
     color: #4c4c4c;
 }
 
-QCheckBox::indicator {
-    width: 16px;
-    height: 16px;
+QCheckBox::indicator,
+QTreeView::indicator {
+    width: 18px;
+    height: 18px;
 }
 
-QCheckBox::indicator:unchecked {
+QCheckBox::indicator:unchecked,
+QTreeView::indicator:unchecked {
     image: url(:/icons/dark/square_accent.svg);
 }
 
-QCheckBox::indicator:checked {
+QCheckBox::indicator:checked,
+QTreeView::indicator:checked {
     image: url(:/icons/dark/square-logo-fill_accent.svg);
 }
 
-QCheckBox::indicator:unchecked:disabled {
+QCheckBox::indicator:unchecked:disabled,
+QTreeView::indicator:unchecked:disabled {
     image: url(:/icons/dark/square_disabled.svg);
 }
 
-QCheckBox::indicator:checked:disabled {
+QCheckBox::indicator:checked:disabled,
+QTreeView::indicator:checked:disabled {
     image: url(:/icons/dark/square-logo-fill_disabled.svg);
 }
 

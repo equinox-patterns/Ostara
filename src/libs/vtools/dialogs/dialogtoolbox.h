@@ -89,6 +89,7 @@ auto OkColor(const QWidget *widget) -> QColor;
 auto GetColorDotPixmap(const QColor &color, int diameter = 10) -> QPixmap;
 void CheckPointLabel(QDialog *dialog, QLineEdit *edit, QLabel *labelEditNamePoint, const QString &pointName,
                      const VContainer *data, bool &flag);
+auto AddShowPointNameCheckbox(QFormLayout *layout) -> QCheckBox *;
 auto FindNotExcludedNeighborNodeDown(QListWidget *listWidget, int candidate) -> int;
 auto FindNotExcludedNeighborNodeUp(QListWidget *listWidget, int candidate) -> int;
 auto FindNotExcludedNodeDown(QListWidget *listWidget, int candidate) -> int;

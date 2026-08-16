@@ -80,6 +80,8 @@ DialogCurveIntersectAxis::DialogCurveIntersectAxis(const VContainer *data, VAbst
     flagName(true)
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     InitIcons();
 

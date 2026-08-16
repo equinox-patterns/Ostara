@@ -148,6 +148,7 @@ auto VToolBisector::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScen
     initData.typeLine = dialogTool->GetTypeLine();
     initData.lineColor = dialogTool->GetLineColor();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;

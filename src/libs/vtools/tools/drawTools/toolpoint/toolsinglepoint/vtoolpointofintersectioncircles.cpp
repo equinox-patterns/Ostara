@@ -112,6 +112,7 @@ auto VToolPointOfIntersectionCircles::Create(const QPointer<DialogTool> &dialog,
     initData.secondCircleRadius = dialogTool->GetSecondCircleRadius();
     initData.crossPoint = dialogTool->GetCrossCirclesPoint();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;

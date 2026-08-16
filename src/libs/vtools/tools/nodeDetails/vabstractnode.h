@@ -51,7 +51,7 @@ struct VAbstractNodeInitData : VAbstractToolInitData
     quint32 idTool{NULL_ID};
     qreal mx{0};
     qreal my{0};
-    bool showLabel{true};
+    bool showLabel{false};
     bool showLabelExplicit{false};
 };
 

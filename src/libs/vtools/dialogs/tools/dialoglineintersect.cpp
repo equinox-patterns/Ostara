@@ -68,6 +68,8 @@ DialogLineIntersect::DialogLineIntersect(const VContainer *data, VAbstractPatter
     flagName(true)
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     MakeFilterableComboBox(ui->comboBoxP1Line1);
     MakeFilterableComboBox(ui->comboBoxP2Line1);

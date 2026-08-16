@@ -59,9 +59,10 @@ public:
     /** @brief _y y coordinate */
     qreal _y{0}; // NOLINT(misc-non-private-member-variables-in-classes)
 
-    /** @brief m_hideLabel show or not label for this point */
-    bool m_showLabel{true}; // NOLINT(misc-non-private-member-variables-in-classes)
+    /** @brief m_showLabel whether the point name is shown on the canvas */
+    bool m_showLabel{false}; // NOLINT(misc-non-private-member-variables-in-classes)
 
+    /** @brief Whether m_showLabel was explicitly set (vs. the default hidden state) */
     bool m_showLabelExplicit{false}; // NOLINT(misc-non-private-member-variables-in-classes)
 
 private:

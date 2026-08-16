@@ -72,6 +72,8 @@ DialogEndLine::DialogEndLine(const VContainer *data, VAbstractPattern *doc, quin
     flagName(true)
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     ui->lineEditNamePoint->setClearButtonEnabled(true);
 

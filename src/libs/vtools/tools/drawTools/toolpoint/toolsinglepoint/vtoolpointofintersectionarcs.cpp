@@ -485,6 +485,7 @@ auto VToolPointOfIntersectionArcs::Create(const QPointer<DialogTool> &dialog, VM
     initData.secondArcId = dialogTool->GetSecondArcId();
     initData.pType = dialogTool->GetCrossArcPoint();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;

@@ -50,7 +50,7 @@ struct VToolSinglePointInitData : VDrawToolInitData
     QString lineRoleName{};
     qreal mx{labelMX};
     qreal my{labelMY};
-    bool showLabel{true};
+    bool showLabel{false};
 };
 
 /**

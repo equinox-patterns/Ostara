@@ -270,7 +270,7 @@ auto BackgroundSVGItemProperties() -> std::vector<PropertyDesc>;
 auto PointOfIntersectionArcsProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolPointOfIntersectionArcs>(T("Point label:")),
+        MakePointName<VToolPointOfIntersectionArcs>(T("Point name:")),
         MakeParentPoint<VToolPointOfIntersectionArcs>(AttrFirstArc, T("First arc:"), &VToolPointOfIntersectionArcs::FirstArcName),
         MakeParentPoint<VToolPointOfIntersectionArcs>(AttrSecondArc, T("Second arc:"), &VToolPointOfIntersectionArcs::SecondArcName),
         MakeCrossPoint<VToolPointOfIntersectionArcs>(T("Take:")),
@@ -290,7 +290,7 @@ auto PointOfIntersectionArcsProperties() -> std::vector<PropertyDesc>
 auto PointOfIntersectionCirclesProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolPointOfIntersectionCircles>(T("Point label:")),
+        MakePointName<VToolPointOfIntersectionCircles>(T("Point name:")),
         MakeParentPoint<VToolPointOfIntersectionCircles>(AttrC1Center, T("Center of the first circle:"), &VToolPointOfIntersectionCircles::FirstCircleCenterPointName),
         MakeParentPoint<VToolPointOfIntersectionCircles>(AttrC2Center, T("Center of the second circle:"), &VToolPointOfIntersectionCircles::SecondCircleCenterPointName),
         // First circle radius (custom formula)
@@ -340,7 +340,7 @@ auto PointOfIntersectionCirclesProperties() -> std::vector<PropertyDesc>
 auto PointOfIntersectionCurvesProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolPointOfIntersectionCurves>(T("Point label:")),
+        MakePointName<VToolPointOfIntersectionCurves>(T("Point name:")),
         MakeParentPoint<VToolPointOfIntersectionCurves>(AttrCurve1, T("First curve:"), &VToolPointOfIntersectionCurves::FirstCurveName),
         MakeParentPoint<VToolPointOfIntersectionCurves>(AttrCurve2, T("Second curve:"), &VToolPointOfIntersectionCurves::SecondCurveName),
         MakeVCrossPoint<VToolPointOfIntersectionCurves>(T("Vertical correction:")),
@@ -361,7 +361,7 @@ auto PointOfIntersectionCurvesProperties() -> std::vector<PropertyDesc>
 auto PointFromCircleAndTangentProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolPointFromCircleAndTangent>(T("Point label:")),
+        MakePointName<VToolPointFromCircleAndTangent>(T("Point name:")),
         MakeParentPoint<VToolPointFromCircleAndTangent>(AttrCCenter, T("Center of the circle:"), &VToolPointFromCircleAndTangent::CircleCenterPointName),
         MakeParentPoint<VToolPointFromCircleAndTangent>(AttrTangent, T("Tangent point:"), &VToolPointFromCircleAndTangent::TangentPointName),
         // Circle radius (custom formula)
@@ -392,7 +392,7 @@ auto PointFromCircleAndTangentProperties() -> std::vector<PropertyDesc>
 auto PointFromArcAndTangentProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolPointFromArcAndTangent>(T("Point label:")),
+        MakePointName<VToolPointFromArcAndTangent>(T("Point name:")),
         MakeParentPoint<VToolPointFromArcAndTangent>(AttrTangent, T("Tangent point:"), &VToolPointFromArcAndTangent::TangentPointName),
         MakeParentPoint<VToolPointFromArcAndTangent>(AttrArc, T("Arc:"), &VToolPointFromArcAndTangent::ArcName),
         MakeCrossPoint<VToolPointFromArcAndTangent>(T("Take:")),

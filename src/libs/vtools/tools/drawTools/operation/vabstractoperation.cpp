@@ -381,7 +381,7 @@ auto VAbstractOperation::ExtractDestinationData(const QDomElement &domElement) -
                                             VDomDocument::GetParametrDouble(element, AttrMx, QChar('1'))),
                                         .my = VAbstractValApplication::VApp()->toPixel(
                                             VDomDocument::GetParametrDouble(element, AttrMy, QChar('1'))),
-                                        .showLabel = VDomDocument::GetParametrBool(element, AttrShowLabel, trueStr)});
+                                        .showLabel = VDomDocument::GetParametrBool(element, AttrShowLabel, falseStr)});
                 }
             }
 
@@ -751,6 +751,7 @@ void VAbstractOperation::ChangeLabelVisibility(quint32 id, bool visible)
         {
             dItem->showLabel = visible;
         }
+        SetLabelVisible(id, visible);
     }
 }
 

@@ -713,7 +713,7 @@ void VPattern::ParseNodePoint(const QDomElement &domElement, const Document &par
         PointsCommonAttributes(domElement, initData.id, initData.mx, initData.my);
         initData.idObject = GetParametrUInt(domElement, AttrIdObject, NULL_ID_STR);
         initData.idTool = GetParametrUInt(domElement, VAbstractNode::AttrIdTool, NULL_ID_STR);
-        initData.showLabel = GetParametrBool(domElement, AttrShowLabel, trueStr);
+        initData.showLabel = GetParametrBool(domElement, AttrShowLabel, falseStr);
         initData.showLabelExplicit = domElement.hasAttribute(AttrShowLabel);
 
         VNodePoint::Create(initData);
@@ -1490,12 +1490,12 @@ void VPattern::ParseToolTrueDarts(VMainGraphicsScene *scene, const QDomElement &
         initData.name1 = GetParametrString(domElement, AttrName1, QChar('A'));
         initData.mx1 = app->toPixel(GetParametrDouble(domElement, AttrMx1, labelMXStr));
         initData.my1 = app->toPixel(GetParametrDouble(domElement, AttrMy1, labelMYStr));
-        initData.showLabel1 = GetParametrBool(domElement, AttrShowLabel1, trueStr);
+        initData.showLabel1 = GetParametrBool(domElement, AttrShowLabel1, falseStr);
 
         initData.name2 = GetParametrString(domElement, AttrName2, QChar('A'));
         initData.mx2 = app->toPixel(GetParametrDouble(domElement, AttrMx2, labelMXStr));
         initData.my2 = app->toPixel(GetParametrDouble(domElement, AttrMy2, labelMYStr));
-        initData.showLabel2 = GetParametrBool(domElement, AttrShowLabel2, trueStr);
+        initData.showLabel2 = GetParametrBool(domElement, AttrShowLabel2, falseStr);
 
         VToolTrueDarts::Create(initData);
     }

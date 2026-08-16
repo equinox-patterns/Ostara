@@ -379,6 +379,7 @@ auto VToolCurveIntersectAxis::Create(const QPointer<DialogTool> &dialog, VMainGr
     initData.typeLine = dialogTool->GetTypeLine();
     initData.lineColor = dialogTool->GetLineColor();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;
@@ -794,7 +795,7 @@ auto VToolCurveIntersectAxis::MakeToolTip() const -> QString
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true),
                                      tr("Angle"))  // 3, 4
                                 .arg(line.angle()) // 5
-                                .arg(tr("Label"),
+                                .arg(tr("Point name"),
                                      second->name(), /* 6, 7 */
                                      tr("Segment 1"),
                                      segment1->ObjectName(), /* 8, 9 */

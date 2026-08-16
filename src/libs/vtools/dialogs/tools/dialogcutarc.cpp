@@ -67,6 +67,8 @@ DialogCutArc::DialogCutArc(const VContainer *data, VAbstractPattern *doc, quint3
     m_formula(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     InitIcons();
 

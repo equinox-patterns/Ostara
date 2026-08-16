@@ -55,6 +55,8 @@ DialogPointOfIntersection::DialogPointOfIntersection(const VContainer *data, VAb
     flagError(true)
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     // Re-add spanning 2 rows
     ui->gridLayout->removeItem(ui->gridLayout->itemAtPosition(0, 2));

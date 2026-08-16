@@ -381,7 +381,7 @@ auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
 auto CutArcProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectName<VToolCutArc>(T("Point label:")),
+        MakeObjectName<VToolCutArc>(T("Point name:")),
         MakeParentPoint<VToolCutArc>(AttrArc, T("Arc:"), &VToolCutArc::CurveName),
         MakeStringPropWithValidator<VToolCutArc>(AttrCurveName1, T("Name1:"), &VToolCutArc::GetName1, &VToolCutArc::SetName1),
         MakeStringPropWithValidator<VToolCutArc>(AttrCurveName2, T("Name2:"), &VToolCutArc::GetName2, &VToolCutArc::SetName2),
@@ -414,7 +414,7 @@ auto CutArcProperties() -> std::vector<PropertyDesc>
 auto CutSplineProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectName<VToolCutSpline>(T("Point label:")),
+        MakeObjectName<VToolCutSpline>(T("Point name:")),
         MakeParentPoint<VToolCutSpline>(AttrCurve, T("Curve:"), &VToolCutSpline::CurveName),
         MakeStringPropWithValidator<VToolCutSpline>(AttrCurveName1, T("Name1:"), &VToolCutSpline::GetName1, &VToolCutSpline::SetName1),
         MakeStringPropWithValidator<VToolCutSpline>(AttrCurveName2, T("Name2:"), &VToolCutSpline::GetName2, &VToolCutSpline::SetName2),
@@ -447,7 +447,7 @@ auto CutSplineProperties() -> std::vector<PropertyDesc>
 auto CutSplinePathProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectName<VToolCutSplinePath>(T("Point label:")),
+        MakeObjectName<VToolCutSplinePath>(T("Point name:")),
         MakeParentPoint<VToolCutSplinePath>(AttrCurve, T("Curve:"), &VToolCutSplinePath::CurveName),
         MakeStringPropWithValidator<VToolCutSplinePath>(AttrCurveName1, T("Name1:"), &VToolCutSplinePath::GetName1, &VToolCutSplinePath::SetName1),
         MakeStringPropWithValidator<VToolCutSplinePath>(AttrCurveName2, T("Name2:"), &VToolCutSplinePath::GetName2, &VToolCutSplinePath::SetName2),

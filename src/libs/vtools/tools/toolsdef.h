@@ -62,7 +62,7 @@ struct DestinationItem
     quint32 id{NULL_ID};
     qreal mx{1};
     qreal my{1};
-    bool showLabel{true};
+    bool showLabel{false};
     QUuid recordId{};
 };
 

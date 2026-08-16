@@ -136,9 +136,11 @@ const QString AttrFollowGrainline = QStringLiteral("followGrainline");
 const QString AttrSewLineOnDrawing = QStringLiteral("sewLineOnDrawing");
 const QString AttrRotationAngle = QStringLiteral("rotationAngle");
 const QString AttrClosed = QStringLiteral("closed");
-const QString AttrShowLabel = QStringLiteral("showLabel");
-const QString AttrShowLabel1 = QStringLiteral("showLabel1");
-const QString AttrShowLabel2 = QStringLiteral("showLabel2");
+// C++ identifier keeps the Valentina name "Label" (= point name); the XML attribute is "showPointName"
+// to disambiguate the point-name label from piece/segment labels.
+const QString AttrShowLabel = QStringLiteral("showPointName");
+const QString AttrShowLabel1 = QStringLiteral("showPointName1");
+const QString AttrShowLabel2 = QStringLiteral("showPointName2");
 const QString AttrWidth = QStringLiteral("width");
 const QString AttrTrueZeroWidth = QStringLiteral("trueZeroWidth");
 const QString AttrHeight = QStringLiteral("height");

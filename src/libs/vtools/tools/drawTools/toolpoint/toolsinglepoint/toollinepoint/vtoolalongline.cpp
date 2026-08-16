@@ -174,7 +174,7 @@ auto VToolAlongLine::MakeToolTip() const -> QString
                                 .arg(QStringLiteral("%1->%2").arg(basePoint->name(), current->name()),
                                      QStringLiteral("%1->%2").arg(current->name(), secondPoint->name()))
                                 .arg(VAbstractValApplication::VApp()->fromPixel(curToSecond.length()))
-                                .arg(tr("Label"), current->name());
+                                .arg(tr("Point name"), current->name());
     return toolTip;
 }
 
@@ -322,6 +322,7 @@ auto VToolAlongLine::Create(const QPointer<DialogTool> &dialog, VMainGraphicsSce
     initData.typeLine = dialogTool->GetTypeLine();
     initData.lineColor = dialogTool->GetLineColor();
     initData.name = dialogTool->GetPointName();
+    initData.showLabel = dialogTool->GetShowLabel();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;

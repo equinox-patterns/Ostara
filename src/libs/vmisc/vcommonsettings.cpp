@@ -162,7 +162,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternShowCurveDetails, ("patte
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternShowSegmentLabels, ("pattern/showSegmentLabels"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternPieceShowMainPath, ("pattern/pieceShowMainPath"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelFontSize, ("pattern/labelFontSize"_L1))           // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternHideLabels, ("pattern/hideLabels"_L1))                 // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternShowAllLabels, ("pattern/showAllLabels"_L1))                 // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternShowAccuracyRadius, ("pattern/showAccuracyRadius"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternUseOpenGLRender, ("pattern/useOpenGLRender"_L1))       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternGraphicalOutput, ("pattern/graphicalOutput"_L1))       // NOLINT
@@ -1269,15 +1269,15 @@ auto VCommonSettings::GetDefPatternLabelFontSize() -> int
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetHideLabels() const -> bool
+auto VCommonSettings::GetShowAllLabels() const -> bool
 {
-    return value(*settingPatternHideLabels, false).toBool();
+    return value(*settingPatternShowAllLabels, false).toBool();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetHideLabels(bool value)
+void VCommonSettings::SetShowAllLabels(bool value)
 {
-    setValue(*settingPatternHideLabels, value);
+    setValue(*settingPatternShowAllLabels, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

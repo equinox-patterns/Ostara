@@ -434,6 +434,14 @@ void CheckPointLabel(QDialog *dialog, QLineEdit *edit, QLabel *labelEditNamePoin
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto AddShowPointNameCheckbox(QFormLayout *layout) -> QCheckBox *
+{
+    auto *checkBox = new QCheckBox(QCoreApplication::translate("DialogTool", "Show Point name"));
+    layout->addRow(checkBox);
+    return checkBox;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto FindNotExcludedNeighborNodeDown(QListWidget *listWidget, int candidate) -> int
 {
     SCASSERT(listWidget != nullptr);

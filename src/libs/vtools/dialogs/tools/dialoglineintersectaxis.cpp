@@ -79,6 +79,8 @@ DialogLineIntersectAxis::DialogLineIntersectAxis(const VContainer *data, VAbstra
     flagName(true)
 {
     ui->setupUi(this);
+    connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
+            [this](bool checked) { SetShowLabel(checked); });
 
     InitIcons();
 

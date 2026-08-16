@@ -86,6 +86,7 @@ public:
     auto y() const -> qreal;
     void setY(const qreal &value);
 
+    // "Label" here = the point's name (the text drawn next to the point), NOT a piece or segment label.
     auto IsShowLabel() const -> bool;
     void SetShowLabel(bool hide);
 

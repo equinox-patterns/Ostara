@@ -81,7 +81,7 @@ protected:
     bool m_onlyPoint{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_isHovered{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_alwaysHovered{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
-    bool m_showLabel{true};  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+    bool m_showLabel{false};  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 
     bool m_selectedFromChild{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 
