@@ -529,9 +529,7 @@ void VMainGraphicsView::ZoomFitBest()
 {
     auto *currentScene = qobject_cast<VMainGraphicsScene *>(scene());
     SCASSERT(currentScene)
-    currentScene->SetOriginsVisible(false);
     const QRectF rect = currentScene->VisibleItemsBoundingRect();
-    currentScene->SetOriginsVisible(true);
     if (rect.isEmpty())
     {
         return;

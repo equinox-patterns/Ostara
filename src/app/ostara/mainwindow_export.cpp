@@ -83,16 +83,12 @@ void MainWindow::ExportDraw(const QString &fileName)
 
     ui->view->repaint();
 
-    m_sceneDraw->SetOriginsVisible(false);
-
     const QRectF rect = m_sceneDraw->VisibleItemsBoundingRect();
     m_sceneDraw->update(rect);
     exporter.SetImageRect(rect);
     exporter.SetOffset(rect.topLeft()); // Correct positions to fit SVG view rect
 
     exporter.ExportToSVG(m_sceneDraw, QList<QGraphicsItem *>());
-
-    m_sceneDraw->SetOriginsVisible(true);
 
     // Restore scale, scrollbars and current active pattern piece
     ui->view->setTransform(viewTransform);

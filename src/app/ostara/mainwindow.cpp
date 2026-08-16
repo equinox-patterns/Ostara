@@ -616,12 +616,6 @@ void MainWindow::AddPP(const QString &PPName)
         return;
     }
 
-    if (m_comboBoxDraws->count() == 0)
-    {
-        m_sceneDraw->InitOrigins();
-        m_sceneDetails->InitOrigins();
-    }
-
     QSignalBlocker blocker(m_comboBoxDraws);
     m_comboBoxDraws->addItem(PPName);
 

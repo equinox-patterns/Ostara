@@ -28,24 +28,12 @@
 
 #include "vmaingraphicsscene.h"
 
-#include <QBrush>
 #include <QEvent>
 #include <QGraphicsItem>
-#include <QGraphicsLineItem>
 #include <QGraphicsSceneMouseEvent>
-#include <QGraphicsSimpleTextItem>
 #include <QGraphicsView>
-#include <QLineF>
-#include <QPen>
 
 #include "global.h"
-
-namespace
-{
-// Marks scene items that make up the origin (axis) decoration, so SetOriginsVisible() can find them by
-// querying the live scene instead of caching raw pointers that dangle once the items are deleted.
-constexpr int originItemData = 0;
-} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -220,112 +208,6 @@ auto VMainGraphicsScene::IsNonInteractive() const -> bool
 void VMainGraphicsScene::SetNonInteractive(bool nonInteractive)
 {
     m_nonInteractive = nonInteractive;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VMainGraphicsScene::InitOrigins()
-{
-    QPen const originsPen(Qt::green, MmToPixel(1.2 / 3.0), Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-    QBrush const axisTextBrush(Qt::green);
-    const qreal arrowAngle = 35.0;
-    const qreal arrowLength = 12.0;
-
-    {
-        // X axis
-        const QLineF lineX(QPointF(25, 0), QPointF(-5, 0));
-        auto *xLine1 = new QGraphicsLineItem(lineX);
-        xLine1->setPen(originsPen);
-        xLine1->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        xLine1->setZValue(-0.5);
-        addItem(xLine1);
-        xLine1->setData(originItemData, true);
-
-        // Arrow left side
-        QLineF arrowLeftLine = lineX;
-        arrowLeftLine.setAngle(arrowLeftLine.angle() - arrowAngle);
-        arrowLeftLine.setLength(arrowLength);
-        auto *xLine2 = new QGraphicsLineItem(arrowLeftLine);
-        xLine2->setPen(originsPen);
-        xLine2->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        xLine2->setZValue(-0.5);
-        addItem(xLine2);
-        xLine2->setData(originItemData, true);
-
-        // Arrow right side
-        QLineF arrowRightLine = lineX;
-        arrowRightLine.setAngle(arrowRightLine.angle() + arrowAngle);
-        arrowRightLine.setLength(arrowLength);
-        auto *xLine3 = new QGraphicsLineItem(arrowRightLine);
-        xLine3->setPen(originsPen);
-        xLine3->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        xLine3->setZValue(-0.5);
-        addItem(xLine3);
-        xLine3->setData(originItemData, true);
-
-        // X axis text
-        auto *xOrigin = new QGraphicsSimpleTextItem(QStringLiteral("X"), xLine1);
-        xOrigin->setBrush(axisTextBrush);
-        xOrigin->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        xOrigin->setZValue(-0.5);
-        xOrigin->setPos(30, -(xOrigin->boundingRect().height() / 2));
-        xOrigin->setData(originItemData, true);
-    }
-
-    {
-        // Y axis
-        const QLineF lineY(QPointF(0, 25), QPointF(0, -5));
-        auto *yLine1 = new QGraphicsLineItem(lineY);
-        yLine1->setPen(originsPen);
-        yLine1->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        yLine1->setZValue(-0.5);
-        addItem(yLine1);
-        yLine1->setData(originItemData, true);
-
-        // Arrow left side
-        QLineF arrowLeftLine = lineY;
-        arrowLeftLine.setAngle(arrowLeftLine.angle() - arrowAngle);
-        arrowLeftLine.setLength(arrowLength);
-        auto *yLine2 = new QGraphicsLineItem(arrowLeftLine);
-        yLine2->setPen(originsPen);
-        yLine2->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        yLine2->setZValue(-0.5);
-        addItem(yLine2);
-        yLine2->setData(originItemData, true);
-
-        // Arrow right side
-        QLineF arrowRightLine = lineY;
-        arrowRightLine.setAngle(arrowRightLine.angle() + arrowAngle);
-        arrowRightLine.setLength(arrowLength);
-        auto *yLine3 = new QGraphicsLineItem(arrowRightLine);
-        yLine3->setPen(originsPen);
-        yLine3->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        yLine3->setZValue(-0.5);
-        addItem(yLine3);
-        yLine3->setData(originItemData, true);
-
-        // Y axis text
-        auto *yOrigin = new QGraphicsSimpleTextItem(QStringLiteral("Y"), yLine1);
-        yOrigin->setBrush(axisTextBrush);
-        yOrigin->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        yOrigin->setZValue(-0.5);
-        yOrigin->setPos(-(yOrigin->boundingRect().width() / 2), 30);
-        yOrigin->setData(originItemData, true);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VMainGraphicsScene::SetOriginsVisible(bool visible) const
-{
-    // Derive the origin items from the live scene instead of a cache, so items deleted by clear() can never
-    // be dereferenced here.
-    const QList<QGraphicsItem *> sceneItems = items();
-    for (auto *item : sceneItems)
-    {
-        if (item != nullptr && item->data(originItemData).toBool())
-        {
-            item->setVisible(visible);
-        }
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

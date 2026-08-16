@@ -839,9 +839,7 @@ void VPattern::PrepareForParse(const Document &parse)
     {
         RefreshElementIdCache();
         sceneDraw->clear();
-        sceneDraw->InitOrigins();
         sceneDetail->clear();
-        sceneDetail->InitOrigins();
         data->ClearForFullParse();
         PatternBlockMapper()->Clear();
 

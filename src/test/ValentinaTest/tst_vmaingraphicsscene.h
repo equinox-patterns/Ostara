@@ -39,7 +39,6 @@ public:
     ~TST_VMainGraphicsScene() override = default;
 
 private slots:
-    void SetOriginsVisibleIsSceneDerived() const;
     void ClearDestroysVisualizationItem() const;
 
 private:

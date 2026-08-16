@@ -29,7 +29,6 @@
 
 #include "../vwidgets/vmaingraphicsscene.h"
 
-#include <QGraphicsLineItem>
 #include <QGraphicsObject>
 #include <QPointer>
 #include <QtTest>
@@ -50,35 +49,6 @@ public:
 TST_VMainGraphicsScene::TST_VMainGraphicsScene(QObject *parent)
   : QObject(parent)
 {
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-// Regression test for a use-after-free crash (EXC_BAD_ACCESS during undo -> MainWindow::Clear()).
-// SetOriginsVisible() must toggle only the origin (axis) items and must stay safe after the scene has been
-// cleared - it derives them from the live scene, so a stale pointer to a deleted item can never be touched.
-void TST_VMainGraphicsScene::SetOriginsVisibleIsSceneDerived() const
-{
-    VMainGraphicsScene scene;
-
-    scene.InitOrigins();
-    auto *other = new QGraphicsLineItem(QLineF(0, 0, 10, 10)); // a non-origin item that must not be toggled
-    scene.addItem(other);
-
-    const QList<QGraphicsItem *> allItems = scene.items();
-    QVERIFY2(allItems.size() > 1, "InitOrigins() must add origin items to the scene.");
-
-    scene.SetOriginsVisible(false);
-    for (const auto *item : allItems)
-    {
-        // Origin items carry a marker (data key 0); everything else must keep its visibility.
-        QCOMPARE(item->isVisible(), not item->data(0).toBool());
-    }
-    QVERIFY2(other->isVisible(), "Non-origin items must not be affected by SetOriginsVisible().");
-
-    // After clearing the scene the origin items are gone; this must be a safe no-op, not a dangling access.
-    scene.clear();
-    scene.SetOriginsVisible(true);
-    QVERIFY(scene.items().isEmpty());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
