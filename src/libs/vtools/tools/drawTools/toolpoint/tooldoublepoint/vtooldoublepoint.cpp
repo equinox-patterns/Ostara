@@ -309,6 +309,13 @@ void VToolDoublePoint::ChangeLabelPosition(quint32 id, const QPointF &pos)
         point->setMy(pos.y());
         firstPoint->RefreshPointGeometry(*(point.data()));
 
+        QDomElement element = doc->FindElementById(m_id, getTagName());
+        if (element.isElement())
+        {
+            doc->SetAttribute(element, AttrMx1, VAbstractValApplication::VApp()->fromPixel(pos.x()));
+            doc->SetAttribute(element, AttrMy1, VAbstractValApplication::VApp()->fromPixel(pos.y()));
+        }
+
         if (QGraphicsScene *sc = firstPoint->scene())
         {
             VMainGraphicsView::NewSceneRect(sc, VAbstractValApplication::VApp()->getSceneView(), firstPoint);
@@ -320,6 +327,13 @@ void VToolDoublePoint::ChangeLabelPosition(quint32 id, const QPointF &pos)
         point->setMx(pos.x());
         point->setMy(pos.y());
         secondPoint->RefreshPointGeometry(*(point.data()));
+
+        QDomElement element = doc->FindElementById(m_id, getTagName());
+        if (element.isElement())
+        {
+            doc->SetAttribute(element, AttrMx2, VAbstractValApplication::VApp()->fromPixel(pos.x()));
+            doc->SetAttribute(element, AttrMy2, VAbstractValApplication::VApp()->fromPixel(pos.y()));
+        }
 
         if (QGraphicsScene *sc = secondPoint->scene())
         {
@@ -367,8 +381,7 @@ void VToolDoublePoint::ToolSelectionType(const SelectionType &selectionType)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolDoublePoint::UpdateNamePosition(quint32 id, const QPointF &pos)
 {
-    Q_UNUSED(id)
-    Q_UNUSED(pos)
+    ChangeLabelPosition(id, pos);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

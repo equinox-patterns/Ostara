@@ -183,8 +183,7 @@ void VToolSinglePoint::NameChangePosition(const QPointF &pos)
  */
 void VToolSinglePoint::UpdateNamePosition(quint32 id, const QPointF &pos)
 {
-    Q_UNUSED(id)
-    Q_UNUSED(pos)
+    ChangeLabelPosition(id, pos);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -371,6 +370,13 @@ void VToolSinglePoint::ChangeLabelPosition(quint32 id, const QPointF &pos)
         point->setMy(pos.y());
         m_namePoint->SetRealPos(pos);
         RefreshLine();
+
+        QDomElement element = doc->FindElementById(m_id, getTagName());
+        if (element.isElement())
+        {
+            doc->SetAttribute(element, AttrMx, VAbstractValApplication::VApp()->fromPixel(pos.x()));
+            doc->SetAttribute(element, AttrMy, VAbstractValApplication::VApp()->fromPixel(pos.y()));
+        }
 
         if (QGraphicsScene *sc = scene())
         {

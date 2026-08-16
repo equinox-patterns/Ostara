@@ -179,6 +179,7 @@ auto VGraphicsSimpleTextItem::itemChange(GraphicsItemChange change, const QVaria
                 m_realPos = line.p2();
             }
             emit NameChangePosition(m_realPos + this->parentItem()->pos());
+            emit UpdateLine();
 
             m_changeFinished = true;
         }

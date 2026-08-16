@@ -5,7 +5,7 @@
     "PointColor": "black",
     "LabelColor": "black",
     "LabelHoverColor": "green",
-    "LabelLineColor": [0, 0, 0, 16],
+    "LabelLineColor": [51, 51, 51, 125],
     "AccuracyRadiusColor": "blue",
     "ControlLineColor": [255, 0, 0, 128],
     "ControlPointColor": "red",
@@ -21,7 +21,7 @@
     "PointColor": "black",
     "NodeLabelColor": "black",
     "NodeLabelHoverColor": "green",
-    "NodeLabelLineColor": [0, 0, 0, 16],
+    "NodeLabelLineColor": [51, 51, 51, 125],
     "LabelBackgroundColor": [251, 251, 175, 128],
     "LabelTextColor": "black",
     "LabelModeColor": "black"

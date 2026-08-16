@@ -235,6 +235,12 @@ void VNodePoint::ChangeLabelPosition(quint32 id, const QPointF &pos)
         point->setMy(pos.y());
         m_namePoint->SetRealPos(pos);
         RefreshLine();
+        QDomElement element = doc->FindElementById(m_id, getTagName());
+        if (element.isElement())
+        {
+            doc->SetAttribute(element, AttrMx, VAbstractValApplication::VApp()->fromPixel(pos.x()));
+            doc->SetAttribute(element, AttrMy, VAbstractValApplication::VApp()->fromPixel(pos.y()));
+        }
         if (QGraphicsScene *sc = scene())
         {
             VMainGraphicsView::NewSceneRect(sc, VAbstractValApplication::VApp()->getSceneView(), this);
@@ -356,7 +362,7 @@ void VNodePoint::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
  */
 void VNodePoint::NameChangePosition(const QPointF &pos)
 {
-    Q_UNUSED(pos)
+    ChangeLabelPosition(m_id, pos - this->pos());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
