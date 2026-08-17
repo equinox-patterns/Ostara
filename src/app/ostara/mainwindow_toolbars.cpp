@@ -71,7 +71,7 @@ auto FormatActionToolTip(const QAction *action) -> QString
 
     if (const auto shortcuts = action->shortcuts(); !shortcuts.isEmpty())
     {
-        const auto sc = shortcuts.constFirst().toString(QKeySequence::NativeText).toLower();
+        const auto sc = VModifierKey::Sequence(shortcuts.constFirst()).toLower();
         return QStringLiteral("%1 (%2)").arg(text, sc);
     }
 

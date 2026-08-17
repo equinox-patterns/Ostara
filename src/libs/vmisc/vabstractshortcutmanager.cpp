@@ -33,6 +33,7 @@
 
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
+#include "vmodifierkey.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "compatibility.h"
@@ -511,8 +512,8 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::StringListToReadableString(const QStringList &stringList) -> QString
 {
-    QString s = QKeySequence::fromString(stringList.join(", "_L1)).toString(QKeySequence::NativeText);
-    return s;
+    const QKeySequence sequence = QKeySequence::fromString(stringList.join(", "_L1));
+    return VModifierKey::Sequence(sequence);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

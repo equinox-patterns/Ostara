@@ -31652,8 +31652,8 @@ Erreur de compatibilité du format .rld: actualFileVersion = %1 alors que fileVe
         <translation>Sélectionner le deuxième point de la courbe</translation>
     </message>
     <message>
-        <source>Select an additional point or press Enter to finish</source>
-        <translation>Sélectionner un point supplémentaire ou appuyer sur Entrée pour terminer</translation>
+        <source>Select an additional point or press &lt;b&gt;%1&lt;/b&gt; to finish</source>
+        <translation>Sélectionner un point supplémentaire ou appuyer sur &lt;b&gt;%1&lt;/b&gt; pour terminer</translation>
     </message>
 </context>
 </TS>

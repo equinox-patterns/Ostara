@@ -35,6 +35,7 @@
 #include "../vgeometry/vsplinepath.h"
 #include "../vgeometry/vsplinepoint.h"
 #include "../vmisc/vabstractapplication.h"
+#include "../vmisc/vmodifierkey.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -112,7 +113,7 @@ void OToolCurve::ChosenObject(quint32 id, const SceneObject &type)
     }
     else
     {
-        emit ToolTip(tr("Select an additional point or press Enter to finish"));
+        emit ToolTip(tr("Select an additional point or press <b>%1</b> to finish").arg(VModifierKey::EnterKey()));
     }
 }
 

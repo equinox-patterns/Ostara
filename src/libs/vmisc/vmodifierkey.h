@@ -30,31 +30,30 @@
 
 #include <QString>
 
+class QKeySequence;
+
 /**
  * A class that helps to deal efficiently with platform and localization issues
  * of modifier keys.
  *
- * It is based on QKeySequence::toString(QKeySequence::NativeText) which provides
- * localization and deals with swapping Ctrl and Cmd on Mac OS X. In contrast
- * to QKeySequence, VModifierKey has an implicit operator for casting to QString,
- * and it removes the trailing '+' from pseudo key sequences which consist of
- * modifier keys only. Static methods provide efficient translations of the
- * pure modifier keys.
+ * Renders keys and modifiers as human-readable words adapted to the current
+ * platform ("Shift", "Ctrl"/"Cmd", "Enter", ...) instead of the graphical
+ * symbols produced by QKeySequence::toString(QKeySequence::NativeText) on macOS.
+ * On Apple platforms, Qt::ControlModifier corresponds to the Command key and is
+ * rendered as "Cmd"; Qt::MetaModifier corresponds to the Control key and is
+ * rendered as "Ctrl".
  *
- * For true QKeySequences, call QKeySequence::toString(QKeySequence::NativeText)
- * directly.
- *
- * On Windows and Linux, the keys will be displayed as word ("Shift" etc.).
- * On OS X, the keys will be displayed as graphical symbols ("⇧", i.e.
- * Unicode character U+21E7, etc.).
+ * In contrast to QKeySequence, VModifierKey has an implicit operator for casting
+ * to QString. Static methods provide the pure modifier keys, and
+ * VModifierKey::Sequence() renders a full QKeySequence as words.
  *
  * Synopsis:
  *
  *     QString text = tr("%1+Click to add a point.").arg(VModifierKey::control());
  *     QString more = tr("%1+Click to select a point.").arg(VModifierKey(Qt::ALT + Qt::ShiftModifier));
  *
- *     // BUT:
- *     QString help = help_action.shortcut().toString(QKeySequence::NativeText);
+ *     // For a full key sequence:
+ *     QString help = VModifierKey::Sequence(help_action.shortcut());
  */
 
 class VModifierKey
@@ -100,6 +99,10 @@ public:
 
     /** Returns a shared Escape modifier key. */
     static auto Escape() -> const VModifierKey &;
+
+    /** Returns the given key sequence rendered as words adapted to the current
+     *  platform (e.g. "Ctrl+Shift+N" / "Cmd+Shift+N"). */
+    static auto Sequence(const QKeySequence &sequence) -> QString;
 
 protected:
     /** Constructs a new VModifierKey for the given key. */

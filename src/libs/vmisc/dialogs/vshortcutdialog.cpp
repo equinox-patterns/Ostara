@@ -27,6 +27,7 @@
  *************************************************************************/
 #include "vshortcutdialog.h"
 #include "../vabstractapplication.h"
+#include "../vmodifierkey.h"
 #include "ui_vshortcutdialog.h"
 
 #include <QAbstractButton>
@@ -114,7 +115,7 @@ void VShortcutDialog::ButtonBoxClicked(QAbstractButton *button)
             auto conflictingShortcut = ShortcutAlreadyBound(sequence, m_shortcutObject.type);
             if (!conflictingShortcut.isEmpty())
             {
-                QString const nativeShortcutString = sequence.toString(QKeySequence::NativeText);
+                QString const nativeShortcutString = VModifierKey::Sequence(sequence);
                 QMessageBox::warning(
                     this, tr("Shortcut Already Used"),
                     tr(R"("%1" is already bound to "%2")").arg(nativeShortcutString, conflictingShortcut));

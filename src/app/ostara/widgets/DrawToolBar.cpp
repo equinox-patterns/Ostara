@@ -38,6 +38,7 @@
 #include <QVBoxLayout>
 
 #include "def.h"
+#include "../vmisc/vmodifierkey.h"
 #include "vtheme.h"
 
 namespace
@@ -78,7 +79,7 @@ auto FormatTooltip(const QString &toolName, const QAction *action) -> QString
     {
         return toolName;
     }
-    const auto shortcut = action->shortcuts().constFirst().toString(QKeySequence::NativeText).toLower();
+    const auto shortcut = VModifierKey::Sequence(action->shortcuts().constFirst()).toLower();
     return QStringLiteral("%1 (%2)").arg(toolName, shortcut);
 }
 } // anonymous namespace

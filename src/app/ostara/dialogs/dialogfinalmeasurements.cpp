@@ -32,6 +32,7 @@
 #include "themeDef.h"
 #include "vtheme.h"
 #include "../vmisc/vabstractvalapplication.h"
+#include "../vmisc/vmodifierkey.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/calculator.h"
 #include "../vtools/dialogs/dialogtoolbox.h"
@@ -945,12 +946,12 @@ void DialogFinalMeasurements::UpdateSearchControlsTooltips()
         if (button->toolTip().contains("%1"_L1))
         {
             m_serachButtonTooltips.insert(button, button->toolTip());
-            button->setToolTip(button->toolTip().arg(button->shortcut().toString(QKeySequence::NativeText)));
+            button->setToolTip(button->toolTip().arg(VModifierKey::Sequence(button->shortcut())));
         }
         else if (m_serachButtonTooltips.contains(button))
         {
             QString const tooltip = m_serachButtonTooltips.value(button);
-            button->setToolTip(tooltip.arg(button->shortcut().toString(QKeySequence::NativeText)));
+            button->setToolTip(tooltip.arg(VModifierKey::Sequence(button->shortcut())));
         }
     };
 

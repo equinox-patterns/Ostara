@@ -31,6 +31,7 @@
 #include "../qmuparser/qmutokenparser.h"
 #include "../vmisc/dialogs/dialogexporttocsv.h"
 #include "../vmisc/qxtcsvmodel.h"
+#include "../vmisc/vmodifierkey.h"
 #include "vtheme.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/calculator.h"
@@ -1313,12 +1314,12 @@ void DialogIncrements::UpdateSearchControlsTooltips()
         if (button->toolTip().contains("%1"_L1))
         {
             m_serachButtonTooltips.insert(button, button->toolTip());
-            button->setToolTip(button->toolTip().arg(button->shortcut().toString(QKeySequence::NativeText)));
+            button->setToolTip(button->toolTip().arg(VModifierKey::Sequence(button->shortcut())));
         }
         else if (m_serachButtonTooltips.contains(button))
         {
             QString const tooltip = m_serachButtonTooltips.value(button);
-            button->setToolTip(tooltip.arg(button->shortcut().toString(QKeySequence::NativeText)));
+            button->setToolTip(tooltip.arg(VModifierKey::Sequence(button->shortcut())));
         }
     };
 
