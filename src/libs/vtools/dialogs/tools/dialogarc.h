@@ -38,6 +38,7 @@
 #include "dialogtool.h"
 
 class FormulaInputWidget;
+class AngleFormulaWidget;
 
 namespace Ui
 {
@@ -106,8 +107,8 @@ private:
     Ui::DialogArc *ui;
 
     FormulaInputWidget *m_formulaRadius;
-    FormulaInputWidget *m_formulaF1;
-    FormulaInputWidget *m_formulaF2;
+    AngleFormulaWidget *m_formulaF1;
+    AngleFormulaWidget *m_formulaF2;
 
     bool m_flagAlias{true};
 

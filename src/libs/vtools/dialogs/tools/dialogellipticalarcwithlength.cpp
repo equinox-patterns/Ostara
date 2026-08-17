@@ -45,6 +45,7 @@
 #include "../vwidgets/global.h"
 #include "../vwidgets/vabstractmainwindow.h"
 #include "../widgets/formulainputwidget.h"
+#include "../widgets/angleformulawidget.h"
 #include "ui_dialogellipticalarcwithlength.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -56,9 +57,9 @@ DialogEllipticalArcWithLength::DialogEllipticalArcWithLength(const VContainer *d
     ui(new Ui::DialogEllipticalArcWithLength),
     m_formulaRadius1(new FormulaInputWidget(this)),
     m_formulaRadius2(new FormulaInputWidget(this)),
-    m_formulaF1(new FormulaInputWidget(this)),
+    m_formulaF1(new AngleFormulaWidget(this)),
     m_formulaLength(new FormulaInputWidget(this)),
-    m_formulaRotationAngle(new FormulaInputWidget(this))
+    m_formulaRotationAngle(new AngleFormulaWidget(this))
 {
     ui->setupUi(this);
 
@@ -92,7 +93,7 @@ DialogEllipticalArcWithLength::DialogEllipticalArcWithLength(const VContainer *d
     m_formulaF1->setLabelText(tr("First angle:"));
     m_formulaF1->setPostfix(degreeSymbol);
     m_formulaF1->setDialogTitle(tr("Edit the first angle"));
-    connect(m_formulaF1, &FormulaInputWidget::valueChanged, this,
+    connect(m_formulaF1, &AngleFormulaWidget::valueChanged, this,
             [this]() { CheckState(); });
 
     m_formulaLength->setData(&this->data);
@@ -108,11 +109,11 @@ DialogEllipticalArcWithLength::DialogEllipticalArcWithLength(const VContainer *d
     m_formulaRotationAngle->setLabelText(tr("Rotation angle:"));
     m_formulaRotationAngle->setPostfix(degreeSymbol);
     m_formulaRotationAngle->setDialogTitle(tr("Edit rotation angle"));
-    connect(m_formulaRotationAngle, &FormulaInputWidget::valueChanged, this,
+    connect(m_formulaRotationAngle, &AngleFormulaWidget::valueChanged, this,
             [this]() { CheckState(); });
 
     // Replace formula placeholders in the UI layout with the actual widgets.
-    auto replacePlaceholder = [this](const char *name, FormulaInputWidget *widget)
+    auto replacePlaceholder = [this](const char *name, QWidget *widget)
     {
         auto *placeholder = findChild<QWidget *>(QString::fromLatin1(name));
         if (placeholder)

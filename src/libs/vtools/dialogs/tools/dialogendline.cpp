@@ -54,6 +54,7 @@
 #include "../vwidgets/vabstractmainwindow.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../widgets/formulainputwidget.h"
+#include "../widgets/angleformulawidget.h"
 #include "ui_dialogendline.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -66,7 +67,7 @@ DialogEndLine::DialogEndLine(const VContainer *data, VAbstractPattern *doc, quin
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogEndLine),
     m_formulaLength(new FormulaInputWidget(this)),
-    m_formulaAngle(new FormulaInputWidget(this)),
+    m_formulaAngle(new AngleFormulaWidget(this)),
     pointName(),
     m_firstRelease(false),
     flagName(true)
@@ -96,7 +97,7 @@ DialogEndLine::DialogEndLine(const VContainer *data, VAbstractPattern *doc, quin
     m_formulaAngle->setLabelText(tr("Angle:"));
     m_formulaAngle->setPostfix(degreeSymbol);
     m_formulaAngle->setDialogTitle(tr("Edit angle"));
-    connect(m_formulaAngle, &FormulaInputWidget::valueChanged, this,
+    connect(m_formulaAngle, &AngleFormulaWidget::valueChanged, this,
             [this]() { CheckState(); });
 
     // Replace formula placeholders in the UI layout with the actual widgets.

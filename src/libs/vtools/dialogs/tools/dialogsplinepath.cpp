@@ -47,6 +47,7 @@
 #include "../../visualization/visualization.h"
 #include "../qmuparser/qmudef.h"
 #include "../widgets/formulainputwidget.h"
+#include "../widgets/angleformulawidget.h"
 #include "../vgeometry/../ifc/ifcdef.h"
 #include "../vgeometry/vpointf.h"
 #include "../vgeometry/vsplinepoint.h"
@@ -134,13 +135,13 @@ DialogSplinePath::DialogSplinePath(const VContainer *data, VAbstractPattern *doc
 
     connect(m_formulaLength1, &FormulaInputWidget::valueChanged, this, [this]() { Length1Changed(); });
 
-    m_formulaAngle1 = new FormulaInputWidget(this);
+    m_formulaAngle1 = new AngleFormulaWidget(this);
     m_formulaAngle1->setData(&this->data);
     m_formulaAngle1->setToolId(toolId);
     m_formulaAngle1->setLabelText(tr("Angle:"));
     m_formulaAngle1->setPostfix(degreeSymbol);
     m_formulaAngle1->setDialogTitle(tr("Edit first control point angle"));
-    connect(m_formulaAngle1, &FormulaInputWidget::valueChanged, this, [this]() { Angle1Changed(); });
+    connect(m_formulaAngle1, &AngleFormulaWidget::valueChanged, this, [this]() { Angle1Changed(); });
 
     m_formulaLength2 = new FormulaInputWidget(this);
     m_formulaLength2->setData(&this->data);
@@ -151,16 +152,16 @@ DialogSplinePath::DialogSplinePath(const VContainer *data, VAbstractPattern *doc
     m_formulaLength2->setCheckLessThanZero(true);
     connect(m_formulaLength2, &FormulaInputWidget::valueChanged, this, [this]() { Length2Changed(); });
 
-    m_formulaAngle2 = new FormulaInputWidget(this);
+    m_formulaAngle2 = new AngleFormulaWidget(this);
     m_formulaAngle2->setData(&this->data);
     m_formulaAngle2->setToolId(toolId);
     m_formulaAngle2->setLabelText(tr("Angle:"));
     m_formulaAngle2->setPostfix(degreeSymbol);
     m_formulaAngle2->setDialogTitle(tr("Edit second control point angle"));
-    connect(m_formulaAngle2, &FormulaInputWidget::valueChanged, this, [this]() { Angle2Changed(); });
+    connect(m_formulaAngle2, &AngleFormulaWidget::valueChanged, this, [this]() { Angle2Changed(); });
 
     // Replace placeholders
-    auto replacePlaceholder = [this](const char *name, FormulaInputWidget *widget)
+    auto replacePlaceholder = [this](const char *name, QWidget *widget)
     {
         auto *placeholder = findChild<QWidget *>(QString::fromLatin1(name));
         if (placeholder)

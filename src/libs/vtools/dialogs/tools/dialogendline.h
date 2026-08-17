@@ -38,6 +38,7 @@
 #include "dialogtool.h"
 
 class FormulaInputWidget;
+class AngleFormulaWidget;
 
 namespace Ui
 {
@@ -103,7 +104,7 @@ private:
     Ui::DialogEndLine *ui;
 
     FormulaInputWidget *m_formulaLength;
-    FormulaInputWidget *m_formulaAngle;
+    AngleFormulaWidget *m_formulaAngle;
 
     QString pointName;
 

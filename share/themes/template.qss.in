@@ -816,6 +816,15 @@ QPushButton#dockCloseBtn {
     image: url(:/icons/$theme/x_$theme.svg);
 }
 
+/* Presets d'angle (0/90/180/270°) sous les champs de formule angle */
+QPushButton#anglePresetBtn0,
+QPushButton#anglePresetBtn90,
+QPushButton#anglePresetBtn180,
+QPushButton#anglePresetBtn270 {
+    padding: 2px 8px;
+    min-height: 22px;
+}
+
 QDockWidget::close-button,
 QDockWidget::float-button {
     background: transparent;

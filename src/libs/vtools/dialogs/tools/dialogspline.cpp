@@ -45,6 +45,7 @@
 #include "../vgeometry/vspline.h"
 #include "../vmisc/def.h"
 #include "../widgets/formulainputwidget.h"
+#include "../widgets/angleformulawidget.h"
 #include "vtheme.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
@@ -64,9 +65,9 @@ DialogSpline::DialogSpline(const VContainer *data, VAbstractPattern *doc, quint3
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogSpline),
     m_formulaLength1(new FormulaInputWidget(this)),
-    m_formulaAngle1(new FormulaInputWidget(this)),
+    m_formulaAngle1(new AngleFormulaWidget(this)),
     m_formulaLength2(new FormulaInputWidget(this)),
-    m_formulaAngle2(new FormulaInputWidget(this))
+    m_formulaAngle2(new AngleFormulaWidget(this))
 {
     ui->setupUi(this);
 
@@ -90,7 +91,7 @@ DialogSpline::DialogSpline(const VContainer *data, VAbstractPattern *doc, quint3
     m_formulaAngle1->setLabelText(tr("Angle:"));
     m_formulaAngle1->setPostfix(degreeSymbol);
     m_formulaAngle1->setDialogTitle(tr("Edit first control point angle"));
-    connect(m_formulaAngle1, &FormulaInputWidget::valueChanged, this, [this](bool) { CheckState(); });
+    connect(m_formulaAngle1, &AngleFormulaWidget::valueChanged, this, [this](bool) { CheckState(); });
 
     m_formulaLength2->setData(&this->data);
     m_formulaLength2->setToolId(toolId);
@@ -105,10 +106,10 @@ DialogSpline::DialogSpline(const VContainer *data, VAbstractPattern *doc, quint3
     m_formulaAngle2->setLabelText(tr("Angle:"));
     m_formulaAngle2->setPostfix(degreeSymbol);
     m_formulaAngle2->setDialogTitle(tr("Edit second control point angle"));
-    connect(m_formulaAngle2, &FormulaInputWidget::valueChanged, this, [this](bool) { CheckState(); });
+    connect(m_formulaAngle2, &AngleFormulaWidget::valueChanged, this, [this](bool) { CheckState(); });
 
     // Replace placeholders with actual formula widgets
-    auto replacePlaceholder = [this](const char *name, FormulaInputWidget *widget) {
+    auto replacePlaceholder = [this](const char *name, QWidget *widget) {
         auto *placeholder = findChild<QWidget *>(QString::fromLatin1(name));
         if (placeholder)
         {

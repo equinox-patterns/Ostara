@@ -50,6 +50,7 @@
 #include "../vwidgets/global.h"
 #include "../vwidgets/vabstractmainwindow.h"
 #include "../widgets/formulainputwidget.h"
+#include "../widgets/angleformulawidget.h"
 #include "ui_dialogarcwithlength.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -57,7 +58,7 @@ DialogArcWithLength::DialogArcWithLength(const VContainer *data, VAbstractPatter
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogArcWithLength),
     m_formula(new FormulaInputWidget(this)),
-    m_formula2(new FormulaInputWidget(this)),
+    m_formula2(new AngleFormulaWidget(this)),
     m_formula3(new FormulaInputWidget(this))
 {
     ui->setupUi(this);
@@ -82,7 +83,7 @@ DialogArcWithLength::DialogArcWithLength(const VContainer *data, VAbstractPatter
     m_formula2->setLabelText(tr("First angle:"));
     m_formula2->setPostfix(degreeSymbol);
     m_formula2->setDialogTitle(tr("Edit the first angle"));
-    connect(m_formula2, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
+    connect(m_formula2, &AngleFormulaWidget::valueChanged, this, [this]() { CheckState(); });
 
     m_formula3->setData(&this->data);
     m_formula3->setToolId(toolId);

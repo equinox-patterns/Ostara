@@ -38,6 +38,7 @@
 #include "dialogtool.h"
 
 class FormulaInputWidget;
+class AngleFormulaWidget;
 
 namespace Ui
 {
@@ -114,7 +115,7 @@ private:
     Q_DISABLE_COPY_MOVE(DialogCurveIntersectAxis) // NOLINT
     Ui::DialogCurveIntersectAxis *ui;
 
-    FormulaInputWidget *m_formula;
+    AngleFormulaWidget *m_formula;
 
     QString pointName;
 

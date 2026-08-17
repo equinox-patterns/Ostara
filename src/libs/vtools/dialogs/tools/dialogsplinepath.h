@@ -41,6 +41,7 @@
 #include "dialogtool.h"
 
 class FormulaInputWidget;
+class AngleFormulaWidget;
 
 namespace Ui
 {
@@ -117,9 +118,9 @@ private:
     QString m_oldName{};
 
     FormulaInputWidget *m_formulaLength1{nullptr};
-    FormulaInputWidget *m_formulaAngle1{nullptr};
+    AngleFormulaWidget *m_formulaAngle1{nullptr};
     FormulaInputWidget *m_formulaLength2{nullptr};
-    FormulaInputWidget *m_formulaAngle2{nullptr};
+    AngleFormulaWidget *m_formulaAngle2{nullptr};
 
     bool m_visConnected{false};
 

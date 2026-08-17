@@ -46,6 +46,7 @@
 #include "../vwidgets/global.h"
 #include "../vwidgets/vabstractmainwindow.h"
 #include "../widgets/formulainputwidget.h"
+#include "../widgets/angleformulawidget.h"
 #include "ui_dialogellipticalarc.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -59,9 +60,9 @@ DialogEllipticalArc::DialogEllipticalArc(const VContainer *data, VAbstractPatter
     ui(new Ui::DialogEllipticalArc),
     m_formulaRadius1(new FormulaInputWidget(this)),
     m_formulaRadius2(new FormulaInputWidget(this)),
-    m_formulaF1(new FormulaInputWidget(this)),
-    m_formulaF2(new FormulaInputWidget(this)),
-    m_formulaRotationAngle(new FormulaInputWidget(this))
+    m_formulaF1(new AngleFormulaWidget(this)),
+    m_formulaF2(new AngleFormulaWidget(this)),
+    m_formulaRotationAngle(new AngleFormulaWidget(this))
 {
     ui->setupUi(this);
 
@@ -93,7 +94,7 @@ DialogEllipticalArc::DialogEllipticalArc(const VContainer *data, VAbstractPatter
     m_formulaF1->setLabelText(tr("First angle:"));
     m_formulaF1->setPostfix(degreeSymbol);
     m_formulaF1->setDialogTitle(tr("Edit first angle"));
-    connect(m_formulaF1, &FormulaInputWidget::valueChanged, this,
+    connect(m_formulaF1, &AngleFormulaWidget::valueChanged, this,
             [this]() { m_angleF1 = m_formulaF1->value(); CheckState(); });
 
     m_formulaF2->setData(&this->data);
@@ -101,7 +102,7 @@ DialogEllipticalArc::DialogEllipticalArc(const VContainer *data, VAbstractPatter
     m_formulaF2->setLabelText(tr("Second angle:"));
     m_formulaF2->setPostfix(degreeSymbol);
     m_formulaF2->setDialogTitle(tr("Edit second angle"));
-    connect(m_formulaF2, &FormulaInputWidget::valueChanged, this,
+    connect(m_formulaF2, &AngleFormulaWidget::valueChanged, this,
             [this]() { m_angleF2 = m_formulaF2->value(); CheckState(); });
 
     m_formulaRotationAngle->setData(&this->data);
@@ -109,11 +110,11 @@ DialogEllipticalArc::DialogEllipticalArc(const VContainer *data, VAbstractPatter
     m_formulaRotationAngle->setLabelText(tr("Rotation angle:"));
     m_formulaRotationAngle->setPostfix(degreeSymbol);
     m_formulaRotationAngle->setDialogTitle(tr("Edit rotation angle"));
-    connect(m_formulaRotationAngle, &FormulaInputWidget::valueChanged, this,
+    connect(m_formulaRotationAngle, &AngleFormulaWidget::valueChanged, this,
             [this]() { m_angleRotation = m_formulaRotationAngle->value(); CheckState(); });
 
     // Replace formula placeholders in the UI layout with the actual widgets.
-    auto replacePlaceholder = [this](const char *name, FormulaInputWidget *widget)
+    auto replacePlaceholder = [this](const char *name, QWidget *widget)
     {
         auto *placeholder = findChild<QWidget *>(QString::fromLatin1(name));
         if (placeholder)

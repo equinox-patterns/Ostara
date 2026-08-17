@@ -61,6 +61,7 @@
 #include "../vwidgets/vabstractmainwindow.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../widgets/formulainputwidget.h"
+#include "../widgets/angleformulawidget.h"
 #include "ui_dialogcurveintersectaxis.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -74,7 +75,7 @@ DialogCurveIntersectAxis::DialogCurveIntersectAxis(const VContainer *data, VAbst
                                                    QWidget *parent)
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogCurveIntersectAxis),
-    m_formula(new FormulaInputWidget(this)),
+    m_formula(new AngleFormulaWidget(this)),
     pointName(),
     m_firstRelease(false),
     flagName(true)
@@ -98,7 +99,7 @@ DialogCurveIntersectAxis::DialogCurveIntersectAxis(const VContainer *data, VAbst
     m_formula->setLabelText(tr("Angle:"));
     m_formula->setPostfix(degreeSymbol);
     m_formula->setDialogTitle(tr("Edit angle"));
-    connect(m_formula, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
+    connect(m_formula, &AngleFormulaWidget::valueChanged, this, [this]() { CheckState(); });
 
     // Replace placeholder
     if (auto *placeholder = ui->formulaPlaceholder)

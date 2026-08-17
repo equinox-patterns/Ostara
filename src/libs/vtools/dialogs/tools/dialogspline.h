@@ -40,6 +40,7 @@
 #include "dialogtool.h"
 
 class FormulaInputWidget;
+class AngleFormulaWidget;
 
 namespace Ui
 {
@@ -99,9 +100,9 @@ private:
     bool flagAlias{true};
 
     FormulaInputWidget *m_formulaLength1;
-    FormulaInputWidget *m_formulaAngle1;
+    AngleFormulaWidget *m_formulaAngle1;
     FormulaInputWidget *m_formulaLength2;
-    FormulaInputWidget *m_formulaAngle2;
+    AngleFormulaWidget *m_formulaAngle2;
 
     QString originAliasSuffix{};
 
