@@ -72,6 +72,8 @@ DialogArc::DialogArc(const VContainer *data, VAbstractPattern *doc, quint32 tool
     m_formulaRadius->setLabelText(tr("Radius:"));
     m_formulaRadius->setPostfix(lengthPostfix);
     m_formulaRadius->setDialogTitle(tr("Edit radius"));
+    m_formulaRadius->setCheckZero(true);
+    m_formulaRadius->setCheckLessThanZero(true);
     connect(m_formulaRadius, &FormulaInputWidget::valueChanged, this,
             [this]() { CheckState(); });
 
@@ -81,7 +83,7 @@ DialogArc::DialogArc(const VContainer *data, VAbstractPattern *doc, quint32 tool
     m_formulaF1->setPostfix(degreeSymbol);
     m_formulaF1->setDialogTitle(tr("Edit first angle"));
     connect(m_formulaF1, &AngleFormulaWidget::valueChanged, this,
-            [this]() { m_angleF1 = m_formulaF1->value(); CheckState(); });
+            [this]() { m_angleF1 = m_formulaF1->value(); CheckState(); UpdatePointControls(); });
 
     m_formulaF2->setData(&this->data);
     m_formulaF2->setToolId(toolId);
@@ -89,7 +91,7 @@ DialogArc::DialogArc(const VContainer *data, VAbstractPattern *doc, quint32 tool
     m_formulaF2->setPostfix(degreeSymbol);
     m_formulaF2->setDialogTitle(tr("Edit second angle"));
     connect(m_formulaF2, &AngleFormulaWidget::valueChanged, this,
-            [this]() { m_angleF2 = m_formulaF2->value(); CheckState(); });
+            [this]() { m_angleF2 = m_formulaF2->value(); CheckState(); UpdatePointControls(); });
 
     // Replace formula placeholders in the UI layout with the actual widgets.
     if (auto *placeholder = ui->formulaRadiusPlaceholder)
@@ -133,6 +135,33 @@ DialogArc::DialogArc(const VContainer *data, VAbstractPattern *doc, quint32 tool
 
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogArc::ValidateAlias);
 
+    // Start/End point creation controls.
+    m_startShowLabelCheckbox = AddShowPointNameCheckbox(ui->formLayoutStartPoint);
+    connect(m_startShowLabelCheckbox, &QCheckBox::toggled, this, [this](bool checked) { m_showLabelStart = checked; });
+
+    m_endShowLabelCheckbox = AddShowPointNameCheckbox(ui->formLayoutEndPoint);
+    connect(m_endShowLabelCheckbox, &QCheckBox::toggled, this, [this](bool checked) { m_showLabelEnd = checked; });
+
+    connect(ui->checkBoxCreateStartPoint, &QCheckBox::toggled, this, [this](bool checked) {
+        if (checked && ui->lineEditStartPointName->text().isEmpty())
+        {
+            ui->lineEditStartPointName->setText(
+                VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
+        }
+        UpdatePointControls();
+    });
+
+    connect(ui->checkBoxCreateEndPoint, &QCheckBox::toggled, this, [this](bool checked) {
+        if (checked && ui->lineEditEndPointName->text().isEmpty())
+        {
+            ui->lineEditEndPointName->setText(
+                VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
+        }
+        UpdatePointControls();
+    });
+
+    UpdatePointControls();
+
     vis = new VisToolArc(&this->data);
 
     ui->tabWidget->setCurrentIndex(0);
@@ -167,7 +196,8 @@ void DialogArc::SetF2(const QString &value)
 
     if (auto *path = qobject_cast<VisToolArc *>(vis))
     {
-        path->SetF2(m_formulaF2->formula());
+        path->SetF2(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formulaF2->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -283,6 +313,7 @@ void DialogArc::ShowDialog(bool click)
 
                 SetRadius(QString::number(VAbstractValApplication::VApp()->fromPixel(line.length())));
                 arcVis->RefreshGeometry();
+                arcVis->RefreshToolTip();
                 m_stageRadius = false;
                 m_stageF1 = true;
             }
@@ -290,6 +321,7 @@ void DialogArc::ShowDialog(bool click)
             {
                 SetF1(QString::number(Angle()));
                 arcVis->RefreshGeometry();
+                arcVis->RefreshToolTip();
                 m_stageF1 = false;
             }
             else
@@ -320,7 +352,8 @@ void DialogArc::SetF1(const QString &value)
 
     if (auto *path = qobject_cast<VisToolArc *>(vis))
     {
-        path->SetF1(m_formulaF1->formula());
+        path->SetF1(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formulaF1->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -335,7 +368,8 @@ void DialogArc::SetRadius(const QString &value)
 
     if (auto *path = qobject_cast<VisToolArc *>(vis))
     {
-        path->SetRadius(m_formulaRadius->formula());
+        path->SetRadius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formulaRadius->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -380,9 +414,11 @@ void DialogArc::SaveData()
     auto *path = qobject_cast<VisToolArc *>(vis);
     SCASSERT(path != nullptr)
 
-    const QString radius = m_formulaRadius->formula();
-    const QString f1 = m_formulaF1->formula();
-    const QString f2 = m_formulaF2->formula();
+    const VTranslateVars *trVars = VAbstractValApplication::VApp()->TrVars();
+    const bool osSeparator = VAbstractValApplication::VApp()->Settings()->GetOsSeparator();
+    const QString radius = trVars->FormulaToUser(m_formulaRadius->formula(), osSeparator);
+    const QString f1 = trVars->FormulaToUser(m_formulaF1->formula(), osSeparator);
+    const QString f2 = trVars->FormulaToUser(m_formulaF2->formula(), osSeparator);
 
     path->SetCenterId(GetCenter());
     path->SetRadius(radius);
@@ -453,6 +489,67 @@ void DialogArc::FinishCreating()
 void DialogArc::InitIcons()
 {
     // Formula-related icons are now managed by FormulaInputWidget.
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogArc::IsCreateStartPoint() const -> bool
+{
+    return ui->checkBoxCreateStartPoint->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogArc::IsCreateEndPoint() const -> bool
+{
+    return ui->checkBoxCreateEndPoint->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogArc::GetStartPointName() const -> QString
+{
+    return ui->lineEditStartPointName->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogArc::GetEndPointName() const -> QString
+{
+    return ui->lineEditEndPointName->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogArc::GetStartShowLabel() const -> bool
+{
+    return m_showLabelStart;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogArc::GetEndShowLabel() const -> bool
+{
+    return m_showLabelEnd;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogArc::UpdatePointControls()
+{
+    const bool fullCircle = (!m_formulaF1->formula().isEmpty() && !m_formulaF2->formula().isEmpty() &&
+                             qFuzzyIsNull(m_angleF1 - m_angleF2));
+
+    ui->checkBoxCreateStartPoint->setEnabled(not fullCircle);
+    ui->checkBoxCreateEndPoint->setEnabled(not fullCircle);
+
+    const bool startOn = ui->checkBoxCreateStartPoint->isChecked() && not fullCircle;
+    const bool endOn = ui->checkBoxCreateEndPoint->isChecked() && not fullCircle;
+
+    ui->lineEditStartPointName->setEnabled(startOn);
+    ui->lineEditEndPointName->setEnabled(endOn);
+
+    if (m_startShowLabelCheckbox != nullptr)
+    {
+        m_startShowLabelCheckbox->setEnabled(startOn);
+    }
+    if (m_endShowLabelCheckbox != nullptr)
+    {
+        m_endShowLabelCheckbox->setEnabled(endOn);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

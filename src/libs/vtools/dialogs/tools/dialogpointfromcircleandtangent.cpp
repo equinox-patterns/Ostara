@@ -158,7 +158,8 @@ void DialogPointFromCircleAndTangent::SetCircleRadius(const QString &value)
 
     if (auto *point = qobject_cast<VisToolPointFromCircleAndTangent *>(vis))
     {
-        point->SetCRadius(m_formula->formula());
+        point->SetCRadius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -322,7 +323,8 @@ void DialogPointFromCircleAndTangent::SaveData()
 
     point->SetPointId(GetTangentPointId());
     point->SetCenterId(GetCircleCenterId());
-    point->SetCRadius(m_formula->formula());
+    point->SetCRadius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     point->SetCrossPoint(GetCrossCirclesPoint());
     point->RefreshGeometry();
 }

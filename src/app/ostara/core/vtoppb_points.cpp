@@ -37,6 +37,7 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersection.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolarcpoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolnormal.h"
@@ -378,6 +379,16 @@ auto LineIntersectAxisProperties() -> std::vector<PropertyDesc>;
 auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>;
 
 // ====== Tool descriptors ======
+
+// --- VToolArcPoint (point at arc start/end) ---
+auto ArcPointProperties() -> std::vector<PropertyDesc>
+{
+    return {
+        MakePointName<VToolArcPoint>(T("Point name:")),
+        MakeShowPointName<VToolArcPoint>(T("Show Point name")),
+        MakeNotes<VToolArcPoint>(T("Notes:")),
+    };
+}
 
 // --- VToolBasePoint (SinglePoint) ---
 auto SinglePointProperties() -> std::vector<PropertyDesc>

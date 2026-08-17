@@ -44,7 +44,7 @@ VToolRecord::VToolRecord(vidtype id, Tool toolType, int indexPatternBlock)
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolRecord::IsMandatory() const -> bool
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 67, "Check list.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 68, "Check list.");
     return toolType != Tool::Pin && toolType != Tool::NodePoint && toolType != Tool::NodeArc
            && toolType != Tool::NodeElArc && toolType != Tool::NodeSpline && toolType != Tool::NodeSplinePath
            && toolType != Tool::PiecePath;

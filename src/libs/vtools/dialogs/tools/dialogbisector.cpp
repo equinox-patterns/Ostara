@@ -278,7 +278,8 @@ void DialogBisector::SetFormula(const QString &value)
 
     if (auto *line = qobject_cast<VisToolBisector *>(vis))
     {
-        line->SetLength(m_formula->formula());
+        line->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -417,7 +418,8 @@ void DialogBisector::SaveData()
     line->SetPoint1Id(GetFirstPointId());
     line->SetPoint2Id(GetSecondPointId());
     line->SetPoint3Id(GetThirdPointId());
-    line->SetLength(m_formula->formula());
+    line->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     line->SetLineStyle(LineStyleToPenStyle(GetTypeLine()));
     line->RefreshGeometry();
 }

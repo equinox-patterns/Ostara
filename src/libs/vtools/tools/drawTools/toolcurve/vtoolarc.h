@@ -48,6 +48,12 @@ struct VToolArcInitData : VToolAbstractCurveInitData
     QString radius{'0'};     // NOLINT(misc-non-private-member-variables-in-classes)
     QString f1{'0'};         // NOLINT(misc-non-private-member-variables-in-classes)
     QString f2{'0'};         // NOLINT(misc-non-private-member-variables-in-classes)
+    bool createStartPoint{false};
+    bool createEndPoint{false};
+    QString startPointName{};
+    QString endPointName{};
+    bool startShowLabel{false};
+    bool endShowLabel{false};
 };
 
 /**
@@ -84,6 +90,11 @@ public:
     auto GetApproximationScale() const -> qreal override;
     void SetApproximationScale(qreal value);
 
+    auto HasStartPoint() const -> bool;
+    auto HasEndPoint() const -> bool;
+    void SetCreateStartPoint(bool create);
+    void SetCreateEndPoint(bool create);
+
     void ShowVisualization(bool show) override;
 
 protected slots:
@@ -102,6 +113,8 @@ private:
     explicit VToolArc(const VToolArcInitData &initData, QGraphicsItem *parent = nullptr);
 
     auto GatherToolChanges() const -> ToolChanges;
+
+    auto FindPointId(bool isStart) const -> quint32;
 };
 
 #endif // VTOOLARC_H

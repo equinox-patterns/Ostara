@@ -69,6 +69,7 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolarcpoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromarcandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromcircleandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.h"
@@ -360,7 +361,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 67, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 68, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -451,6 +452,8 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
                 return PointFromCircleAndTangent(tool);
             case Tool::PointFromArcAndTangent:
                 return PointFromArcAndTangent(tool);
+            case Tool::ArcPoint:
+                return ArcPoint(tool);
             case Tool::TrueDarts:
                 return TrueDarts(tool);
             case Tool::EllipticalArc:
@@ -1059,6 +1062,21 @@ auto VPatternRecipe::PointFromArcAndTangent(const VToolRecord &record) -> QDomEl
     SetAttribute(step, AttrArc, tool->ArcName());
     SetAttribute(step, AttrTangent, tool->TangentPointName());
     SetAttribute(step, AttrCrossPoint, static_cast<int>(tool->GetCrossCirclesPoint()));
+
+    return step;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPatternRecipe::ArcPoint(const VToolRecord &record) -> QDomElement
+{
+    auto *tool = GetPatternTool<VToolArcPoint>(record.GetId());
+
+    QDomElement step = createElement(TagStep);
+
+    SetAttribute(step, AttrType, tool->TypeString());
+    SetAttribute(step, AttrLabel, tool->name());
+    SetAttribute(step, AttrNotes, tool->GetNotes());
+    SetAttribute(step, AttrArc, tool->ArcName());
 
     return step;
 }

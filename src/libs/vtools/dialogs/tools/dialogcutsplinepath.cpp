@@ -293,7 +293,8 @@ void DialogCutSplinePath::SaveData()
     SCASSERT(path != nullptr)
 
     path->SetSplinePathId(getSplinePathId());
-    path->SetLength(m_formula->formula());
+    path->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     path->RefreshGeometry();
 }
 

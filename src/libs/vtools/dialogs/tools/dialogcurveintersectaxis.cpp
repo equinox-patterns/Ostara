@@ -204,7 +204,8 @@ void DialogCurveIntersectAxis::SetAngle(const QString &value)
 
     if (auto *line = qobject_cast<VisToolCurveIntersectAxis *>(vis))
     {
-        line->SetAngle(m_formula->formula());
+        line->SetAngle(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -374,7 +375,8 @@ void DialogCurveIntersectAxis::SaveData()
 
     line->SetCurveId(getCurveId());
     line->setAxisPointId(GetBasePointId());
-    line->SetAngle(m_formula->formula());
+    line->SetAngle(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     line->SetLineStyle(LineStyleToPenStyle(GetTypeLine()));
     line->RefreshGeometry();
 }

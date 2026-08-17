@@ -250,7 +250,8 @@ void DialogShoulderPoint::ChosenObject(quint32 id, const SceneObject &type)
 void DialogShoulderPoint::SaveData()
 {
     m_pointName = ui->lineEditNamePoint->text();
-    const QString formulaText = m_formula->formula();
+    const QString formulaText = VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator());
 
     auto *line = qobject_cast<VisToolShoulderPoint *>(vis);
     SCASSERT(line != nullptr)
@@ -393,7 +394,8 @@ void DialogShoulderPoint::SetFormula(const QString &value)
 
     if (auto *line = qobject_cast<VisToolShoulderPoint *>(vis))
     {
-        line->SetLength(m_formula->formula());
+        line->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {

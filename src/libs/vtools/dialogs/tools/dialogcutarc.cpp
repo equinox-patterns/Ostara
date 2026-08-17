@@ -208,7 +208,8 @@ void DialogCutArc::SaveData()
     SCASSERT(path != nullptr)
 
     path->SetArcId(getArcId());
-    path->SetLength(m_formula->formula());
+    path->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     path->RefreshGeometry();
 }
 
@@ -389,7 +390,8 @@ void DialogCutArc::SetFormula(const QString &value)
 
     if (auto *path = qobject_cast<VisToolCutArc *>(vis))
     {
-        path->SetLength(m_formula->formula());
+        path->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {

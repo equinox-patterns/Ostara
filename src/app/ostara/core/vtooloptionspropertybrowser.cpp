@@ -61,6 +61,7 @@ using namespace VtoppbConstants;
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolarcpoint.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarmholecurve.h"
@@ -126,6 +127,7 @@ auto PointFromArcAndTangentProperties() -> std::vector<PropertyDesc>;
 auto BackgroundPixmapItemProperties() -> std::vector<PropertyDesc>;
 auto BackgroundSVGItemProperties() -> std::vector<PropertyDesc>;
 auto SinglePointProperties() -> std::vector<PropertyDesc>;
+auto ArcPointProperties() -> std::vector<PropertyDesc>;
 auto EndLineProperties() -> std::vector<PropertyDesc>;
 auto AlongLineProperties() -> std::vector<PropertyDesc>;
 auto BisectorProperties() -> std::vector<PropertyDesc>;
@@ -196,12 +198,15 @@ void VToolOptionsPropertyBrowser::ClearPropertyBrowser()
 void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 67, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 68, "Not all tools were used in switch.");
 
     switch (item->type())
     {
         case VToolBasePoint::Type:
             ShowToolOptions<VToolBasePoint>(item, tr("Base point"), SinglePointProperties());
+            break;
+        case VToolArcPoint::Type:
+            ShowToolOptions<VToolArcPoint>(item, tr("Arc point"), ArcPointProperties());
             break;
         case VToolEndLine::Type:
             ShowToolOptions<VToolEndLine>(item, tr("Point at distance and angle"), EndLineProperties());
@@ -344,12 +349,15 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 67, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 68, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
         case VToolBasePoint::Type:
             UpdateToolOptions<VToolBasePoint>(SinglePointProperties());
+            break;
+        case VToolArcPoint::Type:
+            UpdateToolOptions<VToolArcPoint>(ArcPointProperties());
             break;
         case VToolEndLine::Type:
             UpdateToolOptions<VToolEndLine>(EndLineProperties());
@@ -509,12 +517,15 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 67, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 68, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
         case VToolBasePoint::Type:
             ChangeToolData<VToolBasePoint>(prop, SinglePointProperties());
+            break;
+        case VToolArcPoint::Type:
+            ChangeToolData<VToolArcPoint>(prop, ArcPointProperties());
             break;
         case VToolEndLine::Type:
             ChangeToolData<VToolEndLine>(prop, EndLineProperties());

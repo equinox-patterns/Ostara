@@ -42,6 +42,7 @@
 #include "../widgets/formulainputwidget.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/vcontainer.h"
+#include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vabstractmainwindow.h"
 #include "ui_dialogpointofintersectioncircles.h"
 
@@ -194,7 +195,8 @@ void DialogPointOfIntersectionCircles::SetFirstCircleRadius(const QString &value
 
     if (auto *point = qobject_cast<VisToolPointOfIntersectionCircles *>(vis))
     {
-        point->SetC1Radius(value);
+        point->SetC1Radius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            value, VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -215,7 +217,8 @@ void DialogPointOfIntersectionCircles::SetSecondCircleRadius(const QString &valu
 
     if (auto *point = qobject_cast<VisToolPointOfIntersectionCircles *>(vis))
     {
-        point->SetC2Radius(value);
+        point->SetC2Radius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            value, VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -392,8 +395,10 @@ void DialogPointOfIntersectionCircles::SaveData()
 
     point->SetCircle1Id(GetFirstCircleCenterId());
     point->SetCircle2Id(GetSecondCircleCenterId());
-    point->SetC1Radius(m_formulaCircle1->formula());
-    point->SetC2Radius(m_formulaCircle2->formula());
+    point->SetC1Radius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formulaCircle1->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
+    point->SetC2Radius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formulaCircle2->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     point->SetCrossPoint(GetCrossCirclesPoint());
     point->RefreshGeometry();
 }

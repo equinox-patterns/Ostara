@@ -704,7 +704,7 @@ auto VArc::CutPointFlipped(qreal length, qreal fullLength, const QString &pointN
         if (not pointName.isEmpty())
         {
             errorMsg = tr("Curve '%1'. Length of a cut segment (%2) is too big. Optimize it to maximal value.")
-                           .arg(name(), errorMsg);
+                           .arg(name(), pointName);
         }
         else
         {

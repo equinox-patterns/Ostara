@@ -96,6 +96,7 @@ private:
     auto PointOfIntersectionCurves(const VToolRecord &record) -> QDomElement;
     auto PointFromCircleAndTangent(const VToolRecord &record) -> QDomElement;
     auto PointFromArcAndTangent(const VToolRecord &record) -> QDomElement;
+    auto ArcPoint(const VToolRecord &record) -> QDomElement;
     auto TrueDarts(const VToolRecord &record) -> QDomElement;
     auto EllipticalArc(const VToolRecord &record) -> QDomElement;
     auto Rotation(const VToolRecord &record, const VContainer &data) -> QDomElement;

@@ -253,7 +253,8 @@ void DialogNormal::SaveData()
     m_pointName = ui->lineEditNamePoint->text();
     m_angle = ui->doubleSpinBoxAngle->value();
 
-    const QString formulaText = m_formula->formula();
+    const QString formulaText = VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator());
 
     auto *line = qobject_cast<VisToolNormal *>(vis);
     SCASSERT(line != nullptr)
@@ -352,7 +353,8 @@ void DialogNormal::SetFormula(const QString &value)
 
     if (auto *line = qobject_cast<VisToolNormal *>(vis))
     {
-        line->SetLength(m_formula->formula());
+        line->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {

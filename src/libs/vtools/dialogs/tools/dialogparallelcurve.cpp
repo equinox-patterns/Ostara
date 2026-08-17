@@ -33,6 +33,7 @@
 #include "vtheme.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/vcontainer.h"
+#include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/global.h"
 #include "../vwidgets/vabstractmainwindow.h"
 #include "../widgets/formulainputwidget.h"
@@ -159,7 +160,8 @@ void DialogParallelCurve::SetFormulaWidth(const QString &value)
 
     if (auto *path = qobject_cast<VisToolParallelCurve *>(vis))
     {
-        path->SetOffsetWidth(m_formula->formula());
+        path->SetOffsetWidth(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -347,7 +349,8 @@ void DialogParallelCurve::SaveData()
     SCASSERT(path != nullptr)
 
     path->SetCurveId(GetOriginCurveId());
-    path->SetOffsetWidth(m_formula->formula());
+    path->SetOffsetWidth(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     path->RefreshGeometry();
 }

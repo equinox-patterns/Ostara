@@ -232,7 +232,8 @@ void DialogCutSpline::SetFormula(const QString &value)
 
     if (auto *path = qobject_cast<VisToolCutSpline *>(vis))
     {
-        path->SetLength(m_formula->formula());
+        path->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -298,7 +299,8 @@ void DialogCutSpline::SaveData()
     SCASSERT(path != nullptr)
 
     path->SetSplineId(getSplineId());
-    path->SetLength(m_formula->formula());
+    path->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     path->RefreshGeometry();
 }
 

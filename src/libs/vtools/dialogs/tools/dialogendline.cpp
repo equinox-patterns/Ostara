@@ -50,6 +50,7 @@
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/variables/vlinelength.h"
 #include "../vpatterndb/vcontainer.h"
+#include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/global.h"
 #include "../vwidgets/vabstractmainwindow.h"
 #include "../vwidgets/vmaingraphicsscene.h"
@@ -229,7 +230,8 @@ void DialogEndLine::SetFormula(const QString &value)
 
     if (auto *line = qobject_cast<VisToolEndLine *>(vis))
     {
-        line->SetLength(m_formulaLength->formula());
+        line->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formulaLength->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -248,7 +250,8 @@ void DialogEndLine::SetAngle(const QString &value)
 
     if (auto *line = qobject_cast<VisToolEndLine *>(vis))
     {
-        line->SetAngle(m_formulaAngle->formula());
+        line->SetAngle(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formulaAngle->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -343,8 +346,10 @@ void DialogEndLine::SaveData()
     auto *line = qobject_cast<VisToolEndLine *>(vis);
     SCASSERT(line != nullptr)
 
-    const QString lengthFormula = m_formulaLength->formula();
-    const QString angleFormula = m_formulaAngle->formula();
+    const VTranslateVars *trVars = VAbstractValApplication::VApp()->TrVars();
+    const bool osSeparator = VAbstractValApplication::VApp()->Settings()->GetOsSeparator();
+    const QString lengthFormula = trVars->FormulaToUser(m_formulaLength->formula(), osSeparator);
+    const QString angleFormula = trVars->FormulaToUser(m_formulaAngle->formula(), osSeparator);
 
     line->SetBasePointId(GetBasePointId());
     line->SetLength(lengthFormula);

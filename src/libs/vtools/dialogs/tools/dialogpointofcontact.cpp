@@ -316,7 +316,8 @@ void DialogPointOfContact::SaveData()
     line->SetLineP1Id(GetFirstPoint());
     line->SetLineP2Id(GetSecondPoint());
     line->SetRadiusId(GetCenter());
-    line->SetRadius(m_formula->formula());
+    line->SetRadius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     line->RefreshGeometry();
 }
 
@@ -413,7 +414,8 @@ void DialogPointOfContact::SetRadius(const QString &value)
 
     if (auto *line = qobject_cast<VisToolPointOfContact *>(vis))
     {
-        line->SetRadius(m_formula->formula());
+        line->SetRadius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {

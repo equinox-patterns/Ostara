@@ -209,7 +209,8 @@ void DialogEllipticalArc::SetRadius1(const QString &value)
 
     if (auto *path = qobject_cast<VisToolEllipticalArc *>(vis))
     {
-        path->SetRadius1(m_formulaRadius1->formula());
+        path->SetRadius1(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formulaRadius1->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -238,7 +239,8 @@ void DialogEllipticalArc::SetRadius2(const QString &value)
 
     if (auto *path = qobject_cast<VisToolEllipticalArc *>(vis))
     {
-        path->SetRadius2(m_formulaRadius2->formula());
+        path->SetRadius2(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formulaRadius2->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -267,7 +269,8 @@ void DialogEllipticalArc::SetF1(const QString &value)
 
     if (auto *path = qobject_cast<VisToolEllipticalArc *>(vis))
     {
-        path->SetF1(m_formulaF1->formula());
+        path->SetF1(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formulaF1->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -296,7 +299,8 @@ void DialogEllipticalArc::SetF2(const QString &value)
 
     if (auto *path = qobject_cast<VisToolEllipticalArc *>(vis))
     {
-        path->SetF2(m_formulaF2->formula());
+        path->SetF2(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formulaF2->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -325,7 +329,8 @@ void DialogEllipticalArc::SetRotationAngle(const QString &value)
 
     if (auto *path = qobject_cast<VisToolEllipticalArc *>(vis))
     {
-        path->SetRotationAngle(m_formulaRotationAngle->formula());
+        path->SetRotationAngle(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formulaRotationAngle->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -408,11 +413,13 @@ void DialogEllipticalArc::SaveData()
     auto *path = qobject_cast<VisToolEllipticalArc *>(vis);
     SCASSERT(path != nullptr)
 
-    const QString radius1 = m_formulaRadius1->formula();
-    const QString radius2 = m_formulaRadius2->formula();
-    const QString f1 = m_formulaF1->formula();
-    const QString f2 = m_formulaF2->formula();
-    const QString rotationAngle = m_formulaRotationAngle->formula();
+    const VTranslateVars *trVars = VAbstractValApplication::VApp()->TrVars();
+    const bool osSeparator = VAbstractValApplication::VApp()->Settings()->GetOsSeparator();
+    const QString radius1 = trVars->FormulaToUser(m_formulaRadius1->formula(), osSeparator);
+    const QString radius2 = trVars->FormulaToUser(m_formulaRadius2->formula(), osSeparator);
+    const QString f1 = trVars->FormulaToUser(m_formulaF1->formula(), osSeparator);
+    const QString f2 = trVars->FormulaToUser(m_formulaF2->formula(), osSeparator);
+    const QString rotationAngle = trVars->FormulaToUser(m_formulaRotationAngle->formula(), osSeparator);
 
     path->SetCenterId(GetCenter());
     path->SetRadius1(radius1);

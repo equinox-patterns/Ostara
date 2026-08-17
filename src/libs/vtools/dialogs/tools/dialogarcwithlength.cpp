@@ -175,7 +175,8 @@ void DialogArcWithLength::SetRadius(const QString &value)
 
     if (auto *path = qobject_cast<VisToolArcWithLength *>(vis))
     {
-        path->SetRadius(m_formula->formula());
+        path->SetRadius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -196,7 +197,8 @@ void DialogArcWithLength::SetF1(const QString &value)
 
     if (auto *path = qobject_cast<VisToolArcWithLength *>(vis))
     {
-        path->SetF1(m_formula2->formula());
+        path->SetF1(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula2->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -217,7 +219,8 @@ void DialogArcWithLength::SetLength(const QString &value)
 
     if (auto *path = qobject_cast<VisToolArcWithLength *>(vis))
     {
-        path->SetLength(m_formula3->formula());
+        path->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula3->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
@@ -416,9 +419,12 @@ void DialogArcWithLength::SaveData()
     SCASSERT(path != nullptr)
 
     path->SetCenterId(GetCenter());
-    path->SetRadius(m_formula->formula());
-    path->SetF1(m_formula2->formula());
-    path->SetLength(m_formula3->formula());
+    path->SetRadius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
+    path->SetF1(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula2->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
+    path->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula3->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     path->RefreshGeometry();
 }

@@ -273,7 +273,8 @@ void DialogAlongLine::SaveData()
 {
     m_pointName = ui->lineEditNamePoint->text();
 
-    const QString formulaText = m_formula->formula();
+    const QString formulaText = VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator());
 
     auto *line = qobject_cast<VisToolAlongLine *>(vis);
     SCASSERT(line != nullptr)
@@ -503,7 +504,8 @@ void DialogAlongLine::SetFormula(const QString &value)
 
     if (auto *line = qobject_cast<VisToolAlongLine *>(vis))
     {
-        line->SetLength(m_formula->formula());
+        line->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
     }
     else
     {
