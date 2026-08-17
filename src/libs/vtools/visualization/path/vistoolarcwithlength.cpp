@@ -89,7 +89,7 @@ void VisToolArcWithLength::RefreshGeometry()
                               "<b>%3</b> - skip")
                                .arg(LengthToUser(r.length()), prefix, VModifierKey::EnterKey()));
             }
-            else if (m_f1 < 0)
+            else if (not m_f1Set)
             {
                 qreal const f1Angle = Angle();
                 auto arc = VArc(*first, m_radius, f1Angle, f1Angle);
@@ -109,7 +109,7 @@ void VisToolArcWithLength::RefreshGeometry()
                                .arg(LengthToUser(m_radius), prefix, AngleToUser(f1Angle), VModifierKey::Shift(),
                                     VModifierKey::EnterKey()));
             }
-            else if (m_f1 >= 0)
+            else
             {
                 auto arc = VArc(*first, m_radius, m_f1, r.angle());
                 arc.SetApproximationScale(ApproximationScale());
@@ -130,7 +130,7 @@ void VisToolArcWithLength::RefreshGeometry()
         }
         else
         {
-            if (not qFuzzyIsNull(m_radius) && m_f1 >= 0 && not qFuzzyIsNull(m_length))
+            if (not qFuzzyIsNull(m_radius) && m_f1Set && not qFuzzyIsNull(m_length))
             {
                 auto arc = VArc(m_length, *first, m_radius, m_f1);
                 arc.SetApproximationScale(ApproximationScale());
@@ -161,22 +161,11 @@ void VisToolArcWithLength::SetRadius(const QString &expression)
 void VisToolArcWithLength::SetF1(const QString &expression)
 {
     m_f1 = FindValFromUser(expression, GetData()->DataVariables());
+    m_f1Set = true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VisToolArcWithLength::SetLength(const QString &expression)
 {
     m_length = FindLengthFromUser(expression, GetData()->DataVariables());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VisToolArcWithLength::CorrectAngle(qreal angle) -> qreal
-{
-    qreal ang = angle;
-    if (angle > 360)
-    {
-        ang = angle - 360.0 * qFloor(angle / 360);
-    }
-
-    return (qFloor(qAbs(ang) / 5.)) * 5;
 }

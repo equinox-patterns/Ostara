@@ -118,8 +118,6 @@ private:
     bool m_firstRelease{false};
 
     void FinishCreating();
-
-    void InitIcons();
 };
 
 #endif // DIALOGARCWITHLENGTH_H

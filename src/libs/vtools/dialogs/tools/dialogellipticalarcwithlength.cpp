@@ -431,9 +431,9 @@ void DialogEllipticalArcWithLength::ShowDialog(bool click)
 
         if (m_stage == 3) // length
         {
-            const qreal r1 = Visualization::FindLengthFromUser(m_formulaRadius1->formula(), data.DataVariables());
-            const qreal r2 = Visualization::FindLengthFromUser(m_formulaRadius2->formula(), data.DataVariables());
-            const qreal angle1 = Visualization::FindValFromUser(m_formulaF1->formula(), data.DataVariables());
+            const qreal r1 = Visualization::FindLengthFromUser(m_formulaRadius1->formula(), data.DataVariables(), false);
+            const qreal r2 = Visualization::FindLengthFromUser(m_formulaRadius2->formula(), data.DataVariables(), false);
+            const qreal angle1 = Visualization::FindValFromUser(m_formulaF1->formula(), data.DataVariables(), false);
             VEllipticalArc const arc(*center, r1, r2, angle1, line.angle(), 0);
 
             SetLength(QString::number(VAbstractValApplication::VApp()->fromPixel(arc.GetLength())));

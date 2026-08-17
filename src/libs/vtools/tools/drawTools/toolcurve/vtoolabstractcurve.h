@@ -340,7 +340,7 @@ protected:
 
         auto HasChanges() const -> bool { return oldCenterLabel != newCenterLabel || oldAliasSuffix != newAliasSuffix; }
 
-        auto CenterLabelChanged() const -> bool { return oldCenterLabel != newAliasSuffix; }
+        auto CenterLabelChanged() const -> bool { return oldCenterLabel != newCenterLabel; }
         auto AliasSuffixChanged() const -> bool { return oldAliasSuffix != newAliasSuffix; }
     };
 

@@ -156,7 +156,6 @@ auto VToolArcWithLength::Create(VToolArcWithLengthInitData &initData) -> VToolAr
     if (initData.typeCreation == Source::FromGui)
     {
         initData.id = initData.data->AddGObject(arc);
-        initData.data->AddArc(initData.data->GeometricObject<VArc>(initData.id), initData.id);
     }
     else
     {
@@ -207,6 +206,7 @@ auto VToolArcWithLength::GetFormulaRadius() const -> VFormula
     SCASSERT(arc.isNull() == false)
 
     VFormula radius(arc->GetFormulaRadius(), getData());
+    radius.setCheckZero(true);
     radius.setToolId(m_id);
     radius.setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits()));
     radius.Eval();

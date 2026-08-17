@@ -63,8 +63,6 @@ DialogArcWithLength::DialogArcWithLength(const VContainer *data, VAbstractPatter
 {
     ui->setupUi(this);
 
-    InitIcons();
-
     MakeFilterableComboBox(ui->comboBoxCenter);
 
     // --- Configure formula widgets ---
@@ -76,6 +74,7 @@ DialogArcWithLength::DialogArcWithLength(const VContainer *data, VAbstractPatter
     m_formula->setPostfix(lengthPostfix);
     m_formula->setDialogTitle(tr("Edit radius"));
     m_formula->setCheckLessThanZero(true);
+    m_formula->setCheckZero(true);
     connect(m_formula, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
 
     m_formula2->setData(&this->data);
@@ -90,6 +89,8 @@ DialogArcWithLength::DialogArcWithLength(const VContainer *data, VAbstractPatter
     m_formula3->setLabelText(tr("Length:"));
     m_formula3->setPostfix(lengthPostfix);
     m_formula3->setDialogTitle(tr("Edit the arc length"));
+    m_formula3->setCheckZero(true);
+    m_formula3->setCheckLessThanZero(true);
     connect(m_formula3, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
 
     // Replace formula placeholders in the UI layout with the actual widgets.
@@ -157,9 +158,14 @@ auto DialogArcWithLength::GetCenter() const -> quint32
 void DialogArcWithLength::SetCenter(const quint32 &value)
 {
     ChangeCurrentData(ui->comboBoxCenter, value);
-    auto *path = qobject_cast<VisToolArcWithLength *>(vis);
-    SCASSERT(path != nullptr)
-    path->SetCenterId(value);
+    if (auto *path = qobject_cast<VisToolArcWithLength *>(vis))
+    {
+        path->SetCenterId(value);
+    }
+    else
+    {
+        qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -263,9 +269,14 @@ void DialogArcWithLength::SetApproximationScale(qreal value)
 {
     ui->doubleSpinBoxApproximationScale->setValue(value);
 
-    auto *path = qobject_cast<VisToolArcWithLength *>(vis);
-    SCASSERT(path != nullptr)
-    path->SetApproximationScale(value);
+    if (auto *path = qobject_cast<VisToolArcWithLength *>(vis))
+    {
+        path->SetApproximationScale(value);
+    }
+    else
+    {
+        qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -351,8 +362,8 @@ void DialogArcWithLength::ShowDialog(bool click)
             }
             else
             {
-                const qreal r = Visualization::FindLengthFromUser(m_formula->formula(), data.DataVariables());
-                const qreal angle1 = Visualization::FindValFromUser(m_formula2->formula(), data.DataVariables());
+                const qreal r = Visualization::FindLengthFromUser(m_formula->formula(), data.DataVariables(), false);
+                const qreal angle1 = Visualization::FindValFromUser(m_formula2->formula(), data.DataVariables(), false);
                 VArc const arc(*point, r, angle1, line.angle());
 
                 SetLength(QString::number(VAbstractValApplication::VApp()->fromPixel(arc.GetLength())));
@@ -415,18 +426,22 @@ void DialogArcWithLength::ShowVisualization()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogArcWithLength::SaveData()
 {
-    auto *path = qobject_cast<VisToolArcWithLength *>(vis);
-    SCASSERT(path != nullptr)
-
-    path->SetCenterId(GetCenter());
-    path->SetRadius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
-        m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
-    path->SetF1(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
-        m_formula2->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
-    path->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
-        m_formula3->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
-    path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
-    path->RefreshGeometry();
+    if (auto *path = qobject_cast<VisToolArcWithLength *>(vis))
+    {
+        path->SetCenterId(GetCenter());
+        path->SetRadius(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
+        path->SetF1(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula2->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
+        path->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
+            m_formula3->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
+        path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
+        path->RefreshGeometry();
+    }
+    else
+    {
+        qCWarning(vDialog, "%s: visualization unavailable, skipping save.", Q_FUNC_INFO);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -441,10 +456,6 @@ void DialogArcWithLength::changeEvent(QEvent *event)
     if (event->type() == QEvent::LanguageChange)
     {
         ui->retranslateUi(this);
-    }
-
-    if (event->type() == QEvent::PaletteChange)
-    {
     }
 
     // remember to call base class implementation
@@ -478,18 +489,14 @@ void DialogArcWithLength::ValidateAlias()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogArcWithLength::FinishCreating()
 {
-    vis->SetMode(Mode::Show);
-    vis->RefreshGeometry();
+    if (vis != nullptr)
+    {
+        vis->SetMode(Mode::Show);
+        vis->RefreshGeometry();
+    }
 
     emit ToolTip(QString());
 
     setModal(true);
     show();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogArcWithLength::InitIcons()
-{
-    // Formula-related icons are now managed by FormulaInputWidget.
-    // PaletteChange re-initialization is handled by FormulaInputWidget internally.
 }

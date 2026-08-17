@@ -60,14 +60,13 @@ public:
         Type = UserType + static_cast<int>(Vis::ToolArcWithLength)
     };
 
-    static auto CorrectAngle(qreal angle) -> qreal;
-
 private:
     Q_DISABLE_COPY_MOVE(VisToolArcWithLength) // NOLINT
     VScaledEllipse *m_arcCenter{nullptr};
     VScaledEllipse *m_f1Point{nullptr};
     qreal m_radius{0};
     qreal m_f1{-1};
+    bool m_f1Set{false};
     qreal m_length{0};
     quint32 m_centerId{NULL_ID};
 };
