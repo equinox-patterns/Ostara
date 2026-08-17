@@ -90,11 +90,6 @@ public:
     auto GetApproximationScale() const -> qreal override;
     void SetApproximationScale(qreal value);
 
-    auto HasStartPoint() const -> bool;
-    auto HasEndPoint() const -> bool;
-    void SetCreateStartPoint(bool create);
-    void SetCreateEndPoint(bool create);
-
     void ShowVisualization(bool show) override;
 
 protected slots:
@@ -113,8 +108,6 @@ private:
     explicit VToolArc(const VToolArcInitData &initData, QGraphicsItem *parent = nullptr);
 
     auto GatherToolChanges() const -> ToolChanges;
-
-    auto FindPointId(bool isStart) const -> quint32;
 };
 
 #endif // VTOOLARC_H

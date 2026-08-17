@@ -44,6 +44,7 @@
 #include "vtheme.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
+#include "../vmisc/vmath.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
@@ -75,7 +76,7 @@ DialogArcWithLength::DialogArcWithLength(const VContainer *data, VAbstractPatter
     m_formula->setDialogTitle(tr("Edit radius"));
     m_formula->setCheckLessThanZero(true);
     m_formula->setCheckZero(true);
-    connect(m_formula, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
+    connect(m_formula, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); UpdatePointControls(); });
 
     m_formula2->setData(&this->data);
     m_formula2->setToolId(toolId);
@@ -91,7 +92,7 @@ DialogArcWithLength::DialogArcWithLength(const VContainer *data, VAbstractPatter
     m_formula3->setDialogTitle(tr("Edit the arc length"));
     m_formula3->setCheckZero(true);
     m_formula3->setCheckLessThanZero(true);
-    connect(m_formula3, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
+    connect(m_formula3, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); UpdatePointControls(); });
 
     // Replace formula placeholders in the UI layout with the actual widgets.
     if (auto *placeholder = ui->formulaPlaceholder)
@@ -136,6 +137,33 @@ DialogArcWithLength::DialogArcWithLength(const VContainer *data, VAbstractPatter
     ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
 
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogArcWithLength::ValidateAlias);
+
+    // Start/End point creation controls.
+    m_startShowLabelCheckbox = AddShowPointNameCheckbox(ui->formLayoutStartPoint);
+    connect(m_startShowLabelCheckbox, &QCheckBox::toggled, this, [this](bool checked) { m_showLabelStart = checked; });
+
+    m_endShowLabelCheckbox = AddShowPointNameCheckbox(ui->formLayoutEndPoint);
+    connect(m_endShowLabelCheckbox, &QCheckBox::toggled, this, [this](bool checked) { m_showLabelEnd = checked; });
+
+    connect(ui->checkBoxCreateStartPoint, &QCheckBox::toggled, this, [this](bool checked) {
+        if (checked && ui->lineEditStartPointName->text().isEmpty())
+        {
+            ui->lineEditStartPointName->setText(
+                VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
+        }
+        UpdatePointControls();
+    });
+
+    connect(ui->checkBoxCreateEndPoint, &QCheckBox::toggled, this, [this](bool checked) {
+        if (checked && ui->lineEditEndPointName->text().isEmpty())
+        {
+            ui->lineEditEndPointName->setText(
+                VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
+        }
+        UpdatePointControls();
+    });
+
+    UpdatePointControls();
 
     vis = new VisToolArcWithLength(&this->data);
 
@@ -499,4 +527,75 @@ void DialogArcWithLength::FinishCreating()
 
     setModal(true);
     show();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogArcWithLength::IsCreateStartPoint() const -> bool
+{
+    return ui->checkBoxCreateStartPoint->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogArcWithLength::IsCreateEndPoint() const -> bool
+{
+    return ui->checkBoxCreateEndPoint->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogArcWithLength::GetStartPointName() const -> QString
+{
+    return ui->lineEditStartPointName->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogArcWithLength::GetEndPointName() const -> QString
+{
+    return ui->lineEditEndPointName->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogArcWithLength::GetStartShowLabel() const -> bool
+{
+    return m_showLabelStart;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogArcWithLength::GetEndShowLabel() const -> bool
+{
+    return m_showLabelEnd;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogArcWithLength::UpdatePointControls()
+{
+    const bool hasFormulas = !m_formula->formula().isEmpty() && !m_formula3->formula().isEmpty();
+
+    qreal radius = 0;
+    qreal length = 0;
+    if (hasFormulas)
+    {
+        radius = m_formula->value();
+        length = m_formula3->value();
+    }
+
+    // Full circle when the length reaches the full circumference (VArc::FindF2 clamps it to a full circle).
+    const bool fullCircle = hasFormulas && radius > 0 && length >= M_2PI * radius;
+
+    ui->checkBoxCreateStartPoint->setEnabled(not fullCircle);
+    ui->checkBoxCreateEndPoint->setEnabled(not fullCircle);
+
+    const bool startOn = ui->checkBoxCreateStartPoint->isChecked() && not fullCircle;
+    const bool endOn = ui->checkBoxCreateEndPoint->isChecked() && not fullCircle;
+
+    ui->lineEditStartPointName->setEnabled(startOn);
+    ui->lineEditEndPointName->setEnabled(endOn);
+
+    if (m_startShowLabelCheckbox != nullptr)
+    {
+        m_startShowLabelCheckbox->setEnabled(startOn);
+    }
+    if (m_endShowLabelCheckbox != nullptr)
+    {
+        m_endShowLabelCheckbox->setEnabled(endOn);
+    }
 }

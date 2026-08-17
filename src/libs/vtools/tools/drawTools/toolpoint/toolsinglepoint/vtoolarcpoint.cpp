@@ -56,8 +56,8 @@ VToolArcPoint::VToolArcPoint(const VToolArcPointInitData &initData, QGraphicsIte
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolArcPoint::Create(VToolArcPointInitData initData) -> VToolArcPoint *
 {
-    const VArc arc = *initData.data->GeometricObject<VArc>(initData.arcId);
-    const QPointF point = (initData.position == ArcPointPosition::Start) ? arc.GetP1() : arc.GetP2();
+    const QSharedPointer<VAbstractArc> arc = initData.data->GeometricObject<VAbstractArc>(initData.arcId);
+    const QPointF point = (initData.position == ArcPointPosition::Start) ? arc->GetP1() : arc->GetP2();
 
     auto *p = new VPointF(point, initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);

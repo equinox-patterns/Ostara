@@ -407,6 +407,40 @@ auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
         MakeCurvePenStyle<VToolArcWithLength>(T("Pen style:")),
         MakeLineColor<VToolArcWithLength>(T("Color:")),
         MakeApproximationScale<VToolArcWithLength>(T("Approximation scale:")),
+        {QStringLiteral("createStartPoint"), T("Create start point"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolArcWithLength *>(tool);
+             auto *p = new VPE::VBoolProperty(T("Create start point"));
+             p->setValue(t->HasStartPoint());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArcWithLength *>(b->currentItem())) {
+                 t->SetCreateStartPoint(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArcWithLength *>(b->currentItem())) {
+                 prop->setValue(t->HasStartPoint());
+             }
+         }},
+        {QStringLiteral("createEndPoint"), T("Create end point"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolArcWithLength *>(tool);
+             auto *p = new VPE::VBoolProperty(T("Create end point"));
+             p->setValue(t->HasEndPoint());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArcWithLength *>(b->currentItem())) {
+                 t->SetCreateEndPoint(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolArcWithLength *>(b->currentItem())) {
+                 prop->setValue(t->HasEndPoint());
+             }
+         }},
         MakeNotes<VToolArcWithLength>(T("Notes:")),
     };
 }
@@ -911,6 +945,40 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>
         MakeCurvePenStyle<VToolEllipticalArc>(T("Pen style:")),
         MakeLineColor<VToolEllipticalArc>(T("Color:")),
         MakeApproximationScale<VToolEllipticalArc>(T("Approximation scale:")),
+        {QStringLiteral("createStartPoint"), T("Create start point"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArc *>(tool);
+             auto *p = new VPE::VBoolProperty(T("Create start point"));
+             p->setValue(t->HasStartPoint());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 t->SetCreateStartPoint(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 prop->setValue(t->HasStartPoint());
+             }
+         }},
+        {QStringLiteral("createEndPoint"), T("Create end point"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArc *>(tool);
+             auto *p = new VPE::VBoolProperty(T("Create end point"));
+             p->setValue(t->HasEndPoint());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 t->SetCreateEndPoint(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArc *>(b->currentItem())) {
+                 prop->setValue(t->HasEndPoint());
+             }
+         }},
         MakeNotes<VToolEllipticalArc>(T("Notes:")),
     };
 }
@@ -1010,6 +1078,40 @@ auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
         MakeCurvePenStyle<VToolEllipticalArcWithLength>(T("Pen style:")),
         MakeLineColor<VToolEllipticalArcWithLength>(T("Color:")),
         MakeApproximationScale<VToolEllipticalArcWithLength>(T("Approximation scale:")),
+        {QStringLiteral("createStartPoint"), T("Create start point"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
+             auto *p = new VPE::VBoolProperty(T("Create start point"));
+             p->setValue(t->HasStartPoint());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 t->SetCreateStartPoint(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 prop->setValue(t->HasStartPoint());
+             }
+         }},
+        {QStringLiteral("createEndPoint"), T("Create end point"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
+             auto *p = new VPE::VBoolProperty(T("Create end point"));
+             p->setValue(t->HasEndPoint());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 t->SetCreateEndPoint(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolEllipticalArcWithLength *>(b->currentItem())) {
+                 prop->setValue(t->HasEndPoint());
+             }
+         }},
         MakeNotes<VToolEllipticalArcWithLength>(T("Notes:")),
     };
 }

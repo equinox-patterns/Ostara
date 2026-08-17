@@ -51,6 +51,7 @@
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "vtoolabstractcurve.h"
+#include "../toolpoint/toolsinglepoint/vtoolarcpoint.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"
@@ -146,6 +147,12 @@ auto VToolEllipticalArc::Create(const QPointer<DialogTool> &dialog, VMainGraphic
     initData.approximationScale = dialogTool->GetApproximationScale();
     initData.notes = dialogTool->GetNotes();
     initData.aliasSuffix = dialogTool->GetAliasSuffix();
+    initData.createStartPoint = dialogTool->IsCreateStartPoint();
+    initData.createEndPoint = dialogTool->IsCreateEndPoint();
+    initData.startPointName = dialogTool->GetStartPointName();
+    initData.endPointName = dialogTool->GetEndPointName();
+    initData.startShowLabel = dialogTool->GetStartShowLabel();
+    initData.endShowLabel = dialogTool->GetEndShowLabel();
     // initData.approximationScale = dialogTool->GetApproximationScale(); // For future use
 
     VToolEllipticalArc *point = Create(initData);
@@ -217,6 +224,40 @@ auto VToolEllipticalArc::Create(VToolEllipticalArcInitData &initData) -> VToolEl
         initData.scene->addItem(toolEllipticalArc);
         InitElArcToolConnections(initData.scene, toolEllipticalArc);
         VAbstractPattern::AddTool(initData.id, toolEllipticalArc);
+
+        // Create the optional start/end points (GUI creation only).
+        if (initData.typeCreation == Source::FromGui)
+        {
+            if (initData.createStartPoint)
+            {
+                VToolArcPointInitData pointData;
+                pointData.arcId = initData.id;
+                pointData.position = ArcPointPosition::Start;
+                pointData.name = initData.startPointName;
+                pointData.showLabel = initData.startShowLabel;
+                pointData.scene = initData.scene;
+                pointData.doc = initData.doc;
+                pointData.data = initData.data;
+                pointData.parse = initData.parse;
+                pointData.typeCreation = Source::FromGui;
+                VToolArcPoint::Create(pointData);
+            }
+            if (initData.createEndPoint)
+            {
+                VToolArcPointInitData pointData;
+                pointData.arcId = initData.id;
+                pointData.position = ArcPointPosition::End;
+                pointData.name = initData.endPointName;
+                pointData.showLabel = initData.endShowLabel;
+                pointData.scene = initData.scene;
+                pointData.doc = initData.doc;
+                pointData.data = initData.data;
+                pointData.parse = initData.parse;
+                pointData.typeCreation = Source::FromGui;
+                VToolArcPoint::Create(pointData);
+            }
+        }
+
         return toolEllipticalArc;
     }
     return nullptr;

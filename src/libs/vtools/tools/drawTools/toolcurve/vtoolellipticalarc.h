@@ -50,6 +50,12 @@ struct VToolEllipticalArcInitData : VToolAbstractCurveInitData
     QString f1{'0'};            // NOLINT(misc-non-private-member-variables-in-classes)
     QString f2{'0'};            // NOLINT(misc-non-private-member-variables-in-classes)
     QString rotationAngle{'0'}; // NOLINT(misc-non-private-member-variables-in-classes)
+    bool createStartPoint{false};
+    bool createEndPoint{false};
+    QString startPointName{};
+    QString endPointName{};
+    bool startShowLabel{false};
+    bool endShowLabel{false};
 };
 
 /**

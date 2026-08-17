@@ -95,7 +95,7 @@ DialogEllipticalArc::DialogEllipticalArc(const VContainer *data, VAbstractPatter
     m_formulaF1->setPostfix(degreeSymbol);
     m_formulaF1->setDialogTitle(tr("Edit first angle"));
     connect(m_formulaF1, &AngleFormulaWidget::valueChanged, this,
-            [this]() { m_angleF1 = m_formulaF1->value(); CheckState(); });
+            [this]() { m_angleF1 = m_formulaF1->value(); CheckState(); UpdatePointControls(); });
 
     m_formulaF2->setData(&this->data);
     m_formulaF2->setToolId(toolId);
@@ -103,7 +103,7 @@ DialogEllipticalArc::DialogEllipticalArc(const VContainer *data, VAbstractPatter
     m_formulaF2->setPostfix(degreeSymbol);
     m_formulaF2->setDialogTitle(tr("Edit second angle"));
     connect(m_formulaF2, &AngleFormulaWidget::valueChanged, this,
-            [this]() { m_angleF2 = m_formulaF2->value(); CheckState(); });
+            [this]() { m_angleF2 = m_formulaF2->value(); CheckState(); UpdatePointControls(); });
 
     m_formulaRotationAngle->setData(&this->data);
     m_formulaRotationAngle->setToolId(toolId);
@@ -144,6 +144,33 @@ DialogEllipticalArc::DialogEllipticalArc(const VContainer *data, VAbstractPatter
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogEllipticalArc::ValidateAlias);
+
+    // Start/End point creation controls.
+    m_startShowLabelCheckbox = AddShowPointNameCheckbox(ui->formLayoutStartPoint);
+    connect(m_startShowLabelCheckbox, &QCheckBox::toggled, this, [this](bool checked) { m_showLabelStart = checked; });
+
+    m_endShowLabelCheckbox = AddShowPointNameCheckbox(ui->formLayoutEndPoint);
+    connect(m_endShowLabelCheckbox, &QCheckBox::toggled, this, [this](bool checked) { m_showLabelEnd = checked; });
+
+    connect(ui->checkBoxCreateStartPoint, &QCheckBox::toggled, this, [this](bool checked) {
+        if (checked && ui->lineEditStartPointName->text().isEmpty())
+        {
+            ui->lineEditStartPointName->setText(
+                VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
+        }
+        UpdatePointControls();
+    });
+
+    connect(ui->checkBoxCreateEndPoint, &QCheckBox::toggled, this, [this](bool checked) {
+        if (checked && ui->lineEditEndPointName->text().isEmpty())
+        {
+            ui->lineEditEndPointName->setText(
+                VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
+        }
+        UpdatePointControls();
+    });
+
+    UpdatePointControls();
 
     vis = new VisToolEllipticalArc(&this->data);
 
@@ -645,4 +672,65 @@ void DialogEllipticalArc::SetAliasSuffix(const QString &alias)
 auto DialogEllipticalArc::GetAliasSuffix() const -> QString
 {
     return ui->lineEditAlias->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEllipticalArc::IsCreateStartPoint() const -> bool
+{
+    return ui->checkBoxCreateStartPoint->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEllipticalArc::IsCreateEndPoint() const -> bool
+{
+    return ui->checkBoxCreateEndPoint->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEllipticalArc::GetStartPointName() const -> QString
+{
+    return ui->lineEditStartPointName->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEllipticalArc::GetEndPointName() const -> QString
+{
+    return ui->lineEditEndPointName->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEllipticalArc::GetStartShowLabel() const -> bool
+{
+    return m_showLabelStart;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEllipticalArc::GetEndShowLabel() const -> bool
+{
+    return m_showLabelEnd;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogEllipticalArc::UpdatePointControls()
+{
+    const bool fullEllipse = (!m_formulaF1->formula().isEmpty() && !m_formulaF2->formula().isEmpty() &&
+                              qFuzzyIsNull(m_angleF1 - m_angleF2));
+
+    ui->checkBoxCreateStartPoint->setEnabled(not fullEllipse);
+    ui->checkBoxCreateEndPoint->setEnabled(not fullEllipse);
+
+    const bool startOn = ui->checkBoxCreateStartPoint->isChecked() && not fullEllipse;
+    const bool endOn = ui->checkBoxCreateEndPoint->isChecked() && not fullEllipse;
+
+    ui->lineEditStartPointName->setEnabled(startOn);
+    ui->lineEditEndPointName->setEnabled(endOn);
+
+    if (m_startShowLabelCheckbox != nullptr)
+    {
+        m_startShowLabelCheckbox->setEnabled(startOn);
+    }
+    if (m_endShowLabelCheckbox != nullptr)
+    {
+        m_endShowLabelCheckbox->setEnabled(endOn);
+    }
 }

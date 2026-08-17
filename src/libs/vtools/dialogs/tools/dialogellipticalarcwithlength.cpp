@@ -39,6 +39,7 @@
 #include "vtheme.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
+#include "../vmisc/vmath.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
@@ -77,7 +78,7 @@ DialogEllipticalArcWithLength::DialogEllipticalArcWithLength(const VContainer *d
     m_formulaRadius1->setDialogTitle(tr("Edit radius1"));
     m_formulaRadius1->setCheckLessThanZero(true);
     connect(m_formulaRadius1, &FormulaInputWidget::valueChanged, this,
-            [this]() { CheckState(); });
+            [this]() { CheckState(); UpdatePointControls(); });
 
     m_formulaRadius2->setData(&this->data);
     m_formulaRadius2->setToolId(toolId);
@@ -86,7 +87,7 @@ DialogEllipticalArcWithLength::DialogEllipticalArcWithLength(const VContainer *d
     m_formulaRadius2->setDialogTitle(tr("Edit radius2"));
     m_formulaRadius2->setCheckLessThanZero(true);
     connect(m_formulaRadius2, &FormulaInputWidget::valueChanged, this,
-            [this]() { CheckState(); });
+            [this]() { CheckState(); UpdatePointControls(); });
 
     m_formulaF1->setData(&this->data);
     m_formulaF1->setToolId(toolId);
@@ -102,7 +103,7 @@ DialogEllipticalArcWithLength::DialogEllipticalArcWithLength(const VContainer *d
     m_formulaLength->setPostfix(lengthPostfix);
     m_formulaLength->setDialogTitle(tr("Edit the elliptical arc length"));
     connect(m_formulaLength, &FormulaInputWidget::valueChanged, this,
-            [this]() { CheckState(); });
+            [this]() { CheckState(); UpdatePointControls(); });
 
     m_formulaRotationAngle->setData(&this->data);
     m_formulaRotationAngle->setToolId(toolId);
@@ -143,6 +144,33 @@ DialogEllipticalArcWithLength::DialogEllipticalArcWithLength(const VContainer *d
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogEllipticalArcWithLength::ValidateAlias);
+
+    // Start/End point creation controls.
+    m_startShowLabelCheckbox = AddShowPointNameCheckbox(ui->formLayoutStartPoint);
+    connect(m_startShowLabelCheckbox, &QCheckBox::toggled, this, [this](bool checked) { m_showLabelStart = checked; });
+
+    m_endShowLabelCheckbox = AddShowPointNameCheckbox(ui->formLayoutEndPoint);
+    connect(m_endShowLabelCheckbox, &QCheckBox::toggled, this, [this](bool checked) { m_showLabelEnd = checked; });
+
+    connect(ui->checkBoxCreateStartPoint, &QCheckBox::toggled, this, [this](bool checked) {
+        if (checked && ui->lineEditStartPointName->text().isEmpty())
+        {
+            ui->lineEditStartPointName->setText(
+                VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
+        }
+        UpdatePointControls();
+    });
+
+    connect(ui->checkBoxCreateEndPoint, &QCheckBox::toggled, this, [this](bool checked) {
+        if (checked && ui->lineEditEndPointName->text().isEmpty())
+        {
+            ui->lineEditEndPointName->setText(
+                VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
+        }
+        UpdatePointControls();
+    });
+
+    UpdatePointControls();
 
     vis = new VisToolEllipticalArcWithLength(&this->data);
 
@@ -583,4 +611,71 @@ void DialogEllipticalArcWithLength::FinishCreating()
 void DialogEllipticalArcWithLength::InitIcons()
 {
     // Formula-related icons are now managed by FormulaInputWidget.
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEllipticalArcWithLength::IsCreateStartPoint() const -> bool
+{
+    return ui->checkBoxCreateStartPoint->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEllipticalArcWithLength::IsCreateEndPoint() const -> bool
+{
+    return ui->checkBoxCreateEndPoint->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEllipticalArcWithLength::GetStartPointName() const -> QString
+{
+    return ui->lineEditStartPointName->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEllipticalArcWithLength::GetEndPointName() const -> QString
+{
+    return ui->lineEditEndPointName->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEllipticalArcWithLength::GetStartShowLabel() const -> bool
+{
+    return m_showLabelStart;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEllipticalArcWithLength::GetEndShowLabel() const -> bool
+{
+    return m_showLabelEnd;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogEllipticalArcWithLength::UpdatePointControls()
+{
+    const qreal r1 = m_formulaRadius1->value();
+    const qreal r2 = m_formulaRadius2->value();
+    const qreal length = m_formulaLength->value();
+
+    // Full ellipse when the length reaches the ellipse perimeter (Ramanujan approximation).
+    const qreal h = (r1 - r2) * (r1 - r2) / ((r1 + r2) * (r1 + r2));
+    const qreal perimeter = M_PI * (r1 + r2) * (1.0 + 3.0 * h / (10.0 + qSqrt(4.0 - 3.0 * h)));
+    const bool fullEllipse = (r1 > 0 && r2 > 0 && length >= perimeter);
+
+    ui->checkBoxCreateStartPoint->setEnabled(not fullEllipse);
+    ui->checkBoxCreateEndPoint->setEnabled(not fullEllipse);
+
+    const bool startOn = ui->checkBoxCreateStartPoint->isChecked() && not fullEllipse;
+    const bool endOn = ui->checkBoxCreateEndPoint->isChecked() && not fullEllipse;
+
+    ui->lineEditStartPointName->setEnabled(startOn);
+    ui->lineEditEndPointName->setEnabled(endOn);
+
+    if (m_startShowLabelCheckbox != nullptr)
+    {
+        m_startShowLabelCheckbox->setEnabled(startOn);
+    }
+    if (m_endShowLabelCheckbox != nullptr)
+    {
+        m_endShowLabelCheckbox->setEnabled(endOn);
+    }
 }

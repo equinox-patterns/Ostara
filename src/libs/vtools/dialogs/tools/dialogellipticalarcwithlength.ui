@@ -44,6 +44,20 @@
         <widget class="QWidget" name="formulaRotationAnglePlaceholder" native="true"/>
        </item>
        <item>
+        <widget class="QCheckBox" name="checkBoxCreateStartPoint">
+         <property name="text">
+          <string>Create start point</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxCreateEndPoint">
+         <property name="text">
+          <string>Create end point</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="formulaSeparatorLayout">
          <property name="leftMargin">
           <number>33</number>
@@ -210,6 +224,55 @@
           </size>
          </property>
         </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabPoint">
+      <attribute name="title">
+       <string>Point</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayoutPoint">
+       <item>
+        <layout class="QFormLayout" name="formLayoutStartPoint">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="labelStartPointName">
+           <property name="text">
+            <string>Start point name:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="lineEditStartPointName">
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="formLayoutEndPoint">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="labelEndPointName">
+           <property name="text">
+            <string>End point name:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="lineEditEndPointName">
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

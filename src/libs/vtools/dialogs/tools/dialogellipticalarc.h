@@ -39,6 +39,7 @@
 
 class FormulaInputWidget;
 class AngleFormulaWidget;
+class QCheckBox;
 
 namespace Ui
 {
@@ -86,6 +87,13 @@ public:
     void SetAliasSuffix(const QString &alias);
     auto GetAliasSuffix() const -> QString;
 
+    auto IsCreateStartPoint() const -> bool;
+    auto IsCreateEndPoint() const -> bool;
+    auto GetStartPointName() const -> QString;
+    auto GetEndPointName() const -> QString;
+    auto GetStartShowLabel() const -> bool;
+    auto GetEndShowLabel() const -> bool;
+
     void ShowDialog(bool click) override;
 
     void CheckDependencyTreeComplete() override;
@@ -130,9 +138,16 @@ private:
 
     int m_stage{0};
 
+    QCheckBox *m_startShowLabelCheckbox{nullptr};
+    QCheckBox *m_endShowLabelCheckbox{nullptr};
+    bool m_showLabelStart{false};
+    bool m_showLabelEnd{false};
+
     void FinishCreating();
 
     void InitIcons();
+
+    void UpdatePointControls();
 };
 
 #endif // DIALOGELLIPTICALARC_H

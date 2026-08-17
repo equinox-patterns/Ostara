@@ -330,6 +330,11 @@ public:
 
     void SetAliasSuffix(const QString &alias) override;
 
+    auto HasStartPoint() const -> bool;
+    auto HasEndPoint() const -> bool;
+    void SetCreateStartPoint(bool create);
+    void SetCreateEndPoint(bool create);
+
 protected:
     struct ToolChanges
     {
@@ -352,6 +357,8 @@ protected:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
+    auto FindPointId(bool isStart) const -> quint32;
+
     Q_DISABLE_COPY_MOVE(VToolAbstractArc) // NOLINT
 };
 

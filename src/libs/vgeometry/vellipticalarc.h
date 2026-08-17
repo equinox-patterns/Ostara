@@ -89,8 +89,8 @@ public:
 
     auto GetLength() const -> qreal override;
 
-    auto GetP1() const -> QPointF;
-    auto GetP2() const -> QPointF;
+    auto GetP1() const -> QPointF override;
+    auto GetP2() const -> QPointF override;
 
     auto GetPoints() const -> QVector<QPointF> override;
 
