@@ -24,18 +24,80 @@
 #include <QEvent>
 #include <QFormLayout>
 #include <QFrame>
+#include <QHBoxLayout>
 #include <QKeyEvent>
+#include <QLabel>
 #include <QLayout>
 #include <QLayoutItem>
 #include <QMargins>
+#include <QMouseEvent>
+#include <QPixmap>
 #include <QPlainTextEdit>
 #include <QStyleOptionViewItem>
 #include <QVariant>
 #include <QWidget>
 
+#include <functional>
+
 #include "plugins/vwidgetproperty.h"
 #include "vproperty.h"
 #include "vpropertyformwidget_p.h"
+
+namespace
+{
+// A flat, non-button collapsible header: "Title ▾/▴" where clicking toggles the callback.
+class CollapsibleHeader : public QFrame
+{
+public:
+    CollapsibleHeader(const QString &text, const QPixmap &expandPixmap, const QPixmap &collapsePixmap,
+                      std::function<void(bool)> onToggle, QWidget *parent)
+      : QFrame(parent),
+        m_onToggle(onToggle),
+        m_collapsed(true),
+        m_expandPixmap(expandPixmap),
+        m_collapsePixmap(collapsePixmap)
+    {
+        setFrameStyle(QFrame::NoFrame);
+        {
+            auto p = palette();
+            p.setColor(QPalette::Window, qApp->palette().button().color());
+            setPalette(p);
+            setAutoFillBackground(true);
+        }
+
+        auto *layout = new QHBoxLayout(this);
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->setSpacing(4);
+
+        auto *title = new QLabel(text, this);
+        title->setAttribute(Qt::WA_TransparentForMouseEvents);
+
+        m_caret = new QLabel(this);
+        m_caret->setAttribute(Qt::WA_TransparentForMouseEvents);
+        m_caret->setPixmap(m_expandPixmap);
+
+        layout->addWidget(title);
+        layout->addWidget(m_caret);
+        layout->addStretch();
+    }
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override
+    {
+        m_collapsed = !m_collapsed;
+        m_caret->setPixmap(m_collapsed ? m_expandPixmap : m_collapsePixmap);
+        m_onToggle(m_collapsed);
+        QWidget::mousePressEvent(event);
+    }
+
+private:
+    std::function<void(bool)> m_onToggle;
+    bool m_collapsed;
+    QLabel *m_caret;
+    QPixmap m_expandPixmap;
+    QPixmap m_collapsePixmap;
+};
+} // namespace
 
 VPE::VPropertyFormWidget::VPropertyFormWidget(const QString &title, const QString &description,
                                               const QList<VProperty *> &properties, QWidget *parent)
@@ -74,6 +136,11 @@ VPE::VPropertyFormWidget::VPropertyFormWidget(VPropertyFormWidgetPrivate *d_poin
 VPE::VPropertyFormWidget::~VPropertyFormWidget()
 {
     delete vproperty_d_ptr;
+}
+
+void VPE::VPropertyFormWidget::setDarkTheme(bool dark)
+{
+    m_dark = dark;
 }
 
 void VPE::VPropertyFormWidget::build()
@@ -150,6 +217,41 @@ void VPE::VPropertyFormWidget::build()
                     ++i;
                     vproperty_d_ptr->Properties.insert(i, children[j]);
                 }
+            }
+            else if (tmpProperty->isCollapsible())
+            {
+                // Collapsible group: a flat header (text + caret) toggles a hideable content frame.
+                const QString theme = m_dark ? QStringLiteral("dark") : QStringLiteral("light");
+                const QPixmap expandPixmap(QStringLiteral(":/icons/%1/caret-down_%2.svg").arg(theme, theme));
+                const QPixmap collapsePixmap(QStringLiteral(":/icons/%1/caret-up_%2.svg").arg(theme, theme));
+
+                auto *content = new QFrame(this);
+                content->setObjectName(QStringLiteral("propertyCollapseContent"));
+                auto *subFormLayout = new QFormLayout(content);
+                subFormLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+                QMargins margins = subFormLayout->contentsMargins();
+                margins.setTop(0);
+                margins.setLeft(18);
+                margins.setRight(0);
+                subFormLayout->setContentsMargins(margins);
+                content->setLayout(subFormLayout);
+
+                QList<VProperty *> children = tmpProperty->getChildren();
+                for (int j = 0; j < children.size(); ++j)
+                {
+                    buildEditor(children[j], subFormLayout);
+                    ++i;
+                    vproperty_d_ptr->Properties.insert(i, children[j]);
+                }
+
+                content->setVisible(false); // collapsed by default
+
+                auto *header = new CollapsibleHeader(tmpProperty->getName(), expandPixmap, collapsePixmap,
+                                                     [content](bool collapsed) { content->setVisible(!collapsed); }, this);
+                header->setObjectName(QStringLiteral("propertyCollapseHeader"));
+
+                tmpFormLayout->addRow(header);
+                tmpFormLayout->addRow(content);
             }
             else
             {
@@ -260,15 +362,20 @@ void VPE::VPropertyFormWidget::commitData(int row)
         if (oldValue != newValue)
         {
             VProperty *parent = tmpProperty->getParent();
-            if (parent == nullptr || parent->propertyType() != Property::Complex)
-            {
-                tmpProperty->setValue(newValue);
-                emit propertyDataSubmitted(tmpProperty);
-            }
-            else if (parent->propertyType() == Property::Complex)
+            if (parent != nullptr && parent->propertyType() == Property::Complex)
             {
                 tmpProperty->UpdateParent(newValue);
                 emit propertyDataSubmitted(parent);
+            }
+            else if (parent != nullptr && parent->isCollapsible())
+            {
+                tmpProperty->setValue(newValue);
+                emit propertyDataSubmitted(parent);
+            }
+            else
+            {
+                tmpProperty->setValue(newValue);
+                emit propertyDataSubmitted(tmpProperty);
             }
         }
     }

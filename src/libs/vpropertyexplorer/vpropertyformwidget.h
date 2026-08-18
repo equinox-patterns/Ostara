@@ -81,6 +81,9 @@ public slots:
     //! submitted to the property.
     void setCommitBehaviour(bool auto_commit = true);
 
+    //! Sets the theme used to resolve collapsible-group caret icons
+    void setDarkTheme(bool dark);
+
 signals:
     //! Emitted whenever a property data changes
     void propertyDataSubmitted(VProperty* property);
@@ -100,6 +103,9 @@ protected:
     void commitData(const QWidget* editor);
 
 private:
+    //! Whether the current theme is dark (used to resolve caret icons)
+    bool m_dark{false};
+
     Q_DISABLE_COPY_MOVE(VPropertyFormWidget) // NOLINT
 };
 

@@ -435,6 +435,16 @@ void VPE::VProperty::setPropertyType(const Property &type)
     vproperty_d_ptr->type = type;
 }
 
+auto VPE::VProperty::isCollapsible() const -> bool
+{
+    return vproperty_d_ptr->Collapsible;
+}
+
+void VPE::VProperty::setCollapsible(bool collapsible)
+{
+    vproperty_d_ptr->Collapsible = collapsible;
+}
+
 void VPE::VProperty::UpdateParent(const QVariant &value)
 {
     Q_UNUSED(value)

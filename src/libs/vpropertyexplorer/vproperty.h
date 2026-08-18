@@ -227,6 +227,10 @@ public:
     auto propertyType() const -> Property;
     void setPropertyType(const Property &type);
 
+    //! Whether this property renders as a collapsible (foldable) group
+    auto isCollapsible() const -> bool;
+    void setCollapsible(bool collapsible);
+
     virtual void UpdateParent(const QVariant &value);
 public slots:
     virtual void ValueChildChanged(const QVariant &value, int typeForParent);

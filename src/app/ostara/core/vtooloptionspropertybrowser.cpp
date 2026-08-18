@@ -35,6 +35,7 @@ using namespace VtoppbConstants;
 #include "../vgeometry/vsplinepath.h"
 #include "../vmisc/def.h"
 #include "../vmisc/vvalentinasettings.h"
+#include "../vtheme/vtheme.h"
 #include "../vpatterndb/vformula.h"
 #include "../vpropertyexplorer/plugins/vboolproperty.h"
 #include "../vpropertyexplorer/plugins/venumproperty.h"
@@ -164,6 +165,7 @@ VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QDockWidget *parent)
     m_PropertyModel = new VPE::VPropertyModel(this);
     m_formView = new VPE::VPropertyFormView(m_PropertyModel, parent);
     m_formView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_formView->setDarkTheme(VTheme::ColorSheme() == VColorSheme::Dark);
 
     auto *scroll = new QScrollArea(parent);
     scroll->setWidgetResizable(true);
