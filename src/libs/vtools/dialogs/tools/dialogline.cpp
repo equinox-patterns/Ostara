@@ -56,31 +56,17 @@
  */
 DialogLine::DialogLine(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent)
   : DialogTool(data, doc, toolId, parent),
-    ui(new Ui::DialogLine),
-    flagError(true)
+    ui(new Ui::DialogLine)
 {
     ui->setupUi(this);
     InitOkCancelApply(ui);
 
-    // Re-add spanning 2 rows
-    ui->gridLayout->removeItem(ui->gridLayout->itemAtPosition(2, 2));
-    ui->gridLayout->addLayout(ui->verticalLayoutSwap, 2, 2, 2, 1);
-
-    MakeFilterableComboBox(ui->comboBoxFirstPoint);
-    MakeFilterableComboBox(ui->comboBoxSecondPoint);
-
-    FillComboBoxPoints(ui->comboBoxFirstPoint);
-    FillComboBoxPoints(ui->comboBoxSecondPoint);
     m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonLineColor);
 
     QMap<QString, QIcon> stylesPics = LineStylesPics(ui->comboBoxLineType->palette().color(QPalette::Base),
                                                      ui->comboBoxLineType->palette().color(QPalette::Text));
     stylesPics.remove(TypeLineNone); // Prevent hiding line
     FillComboBoxTypeLine(ui->comboBoxLineType, stylesPics);
-
-    connect(ui->comboBoxFirstPoint, &QComboBox::currentTextChanged, this, &DialogLine::PointNameChanged);
-    connect(ui->comboBoxSecondPoint, &QComboBox::currentTextChanged, this, &DialogLine::PointNameChanged);
-    connect(ui->toolButtonSwapPoints, &QToolButton::clicked, this, &DialogLine::SwapPoints);
 
     // Role name field (Line_CarrureDevant)
     m_labelRoleName = new QLabel(tr("Line:"));
@@ -118,7 +104,7 @@ DialogLine::~DialogLine()
  */
 void DialogLine::SetSecondPoint(quint32 value)
 {
-    setCurrentPointId(ui->comboBoxSecondPoint, value);
+    m_secondPointId = value;
 
     auto *line = qobject_cast<VisToolLine *>(vis);
     SCASSERT(line != nullptr)
@@ -155,7 +141,7 @@ void DialogLine::SetLineColor(const QString &value)
  */
 void DialogLine::SetFirstPoint(quint32 value)
 {
-    setCurrentPointId(ui->comboBoxFirstPoint, value);
+    m_firstPointId = value;
 
     auto *line = qobject_cast<VisToolLine *>(vis);
     SCASSERT(line != nullptr)
@@ -163,24 +149,6 @@ void DialogLine::SetFirstPoint(quint32 value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogLine::PointNameChanged()
-{
-    QColor color;
-    if (getCurrentObjectId(ui->comboBoxFirstPoint) == getCurrentObjectId(ui->comboBoxSecondPoint))
-    {
-        flagError = false;
-        color = errorColor;
-    }
-    else
-    {
-        flagError = true;
-        color = OkColor(this);
-    }
-    ChangeColor(ui->labelFirstPoint, color);
-    ChangeColor(ui->labelSecondPoint, color);
-    CheckState();
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 void DialogLine::ShowVisualization()
 {
@@ -212,19 +180,18 @@ void DialogLine::ChosenObject(quint32 id, const SceneObject &type)
         switch (number)
         {
             case 0:
-                if (SetObject(id, ui->comboBoxFirstPoint, tr("Select second point")))
+                m_firstPointId = id;
+                emit ToolTip(tr("Select second point"));
+                number++;
+                if (vis != nullptr)
                 {
-                    number++;
-                    if (vis != nullptr)
-                    {
-                        vis->VisualMode(id);
-                    }
+                    vis->VisualMode(id);
                 }
                 break;
             case 1:
-                if (getCurrentObjectId(ui->comboBoxFirstPoint) != id &&
-                    SetObject(id, ui->comboBoxSecondPoint, QString()) && flagError)
+                if (m_firstPointId != id)
                 {
+                    m_secondPointId = id;
                     number = 0;
                     prepare = true;
                     DialogAccepted();
@@ -243,7 +210,7 @@ void DialogLine::ChosenObject(quint32 id, const SceneObject &type)
  */
 auto DialogLine::GetFirstPoint() const -> quint32
 {
-    return qvariant_cast<quint32>(ui->comboBoxFirstPoint->currentData());
+    return m_firstPointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -253,7 +220,7 @@ auto DialogLine::GetFirstPoint() const -> quint32
  */
 auto DialogLine::GetSecondPoint() const -> quint32
 {
-    return qvariant_cast<quint32>(ui->comboBoxSecondPoint->currentData());
+    return m_secondPointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -279,20 +246,9 @@ auto DialogLine::GetNotes() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogLine::SwapPoints()
-{
-    const quint32 first = GetFirstPoint();
-    const quint32 second = GetSecondPoint();
-    SetFirstPoint(second);
-    SetSecondPoint(first);
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 void DialogLine::CheckDependencyTreeComplete()
 {
-    const bool ready = m_doc->IsPatternGraphComplete();
-    ui->comboBoxFirstPoint->setEnabled(ready);
-    ui->comboBoxSecondPoint->setEnabled(ready);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

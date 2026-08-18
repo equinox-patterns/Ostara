@@ -116,64 +116,19 @@ auto MakePointGroup(const QString &title, const QString &nameLabel, const QStrin
             }};
 }
 
-template <typename Tool, typename Getter>
-auto MakePointGroup(const QString &title, const QString &nameLabel, const QString &showLabel,
-                    const QString &basePointLabel, Getter basePointGetter) -> PropertyDesc
+template <typename Tool>
+struct ParentPointDesc
 {
-    return {QStringLiteral("point"), title, false,
-            [title, nameLabel, showLabel, basePointLabel, basePointGetter](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-                auto *t = static_cast<Tool *>(tool);
-                auto *group = new VPE::VProperty(title);
-                group->setCollapsible(true);
-                auto *nameChild = new VPE::VStringProperty(nameLabel);
-                nameChild->setValue(t->name());
-                auto *showChild = new VPE::VBoolProperty(showLabel);
-                showChild->setValue(t->IsLabelVisible(t->getId()));
-                auto *baseChild = new VPE::VLabelProperty(basePointLabel);
-                baseChild->setValue((t->*basePointGetter)());
-                group->addChild(nameChild);
-                group->addChild(showChild);
-                group->addChild(baseChild);
-                return group;
-            },
-            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
-                    const auto children = prop->getChildren();
-                    if (children.size() >= 2) {
-                        QString const n = children[0]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                        if (n != t->name()) {
-                            if (QRegularExpression const rx(NameRegExp());
-                                n.isEmpty() || !VContainer::IsUnique(n, valentinaNamespace) || !rx.match(n).hasMatch())
-                                children[0]->setValue(t->name());
-                            else t->setName(n);
-                        }
-                        t->SetLabelVisible(t->getId(),
-                            children[1]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
-                    }
-                }
-            },
-            [basePointGetter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
-                    const auto children = prop->getChildren();
-                    if (children.size() >= 2) {
-                        children[0]->setValue(t->name());
-                        children[1]->setValue(t->IsLabelVisible(t->getId()));
-                        if (children.size() >= 3) {
-                            children[2]->setValue((t->*basePointGetter)());
-                        }
-                    }
-                }
-            }};
-}
+    QString label;
+    QString (Tool::*getter)() const;
+};
 
-template <typename Tool, typename Getter1, typename Getter2>
+template <typename Tool>
 auto MakePointGroup(const QString &title, const QString &nameLabel, const QString &showLabel,
-                    const QString &firstPointLabel, Getter1 firstPointGetter,
-                    const QString &secondPointLabel, Getter2 secondPointGetter) -> PropertyDesc
+                    const QVector<ParentPointDesc<Tool>> &parentPoints) -> PropertyDesc
 {
     return {QStringLiteral("point"), title, false,
-            [title, nameLabel, showLabel, firstPointLabel, firstPointGetter, secondPointLabel, secondPointGetter]
-            (VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+            [title, nameLabel, showLabel, parentPoints](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *group = new VPE::VProperty(title);
                 group->setCollapsible(true);
@@ -181,14 +136,14 @@ auto MakePointGroup(const QString &title, const QString &nameLabel, const QStrin
                 nameChild->setValue(t->name());
                 auto *showChild = new VPE::VBoolProperty(showLabel);
                 showChild->setValue(t->IsLabelVisible(t->getId()));
-                auto *firstChild = new VPE::VLabelProperty(firstPointLabel);
-                firstChild->setValue((t->*firstPointGetter)());
-                auto *secondChild = new VPE::VLabelProperty(secondPointLabel);
-                secondChild->setValue((t->*secondPointGetter)());
                 group->addChild(nameChild);
                 group->addChild(showChild);
-                group->addChild(firstChild);
-                group->addChild(secondChild);
+                for (const auto &p : parentPoints)
+                {
+                    auto *child = new VPE::VLabelProperty(p.label);
+                    child->setValue((t->*p.getter)());
+                    group->addChild(child);
+                }
                 return group;
             },
             [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -207,14 +162,19 @@ auto MakePointGroup(const QString &title, const QString &nameLabel, const QStrin
                     }
                 }
             },
-            [firstPointGetter, secondPointGetter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+            [parentPoints](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
                 if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
                     const auto children = prop->getChildren();
-                    if (children.size() >= 4) {
+                    if (children.size() >= 2) {
                         children[0]->setValue(t->name());
                         children[1]->setValue(t->IsLabelVisible(t->getId()));
-                        children[2]->setValue((t->*firstPointGetter)());
-                        children[3]->setValue((t->*secondPointGetter)());
+                        for (int i = 0; i < parentPoints.size(); ++i)
+                        {
+                            if (children.size() > 2 + i)
+                            {
+                                children[2 + i]->setValue((t->*parentPoints.at(i).getter)());
+                            }
+                        }
                     }
                 }
             }};
@@ -524,7 +484,7 @@ auto EndLineProperties() -> std::vector<PropertyDesc>
         MakeLineColor<VToolEndLine>(T("Line color:")),
         MakeNotes<VToolEndLine>(T("Notes:")),
         MakePointGroup<VToolEndLine>(T("Point"), T("Point name:"), T("Show Point name"),
-                                     T("Base point:"), &VToolEndLine::BasePointName),
+                                     {{T("Base point:"), &VToolEndLine::BasePointName}}),
     };
 }
 
@@ -543,8 +503,8 @@ auto AlongLineProperties() -> std::vector<PropertyDesc>
         MakeLineColor<VToolAlongLine>(T("Line color:")),
         MakeNotes<VToolAlongLine>(T("Notes:")),
         MakePointGroup<VToolAlongLine>(T("Point"), T("Point name:"), T("Show Point name"),
-                                       T("First point:"), &VToolAlongLine::BasePointName,
-                                       T("Second point:"), &VToolAlongLine::SecondPointName),
+                                       {{T("First point:"), &VToolAlongLine::BasePointName},
+                                        {T("Second point:"), &VToolAlongLine::SecondPointName}}),
     };
 }
 
@@ -552,16 +512,16 @@ auto AlongLineProperties() -> std::vector<PropertyDesc>
 auto BisectorProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeParentPoint<VToolBisector>(AttrFirstPoint, T("First point:"), &VToolBisector::FirstPointName),
-        MakeParentPoint<VToolBisector>(AttrBasePoint, T("Second point:"), &VToolBisector::BasePointName),
-        MakeParentPoint<VToolBisector>(AttrThirdPoint, T("Third point:"), &VToolBisector::ThirdPointName),
-        MakeLineType<VToolBisector>(T("Line type:")),
-        MakeLineColor<VToolBisector>(T("Line color:")),
-        MakeStringPropWithValidator<VToolBisector>(QStringLiteral("lineRoleName"), T("Name:"),
+        MakeStringPropWithValidator<VToolBisector>(QStringLiteral("lineRoleName"), T("Line:"),
         &VToolBisector::GetLineRoleName, &VToolBisector::SetLineRoleName),
         MakeFormulaLength<VToolBisector>(T("Length:")),
+        MakeLineType<VToolBisector>(T("Line type:")),
+        MakeLineColor<VToolBisector>(T("Line color:")),
         MakeNotes<VToolBisector>(T("Notes:")),
-        MakePointGroup<VToolBisector>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakePointGroup<VToolBisector>(T("Point"), T("Point name:"), T("Show Point name"),
+                                      {{T("First point:"), &VToolBisector::FirstPointName},
+                                       {T("Second point:"), &VToolBisector::BasePointName},
+                                       {T("Third point:"), &VToolBisector::ThirdPointName}}),
     };
 }
 
@@ -620,15 +580,15 @@ auto TrueDartsProperties() -> std::vector<PropertyDesc>
 auto HeightProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeParentPoint<VToolHeight>(AttrBasePoint, T("Base point:"), &VToolHeight::BasePointName),
-        MakeParentPoint<VToolHeight>(AttrP1Line, T("First line point:"), &VToolHeight::FirstLinePointName),
-        MakeParentPoint<VToolHeight>(AttrP2Line, T("Second line point:"), &VToolHeight::SecondLinePointName),
+        MakeStringPropWithValidator<VToolHeight>(QStringLiteral("lineRoleName"), T("Line:"),
+        &VToolHeight::GetLineRoleName, &VToolHeight::SetLineRoleName),
         MakeLineType<VToolHeight>(T("Line type:")),
         MakeLineColor<VToolHeight>(T("Line color:")),
-        MakeStringPropWithValidator<VToolHeight>(QStringLiteral("lineRoleName"), T("Name:"),
-        &VToolHeight::GetLineRoleName, &VToolHeight::SetLineRoleName),
         MakeNotes<VToolHeight>(T("Notes:")),
-        MakePointGroup<VToolHeight>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakePointGroup<VToolHeight>(T("Point"), T("Point name:"), T("Show Point name"),
+                                    {{T("Base point:"), &VToolHeight::BasePointName},
+                                     {T("First line point:"), &VToolHeight::FirstLinePointName},
+                                     {T("Second line point:"), &VToolHeight::SecondLinePointName}}),
     };
 }
 
@@ -636,12 +596,10 @@ auto HeightProperties() -> std::vector<PropertyDesc>
 auto LineProperties() -> std::vector<PropertyDesc>
 {
     return {
+        MakeStringPropWithValidator<VToolLine>(QStringLiteral("lineRoleName"), T("Line:"),
+        &VToolLine::GetLineRoleName, &VToolLine::SetLineRoleName),
         MakeLineType<VToolLine>(T("Line type:")),
         MakeLineColor<VToolLine>(T("Line color:")),
-        MakeStringPropWithValidator<VToolLine>(QStringLiteral("lineRoleName"), T("Name:"),
-        &VToolLine::GetLineRoleName, &VToolLine::SetLineRoleName),
-        MakeParentPoint<VToolLine>(AttrFirstPoint, T("First point:"), &VToolLine::FirstPointName),
-        MakeParentPoint<VToolLine>(AttrSecondPoint, T("Second point:"), &VToolLine::SecondPointName),
         MakeNotes<VToolLine>(T("Notes:")),
     };
 }
@@ -650,14 +608,12 @@ auto LineProperties() -> std::vector<PropertyDesc>
 auto LineIntersectProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeParentPoint<VToolLineIntersect>(AttrP1Line1, T("First line (first point):"), &VToolLineIntersect::Line1P1Name),
-        MakeParentPoint<VToolLineIntersect>(AttrP2Line1, T("First line (second point):"), &VToolLineIntersect::Line1P2Name),
-        MakeParentPoint<VToolLineIntersect>(AttrP1Line2, T("Second line (first point):"), &VToolLineIntersect::Line2P1Name),
-        MakeParentPoint<VToolLineIntersect>(AttrP2Line2, T("Second line (second point):"), &VToolLineIntersect::Line2P2Name),
-        MakeStringPropWithValidator<VToolLineIntersect>(QStringLiteral("lineRoleName"), T("Name:"),
-        &VToolLineIntersect::GetLineRoleName, &VToolLineIntersect::SetLineRoleName),
         MakeNotes<VToolLineIntersect>(T("Notes:")),
-        MakePointGroup<VToolLineIntersect>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakePointGroup<VToolLineIntersect>(T("Point"), T("Point name:"), T("Show Point name"),
+                                           {{T("First line (first point):"), &VToolLineIntersect::Line1P1Name},
+                                            {T("First line (second point):"), &VToolLineIntersect::Line1P2Name},
+                                            {T("Second line (first point):"), &VToolLineIntersect::Line2P1Name},
+                                            {T("Second line (second point):"), &VToolLineIntersect::Line2P2Name}}),
     };
 }
 
@@ -665,33 +621,38 @@ auto LineIntersectProperties() -> std::vector<PropertyDesc>
 auto NormalProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeParentPoint<VToolNormal>(AttrBasePoint, T("First point:"), &VToolNormal::BasePointName),
-        MakeParentPoint<VToolNormal>(AttrSecondPoint, T("Second point:"), &VToolNormal::SecondPointName),
-        MakeLineType<VToolNormal>(T("Line type:")),
-        MakeLineColor<VToolNormal>(T("Line color:")),
-        MakeStringPropWithValidator<VToolNormal>(QStringLiteral("lineRoleName"), T("Name:"),
+        MakeStringPropWithValidator<VToolNormal>(QStringLiteral("lineRoleName"), T("Line:"),
         &VToolNormal::GetLineRoleName, &VToolNormal::SetLineRoleName),
         MakeFormulaLength<VToolNormal>(T("Length:")),
-        // Custom: angle is a plain double, not a formula
+        // Custom: angle is a plain number entered as text (QLineEdit), not a formula nor a spinbox
         {AttrAngle, T("Additional angle degrees:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolNormal *>(tool);
-             QMap<QString, QVariant> s{{QStringLiteral("Min"), -360}, {QStringLiteral("Max"), 360}, {QStringLiteral("Precision"), 3}};
-             auto *p = new VPE::VDoubleProperty(T("Additional angle degrees:"), s);
-             p->setValue(t->GetAngle());
+             auto *p = new VPE::VStringProperty(T("Additional angle degrees:"));
+             p->setValue(QString::number(t->GetAngle()));
              return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<VToolNormal *>(b->currentItem())) {
-                 double const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toDouble();
-                 if (!VFuzzyComparePossibleNulls(v, t->GetAngle())) t->SetAngle(v);
+                 QString text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                 text.replace(QLatin1Char(','), QLatin1Char('.'));
+                 bool ok = false;
+                 double const v = text.toDouble(&ok);
+                 if (ok && !VFuzzyComparePossibleNulls(v, t->GetAngle())) {
+                     t->SetAngle(v);
+                 }
+                 prop->setValue(QString::number(t->GetAngle())); // revert to canonical value (also on invalid input)
              }
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolNormal *>(b->currentItem())) prop->setValue(t->GetAngle());
+             if (auto *t = qgraphicsitem_cast<VToolNormal *>(b->currentItem())) prop->setValue(QString::number(t->GetAngle()));
          }},
+        MakeLineType<VToolNormal>(T("Line type:")),
+        MakeLineColor<VToolNormal>(T("Line color:")),
         MakeNotes<VToolNormal>(T("Notes:")),
-        MakePointGroup<VToolNormal>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakePointGroup<VToolNormal>(T("Point"), T("Point name:"), T("Show Point name"),
+                                    {{T("First point:"), &VToolNormal::BasePointName},
+                                     {T("Second point:"), &VToolNormal::SecondPointName}}),
     };
 }
 
@@ -732,10 +693,10 @@ auto PointOfContactProperties() -> std::vector<PropertyDesc>
 auto PointOfIntersectionProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeParentPoint<VToolPointOfIntersection>(AttrFirstPoint, T("X: vertical point:"), &VToolPointOfIntersection::FirstPointName),
-        MakeParentPoint<VToolPointOfIntersection>(AttrSecondPoint, T("Y: horizontal point:"), &VToolPointOfIntersection::SecondPointName),
         MakeNotes<VToolPointOfIntersection>(T("Notes:")),
-        MakePointGroup<VToolPointOfIntersection>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakePointGroup<VToolPointOfIntersection>(T("Point"), T("Point name:"), T("Show Point name"),
+                                                 {{T("X: vertical point:"), &VToolPointOfIntersection::FirstPointName},
+                                                  {T("Y: horizontal point:"), &VToolPointOfIntersection::SecondPointName}}),
     };
 }
 
@@ -743,16 +704,16 @@ auto PointOfIntersectionProperties() -> std::vector<PropertyDesc>
 auto ShoulderPointProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeParentPoint<VToolShoulderPoint>(AttrBasePoint, T("First point:"), &VToolShoulderPoint::BasePointName),
-        MakeParentPoint<VToolShoulderPoint>(AttrSecondPoint, T("Second point:"), &VToolShoulderPoint::SecondPointName),
-        MakeParentPoint<VToolShoulderPoint>(AttrThirdPoint, T("Third point:"), &VToolShoulderPoint::ShoulderPointName),
-        MakeLineType<VToolShoulderPoint>(T("Line type:")),
-        MakeLineColor<VToolShoulderPoint>(T("Line color:")),
-        MakeStringPropWithValidator<VToolShoulderPoint>(QStringLiteral("lineRoleName"), T("Name:"),
+        MakeStringPropWithValidator<VToolShoulderPoint>(QStringLiteral("lineRoleName"), T("Line:"),
         &VToolShoulderPoint::GetLineRoleName, &VToolShoulderPoint::SetLineRoleName),
         MakeFormulaLength<VToolShoulderPoint>(T("Length:")),
+        MakeLineType<VToolShoulderPoint>(T("Line type:")),
+        MakeLineColor<VToolShoulderPoint>(T("Line color:")),
         MakeNotes<VToolShoulderPoint>(T("Notes:")),
-        MakePointGroup<VToolShoulderPoint>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakePointGroup<VToolShoulderPoint>(T("Point"), T("Point name:"), T("Show Point name"),
+                                           {{T("First point:"), &VToolShoulderPoint::BasePointName},
+                                            {T("Second point:"), &VToolShoulderPoint::SecondPointName},
+                                            {T("Third point:"), &VToolShoulderPoint::ShoulderPointName}}),
     };
 }
 
@@ -760,12 +721,12 @@ auto ShoulderPointProperties() -> std::vector<PropertyDesc>
 auto TriangleProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeParentPoint<VToolTriangle>(AttrAxisP1, T("First point of axis:"), &VToolTriangle::AxisP1Name),
-        MakeParentPoint<VToolTriangle>(AttrAxisP2, T("Second point of axis:"), &VToolTriangle::AxisP2Name),
-        MakeParentPoint<VToolTriangle>(AttrFirstPoint, T("First point:"), &VToolTriangle::FirstPointName),
-        MakeParentPoint<VToolTriangle>(AttrSecondPoint, T("Second point:"), &VToolTriangle::SecondPointName),
         MakeNotes<VToolTriangle>(T("Notes:")),
-        MakePointGroup<VToolTriangle>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakePointGroup<VToolTriangle>(T("Point"), T("Point name:"), T("Show Point name"),
+                                      {{T("First point of axis:"), &VToolTriangle::AxisP1Name},
+                                       {T("Second point of axis:"), &VToolTriangle::AxisP2Name},
+                                       {T("First point:"), &VToolTriangle::FirstPointName},
+                                       {T("Second point:"), &VToolTriangle::SecondPointName}}),
     };
 }
 
@@ -773,43 +734,16 @@ auto TriangleProperties() -> std::vector<PropertyDesc>
 auto LineIntersectAxisProperties() -> std::vector<PropertyDesc>
 {
     return {
-        {AttrBasePoint, T("Axis point:"), true,
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-             auto *t = static_cast<VToolLineIntersectAxis *>(tool);
-             auto *p = new VPE::VLabelProperty(T("Axis point:"));
-             p->setValue(t->BasePointName()); return p;
-         }, nullptr,
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolLineIntersectAxis *>(b->currentItem()))
-                 prop->setValue(t->BasePointName());
-         }},
-        {AttrFirstPoint, T("First line point:"), true,
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-             auto *t = static_cast<VToolLineIntersectAxis *>(tool);
-             auto *p = new VPE::VLabelProperty(T("First line point:"));
-             p->setValue(t->FirstLinePoint()); return p;
-         }, nullptr,
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolLineIntersectAxis *>(b->currentItem()))
-                 prop->setValue(t->FirstLinePoint());
-         }},
-        {AttrSecondPoint, T("Second line point:"), true,
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-             auto *t = static_cast<VToolLineIntersectAxis *>(tool);
-             auto *p = new VPE::VLabelProperty(T("Second line point:"));
-             p->setValue(t->SecondLinePoint()); return p;
-         }, nullptr,
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolLineIntersectAxis *>(b->currentItem()))
-                 prop->setValue(t->SecondLinePoint());
-         }},
-        MakeLineType<VToolLineIntersectAxis>(T("Line type:")),
-        MakeLineColor<VToolLineIntersectAxis>(T("Line color:")),
-        MakeStringPropWithValidator<VToolLineIntersectAxis>(QStringLiteral("lineRoleName"), T("Name:"),
+        MakeStringPropWithValidator<VToolLineIntersectAxis>(QStringLiteral("lineRoleName"), T("Line:"),
         &VToolLineIntersectAxis::GetLineRoleName, &VToolLineIntersectAxis::SetLineRoleName),
         MakeFormulaAngle<VToolLineIntersectAxis>(T("Angle:")),
+        MakeLineType<VToolLineIntersectAxis>(T("Line type:")),
+        MakeLineColor<VToolLineIntersectAxis>(T("Line color:")),
         MakeNotes<VToolLineIntersectAxis>(T("Notes:")),
-        MakePointGroup<VToolLineIntersectAxis>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakePointGroup<VToolLineIntersectAxis>(T("Point"), T("Point name:"), T("Show Point name"),
+                                               {{T("Axis point:"), &VToolLineIntersectAxis::BasePointName},
+                                                {T("First line point:"), &VToolLineIntersectAxis::FirstLinePoint},
+                                                {T("Second line point:"), &VToolLineIntersectAxis::SecondLinePoint}}),
     };
 }
 

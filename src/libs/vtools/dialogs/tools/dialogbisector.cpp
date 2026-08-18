@@ -75,11 +75,6 @@ DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, qu
 
     InitIcons();
 
-    MakeFilterableComboBox(ui->comboBoxFirstPoint);
-    MakeFilterableComboBox(ui->comboBoxSecondPoint);
-    MakeFilterableComboBox(ui->comboBoxThirdPoint);
-
-
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
 
@@ -106,11 +101,8 @@ DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, qu
 
     InitOkCancelApply(ui);
 
-    FillComboBoxPoints(ui->comboBoxFirstPoint);
-    FillComboBoxPoints(ui->comboBoxSecondPoint);
     FillComboBoxTypeLine(ui->comboBoxLineType, LineStylesPics(ui->comboBoxLineType->palette().color(QPalette::Base),
                                                               ui->comboBoxLineType->palette().color(QPalette::Text)));
-    FillComboBoxPoints(ui->comboBoxThirdPoint);
     m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonLineColor);
 
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
@@ -120,10 +112,6 @@ DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, qu
                                 m_flagName);
                 CheckState();
             });
-    connect(ui->comboBoxFirstPoint, &QComboBox::currentTextChanged, this, &DialogBisector::PointNameChanged);
-    connect(ui->comboBoxSecondPoint, &QComboBox::currentTextChanged, this, &DialogBisector::PointNameChanged);
-    connect(ui->comboBoxThirdPoint, &QComboBox::currentTextChanged, this, &DialogBisector::PointNameChanged);
-
     vis = new VisToolBisector(&this->data);
 
     // Role name field (Line_CarrureDevant)
@@ -154,32 +142,7 @@ DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, qu
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogBisector::IsValid() const -> bool
 {
-    return m_formula->isValid() && m_flagError && m_flagName && flagRoleName;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogBisector::PointNameChanged()
-{
-    QSet<quint32> set;
-    set.insert(getCurrentObjectId(ui->comboBoxFirstPoint));
-    set.insert(getCurrentObjectId(ui->comboBoxSecondPoint));
-    set.insert(getCurrentObjectId(ui->comboBoxThirdPoint));
-
-    QColor color;
-    if (set.size() != 3)
-    {
-        m_flagError = false;
-        color = errorColor;
-    }
-    else
-    {
-        m_flagError = true;
-        color = OkColor(this);
-    }
-    ChangeColor(ui->labelFirstPoint, color);
-    ChangeColor(ui->labelSecondPoint, color);
-    ChangeColor(ui->labelThirdPoint, color);
-    CheckState();
+    return m_formula->isValid() && m_flagName && flagRoleName;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -220,16 +183,16 @@ void DialogBisector::ChosenObject(quint32 id, const SceneObject &type)
         switch (m_number)
         {
             case 0:
-                if (SetObject(id, ui->comboBoxFirstPoint, tr("Select second point of angle")))
-                {
-                    m_number++;
-                    line->VisualMode(id);
-                }
+                m_firstPointId = id;
+                emit ToolTip(tr("Select second point of angle"));
+                m_number++;
+                line->VisualMode(id);
                 break;
             case 1:
-                if (getCurrentObjectId(ui->comboBoxFirstPoint) != id &&
-                    SetObject(id, ui->comboBoxSecondPoint, tr("Select third point of angle")))
+                if (m_firstPointId != id)
                 {
+                    m_secondPointId = id;
+                    emit ToolTip(tr("Select third point of angle"));
                     m_number++;
                     line->SetPoint2Id(id);
                     line->RefreshGeometry();
@@ -293,7 +256,7 @@ void DialogBisector::SetFormula(const QString &value)
  */
 void DialogBisector::SetFirstPointId(const quint32 &value)
 {
-    setCurrentPointId(ui->comboBoxFirstPoint, value);
+    m_firstPointId = value;
 
     auto *line = qobject_cast<VisToolBisector *>(vis);
     SCASSERT(line != nullptr)
@@ -307,7 +270,7 @@ void DialogBisector::SetFirstPointId(const quint32 &value)
  */
 void DialogBisector::SetSecondPointId(const quint32 &value)
 {
-    setCurrentPointId(ui->comboBoxSecondPoint, value);
+    m_secondPointId = value;
 
     auto *line = qobject_cast<VisToolBisector *>(vis);
     SCASSERT(line != nullptr)
@@ -321,7 +284,7 @@ void DialogBisector::SetSecondPointId(const quint32 &value)
  */
 void DialogBisector::SetThirdPointId(const quint32 &value)
 {
-    setCurrentPointId(ui->comboBoxThirdPoint, value);
+    m_thirdPointId = value;
 
     auto *line = qobject_cast<VisToolBisector *>(vis);
     SCASSERT(line != nullptr)
@@ -403,7 +366,6 @@ void DialogBisector::CheckDependencyTreeComplete()
 {
     const bool ready = m_doc->IsPatternGraphComplete();
     ui->lineEditNamePoint->setEnabled(ready);
-    ui->comboBoxSecondPoint->setEnabled(ready);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -448,13 +410,10 @@ void DialogBisector::changeEvent(QEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogBisector::ChosenThirdPoint(quint32 id)
 {
-    QSet<quint32> set;
-    set.insert(getCurrentObjectId(ui->comboBoxFirstPoint));
-    set.insert(getCurrentObjectId(ui->comboBoxSecondPoint));
-    set.insert(id);
-
-    if (set.size() == 3 && SetObject(id, ui->comboBoxThirdPoint, QString()))
+    if (m_firstPointId != id && m_secondPointId != id)
     {
+        m_thirdPointId = id;
+
         auto *window = qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
         SCASSERT(window != nullptr)
 
@@ -517,7 +476,7 @@ auto DialogBisector::GetFormula() const -> QString
  */
 auto DialogBisector::GetFirstPointId() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxFirstPoint);
+    return m_firstPointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -527,7 +486,7 @@ auto DialogBisector::GetFirstPointId() const -> quint32
  */
 auto DialogBisector::GetSecondPointId() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxSecondPoint);
+    return m_secondPointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -537,7 +496,7 @@ auto DialogBisector::GetSecondPointId() const -> quint32
  */
 auto DialogBisector::GetThirdPointId() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxThirdPoint);
+    return m_thirdPointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

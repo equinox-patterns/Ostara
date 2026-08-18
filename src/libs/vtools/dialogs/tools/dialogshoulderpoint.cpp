@@ -77,10 +77,6 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, VAbstractPatter
 
     InitIcons();
 
-    MakeFilterableComboBox(ui->comboBoxP1Line);
-    MakeFilterableComboBox(ui->comboBoxP2Line);
-    MakeFilterableComboBox(ui->comboBoxP3);
-
     // --- Configure formula widget ---
     m_formula->setData(&this->data);
     m_formula->setToolId(toolId);
@@ -109,9 +105,6 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, VAbstractPatter
 
     FillComboBoxTypeLine(ui->comboBoxLineType, LineStylesPics(ui->comboBoxLineType->palette().color(QPalette::Base),
                                                               ui->comboBoxLineType->palette().color(QPalette::Text)));
-    FillComboBoxPoints(ui->comboBoxP1Line);
-    FillComboBoxPoints(ui->comboBoxP2Line);
-    FillComboBoxPoints(ui->comboBoxP3);
     m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonLineColor);
 
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
@@ -121,10 +114,6 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, VAbstractPatter
                                 m_flagName);
                 CheckState();
             });
-    connect(ui->comboBoxP1Line, &QComboBox::currentTextChanged, this, &DialogShoulderPoint::PointNameChanged);
-    connect(ui->comboBoxP2Line, &QComboBox::currentTextChanged, this, &DialogShoulderPoint::PointNameChanged);
-    connect(ui->comboBoxP3, &QComboBox::currentTextChanged, this, &DialogShoulderPoint::PointNameChanged);
-
     // Role name field (Line_CarrureDevant)
     m_labelRoleName = new QLabel(tr("Line:"));
     m_labelRoleName->setMinimumWidth(90);
@@ -153,34 +142,9 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, VAbstractPatter
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogShoulderPoint::PointNameChanged()
-{
-    QSet<quint32> set;
-    set.insert(getCurrentObjectId(ui->comboBoxP1Line));
-    set.insert(getCurrentObjectId(ui->comboBoxP2Line));
-    set.insert(getCurrentObjectId(ui->comboBoxP3));
-
-    QColor color;
-    if (set.size() != 3)
-    {
-        m_flagError = false;
-        color = errorColor;
-    }
-    else
-    {
-        m_flagError = true;
-        color = OkColor(this);
-    }
-    ChangeColor(ui->labelFirstPoint, color);
-    ChangeColor(ui->labelSecondPoint, color);
-    ChangeColor(ui->labelThirdPoint, color);
-    CheckState();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto DialogShoulderPoint::IsValid() const -> bool
 {
-    return m_formula->isValid() && m_flagName && m_flagError && flagRoleName;
+    return m_formula->isValid() && m_flagName && flagRoleName;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -221,16 +185,16 @@ void DialogShoulderPoint::ChosenObject(quint32 id, const SceneObject &type)
         switch (m_number)
         {
             case 0:
-                if (SetObject(id, ui->comboBoxP3, tr("Select first point of line")))
-                {
-                    m_number++;
-                    line->VisualMode(id);
-                }
+                m_p3 = id;
+                emit ToolTip(tr("Select first point of line"));
+                m_number++;
+                line->VisualMode(id);
                 break;
             case 1:
-                if (getCurrentObjectId(ui->comboBoxP3) != id &&
-                    SetObject(id, ui->comboBoxP1Line, tr("Select second point of line")))
+                if (m_p3 != id)
                 {
+                    m_p1Line = id;
+                    emit ToolTip(tr("Select second point of line"));
                     m_number++;
                     line->SetLineP1Id(id);
                     line->RefreshGeometry();
@@ -288,13 +252,10 @@ void DialogShoulderPoint::changeEvent(QEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogShoulderPoint::ChosenThirdPoint(quint32 id)
 {
-    QSet<quint32> set;
-    set.insert(getCurrentObjectId(ui->comboBoxP3));
-    set.insert(getCurrentObjectId(ui->comboBoxP1Line));
-    set.insert(id);
-
-    if (set.size() == 3 && SetObject(id, ui->comboBoxP2Line, QString()))
+    if (m_p3 != id && m_p1Line != id)
     {
+        m_p2Line = id;
+
         auto *window = qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
         SCASSERT(window != nullptr)
 
@@ -335,7 +296,7 @@ void DialogShoulderPoint::InitIcons()
  */
 void DialogShoulderPoint::SetP3(const quint32 &value)
 {
-    setCurrentPointId(ui->comboBoxP3, value);
+    m_p3 = value;
 
     auto *line = qobject_cast<VisToolShoulderPoint *>(vis);
     SCASSERT(line != nullptr)
@@ -361,7 +322,7 @@ void DialogShoulderPoint::SetLineColor(const QString &value)
  */
 void DialogShoulderPoint::SetP2Line(const quint32 &value)
 {
-    setCurrentPointId(ui->comboBoxP2Line, value);
+    m_p2Line = value;
 
     auto *line = qobject_cast<VisToolShoulderPoint *>(vis);
     SCASSERT(line != nullptr)
@@ -375,7 +336,7 @@ void DialogShoulderPoint::SetP2Line(const quint32 &value)
  */
 void DialogShoulderPoint::SetP1Line(const quint32 &value)
 {
-    setCurrentPointId(ui->comboBoxP1Line, value);
+    m_p1Line = value;
 
     auto *line = qobject_cast<VisToolShoulderPoint *>(vis);
     SCASSERT(line != nullptr)
@@ -451,7 +412,7 @@ auto DialogShoulderPoint::GetFormula() const -> QString
  */
 auto DialogShoulderPoint::GetP1Line() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxP1Line);
+    return m_p1Line;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -461,7 +422,7 @@ auto DialogShoulderPoint::GetP1Line() const -> quint32
  */
 auto DialogShoulderPoint::GetP2Line() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxP2Line);
+    return m_p2Line;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -471,7 +432,7 @@ auto DialogShoulderPoint::GetP2Line() const -> quint32
  */
 auto DialogShoulderPoint::GetP3() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxP3);
+    return m_p3;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -588,6 +549,4 @@ void DialogShoulderPoint::CheckDependencyTreeComplete()
 {
     const bool ready = m_doc->IsPatternGraphComplete();
     ui->lineEditNamePoint->setEnabled(ready);
-    ui->comboBoxP1Line->setEnabled(ready);
-    ui->comboBoxP2Line->setEnabled(ready);
 }

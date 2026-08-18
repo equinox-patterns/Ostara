@@ -624,7 +624,10 @@ void VMainGraphicsView::mousePressEvent(QMouseEvent *event)
                 const QList<QGraphicsItem *> list = PrioritizeItems(items(event->pos()), mapToScene(event->pos()));
                 for (auto *item : list)
                 {
-                    if (item != nullptr && item->type() > QGraphicsItem::UserType && item->type() <= VScaledLine::Type)
+                    // Skip click-transparent visualization items (no mouse buttons): route the click to
+                    // the real tool beneath them, matching the scene's point-preferred hit-test.
+                    if (item != nullptr && item->acceptedMouseButtons() != Qt::NoButton &&
+                        item->type() > QGraphicsItem::UserType && item->type() <= VScaledLine::Type)
                     {
                         emit itemClicked(item);
                         success = true;

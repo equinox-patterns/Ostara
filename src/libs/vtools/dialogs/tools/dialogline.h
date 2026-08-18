@@ -75,10 +75,8 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    void PointNameChanged() override;
 
 private slots:
-    void SwapPoints();
     void ValidateLineRoleName();
 
 protected:
@@ -95,7 +93,9 @@ private:
     /** @brief ui keeps information about user interface */
     Ui::DialogLine *ui;
 
-    bool flagError;
+    quint32 m_firstPointId{NULL_ID};
+    quint32 m_secondPointId{NULL_ID};
+
     bool flagRoleName{true};
     QLabel *m_labelRoleName{nullptr};
 
@@ -106,7 +106,7 @@ private:
 //---------------------------------------------------------------------------------------------------------------------
 inline auto DialogLine::IsValid() const -> bool
 {
-    return flagError && flagRoleName;
+    return flagRoleName;
 }
 
 #endif // DIALOGLINE_H

@@ -88,7 +88,6 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    void PointNameChanged() override;
 
 private slots:
     void ValidateLineRoleName();
@@ -113,8 +112,11 @@ private:
 
     QString m_pointName{};
 
+    quint32 m_p3{NULL_ID};
+    quint32 m_p1Line{NULL_ID};
+    quint32 m_p2Line{NULL_ID};
+
     bool m_flagName{true};
-    bool m_flagError{true};
     bool flagRoleName{true};
     QLabel *m_labelRoleName{nullptr};
 

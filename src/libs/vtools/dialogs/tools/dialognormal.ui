@@ -61,101 +61,11 @@
         </layout>
        </item>
        <item>
-        <layout class="QGridLayout" name="gridLayoutPoints">
-         <property name="verticalSpacing">
-          <number>1</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="labelFirstPoint">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>First point:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="comboBoxFirstPoint"/>
-         </item>
-         <item row="0" column="2">
-          <layout class="QVBoxLayout" name="verticalLayoutSwap">
-           <property name="spacing">
-            <number>1</number>
-           </property>
-           <item alignment="Qt::AlignmentFlag::AlignTop">
-            <widget class="QLabel" name="label_8">
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;font-weight:800;&quot;&gt;┓&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignHCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QToolButton" name="toolButtonSwapPoints">
-             <property name="toolTip">
-              <string>Swap points</string>
-             </property>
-             <property name="text">
-              <string notr="true"/>
-             </property>
-             <property name="icon">
-              <iconset theme="gtk-convert"/>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>16</width>
-               <height>16</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignBottom">
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:800;&quot;&gt;┛&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="labelSecondPoint">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Second point:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="comboBoxSecondPoint"/>
-         </item>
-        </layout>
-       </item>
-       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_6">
          <item>
           <widget class="QLabel" name="label_5">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -175,181 +85,20 @@
           </widget>
          </item>
          <item>
-          <layout class="QGridLayout" name="gridLayout">
-           <property name="sizeConstraint">
-            <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
+          <widget class="QLineEdit" name="lineEditAngle">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <property name="horizontalSpacing">
-            <number>29</number>
+           <property name="maximumSize">
+            <size>
+             <width>80</width>
+             <height>16777215</height>
+            </size>
            </property>
-           <property name="verticalSpacing">
-            <number>6</number>
-           </property>
-           <item row="1" column="2">
-            <widget class="QToolButton" name="toolButtonArrowRight">
-             <property name="text">
-              <string notr="true"/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../../vmisc/share/resources/icon.qrc">
-               <normaloff>:/icon/32x32/arrowRight.png</normaloff>:/icon/32x32/arrowRight.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>32</width>
-               <height>32</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QDoubleSpinBox" name="doubleSpinBoxAngle">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>56</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="minimum">
-              <double>-360.000000000000000</double>
-             </property>
-             <property name="maximum">
-              <double>360.000000000000000</double>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QToolButton" name="toolButtonArrowLeftUp">
-             <property name="text">
-              <string notr="true"/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../../vmisc/share/resources/icon.qrc">
-               <normaloff>:/icon/32x32/arrowLeftUp.png</normaloff>:/icon/32x32/arrowLeftUp.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>32</width>
-               <height>32</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QToolButton" name="toolButtonArrowRightUp">
-             <property name="text">
-              <string notr="true"/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../../vmisc/share/resources/icon.qrc">
-               <normaloff>:/icon/32x32/arrowRightUp.png</normaloff>:/icon/32x32/arrowRightUp.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>32</width>
-               <height>32</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QToolButton" name="toolButtonArrowUp">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="text">
-              <string notr="true"/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../../vmisc/share/resources/icon.qrc">
-               <normaloff>:/icon/32x32/arrowUp.png</normaloff>:/icon/32x32/arrowUp.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>32</width>
-               <height>32</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QToolButton" name="toolButtonArrowLeft">
-             <property name="text">
-              <string notr="true"/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../../vmisc/share/resources/icon.qrc">
-               <normaloff>:/icon/32x32/arrowLeft.png</normaloff>:/icon/32x32/arrowLeft.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>32</width>
-               <height>32</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QToolButton" name="toolButtonArrowLeftDown">
-             <property name="text">
-              <string notr="true"/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../../vmisc/share/resources/icon.qrc">
-               <normaloff>:/icon/32x32/arrowLeftDown.png</normaloff>:/icon/32x32/arrowLeftDown.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>32</width>
-               <height>32</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QToolButton" name="toolButtonArrowDown">
-             <property name="text">
-              <string notr="true"/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../../vmisc/share/resources/icon.qrc">
-               <normaloff>:/icon/32x32/arrowDown.png</normaloff>:/icon/32x32/arrowDown.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>32</width>
-               <height>32</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2">
-            <widget class="QToolButton" name="toolButtonArrowRightDown">
-             <property name="text">
-              <string notr="true"/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../../vmisc/share/resources/icon.qrc">
-               <normaloff>:/icon/32x32/arrowRightDown.png</normaloff>:/icon/32x32/arrowRightDown.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>32</width>
-               <height>32</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          </widget>
          </item>
         </layout>
        </item>
@@ -492,17 +241,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>lineEditNamePoint</tabstop>
-  <tabstop>comboBoxFirstPoint</tabstop>
-  <tabstop>comboBoxSecondPoint</tabstop>
-  <tabstop>doubleSpinBoxAngle</tabstop>
-  <tabstop>toolButtonArrowUp</tabstop>
-  <tabstop>toolButtonArrowRightUp</tabstop>
-  <tabstop>toolButtonArrowRight</tabstop>
-  <tabstop>toolButtonArrowRightDown</tabstop>
-  <tabstop>toolButtonArrowDown</tabstop>
-  <tabstop>toolButtonArrowLeftDown</tabstop>
-  <tabstop>toolButtonArrowLeft</tabstop>
-  <tabstop>toolButtonArrowLeftUp</tabstop>
+  <tabstop>lineEditAngle</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>

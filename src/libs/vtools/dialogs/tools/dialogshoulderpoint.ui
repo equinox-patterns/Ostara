@@ -66,93 +66,6 @@
           <enum>QFormLayout::ExpandingFieldsGrow</enum>
          </property>
          <item row="0" column="0">
-          <widget class="QLabel" name="labelFirstPoint">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>First point:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="comboBoxP1Line">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>145</width>
-             <height>0</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="labelSecondPoint">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Second point:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="comboBoxP2Line">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>143</width>
-             <height>0</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="labelThirdPoint">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Third point:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="comboBoxP3">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>145</width>
-             <height>0</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
           <widget class="QLabel" name="label_7">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -165,7 +78,7 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="0" column="1">
           <widget class="QComboBox" name="comboBoxLineType">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -193,14 +106,14 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
+         <item row="1" column="0">
           <widget class="QLabel" name="label">
            <property name="text">
             <string>Line color:</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="1" column="1">
           <widget class="VPE::QtColorPicker" name="pushButtonLineColor">
            <property name="text">
             <string notr="true">Color</string>
@@ -302,12 +215,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>plainTextEditFormula</tabstop>
-  <tabstop>pushButtonGrowLength</tabstop>
   <tabstop>lineEditNamePoint</tabstop>
-  <tabstop>comboBoxP1Line</tabstop>
-  <tabstop>comboBoxP2Line</tabstop>
-  <tabstop>comboBoxP3</tabstop>
   <tabstop>comboBoxLineType</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>

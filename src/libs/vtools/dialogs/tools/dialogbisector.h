@@ -89,8 +89,6 @@ public:
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
 
-    void PointNameChanged() override;
-
 protected:
     void ShowVisualization() override;
     void SaveData() override;
@@ -111,7 +109,10 @@ private:
 
     QString m_pointName{};
 
-    bool m_flagError{true};
+    quint32 m_firstPointId{NULL_ID};
+    quint32 m_secondPointId{NULL_ID};
+    quint32 m_thirdPointId{NULL_ID};
+
     bool m_flagName{true};
 
     bool flagRoleName{true};

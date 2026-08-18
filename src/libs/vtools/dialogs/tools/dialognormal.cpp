@@ -68,13 +68,6 @@ DialogNormal::DialogNormal(const VContainer *data, VAbstractPattern *doc, quint3
     connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
             [this](bool checked) { SetShowLabel(checked); });
 
-    // Re-add spanning 2 rows
-    ui->gridLayoutPoints->removeItem(ui->gridLayoutPoints->itemAtPosition(0, 2));
-    ui->gridLayoutPoints->addLayout(ui->verticalLayoutSwap, 0, 2, 2, 1);
-
-    MakeFilterableComboBox(ui->comboBoxFirstPoint);
-    MakeFilterableComboBox(ui->comboBoxSecondPoint);
-
     // --- Configure formula widget ---
     m_formula->setData(&this->data);
     m_formula->setToolId(toolId);
@@ -100,24 +93,22 @@ DialogNormal::DialogNormal(const VContainer *data, VAbstractPattern *doc, quint3
 
     InitOkCancelApply(ui);
 
-    FillComboBoxPoints(ui->comboBoxFirstPoint);
-    FillComboBoxPoints(ui->comboBoxSecondPoint);
     FillComboBoxTypeLine(ui->comboBoxLineType, LineStylesPics(ui->comboBoxLineType->palette().color(QPalette::Base),
                                                               ui->comboBoxLineType->palette().color(QPalette::Text)));
     m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonLineColor);
 
-    connect(ui->toolButtonArrowDown, &QPushButton::clicked, this, [this]() { ui->doubleSpinBoxAngle->setValue(270); });
-    connect(ui->toolButtonArrowUp, &QPushButton::clicked, this, [this]() { ui->doubleSpinBoxAngle->setValue(90); });
-    connect(ui->toolButtonArrowLeft, &QPushButton::clicked, this, [this]() { ui->doubleSpinBoxAngle->setValue(180); });
-    connect(ui->toolButtonArrowRight, &QPushButton::clicked, this, [this]() { ui->doubleSpinBoxAngle->setValue(0); });
-    connect(ui->toolButtonArrowLeftUp, &QPushButton::clicked, this,
-            [this]() { ui->doubleSpinBoxAngle->setValue(135); });
-    connect(ui->toolButtonArrowLeftDown, &QPushButton::clicked, this,
-            [this]() { ui->doubleSpinBoxAngle->setValue(225); });
-    connect(ui->toolButtonArrowRightUp, &QPushButton::clicked, this,
-            [this]() { ui->doubleSpinBoxAngle->setValue(45); });
-    connect(ui->toolButtonArrowRightDown, &QPushButton::clicked, this,
-            [this]() { ui->doubleSpinBoxAngle->setValue(315); });
+    ui->lineEditAngle->setText(QString::number(0));
+    connect(ui->lineEditAngle, &QLineEdit::textChanged, this,
+            [this]()
+            {
+                QString angle = ui->lineEditAngle->text();
+                angle.replace(QLatin1Char(','), QLatin1Char('.'));
+                bool ok = false;
+                angle.toDouble(&ok);
+                m_flagAngle = ok;
+                ui->lineEditAngle->setStyleSheet(ok ? QString() : QStringLiteral("border: 1px solid red;"));
+                CheckState();
+            });
 
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
@@ -126,10 +117,6 @@ DialogNormal::DialogNormal(const VContainer *data, VAbstractPattern *doc, quint3
                                 m_flagName);
                 CheckState();
             });
-    connect(ui->comboBoxFirstPoint, &QComboBox::currentTextChanged, this, &DialogNormal::PointNameChanged);
-    connect(ui->comboBoxSecondPoint, &QComboBox::currentTextChanged, this, &DialogNormal::PointNameChanged);
-    connect(ui->toolButtonSwapPoints, &QToolButton::clicked, this, &DialogNormal::SwapPoints);
-
     // Role name field (Line_CarrureDevant)
     m_labelRoleName = new QLabel(tr("Line:"));
     m_labelRoleName->setMinimumWidth(90);
@@ -160,26 +147,7 @@ DialogNormal::DialogNormal(const VContainer *data, VAbstractPattern *doc, quint3
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogNormal::IsValid() const -> bool
 {
-    return m_flagName && m_formula->isValid() && m_flagError && flagRoleName;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogNormal::PointNameChanged()
-{
-    QColor color;
-    if (getCurrentObjectId(ui->comboBoxFirstPoint) == getCurrentObjectId(ui->comboBoxSecondPoint))
-    {
-        m_flagError = false;
-        color = errorColor;
-    }
-    else
-    {
-        m_flagError = true;
-        color = OkColor(this);
-    }
-    ChangeColor(ui->labelFirstPoint, color);
-    ChangeColor(ui->labelSecondPoint, color);
-    CheckState();
+    return m_flagName && m_formula->isValid() && flagRoleName && m_flagAngle;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -215,16 +183,15 @@ void DialogNormal::ChosenObject(quint32 id, const SceneObject &type)
         switch (m_number)
         {
             case 0:
-                if (SetObject(id, ui->comboBoxFirstPoint, tr("Select second point of line")))
-                {
-                    m_number++;
-                    line->VisualMode(id);
-                }
+                m_firstPointId = id;
+                emit ToolTip(tr("Select second point of line"));
+                m_number++;
+                line->VisualMode(id);
                 break;
             case 1:
-                if (getCurrentObjectId(ui->comboBoxFirstPoint) != id &&
-                    SetObject(id, ui->comboBoxSecondPoint, QString()))
+                if (m_firstPointId != id)
                 {
+                    m_secondPointId = id;
                     line->SetPoint2Id(id);
                     line->RefreshGeometry();
                     prepare = true;
@@ -250,7 +217,10 @@ void DialogNormal::ChosenObject(quint32 id, const SceneObject &type)
 void DialogNormal::SaveData()
 {
     m_pointName = ui->lineEditNamePoint->text();
-    m_angle = ui->doubleSpinBoxAngle->value();
+
+    QString angleText = ui->lineEditAngle->text();
+    angleText.replace(QLatin1Char(','), QLatin1Char('.'));
+    m_angle = angleText.toDouble();
 
     const QString formulaText = VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
         m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator());
@@ -305,7 +275,7 @@ void DialogNormal::InitIcons()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogNormal::SetSecondPointId(quint32 value)
 {
-    setCurrentPointId(ui->comboBoxSecondPoint, value);
+    m_secondPointId = value;
 
     auto *line = qobject_cast<VisToolNormal *>(vis);
     SCASSERT(line != nullptr)
@@ -327,7 +297,7 @@ void DialogNormal::SetLineColor(const QString &value)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogNormal::SetFirstPointId(quint32 value)
 {
-    setCurrentPointId(ui->comboBoxFirstPoint, value);
+    m_firstPointId = value;
 
     auto *line = qobject_cast<VisToolNormal *>(vis);
     SCASSERT(line != nullptr)
@@ -338,7 +308,7 @@ void DialogNormal::SetFirstPointId(quint32 value)
 void DialogNormal::SetAngle(qreal value)
 {
     m_angle = value;
-    ui->doubleSpinBoxAngle->setValue(m_angle);
+    ui->lineEditAngle->setText(QString::number(m_angle));
 
     auto *line = qobject_cast<VisToolNormal *>(vis);
     SCASSERT(line != nullptr)
@@ -396,13 +366,13 @@ auto DialogNormal::GetAngle() const -> qreal
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogNormal::GetFirstPointId() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxFirstPoint);
+    return m_firstPointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogNormal::GetSecondPointId() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxSecondPoint);
+    return m_secondPointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -457,20 +427,10 @@ void DialogNormal::ShowDialog(bool click)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogNormal::SwapPoints()
-{
-    const quint32 first = GetFirstPointId();
-    const quint32 second = GetSecondPointId();
-    SetFirstPointId(second);
-    SetSecondPointId(first);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogNormal::CheckDependencyTreeComplete()
 {
     const bool ready = m_doc->IsPatternGraphComplete();
     ui->lineEditNamePoint->setEnabled(ready);
-    ui->comboBoxFirstPoint->setEnabled(ready);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

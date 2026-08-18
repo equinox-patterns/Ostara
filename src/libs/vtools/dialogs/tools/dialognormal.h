@@ -88,10 +88,6 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    void PointNameChanged() override;
-
-private slots:
-    void SwapPoints();
 
 protected:
     void ShowVisualization() override;
@@ -116,8 +112,11 @@ private:
 
     QString m_pointName{};
 
+    quint32 m_firstPointId{NULL_ID};
+    quint32 m_secondPointId{NULL_ID};
+
     bool m_flagName{true};
-    bool m_flagError{true};
+    bool m_flagAngle{true};
 
     bool flagRoleName{true};
     QLabel *m_labelRoleName{nullptr};

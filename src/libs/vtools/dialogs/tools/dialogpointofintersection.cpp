@@ -51,28 +51,16 @@ DialogPointOfIntersection::DialogPointOfIntersection(const VContainer *data, VAb
   : DialogTool(data, doc, toolId, parent),
     ui(new Ui::DialogPointOfIntersection),
     pointName(),
-    flagName(true),
-    flagError(true)
+    flagName(true)
 {
     ui->setupUi(this);
     connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
             [this](bool checked) { SetShowLabel(checked); });
 
-    // Re-add spanning 2 rows
-    ui->gridLayout->removeItem(ui->gridLayout->itemAtPosition(0, 2));
-    ui->gridLayout->addLayout(ui->verticalLayoutSwap, 0, 2, 2, 1);
-
-    MakeFilterableComboBox(ui->comboBoxFirstPoint);
-    MakeFilterableComboBox(ui->comboBoxSecondPoint);
-
-
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
 
     InitOkCancelApply(ui);
-
-    FillComboBoxPoints(ui->comboBoxFirstPoint);
-    FillComboBoxPoints(ui->comboBoxSecondPoint);
 
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this,
             [this]()
@@ -80,11 +68,6 @@ DialogPointOfIntersection::DialogPointOfIntersection(const VContainer *data, VAb
                 CheckPointLabel(this, ui->lineEditNamePoint, ui->labelEditNamePoint, pointName, &this->data, flagName);
                 CheckState();
             });
-    connect(ui->comboBoxFirstPoint, &QComboBox::currentTextChanged, this, &DialogPointOfIntersection::PointNameChanged);
-    connect(ui->comboBoxSecondPoint, &QComboBox::currentTextChanged, this,
-            &DialogPointOfIntersection::PointNameChanged);
-    connect(ui->toolButtonSwapPoints, &QToolButton::clicked, this, &DialogPointOfIntersection::SwapPoints);
-
     vis = new VisToolPointOfIntersection(&this->data);
     vis->VisualMode(NULL_ID); // Show vertical axis
 
@@ -111,7 +94,7 @@ auto DialogPointOfIntersection::GetPointName() const -> QString
  */
 void DialogPointOfIntersection::SetSecondPointId(quint32 value)
 {
-    setCurrentPointId(ui->comboBoxSecondPoint, value);
+    m_secondPointId = value;
 
     auto *line = qobject_cast<VisToolPointOfIntersection *>(vis);
     SCASSERT(line != nullptr)
@@ -134,17 +117,16 @@ void DialogPointOfIntersection::ChosenObject(quint32 id, const SceneObject &type
         switch (number)
         {
             case 0:
-                if (SetObject(id, ui->comboBoxFirstPoint, tr("Select point for Y value (horizontal)")))
-                {
-                    number++;
-                    line->SetPoint1Id(id);
-                    line->RefreshGeometry();
-                }
+                m_firstPointId = id;
+                emit ToolTip(tr("Select point for Y value (horizontal)"));
+                number++;
+                line->SetPoint1Id(id);
+                line->RefreshGeometry();
                 break;
             case 1:
-                if (getCurrentObjectId(ui->comboBoxFirstPoint) != id &&
-                    SetObject(id, ui->comboBoxSecondPoint, QString()))
+                if (m_firstPointId != id)
                 {
+                    m_secondPointId = id;
                     line->SetPoint2Id(id);
                     line->RefreshGeometry();
                     prepare = true;
@@ -171,24 +153,6 @@ void DialogPointOfIntersection::SaveData()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogPointOfIntersection::PointNameChanged()
-{
-    QColor color;
-    if (getCurrentObjectId(ui->comboBoxFirstPoint) == getCurrentObjectId(ui->comboBoxSecondPoint))
-    {
-        flagError = false;
-        color = errorColor;
-    }
-    else
-    {
-        flagError = true;
-        color = OkColor(this);
-    }
-    ChangeColor(ui->labelFirstPoint, color);
-    ChangeColor(ui->labelSecondPoint, color);
-    CheckState();
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPointOfIntersection::ShowVisualization()
 {
@@ -202,7 +166,7 @@ void DialogPointOfIntersection::ShowVisualization()
  */
 void DialogPointOfIntersection::SetFirstPointId(quint32 value)
 {
-    setCurrentPointId(ui->comboBoxFirstPoint, value);
+    m_firstPointId = value;
 
     auto *line = qobject_cast<VisToolPointOfIntersection *>(vis);
     SCASSERT(line != nullptr)
@@ -227,7 +191,7 @@ void DialogPointOfIntersection::SetPointName(const QString &value)
  */
 auto DialogPointOfIntersection::GetFirstPointId() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxFirstPoint);
+    return m_firstPointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -237,7 +201,7 @@ auto DialogPointOfIntersection::GetFirstPointId() const -> quint32
  */
 auto DialogPointOfIntersection::GetSecondPointId() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxSecondPoint);
+    return m_secondPointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -253,14 +217,6 @@ auto DialogPointOfIntersection::GetNotes() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogPointOfIntersection::SwapPoints()
-{
-    const quint32 first = GetFirstPointId();
-    const quint32 second = GetSecondPointId();
-    SetFirstPointId(second);
-    SetSecondPointId(first);
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPointOfIntersection::CheckDependencyTreeComplete()
 {

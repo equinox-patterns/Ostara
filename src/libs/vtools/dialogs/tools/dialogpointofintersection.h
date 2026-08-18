@@ -69,10 +69,6 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    void PointNameChanged() override;
-
-private slots:
-    void SwapPoints();
 
 protected:
     void ShowVisualization() override;
@@ -90,8 +86,10 @@ private:
 
     QString pointName;
 
+    quint32 m_firstPointId{NULL_ID};
+    quint32 m_secondPointId{NULL_ID};
+
     bool flagName;
-    bool flagError;
 
     /** @brief number number of handled objects */
     qint32 number{0};
@@ -100,7 +98,7 @@ private:
 //---------------------------------------------------------------------------------------------------------------------
 inline auto DialogPointOfIntersection::IsValid() const -> bool
 {
-    return flagName && flagError;
+    return flagName;
 }
 
 #endif // DIALOGPOINTOFINTERSECTION_H
