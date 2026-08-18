@@ -51,7 +51,10 @@ VFormulaPropertyEditor::VFormulaPropertyEditor(QWidget *parent)
     m_ToolButton = new QToolButton(this);
     m_ToolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     m_ToolButton->setText(QStringLiteral("..."));
-    m_ToolButton->setIcon(VTheme::GetIconResource(QStringLiteral("icon"), QStringLiteral("16x16/fx.png")));
+    const bool isDark = VTheme::ColorSheme() == VColorSheme::Dark;
+    m_ToolButton->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/function_%1.svg")
+                  .arg(isDark ? QStringLiteral("dark") : QStringLiteral("light"))));
     m_ToolButton->setIconSize(QSize(16, 16));
     m_ToolButton->setFixedSize(24, 24);
     m_ToolButton->installEventFilter(this);

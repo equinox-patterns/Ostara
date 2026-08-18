@@ -117,6 +117,56 @@ auto MakePointGroup(const QString &title, const QString &nameLabel, const QStrin
 }
 
 template <typename Tool, typename Getter>
+auto MakePointGroup(const QString &title, const QString &nameLabel, const QString &showLabel,
+                    const QString &basePointLabel, Getter basePointGetter) -> PropertyDesc
+{
+    return {QStringLiteral("point"), title, false,
+            [title, nameLabel, showLabel, basePointLabel, basePointGetter](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *group = new VPE::VProperty(title);
+                group->setCollapsible(true);
+                auto *nameChild = new VPE::VStringProperty(nameLabel);
+                nameChild->setValue(t->name());
+                auto *showChild = new VPE::VBoolProperty(showLabel);
+                showChild->setValue(t->IsLabelVisible(t->getId()));
+                auto *baseChild = new VPE::VLabelProperty(basePointLabel);
+                baseChild->setValue((t->*basePointGetter)());
+                group->addChild(nameChild);
+                group->addChild(showChild);
+                group->addChild(baseChild);
+                return group;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    const auto children = prop->getChildren();
+                    if (children.size() >= 2) {
+                        QString const n = children[0]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                        if (n != t->name()) {
+                            if (QRegularExpression const rx(NameRegExp());
+                                n.isEmpty() || !VContainer::IsUnique(n, valentinaNamespace) || !rx.match(n).hasMatch())
+                                children[0]->setValue(t->name());
+                            else t->setName(n);
+                        }
+                        t->SetLabelVisible(t->getId(),
+                            children[1]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+                    }
+                }
+            },
+            [basePointGetter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    const auto children = prop->getChildren();
+                    if (children.size() >= 2) {
+                        children[0]->setValue(t->name());
+                        children[1]->setValue(t->IsLabelVisible(t->getId()));
+                        if (children.size() >= 3) {
+                            children[2]->setValue((t->*basePointGetter)());
+                        }
+                    }
+                }
+            }};
+}
+
+template <typename Tool, typename Getter>
 auto MakeParentPoint(const QString &attrId, const QString &label, Getter getter) -> PropertyDesc
 {
     return {attrId, label, true,
@@ -412,15 +462,15 @@ auto SinglePointProperties() -> std::vector<PropertyDesc>
 auto EndLineProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeParentPoint<VToolEndLine>(AttrBasePoint, T("Base point:"), &VToolEndLine::BasePointName),
-        MakeLineType<VToolEndLine>(T("Line type:")),
-        MakeLineColor<VToolEndLine>(T("Line color:")),
-        MakeStringPropWithValidator<VToolEndLine>(QStringLiteral("lineRoleName"), T("Name:"),
+        MakeStringPropWithValidator<VToolEndLine>(QStringLiteral("lineRoleName"), T("Line:"),
         &VToolEndLine::GetLineRoleName, &VToolEndLine::SetLineRoleName),
         MakeFormulaLength<VToolEndLine>(T("Length:")),
         MakeFormulaAngle<VToolEndLine>(T("Angle:")),
+        MakeLineType<VToolEndLine>(T("Line type:")),
+        MakeLineColor<VToolEndLine>(T("Line color:")),
         MakeNotes<VToolEndLine>(T("Notes:")),
-        MakePointGroup<VToolEndLine>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakePointGroup<VToolEndLine>(T("Point"), T("Point name:"), T("Show Point name"),
+                                     T("Base point:"), &VToolEndLine::BasePointName),
     };
 }
 
