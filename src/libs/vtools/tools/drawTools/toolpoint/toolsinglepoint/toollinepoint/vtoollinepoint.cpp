@@ -144,7 +144,11 @@ void VToolLinePoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj
 //---------------------------------------------------------------------------------------------------------------------
 void VToolLinePoint::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    mainLine->SetHighlighted(true);
+    // Line highlight on hover is a Select-mode behavior only.
+    if (not m_suppressContextMenu)
+    {
+        mainLine->SetHighlighted(true);
+    }
     VToolSinglePoint::hoverEnterEvent(event);
 }
 

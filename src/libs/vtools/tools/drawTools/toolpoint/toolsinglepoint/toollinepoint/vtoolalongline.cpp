@@ -266,9 +266,13 @@ void VToolAlongLine::ShowVisualization(bool show)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolAlongLine::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    const bool wasShown = not vis.isNull();
-    ShowVisualization(true);
-    m_hoverOwnsVisualization = not wasShown; // We own the visualization only if the hover created it.
+    // Construction visualization on hover is a Select-mode behavior only.
+    if (not m_suppressContextMenu)
+    {
+        const bool wasShown = not vis.isNull();
+        ShowVisualization(true);
+        m_hoverOwnsVisualization = not wasShown; // We own the visualization only if the hover created it.
+    }
     VToolLinePoint::hoverEnterEvent(event);
 }
 

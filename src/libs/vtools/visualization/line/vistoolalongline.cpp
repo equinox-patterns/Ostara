@@ -48,14 +48,14 @@ VisToolAlongLine::VisToolAlongLine(const VContainer *data, QGraphicsItem *parent
 {
     setZValue(2); // Show on top real tool
 
-    m_lineP1 = InitPoint(VColorRole::VisSupportColor, this);
-    m_lineP2 = InitPoint(VColorRole::VisSupportColor, this); //-V656
+    m_lineP1 = InitPoint(VColorRole::VisMainColor, this);
+    m_lineP2 = InitPoint(VColorRole::VisMainColor, this); //-V656
     m_line = InitItem<VScaledLine>(VColorRole::VisSupportColor, this);
     m_line1 = InitItem<VScaledLine>(VColorRole::VisSupportColor2, this);
     m_line1->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
     m_line2 = InitItem<VScaledLine>(VColorRole::VisSupportColor4, this);
     m_line2->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
-    m_point = InitPoint(VColorRole::VisMainColor, this);
+    m_point = InitPoint(VColorRole::VisSupportColor, this);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
