@@ -72,7 +72,6 @@ DialogHeight::DialogHeight(const VContainer *data, VAbstractPattern *doc, quint3
     MakeFilterableComboBox(ui->comboBoxP1Line);
     MakeFilterableComboBox(ui->comboBoxP2Line);
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));

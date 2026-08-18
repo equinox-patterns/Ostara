@@ -215,9 +215,6 @@
                 <property name="placeholderText">
                  <string>Unique offset name</string>
                 </property>
-                <property name="clearButtonEnabled">
-                 <bool>false</bool>
-                </property>
                </widget>
               </item>
               <item row="2" column="0">
@@ -492,9 +489,6 @@
          </item>
          <item row="5" column="1">
           <widget class="QLineEdit" name="lineEditAlias">
-           <property name="clearButtonEnabled">
-            <bool>true</bool>
-           </property>
           </widget>
          </item>
         </layout>

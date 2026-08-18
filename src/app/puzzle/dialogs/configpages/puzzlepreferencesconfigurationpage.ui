@@ -573,9 +573,6 @@ This option will take an affect after restart.</string>
             </item>
             <item>
              <widget class="QLineEdit" name="lineEditCrashUserEmail">
-              <property name="clearButtonEnabled">
-               <bool>true</bool>
-              </property>
              </widget>
             </item>
            </layout>

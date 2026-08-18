@@ -63,7 +63,6 @@ DialogPointOfIntersectionCircles::DialogPointOfIntersectionCircles(const VContai
     MakeFilterableComboBox(ui->comboBoxCircle1Center);
     MakeFilterableComboBox(ui->comboBoxCircle2Center);
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));

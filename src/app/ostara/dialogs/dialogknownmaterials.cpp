@@ -36,7 +36,6 @@ DialogKnownMaterials::DialogKnownMaterials(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->lineEditMaterial->setClearButtonEnabled(true);
 
     connect(ui->toolButtonAdd, &QToolButton::clicked, this, &DialogKnownMaterials::Add);
     connect(ui->toolButtonRemove, &QToolButton::clicked, this, &DialogKnownMaterials::Remove);

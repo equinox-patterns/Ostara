@@ -64,8 +64,6 @@ DialogTrueDarts::DialogTrueDarts(const VContainer *data, VAbstractPattern *doc, 
     MakeFilterableComboBox(ui->comboBoxSecondDartPoint);
     MakeFilterableComboBox(ui->comboBoxThirdDartPoint);
 
-    ui->lineEditFirstNewDartPoint->setClearButtonEnabled(true);
-    ui->lineEditSecondNewDartPoint->setClearButtonEnabled(true);
 
     const QString name1 = VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel);
     const QString name2 =

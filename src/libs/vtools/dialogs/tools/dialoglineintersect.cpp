@@ -78,7 +78,6 @@ DialogLineIntersect::DialogLineIntersect(const VContainer *data, VAbstractPatter
     MakeFilterableComboBox(ui->comboBoxP1Line2);
     MakeFilterableComboBox(ui->comboBoxP2Line2);
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     number = 0;
     InitOkCancelApply(ui);

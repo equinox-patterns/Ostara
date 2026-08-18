@@ -90,7 +90,6 @@ DialogLineIntersectAxis::DialogLineIntersectAxis(const VContainer *data, VAbstra
 
     timerFormula->setSingleShot(true);
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));

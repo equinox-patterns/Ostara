@@ -63,7 +63,6 @@ public:
 
     void         setReadOnly(bool readOnly);
     void         setOsSeparator(bool separator);
-    void         setClearButtonEnable(bool value);
 
     //! Sets the settings.
     virtual void setSetting(const QString& key, const QVariant& value) override;
@@ -93,7 +92,6 @@ public:
 protected:
     bool readOnly;
     int typeForParent;
-    bool clearButton;
     bool m_osSeparator;
 
     virtual auto eventFilter(QObject *object, QEvent *event) -> bool override;

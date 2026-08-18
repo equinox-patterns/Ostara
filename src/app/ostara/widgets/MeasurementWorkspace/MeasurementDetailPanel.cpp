@@ -86,7 +86,6 @@ void MeasurementDetailPanel::SetupUI()
     // Full name
     m_fullNameEdit = new QLineEdit();
     m_fullNameEdit->setPlaceholderText(tr("e.g., Chest circumference"));
-    m_fullNameEdit->setClearButtonEnabled(true);
     connect(m_fullNameEdit, &QLineEdit::textEdited, this, &MeasurementDetailPanel::OnFieldChanged);
     m_form->addRow(tr("Full name:"), m_fullNameEdit);
 

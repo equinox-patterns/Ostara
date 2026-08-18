@@ -74,8 +74,6 @@ DialogSaveLayout::DialogSaveLayout(int count, Draw mode, const QString &fileName
     setWindowFlags(Qt::Window);
 #endif
 
-    ui->lineEditPath->setClearButtonEnabled(true);
-    ui->lineEditFileName->setClearButtonEnabled(true);
 
     VAbstractApplication::VApp()->Settings()->GetOsSeparator() ? setLocale(QLocale()) : setLocale(QLocale::c());
 

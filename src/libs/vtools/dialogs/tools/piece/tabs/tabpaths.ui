@@ -405,9 +405,6 @@
                <property name="placeholderText">
                 <string notr="true">{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}</string>
                </property>
-               <property name="clearButtonEnabled">
-                <bool>true</bool>
-               </property>
               </widget>
              </item>
              <item row="0" column="1">

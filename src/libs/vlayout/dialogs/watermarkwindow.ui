@@ -115,9 +115,6 @@
              <property name="placeholderText">
               <string>watermark text</string>
              </property>
-             <property name="clearButtonEnabled">
-              <bool>true</bool>
-             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -235,9 +232,6 @@
               <widget class="QLineEdit" name="lineEditPath">
                <property name="placeholderText">
                 <string>path to image</string>
-               </property>
-               <property name="clearButtonEnabled">
-                <bool>true</bool>
                </property>
               </widget>
              </item>

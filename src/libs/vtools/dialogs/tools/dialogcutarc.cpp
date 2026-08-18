@@ -74,7 +74,6 @@ DialogCutArc::DialogCutArc(const VContainer *data, VAbstractPattern *doc, quint3
 
     MakeFilterableComboBox(ui->comboBoxArc);
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     SetPointName(VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
 

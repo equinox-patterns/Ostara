@@ -80,7 +80,6 @@ auto MakePointName(const QString &label) -> PropertyDesc
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VStringProperty(label);
-                p->setClearButtonEnable(true);
                 p->setValue(t->name());
                 return p;
             },
@@ -479,7 +478,7 @@ auto TrueDartsProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolTrueDarts *>(tool);
              auto *p = new VPE::VStringProperty(T("Point 1 label:"));
-             p->setClearButtonEnable(true); p->setValue(t->nameP1()); return p;
+             p->setValue(t->nameP1()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<VToolTrueDarts *>(b->currentItem())) {
@@ -498,7 +497,7 @@ auto TrueDartsProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolTrueDarts *>(tool);
              auto *p = new VPE::VStringProperty(T("Point 2 label:"));
-             p->setClearButtonEnable(true); p->setValue(t->nameP2()); return p;
+             p->setValue(t->nameP2()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<VToolTrueDarts *>(b->currentItem())) {
@@ -757,7 +756,7 @@ auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCurveIntersectAxis *>(tool);
              auto *p = new VPE::VStringProperty(T("Name1:"));
-             p->setClearButtonEnable(true); p->setValue(t->GetName1()); return p;
+             p->setValue(t->GetName1()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem())) {
@@ -773,7 +772,7 @@ auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCurveIntersectAxis *>(tool);
              auto *p = new VPE::VStringProperty(T("Name2:"));
-             p->setClearButtonEnable(true); p->setValue(t->GetName2()); return p;
+             p->setValue(t->GetName2()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem())) {
@@ -789,7 +788,7 @@ auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCurveIntersectAxis *>(tool);
              auto *p = new VPE::VStringProperty(T("Alias1:"));
-             p->setClearButtonEnable(true); p->setValue(t->GetAliasSuffix1()); return p;
+             p->setValue(t->GetAliasSuffix1()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem())) {
@@ -805,7 +804,7 @@ auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCurveIntersectAxis *>(tool);
              auto *p = new VPE::VStringProperty(T("Alias2:"));
-             p->setClearButtonEnable(true); p->setValue(t->GetAliasSuffix2()); return p;
+             p->setValue(t->GetAliasSuffix2()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem())) {

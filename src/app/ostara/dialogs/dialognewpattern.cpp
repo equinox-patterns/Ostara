@@ -45,7 +45,6 @@ DialogNewPattern::DialogNewPattern(VContainer *data, const QString &patternPiece
 {
     ui->setupUi(this);
 
-    ui->lineEditName->setClearButtonEnabled(true);
 
     VAbstractValApplication::VApp()->ValentinaSettings()->GetOsSeparator() ? setLocale(QLocale())
                                                                            : setLocale(QLocale::c());

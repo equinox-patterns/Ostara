@@ -141,7 +141,6 @@ void DialogDateTimeFormats::Init(const QStringList &predefined, const QStringLis
 {
     SetFormatLines(predefined, userDefined);
 
-    ui->lineEditFormat->setClearButtonEnabled(true);
 
     connect(ui->toolButtonRemove, &QToolButton::clicked, this, &DialogDateTimeFormats::RemoveLine);
     connect(ui->toolButtonAdd, &QToolButton::clicked, this, &DialogDateTimeFormats::AddLine);

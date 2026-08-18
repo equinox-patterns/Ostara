@@ -48,7 +48,6 @@ VFormulaProperty::VFormulaProperty(const QString &name)
 
     auto *tmpFormula = new VPE::VStringProperty(tr("Formula"));
     addChild(tmpFormula);
-    tmpFormula->setClearButtonEnable(true);
     tmpFormula->setUpdateBehaviour(true, false);
     tmpFormula->setOsSeparator(VAbstractApplication::VApp()->Settings()->GetOsSeparator());
 

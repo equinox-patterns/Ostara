@@ -83,7 +83,6 @@ DialogPointFromCircleAndTangent::DialogPointFromCircleAndTangent(const VContaine
     MakeFilterableComboBox(ui->comboBoxCircleCenter);
     MakeFilterableComboBox(ui->comboBoxTangentPoint);
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));

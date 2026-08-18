@@ -50,7 +50,6 @@ DialogSinglePoint::DialogSinglePoint(const VContainer *data, VAbstractPattern *d
 {
     ui->setupUi(this);
 
-    ui->lineEditName->setClearButtonEnabled(true);
 
     ui->doubleSpinBoxX->setRange(0, VAbstractValApplication::VApp()->fromPixel(maxSceneSize));
     ui->doubleSpinBoxY->setRange(0, VAbstractValApplication::VApp()->fromPixel(maxSceneSize));

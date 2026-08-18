@@ -36,7 +36,7 @@ VPE::VStringProperty::VStringProperty(const QString &name, const QMap<QString, Q
 #else
                 QVariant::String),
 #endif
-      readOnly(false), typeForParent(0), clearButton(false), m_osSeparator(false)
+      readOnly(false), typeForParent(0), m_osSeparator(false)
 {
     VProperty::setSettings(settings);
     vproperty_d_ptr->VariantValue.setValue(QString());
@@ -48,7 +48,7 @@ VPE::VStringProperty::VStringProperty(const QString &name, const QMap<QString, Q
 }
 
 VPE::VStringProperty::VStringProperty(const QString &name)
-    : VProperty(name), readOnly(false), typeForParent(0), clearButton(false), m_osSeparator(false)
+    : VProperty(name), readOnly(false), typeForParent(0), m_osSeparator(false)
 {
     vproperty_d_ptr->VariantValue.setValue(QString());
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -68,7 +68,6 @@ auto VPE::VStringProperty::createEditor(QWidget *parent, const QStyleOptionViewI
     tmpEditor->setLocale(parent->locale());
     tmpEditor->setReadOnly(readOnly);
     tmpEditor->installEventFilter(this);
-    tmpEditor->setClearButtonEnabled(clearButton);
     tmpEditor->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     tmpEditor->setText(vproperty_d_ptr->VariantValue.toString());
 
@@ -109,11 +108,6 @@ void VPE::VStringProperty::setReadOnly(bool readOnly)
 void VPE::VStringProperty::setOsSeparator(bool separator)
 {
     m_osSeparator = separator;
-}
-
-void VPE::VStringProperty::setClearButtonEnable(bool value)
-{
-    this->clearButton = value;
 }
 
 void VPE::VStringProperty::setSetting(const QString &key, const QVariant &value)

@@ -225,7 +225,6 @@ void Step2Container::SetupUI()
     // Search bar with magnifying-glass icon inside the QLineEdit
     auto *searchEdit = new QLineEdit();
     searchEdit->setPlaceholderText(tr("Search measurements…"));
-    searchEdit->setClearButtonEnabled(true);
     searchEdit->addAction(MakeToolIcon(QStringLiteral("magnifying-glass"), dark), QLineEdit::LeadingPosition);
 
     connect(searchEdit, &QLineEdit::textChanged, m_tablePanel, &MeasurementTablePanel::SetFilter);

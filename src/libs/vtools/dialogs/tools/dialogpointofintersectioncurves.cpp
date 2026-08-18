@@ -64,7 +64,6 @@ DialogPointOfIntersectionCurves::DialogPointOfIntersectionCurves(const VContaine
     MakeFilterableComboBox(ui->comboBoxCurve1);
     MakeFilterableComboBox(ui->comboBoxCurve2);
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     SetPointName(VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
 

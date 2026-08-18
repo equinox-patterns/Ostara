@@ -93,7 +93,6 @@ auto MakeObjectName(const QString &label) -> PropertyDesc
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VStringProperty(label);
-                p->setClearButtonEnable(true);
                 p->setValue(t->name());
                 return p;
             },

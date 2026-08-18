@@ -104,7 +104,6 @@ DialogEditWrongFormula::DialogEditWrongFormula(const VContainer *data, quint32 t
     InitVariables();
     this->formulaBaseHeight = ui->plainTextEditFormula->height();
     ui->plainTextEditFormula->installEventFilter(this);
-    ui->filterFormulaInputs->setClearButtonEnabled(true);
 
     connect(ui->filterFormulaInputs, &QLineEdit::textChanged, this, &DialogEditWrongFormula::FilterVariablesEdited);
 

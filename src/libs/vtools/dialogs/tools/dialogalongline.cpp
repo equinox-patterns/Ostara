@@ -107,7 +107,6 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
         }
     }
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));

@@ -89,7 +89,6 @@ DialogCurveIntersectAxis::DialogCurveIntersectAxis(const VContainer *data, VAbst
     MakeFilterableComboBox(ui->comboBoxAxisPoint);
     MakeFilterableComboBox(ui->comboBoxCurve);
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     SetPointName(VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
 

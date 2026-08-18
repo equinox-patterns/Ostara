@@ -52,7 +52,6 @@ DialogPointFromArcAndTangent::DialogPointFromArcAndTangent(const VContainer *dat
     MakeFilterableComboBox(ui->comboBoxTangentPoint);
     MakeFilterableComboBox(ui->comboBoxArc);
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));

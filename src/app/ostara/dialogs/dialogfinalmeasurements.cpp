@@ -64,7 +64,6 @@ DialogFinalMeasurements::DialogFinalMeasurements(VPattern *doc, QWidget *parent)
 
     m_data.FillPiecesAreas(VAbstractValApplication::VApp()->patternUnits());
 
-    ui->lineEditName->setClearButtonEnabled(true);
 
     ui->lineEditFind->installEventFilter(this);
 

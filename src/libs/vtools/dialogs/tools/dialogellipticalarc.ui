@@ -246,9 +246,6 @@
          </item>
          <item row="0" column="1">
           <widget class="QLineEdit" name="lineEditStartPointName">
-           <property name="clearButtonEnabled">
-            <bool>true</bool>
-           </property>
           </widget>
          </item>
         </layout>
@@ -267,9 +264,6 @@
          </item>
          <item row="0" column="1">
           <widget class="QLineEdit" name="lineEditEndPointName">
-           <property name="clearButtonEnabled">
-            <bool>true</bool>
-           </property>
           </widget>
          </item>
         </layout>

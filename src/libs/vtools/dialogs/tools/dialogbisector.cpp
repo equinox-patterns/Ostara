@@ -79,7 +79,6 @@ DialogBisector::DialogBisector(const VContainer *data, VAbstractPattern *doc, qu
     MakeFilterableComboBox(ui->comboBoxSecondPoint);
     MakeFilterableComboBox(ui->comboBoxThirdPoint);
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));

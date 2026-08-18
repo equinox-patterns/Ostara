@@ -63,7 +63,6 @@ auto MakePointName(const QString &label) -> PropertyDesc
             {
                 auto *t = static_cast<Tool *>(tool);
                 auto *prop = new VPE::VStringProperty(label);
-                prop->setClearButtonEnable(true);
                 prop->setValue(t->name());
                 return prop;
             },
@@ -236,7 +235,6 @@ auto MakeObjectName(const QString &label) -> PropertyDesc
             {
                 auto *t = static_cast<Tool *>(tool);
                 auto *prop = new VPE::VStringProperty(label);
-                prop->setClearButtonEnable(true);
                 prop->setValue(t->name());
                 return prop;
             },

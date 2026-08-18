@@ -132,8 +132,6 @@ DialogIncrements::DialogIncrements(VContainer *data, VPattern *doc, QWidget *par
     ui->toolButtonImportIncrementsCSVPC->setIcon(FromTheme(VThemeIcon::DocumentImport));
     ui->toolButtonExportIncrementsCSVPC->setIcon(FromTheme(VThemeIcon::DocumentExport));
 
-    ui->lineEditName->setClearButtonEnabled(true);
-    ui->lineEditNamePC->setClearButtonEnabled(true);
 
     ui->lineEditFind->installEventFilter(this);
     ui->lineEditFindPC->installEventFilter(this);

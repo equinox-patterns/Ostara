@@ -77,7 +77,6 @@ DialogCutSplinePath::DialogCutSplinePath(const VContainer *data, VAbstractPatter
 
     MakeFilterableComboBox(ui->comboBoxSplinePath);
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     SetPointName(VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
 

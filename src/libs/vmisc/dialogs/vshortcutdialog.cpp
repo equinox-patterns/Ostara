@@ -86,7 +86,6 @@ VShortcutDialog::VShortcutDialog(int index, QWidget *parent)
     ui->keySequenceEdit->setKeySequence(m_shortcutObject.shortcuts.join(", "_L1));
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
-    ui->keySequenceEdit->setClearButtonEnabled(true);
 #endif
 }
 

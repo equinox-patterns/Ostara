@@ -138,7 +138,6 @@ void DialogManageMeasurements::SetupUI()
 
     m_searchEdit = new QLineEdit();
     m_searchEdit->setPlaceholderText(tr("Search tables…"));
-    m_searchEdit->setClearButtonEnabled(true);
     bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
     m_searchEdit->addAction(QIcon(IconResPath(QStringLiteral("magnifying-glass"), dark)),
                             QLineEdit::LeadingPosition);

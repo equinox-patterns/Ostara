@@ -35,9 +35,6 @@
        <property name="placeholderText">
         <string>Choose group name</string>
        </property>
-       <property name="clearButtonEnabled">
-        <bool>true</bool>
-       </property>
       </widget>
      </item>
      <item row="1" column="0">
@@ -54,9 +51,6 @@
        </property>
        <property name="placeholderText">
         <string>Add tags</string>
-       </property>
-       <property name="clearButtonEnabled">
-        <bool>true</bool>
        </property>
       </widget>
      </item>

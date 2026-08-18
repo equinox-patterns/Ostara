@@ -95,7 +95,6 @@ DialogNormal::DialogNormal(const VContainer *data, VAbstractPattern *doc, quint3
         }
     }
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
 

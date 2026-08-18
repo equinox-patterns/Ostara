@@ -101,7 +101,6 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, VAbstractPatter
         }
     }
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     ui->lineEditNamePoint->setText(
         VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));

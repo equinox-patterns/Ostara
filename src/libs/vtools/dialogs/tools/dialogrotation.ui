@@ -131,9 +131,6 @@
              <property name="enabled">
               <bool>false</bool>
              </property>
-             <property name="clearButtonEnabled">
-              <bool>true</bool>
-             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -409,9 +406,6 @@
             <property name="text">
              <string>Rotation</string>
             </property>
-            <property name="clearButtonEnabled">
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
           <item row="0" column="0">
@@ -428,9 +422,6 @@
             </property>
             <property name="placeholderText">
              <string>Add tags</string>
-            </property>
-            <property name="clearButtonEnabled">
-             <bool>true</bool>
             </property>
            </widget>
           </item>

@@ -120,9 +120,6 @@
            <property name="placeholderText">
             <string>Name of measurement or increment</string>
            </property>
-           <property name="clearButtonEnabled">
-            <bool>true</bool>
-           </property>
           </widget>
          </item>
          <item row="2" column="0">
@@ -136,9 +133,6 @@
           <widget class="QLineEdit" name="lineEditPassmarkWidth">
            <property name="placeholderText">
             <string>Name of measurement or increment</string>
-           </property>
-           <property name="clearButtonEnabled">
-            <bool>true</bool>
            </property>
           </widget>
          </item>

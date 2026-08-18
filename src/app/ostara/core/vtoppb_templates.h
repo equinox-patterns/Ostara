@@ -96,7 +96,6 @@ void VToolOptionsPropertyBrowser::AddPropertyObjectName(Tool *i, const QString &
     else
     {
         auto *itemName = new VPE::VStringProperty(propertyName);
-        itemName->setClearButtonEnable(true);
         itemName->setValue(i->name());
         itemName->setReadOnly(readOnly);
         AddProperty(itemName, AttrName);
@@ -108,7 +107,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertySubName(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetName());
     AddProperty(itemName, VtoppbConstants::AttrSubName);
 }
@@ -118,7 +116,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyCurveName1(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetName1());
     AddProperty(itemName, AttrCurveName1);
 }
@@ -128,7 +125,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyCurveName2(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetName2());
     AddProperty(itemName, AttrCurveName2);
 }
@@ -138,7 +134,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyCurve1Name1(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetCurve1Name1());
     AddProperty(itemName, AttrCurve1Name1);
 }
@@ -148,7 +143,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyCurve1Name2(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetCurve1Name2());
     AddProperty(itemName, AttrCurve1Name2);
 }
@@ -158,7 +152,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyCurve2Name1(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetCurve2Name1());
     AddProperty(itemName, AttrCurve2Name1);
 }
@@ -168,7 +161,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyCurve2Name2(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetCurve2Name2());
     AddProperty(itemName, AttrCurve2Name2);
 }
@@ -178,7 +170,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyCurve1Alias1(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetCurve1AliasSuffix1());
     AddProperty(itemName, AttrCurve1Alias1);
 }
@@ -188,7 +179,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyCurve1Alias2(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetCurve1AliasSuffix2());
     AddProperty(itemName, AttrCurve1Alias2);
 }
@@ -198,7 +188,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyCurve2Alias1(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetCurve2AliasSuffix1());
     AddProperty(itemName, AttrCurve2Alias1);
 }
@@ -208,7 +197,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyCurve2Alias2(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetCurve2AliasSuffix2());
     AddProperty(itemName, AttrCurve2Alias2);
 }
@@ -217,7 +205,6 @@ void VToolOptionsPropertyBrowser::AddPropertyCurve2Alias2(Tool *i, const QString
 template <class Tool> void VToolOptionsPropertyBrowser::AddPropertyAlias(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetAliasSuffix());
     AddProperty(itemName, AttrAlias);
 }
@@ -226,7 +213,6 @@ template <class Tool> void VToolOptionsPropertyBrowser::AddPropertyAlias(Tool *i
 template <class Tool> void VToolOptionsPropertyBrowser::AddPropertyAlias1(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetAliasSuffix1());
     AddProperty(itemName, AttrAlias1);
 }
@@ -235,7 +221,6 @@ template <class Tool> void VToolOptionsPropertyBrowser::AddPropertyAlias1(Tool *
 template <class Tool> void VToolOptionsPropertyBrowser::AddPropertyAlias2(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetAliasSuffix2());
     AddProperty(itemName, AttrAlias2);
 }
@@ -244,7 +229,6 @@ template <class Tool> void VToolOptionsPropertyBrowser::AddPropertyAlias2(Tool *
 template <class Tool> void VToolOptionsPropertyBrowser::AddPropertyPointName1(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->nameP1());
     AddProperty(itemName, AttrName1);
 }
@@ -253,7 +237,6 @@ template <class Tool> void VToolOptionsPropertyBrowser::AddPropertyPointName1(To
 template <class Tool> void VToolOptionsPropertyBrowser::AddPropertyPointName2(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->nameP2());
     AddProperty(itemName, AttrName2);
 }
@@ -961,7 +944,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyArc1Name1(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetArc1Name1());
     AddProperty(itemName, AttrCurve1Name1);
 }
@@ -971,7 +953,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyArc1Name2(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetArc1Name2());
     AddProperty(itemName, AttrCurve1Name2);
 }
@@ -981,7 +962,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyArc2Name1(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetArc2Name1());
     AddProperty(itemName, AttrCurve2Name1);
 }
@@ -991,7 +971,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyArc2Name2(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetArc2Name2());
     AddProperty(itemName, AttrCurve2Name2);
 }
@@ -1001,7 +980,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyArc1Alias1(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetArc1AliasSuffix1());
     AddProperty(itemName, AttrCurve1Alias1);
 }
@@ -1011,7 +989,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyArc1Alias2(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetArc1AliasSuffix2());
     AddProperty(itemName, AttrCurve1Alias2);
 }
@@ -1021,7 +998,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyArc2Alias1(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetArc2AliasSuffix1());
     AddProperty(itemName, AttrCurve2Alias1);
 }
@@ -1031,7 +1007,6 @@ template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyArc2Alias2(Tool *i, const QString &propertyName)
 {
     auto *itemName = new VPE::VStringProperty(propertyName);
-    itemName->setClearButtonEnable(true);
     itemName->setValue(i->GetArc2AliasSuffix2());
     AddProperty(itemName, AttrCurve2Alias2);
 }
@@ -1114,7 +1089,6 @@ auto MakeStringProp(const QString &attrId, const QString &label, Getter getter, 
             [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VStringProperty(label);
-                p->setClearButtonEnable(true);
                 p->setValue((t->*getter)());
                 return p;
             },
@@ -1150,7 +1124,6 @@ auto MakeStringPropWithValidator(const QString &attrId, const QString &label, Ge
             [getter, label, nameDecoration](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VStringProperty(label);
-                p->setClearButtonEnable(true);
                 p->setNameDecoration(nameDecoration);
                 p->setValue((t->*getter)());
                 return p;

@@ -1975,7 +1975,6 @@ void DialogSeamAllowance::InitPieceTab()
     uiTabPaths->lineEditShortName->setValidator(
         new QRegularExpressionValidator(QRegularExpression(VPiece::ShortNameRegExp()), this));
 
-    uiTabPaths->lineEditName->setClearButtonEnabled(true);
     uiTabPaths->lineEditName->setText(GetDefaultPieceName());
 
     connect(uiTabPaths->checkBoxForbidFlipping, CHECKBOX_STATE_CHANGED, this,

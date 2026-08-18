@@ -63,7 +63,6 @@ DialogPointOfIntersectionArcs::DialogPointOfIntersectionArcs(const VContainer *d
     MakeFilterableComboBox(ui->comboBoxArc1);
     MakeFilterableComboBox(ui->comboBoxArc2);
 
-    ui->lineEditNamePoint->setClearButtonEnabled(true);
 
     SetPointName(VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
 

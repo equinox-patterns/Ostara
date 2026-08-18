@@ -1309,7 +1309,6 @@ void DialogPiecePath::SetOptionControls()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPiecePath::InitPathTab()
 {
-    ui->lineEditName->setClearButtonEnabled(true);
 
     FillComboBoxTypeLine(ui->comboBoxPenType, CurvePenStylesPics(ui->comboBoxPenType->palette().color(QPalette::Base),
                                                                  ui->comboBoxPenType->palette().color(QPalette::Text)));
