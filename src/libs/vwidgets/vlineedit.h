@@ -44,12 +44,10 @@ public:
 protected:
     virtual void focusInEvent(QFocusEvent *e) override;
     virtual void focusOutEvent(QFocusEvent *e) override;
-    virtual void mousePressEvent(QMouseEvent *e) override;
 
 private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(VLineEdit) // NOLINT
-    bool m_selectOnMousePress;
 };
 
 /*! Line edit widget with auto completion based on QStringListModel.

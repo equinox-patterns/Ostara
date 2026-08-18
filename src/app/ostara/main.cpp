@@ -33,6 +33,7 @@
 
 #include "vabstractapplication.h"
 #include "vvalentinasettings.h"
+#include "vclickselectallfilter.h"
 
 #include <QMessageBox> // For QT_REQUIRE_VERSION
 #include <QTimer>
@@ -122,6 +123,9 @@ auto main(int argc, char *argv[]) -> int
 
     VApplication app(argc, argv);
     app.InitOptions();
+
+    // Select all text on a single click in every QLineEdit / QTextEdit / QPlainTextEdit.
+    VClickSelectAllFilter::InstallOnApplication();
 
     VAbstractApplication::LogScreenInfo();
 

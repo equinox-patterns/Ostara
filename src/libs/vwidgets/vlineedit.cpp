@@ -30,6 +30,7 @@
 
 #include <QApplication>
 #include <QCompleter>
+#include <QFocusEvent>
 #include <QStringListModel>
 #include <QTimer>
 #include <QtDebug>
@@ -99,15 +100,13 @@ auto MultiSelectCompleter::splitPath(const QString &path) const -> QStringList
 // VLineEdit
 //---------------------------------------------------------------------------------------------------------------------
 VLineEdit::VLineEdit(QWidget *parent)
-  : QLineEdit(parent),
-    m_selectOnMousePress(false)
+  : QLineEdit(parent)
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 VLineEdit::VLineEdit(const QString &contents, QWidget *parent)
-  : QLineEdit(contents, parent),
-    m_selectOnMousePress(false)
+  : QLineEdit(contents, parent)
 {
 }
 
@@ -115,8 +114,12 @@ VLineEdit::VLineEdit(const QString &contents, QWidget *parent)
 void VLineEdit::focusInEvent(QFocusEvent *e)
 {
     QLineEdit::focusInEvent(e);
-    selectAll();
-    m_selectOnMousePress = true;
+    // The global VClickSelectAllFilter owns the mouse-click selection; keep
+    // select-all only for keyboard focus (Tab / Backtab), not for mouse focus.
+    if (e->reason() != Qt::MouseFocusReason)
+    {
+        selectAll();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -131,17 +134,6 @@ void VLineEdit::focusOutEvent(QFocusEvent *e)
     if (wasTextSelected)
     {
         setSelection(start, selectionLength);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VLineEdit::mousePressEvent(QMouseEvent *e)
-{
-    QLineEdit::mousePressEvent(e);
-    if (m_selectOnMousePress)
-    {
-        selectAll();
-        m_selectOnMousePress = false;
     }
 }
 
