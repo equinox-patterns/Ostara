@@ -34,6 +34,7 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include <QFlags>
+#include <QFocusEvent>
 #include <QGestureEvent>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
@@ -598,6 +599,7 @@ void VMainGraphicsView::mousePressEvent(QMouseEvent *event)
         m_isSpacePanDrag = true;
         event->accept();
         viewport()->setCursor(Qt::ClosedHandCursor);
+        QGuiApplication::changeOverrideCursor(Qt::ClosedHandCursor);
         QGraphicsView::mousePressEvent(event);
         return;
     }
@@ -646,8 +648,10 @@ void VMainGraphicsView::mousePressEvent(QMouseEvent *event)
                 m_ptStartPos = event->pos();
                 m_oldCursor = viewport()->cursor();
                 QGraphicsView::setDragMode(QGraphicsView::ScrollHandDrag);
+                m_isMiddlePanActive = true;
                 event->accept();
                 viewport()->setCursor(Qt::ClosedHandCursor);
+                QGuiApplication::setOverrideCursor(Qt::ClosedHandCursor);
             }
             break;
         }
@@ -729,11 +733,17 @@ void VMainGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     if (event->button() == Qt::MiddleButton)
     {
         viewport()->setCursor(m_oldCursor);
+        if (m_isMiddlePanActive)
+        {
+            m_isMiddlePanActive = false;
+            QGuiApplication::restoreOverrideCursor();
+        }
     }
     if (wasSpacePanDrag)
     {
         m_isSpacePanDrag = false;
         viewport()->setCursor(Qt::OpenHandCursor); // Space still held
+        QGuiApplication::changeOverrideCursor(Qt::OpenHandCursor);
     }
     else if (event->button() == Qt::LeftButton)
     {
@@ -752,6 +762,7 @@ void VMainGraphicsView::keyPressEvent(QKeyEvent *event)
     {
         m_preSpaceCursor = viewport()->cursor();
         viewport()->setCursor(Qt::OpenHandCursor);
+        QGuiApplication::setOverrideCursor(Qt::OpenHandCursor);
         m_isSpacePanActive = true;
         event->accept();
         return;
@@ -775,10 +786,30 @@ void VMainGraphicsView::keyReleaseEvent(QKeyEvent *event)
             m_isSpacePanDrag = false;
         }
         viewport()->setCursor(m_preSpaceCursor);
+        QGuiApplication::restoreOverrideCursor();
         event->accept();
         return;
     }
     QGraphicsView::keyReleaseEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsView::focusOutEvent(QFocusEvent *event)
+{
+    // If the window loses focus while a pan is active, the matching key/mouse release
+    // event is never delivered and the pan state (drag mode + cursor override) stays stuck.
+    // Reset it here to avoid a permanent global hand cursor.
+    if (m_isSpacePanActive || m_isSpacePanDrag || m_isMiddlePanActive)
+    {
+        const bool wasMiddlePan = m_isMiddlePanActive;
+        m_isSpacePanActive = false;
+        m_isSpacePanDrag = false;
+        m_isMiddlePanActive = false;
+        QGraphicsView::setDragMode(QGraphicsView::NoDrag);
+        viewport()->setCursor(wasMiddlePan ? m_oldCursor : m_preSpaceCursor);
+        QGuiApplication::restoreOverrideCursor();
+    }
+    QGraphicsView::focusOutEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
