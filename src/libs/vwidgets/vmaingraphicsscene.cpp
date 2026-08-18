@@ -87,6 +87,37 @@ auto VMainGraphicsScene::ClosestHoverItem(const QPointF &scenePos) const -> QGra
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
+ * @brief ItemToRaise item that has to be raised temporarily so it wins the event dispatch.
+ *
+ * Points built by operation tools (Rotate, Move, Flipping) and by double point tools (TrueDarts) are
+ * children of their tool item, not top-level items. Qt stacks a child only among its siblings, so the
+ * Z=1 they inherit from VScenePoint never lifts them above a top-level curve at Z=0, and raising such
+ * a point has no effect at all. Raise its top-level ancestor instead. When both items share the same
+ * top-level ancestor, sibling ordering already applies and the item itself is the one to raise.
+ *
+ * @param scenePos cursor position in scene coordinates.
+ * @return item to raise, or nullptr when nothing has to be raised.
+ */
+auto VMainGraphicsScene::ItemToRaise(const QPointF &scenePos) const -> QGraphicsItem *
+{
+    const QList<QGraphicsItem *> under = items(scenePos);
+    if (under.size() < 2)
+    {
+        return nullptr;
+    }
+
+    QGraphicsItem *closest = ClosestHoverItem(scenePos);
+    QGraphicsItem *topmost = under.constFirst();
+    if (closest == nullptr || closest == topmost)
+    {
+        return nullptr;
+    }
+
+    return closest->topLevelItem() != topmost->topLevelItem() ? closest->topLevelItem() : closest;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
  * @brief mouseMoveEvent handle mouse move events.
  * @param event mouse move event.
  */
@@ -99,18 +130,12 @@ void VMainGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     // does (VMainGraphicsView::PrioritizeItems picks the item whose center is closest to the
     // cursor). Temporarily raise the hover-accepting item closest to the cursor so it becomes
     // topmost for the hover dispatch, then restore its Z.
-    QGraphicsItem *raisedItem = nullptr;
+    QGraphicsItem *raisedItem = ItemToRaise(event->scenePos());
     qreal raisedItemZ = 0;
-    const QList<QGraphicsItem *> under = items(event->scenePos());
-    if (under.size() > 1)
+    if (raisedItem != nullptr)
     {
-        QGraphicsItem *closest = ClosestHoverItem(event->scenePos());
-        if (closest != nullptr && closest != under.constFirst())
-        {
-            raisedItem = closest;
-            raisedItemZ = closest->zValue();
-            closest->setZValue(closest->zValue() + 2.0);
-        }
+        raisedItemZ = raisedItem->zValue();
+        raisedItem->setZValue(raisedItemZ + 2.0);
     }
 
     QGraphicsScene::mouseMoveEvent(event);
@@ -146,18 +171,12 @@ void VMainGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     // closest to the cursor so it becomes topmost for the press dispatch, then restore its Z.
     // Without this, a child line that ends up topmost swallows the click (it emits no Choosed
     // signal), so the active tool never fires on the point.
-    QGraphicsItem *raisedItem = nullptr;
+    QGraphicsItem *raisedItem = ItemToRaise(event->scenePos());
     qreal raisedItemZ = 0;
-    const QList<QGraphicsItem *> under = items(event->scenePos());
-    if (under.size() > 1)
+    if (raisedItem != nullptr)
     {
-        QGraphicsItem *closest = ClosestHoverItem(event->scenePos());
-        if (closest != nullptr && closest != under.constFirst())
-        {
-            raisedItem = closest;
-            raisedItemZ = closest->zValue();
-            closest->setZValue(closest->zValue() + 2.0);
-        }
+        raisedItemZ = raisedItem->zValue();
+        raisedItem->setZValue(raisedItemZ + 2.0);
     }
 
     QGraphicsScene::mousePressEvent(event);

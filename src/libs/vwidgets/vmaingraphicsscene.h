@@ -170,6 +170,9 @@ private:
     /** @brief Item under scenePos (accepting hover) whose center is closest to it. */
     auto ClosestHoverItem(const QPointF &scenePos) const -> QGraphicsItem *;
 
+    /** @brief Item to raise temporarily so it wins the event dispatch, nullptr when none. */
+    auto ItemToRaise(const QPointF &scenePos) const -> QGraphicsItem *;
+
     /** @brief horScrollBar value horizontal scroll bar. */
     qint32        horScrollBar;
 
