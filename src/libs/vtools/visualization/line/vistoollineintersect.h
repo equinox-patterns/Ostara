@@ -54,6 +54,8 @@ public:
     void SetLine2P1Id(quint32 value);
     void SetLine2P2Id(quint32 value);
 
+    void Clear();
+
     auto type() const -> int override {return Type;}
     enum {Type = UserType + static_cast<int>(Vis::ToolLineIntersect)};
 private:

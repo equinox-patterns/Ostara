@@ -36,12 +36,14 @@
 #include <QLine>
 #include <QLineEdit>
 #include <QLineF>
+#include <QMessageBox>
 #include <QPointF>
 #include <QPointer>
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QSet>
 #include <QSharedPointer>
+#include <QSignalBlocker>
 
 #include "../../visualization/line/vistoollineintersect.h"
 #include "../../visualization/visualization.h"
@@ -191,16 +193,30 @@ void DialogLineIntersect::ChosenObject(quint32 id, const SceneObject &type)
                     }
                     else
                     {
-                        this->setModal(true);
-                        this->show();
-                        connect(ui->comboBoxP1Line1, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-                                &DialogLineIntersect::PointChanged);
-                        connect(ui->comboBoxP2Line1, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-                                &DialogLineIntersect::PointChanged);
-                        connect(ui->comboBoxP1Line2, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-                                &DialogLineIntersect::PointChanged);
-                        connect(ui->comboBoxP2Line2, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-                                &DialogLineIntersect::PointChanged);
+                        QMessageBox::warning(
+                            this, tr("Line intersect"),
+                            tr("These two lines are parallel, no intersection possible. "
+                               "Please choose 2 non-parallel lines."));
+
+                        number = 0;
+                        prepare = false;
+                        flagPoint = true;
+                        flagError = true;
+
+                        {
+                            const QSignalBlocker blockerP1Line1(ui->comboBoxP1Line1);
+                            const QSignalBlocker blockerP2Line1(ui->comboBoxP2Line1);
+                            const QSignalBlocker blockerP1Line2(ui->comboBoxP1Line2);
+                            const QSignalBlocker blockerP2Line2(ui->comboBoxP2Line2);
+                            ui->comboBoxP1Line1->setCurrentIndex(-1);
+                            ui->comboBoxP2Line1->setCurrentIndex(-1);
+                            ui->comboBoxP1Line2->setCurrentIndex(-1);
+                            ui->comboBoxP2Line2->setCurrentIndex(-1);
+                        }
+
+                        line->Clear();
+
+                        emit ToolTip(tr("Select first point of first line"));
                     }
                 }
             }
@@ -224,16 +240,6 @@ void DialogLineIntersect::SaveData()
     line->SetLine2P1Id(GetP1Line2());
     line->SetLine2P2Id(GetP2Line2());
     line->RefreshGeometry();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief P1Line1Changed changed first point of first line
- */
-void DialogLineIntersect::PointChanged()
-{
-    flagPoint = CheckIntersecion();
-    CheckState();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

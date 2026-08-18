@@ -122,3 +122,30 @@ void VisToolLineIntersect::VisualMode(quint32 id)
     m_line1P1Id = id;
     StartVisualMode();
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+void VisToolLineIntersect::Clear()
+{
+    m_line1P1Id = NULL_ID;
+    m_line1P2Id = NULL_ID;
+    m_line2P1Id = NULL_ID;
+    m_line2P2Id = NULL_ID;
+
+    // Line 2 is drawn on `this` (see RefreshGeometry) — clear its geometry. `this` stays
+    // visible so its children (line 1, points) can be drawn again on the next attempt.
+    setLine(QLineF());
+
+    auto hide = [](QGraphicsItem *item)
+    {
+        if (item != nullptr)
+        {
+            item->setVisible(false);
+        }
+    };
+    hide(m_line1P1);
+    hide(m_line1P2);
+    hide(m_line1);
+    hide(m_line2P1);
+    hide(m_line2P2);
+    hide(m_point);
+}

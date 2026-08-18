@@ -150,8 +150,11 @@ template <typename Item> inline void Visualization::AddItem(Item *item)
     SCASSERT(scene != nullptr)
     qCDebug(vVis) << "AddItem:" << static_cast<void *>(item)
                   << "→ scene:" << static_cast<void *>(scene);
-    scene->addItem(item);
-    connect(scene, &VMainGraphicsScene::mouseMove, item, &Visualization::MousePos);
+    if (item->scene() != scene)
+    {
+        scene->addItem(item);
+    }
+    connect(scene, &VMainGraphicsScene::mouseMove, item, &Visualization::MousePos, Qt::UniqueConnection);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

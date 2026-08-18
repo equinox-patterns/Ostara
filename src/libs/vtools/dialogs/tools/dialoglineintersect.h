@@ -78,7 +78,6 @@ public:
 
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
-    void PointChanged();
     void PointNameChanged() override;
 
 private slots:
