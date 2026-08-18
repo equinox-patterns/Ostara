@@ -68,6 +68,52 @@ auto SegmentDotPixmap(VColorRole role) -> QPixmap
     return VPE::VColorPropertyEditor::GetColorPixmap(VSceneStylesheet::Color(role), 16);
 }
 
+/**
+ * @brief CurveDisplayName simplified name shown by the property browser.
+ *
+ * Ostara drives the user away from point-derived technical names: Spl_ and SplPath_ both
+ * collapse to Curve_, arcs keep Arc_ and ElArc_. When the user has not named the object yet
+ * the suffix reads (Unnamed), which is the nudge to name it.
+ *
+ * @param objectName a VGObject::ObjectName() result, either "Spl_A_B" or "Spl_MyName (Spl_A_B)".
+ */
+auto CurveDisplayName(const QString &objectName) -> QString
+{
+    const qsizetype headEnd = objectName.indexOf(QLatin1Char('_'));
+    if (headEnd < 0)
+    {
+        return objectName;
+    }
+
+    const QString head = objectName.left(headEnd + 1);
+
+    QString prefix;
+    if (head == QLatin1String(SPL_) || head == splPath_V + QLatin1Char('_'))
+    {
+        prefix = QStringLiteral("Curve_");
+    }
+    else if (head == QLatin1String(ARC_) || head == QLatin1String(ELARC_))
+    {
+        prefix = head;
+    }
+    else
+    {
+        return objectName; // not a curve or an arc, leave it alone
+    }
+
+    // The alias carries the user suffix: "Spl_MyName (Spl_A_B)" -> "MyName".
+    QString suffix;
+    if (const qsizetype aliasEnd = objectName.indexOf(QLatin1String(" (")); aliasEnd > 0)
+    {
+        if (const QString alias = objectName.left(aliasEnd); alias.startsWith(head))
+        {
+            suffix = alias.mid(head.length());
+        }
+    }
+
+    return prefix + (suffix.isEmpty() ? T("(Unnamed)") : suffix);
+}
+
 // --- Helpers ---
 
 template <typename Tool>
@@ -77,12 +123,12 @@ auto MakeObjectNameReadOnly(const QString &label) -> PropertyDesc
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VLabelProperty(label);
-                p->setValue(t->name());
+                p->setValue(CurveDisplayName(t->name()));
                 return p;
             }, nullptr,
             [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
                 if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
-                    prop->setValue(t->name());
+                    prop->setValue(CurveDisplayName(t->name()));
             }};
 }
 
@@ -121,6 +167,25 @@ auto MakeParentPoint(const QString &attrId, const QString &label, Getter getter)
             [getter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
                 if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
                     prop->setValue((t->*getter)());
+            }};
+}
+
+// Same as MakeParentPoint, but the parent is a curve or an arc, so its name goes through the
+// simplified display naming. Kept apart on purpose: MakeParentPoint also serves real points
+// (Center point:, Bezier handles), whose names must stay untouched.
+template <typename Tool, typename Getter>
+auto MakeSourceCurve(const QString &attrId, const QString &label, Getter getter) -> PropertyDesc
+{
+    return {attrId, label, true,
+            [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new VPE::VLabelProperty(label);
+                p->setValue(CurveDisplayName((t->*getter)()));
+                return p;
+            }, nullptr,
+            [getter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                    prop->setValue(CurveDisplayName((t->*getter)()));
             }};
 }
 
@@ -303,7 +368,7 @@ auto ArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaF2()); prop->setValue(v);
              }
          }},
-        MakeStringPropWithValidator<VToolArc>(AttrAlias, T("Alias:"), &VToolArc::GetAliasSuffix, &VToolArc::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolArc>(AttrAlias, T("Arc:"), &VToolArc::GetAliasSuffix, &VToolArc::SetAliasSuffix),
         MakeCurvePenStyle<VToolArc>(T("Pen style:")),
         MakeLineColor<VToolArc>(T("Color:")),
         MakeApproximationScale<VToolArc>(T("Approximation scale:")),
@@ -402,7 +467,7 @@ auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
              }
          }},
-        MakeStringPropWithValidator<VToolArcWithLength>(AttrAlias, T("Alias:"), &VToolArcWithLength::GetAliasSuffix, &VToolArcWithLength::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolArcWithLength>(AttrAlias, T("Arc:"), &VToolArcWithLength::GetAliasSuffix, &VToolArcWithLength::SetAliasSuffix),
         MakeCurvePenStyle<VToolArcWithLength>(T("Pen style:")),
         MakeLineColor<VToolArcWithLength>(T("Color:")),
         MakeApproximationScale<VToolArcWithLength>(T("Approximation scale:")),
@@ -449,12 +514,11 @@ auto CutArcProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeObjectName<VToolCutArc>(T("Point name:")),
-        MakeParentPoint<VToolCutArc>(AttrArc, T("Arc:"), &VToolCutArc::CurveName),
-        MakeStringPropWithValidator<VToolCutArc>(AttrCurveName1, T("Name1:"), &VToolCutArc::GetName1, &VToolCutArc::SetName1),
-        MakeStringPropWithValidator<VToolCutArc>(AttrCurveName2, T("Name2:"), &VToolCutArc::GetName2, &VToolCutArc::SetName2),
-        MakeStringPropWithValidator<VToolCutArc>(AttrAlias1, T("Alias1:"), &VToolCutArc::GetAliasSuffix1, &VToolCutArc::SetAliasSuffix1,
+        MakeSourceCurve<VToolCutArc>(AttrArc, T("Arc:"), &VToolCutArc::CurveName),
+        // Name1/Name2 stay auto-generated in the backend, they are just not shown any more.
+        MakeStringPropWithValidator<VToolCutArc>(AttrAlias1, T("Arc:"), &VToolCutArc::GetAliasSuffix1, &VToolCutArc::SetAliasSuffix1,
                                              SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolCutArc>(AttrAlias2, T("Alias2:"), &VToolCutArc::GetAliasSuffix2, &VToolCutArc::SetAliasSuffix2,
+        MakeStringPropWithValidator<VToolCutArc>(AttrAlias2, T("Arc:"), &VToolCutArc::GetAliasSuffix2, &VToolCutArc::SetAliasSuffix2,
                                              SegmentDotPixmap(VColorRole::VisSupportColor4)),
         {AttrLength, T("Length:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
@@ -482,12 +546,11 @@ auto CutSplineProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeObjectName<VToolCutSpline>(T("Point name:")),
-        MakeParentPoint<VToolCutSpline>(AttrCurve, T("Curve:"), &VToolCutSpline::CurveName),
-        MakeStringPropWithValidator<VToolCutSpline>(AttrCurveName1, T("Name1:"), &VToolCutSpline::GetName1, &VToolCutSpline::SetName1),
-        MakeStringPropWithValidator<VToolCutSpline>(AttrCurveName2, T("Name2:"), &VToolCutSpline::GetName2, &VToolCutSpline::SetName2),
-        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias1, T("Alias1:"), &VToolCutSpline::GetAliasSuffix1, &VToolCutSpline::SetAliasSuffix1,
+        MakeSourceCurve<VToolCutSpline>(AttrCurve, T("Curve:"), &VToolCutSpline::CurveName),
+        // Name1/Name2 stay auto-generated in the backend, they are just not shown any more.
+        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias1, T("Curve:"), &VToolCutSpline::GetAliasSuffix1, &VToolCutSpline::SetAliasSuffix1,
                                                 SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias2, T("Alias2:"), &VToolCutSpline::GetAliasSuffix2, &VToolCutSpline::SetAliasSuffix2,
+        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias2, T("Curve:"), &VToolCutSpline::GetAliasSuffix2, &VToolCutSpline::SetAliasSuffix2,
                                                 SegmentDotPixmap(VColorRole::VisSupportColor4)),
         {AttrLength, T("Length:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
@@ -515,12 +578,11 @@ auto CutSplinePathProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeObjectName<VToolCutSplinePath>(T("Point name:")),
-        MakeParentPoint<VToolCutSplinePath>(AttrCurve, T("Curve:"), &VToolCutSplinePath::CurveName),
-        MakeStringPropWithValidator<VToolCutSplinePath>(AttrCurveName1, T("Name1:"), &VToolCutSplinePath::GetName1, &VToolCutSplinePath::SetName1),
-        MakeStringPropWithValidator<VToolCutSplinePath>(AttrCurveName2, T("Name2:"), &VToolCutSplinePath::GetName2, &VToolCutSplinePath::SetName2),
-        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias1, T("Alias1:"), &VToolCutSplinePath::GetAliasSuffix1, &VToolCutSplinePath::SetAliasSuffix1,
+        MakeSourceCurve<VToolCutSplinePath>(AttrCurve, T("Curve:"), &VToolCutSplinePath::CurveName),
+        // Name1/Name2 stay auto-generated in the backend, they are just not shown any more.
+        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias1, T("Curve:"), &VToolCutSplinePath::GetAliasSuffix1, &VToolCutSplinePath::SetAliasSuffix1,
                                                    SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias2, T("Alias2:"), &VToolCutSplinePath::GetAliasSuffix2, &VToolCutSplinePath::SetAliasSuffix2,
+        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias2, T("Curve:"), &VToolCutSplinePath::GetAliasSuffix2, &VToolCutSplinePath::SetAliasSuffix2,
                                                    SegmentDotPixmap(VColorRole::VisSupportColor4)),
         {AttrLength, T("Length:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
@@ -548,6 +610,7 @@ auto SplineProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeObjectNameReadOnly<VToolSpline>(T("Name:")),
+        MakeStringPropWithValidator<VToolSpline>(AttrAlias, T("Curve:"), &VToolSpline::GetAliasSuffix, &VToolSpline::SetAliasSuffix),
         // C1 angle — custom VFormula construction
         {AttrAngle1, T("C1: angle:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
@@ -710,7 +773,7 @@ auto CubicBezierProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolCubicBezier>(AttrPoint2, T("Second point:"), &VToolCubicBezier::SecondPointName),
         MakeParentPoint<VToolCubicBezier>(AttrPoint3, T("Third point:"), &VToolCubicBezier::ThirdPointName),
         MakeParentPoint<VToolCubicBezier>(AttrPoint4, T("Fourth point:"), &VToolCubicBezier::ForthPointName),
-        MakeStringPropWithValidator<VToolCubicBezier>(AttrAlias, T("Alias:"), &VToolCubicBezier::GetAliasSuffix, &VToolCubicBezier::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolCubicBezier>(AttrAlias, T("Curve:"), &VToolCubicBezier::GetAliasSuffix, &VToolCubicBezier::SetAliasSuffix),
         MakeCurvePenStyle<VToolCubicBezier>(T("Pen style:")),
         MakeLineColor<VToolCubicBezier>(T("Color:")),
         {AttrAScale, T("Approximation scale:"), false,
@@ -749,7 +812,7 @@ auto ArmholeCurveProperties() -> std::vector<PropertyDesc>
         MakeParentPoint<VToolArmholeCurve>(AttrPoint4, T("Chest/back width:"), &VToolArmholeCurve::SecondPointName),
         MakeParentPoint<VToolArmholeCurve>(AttrPoint6, T("Perpendicular:"), &VToolArmholeCurve::ThirdPointName),
         MakeParentPoint<VToolArmholeCurve>(AttrPoint7, T("Shoulder:"), &VToolArmholeCurve::FourthPointName),
-        MakeStringPropWithValidator<VToolArmholeCurve>(AttrAlias, T("Alias:"), &VToolArmholeCurve::GetAliasSuffix, &VToolArmholeCurve::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolArmholeCurve>(AttrAlias, T("Curve:"), &VToolArmholeCurve::GetAliasSuffix, &VToolArmholeCurve::SetAliasSuffix),
         MakeCurvePenStyle<VToolArmholeCurve>(T("Pen style:")),
         MakeLineColor<VToolArmholeCurve>(T("Color:")),
         {AttrAScale, T("Approximation scale:"), false,
@@ -784,7 +847,7 @@ auto SplinePathProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeObjectNameReadOnly<VToolSplinePath>(T("Name:")),
-        MakeStringPropWithValidator<VToolSplinePath>(AttrAlias, T("Alias:"), &VToolSplinePath::GetAliasSuffix, &VToolSplinePath::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolSplinePath>(AttrAlias, T("Curve:"), &VToolSplinePath::GetAliasSuffix, &VToolSplinePath::SetAliasSuffix),
         MakeCurvePenStyle<VToolSplinePath>(T("Pen style:")),
         MakeLineColor<VToolSplinePath>(T("Color:")),
         {AttrAScale, T("Approximation scale:"), false,
@@ -819,7 +882,7 @@ auto CubicBezierPathProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeObjectNameReadOnly<VToolCubicBezierPath>(T("Name:")),
-        MakeStringPropWithValidator<VToolCubicBezierPath>(AttrAlias, T("Alias:"), &VToolCubicBezierPath::GetAliasSuffix, &VToolCubicBezierPath::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolCubicBezierPath>(AttrAlias, T("Curve:"), &VToolCubicBezierPath::GetAliasSuffix, &VToolCubicBezierPath::SetAliasSuffix),
         MakeCurvePenStyle<VToolCubicBezierPath>(T("Pen style:")),
         MakeLineColor<VToolCubicBezierPath>(T("Color:")),
         {AttrAScale, T("Approximation scale:"), false,
@@ -940,7 +1003,7 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaRotationAngle()); prop->setValue(v);
              }
          }},
-        MakeStringPropWithValidator<VToolEllipticalArc>(AttrAlias, T("Alias:"), &VToolEllipticalArc::GetAliasSuffix, &VToolEllipticalArc::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolEllipticalArc>(AttrAlias, T("ElArc:"), &VToolEllipticalArc::GetAliasSuffix, &VToolEllipticalArc::SetAliasSuffix),
         MakeCurvePenStyle<VToolEllipticalArc>(T("Pen style:")),
         MakeLineColor<VToolEllipticalArc>(T("Color:")),
         MakeApproximationScale<VToolEllipticalArc>(T("Approximation scale:")),
@@ -1073,7 +1136,7 @@ auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaRotationAngle()); prop->setValue(v);
              }
          }},
-        MakeStringPropWithValidator<VToolEllipticalArcWithLength>(AttrAlias, T("Alias:"), &VToolEllipticalArcWithLength::GetAliasSuffix, &VToolEllipticalArcWithLength::SetAliasSuffix),
+        MakeStringPropWithValidator<VToolEllipticalArcWithLength>(AttrAlias, T("ElArc:"), &VToolEllipticalArcWithLength::GetAliasSuffix, &VToolEllipticalArcWithLength::SetAliasSuffix),
         MakeCurvePenStyle<VToolEllipticalArcWithLength>(T("Pen style:")),
         MakeLineColor<VToolEllipticalArcWithLength>(T("Color:")),
         MakeApproximationScale<VToolEllipticalArcWithLength>(T("Approximation scale:")),
@@ -1120,7 +1183,8 @@ auto ParallelCurveProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeObjectNameReadOnly<VToolParallelCurve>(T("Full name:")),
-        MakeParentPoint<VToolParallelCurve>(AttrCurve, T("Curve:"), &VToolParallelCurve::CurveName),
+        MakeSourceCurve<VToolParallelCurve>(AttrCurve, T("Curve:"), &VToolParallelCurve::CurveName),
+        MakeStringPropWithValidator<VToolParallelCurve>(AttrAlias, T("Curve:"), &VToolParallelCurve::GetAliasSuffix, &VToolParallelCurve::SetAliasSuffix),
         {AttrWidth, T("Width:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolParallelCurve *>(tool);
@@ -1148,9 +1212,9 @@ auto GraduatedCurveProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeObjectNameReadOnly<VToolGraduatedCurve>(T("Full name:")),
-        MakeParentPoint<VToolGraduatedCurve>(AttrCurve, T("Curve:"), &VToolGraduatedCurve::CurveName),
-        MakeStringPropWithValidator<VToolGraduatedCurve>(VtoppbConstants::AttrSubName, T("Name:"), &VToolGraduatedCurve::GetName, &VToolGraduatedCurve::SetName),
-        MakeStringPropWithValidator<VToolGraduatedCurve>(AttrAlias, T("Alias:"), &VToolGraduatedCurve::GetAliasSuffix, &VToolGraduatedCurve::SetAliasSuffix),
+        MakeSourceCurve<VToolGraduatedCurve>(AttrCurve, T("Curve:"), &VToolGraduatedCurve::CurveName),
+        // The subName property stays auto-generated in the backend, it is just not shown any more.
+        MakeStringPropWithValidator<VToolGraduatedCurve>(AttrAlias, T("Curve:"), &VToolGraduatedCurve::GetAliasSuffix, &VToolGraduatedCurve::SetAliasSuffix),
         MakeCurvePenStyle<VToolGraduatedCurve>(T("Pen style:")),
         MakeLineColor<VToolGraduatedCurve>(T("Color:")),
         MakeApproximationScale<VToolGraduatedCurve>(T("Approximation scale:")),

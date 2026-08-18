@@ -147,7 +147,7 @@
          <item row="4" column="0">
           <widget class="QLabel" name="labelAlias">
            <property name="text">
-            <string>Alias:</string>
+            <string>ElArc:</string>
            </property>
           </widget>
          </item>
