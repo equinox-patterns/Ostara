@@ -79,13 +79,6 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
 
     InitIcons();
 
-    // Re-add spanning 2 rows
-    ui->gridLayout->removeItem(ui->gridLayout->itemAtPosition(0, 2));
-    ui->gridLayout->addLayout(ui->verticalLayoutSwap, 0, 2, 2, 1);
-
-    MakeFilterableComboBox(ui->comboBoxFirstPoint);
-    MakeFilterableComboBox(ui->comboBoxSecondPoint);
-
     // --- Configure formula widget ---
     m_formula->setData(&this->data);
     m_formula->setToolId(toolId);
@@ -113,8 +106,6 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
 
     InitOkCancelApply(ui);
 
-    FillComboBoxPoints(ui->comboBoxFirstPoint);
-    FillComboBoxPoints(ui->comboBoxSecondPoint);
     FillComboBoxTypeLine(ui->comboBoxLineType, LineStylesPics(ui->comboBoxLineType->palette().color(QPalette::Base),
                                                               ui->comboBoxLineType->palette().color(QPalette::Text)));
     m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonLineColor);
@@ -126,10 +117,6 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
                                 m_flagName);
                 CheckState();
             });
-    connect(ui->comboBoxFirstPoint, &QComboBox::currentTextChanged, this, &DialogAlongLine::PointChanged);
-    connect(ui->comboBoxSecondPoint, &QComboBox::currentTextChanged, this, &DialogAlongLine::PointChanged);
-    connect(ui->toolButtonSwapPoints, &QToolButton::clicked, this, &DialogAlongLine::SwapPoints);
-
     // Role name field A→C
     auto *containerRoleName = new QWidget();
     auto *layoutRoleName = new QHBoxLayout(containerRoleName);
@@ -195,27 +182,7 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogAlongLine::IsValid() const -> bool
 {
-    return m_flagName && m_formula->isValid() && m_flagError && flagRoleName && flagSecondRoleName;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogAlongLine::PointChanged()
-{
-    QColor color;
-    if (GetFirstPointId() == GetSecondPointId())
-    {
-        m_flagError = false;
-        color = errorColor;
-    }
-    else
-    {
-        m_flagError = true;
-        color = OkColor(this);
-    }
-    SetCurrentLength();
-    ChangeColor(ui->labelFirstPoint, color);
-    ChangeColor(ui->labelSecondPoint, color);
-    CheckState();
+    return m_flagName && m_formula->isValid() && flagRoleName && flagSecondRoleName;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -252,11 +219,10 @@ void DialogAlongLine::ChosenObject(quint32 id, const SceneObject &type)
         switch (m_number)
         {
             case 0:
-                if (SetObject(id, ui->comboBoxFirstPoint, toolTip))
-                {
-                    m_number++;
-                    line->VisualMode(id);
-                }
+                m_firstPointId = id;
+                emit ToolTip(toolTip);
+                m_number++;
+                line->VisualMode(id);
                 break;
             case 1:
                 ChosenSecondPoint(id, toolTip);
@@ -335,39 +301,39 @@ void DialogAlongLine::SetCurrentLength()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogAlongLine::ChosenSecondPoint(quint32 id, const QString &toolTip)
 {
-    if (SetObject(id, ui->comboBoxSecondPoint, QString()))
+    m_secondPointId = id;
+
+    auto *line = qobject_cast<VisToolAlongLine *>(vis);
+    SCASSERT(line != nullptr)
+
+    if (m_firstPointId != m_secondPointId)
     {
-        auto *line = qobject_cast<VisToolAlongLine *>(vis);
-        SCASSERT(line != nullptr)
-
-        if (m_flagError)
+        line->SetPoint2Id(id);
+        if (m_buildMidpoint)
         {
-            line->SetPoint2Id(id);
-            if (m_buildMidpoint)
-            {
-                SetFormula(currentLength + "/2"_L1);
-                line->SetMode(Mode::Show);
-            }
-            else
-            {
-                auto *window = qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
-                SCASSERT(window != nullptr)
-                connect(line, &Visualization::ToolTip, window, &VAbstractMainWindow::ShowToolTip);
-            }
-
-            line->RefreshGeometry();
-
-            prepare = true;
-
-            if (m_buildMidpoint || not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-            {
-                FinishCreating();
-            }
+            SetCurrentLength();
+            SetFormula(currentLength + "/2"_L1);
+            line->SetMode(Mode::Show);
         }
         else
         {
-            emit ToolTip(toolTip);
+            auto *window = qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
+            SCASSERT(window != nullptr)
+            connect(line, &Visualization::ToolTip, window, &VAbstractMainWindow::ShowToolTip);
         }
+
+        line->RefreshGeometry();
+
+        prepare = true;
+
+        if (m_buildMidpoint || not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
+        {
+            FinishCreating();
+        }
+    }
+    else
+    {
+        emit ToolTip(toolTip);
     }
 }
 
@@ -399,7 +365,7 @@ void DialogAlongLine::InitIcons()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogAlongLine::SetSecondPointId(quint32 value)
 {
-    setCurrentPointId(ui->comboBoxSecondPoint, value);
+    m_secondPointId = value;
 
     auto *line = qobject_cast<VisToolAlongLine *>(vis);
     SCASSERT(line != nullptr)
@@ -469,27 +435,16 @@ void DialogAlongLine::ShowDialog(bool click)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogAlongLine::SwapPoints()
-{
-    const quint32 first = GetFirstPointId();
-    const quint32 second = GetSecondPointId();
-    SetFirstPointId(second);
-    SetSecondPointId(first);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogAlongLine::CheckDependencyTreeComplete()
 {
     const bool ready = m_doc->IsPatternGraphComplete();
     ui->lineEditNamePoint->setEnabled(ready);
-    ui->comboBoxFirstPoint->setEnabled(ready);
-    ui->comboBoxSecondPoint->setEnabled(ready);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogAlongLine::SetFirstPointId(quint32 value)
 {
-    setCurrentPointId(ui->comboBoxFirstPoint, value);
+    m_firstPointId = value;
 
     auto *line = qobject_cast<VisToolAlongLine *>(vis);
     SCASSERT(line != nullptr)
@@ -559,13 +514,13 @@ auto DialogAlongLine::GetFormula() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogAlongLine::GetFirstPointId() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxFirstPoint);
+    return m_firstPointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogAlongLine::GetSecondPointId() const -> quint32
 {
-    return getCurrentObjectId(ui->comboBoxSecondPoint);
+    return m_secondPointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

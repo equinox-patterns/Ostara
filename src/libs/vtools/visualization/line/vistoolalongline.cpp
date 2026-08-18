@@ -51,6 +51,7 @@ VisToolAlongLine::VisToolAlongLine(const VContainer *data, QGraphicsItem *parent
     m_lineP1 = InitPoint(VColorRole::VisMainColor, this);
     m_lineP2 = InitPoint(VColorRole::VisMainColor, this); //-V656
     m_line = InitItem<VScaledLine>(VColorRole::VisSupportColor, this);
+    m_line->SetShowArrows(false); // Main line A→B is a support line: no direction arrows (only the split segments carry them)
     m_line1 = InitItem<VScaledLine>(VColorRole::VisSupportColor2, this);
     m_line1->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
     m_line2 = InitItem<VScaledLine>(VColorRole::VisSupportColor4, this);
@@ -89,7 +90,7 @@ void VisToolAlongLine::RefreshGeometry()
             DrawPoint(m_lineP2, static_cast<QPointF>(*second));
 
             QLineF const baseLine(static_cast<QPointF>(*first), static_cast<QPointF>(*second));
-            m_line->SetHighlighted(m_toolPointId <= NULL_ID); // Hide the parent A_B arrows when the split is shown
+            m_line->SetHighlighted(m_toolPointId <= NULL_ID); // Main line bold while creating, hairline once the point is placed
             DrawLine(m_line, baseLine);
 
             if (m_toolPointId > NULL_ID)

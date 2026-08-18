@@ -166,6 +166,60 @@ auto MakePointGroup(const QString &title, const QString &nameLabel, const QStrin
             }};
 }
 
+template <typename Tool, typename Getter1, typename Getter2>
+auto MakePointGroup(const QString &title, const QString &nameLabel, const QString &showLabel,
+                    const QString &firstPointLabel, Getter1 firstPointGetter,
+                    const QString &secondPointLabel, Getter2 secondPointGetter) -> PropertyDesc
+{
+    return {QStringLiteral("point"), title, false,
+            [title, nameLabel, showLabel, firstPointLabel, firstPointGetter, secondPointLabel, secondPointGetter]
+            (VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *group = new VPE::VProperty(title);
+                group->setCollapsible(true);
+                auto *nameChild = new VPE::VStringProperty(nameLabel);
+                nameChild->setValue(t->name());
+                auto *showChild = new VPE::VBoolProperty(showLabel);
+                showChild->setValue(t->IsLabelVisible(t->getId()));
+                auto *firstChild = new VPE::VLabelProperty(firstPointLabel);
+                firstChild->setValue((t->*firstPointGetter)());
+                auto *secondChild = new VPE::VLabelProperty(secondPointLabel);
+                secondChild->setValue((t->*secondPointGetter)());
+                group->addChild(nameChild);
+                group->addChild(showChild);
+                group->addChild(firstChild);
+                group->addChild(secondChild);
+                return group;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    const auto children = prop->getChildren();
+                    if (children.size() >= 2) {
+                        QString const n = children[0]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                        if (n != t->name()) {
+                            if (QRegularExpression const rx(NameRegExp());
+                                n.isEmpty() || !VContainer::IsUnique(n, valentinaNamespace) || !rx.match(n).hasMatch())
+                                children[0]->setValue(t->name());
+                            else t->setName(n);
+                        }
+                        t->SetLabelVisible(t->getId(),
+                            children[1]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+                    }
+                }
+            },
+            [firstPointGetter, secondPointGetter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    const auto children = prop->getChildren();
+                    if (children.size() >= 4) {
+                        children[0]->setValue(t->name());
+                        children[1]->setValue(t->IsLabelVisible(t->getId()));
+                        children[2]->setValue((t->*firstPointGetter)());
+                        children[3]->setValue((t->*secondPointGetter)());
+                    }
+                }
+            }};
+}
+
 template <typename Tool, typename Getter>
 auto MakeParentPoint(const QString &attrId, const QString &label, Getter getter) -> PropertyDesc
 {
@@ -478,19 +532,19 @@ auto EndLineProperties() -> std::vector<PropertyDesc>
 auto AlongLineProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeParentPoint<VToolAlongLine>(AttrBasePoint, T("First point:"), &VToolAlongLine::BasePointName),
-        MakeParentPoint<VToolAlongLine>(AttrSecondPoint, T("Second point:"), &VToolAlongLine::SecondPointName),
-        MakeLineType<VToolAlongLine>(T("Line type:")),
-        MakeLineColor<VToolAlongLine>(T("Line color:")),
-        MakeStringPropWithValidator<VToolAlongLine>(QStringLiteral("lineRoleName"), T("Name:"),
+        MakeStringPropWithValidator<VToolAlongLine>(QStringLiteral("lineRoleName"), T("Line:"),
         &VToolAlongLine::GetLineRoleName, &VToolAlongLine::SetLineRoleName,
         SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolAlongLine>(QStringLiteral("secondLineRoleName"), T("Name 2:"),
+        MakeStringPropWithValidator<VToolAlongLine>(QStringLiteral("secondLineRoleName"), T("Line:"),
         &VToolAlongLine::GetSecondLineRoleName, &VToolAlongLine::SetSecondLineRoleName,
         SegmentDotPixmap(VColorRole::VisSupportColor4)),
         MakeFormulaLength<VToolAlongLine>(T("Length:")),
+        MakeLineType<VToolAlongLine>(T("Line type:")),
+        MakeLineColor<VToolAlongLine>(T("Line color:")),
         MakeNotes<VToolAlongLine>(T("Notes:")),
-        MakePointGroup<VToolAlongLine>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakePointGroup<VToolAlongLine>(T("Point"), T("Point name:"), T("Show Point name"),
+                                       T("First point:"), &VToolAlongLine::BasePointName,
+                                       T("Second point:"), &VToolAlongLine::SecondPointName),
     };
 }
 
