@@ -79,23 +79,6 @@ VFormulaPropertyEditor::VFormulaPropertyEditor(QWidget *parent)
     valueLayout->addSpacerItem(new QSpacerItem(1000000000, 0, QSizePolicy::Expanding, QSizePolicy::Preferred));
     valueLayout->addWidget(m_ToolButton);
 
-    // Formula string row: "Formula:" label + QLineEdit, below the value and above the presets.
-    auto *formulaLayout = new QHBoxLayout;
-    formulaLayout->setSpacing(3);
-    formulaLayout->setContentsMargins(0, 0, 0, 0);
-    auto *formulaLabel = new QLabel(tr("Formula:"), this);
-    m_formulaEdit = new QLineEdit(this);
-    m_formulaEdit->setText(m_formula.GetFormula());
-    connect(m_formulaEdit, &QLineEdit::editingFinished, this, [this]() {
-        m_formula.SetFormula(m_formulaEdit->text(), FormulaType::FromUser);
-        m_formula.Eval();
-        m_TextLabel->setText(m_formula.getStringValue());
-        emit dataChangedByUser(m_formula, this);
-        QCoreApplication::postEvent(this, new VPE::UserChangeEvent());
-    });
-    formulaLayout->addWidget(formulaLabel);
-    formulaLayout->addWidget(m_formulaEdit);
-
     // Preset angle buttons row (0/90/180/270°), shown only for angle fields.
     m_presetRow = new QWidget(this);
     auto *presetLayout = new QHBoxLayout(m_presetRow);
@@ -124,13 +107,12 @@ VFormulaPropertyEditor::VFormulaPropertyEditor(QWidget *parent)
     }
     m_presetRow->setVisible(false);
 
-    // Main vertical layout: value row on top, preset buttons below.
+    // The editor lays out only the value + fx row. The preset row is kept as a child but
+    // rendered by the form view below the "Formula" editor (VProperty::bottomWidget()).
     auto *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(2);
     mainLayout->addLayout(valueLayout);
-    mainLayout->addLayout(formulaLayout);
-    mainLayout->addWidget(m_presetRow);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -140,7 +122,6 @@ void VFormulaPropertyEditor::SetFormula(const VFormula &formula)
     {
         this->m_formula = formula;
         m_TextLabel->setText(this->m_formula.getStringValue());
-        m_formulaEdit->setText(this->m_formula.GetFormula());
         m_presetRow->setVisible(this->m_formula.getPostfix() == degreeSymbol);
     }
 }
@@ -181,4 +162,10 @@ auto VFormulaPropertyEditor::eventFilter(QObject *obj, QEvent *ev) -> bool
 auto VFormulaPropertyEditor::GetFormula() const -> VFormula
 {
     return m_formula;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFormulaPropertyEditor::presetRow() const -> QWidget *
+{
+    return m_presetRow;
 }

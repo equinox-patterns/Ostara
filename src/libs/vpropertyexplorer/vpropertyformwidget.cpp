@@ -217,6 +217,11 @@ void VPE::VPropertyFormWidget::build()
                     ++i;
                     vproperty_d_ptr->Properties.insert(i, children[j]);
                 }
+                if (QWidget *bottom = tmpProperty->bottomWidget(); bottom != nullptr)
+                {
+                    bottom->setParent(group);
+                    subFormLayout->addWidget(bottom);
+                }
             }
             else if (tmpProperty->isCollapsible())
             {
@@ -235,6 +240,11 @@ void VPE::VPropertyFormWidget::build()
                 margins.setRight(0);
                 subFormLayout->setContentsMargins(margins);
                 content->setLayout(subFormLayout);
+
+                // The collapsible group occupies a row in Properties (its header) but has no
+                // editor of its own. Append a placeholder so EditorWidgets stays index-aligned
+                // with Properties — commitData()/loadData() pair them by row index.
+                vproperty_d_ptr->EditorWidgets.append(VPropertyFormWidgetPrivate::SEditorWidget());
 
                 QList<VProperty *> children = tmpProperty->getChildren();
                 for (int j = 0; j < children.size(); ++j)
@@ -272,6 +282,11 @@ void VPE::VPropertyFormWidget::build()
                                     &VProperty::ValueChildChanged, Qt::UniqueConnection);
                             ++i;
                             vproperty_d_ptr->Properties.insert(i, grandchildren[k]);
+                        }
+                        if (QWidget *bottom = child->bottomWidget(); bottom != nullptr)
+                        {
+                            bottom->setParent(childGroup);
+                            childSubLayout->addWidget(bottom);
                         }
                     }
                     else

@@ -151,7 +151,7 @@ auto CutSplinePathProperties() -> std::vector<PropertyDesc>;
 auto SplineProperties() -> std::vector<PropertyDesc>;
 auto CubicBezierProperties() -> std::vector<PropertyDesc>;
 auto ArmholeCurveProperties() -> std::vector<PropertyDesc>;
-auto SplinePathProperties() -> std::vector<PropertyDesc>;
+auto SplinePathProperties(const VToolSplinePath *tool) -> std::vector<PropertyDesc>;
 auto CubicBezierPathProperties() -> std::vector<PropertyDesc>;
 auto EllipticalArcProperties() -> std::vector<PropertyDesc>;
 auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>;
@@ -274,7 +274,8 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
             ShowToolOptions<VToolArmholeCurve>(item, tr("Armhole curve"), ArmholeCurveProperties());
             break;
         case VToolSplinePath::Type:
-            ShowToolOptions<VToolSplinePath>(item, tr("Tool for path curve"), SplinePathProperties());
+            ShowToolOptions<VToolSplinePath>(item, tr("Curve tool"),
+                                             SplinePathProperties(qgraphicsitem_cast<VToolSplinePath *>(item)));
             break;
         case VToolCubicBezierPath::Type:
             ShowToolOptions<VToolCubicBezierPath>(item, tr("Tool cubic bezier curve"), CubicBezierPathProperties());
@@ -425,7 +426,8 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
             UpdateToolOptions<VToolArmholeCurve>(ArmholeCurveProperties());
             break;
         case VToolSplinePath::Type:
-            UpdateToolOptions<VToolSplinePath>(SplinePathProperties());
+            UpdateToolOptions<VToolSplinePath>(
+                SplinePathProperties(qgraphicsitem_cast<VToolSplinePath *>(m_currentItem)));
             break;
         case VToolCubicBezierPath::Type:
             UpdateToolOptions<VToolCubicBezierPath>(CubicBezierPathProperties());
@@ -502,15 +504,18 @@ void VToolOptionsPropertyBrowser::RefreshOptions()
 //---------------------------------------------------------------------------------------------------------------------
 void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
 {
+    // Walk up to the nearest registered property. A collapsible group (e.g. a spline handle)
+    // holds VFormulaProperty children whose own "Formula" child is the one that changed, so we
+    // may need to climb more than one level before reaching a property known to ChangeToolData.
     VPE::VProperty *prop = property;
-    if (!m_propertyToId.contains(prop))
+    while (prop != nullptr && !m_propertyToId.contains(prop))
     {
-        if (!m_propertyToId.contains(prop->getParent())) // Maybe we know parent
-        {
-            return;
-        }
-
         prop = prop->getParent();
+    }
+
+    if (prop == nullptr)
+    {
+        return;
     }
 
     if (!m_currentItem)
@@ -593,7 +598,8 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
             ChangeToolData<VToolArmholeCurve>(prop, ArmholeCurveProperties());
             break;
         case VToolSplinePath::Type:
-            ChangeToolData<VToolSplinePath>(prop, SplinePathProperties());
+            ChangeToolData<VToolSplinePath>(
+                prop, SplinePathProperties(qgraphicsitem_cast<VToolSplinePath *>(m_currentItem)));
             break;
         case VToolCubicBezierPath::Type:
             ChangeToolData<VToolCubicBezierPath>(prop, CubicBezierPathProperties());

@@ -44,6 +44,13 @@ VFormulaProperty::VFormulaProperty(const QString &name)
               static_cast<QVariant::Type>(VFormula::FormulaTypeId()))
 #endif
 {
+    vproperty_d_ptr->type = VPE::Property::Complex;
+
+    auto *tmpFormula = new VPE::VStringProperty(tr("Formula"));
+    addChild(tmpFormula);
+    tmpFormula->setUpdateBehaviour(true, false);
+    tmpFormula->setOsSeparator(VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+
     // Cannot use virtual function setValue in constructor
     SetFormula(QVariant(0).value<VFormula>());
 }
@@ -119,6 +126,18 @@ auto VFormulaProperty::getEditorData(const QWidget *editor) const -> QVariant
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VFormulaProperty::bottomWidget() const -> QWidget *
+{
+    if (const auto *editor = qobject_cast<const VFormulaPropertyEditor *>(VProperty::vproperty_d_ptr->editor);
+        editor != nullptr)
+    {
+        return editor->presetRow();
+    }
+
+    return nullptr;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VFormulaProperty::type() const -> QString
 {
     return QStringLiteral("formula");
@@ -170,6 +189,11 @@ auto VFormulaProperty::GetFormula() const -> VFormula
 //---------------------------------------------------------------------------------------------------------------------
 void VFormulaProperty::SetFormula(const VFormula &formula)
 {
+    if (vproperty_d_ptr->Children.count() < 1)
+    {
+        return;
+    }
+
     QVariant value;
     value.setValue(formula);
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -178,6 +202,15 @@ void VFormulaProperty::SetFormula(const VFormula &formula)
     value.convert(VFormula::FormulaTypeId());
 #endif
     VProperty::vproperty_d_ptr->VariantValue = value;
+
+    QVariant tmpFormula(formula.GetFormula());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    tmpFormula.convert(QMetaType(QMetaType::QString));
+#else
+    tmpFormula.convert(QVariant::String);
+#endif
+
+    VProperty::vproperty_d_ptr->Children.at(0)->setValue(tmpFormula);
 
     if (VProperty::vproperty_d_ptr->editor != nullptr)
     {

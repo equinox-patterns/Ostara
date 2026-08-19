@@ -119,6 +119,11 @@ public:
     //! Gets the data from the widget
     virtual auto getEditorData(const QWidget *editor) const -> QVariant;
 
+    //! Returns an optional widget the form view renders below this property's children (e.g.
+    //! preset value buttons). Returns nullptr when there is none. The view reparents the widget
+    //! to place it below the child editors.
+    virtual auto bottomWidget() const -> QWidget *;
+
     //! Returns item flags
     virtual auto flags(int column = DPC_Name) const -> Qt::ItemFlags;
 

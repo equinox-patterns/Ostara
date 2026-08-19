@@ -42,6 +42,8 @@
 #include "vispath.h"
 
 class VControlPointSpline;
+class VGraphicsSimpleTextItem;
+class VScaledLine;
 
 class VisToolSplinePath : public VisPath // clazy:exclude=ctor-missing-parent-argument
 {
@@ -73,6 +75,8 @@ private:
     Q_DISABLE_COPY_MOVE(VisToolSplinePath) // NOLINT
     QVector<VScaledEllipse *> m_points{};
     QVector<VControlPointSpline *> m_ctrlPoints{};
+    QVector<VGraphicsSimpleTextItem *> m_pointLabels{};
+    QVector<VScaledLine *> m_pointLines{};
     VCurvePathItem *m_newCurveSegment{nullptr};
     VSplinePath m_path{};
 
@@ -82,6 +86,7 @@ private:
     QPointF m_ctrlPoint{};
 
     auto GetPoint(quint32 i) -> VScaledEllipse *;
+    void RefreshPointLabels(const QVector<VSplinePoint> &pathPoints);
     void DragControlPoint(vsizetype lastPoint, vsizetype preLastPoint, const QPointF &pSpl, vsizetype size);
     void NewCurveSegment(const VSpline &spline, const QPointF &pSpl, vsizetype size);
     void Creating(const QPointF &pSpl, vsizetype size);

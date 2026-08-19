@@ -44,6 +44,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/global.h"
 #include "../vwidgets/scalesceneitems.h"
+#include "../vwidgets/vgraphicssimpletextitem.h"
 #include "../vwidgets/vcontrolpointspline.h"
 #include "vispath.h"
 
@@ -84,6 +85,8 @@ void VisToolSplinePath::RefreshGeometry()
         VScaledEllipse *point = GetPoint(static_cast<unsigned>(i));
         DrawPoint(point, static_cast<QPointF>(pathPoints.at(i).P()));
     }
+
+    RefreshPointLabels(pathPoints);
 
     if (GetMode() == Mode::Creation)
     {
@@ -133,6 +136,55 @@ void VisToolSplinePath::RefreshGeometry()
     {
         SetToolTip(tr("Use <b>%1</b> for sticking angle!").arg(VModifierKey::Shift()));
         emit ToolTip(CurrentToolTip());
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VisToolSplinePath::RefreshPointLabels(const QVector<VSplinePoint> &pathPoints)
+{
+    const vsizetype size = pathPoints.size();
+    const vsizetype labelCount = size > 2 ? size - 2 : 0; // intermediate points only (no Start/End)
+
+    while (m_pointLabels.size() < labelCount)
+    {
+        auto *label = new VGraphicsSimpleTextItem(VColorRole::VisSupportColor, VColorRole::VisSupportColor, this);
+        // Pure visual reference: non-interactive, so clicks pass through to the curve below.
+        label->setAcceptedMouseButtons(Qt::NoButton);
+        label->setFlag(QGraphicsItem::ItemIsMovable, false);
+        label->setFlag(QGraphicsItem::ItemIsSelectable, false);
+        label->setFlag(QGraphicsItem::ItemIsFocusable, false);
+        label->setAcceptHoverEvents(false);
+        m_pointLabels.append(label);
+    }
+    while (m_pointLines.size() < labelCount)
+    {
+        auto *line = new VScaledLine(VColorRole::VisSupportColor, this);
+        line->SetBoldLine(false);
+        line->setLine(QLineF(0, 0, 1, 0));
+        line->setAcceptedMouseButtons(Qt::NoButton);
+        m_pointLines.append(line);
+    }
+
+    const QPointF offset(25, -25); // mm, upper-right of the point
+    for (vsizetype i = 0; i < labelCount; ++i)
+    {
+        const QPointF pos = static_cast<QPointF>(pathPoints.at(i + 1).P());
+
+        auto *label = m_pointLabels.at(i);
+        label->setText(tr("Point %1").arg(i + 2));
+        label->SetDestination(pos);
+        label->SetRealPos(pos + offset);
+        label->setVisible(true);
+
+        auto *line = m_pointLines.at(i);
+        line->setLine(QLineF(pos, label->pos()));
+        line->setVisible(true);
+    }
+
+    for (vsizetype i = labelCount; i < m_pointLabels.size(); ++i)
+    {
+        m_pointLabels.at(i)->setVisible(false);
+        m_pointLines.at(i)->setVisible(false);
     }
 }
 

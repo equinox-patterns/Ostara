@@ -122,11 +122,14 @@ private slots:
     void CurveReleased();
 
 private:
+    void HideShownPointLabels(bool hide);
+
     Q_DISABLE_COPY_MOVE(VToolSplinePath) // NOLINT
     QPointF oldPosition{};
     int splIndex{-1};
     bool moved{false};
     QSharedPointer<VSplinePath> oldMoveSplinePath{};
+    QVector<quint32> m_hiddenLabels{};
     QSharedPointer<VSplinePath> newMoveSplinePath{};
     /**
      * @brief controlPoints list pointers of control points.

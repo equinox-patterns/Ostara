@@ -50,6 +50,9 @@ public:
     //! Returns the formula currently set
     auto GetFormula() const -> VFormula;
 
+    //! Returns the preset-angle buttons row (rendered below the formula editor by the form view).
+    auto presetRow() const -> QWidget *;
+
     //! Needed for proper event handling
     auto eventFilter(QObject *obj, QEvent *ev) -> bool override;
 
@@ -72,7 +75,6 @@ private:
     VFormula m_formula{};
     QToolButton *m_ToolButton{nullptr};
     QLabel *m_TextLabel{nullptr};
-    QLineEdit *m_formulaEdit{nullptr};
     QWidget *m_presetRow{nullptr};
 };
 

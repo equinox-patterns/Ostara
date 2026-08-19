@@ -59,6 +59,9 @@ public:
     //! Gets the data from the widget
     auto getEditorData(const QWidget* editor) const -> QVariant override;
 
+    //! Returns the preset-angle buttons row rendered below this property's children.
+    auto bottomWidget() const -> QWidget* override;
+
     //! Returns a string containing the type of the property
     auto type() const -> QString override;
 

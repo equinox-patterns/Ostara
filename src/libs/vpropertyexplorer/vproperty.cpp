@@ -167,6 +167,12 @@ auto VPE::VProperty::getEditorData(const QWidget *editor) const -> QVariant
     return {};
 }
 
+//! Returns an optional widget the form view renders below this property's children.
+auto VPE::VProperty::bottomWidget() const -> QWidget *
+{
+    return nullptr;
+}
+
 //! Returns item flags
 auto VPE::VProperty::flags(int column) const -> Qt::ItemFlags
 {

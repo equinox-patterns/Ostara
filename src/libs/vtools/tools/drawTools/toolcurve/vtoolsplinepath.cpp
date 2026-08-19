@@ -542,6 +542,44 @@ void VToolSplinePath::setSplinePath(const VSplinePath &splPath)
 void VToolSplinePath::ShowVisualization(bool show)
 {
     ShowToolVisualization<VisToolSplinePath>(show);
+    HideShownPointLabels(show);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSplinePath::HideShownPointLabels(bool hide)
+{
+    const VSplinePath path = getSplinePath();
+
+    if (hide)
+    {
+        // Remember which of our points currently have their name shown, so we can restore them.
+        m_hiddenLabels.clear();
+        for (qsizetype i = 0; i < path.CountPoints(); ++i)
+        {
+            const quint32 pointId = path.at(i).P().id();
+            const auto point = VAbstractTool::data.GeometricObject<VPointF>(pointId);
+            if (point->IsShowLabel())
+            {
+                m_hiddenLabels.append(pointId);
+            }
+        }
+    }
+
+    // Toggle the label on each matching point tool (their own name label, not our visu).
+    const QList<QGraphicsItem *> items = scene()->items();
+    for (auto *item : items)
+    {
+        auto *tool = qobject_cast<VAbstractTool *>(dynamic_cast<QObject *>(item));
+        if (tool != nullptr && m_hiddenLabels.contains(tool->getId()))
+        {
+            tool->SetLabelVisible(tool->getId(), !hide);
+        }
+    }
+
+    if (!hide)
+    {
+        m_hiddenLabels.clear();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

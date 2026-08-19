@@ -56,6 +56,7 @@
 #include "../vtheme/vscenestylesheet.h"
 #include "../vpropertyexplorer/plugins/vcolorpropertyeditor.h"
 #include "../vgeometry/vsplinepath.h"
+#include "../vgeometry/vsplinepoint.h"
 #include "../vgeometry/vcubicbezierpath.h"
 #include "../vgeometry/vcubicbezier.h"
 
@@ -314,7 +315,10 @@ auto MakeSplineHandleGroup(const QString &attrId, const QString &title,
                         const auto lenF = children[0]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
                         if (!lenF.error())
                         {
-                            (spl.*lengthSetter)(lenF.getDoubleValue(), lenF.GetFormula(FormulaType::FromUser));
+                            // Length is stored in pixels (see VToolSpline::Create); convert from user
+                            // units. Angle is stored in degrees and needs no conversion.
+                            (spl.*lengthSetter)(VAbstractValApplication::VApp()->toPixel(lenF.getDoubleValue()),
+                                                lenF.GetFormula(FormulaType::FromUser));
                         }
                         const auto angF = children[1]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
                         if (!angF.error())
@@ -349,6 +353,140 @@ auto MakeSplineHandleGroup(const QString &attrId, const QString &title,
             }};
 }
 
+// One spline path handle = one Length formula + one Angle formula, read/written on a VSplinePoint.
+struct SplinePathHandle
+{
+    QString (VSplinePoint::*lengthFormulaGetter)() const;
+    void (VSplinePoint::*lengthSetter)(const qreal &, const QString &);
+    qreal (VSplinePoint::*angleGetter)() const;
+    QString (VSplinePoint::*angleFormulaGetter)() const;
+    void (VSplinePoint::*angleSetter)(const qreal &, const QString &);
+};
+
+// A titled, collapsible group (collapsed by default) holding one or two handles, each rendered as
+// "Length:" then "Angle:". Used for the SplinePath point toggles: Start/End hold a single handle,
+// intermediate points hold two (incoming then outgoing), following the curve direction arrows.
+template <typename Tool>
+auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsizetype pointIndex,
+                              const QVector<SplinePathHandle> &handles) -> PropertyDesc
+{
+    return {attrId, title, false,
+            [title, pointIndex, handles](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                const VSplinePoint point = t->getSplinePath().at(pointIndex);
+
+                auto *group = new VPE::VProperty(title);
+                group->setCollapsible(true);
+                group->setExpandedByDefault(false);
+
+                for (int h = 0; h < handles.size(); ++h)
+                {
+                    auto *lengthProp = new VFormulaProperty(T("Length:"));
+                    VFormula lenF((point.*handles[h].lengthFormulaGetter)(), t->getData());
+                    lenF.setToolId(t->getId());
+                    lenF.setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
+                    lenF.Eval();
+                    lengthProp->SetFormula(lenF);
+
+                    auto *angleProp = new VFormulaProperty(T("Angle:"));
+                    VFormula angF((point.*handles[h].angleFormulaGetter)(), t->getData());
+                    angF.setToolId(t->getId());
+                    angF.setPostfix(degreeSymbol);
+                    angF.Eval();
+                    angleProp->SetFormula(angF);
+
+                    group->addChild(lengthProp);
+                    group->addChild(angleProp);
+                }
+                return group;
+            },
+            [pointIndex, handles](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    const auto children = prop->getChildren();
+                    if (children.size() >= handles.size() * 2)
+                    {
+                        VSplinePath path = t->getSplinePath();
+
+                        // VSplinePoint copies alias the same shared data, so snapshot the handle
+                        // angles as plain values before mutating the path.
+                        QVector<qreal> originalAngles;
+                        originalAngles.reserve(handles.size());
+                        for (int h = 0; h < handles.size(); ++h)
+                        {
+                            originalAngles.append((path[pointIndex].*handles[h].angleGetter)());
+                        }
+
+                        // Length is independent for each handle — always write it (in pixels).
+                        for (int h = 0; h < handles.size(); ++h)
+                        {
+                            const auto lenF =
+                                children[h * 2]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                            if (!lenF.error())
+                            {
+                                (path[pointIndex].*handles[h].lengthSetter)(
+                                    VAbstractValApplication::VApp()->toPixel(lenF.getDoubleValue()),
+                                    lenF.GetFormula(FormulaType::FromUser));
+                            }
+                        }
+
+                        // Angles of a strict (smooth) point are linked: SetAngle1 derives Angle2 and
+                        // SetAngle2 derives Angle1. Writing both would let the stale sibling overwrite
+                        // the edited angle, so write only the angle that actually changed.
+                        for (int h = 0; h < handles.size(); ++h)
+                        {
+                            const auto angF =
+                                children[h * 2 + 1]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                            if (angF.error() || VFuzzyComparePossibleNulls(angF.getDoubleValue(), originalAngles.at(h)))
+                            {
+                                continue; // unchanged — leave the derived sibling untouched
+                            }
+                            (path[pointIndex].*handles[h].angleSetter)(angF.getDoubleValue(),
+                                                                       angF.GetFormula(FormulaType::FromUser));
+                        }
+
+                        t->setSplinePath(path);
+
+                        // The strict coupling may have derived the sibling angle — sync both angle
+                        // fields back so the form doesn't keep showing a stale value.
+                        const VSplinePoint finalPoint = path[pointIndex];
+                        for (int h = 0; h < handles.size(); ++h)
+                        {
+                            VFormula angF((finalPoint.*handles[h].angleFormulaGetter)(), t->getData());
+                            angF.setToolId(t->getId());
+                            angF.setPostfix(degreeSymbol);
+                            angF.Eval();
+                            QVariant va; va.setValue(angF); children[h * 2 + 1]->setValue(va);
+                        }
+                    }
+                }
+            },
+            [pointIndex, handles](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    const auto children = prop->getChildren();
+                    if (children.size() >= handles.size() * 2)
+                    {
+                        const VSplinePoint point = t->getSplinePath().at(pointIndex);
+                        for (int h = 0; h < handles.size(); ++h)
+                        {
+                            VFormula lenF((point.*handles[h].lengthFormulaGetter)(), t->getData());
+                            lenF.setToolId(t->getId());
+                            lenF.setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
+                            lenF.Eval();
+                            QVariant v; v.setValue(lenF); children[h * 2]->setValue(v);
+
+                            VFormula angF((point.*handles[h].angleFormulaGetter)(), t->getData());
+                            angF.setToolId(t->getId());
+                            angF.setPostfix(degreeSymbol);
+                            angF.Eval();
+                            QVariant va; va.setValue(angF); children[h * 2 + 1]->setValue(va);
+                        }
+                    }
+                }
+            }};
+}
+
 } // anonymous namespace
 
 // Forward declarations
@@ -360,7 +498,7 @@ auto CutSplinePathProperties() -> std::vector<PropertyDesc>;
 auto SplineProperties() -> std::vector<PropertyDesc>;
 auto CubicBezierProperties() -> std::vector<PropertyDesc>;
 auto ArmholeCurveProperties() -> std::vector<PropertyDesc>;
-auto SplinePathProperties() -> std::vector<PropertyDesc>;
+auto SplinePathProperties(const VToolSplinePath *tool) -> std::vector<PropertyDesc>;
 auto CubicBezierPathProperties() -> std::vector<PropertyDesc>;
 auto EllipticalArcProperties() -> std::vector<PropertyDesc>;
 auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>;
@@ -708,15 +846,50 @@ auto ArmholeCurveProperties() -> std::vector<PropertyDesc>
 }
 
 // --- VToolSplinePath ---
-auto SplinePathProperties() -> std::vector<PropertyDesc>
+auto SplinePathProperties(const VToolSplinePath *tool) -> std::vector<PropertyDesc>
 {
-    return {
+    std::vector<PropertyDesc> descs = {
         MakeObjectNameReadOnly<VToolSplinePath>(T("Name:")),
         MakeStringPropWithValidator<VToolSplinePath>(AttrAlias, T("Curve:"), &VToolSplinePath::GetAliasSuffix, &VToolSplinePath::SetAliasSuffix),
-        MakeCurvePenStyle<VToolSplinePath>(T("Pen style:")),
-        MakeLineColor<VToolSplinePath>(T("Color:")),
-        MakeNotes<VToolSplinePath>(T("Notes:")),
     };
+
+    const vsizetype count = tool != nullptr ? tool->getSplinePath().CountPoints() : 0;
+
+    if (count >= 1)
+    {
+        // Start point: only the outgoing handle (Angle2/Length2) is used.
+        descs.push_back(MakeSplinePathPointGroup<VToolSplinePath>(
+            QStringLiteral("startPoint"), T("Start point"), 0,
+            {{&VSplinePoint::Length2Formula, &VSplinePoint::SetLength2, &VSplinePoint::Angle2,
+              &VSplinePoint::Angle2Formula, &VSplinePoint::SetAngle2}}));
+    }
+
+    for (vsizetype i = 1; i < count - 1; ++i)
+    {
+        // Intermediate point: incoming handle (1) then outgoing handle (2), following the arrows.
+        const QString title = VToolOptionsPropertyBrowser::tr("Point %1").arg(i + 1);
+        descs.push_back(MakeSplinePathPointGroup<VToolSplinePath>(
+            QStringLiteral("point%1").arg(i + 1), title, i,
+            {{&VSplinePoint::Length1Formula, &VSplinePoint::SetLength1, &VSplinePoint::Angle1,
+              &VSplinePoint::Angle1Formula, &VSplinePoint::SetAngle1},
+             {&VSplinePoint::Length2Formula, &VSplinePoint::SetLength2, &VSplinePoint::Angle2,
+              &VSplinePoint::Angle2Formula, &VSplinePoint::SetAngle2}}));
+    }
+
+    if (count >= 2)
+    {
+        // End point: only the incoming handle (Angle1/Length1) is used.
+        descs.push_back(MakeSplinePathPointGroup<VToolSplinePath>(
+            QStringLiteral("endPoint"), T("End point"), count - 1,
+            {{&VSplinePoint::Length1Formula, &VSplinePoint::SetLength1, &VSplinePoint::Angle1,
+              &VSplinePoint::Angle1Formula, &VSplinePoint::SetAngle1}}));
+    }
+
+    descs.push_back(MakeCurvePenStyle<VToolSplinePath>(T("Pen style:")));
+    descs.push_back(MakeLineColor<VToolSplinePath>(T("Color:")));
+    descs.push_back(MakeNotes<VToolSplinePath>(T("Notes:")));
+
+    return descs;
 }
 
 // --- VToolCubicBezierPath ---
