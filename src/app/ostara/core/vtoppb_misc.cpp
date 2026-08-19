@@ -43,6 +43,8 @@
 #include "../vpropertyexplorer/plugins/vtextproperty.h"
 #include "../vpropertyexplorer/plugins/vboolproperty.h"
 #include "../vpropertyexplorer/plugins/vnumberproperty.h"
+#include "../vpropertyexplorer/plugins/vcolorpropertyeditor.h"
+#include "../vtheme/vscenestylesheet.h"
 #include "ifcdef.h"
 #include "../vmisc/def.h"
 
@@ -51,6 +53,11 @@ namespace
 auto T(const char *s) -> QString
 {
     return VToolOptionsPropertyBrowser::tr(s);
+}
+
+auto SegmentDotPixmap(VColorRole role) -> QPixmap
+{
+    return VPE::VColorPropertyEditor::GetColorPixmap(VSceneStylesheet::Color(role), 16);
 }
 
 // --- Reusable helpers ---
@@ -89,6 +96,49 @@ auto MakePointName(const QString &label) -> PropertyDesc
             {
                 if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
                     prop->setValue(t->name());
+            }};
+}
+
+template <typename Tool>
+auto MakePointGroup(const QString &title, const QString &nameLabel, const QString &showLabel) -> PropertyDesc
+{
+    return {QStringLiteral("point"), title, false,
+            [title, nameLabel, showLabel](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *group = new VPE::VProperty(title);
+                group->setCollapsible(true);
+                auto *nameChild = new VPE::VStringProperty(nameLabel);
+                nameChild->setValue(t->name());
+                auto *showChild = new VPE::VBoolProperty(showLabel);
+                showChild->setValue(t->IsLabelVisible(t->getId()));
+                group->addChild(nameChild);
+                group->addChild(showChild);
+                return group;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    const auto children = prop->getChildren();
+                    if (children.size() >= 2) {
+                        QString const n = children[0]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                        if (n != t->name()) {
+                            if (QRegularExpression const rx(NameRegExp());
+                                n.isEmpty() || !VContainer::IsUnique(n, valentinaNamespace) || !rx.match(n).hasMatch())
+                                children[0]->setValue(t->name());
+                            else t->setName(n);
+                        }
+                        t->SetLabelVisible(t->getId(),
+                            children[1]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+                    }
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    const auto children = prop->getChildren();
+                    if (children.size() >= 2) {
+                        children[0]->setValue(t->name());
+                        children[1]->setValue(t->IsLabelVisible(t->getId()));
+                    }
+                }
             }};
 }
 
@@ -268,19 +318,17 @@ auto BackgroundSVGItemProperties() -> std::vector<PropertyDesc>;
 auto PointOfIntersectionArcsProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolPointOfIntersectionArcs>(T("Point name:")),
-        MakeParentPoint<VToolPointOfIntersectionArcs>(AttrFirstArc, T("First arc:"), &VToolPointOfIntersectionArcs::FirstArcName),
-        MakeParentPoint<VToolPointOfIntersectionArcs>(AttrSecondArc, T("Second arc:"), &VToolPointOfIntersectionArcs::SecondArcName),
         MakeCrossPoint<VToolPointOfIntersectionArcs>(T("Take:")),
-        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Name1, T("First arc. Left sub arc name:"), &VToolPointOfIntersectionArcs::GetArc1Name1, &VToolPointOfIntersectionArcs::SetArc1Name1),
-        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Name2, T("First arc. Right sub arc name:"), &VToolPointOfIntersectionArcs::GetArc1Name2, &VToolPointOfIntersectionArcs::SetArc1Name2),
-        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Alias1, T("First arc. Left sub arc alias:"), &VToolPointOfIntersectionArcs::GetArc1AliasSuffix1, &VToolPointOfIntersectionArcs::SetArc1AliasSuffix1),
-        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Alias2, T("First arc. Right sub arc alias:"), &VToolPointOfIntersectionArcs::GetArc1AliasSuffix2, &VToolPointOfIntersectionArcs::SetArc1AliasSuffix2),
-        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Name1, T("Second arc. Left sub arc name:"), &VToolPointOfIntersectionArcs::GetArc2Name1, &VToolPointOfIntersectionArcs::SetArc2Name1),
-        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Name2, T("Second arc. Right sub arc name:"), &VToolPointOfIntersectionArcs::GetArc2Name2, &VToolPointOfIntersectionArcs::SetArc2Name2),
-        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Alias1, T("Second arc. Left sub arc alias:"), &VToolPointOfIntersectionArcs::GetArc2AliasSuffix1, &VToolPointOfIntersectionArcs::SetArc2AliasSuffix1),
-        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Alias2, T("Second arc. Right sub arc alias:"), &VToolPointOfIntersectionArcs::GetArc2AliasSuffix2, &VToolPointOfIntersectionArcs::SetArc2AliasSuffix2),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Alias1, T("Arc:"), &VToolPointOfIntersectionArcs::GetArc1AliasSuffix1, &VToolPointOfIntersectionArcs::SetArc1AliasSuffix1,
+                                                                 SegmentDotPixmap(VColorRole::VisSupportColor2)),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Alias2, T("Arc:"), &VToolPointOfIntersectionArcs::GetArc1AliasSuffix2, &VToolPointOfIntersectionArcs::SetArc1AliasSuffix2,
+                                                                 SegmentDotPixmap(VColorRole::VisSupportColor4)),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Alias1, T("Arc:"), &VToolPointOfIntersectionArcs::GetArc2AliasSuffix1, &VToolPointOfIntersectionArcs::SetArc2AliasSuffix1,
+                                                                 SegmentDotPixmap(VColorRole::VisSupportColor)),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Alias2, T("Arc:"), &VToolPointOfIntersectionArcs::GetArc2AliasSuffix2, &VToolPointOfIntersectionArcs::SetArc2AliasSuffix2,
+                                                                 SegmentDotPixmap(VColorRole::VisSupportColor3)),
         MakeNotes<VToolPointOfIntersectionArcs>(T("Notes:")),
+        MakePointGroup<VToolPointOfIntersectionArcs>(T("Point"), T("Point name:"), T("Show Point name")),
     };
 }
 
@@ -288,9 +336,6 @@ auto PointOfIntersectionArcsProperties() -> std::vector<PropertyDesc>
 auto PointOfIntersectionCirclesProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolPointOfIntersectionCircles>(T("Point name:")),
-        MakeParentPoint<VToolPointOfIntersectionCircles>(AttrC1Center, T("Center of the first circle:"), &VToolPointOfIntersectionCircles::FirstCircleCenterPointName),
-        MakeParentPoint<VToolPointOfIntersectionCircles>(AttrC2Center, T("Center of the second circle:"), &VToolPointOfIntersectionCircles::SecondCircleCenterPointName),
         // First circle radius (custom formula)
         {AttrC1Radius, T("First circle radius:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
@@ -331,6 +376,7 @@ auto PointOfIntersectionCirclesProperties() -> std::vector<PropertyDesc>
          }},
         MakeCrossPoint<VToolPointOfIntersectionCircles>(T("Take:")),
         MakeNotes<VToolPointOfIntersectionCircles>(T("Notes:")),
+        MakePointGroup<VToolPointOfIntersectionCircles>(T("Point"), T("Point name:"), T("Show Point name")),
     };
 }
 
@@ -338,20 +384,18 @@ auto PointOfIntersectionCirclesProperties() -> std::vector<PropertyDesc>
 auto PointOfIntersectionCurvesProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolPointOfIntersectionCurves>(T("Point name:")),
-        MakeParentPoint<VToolPointOfIntersectionCurves>(AttrCurve1, T("First curve:"), &VToolPointOfIntersectionCurves::FirstCurveName),
-        MakeParentPoint<VToolPointOfIntersectionCurves>(AttrCurve2, T("Second curve:"), &VToolPointOfIntersectionCurves::SecondCurveName),
         MakeVCrossPoint<VToolPointOfIntersectionCurves>(T("Vertical correction:")),
         MakeHCrossPoint<VToolPointOfIntersectionCurves>(T("Horizontal correction:")),
-        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Name1, T("First curve. Left sub curve name:"), &VToolPointOfIntersectionCurves::GetCurve1Name1, &VToolPointOfIntersectionCurves::SetCurve1Name1),
-        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Name2, T("First curve. Right sub curve name:"), &VToolPointOfIntersectionCurves::GetCurve1Name2, &VToolPointOfIntersectionCurves::SetCurve1Name2),
-        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Alias1, T("First curve. Left sub curve alias:"), &VToolPointOfIntersectionCurves::GetCurve1AliasSuffix1, &VToolPointOfIntersectionCurves::SetCurve1AliasSuffix1),
-        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Alias2, T("First curve. Right sub curve alias:"), &VToolPointOfIntersectionCurves::GetCurve1AliasSuffix2, &VToolPointOfIntersectionCurves::SetCurve1AliasSuffix2),
-        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Name1, T("Second curve. Left sub curve name:"), &VToolPointOfIntersectionCurves::GetCurve2Name1, &VToolPointOfIntersectionCurves::SetCurve2Name1),
-        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Name2, T("Second curve. Right sub curve name:"), &VToolPointOfIntersectionCurves::GetCurve2Name2, &VToolPointOfIntersectionCurves::SetCurve2Name2),
-        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Alias1, T("Second curve. Left sub curve alias:"), &VToolPointOfIntersectionCurves::GetCurve2AliasSuffix1, &VToolPointOfIntersectionCurves::SetCurve2AliasSuffix1),
-        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Alias2, T("Second curve. Right sub curve alias:"), &VToolPointOfIntersectionCurves::GetCurve2AliasSuffix2, &VToolPointOfIntersectionCurves::SetCurve2AliasSuffix2),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Alias1, T("Curve:"), &VToolPointOfIntersectionCurves::GetCurve1AliasSuffix1, &VToolPointOfIntersectionCurves::SetCurve1AliasSuffix1,
+                                                                   SegmentDotPixmap(VColorRole::VisSupportColor2)),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Alias2, T("Curve:"), &VToolPointOfIntersectionCurves::GetCurve1AliasSuffix2, &VToolPointOfIntersectionCurves::SetCurve1AliasSuffix2,
+                                                                   SegmentDotPixmap(VColorRole::VisSupportColor4)),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Alias1, T("Curve:"), &VToolPointOfIntersectionCurves::GetCurve2AliasSuffix1, &VToolPointOfIntersectionCurves::SetCurve2AliasSuffix1,
+                                                                   SegmentDotPixmap(VColorRole::VisSupportColor)),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Alias2, T("Curve:"), &VToolPointOfIntersectionCurves::GetCurve2AliasSuffix2, &VToolPointOfIntersectionCurves::SetCurve2AliasSuffix2,
+                                                                   SegmentDotPixmap(VColorRole::VisSupportColor3)),
         MakeNotes<VToolPointOfIntersectionCurves>(T("Notes:")),
+        MakePointGroup<VToolPointOfIntersectionCurves>(T("Point"), T("Point name:"), T("Show Point name")),
     };
 }
 
@@ -359,9 +403,6 @@ auto PointOfIntersectionCurvesProperties() -> std::vector<PropertyDesc>
 auto PointFromCircleAndTangentProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolPointFromCircleAndTangent>(T("Point name:")),
-        MakeParentPoint<VToolPointFromCircleAndTangent>(AttrCCenter, T("Center of the circle:"), &VToolPointFromCircleAndTangent::CircleCenterPointName),
-        MakeParentPoint<VToolPointFromCircleAndTangent>(AttrTangent, T("Tangent point:"), &VToolPointFromCircleAndTangent::TangentPointName),
         // Circle radius (custom formula)
         {AttrCRadius, T("Circle radius:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
@@ -383,6 +424,7 @@ auto PointFromCircleAndTangentProperties() -> std::vector<PropertyDesc>
          }},
         MakeCrossPoint<VToolPointFromCircleAndTangent>(T("Take:")),
         MakeNotes<VToolPointFromCircleAndTangent>(T("Notes:")),
+        MakePointGroup<VToolPointFromCircleAndTangent>(T("Point"), T("Point name:"), T("Show Point name")),
     };
 }
 
@@ -390,11 +432,9 @@ auto PointFromCircleAndTangentProperties() -> std::vector<PropertyDesc>
 auto PointFromArcAndTangentProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakePointName<VToolPointFromArcAndTangent>(T("Point name:")),
-        MakeParentPoint<VToolPointFromArcAndTangent>(AttrTangent, T("Tangent point:"), &VToolPointFromArcAndTangent::TangentPointName),
-        MakeParentPoint<VToolPointFromArcAndTangent>(AttrArc, T("Arc:"), &VToolPointFromArcAndTangent::ArcName),
         MakeCrossPoint<VToolPointFromArcAndTangent>(T("Take:")),
         MakeNotes<VToolPointFromArcAndTangent>(T("Notes:")),
+        MakePointGroup<VToolPointFromArcAndTangent>(T("Point"), T("Point name:"), T("Show Point name")),
     };
 }
 

@@ -64,6 +64,9 @@
          </property>
          <item row="0" column="0">
           <widget class="QLabel" name="labelCircleCenter">
+           <property name="visible">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -77,6 +80,9 @@
          </item>
          <item row="0" column="1">
           <widget class="QComboBox" name="comboBoxCircleCenter">
+           <property name="visible">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -93,6 +99,9 @@
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="labelTangentPoint">
+           <property name="visible">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -106,6 +115,9 @@
          </item>
          <item row="1" column="1">
           <widget class="QComboBox" name="comboBoxTangentPoint">
+           <property name="visible">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>

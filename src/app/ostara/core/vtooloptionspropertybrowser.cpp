@@ -229,10 +229,10 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
             ShowToolOptions<VToolCutArc>(item, tr("Cut arc tool"), CutArcProperties());
             break;
         case VToolCutSpline::Type:
-            ShowToolOptions<VToolCutSpline>(item, tr("Tool for segmenting a curve"), CutSplineProperties());
+            ShowToolOptions<VToolCutSpline>(item, tr("Tool segment a curve"), CutSplineProperties());
             break;
         case VToolCutSplinePath::Type:
-            ShowToolOptions<VToolCutSplinePath>(item, tr("Tool segment a pathed curve"), CutSplinePathProperties());
+            ShowToolOptions<VToolCutSplinePath>(item, tr("Tool segment a curve"), CutSplinePathProperties());
             break;
         case VToolHeight::Type:
             ShowToolOptions<VToolHeight>(item, tr("Perpendicular point along line"), HeightProperties());

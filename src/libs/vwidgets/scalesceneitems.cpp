@@ -259,7 +259,7 @@ void VScaledEllipse::RefreshScale()
     {
         const QColor color = VSceneStylesheet::Color(m_role);
         visPen.setColor(color);
-        setBrush(QBrush(color)); // Fill follows the outline (active state = whole point, not just contour)
+        setBrush(m_pointMode ? QBrush(color) : QBrush(Qt::NoBrush)); // Points filled; construction circles stay outlined
     }
 
     visPen.setWidthF(width);

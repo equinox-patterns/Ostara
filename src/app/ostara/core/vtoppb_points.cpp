@@ -660,9 +660,8 @@ auto NormalProperties() -> std::vector<PropertyDesc>
 auto PointOfContactProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeParentPoint<VToolPointOfContact>(AttrCenter, T("Center of arc:"), &VToolPointOfContact::ArcCenterPointName),
-        MakeParentPoint<VToolPointOfContact>(AttrFirstPoint, T("Top of the line:"), &VToolPointOfContact::FirstPointName),
-        MakeParentPoint<VToolPointOfContact>(AttrSecondPoint, T("End of the line:"), &VToolPointOfContact::SecondPointName),
+        MakeStringPropWithValidator<VToolPointOfContact>(QStringLiteral("lineRoleName"), T("Line:"),
+        &VToolPointOfContact::GetLineRoleName, &VToolPointOfContact::SetLineRoleName),
         // Custom: arc radius formula (method is getArcRadius, not GetArcRadius)
         {AttrRadius, T("Radius:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
@@ -682,8 +681,6 @@ auto PointOfContactProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->getArcRadius()); prop->setValue(v);
              }
          }},
-        MakeStringPropWithValidator<VToolPointOfContact>(QStringLiteral("lineRoleName"), T("Name:"),
-        &VToolPointOfContact::GetLineRoleName, &VToolPointOfContact::SetLineRoleName),
         MakeNotes<VToolPointOfContact>(T("Notes:")),
         MakePointGroup<VToolPointOfContact>(T("Point"), T("Point name:"), T("Show Point name")),
     };
@@ -751,95 +748,16 @@ auto LineIntersectAxisProperties() -> std::vector<PropertyDesc>
 auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>
 {
     return {
-        {AttrBasePoint, T("Axis point:"), true,
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-             auto *t = static_cast<VToolCurveIntersectAxis *>(tool);
-             auto *p = new VPE::VLabelProperty(T("Axis point:"));
-             p->setValue(t->BasePointName()); return p;
-         }, nullptr,
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem()))
-                 prop->setValue(t->BasePointName());
-         }},
-        {AttrCurve, T("Curve:"), true,
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-             auto *t = static_cast<VToolCurveIntersectAxis *>(tool);
-             auto *p = new VPE::VLabelProperty(T("Curve:"));
-             p->setValue(t->CurveName()); return p;
-         }, nullptr,
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem()))
-                 prop->setValue(t->CurveName());
-         }},
-        {AttrCurveName1, T("Name1:"), false,
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-             auto *t = static_cast<VToolCurveIntersectAxis *>(tool);
-             auto *p = new VPE::VStringProperty(T("Name1:"));
-             p->setValue(t->GetName1()); return p;
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem())) {
-                 QString const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                 if (v != t->GetName1()) t->SetName1(v);
-             }
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem()))
-                 prop->setValue(t->GetName1());
-         }},
-        {AttrCurveName2, T("Name2:"), false,
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-             auto *t = static_cast<VToolCurveIntersectAxis *>(tool);
-             auto *p = new VPE::VStringProperty(T("Name2:"));
-             p->setValue(t->GetName2()); return p;
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem())) {
-                 QString const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                 if (v != t->GetName2()) t->SetName2(v);
-             }
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem()))
-                 prop->setValue(t->GetName2());
-         }},
-        {AttrAlias1, T("Alias1:"), false,
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-             auto *t = static_cast<VToolCurveIntersectAxis *>(tool);
-             auto *p = new VPE::VStringProperty(T("Alias1:"));
-             p->setValue(t->GetAliasSuffix1()); return p;
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem())) {
-                 QString const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                 if (v != t->GetAliasSuffix1()) t->SetAliasSuffix1(v);
-             }
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem()))
-                 prop->setValue(t->GetAliasSuffix1());
-         }},
-        {AttrAlias2, T("Alias2:"), false,
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-             auto *t = static_cast<VToolCurveIntersectAxis *>(tool);
-             auto *p = new VPE::VStringProperty(T("Alias2:"));
-             p->setValue(t->GetAliasSuffix2()); return p;
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem())) {
-                 QString const v = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                 if (v != t->GetAliasSuffix2()) t->SetAliasSuffix2(v);
-             }
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCurveIntersectAxis *>(b->currentItem()))
-                 prop->setValue(t->GetAliasSuffix2());
-         }},
-        MakeLineType<VToolCurveIntersectAxis>(T("Line type:")),
-        MakeLineColor<VToolCurveIntersectAxis>(T("Line color:")),
-        MakeStringPropWithValidator<VToolCurveIntersectAxis>(QStringLiteral("lineRoleName"), T("Name:"),
+        // Name1/Name2 stay auto-generated in the backend, they are just not shown any more.
+        MakeStringPropWithValidator<VToolCurveIntersectAxis>(AttrAlias1, T("Curve:"), &VToolCurveIntersectAxis::GetAliasSuffix1, &VToolCurveIntersectAxis::SetAliasSuffix1,
+                                                             SegmentDotPixmap(VColorRole::VisSupportColor2)),
+        MakeStringPropWithValidator<VToolCurveIntersectAxis>(AttrAlias2, T("Curve:"), &VToolCurveIntersectAxis::GetAliasSuffix2, &VToolCurveIntersectAxis::SetAliasSuffix2,
+                                                             SegmentDotPixmap(VColorRole::VisSupportColor4)),
+        MakeStringPropWithValidator<VToolCurveIntersectAxis>(QStringLiteral("lineRoleName"), T("Line:"),
         &VToolCurveIntersectAxis::GetLineRoleName, &VToolCurveIntersectAxis::SetLineRoleName),
         MakeFormulaAngle<VToolCurveIntersectAxis>(T("Angle:")),
+        MakeLineType<VToolCurveIntersectAxis>(T("Line type:")),
+        MakeLineColor<VToolCurveIntersectAxis>(T("Line color:")),
         MakeNotes<VToolCurveIntersectAxis>(T("Notes:")),
         MakePointGroup<VToolCurveIntersectAxis>(T("Point"), T("Point name:"), T("Show Point name")),
     };

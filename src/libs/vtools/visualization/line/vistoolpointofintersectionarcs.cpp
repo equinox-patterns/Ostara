@@ -49,10 +49,18 @@ VisToolPointOfIntersectionArcs::VisToolPointOfIntersectionArcs(const VContainer 
 {
     this->setPen(QPen(Qt::NoPen)); // don't use parent this time
 
-    m_arc1Path = InitItem<VCurvePathItem>(VColorRole::VisSupportColor2, this);
+    m_arc1Path = InitItem<VCurvePathItem>(VColorRole::VisSupportColor, this);
     m_arc1Path->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
-    m_arc2Path = InitItem<VCurvePathItem>(VColorRole::VisSupportColor4, this);
+    m_arc2Path = InitItem<VCurvePathItem>(VColorRole::VisSupportColor, this);
     m_arc2Path->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
+    m_arc1Seg1 = InitItem<VCurvePathItem>(VColorRole::VisSupportColor2, this);
+    m_arc1Seg1->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
+    m_arc1Seg2 = InitItem<VCurvePathItem>(VColorRole::VisSupportColor4, this);
+    m_arc1Seg2->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
+    m_arc2Seg1 = InitItem<VCurvePathItem>(VColorRole::VisSupportColor, this);
+    m_arc2Seg1->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
+    m_arc2Seg2 = InitItem<VCurvePathItem>(VColorRole::VisSupportColor3, this);
+    m_arc2Seg2->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
 
     m_point = InitPoint(VColorRole::VisMainColor, this);
     m_point->setZValue(2);
@@ -65,18 +73,40 @@ void VisToolPointOfIntersectionArcs::RefreshGeometry()
     if (m_arc1Id > NULL_ID)
     {
         const QSharedPointer<VArc> arc1 = GetData()->GeometricObject<VArc>(m_arc1Id);
-        DrawPath(m_arc1Path, arc1->GetPath(), arc1->DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
+        DrawPath(m_arc1Path, arc1->GetPath(), m_arc2Id > NULL_ID ? QVector<DirectionArrow>() : arc1->DirectionArrows(),
+                 Qt::SolidLine, Qt::RoundCap);
 
         if (m_arc2Id > NULL_ID)
         {
             const QSharedPointer<VArc> arc2 = GetData()->GeometricObject<VArc>(m_arc2Id);
-            DrawPath(m_arc2Path, arc2->GetPath(), arc2->DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
+            DrawPath(m_arc2Path, arc2->GetPath(), QVector<DirectionArrow>(), Qt::SolidLine, Qt::RoundCap);
 
             QPointF fPoint;
-            VToolPointOfIntersectionArcs::FindPoint(arc1.data(), arc2.data(), m_crossPoint, &fPoint);
+            const bool success =
+                VToolPointOfIntersectionArcs::FindPoint(arc1.data(), arc2.data(), m_crossPoint, &fPoint);
             DrawPoint(m_point, fPoint);
+
+            if (success)
+            {
+                DrawSegments(m_arc1Id, fPoint, m_arc1Seg1, m_arc1Seg2);
+                DrawSegments(m_arc2Id, fPoint, m_arc2Seg1, m_arc2Seg2);
+            }
         }
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VisToolPointOfIntersectionArcs::DrawSegments(quint32 arcId, const QPointF &p, VCurvePathItem *seg1,
+                                                  VCurvePathItem *seg2)
+{
+    const QSharedPointer<VArc> arc = GetData()->GeometricObject<VArc>(arcId);
+    const qreal segLength = arc->GetLengthByPoint(p);
+
+    VArc ar1;
+    VArc ar2;
+    arc->CutArc(segLength, &ar1, &ar2, QString());
+    DrawPath(seg1, ar1.GetPath(), ar1.DirectionArrows(), LineStyle(), Qt::RoundCap);
+    DrawPath(seg2, ar2.GetPath(), ar2.DirectionArrows(), LineStyle(), Qt::RoundCap);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

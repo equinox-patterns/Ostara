@@ -33,11 +33,14 @@
 #include <QGraphicsItem>
 #include <QMetaObject>
 #include <QObject>
+#include <QPointF>
 #include <QString>
 #include <QtGlobal>
 
 #include "../vmisc/def.h"
 #include "visline.h"
+
+class VAbstractCurve;
 
 class VisToolCurveIntersectAxis final : public VisLine
 {
@@ -61,6 +64,8 @@ public:
 private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(VisToolCurveIntersectAxis) // NOLINT
+    void DrawSegments(const VAbstractCurve *curve, const QPointF &p);
+
     quint32         m_axisPointId{NULL_ID};
     qreal           m_angle{-1};
     VScaledEllipse *m_point{nullptr};
@@ -68,6 +73,8 @@ private:
     VScaledLine    *m_baseLine{nullptr};
     VScaledLine    *m_axisLine{nullptr};
     VCurvePathItem *m_visCurve{nullptr};
+    VCurvePathItem *m_curve1{nullptr};
+    VCurvePathItem *m_curve2{nullptr};
     quint32         m_curveId{NULL_ID};
 };
 

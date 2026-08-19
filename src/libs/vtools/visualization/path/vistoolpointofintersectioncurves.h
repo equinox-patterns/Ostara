@@ -33,6 +33,7 @@
 #include <QGraphicsItem>
 #include <QMetaObject>
 #include <QObject>
+#include <QPointF>
 #include <QString>
 #include <QtGlobal>
 
@@ -59,12 +60,18 @@ public:
     enum {Type = UserType + static_cast<int>(Vis::ToolPointOfIntersectionCurves)};
 private:
     Q_DISABLE_COPY_MOVE(VisToolPointOfIntersectionCurves) // NOLINT
+    void DrawSegments(quint32 curveId, const QPointF &p, VCurvePathItem *seg1, VCurvePathItem *seg2);
+
     quint32            m_curve1Id{NULL_ID};
     quint32            m_curve2Id{NULL_ID};
     VCrossCurvesPoint  m_vCrossPoint{VCrossCurvesPoint::HighestPoint};
     HCrossCurvesPoint  m_hCrossPoint{HCrossCurvesPoint::LeftmostPoint};
     VScaledEllipse    *m_point{nullptr};
     VCurvePathItem    *m_visCurve2{nullptr};
+    VCurvePathItem    *m_curve1Seg1{nullptr};
+    VCurvePathItem    *m_curve1Seg2{nullptr};
+    VCurvePathItem    *m_curve2Seg1{nullptr};
+    VCurvePathItem    *m_curve2Seg2{nullptr};
 };
 
 //---------------------------------------------------------------------------------------------------------------------

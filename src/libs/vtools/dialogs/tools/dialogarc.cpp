@@ -29,6 +29,7 @@
 #include "dialogarc.h"
 
 #include <QDialog>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPointer>
 #include <QPushButton>
@@ -132,6 +133,19 @@ DialogArc::DialogArc(const VContainer *data, VAbstractPattern *doc, quint32 tool
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogArc::ValidateAlias);
+
+    // Move the "Arc:" field to the top of the Tool tab (above the radius formula).
+    auto aliasRow = ui->formLayout->takeRow(3);
+    QWidget *aliasLabel = aliasRow.labelItem->widget();
+    QWidget *aliasField = aliasRow.fieldItem->widget();
+    delete aliasRow.labelItem;
+    delete aliasRow.fieldItem;
+
+    auto *aliasLayout = new QHBoxLayout;
+    aliasLayout->setContentsMargins(0, 0, 0, 0);
+    aliasLayout->addWidget(aliasLabel);
+    aliasLayout->addWidget(aliasField);
+    ui->verticalLayout->insertLayout(0, aliasLayout);
 
     // Start/End point creation controls.
     m_startShowLabelCheckbox = AddShowPointNameCheckbox(ui->formLayoutStartPoint);

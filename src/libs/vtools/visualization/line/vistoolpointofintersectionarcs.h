@@ -33,6 +33,7 @@
 #include <QGraphicsItem>
 #include <QMetaObject>
 #include <QObject>
+#include <QPointF>
 #include <QString>
 #include <QtGlobal>
 
@@ -59,12 +60,18 @@ public:
 private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(VisToolPointOfIntersectionArcs) // NOLINT
+    void DrawSegments(quint32 arcId, const QPointF &p, VCurvePathItem *seg1, VCurvePathItem *seg2);
+
     quint32            m_arc1Id{NULL_ID};
     quint32            m_arc2Id{NULL_ID};
     CrossCirclesPoint  m_crossPoint{CrossCirclesPoint::FirstPoint};
     VScaledEllipse    *m_point{nullptr};
     VCurvePathItem    *m_arc1Path{nullptr};
     VCurvePathItem    *m_arc2Path{nullptr};
+    VCurvePathItem    *m_arc1Seg1{nullptr};
+    VCurvePathItem    *m_arc1Seg2{nullptr};
+    VCurvePathItem    *m_arc2Seg1{nullptr};
+    VCurvePathItem    *m_arc2Seg2{nullptr};
 };
 
 //---------------------------------------------------------------------------------------------------------------------

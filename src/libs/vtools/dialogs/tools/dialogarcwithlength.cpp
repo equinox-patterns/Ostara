@@ -29,6 +29,7 @@
 #include "dialogarcwithlength.h"
 
 #include <QDialog>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QPointer>
@@ -135,6 +136,19 @@ DialogArcWithLength::DialogArcWithLength(const VContainer *data, VAbstractPatter
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogArcWithLength::ValidateAlias);
+
+    // Move the "Arc:" field to the top of the Tool tab (above the radius formula).
+    auto aliasRow = ui->formLayout_2->takeRow(3);
+    QWidget *aliasLabel = aliasRow.labelItem->widget();
+    QWidget *aliasField = aliasRow.fieldItem->widget();
+    delete aliasRow.labelItem;
+    delete aliasRow.fieldItem;
+
+    auto *aliasLayout = new QHBoxLayout;
+    aliasLayout->setContentsMargins(0, 0, 0, 0);
+    aliasLayout->addWidget(aliasLabel);
+    aliasLayout->addWidget(aliasField);
+    ui->verticalLayout->insertLayout(0, aliasLayout);
 
     // Start/End point creation controls.
     m_startShowLabelCheckbox = AddShowPointNameCheckbox(ui->formLayoutStartPoint);

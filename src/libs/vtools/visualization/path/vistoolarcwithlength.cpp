@@ -92,13 +92,15 @@ void VisToolArcWithLength::RefreshGeometry()
             else if (not m_f1Set)
             {
                 qreal const f1Angle = Angle();
-                auto arc = VArc(*first, m_radius, f1Angle, f1Angle);
-                arc.SetApproximationScale(ApproximationScale());
-                DrawPath(this, arc.GetPath(), QVector<DirectionArrow>(), Qt::DashLine, Qt::RoundCap);
 
                 QLineF f1Line = r;
                 f1Line.setLength(m_radius);
                 f1Line.setAngle(f1Angle);
+
+                QPainterPath linePath;
+                linePath.moveTo(static_cast<QPointF>(*first));
+                linePath.lineTo(f1Line.p2());
+                DrawPath(this, linePath, QVector<DirectionArrow>(), Qt::DashLine, Qt::RoundCap);
 
                 DrawPoint(m_f1Point, f1Line.p2());
 
