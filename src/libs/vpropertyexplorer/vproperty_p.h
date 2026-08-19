@@ -78,6 +78,9 @@ public:
     //! Whether this property group renders as a collapsible (foldable) header
     bool Collapsible{false}; // NOLINT(misc-non-private-member-variables-in-classes)
 
+    //! Whether this collapsible group starts expanded (shown) instead of collapsed
+    bool ExpandedByDefault{false}; // NOLINT(misc-non-private-member-variables-in-classes)
+
     //! List of child properties
     QList<VProperty*> Children{}; // NOLINT(misc-non-private-member-variables-in-classes)
 

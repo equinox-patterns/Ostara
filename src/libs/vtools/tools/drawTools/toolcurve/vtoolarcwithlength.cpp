@@ -101,7 +101,6 @@ void VToolArcWithLength::SetDialog()
     dialogTool->SetRadius(arc->GetFormulaRadius());
     dialogTool->SetColor(arc->GetColor());
     dialogTool->SetPenStyle(arc->GetPenStyle());
-    dialogTool->SetApproximationScale(arc->GetApproximationScale());
     dialogTool->SetNotes(m_notes);
     dialogTool->SetAliasSuffix(arc->GetAliasSuffix());
 }
@@ -121,7 +120,6 @@ auto VToolArcWithLength::Create(const QPointer<DialogTool> &dialog, VMainGraphic
     initData.length = dialogTool->GetLength();
     initData.color = dialogTool->GetColor();
     initData.penStyle = dialogTool->GetPenStyle();
-    initData.approximationScale = dialogTool->GetApproximationScale();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;
@@ -373,7 +371,6 @@ void VToolArcWithLength::SaveDialog(QDomElement &domElement)
     doc->SetAttribute(domElement, AttrLength, dialogTool->GetLength());
     doc->SetAttribute(domElement, AttrColor, dialogTool->GetColor());
     doc->SetAttribute(domElement, AttrPenStyle, dialogTool->GetPenStyle());
-    doc->SetAttribute(domElement, AttrAScale, dialogTool->GetApproximationScale());
     doc->SetAttributeOrRemoveIf<QString>(domElement, AttrAlias, dialogTool->GetAliasSuffix(),
                                          [](const QString &suffix) noexcept { return suffix.isEmpty(); });
     doc->SetAttributeOrRemoveIf<QString>(domElement, AttrNotes, dialogTool->GetNotes(),

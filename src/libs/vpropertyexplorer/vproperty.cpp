@@ -445,6 +445,16 @@ void VPE::VProperty::setCollapsible(bool collapsible)
     vproperty_d_ptr->Collapsible = collapsible;
 }
 
+auto VPE::VProperty::isExpandedByDefault() const -> bool
+{
+    return vproperty_d_ptr->ExpandedByDefault;
+}
+
+void VPE::VProperty::setExpandedByDefault(bool expanded)
+{
+    vproperty_d_ptr->ExpandedByDefault = expanded;
+}
+
 void VPE::VProperty::UpdateParent(const QVariant &value)
 {
     Q_UNUSED(value)

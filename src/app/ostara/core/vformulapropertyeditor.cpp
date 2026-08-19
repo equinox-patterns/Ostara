@@ -34,10 +34,13 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QKeyEvent>
+#include <QPushButton>
 #include <QRegularExpression>
 #include <QSpacerItem>
+#include <QVBoxLayout>
 
 #include "vtheme.h"
+#include "../vmisc/literals.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vpropertyexplorer/vproperty.h"
 #include "../vtools/dialogs/support/dialogeditwrongformula.h"
@@ -67,14 +70,67 @@ VFormulaPropertyEditor::VFormulaPropertyEditor(QWidget *parent)
     m_TextLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     m_TextLabel->setText(m_formula.getStringValue());
 
-    // The layout (a horizontal layout)
-    auto *layout = new QHBoxLayout(this);
-    layout->setSpacing(3);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(m_TextLabel);
+    // Value + fx button row
+    auto *valueLayout = new QHBoxLayout;
+    valueLayout->setSpacing(3);
+    valueLayout->setContentsMargins(0, 0, 0, 0);
+    valueLayout->addWidget(m_TextLabel);
     // Spacer (this is needed for proper display of the label and button)
-    layout->addSpacerItem(new QSpacerItem(1000000000, 0, QSizePolicy::Expanding, QSizePolicy::Preferred));
-    layout->addWidget(m_ToolButton);
+    valueLayout->addSpacerItem(new QSpacerItem(1000000000, 0, QSizePolicy::Expanding, QSizePolicy::Preferred));
+    valueLayout->addWidget(m_ToolButton);
+
+    // Formula string row: "Formula:" label + QLineEdit, below the value and above the presets.
+    auto *formulaLayout = new QHBoxLayout;
+    formulaLayout->setSpacing(3);
+    formulaLayout->setContentsMargins(0, 0, 0, 0);
+    auto *formulaLabel = new QLabel(tr("Formula:"), this);
+    m_formulaEdit = new QLineEdit(this);
+    m_formulaEdit->setText(m_formula.GetFormula());
+    connect(m_formulaEdit, &QLineEdit::editingFinished, this, [this]() {
+        m_formula.SetFormula(m_formulaEdit->text(), FormulaType::FromUser);
+        m_formula.Eval();
+        m_TextLabel->setText(m_formula.getStringValue());
+        emit dataChangedByUser(m_formula, this);
+        QCoreApplication::postEvent(this, new VPE::UserChangeEvent());
+    });
+    formulaLayout->addWidget(formulaLabel);
+    formulaLayout->addWidget(m_formulaEdit);
+
+    // Preset angle buttons row (0/90/180/270°), shown only for angle fields.
+    m_presetRow = new QWidget(this);
+    auto *presetLayout = new QHBoxLayout(m_presetRow);
+    presetLayout->setContentsMargins(0, 0, 0, 0);
+    presetLayout->setSpacing(4);
+    constexpr int kPresetAngles[] = {0, 90, 180, 270};
+    constexpr const char *kPresetArrows[] = {"right", "up", "left", "down"};
+    for (int i = 0; i < 4; ++i)
+    {
+        const int angle = kPresetAngles[i];
+        auto *button = new QPushButton(QString::number(angle) + degreeSymbol, m_presetRow);
+        button->setObjectName(QStringLiteral("anglePresetBtn") + QString::number(angle));
+        button->setIcon(QIcon(QStringLiteral(":/icons/%1/arrow-%2_%1.svg")
+                                  .arg(isDark ? QStringLiteral("dark") : QStringLiteral("light"),
+                                       QString::fromLatin1(kPresetArrows[i]))));
+        button->setLayoutDirection(Qt::RightToLeft);
+        button->setCursor(Qt::ArrowCursor);
+        connect(button, &QPushButton::clicked, this, [this, angle]() {
+            m_formula.SetFormula(QString::number(angle), FormulaType::FromUser);
+            m_formula.Eval();
+            m_TextLabel->setText(m_formula.getStringValue());
+            emit dataChangedByUser(m_formula, this);
+            QCoreApplication::postEvent(this, new VPE::UserChangeEvent());
+        });
+        presetLayout->addWidget(button);
+    }
+    m_presetRow->setVisible(false);
+
+    // Main vertical layout: value row on top, preset buttons below.
+    auto *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(2);
+    mainLayout->addLayout(valueLayout);
+    mainLayout->addLayout(formulaLayout);
+    mainLayout->addWidget(m_presetRow);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -84,6 +140,8 @@ void VFormulaPropertyEditor::SetFormula(const VFormula &formula)
     {
         this->m_formula = formula;
         m_TextLabel->setText(this->m_formula.getStringValue());
+        m_formulaEdit->setText(this->m_formula.GetFormula());
+        m_presetRow->setVisible(this->m_formula.getPostfix() == degreeSymbol);
     }
 }
 

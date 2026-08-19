@@ -110,8 +110,6 @@ DialogSplinePath::DialogSplinePath(const VContainer *data, VAbstractPattern *doc
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->comboBoxNewPoint);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->comboBoxPoint);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->comboBoxPenStyle);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->doubleSpinBoxApproximationScale);
-
 
     MakeFilterableComboBox(ui->comboBoxNewPoint);
     MakeFilterableComboBox(ui->comboBoxPoint);
@@ -186,8 +184,6 @@ DialogSplinePath::DialogSplinePath(const VContainer *data, VAbstractPattern *doc
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
-    ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
-
     connect(ui->listWidget, &QListWidget::currentRowChanged, this, &DialogSplinePath::PointChanged);
     connect(ui->comboBoxPoint, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             &DialogSplinePath::currentPointChanged);
@@ -244,7 +240,6 @@ void DialogSplinePath::SetPath(const VSplinePath &value)
             NewItem(path.at(i));
         }
         ui->listWidget->setFocus(Qt::OtherFocusReason);
-        ui->doubleSpinBoxApproximationScale->setValue(path.GetApproximationScale());
 
         originAliasSuffix = path.GetAliasSuffix();
         ui->lineEditAlias->setText(originAliasSuffix);
@@ -824,9 +819,10 @@ void DialogSplinePath::SavePath()
     SaveCurrentPoint();
 
     const quint32 d = path.GetDuplicate(); // Save previous value
+    const qreal approximationScale = path.GetApproximationScale(); // Preserve across rebuild
     path.Clear();
     path = ExtractPath();
-    path.SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
+    path.SetApproximationScale(approximationScale);
     path.SetPenStyle(GetComboBoxCurrentData(ui->comboBoxPenStyle, TypeLineLine));
     path.SetColor(GetColorComboCurrentName(m_colorCombo));
     path.SetAliasSuffix(ui->lineEditAlias->text());

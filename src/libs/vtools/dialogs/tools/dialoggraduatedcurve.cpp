@@ -108,8 +108,6 @@ DialogGraduatedCurve::DialogGraduatedCurve(const VContainer *data,
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
-    ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
-
     connect(ui->lineEditCurveName, &QLineEdit::textEdited, this, &DialogGraduatedCurve::ValidateName);
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogGraduatedCurve::ValidateAlias);
 
@@ -283,22 +281,6 @@ void DialogGraduatedCurve::SetColor(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogGraduatedCurve::GetApproximationScale() const -> qreal
-{
-    return ui->doubleSpinBoxApproximationScale->value();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogGraduatedCurve::SetApproximationScale(qreal value)
-{
-    ui->doubleSpinBoxApproximationScale->setValue(value);
-
-    auto *path = qobject_cast<VisToolGraduatedCurve *>(vis);
-    SCASSERT(path != nullptr)
-    path->SetApproximationScale(value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogGraduatedCurve::SetNotes(const QString &notes)
 {
     ui->plainTextEditToolNotes->setPlainText(notes);
@@ -445,7 +427,6 @@ void DialogGraduatedCurve::SaveData()
 
     path->SetCurveId(GetOriginCurveId());
     path->SetOffsets(GetOffsets());
-    path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     path->RefreshGeometry();
 }
 

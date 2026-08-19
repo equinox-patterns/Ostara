@@ -137,8 +137,6 @@ DialogSpline::DialogSpline(const VContainer *data, VAbstractPattern *doc, quint3
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
-    ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
-
     connect(ui->comboBoxP1, &QComboBox::currentTextChanged, this, &DialogSpline::PointNameChanged);
     connect(ui->comboBoxP4, &QComboBox::currentTextChanged, this, &DialogSpline::PointNameChanged);
 
@@ -306,9 +304,10 @@ void DialogSpline::SaveSpline()
     const qreal length2 = m_formulaLength2->value();
 
     const quint32 d = spl.GetDuplicate(); // Save previous value
+    const qreal approximationScale = spl.GetApproximationScale(); // Preserve across rebuild
 
     spl = VSpline(*GetP1(), *GetP4(), angle1, angle1F, angle2, angle2F, length1, length1F, length2, length2F);
-    spl.SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
+    spl.SetApproximationScale(approximationScale);
     spl.SetPenStyle(GetComboBoxCurrentData(ui->comboBoxPenStyle, TypeLineLine));
     spl.SetColor(GetColorComboCurrentName(m_colorCombo));
     spl.SetAliasSuffix(ui->lineEditAlias->text());
@@ -382,7 +381,6 @@ void DialogSpline::SetSpline(const VSpline &spline)
 
     m_oldName = spl.name();
 
-    ui->doubleSpinBoxApproximationScale->setValue(spl.GetApproximationScale());
     SetColorComboCurrentName(m_colorCombo, spl.GetColor());
     ChangeCurrentData(ui->comboBoxPenStyle, spl.GetPenStyle());
 

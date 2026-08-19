@@ -66,8 +66,6 @@ DialogEllipticalArcWithLength::DialogEllipticalArcWithLength(const VContainer *d
 
     MakeFilterableComboBox(ui->comboBoxCenter);
 
-    ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
-
     // --- Configure formula widgets ---
     const QString lengthPostfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
 
@@ -340,22 +338,6 @@ void DialogEllipticalArcWithLength::SetColor(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogEllipticalArcWithLength::GetApproximationScale() const -> qreal
-{
-    return ui->doubleSpinBoxApproximationScale->value();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogEllipticalArcWithLength::SetApproximationScale(qreal value)
-{
-    ui->doubleSpinBoxApproximationScale->setValue(value);
-
-    auto *path = qobject_cast<VisToolEllipticalArcWithLength *>(vis);
-    SCASSERT(path != nullptr)
-    path->SetApproximationScale(value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogEllipticalArcWithLength::SetNotes(const QString &notes)
 {
     ui->plainTextEditToolNotes->setPlainText(notes);
@@ -545,7 +527,6 @@ void DialogEllipticalArcWithLength::SaveData()
     path->SetF1(f1);
     path->SetLength(length);
     path->SetRotationAngle(rotationAngle);
-    path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     path->RefreshGeometry();
 }
 

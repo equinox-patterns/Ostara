@@ -65,8 +65,6 @@ DialogCubicBezier::DialogCubicBezier(const VContainer *data, VAbstractPattern *d
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
-    ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
-
     connect(ui->comboBoxP1, &QComboBox::currentTextChanged, this, &DialogCubicBezier::PointNameChanged);
     connect(ui->comboBoxP4, &QComboBox::currentTextChanged, this, &DialogCubicBezier::PointNameChanged);
 
@@ -103,8 +101,6 @@ void DialogCubicBezier::SetSpline(const VCubicBezier &spline)
 
     ChangeCurrentData(ui->comboBoxPenStyle, spl.GetPenStyle());
     SetColorComboCurrentName(m_colorCombo, spl.GetColor());
-
-    ui->doubleSpinBoxApproximationScale->setValue(spl.GetApproximationScale());
 
     originAliasSuffix = spl.GetAliasSuffix();
     ui->lineEditAlias->setText(originAliasSuffix);
@@ -236,7 +232,7 @@ void DialogCubicBezier::SaveData()
 
     auto *path = qobject_cast<VisToolCubicBezier *>(vis);
     SCASSERT(path != nullptr)
-    path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
+    path->SetApproximationScale(spl.GetApproximationScale());
     path->SetPoint1Id(GetP1()->id());
     path->SetPoint2Id(GetP2()->id());
     path->SetPoint3Id(GetP3()->id());
@@ -297,8 +293,9 @@ auto DialogCubicBezier::GetP4() const -> QSharedPointer<VPointF>
 void DialogCubicBezier::SaveSpline()
 {
     const quint32 d = spl.GetDuplicate(); // Save previous value
+    const qreal approximationScale = spl.GetApproximationScale(); // Preserve across rebuild
     spl = VCubicBezier(*GetP1(), *GetP2(), *GetP3(), *GetP4());
-    spl.SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
+    spl.SetApproximationScale(approximationScale);
     spl.SetPenStyle(GetComboBoxCurrentData(ui->comboBoxPenStyle, TypeLineLine));
     spl.SetColor(GetColorComboCurrentName(m_colorCombo));
     spl.SetAliasSuffix(ui->lineEditAlias->text());

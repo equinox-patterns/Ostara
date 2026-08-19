@@ -72,6 +72,8 @@ private:
     VFormula m_formula{};
     QToolButton *m_ToolButton{nullptr};
     QLabel *m_TextLabel{nullptr};
+    QLineEdit *m_formulaEdit{nullptr};
+    QWidget *m_presetRow{nullptr};
 };
 
 #endif // VFORMULAPROPERTYEDITOR_H

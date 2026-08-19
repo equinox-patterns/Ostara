@@ -78,8 +78,6 @@ DialogCubicBezierPath::DialogCubicBezierPath(const VContainer *data,
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
-    ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
-
     connect(ui->listWidget, &QListWidget::currentRowChanged, this, &DialogCubicBezierPath::PointChanged);
     connect(ui->comboBoxPoint, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             &DialogCubicBezierPath::currentPointChanged);
@@ -128,7 +126,6 @@ void DialogCubicBezierPath::SetPath(const VCubicBezierPath &value)
             NewItem(path.at(i));
         }
         ui->listWidget->setFocus(Qt::OtherFocusReason);
-        ui->doubleSpinBoxApproximationScale->setValue(path.GetApproximationScale());
 
         originAliasSuffix = path.GetAliasSuffix();
         ui->lineEditAlias->setText(originAliasSuffix);
@@ -412,11 +409,12 @@ void DialogCubicBezierPath::DataPoint(const VPointF &p)
 void DialogCubicBezierPath::SavePath()
 {
     const quint32 d = path.GetDuplicate(); // Save previous value
+    const qreal approximationScale = path.GetApproximationScale(); // Preserve across rebuild
     path.Clear();
     path = ExtractPath();
     path.SetPenStyle(GetComboBoxCurrentData(ui->comboBoxPenStyle, TypeLineLine));
     path.SetColor(GetColorComboCurrentName(m_colorCombo));
-    path.SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
+    path.SetApproximationScale(approximationScale);
     path.SetAliasSuffix(ui->lineEditAlias->text());
     path.SetDuplicate(d);
 }

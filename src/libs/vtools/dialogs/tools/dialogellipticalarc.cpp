@@ -68,8 +68,6 @@ DialogEllipticalArc::DialogEllipticalArc(const VContainer *data, VAbstractPatter
 
     MakeFilterableComboBox(ui->comboBoxBasePoint);
 
-    ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
-
     // --- Configure formula widgets ---
     const QString lengthPostfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
 
@@ -398,22 +396,6 @@ void DialogEllipticalArc::SetColor(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogEllipticalArc::GetApproximationScale() const -> qreal
-{
-    return ui->doubleSpinBoxApproximationScale->value();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogEllipticalArc::SetApproximationScale(qreal value)
-{
-    ui->doubleSpinBoxApproximationScale->setValue(value);
-
-    auto *path = qobject_cast<VisToolEllipticalArc *>(vis);
-    SCASSERT(path != nullptr)
-    path->SetApproximationScale(value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief EvalRadiuses calculate value of radiuses
  */
@@ -454,7 +436,6 @@ void DialogEllipticalArc::SaveData()
     path->SetF1(f1);
     path->SetF2(f2);
     path->SetRotationAngle(rotationAngle);
-    path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     path->RefreshGeometry();
 }
 

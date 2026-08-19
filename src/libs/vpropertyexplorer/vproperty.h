@@ -231,6 +231,10 @@ public:
     auto isCollapsible() const -> bool;
     void setCollapsible(bool collapsible);
 
+    //! Whether this collapsible group starts expanded (shown) instead of collapsed
+    auto isExpandedByDefault() const -> bool;
+    void setExpandedByDefault(bool expanded);
+
     virtual void UpdateParent(const QVariant &value);
 public slots:
     virtual void ValueChildChanged(const QVariant &value, int typeForParent);

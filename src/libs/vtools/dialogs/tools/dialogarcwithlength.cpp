@@ -134,8 +134,6 @@ DialogArcWithLength::DialogArcWithLength(const VContainer *data, VAbstractPatter
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
-    ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
-
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogArcWithLength::ValidateAlias);
 
     // Start/End point creation controls.
@@ -284,27 +282,6 @@ auto DialogArcWithLength::GetColor() const -> QString
 void DialogArcWithLength::SetColor(const QString &value)
 {
     SetColorComboCurrentName(m_colorCombo, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto DialogArcWithLength::GetApproximationScale() const -> qreal
-{
-    return ui->doubleSpinBoxApproximationScale->value();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogArcWithLength::SetApproximationScale(qreal value)
-{
-    ui->doubleSpinBoxApproximationScale->setValue(value);
-
-    if (auto *path = qobject_cast<VisToolArcWithLength *>(vis))
-    {
-        path->SetApproximationScale(value);
-    }
-    else
-    {
-        qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -463,7 +440,6 @@ void DialogArcWithLength::SaveData()
             m_formula2->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
         path->SetLength(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
             m_formula3->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
-        path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
         path->RefreshGeometry();
     }
     else

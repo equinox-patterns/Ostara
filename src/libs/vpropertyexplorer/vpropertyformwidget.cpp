@@ -50,10 +50,10 @@ class CollapsibleHeader : public QFrame
 {
 public:
     CollapsibleHeader(const QString &text, const QPixmap &expandPixmap, const QPixmap &collapsePixmap,
-                      std::function<void(bool)> onToggle, QWidget *parent)
+                      bool initiallyCollapsed, std::function<void(bool)> onToggle, QWidget *parent)
       : QFrame(parent),
         m_onToggle(onToggle),
-        m_collapsed(true),
+        m_collapsed(initiallyCollapsed),
         m_expandPixmap(expandPixmap),
         m_collapsePixmap(collapsePixmap)
     {
@@ -74,7 +74,7 @@ public:
 
         m_caret = new QLabel(this);
         m_caret->setAttribute(Qt::WA_TransparentForMouseEvents);
-        m_caret->setPixmap(m_expandPixmap);
+        m_caret->setPixmap(m_collapsed ? m_expandPixmap : m_collapsePixmap);
 
         layout->addWidget(title);
         layout->addWidget(m_caret);
@@ -239,14 +239,53 @@ void VPE::VPropertyFormWidget::build()
                 QList<VProperty *> children = tmpProperty->getChildren();
                 for (int j = 0; j < children.size(); ++j)
                 {
-                    buildEditor(children[j], subFormLayout);
-                    ++i;
-                    vproperty_d_ptr->Properties.insert(i, children[j]);
+                    VProperty *const child = children[j];
+                    if (child->propertyType() == Property::Complex)
+                    {
+                        // A Complex child (e.g. VFormulaProperty) renders as a bold row plus an
+                        // indented sub-frame holding its own children (the "Formula" field).
+                        buildEditor(child, subFormLayout, Property::Complex);
+                        auto *childGroup = new QFrame(content);
+                        childGroup->setFrameStyle(QFrame::NoFrame);
+                        {
+                            auto p = childGroup->palette();
+                            p.setColor(QPalette::Window, qApp->palette().button().color());
+                            childGroup->setPalette(p);
+                            childGroup->setAutoFillBackground(true);
+                        }
+                        subFormLayout->addRow(childGroup);
+                        auto *childSubLayout = new QFormLayout(childGroup);
+                        childSubLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+                        QMargins childMargins = childSubLayout->contentsMargins();
+                        childMargins.setTop(0);
+                        childMargins.setLeft(18);
+                        childMargins.setRight(0);
+                        childSubLayout->setContentsMargins(childMargins);
+                        childGroup->setLayout(childSubLayout);
+                        ++i;
+                        vproperty_d_ptr->Properties.insert(i, child);
+                        const QList<VProperty *> grandchildren = child->getChildren();
+                        for (int k = 0; k < grandchildren.size(); ++k)
+                        {
+                            buildEditor(grandchildren[k], childSubLayout);
+                            connect(grandchildren[k], &VProperty::childChanged, child,
+                                    &VProperty::ValueChildChanged, Qt::UniqueConnection);
+                            ++i;
+                            vproperty_d_ptr->Properties.insert(i, grandchildren[k]);
+                        }
+                    }
+                    else
+                    {
+                        buildEditor(child, subFormLayout);
+                        ++i;
+                        vproperty_d_ptr->Properties.insert(i, child);
+                    }
                 }
 
-                content->setVisible(false); // collapsed by default
+                content->setVisible(tmpProperty->isExpandedByDefault());
 
                 auto *header = new CollapsibleHeader(tmpProperty->getName(), expandPixmap, collapsePixmap,
+                                                     !tmpProperty->isExpandedByDefault(),
                                                      [content](bool collapsed) { content->setVisible(!collapsed); }, this);
                 header->setObjectName(QStringLiteral("propertyCollapseHeader"));
 

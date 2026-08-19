@@ -64,8 +64,6 @@ DialogArmholeCurve::DialogArmholeCurve(const VContainer *data, VAbstractPattern 
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
-    ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
-
     connect(ui->comboBoxP1, &QComboBox::currentTextChanged, this, &DialogArmholeCurve::PointNameChanged);
     connect(ui->comboBoxP4, &QComboBox::currentTextChanged, this, &DialogArmholeCurve::PointNameChanged);
 
@@ -103,8 +101,6 @@ void DialogArmholeCurve::SetPath(const VCubicBezierPath &path)
 
     ChangeCurrentData(ui->comboBoxPenStyle, m_path.GetPenStyle());
     SetColorComboCurrentName(m_colorCombo, m_path.GetColor());
-
-    ui->doubleSpinBoxApproximationScale->setValue(m_path.GetApproximationScale());
 
     originAliasSuffix = m_path.GetAliasSuffix();
     ui->lineEditAlias->setText(originAliasSuffix);
@@ -250,7 +246,7 @@ void DialogArmholeCurve::SaveData()
 
     auto *visPath = qobject_cast<VisToolArmholeCurve *>(vis);
     SCASSERT(visPath != nullptr)
-    visPath->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
+    visPath->SetApproximationScale(m_path.GetApproximationScale());
     visPath->SetPoint1Id(GetP1()->id());
     visPath->SetPoint2Id(GetP2()->id()); // chest/back width
     visPath->SetPoint3Id(GetP3()->id()); // perpendicular
@@ -328,8 +324,9 @@ void DialogArmholeCurve::SavePath()
     pathPoints.append(*GetP3());    // [5] perpendicular (user)
     pathPoints.append(*GetP4());    // [6] shoulder (user)
 
+    const qreal approximationScale = m_path.GetApproximationScale(); // Preserve across rebuild
     m_path = VCubicBezierPath(pathPoints);
-    m_path.SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
+    m_path.SetApproximationScale(approximationScale);
     m_path.SetPenStyle(GetComboBoxCurrentData(ui->comboBoxPenStyle, TypeLineLine));
     m_path.SetColor(GetColorComboCurrentName(m_colorCombo));
     m_path.SetAliasSuffix(ui->lineEditAlias->text());

@@ -99,7 +99,6 @@ void VToolEllipticalArcWithLength::SetDialog()
     dialogTool->SetRotationAngle(elArc->GetFormulaRotationAngle());
     dialogTool->SetColor(elArc->GetColor());
     dialogTool->SetPenStyle(elArc->GetPenStyle());
-    dialogTool->SetApproximationScale(elArc->GetApproximationScale());
     dialogTool->SetNotes(m_notes);
     dialogTool->SetAliasSuffix(elArc->GetAliasSuffix());
 }
@@ -123,7 +122,6 @@ auto VToolEllipticalArcWithLength::Create(const QPointer<DialogTool> &dialog,
     initData.rotationAngle = dialogTool->GetRotationAngle();
     initData.color = dialogTool->GetColor();
     initData.penStyle = dialogTool->GetPenStyle();
-    initData.approximationScale = dialogTool->GetApproximationScale();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;
@@ -442,7 +440,6 @@ void VToolEllipticalArcWithLength::SaveDialog(QDomElement &domElement)
     doc->SetAttribute(domElement, AttrRotationAngle, dialogTool->GetRotationAngle());
     doc->SetAttribute(domElement, AttrColor, dialogTool->GetColor());
     doc->SetAttribute(domElement, AttrPenStyle, dialogTool->GetPenStyle());
-    doc->SetAttribute(domElement, AttrAScale, dialogTool->GetApproximationScale());
     doc->SetAttributeOrRemoveIf<QString>(domElement,
                                          AttrAlias,
                                          dialogTool->GetAliasSuffix(),

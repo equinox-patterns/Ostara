@@ -91,8 +91,6 @@ DialogParallelCurve::DialogParallelCurve(const VContainer *data, VAbstractPatter
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
-    ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
-
     connect(ui->lineEditName, &QLineEdit::textEdited, this, &DialogParallelCurve::ValidateName);
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogParallelCurve::ValidateAlias);
 
@@ -191,22 +189,6 @@ auto DialogParallelCurve::GetColor() const -> QString
 void DialogParallelCurve::SetColor(const QString &value)
 {
     SetColorComboCurrentName(m_colorCombo, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto DialogParallelCurve::GetApproximationScale() const -> qreal
-{
-    return ui->doubleSpinBoxApproximationScale->value();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogParallelCurve::SetApproximationScale(qreal value)
-{
-    ui->doubleSpinBoxApproximationScale->setValue(value);
-
-    auto *path = qobject_cast<VisToolParallelCurve *>(vis);
-    SCASSERT(path != nullptr)
-    path->SetApproximationScale(value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -351,7 +333,6 @@ void DialogParallelCurve::SaveData()
     path->SetCurveId(GetOriginCurveId());
     path->SetOffsetWidth(VAbstractValApplication::VApp()->TrVars()->FormulaToUser(
         m_formula->formula(), VAbstractValApplication::VApp()->Settings()->GetOsSeparator()));
-    path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     path->RefreshGeometry();
 }
 

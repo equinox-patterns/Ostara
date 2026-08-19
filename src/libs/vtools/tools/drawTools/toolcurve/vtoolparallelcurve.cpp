@@ -57,7 +57,6 @@ void VToolParallelCurve::SetDialog()
     dialogTool->SetFormulaWidth(m_formulaWidth);
     dialogTool->SetPenStyle(splPath->GetPenStyle());
     dialogTool->SetColor(splPath->GetColor());
-    dialogTool->SetApproximationScale(splPath->GetApproximationScale());
     dialogTool->SetName(GetName());
     dialogTool->SetAliasSuffix(splPath->GetAliasSuffix());
     dialogTool->SetNotes(m_notes);
@@ -79,7 +78,6 @@ auto VToolParallelCurve::Create(const QPointer<DialogTool> &dialog,
     initData.name = dialogTool->GetName();
     initData.color = dialogTool->GetColor();
     initData.penStyle = dialogTool->GetPenStyle();
-    initData.approximationScale = dialogTool->GetApproximationScale();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;
@@ -203,7 +201,6 @@ void VToolParallelCurve::SaveDialog(QDomElement &domElement)
     doc->SetAttribute(domElement, AttrName, dialogTool->GetName());
     doc->SetAttribute(domElement, AttrColor, dialogTool->GetColor());
     doc->SetAttribute(domElement, AttrPenStyle, dialogTool->GetPenStyle());
-    doc->SetAttribute(domElement, AttrAScale, dialogTool->GetApproximationScale());
     doc->SetAttributeOrRemoveIf<QString>(domElement,
                                          AttrAlias,
                                          dialogTool->GetAliasSuffix(),

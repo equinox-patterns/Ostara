@@ -62,8 +62,6 @@ DialogArc::DialogArc(const VContainer *data, VAbstractPattern *doc, quint32 tool
 
     MakeFilterableComboBox(ui->comboBoxBasePoint);
 
-    ui->doubleSpinBoxApproximationScale->setMaximum(maxCurveApproximationScale);
-
     // --- Configure formula widgets ---
     const QString lengthPostfix = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
 
@@ -227,22 +225,6 @@ auto DialogArc::GetColor() const -> QString
 void DialogArc::SetColor(const QString &value)
 {
     SetColorComboCurrentName(m_colorCombo, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto DialogArc::GetApproximationScale() const -> qreal
-{
-    return ui->doubleSpinBoxApproximationScale->value();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogArc::SetApproximationScale(qreal value)
-{
-    ui->doubleSpinBoxApproximationScale->setValue(value);
-
-    auto *path = qobject_cast<VisToolArc *>(vis);
-    SCASSERT(path != nullptr)
-    path->SetApproximationScale(value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -424,7 +406,6 @@ void DialogArc::SaveData()
     path->SetRadius(radius);
     path->SetF1(f1);
     path->SetF2(f2);
-    path->SetApproximationScale(ui->doubleSpinBoxApproximationScale->value());
     path->RefreshGeometry();
 }
 
