@@ -49,7 +49,7 @@ public:
     auto type() const -> int override { return Type; }
     enum
     {
-        Type = UserType + static_cast<int>(Vis::ToolParallelCurve)
+        Type = UserType + static_cast<int>(Vis::ToolGraduatedCurve)
     };
 
 private:
