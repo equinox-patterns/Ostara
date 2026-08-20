@@ -457,7 +457,7 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
         case VShortcutAction::ToolTrueDarts:
             return tr("Tool 'True darts'", "shortcut for action");
         case VShortcutAction::ToolGroup:
-            return tr("Tool 'Visibility group'", "shortcut for action");
+            return tr("Tool 'Layer'", "shortcut for action");
         case VShortcutAction::ToolRotation:
             return tr("Tool 'Rotate objects'", "shortcut for action");
         case VShortcutAction::ToolFlippingByLine:

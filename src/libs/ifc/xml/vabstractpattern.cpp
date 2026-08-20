@@ -2051,7 +2051,7 @@ auto VAbstractPattern::GroupLinkedToTool(vidtype toolId) const -> vidtype
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GetGroupName(quint32 id) -> QString
 {
-    QString name = QCoreApplication::translate("VAbstractPattern", "New group");
+    QString name = QCoreApplication::translate("VAbstractPattern", "New layer");
     if (QDomElement const group = FindElementById(id, TagGroup); group.isElement())
     {
         name = GetParametrString(group, AttrName, name);
@@ -2236,7 +2236,7 @@ auto VAbstractPattern::GetGroups(const QString &patternPieceName) -> QMap<quint3
                                     {.name = GetParametrString(group,
                                                                AttrName,
                                                                QCoreApplication::translate("VAbstractPattern",
-                                                                                           "New group")),
+                                                                                           "New layer")),
                                      .visible = GetParametrBool(group, AttrVisible, trueStr),
                                      .tags = FilterGroupTags(GetParametrEmptyString(group, AttrTags)),
                                      .tool = GetParametrUInt(group, AttrTool, NULL_ID_STR),
@@ -2295,7 +2295,7 @@ auto VAbstractPattern::GetGroupsContainingItem(quint32 toolId, quint32 objectId,
                         const QString name = GetParametrString(group,
                                                                AttrName,
                                                                QCoreApplication::translate("VAbstractPattern",
-                                                                                           "New group"));
+                                                                                           "New layer"));
                         data.insert(groupId, name);
                     }
                 }

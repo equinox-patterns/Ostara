@@ -1069,8 +1069,8 @@ void MainWindow::changeEvent(QEvent *event)
 
         if (VApplication::VApp()->GetDrawMode() == Draw::Calculation)
         {
-            ui->dockWidgetGroups->setWindowTitle(tr("Groups of visibility"));
-            ui->dockWidgetGroups->setToolTip(tr("Contains all visibility groups"));
+            ui->dockWidgetGroups->setWindowTitle(tr("Layers"));
+            ui->dockWidgetGroups->setToolTip(tr("Contains all layers"));
         }
         else
         {
@@ -2215,9 +2215,9 @@ void MainWindow::ActionDraw(bool checked)
         ui->dockWidgetToolOptions->setVisible(m_toolOptionsActive);
 
         WrapDockContent(ui->dockWidgetGroups, m_groupsWidget);
-        ui->dockWidgetGroups->setWindowTitle(tr("Groups of visibility"));
+        ui->dockWidgetGroups->setWindowTitle(tr("Layers"));
         ui->dockWidgetGroups->setVisible(m_groupsActive);
-        ui->dockWidgetGroups->setToolTip(tr("Contains all visibility groups"));
+        ui->dockWidgetGroups->setToolTip(tr("Contains all layers"));
 
         ui->dockWidgetBackgroundImages->setVisible(m_backgroundImagesActive);
 

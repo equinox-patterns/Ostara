@@ -92,7 +92,7 @@ void DialogGroup::ShowDialog(bool click)
             return;
         }
 
-        SetName(tr("New group"));
+        SetName(tr("New layer"));
 
         setModal(true);
         emit ToolTip(QString());

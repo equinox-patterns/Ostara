@@ -392,7 +392,7 @@ void DrawToolBar::InitializeGroups()
             {QStringLiteral("point_of_contact"),              tr("Point of intersection circle and segment"), nullptr, makeBtn("point_of_contact")},
         }, kModeDraw},
         {tr("Operations"), {
-            {QStringLiteral("group_plus"),               tr("Visibility group"),                  nullptr, makeBtn("group_plus")},
+            {QStringLiteral("group_plus"),               tr("Layer"),                  nullptr, makeBtn("group_plus")},
             {QStringLiteral("flipping_axis"),            tr("Flipping objects by axis"),          nullptr, makeBtn("flipping_axis")},
             {QStringLiteral("flipping_line"),            tr("Flipping objects by line"),          nullptr, makeBtn("flipping_line")},
             {QStringLiteral("rotation"),                 tr("Rotate objects"),                    nullptr, makeBtn("rotation")},

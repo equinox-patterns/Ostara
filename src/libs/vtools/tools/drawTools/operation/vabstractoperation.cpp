@@ -1151,7 +1151,7 @@ auto VAbstractOperation::VisibilityGroupToolTip() const -> QString
     if (group != null_id)
     {
         return QStringLiteral("<tr> <td><b>%1:</b> %2</td> </tr>")
-            .arg(tr("Visibility group"), doc->GetGroupName(group)); // 1, 2
+            .arg(tr("Layer"), doc->GetGroupName(group)); // 1, 2
     }
 
     return {};

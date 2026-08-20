@@ -112,6 +112,9 @@ struct VFinalMeasurement
     QString description{};
 };
 
+// NOTE: backend "group" = the *visibility* feature, exposed to the user as "Layer".
+//       The UI term "Group" now refers to the new attachment feature (backend "attachment").
+//       Do NOT reuse "group" for a new concept.
 struct VGroupData
 {
     QString name{};

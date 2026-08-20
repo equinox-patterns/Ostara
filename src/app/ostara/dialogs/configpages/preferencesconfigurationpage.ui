@@ -361,7 +361,7 @@
               <item>
                <widget class="QCheckBox" name="checkBoxUseToolGroups">
                 <property name="text">
-                 <string>Use tool groups</string>
+                 <string>Use layers</string>
                 </property>
                </widget>
               </item>

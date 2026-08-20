@@ -170,7 +170,7 @@ void DialogOperationTool::GroupNameChanged()
         {
             flagGroupName = false;
             ChangeColor(Widgets().labelGroupName, errorColor);
-            Widgets().labelStatus->setText(tr("Invalid group name"));
+            Widgets().labelStatus->setText(tr("Invalid layer name"));
             CheckState();
             return;
         }

@@ -241,7 +241,7 @@ auto VDrawTool::CreateAddToGroupMenu(QMenu &menu, quint32 itemId) -> QActionGrou
         return actionsAddToGroup;
     }
 
-    QMenu *menuAddToGroup = menu.addMenu(FromTheme(VThemeIcon::ListAdd), tr("Add to group"));
+    QMenu *menuAddToGroup = menu.addMenu(FromTheme(VThemeIcon::ListAdd), tr("Add to layer"));
 
     auto list = QStringList(groupsNotContainingItem.values());
     list.sort(Qt::CaseInsensitive);
@@ -272,7 +272,7 @@ auto VDrawTool::CreateRemoveFromGroupMenu(QMenu &menu, quint32 itemId) -> QActio
         return actionsRemoveFromGroup;
     }
 
-    QMenu *menuRemoveFromGroup = menu.addMenu(FromTheme(VThemeIcon::ListRemove), tr("Remove from group"));
+    QMenu *menuRemoveFromGroup = menu.addMenu(FromTheme(VThemeIcon::ListRemove), tr("Remove from layer"));
 
     auto list = QStringList(groupsContainingItem.values());
     list.sort(Qt::CaseInsensitive);
