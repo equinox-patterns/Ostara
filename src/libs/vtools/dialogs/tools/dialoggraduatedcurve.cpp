@@ -114,7 +114,7 @@ DialogGraduatedCurve::DialogGraduatedCurve(const VContainer *data,
     // Move the curve-name field (Alias) to the top of the Tool tab (above the offsets)
     ui->labelAlias->setMinimumWidth(90);
 
-    auto aliasRow = ui->formLayout_2->takeRow(5);
+    auto aliasRow = ui->formLayout_2->takeRow(ui->labelAlias);
 
     QWidget *aliasLabel = aliasRow.labelItem->widget();
     QWidget *aliasField = aliasRow.fieldItem->widget();
