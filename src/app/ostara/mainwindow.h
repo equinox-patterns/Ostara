@@ -63,6 +63,8 @@ class VBackgroundImageControls;
 class VWidgetBackgroundImages;
 class DrawToolBar;
 class TopBar;
+class BreadcrumbBar;
+class QGraphicsItem;
 class WelcomeScreen;
 class QStackedWidget;
 
@@ -133,6 +135,8 @@ protected:
 #endif
 private slots:
     void ScaleChanged(qreal scale);
+    void HandleItemClicked(QGraphicsItem *item);
+    void ItemDoubleClicked(QGraphicsItem *item);
     void MouseMove(const QPointF &scenePos);
     void Clear();
     void PatternChangesWereSaved(bool saved);
@@ -179,6 +183,7 @@ private slots:
     void ToolUnionDetails(bool checked);
     void ToolDuplicateDetail(bool checked);
     void ToolGroup(bool checked);
+    void ToolAttach(bool checked);
     void ToolRotation(bool checked);
     void ToolFlippingByLine(bool checked);
     void ToolFlippingByAxis(bool checked);
@@ -230,6 +235,7 @@ private slots:
     void ClosedDialogUnionDetails(int result);
     void ClosedDialogDuplicateDetail(int result);
     void ClosedDialogGroup(int result);
+    void ClosedDialogAttach(int result);
     void ClosedDialogPiecePath(int result);
     void ClosedDialogPin(int result);
     void ClosedDialogInsertNode(int result);
@@ -312,6 +318,7 @@ private:
 
     DrawToolBar *m_drawToolBar{nullptr};
     TopBar      *m_topBar{nullptr};
+    BreadcrumbBar *m_breadcrumb{nullptr};
 
     QStackedWidget *m_stackedWidget{nullptr};
     WelcomeScreen  *m_welcomeScreen{nullptr};

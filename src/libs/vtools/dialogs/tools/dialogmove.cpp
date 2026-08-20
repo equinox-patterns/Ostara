@@ -404,17 +404,7 @@ void DialogMove::ChosenObject(quint32 id, const SceneObject &type)
 {
     if (IsStage1())
     {
-        if (auto obj = std::find_if(SourceObjects().begin(),
-                                    SourceObjects().end(),
-                                    [id](const SourceItem &sItem) { return sItem.id == id; });
-            obj == SourceObjects().end())
-        {
-            SourceObjects().push_back(SourceItem{id});
-        }
-        else
-        {
-            SourceObjects().erase(obj);
-        }
+        ToggleSourceObject(id);
 
         auto *operation = qobject_cast<VisToolMove *>(vis);
         SCASSERT(operation != nullptr)

@@ -29,6 +29,8 @@
 #include "dialogseamallowance.h"
 #include "dialogseamallowance_helpers.h"
 #include "../../../tools/vtoolseamallowance.h"
+#include "../../../tools/drawTools/toolcurve/vtoolabstractcurve.h"
+#include "../../../tools/drawTools/toolpoint/vabstractpoint.h"
 #include "../../../undocommands/savepiecepathoptions.h"
 #include "../../../undocommands/saveplacelabeloptions.h"
 #include "../../../visualization/path/vispiecespecialpoints.h"
@@ -327,6 +329,40 @@ void DialogSeamAllowance::SetPiece(const VPiece &piece)
     ListChanged();
 }
 
+namespace
+{
+// Maps a SceneObject to its piece-node tool type; LAST_ONE_DO_NOT_USE means "not a piece object".
+auto NodeToolForSceneObject(const SceneObject &type) -> Tool
+{
+    switch (type)
+    {
+        case SceneObject::Arc: return Tool::NodeArc;
+        case SceneObject::ElArc: return Tool::NodeElArc;
+        case SceneObject::Point: return Tool::NodePoint;
+        case SceneObject::Spline: return Tool::NodeSpline;
+        case SceneObject::SplinePath: return Tool::NodeSplinePath;
+        default: return Tool::LAST_ONE_DO_NOT_USE;
+    }
+}
+
+// Resolves the SceneObject type of a drawing object from its tool id.
+auto SceneTypeForTool(vidtype toolId) -> SceneObject
+{
+    if (VDataTool *tool = VAbstractPattern::getTool(toolId); tool != nullptr)
+    {
+        if (auto *curve = qobject_cast<VToolAbstractCurve *>(tool))
+        {
+            return curve->GetSceneType();
+        }
+        if (qobject_cast<VAbstractPoint *>(tool))
+        {
+            return SceneObject::Point;
+        }
+    }
+    return SceneObject::Unknown;
+}
+} // namespace
+
 //---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief ChoosedObject gets id and type of selected object. Save right data and ignore wrong.
@@ -346,31 +382,50 @@ void DialogSeamAllowance::ChosenObject(quint32 id, const SceneObject &type)
         reverse = true;
     }
 
+    const auto attachmentItems = m_doc->IsIsolated() ? QVector<QPair<quint32, quint32>>{}
+                                                     : m_doc->GetAttachmentItemsForObject(id);
+
     if (id != GetLastId())
     {
-        switch (type)
+        if (attachmentItems.isEmpty())
         {
-            case SceneObject::Arc:
-                NewMainPathItem(VPieceNode(id, Tool::NodeArc, reverse));
-                break;
-            case SceneObject::ElArc:
-                NewMainPathItem(VPieceNode(id, Tool::NodeElArc, reverse));
-                break;
-            case SceneObject::Point:
-                NewMainPathItem(VPieceNode(id, Tool::NodePoint));
-                break;
-            case SceneObject::Spline:
-                NewMainPathItem(VPieceNode(id, Tool::NodeSpline, reverse));
-                break;
-            case SceneObject::SplinePath:
-                NewMainPathItem(VPieceNode(id, Tool::NodeSplinePath, reverse));
-                break;
-            case SceneObject::Line:
-            case SceneObject::Detail:
-            case SceneObject::Unknown:
-            default:
-                qDebug() << "Got wrong scene object. Ignore.";
-                break;
+            switch (type)
+            {
+                case SceneObject::Arc:
+                    NewMainPathItem(VPieceNode(id, Tool::NodeArc, reverse));
+                    break;
+                case SceneObject::ElArc:
+                    NewMainPathItem(VPieceNode(id, Tool::NodeElArc, reverse));
+                    break;
+                case SceneObject::Point:
+                    NewMainPathItem(VPieceNode(id, Tool::NodePoint));
+                    break;
+                case SceneObject::Spline:
+                    NewMainPathItem(VPieceNode(id, Tool::NodeSpline, reverse));
+                    break;
+                case SceneObject::SplinePath:
+                    NewMainPathItem(VPieceNode(id, Tool::NodeSplinePath, reverse));
+                    break;
+                case SceneObject::Line:
+                case SceneObject::Detail:
+                case SceneObject::Unknown:
+                default:
+                    qDebug() << "Got wrong scene object. Ignore.";
+                    break;
+            }
+        }
+        else
+        {
+            // The clicked object belongs to an attachment: add every member as a piece node.
+            for (const auto &item : attachmentItems)
+            {
+                const Tool nodeTool = NodeToolForSceneObject(SceneTypeForTool(item.second));
+                if (nodeTool == Tool::LAST_ONE_DO_NOT_USE)
+                {
+                    continue;
+                }
+                NewMainPathItem(VPieceNode(item.first, nodeTool, item.first == id && reverse));
+            }
         }
     }
     else

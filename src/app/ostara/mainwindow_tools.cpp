@@ -28,6 +28,7 @@
  *************************************************************************/
 
 #include "mainwindow.h"
+#include "widgets/BreadcrumbBar.h"
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
 #include "vtheme.h"
@@ -62,6 +63,7 @@
 #include "../vtools/dialogs/tools/dialogflippingbyaxis.h"
 #include "../vtools/dialogs/tools/dialogflippingbyline.h"
 #include "../vtools/dialogs/tools/dialoggroup.h"
+#include "../vtools/dialogs/tools/dialogattach.h"
 #include "../vtools/dialogs/tools/dialogheight.h"
 #include "../vtools/dialogs/tools/dialogline.h"
 #include "../vtools/dialogs/tools/dialoglineintersect.h"
@@ -142,6 +144,7 @@
 // Undo commands used by tool callbacks
 #include "../vtools/undocommands/renamepp.h"
 #include "../vtools/undocommands/undogroup.h"
+#include "../vtools/undocommands/undoattachment.h"
 
 // Other needed headers
 #include "../vmisc/def.h"
@@ -635,6 +638,19 @@ void MainWindow::ToolGroup(bool checked)
 
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolAttach(bool checked)
+{
+    ToolSelectGroupObjects();
+    const QString tooltip = tr("Select one or more objects, hold <b>%1</b> - for multiple selection, "
+                               "<b>%2</b> - finish creation")
+                                .arg(VModifierKey::Control(), VModifierKey::EnterKey());
+    SetToolButton<DialogAttach>(checked, Tool::Attach, QStringLiteral("group_plus_cursor.png"), tooltip,
+                                &MainWindow::ClosedDialogAttach);
+    LogPatternToolUsed(checked, QStringLiteral("Attach tool"));
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolRotation(bool checked)
 {
     ToolSelectOperationObjects();
@@ -702,6 +718,27 @@ void MainWindow::ClosedDialogGroup(int result)
             auto *addGroup = new AddGroup(group, doc);
             connect(addGroup, &AddGroup::UpdateGroups, m_groupsWidget, &VWidgetGroups::UpdateGroups);
             VAbstractApplication::VApp()->getUndoStack()->push(addGroup);
+        }
+    }
+    ArrowTool(true);
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ClosedDialogAttach(int result)
+{
+    SCASSERT(m_dialogTool != nullptr)
+    if (result == QDialog::Accepted)
+    {
+        const QPointer<DialogAttach> dialog = qobject_cast<DialogAttach *>(m_dialogTool);
+        SCASSERT(not dialog.isNull())
+
+        if (const QDomElement attachment =
+                doc->CreateAttachment(pattern->getNextId(), dialog->GetName(), dialog->GetGroup());
+                !attachment.isNull())
+        {
+            auto *addAttachment = new AddAttachment(attachment, doc);
+            VAbstractApplication::VApp()->getUndoStack()->push(addAttachment);
         }
     }
     ArrowTool(true);
@@ -997,6 +1034,11 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     }
 
     CancelTool();
+    doc->ClearIsolation();
+    if (m_breadcrumb != nullptr)
+    {
+        m_breadcrumb->hide();
+    }
     emit EnableItemMove(false);
     m_currentTool = m_lastUsedTool = t;
 
@@ -1015,7 +1057,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Check if need to extend.");
 
     switch (t)
     {
@@ -1092,7 +1134,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
                 }
                 dialogTool->ChosenObject(id, type);
             });
-    if (t == Tool::Group)
+    if (t == Tool::Group || t == Tool::Attach)
     {
         connect(scene, &VMainGraphicsScene::SelectedObject, m_dialogTool.data(), &DialogTool::SelectedObject);
     }

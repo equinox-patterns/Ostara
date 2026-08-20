@@ -39,7 +39,10 @@
 
 class QDockWidget;
 class QGraphicsItem;
+class QLabel;
+class QPushButton;
 class QScrollArea;
+class QWidget;
 class VFormula;
 
 struct PropertyDesc;
@@ -56,6 +59,11 @@ public:
     QGraphicsItem *currentItem() const { return m_currentItem; }
     auto ComboBoxPalette() const -> QPalette;
 
+    void ShowGroupOptions(const QString &groupName, quint32 attachmentId);
+
+signals:
+    void DetachAllRequested(quint32 attachmentId);
+
 public slots:
     void itemClicked(QGraphicsItem *item);
     void UpdateOptions();
@@ -70,6 +78,11 @@ private:
 
     VPE::VPropertyModel *m_PropertyModel{nullptr};
     VPE::VPropertyFormView *m_formView{nullptr};
+
+    QWidget *m_groupView{nullptr};
+    QLabel *m_groupNameLabel{nullptr};
+    QPushButton *m_detachButton{nullptr};
+    quint32 m_groupAttachmentId{};
 
     QGraphicsItem *m_currentItem{nullptr};
     QPointer<QObject> m_currentObject{};

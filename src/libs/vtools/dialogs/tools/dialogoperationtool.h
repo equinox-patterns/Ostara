@@ -119,6 +119,8 @@ protected:
     void FillSourceList();
     auto SaveSourceObjects() const -> QVector<SourceItem>;
 
+    void ToggleSourceObject(quint32 id);
+
     auto SourceObjects() -> QVector<SourceItem> & { return m_sourceObjects; }
     auto IsStage1() const -> bool { return stage1; }
     void SetStage1(bool value) { stage1 = value; }

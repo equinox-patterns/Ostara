@@ -109,6 +109,8 @@ using namespace VtoppbConstants;
 #include <QPalette>
 #include <QRegularExpression>
 #include <QScrollArea>
+#include <QLabel>
+#include <QPushButton>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"
@@ -172,6 +174,19 @@ VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QDockWidget *parent)
     auto *scroll = new QScrollArea(parent);
     scroll->setWidgetResizable(true);
 
+    // Group view (attachment): label + detach button, shown while navigating into a group.
+    m_groupView = new QWidget(parent);
+    m_groupView->hide();
+    auto *groupLayout = new QVBoxLayout(m_groupView);
+    groupLayout->setContentsMargins(0, 0, 0, 8);
+    groupLayout->setSpacing(4);
+    m_groupNameLabel = new QLabel(m_groupView);
+    m_detachButton = new QPushButton(tr("Detach all"), m_groupView);
+    groupLayout->addWidget(m_groupNameLabel);
+    groupLayout->addWidget(m_detachButton);
+    connect(m_detachButton, &QPushButton::clicked, this,
+            [this]() { emit DetachAllRequested(m_groupAttachmentId); });
+
     // Wrap QGroupBox in a widget whose layout has only top margin.
     // QSS margin-top on the QGroupBox is clipped by the scroll area's
     // viewport (widget is at y=0), so we compensate with a top-only layout margin.
@@ -179,6 +194,7 @@ VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QDockWidget *parent)
     auto *scrollLayout = new QVBoxLayout(scrollContents);
     scrollLayout->setContentsMargins(0, 8, 0, 0);
     scrollLayout->setSpacing(0);
+    scrollLayout->addWidget(m_groupView);
     scrollLayout->addWidget(m_formView);
     scroll->setWidget(scrollContents);
 
@@ -199,10 +215,20 @@ void VToolOptionsPropertyBrowser::ClearPropertyBrowser()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolOptionsPropertyBrowser::ShowGroupOptions(const QString &groupName, quint32 attachmentId)
+{
+    ClearPropertyBrowser();
+    m_formView->setTitle(QString());
+    m_groupAttachmentId = attachmentId;
+    m_groupNameLabel->setText(tr("Group: %1").arg(groupName));
+    m_groupView->show();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were used in switch.");
 
     switch (item->type())
     {
@@ -357,7 +383,7 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
@@ -532,7 +558,7 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
@@ -717,6 +743,7 @@ void VToolOptionsPropertyBrowser::itemClicked(QGraphicsItem *item)
     }
 
     ShowItemOptions(m_currentItem);
+    m_groupView->hide();
 
     if (auto *newPoint = dynamic_cast<VScenePoint *>(m_currentItem))
     {

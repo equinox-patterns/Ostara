@@ -258,6 +258,7 @@ enum class Tool : ToolVisHolderType
     TrueDarts,
     UnionDetails,
     Group,
+    Attach,
     Rotation,
     FlippingByLine,
     FlippingByAxis,

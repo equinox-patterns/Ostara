@@ -818,6 +818,21 @@ void VMainGraphicsView::focusOutEvent(QFocusEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void VMainGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    if (event->button() == Qt::LeftButton)
+    {
+        // Hit-test the double-clicked item and forward it (used for attachment isolation).
+        const QList<QGraphicsItem *> list = PrioritizeItems(items(event->pos()), mapToScene(event->pos()));
+        for (auto *item : list)
+        {
+            if (item != nullptr && item->acceptedMouseButtons() != Qt::NoButton &&
+                item->type() > QGraphicsItem::UserType && item->type() <= VScaledLine::Type)
+            {
+                emit itemDoubleClicked(item);
+                break;
+            }
+        }
+    }
+
     if (event->button() == Qt::LeftButton &&
         VAbstractApplication::VApp()->Settings()->IsDoubleClickZoomFitBestCurrentPP())
     {

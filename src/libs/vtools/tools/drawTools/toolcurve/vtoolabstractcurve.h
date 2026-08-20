@@ -79,6 +79,8 @@ public:
 
     void TriggerChoosed() override { emit ChoosedTool(m_id, sceneType); }
 
+    auto GetSceneType() const -> SceneObject;
+
     virtual void ShowHandles(bool show);
 
     auto GetLineColor() const -> QString;
@@ -133,7 +135,6 @@ protected:
     auto GetAcceptHoverEvents() const -> bool;
     void SetAcceptHoverEvents(bool newAcceptHoverEvents);
 
-    auto GetSceneType() const -> SceneObject;
     void SetSceneType(SceneObject newSceneType);
 
     static auto CorrectedSpline(const VSpline &spline, const SplinePointPosition &position, const QPointF &pos)

@@ -156,6 +156,7 @@ signals:
      */
     void MouseRelease();
     void itemClicked(QGraphicsItem *item);
+    void itemDoubleClicked(QGraphicsItem *item);
     void ScaleChanged(qreal scale);
     void ZoomFitBestCurrent();
     void RubberBandSelectionStarted();

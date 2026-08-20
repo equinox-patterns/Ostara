@@ -539,6 +539,81 @@ auto DialogOperationTool::SaveSourceObjects() const -> QVector<SourceItem>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void DialogOperationTool::ToggleSourceObject(quint32 id)
+{
+    // When isolating a single object, do not expand to the whole attachment.
+    // Otherwise, if the clicked object belongs to an attachment, toggle the whole group.
+    const auto attachmentItems = m_doc->IsIsolated() ? QVector<QPair<quint32, quint32>>{}
+                                                     : m_doc->GetAttachmentItemsForObject(id);
+
+    QVector<quint32> group;
+    if (attachmentItems.isEmpty())
+    {
+        group.append(id);
+    }
+    else
+    {
+        group.reserve(attachmentItems.size());
+        for (const auto &item : attachmentItems)
+        {
+            group.append(item.first); // object id
+        }
+    }
+
+    // Any member already present in the source list => the group is being removed, not added.
+    bool present = false;
+    for (const quint32 gid : group)
+    {
+        for (const SourceItem &sItem : m_sourceObjects)
+        {
+            if (sItem.id == gid)
+            {
+                present = true;
+                break;
+            }
+        }
+        if (present)
+        {
+            break;
+        }
+    }
+
+    if (present)
+    {
+        for (const quint32 gid : group)
+        {
+            for (int i = 0; i < m_sourceObjects.size(); ++i)
+            {
+                if (m_sourceObjects.at(i).id == gid)
+                {
+                    m_sourceObjects.removeAt(i);
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        for (const quint32 gid : group)
+        {
+            bool alreadyThere = false;
+            for (const SourceItem &sItem : m_sourceObjects)
+            {
+                if (sItem.id == gid)
+                {
+                    alreadyThere = true;
+                    break;
+                }
+            }
+            if (!alreadyThere)
+            {
+                m_sourceObjects.push_back(SourceItem{gid});
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto DialogOperationTool::SourceObjectsChanged() const -> bool
 {
     if (!m_sourceBaselineCaptured)

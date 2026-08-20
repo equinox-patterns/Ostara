@@ -39,6 +39,7 @@
 #include "../../undocommands/addtocalc.h"
 #include "../../undocommands/savetooloptions.h"
 #include "../../undocommands/undogroup.h"
+#include "../../undocommands/undoattachment.h"
 #include "../ifc/exception/vexceptionwrongid.h"
 #include "../ifc/ifcdef.h"
 #include "../ifc/xml/vabstractpattern.h"
@@ -415,6 +416,124 @@ void VDrawTool::HandleRemoveFromGroup(const QAction *selectedAction, quint32 ite
             window,
             &VAbstractMainWindow::UpdateVisibilityGroups);
     VAbstractApplication::VApp()->getUndoStack()->push(removeItemFromGroup);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDrawTool::CreateAddToAttachmentMenu(QMenu &menu, quint32 itemId) -> QActionGroup *
+{
+    auto *actionsAddToAttachment = new QActionGroup(this);
+
+    // An object belongs to at most one attachment: only offer "add" when it is not attached yet.
+    if (not doc->GetAttachmentItemsForObject(itemId).isEmpty())
+    {
+        return actionsAddToAttachment;
+    }
+
+    QMap<quint32, QString> attachmentsNotContainingItem = doc->GetAttachmentsContainingItem(this->getId(), itemId, false);
+
+    if (attachmentsNotContainingItem.empty())
+    {
+        return actionsAddToAttachment;
+    }
+
+    QMenu *menuAddToAttachment = menu.addMenu(FromTheme(VThemeIcon::ListAdd), tr("Add to group"));
+
+    auto list = QStringList(attachmentsNotContainingItem.values());
+    list.sort(Qt::CaseInsensitive);
+
+    for (const auto &name : list)
+    {
+        QAction *actionAddToAttachment = menuAddToAttachment->addAction(name);
+        actionsAddToAttachment->addAction(actionAddToAttachment);
+        const quint32 attachmentId = attachmentsNotContainingItem.key(name);
+        actionAddToAttachment->setData(attachmentId);
+
+        // Remove the processed attachment to handle duplicate names correctly
+        attachmentsNotContainingItem.remove(attachmentId);
+    }
+
+    return actionsAddToAttachment;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDrawTool::CreateRemoveFromAttachmentMenu(QMenu &menu, quint32 itemId) -> QActionGroup *
+{
+    QMap<quint32, QString> attachmentsContainingItem = doc->GetAttachmentsContainingItem(this->getId(), itemId, true);
+
+    auto *actionsRemoveFromAttachment = new QActionGroup(this);
+
+    if (attachmentsContainingItem.empty())
+    {
+        return actionsRemoveFromAttachment;
+    }
+
+    QMenu *menuRemoveFromAttachment = menu.addMenu(FromTheme(VThemeIcon::ListRemove), tr("Remove from group"));
+
+    auto list = QStringList(attachmentsContainingItem.values());
+    list.sort(Qt::CaseInsensitive);
+
+    for (const auto &name : list)
+    {
+        QAction *actionRemoveFromAttachment = menuRemoveFromAttachment->addAction(name);
+        actionsRemoveFromAttachment->addAction(actionRemoveFromAttachment);
+        const quint32 attachmentId = attachmentsContainingItem.key(name);
+        actionRemoveFromAttachment->setData(attachmentId);
+
+        // Remove the processed attachment to handle duplicate names correctly
+        attachmentsContainingItem.remove(attachmentId);
+    }
+
+    return actionsRemoveFromAttachment;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDrawTool::CreateDetachAllAction(QMenu &menu, quint32 itemId) -> QAction *
+{
+    QAction *actionDetachAll = menu.addAction(FromTheme(VThemeIcon::ListRemove), tr("Detach all"));
+    if (doc->GetAttachmentsContainingItem(this->getId(), itemId, true).isEmpty())
+    {
+        actionDetachAll->setVisible(false);
+    }
+    return actionDetachAll;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VDrawTool::HandleAddToAttachment(QAction const *selectedAction, quint32 itemId)
+{
+    quint32 const attachmentId = selectedAction->data().toUInt();
+    QDomElement const item = doc->AddItemToAttachment(this->getId(), itemId, attachmentId);
+
+    auto *scene = qobject_cast<VMainGraphicsScene *>(VAbstractValApplication::VApp()->getCurrentScene());
+    SCASSERT(scene != nullptr)
+    scene->clearSelection();
+
+    auto *addItemToAttachment = new AddItemToAttachment(item, doc, attachmentId);
+    VAbstractApplication::VApp()->getUndoStack()->push(addItemToAttachment);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VDrawTool::HandleRemoveFromAttachment(QAction const *selectedAction, quint32 itemId)
+{
+    quint32 const attachmentId = selectedAction->data().toUInt();
+    QDomElement const item = doc->RemoveItemFromAttachment(this->getId(), itemId, attachmentId);
+
+    auto *removeItemFromAttachment = new RemoveItemFromAttachment(item, doc, attachmentId);
+    VAbstractApplication::VApp()->getUndoStack()->push(removeItemFromAttachment);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VDrawTool::HandleDetachAll(quint32 itemId)
+{
+    const QMap<quint32, QString> attachmentsContainingItem = doc->GetAttachmentsContainingItem(this->getId(), itemId, true);
+    if (attachmentsContainingItem.isEmpty())
+    {
+        return;
+    }
+
+    const quint32 attachmentId = attachmentsContainingItem.firstKey();
+
+    auto *delAttachment = new DelAttachment(doc, attachmentId);
+    VAbstractApplication::VApp()->getUndoStack()->push(delAttachment);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

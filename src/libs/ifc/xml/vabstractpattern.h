@@ -124,6 +124,14 @@ struct VGroupData
     QVector<QPair<vidtype, vidtype>> items{};
 };
 
+// Attachment = association of objects in a named group (type Illustrator), purely visual.
+// Distinct from VGroupData ("group" = visibility, exposed as "Layer"). See AttachTool.md.
+struct VAttachmentData
+{
+    QString name{};
+    QVector<QPair<vidtype, vidtype>> items{}; // (objectId, toolId)
+};
+
 QT_WARNING_POP
 
 QT_WARNING_PUSH
@@ -253,6 +261,26 @@ public:
 
     static auto FilterGroupTags(const QString &tags) -> QStringList;
 
+    void ParseAttachments(const QDomElement &domElement);
+    auto CreateAttachments(const QString &patternPieceName = QString()) -> QDomElement;
+    auto CreateAttachment(quint32 id, const QString &name, const QMap<quint32, quint32> &attachmentData) -> QDomElement;
+
+    auto GetAttachmentName(quint32 id) -> QString;
+    void SetAttachmentName(quint32 id, const QString &name);
+
+    auto GetAttachments(const QString &patternPieceName = QString()) -> QMap<quint32, VAttachmentData>;
+    auto GetAttachmentsContainingItem(quint32 toolId, quint32 objectId, bool containItem) -> QMap<quint32, QString>;
+    auto GetAttachmentItemsForObject(quint32 objectId) -> QVector<QPair<quint32, quint32>>;
+    auto AddItemToAttachment(quint32 toolId, quint32 objectId, quint32 attachmentId) -> QDomElement;
+    auto RemoveItemFromAttachment(quint32 toolId, quint32 objectId, quint32 attachmentId) -> QDomElement;
+
+    auto GetIsolatedAttachment() const -> quint32;
+    void SetIsolatedAttachment(quint32 attachmentId);
+    auto GetIsolatedObject() const -> quint32;
+    void SetIsolatedObject(quint32 objectId);
+    void ClearIsolation();
+    auto IsIsolated() const -> bool;
+
     auto PieceDrawName(quint32 id) -> QString;
 
     virtual auto GetCompleteData() const -> VContainer;
@@ -277,6 +305,9 @@ public:
     static const QString TagGroups;
     static const QString TagGroup;
     static const QString TagGroupItem;
+    static const QString TagAttachments;
+    static const QString TagAttachment;
+    static const QString TagAttachmentItem;
     static const QString TagPoint;
     static const QString TagSpline;
     static const QString TagArc;
@@ -397,6 +428,14 @@ signals:
      * @brief UpdateGroups emit if the groups have been updated
      */
     void UpdateGroups();
+    /**
+     * @brief UpdateAttachments emit if the attachments have been updated
+     */
+    void UpdateAttachments();
+    /**
+     * @brief IsolationChanged emit if the attachment isolation state has changed.
+     */
+    void IsolationChanged();
     void UpdateToolTip();
 
     void BackgroundImageTransformationChanged(QUuid id);
@@ -458,6 +497,8 @@ protected:
 
     auto GroupHasItem(const QDomElement &groupDomElement, quint32 toolId, quint32 objectId) -> bool;
 
+    auto AttachmentHasItem(const QDomElement &attachmentDomElement, quint32 toolId, quint32 objectId) -> bool;
+
     auto SaveSchema() const -> QString override;
 
     auto ReadUnits() const -> Unit;
@@ -476,6 +517,11 @@ private:
     VPatternGraph *m_patternGraph;
 
     VPatternBlockMapper *m_patternBlockMapper;
+
+    /** @brief isolated attachment id — transient isolation state (type Illustrator), not persisted. */
+    quint32 m_isolatedAttachmentId{NULL_ID};
+    /** @brief isolated object id — transient isolation state (type Illustrator), not persisted. */
+    quint32 m_isolatedObjectId{NULL_ID};
 
     QList<QFutureWatcher<void> *> m_formulaDependenciesWatchers{};
     mutable QMutex m_watchersMutex{};

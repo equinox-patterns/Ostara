@@ -30,6 +30,7 @@
 #include "widgets/DockWrapper.h"
 #include "widgets/DrawToolBar.h"
 #include "widgets/TopBar.h"
+#include "widgets/BreadcrumbBar.h"
 
 #include <QAction>
 #include <QComboBox>
@@ -188,6 +189,7 @@
 #include "../vtools/undocommands/image/deletebackgroundimage.h"
 #include "../vtools/undocommands/renamepp.h"
 #include "../vtools/undocommands/undogroup.h"
+#include "../vtools/undocommands/undoattachment.h"
 #include "../vwidgets/vabstractsimple.h"
 #include "../vwidgets/vgraphicssimpletextitem.h"
 #include "../vwidgets/vmaingraphicsscene.h"
@@ -363,6 +365,7 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("parallel_curve"),               ui->actionParallelCurveTool},
         {QStringLiteral("graduated_curve_offseting"),    ui->actionGraduatedCurveTool},
         {QStringLiteral("group_plus"),                   ui->actionGroupTool},
+        {QStringLiteral("attach"),                       ui->actionAttachTool},
         {QStringLiteral("flipping_axis"),                ui->actionFlippingByAxisTool},
         {QStringLiteral("flipping_line"),                ui->actionFlippingByLineTool},
         {QStringLiteral("rotation"),                     ui->actionRotationTool},
@@ -409,7 +412,17 @@ MainWindow::MainWindow(QWidget *parent)
         oldLayout->setContentsMargins(0, 0, 0, 0);
         oldLayout->setSpacing(0);
     }
-    m_stackedWidget->addWidget(oldCentral);      // index 0 — editor (wraps ui->view)
+
+    // Wrap the editor in a vertical layout with the attachment breadcrumb above the canvas.
+    m_breadcrumb = new BreadcrumbBar(this);
+    auto *editorContainer = new QWidget(this);
+    auto *editorLayout = new QVBoxLayout(editorContainer);
+    editorLayout->setContentsMargins(0, 0, 0, 0);
+    editorLayout->setSpacing(0);
+    editorLayout->addWidget(m_breadcrumb);
+    editorLayout->addWidget(oldCentral);
+
+    m_stackedWidget->addWidget(editorContainer);  // index 0 — editor (wraps ui->view)
     m_stackedWidget->addWidget(m_welcomeScreen); // index 1 — welcome
     setCentralWidget(m_stackedWidget);
     m_stackedWidget->setCurrentWidget(m_welcomeScreen); // start on welcome
@@ -1364,7 +1377,73 @@ void MainWindow::ScaleChanged(qreal scale)
 
     RefreshSceneItemPens(scene);
 }
-// Extracted: 
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::HandleItemClicked(QGraphicsItem *item)
+{
+    if (doc == nullptr || m_breadcrumb == nullptr)
+    {
+        m_toolOptions->itemClicked(item);
+        return;
+    }
+
+    const vidtype id = VWidgetDependencies::ItemToId(item);
+
+    // Clicking a member of an attachment enters the group level.
+    if (id != NULL_ID && not doc->GetAttachmentItemsForObject(id).isEmpty())
+    {
+        const QMap<quint32, QString> attachments = doc->GetAttachmentsContainingItem(id, id, true);
+        if (not attachments.isEmpty())
+        {
+            const quint32 attachmentId = attachments.firstKey();
+            const QString groupName = attachments.first();
+            doc->SetIsolatedAttachment(attachmentId);
+            m_toolOptions->ShowGroupOptions(groupName, attachmentId);
+            m_breadcrumb->Update(groupName, QString());
+            return;
+        }
+    }
+
+    // Otherwise: normal object selection, back to the canvas level.
+    doc->ClearIsolation();
+    m_toolOptions->itemClicked(item);
+    m_breadcrumb->hide();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ItemDoubleClicked(QGraphicsItem *item)
+{
+    if (doc == nullptr || m_breadcrumb == nullptr)
+    {
+        return;
+    }
+
+    const vidtype id = VWidgetDependencies::ItemToId(item);
+    if (id == NULL_ID || doc->GetAttachmentItemsForObject(id).isEmpty())
+    {
+        return;
+    }
+
+    const QMap<quint32, QString> attachments = doc->GetAttachmentsContainingItem(id, id, true);
+    const quint32 attachmentId = attachments.isEmpty() ? NULL_ID : attachments.firstKey();
+    const QString groupName = attachments.isEmpty() ? tr("Group") : attachments.first();
+
+    doc->SetIsolatedAttachment(attachmentId);
+    doc->SetIsolatedObject(id);
+
+    m_toolOptions->itemClicked(item);
+
+    QString objectName = tr("Object");
+    if (pattern != nullptr)
+    {
+        if (const auto gobject = pattern->GetGObject(id); not gobject.isNull())
+        {
+            objectName = gobject->ObjectName();
+        }
+    }
+    m_breadcrumb->Update(groupName, objectName);
+}
+// Extracted:
 
 
 // Extracted: 
@@ -1703,7 +1782,7 @@ void MainWindow::OpenAt(QAction *where)
 void MainWindow::InitToolButtons()
 {
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Check if all tools were connected.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Check if all tools were connected.");
 
     auto InitToolButton = [this](VShortcutAction type, QAction *action, void (MainWindow::*slotFunction)(bool))
     {
@@ -1763,6 +1842,7 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ToolArcWithLength, ui->actionArcWithLengthTool, &MainWindow::ToolArcWithLength);
     InitToolButton(VShortcutAction::ToolTrueDarts, ui->actionTrueDartsTool, &MainWindow::ToolTrueDarts);
     InitToolButton(VShortcutAction::ToolGroup, ui->actionGroupTool, &MainWindow::ToolGroup);
+    InitToolButton(VShortcutAction::ToolAttach, ui->actionAttachTool, &MainWindow::ToolAttach);
     InitToolButton(VShortcutAction::ToolRotation, ui->actionRotationTool, &MainWindow::ToolRotation);
     InitToolButton(VShortcutAction::ToolFlippingByLine, ui->actionFlippingByLineTool, &MainWindow::ToolFlippingByLine);
     InitToolButton(VShortcutAction::ToolFlippingByAxis, ui->actionFlippingByAxisTool, &MainWindow::ToolFlippingByAxis);
@@ -1828,7 +1908,7 @@ void MainWindow::MouseMove(const QPointF &scenePos)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1995,6 +2075,9 @@ void MainWindow::CancelTool()
             break;
         case Tool::Group:
             ui->actionGroupTool->setChecked(false);
+            break;
+        case Tool::Attach:
+            ui->actionAttachTool->setChecked(false);
             break;
         case Tool::Rotation:
             ui->actionRotationTool->setChecked(false);
@@ -3501,7 +3584,7 @@ void MainWindow::SetEnableTool(bool enable)
     QT_WARNING_POP
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
 
     // Drawing Tools
     ui->actionEndLineTool->setEnabled(drawTools);
@@ -3539,6 +3622,7 @@ void MainWindow::SetEnableTool(bool enable)
     ui->actionArcWithLengthTool->setEnabled(drawTools);
     ui->actionTrueDartsTool->setEnabled(drawTools);
     ui->actionGroupTool->setEnabled(drawTools);
+    ui->actionAttachTool->setEnabled(drawTools);
     ui->actionRotationTool->setEnabled(drawTools);
     ui->actionFlippingByLineTool->setEnabled(drawTools);
     ui->actionFlippingByAxisTool->setEnabled(drawTools);
@@ -3714,7 +3798,7 @@ void MainWindow::CreateMenus()
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -3904,6 +3988,10 @@ void MainWindow::LastUsedTool()
             ui->actionGroupTool->setChecked(true);
             ToolGroup(true);
             break;
+        case Tool::Attach:
+            ui->actionAttachTool->setChecked(true);
+            ToolAttach(true);
+            break;
         case Tool::Rotation:
             ui->actionRotationTool->setChecked(true);
             ToolRotation(true);
@@ -4041,7 +4129,30 @@ void MainWindow::InitDocksContain()
         ui->dockWidgetToolOptions->setWidget(root);
     }
 
-    connect(ui->view, &VMainGraphicsView::itemClicked, m_toolOptions, &VToolOptionsPropertyBrowser::itemClicked);
+    connect(ui->view, &VMainGraphicsView::itemClicked, this, &MainWindow::HandleItemClicked);
+    connect(ui->view, &VMainGraphicsView::itemDoubleClicked, this, &MainWindow::ItemDoubleClicked);
+    connect(m_breadcrumb, &BreadcrumbBar::canvasClicked, this, [this]()
+            {
+                doc->ClearIsolation();
+                m_breadcrumb->hide();
+                m_toolOptions->itemClicked(nullptr);
+            });
+    connect(m_breadcrumb, &BreadcrumbBar::groupClicked, this, [this]()
+            {
+                const quint32 attachmentId = doc->GetIsolatedAttachment();
+                doc->SetIsolatedAttachment(attachmentId);
+                const QString groupName = doc->GetAttachmentName(attachmentId);
+                m_toolOptions->ShowGroupOptions(groupName, attachmentId);
+                m_breadcrumb->Update(groupName, QString());
+            });
+    connect(m_toolOptions, &VToolOptionsPropertyBrowser::DetachAllRequested, this, [this](quint32 attachmentId)
+            {
+                auto *delAttachment = new DelAttachment(doc, attachmentId);
+                VAbstractApplication::VApp()->getUndoStack()->push(delAttachment);
+                doc->ClearIsolation();
+                m_breadcrumb->hide();
+                m_toolOptions->itemClicked(nullptr);
+            });
     connect(doc, &VPattern::FullUpdateFromFile, m_toolOptions, &VToolOptionsPropertyBrowser::UpdateOptions,
             Qt::QueuedConnection);
 

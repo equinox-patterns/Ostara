@@ -688,7 +688,7 @@ void VPattern::ParseRootElement(const Document &parse, const QDomNode &node)
  */
 void VPattern::ParseDrawElement(const QDomNode &node, const Document &parse)
 {
-    QStringList const tags{TagCalculation, TagModeling, TagDetails, TagGroups};
+    QStringList const tags{TagCalculation, TagModeling, TagDetails, TagGroups, TagAttachments};
     QDomNode domNode = node.firstChild();
     while (not domNode.isNull())
     {
@@ -719,6 +719,9 @@ void VPattern::ParseDrawElement(const QDomNode &node, const Document &parse)
                 break;
             case 3: // TagGroups
                 ParseGroups(domElement);
+                break;
+            case 4: // TagAttachments
+                ParseAttachments(domElement);
                 break;
             default:
                 throw VException(tr("Wrong tag name '%1'.").arg(domElement.tagName()));
@@ -883,7 +886,7 @@ void VPattern::DrawToolsCommonAttributes(const QDomElement &domElement, quint32 
 auto VPattern::ActiveDrawBoundingRect() const -> QRectF
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were used.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were used.");
 
     QRectF rec;
 
@@ -976,6 +979,7 @@ auto VPattern::ActiveDrawBoundingRect() const -> QRectF
             case Tool::NodeSpline:
             case Tool::NodeSplinePath:
             case Tool::Group:
+            case Tool::Attach:
             case Tool::PiecePath:
             case Tool::Pin:
             case Tool::InsertNode:
