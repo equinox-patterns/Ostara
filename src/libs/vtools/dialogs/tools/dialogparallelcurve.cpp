@@ -119,6 +119,33 @@ DialogParallelCurve::DialogParallelCurve(const VContainer *data, VAbstractPatter
     lineSeparatorLayout->addWidget(lineSeparator);
     ui->verticalLayout->insertLayout(1, lineSeparatorLayout);
 
+    // Start/End point creation controls.
+    m_startShowLabelCheckbox = AddShowPointNameCheckbox(ui->formLayoutStartPoint);
+    connect(m_startShowLabelCheckbox, &QCheckBox::toggled, this, [this](bool checked) { m_showLabelStart = checked; });
+
+    m_endShowLabelCheckbox = AddShowPointNameCheckbox(ui->formLayoutEndPoint);
+    connect(m_endShowLabelCheckbox, &QCheckBox::toggled, this, [this](bool checked) { m_showLabelEnd = checked; });
+
+    connect(ui->checkBoxCreateStartPoint, &QCheckBox::toggled, this, [this](bool checked) {
+        if (checked && ui->lineEditStartPointName->text().isEmpty())
+        {
+            ui->lineEditStartPointName->setText(
+                VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
+        }
+        UpdatePointControls();
+    });
+
+    connect(ui->checkBoxCreateEndPoint, &QCheckBox::toggled, this, [this](bool checked) {
+        if (checked && ui->lineEditEndPointName->text().isEmpty())
+        {
+            ui->lineEditEndPointName->setText(
+                VAbstractValApplication::VApp()->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
+        }
+        UpdatePointControls();
+    });
+
+    UpdatePointControls();
+
     vis = new VisToolParallelCurve(&this->data);
 
     ui->tabWidget->setCurrentIndex(0);
@@ -229,6 +256,61 @@ void DialogParallelCurve::SetAliasSuffix(const QString &alias)
 auto DialogParallelCurve::GetAliasSuffix() const -> QString
 {
     return ui->lineEditAlias->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogParallelCurve::IsCreateStartPoint() const -> bool
+{
+    return ui->checkBoxCreateStartPoint->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogParallelCurve::IsCreateEndPoint() const -> bool
+{
+    return ui->checkBoxCreateEndPoint->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogParallelCurve::GetStartPointName() const -> QString
+{
+    return ui->lineEditStartPointName->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogParallelCurve::GetEndPointName() const -> QString
+{
+    return ui->lineEditEndPointName->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogParallelCurve::GetStartShowLabel() const -> bool
+{
+    return m_showLabelStart;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogParallelCurve::GetEndShowLabel() const -> bool
+{
+    return m_showLabelEnd;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogParallelCurve::UpdatePointControls()
+{
+    const bool startOn = ui->checkBoxCreateStartPoint->isChecked();
+    const bool endOn = ui->checkBoxCreateEndPoint->isChecked();
+
+    ui->lineEditStartPointName->setEnabled(startOn);
+    ui->lineEditEndPointName->setEnabled(endOn);
+
+    if (m_startShowLabelCheckbox != nullptr)
+    {
+        m_startShowLabelCheckbox->setEnabled(startOn);
+    }
+    if (m_endShowLabelCheckbox != nullptr)
+    {
+        m_endShowLabelCheckbox->setEnabled(endOn);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

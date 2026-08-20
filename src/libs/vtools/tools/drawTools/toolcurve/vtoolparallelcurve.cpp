@@ -35,6 +35,7 @@
 #include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/vsplinepath.h"
 #include "../vpatterndb/vformula.h"
+#include "../toolpoint/toolsinglepoint/vtoolcurvepoint.h"
 #include "ifcdef.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -85,6 +86,12 @@ auto VToolParallelCurve::Create(const QPointer<DialogTool> &dialog,
     initData.typeCreation = Source::FromGui;
     initData.notes = dialogTool->GetNotes();
     initData.aliasSuffix = dialogTool->GetAliasSuffix();
+    initData.createStartPoint = dialogTool->IsCreateStartPoint();
+    initData.createEndPoint = dialogTool->IsCreateEndPoint();
+    initData.startPointName = dialogTool->GetStartPointName();
+    initData.endPointName = dialogTool->GetEndPointName();
+    initData.startShowLabel = dialogTool->GetStartShowLabel();
+    initData.endShowLabel = dialogTool->GetEndShowLabel();
 
     VToolParallelCurve *curve = Create(initData);
     if (curve != nullptr)
@@ -141,6 +148,40 @@ auto VToolParallelCurve::Create(VToolParallelCurveInitData &initData) -> VToolPa
         initData.scene->addItem(path);
         InitSplinePathToolConnections(initData.scene, path);
         VAbstractPattern::AddTool(initData.id, path);
+
+        // Create the optional start/end points (GUI creation only).
+        if (initData.typeCreation == Source::FromGui)
+        {
+            if (initData.createStartPoint)
+            {
+                VToolCurvePointInitData pointData;
+                pointData.splineId = initData.id;
+                pointData.position = CurvePointPosition::Start;
+                pointData.name = initData.startPointName;
+                pointData.showLabel = initData.startShowLabel;
+                pointData.scene = initData.scene;
+                pointData.doc = initData.doc;
+                pointData.data = initData.data;
+                pointData.parse = initData.parse;
+                pointData.typeCreation = Source::FromGui;
+                VToolCurvePoint::Create(pointData);
+            }
+            if (initData.createEndPoint)
+            {
+                VToolCurvePointInitData pointData;
+                pointData.splineId = initData.id;
+                pointData.position = CurvePointPosition::End;
+                pointData.name = initData.endPointName;
+                pointData.showLabel = initData.endShowLabel;
+                pointData.scene = initData.scene;
+                pointData.doc = initData.doc;
+                pointData.data = initData.data;
+                pointData.parse = initData.parse;
+                pointData.typeCreation = Source::FromGui;
+                VToolCurvePoint::Create(pointData);
+            }
+        }
+
         return path;
     }
     return nullptr;

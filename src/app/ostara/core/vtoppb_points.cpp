@@ -38,6 +38,7 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolarcpoint.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolcurvepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolnormal.h"
@@ -436,6 +437,7 @@ auto ShoulderPointProperties() -> std::vector<PropertyDesc>;
 auto TriangleProperties() -> std::vector<PropertyDesc>;
 auto LineIntersectAxisProperties() -> std::vector<PropertyDesc>;
 auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>;
+auto CurvePointProperties() -> std::vector<PropertyDesc>;
 
 // ====== Tool descriptors ======
 
@@ -445,6 +447,15 @@ auto ArcPointProperties() -> std::vector<PropertyDesc>
     return {
         MakeNotes<VToolArcPoint>(T("Notes:")),
         MakePointGroup<VToolArcPoint>(T("Point"), T("Point name:"), T("Show Point name")),
+    };
+}
+
+// --- VToolCurvePoint (point at offset curve start/end) ---
+auto CurvePointProperties() -> std::vector<PropertyDesc>
+{
+    return {
+        MakeNotes<VToolCurvePoint>(T("Notes:")),
+        MakePointGroup<VToolCurvePoint>(T("Point"), T("Point name:"), T("Show Point name")),
     };
 }
 

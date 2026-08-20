@@ -126,6 +126,7 @@ extern const QString AttrCCenter;
 extern const QString AttrTangent;
 extern const QString AttrCRadius;
 extern const QString AttrArc;
+extern const QString AttrSpline;
 extern const QString AttrSuffix;
 extern const QString AttrItem;
 extern const QString AttrIdObject;

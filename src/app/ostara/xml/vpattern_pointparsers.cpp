@@ -59,6 +59,7 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolarcpoint.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolcurvepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromarcandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromcircleandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.h"
@@ -119,7 +120,9 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
                                      VToolPin::ToolType,                         /*23*/
                                      VToolPlaceLabel::ToolType,                  /*24*/
                                      VToolArcPoint::ToolTypeStart,               /*25*/
-                                     VToolArcPoint::ToolTypeEnd});               /*26*/
+                                     VToolArcPoint::ToolTypeEnd,                 /*26*/
+                                     VToolCurvePoint::ToolTypeStart,             /*27*/
+                                     VToolCurvePoint::ToolTypeEnd});             /*28*/
     switch (points.indexOf(type))
     {
         case 0: // VToolBasePoint::ToolType
@@ -202,6 +205,12 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
             break;
         case 26: // VToolArcPoint::ToolTypeEnd
             ParseToolArcPoint(scene, domElement, parse, false);
+            break;
+        case 27: // VToolCurvePoint::ToolTypeStart
+            ParseToolCurvePoint(scene, domElement, parse, true);
+            break;
+        case 28: // VToolCurvePoint::ToolTypeEnd
+            ParseToolCurvePoint(scene, domElement, parse, false);
             break;
         default:
             throw VException(tr("Unknown point type '%1'.").arg(type));
@@ -1490,6 +1499,36 @@ void VPattern::ParseToolArcPoint(VMainGraphicsScene *scene, const QDomElement &d
     catch (const VExceptionBadId &e)
     {
         VExceptionObjectError excep(tr("Error creating or updating arc point"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseToolCurvePoint(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse,
+                                   bool isStart)
+{
+    SCASSERT(scene != nullptr)
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        VToolCurvePointInitData initData;
+        initData.scene = scene;
+        initData.doc = this;
+        initData.data = data;
+        initData.parse = parse;
+        initData.typeCreation = Source::FromFile;
+
+        PointsCommonAttributes(domElement, initData);
+        initData.splineId = GetParametrUInt(domElement, AttrSpline, NULL_ID_STR);
+        initData.position = isStart ? CurvePointPosition::Start : CurvePointPosition::End;
+
+        VToolCurvePoint::Create(initData);
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating curve point"), domElement);
         excep.AddMoreInformation(e.ErrorMessage());
         throw excep;
     }

@@ -71,6 +71,8 @@ public:
 
     void RefreshLine();
 
+    void SetActivePoint(bool active);
+
 protected:
     /** @brief namePoint point label. */
     VGraphicsSimpleTextItem *m_namePoint; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
@@ -80,6 +82,7 @@ protected:
 
     bool m_onlyPoint{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_isHovered{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+    bool m_selected{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_alwaysHovered{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_showLabel{false};  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 

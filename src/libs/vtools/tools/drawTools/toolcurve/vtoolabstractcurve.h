@@ -392,6 +392,11 @@ public:
 
     auto CurveName() const -> QString;
 
+    auto HasStartPoint() const -> bool;
+    auto HasEndPoint() const -> bool;
+    void SetCreateStartPoint(bool create);
+    void SetCreateEndPoint(bool create);
+
 protected:
     struct ToolChanges
     {
@@ -423,6 +428,7 @@ private:
 
     void UpdateNameField(VToolAbstractOffsetCurveField field, const QString &value);
     auto HasConflict(const QString &value, VToolAbstractOffsetCurveField currentField) const -> bool;
+    auto FindPointId(bool isStart) const -> quint32;
 };
 
 //---------------------------------------------------------------------------------------------------------------------

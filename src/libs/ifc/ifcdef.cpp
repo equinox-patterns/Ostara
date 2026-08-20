@@ -125,6 +125,7 @@ const QString AttrCCenter = QStringLiteral("cCenter");
 const QString AttrTangent = QStringLiteral("tangent");
 const QString AttrCRadius = QStringLiteral("cRadius");
 const QString AttrArc = QStringLiteral("arc");
+const QString AttrSpline = QStringLiteral("spline");
 const QString AttrSuffix = QStringLiteral("suffix");
 const QString AttrItem = QStringLiteral("item");
 const QString AttrIdObject = QStringLiteral("idObject");

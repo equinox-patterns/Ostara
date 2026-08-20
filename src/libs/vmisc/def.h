@@ -281,6 +281,7 @@ enum class Tool : ToolVisHolderType
     Curve,
     CutCurve,
     ArcPoint,
+    CurvePoint,
     LAST_ONE_DO_NOT_USE // add new stuffs above this, this constant must be last and never used
 };
 

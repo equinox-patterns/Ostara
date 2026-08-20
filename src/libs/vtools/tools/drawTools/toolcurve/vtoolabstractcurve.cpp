@@ -57,6 +57,7 @@
 #include "vexception.h"
 #include "vscenestylesheet.h"
 #include "../toolpoint/toolsinglepoint/vtoolarcpoint.h"
+#include "../toolpoint/toolsinglepoint/vtoolcurvepoint.h"
 #include "../../../undocommands/deltool.h"
 #include "../ifc/xml/vpatterngraph.h"
 #include "../vmisc/vabstractapplication.h"
@@ -814,6 +815,122 @@ auto VToolAbstractOffsetCurve::HasConflict(const QString &value, VToolAbstractOf
     {
         // Alias cannot conflict with name
         return value == currentName;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractOffsetCurve::FindPointId(bool isStart) const -> quint32
+{
+    const auto position = isStart ? CurvePointPosition::Start : CurvePointPosition::End;
+
+    const QVector<VNode> deps = doc->PatternGraph()->GetDependentNodes(m_id, [](const VNode &node) {
+        return node.type == VNodeType::TOOL;
+    });
+
+    for (const auto &node : deps)
+    {
+        if (auto *point = qobject_cast<VToolCurvePoint *>(VAbstractPattern::getTool(node.id)))
+        {
+            if (point->GetPosition() == position)
+            {
+                return node.id;
+            }
+        }
+    }
+
+    return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractOffsetCurve::HasStartPoint() const -> bool
+{
+    return FindPointId(true) != NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractOffsetCurve::HasEndPoint() const -> bool
+{
+    return FindPointId(false) != NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAbstractOffsetCurve::SetCreateStartPoint(bool create)
+{
+    if (create)
+    {
+        if (not HasStartPoint())
+        {
+            VToolCurvePointInitData pointData;
+            pointData.splineId = m_id;
+            pointData.position = CurvePointPosition::Start;
+            pointData.name = doc->GenerateLabel(LabelType::NewLabel);
+            pointData.showLabel = false;
+            pointData.scene = qobject_cast<VMainGraphicsScene *>(scene());
+            pointData.doc = doc;
+            pointData.data = getData();
+            pointData.parse = Document::FullParse;
+            pointData.typeCreation = Source::FromGui;
+            VToolCurvePoint::Create(pointData);
+        }
+    }
+    else
+    {
+        const quint32 pointId = FindPointId(true);
+        if (pointId != NULL_ID)
+        {
+            auto *delTool = new DelTool(doc, pointId);
+            connect(delTool, &DelTool::NeedFullParsing, doc, &VAbstractPattern::NeedFullParsing);
+            VAbstractApplication::VApp()->getUndoStack()->push(delTool);
+
+            // The full parse closes the property browser; re-show it for this curve (queued, after the parse).
+            const quint32 curveId = m_id;
+            QTimer::singleShot(0, [curveId]() {
+                if (auto *tool = qobject_cast<VToolAbstractOffsetCurve *>(VAbstractPattern::getTool(curveId)))
+                {
+                    emit VAbstractValApplication::VApp()->getSceneView()->itemClicked(tool);
+                }
+            });
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAbstractOffsetCurve::SetCreateEndPoint(bool create)
+{
+    if (create)
+    {
+        if (not HasEndPoint())
+        {
+            VToolCurvePointInitData pointData;
+            pointData.splineId = m_id;
+            pointData.position = CurvePointPosition::End;
+            pointData.name = doc->GenerateLabel(LabelType::NewLabel);
+            pointData.showLabel = false;
+            pointData.scene = qobject_cast<VMainGraphicsScene *>(scene());
+            pointData.doc = doc;
+            pointData.data = getData();
+            pointData.parse = Document::FullParse;
+            pointData.typeCreation = Source::FromGui;
+            VToolCurvePoint::Create(pointData);
+        }
+    }
+    else
+    {
+        const quint32 pointId = FindPointId(false);
+        if (pointId != NULL_ID)
+        {
+            auto *delTool = new DelTool(doc, pointId);
+            connect(delTool, &DelTool::NeedFullParsing, doc, &VAbstractPattern::NeedFullParsing);
+            VAbstractApplication::VApp()->getUndoStack()->push(delTool);
+
+            const quint32 curveId = m_id;
+            QTimer::singleShot(0, [curveId]() {
+                if (auto *tool = qobject_cast<VToolAbstractOffsetCurve *>(VAbstractPattern::getTool(curveId)))
+                {
+                    emit VAbstractValApplication::VApp()->getSceneView()->itemClicked(tool);
+                }
+            });
+        }
     }
 }
 

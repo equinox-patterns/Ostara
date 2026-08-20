@@ -38,6 +38,7 @@ class DialogGraduatedCurve;
 }
 
 struct VRawGraduatedCurveOffset;
+class QCheckBox;
 
 struct VGraduatedCurveOffsetFormula
 {
@@ -78,6 +79,13 @@ public:
 
     void SetAliasSuffix(const QString &alias);
     auto GetAliasSuffix() const -> QString;
+
+    auto IsCreateStartPoint() const -> bool;
+    auto IsCreateEndPoint() const -> bool;
+    auto GetStartPointName() const -> QString;
+    auto GetEndPointName() const -> QString;
+    auto GetStartShowLabel() const -> bool;
+    auto GetEndShowLabel() const -> bool;
 
     void ShowDialog(bool click) override;
 
@@ -126,6 +134,11 @@ private:
 
     QVector<VGraduatedCurveOffsetFormula> m_offsets{};
 
+    QCheckBox *m_startShowLabelCheckbox{nullptr};
+    QCheckBox *m_endShowLabelCheckbox{nullptr};
+    bool m_showLabelStart{false};
+    bool m_showLabelEnd{false};
+
     void FinishCreating();
 
     void InitIcons();
@@ -140,6 +153,8 @@ private:
     auto VisualizationOffsets() const -> QVector<VRawGraduatedCurveOffset>;
 
     void ShowHeaderUnits(int column);
+
+    void UpdatePointControls();
 };
 
 #endif // DIALOGGRADUATEDCURVE_H

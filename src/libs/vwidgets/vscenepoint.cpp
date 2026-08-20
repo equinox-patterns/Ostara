@@ -217,6 +217,13 @@ void VScenePoint::RefreshHoverPen()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VScenePoint::SetActivePoint(bool active)
+{
+    m_selected = active;
+    RefreshHoverPen();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VScenePoint::RefreshLine()
 {
     if (m_onlyPoint)
@@ -294,14 +301,17 @@ void VScenePoint::SetLabelTextHoverColorRole(VColorRole role)
 //---------------------------------------------------------------------------------------------------------------------
 void VScenePoint::ScaleMainPenWidth(qreal scale)
 {
-    const qreal width = ScaleWidth(m_isHovered ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
-                                               : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
+    // An active point (property browser open) keeps its highlighted look even when not hovered.
+    const bool hovered = m_isHovered || m_selected;
+
+    const qreal width = ScaleWidth(hovered ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
+                                           : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
                                    scale);
 
     QPen pointPen = pen();
     if (m_role != VColorRole::CustomColor)
     {
-        const bool hoverColorActive = m_isHovered && not m_alwaysHovered;
+        const bool hoverColorActive = hovered && not m_alwaysHovered;
         const VColorRole colorRole = hoverColorActive ? VColorRole::VisSupportColor : m_role;
         const QColor color = VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::Color(colorRole));
         pointPen.setColor(color);

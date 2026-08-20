@@ -39,6 +39,12 @@ struct VToolParallelCurveInitData : VToolAbstractCurveInitData
     quint32 originCurveId{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
     QString formulaWidth{'0'};      // NOLINT(misc-non-private-member-variables-in-classes)
     QString name{};                 // NOLINT(misc-non-private-member-variables-in-classes)
+    bool createStartPoint{false};   // NOLINT(misc-non-private-member-variables-in-classes)
+    bool createEndPoint{false};     // NOLINT(misc-non-private-member-variables-in-classes)
+    QString startPointName{};       // NOLINT(misc-non-private-member-variables-in-classes)
+    QString endPointName{};         // NOLINT(misc-non-private-member-variables-in-classes)
+    bool startShowLabel{false};     // NOLINT(misc-non-private-member-variables-in-classes)
+    bool endShowLabel{false};       // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
 class VToolParallelCurve : public VToolAbstractOffsetCurve

@@ -1703,7 +1703,7 @@ void MainWindow::OpenAt(QAction *where)
 void MainWindow::InitToolButtons()
 {
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 68, "Check if all tools were connected.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Check if all tools were connected.");
 
     auto InitToolButton = [this](VShortcutAction type, QAction *action, void (MainWindow::*slotFunction)(bool))
     {
@@ -1828,7 +1828,7 @@ void MainWindow::MouseMove(const QPointF &scenePos)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 68, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1868,6 +1868,7 @@ void MainWindow::CancelTool()
         case Tool::AbstractSpline:
         case Tool::Cut:
         case Tool::ArcPoint:
+        case Tool::CurvePoint:
         case Tool::LAST_ONE_DO_NOT_USE:
         case Tool::NodePoint:
         case Tool::NodeArc:
@@ -3500,7 +3501,7 @@ void MainWindow::SetEnableTool(bool enable)
     QT_WARNING_POP
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 68, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were handled.");
 
     // Drawing Tools
     ui->actionEndLineTool->setEnabled(drawTools);
@@ -3713,7 +3714,7 @@ void MainWindow::CreateMenus()
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 68, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -3737,6 +3738,7 @@ void MainWindow::LastUsedTool()
         case Tool::AbstractSpline:
         case Tool::Cut:
         case Tool::ArcPoint:
+        case Tool::CurvePoint:
         case Tool::LAST_ONE_DO_NOT_USE:
         case Tool::NodePoint:
         case Tool::NodeArc:

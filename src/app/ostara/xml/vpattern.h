@@ -221,6 +221,7 @@ private:
     void ParseToolPointFromArcAndTangent(VMainGraphicsScene *scene, const QDomElement &domElement,
                                          const Document &parse);
     void ParseToolArcPoint(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse, bool isStart);
+    void ParseToolCurvePoint(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse, bool isStart);
     void ParseToolTrueDarts(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
 
     // TODO. Delete if minimal supported version is 0.2.7

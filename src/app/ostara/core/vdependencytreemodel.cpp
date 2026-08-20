@@ -77,7 +77,7 @@ auto GetObjectName(vidtype id, const VContainer &patternData, const QString &def
 //---------------------------------------------------------------------------------------------------------------------
 auto IsGeometricTool(Tool toolType) -> bool
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 68, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "List of tools changed.");
 
     switch (toolType)
     {
@@ -112,6 +112,7 @@ auto IsGeometricTool(Tool toolType) -> bool
         case Tool::PointFromCircleAndTangent:
         case Tool::PointFromArcAndTangent:
         case Tool::ArcPoint:
+        case Tool::CurvePoint:
         case Tool::EllipticalArc:
         case Tool::EllipticalArcWithLength:
             return true;
@@ -981,7 +982,7 @@ auto VDependencyTreeModel::GetToolName(vidtype id, const VContainer &patternData
 //---------------------------------------------------------------------------------------------------------------------
 auto VDependencyTreeModel::GetOperationToolName(Tool toolType, const QString &defaultName) const -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 68, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "List of tools changed.");
 
     switch (toolType)
     {
@@ -1007,7 +1008,7 @@ auto VDependencyTreeModel::GetToolToolTip(vidtype id) const -> QString
 {
     const VToolRecord tool = FindToolRecord(id);
 
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 68, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "List of tools changed.");
 
     switch (tool.GetToolType())
     {

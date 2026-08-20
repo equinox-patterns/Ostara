@@ -1201,9 +1201,42 @@ auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
 auto ParallelCurveProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolParallelCurve>(T("Full name:")),
-        MakeSourceCurve<VToolParallelCurve>(AttrCurve, T("Curve:"), &VToolParallelCurve::CurveName),
+        MakeObjectNameReadOnly<VToolParallelCurve>(T("Name:")),
         MakeStringPropWithValidator<VToolParallelCurve>(AttrAlias, T("Curve:"), &VToolParallelCurve::GetAliasSuffix, &VToolParallelCurve::SetAliasSuffix),
+        {QStringLiteral("createStartPoint"), T("Create start point"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolParallelCurve *>(tool);
+             auto *p = new VPE::VBoolProperty(T("Create start point"));
+             p->setValue(t->HasStartPoint());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolParallelCurve *>(b->currentItem())) {
+                 t->SetCreateStartPoint(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolParallelCurve *>(b->currentItem())) {
+                 prop->setValue(t->HasStartPoint());
+             }
+         }},
+        {QStringLiteral("createEndPoint"), T("Create end point"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolParallelCurve *>(tool);
+             auto *p = new VPE::VBoolProperty(T("Create end point"));
+             p->setValue(t->HasEndPoint());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolParallelCurve *>(b->currentItem())) {
+                 t->SetCreateEndPoint(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolParallelCurve *>(b->currentItem())) {
+                 prop->setValue(t->HasEndPoint());
+             }
+         }},
         {AttrWidth, T("Width:"), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolParallelCurve *>(tool);
@@ -1234,6 +1267,40 @@ auto GraduatedCurveProperties() -> std::vector<PropertyDesc>
         MakeSourceCurve<VToolGraduatedCurve>(AttrCurve, T("Curve:"), &VToolGraduatedCurve::CurveName),
         // The subName property stays auto-generated in the backend, it is just not shown any more.
         MakeStringPropWithValidator<VToolGraduatedCurve>(AttrAlias, T("Curve:"), &VToolGraduatedCurve::GetAliasSuffix, &VToolGraduatedCurve::SetAliasSuffix),
+        {QStringLiteral("createStartPoint"), T("Create start point"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolGraduatedCurve *>(tool);
+             auto *p = new VPE::VBoolProperty(T("Create start point"));
+             p->setValue(t->HasStartPoint());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolGraduatedCurve *>(b->currentItem())) {
+                 t->SetCreateStartPoint(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolGraduatedCurve *>(b->currentItem())) {
+                 prop->setValue(t->HasStartPoint());
+             }
+         }},
+        {QStringLiteral("createEndPoint"), T("Create end point"), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<VToolGraduatedCurve *>(tool);
+             auto *p = new VPE::VBoolProperty(T("Create end point"));
+             p->setValue(t->HasEndPoint());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolGraduatedCurve *>(b->currentItem())) {
+                 t->SetCreateEndPoint(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<VToolGraduatedCurve *>(b->currentItem())) {
+                 prop->setValue(t->HasEndPoint());
+             }
+         }},
         MakeCurvePenStyle<VToolGraduatedCurve>(T("Pen style:")),
         MakeLineColor<VToolGraduatedCurve>(T("Color:")),
         MakeNotes<VToolGraduatedCurve>(T("Notes:")),
