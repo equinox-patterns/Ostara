@@ -71,7 +71,7 @@ BreadcrumbBar::~BreadcrumbBar() = default;
 //---------------------------------------------------------------------------------------------------------------------
 void BreadcrumbBar::Update(const QString &groupName, const QString &objectName)
 {
-    m_groupButton->setText(tr("Group \"%1\"").arg(groupName));
+    m_groupButton->setText(tr("Group %1").arg(groupName));
 
     const bool hasObject = not objectName.isEmpty();
     m_objectSeparator->setVisible(hasObject);

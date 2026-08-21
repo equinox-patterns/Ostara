@@ -39,10 +39,7 @@
 
 class QDockWidget;
 class QGraphicsItem;
-class QLabel;
-class QPushButton;
 class QScrollArea;
-class QWidget;
 class VFormula;
 
 struct PropertyDesc;
@@ -63,6 +60,7 @@ public:
 
 signals:
     void DetachAllRequested(quint32 attachmentId);
+    void RenameRequested(quint32 attachmentId, const QString &name);
 
 public slots:
     void itemClicked(QGraphicsItem *item);
@@ -79,9 +77,6 @@ private:
     VPE::VPropertyModel *m_PropertyModel{nullptr};
     VPE::VPropertyFormView *m_formView{nullptr};
 
-    QWidget *m_groupView{nullptr};
-    QLabel *m_groupNameLabel{nullptr};
-    QPushButton *m_detachButton{nullptr};
     quint32 m_groupAttachmentId{};
 
     QGraphicsItem *m_currentItem{nullptr};
