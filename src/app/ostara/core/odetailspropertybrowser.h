@@ -52,6 +52,14 @@ public:
     void FinishPassmarkSelection();
     void CancelPassmarkSelection();
 
+    auto IsSelectingFoldLinePoints() const -> bool;
+    void OnNodeSelectedForFoldLine(quint32 nodeId);
+    void CancelFoldLineSelection();
+
+    auto IsSelectingSAPoints() const -> bool;
+    void OnNodeSelectedForSA(quint32 nodeId);
+    void CancelSASelection();
+
 signals:
     void ShowStatusTip(const QString &text);
     void HighlightNode(quint32 nodeId, bool highlight, QColor color = Qt::red);

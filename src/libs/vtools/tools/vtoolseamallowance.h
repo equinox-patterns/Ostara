@@ -95,6 +95,7 @@ public:
     static const QString TagIPaths;
     static const QString TagPins;
     static const QString TagPlaceLabels;
+    static const QString TagSaMarginProperties;
 
     static const QString AttrSeamAllowance;
     static const QString AttrHideMainPath;
@@ -121,6 +122,7 @@ public:
     static void AddPins(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &pins);
     static void AddPlaceLabels(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &placeLabels);
     static void AddGrainline(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
+    static void AddSAMarginProperties(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
     static void AddMirrorLine(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
 
     void SetName(const QString &name);

@@ -120,6 +120,15 @@ public:
     auto GetPlaceLabels() -> QVector<quint32> &;
     void SetPlaceLabels(const QVector<quint32> &labels);
 
+    auto GetSAMarginGroupNodeIds() const -> QVector<QVector<quint32>>;
+    void SetSAMarginGroupNodeIds(const QVector<QVector<quint32>> &groups);
+    auto GetSAMarginGroupNames() const -> QVector<QString>;
+    void SetSAMarginGroupNames(const QVector<QString> &names);
+    auto GetSAMarginGroupColorIndices() const -> QVector<int>;
+    void SetSAMarginGroupColorIndices(const QVector<int> &indices);
+    auto GetSAMarginGroupShowStates() const -> QVector<bool>;
+    void SetSAMarginGroupShowStates(const QVector<bool> &states);
+
     auto Dependencies() const -> QList<quint32>;
 
     void SetGrainlineGeometry(const VGrainlineData &data);

@@ -59,6 +59,15 @@ public:
     QVector<quint32> m_pins{};                   // NOLINT(misc-non-private-member-variables-in-classes)
     QVector<quint32> m_placeLabels{};            // NOLINT(misc-non-private-member-variables-in-classes)
 
+    /** @brief SA custom margin group node IDs (sorted). */
+    QVector<QVector<quint32>> m_saMarginGroupNodeIds{}; // NOLINT(misc-non-private-member-variables-in-classes)
+    /** @brief Names for SA custom margin groups (parallel to m_saMarginGroupNodeIds). */
+    QVector<QString> m_saMarginGroupNames{}; // NOLINT(misc-non-private-member-variables-in-classes)
+    /** @brief Color indices for SA custom margin groups (parallel to m_saMarginGroupNodeIds). */
+    QVector<int> m_saMarginGroupColorIndices{}; // NOLINT(misc-non-private-member-variables-in-classes)
+    /** @brief Show-on-canvas states for SA custom margin groups (parallel to m_saMarginGroupNodeIds). */
+    QVector<bool> m_saMarginGroupShowStates{}; // NOLINT(misc-non-private-member-variables-in-classes)
+
     /** @brief m_glGrainline grainline geometry object*/
     VGrainlineData m_glGrainline{}; // NOLINT(misc-non-private-member-variables-in-classes)
 

@@ -170,7 +170,8 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
                            VToolSeamAllowance::TagIPaths,
                            VToolSeamAllowance::TagPins,
                            VToolSeamAllowance::TagPlaceLabels,
-                           VAbstractPattern::TagMirrorLine};
+                           VAbstractPattern::TagMirrorLine,
+                           VToolSeamAllowance::TagSaMarginProperties};
 
     QFuture<QVector<VPieceNode>> futurePathV1;
     QFuture<VPiecePath> futurePathV2;
@@ -227,6 +228,45 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
                 case 6: // VToolSeamAllowance::TagMirrorLine
                     futureMirrorLine = QtConcurrent::run(&ParsePieceMirrorLine, element);
                     break;
+                case 7: // VToolSeamAllowance::TagSaMarginProperties
+                {
+                    QVector<QVector<quint32>> saNodeIdGroups;
+                    QVector<QString> saNames;
+                    QVector<int> saColors;
+                    QVector<bool> saShows;
+                    const QDomNodeList saGroupNodes = element.childNodes();
+                    QDOM_LOOP(saGroupNodes, k)
+                    {
+                        const QDomElement gEl = QDOM_ELEMENT(saGroupNodes, k).toElement();
+                        if (gEl.isNull() || gEl.tagName() != QLatin1String("group"))
+                        {
+                            continue;
+                        }
+                        const QStringList idStr = gEl.attribute(QStringLiteral("nodeIds")).split(QLatin1Char(','));
+                        QVector<quint32> grp;
+                        for (const QString &s : idStr)
+                        {
+                            bool ok = false;
+                            const quint32 id = s.toUInt(&ok);
+                            if (ok && id > 0)
+                            {
+                                grp.append(id);
+                            }
+                        }
+                        if (!grp.isEmpty())
+                        {
+                            saNodeIdGroups.append(grp);
+                            saNames.append(gEl.attribute(QStringLiteral("name")));
+                            saColors.append(gEl.attribute(QStringLiteral("colorIndex")).toInt());
+                            saShows.append(gEl.attribute(QStringLiteral("show")) == QLatin1String("true"));
+                        }
+                    }
+                    detail.SetSAMarginGroupNodeIds(saNodeIdGroups);
+                    detail.SetSAMarginGroupNames(saNames);
+                    detail.SetSAMarginGroupColorIndices(saColors);
+                    detail.SetSAMarginGroupShowStates(saShows);
+                    break;
+                }
                 default:
                     break;
             }

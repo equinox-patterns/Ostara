@@ -100,6 +100,7 @@ const QString VToolSeamAllowance::TagRecord = QStringLiteral("record");         
 const QString VToolSeamAllowance::TagIPaths = QStringLiteral("iPaths");           // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagPins = QStringLiteral("pins");               // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagPlaceLabels = QStringLiteral("placeLabels"); // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagSaMarginProperties = QStringLiteral("saMarginProperties"); // NOLINT(cert-err58-cpp)
 
 const QString VToolSeamAllowance::AttrSeamAllowance = QStringLiteral("seamAllowance"); // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrHideMainPath = QStringLiteral("hideMainPath");   // NOLINT(cert-err58-cpp)
@@ -948,6 +949,46 @@ void VToolSeamAllowance::AddMirrorLine(VAbstractPattern *doc, QDomElement &domEl
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::AddSAMarginProperties(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece)
+{
+    const QVector<QVector<quint32>> saNodeIdGroups = piece.GetSAMarginGroupNodeIds();
+    if (saNodeIdGroups.isEmpty())
+    {
+        return;
+    }
+
+    const QVector<QString> saNames = piece.GetSAMarginGroupNames();
+    const QVector<int> saColors = piece.GetSAMarginGroupColorIndices();
+    const QVector<bool> saShows = piece.GetSAMarginGroupShowStates();
+
+    QDomElement saEl = doc->createElement(VToolSeamAllowance::TagSaMarginProperties);
+    for (int i = 0; i < saNodeIdGroups.size(); ++i)
+    {
+        QDomElement gEl = doc->createElement(QStringLiteral("group"));
+        QStringList ids;
+        for (quint32 id : saNodeIdGroups[i])
+        {
+            ids << QString::number(id);
+        }
+        doc->SetAttribute(gEl, QStringLiteral("nodeIds"), ids.join(QLatin1Char(',')));
+        if (i < saNames.size() && !saNames[i].isEmpty())
+        {
+            doc->SetAttribute(gEl, QStringLiteral("name"), saNames[i]);
+        }
+        if (i < saColors.size())
+        {
+            doc->SetAttribute(gEl, QStringLiteral("colorIndex"), saColors[i]);
+        }
+        if (i < saShows.size())
+        {
+            doc->SetAttribute(gEl, QStringLiteral("show"), saShows[i]);
+        }
+        saEl.appendChild(gEl);
+    }
+    domElement.appendChild(saEl);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::SetName(const QString &name)
 {
     VPiece detail = VAbstractTool::data.GetPiece(m_id);
@@ -1293,6 +1334,7 @@ void VToolSeamAllowance::AddToFile()
     AddInternalPaths(doc, domElement, piece.GetInternalPaths());
     AddPins(doc, domElement, piece.GetPins());
     AddPlaceLabels(doc, domElement, piece.GetPlaceLabels());
+    AddSAMarginProperties(doc, domElement, piece);
     AddMirrorLine(doc, domElement, piece);
 
     VAbstractApplication::VApp()->getUndoStack()->push(
@@ -1327,6 +1369,7 @@ void VToolSeamAllowance::RefreshDataInFile()
         AddInternalPaths(doc, domElement, piece.GetInternalPaths());
         AddPins(doc, domElement, piece.GetPins());
         AddPlaceLabels(doc, domElement, piece.GetPlaceLabels());
+        AddSAMarginProperties(doc, domElement, piece);
         AddMirrorLine(doc, domElement, piece);
     }
 }

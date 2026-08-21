@@ -108,3 +108,39 @@ void ODetailsPropertyBrowser::CancelPassmarkSelection()
 {
     m_pieceWidget->CancelPassmarkSelection();
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsPropertyBrowser::IsSelectingFoldLinePoints() const -> bool
+{
+    return m_pieceWidget->IsSelectingFoldLinePoints();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::OnNodeSelectedForFoldLine(quint32 nodeId)
+{
+    m_pieceWidget->OnNodeSelectedForFoldLine(nodeId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::CancelFoldLineSelection()
+{
+    m_pieceWidget->CancelFoldLineSelection();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsPropertyBrowser::IsSelectingSAPoints() const -> bool
+{
+    return m_pieceWidget->IsSelectingSAPoints();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::OnNodeSelectedForSA(quint32 nodeId)
+{
+    m_pieceWidget->OnNodeSelectedForSA(nodeId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::CancelSASelection()
+{
+    m_pieceWidget->CancelSASelection();
+}

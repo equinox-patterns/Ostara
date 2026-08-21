@@ -1406,6 +1406,42 @@ void MainWindow::HandleItemClicked(QGraphicsItem *item)
         }
     }
 
+    // Foldline definition — route node clicks to the details property browser.
+    if (item != nullptr && m_detailsOptions != nullptr && m_detailsOptions->IsSelectingFoldLinePoints())
+    {
+        auto *node = dynamic_cast<VNodePoint *>(item);
+        if (node == nullptr)
+        {
+            if (auto *parentItem = item->parentItem())
+            {
+                node = dynamic_cast<VNodePoint *>(parentItem);
+            }
+        }
+        if (node != nullptr)
+        {
+            m_detailsOptions->OnNodeSelectedForFoldLine(node->getId());
+            return;
+        }
+    }
+
+    // Custom margin selection — route node clicks to the details property browser.
+    if (item != nullptr && m_detailsOptions != nullptr && m_detailsOptions->IsSelectingSAPoints())
+    {
+        auto *node = dynamic_cast<VNodePoint *>(item);
+        if (node == nullptr)
+        {
+            if (auto *parentItem = item->parentItem())
+            {
+                node = dynamic_cast<VNodePoint *>(parentItem);
+            }
+        }
+        if (node != nullptr)
+        {
+            m_detailsOptions->OnNodeSelectedForSA(node->getId());
+            return;
+        }
+    }
+
     if (doc == nullptr || m_breadcrumb == nullptr)
     {
         m_toolOptions->itemClicked(item);
@@ -2231,6 +2267,16 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             if (m_detailsOptions != nullptr && m_detailsOptions->IsSelectingPassmarkPoints())
             {
                 m_detailsOptions->CancelPassmarkSelection();
+                break;
+            }
+            if (m_detailsOptions != nullptr && m_detailsOptions->IsSelectingFoldLinePoints())
+            {
+                m_detailsOptions->CancelFoldLineSelection();
+                break;
+            }
+            if (m_detailsOptions != nullptr && m_detailsOptions->IsSelectingSAPoints())
+            {
+                m_detailsOptions->CancelSASelection();
                 break;
             }
             ArrowTool(true);

@@ -754,6 +754,20 @@
                               </xs:sequence>
                             </xs:complexType>
                           </xs:element>
+                          <xs:element name="saMarginProperties" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="group" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:attribute name="nodeIds" type="xs:string"/>
+                                    <xs:attribute name="name" type="xs:string"/>
+                                    <xs:attribute name="colorIndex" type="xs:int"/>
+                                    <xs:attribute name="show" type="xs:boolean"/>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
                           <xs:element name="mirrorLine" minOccurs="0" maxOccurs="1">
                             <xs:complexType>
                               <xs:attribute name="p1" type="xs:unsignedInt"/>

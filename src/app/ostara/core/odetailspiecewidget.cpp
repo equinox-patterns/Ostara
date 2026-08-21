@@ -26,6 +26,10 @@
 
 #include "odetailspiecewidget.h"
 
+#include "odetailsfoldlinewidget.h"
+#include "odetailsgrainlinewidget.h"
+#include "odetailsseamallowancewidget.h"
+
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
@@ -50,6 +54,8 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTabWidget>
+#include <QTimer>
+#include <QUndoStack>
 #include <QVBoxLayout>
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -166,6 +172,45 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         m_tabWidget->addTab(tab, tr("General"));
     }
 
+    // ── Grainline tab ────────────────────────────────────────────
+    {
+        auto *tab = new QFrame();
+        tab->setFrameStyle(QFrame::NoFrame);
+        tab->setObjectName(QStringLiteral("detailsOptionsTabPage"));
+        auto *layout = new QVBoxLayout(tab);
+
+        m_grainlineWidget = new ODetailsGrainlineWidget(tab);
+        layout->addWidget(m_grainlineWidget);
+
+        // Separator
+        auto *separator = new QFrame();
+        separator->setFrameShape(QFrame::HLine);
+        separator->setFrameShadow(QFrame::Sunken);
+        layout->addWidget(separator);
+
+        m_foldlineWidget = new ODetailsFoldLineWidget(tab);
+        layout->addWidget(m_foldlineWidget);
+
+        layout->addStretch();
+
+        m_tabWidget->addTab(tab, tr("Grainline"));
+    }
+
+    // ── Seam Allowance tab ───────────────────────────────────────
+    {
+        auto *tab = new QFrame();
+        tab->setFrameStyle(QFrame::NoFrame);
+        tab->setObjectName(QStringLiteral("detailsOptionsTabPage"));
+        auto *layout = new QVBoxLayout(tab);
+
+        m_saWidget = new ODetailsSeamAllowanceWidget(tab);
+        layout->addWidget(m_saWidget);
+
+        layout->addStretch();
+
+        m_tabWidget->addTab(tab, tr("Seam Allowance"));
+    }
+
     mainLayout->addWidget(m_tabWidget);
 
     ConnectControls();
@@ -174,15 +219,36 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPieceWidget::ConnectControls()
 {
-    auto modifyPiece = [this](auto func)
+    // Sub-widgets commit through the same snapshot + undo pipeline as the General tab.
+    m_grainlineWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
+    m_foldlineWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
+    connect(m_foldlineWidget, &ODetailsFoldLineWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);
+
+    m_saWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
+    connect(m_saWidget, &ODetailsSeamAllowanceWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);
+    connect(m_saWidget, &ODetailsSeamAllowanceWidget::HighlightNode, this, [this](quint32 nodeId, bool highlight)
     {
-        if (m_updating || !m_currentTool)
+        emit HighlightNode(nodeId, highlight);
+    });
+    connect(m_saWidget, &ODetailsSeamAllowanceWidget::ClearHighlight, this, &ODetailsPieceWidget::ClearHighlight);
+
+    // Re-populate the tabs after undo/redo. Deferred via singleShot to avoid re-entrancy
+    // while CommitPending() is mid-flight (indexChanged fires synchronously during push).
+    connect(VAbstractApplication::VApp()->getUndoStack(), &QUndoStack::indexChanged, this, [this](int)
+    {
+        QTimer::singleShot(0, this, [this]()
         {
-            return;
-        }
-        func(m_pendingDet);
-        CommitPending();
-    };
+            if (!m_currentTool)
+            {
+                return;
+            }
+            const VPiece detail = m_currentTool->getData()->GetPiece(m_currentTool->getId());
+            m_pendingDet = detail;
+            m_grainlineWidget->Show(detail, m_currentTool->getData());
+            m_foldlineWidget->Show(detail);
+            m_saWidget->RefreshTable(detail);
+        });
+    });
 
     // ── General tab connections ──────────────────────────────────
 
@@ -197,25 +263,25 @@ void ODetailsPieceWidget::ConnectControls()
     });
 
     connect(m_alignHGroup, QOverload<QAbstractButton *, bool>::of(&QButtonGroup::buttonToggled),
-            this, [this, modifyPiece](QAbstractButton *button, bool checked)
+            this, [this](QAbstractButton *button, bool checked)
     {
         if (!checked || m_updating)
         {
             return;
         }
         const int v = button->property("alignValue").toInt();
-        modifyPiece([v](VPiece &det) { det.SetGradedAlignH(v); });
+        ModifyPiece([v](VPiece &det) { det.SetGradedAlignH(v); });
     });
 
     connect(m_alignVGroup, QOverload<QAbstractButton *, bool>::of(&QButtonGroup::buttonToggled),
-            this, [this, modifyPiece](QAbstractButton *button, bool checked)
+            this, [this](QAbstractButton *button, bool checked)
     {
         if (!checked || m_updating)
         {
             return;
         }
         const int v = button->property("alignValue").toInt();
-        modifyPiece([v](VPiece &det) { det.SetGradedAlignV(v); });
+        ModifyPiece([v](VPiece &det) { det.SetGradedAlignV(v); });
     });
 
     // ── Passmark multi-selection ──────────────────────────────────
@@ -226,6 +292,17 @@ void ODetailsPieceWidget::ConnectControls()
     // ── Manage main path ──────────────────────────────────────────
 
     connect(m_manageMainPathBtn, &QPushButton::clicked, this, &ODetailsPieceWidget::OnManageMainPath);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::ModifyPiece(std::function<void(VPiece &)> func)
+{
+    if (m_updating || !m_currentTool)
+    {
+        return;
+    }
+    func(m_pendingDet);
+    CommitPending();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -271,6 +348,11 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
         vBtn->setChecked(true);
     }
 
+    // ── Grainline tab ────────────────────────────────────────────
+    m_grainlineWidget->Show(detail, tool->getData());
+    m_foldlineWidget->Show(detail);
+    m_saWidget->Show(detail);
+
     m_updating = false;
 }
 
@@ -282,6 +364,9 @@ void ODetailsPieceWidget::Clear()
     m_pendingDet = VPiece{};
     m_passmarkSelectState = PassmarkSelectState::Idle;
     m_selectedPassmarkNodeIds.clear();
+    m_grainlineWidget->Clear();
+    m_foldlineWidget->Clear();
+    m_saWidget->Clear();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -389,6 +474,42 @@ void ODetailsPieceWidget::CancelPassmarkSelection()
     m_removePassmarksBtn->setText(tr("- Remove passmarks"));
     emit ClearHighlight();
     emit ShowStatusTip(QString());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsPieceWidget::IsSelectingFoldLinePoints() const -> bool
+{
+    return m_foldlineWidget->IsSelectingPoints();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::OnNodeSelectedForFoldLine(quint32 nodeId)
+{
+    m_foldlineWidget->OnNodeSelected(nodeId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::CancelFoldLineSelection()
+{
+    m_foldlineWidget->CancelSelection();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsPieceWidget::IsSelectingSAPoints() const -> bool
+{
+    return m_saWidget->IsSelectingPoints();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::OnNodeSelectedForSA(quint32 nodeId)
+{
+    m_saWidget->OnNodeSelected(nodeId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::CancelSASelection()
+{
+    m_saWidget->CancelSelection();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

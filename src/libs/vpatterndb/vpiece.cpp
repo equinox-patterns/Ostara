@@ -678,6 +678,54 @@ void VPiece::SetPlaceLabels(const QVector<quint32> &labels)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetSAMarginGroupNodeIds() const -> QVector<QVector<quint32>>
+{
+    return d->m_saMarginGroupNodeIds;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetSAMarginGroupNodeIds(const QVector<QVector<quint32>> &groups)
+{
+    d->m_saMarginGroupNodeIds = groups;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetSAMarginGroupNames() const -> QVector<QString>
+{
+    return d->m_saMarginGroupNames;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetSAMarginGroupNames(const QVector<QString> &names)
+{
+    d->m_saMarginGroupNames = names;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetSAMarginGroupColorIndices() const -> QVector<int>
+{
+    return d->m_saMarginGroupColorIndices;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetSAMarginGroupColorIndices(const QVector<int> &indices)
+{
+    d->m_saMarginGroupColorIndices = indices;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetSAMarginGroupShowStates() const -> QVector<bool>
+{
+    return d->m_saMarginGroupShowStates;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetSAMarginGroupShowStates(const QVector<bool> &states)
+{
+    d->m_saMarginGroupShowStates = states;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VPiece::Dependencies() const -> QList<quint32>
 {
     QList<quint32> list = d->m_path.Dependencies();

@@ -827,6 +827,18 @@ private:
 
 Q_DECLARE_METATYPE(CustomSARecord)
 Q_DECLARE_TYPEINFO(CustomSARecord, Q_MOVABLE_TYPE); // NOLINT
+
+/**
+ * @brief SavedSeamAllowance contains a saved seam allowance stored in app settings.
+ */
+struct SavedSeamAllowance
+{
+    QString name{};
+    qreal value{0};    // in mm (fixed physical unit)
+    int colorIndex{0}; // index into kCustomMarginColors
+};
+Q_DECLARE_METATYPE(SavedSeamAllowance)
+Q_DECLARE_TYPEINFO(SavedSeamAllowance, Q_MOVABLE_TYPE); // NOLINT
 /****************************************************************************
 ** This file is derived from code bearing the following notice:
 ** The sole author of this file, Adam Higerd, has explicitly disclaimed all

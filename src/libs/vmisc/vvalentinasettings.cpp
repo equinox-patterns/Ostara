@@ -30,6 +30,10 @@
 
 #include <QDir>
 #include <QGlobalStatic>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 #include <QLocale>
 #include <QMargins>
 #include <QMetaType>
@@ -128,6 +132,8 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDockWidgetBackgroundImagesActive
                           ("dockWidget/backgroundImagesActive"_L1))
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDockWidgetDependenciesActive, ("dockWidget/dependenciesActive"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingSavedSeamAllowances, ("seamAllowance/saved"_L1))
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternMessagesFontSize, ("font/patternMessagesSize"_L1))
 
@@ -1165,6 +1171,41 @@ auto VValentinaSettings::IsAutoGoToObject() const -> bool
 void VValentinaSettings::SetAutoGoToObject(bool value)
 {
     setValue(*settingPatternAutoGoToObject, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetSavedSeamAllowances() const -> QVector<SavedSeamAllowance>
+{
+    const QString json = value(*settingSavedSeamAllowances).toString();
+    if (json.isEmpty())
+    {
+        return {};
+    }
+    const QJsonArray arr = QJsonDocument::fromJson(json.toUtf8()).array();
+    QVector<SavedSeamAllowance> result;
+    result.reserve(arr.size());
+    for (const QJsonValue v : arr)
+    {
+        const QJsonObject o = v.toObject();
+        result.append({o.value(QStringLiteral("name")).toString(), o.value(QStringLiteral("value")).toDouble(),
+                       o.value(QStringLiteral("color")).toInt(0)});
+    }
+    return result;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VValentinaSettings::SetSavedSeamAllowances(const QVector<SavedSeamAllowance> &list)
+{
+    QJsonArray arr;
+    for (const SavedSeamAllowance &e : list)
+    {
+        QJsonObject o;
+        o.insert(QStringLiteral("name"), e.name);
+        o.insert(QStringLiteral("value"), e.value);
+        o.insert(QStringLiteral("color"), e.colorIndex);
+        arr.append(o);
+    }
+    setValue(*settingSavedSeamAllowances, QString::fromUtf8(QJsonDocument(arr).toJson(QJsonDocument::Compact)));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

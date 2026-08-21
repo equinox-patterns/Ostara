@@ -31,6 +31,8 @@
 #include <QSet>
 #include <QWidget>
 
+#include <functional>
+
 #include "../vpatterndb/vpiece.h"
 
 class QButtonGroup;
@@ -39,6 +41,9 @@ class QLineEdit;
 class QPushButton;
 class QSpinBox;
 class QTabWidget;
+class ODetailsFoldLineWidget;
+class ODetailsGrainlineWidget;
+class ODetailsSeamAllowanceWidget;
 class VToolSeamAllowance;
 
 class ODetailsPieceWidget : public QWidget
@@ -57,6 +62,14 @@ public:
     void FinishPassmarkSelection();
     void CancelPassmarkSelection();
 
+    auto IsSelectingFoldLinePoints() const -> bool;
+    void OnNodeSelectedForFoldLine(quint32 nodeId);
+    void CancelFoldLineSelection();
+
+    auto IsSelectingSAPoints() const -> bool;
+    void OnNodeSelectedForSA(quint32 nodeId);
+    void CancelSASelection();
+
 signals:
     void ShowStatusTip(const QString &text);
     void HighlightNode(quint32 nodeId, bool highlight, QColor color = Qt::red);
@@ -65,6 +78,14 @@ signals:
 private:
     void ConnectControls();
     void CommitPending();
+    void ModifyPiece(std::function<void(VPiece &)> func);
+
+    // Grainline tab
+    ODetailsGrainlineWidget *m_grainlineWidget{nullptr};
+    ODetailsFoldLineWidget *m_foldlineWidget{nullptr};
+
+    // Seam allowance tab
+    ODetailsSeamAllowanceWidget *m_saWidget{nullptr};
 
     // General tab
     QLineEdit *m_nameEdit{nullptr};
