@@ -44,6 +44,7 @@ class MainWindow;
 }
 
 class VToolOptionsPropertyBrowser;
+class ODetailsPropertyBrowser;
 class VMeasurements;
 class QFileSystemWatcher;
 class QLabel;
@@ -351,6 +352,7 @@ private:
     QPointer<QLabel> m_measurementFileNameLabel{nullptr};
     QPointer<QLabel> m_measurementSeparator{nullptr};
     VToolOptionsPropertyBrowser *m_toolOptions{nullptr};
+    ODetailsPropertyBrowser *m_detailsOptions{nullptr};
     VWidgetGroups *m_groupsWidget{nullptr};
     VWidgetDetails *m_detailsWidget{nullptr};
     VWidgetDependencies *m_dependenciesWidget{nullptr};
@@ -375,6 +377,7 @@ private:
 
     bool m_groupsActive{false};
     bool m_toolOptionsActive{false};
+    bool m_detailsOptionsActive{false};
     bool m_patternMessagesActive{false};
     bool m_backgroundImagesActive{false};
     bool m_dependenciesActive{false};

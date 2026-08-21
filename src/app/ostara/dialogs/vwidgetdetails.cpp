@@ -93,6 +93,13 @@ void VWidgetDetails::UpdateList()
 //---------------------------------------------------------------------------------------------------------------------
 void VWidgetDetails::SelectDetail(quint32 id)
 {
+    if (id == NULL_ID)
+    {
+        ui->tableWidget->clearSelection();
+        ui->tableWidget->setCurrentItem(nullptr);
+        return;
+    }
+
     const int rowCount = ui->tableWidget->rowCount();
     for (int row = 0; row < rowCount; ++row)
     {

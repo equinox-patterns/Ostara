@@ -99,6 +99,11 @@ public:
     auto GetFormulaSAWidth() const -> QString;
     void SetFormulaSAWidth(const QString &formula, qreal value);
 
+    auto GetGradedAlignH() const -> int;
+    void SetGradedAlignH(int val);
+    auto GetGradedAlignV() const -> int;
+    void SetGradedAlignV(int val);
+
     auto GetInternalPaths() const -> QVector<quint32>;
     auto GetInternalPaths() -> QVector<quint32> &;
     void SetInternalPaths(const QVector<quint32> &iPaths);

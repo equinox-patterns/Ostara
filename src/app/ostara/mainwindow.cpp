@@ -201,7 +201,10 @@
 #include "../vtools/tools/vabstracttool.h"
 #include "../vwidgets/vtoolbuttonpopup.h"
 #include "../vwidgets/vwidgetpopup.h"
+#include "../vtools/tools/nodeDetails/vnodepoint.h"
+#include "../vtools/tools/vtoolseamallowance.h"
 #include "core/vapplication.h"
+#include "core/odetailspropertybrowser.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "dialogs/dialogaboutapp.h"
 #include "dialogs/dialogaddbackgroundimage.h"
@@ -316,6 +319,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->view->setFrameStyle(QFrame::NoFrame);
     ui->view->viewport()->setContentsMargins(0, 0, 0, 0);
 
+    // Created before InitDocksContain() — the breadcrumb signal connections live there.
+    m_breadcrumb = new BreadcrumbBar(this);
+
     InitDocksContain();
     CreateMenus();
 
@@ -414,7 +420,6 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // Wrap the editor in a vertical layout with the attachment breadcrumb above the canvas.
-    m_breadcrumb = new BreadcrumbBar(this);
     auto *editorContainer = new QWidget(this);
     auto *editorLayout = new QVBoxLayout(editorContainer);
     editorLayout->setContentsMargins(0, 0, 0, 0);
@@ -567,6 +572,7 @@ void MainWindow::ShowWelcomeScreen()
     ui->topBar->setVisible(false);
     m_drawToolBar->setVisible(false);
     ui->dockWidgetToolOptions->setVisible(false);
+    ui->dockWidgetDetailsOptions->setVisible(false);
     ui->dockWidgetLayoutPages->setVisible(false);
     ui->dockWidgetGroups->setVisible(false);
     ui->dockWidgetMessages->setVisible(false);
@@ -610,6 +616,7 @@ void MainWindow::ShowEditor()
     // Sync boolean members with actual dock state after restore
     m_groupsActive = ui->dockWidgetGroups->isVisible();
     m_toolOptionsActive = ui->dockWidgetToolOptions->isVisible();
+    m_detailsOptionsActive = ui->dockWidgetDetailsOptions->isVisible();
     m_patternMessagesActive = ui->dockWidgetMessages->isVisible();
     m_backgroundImagesActive = ui->dockWidgetBackgroundImages->isVisible();
     m_dependenciesActive = ui->dockWidgetDependencies->isVisible();
@@ -1381,6 +1388,24 @@ void MainWindow::ScaleChanged(qreal scale)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::HandleItemClicked(QGraphicsItem *item)
 {
+    // Passmark multi-selection — route node clicks to the details property browser.
+    if (item != nullptr && m_detailsOptions != nullptr && m_detailsOptions->IsSelectingPassmarkPoints())
+    {
+        auto *node = dynamic_cast<VNodePoint *>(item);
+        if (node == nullptr)
+        {
+            if (auto *parentItem = item->parentItem())
+            {
+                node = dynamic_cast<VNodePoint *>(parentItem);
+            }
+        }
+        if (node != nullptr)
+        {
+            m_detailsOptions->OnNodeSelectedForPassmark(node->getId());
+            return;
+        }
+    }
+
     if (doc == nullptr || m_breadcrumb == nullptr)
     {
         m_toolOptions->itemClicked(item);
@@ -1408,6 +1433,12 @@ void MainWindow::HandleItemClicked(QGraphicsItem *item)
     doc->ClearIsolation();
     m_toolOptions->itemClicked(item);
     m_breadcrumb->hide();
+
+    // Empty canvas click → deselect the current piece (Details mode).
+    if (item == nullptr)
+    {
+        doc->SelectedDetail(NULL_ID);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2197,11 +2228,23 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
         case Qt::Key_Escape:
+            if (m_detailsOptions != nullptr && m_detailsOptions->IsSelectingPassmarkPoints())
+            {
+                m_detailsOptions->CancelPassmarkSelection();
+                break;
+            }
+            ArrowTool(true);
+            break;
         case Qt::Key_V:
             ArrowTool(true);
             break;
         case Qt::Key_Return:
         case Qt::Key_Enter:
+            if (m_detailsOptions != nullptr && m_detailsOptions->IsSelectingPassmarkPoints())
+            {
+                m_detailsOptions->FinishPassmarkSelection();
+                break;
+            }
             EndVisualization();
             break;
         default:
@@ -2296,6 +2339,7 @@ void MainWindow::ActionDraw(bool checked)
 
         ui->dockWidgetLayoutPages->setVisible(false);
         ui->dockWidgetToolOptions->setVisible(m_toolOptionsActive);
+        ui->dockWidgetDetailsOptions->setVisible(false);
 
         WrapDockContent(ui->dockWidgetGroups, m_groupsWidget);
         ui->dockWidgetGroups->setWindowTitle(tr("Layers"));
@@ -2309,6 +2353,7 @@ void MainWindow::ActionDraw(bool checked)
         ui->dockWidgetMessages->setVisible(m_patternMessagesActive);
 
         actionDockWidgetToolOptions->setEnabled(true);
+        actionDockWidgetDetailsOptions->setDisabled(true);
         actionDockWidgetGroups->setEnabled(true);
         actionDockWidgetBackgroundImages->setEnabled(true);
         actionDockWidgetDependencies->setEnabled(true);
@@ -2389,12 +2434,14 @@ void MainWindow::ActionDetails(bool checked)
         ui->dockWidgetGroups->setToolTip(tr("Show which details will go in layout"));
 
         ui->dockWidgetToolOptions->setVisible(false);
+        ui->dockWidgetDetailsOptions->setVisible(m_detailsOptionsActive);
         ui->dockWidgetBackgroundImages->setVisible(false);
         ui->dockWidgetDependencies->setVisible(false);
 
         ui->dockWidgetMessages->setVisible(m_patternMessagesActive);
 
         actionDockWidgetToolOptions->setDisabled(true);
+        actionDockWidgetDetailsOptions->setEnabled(true);
         actionDockWidgetBackgroundImages->setDisabled(true);
         actionDockWidgetDependencies->setDisabled(true);
 
@@ -2506,12 +2553,14 @@ void MainWindow::ActionLayout(bool checked)
 
     ui->dockWidgetLayoutPages->setVisible(true);
     ui->dockWidgetToolOptions->setVisible(false);
+    ui->dockWidgetDetailsOptions->setVisible(false);
     ui->dockWidgetGroups->setVisible(false);
     ui->dockWidgetMessages->setVisible(false);
     ui->dockWidgetBackgroundImages->setVisible(false);
     ui->dockWidgetDependencies->setVisible(false);
 
     actionDockWidgetToolOptions->setDisabled(true);
+    actionDockWidgetDetailsOptions->setDisabled(true);
     actionDockWidgetGroups->setDisabled(true);
     actionDockWidgetBackgroundImages->setDisabled(true);
     actionDockWidgetDependencies->setDisabled(true);
@@ -3169,6 +3218,7 @@ void MainWindow::SetEnableWidgets(bool enable)
     ui->actionRemoveWatermark->setEnabled(enable && not doc->GetWatermarkPath().isEmpty());
 
     actionDockWidgetToolOptions->setEnabled(enableOnDesignStage);
+    actionDockWidgetDetailsOptions->setEnabled(enableOnDetailsStage);
     actionDockWidgetGroups->setEnabled(enableOnDesignStage);
     actionDockWidgetBackgroundImages->setEnabled(enableOnDrawStage);
 
@@ -4060,6 +4110,11 @@ void MainWindow::AddDocks()
             [this](bool checked) { m_toolOptionsActive = checked; });
     ui->menuWindow->addAction(actionDockWidgetToolOptions);
 
+    actionDockWidgetDetailsOptions = ui->dockWidgetDetailsOptions->toggleViewAction();
+    connect(actionDockWidgetDetailsOptions, &QAction::triggered, this,
+            [this](bool checked) { m_detailsOptionsActive = checked; });
+    ui->menuWindow->addAction(actionDockWidgetDetailsOptions);
+
     actionDockWidgetGroups = ui->dockWidgetGroups->toggleViewAction();
     connect(actionDockWidgetGroups, &QAction::triggered, this, [this](bool checked) { m_groupsActive = checked; });
     ui->menuWindow->addAction(actionDockWidgetGroups);
@@ -4129,6 +4184,110 @@ void MainWindow::InitDocksContain()
         ui->dockWidgetToolOptions->setWidget(root);
     }
 
+    qCDebug(vMainWindow, "Initialization details options browser.");
+    m_detailsOptions = new ODetailsPropertyBrowser(ui->dockWidgetDetailsOptions);
+
+    // Same root QWidget re-wrap as the tool options dock above.
+    {
+        auto *scroll = ui->dockWidgetDetailsOptions->widget();
+        auto *root = new QWidget(ui->dockWidgetDetailsOptions);
+        auto *rootLayout = new QVBoxLayout(root);
+        rootLayout->setContentsMargins(0, 8, 0, 0);
+        rootLayout->setSpacing(0);
+        rootLayout->addWidget(scroll);
+        ui->dockWidgetDetailsOptions->setWidget(root);
+    }
+
+    // ── Details options browser: piece selection + passmark routing ──
+    connect(doc, &VPattern::ShowDetail, this, [this](quint32 id)
+    {
+        if (id == NULL_ID)
+        {
+            m_detailsOptions->ShowEmpty();
+            return;
+        }
+        if (auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(id)))
+        {
+            m_detailsOptions->ShowPieceOptions(tool);
+        }
+    });
+
+    connect(m_detailsOptions, &ODetailsPropertyBrowser::ShowStatusTip, this,
+            [this](const QString &text) { m_statusLabel->setText(text); });
+
+    connect(m_detailsOptions, &ODetailsPropertyBrowser::HighlightNode, this,
+            [this](quint32 nodeId, bool highlight, QColor color)
+    {
+        if (pattern == nullptr)
+        {
+            return;
+        }
+        const auto *pieces = pattern->DataPieces();
+        if (pieces == nullptr)
+        {
+            return;
+        }
+        for (auto it = pieces->constBegin(); it != pieces->constEnd(); ++it)
+        {
+            auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key()));
+            if (tool == nullptr)
+            {
+                continue;
+            }
+            for (auto *child : tool->childItems())
+            {
+                auto *nodePoint = dynamic_cast<VNodePoint *>(child);
+                if (nodePoint != nullptr && nodePoint->getId() == nodeId)
+                {
+                    if (highlight)
+                    {
+                        nodePoint->setPen(QPen(color, 2));
+                        nodePoint->setBrush(QBrush(color));
+                    }
+                    else
+                    {
+                        nodePoint->setPen(QPen(Qt::black, 1));
+                        nodePoint->setBrush(QBrush(Qt::NoBrush));
+                    }
+                    return;
+                }
+            }
+        }
+    });
+
+    connect(m_detailsOptions, &ODetailsPropertyBrowser::ClearHighlight, this, [this]()
+    {
+        if (pattern == nullptr)
+        {
+            return;
+        }
+        const auto *pieces = pattern->DataPieces();
+        if (pieces == nullptr)
+        {
+            return;
+        }
+        for (auto it = pieces->constBegin(); it != pieces->constEnd(); ++it)
+        {
+            auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key()));
+            if (tool == nullptr)
+            {
+                continue;
+            }
+            std::function<void(QGraphicsItem *)> restorePens = [&](QGraphicsItem *item)
+            {
+                if (auto *nodePoint = dynamic_cast<VNodePoint *>(item))
+                {
+                    nodePoint->RefreshScale();
+                }
+                for (auto *child : item->childItems())
+                {
+                    restorePens(child);
+                }
+            };
+            restorePens(tool);
+        }
+    });
+
     connect(ui->view, &VMainGraphicsView::itemClicked, this, &MainWindow::HandleItemClicked);
     connect(ui->view, &VMainGraphicsView::itemDoubleClicked, this, &MainWindow::ItemDoubleClicked);
     connect(m_breadcrumb, &BreadcrumbBar::canvasClicked, this, [this]()
@@ -4152,6 +4311,28 @@ void MainWindow::InitDocksContain()
                 doc->ClearIsolation();
                 m_breadcrumb->hide();
                 m_toolOptions->itemClicked(nullptr);
+            });
+    connect(m_toolOptions, &VToolOptionsPropertyBrowser::RenameRequested, this,
+            [this](quint32 attachmentId, const QString &name)
+            {
+                if (doc->GetAttachmentName(attachmentId) == name)
+                {
+                    return;
+                }
+                auto *renameAttachment = new RenameAttachment(doc, attachmentId, name);
+                VAbstractApplication::VApp()->getUndoStack()->push(renameAttachment);
+
+                // Reflect the new name in the breadcrumb (keep the drilled-down object, if any).
+                QString objectName;
+                const quint32 objectId = doc->GetIsolatedObject();
+                if (objectId != NULL_ID && pattern != nullptr)
+                {
+                    if (const auto gobject = pattern->GetGObject(objectId); not gobject.isNull())
+                    {
+                        objectName = gobject->ObjectName();
+                    }
+                }
+                m_breadcrumb->Update(name, objectName);
             });
     connect(doc, &VPattern::FullUpdateFromFile, m_toolOptions, &VToolOptionsPropertyBrowser::UpdateOptions,
             Qt::QueuedConnection);
@@ -4230,6 +4411,7 @@ void MainWindow::InitDocksContain()
 
     // ── Custom title bars ──
     setupTitleBar(ui->dockWidgetToolOptions);
+    setupTitleBar(ui->dockWidgetDetailsOptions);
     setupTitleBar(ui->dockWidgetLayoutPages);
     setupTitleBar(ui->dockWidgetGroups);
     setupTitleBar(ui->dockWidgetMessages);

@@ -800,6 +800,8 @@
                         <xs:attribute name="hideMainPath" type="xs:boolean"/>
                         <xs:attribute name="showFullPiece" type="xs:boolean"/>
                         <xs:attribute name="priority" type="piecePriorityType"/>
+                        <xs:attribute name="gradedAlignH" type="xs:int"/>
+                        <xs:attribute name="gradedAlignV" type="xs:int"/>
                         <xs:attribute name="gravity" type="layoutSideGravityType"/>
                         <xs:attribute name="cuttingTime" type="cuttingTime"/>
                         <xs:attribute name="nestTogethWithNext" type="xs:boolean"/>

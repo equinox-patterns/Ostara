@@ -582,6 +582,30 @@ void VPiece::SetFormulaSAWidth(const QString &formula, qreal value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetGradedAlignH() const -> int
+{
+    return d->m_gradedAlignH;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetGradedAlignH(int val)
+{
+    d->m_gradedAlignH = val;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetGradedAlignV() const -> int
+{
+    return d->m_gradedAlignV;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetGradedAlignV(int val)
+{
+    d->m_gradedAlignV = val;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VPiece::GetInternalPaths() const -> QVector<quint32>
 {
     return d->m_internalPaths;

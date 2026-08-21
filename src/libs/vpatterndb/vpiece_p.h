@@ -66,6 +66,11 @@ public:
 
     QString m_shortName{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
+    /** @brief Graded alignment: horizontal (1=left, 2=center, 3=right). */
+    int m_gradedAlignH{2}; // NOLINT(misc-non-private-member-variables-in-classes)
+    /** @brief Graded alignment: vertical (1=top, 2=center, 3=bottom). */
+    int m_gradedAlignV{2}; // NOLINT(misc-non-private-member-variables-in-classes)
+
     quint32 m_mirrorLineStartPoint{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
     quint32 m_mirrorLineEndPoint{NULL_ID};   // NOLINT(misc-non-private-member-variables-in-classes)
 

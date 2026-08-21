@@ -813,6 +813,10 @@ void VToolSeamAllowance::AddAttributes(VAbstractPattern *doc, QDomElement &domEl
                                       [](bool united) noexcept { return not united; });
     doc->SetAttributeOrRemoveIf<uint>(domElement, AttrPiecePriority, piece.GetPriority(),
                                       [](uint priority) noexcept { return priority == 0; });
+    doc->SetAttributeOrRemoveIf<int>(domElement, AttrGradedAlignH, piece.GetGradedAlignH(),
+                                     [](int val) noexcept { return val == 2; });
+    doc->SetAttributeOrRemoveIf<int>(domElement, AttrGradedAlignV, piece.GetGradedAlignV(),
+                                     [](int val) noexcept { return val == 2; });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

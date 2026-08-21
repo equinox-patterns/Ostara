@@ -64,6 +64,7 @@ void MainWindow::ReadSettings()
         // correctly after ShowWelcomeScreen() hides everything.
         m_groupsActive = ui->dockWidgetGroups->isVisible();
         m_toolOptionsActive = ui->dockWidgetToolOptions->isVisible();
+        m_detailsOptionsActive = ui->dockWidgetDetailsOptions->isVisible();
         m_patternMessagesActive = ui->dockWidgetMessages->isVisible();
         m_backgroundImagesActive = ui->dockWidgetBackgroundImages->isVisible();
         m_dependenciesActive = ui->dockWidgetDependencies->isVisible();

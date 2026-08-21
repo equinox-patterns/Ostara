@@ -650,6 +650,11 @@ QTabWidget::pane {
     top: -1px;
 }
 
+/* Details options dock — tab page background matches QGroupBox (QFrame, §14) */
+QFrame#detailsOptionsTabPage {
+    background: #f4f4f4;
+}
+
 QTabBar::tab {
     background: #e5e5e5;
     color: #4c4c4c;
