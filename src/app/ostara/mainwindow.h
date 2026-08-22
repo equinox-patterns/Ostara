@@ -481,6 +481,10 @@ private:
     void SaveDockStateForMode(Draw mode);
     void RestoreDockStateForMode(Draw mode);
 
+    // Sync each preference dock's visibility to its boolean member, so persisted
+    // layouts reflect the user's choices, not the current mode's forced visibility.
+    void ApplyDockPreferences();
+
     // Measurement slots (from embedded WelcomeScreen)
     void WelcomeNewMeasurement();
     void WelcomeOpenMeasurement();

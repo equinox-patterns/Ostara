@@ -561,9 +561,36 @@ void MainWindow::InitWelcomePage()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ApplyDockPreferences syncs each preference dock's visibility to its boolean member,
+ *        so a persisted layout reflects the user's choices instead of the current mode's
+ *        forced dock visibility (mode functions hide docks irrelevant to the active mode,
+ *        e.g. Tool options in Details mode).
+ */
+void MainWindow::ApplyDockPreferences()
+{
+    ui->dockWidgetToolOptions->setVisible(m_toolOptionsActive);
+    ui->dockWidgetDetailsOptions->setVisible(m_detailsOptionsActive);
+    ui->dockWidgetGroups->setVisible(m_groupsActive);
+    ui->dockWidgetMessages->setVisible(m_patternMessagesActive);
+    ui->dockWidgetBackgroundImages->setVisible(m_backgroundImagesActive);
+    ui->dockWidgetDependencies->setVisible(m_dependenciesActive);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ShowWelcomeScreen()
 {
     m_stackedWidget->setCurrentWidget(m_welcomeScreen);
+
+    // Apply user dock preferences so the saved editor state reflects the user's
+    // choices, not the current mode's forced dock visibility (e.g. Tool options
+    // hidden in Details mode). Only once the window is shown: during construction
+    // isVisible() is false for every dock, so the boolean members are all false
+    // and must not be applied to the layout.
+    if (isVisible())
+    {
+        ApplyDockPreferences();
+    }
 
     // Save editor dock state before hiding, so ShowEditor() can restore it
     m_editorDockState = saveState(kToolbarStateVersion);

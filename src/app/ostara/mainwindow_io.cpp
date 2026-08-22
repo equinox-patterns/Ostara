@@ -115,6 +115,14 @@ void MainWindow::WriteSettings()
     }
     else
     {
+        // Normalize dock visibility to the user's preferences before persisting —
+        // the current mode may have force-hidden docks (e.g. Tool options in Details
+        // mode), which must not leak into the persisted layout. Only when the window
+        // is visible: during construction isVisible() is false for every dock.
+        if (isVisible())
+        {
+            ApplyDockPreferences();
+        }
         settings->SetToolbarsState(saveState(kToolbarStateVersion));
     }
 
