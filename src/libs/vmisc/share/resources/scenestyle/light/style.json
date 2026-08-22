@@ -14,7 +14,8 @@
     "VisSupportColor2": "darkGreen",
     "VisSupportColor3": "darkBlue",
     "VisSupportColor4": "darkRed",
-    "BasePointColor": "red"
+    "BasePointColor": "red",
+    "ActivePointColor": "#ffa500"
   },
   "PatternPieceStyle": {
     "PieceColor": "#2b2b2b",

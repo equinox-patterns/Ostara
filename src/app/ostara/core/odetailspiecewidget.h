@@ -74,6 +74,7 @@ public:
 signals:
     void ShowStatusTip(const QString &text);
     void HighlightNode(quint32 nodeId, bool highlight, QColor color = Qt::red);
+    void HighlightTemporaryNode(quint32 nodeId, bool selected);
     void ClearHighlight();
 
 private:

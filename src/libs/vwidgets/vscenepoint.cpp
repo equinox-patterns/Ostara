@@ -224,6 +224,13 @@ void VScenePoint::SetActivePoint(bool active)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VScenePoint::SetTemporarySelected(bool selected)
+{
+    m_temporarySelected = selected;
+    RefreshHoverPen();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VScenePoint::RefreshLine()
 {
     if (m_onlyPoint)
@@ -302,7 +309,7 @@ void VScenePoint::SetLabelTextHoverColorRole(VColorRole role)
 void VScenePoint::ScaleMainPenWidth(qreal scale)
 {
     // An active point (property browser open) keeps its highlighted look even when not hovered.
-    const bool hovered = m_isHovered || m_selected;
+    const bool hovered = m_isHovered || m_selected || m_temporarySelected;
 
     const qreal width = ScaleWidth(hovered ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
                                            : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
@@ -311,13 +318,28 @@ void VScenePoint::ScaleMainPenWidth(qreal scale)
     QPen pointPen = pen();
     if (m_role != VColorRole::CustomColor)
     {
+        // Priority: transient multi-selection (magenta) > persistent active (orange) > hover (magenta).
+        const bool active = m_selected && not m_alwaysHovered;
+        const bool transient = m_temporarySelected && not m_alwaysHovered;
         const bool hoverColorActive = hovered && not m_alwaysHovered;
-        const VColorRole colorRole = hoverColorActive ? VColorRole::VisSupportColor : m_role;
+        VColorRole colorRole = m_role;
+        if (transient)
+        {
+            colorRole = VColorRole::VisSupportColor;
+        }
+        else if (active)
+        {
+            colorRole = VColorRole::ActivePointColor;
+        }
+        else if (hoverColorActive)
+        {
+            colorRole = VColorRole::VisSupportColor;
+        }
         const QColor color = VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::Color(colorRole));
         pointPen.setColor(color);
         // Hover/active points and Draw-mode points stay filled. Details-mode piece points
         // are outline-only at rest: the fill is removed so only the outline shows.
-        if (hoverColorActive || m_fillPoints)
+        if (hoverColorActive || transient || m_fillPoints)
         {
             setBrush(QBrush(color)); // Fill inherits the role color (outline + fill = same color)
         }

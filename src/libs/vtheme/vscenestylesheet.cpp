@@ -120,6 +120,8 @@ auto VSceneStylesheet::Color(VColorRole role) -> QColor
             return ToolStyle().VisSupportColor4();
         case VColorRole::BasePointColor:
             return ToolStyle().BasePointColor();
+        case VColorRole::ActivePointColor:
+            return ToolStyle().ActivePointColor();
         case VColorRole::PieceColor:
             return PatternPieceStyle().PieceColor();
         case VColorRole::PiecePointColor:

@@ -549,12 +549,12 @@ void ODetailsPieceWidget::OnNodeSelectedForPassmark(quint32 nodeId)
     if (m_selectedPassmarkNodeIds.contains(nodeId))
     {
         m_selectedPassmarkNodeIds.remove(nodeId);
-        emit HighlightNode(nodeId, false);
+        emit HighlightTemporaryNode(nodeId, false);
     }
     else
     {
         m_selectedPassmarkNodeIds.insert(nodeId);
-        emit HighlightNode(nodeId, true);
+        emit HighlightTemporaryNode(nodeId, true);
     }
 
     const auto count = m_selectedPassmarkNodeIds.size();

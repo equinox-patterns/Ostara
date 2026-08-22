@@ -67,6 +67,7 @@ public:
     auto VisSupportColor3() const -> QColor;
     auto VisSupportColor4() const -> QColor;
     auto BasePointColor() const -> QColor;
+    auto ActivePointColor() const -> QColor;
 
 private:
     QColor m_patternColor{};
@@ -84,6 +85,7 @@ private:
     QColor m_visSupportColor3{};
     QColor m_visSupportColor4{};
     QColor m_basePointColor{};
+    QColor m_activePointColor{};
     QMap<QString, QString> m_colorAdjustments{};
 };
 
@@ -181,6 +183,12 @@ inline auto VToolStyle::VisSupportColor4() const -> QColor
 inline auto VToolStyle::BasePointColor() const -> QColor
 {
     return m_basePointColor;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+inline auto VToolStyle::ActivePointColor() const -> QColor
+{
+    return m_activePointColor;
 }
 
 #endif // VTOOLSTYLE_H

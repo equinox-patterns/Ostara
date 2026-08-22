@@ -61,6 +61,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, VisSupportColor2Var, ("VisSupportColor2
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, VisSupportColor3Var, ("VisSupportColor3"_L1))       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, VisSupportColor4Var, ("VisSupportColor4"_L1))       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, BasePointColorVar, ("BasePointColor"_L1))           // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, ActivePointColorVar, ("ActivePointColor"_L1))       // NOLINT
 
 QT_WARNING_POP
 
@@ -129,6 +130,7 @@ void VToolStyle::LoadJson(const QJsonObject &json)
     ReadColor(obj, *VisSupportColor3Var, m_visSupportColor3);
     ReadColor(obj, *VisSupportColor4Var, m_visSupportColor4);
     ReadColor(obj, *BasePointColorVar, m_basePointColor);
+    ReadColor(obj, *ActivePointColorVar, m_activePointColor);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -152,6 +154,7 @@ auto VToolStyle::ToJson() const -> QJsonObject
     WriteColor(obj, *VisSupportColor3Var, m_visSupportColor3);
     WriteColor(obj, *VisSupportColor4Var, m_visSupportColor4);
     WriteColor(obj, *BasePointColorVar, m_basePointColor);
+    WriteColor(obj, *ActivePointColorVar, m_activePointColor);
 
     QJsonObject root;
     root[*ToolStyleNodeVar] = obj;

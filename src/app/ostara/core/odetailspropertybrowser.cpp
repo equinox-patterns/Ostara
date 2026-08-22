@@ -84,6 +84,7 @@ ODetailsPropertyBrowser::ODetailsPropertyBrowser(QDockWidget *parent)
     // Re-emit piece widget signals through the browser.
     connect(m_pieceWidget, &ODetailsPieceWidget::ShowStatusTip, this, &ODetailsPropertyBrowser::ShowStatusTip);
     connect(m_pieceWidget, &ODetailsPieceWidget::HighlightNode, this, &ODetailsPropertyBrowser::HighlightNode);
+    connect(m_pieceWidget, &ODetailsPieceWidget::HighlightTemporaryNode, this, &ODetailsPropertyBrowser::HighlightTemporaryNode);
     connect(m_pieceWidget, &ODetailsPieceWidget::ClearHighlight, this, &ODetailsPropertyBrowser::ClearHighlight);
 
     // ── Same structure as the draw-mode Options dock (VToolOptionsPropertyBrowser):

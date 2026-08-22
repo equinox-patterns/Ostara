@@ -4417,6 +4417,37 @@ void MainWindow::InitDocksContain()
         }
     });
 
+    connect(m_detailsOptions, &ODetailsPropertyBrowser::HighlightTemporaryNode, this,
+            [this](quint32 nodeId, bool selected)
+    {
+        if (pattern == nullptr)
+        {
+            return;
+        }
+        const auto *pieces = pattern->DataPieces();
+        if (pieces == nullptr)
+        {
+            return;
+        }
+        for (auto it = pieces->constBegin(); it != pieces->constEnd(); ++it)
+        {
+            auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key()));
+            if (tool == nullptr)
+            {
+                continue;
+            }
+            for (auto *child : tool->childItems())
+            {
+                auto *nodePoint = dynamic_cast<VNodePoint *>(child);
+                if (nodePoint != nullptr && nodePoint->getId() == nodeId)
+                {
+                    nodePoint->SetTemporarySelected(selected);
+                    return;
+                }
+            }
+        }
+    });
+
     connect(m_detailsOptions, &ODetailsPropertyBrowser::ClearHighlight, this, [this]()
     {
         if (pattern == nullptr)
@@ -4440,6 +4471,7 @@ void MainWindow::InitDocksContain()
                 if (auto *nodePoint = dynamic_cast<VNodePoint *>(item))
                 {
                     nodePoint->SetActivePoint(false);
+                    nodePoint->SetTemporarySelected(false);
                     nodePoint->RefreshScale();
                 }
                 for (auto *child : item->childItems())

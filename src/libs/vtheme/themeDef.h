@@ -58,6 +58,7 @@ enum class VColorRole : quint8
     VisSupportColor3,
     VisSupportColor4,
     BasePointColor,
+    ActivePointColor,
     PieceColor,
     PiecePointColor,
     PieceNodeLabelColor,

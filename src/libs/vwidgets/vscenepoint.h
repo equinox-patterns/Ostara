@@ -73,6 +73,11 @@ public:
 
     void SetActivePoint(bool active);
 
+    /** @brief Set the transient multi-selection state (e.g. passmark points clicked while
+     *  adding/removing). Rendered magenta, distinct from the persistent active (orange).
+     */
+    void SetTemporarySelected(bool selected);
+
     /** @brief Toggle whether the point disc is filled at rest.
      *
      *  Details-mode piece points (VNodePoint) are outline-only when idle; hover/active
@@ -90,6 +95,7 @@ protected:
     bool m_onlyPoint{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_isHovered{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_selected{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+    bool m_temporarySelected{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_alwaysHovered{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_fillPoints{true}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_showLabel{false};  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
