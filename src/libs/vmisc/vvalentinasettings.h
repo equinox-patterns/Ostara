@@ -273,6 +273,9 @@ public:
     auto IsAutoGoToObject() const -> bool;
     void SetAutoGoToObject(bool value);
 
+    auto GetModeToolbarsState(Draw mode) const -> QByteArray;
+    void SetModeToolbarsState(Draw mode, const QByteArray &value);
+
     auto GetSavedSeamAllowances() const -> QVector<SavedSeamAllowance>;
     void SetSavedSeamAllowances(const QVector<SavedSeamAllowance> &list);
 

@@ -59,6 +59,15 @@ void MainWindow::ReadSettings()
         restoreGeometry(settings->GetGeometry());
         restoreState(settings->GetToolbarsState(), kToolbarStateVersion);
 
+        // Load per-mode dock layouts so the first entry into a mode after startup
+        // restores its own sizes/visibility instead of inheriting the current mode's.
+        // (At startup every mode function runs while openingPattern is true, so
+        // SaveDockStateForMode() skips capturing — without this the mode states
+        // would stay empty until the user leaves a mode once.)
+        m_drawModeDockState = settings->GetModeToolbarsState(Draw::Calculation);
+        m_detailsModeDockState = settings->GetModeToolbarsState(Draw::Modeling);
+        m_layoutModeDockState = settings->GetModeToolbarsState(Draw::Layout);
+
         // Dock visibility is handled by saveState()/restoreState() — sync the
         // boolean members from actual dock state so ShowEditor() can restore
         // correctly after ShowWelcomeScreen() hides everything.
@@ -105,6 +114,23 @@ void MainWindow::WriteSettings()
     VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
     settings->SetGeometry(saveGeometry());
 
+    // Capture the current mode's true dock layout (sizes included) BEFORE
+    // ApplyDockPreferences() re-shows the docks that the mode force-hidden
+    // (e.g. Tool options in Details mode) — that re-layout would shrink the
+    // Options dock and leak a wrong height into the persisted state. Only on
+    // the editor (not the WelcomeScreen, where every dock is hidden).
+    if (m_stackedWidget->currentIndex() == 0 && isVisible())
+    {
+        SaveDockStateForMode(VAbstractValApplication::VApp()->GetDrawMode());
+    }
+
+    // Snapshot the true per-mode layouts: ActionDraw(true) below re-saves the
+    // current mode's normalized layout into its member, which must not overwrite
+    // the states we persist here.
+    const QByteArray drawState = m_drawModeDockState;
+    const QByteArray detailsState = m_detailsModeDockState;
+    const QByteArray layoutState = m_layoutModeDockState;
+
     // Save dock state BEFORE ActionDraw(true) — ActionDraw resets dock visibility
     // from stale boolean members, which would reopen docks the user closed.
     // When on the WelcomeScreen all docks are hidden, so save the last known editor
@@ -126,9 +152,24 @@ void MainWindow::WriteSettings()
         settings->SetToolbarsState(saveState(kToolbarStateVersion));
     }
 
+    // Persist each mode's own dock layout, so a mode change never overwrites
+    // the others' sizes/visibility, and the first entry into a mode after
+    // startup (when mode states are empty) restores the saved geometry.
+    settings->SetModeToolbarsState(Draw::Calculation, drawState);
+    settings->SetModeToolbarsState(Draw::Modeling, detailsState);
+    settings->SetModeToolbarsState(Draw::Layout, layoutState);
+
     settings->sync();
 
     ActionDraw(true);
+
+    // Restore the true per-mode layouts: ActionDraw(true) just overwrote the
+    // current mode's member with the normalized layout, which must not leak
+    // into the next pattern opened in this session.
+    m_drawModeDockState = drawState;
+    m_detailsModeDockState = detailsState;
+    m_layoutModeDockState = layoutState;
+
     if (settings->status() == QSettings::AccessError)
     {
         qWarning() << tr("Cannot save settings. Access denied.");

@@ -84,6 +84,16 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternGlobalToolColor, ("patter
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternCollectGarbage, ("pattern/collectGarbage"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternAutoGoToObject, ("pattern/autoGoToObject"_L1))   // NOLINT
 
+// Dock layouts per mode (Draw / Details / Layout) — Ostara: each mode has its own
+// dock sizes/visibility, persisted separately so a mode change doesn't leak into
+// the global toolbarsState nor overwrite the other modes' geometry.
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingModeToolbarsStateDraw, ("mode/toolbarsStateDraw"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingModeToolbarsStateDetails, ("mode/toolbarsStateDetails"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingModeToolbarsStateLayout, ("mode/toolbarsStateLayout"_L1))
+
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutWidth, ("layout/width"_L1))             // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutSorting, ("layout/sorting"_L1))         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutPaperHeight, ("layout/paperHeight"_L1)) // NOLINT
@@ -1165,6 +1175,38 @@ void VValentinaSettings::SetCollectGarbage(bool value)
 auto VValentinaSettings::IsAutoGoToObject() const -> bool
 {
     return value(*settingPatternAutoGoToObject, true).toBool();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetModeToolbarsState(Draw mode) const -> QByteArray
+{
+    switch (mode)
+    {
+        case Draw::Calculation:
+            return value(*settingModeToolbarsStateDraw).toByteArray();
+        case Draw::Modeling:
+            return value(*settingModeToolbarsStateDetails).toByteArray();
+        case Draw::Layout:
+            return value(*settingModeToolbarsStateLayout).toByteArray();
+    }
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VValentinaSettings::SetModeToolbarsState(Draw mode, const QByteArray &value)
+{
+    switch (mode)
+    {
+        case Draw::Calculation:
+            setValue(*settingModeToolbarsStateDraw, value);
+            break;
+        case Draw::Modeling:
+            setValue(*settingModeToolbarsStateDetails, value);
+            break;
+        case Draw::Layout:
+            setValue(*settingModeToolbarsStateLayout, value);
+            break;
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
