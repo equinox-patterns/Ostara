@@ -3085,6 +3085,7 @@ void MainWindow::Clear()
     m_detailsWidget->UpdateList();
     m_backgroundImagesWidget->UpdateImages();
     m_dependenciesWidget->Clear();
+    m_detailsOptions->Clear();
     qCDebug(vMainWindow, "Clearing scenes.");
     m_sceneDraw->clear();
     qCDebug(vMainWindow, "Draw scene cleared.");

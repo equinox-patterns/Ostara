@@ -97,6 +97,7 @@ private:
     QButtonGroup *m_alignVGroup{nullptr};
     QPushButton *m_alignHBtns[3]{};
     QPushButton *m_alignVBtns[3]{};
+    void RefreshAlignIcons();
 
     // Manage main path
     QPushButton *m_manageMainPathBtn{nullptr};

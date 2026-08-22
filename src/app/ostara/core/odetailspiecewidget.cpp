@@ -39,6 +39,7 @@
 #include "../vtools/dialogs/tools/piece/dialogmainpath.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/undocommands/savepieceoptions.h"
+#include "../vtheme/vtheme.h"
 
 #include <QButtonGroup>
 #include <QComboBox>
@@ -49,14 +50,46 @@
 #include <QFrame>
 #include <QGroupBox>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSize>
 #include <QSpinBox>
 #include <QTabWidget>
 #include <QTimer>
 #include <QUndoStack>
 #include <QVBoxLayout>
+
+namespace
+{
+// Graded alignment icons: regular (outline) for the normal state, fill for the checked state.
+// QCommonStyle renders a checked QPushButton icon in QIcon::On, unchecked in QIcon::Off.
+auto MakeAlignIcon(const QString &baseName, bool dark) -> QIcon
+{
+    const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
+    QIcon icon;
+    icon.addFile(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, baseName));                    // Off = regular
+    icon.addFile(QStringLiteral(":/icons/%1/%2-fill_%1.svg").arg(theme, baseName), QSize(),
+                 QIcon::Normal, QIcon::On);                                                       // On = fill
+    return icon;
+}
+
+// alignValue 1/2/3 → Left/Center/Right horizontally, Top/Center/Bottom vertically.
+auto AlignIconBaseName(bool vertical, int value) -> QString
+{
+    switch (value)
+    {
+        case 1:
+            return vertical ? QStringLiteral("align-top-simple") : QStringLiteral("align-left-simple");
+        case 3:
+            return vertical ? QStringLiteral("align-bottom-simple") : QStringLiteral("align-right-simple");
+        default:
+            return vertical ? QStringLiteral("align-center-vertical-simple")
+                            : QStringLiteral("align-center-horizontal-simple");
+    }
+}
+} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
@@ -214,6 +247,8 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
     mainLayout->addWidget(m_tabWidget);
 
     ConnectControls();
+
+    RefreshAlignIcons();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -290,6 +325,9 @@ void ODetailsPieceWidget::ConnectControls()
         ModifyPiece([v](VPiece &det) { det.SetGradedAlignV(v); });
     });
 
+    // Graded alignment icons follow the current theme (Light/Dark toggle).
+    connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, &ODetailsPieceWidget::RefreshAlignIcons);
+
     // ── Passmark multi-selection ──────────────────────────────────
 
     connect(m_addPassmarksBtn, &QPushButton::clicked, this, &ODetailsPieceWidget::OnAddPassmarks);
@@ -309,6 +347,20 @@ void ODetailsPieceWidget::ModifyPiece(std::function<void(VPiece &)> func)
     }
     func(m_pendingDet);
     CommitPending();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::RefreshAlignIcons()
+{
+    const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
+    const QSize iconSize(16, 16);
+    for (int i = 0; i < 3; ++i)
+    {
+        m_alignHBtns[i]->setIcon(MakeAlignIcon(AlignIconBaseName(false, i + 1), dark));
+        m_alignHBtns[i]->setIconSize(iconSize);
+        m_alignVBtns[i]->setIcon(MakeAlignIcon(AlignIconBaseName(true, i + 1), dark));
+        m_alignVBtns[i]->setIconSize(iconSize);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

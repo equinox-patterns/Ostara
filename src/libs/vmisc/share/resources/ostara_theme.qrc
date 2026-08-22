@@ -63,6 +63,18 @@
         <file alias="arrow-right_light.svg">../../../../../share/themes/icons/light/arrow-right_light.svg</file>
         <file alias="arrow-down_light.svg">../../../../../share/themes/icons/light/arrow-down_light.svg</file>
         <file alias="arrow-left_light.svg">../../../../../share/themes/icons/light/arrow-left_light.svg</file>
+        <file alias="align-left-simple_light.svg">../../../../../share/themes/icons/light/align-left-simple_light.svg</file>
+        <file alias="align-left-simple-fill_light.svg">../../../../../share/themes/icons/light/align-left-simple-fill_light.svg</file>
+        <file alias="align-center-horizontal-simple_light.svg">../../../../../share/themes/icons/light/align-center-horizontal-simple_light.svg</file>
+        <file alias="align-center-horizontal-simple-fill_light.svg">../../../../../share/themes/icons/light/align-center-horizontal-simple-fill_light.svg</file>
+        <file alias="align-right-simple_light.svg">../../../../../share/themes/icons/light/align-right-simple_light.svg</file>
+        <file alias="align-right-simple-fill_light.svg">../../../../../share/themes/icons/light/align-right-simple-fill_light.svg</file>
+        <file alias="align-top-simple_light.svg">../../../../../share/themes/icons/light/align-top-simple_light.svg</file>
+        <file alias="align-top-simple-fill_light.svg">../../../../../share/themes/icons/light/align-top-simple-fill_light.svg</file>
+        <file alias="align-center-vertical-simple_light.svg">../../../../../share/themes/icons/light/align-center-vertical-simple_light.svg</file>
+        <file alias="align-center-vertical-simple-fill_light.svg">../../../../../share/themes/icons/light/align-center-vertical-simple-fill_light.svg</file>
+        <file alias="align-bottom-simple_light.svg">../../../../../share/themes/icons/light/align-bottom-simple_light.svg</file>
+        <file alias="align-bottom-simple-fill_light.svg">../../../../../share/themes/icons/light/align-bottom-simple-fill_light.svg</file>
     </qresource>
     <qresource prefix="/icons/dark">
         <file alias="square_accent.svg">../../../../../share/themes/icons/dark/square_accent.svg</file>
@@ -124,5 +136,17 @@
         <file alias="arrow-right_dark.svg">../../../../../share/themes/icons/dark/arrow-right_dark.svg</file>
         <file alias="arrow-down_dark.svg">../../../../../share/themes/icons/dark/arrow-down_dark.svg</file>
         <file alias="arrow-left_dark.svg">../../../../../share/themes/icons/dark/arrow-left_dark.svg</file>
+        <file alias="align-left-simple_dark.svg">../../../../../share/themes/icons/dark/align-left-simple_dark.svg</file>
+        <file alias="align-left-simple-fill_dark.svg">../../../../../share/themes/icons/dark/align-left-simple-fill_dark.svg</file>
+        <file alias="align-center-horizontal-simple_dark.svg">../../../../../share/themes/icons/dark/align-center-horizontal-simple_dark.svg</file>
+        <file alias="align-center-horizontal-simple-fill_dark.svg">../../../../../share/themes/icons/dark/align-center-horizontal-simple-fill_dark.svg</file>
+        <file alias="align-right-simple_dark.svg">../../../../../share/themes/icons/dark/align-right-simple_dark.svg</file>
+        <file alias="align-right-simple-fill_dark.svg">../../../../../share/themes/icons/dark/align-right-simple-fill_dark.svg</file>
+        <file alias="align-top-simple_dark.svg">../../../../../share/themes/icons/dark/align-top-simple_dark.svg</file>
+        <file alias="align-top-simple-fill_dark.svg">../../../../../share/themes/icons/dark/align-top-simple-fill_dark.svg</file>
+        <file alias="align-center-vertical-simple_dark.svg">../../../../../share/themes/icons/dark/align-center-vertical-simple_dark.svg</file>
+        <file alias="align-center-vertical-simple-fill_dark.svg">../../../../../share/themes/icons/dark/align-center-vertical-simple-fill_dark.svg</file>
+        <file alias="align-bottom-simple_dark.svg">../../../../../share/themes/icons/dark/align-bottom-simple_dark.svg</file>
+        <file alias="align-bottom-simple-fill_dark.svg">../../../../../share/themes/icons/dark/align-bottom-simple-fill_dark.svg</file>
     </qresource>
 </RCC>

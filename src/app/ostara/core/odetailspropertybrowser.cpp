@@ -109,6 +109,13 @@ void ODetailsPropertyBrowser::ShowEmpty()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::Clear()
+{
+    m_pieceWidget->Clear();
+    m_stack->setCurrentIndex(0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODetailsPropertyBrowser::ShowPieceOptions(VToolSeamAllowance *tool)
 {
     m_pieceWidget->Show(tool);

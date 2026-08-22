@@ -46,6 +46,7 @@ public:
 
     void ShowEmpty();
     void ShowPieceOptions(VToolSeamAllowance *tool);
+    void Clear();
 
     auto IsSelectingPassmarkPoints() const -> bool;
     void OnNodeSelectedForPassmark(quint32 nodeId);
