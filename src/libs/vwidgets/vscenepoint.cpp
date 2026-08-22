@@ -315,7 +315,16 @@ void VScenePoint::ScaleMainPenWidth(qreal scale)
         const VColorRole colorRole = hoverColorActive ? VColorRole::VisSupportColor : m_role;
         const QColor color = VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::Color(colorRole));
         pointPen.setColor(color);
-        setBrush(QBrush(color)); // Fill inherits the role color (outline + fill = same color)
+        // Hover/active points and Draw-mode points stay filled. Details-mode piece points
+        // are outline-only at rest: the fill is removed so only the outline shows.
+        if (hoverColorActive || m_fillPoints)
+        {
+            setBrush(QBrush(color)); // Fill inherits the role color (outline + fill = same color)
+        }
+        else
+        {
+            setBrush(Qt::NoBrush);
+        }
     }
     pointPen.setWidthF(width);
     setPen(pointPen);

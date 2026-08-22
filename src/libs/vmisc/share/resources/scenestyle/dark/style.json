@@ -20,8 +20,8 @@
     "BasePointColor": "#ffd900"
   },
   "PatternPieceStyle": {
-    "PieceColor": "#83aad1",
-    "PointColor": "#ffd900",
+    "PieceColor": "#e5e5e5",
+    "PointColor": "#d6d6d6",
     "NodeLabelColor": "#e5e5e5",
     "NodeLabelHoverColor": "#ffd900",
     "NodeLabelLineColor": [255, 217, 0, 125],

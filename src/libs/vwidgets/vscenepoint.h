@@ -73,6 +73,13 @@ public:
 
     void SetActivePoint(bool active);
 
+    /** @brief Toggle whether the point disc is filled at rest.
+     *
+     *  Details-mode piece points (VNodePoint) are outline-only when idle; hover/active
+     *  states keep their fill. Draw-mode points (VSimplePoint) stay filled.
+     */
+    void SetPointFillEnabled(bool fill);
+
 protected:
     /** @brief namePoint point label. */
     VGraphicsSimpleTextItem *m_namePoint; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
@@ -84,6 +91,7 @@ protected:
     bool m_isHovered{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_selected{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_alwaysHovered{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+    bool m_fillPoints{true}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_showLabel{false};  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 
     bool m_selectedFromChild{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
@@ -115,6 +123,12 @@ inline auto VScenePoint::GetColorRole() const -> VColorRole
 inline void VScenePoint::SetColorRole(VColorRole role)
 {
     m_role = role;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+inline void VScenePoint::SetPointFillEnabled(bool fill)
+{
+    m_fillPoints = fill;
 }
 
 #endif // VSCENEPOINT_H

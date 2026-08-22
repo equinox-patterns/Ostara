@@ -1273,6 +1273,12 @@ void VToolSeamAllowance::RefreshScale()
     mirrorLinePen.setStyle(Qt::DashDotLine);
     m_mirrorLine->setPen(mirrorLinePen);
 
+    // The fold-line mark and the "Cut On Fold" label are filled with the piece color
+    // (theme-aware: re-applied on every Light/Dark toggle via RefreshSceneItemPens).
+    const QBrush foldLineBrush(VSceneStylesheet::PatternPieceStyle().PieceColor());
+    m_foldLineMark->setBrush(foldLineBrush);
+    m_foldLineLabelText->setBrush(foldLineBrush);
+
     VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
     if (settings->GetSingleStrokeOutlineFont() || settings->GetSingleLineFonts())
     {
@@ -1280,7 +1286,7 @@ void VToolSeamAllowance::RefreshScale()
     }
     else
     {
-        m_foldLineLabel->setBrush(Qt::SolidPattern);
+        m_foldLineLabel->setBrush(foldLineBrush);
     }
 }
 
@@ -1678,7 +1684,11 @@ VToolSeamAllowance::VToolSeamAllowance(const VToolSeamAllowanceInitData &initDat
     connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this,
             [this]() { m_saHighlights.UpdateColors(); });
 
-    m_foldLineMark->setBrush(Qt::SolidPattern);
+    // The fold-line mark and the "Cut On Fold" label follow the piece color (theme-aware),
+    // not a hard-coded black: the black fill was invisible on the dark canvas.
+    const QBrush foldLineBrush(VSceneStylesheet::PatternPieceStyle().PieceColor());
+    m_foldLineMark->setBrush(foldLineBrush);
+    m_foldLineLabelText->setBrush(foldLineBrush);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

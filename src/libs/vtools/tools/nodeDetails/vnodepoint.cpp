@@ -121,6 +121,10 @@ VNodePoint::VNodePoint(const VAbstractNodeInitData &initData, QObject *qoParent,
                   qoParent),
     VScenePoint(VColorRole::PiecePointColor, parent)
 {
+    // Details-mode piece points are outline-only at rest; hover/active keep their fill.
+    // Draw-mode points (VSimplePoint) are untouched (m_fillPoints stays true).
+    SetPointFillEnabled(false);
+
     m_namePoint->SetTextColor(VColorRole::PieceNodeLabelColor);
     m_namePoint->SetTextHoverColor(VColorRole::PieceNodeLabelHoverColor);
     m_namePoint->SetShowParentTooltip(false);
