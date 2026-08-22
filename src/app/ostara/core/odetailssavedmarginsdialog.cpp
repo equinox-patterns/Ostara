@@ -26,16 +26,36 @@
 
 #include "odetailssavedmarginsdialog.h"
 
-#include "odetailsseamallowancewidget.h"
+#include "../vwidgets/osamarginpalette.h"
+#include "osavedmarginrowwidget.h"
 
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
 
-#include <QHeaderView>
+#include <QPalette>
+
+#include <QComboBox>
+#include <QFrame>
+#include <QLocale>
+#include <QLineEdit>
 #include <QPushButton>
-#include <QTableWidget>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QScrollArea>
 #include <QVBoxLayout>
+
+namespace
+{
+[[nodiscard]] auto ParseSavedValue(const QString &text, bool *ok) -> double
+{
+    QString normalized = text;
+    normalized.replace(QLatin1Char(','), QLatin1Char('.'));
+    return QLocale::c().toDouble(normalized, ok);
+}
+
+const QRegularExpression kSavedDecimalRegex(QStringLiteral("[0-9]*[\\.,]?[0-9]*"));
+} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 ODetailsSavedMarginsDialog::ODetailsSavedMarginsDialog(QWidget *parent)
@@ -46,57 +66,70 @@ ODetailsSavedMarginsDialog::ODetailsSavedMarginsDialog(QWidget *parent)
 
     auto *layout = new QVBoxLayout(this);
 
-    m_table = new QTableWidget(0, 3);
-    m_table->setHorizontalHeaderLabels({tr("Name"), tr("Value"), tr("Color")});
-    m_table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
-    m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
-    m_table->setColumnWidth(1, 70);
-    m_table->setColumnWidth(2, 55);
-    m_table->verticalHeader()->setVisible(false);
-    m_table->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_table->setSelectionMode(QAbstractItemView::SingleSelection);
-    layout->addWidget(m_table);
+    m_scrollArea = new QScrollArea();
+    m_scrollArea->setWidgetResizable(true);
+    m_scrollArea->setFrameShape(QFrame::NoFrame);
+    m_listContainer = new QWidget();
+    m_listLayout = new QVBoxLayout(m_listContainer);
+    m_listLayout->setContentsMargins(0, 0, 0, 0);
+    m_listLayout->setSpacing(0);
+    m_scrollArea->setWidget(m_listContainer);
+    layout->addWidget(m_scrollArea);
 
-    const Unit patternUnit = VAbstractValApplication::VApp()->patternUnits();
-    const QVector<SavedSeamAllowance> saved =
-        VAbstractValApplication::VApp()->ValentinaSettings()->GetSavedSeamAllowances();
+    // The scroll-area viewport paints a flat NATIVE background (white on macOS) that
+    // overrides global QSS and palette. Only an inline dot-selector with an OPAQUE
+    // color works (SubtiliteCode §13); `transparent` would let the native white show
+    // through. Use the Window color (#232323 dark / #F9F9F9 light), read from the
+    // palette so it always follows the current theme.
+    m_scrollArea->viewport()->setStyleSheet(
+        QStringLiteral(".QWidget { background: %1; }").arg(palette().color(QPalette::Window).name()));
+
+    const auto saved = VAbstractValApplication::VApp()->ValentinaSettings()->GetSavedSeamAllowances();
     for (const auto &s : saved)
     {
-        const int row = m_table->rowCount();
-        m_table->insertRow(row);
-
-        m_table->setItem(row, 0, new QTableWidgetItem(s.name));
-
-        const qreal displayVal = UnitConvertor(s.value, Unit::Mm, patternUnit);
-        m_table->setItem(row, 1, new QTableWidgetItem(QString::number(displayVal, 'f', 1)));
-
-        const int colorIdx = (s.colorIndex >= 0 && s.colorIndex < kCustomMarginColors.size()) ? s.colorIndex : 0;
-        auto *colorItem = new QTableWidgetItem();
-        colorItem->setBackground(kCustomMarginColors.at(colorIdx));
-        colorItem->setData(Qt::UserRole, colorIdx);
-        m_table->setItem(row, 2, colorItem);
+        AddRow(s);
     }
 
-    auto *deleteBtn = new QPushButton(tr("Delete selected"));
-    layout->addWidget(deleteBtn);
-    connect(deleteBtn, &QPushButton::clicked, this, &ODetailsSavedMarginsDialog::DeleteSelected);
+    // The widgetResizable scroll area stretches the container to the viewport height;
+    // without this, the spare space would be spread into gaps between the rows. Absorb
+    // it at the end so the rows stay stacked one after another at the top.
+    m_listLayout->addStretch(1);
 
     auto *closeBtn = new QPushButton(tr("Close"));
+    // Real default button of the dialog — Enter closes it.
+    closeBtn->setDefault(true);
     layout->addWidget(closeBtn);
     connect(closeBtn, &QPushButton::clicked, this, &QDialog::accept);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsSavedMarginsDialog::DeleteSelected()
+void ODetailsSavedMarginsDialog::AddRow(const SavedSeamAllowance &s)
 {
-    const int row = m_table->currentRow();
-    if (row < 0)
+    auto *row = new OSavedMarginRowWidget(m_listContainer);
+    // Vertical Fixed: rows keep their sizeHint and stack one after another instead
+    // of being stretched by the container layout's spare space.
+    row->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    m_listLayout->addWidget(row);
+
+    row->nameEdit()->setText(s.name);
+
+    const Unit patternUnit = VAbstractValApplication::VApp()->patternUnits();
+    const qreal displayVal = UnitConvertor(s.value, Unit::Mm, patternUnit);
+    row->valueEdit()->setText(QString::number(displayVal, 'f', 1));
+    row->valueEdit()->setValidator(new QRegularExpressionValidator(kSavedDecimalRegex, this));
+
+    const int colorIdx = (s.colorIndex >= 0 && s.colorIndex < OSAMarginPalette::kColorCount) ? s.colorIndex : 0;
+    row->colorCombo()->setCurrentIndex(colorIdx);
+
+    connect(row->nameEdit(), &QLineEdit::editingFinished, this, &ODetailsSavedMarginsDialog::Persist);
+    connect(row->valueEdit(), &QLineEdit::editingFinished, this, &ODetailsSavedMarginsDialog::Persist);
+    connect(row->colorCombo(), QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &ODetailsSavedMarginsDialog::Persist);
+    connect(row->deleteButton(), &QPushButton::clicked, this, [this, row]()
     {
-        return;
-    }
-    m_table->removeRow(row);
-    Persist();
+        delete row;
+        Persist();
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -104,13 +137,20 @@ void ODetailsSavedMarginsDialog::Persist()
 {
     QVector<SavedSeamAllowance> list;
     const Unit patternUnit = VAbstractValApplication::VApp()->patternUnits();
-    for (int r = 0; r < m_table->rowCount(); ++r)
+    for (int i = 0; i < m_listLayout->count(); ++i)
     {
+        auto *row = qobject_cast<OSavedMarginRowWidget *>(m_listLayout->itemAt(i)->widget());
+        if (row == nullptr)
+        {
+            continue;
+        }
+
         SavedSeamAllowance s;
-        s.name = m_table->item(r, 0)->text();
-        const double v = m_table->item(r, 1)->text().toDouble();
-        s.value = UnitConvertor(v, patternUnit, Unit::Mm);
-        s.colorIndex = m_table->item(r, 2)->data(Qt::UserRole).toInt();
+        s.name = row->nameEdit()->text().trimmed();
+        bool ok = false;
+        const double v = ParseSavedValue(row->valueEdit()->text(), &ok);
+        s.value = UnitConvertor(ok ? v : 0, patternUnit, Unit::Mm);
+        s.colorIndex = row->colorCombo()->currentIndex();
         list.append(s);
     }
     VAbstractValApplication::VApp()->ValentinaSettings()->SetSavedSeamAllowances(list);

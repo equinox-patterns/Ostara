@@ -51,8 +51,6 @@ struct CustomMarginGroup
 
 auto FindCustomMarginGroups(const VPiece &detail) -> QVector<CustomMarginGroup>;
 
-extern const QVector<QColor> kCustomMarginColors;
-
 class ODetailsSeamAllowanceWidget : public QWidget
 {
     Q_OBJECT // NOLINT

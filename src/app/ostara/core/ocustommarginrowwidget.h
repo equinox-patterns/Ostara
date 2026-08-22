@@ -27,7 +27,6 @@
 #ifndef OCUSTOMMARGINROWWIDGET_H
 #define OCUSTOMMARGINROWWIDGET_H
 
-#include <QColor>
 #include <QVector>
 #include <QWidget>
 
@@ -47,8 +46,7 @@ class OCustomMarginRowWidget : public QWidget
     Q_OBJECT // NOLINT
 
 public:
-    explicit OCustomMarginRowWidget(const QVector<quint32> &nodeIds, const QVector<QColor> &colors,
-                                    QWidget *parent = nullptr);
+    explicit OCustomMarginRowWidget(const QVector<quint32> &nodeIds, QWidget *parent = nullptr);
     ~OCustomMarginRowWidget() override = default;
 
     auto nameEdit() const -> QLineEdit *;
@@ -68,6 +66,7 @@ private:
     QPushButton *m_deleteButton{nullptr};
 
     void refreshDeleteIcon();
+    void refreshColorSwatches();
 
     Q_DISABLE_COPY_MOVE(OCustomMarginRowWidget) // NOLINT
 };

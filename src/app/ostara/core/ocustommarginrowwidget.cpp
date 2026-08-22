@@ -28,6 +28,7 @@
 
 #include "../vmisc/FactoryWidgets.h"
 #include "../vtheme/vtheme.h"
+#include "../vwidgets/osamarginpalette.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -38,9 +39,9 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QPushButton>
+#include <QSignalBlocker>
 
-OCustomMarginRowWidget::OCustomMarginRowWidget(const QVector<quint32> &nodeIds, const QVector<QColor> &colors,
-                                               QWidget *parent)
+OCustomMarginRowWidget::OCustomMarginRowWidget(const QVector<quint32> &nodeIds, QWidget *parent)
   : QWidget(parent)
   , m_nodeIds(nodeIds)
 {
@@ -58,7 +59,7 @@ OCustomMarginRowWidget::OCustomMarginRowWidget(const QVector<quint32> &nodeIds, 
 
     m_colorCombo = MakeComboBox(this);
     m_colorCombo->setIconSize(QSize(16, 16));
-    for (const QColor &c : colors)
+    for (const QColor &c : OSAMarginPalette::Colors())
     {
         QPixmap px(16, 16);
         px.fill(c);
@@ -85,6 +86,8 @@ OCustomMarginRowWidget::OCustomMarginRowWidget(const QVector<quint32> &nodeIds, 
 
     // Reload the themed trash icon when the theme changes (Light/Dark toggle).
     connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, &OCustomMarginRowWidget::refreshDeleteIcon);
+    // Rebuild the color swatches so they follow the current theme.
+    connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, &OCustomMarginRowWidget::refreshColorSwatches);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -93,6 +96,24 @@ void OCustomMarginRowWidget::refreshDeleteIcon()
     const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
     m_deleteButton->setIcon(QIcon(QStringLiteral(":/icons/%1/trash_%1.svg")
                                       .arg(dark ? QStringLiteral("dark") : QStringLiteral("light"))));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OCustomMarginRowWidget::refreshColorSwatches()
+{
+    // Rebuilding the combo re-emits currentIndexChanged, which would make the parent
+    // persist a bogus color index into the piece. Suppress the signal during the
+    // refresh and restore the same position afterwards.
+    const int current = m_colorCombo->currentIndex();
+    QSignalBlocker blocker(m_colorCombo);
+    m_colorCombo->clear();
+    for (const QColor &c : OSAMarginPalette::Colors())
+    {
+        QPixmap px(16, 16);
+        px.fill(c);
+        m_colorCombo->addItem(QIcon(px), QString());
+    }
+    m_colorCombo->setCurrentIndex(current);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

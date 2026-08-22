@@ -52,6 +52,7 @@
 #include "themeDef.h"
 #include "vscenestylesheet.h"
 #include "../vmisc/vvalentinasettings.h"
+#include "../vtheme/vtheme.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
 #include "../vpatterndb/variables/vincrement.h"
@@ -1670,6 +1671,12 @@ VToolSeamAllowance::VToolSeamAllowance(const VToolSeamAllowanceInitData &initDat
     connect(m_sceneDetails, &VMainGraphicsScene::UpdatePassmarks, this, &VToolSeamAllowance::UpdatePassmarks);
 
     ConnectOutsideSignals();
+
+    // Re-paint the seam-allowance highlight colors when the theme toggles. `this` is
+    // a QObject and the tools are re-created on every reparse, so the connection is
+    // cleaned up automatically and never duplicated.
+    connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this,
+            [this]() { m_saHighlights.UpdateColors(); });
 
     m_foldLineMark->setBrush(Qt::SolidPattern);
 }

@@ -29,7 +29,11 @@
 
 #include <QDialog>
 
-class QTableWidget;
+struct SavedSeamAllowance;
+
+class QScrollArea;
+class QVBoxLayout;
+class QWidget;
 
 class ODetailsSavedMarginsDialog : public QDialog
 {
@@ -40,10 +44,12 @@ public:
     ~ODetailsSavedMarginsDialog() override = default;
 
 private:
-    void DeleteSelected();
+    void AddRow(const SavedSeamAllowance &s);
     void Persist();
 
-    QTableWidget *m_table{nullptr};
+    QScrollArea *m_scrollArea{nullptr};
+    QWidget *m_listContainer{nullptr};
+    QVBoxLayout *m_listLayout{nullptr};
 
     Q_DISABLE_COPY_MOVE(ODetailsSavedMarginsDialog) // NOLINT
 };

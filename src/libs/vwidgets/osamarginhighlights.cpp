@@ -26,6 +26,8 @@
 
 #include "osamarginhighlights.h"
 
+#include "osamarginpalette.h"
+
 #include <QGraphicsPathItem>
 #include <QPainterPath>
 #include <QPen>
@@ -40,13 +42,7 @@
 
 namespace
 {
-const QVector<QColor> kSAMarginHighlightColors = {
-    Qt::red,
-    Qt::blue,
-    Qt::green,
-    QColor(255, 165, 0), // orange
-    QColor(128, 0, 128)  // violet
-};
+constexpr int kHighlightPenWidth = 2;
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -69,6 +65,16 @@ void OSAMarginHighlights::Clear()
         delete item;
     }
     m_items.clear();
+    m_colorIndices.clear();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OSAMarginHighlights::UpdateColors()
+{
+    for (int i = 0; i < m_items.size() && i < m_colorIndices.size(); ++i)
+    {
+        m_items.at(i)->setPen(QPen(OSAMarginPalette::Color(m_colorIndices.at(i)), kHighlightPenWidth));
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -114,7 +120,7 @@ void OSAMarginHighlights::Update(const VPiece &piece, const VContainer *data)
             continue;
         }
 
-        const QColor color = kSAMarginHighlightColors.value(colors.at(gi), Qt::red);
+        const int colorIdx = colors.at(gi);
 
         // Build a set of group node IDs for O(1) lookup.
         const QSet<quint32> groupSet(nodeIds.begin(), nodeIds.end());
@@ -190,9 +196,10 @@ void OSAMarginHighlights::Update(const VPiece &piece, const VContainer *data)
         QPainterPath segPath = VPiecePath::MakePainterPath(segPoints);
 
         auto *highlightItem = new QGraphicsPathItem(segPath, m_parent);
-        highlightItem->setPen(QPen(color, 2));
+        highlightItem->setPen(QPen(OSAMarginPalette::Color(colorIdx), kHighlightPenWidth));
         highlightItem->setBrush(QBrush(Qt::NoBrush));
         highlightItem->setZValue(100);
         m_items.append(highlightItem);
+        m_colorIndices.append(colorIdx);
     }
 }

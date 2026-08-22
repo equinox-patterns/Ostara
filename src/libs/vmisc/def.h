@@ -835,7 +835,7 @@ struct SavedSeamAllowance
 {
     QString name{};
     qreal value{0};    // in mm (fixed physical unit)
-    int colorIndex{0}; // index into kCustomMarginColors
+    int colorIndex{0}; // index into OSAMarginPalette::ColorNames()
 };
 Q_DECLARE_METATYPE(SavedSeamAllowance)
 Q_DECLARE_TYPEINFO(SavedSeamAllowance, Q_MOVABLE_TYPE); // NOLINT

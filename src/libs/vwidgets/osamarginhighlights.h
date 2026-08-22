@@ -42,11 +42,13 @@ public:
     ~OSAMarginHighlights();
 
     void Update(const VPiece &piece, const VContainer *data);
+    void UpdateColors();
     void Clear();
 
 private:
     QGraphicsItem *m_parent;
     QVector<QGraphicsPathItem *> m_items;
+    QVector<int> m_colorIndices;
 
     Q_DISABLE_COPY_MOVE(OSAMarginHighlights) // NOLINT
 };

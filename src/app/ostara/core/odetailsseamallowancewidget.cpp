@@ -31,6 +31,7 @@
 
 #include "../ifc/ifcdef.h"
 #include "../vmisc/def.h"
+#include "../vwidgets/osamarginpalette.h"
 #include "../vmisc/FactoryWidgets.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
@@ -75,24 +76,16 @@ auto MakeColorCombo(int row, QWidget *parent = nullptr) -> QComboBox *
 {
     auto *combo = MakeComboBox(parent);
     combo->setIconSize(QSize(16, 16));
-    for (const QColor &c : kCustomMarginColors)
+    for (const QColor &c : OSAMarginPalette::Colors())
     {
         QPixmap px(16, 16);
         px.fill(c);
         combo->addItem(QIcon(px), QString());
     }
-    combo->setCurrentIndex(row % kCustomMarginColors.size());
+    combo->setCurrentIndex(row % OSAMarginPalette::kColorCount);
     return combo;
 }
 } // namespace
-
-const QVector<QColor> kCustomMarginColors = {
-    Qt::red,
-    Qt::blue,
-    Qt::green,
-    QColor(255, 165, 0), // orange
-    QColor(128, 0, 128)  // violet
-};
 
 //---------------------------------------------------------------------------------------------------------------------
 auto FindCustomMarginGroups(const VPiece &detail) -> QVector<CustomMarginGroup>
@@ -431,17 +424,21 @@ void ODetailsSeamAllowanceWidget::PopulateList(const VPiece &detail)
                                  : tr("Custom seam allowance %1").arg(m_rows.size() + 1);
         const int storedColor = (storedIdx >= 0 && storedIdx < storedColors.size())
                                     ? storedColors.at(storedIdx)
-                                    : static_cast<int>(m_rows.size() % kCustomMarginColors.size());
+                                    : static_cast<int>(m_rows.size() % OSAMarginPalette::kColorCount);
         const bool storedShow = (storedIdx >= 0 && storedIdx < storedShows.size()) ? storedShows.at(storedIdx) : false;
 
-        auto *row = new OCustomMarginRowWidget(group, kCustomMarginColors, m_listContainer);
+        auto *row = new OCustomMarginRowWidget(group, m_listContainer);
         row->nameEdit()->setText(name);
 
         bool valueOk = false;
         const qreal valuePx = groupValue.toDouble(&valueOk);
         row->valueEdit()->setText(valueOk ? QString::number(valuePx) : QStringLiteral("0"));
         row->valueEdit()->setValidator(new QRegularExpressionValidator(kDecimalRegex, this));
-        row->colorCombo()->setCurrentIndex(storedColor);
+        // A stored index read from the XML is unbounded (unrestricted xs:int in the
+        // schema); clamp it before setting the combo so a corrupt value cannot leave
+        // it at -1 and then get persisted back on the next edit.
+        const int safeColor = (storedColor >= 0 && storedColor < OSAMarginPalette::kColorCount) ? storedColor : 0;
+        row->colorCombo()->setCurrentIndex(safeColor);
         row->showCheck()->setChecked(storedShow);
 
         // Name editing.
@@ -881,7 +878,7 @@ void ODetailsSeamAllowanceWidget::FinishSelection()
         nameEdit->setText(s.name);
         const qreal displayVal = UnitConvertor(s.value, Unit::Mm, VAbstractValApplication::VApp()->patternUnits());
         valueEdit->setText(VAbstractApplication::VApp()->LocaleToString(displayVal));
-        if (s.colorIndex >= 0 && s.colorIndex < kCustomMarginColors.size())
+        if (s.colorIndex >= 0 && s.colorIndex < OSAMarginPalette::kColorCount)
         {
             colorCombo->setCurrentIndex(s.colorIndex);
         }
