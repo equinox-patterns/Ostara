@@ -145,12 +145,12 @@ QStatusBar QLabel {
 
 /* =========================================================================
    QPushButton — Boutons standards
-   Design: flat, #232323 at rest → #983e60 on hover/pressed/default
+   Design: flat, #333333 at rest → #983e60 on hover/pressed/default
    Disabled: #4c4c4c + #4c4c4c
    ========================================================================= */
 
 QPushButton {
-    background-color: #232323;
+    background-color: #333333;
     color: #e5e5e5;
     border: 1px solid #333333;
     border-radius: 2px;
@@ -166,7 +166,7 @@ QPushButton:default {
 }
 
 QPushButton:disabled {
-    background-color: #232323;
+    background-color: #333333;
     color: #4c4c4c;
     border-color: #4c4c4c;
 }
