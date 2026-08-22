@@ -314,16 +314,14 @@ auto RenderFoldLine(const VPiece &detail, const VContainer *data) -> VFoldLine
     QLineF const foldLine = detail.IsHideMainPath() ? detail.SeamAllowanceMirrorLine(data)
                                                     : detail.SeamMirrorLine(data);
     VFoldLine fLine(foldLine, detail.GetFoldLineType());
-    fLine.SetLabelSvgFontSize(detail.GetFoldLineSvgFontSize());
-    fLine.SetLabelFontItalic(detail.IsFoldLineLabelFontItalic());
-    fLine.SetLabelFontBold(detail.IsFoldLineLabelFontBold());
+    const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+    fLine.SetLabelSvgFontSize(static_cast<unsigned int>(settings->GetFoldLineLabelFontPixelSize()));
     fLine.SetLabel(detail.GetFoldLineLabel());
-    fLine.SetLabelAlignment(detail.GetFoldLineLabelAlignment());
 
     {
-        const VCommonSettings *settings = VAbstractApplication::VApp()->Settings();
-        QFont font = settings->GetLabelFont();
-        font.setPointSize(static_cast<int>(detail.GetFoldLineSvgFontSize()));
+        QFont font(settings->GetFoldLineLabelFontFamily());
+        font.setWeight(settings->GetFoldLineLabelFontWeight());
+        font.setPixelSize(settings->GetFoldLineLabelFontPixelSize());
         fLine.SetOutlineFont(font);
         fLine.SetSvgFont(settings->GetLabelSVGFont());
     }
@@ -932,17 +930,8 @@ void VToolSeamAllowance::AddMirrorLine(VAbstractPattern *doc, QDomElement &domEl
         domData, VAbstractPattern::AttrFoldLineCenterFormula, piece.GetFormulaFoldCenter(),
         [piece](const QString &center) noexcept { return not piece.IsManualFoldCenter() || center.isEmpty(); });
     doc->SetAttribute(domData, VAbstractPattern::AttrFoldLineType, FoldLineTypeToString(piece.GetFoldLineType()));
-    doc->SetAttributeOrRemoveIf<unsigned int>(domData, VAbstractPattern::AttrFoldLineFontSize,
-                                              piece.GetFoldLineSvgFontSize(),
-                                              [](unsigned int size) noexcept { return size == defFoldLineFontSize; });
-    doc->SetAttributeOrRemoveIf<bool>(domData, VDomDocument::AttrItalic, piece.IsFoldLineLabelFontItalic(),
-                                      [](bool italic) noexcept { return not italic; });
-    doc->SetAttributeOrRemoveIf<bool>(domData, VDomDocument::AttrBold, piece.IsFoldLineLabelFontBold(),
-                                      [](bool bold) noexcept { return not bold; });
     doc->SetAttributeOrRemoveIf<QString>(domData, VAbstractPattern::AttrFoldLineLabel, piece.GetFoldLineLabel(),
                                          [](const QString &label) noexcept { return label.isEmpty(); });
-    doc->SetAttributeOrRemoveIf<int>(domData, VDomDocument::AttrAlignment, piece.GetFoldLineLabelAlignment(),
-                                     [](int alignment) noexcept { return alignment == Qt::AlignHCenter; });
     doc->SetAttributeOrRemoveIf<bool>(domData, VAbstractPattern::AttrMirrorLineVisible, piece.IsShowMirrorLine(),
                                       [](bool visible) noexcept { return visible; });
 

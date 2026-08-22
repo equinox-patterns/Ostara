@@ -486,6 +486,25 @@ void VGrainlineItem::hoverEnterEvent(QGraphicsSceneHoverEvent *pME)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VGrainlineItem::hoverMoveEvent(QGraphicsSceneHoverEvent *pME)
+{
+    if (flags() & QGraphicsItem::ItemIsMovable)
+    {
+        // The resize handle (small filled square at the selection-box corner) must
+        // show the resize cursor on hover, not only while dragging.
+        if (m_eMode != mNormal && m_polyResize.containsPoint(pME->pos(), Qt::OddEvenFill))
+        {
+            setCursor(Qt::SizeFDiagCursor);
+        }
+        else
+        {
+            SetItemOverrideCursor(this, cursorArrowOpenHand, 1, 1);
+        }
+    }
+    QGraphicsItem::hoverMoveEvent(pME);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VGrainlineItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *pME)
 {
     if (flags() & QGraphicsItem::ItemIsMovable)

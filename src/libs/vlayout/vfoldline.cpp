@@ -831,7 +831,10 @@ auto VFoldLine::LabelOutlineFont() const -> QFont
 {
     QFont font = m_outlineFont;
     font.setItalic(m_italic);
-    font.setBold(m_bold);
+    if (m_bold)
+    {
+        font.setBold(true);
+    }
     return font;
 }
 

@@ -97,6 +97,7 @@ private:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *pME) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *pME) override;
     void hoverEnterEvent(QGraphicsSceneHoverEvent *pME) override;
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *pME) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *pME) override;
     void Update() override;
     void UpdateRectangle();

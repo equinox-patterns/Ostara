@@ -277,7 +277,6 @@ private:
     void InitFoldLineTab();
     void InitAllPinComboboxes();
     void InitFoldLineType();
-    void InitFoldLabelFontSizes();
 
     void SetFormulaSAWidth(const QString &formula);
     void SetFormulaPassmarkLength(const QString &formula);

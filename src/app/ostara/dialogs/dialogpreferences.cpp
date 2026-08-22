@@ -30,6 +30,7 @@
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vtools/dialogs/dialogtoolbox.h"
+#include "configpages/preferencesappearancepage.h"
 #include "configpages/preferencesconfigurationpage.h"
 #include "configpages/preferencespathpage.h"
 #include "configpages/preferencespatternpage.h"
@@ -46,7 +47,8 @@ DialogPreferences::DialogPreferences(QWidget *parent)
     ui(new Ui::DialogPreferences),
     m_configurePage(new PreferencesConfigurationPage),
     m_patternPage(new PreferencesPatternPage),
-    m_pathPage(new PreferencesPathPage)
+    m_pathPage(new PreferencesPathPage),
+    m_appearancePage(new PreferencesAppearancePage)
 {
     ui->setupUi(this);
 
@@ -67,6 +69,7 @@ DialogPreferences::DialogPreferences(QWidget *parent)
     ui->pagesWidget->insertWidget(0, m_configurePage);
     ui->pagesWidget->insertWidget(1, m_patternPage);
     ui->pagesWidget->insertWidget(2, m_pathPage);
+    ui->pagesWidget->insertWidget(3, m_appearancePage);
 
     connect(ui->contentsWidget, &QListWidget::currentItemChanged, this, &DialogPreferences::PageChanged);
     ui->pagesWidget->setCurrentIndex(0);
@@ -150,6 +153,7 @@ void DialogPreferences::Apply()
     preferences += m_configurePage->Apply();
     preferences += m_patternPage->Apply();
     preferences += m_pathPage->Apply();
+    preferences += m_appearancePage->Apply();
 
     if (not preferences.isEmpty())
     {

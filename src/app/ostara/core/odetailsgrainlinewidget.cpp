@@ -130,16 +130,9 @@ void ODetailsGrainlineWidget::ConnectControls()
     {
         if (checked)
         {
+            // Rotation is still forced to 90 on activation (existing behavior).
             const bool wasUpdating = m_updating;
             m_updating = true;
-            if (auto *btn = m_lengthGroup->button(1)) // 10 cm
-            {
-                btn->setChecked(true);
-            }
-            if (auto *simpleBtn = m_arrowGroup->button(0)) // Simple
-            {
-                simpleBtn->setChecked(true);
-            }
             m_rotationSpin->setValue(90.0);
             m_updating = wasUpdating;
         }
@@ -163,7 +156,29 @@ void ODetailsGrainlineWidget::ConnectControls()
             geom.SetTopPin(NULL_ID);
             geom.SetBottomPin(NULL_ID);
 
-            geom.SetLength(QStringLiteral("10"));
+            // The pre-selected preset applies only when the grainline has no real
+            // length yet (fresh piece, or file fallback "1"). Otherwise the current
+            // length is kept, so re-activating does not reset a canvas-resized
+            // grainline back to a preset.
+            double appliedLength = kGrainlinePresets[1].length; // default 10 cm
+            if (auto *btn = m_lengthGroup->checkedButton())
+            {
+                appliedLength = btn->property("lengthValue").toDouble();
+            }
+            const QString len = geom.GetLength();
+            if (len.isEmpty() || len == QLatin1Char('1'))
+            {
+                geom.SetLength(QString::number(appliedLength));
+            }
+            else
+            {
+                bool ok = false;
+                const double existing = len.toDouble(&ok);
+                if (ok)
+                {
+                    appliedLength = existing;
+                }
+            }
             geom.SetRotation(QStringLiteral("90"));
 
             // Center the grainline on the piece bounding box.
@@ -183,10 +198,10 @@ void ODetailsGrainlineWidget::ConnectControls()
                     const QPointF center = bbox.center() - pieceOffset;
 
                     // Offset so the grainline midpoint sits at the bbox center
-                    // (not its tail). For a vertical (90°) grainline of length 10.
+                    // (not its tail). For a vertical (90°) grainline.
                     const qreal rad = qDegreesToRadians(90.0);
-                    const QPointF tail(center.x() - 10.0 * qCos(rad) / 2.0,
-                                       center.y() + 10.0 * qSin(rad) / 2.0);
+                    const QPointF tail(center.x() - appliedLength * qCos(rad) / 2.0,
+                                       center.y() + appliedLength * qSin(rad) / 2.0);
                     geom.SetPos(tail);
                 }
             }
@@ -197,6 +212,12 @@ void ODetailsGrainlineWidget::ConnectControls()
             this, [this](QAbstractButton *button, bool checked)
     {
         if (!checked || m_updating)
+        {
+            return;
+        }
+        // Inactive grainline: the click only pre-selects the preset (applied on
+        // activation). Active grainline: re-apply the length immediately.
+        if (!m_activeCheck->isChecked())
         {
             return;
         }
@@ -255,31 +276,7 @@ void ODetailsGrainlineWidget::Show(const VPiece &det, const VContainer *data)
 
     m_activeCheck->setChecked(grainline.IsEnabled());
 
-    {
-        const QString lenFormula = grainline.GetLength();
-        bool ok = false;
-        const double lenValue = lenFormula.toDouble(&ok);
-        int presetIdx = -1;
-        if (ok)
-        {
-            const int lenInt = qRound(lenValue);
-            for (int i = 0; i < kGrainlinePresetCount; ++i)
-            {
-                if (kGrainlinePresets[i].length == lenInt)
-                {
-                    presetIdx = i;
-                    break;
-                }
-            }
-        }
-        if (presetIdx >= 0)
-        {
-            if (auto *btn = m_lengthGroup->button(presetIdx))
-            {
-                btn->setChecked(true);
-            }
-        }
-    }
+    UpdatePresetsState(grainline.IsEnabled());
 
     {
         const QString rotFormula = grainline.GetRotation();
@@ -298,6 +295,22 @@ void ODetailsGrainlineWidget::Show(const VPiece &det, const VContainer *data)
     }
 
     m_updating = false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGrainlineWidget::UpdatePresetsState(bool grainlineEnabled)
+{
+    // Presets stay interactive in both states: when the grainline is active a
+    // click re-applies the length; when inactive it is a pre-selection applied
+    // on activation. Only make sure a default (10 cm) is selected when the
+    // grainline is inactive, so activation always has a value to apply.
+    if (!grainlineEnabled && m_lengthGroup->checkedButton() == nullptr)
+    {
+        if (auto *btn = m_lengthGroup->button(1)) // 10 cm by default
+        {
+            btn->setChecked(true);
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

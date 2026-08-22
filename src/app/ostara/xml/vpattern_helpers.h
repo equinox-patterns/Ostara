@@ -48,11 +48,7 @@ struct VPieceFoldLineData
     bool manualWidth{false};
     bool manualCenter{false};
     FoldLineType type{FoldLineType::TwoArrowsTextAbove};
-    unsigned int fontSize{defFoldLineFontSize};
-    bool italic{false};
-    bool bold{false};
     QString label{};
-    int alignment{Qt::AlignHCenter};
 };
 
 namespace VPatternHelpers

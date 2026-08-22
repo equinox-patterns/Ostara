@@ -28,6 +28,7 @@
 
 #include "vvalentinasettings.h"
 
+#include <QApplication>
 #include <QDir>
 #include <QGlobalStatic>
 #include <QJsonArray>
@@ -144,6 +145,14 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDockWidgetBackgroundImagesActive
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDockWidgetDependenciesActive, ("dockWidget/dependenciesActive"_L1))
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingSavedSeamAllowances, ("seamAllowance/saved"_L1))
+
+// Fold line label appearance — global settings
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingFoldLineLabelFontFamily, ("pattern/foldLineLabelFontFamily"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingFoldLineLabelFontWeight, ("pattern/foldLineLabelFontWeight"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingFoldLineLabelFontPixelSize, ("pattern/foldLineLabelFontPixelSize"_L1))
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternMessagesFontSize, ("font/patternMessagesSize"_L1))
 
@@ -1248,6 +1257,55 @@ void VValentinaSettings::SetSavedSeamAllowances(const QVector<SavedSeamAllowance
         arr.append(o);
     }
     setValue(*settingSavedSeamAllowances, QString::fromUtf8(QJsonDocument(arr).toJson(QJsonDocument::Compact)));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetFoldLineLabelFontFamily() const -> QString
+{
+    return ValueOrDef<QString>(*this, *settingFoldLineLabelFontFamily, GetDefFoldLineLabelFontFamily());
+}
+
+auto VValentinaSettings::GetDefFoldLineLabelFontFamily() -> QString
+{
+    return QApplication::font().family();
+}
+
+void VValentinaSettings::SetFoldLineLabelFontFamily(const QString &value)
+{
+    setValue(*settingFoldLineLabelFontFamily, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetFoldLineLabelFontWeight() const -> QFont::Weight
+{
+    return static_cast<QFont::Weight>(
+        ValueOrDef<int>(*this, *settingFoldLineLabelFontWeight, static_cast<int>(GetDefFoldLineLabelFontWeight())));
+}
+
+auto VValentinaSettings::GetDefFoldLineLabelFontWeight() -> QFont::Weight
+{
+    return QFont::Normal;
+}
+
+void VValentinaSettings::SetFoldLineLabelFontWeight(QFont::Weight weight)
+{
+    setValue(*settingFoldLineLabelFontWeight, static_cast<int>(weight));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetFoldLineLabelFontPixelSize() const -> int
+{
+    return ValueOrDef<int>(*this, *settingFoldLineLabelFontPixelSize, GetDefFoldLineLabelFontPixelSize());
+}
+
+auto VValentinaSettings::GetDefFoldLineLabelFontPixelSize() -> int
+{
+    return 16;
+}
+
+void VValentinaSettings::SetFoldLineLabelFontPixelSize(int size)
+{
+    setValue(*settingFoldLineLabelFontPixelSize, size);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

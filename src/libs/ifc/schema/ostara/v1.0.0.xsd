@@ -779,11 +779,7 @@
                               <xs:attribute name="manualWidth" type="xs:boolean"/>
                               <xs:attribute name="manualCenter" type="xs:boolean"/>
                               <xs:attribute name="type" type="foldLineType"/>
-                              <xs:attribute name="fontSize" type="xs:unsignedInt"/>
-                              <xs:attribute name="bold" type="xs:boolean"/>
-                              <xs:attribute name="italic" type="xs:boolean"/>
                               <xs:attribute name="label" type="xs:string"/>
-                              <xs:attribute name="alignment" type="xs:unsignedInt"/>
                               <xs:attribute name="visible" type="xs:boolean"/>
                             </xs:complexType>
                           </xs:element>

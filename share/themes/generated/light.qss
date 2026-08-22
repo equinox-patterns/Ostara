@@ -171,6 +171,20 @@ QPushButton:disabled {
     border-color: #e5e5e5;
 }
 
+/* État sélectionné (QPushButton checkable — presets de longueur, Simple/Double, …)
+   Fond de sélection + bordure accent, cohérent avec QToolButton:checked. */
+QPushButton:checked {
+    background-color: rgba(140,69,96,0.10);
+    color: #2b2b2b;
+    border: 1px solid #8C4560;
+}
+
+QPushButton:checked:hover {
+    background-color: rgba(140,69,96,0.10);
+    color: #2b2b2b;
+    border: 1px solid #8C4560;
+}
+
 /* Variante : bouton icône seule (Phosphor, transparent, sans bordure) */
 QPushButton#phosphorIconBtn {
     background: transparent;

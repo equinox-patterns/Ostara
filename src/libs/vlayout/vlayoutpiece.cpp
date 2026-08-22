@@ -59,6 +59,7 @@
 #include "../vmisc/svgfont/vsvgfontengine.h"
 #include "../vmisc/testpath.h"
 #include "../vmisc/vabstractvalapplication.h"
+#include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
 #include "../vpatterndb/variables/vmeasurement.h"
@@ -259,16 +260,14 @@ void InitFoldLine(VLayoutPiece &det, const VPiece &piece, const VContainer *patt
         return;
     }
 
-    det.SetFoldLineSvgFontSize(piece.GetFoldLineSvgFontSize());
-    det.SetFoldLineLabelFontItalic(piece.IsFoldLineLabelFontItalic());
-    det.SetFoldLineLabelFontBold(piece.IsFoldLineLabelFontBold());
     det.SetFoldLineLabel(piece.GetFoldLineLabel());
-    det.SetFoldLineLabelAlignment(piece.GetFoldLineLabelAlignment());
 
     {
-        VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-        QFont font = settings->GetLabelFont();
-        font.setPointSize(static_cast<int>(piece.GetFoldLineSvgFontSize()));
+        const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+        det.SetFoldLineSvgFontSize(static_cast<unsigned int>(settings->GetFoldLineLabelFontPixelSize()));
+        QFont font(settings->GetFoldLineLabelFontFamily());
+        font.setWeight(settings->GetFoldLineLabelFontWeight());
+        font.setPixelSize(settings->GetFoldLineLabelFontPixelSize());
         det.SetFoldLineOutlineFont(font);
         det.SetFoldLineSVGFontFamily(settings->GetLabelSVGFont());
     }
@@ -1118,10 +1117,7 @@ auto VLayoutPiece::FoldLine() const -> VFoldLine
     QLineF const foldLine = IsHideMainPath() ? GetSeamAllowanceMirrorLine() : GetSeamMirrorLine();
     VFoldLine fLine(foldLine, GetFoldLineType());
     fLine.SetLabelSvgFontSize(GetFoldLineSvgFontSize());
-    fLine.SetLabelFontItalic(IsFoldLineLabelFontItalic());
-    fLine.SetLabelFontBold(IsFoldLineLabelFontBold());
     fLine.SetLabel(GetFoldLineLabel());
-    fLine.SetLabelAlignment(GetFoldLineLabelAlignment());
     fLine.SetHeight(GetFoldLineHeight());
     fLine.SetWidth(GetFoldLineWidth());
     fLine.SetCenterPosition(GetFoldLineCenterPosition());

@@ -1391,23 +1391,7 @@ auto DialogSeamAllowance::CreatePiece() const -> VPiece
                                    ? GetFormulaFromUser(uiTabFoldLine->plainTextEditCenter)
                                    : QString());
     piece.SetFoldLineType(static_cast<FoldLineType>(uiTabFoldLine->comboBoxType->currentData().toUInt()));
-    piece.SetFoldLineSvgFontSize(uiTabFoldLine->comboBoxLabelFontSize->currentData().toUInt());
-    piece.SetFoldLineLabelFontItalic(uiTabFoldLine->toolButtonItalic->isChecked());
-    piece.SetFoldLineLabelFontBold(uiTabFoldLine->toolButtonBold->isChecked());
     piece.SetFoldLineLabel(uiTabFoldLine->lineEditLabel->text());
-
-    if (uiTabFoldLine->toolButtonTextLeft->isChecked())
-    {
-        piece.SetFoldLineLabelAlignment(Qt::AlignLeft);
-    }
-    else if (uiTabFoldLine->toolButtonTextCenter->isChecked())
-    {
-        piece.SetFoldLineLabelAlignment(Qt::AlignHCenter);
-    }
-    else if (uiTabFoldLine->toolButtonTextRight->isChecked())
-    {
-        piece.SetFoldLineLabelAlignment(Qt::AlignRight);
-    }
 
     piece.GetGrainlineGeometry().SetEnabled(uiTabGrainline->groupBoxGrainline->isChecked());
     piece.GetGrainlineGeometry().SetArrowType(

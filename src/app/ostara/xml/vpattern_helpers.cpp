@@ -82,16 +82,7 @@ auto ParsePieceMirrorLine(const QDomElement &domElement) -> VPieceFoldLineData
             VDomDocument::GetParametrString(domElement,
                                             VAbstractPattern::AttrFoldLineType,
                                             FoldLineTypeToString(FoldLineType::TwoArrowsTextAbove))),
-        .fontSize = qMax(static_cast<unsigned int>(VCommonSettings::MinPieceLabelFontPointSize()),
-                         VDomDocument::GetParametrUInt(domElement,
-                                                       VAbstractPattern::AttrFoldLineFontSize,
-                                                       QString::number(defFoldLineFontSize))),
-        .italic = VDomDocument::GetParametrBool(domElement, VDomDocument::AttrItalic, falseStr),
-        .bold = VDomDocument::GetParametrBool(domElement, VDomDocument::AttrBold, falseStr),
-        .label = VDomDocument::GetParametrEmptyString(domElement, VAbstractPattern::AttrFoldLineLabel),
-        .alignment = VDomDocument::GetParametrInt(domElement,
-                                                  VDomDocument::AttrAlignment,
-                                                  QString::number(Qt::AlignHCenter))};
+        .label = VDomDocument::GetParametrEmptyString(domElement, VAbstractPattern::AttrFoldLineLabel)};
 }
 
 //---------------------------------------------------------------------------------------------------------------------

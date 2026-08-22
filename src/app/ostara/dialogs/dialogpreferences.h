@@ -36,6 +36,7 @@ namespace Ui
 class DialogPreferences;
 }
 
+class PreferencesAppearancePage;
 class PreferencesConfigurationPage;
 class PreferencesPatternPage;
 class PreferencesPathPage;
@@ -67,6 +68,7 @@ private:
     PreferencesConfigurationPage *m_configurePage;
     PreferencesPatternPage *m_patternPage;
     PreferencesPathPage *m_pathPage;
+    PreferencesAppearancePage *m_appearancePage;
 
     void Apply();
     void Ok();

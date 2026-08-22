@@ -223,6 +223,11 @@ void ODetailsPieceWidget::ConnectControls()
     m_grainlineWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
     m_foldlineWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
     connect(m_foldlineWidget, &ODetailsFoldLineWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);
+    connect(m_foldlineWidget, &ODetailsFoldLineWidget::HighlightNode, this,
+            [this](quint32 nodeId, bool highlight)
+    {
+        emit HighlightNode(nodeId, highlight);
+    });
 
     m_saWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);

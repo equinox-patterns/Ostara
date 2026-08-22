@@ -47,8 +47,7 @@ const struct
     const char *text;
 } kFoldLineTypeItems[] = {
     {FoldLineType::TwoArrows,          QT_TRANSLATE_NOOP("ODetailsFoldLineWidget", "No text")},
-    {FoldLineType::TwoArrowsTextAbove, QT_TRANSLATE_NOOP("ODetailsFoldLineWidget", "Text above")},
-    {FoldLineType::TwoArrowsTextUnder, QT_TRANSLATE_NOOP("ODetailsFoldLineWidget", "Text below")},
+    {FoldLineType::TwoArrowsTextAbove, QT_TRANSLATE_NOOP("ODetailsFoldLineWidget", "With text")},
 };
 } // namespace
 
@@ -117,12 +116,14 @@ void ODetailsFoldLineWidget::ConnectControls()
                 emit ShowStatusTip(tr("Select the first point of the foldline — respect clockwise direction"));
                 break;
             case FoldLineSelectState::WaitingFirstPoint:
+                ResetSelectionHighlight();
                 m_selectState = FoldLineSelectState::Idle;
                 m_firstPoint = 0;
                 m_defineBtn->setText(tr("Define foldline"));
                 emit ShowStatusTip(QString());
                 break;
             case FoldLineSelectState::WaitingSecondPoint:
+                ResetSelectionHighlight();
                 m_selectState = FoldLineSelectState::WaitingFirstPoint;
                 m_firstPoint = 0;
                 emit ShowStatusTip(tr("Select the first point of the foldline — respect clockwise direction"));
@@ -252,6 +253,7 @@ void ODetailsFoldLineWidget::Show(const VPiece &det)
 void ODetailsFoldLineWidget::Clear()
 {
     m_path = VPiecePath{};
+    ResetSelectionHighlight();
     m_selectState = FoldLineSelectState::Idle;
     m_firstPoint = 0;
     m_defineBtn->setText(tr("Define foldline"));
@@ -271,6 +273,17 @@ auto ODetailsFoldLineWidget::IsSelectingPoints() const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODetailsFoldLineWidget::ResetSelectionHighlight()
+{
+    // The first selected point stays magenta while the selection is in progress;
+    // clear it whenever the selection ends or is cancelled.
+    if (m_firstPoint != 0)
+    {
+        emit HighlightNode(m_firstPoint, false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODetailsFoldLineWidget::OnNodeSelected(quint32 nodeId)
 {
     if (m_selectState == FoldLineSelectState::Idle)
@@ -281,6 +294,7 @@ void ODetailsFoldLineWidget::OnNodeSelected(quint32 nodeId)
     // Validate the node belongs to the current piece.
     if (m_path.indexOfNode(nodeId) == -1)
     {
+        ResetSelectionHighlight();
         m_selectState = FoldLineSelectState::Idle;
         m_firstPoint = 0;
         m_defineBtn->setText(tr("Define foldline"));
@@ -294,6 +308,7 @@ void ODetailsFoldLineWidget::OnNodeSelected(quint32 nodeId)
     {
         m_firstPoint = nodeId;
         m_selectState = FoldLineSelectState::WaitingSecondPoint;
+        emit HighlightNode(m_firstPoint, true);
         emit ShowStatusTip(tr("Select the second point of the foldline — respect clockwise direction"));
         return;
     }
@@ -304,6 +319,7 @@ void ODetailsFoldLineWidget::OnNodeSelected(quint32 nodeId)
 
     if (!ValidateMirrorLinePoints(startPoint, endPoint))
     {
+        ResetSelectionHighlight();
         m_selectState = FoldLineSelectState::Idle;
         m_firstPoint = 0;
         m_defineBtn->setText(tr("Define foldline"));
@@ -313,6 +329,8 @@ void ODetailsFoldLineWidget::OnNodeSelected(quint32 nodeId)
         return;
     }
 
+    ResetSelectionHighlight();
+    emit HighlightNode(endPoint, false);
     m_selectState = FoldLineSelectState::Idle;
     m_firstPoint = 0;
     m_defineBtn->setText(tr("Define foldline"));
@@ -344,6 +362,7 @@ void ODetailsFoldLineWidget::OnNodeSelected(quint32 nodeId)
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsFoldLineWidget::CancelSelection()
 {
+    ResetSelectionHighlight();
     m_selectState = FoldLineSelectState::Idle;
     m_firstPoint = 0;
     m_defineBtn->setText(tr("Define foldline"));

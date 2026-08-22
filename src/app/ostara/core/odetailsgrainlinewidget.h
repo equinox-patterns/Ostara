@@ -53,6 +53,7 @@ public:
 
 private:
     void ConnectControls();
+    void UpdatePresetsState(bool grainlineEnabled);
 
     QCheckBox *m_activeCheck{nullptr};
     QButtonGroup *m_lengthGroup{nullptr};

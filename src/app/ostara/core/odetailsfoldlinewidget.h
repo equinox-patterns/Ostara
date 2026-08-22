@@ -59,10 +59,12 @@ public:
 
 signals:
     void ShowStatusTip(const QString &text);
+    void HighlightNode(quint32 nodeId, bool highlight);
 
 private:
     void ConnectControls();
     void UpdateFoldLineStatus(bool defined);
+    void ResetSelectionHighlight();
     auto ValidateMirrorLinePoints(quint32 startPoint, quint32 endPoint) const -> bool;
 
     enum class FoldLineSelectState

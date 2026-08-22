@@ -87,38 +87,7 @@ void DialogSeamAllowance::InitFold(const VPiece &piece)
         }
     }
 
-    {
-        const qint32 indexSize = uiTabFoldLine->comboBoxLabelFontSize->findData(piece.GetFoldLineSvgFontSize());
-        if (indexSize != -1)
-        {
-            uiTabFoldLine->comboBoxLabelFontSize->setCurrentIndex(indexSize);
-        }
-    }
-
-    uiTabFoldLine->toolButtonItalic->setChecked(piece.IsFoldLineLabelFontItalic());
-    uiTabFoldLine->toolButtonBold->setChecked(piece.IsFoldLineLabelFontBold());
     uiTabFoldLine->lineEditLabel->setText(piece.GetFoldLineLabel());
-
-    const int lineAlignment = piece.GetFoldLineLabelAlignment();
-
-    if (lineAlignment == 0 || lineAlignment & Qt::AlignLeft)
-    {
-        uiTabFoldLine->toolButtonTextLeft->setChecked(true);
-        uiTabFoldLine->toolButtonTextCenter->setChecked(false);
-        uiTabFoldLine->toolButtonTextRight->setChecked(false);
-    }
-    else if (lineAlignment & Qt::AlignHCenter)
-    {
-        uiTabFoldLine->toolButtonTextLeft->setChecked(false);
-        uiTabFoldLine->toolButtonTextCenter->setChecked(true);
-        uiTabFoldLine->toolButtonTextRight->setChecked(false);
-    }
-    else if (lineAlignment & Qt::AlignRight)
-    {
-        uiTabFoldLine->toolButtonTextLeft->setChecked(false);
-        uiTabFoldLine->toolButtonTextCenter->setChecked(false);
-        uiTabFoldLine->toolButtonTextRight->setChecked(true);
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -226,8 +195,6 @@ void DialogSeamAllowance::InitFoldLineTab()
 {
     InitFoldLineType();
 
-    InitFoldLabelFontSizes();
-
     // Height formula
     this->m_formulaBaseFoldHeight = uiTabFoldLine->plainTextEditHeight->height();
     uiTabFoldLine->plainTextEditHeight->installEventFilter(this);
@@ -282,29 +249,5 @@ void DialogSeamAllowance::InitFoldLineType()
     uiTabFoldLine->comboBoxType->addItem(tr("Three dots"), static_cast<unsigned int>(FoldLineType::ThreeDots));
     uiTabFoldLine->comboBoxType->addItem(tr("Three X"), static_cast<unsigned int>(FoldLineType::ThreeX));
     uiTabFoldLine->comboBoxType->addItem(tr("None"), static_cast<unsigned int>(FoldLineType::None));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::InitFoldLabelFontSizes()
-{
-    uiTabFoldLine->comboBoxLabelFontSize->clear();
-
-    // Get the available font sizes
-    QList<int> const sizes = QFontDatabase::standardSizes();
-    for (auto size : sizes)
-    {
-        if (size >= VCommonSettings::MinPieceLabelFontPointSize())
-        {
-            uiTabFoldLine->comboBoxLabelFontSize->addItem(QString::number(size), size);
-        }
-    }
-
-    {
-        const qint32 indexSize = uiTabFoldLine->comboBoxLabelFontSize->findData(defFoldLineFontSize);
-        if (indexSize != -1)
-        {
-            uiTabFoldLine->comboBoxLabelFontSize->setCurrentIndex(indexSize);
-        }
-    }
 }
 

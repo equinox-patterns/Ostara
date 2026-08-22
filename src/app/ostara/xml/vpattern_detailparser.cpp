@@ -320,11 +320,7 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
         detail.SetFormulaFoldWidth(data.widthFormula);
         detail.SetFormulaFoldCenter(data.centerFormula);
         detail.SetFoldLineType(data.type);
-        detail.SetFoldLineSvgFontSize(data.fontSize);
-        detail.SetFoldLineLabelFontItalic(data.italic);
-        detail.SetFoldLineLabelFontBold(data.bold);
         detail.SetFoldLineLabel(data.label);
-        detail.SetFoldLineLabelAlignment(data.alignment);
     }
 }
 

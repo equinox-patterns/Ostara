@@ -29,6 +29,7 @@
 #ifndef VVALENTINASETTINGS_H
 #define VVALENTINASETTINGS_H
 
+#include <QFont>
 #include <QMetaObject>
 #include <QObject>
 #include <QSettings>
@@ -278,6 +279,19 @@ public:
 
     auto GetSavedSeamAllowances() const -> QVector<SavedSeamAllowance>;
     void SetSavedSeamAllowances(const QVector<SavedSeamAllowance> &list);
+
+    // Fold line label appearance — global settings (family / weight / pixel size)
+    auto GetFoldLineLabelFontFamily() const -> QString;
+    static auto GetDefFoldLineLabelFontFamily() -> QString;
+    void SetFoldLineLabelFontFamily(const QString &value);
+
+    auto GetFoldLineLabelFontWeight() const -> QFont::Weight;
+    static auto GetDefFoldLineLabelFontWeight() -> QFont::Weight;
+    void SetFoldLineLabelFontWeight(QFont::Weight weight);
+
+    auto GetFoldLineLabelFontPixelSize() const -> int;
+    static auto GetDefFoldLineLabelFontPixelSize() -> int;
+    void SetFoldLineLabelFontPixelSize(int size);
 
 signals:
     void UserToolColorsChanged();
