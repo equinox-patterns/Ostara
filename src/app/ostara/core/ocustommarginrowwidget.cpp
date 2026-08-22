@@ -78,12 +78,21 @@ OCustomMarginRowWidget::OCustomMarginRowWidget(const QVector<quint32> &nodeIds, 
     checkLayout->addWidget(m_showCheck);
     layout->addWidget(checkContainer);
 
-    const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
     m_deleteButton = new QPushButton();
+    m_deleteButton->setFixedWidth(30);
+    refreshDeleteIcon();
+    layout->addWidget(m_deleteButton);
+
+    // Reload the themed trash icon when the theme changes (Light/Dark toggle).
+    connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, &OCustomMarginRowWidget::refreshDeleteIcon);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OCustomMarginRowWidget::refreshDeleteIcon()
+{
+    const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
     m_deleteButton->setIcon(QIcon(QStringLiteral(":/icons/%1/trash_%1.svg")
                                       .arg(dark ? QStringLiteral("dark") : QStringLiteral("light"))));
-    m_deleteButton->setFixedWidth(30);
-    layout->addWidget(m_deleteButton);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -67,6 +67,8 @@ private:
     QCheckBox *m_showCheck{nullptr};
     QPushButton *m_deleteButton{nullptr};
 
+    void refreshDeleteIcon();
+
     Q_DISABLE_COPY_MOVE(OCustomMarginRowWidget) // NOLINT
 };
 
