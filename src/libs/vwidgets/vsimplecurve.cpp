@@ -159,6 +159,13 @@ auto VSimpleCurve::itemChange(QGraphicsItem::GraphicsItemChange change, const QV
     {
         ScalePenWidth();
     }
+    else if (change == QGraphicsItem::ItemEnabledHasChanged)
+    {
+        // CorrectToolColor() depends on isEnabled(); re-resolve the pen now that the enabled state
+        // is final, otherwise a curve disabled at refresh time (e.g. while switching draw/details
+        // mode) keeps its DisabledColor until the next hover/zoom.
+        ScalePenWidth();
+    }
     else if (change == QGraphicsItem::ItemSelectedHasChanged)
     {
         emit Selected(value.toBool(), id);
