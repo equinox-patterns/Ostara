@@ -229,7 +229,7 @@ void VTheme::InitFonts()
         if (!families.isEmpty())
         {
             QFont interFont(families.first());
-            interFont.setPixelSize(15);
+            interFont.setPixelSize(14);
             interFont.setWeight(QFont::Normal); // 400 — variable font, Normal is a safe default
             qApp->setFont(interFont);           // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
         }

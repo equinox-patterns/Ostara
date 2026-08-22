@@ -8,6 +8,8 @@
         <file alias="square-logo-fill_accent.svg">../../../../../share/themes/icons/light/square-logo-fill_accent.svg</file>
         <file alias="square_disabled.svg">../../../../../share/themes/icons/light/square_disabled.svg</file>
         <file alias="square-logo-fill_disabled.svg">../../../../../share/themes/icons/light/square-logo-fill_disabled.svg</file>
+        <file alias="square_light.svg">../../../../../share/themes/icons/light/square_light.svg</file>
+        <file alias="square-logo-fill_light.svg">../../../../../share/themes/icons/light/square-logo-fill_light.svg</file>
         <file alias="circle_accent.svg">../../../../../share/themes/icons/light/circle_accent.svg</file>
         <file alias="radio-button-fill_accent.svg">../../../../../share/themes/icons/light/radio-button-fill_accent.svg</file>
         <file alias="circle_disabled.svg">../../../../../share/themes/icons/light/circle_disabled.svg</file>
@@ -67,6 +69,8 @@
         <file alias="square-logo-fill_accent.svg">../../../../../share/themes/icons/dark/square-logo-fill_accent.svg</file>
         <file alias="square_disabled.svg">../../../../../share/themes/icons/dark/square_disabled.svg</file>
         <file alias="square-logo-fill_disabled.svg">../../../../../share/themes/icons/dark/square-logo-fill_disabled.svg</file>
+        <file alias="square_dark.svg">../../../../../share/themes/icons/dark/square_dark.svg</file>
+        <file alias="square-logo-fill_dark.svg">../../../../../share/themes/icons/dark/square-logo-fill_dark.svg</file>
         <file alias="circle_accent.svg">../../../../../share/themes/icons/dark/circle_accent.svg</file>
         <file alias="radio-button-fill_accent.svg">../../../../../share/themes/icons/dark/radio-button-fill_accent.svg</file>
         <file alias="circle_disabled.svg">../../../../../share/themes/icons/dark/circle_disabled.svg</file>

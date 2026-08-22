@@ -21,6 +21,7 @@ set(VWIDGETS_SOURCES
     vsimplepoint.cpp
     vabstractsimple.cpp
     vnobrushscalepathitem.cpp
+    osamarginhighlights.cpp
     vsimplecurve.cpp
     vabstractmainwindow.cpp
     vgrainlineitem.cpp
@@ -51,6 +52,7 @@ set(VWIDGETS_SOURCES
     vsimplepoint.h
     vabstractsimple.h
     vnobrushscalepathitem.h
+    osamarginhighlights.h
     vsimplecurve.h
     vabstractmainwindow.h
     vgrainlineitem.h

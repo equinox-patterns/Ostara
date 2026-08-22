@@ -58,6 +58,7 @@ public:
 
     auto IsSelectingSAPoints() const -> bool;
     void OnNodeSelectedForSA(quint32 nodeId);
+    void OnNodeHoveredForSA(quint32 nodeId);
     void CancelSASelection();
 
 signals:

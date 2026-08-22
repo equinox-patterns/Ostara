@@ -226,9 +226,10 @@ void ODetailsPieceWidget::ConnectControls()
 
     m_saWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);
-    connect(m_saWidget, &ODetailsSeamAllowanceWidget::HighlightNode, this, [this](quint32 nodeId, bool highlight)
+    connect(m_saWidget, &ODetailsSeamAllowanceWidget::HighlightNode, this,
+            [this](quint32 nodeId, bool highlight, QColor color)
     {
-        emit HighlightNode(nodeId, highlight);
+        emit HighlightNode(nodeId, highlight, color);
     });
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::ClearHighlight, this, &ODetailsPieceWidget::ClearHighlight);
 
@@ -246,7 +247,7 @@ void ODetailsPieceWidget::ConnectControls()
             m_pendingDet = detail;
             m_grainlineWidget->Show(detail, m_currentTool->getData());
             m_foldlineWidget->Show(detail);
-            m_saWidget->RefreshTable(detail);
+            m_saWidget->RefreshList(detail);
         });
     });
 
@@ -504,6 +505,12 @@ auto ODetailsPieceWidget::IsSelectingSAPoints() const -> bool
 void ODetailsPieceWidget::OnNodeSelectedForSA(quint32 nodeId)
 {
     m_saWidget->OnNodeSelected(nodeId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::OnNodeHoveredForSA(quint32 nodeId)
+{
+    m_saWidget->OnNodeHovered(nodeId);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

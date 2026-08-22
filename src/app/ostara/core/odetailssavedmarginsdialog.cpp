@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   21/08/2026
  **
- **  @brief  Saved custom margins management dialog
+ **  @brief  Saved custom seam allowances management dialog
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -41,7 +41,7 @@
 ODetailsSavedMarginsDialog::ODetailsSavedMarginsDialog(QWidget *parent)
   : QDialog(parent)
 {
-    setWindowTitle(tr("Saved custom margins"));
+    setWindowTitle(tr("Saved custom seam allowances"));
     resize(520, 300);
 
     auto *layout = new QVBoxLayout(this);

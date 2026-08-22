@@ -34,6 +34,7 @@
 #include <QtGlobal>
 
 #include "../vlayout/vfoldline.h"
+#include "../vwidgets/osamarginhighlights.h"
 #include "../vwidgets/vgrainlineitem.h"
 #include "vinteractivetool.h"
 
@@ -203,6 +204,7 @@ private:
     QGraphicsPathItem *m_foldLineMark;
     QGraphicsPathItem *m_foldLineLabel;
     QGraphicsSimpleTextItem *m_foldLineLabelText;
+    OSAMarginHighlights m_saHighlights;
 
     bool m_acceptHoverEvents{true};
 

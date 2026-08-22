@@ -300,6 +300,13 @@ QPlainTextEdit:disabled {
     border-color: #e5e5e5;
 }
 
+/* Checkbox field — container styled as an input field */
+#checkField {
+    background-color: #f9f9f9;
+    border: 1px solid #d6d6d6;
+    border-radius: 2px;
+}
+
 /* =========================================================================
    QSpinBox / QDoubleSpinBox — Champs numériques
    Design: like QLineEdit + custom up/down buttons (all-or-nothing rule)
@@ -599,12 +606,12 @@ QTreeView::indicator {
 
 QCheckBox::indicator:unchecked,
 QTreeView::indicator:unchecked {
-    image: url(:/icons/light/square_accent.svg);
+    image: url(:/icons/light/square_light.svg);
 }
 
 QCheckBox::indicator:checked,
 QTreeView::indicator:checked {
-    image: url(:/icons/light/square-logo-fill_accent.svg);
+    image: url(:/icons/light/square-logo-fill_light.svg);
 }
 
 QCheckBox::indicator:unchecked:disabled,

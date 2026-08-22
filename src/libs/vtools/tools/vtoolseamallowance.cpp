@@ -1649,7 +1649,8 @@ VToolSeamAllowance::VToolSeamAllowance(const VToolSeamAllowanceInitData &initDat
     m_mirrorLine(new QGraphicsPathItem(this)),
     m_foldLineMark(new QGraphicsPathItem(this)),
     m_foldLineLabel(new QGraphicsPathItem(this)),
-    m_foldLineLabelText(new QGraphicsSimpleTextItem(this))
+    m_foldLineLabelText(new QGraphicsSimpleTextItem(this)),
+    m_saHighlights(this)
 {
     VPiece const detail = initData.data->GetPiece(initData.id);
     ReinitInternals(detail, m_sceneDetails);
@@ -1813,6 +1814,7 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
     this->setPath(path);
 
     m_placeLabels->setPath(geom.placeLabels);
+    m_saHighlights.Update(VAbstractTool::data.GetPiece(m_id), getData());
 
     if (geom.hasSeamAllowance)
     {

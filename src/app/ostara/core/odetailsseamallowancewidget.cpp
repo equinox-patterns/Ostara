@@ -26,10 +26,12 @@
 
 #include "odetailsseamallowancewidget.h"
 
+#include "ocustommarginrowwidget.h"
 #include "odetailssavedmarginsdialog.h"
 
 #include "../ifc/ifcdef.h"
 #include "../vmisc/def.h"
+#include "../vmisc/FactoryWidgets.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
@@ -44,7 +46,6 @@
 #include <QFormLayout>
 #include <QFrame>
 #include <QHBoxLayout>
-#include <QHeaderView>
 #include <QIcon>
 #include <QLabel>
 #include <QLineEdit>
@@ -54,7 +55,7 @@
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
-#include <QTableWidget>
+#include <QTimer>
 #include <QVBoxLayout>
 
 #include <algorithm>
@@ -72,7 +73,7 @@ const QRegularExpression kDecimalRegex(QStringLiteral("[0-9]*[\\.,]?[0-9]*"));
 
 auto MakeColorCombo(int row, QWidget *parent = nullptr) -> QComboBox *
 {
-    auto *combo = new QComboBox(parent);
+    auto *combo = MakeComboBox(parent);
     combo->setIconSize(QSize(16, 16));
     for (const QColor &c : kCustomMarginColors)
     {
@@ -234,26 +235,16 @@ ODetailsSeamAllowanceWidget::ODetailsSeamAllowanceWidget(QWidget *parent)
     valueRow->addWidget(m_applyValueBtn);
     mainLayout->addLayout(valueRow);
 
-    m_addCustomBtn = new QPushButton(tr("+ Add custom margin"));
+    m_addCustomBtn = new QPushButton(tr("+ Add custom seam allowance"));
     mainLayout->addWidget(m_addCustomBtn);
 
-    m_table = new QTableWidget(0, 5);
-    m_table->setHorizontalHeaderLabels({tr("Name"), tr("Value"), tr("Color"), tr("Show"), QString()});
-    m_table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
-    m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
-    m_table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
-    m_table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Fixed);
-    m_table->setColumnWidth(1, 65);
-    m_table->setColumnWidth(2, 55);
-    m_table->setColumnWidth(3, 45);
-    m_table->setColumnWidth(4, 30);
-    m_table->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_table->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_table->verticalHeader()->setVisible(false);
-    mainLayout->addWidget(m_table);
+    m_listContainer = new QWidget();
+    m_listLayout = new QVBoxLayout(m_listContainer);
+    m_listLayout->setContentsMargins(0, 0, 0, 0);
+    m_listLayout->setSpacing(0);
+    mainLayout->addWidget(m_listContainer);
 
-    m_manageSavedBtn = new QPushButton(tr("Manage saved custom margins"));
+    m_manageSavedBtn = new QPushButton(tr("Manage saved custom seam allowances"));
     mainLayout->addWidget(m_manageSavedBtn);
 
     ConnectControls();
@@ -317,7 +308,7 @@ void ODetailsSeamAllowanceWidget::ConnectControls()
         m_modifyPending([formula, value](VPiece &det) { det.SetFormulaSAWidth(formula, value); });
     });
 
-    // --- Add custom margin button ---
+    // --- Add custom seam allowance button ---
     connect(m_addCustomBtn, &QPushButton::clicked, this, [this]()
     {
         switch (m_state)
@@ -326,7 +317,7 @@ void ODetailsSeamAllowanceWidget::ConnectControls()
                 m_state = State::SelectingPoints;
                 m_selectedNodeIds.clear();
                 m_addCustomBtn->setText(tr("Cancel"));
-                emit ShowStatusTip(tr("Select the first and last point of the margin segment"));
+                emit ShowStatusTip(tr("Select the first and last point of the seam allowance segment"));
                 break;
             case State::SelectingPoints:
                 CancelSelection();
@@ -334,7 +325,7 @@ void ODetailsSeamAllowanceWidget::ConnectControls()
         }
     });
 
-    // --- Manage saved custom margins button ---
+    // --- Manage saved custom seam allowances button ---
     connect(m_manageSavedBtn, &QPushButton::clicked, this, [this]()
     {
         auto *dialog = new ODetailsSavedMarginsDialog(this);
@@ -354,9 +345,10 @@ void ODetailsSeamAllowanceWidget::Show(const VPiece &det)
     m_hideMainPathCheck->setChecked(det.IsHideMainPath());
     m_valueEdit->setText(VAbstractApplication::VApp()->LocaleToString(det.GetSAWidth()));
 
-    PopulateTable(det);
+    PopulateList(det);
 
     m_updating = false;
+    FlushDefaultPersist();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -365,22 +357,27 @@ void ODetailsSeamAllowanceWidget::Clear()
     m_path = VPiecePath{};
     m_state = State::Idle;
     m_selectedNodeIds.clear();
-    m_addCustomBtn->setText(tr("+ Add custom margin"));
+    m_addCustomBtn->setText(tr("+ Add custom seam allowance"));
     m_updating = false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsSeamAllowanceWidget::RefreshTable(const VPiece &detail)
+void ODetailsSeamAllowanceWidget::RefreshList(const VPiece &detail)
 {
     m_updating = true;
-    PopulateTable(detail);
+    PopulateList(detail);
     m_updating = false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsSeamAllowanceWidget::PopulateTable(const VPiece &detail)
+void ODetailsSeamAllowanceWidget::PopulateList(const VPiece &detail)
 {
-    m_table->setRowCount(0);
+    for (auto *row : m_rows)
+    {
+        m_listLayout->removeWidget(row);
+        delete row;
+    }
+    m_rows.clear();
 
     const QVector<CustomMarginGroup> groups = FindCustomMarginGroups(detail);
 
@@ -424,39 +421,44 @@ void ODetailsSeamAllowanceWidget::PopulateTable(const VPiece &detail)
         QVector<quint32> hashKey = group;
         std::sort(hashKey.begin(), hashKey.end());
 
-        const int row = m_table->rowCount();
-        m_table->insertRow(row);
-
         const int storedIdx = findStoredIdx(hashKey);
+        if (storedIdx < 0)
+        {
+            m_pendingDefaultPersist = true;
+        }
         const QString name = (storedIdx >= 0 && storedIdx < storedNames.size())
                                  ? storedNames.at(storedIdx)
-                                 : tr("Custom margin %1").arg(row + 1);
+                                 : tr("Custom seam allowance %1").arg(m_rows.size() + 1);
         const int storedColor = (storedIdx >= 0 && storedIdx < storedColors.size())
                                     ? storedColors.at(storedIdx)
-                                    : row % kCustomMarginColors.size();
+                                    : static_cast<int>(m_rows.size() % kCustomMarginColors.size());
         const bool storedShow = (storedIdx >= 0 && storedIdx < storedShows.size()) ? storedShows.at(storedIdx) : false;
 
-        // Column 0 — name (QLineEdit), node IDs stored in the item's UserRole.
-        auto *nameWidget = new QLineEdit(name);
-        m_table->setCellWidget(row, 0, nameWidget);
-        auto *nodeItem = new QTableWidgetItem();
-        nodeItem->setData(Qt::UserRole, QVariant::fromValue(group));
-        m_table->setItem(row, 0, nodeItem);
+        auto *row = new OCustomMarginRowWidget(group, kCustomMarginColors, m_listContainer);
+        row->nameEdit()->setText(name);
 
-        connect(nameWidget, &QLineEdit::editingFinished, this, [this, hashKey, nameWidget]()
+        bool valueOk = false;
+        const qreal valuePx = groupValue.toDouble(&valueOk);
+        row->valueEdit()->setText(valueOk ? QString::number(valuePx) : QStringLiteral("0"));
+        row->valueEdit()->setValidator(new QRegularExpressionValidator(kDecimalRegex, this));
+        row->colorCombo()->setCurrentIndex(storedColor);
+        row->showCheck()->setChecked(storedShow);
+
+        // Name editing.
+        connect(row->nameEdit(), &QLineEdit::editingFinished, this, [this, row, hashKey]()
         {
             if (m_updating || !m_modifyPending)
             {
                 return;
             }
-            const QString text = nameWidget->text().trimmed();
+            const QString text = row->nameEdit()->text().trimmed();
             if (text.isEmpty())
             {
                 return;
             }
             m_modifyPending([this, hashKey, text](VPiece &det)
             {
-                CollectGroupsFromTable(det);
+                CollectGroupsFromList(det);
                 auto groups = det.GetSAMarginGroupNodeIds();
                 auto names = det.GetSAMarginGroupNames();
                 for (int i = 0; i < groups.size() && i < names.size(); ++i)
@@ -473,24 +475,50 @@ void ODetailsSeamAllowanceWidget::PopulateTable(const VPiece &detail)
             });
         });
 
-        // Column 1 — value (display only).
-        bool ok = false;
-        const qreal valuePx = groupValue.toDouble(&ok);
-        const QString displayVal = ok ? QString::number(valuePx) : QStringLiteral("0");
-        auto *valueWidget = new QLineEdit(displayVal);
-        valueWidget->setAlignment(Qt::AlignCenter);
-        valueWidget->setReadOnly(true);
-        m_table->setCellWidget(row, 1, valueWidget);
+        // Value editing — applies the new width to the group's per-node SA formulas.
+        connect(row->valueEdit(), &QLineEdit::editingFinished, this, [this, row, group]()
+        {
+            if (m_updating || !m_modifyPending)
+            {
+                return;
+            }
+            bool ok = false;
+            const double value = ParseDecimal(row->valueEdit()->text(), &ok);
+            if (!ok || value < 0)
+            {
+                return;
+            }
+            const QString valueStr = QString::number(value);
+            m_modifyPending([group, valueStr](VPiece &det)
+            {
+                auto nodes = det.GetPath().GetNodes();
+                for (int j = 0; j < group.size(); ++j)
+                {
+                    const int idx = det.GetPath().indexOfNode(group.at(j));
+                    if (idx < 0)
+                    {
+                        continue;
+                    }
+                    if (j == 0)
+                    {
+                        nodes[idx].SetFormulaSAAfter(valueStr);
+                    }
+                    else if (j == group.size() - 1)
+                    {
+                        nodes[idx].SetFormulaSABefore(valueStr);
+                    }
+                    else
+                    {
+                        nodes[idx].SetFormulaSABefore(valueStr);
+                        nodes[idx].SetFormulaSAAfter(valueStr);
+                    }
+                }
+                det.GetPath().SetNodes(nodes);
+            });
+        });
 
-        // Column 2 — color combo (wrapped in a container).
-        auto *colorCombo = MakeColorCombo(storedColor);
-        auto *colorContainer = new QWidget(m_table);
-        auto *colorLayout = new QHBoxLayout(colorContainer);
-        colorLayout->setContentsMargins(2, 0, 2, 0);
-        colorLayout->addWidget(colorCombo);
-        m_table->setCellWidget(row, 2, colorContainer);
-
-        connect(colorCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+        // Color.
+        connect(row->colorCombo(), QOverload<int>::of(&QComboBox::currentIndexChanged), this,
                 [this, hashKey](int index)
         {
             if (m_updating || !m_modifyPending)
@@ -499,7 +527,7 @@ void ODetailsSeamAllowanceWidget::PopulateTable(const VPiece &detail)
             }
             m_modifyPending([this, hashKey, index](VPiece &det)
             {
-                CollectGroupsFromTable(det);
+                CollectGroupsFromList(det);
                 auto groups = det.GetSAMarginGroupNodeIds();
                 auto colors = det.GetSAMarginGroupColorIndices();
                 for (int i = 0; i < groups.size() && i < colors.size(); ++i)
@@ -516,17 +544,8 @@ void ODetailsSeamAllowanceWidget::PopulateTable(const VPiece &detail)
             });
         });
 
-        // Column 3 — show checkbox (wrapped in a container).
-        auto *showCheck = new QCheckBox();
-        showCheck->setChecked(storedShow);
-        auto *showContainer = new QWidget(m_table);
-        auto *showLayout = new QHBoxLayout(showContainer);
-        showLayout->setContentsMargins(0, 0, 0, 0);
-        showLayout->setAlignment(Qt::AlignCenter);
-        showLayout->addWidget(showCheck);
-        m_table->setCellWidget(row, 3, showContainer);
-
-        connect(showCheck, &QCheckBox::toggled, this, [this, hashKey](bool checked)
+        // Show.
+        connect(row->showCheck(), &QCheckBox::toggled, this, [this, hashKey](bool checked)
         {
             if (m_updating || !m_modifyPending)
             {
@@ -534,7 +553,7 @@ void ODetailsSeamAllowanceWidget::PopulateTable(const VPiece &detail)
             }
             m_modifyPending([this, hashKey, checked](VPiece &det)
             {
-                CollectGroupsFromTable(det);
+                CollectGroupsFromList(det);
                 auto groups = det.GetSAMarginGroupNodeIds();
                 auto shows = det.GetSAMarginGroupShowStates();
                 for (int i = 0; i < groups.size() && i < shows.size(); ++i)
@@ -551,27 +570,38 @@ void ODetailsSeamAllowanceWidget::PopulateTable(const VPiece &detail)
             });
         });
 
-        // Column 4 — delete button.
-        auto *deleteBtn = new QPushButton(QStringLiteral("×"));
-        deleteBtn->setFixedWidth(30);
-        m_table->setCellWidget(row, 4, deleteBtn);
-
-        connect(deleteBtn, &QPushButton::clicked, this, [this, hashKey]()
+        // Delete.
+        connect(row->deleteButton(), &QPushButton::clicked, this, [this, group, hashKey]()
         {
             if (m_updating || !m_modifyPending)
             {
                 return;
             }
-            m_modifyPending([hashKey](VPiece &det)
+            m_modifyPending([group, hashKey](VPiece &det)
             {
-                // Reset node SA formulas for this group back to the default.
+                // Reset only the group's own SA formulas back to the default. The
+                // boundary node's other side may belong to the neighbouring group, so
+                // only the side facing this group is reset (first → after, last → before).
                 auto nodes = det.GetPath().GetNodes();
-                for (int i = 0; i < nodes.size(); ++i)
+                for (int j = 0; j < group.size(); ++j)
                 {
-                    if (hashKey.contains(nodes.at(i).GetId()))
+                    const int idx = det.GetPath().indexOfNode(group.at(j));
+                    if (idx < 0)
                     {
-                        nodes[i].SetFormulaSABefore(currentSeamAllowance);
-                        nodes[i].SetFormulaSAAfter(currentSeamAllowance);
+                        continue;
+                    }
+                    if (j == 0)
+                    {
+                        nodes[idx].SetFormulaSAAfter(currentSeamAllowance);
+                    }
+                    else if (j == group.size() - 1)
+                    {
+                        nodes[idx].SetFormulaSABefore(currentSeamAllowance);
+                    }
+                    else
+                    {
+                        nodes[idx].SetFormulaSABefore(currentSeamAllowance);
+                        nodes[idx].SetFormulaSAAfter(currentSeamAllowance);
                     }
                 }
                 det.GetPath().SetNodes(nodes);
@@ -609,25 +639,23 @@ void ODetailsSeamAllowanceWidget::PopulateTable(const VPiece &detail)
                 det.SetSAMarginGroupShowStates(shows);
             });
         });
+
+        m_listLayout->addWidget(row);
+        m_rows.append(row);
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsSeamAllowanceWidget::CollectGroupsFromTable(VPiece &det) const
+void ODetailsSeamAllowanceWidget::CollectGroupsFromList(VPiece &det) const
 {
     QVector<QVector<quint32>> nodeIdGroups;
     QVector<QString> names;
     QVector<int> colors;
     QVector<bool> shows;
 
-    for (int r = 0; r < m_table->rowCount(); ++r)
+    for (const auto *row : m_rows)
     {
-        const auto *item = m_table->item(r, 0);
-        if (!item)
-        {
-            continue;
-        }
-        auto nodeIds = item->data(Qt::UserRole).value<QVector<quint32>>();
+        auto nodeIds = row->nodeIds();
         if (nodeIds.isEmpty())
         {
             continue;
@@ -635,22 +663,37 @@ void ODetailsSeamAllowanceWidget::CollectGroupsFromTable(VPiece &det) const
         std::sort(nodeIds.begin(), nodeIds.end());
         nodeIdGroups.append(nodeIds);
 
-        auto *nameW = qobject_cast<QLineEdit *>(m_table->cellWidget(r, 0));
-        auto *colorContainer = m_table->cellWidget(r, 2);
-        auto *colorCombo = colorContainer ? colorContainer->findChild<QComboBox *>() : nullptr;
-        auto *showContainer = m_table->cellWidget(r, 3);
-        auto *showCheck = showContainer ? showContainer->findChild<QCheckBox *>() : nullptr;
-
-        names.append(nameW ? nameW->text().trimmed() : QString());
-        colors.append(colorCombo ? colorCombo->currentIndex()
-                                 : static_cast<int>(r % kCustomMarginColors.size()));
-        shows.append(showCheck ? showCheck->isChecked() : false);
+        names.append(row->nameEdit()->text().trimmed());
+        colors.append(row->colorCombo()->currentIndex());
+        shows.append(row->showCheck()->isChecked());
     }
 
     det.SetSAMarginGroupNodeIds(nodeIdGroups);
     det.SetSAMarginGroupNames(names);
     det.SetSAMarginGroupColorIndices(colors);
     det.SetSAMarginGroupShowStates(shows);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsSeamAllowanceWidget::FlushDefaultPersist()
+{
+    // Persist the default name/color/show assigned to legacy groups (no stored
+    // metadata) exactly once, so they stop shifting on later refreshes. Deferred via
+    // singleShot: during Show() the piece widget's m_updating guard would silently
+    // drop a synchronous persist.
+    if (!m_pendingDefaultPersist || !m_modifyPending)
+    {
+        return;
+    }
+    m_pendingDefaultPersist = false;
+    QTimer::singleShot(0, this, [this]()
+    {
+        if (!m_modifyPending)
+        {
+            return;
+        }
+        m_modifyPending([this](VPiece &det) { CollectGroupsFromList(det); });
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -688,6 +731,43 @@ void ODetailsSeamAllowanceWidget::OnNodeSelected(quint32 nodeId)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODetailsSeamAllowanceWidget::OnNodeHovered(quint32 nodeId)
+{
+    if (m_state != State::SelectingPoints)
+    {
+        return;
+    }
+
+    // Re-apply the persistent highlight for already-selected points — the point's
+    // own repaint may reset the transient pen/brush applied by HighlightNode.
+    for (quint32 id : m_selectedNodeIds)
+    {
+        emit HighlightNode(id, true);
+    }
+
+    // Clear the previous transient hover highlight (unless it is a selected point).
+    if (m_hoveredNodeId != 0 && !m_selectedNodeIds.contains(m_hoveredNodeId))
+    {
+        emit HighlightNode(m_hoveredNodeId, false);
+    }
+    m_hoveredNodeId = 0;
+
+    if (nodeId == 0 || m_selectedNodeIds.contains(nodeId))
+    {
+        return;
+    }
+
+    const int idx = m_path.indexOfNode(nodeId);
+    if (idx == -1 || m_path.at(idx).IsExcluded())
+    {
+        return;
+    }
+
+    emit HighlightNode(nodeId, true);
+    m_hoveredNodeId = nodeId;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODetailsSeamAllowanceWidget::CancelSelection()
 {
     if (m_state != State::SelectingPoints)
@@ -696,7 +776,8 @@ void ODetailsSeamAllowanceWidget::CancelSelection()
     }
     m_state = State::Idle;
     m_selectedNodeIds.clear();
-    m_addCustomBtn->setText(tr("+ Add custom margin"));
+    m_hoveredNodeId = 0;
+    m_addCustomBtn->setText(tr("+ Add custom seam allowance"));
     emit ShowStatusTip(QString());
     emit ClearHighlight();
 }
@@ -744,13 +825,13 @@ void ODetailsSeamAllowanceWidget::FinishSelection()
     }
 
     auto *dialog = new QDialog(this);
-    dialog->setWindowTitle(tr("Apply custom margin"));
+    dialog->setWindowTitle(tr("Apply custom seam allowance"));
     auto *dlgLayout = new QVBoxLayout(dialog);
 
-    auto *savedLabel = new QLabel(tr("Select a saved custom margin:"));
+    auto *savedLabel = new QLabel(tr("Select a saved custom seam allowance:"));
     dlgLayout->addWidget(savedLabel);
 
-    auto *savedCombo = new QComboBox();
+    auto *savedCombo = MakeComboBox();
     savedCombo->addItem(QString()); // Empty = no selection
     const auto savedList = VAbstractValApplication::VApp()->ValentinaSettings()->GetSavedSeamAllowances();
     const Unit patternUnit = VAbstractValApplication::VApp()->patternUnits();
@@ -770,7 +851,7 @@ void ODetailsSeamAllowanceWidget::FinishSelection()
     separator->setFrameShadow(QFrame::Sunken);
     dlgLayout->addWidget(separator);
 
-    auto *createLabel = new QLabel(tr("Create a new custom margin:"));
+    auto *createLabel = new QLabel(tr("Create a new custom seam allowance:"));
     dlgLayout->addWidget(createLabel);
 
     auto *form = new QFormLayout();
@@ -783,7 +864,7 @@ void ODetailsSeamAllowanceWidget::FinishSelection()
     form->addRow(tr("Color"), colorCombo);
     dlgLayout->addLayout(form);
 
-    auto *saveCheck = new QCheckBox(tr("Save to saved custom margins"));
+    auto *saveCheck = new QCheckBox(tr("Save to saved custom seam allowances"));
     dlgLayout->addWidget(saveCheck);
 
     auto *applyBtn = new QPushButton(tr("Apply"));
@@ -822,7 +903,8 @@ void ODetailsSeamAllowanceWidget::FinishSelection()
         }
 
         m_state = State::Idle;
-        m_addCustomBtn->setText(tr("+ Add custom margin"));
+        m_hoveredNodeId = 0;
+        m_addCustomBtn->setText(tr("+ Add custom seam allowance"));
         emit ShowStatusTip(QString());
         emit ClearHighlight();
 
@@ -929,7 +1011,10 @@ void ODetailsSeamAllowanceWidget::FinishSelection()
         dialog->accept();
     });
 
-    dialog->exec();
+    if (dialog->exec() == QDialog::Rejected)
+    {
+        CancelSelection();
+    }
     delete dialog;
 }
 

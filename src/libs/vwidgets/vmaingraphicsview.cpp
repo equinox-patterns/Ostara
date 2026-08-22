@@ -667,6 +667,8 @@ void VMainGraphicsView::mousePressEvent(QMouseEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void VMainGraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
+    emit itemHovered(itemAt(event->pos()));
+
     // Hack to fix problem with mouse cursor. Looks like after we switch cursor back it is rewrited back by a dialog.
     // Because no real way to catch this call we will check state for each move and compare to excpected state.
     if (dragMode() != QGraphicsView::ScrollHandDrag)

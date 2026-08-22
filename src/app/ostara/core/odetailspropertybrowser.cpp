@@ -32,7 +32,35 @@
 #include <QLabel>
 #include <QScrollArea>
 #include <QStackedWidget>
+#include <QStyle>
 #include <QVBoxLayout>
+
+namespace
+{
+// The dock's default width is driven by the content's sizeHint(). For a fixed
+// layout (buttons/table that cannot reflow), sizeHint() is wider than the
+// minimum, so the dock opens wider than necessary. Reporting minimumSizeHint()
+// as sizeHint() makes the dock open at its smallest usable width — right before
+// the horizontal scrollbar appears — while the user can still widen it.
+class ODetailsScrollContents final : public QWidget
+{
+public:
+    explicit ODetailsScrollContents(QWidget *parent = nullptr)
+      : QWidget(parent)
+    {}
+
+    auto sizeHint() const -> QSize override
+    {
+        // The scroll area's vertical scrollbar (shown when the content is taller
+        // than the viewport) eats into the horizontal viewport, which would make
+        // the content overflow and show a spurious horizontal scrollbar. Add its
+        // extent so the dock opens just wide enough for the content.
+        auto hint = minimumSizeHint();
+        hint.setWidth(hint.width() + style()->pixelMetric(QStyle::PM_ScrollBarExtent));
+        return hint;
+    }
+};
+} // namespace
 
 ODetailsPropertyBrowser::ODetailsPropertyBrowser(QDockWidget *parent)
   : QObject(parent)
@@ -44,8 +72,9 @@ ODetailsPropertyBrowser::ODetailsPropertyBrowser(QDockWidget *parent)
     auto *emptyLayout = new QVBoxLayout(emptyPage);
     emptyLayout->setContentsMargins(0, 0, 0, 0);
     auto *emptyLabel = new QLabel(tr("Select a piece"), emptyPage);
-    emptyLabel->setAlignment(Qt::AlignCenter);
+    emptyLabel->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     emptyLayout->addWidget(emptyLabel);
+    emptyLayout->addStretch();
     m_stack->addWidget(emptyPage);
 
     // Piece page — the contextual property browser for a selected piece.
@@ -62,7 +91,7 @@ ODetailsPropertyBrowser::ODetailsPropertyBrowser(QDockWidget *parent)
     auto *scroll = new QScrollArea(parent);
     scroll->setWidgetResizable(true);
 
-    auto *scrollContents = new QWidget(scroll);
+    auto *scrollContents = new ODetailsScrollContents(scroll);
     auto *scrollLayout = new QVBoxLayout(scrollContents);
     scrollLayout->setContentsMargins(0, 8, 0, 0);
     scrollLayout->setSpacing(0);
@@ -137,6 +166,12 @@ auto ODetailsPropertyBrowser::IsSelectingSAPoints() const -> bool
 void ODetailsPropertyBrowser::OnNodeSelectedForSA(quint32 nodeId)
 {
     m_pieceWidget->OnNodeSelectedForSA(nodeId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::OnNodeHoveredForSA(quint32 nodeId)
+{
+    m_pieceWidget->OnNodeHoveredForSA(nodeId);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

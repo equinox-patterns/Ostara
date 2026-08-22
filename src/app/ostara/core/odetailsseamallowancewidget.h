@@ -35,10 +35,11 @@
 #include "../vpatterndb/vpiece.h"
 #include "../vpatterndb/vpiecepath.h"
 
+class OCustomMarginRowWidget;
 class QCheckBox;
 class QLineEdit;
 class QPushButton;
-class QTableWidget;
+class QVBoxLayout;
 
 //---------------------------------------------------------------------------------------------------------------------
 /** @brief A detected custom seam-allowance margin group on a piece contour. */
@@ -67,20 +68,22 @@ public:
 
     auto IsSelectingPoints() const -> bool;
     void OnNodeSelected(quint32 nodeId);
+    void OnNodeHovered(quint32 nodeId);
     void CancelSelection();
 
-    void RefreshTable(const VPiece &detail);
+    void RefreshList(const VPiece &detail);
 
 signals:
     void ShowStatusTip(const QString &text);
-    void HighlightNode(quint32 nodeId, bool highlight);
+    void HighlightNode(quint32 nodeId, bool highlight, QColor color = QColor(255, 0, 255));
     void ClearHighlight();
 
 private:
     void ConnectControls();
-    void PopulateTable(const VPiece &detail);
-    void CollectGroupsFromTable(VPiece &det) const;
+    void PopulateList(const VPiece &detail);
+    void CollectGroupsFromList(VPiece &det) const;
     void FinishSelection();
+    void FlushDefaultPersist();
 
     // UI
     QCheckBox *m_activeCheck{nullptr};
@@ -88,7 +91,9 @@ private:
     QLineEdit *m_valueEdit{nullptr};
     QPushButton *m_applyValueBtn{nullptr};
     QPushButton *m_addCustomBtn{nullptr};
-    QTableWidget *m_table{nullptr};
+    QWidget *m_listContainer{nullptr};
+    QVBoxLayout *m_listLayout{nullptr};
+    QVector<OCustomMarginRowWidget *> m_rows{};
     QPushButton *m_manageSavedBtn{nullptr};
 
     // State
@@ -99,6 +104,8 @@ private:
     };
     State m_state{State::Idle};
     QVector<quint32> m_selectedNodeIds{};
+    quint32 m_hoveredNodeId{0};
+    bool m_pendingDefaultPersist{false};
 
     VPiecePath m_path{};
     std::function<void(std::function<void(VPiece &)>)> m_modifyPending;

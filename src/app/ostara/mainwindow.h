@@ -137,6 +137,7 @@ protected:
 private slots:
     void ScaleChanged(qreal scale);
     void HandleItemClicked(QGraphicsItem *item);
+    void HandleItemHovered(QGraphicsItem *item);
     void ItemDoubleClicked(QGraphicsItem *item);
     void MouseMove(const QPointF &scenePos);
     void Clear();
@@ -384,6 +385,11 @@ private:
 
     QByteArray m_editorDockState{};
 
+    // Per-mode dock layouts (size + visibility), restored on mode re-entry.
+    QByteArray m_drawModeDockState{};
+    QByteArray m_detailsModeDockState{};
+    QByteArray m_layoutModeDockState{};
+
     // True while a tool options (edit) dialog is open. Undo/redo are blocked during this time because
     // running them triggers a full reparse that destroys the tool and pattern container the open dialog
     // still references, leading to a use-after-free when the dialog is accepted.
@@ -470,6 +476,10 @@ private:
     void InitWelcomePage();
     void ShowWelcomeScreen();
     void ShowEditor();
+
+    // Preserve dock layout (size + visibility) across Draw/Details/Layout mode switches.
+    void SaveDockStateForMode(Draw mode);
+    void RestoreDockStateForMode(Draw mode);
 
     // Measurement slots (from embedded WelcomeScreen)
     void WelcomeNewMeasurement();

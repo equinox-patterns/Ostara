@@ -1478,6 +1478,33 @@ void MainWindow::HandleItemClicked(QGraphicsItem *item)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::HandleItemHovered(QGraphicsItem *item)
+{
+    // Custom seam allowance selection — route node hover to the details property browser.
+    if (m_detailsOptions == nullptr || !m_detailsOptions->IsSelectingSAPoints())
+    {
+        return;
+    }
+
+    if (item == nullptr)
+    {
+        m_detailsOptions->OnNodeHoveredForSA(0);
+        return;
+    }
+
+    auto *node = dynamic_cast<VNodePoint *>(item);
+    if (node == nullptr)
+    {
+        if (auto *parentItem = item->parentItem())
+        {
+            node = dynamic_cast<VNodePoint *>(parentItem);
+        }
+    }
+
+    m_detailsOptions->OnNodeHoveredForSA(node != nullptr ? node->getId() : 0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ItemDoubleClicked(QGraphicsItem *item)
 {
     if (doc == nullptr || m_breadcrumb == nullptr)
@@ -2342,6 +2369,67 @@ void MainWindow::RestoreCurrentScene()
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
+ * @brief SaveDockStateForMode remembers the current dock layout for the given mode.
+ *        Called when leaving a mode so its dock sizes/visibility can be restored on re-entry.
+ */
+void MainWindow::SaveDockStateForMode(Draw mode)
+{
+    // During pattern opening the mode functions run back-to-back to set up the
+    // initial layout; the dock state isn't user-established yet, so saving it would
+    // capture a wrong intermediate layout (e.g. every dock visible right after
+    // restoreState()).
+    if (VAbstractValApplication::VApp()->getOpeningPattern())
+    {
+        return;
+    }
+
+    switch (mode)
+    {
+        case Draw::Calculation:
+            m_drawModeDockState = saveState(kToolbarStateVersion);
+            break;
+        case Draw::Modeling:
+            m_detailsModeDockState = saveState(kToolbarStateVersion);
+            break;
+        case Draw::Layout:
+            m_layoutModeDockState = saveState(kToolbarStateVersion);
+            break;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RestoreDockStateForMode(Draw mode)
+{
+    if (VAbstractValApplication::VApp()->getOpeningPattern())
+    {
+        return;
+    }
+
+    switch (mode)
+    {
+        case Draw::Calculation:
+            if (!m_drawModeDockState.isEmpty())
+            {
+                restoreState(m_drawModeDockState, kToolbarStateVersion);
+            }
+            break;
+        case Draw::Modeling:
+            if (!m_detailsModeDockState.isEmpty())
+            {
+                restoreState(m_detailsModeDockState, kToolbarStateVersion);
+            }
+            break;
+        case Draw::Layout:
+            if (!m_layoutModeDockState.isEmpty())
+            {
+                restoreState(m_layoutModeDockState, kToolbarStateVersion);
+            }
+            break;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
  * @brief ActionDraw show draw scene.
  * @param checked true - button checked.
  */
@@ -2350,6 +2438,7 @@ void MainWindow::ActionDraw(bool checked)
     if (checked)
     {
         qCDebug(vMainWindow, "Show draw scene");
+        SaveDockStateForMode(VAbstractValApplication::VApp()->GetDrawMode());
         ArrowTool(true);
 
         const auto resource = QStringLiteral("icon");
@@ -2405,6 +2494,8 @@ void MainWindow::ActionDraw(bool checked)
         actionDockWidgetDependencies->setEnabled(true);
 
         m_topBar->SetPatternPieceVisible(true);
+
+        RestoreDockStateForMode(Draw::Calculation);
     }
     else
     {
@@ -2451,6 +2542,7 @@ void MainWindow::ActionDetails(bool checked)
         m_detailsWidget->UpdateList();
 
         qCDebug(vMainWindow, "Show details scene");
+        SaveDockStateForMode(VAbstractValApplication::VApp()->GetDrawMode());
         SaveCurrentScene();
 
         currentScene = m_sceneDetails;
@@ -2497,6 +2589,8 @@ void MainWindow::ActionDetails(bool checked)
         RefreshPieceGeometry();
 
         m_topBar->SetPatternPieceVisible(false);
+
+        RestoreDockStateForMode(Draw::Modeling);
     }
     else
     {
@@ -2567,6 +2661,8 @@ void MainWindow::ActionLayout(bool checked)
 
     qCDebug(vMainWindow, "Show layout scene");
 
+    SaveDockStateForMode(VAbstractValApplication::VApp()->GetDrawMode());
+
     SaveCurrentScene();
 
     try
@@ -2619,6 +2715,8 @@ void MainWindow::ActionLayout(bool checked)
     }
 
     m_statusLabel->setText(QString());
+
+    RestoreDockStateForMode(Draw::Layout);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -4262,7 +4360,7 @@ void MainWindow::InitDocksContain()
             [this](const QString &text) { m_statusLabel->setText(text); });
 
     connect(m_detailsOptions, &ODetailsPropertyBrowser::HighlightNode, this,
-            [this](quint32 nodeId, bool highlight, QColor color)
+            [this](quint32 nodeId, bool highlight)
     {
         if (pattern == nullptr)
         {
@@ -4285,16 +4383,7 @@ void MainWindow::InitDocksContain()
                 auto *nodePoint = dynamic_cast<VNodePoint *>(child);
                 if (nodePoint != nullptr && nodePoint->getId() == nodeId)
                 {
-                    if (highlight)
-                    {
-                        nodePoint->setPen(QPen(color, 2));
-                        nodePoint->setBrush(QBrush(color));
-                    }
-                    else
-                    {
-                        nodePoint->setPen(QPen(Qt::black, 1));
-                        nodePoint->setBrush(QBrush(Qt::NoBrush));
-                    }
+                    nodePoint->SetActivePoint(highlight);
                     return;
                 }
             }
@@ -4323,6 +4412,7 @@ void MainWindow::InitDocksContain()
             {
                 if (auto *nodePoint = dynamic_cast<VNodePoint *>(item))
                 {
+                    nodePoint->SetActivePoint(false);
                     nodePoint->RefreshScale();
                 }
                 for (auto *child : item->childItems())
@@ -4335,6 +4425,7 @@ void MainWindow::InitDocksContain()
     });
 
     connect(ui->view, &VMainGraphicsView::itemClicked, this, &MainWindow::HandleItemClicked);
+    connect(ui->view, &VMainGraphicsView::itemHovered, this, &MainWindow::HandleItemHovered);
     connect(ui->view, &VMainGraphicsView::itemDoubleClicked, this, &MainWindow::ItemDoubleClicked);
     connect(m_breadcrumb, &BreadcrumbBar::canvasClicked, this, [this]()
             {
