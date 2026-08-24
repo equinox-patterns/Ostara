@@ -52,6 +52,7 @@ class DialogIncrements;
 class DialogTool;
 class DialogHistory;
 class DialogFinalMeasurements;
+class OInfoBlockWindow;
 class VWidgetGroups;
 class VWidgetDetails;
 class VWidgetDependencies;
@@ -281,6 +282,7 @@ private slots:
     void ActionNewDraw_triggered();
     void ActionTable_triggered();
     void ActionFinalMeasurements_triggered();
+    void ActionInfoBlock_triggered();
     void ActionManageMeasurements();
     void ActionShowMainPath_triggered(bool checked);
     void ActionBoundaryTogetherWithNotches_triggered(bool checked);
@@ -313,6 +315,7 @@ private:
     QPointer<DialogIncrements> m_dialogTable;
     QPointer<DialogTool> m_dialogTool{};
     QPointer<DialogFinalMeasurements> m_dialogFMeasurements;
+    QPointer<OInfoBlockWindow> m_infoBlockWindow;
 
     /** @brief comboBoxDraws comboc who show name of pattern peaces. */
     QComboBox *m_comboBoxDraws{nullptr};

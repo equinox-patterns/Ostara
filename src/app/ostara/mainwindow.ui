@@ -80,6 +80,7 @@
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
     <addaction name="actionPattern_properties"/>
+    <addaction name="actionInfoBlock"/>
     <addaction name="separator"/>
     <addaction name="actionClosePattern"/>
     <addaction name="actionExit"/>
@@ -1042,6 +1043,17 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+I</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionInfoBlock">
+   <property name="text">
+    <string>Information block</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

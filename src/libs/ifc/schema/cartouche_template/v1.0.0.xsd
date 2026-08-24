@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:oct="urn:ostara:cartoucheTemplate"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!--
+    Ostara Cartouche Template Format v1.0.0
+    A named, ordered list of cartouche sections plus per-section styling.
+    Stored globally in ~/Ostara/CartoucheTemplates as a .oct file.
+    Forward-compatible: unknown elements and attributes are preserved.
+  -->
+
+  <!-- ===== ROOT ===== -->
+  <xs:element name="cartoucheTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="sections" type="SectionsType" minOccurs="1" maxOccurs="1"/>
+        <!-- Forward-compat: unknown top-level elements preserved -->
+        <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="version" type="FormatVersion" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ===== SECTIONS ===== -->
+  <xs:complexType name="SectionsType">
+    <xs:sequence>
+      <xs:element name="section" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="type" type="xs:string" use="required"/>
+          <!-- Per-section styling (all types) -->
+          <xs:attribute name="useDefaults" type="xs:boolean" default="true"/>
+          <xs:attribute name="fontFamily" type="xs:string"/>
+          <xs:attribute name="fontWeight" type="xs:int" default="0"/>
+          <xs:attribute name="fontSize" type="xs:double" default="0"/>
+          <!-- Type-specific options -->
+          <xs:attribute name="axis" type="AxisEnum"/>
+          <xs:attribute name="measureName" type="xs:string"/>
+          <xs:attribute name="logo" type="xs:string"/>
+          <xs:attribute name="logoWidth" type="xs:double" default="2"/>
+          <xs:attribute name="logoHeight" type="xs:double" default="2"/>
+          <!-- Forward-compat: unknown attributes preserved -->
+          <xs:anyAttribute processContents="lax"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ===== SIMPLE TYPES ===== -->
+
+  <xs:simpleType name="FormatVersion">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{1,}(\.[0-9]{1,}){1,2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="AxisEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="X"/>
+      <xs:enumeration value="Y"/>
+      <xs:enumeration value="Z"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

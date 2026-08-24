@@ -95,6 +95,9 @@ public:
     auto GetPathMeasurementLibrary() const -> QString;
     void SetPathMeasurementLibrary(const QString &value) const;
 
+    auto GetPathCartoucheTemplates() const -> QString;
+    void SetPathCartoucheTemplates(const QString &value) const;
+
     auto GetMeasurementFavorites() const -> QStringList;
     void SetMeasurementFavorites(const QStringList &value) const;
 
@@ -236,6 +239,15 @@ public:
 
     auto GetLabelSVGFont() const -> QString;
     void SetLabelSVGFont(const QString &family);
+
+    auto GetLogoPath() const -> QString;
+    void SetLogoPath(const QString &path);
+    auto GetLogoWidth() const -> double;
+    void SetLogoWidth(double value);
+    auto GetLogoHeight() const -> double;
+    void SetLogoHeight(double value);
+    auto GetDefaultCartoucheTemplate() const -> QString;
+    void SetDefaultCartoucheTemplate(const QString &name);
 
     auto GetSingleStrokeOutlineFont() const -> bool;
     void SetSingleStrokeOutlineFont(bool value);

@@ -99,6 +99,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsSVGFonts, ("paths/svgFonts"
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsFontCorrections, ("paths/fontCorrections"_L1))         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsKnownMeasurements, ("paths/knownMeasurements"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsMeasurementLibrary, ("paths/measurementLibrary"_L1))   // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCartoucheTemplates, ("paths/cartoucheTemplates"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingMeasurementFavorites, ("paths/measurementFavorites"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationOsSeparator, ("configuration/osSeparator"_L1)) // NOLINT
 // NOLINTNEXTLINE
@@ -152,6 +153,10 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDoublePassmark, ("pattern/double
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternDefaultSeamAllowance, ("pattern/defaultSeamAllowance"_L1))
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelFont, ("pattern/labelFont"_L1))       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelSVGFont, ("pattern/labelSVGFont"_L1)) // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCartoucheLogoPath, ("cartouche/logoPath"_L1))       // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCartoucheLogoWidth, ("cartouche/logoWidth"_L1))     // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCartoucheLogoHeight, ("cartouche/logoHeight"_L1))   // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCartoucheDefaultTemplate, ("cartouche/defaultTemplate"_L1)) // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSingleStrokeOutlineFont, ("pattern/singleStrokeOutlineFont"_L1))
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSingleLineFonts, ("pattern/singleLineFonts"_L1)) // NOLINT
@@ -478,6 +483,22 @@ void VCommonSettings::SetPathMeasurementLibrary(const QString &value) const
 {
     QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
     settings.setValue(*settingPathsMeasurementLibrary, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetPathCartoucheTemplates() const -> QString
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingPathsCartoucheTemplates,
+                          QDir::homePath() + QStringLiteral("/Ostara/CartoucheTemplates")).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetPathCartoucheTemplates(const QString &value) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingPathsCartoucheTemplates, value);
     settings.sync();
 }
 
@@ -1205,6 +1226,54 @@ auto VCommonSettings::GetLabelSVGFont() const -> QString
 void VCommonSettings::SetLabelSVGFont(const QString &family)
 {
     setValue(*settingPatternLabelSVGFont, family);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetLogoPath() const -> QString
+{
+    return value(*settingCartoucheLogoPath, QString()).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetLogoPath(const QString &path)
+{
+    setValue(*settingCartoucheLogoPath, path);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetLogoWidth() const -> double
+{
+    return value(*settingCartoucheLogoWidth, 2.0).toDouble();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetLogoWidth(double value)
+{
+    setValue(*settingCartoucheLogoWidth, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetLogoHeight() const -> double
+{
+    return value(*settingCartoucheLogoHeight, 2.0).toDouble();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetLogoHeight(double value)
+{
+    setValue(*settingCartoucheLogoHeight, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetDefaultCartoucheTemplate() const -> QString
+{
+    return value(*settingCartoucheDefaultTemplate, QStringLiteral("Default")).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetDefaultCartoucheTemplate(const QString &name)
+{
+    setValue(*settingCartoucheDefaultTemplate, name);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -216,6 +216,7 @@
 #include "widgets/MeasurementWorkspace/MeasurementWindow.h"
 #include "widgets/MeasurementWorkspace/MeasurementWorkspace.h"
 #include "widgets/ODockTitleBar.h"
+#include "widgets/InfoBlock/OInfoBlockWindow.h"
 #include "WelcomeScreen.h"
 #include "StyleGuideWindow.h"
 #include <QStackedWidget>
@@ -3612,6 +3613,22 @@ void MainWindow::ActionFinalMeasurements_triggered()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ActionInfoBlock_triggered()
+{
+    if (m_infoBlockWindow.isNull())
+    {
+        auto *window = new OInfoBlockWindow(this);
+        m_infoBlockWindow = window;
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->show();
+    }
+    else
+    {
+        m_infoBlockWindow->activateWindow();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ActionShowMainPath_triggered(bool checked)
 {
     VAbstractValApplication::VApp()->ValentinaSettings()->SetPieceShowMainPath(checked);
@@ -4641,6 +4658,7 @@ void MainWindow::CreateActions()
     connect(ui->actionExportFinalMeasurementsToCSV, &QAction::triggered, this, &MainWindow::ExportFMeasurementsToCSV);
     connect(ui->actionTable, &QAction::triggered, this, &MainWindow::ActionTable_triggered);
     connect(ui->actionFinalMeasurements, &QAction::triggered, this, &MainWindow::ActionFinalMeasurements_triggered);
+    connect(ui->actionInfoBlock, &QAction::triggered, this, &MainWindow::ActionInfoBlock_triggered);
 
     connect(ui->actionAbout_Qt, &QAction::triggered, this, [this]() { QMessageBox::aboutQt(this, tr("About Qt")); });
 
