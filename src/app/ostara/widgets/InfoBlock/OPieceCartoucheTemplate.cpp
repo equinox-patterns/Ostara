@@ -168,8 +168,7 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
                     sectionEl.setAttribute(field.key, QString::number(value.toInt()));
                     break;
                 case OPieceCartoucheOptionKind::FontSize:
-                case OPieceCartoucheOptionKind::LogoWidth:
-                case OPieceCartoucheOptionKind::LogoHeight:
+                case OPieceCartoucheOptionKind::LogoSize:
                     sectionEl.setAttribute(field.key, QString::number(value.toDouble()));
                     break;
                 case OPieceCartoucheOptionKind::FontFamily:
@@ -224,8 +223,7 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                         section.options.insert(field.key, attr.toInt());
                         break;
                     case OPieceCartoucheOptionKind::FontSize:
-                    case OPieceCartoucheOptionKind::LogoWidth:
-                    case OPieceCartoucheOptionKind::LogoHeight:
+                    case OPieceCartoucheOptionKind::LogoSize:
                         section.options.insert(field.key, attr.toDouble());
                         break;
                     case OPieceCartoucheOptionKind::Axis:

@@ -39,8 +39,7 @@
           <xs:attribute name="measureName" type="xs:string"/>
           <xs:attribute name="separator" type="xs:string" default=""/>
           <xs:attribute name="logo" type="xs:string"/>
-          <xs:attribute name="logoWidth" type="xs:double" default="2"/>
-          <xs:attribute name="logoHeight" type="xs:double" default="2"/>
+          <xs:attribute name="logoSize" type="xs:double" default="2"/>
           <!-- Forward-compat: unknown attributes preserved -->
           <xs:anyAttribute processContents="lax"/>
         </xs:complexType>

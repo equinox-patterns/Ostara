@@ -48,9 +48,8 @@ enum class OPieceCartoucheOptionKind
     Axis,         ///< QString — size-axis name from the loaded table
     MeasureName,  ///< QString — measurement full name from the loaded table
     Separator,    ///< QString — separator between name and value ("", ":", "-", "/", "·")
-    Logo,         ///< QString — reference logo identifier
-    LogoWidth,    ///< double — logo width in cm
-    LogoHeight    ///< double — logo height in cm
+    Logo,         ///< QString — logo file name from the logo library
+    LogoSize      ///< double — logo size in cm
 };
 
 /**

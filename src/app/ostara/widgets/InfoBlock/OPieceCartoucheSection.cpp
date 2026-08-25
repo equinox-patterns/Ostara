@@ -100,9 +100,7 @@ auto OPieceCartoucheSection::DefaultValue(const QString &key) const -> QVariant
                 return QString();
             case OPieceCartoucheOptionKind::Logo:
                 return QString();
-            case OPieceCartoucheOptionKind::LogoWidth:
-                return kDefaultLogoSize;
-            case OPieceCartoucheOptionKind::LogoHeight:
+            case OPieceCartoucheOptionKind::LogoSize:
                 return kDefaultLogoSize;
         }
         break;

@@ -10,6 +10,7 @@
  **  program, whose allow create and modeling patterns of clothing.
  **  Copyright (C) 2015 Valentina project
  **  <https://gitlab.com/smart-pattern/valentina> All Rights Reserved.
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
  **
  **  Valentina is free software: you can redistribute it and/or modify
  **  it under the terms of the GNU General Public License as published by
@@ -100,6 +101,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsFontCorrections, ("paths/fo
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsKnownMeasurements, ("paths/knownMeasurements"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsMeasurementLibrary, ("paths/measurementLibrary"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCartoucheTemplates, ("paths/cartoucheTemplates"_L1))   // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsLogos, ("paths/logos"_L1))                              // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingMeasurementFavorites, ("paths/measurementFavorites"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationOsSeparator, ("configuration/osSeparator"_L1)) // NOLINT
 // NOLINTNEXTLINE
@@ -153,9 +155,6 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDoublePassmark, ("pattern/double
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternDefaultSeamAllowance, ("pattern/defaultSeamAllowance"_L1))
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelFont, ("pattern/labelFont"_L1))       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelSVGFont, ("pattern/labelSVGFont"_L1)) // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCartoucheLogoPath, ("cartouche/logoPath"_L1))       // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCartoucheLogoWidth, ("cartouche/logoWidth"_L1))     // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCartoucheLogoHeight, ("cartouche/logoHeight"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCartoucheDefaultTemplate, ("cartouche/defaultTemplate"_L1)) // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSingleStrokeOutlineFont, ("pattern/singleStrokeOutlineFont"_L1))
@@ -499,6 +498,21 @@ void VCommonSettings::SetPathCartoucheTemplates(const QString &value) const
 {
     QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
     settings.setValue(*settingPathsCartoucheTemplates, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetPathLogos() const -> QString
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingPathsLogos, QDir::homePath() + QStringLiteral("/Ostara/Logos")).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetPathLogos(const QString &value) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingPathsLogos, value);
     settings.sync();
 }
 
@@ -1228,41 +1242,6 @@ void VCommonSettings::SetLabelSVGFont(const QString &family)
     setValue(*settingPatternLabelSVGFont, family);
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetLogoPath() const -> QString
-{
-    return value(*settingCartoucheLogoPath, QString()).toString();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetLogoPath(const QString &path)
-{
-    setValue(*settingCartoucheLogoPath, path);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetLogoWidth() const -> double
-{
-    return value(*settingCartoucheLogoWidth, 2.0).toDouble();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetLogoWidth(double value)
-{
-    setValue(*settingCartoucheLogoWidth, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetLogoHeight() const -> double
-{
-    return value(*settingCartoucheLogoHeight, 2.0).toDouble();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetLogoHeight(double value)
-{
-    setValue(*settingCartoucheLogoHeight, value);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetDefaultCartoucheTemplate() const -> QString

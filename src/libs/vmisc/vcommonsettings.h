@@ -10,6 +10,7 @@
  **  program, whose allow create and modeling patterns of clothing.
  **  Copyright (C) 2015 Valentina project
  **  <https://gitlab.com/smart-pattern/valentina> All Rights Reserved.
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
  **
  **  Valentina is free software: you can redistribute it and/or modify
  **  it under the terms of the GNU General Public License as published by
@@ -97,6 +98,9 @@ public:
 
     auto GetPathCartoucheTemplates() const -> QString;
     void SetPathCartoucheTemplates(const QString &value) const;
+
+    auto GetPathLogos() const -> QString;
+    void SetPathLogos(const QString &value) const;
 
     auto GetMeasurementFavorites() const -> QStringList;
     void SetMeasurementFavorites(const QStringList &value) const;
@@ -240,12 +244,6 @@ public:
     auto GetLabelSVGFont() const -> QString;
     void SetLabelSVGFont(const QString &family);
 
-    auto GetLogoPath() const -> QString;
-    void SetLogoPath(const QString &path);
-    auto GetLogoWidth() const -> double;
-    void SetLogoWidth(double value);
-    auto GetLogoHeight() const -> double;
-    void SetLogoHeight(double value);
     auto GetDefaultCartoucheTemplate() const -> QString;
     void SetDefaultCartoucheTemplate(const QString &name);
 

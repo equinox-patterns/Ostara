@@ -27,6 +27,7 @@
 #ifndef OINFOBLOCKEDITOR_H
 #define OINFOBLOCKEDITOR_H
 
+#include "OPieceCartoucheStorage.h"
 #include "OPieceCartoucheTable.h"
 #include "OPieceCartoucheTemplate.h"
 
@@ -34,10 +35,14 @@
 
 class QLineEdit;
 class QListWidget;
+class QPlainTextEdit;
 class QPushButton;
 class QStackedWidget;
+class QTreeWidget;
+class QTreeWidgetItem;
 class OInfoBlockPreview;
 class OInfoBlockSectionEditor;
+class OLogoPreview;
 
 /**
  * @brief Information block editor — the template editing widget.
@@ -68,11 +73,20 @@ private:
     void SetupUI();
     void SetupEditorPage();
     void SetupTemplatesPage();
+    void SetupLogosPage();
     void NewTemplate();
     void ShowTemplatesList();
+    void ShowLogosPage();
     void LoadFile(const QString &filePath);
     void OnAddSection(const QString &typeId);
+    void OnAddLogo();
+    void OnRemoveLogo();
+    void OnLogoSelected(QTreeWidgetItem *current);
+    void OnLogoNameEdited(const QString &text);
+    void OnLogoNotesChanged();
+    void PersistLogos();
     void RefreshTemplateList();
+    void RefreshLogosList();
     void RefreshSectionList();
     void SelectSection(int index);
     void RefreshPreview();
@@ -96,6 +110,14 @@ private:
 
     // Templates page
     QListWidget *m_templatesList{nullptr};
+
+    // Logos page
+    QTreeWidget *m_logosTree{nullptr};
+    QLineEdit *m_logoNameEdit{nullptr};
+    QPlainTextEdit *m_logoNotesEdit{nullptr};
+    OLogoPreview *m_logoPreview{nullptr};
+    QList<OPieceCartoucheStorage::LogoEntry> m_logoEntries;
+    bool m_updatingLogos{false};
 };
 
 #endif // OINFOBLOCKEDITOR_H

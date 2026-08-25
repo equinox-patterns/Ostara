@@ -27,14 +27,12 @@
 #include "OInfoBlockSectionEditor.h"
 
 #include "OPieceCartoucheCatalogue.h"
+#include "OPieceCartoucheStorage.h"
 #include "OPieceCartoucheTable.h"
-
-#include "vabstractapplication.h"
 
 #include <QButtonGroup>
 #include <QComboBox>
 #include <QDoubleSpinBox>
-#include <QFileInfo>
 #include <QFontComboBox>
 #include <QFormLayout>
 #include <QHBoxLayout>
@@ -265,55 +263,35 @@ void OInfoBlockSectionEditor::Rebuild()
             {
                 auto *combo = new QComboBox(content);
                 const QString stored = section.options.value(field.key).toString();
-                const QString logoPath = VAbstractApplication::VApp()->Settings()->GetLogoPath();
-
-                QStringList candidates;
-                if (!logoPath.isEmpty())
+                const QList<OPieceCartoucheStorage::LogoEntry> logos = OPieceCartoucheStorage::LoadLogos();
+                if (logos.isEmpty())
                 {
-                    candidates << logoPath;
-                }
-                if (!stored.isEmpty() && !candidates.contains(stored))
-                {
-                    candidates << stored;
-                }
-
-                if (candidates.isEmpty())
-                {
-                    combo->addItem(tr("No logo configured"));
+                    combo->setEnabled(false);
+                    combo->addItem(tr("No logos yet — add them in the Logo page"));
                 }
                 else
                 {
-                    for (const QString &candidate : candidates)
+                    for (const OPieceCartoucheStorage::LogoEntry &entry : logos)
                     {
-                        combo->addItem(QFileInfo(candidate).completeBaseName(), candidate);
+                        combo->addItem(entry.name.isEmpty() ? entry.fileName : entry.name, entry.fileName);
                     }
-                    const int index = static_cast<int>(candidates.indexOf(stored));
-                    combo->setCurrentIndex(index < 0 ? 0 : index);
+                    const int index = combo->findData(stored);
+                    combo->setCurrentIndex(index < 0 ? -1 : index);
                 }
-
                 connect(combo, &QComboBox::currentIndexChanged, this, [this, field, combo](int) {
                     m_template->SetSectionOption(m_index, field.key, combo->currentData().toString());
                     emit OptionsChanged();
                 });
-
-                // Keep the stored option in sync with the visible selection even
-                // when the combo has a single item (no index change would fire).
-                m_template->SetSectionOption(m_index, field.key, combo->currentData().toString());
-
                 form->addRow(field.label, combo);
                 break;
             }
-            case OPieceCartoucheOptionKind::LogoWidth:
-            case OPieceCartoucheOptionKind::LogoHeight:
+            case OPieceCartoucheOptionKind::LogoSize:
             {
                 auto *spin = new QDoubleSpinBox(content);
                 spin->setRange(0.1, 200.0);
                 spin->setDecimals(2);
                 spin->setSuffix(QStringLiteral(" cm"));
-                const double defaultSize = field.kind == OPieceCartoucheOptionKind::LogoWidth
-                                               ? VAbstractApplication::VApp()->Settings()->GetLogoWidth()
-                                               : VAbstractApplication::VApp()->Settings()->GetLogoHeight();
-                spin->setValue(section.options.value(field.key, defaultSize).toDouble());
+                spin->setValue(section.options.value(field.key, 2.0).toDouble());
                 connect(spin, &QDoubleSpinBox::valueChanged, this, [this, field](double v) {
                     m_template->SetSectionOption(m_index, field.key, v);
                     emit OptionsChanged();

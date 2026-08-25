@@ -27,11 +27,15 @@
 #include "OInfoBlockPreview.h"
 
 #include "OPieceCartoucheCatalogue.h"
+#include "OPieceCartoucheStorage.h"
 #include "OPieceCartoucheTable.h"
+
+#include "def.h"
 
 #include <QFontMetricsF>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QSvgRenderer>
 
 namespace
 {
@@ -133,6 +137,38 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
             const QString value = OPieceCartoucheTable::FormatValue(m_table->MeasurementValue(name))
                                   + QLatin1Char(' ') + m_table->UnitsStr();
             line = ComposeLine(storedFull, value, separator);
+        }
+        else if (type.Id() == QStringLiteral("logo"))
+        {
+            const QString stored = options.value(QStringLiteral("logo")).toString();
+            if (stored.isEmpty())
+            {
+                continue;  // dead data: no logo chosen
+            }
+            const QString fullPath =
+                OPieceCartoucheStorage::LogosDirectory() + QLatin1Char('/') + stored;
+            QSvgRenderer renderer(fullPath);
+            if (!renderer.isValid())
+            {
+                continue;  // dead data: missing or invalid SVG
+            }
+            const double sizeCm = options.value(QStringLiteral("logoSize"), 2.0).toDouble();
+            const double targetH = qMax(8.0, ToPixel(sizeCm, Unit::Cm));
+            const QSize base = renderer.defaultSize();
+            double drawW = targetH;
+            const double drawH = targetH;
+            if (base.isValid() && base.width() > 0 && base.height() > 0)
+            {
+                drawW = targetH * (static_cast<double>(base.width()) / base.height());
+            }
+            const QRectF logoRect(margin + (width() - 2.0 * margin - drawW) / 2.0, y, drawW, drawH);
+            renderer.render(&painter, logoRect);
+            y += drawH + 6.0;
+            if (y > height())
+            {
+                break;
+            }
+            continue;
         }
 
         QFont font = baseFont;

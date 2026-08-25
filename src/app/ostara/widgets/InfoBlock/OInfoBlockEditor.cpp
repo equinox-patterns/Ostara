@@ -28,6 +28,7 @@
 
 #include "OInfoBlockPreview.h"
 #include "OInfoBlockSectionEditor.h"
+#include "OLogoPreview.h"
 #include "OPieceCartoucheCatalogue.h"
 #include "OPieceCartoucheStorage.h"
 
@@ -35,14 +36,20 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QFormLayout>
+#include <QGroupBox>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPlainTextEdit>
 #include <QPushButton>
 #include <QSplitter>
 #include <QStackedWidget>
+#include <QStringList>
+#include <QTreeWidget>
 #include <QVBoxLayout>
 
 OInfoBlockEditor::OInfoBlockEditor(QWidget *parent) : QWidget(parent)
@@ -62,9 +69,10 @@ void OInfoBlockEditor::SetupUI()
     m_menuList->setFixedWidth(170);
     m_menuList->addItem(tr("Existing templates"));
     m_menuList->addItem(tr("Create new"));
+    m_menuList->addItem(tr("Logo"));
     m_menuList->addItem(tr("Libraries"));
-    m_menuList->item(2)->setFlags(m_menuList->item(2)->flags() & ~Qt::ItemIsEnabled);
-    m_menuList->item(2)->setToolTip(tr("Coming in a later version."));
+    m_menuList->item(3)->setFlags(m_menuList->item(3)->flags() & ~Qt::ItemIsEnabled);
+    m_menuList->item(3)->setToolTip(tr("Coming in a later version."));
     connect(m_menuList, &QListWidget::itemClicked, this, [this](QListWidgetItem *item) {
         const int row = m_menuList->row(item);
         if (row == 0)
@@ -75,12 +83,17 @@ void OInfoBlockEditor::SetupUI()
         {
             NewTemplate();
         }
+        else if (row == 2)
+        {
+            ShowLogosPage();
+        }
     });
     outer->addWidget(m_menuList);
 
     m_stack = new QStackedWidget();
-    SetupEditorPage();    // index 0
-    SetupTemplatesPage(); // index 1
+    SetupEditorPage();     // index 0
+    SetupTemplatesPage();  // index 1
+    SetupLogosPage();      // index 2
     outer->addWidget(m_stack, 1);
 
     m_menuList->setCurrentRow(1);
@@ -192,6 +205,7 @@ void OInfoBlockEditor::SetupEditorPage()
     splitter->addWidget(m_preview);
     splitter->setStretchFactor(0, 1);
     splitter->setStretchFactor(1, 1);
+    splitter->setSizes({400, 400});  // 50/50 at open — Qt keeps the ratio on window resize
 
     vbox->addWidget(splitter, 1);
 
@@ -217,6 +231,240 @@ void OInfoBlockEditor::SetupTemplatesPage()
     layout->addWidget(m_templatesList, 1);
 
     m_stack->addWidget(templatesPage);
+}
+
+void OInfoBlockEditor::SetupLogosPage()
+{
+    auto *logosPage = new QWidget();
+    auto *vbox = new QVBoxLayout(logosPage);
+    vbox->setContentsMargins(8, 8, 8, 8);
+
+    auto *left = new QWidget();
+    auto *leftLayout = new QVBoxLayout(left);
+    leftLayout->setContentsMargins(0, 0, 0, 0);
+    leftLayout->setSpacing(4);
+
+    auto *listBar = new QHBoxLayout();
+    auto *addBtn = new QPushButton(tr("Add Logo"));
+    connect(addBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnAddLogo);
+    listBar->addWidget(addBtn);
+    auto *removeBtn = new QPushButton(tr("Remove Logo"));
+    connect(removeBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnRemoveLogo);
+    listBar->addWidget(removeBtn);
+    listBar->addStretch();
+    leftLayout->addLayout(listBar);
+
+    m_logosTree = new QTreeWidget();
+    m_logosTree->setColumnCount(3);
+    m_logosTree->setHeaderLabels({tr("Name"), tr("Notes"), tr("Path")});
+    m_logosTree->setRootIsDecorated(false);
+    m_logosTree->setUniformRowHeights(true);
+    connect(m_logosTree, &QTreeWidget::currentItemChanged, this,
+            [this](QTreeWidgetItem *current, QTreeWidgetItem *previous) {
+                Q_UNUSED(previous)
+                OnLogoSelected(current);
+            });
+    leftLayout->addWidget(m_logosTree, 1);
+
+    auto *editGroup = new QGroupBox(tr("Logo"));
+    auto *form = new QFormLayout(editGroup);
+    m_logoNameEdit = new QLineEdit();
+    m_logoNameEdit->setPlaceholderText(tr("Logo name"));
+    connect(m_logoNameEdit, &QLineEdit::textChanged, this, &OInfoBlockEditor::OnLogoNameEdited);
+    form->addRow(tr("Name:"), m_logoNameEdit);
+    m_logoNotesEdit = new QPlainTextEdit();
+    m_logoNotesEdit->setPlaceholderText(tr("Notes"));
+    m_logoNotesEdit->setFixedHeight(70);
+    connect(m_logoNotesEdit, &QPlainTextEdit::textChanged, this, &OInfoBlockEditor::OnLogoNotesChanged);
+    form->addRow(tr("Notes:"), m_logoNotesEdit);
+    leftLayout->addWidget(editGroup);
+
+    m_logoPreview = new OLogoPreview();
+    auto *splitter = new QSplitter(Qt::Horizontal);
+    splitter->addWidget(left);
+    splitter->addWidget(m_logoPreview);
+    splitter->setStretchFactor(0, 1);
+    splitter->setStretchFactor(1, 1);
+    splitter->setSizes({400, 400});  // 50/50 at open — ratio kept on window resize
+    vbox->addWidget(splitter, 1);
+
+    m_stack->addWidget(logosPage);
+}
+
+void OInfoBlockEditor::ShowLogosPage()
+{
+    m_logoEntries = OPieceCartoucheStorage::LoadLogos();
+    RefreshLogosList();
+    m_logosTree->setCurrentItem(nullptr);
+    OnLogoSelected(nullptr);
+    m_stack->setCurrentIndex(2);
+}
+
+void OInfoBlockEditor::RefreshLogosList()
+{
+    m_logosTree->clear();
+    if (m_logoEntries.isEmpty())
+    {
+        auto *item = new QTreeWidgetItem();
+        item->setText(0, tr("No logos yet. Add one."));
+        item->setFlags(Qt::NoItemFlags);
+        m_logosTree->addTopLevelItem(item);
+        return;
+    }
+    for (const OPieceCartoucheStorage::LogoEntry &entry : m_logoEntries)
+    {
+        auto *item = new QTreeWidgetItem();
+        item->setText(0, entry.name.isEmpty() ? QFileInfo(entry.fileName).completeBaseName() : entry.name);
+        item->setText(1, entry.notes);
+        item->setText(2, OPieceCartoucheStorage::LogosDirectory() + QLatin1Char('/') + entry.fileName);
+        item->setData(0, Qt::UserRole, entry.fileName);
+        m_logosTree->addTopLevelItem(item);
+    }
+}
+
+void OInfoBlockEditor::OnLogoSelected(QTreeWidgetItem *current)
+{
+    m_updatingLogos = true;
+    if (current == nullptr)
+    {
+        m_logoNameEdit->clear();
+        m_logoNotesEdit->clear();
+        m_logoPreview->SetSvgFile(QString());
+    }
+    else
+    {
+        const QString fileName = current->data(0, Qt::UserRole).toString();
+        for (const OPieceCartoucheStorage::LogoEntry &entry : m_logoEntries)
+        {
+            if (entry.fileName == fileName)
+            {
+                m_logoNameEdit->setText(entry.name);
+                m_logoNotesEdit->setPlainText(entry.notes);
+                break;
+            }
+        }
+        m_logoPreview->SetSvgFile(OPieceCartoucheStorage::LogosDirectory() + QLatin1Char('/') + fileName);
+    }
+    m_updatingLogos = false;
+}
+
+void OInfoBlockEditor::OnLogoNameEdited(const QString &text)
+{
+    if (m_updatingLogos)
+    {
+        return;
+    }
+    QTreeWidgetItem *item = m_logosTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString fileName = item->data(0, Qt::UserRole).toString();
+    for (OPieceCartoucheStorage::LogoEntry &entry : m_logoEntries)
+    {
+        if (entry.fileName == fileName)
+        {
+            entry.name = text;
+            item->setText(0, text.isEmpty() ? QFileInfo(fileName).completeBaseName() : text);
+            break;
+        }
+    }
+    PersistLogos();
+}
+
+void OInfoBlockEditor::OnLogoNotesChanged()
+{
+    if (m_updatingLogos)
+    {
+        return;
+    }
+    QTreeWidgetItem *item = m_logosTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString fileName = item->data(0, Qt::UserRole).toString();
+    const QString notes = m_logoNotesEdit->toPlainText();
+    for (OPieceCartoucheStorage::LogoEntry &entry : m_logoEntries)
+    {
+        if (entry.fileName == fileName)
+        {
+            entry.notes = notes;
+            item->setText(1, notes);
+            break;
+        }
+    }
+    PersistLogos();
+}
+
+void OInfoBlockEditor::PersistLogos()
+{
+    QString err;
+    if (!OPieceCartoucheStorage::SaveLogos(m_logoEntries, &err))
+    {
+        QMessageBox::critical(this, tr("Logo"), err);
+    }
+}
+
+void OInfoBlockEditor::OnAddLogo()
+{
+    const QString src = QFileDialog::getOpenFileName(this, tr("Add Logo"), QDir::homePath(),
+                                                     tr("SVG files (*.svg)"));
+    if (src.isEmpty())
+    {
+        return;
+    }
+
+    QString err;
+    if (!OPieceCartoucheStorage::AddLogo(src, &err))
+    {
+        QMessageBox::critical(this, tr("Logo"), err);
+        return;
+    }
+
+    const QString newFile = QFileInfo(src).fileName();
+    ShowLogosPage();
+    // Select the freshly added logo.
+    for (int i = 0; i < m_logosTree->topLevelItemCount(); ++i)
+    {
+        QTreeWidgetItem *item = m_logosTree->topLevelItem(i);
+        if (item->data(0, Qt::UserRole).toString() == newFile)
+        {
+            m_logosTree->setCurrentItem(item);
+            break;
+        }
+    }
+    emit StatusMessage(tr("Logo added"));
+}
+
+void OInfoBlockEditor::OnRemoveLogo()
+{
+    QTreeWidgetItem *item = m_logosTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString fileName = item->data(0, Qt::UserRole).toString();
+    if (fileName.isEmpty())
+    {
+        return;  // the empty-state hint item
+    }
+
+    const auto answer = QMessageBox::question(
+        this, tr("Remove Logo"), tr("Remove the logo \"%1\" from the library?").arg(item->text(0)));
+    if (answer != QMessageBox::Yes)
+    {
+        return;
+    }
+
+    QString err;
+    if (!OPieceCartoucheStorage::RemoveLogo(fileName, &err))
+    {
+        QMessageBox::critical(this, tr("Logo"), err);
+        return;
+    }
+    ShowLogosPage();
+    emit StatusMessage(tr("Logo removed"));
 }
 
 void OInfoBlockEditor::NewTemplate()

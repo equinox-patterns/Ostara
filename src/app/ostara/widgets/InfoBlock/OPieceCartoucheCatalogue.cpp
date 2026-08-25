@@ -53,10 +53,8 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
     const OPieceCartoucheOptionField kSeparator{QStringLiteral("separator"),
                                                 OPieceCartoucheOptionKind::Separator, T("Separator")};
     const OPieceCartoucheOptionField kLogo{QStringLiteral("logo"), OPieceCartoucheOptionKind::Logo, T("Logo")};
-    const OPieceCartoucheOptionField kLogoWidth{QStringLiteral("logoWidth"),
-                                                OPieceCartoucheOptionKind::LogoWidth, T("Logo width (cm)")};
-    const OPieceCartoucheOptionField kLogoHeight{QStringLiteral("logoHeight"),
-                                                 OPieceCartoucheOptionKind::LogoHeight, T("Logo height (cm)")};
+    const OPieceCartoucheOptionField kLogoSize{QStringLiteral("logoSize"),
+                                               OPieceCartoucheOptionKind::LogoSize, T("Logo size (cm)")};
 
     const QList<OPieceCartoucheOptionField> textFields = {kFontFamily, kFontWeight, kFontSize};
 
@@ -84,8 +82,8 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
                                  "calculated value at the reference size and its unit."),
                                {kMeasureName, kSeparator, kFontFamily, kFontWeight, kFontSize}),
         OPieceCartoucheSection(QStringLiteral("logo"), T("Logo"),
-                               T("The reference logo (configured in the settings)."),
-                               {kLogo, kLogoWidth, kLogoHeight, kFontFamily, kFontWeight, kFontSize}),
+                               T("A logo from your library (add your SVG logos in the Logo page)."),
+                               {kLogo, kLogoSize}),
         OPieceCartoucheSection(QStringLiteral("collection"), T("Collection"),
                                T("The collection name."), textFields),
         OPieceCartoucheSection(QStringLiteral("fabricInfo"), T("Fabric info"),
