@@ -84,6 +84,10 @@ auto OPieceCartoucheSection::DefaultValue(const QString &key) const -> QVariant
         {
             continue;
         }
+        if (field.defaultValue.isValid())
+        {
+            return field.defaultValue;
+        }
         switch (field.kind)
         {
             case OPieceCartoucheOptionKind::FontFamily:
@@ -102,6 +106,8 @@ auto OPieceCartoucheSection::DefaultValue(const QString &key) const -> QVariant
                 return QString();
             case OPieceCartoucheOptionKind::LogoSize:
                 return kDefaultLogoSize;
+            case OPieceCartoucheOptionKind::Cut:
+                return QVariant();  // handled in DefaultOptions (composite sub-keys)
         }
         break;
     }
@@ -113,6 +119,20 @@ auto OPieceCartoucheSection::DefaultOptions() const -> QHash<QString, QVariant>
     QHash<QString, QVariant> options;
     for (const OPieceCartoucheOptionField &field : m_fields)
     {
+        if (field.kind == OPieceCartoucheOptionKind::Cut)
+        {
+            // The Cut section expands into its six per-fabric sub-options.
+            // Fabric is pre-filled (1 + on fold) so a newly added Cut section
+            // shows an immediate preview — template-level example only; pieces
+            // start empty (spec §24).
+            options.insert(OPieceCartoucheCut::kFabricQty, 1);
+            options.insert(OPieceCartoucheCut::kFabricOnFold, true);
+            options.insert(OPieceCartoucheCut::kInterfacingQty, 0);
+            options.insert(OPieceCartoucheCut::kInterfacingOnFold, false);
+            options.insert(OPieceCartoucheCut::kLiningQty, 0);
+            options.insert(OPieceCartoucheCut::kLiningOnFold, false);
+            continue;
+        }
         options.insert(field.key, DefaultValue(field.key));
     }
     return options;

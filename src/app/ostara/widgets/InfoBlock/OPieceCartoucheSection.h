@@ -30,6 +30,7 @@
 #include <QHash>
 #include <QList>
 #include <QString>
+#include <QStringList>
 #include <QVariant>
 
 /**
@@ -49,8 +50,28 @@ enum class OPieceCartoucheOptionKind
     MeasureName,  ///< QString — measurement full name from the loaded table
     Separator,    ///< QString — separator between name and value ("", ":", "-", "/", "·")
     Logo,         ///< QString — logo file name from the logo library
-    LogoSize      ///< double — logo size in cm
+    LogoSize,     ///< double — logo size in cm
+    Cut           ///< composite — 3 tabs (fabric/interfacing/lining), qty + on fold
 };
+
+/**
+ * @brief Option keys of the Cut section — one section covers the three fabrics
+ * (fabric / interfacing / lining); each filled tab becomes one label line.
+ */
+namespace OPieceCartoucheCut
+{
+inline const QString kFabricQty = QStringLiteral("fabricQty");
+inline const QString kFabricOnFold = QStringLiteral("fabricOnFold");
+inline const QString kInterfacingQty = QStringLiteral("interfacingQty");
+inline const QString kInterfacingOnFold = QStringLiteral("interfacingOnFold");
+inline const QString kLiningQty = QStringLiteral("liningQty");
+inline const QString kLiningOnFold = QStringLiteral("liningOnFold");
+
+inline const QStringList kQtyKeys = {kFabricQty, kInterfacingQty, kLiningQty};
+inline const QStringList kFoldKeys = {kFabricOnFold, kInterfacingOnFold, kLiningOnFold};
+inline const QStringList kAllKeys = {kFabricQty, kFabricOnFold, kInterfacingQty, kInterfacingOnFold,
+                                     kLiningQty, kLiningOnFold};
+}  // namespace OPieceCartoucheCut
 
 /**
  * @brief Declarative description of one option of a section type.
@@ -60,6 +81,8 @@ struct OPieceCartoucheOptionField
     QString key;
     OPieceCartoucheOptionKind kind{OPieceCartoucheOptionKind::FontFamily};
     QString label;
+    QStringList values{};     ///< candidate values for the editor (e.g. separators); empty = kind default
+    QVariant defaultValue{};  ///< per-field default value; invalid = kind default
 };
 
 /**

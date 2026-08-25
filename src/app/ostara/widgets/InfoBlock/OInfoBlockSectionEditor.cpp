@@ -33,6 +33,7 @@
 #include "vmisc/FactoryWidgets.h"
 
 #include <QButtonGroup>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QFontComboBox>
@@ -42,6 +43,7 @@
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QStringList>
+#include <QTabWidget>
 #include <QVBoxLayout>
 
 OInfoBlockSectionEditor::OInfoBlockSectionEditor(QWidget *parent) : QWidget(parent)
@@ -230,21 +232,36 @@ void OInfoBlockSectionEditor::Rebuild()
             {
                 struct SeparatorEntry
                 {
-                    const char *label;
-                    const char *value;
+                    QString label;
+                    QString value;
                 };
-                static const SeparatorEntry kSeparators[] = {
-                    {"None", ""}, {":", ":"}, {"-", "-"}, {"/", "/"}, {"·", "·"},
-                };
+                QList<SeparatorEntry> entries;
+                if (field.values.isEmpty())
+                {
+                    // Default set: no separator, then the common punctuation.
+                    entries = {{tr("None"), QString()},
+                               {QStringLiteral(":"), QStringLiteral(":")},
+                               {QStringLiteral("-"), QStringLiteral("-")},
+                               {QStringLiteral("/"), QStringLiteral("/")},
+                               {QStringLiteral("·"), QStringLiteral("·")}};
+                }
+                else
+                {
+                    for (const QString &value : field.values)
+                    {
+                        entries.append({value, value});
+                    }
+                }
+
                 auto *row = new QWidget(content);
                 auto *rowLayout = new QHBoxLayout(row);
                 rowLayout->setContentsMargins(0, 0, 0, 0);
                 rowLayout->setSpacing(8);
                 auto *group = new QButtonGroup(row);
                 const QString current = section.options.value(field.key).toString();
-                for (const SeparatorEntry &entry : kSeparators)
+                for (const SeparatorEntry &entry : entries)
                 {
-                    auto *radio = new QRadioButton(tr(entry.label), row);
+                    auto *radio = new QRadioButton(entry.label, row);
                     radio->setObjectName(QStringLiteral("separatorRadio"));
                     radio->setChecked(entry.value == current);
                     group->addButton(radio);
@@ -252,7 +269,7 @@ void OInfoBlockSectionEditor::Rebuild()
                     connect(radio, &QRadioButton::toggled, this, [this, field, entry](bool on) {
                         if (on)
                         {
-                            m_template->SetSectionOption(m_index, field.key, QString::fromUtf8(entry.value));
+                            m_template->SetSectionOption(m_index, field.key, entry.value);
                             emit OptionsChanged();
                         }
                     });
@@ -299,6 +316,53 @@ void OInfoBlockSectionEditor::Rebuild()
                     emit OptionsChanged();
                 });
                 form->addRow(field.label, spin);
+                break;
+            }
+            case OPieceCartoucheOptionKind::Cut:
+            {
+                struct CutTab
+                {
+                    const char *name;
+                    QString qtyKey;
+                    QString foldKey;
+                };
+                static const CutTab kCutTabs[] = {
+                    {"Fabric", OPieceCartoucheCut::kFabricQty, OPieceCartoucheCut::kFabricOnFold},
+                    {"Interfacing", OPieceCartoucheCut::kInterfacingQty, OPieceCartoucheCut::kInterfacingOnFold},
+                    {"Lining", OPieceCartoucheCut::kLiningQty, OPieceCartoucheCut::kLiningOnFold},
+                };
+
+                auto *tabs = new QTabWidget(content);
+                for (const CutTab &tab : kCutTabs)
+                {
+                    auto *page = new QWidget(tabs);
+                    auto *pageLayout = new QHBoxLayout(page);
+                    pageLayout->setContentsMargins(6, 6, 6, 6);
+
+                    auto *label = new QLabel(tr("Cut"), page);
+                    pageLayout->addWidget(label);
+
+                    auto *spin = new QSpinBox(page);
+                    spin->setRange(0, 99);
+                    spin->setValue(section.options.value(tab.qtyKey, 0).toInt());
+                    connect(spin, &QSpinBox::valueChanged, this, [this, tab](int v) {
+                        m_template->SetSectionOption(m_index, tab.qtyKey, v);
+                        emit OptionsChanged();
+                    });
+                    pageLayout->addWidget(spin);
+
+                    auto *fold = new QCheckBox(tr("On fold"), page);
+                    fold->setChecked(section.options.value(tab.foldKey, false).toBool());
+                    connect(fold, &QCheckBox::toggled, this, [this, tab](bool on) {
+                        m_template->SetSectionOption(m_index, tab.foldKey, on);
+                        emit OptionsChanged();
+                    });
+                    pageLayout->addWidget(fold);
+
+                    pageLayout->addStretch();
+                    tabs->addTab(page, tr(tab.name));
+                }
+                form->addRow(field.label, tabs);
                 break;
             }
         }

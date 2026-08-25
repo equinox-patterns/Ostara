@@ -103,6 +103,25 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
 
         const auto &options = m_template->SectionAt(i).options;
 
+        // Section font — computed once, shared by every line the section draws
+        // (a cut section renders one line per filled fabric tab).
+        QFont font = baseFont;
+        const QString family = options.value(QStringLiteral("fontFamily")).toString();
+        const int weight = options.value(QStringLiteral("fontWeight"), 0).toInt();
+        const double size = options.value(QStringLiteral("fontSize"), 0.0).toDouble();
+        if (!family.isEmpty())
+        {
+            font.setFamily(family);
+        }
+        if (weight > 0)
+        {
+            font.setWeight(QFont::Weight(weight));
+        }
+        if (size > 0.0)
+        {
+            font.setPixelSize(qRound(size));
+        }
+
         QString line = type.DisplayName();
         const QString separator = options.value(QStringLiteral("separator")).toString();
         if (type.Id() == QStringLiteral("axis"))
@@ -138,6 +157,59 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                                   + QLatin1Char(' ') + m_table->UnitsStr();
             line = ComposeLine(storedFull, value, separator);
         }
+        else if (type.Id() == QStringLiteral("pieceNumber"))
+        {
+            // Sample "01 of 10" — the total is an example, computed automatically
+            // from the number of active pieces at render time (spec §22).
+            line = ComposeLine(QStringLiteral("01"), QStringLiteral("10"), separator);
+        }
+        else if (type.Id() == QStringLiteral("cut"))
+        {
+            // One line per filled fabric tab; an empty tab is skipped (§4.3).
+            struct CutTab
+            {
+                QString qtyKey;
+                QString foldKey;
+                const char *display;
+            };
+            static const CutTab kCutTabs[] = {
+                {OPieceCartoucheCut::kFabricQty, OPieceCartoucheCut::kFabricOnFold, "fabric"},
+                {OPieceCartoucheCut::kInterfacingQty, OPieceCartoucheCut::kInterfacingOnFold, "interfacing"},
+                {OPieceCartoucheCut::kLiningQty, OPieceCartoucheCut::kLiningOnFold, "lining"},
+            };
+
+            painter.setFont(font);
+            painter.setPen(palette().text().color());
+            bool any = false;
+            for (const CutTab &tab : kCutTabs)
+            {
+                const int qty = options.value(tab.qtyKey, 0).toInt();
+                if (qty <= 0)
+                {
+                    continue;  // empty tab → no line
+                }
+                any = true;
+                const bool onFold = options.value(tab.foldKey, false).toBool();
+                QString text = QStringLiteral("Cut %1").arg(qty);
+                if (onFold)
+                {
+                    text += QStringLiteral(" on fold");
+                }
+                text += QStringLiteral(" (%1)").arg(QString::fromLatin1(tab.display));
+                const QRectF lineRect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
+                painter.drawText(lineRect, Qt::AlignHCenter | Qt::AlignVCenter, text);
+                y += QFontMetricsF(font).height() + 6.0;
+                if (y > height())
+                {
+                    break;
+                }
+            }
+            if (!any)
+            {
+                continue;  // dead data: no fabric tab filled
+            }
+            continue;
+        }
         else if (type.Id() == QStringLiteral("logo"))
         {
             const QString stored = options.value(QStringLiteral("logo")).toString();
@@ -169,23 +241,6 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                 break;
             }
             continue;
-        }
-
-        QFont font = baseFont;
-        const QString family = options.value(QStringLiteral("fontFamily")).toString();
-        const int weight = options.value(QStringLiteral("fontWeight"), 0).toInt();
-        const double size = options.value(QStringLiteral("fontSize"), 0.0).toDouble();
-        if (!family.isEmpty())
-        {
-            font.setFamily(family);
-        }
-        if (weight > 0)
-        {
-            font.setWeight(QFont::Weight(weight));
-        }
-        if (size > 0.0)
-        {
-            font.setPixelSize(qRound(size));
         }
 
         painter.setFont(font);

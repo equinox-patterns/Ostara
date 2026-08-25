@@ -52,27 +52,38 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
                                                   OPieceCartoucheOptionKind::MeasureName, T("Measurement")};
     const OPieceCartoucheOptionField kSeparator{QStringLiteral("separator"),
                                                 OPieceCartoucheOptionKind::Separator, T("Separator")};
+    // Piece number: "01 of 10", "01 - 10" or "01 / 10" — no "no separator" choice.
+    const OPieceCartoucheOptionField kPieceSeparator{
+        QStringLiteral("separator"), OPieceCartoucheOptionKind::Separator, T("Separator"),
+        {QStringLiteral("of"), QStringLiteral("-"), QStringLiteral("/")}, QStringLiteral("of")};
     const OPieceCartoucheOptionField kLogo{QStringLiteral("logo"), OPieceCartoucheOptionKind::Logo, T("Logo")};
     const OPieceCartoucheOptionField kLogoSize{QStringLiteral("logoSize"),
                                                OPieceCartoucheOptionKind::LogoSize, T("Logo size (cm)")};
+    const OPieceCartoucheOptionField kCut{QStringLiteral("cut"), OPieceCartoucheOptionKind::Cut, T("Cut")};
 
     const QList<OPieceCartoucheOptionField> textFields = {kFontFamily, kFontWeight, kFontSize};
 
     return {
         OPieceCartoucheSection(QStringLiteral("patternName"), T("Pattern name"),
                                T("The name of the pattern (set in the pattern toolbar)."), textFields),
-        OPieceCartoucheSection(QStringLiteral("company"), T("Brand / Company"),
-                               T("The brand or company name stored in the document."), textFields),
         OPieceCartoucheSection(QStringLiteral("client"), T("Client"),
                                T("The client's name, birth date and email from the document."), textFields),
         OPieceCartoucheSection(QStringLiteral("pieceName"), T("Piece name"),
                                T("The name of the piece (from the piece options)."), textFields),
         OPieceCartoucheSection(QStringLiteral("pieceNumber"), T("Piece number"),
-                               T("The piece number, entered in the information block."), textFields),
+                               T("The piece number and its total, e.g. 01 of 10. The total shown here is an "
+                                 "example — it is computed automatically from the number of active pieces."),
+                               {kPieceSeparator, kFontFamily, kFontWeight, kFontSize}),
         OPieceCartoucheSection(QStringLiteral("cut"), T("Cut (Fabric / Interfacing / Lining)"),
-                               T("Cut quantity per fabric — only filled tabs are shown."), textFields),
+                               T("One section covers all three fabrics — no need to add Cut several times. "
+                                 "The values here are only an example so you can see how the section "
+                                 "renders: in the pieces, the cut quantities are entered per piece and are "
+                                 "empty by default."),
+                               {kCut, kFontFamily, kFontWeight, kFontSize}),
         OPieceCartoucheSection(QStringLiteral("freeText"), T("Free text"),
-                               T("Free text entered per piece in the information block."), textFields),
+                               T("Free text entered per piece in the information block. It can span "
+                                 "several lines."),
+                               textFields),
         OPieceCartoucheSection(QStringLiteral("axis"), T("Sizes (Height, Commercial size, Group...)"),
                                T("Requires a multi-size table (.omt). Shows a size-axis value under its user-given "
                                  "name. With a single-size table, this information is simply ignored."),

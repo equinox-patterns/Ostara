@@ -157,6 +157,19 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
         const auto &type = OPieceCartoucheCatalogue::Section(section.typeId);
         for (const OPieceCartoucheOptionField &field : type.Fields())
         {
+            if (field.kind == OPieceCartoucheOptionKind::Cut)
+            {
+                // The Cut section expands into its six per-fabric sub-options.
+                for (const QString &key : OPieceCartoucheCut::kAllKeys)
+                {
+                    const QVariant value = section.options.value(key);
+                    if (value.isValid())
+                    {
+                        sectionEl.setAttribute(key, value.toString());
+                    }
+                }
+                continue;
+            }
             const QVariant value = section.options.value(field.key);
             if (!value.isValid())
             {
@@ -178,6 +191,8 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
                 case OPieceCartoucheOptionKind::Logo:
                     sectionEl.setAttribute(field.key, value.toString());
                     break;
+                case OPieceCartoucheOptionKind::Cut:
+                    break;  // handled above (expands into the six fabric sub-keys)
             }
         }
         sectionsEl.appendChild(sectionEl);
@@ -212,6 +227,28 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
             section.options = type.DefaultOptions();
             for (const OPieceCartoucheOptionField &field : type.Fields())
             {
+                if (field.kind == OPieceCartoucheOptionKind::Cut)
+                {
+                    for (const QString &key : OPieceCartoucheCut::kAllKeys)
+                    {
+                        if (!sectionEl.hasAttribute(key))
+                        {
+                            continue;
+                        }
+                        const QString attr = sectionEl.attribute(key);
+                        if (OPieceCartoucheCut::kQtyKeys.contains(key))
+                        {
+                            section.options.insert(key, attr.toInt());
+                        }
+                        else
+                        {
+                            section.options.insert(key, attr.toInt() != 0
+                                                             || attr.compare(QStringLiteral("true"),
+                                                                             Qt::CaseInsensitive) == 0);
+                        }
+                    }
+                    continue;
+                }
                 if (!sectionEl.hasAttribute(field.key))
                 {
                     continue;
@@ -234,7 +271,10 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                     {
                         static const QStringList kSeparators = {QString(), QStringLiteral(":"), QStringLiteral("-"),
                                                                 QStringLiteral("/"), QStringLiteral("·")};
-                        section.options.insert(field.key, kSeparators.contains(attr) ? attr : QString());
+                        const QStringList allowed = field.values.isEmpty() ? kSeparators : field.values;
+                        const QString fallback =
+                            field.defaultValue.isValid() ? field.defaultValue.toString() : QString();
+                        section.options.insert(field.key, allowed.contains(attr) ? attr : fallback);
                         break;
                     }
                     case OPieceCartoucheOptionKind::FontFamily:
@@ -242,6 +282,8 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                     case OPieceCartoucheOptionKind::Logo:
                         section.options.insert(field.key, attr);
                         break;
+                    case OPieceCartoucheOptionKind::Cut:
+                        break;  // handled above (expands into the six fabric sub-keys)
                 }
             }
         }

@@ -40,6 +40,13 @@
           <xs:attribute name="separator" type="xs:string" default=""/>
           <xs:attribute name="logo" type="xs:string"/>
           <xs:attribute name="logoSize" type="xs:double" default="2"/>
+          <!-- Cut: one per fabric, qty = number of pieces, onFold = folded layout -->
+          <xs:attribute name="fabricQty" type="xs:nonNegativeInteger" default="0"/>
+          <xs:attribute name="fabricOnFold" type="xs:boolean" default="false"/>
+          <xs:attribute name="interfacingQty" type="xs:nonNegativeInteger" default="0"/>
+          <xs:attribute name="interfacingOnFold" type="xs:boolean" default="false"/>
+          <xs:attribute name="liningQty" type="xs:nonNegativeInteger" default="0"/>
+          <xs:attribute name="liningOnFold" type="xs:boolean" default="false"/>
           <!-- Forward-compat: unknown attributes preserved -->
           <xs:anyAttribute processContents="lax"/>
         </xs:complexType>

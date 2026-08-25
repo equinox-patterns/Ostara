@@ -70,9 +70,6 @@ void OInfoBlockEditor::SetupUI()
     m_menuList->addItem(tr("Existing templates"));
     m_menuList->addItem(tr("Create new"));
     m_menuList->addItem(tr("Logo"));
-    m_menuList->addItem(tr("Libraries"));
-    m_menuList->item(3)->setFlags(m_menuList->item(3)->flags() & ~Qt::ItemIsEnabled);
-    m_menuList->item(3)->setToolTip(tr("Coming in a later version."));
     connect(m_menuList, &QListWidget::itemClicked, this, [this](QListWidgetItem *item) {
         const int row = m_menuList->row(item);
         if (row == 0)
