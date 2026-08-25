@@ -32,6 +32,7 @@
 #include <QObject>
 
 class QDockWidget;
+class QLabel;
 class QStackedWidget;
 class ODetailsPieceWidget;
 class VToolSeamAllowance;
@@ -47,6 +48,8 @@ public:
     void ShowEmpty();
     void ShowPieceOptions(VToolSeamAllowance *tool);
     void Clear();
+
+    void RetranslateUI();
 
     auto IsSelectingPassmarkPoints() const -> bool;
     void OnNodeSelectedForPassmark(quint32 nodeId);
@@ -74,6 +77,7 @@ private:
 
     QStackedWidget *m_stack{nullptr};
     ODetailsPieceWidget *m_pieceWidget{nullptr};
+    QLabel *m_emptyLabel{nullptr};
 };
 
 #endif // ODETAILSPROPERTYBROWSER_H

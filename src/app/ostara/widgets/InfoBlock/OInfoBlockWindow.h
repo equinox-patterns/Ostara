@@ -29,6 +29,7 @@
 
 #include <QMainWindow>
 
+class QEvent;
 class OInfoBlockEditor;
 
 /**
@@ -47,6 +48,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
+    void changeEvent(QEvent *event) override;
 
 private:
     OInfoBlockEditor *m_editor{nullptr};

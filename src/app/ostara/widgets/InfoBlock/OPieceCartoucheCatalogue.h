@@ -46,6 +46,9 @@ public:
     /// Lookup by id — returns an invalid (empty) section when unknown.
     static auto Section(const QString &id) -> const OPieceCartoucheSection &;
 
+    /// Drop the cached catalogue so the next access rebuilds it (language change).
+    static void InvalidateCache();
+
 private:
     static auto Build() -> QList<OPieceCartoucheSection>;
 };

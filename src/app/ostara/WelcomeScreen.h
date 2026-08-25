@@ -54,6 +54,7 @@ public:
         QLabel *title{nullptr};
         QPushButton *newBtn{nullptr};
         QPushButton *openBtn{nullptr};
+        QLabel *recentLabel{nullptr};
         QListWidget *recentList{nullptr};
     };
 
@@ -82,6 +83,7 @@ private:
     // Sections
     Section m_patternsSection;
     Section m_measurementsSection;
+    QPushButton *m_featuresBtn{nullptr};
 };
 
 #endif // WELCOMESCREEN_H

@@ -48,6 +48,7 @@ public:
     void SetActions(const QHash<QString, QAction *> &actions);
     void ReloadIcons();
     void RestoreSavedWidth();
+    void RetranslateGroups();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;

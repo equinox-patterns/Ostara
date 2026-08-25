@@ -36,6 +36,7 @@
 
 class QButtonGroup;
 class QCheckBox;
+class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
@@ -57,6 +58,8 @@ public:
     void OnNodeSelected(quint32 nodeId);
     void CancelSelection();
 
+    void RetranslateUI();
+
 signals:
     void ShowStatusTip(const QString &text);
     void HighlightNode(quint32 nodeId, bool highlight);
@@ -74,6 +77,7 @@ private:
         WaitingSecondPoint
     };
 
+    QGroupBox *m_foldGroup{nullptr};
     QPushButton *m_defineBtn{nullptr};
     QPushButton *m_deactivateBtn{nullptr};
     QLabel *m_statusLabel{nullptr};
@@ -81,6 +85,7 @@ private:
     QCheckBox *m_showMirrorLineCheck{nullptr};
     QButtonGroup *m_typeGroup{nullptr};
     QLineEdit *m_textEdit{nullptr};
+    bool m_foldValid{false};
 
     std::function<void(std::function<void(VPiece &)>)> m_modifyPending;
     VPiecePath m_path{};

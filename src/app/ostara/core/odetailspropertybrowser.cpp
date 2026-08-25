@@ -71,9 +71,9 @@ ODetailsPropertyBrowser::ODetailsPropertyBrowser(QDockWidget *parent)
     auto *emptyPage = new QWidget(m_stack);
     auto *emptyLayout = new QVBoxLayout(emptyPage);
     emptyLayout->setContentsMargins(0, 0, 0, 0);
-    auto *emptyLabel = new QLabel(tr("Select a piece"), emptyPage);
-    emptyLabel->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
-    emptyLayout->addWidget(emptyLabel);
+    m_emptyLabel = new QLabel(tr("Select a piece"), emptyPage);
+    m_emptyLabel->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    emptyLayout->addWidget(m_emptyLabel);
     emptyLayout->addStretch();
     m_stack->addWidget(emptyPage);
 
@@ -100,6 +100,13 @@ ODetailsPropertyBrowser::ODetailsPropertyBrowser(QDockWidget *parent)
     scroll->setWidget(scrollContents);
 
     parent->setWidget(scroll);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::RetranslateUI()
+{
+    m_emptyLabel->setText(tr("Select a piece"));
+    m_pieceWidget->RetranslateUI();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

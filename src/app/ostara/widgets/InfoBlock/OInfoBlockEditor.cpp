@@ -97,6 +97,82 @@ void OInfoBlockEditor::SetupUI()
     NewTemplate();
 }
 
+void OInfoBlockEditor::RetranslateUI()
+{
+    // The catalogue caches its translated section names once — drop it so the
+    // rebuild below (menu, section list) resolves in the new language.
+    OPieceCartoucheCatalogue::InvalidateCache();
+
+    // Left menu — 3 fixed entries.
+    if (m_menuList->count() > 0)
+    {
+        m_menuList->item(0)->setText(tr("Existing templates"));
+    }
+    if (m_menuList->count() > 1)
+    {
+        m_menuList->item(1)->setText(tr("Create new"));
+    }
+    if (m_menuList->count() > 2)
+    {
+        m_menuList->item(2)->setText(tr("Logo"));
+    }
+
+    // Editor page — top bar.
+    m_nameEdit->setPlaceholderText(tr("Template name"));
+    m_addBtn->setText(tr("+ Add information"));
+    m_saveBtn->setText(tr("Save"));
+    m_saveAsBtn->setText(tr("Save As…"));
+    m_upBtn->setToolTip(tr("Move up"));
+    m_downBtn->setToolTip(tr("Move down"));
+
+    // "+ Add information" dropdown — the actions were built once from the
+    // catalogue; rebuild them so the labels resolve in the new language.
+    m_addMenu->clear();
+    for (const OPieceCartoucheSection &section : OPieceCartoucheCatalogue::Sections())
+    {
+        QAction *action = m_addMenu->addAction(section.DisplayName());
+        action->setToolTip(section.Description());
+        connect(action, &QAction::triggered, this, [this, id = section.Id()]() { OnAddSection(id); });
+    }
+
+    // Templates page.
+    m_templatesTitle->setText(tr("Existing templates"));
+    if (m_templatesList->count() == 1 && m_templatesList->item(0)->data(Qt::UserRole).toString().isEmpty())
+    {
+        m_templatesList->item(0)->setText(tr("No templates yet. Create one."));
+    }
+
+    // Logos page.
+    m_logoEditGroup->setTitle(tr("Logo"));
+    m_logoNameLabel->setText(tr("Name:"));
+    m_logoNotesLabel->setText(tr("Notes:"));
+    m_logoNameEdit->setPlaceholderText(tr("Logo name"));
+    m_logoNotesEdit->setPlaceholderText(tr("Notes"));
+    m_logosTree->setHeaderLabels({tr("Name"), tr("Notes"), tr("Path")});
+    m_addLogoBtn->setText(tr("Add Logo"));
+    m_removeLogoBtn->setText(tr("Remove Logo"));
+    if (m_logoEntries.isEmpty() && m_logosTree->topLevelItemCount() > 0)
+    {
+        m_logosTree->topLevelItem(0)->setText(0, tr("No logos yet. Add one."));
+    }
+
+    // Section names come from the catalogue — refresh the ordered list. Keep the
+    // current row so the section editor below stays on the same section.
+    const int currentRow = m_sectionList->currentRow();
+    RefreshSectionList();
+    if (currentRow >= 0)
+    {
+        m_sectionList->setCurrentRow(currentRow);  // re-selects → rebuilds the section editor
+    }
+    else
+    {
+        m_sectionEditor->RetranslateUI();  // rebuilds the "Select a section…" hint
+    }
+
+    // The preview is a child widget too — re-render it in the new language.
+    m_preview->RetranslateUI();
+}
+
 void OInfoBlockEditor::SetupEditorPage()
 {
     auto *editorPage = new QWidget();
@@ -115,19 +191,19 @@ void OInfoBlockEditor::SetupEditorPage()
     topBar->addWidget(m_nameEdit, 1);
 
     m_addBtn = new QPushButton(tr("+ Add information"));
-    auto *menu = new QMenu(m_addBtn);
+    m_addMenu = new QMenu(m_addBtn);
     for (const OPieceCartoucheSection &section : OPieceCartoucheCatalogue::Sections())
     {
-        QAction *action = menu->addAction(section.DisplayName());
+        QAction *action = m_addMenu->addAction(section.DisplayName());
         action->setToolTip(section.Description());
         connect(action, &QAction::triggered, this, [this, id = section.Id()]() { OnAddSection(id); });
     }
-    m_addBtn->setMenu(menu);
+    m_addBtn->setMenu(m_addMenu);
 
-    auto *upBtn = new QPushButton();
-    upBtn->setObjectName(QStringLiteral("infoBlockUpBtn"));
-    upBtn->setToolTip(tr("Move up"));
-    connect(upBtn, &QPushButton::clicked, this, [this]() {
+    m_upBtn = new QPushButton();
+    m_upBtn->setObjectName(QStringLiteral("infoBlockUpBtn"));
+    m_upBtn->setToolTip(tr("Move up"));
+    connect(m_upBtn, &QPushButton::clicked, this, [this]() {
         const int row = m_sectionList->currentRow();
         if (row <= 0)
         {
@@ -139,10 +215,10 @@ void OInfoBlockEditor::SetupEditorPage()
         SetModified(true);
     });
 
-    auto *downBtn = new QPushButton();
-    downBtn->setObjectName(QStringLiteral("infoBlockDownBtn"));
-    downBtn->setToolTip(tr("Move down"));
-    connect(downBtn, &QPushButton::clicked, this, [this]() {
+    m_downBtn = new QPushButton();
+    m_downBtn->setObjectName(QStringLiteral("infoBlockDownBtn"));
+    m_downBtn->setToolTip(tr("Move down"));
+    connect(m_downBtn, &QPushButton::clicked, this, [this]() {
         const int row = m_sectionList->currentRow();
         if (row < 0 || row >= m_template.SectionCount() - 1)
         {
@@ -156,13 +232,13 @@ void OInfoBlockEditor::SetupEditorPage()
 
     topBar->addStretch();
 
-    auto *saveBtn = new QPushButton(tr("Save"));
-    connect(saveBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnSave);
-    topBar->addWidget(saveBtn);
+    m_saveBtn = new QPushButton(tr("Save"));
+    connect(m_saveBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnSave);
+    topBar->addWidget(m_saveBtn);
 
-    auto *saveAsBtn = new QPushButton(tr("Save As…"));
-    connect(saveAsBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnSaveAs);
-    topBar->addWidget(saveAsBtn);
+    m_saveAsBtn = new QPushButton(tr("Save As…"));
+    connect(m_saveAsBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnSaveAs);
+    topBar->addWidget(m_saveAsBtn);
 
     vbox->addLayout(topBar);
 
@@ -189,8 +265,8 @@ void OInfoBlockEditor::SetupEditorPage()
     auto *listBar = new QHBoxLayout();
     listBar->setSpacing(4);
     listBar->addWidget(m_addBtn);
-    listBar->addWidget(upBtn);
-    listBar->addWidget(downBtn);
+    listBar->addWidget(m_upBtn);
+    listBar->addWidget(m_downBtn);
     listBar->addStretch();
     leftLayout->addLayout(listBar);
 
@@ -214,12 +290,12 @@ void OInfoBlockEditor::SetupTemplatesPage()
     auto *templatesPage = new QWidget();
     auto *layout = new QVBoxLayout(templatesPage);
 
-    auto *title = new QLabel(tr("Existing templates"), templatesPage);
-    QFont titleFont = title->font();
+    m_templatesTitle = new QLabel(tr("Existing templates"), templatesPage);
+    QFont titleFont = m_templatesTitle->font();
     titleFont.setPointSize(13);
     titleFont.setBold(true);
-    title->setFont(titleFont);
-    layout->addWidget(title);
+    m_templatesTitle->setFont(titleFont);
+    layout->addWidget(m_templatesTitle);
 
     m_templatesList = new QListWidget();
     connect(m_templatesList, &QListWidget::itemDoubleClicked, this, [this](QListWidgetItem *item) {
@@ -242,12 +318,12 @@ void OInfoBlockEditor::SetupLogosPage()
     leftLayout->setSpacing(4);
 
     auto *listBar = new QHBoxLayout();
-    auto *addBtn = new QPushButton(tr("Add Logo"));
-    connect(addBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnAddLogo);
-    listBar->addWidget(addBtn);
-    auto *removeBtn = new QPushButton(tr("Remove Logo"));
-    connect(removeBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnRemoveLogo);
-    listBar->addWidget(removeBtn);
+    m_addLogoBtn = new QPushButton(tr("Add Logo"));
+    connect(m_addLogoBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnAddLogo);
+    listBar->addWidget(m_addLogoBtn);
+    m_removeLogoBtn = new QPushButton(tr("Remove Logo"));
+    connect(m_removeLogoBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnRemoveLogo);
+    listBar->addWidget(m_removeLogoBtn);
     listBar->addStretch();
     leftLayout->addLayout(listBar);
 
@@ -263,18 +339,20 @@ void OInfoBlockEditor::SetupLogosPage()
             });
     leftLayout->addWidget(m_logosTree, 1);
 
-    auto *editGroup = new QGroupBox(tr("Logo"));
-    auto *form = new QFormLayout(editGroup);
+    m_logoEditGroup = new QGroupBox(tr("Logo"));
+    auto *form = new QFormLayout(m_logoEditGroup);
     m_logoNameEdit = new QLineEdit();
     m_logoNameEdit->setPlaceholderText(tr("Logo name"));
     connect(m_logoNameEdit, &QLineEdit::textChanged, this, &OInfoBlockEditor::OnLogoNameEdited);
-    form->addRow(tr("Name:"), m_logoNameEdit);
+    m_logoNameLabel = new QLabel(tr("Name:"));
+    form->addRow(m_logoNameLabel, m_logoNameEdit);
     m_logoNotesEdit = new QPlainTextEdit();
     m_logoNotesEdit->setPlaceholderText(tr("Notes"));
     m_logoNotesEdit->setFixedHeight(70);
     connect(m_logoNotesEdit, &QPlainTextEdit::textChanged, this, &OInfoBlockEditor::OnLogoNotesChanged);
-    form->addRow(tr("Notes:"), m_logoNotesEdit);
-    leftLayout->addWidget(editGroup);
+    m_logoNotesLabel = new QLabel(tr("Notes:"));
+    form->addRow(m_logoNotesLabel, m_logoNotesEdit);
+    leftLayout->addWidget(m_logoEditGroup);
 
     m_logoPreview = new OLogoPreview();
     auto *splitter = new QSplitter(Qt::Horizontal);

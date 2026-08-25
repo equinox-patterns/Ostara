@@ -324,7 +324,7 @@ auto MakeCrossPoint(const QString &label) -> PropertyDesc
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VEnumProperty(label);
-                p->setLiterals(QStringList({T("First point"), T("Second point")}));
+                p->setLiterals(QStringList({T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second point"))}));
                 p->setValue(static_cast<int>(t->GetCrossCirclesPoint()) - 1);
                 return p;
             },
@@ -348,7 +348,7 @@ auto MakeAxisType(const QString &label) -> PropertyDesc
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VEnumProperty(label);
-                p->setLiterals(QStringList({T("Vertical axis"), T("Horizontal axis")}));
+                p->setLiterals(QStringList({T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Vertical axis")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Horizontal axis"))}));
                 p->setValue(static_cast<int>(t->GetAxisType()) - 1);
                 return p;
             },
@@ -372,7 +372,7 @@ auto MakeVCrossPoint(const QString &label) -> PropertyDesc
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VEnumProperty(label);
-                p->setLiterals(QStringList({T("Highest point"), T("Lowest point")}));
+                p->setLiterals(QStringList({T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Highest point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Lowest point"))}));
                 p->setValue(static_cast<int>(t->GetVCrossPoint()) - 1);
                 return p;
             },
@@ -396,7 +396,7 @@ auto MakeHCrossPoint(const QString &label) -> PropertyDesc
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VEnumProperty(label);
-                p->setLiterals(QStringList({T("Leftmost point"), T("Rightmost point")}));
+                p->setLiterals(QStringList({T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Leftmost point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Rightmost point"))}));
                 p->setValue(static_cast<int>(t->GetHCrossPoint()) - 1);
                 return p;
             },
@@ -445,8 +445,8 @@ auto CurvePointProperties() -> std::vector<PropertyDesc>;
 auto ArcPointProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeNotes<VToolArcPoint>(T("Notes:")),
-        MakePointGroup<VToolArcPoint>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeNotes<VToolArcPoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolArcPoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -454,8 +454,8 @@ auto ArcPointProperties() -> std::vector<PropertyDesc>
 auto CurvePointProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeNotes<VToolCurvePoint>(T("Notes:")),
-        MakePointGroup<VToolCurvePoint>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeNotes<VToolCurvePoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolCurvePoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -463,10 +463,10 @@ auto CurvePointProperties() -> std::vector<PropertyDesc>
 auto SinglePointProperties() -> std::vector<PropertyDesc>
 {
     return {
-        {QStringLiteral("position"), T("Position:"), false,
+        {QStringLiteral("position"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Position:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolBasePoint *>(tool);
-             auto *p = new VPE::VPointFProperty(T("Position:"));
+             auto *p = new VPE::VPointFProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Position:")));
              p->setValue(t->GetBasePointPos());
              return p;
          },
@@ -478,8 +478,8 @@ auto SinglePointProperties() -> std::vector<PropertyDesc>
              if (auto *t = qgraphicsitem_cast<VToolBasePoint *>(b->currentItem()))
                  prop->setValue(t->GetBasePointPos());
          }},
-        MakeNotes<VToolBasePoint>(T("Notes:")),
-        MakePointGroup<VToolBasePoint>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeNotes<VToolBasePoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolBasePoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -487,15 +487,15 @@ auto SinglePointProperties() -> std::vector<PropertyDesc>
 auto EndLineProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeStringPropWithValidator<VToolEndLine>(QStringLiteral("lineRoleName"), T("Line:"),
+        MakeStringPropWithValidator<VToolEndLine>(QStringLiteral("lineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
         &VToolEndLine::GetLineRoleName, &VToolEndLine::SetLineRoleName),
-        MakeFormulaLength<VToolEndLine>(T("Length:")),
-        MakeFormulaAngle<VToolEndLine>(T("Angle:")),
-        MakeLineType<VToolEndLine>(T("Line type:")),
-        MakeLineColor<VToolEndLine>(T("Line color:")),
-        MakeNotes<VToolEndLine>(T("Notes:")),
-        MakePointGroup<VToolEndLine>(T("Point"), T("Point name:"), T("Show Point name"),
-                                     {{T("Base point:"), &VToolEndLine::BasePointName}}),
+        MakeFormulaLength<VToolEndLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
+        MakeFormulaAngle<VToolEndLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:"))),
+        MakeLineType<VToolEndLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:"))),
+        MakeLineColor<VToolEndLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:"))),
+        MakeNotes<VToolEndLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolEndLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")),
+                                     {{T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Base point:")), &VToolEndLine::BasePointName}}),
     };
 }
 
@@ -503,19 +503,19 @@ auto EndLineProperties() -> std::vector<PropertyDesc>
 auto AlongLineProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeStringPropWithValidator<VToolAlongLine>(QStringLiteral("lineRoleName"), T("Line:"),
+        MakeStringPropWithValidator<VToolAlongLine>(QStringLiteral("lineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
         &VToolAlongLine::GetLineRoleName, &VToolAlongLine::SetLineRoleName,
         SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolAlongLine>(QStringLiteral("secondLineRoleName"), T("Line:"),
+        MakeStringPropWithValidator<VToolAlongLine>(QStringLiteral("secondLineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
         &VToolAlongLine::GetSecondLineRoleName, &VToolAlongLine::SetSecondLineRoleName,
         SegmentDotPixmap(VColorRole::VisSupportColor4)),
-        MakeFormulaLength<VToolAlongLine>(T("Length:")),
-        MakeLineType<VToolAlongLine>(T("Line type:")),
-        MakeLineColor<VToolAlongLine>(T("Line color:")),
-        MakeNotes<VToolAlongLine>(T("Notes:")),
-        MakePointGroup<VToolAlongLine>(T("Point"), T("Point name:"), T("Show Point name"),
-                                       {{T("First point:"), &VToolAlongLine::BasePointName},
-                                        {T("Second point:"), &VToolAlongLine::SecondPointName}}),
+        MakeFormulaLength<VToolAlongLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
+        MakeLineType<VToolAlongLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:"))),
+        MakeLineColor<VToolAlongLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:"))),
+        MakeNotes<VToolAlongLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolAlongLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")),
+                                       {{T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First point:")), &VToolAlongLine::BasePointName},
+                                        {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second point:")), &VToolAlongLine::SecondPointName}}),
     };
 }
 
@@ -523,16 +523,16 @@ auto AlongLineProperties() -> std::vector<PropertyDesc>
 auto BisectorProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeStringPropWithValidator<VToolBisector>(QStringLiteral("lineRoleName"), T("Line:"),
+        MakeStringPropWithValidator<VToolBisector>(QStringLiteral("lineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
         &VToolBisector::GetLineRoleName, &VToolBisector::SetLineRoleName),
-        MakeFormulaLength<VToolBisector>(T("Length:")),
-        MakeLineType<VToolBisector>(T("Line type:")),
-        MakeLineColor<VToolBisector>(T("Line color:")),
-        MakeNotes<VToolBisector>(T("Notes:")),
-        MakePointGroup<VToolBisector>(T("Point"), T("Point name:"), T("Show Point name"),
-                                      {{T("First point:"), &VToolBisector::FirstPointName},
-                                       {T("Second point:"), &VToolBisector::BasePointName},
-                                       {T("Third point:"), &VToolBisector::ThirdPointName}}),
+        MakeFormulaLength<VToolBisector>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
+        MakeLineType<VToolBisector>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:"))),
+        MakeLineColor<VToolBisector>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:"))),
+        MakeNotes<VToolBisector>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolBisector>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")),
+                                      {{T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First point:")), &VToolBisector::FirstPointName},
+                                       {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second point:")), &VToolBisector::BasePointName},
+                                       {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Third point:")), &VToolBisector::ThirdPointName}}),
     };
 }
 
@@ -540,10 +540,10 @@ auto BisectorProperties() -> std::vector<PropertyDesc>
 auto TrueDartsProperties() -> std::vector<PropertyDesc>
 {
     return {
-        {AttrName1, T("Point 1 label:"), false,
+        {AttrName1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point 1 label:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolTrueDarts *>(tool);
-             auto *p = new VPE::VStringProperty(T("Point 1 label:"));
+             auto *p = new VPE::VStringProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point 1 label:")));
              p->setValue(t->nameP1()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -559,10 +559,10 @@ auto TrueDartsProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<VToolTrueDarts *>(b->currentItem())) prop->setValue(t->nameP1());
          }},
-        {AttrName2, T("Point 2 label:"), false,
+        {AttrName2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point 2 label:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolTrueDarts *>(tool);
-             auto *p = new VPE::VStringProperty(T("Point 2 label:"));
+             auto *p = new VPE::VStringProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point 2 label:")));
              p->setValue(t->nameP2()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -578,12 +578,12 @@ auto TrueDartsProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<VToolTrueDarts *>(b->currentItem())) prop->setValue(t->nameP2());
          }},
-        MakeParentPoint<VToolTrueDarts>(AttrFirstPoint, T("First base point:"), &VToolTrueDarts::BaseLineP1Name),
-        MakeParentPoint<VToolTrueDarts>(AttrSecondPoint, T("Second base point:"), &VToolTrueDarts::BaseLineP2Name),
-        MakeParentPoint<VToolTrueDarts>(AttrDartP1, T("First dart point:"), &VToolTrueDarts::DartP1Name),
-        MakeParentPoint<VToolTrueDarts>(AttrDartP2, T("Second dart point:"), &VToolTrueDarts::DartP2Name),
-        MakeParentPoint<VToolTrueDarts>(AttrDartP3, T("Third dart point:"), &VToolTrueDarts::DartP3Name),
-        MakeNotes<VToolTrueDarts>(T("Notes:")),
+        MakeParentPoint<VToolTrueDarts>(AttrFirstPoint, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First base point:")), &VToolTrueDarts::BaseLineP1Name),
+        MakeParentPoint<VToolTrueDarts>(AttrSecondPoint, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second base point:")), &VToolTrueDarts::BaseLineP2Name),
+        MakeParentPoint<VToolTrueDarts>(AttrDartP1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First dart point:")), &VToolTrueDarts::DartP1Name),
+        MakeParentPoint<VToolTrueDarts>(AttrDartP2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second dart point:")), &VToolTrueDarts::DartP2Name),
+        MakeParentPoint<VToolTrueDarts>(AttrDartP3, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Third dart point:")), &VToolTrueDarts::DartP3Name),
+        MakeNotes<VToolTrueDarts>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }
 
@@ -591,15 +591,15 @@ auto TrueDartsProperties() -> std::vector<PropertyDesc>
 auto HeightProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeStringPropWithValidator<VToolHeight>(QStringLiteral("lineRoleName"), T("Line:"),
+        MakeStringPropWithValidator<VToolHeight>(QStringLiteral("lineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
         &VToolHeight::GetLineRoleName, &VToolHeight::SetLineRoleName),
-        MakeLineType<VToolHeight>(T("Line type:")),
-        MakeLineColor<VToolHeight>(T("Line color:")),
-        MakeNotes<VToolHeight>(T("Notes:")),
-        MakePointGroup<VToolHeight>(T("Point"), T("Point name:"), T("Show Point name"),
-                                    {{T("Base point:"), &VToolHeight::BasePointName},
-                                     {T("First line point:"), &VToolHeight::FirstLinePointName},
-                                     {T("Second line point:"), &VToolHeight::SecondLinePointName}}),
+        MakeLineType<VToolHeight>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:"))),
+        MakeLineColor<VToolHeight>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:"))),
+        MakeNotes<VToolHeight>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolHeight>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")),
+                                    {{T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Base point:")), &VToolHeight::BasePointName},
+                                     {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First line point:")), &VToolHeight::FirstLinePointName},
+                                     {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second line point:")), &VToolHeight::SecondLinePointName}}),
     };
 }
 
@@ -607,11 +607,11 @@ auto HeightProperties() -> std::vector<PropertyDesc>
 auto LineProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeStringPropWithValidator<VToolLine>(QStringLiteral("lineRoleName"), T("Line:"),
+        MakeStringPropWithValidator<VToolLine>(QStringLiteral("lineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
         &VToolLine::GetLineRoleName, &VToolLine::SetLineRoleName),
-        MakeLineType<VToolLine>(T("Line type:")),
-        MakeLineColor<VToolLine>(T("Line color:")),
-        MakeNotes<VToolLine>(T("Notes:")),
+        MakeLineType<VToolLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:"))),
+        MakeLineColor<VToolLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:"))),
+        MakeNotes<VToolLine>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }
 
@@ -619,12 +619,12 @@ auto LineProperties() -> std::vector<PropertyDesc>
 auto LineIntersectProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeNotes<VToolLineIntersect>(T("Notes:")),
-        MakePointGroup<VToolLineIntersect>(T("Point"), T("Point name:"), T("Show Point name"),
-                                           {{T("First line (first point):"), &VToolLineIntersect::Line1P1Name},
-                                            {T("First line (second point):"), &VToolLineIntersect::Line1P2Name},
-                                            {T("Second line (first point):"), &VToolLineIntersect::Line2P1Name},
-                                            {T("Second line (second point):"), &VToolLineIntersect::Line2P2Name}}),
+        MakeNotes<VToolLineIntersect>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolLineIntersect>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")),
+                                           {{T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First line (first point):")), &VToolLineIntersect::Line1P1Name},
+                                            {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First line (second point):")), &VToolLineIntersect::Line1P2Name},
+                                            {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second line (first point):")), &VToolLineIntersect::Line2P1Name},
+                                            {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second line (second point):")), &VToolLineIntersect::Line2P2Name}}),
     };
 }
 
@@ -632,14 +632,14 @@ auto LineIntersectProperties() -> std::vector<PropertyDesc>
 auto NormalProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeStringPropWithValidator<VToolNormal>(QStringLiteral("lineRoleName"), T("Line:"),
+        MakeStringPropWithValidator<VToolNormal>(QStringLiteral("lineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
         &VToolNormal::GetLineRoleName, &VToolNormal::SetLineRoleName),
-        MakeFormulaLength<VToolNormal>(T("Length:")),
+        MakeFormulaLength<VToolNormal>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
         // Custom: angle is a plain number entered as text (QLineEdit), not a formula nor a spinbox
-        {AttrAngle, T("Additional angle degrees:"), false,
+        {AttrAngle, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Additional angle degrees:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolNormal *>(tool);
-             auto *p = new VPE::VStringProperty(T("Additional angle degrees:"));
+             auto *p = new VPE::VStringProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Additional angle degrees:")));
              p->setValue(QString::number(t->GetAngle()));
              return p;
          },
@@ -658,12 +658,12 @@ auto NormalProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<VToolNormal *>(b->currentItem())) prop->setValue(QString::number(t->GetAngle()));
          }},
-        MakeLineType<VToolNormal>(T("Line type:")),
-        MakeLineColor<VToolNormal>(T("Line color:")),
-        MakeNotes<VToolNormal>(T("Notes:")),
-        MakePointGroup<VToolNormal>(T("Point"), T("Point name:"), T("Show Point name"),
-                                    {{T("First point:"), &VToolNormal::BasePointName},
-                                     {T("Second point:"), &VToolNormal::SecondPointName}}),
+        MakeLineType<VToolNormal>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:"))),
+        MakeLineColor<VToolNormal>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:"))),
+        MakeNotes<VToolNormal>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolNormal>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")),
+                                    {{T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First point:")), &VToolNormal::BasePointName},
+                                     {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second point:")), &VToolNormal::SecondPointName}}),
     };
 }
 
@@ -671,13 +671,13 @@ auto NormalProperties() -> std::vector<PropertyDesc>
 auto PointOfContactProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeStringPropWithValidator<VToolPointOfContact>(QStringLiteral("lineRoleName"), T("Line:"),
+        MakeStringPropWithValidator<VToolPointOfContact>(QStringLiteral("lineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
         &VToolPointOfContact::GetLineRoleName, &VToolPointOfContact::SetLineRoleName),
         // Custom: arc radius formula (method is getArcRadius, not GetArcRadius)
-        {AttrRadius, T("Radius:"), false,
+        {AttrRadius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolPointOfContact *>(tool);
-             auto *p = new VFormulaProperty(T("Radius:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius:")));
              p->SetFormula(t->getArcRadius());
              return p;
          },
@@ -692,8 +692,8 @@ auto PointOfContactProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->getArcRadius()); prop->setValue(v);
              }
          }},
-        MakeNotes<VToolPointOfContact>(T("Notes:")),
-        MakePointGroup<VToolPointOfContact>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeNotes<VToolPointOfContact>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolPointOfContact>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -701,10 +701,10 @@ auto PointOfContactProperties() -> std::vector<PropertyDesc>
 auto PointOfIntersectionProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeNotes<VToolPointOfIntersection>(T("Notes:")),
-        MakePointGroup<VToolPointOfIntersection>(T("Point"), T("Point name:"), T("Show Point name"),
-                                                 {{T("X: vertical point:"), &VToolPointOfIntersection::FirstPointName},
-                                                  {T("Y: horizontal point:"), &VToolPointOfIntersection::SecondPointName}}),
+        MakeNotes<VToolPointOfIntersection>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolPointOfIntersection>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")),
+                                                 {{T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "X: vertical point:")), &VToolPointOfIntersection::FirstPointName},
+                                                  {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Y: horizontal point:")), &VToolPointOfIntersection::SecondPointName}}),
     };
 }
 
@@ -712,16 +712,16 @@ auto PointOfIntersectionProperties() -> std::vector<PropertyDesc>
 auto ShoulderPointProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeStringPropWithValidator<VToolShoulderPoint>(QStringLiteral("lineRoleName"), T("Line:"),
+        MakeStringPropWithValidator<VToolShoulderPoint>(QStringLiteral("lineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
         &VToolShoulderPoint::GetLineRoleName, &VToolShoulderPoint::SetLineRoleName),
-        MakeFormulaLength<VToolShoulderPoint>(T("Length:")),
-        MakeLineType<VToolShoulderPoint>(T("Line type:")),
-        MakeLineColor<VToolShoulderPoint>(T("Line color:")),
-        MakeNotes<VToolShoulderPoint>(T("Notes:")),
-        MakePointGroup<VToolShoulderPoint>(T("Point"), T("Point name:"), T("Show Point name"),
-                                           {{T("First point:"), &VToolShoulderPoint::BasePointName},
-                                            {T("Second point:"), &VToolShoulderPoint::SecondPointName},
-                                            {T("Third point:"), &VToolShoulderPoint::ShoulderPointName}}),
+        MakeFormulaLength<VToolShoulderPoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
+        MakeLineType<VToolShoulderPoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:"))),
+        MakeLineColor<VToolShoulderPoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:"))),
+        MakeNotes<VToolShoulderPoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolShoulderPoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")),
+                                           {{T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First point:")), &VToolShoulderPoint::BasePointName},
+                                            {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second point:")), &VToolShoulderPoint::SecondPointName},
+                                            {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Third point:")), &VToolShoulderPoint::ShoulderPointName}}),
     };
 }
 
@@ -729,12 +729,12 @@ auto ShoulderPointProperties() -> std::vector<PropertyDesc>
 auto TriangleProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeNotes<VToolTriangle>(T("Notes:")),
-        MakePointGroup<VToolTriangle>(T("Point"), T("Point name:"), T("Show Point name"),
-                                      {{T("First point of axis:"), &VToolTriangle::AxisP1Name},
-                                       {T("Second point of axis:"), &VToolTriangle::AxisP2Name},
-                                       {T("First point:"), &VToolTriangle::FirstPointName},
-                                       {T("Second point:"), &VToolTriangle::SecondPointName}}),
+        MakeNotes<VToolTriangle>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolTriangle>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")),
+                                      {{T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First point of axis:")), &VToolTriangle::AxisP1Name},
+                                       {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second point of axis:")), &VToolTriangle::AxisP2Name},
+                                       {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First point:")), &VToolTriangle::FirstPointName},
+                                       {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second point:")), &VToolTriangle::SecondPointName}}),
     };
 }
 
@@ -742,16 +742,16 @@ auto TriangleProperties() -> std::vector<PropertyDesc>
 auto LineIntersectAxisProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeStringPropWithValidator<VToolLineIntersectAxis>(QStringLiteral("lineRoleName"), T("Line:"),
+        MakeStringPropWithValidator<VToolLineIntersectAxis>(QStringLiteral("lineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
         &VToolLineIntersectAxis::GetLineRoleName, &VToolLineIntersectAxis::SetLineRoleName),
-        MakeFormulaAngle<VToolLineIntersectAxis>(T("Angle:")),
-        MakeLineType<VToolLineIntersectAxis>(T("Line type:")),
-        MakeLineColor<VToolLineIntersectAxis>(T("Line color:")),
-        MakeNotes<VToolLineIntersectAxis>(T("Notes:")),
-        MakePointGroup<VToolLineIntersectAxis>(T("Point"), T("Point name:"), T("Show Point name"),
-                                               {{T("Axis point:"), &VToolLineIntersectAxis::BasePointName},
-                                                {T("First line point:"), &VToolLineIntersectAxis::FirstLinePoint},
-                                                {T("Second line point:"), &VToolLineIntersectAxis::SecondLinePoint}}),
+        MakeFormulaAngle<VToolLineIntersectAxis>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:"))),
+        MakeLineType<VToolLineIntersectAxis>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:"))),
+        MakeLineColor<VToolLineIntersectAxis>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:"))),
+        MakeNotes<VToolLineIntersectAxis>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolLineIntersectAxis>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")),
+                                               {{T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Axis point:")), &VToolLineIntersectAxis::BasePointName},
+                                                {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First line point:")), &VToolLineIntersectAxis::FirstLinePoint},
+                                                {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second line point:")), &VToolLineIntersectAxis::SecondLinePoint}}),
     };
 }
 
@@ -760,16 +760,16 @@ auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>
 {
     return {
         // Name1/Name2 stay auto-generated in the backend, they are just not shown any more.
-        MakeStringPropWithValidator<VToolCurveIntersectAxis>(AttrAlias1, T("Curve:"), &VToolCurveIntersectAxis::GetAliasSuffix1, &VToolCurveIntersectAxis::SetAliasSuffix1,
+        MakeStringPropWithValidator<VToolCurveIntersectAxis>(AttrAlias1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCurveIntersectAxis::GetAliasSuffix1, &VToolCurveIntersectAxis::SetAliasSuffix1,
                                                              SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolCurveIntersectAxis>(AttrAlias2, T("Curve:"), &VToolCurveIntersectAxis::GetAliasSuffix2, &VToolCurveIntersectAxis::SetAliasSuffix2,
+        MakeStringPropWithValidator<VToolCurveIntersectAxis>(AttrAlias2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCurveIntersectAxis::GetAliasSuffix2, &VToolCurveIntersectAxis::SetAliasSuffix2,
                                                              SegmentDotPixmap(VColorRole::VisSupportColor4)),
-        MakeStringPropWithValidator<VToolCurveIntersectAxis>(QStringLiteral("lineRoleName"), T("Line:"),
+        MakeStringPropWithValidator<VToolCurveIntersectAxis>(QStringLiteral("lineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
         &VToolCurveIntersectAxis::GetLineRoleName, &VToolCurveIntersectAxis::SetLineRoleName),
-        MakeFormulaAngle<VToolCurveIntersectAxis>(T("Angle:")),
-        MakeLineType<VToolCurveIntersectAxis>(T("Line type:")),
-        MakeLineColor<VToolCurveIntersectAxis>(T("Line color:")),
-        MakeNotes<VToolCurveIntersectAxis>(T("Notes:")),
-        MakePointGroup<VToolCurveIntersectAxis>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeFormulaAngle<VToolCurveIntersectAxis>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:"))),
+        MakeLineType<VToolCurveIntersectAxis>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:"))),
+        MakeLineColor<VToolCurveIntersectAxis>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:"))),
+        MakeNotes<VToolCurveIntersectAxis>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolCurveIntersectAxis>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }

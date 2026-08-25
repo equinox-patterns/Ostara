@@ -67,14 +67,14 @@ ODetailsGrainlineWidget::ODetailsGrainlineWidget(QWidget *parent)
     auto *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
-    auto *grainlineGroup = new QGroupBox(tr("Grainline"));
-    auto *grainLayout = new QVBoxLayout(grainlineGroup);
+    m_grainlineGroup = new QGroupBox(tr("Grainline"));
+    auto *grainLayout = new QVBoxLayout(m_grainlineGroup);
 
     m_activeCheck = new QCheckBox(tr("Activate grainline"));
     grainLayout->addWidget(m_activeCheck);
 
     // Length presets
-    auto *lenLabel = new QLabel(tr("Length"));
+    m_lenLabel = new QLabel(tr("Length"));
     auto *lenLayout = new QHBoxLayout();
     m_lengthGroup = new QButtonGroup(this);
     m_lengthGroup->setExclusive(true);
@@ -87,7 +87,7 @@ ODetailsGrainlineWidget::ODetailsGrainlineWidget(QWidget *parent)
         m_lengthGroup->addButton(btn, i);
         lenLayout->addWidget(btn);
     }
-    grainLayout->addWidget(lenLabel);
+    grainLayout->addWidget(m_lenLabel);
     grainLayout->addLayout(lenLayout);
 
     // Rotation
@@ -97,6 +97,7 @@ ODetailsGrainlineWidget::ODetailsGrainlineWidget(QWidget *parent)
     m_rotationSpin->setDecimals(1);
     m_rotationSpin->setSuffix(QStringLiteral("°"));
     rotForm->addRow(tr("Rotation"), m_rotationSpin);
+    m_rotLabel = qobject_cast<QLabel *>(rotForm->labelForField(m_rotationSpin));
     grainLayout->addLayout(rotForm);
 
     // Arrow type
@@ -104,23 +105,45 @@ ODetailsGrainlineWidget::ODetailsGrainlineWidget(QWidget *parent)
     m_arrowGroup = new QButtonGroup(this);
     m_arrowGroup->setExclusive(true);
 
-    auto *simpleBtn = new QPushButton(tr("Simple"));
-    simpleBtn->setCheckable(true);
-    simpleBtn->setProperty("arrowType", static_cast<int>(GrainlineArrowDirection::twoWaysUpDown));
-    m_arrowGroup->addButton(simpleBtn, 0);
-    arrowLayout->addWidget(simpleBtn);
+    m_simpleBtn = new QPushButton(tr("Simple"));
+    m_simpleBtn->setCheckable(true);
+    m_simpleBtn->setProperty("arrowType", static_cast<int>(GrainlineArrowDirection::twoWaysUpDown));
+    m_arrowGroup->addButton(m_simpleBtn, 0);
+    arrowLayout->addWidget(m_simpleBtn);
 
-    auto *doubleBtn = new QPushButton(tr("Double"));
-    doubleBtn->setCheckable(true);
-    doubleBtn->setProperty("arrowType", static_cast<int>(GrainlineArrowDirection::fourWays));
-    m_arrowGroup->addButton(doubleBtn, 1);
-    arrowLayout->addWidget(doubleBtn);
+    m_doubleBtn = new QPushButton(tr("Double"));
+    m_doubleBtn->setCheckable(true);
+    m_doubleBtn->setProperty("arrowType", static_cast<int>(GrainlineArrowDirection::fourWays));
+    m_arrowGroup->addButton(m_doubleBtn, 1);
+    arrowLayout->addWidget(m_doubleBtn);
 
     grainLayout->addLayout(arrowLayout);
 
-    mainLayout->addWidget(grainlineGroup);
+    mainLayout->addWidget(m_grainlineGroup);
 
     ConnectControls();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGrainlineWidget::RetranslateUI()
+{
+    m_grainlineGroup->setTitle(tr("Grainline"));
+    m_activeCheck->setText(tr("Activate grainline"));
+    m_lenLabel->setText(tr("Length"));
+    if (m_rotLabel)
+    {
+        m_rotLabel->setText(tr("Rotation"));
+    }
+    m_simpleBtn->setText(tr("Simple"));
+    m_doubleBtn->setText(tr("Double"));
+    for (auto *btn : m_lengthGroup->buttons())
+    {
+        const int id = m_lengthGroup->id(btn);
+        if (id >= 0 && id < kGrainlinePresetCount)
+        {
+            btn->setText(tr(kGrainlinePresets[id].label));
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

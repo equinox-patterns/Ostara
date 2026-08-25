@@ -244,6 +244,29 @@ ODetailsSeamAllowanceWidget::ODetailsSeamAllowanceWidget(QWidget *parent)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODetailsSeamAllowanceWidget::RetranslateUI()
+{
+    m_activeCheck->setText(tr("Activate seam allowance"));
+    m_hideMainPathCheck->setText(tr("Hide main path"));
+    m_applyValueBtn->setText(tr("Apply"));
+    m_addCustomBtn->setText(m_state == State::SelectingPoints ? tr("Cancel") : tr("+ Add custom seam allowance"));
+    m_manageSavedBtn->setText(tr("Manage saved custom seam allowances"));
+
+    // Re-translate the default names of custom rows — only those still carrying the
+    // previous language's default; a user-renamed row is never overwritten.
+    for (int i = 0; i < m_rows.size(); ++i)
+    {
+        auto *row = m_rows.at(i);
+        const QString newDefault = tr("Custom seam allowance %1").arg(i + 1);
+        if (row->nameEdit()->text() == row->property("defaultName").toString())
+        {
+            row->nameEdit()->setText(newDefault);
+            row->setProperty("defaultName", newDefault);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODetailsSeamAllowanceWidget::ConnectControls()
 {
     // --- Active checkbox ---
@@ -429,6 +452,7 @@ void ODetailsSeamAllowanceWidget::PopulateList(const VPiece &detail)
 
         auto *row = new OCustomMarginRowWidget(group, m_listContainer);
         row->nameEdit()->setText(name);
+        row->setProperty("defaultName", name); // marker to detect user-renamed rows on retranslate
 
         bool valueOk = false;
         const qreal valuePx = groupValue.toDouble(&valueOk);

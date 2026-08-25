@@ -1134,6 +1134,18 @@ void MainWindow::changeEvent(QEvent *event)
             m_drawToolBar->SetMode(VApplication::VApp()->GetDrawMode());
         }
 
+        // Re-translate the docks and toolbar (children of the QMainWindow do not
+        // receive QEvent::LanguageChange on their own).
+        m_drawToolBar->RetranslateGroups();
+        if (m_detailsOptions)
+        {
+            m_detailsOptions->RetranslateUI();
+        }
+        if (m_toolOptions)
+        {
+            m_toolOptions->RetranslateUI();
+        }
+
         UpdateWindowTitle();
         emit m_sceneDetails->LanguageChanged();
 

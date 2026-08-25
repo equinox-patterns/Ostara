@@ -33,8 +33,11 @@
 
 #include <QWidget>
 
+class QGroupBox;
+class QLabel;
 class QLineEdit;
 class QListWidget;
+class QMenu;
 class QPlainTextEdit;
 class QPushButton;
 class QStackedWidget;
@@ -60,6 +63,9 @@ public:
     explicit OInfoBlockEditor(QWidget *parent = nullptr);
 
     auto IsModified() const -> bool;
+
+    /// Re-translate all fixed literals (called on QEvent::LanguageChange).
+    void RetranslateUI();
 
 public slots:
     void OnSave();
@@ -104,14 +110,25 @@ private:
     // Editor page
     QLineEdit *m_nameEdit{nullptr};
     QPushButton *m_addBtn{nullptr};
+    QMenu *m_addMenu{nullptr};
+    QPushButton *m_upBtn{nullptr};
+    QPushButton *m_downBtn{nullptr};
+    QPushButton *m_saveBtn{nullptr};
+    QPushButton *m_saveAsBtn{nullptr};
     QListWidget *m_sectionList{nullptr};
     OInfoBlockSectionEditor *m_sectionEditor{nullptr};
     OInfoBlockPreview *m_preview{nullptr};
 
     // Templates page
+    QLabel *m_templatesTitle{nullptr};
     QListWidget *m_templatesList{nullptr};
 
     // Logos page
+    QGroupBox *m_logoEditGroup{nullptr};
+    QLabel *m_logoNameLabel{nullptr};
+    QLabel *m_logoNotesLabel{nullptr};
+    QPushButton *m_addLogoBtn{nullptr};
+    QPushButton *m_removeLogoBtn{nullptr};
     QTreeWidget *m_logosTree{nullptr};
     QLineEdit *m_logoNameEdit{nullptr};
     QPlainTextEdit *m_logoNotesEdit{nullptr};

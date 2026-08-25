@@ -36,6 +36,9 @@
 class QButtonGroup;
 class QCheckBox;
 class QDoubleSpinBox;
+class QGroupBox;
+class QLabel;
+class QPushButton;
 class VContainer;
 
 class ODetailsGrainlineWidget : public QWidget
@@ -51,6 +54,8 @@ public:
 
     void SetModifyPending(std::function<void(std::function<void(VPiece &)>)> modify);
 
+    void RetranslateUI();
+
 private:
     void ConnectControls();
     void UpdatePresetsState(bool grainlineEnabled);
@@ -59,6 +64,12 @@ private:
     QButtonGroup *m_lengthGroup{nullptr};
     QDoubleSpinBox *m_rotationSpin{nullptr};
     QButtonGroup *m_arrowGroup{nullptr};
+
+    QGroupBox *m_grainlineGroup{nullptr};
+    QLabel *m_lenLabel{nullptr};
+    QLabel *m_rotLabel{nullptr};
+    QPushButton *m_simpleBtn{nullptr};
+    QPushButton *m_doubleBtn{nullptr};
 
     std::function<void(std::function<void(VPiece &)>)> m_modifyPending;
     const VContainer *m_data{nullptr};

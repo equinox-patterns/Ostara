@@ -61,6 +61,13 @@ void OInfoBlockSectionEditor::SetSection(OPieceCartoucheTemplate *tpl, int index
     Rebuild();
 }
 
+void OInfoBlockSectionEditor::RetranslateUI()
+{
+    // The whole edit zone is data-driven — rebuild it so every tr() literal and
+    // catalogue label is re-resolved in the new language.
+    Rebuild();
+}
+
 void OInfoBlockSectionEditor::Rebuild()
 {
     if (m_content != nullptr)
@@ -249,7 +256,9 @@ void OInfoBlockSectionEditor::Rebuild()
                 {
                     for (const QString &value : field.values)
                     {
-                        entries.append({value, value});
+                        // Word separators ("of") are translated; punctuation stays as-is.
+                        const QString label = value == QLatin1String("of") ? tr("of") : value;
+                        entries.append({label, value});
                     }
                 }
 
@@ -327,9 +336,12 @@ void OInfoBlockSectionEditor::Rebuild()
                     QString foldKey;
                 };
                 static const CutTab kCutTabs[] = {
-                    {"Fabric", OPieceCartoucheCut::kFabricQty, OPieceCartoucheCut::kFabricOnFold},
-                    {"Interfacing", OPieceCartoucheCut::kInterfacingQty, OPieceCartoucheCut::kInterfacingOnFold},
-                    {"Lining", OPieceCartoucheCut::kLiningQty, OPieceCartoucheCut::kLiningOnFold},
+                    {QT_TRANSLATE_NOOP("OInfoBlockSectionEditor", "Fabric"),
+                     OPieceCartoucheCut::kFabricQty, OPieceCartoucheCut::kFabricOnFold},
+                    {QT_TRANSLATE_NOOP("OInfoBlockSectionEditor", "Interfacing"),
+                     OPieceCartoucheCut::kInterfacingQty, OPieceCartoucheCut::kInterfacingOnFold},
+                    {QT_TRANSLATE_NOOP("OInfoBlockSectionEditor", "Lining"),
+                     OPieceCartoucheCut::kLiningQty, OPieceCartoucheCut::kLiningOnFold},
                 };
 
                 auto *tabs = new QTabWidget(content);

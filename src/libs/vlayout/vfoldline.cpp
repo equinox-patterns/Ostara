@@ -381,7 +381,7 @@ auto VFoldLine::ThreeDotsRadius() const -> qreal
 auto VFoldLine::DefaultFoldLineLabel() -> QString
 {
     QSharedPointer<VTranslator> const phTr = VAbstractApplication::VApp()->GetPlaceholderTranslator();
-    return phTr->translate("FoldLine", "Cut On Fold");
+    return phTr->translate("FoldLine", QT_TRANSLATE_NOOP("FoldLine", "Cut On Fold"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

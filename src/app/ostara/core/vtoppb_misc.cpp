@@ -318,17 +318,17 @@ auto BackgroundSVGItemProperties() -> std::vector<PropertyDesc>;
 auto PointOfIntersectionArcsProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeCrossPoint<VToolPointOfIntersectionArcs>(T("Take:")),
-        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Alias1, T("Arc:"), &VToolPointOfIntersectionArcs::GetArc1AliasSuffix1, &VToolPointOfIntersectionArcs::SetArc1AliasSuffix1,
+        MakeCrossPoint<VToolPointOfIntersectionArcs>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Take:"))),
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Alias1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolPointOfIntersectionArcs::GetArc1AliasSuffix1, &VToolPointOfIntersectionArcs::SetArc1AliasSuffix1,
                                                                  SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Alias2, T("Arc:"), &VToolPointOfIntersectionArcs::GetArc1AliasSuffix2, &VToolPointOfIntersectionArcs::SetArc1AliasSuffix2,
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve1Alias2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolPointOfIntersectionArcs::GetArc1AliasSuffix2, &VToolPointOfIntersectionArcs::SetArc1AliasSuffix2,
                                                                  SegmentDotPixmap(VColorRole::VisSupportColor4)),
-        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Alias1, T("Arc:"), &VToolPointOfIntersectionArcs::GetArc2AliasSuffix1, &VToolPointOfIntersectionArcs::SetArc2AliasSuffix1,
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Alias1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolPointOfIntersectionArcs::GetArc2AliasSuffix1, &VToolPointOfIntersectionArcs::SetArc2AliasSuffix1,
                                                                  SegmentDotPixmap(VColorRole::VisSupportColor)),
-        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Alias2, T("Arc:"), &VToolPointOfIntersectionArcs::GetArc2AliasSuffix2, &VToolPointOfIntersectionArcs::SetArc2AliasSuffix2,
+        MakeStringPropWithValidator<VToolPointOfIntersectionArcs>(AttrCurve2Alias2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolPointOfIntersectionArcs::GetArc2AliasSuffix2, &VToolPointOfIntersectionArcs::SetArc2AliasSuffix2,
                                                                  SegmentDotPixmap(VColorRole::VisSupportColor3)),
-        MakeNotes<VToolPointOfIntersectionArcs>(T("Notes:")),
-        MakePointGroup<VToolPointOfIntersectionArcs>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeNotes<VToolPointOfIntersectionArcs>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolPointOfIntersectionArcs>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -337,10 +337,10 @@ auto PointOfIntersectionCirclesProperties() -> std::vector<PropertyDesc>
 {
     return {
         // First circle radius (custom formula)
-        {AttrC1Radius, T("First circle radius:"), false,
+        {AttrC1Radius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First circle radius:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolPointOfIntersectionCircles *>(tool);
-             auto *prop = new VFormulaProperty(T("First circle radius:"));
+             auto *prop = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First circle radius:")));
              prop->SetFormula(t->GetFirstCircleRadius());
              return prop;
          },
@@ -356,10 +356,10 @@ auto PointOfIntersectionCirclesProperties() -> std::vector<PropertyDesc>
              }
          }},
         // Second circle radius (custom formula)
-        {AttrC2Radius, T("Second circle radius:"), false,
+        {AttrC2Radius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second circle radius:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolPointOfIntersectionCircles *>(tool);
-             auto *prop = new VFormulaProperty(T("Second circle radius:"));
+             auto *prop = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second circle radius:")));
              prop->SetFormula(t->GetSecondCircleRadius());
              return prop;
          },
@@ -374,9 +374,9 @@ auto PointOfIntersectionCirclesProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetSecondCircleRadius()); prop->setValue(v);
              }
          }},
-        MakeCrossPoint<VToolPointOfIntersectionCircles>(T("Take:")),
-        MakeNotes<VToolPointOfIntersectionCircles>(T("Notes:")),
-        MakePointGroup<VToolPointOfIntersectionCircles>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeCrossPoint<VToolPointOfIntersectionCircles>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Take:"))),
+        MakeNotes<VToolPointOfIntersectionCircles>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolPointOfIntersectionCircles>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -384,18 +384,18 @@ auto PointOfIntersectionCirclesProperties() -> std::vector<PropertyDesc>
 auto PointOfIntersectionCurvesProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeVCrossPoint<VToolPointOfIntersectionCurves>(T("Vertical correction:")),
-        MakeHCrossPoint<VToolPointOfIntersectionCurves>(T("Horizontal correction:")),
-        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Alias1, T("Curve:"), &VToolPointOfIntersectionCurves::GetCurve1AliasSuffix1, &VToolPointOfIntersectionCurves::SetCurve1AliasSuffix1,
+        MakeVCrossPoint<VToolPointOfIntersectionCurves>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Vertical correction:"))),
+        MakeHCrossPoint<VToolPointOfIntersectionCurves>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Horizontal correction:"))),
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Alias1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolPointOfIntersectionCurves::GetCurve1AliasSuffix1, &VToolPointOfIntersectionCurves::SetCurve1AliasSuffix1,
                                                                    SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Alias2, T("Curve:"), &VToolPointOfIntersectionCurves::GetCurve1AliasSuffix2, &VToolPointOfIntersectionCurves::SetCurve1AliasSuffix2,
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve1Alias2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolPointOfIntersectionCurves::GetCurve1AliasSuffix2, &VToolPointOfIntersectionCurves::SetCurve1AliasSuffix2,
                                                                    SegmentDotPixmap(VColorRole::VisSupportColor4)),
-        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Alias1, T("Curve:"), &VToolPointOfIntersectionCurves::GetCurve2AliasSuffix1, &VToolPointOfIntersectionCurves::SetCurve2AliasSuffix1,
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Alias1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolPointOfIntersectionCurves::GetCurve2AliasSuffix1, &VToolPointOfIntersectionCurves::SetCurve2AliasSuffix1,
                                                                    SegmentDotPixmap(VColorRole::VisSupportColor)),
-        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Alias2, T("Curve:"), &VToolPointOfIntersectionCurves::GetCurve2AliasSuffix2, &VToolPointOfIntersectionCurves::SetCurve2AliasSuffix2,
+        MakeStringPropWithValidator<VToolPointOfIntersectionCurves>(AttrCurve2Alias2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolPointOfIntersectionCurves::GetCurve2AliasSuffix2, &VToolPointOfIntersectionCurves::SetCurve2AliasSuffix2,
                                                                    SegmentDotPixmap(VColorRole::VisSupportColor3)),
-        MakeNotes<VToolPointOfIntersectionCurves>(T("Notes:")),
-        MakePointGroup<VToolPointOfIntersectionCurves>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeNotes<VToolPointOfIntersectionCurves>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolPointOfIntersectionCurves>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -404,10 +404,10 @@ auto PointFromCircleAndTangentProperties() -> std::vector<PropertyDesc>
 {
     return {
         // Circle radius (custom formula)
-        {AttrCRadius, T("Circle radius:"), false,
+        {AttrCRadius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Circle radius:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolPointFromCircleAndTangent *>(tool);
-             auto *prop = new VFormulaProperty(T("Circle radius:"));
+             auto *prop = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Circle radius:")));
              prop->SetFormula(t->GetCircleRadius());
              return prop;
          },
@@ -422,9 +422,9 @@ auto PointFromCircleAndTangentProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetCircleRadius()); prop->setValue(v);
              }
          }},
-        MakeCrossPoint<VToolPointFromCircleAndTangent>(T("Take:")),
-        MakeNotes<VToolPointFromCircleAndTangent>(T("Notes:")),
-        MakePointGroup<VToolPointFromCircleAndTangent>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeCrossPoint<VToolPointFromCircleAndTangent>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Take:"))),
+        MakeNotes<VToolPointFromCircleAndTangent>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolPointFromCircleAndTangent>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -432,9 +432,9 @@ auto PointFromCircleAndTangentProperties() -> std::vector<PropertyDesc>
 auto PointFromArcAndTangentProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeCrossPoint<VToolPointFromArcAndTangent>(T("Take:")),
-        MakeNotes<VToolPointFromArcAndTangent>(T("Notes:")),
-        MakePointGroup<VToolPointFromArcAndTangent>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeCrossPoint<VToolPointFromArcAndTangent>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Take:"))),
+        MakeNotes<VToolPointFromArcAndTangent>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolPointFromArcAndTangent>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -442,11 +442,11 @@ auto PointFromArcAndTangentProperties() -> std::vector<PropertyDesc>
 auto BackgroundPixmapItemProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectName<VBackgroundPixmapItem>(T("Name:")),
-        {VtoppbConstants::AttrHold, T("Hold:"), false,
+        MakeObjectName<VBackgroundPixmapItem>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        {VtoppbConstants::AttrHold, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Hold:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VBackgroundPixmapItem *>(tool);
-             auto *prop = new VPE::VBoolProperty(T("Hold:"));
+             auto *prop = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Hold:")));
              prop->setValue(t->IsHold());
              return prop;
          },
@@ -460,10 +460,10 @@ auto BackgroundPixmapItemProperties() -> std::vector<PropertyDesc>
              if (auto *t = qgraphicsitem_cast<VBackgroundPixmapItem *>(b->currentItem()))
                  prop->setValue(t->IsHold());
          }},
-        {VtoppbConstants::AttrVisible, T("Visible:"), false,
+        {VtoppbConstants::AttrVisible, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Visible:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VBackgroundPixmapItem *>(tool);
-             auto *prop = new VPE::VBoolProperty(T("Visible:"));
+             auto *prop = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Visible:")));
              prop->setValue(t->IsVisible());
              return prop;
          },
@@ -477,12 +477,12 @@ auto BackgroundPixmapItemProperties() -> std::vector<PropertyDesc>
              if (auto *t = qgraphicsitem_cast<VBackgroundPixmapItem *>(b->currentItem()))
                  prop->setValue(t->IsVisible());
          }},
-        {VtoppbConstants::AttrOpacity, T("Opacity:"), false,
+        {VtoppbConstants::AttrOpacity, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Opacity:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VBackgroundPixmapItem *>(tool);
              QMap<QString, QVariant> const settings{{QStringLiteral("Min"), 0}, {QStringLiteral("Max"), 100},
                                                      {QStringLiteral("Step"), 1}, {QStringLiteral("Suffix"), QChar('%')}};
-             auto *prop = new VPE::VIntegerProperty(T("Opacity:"), settings);
+             auto *prop = new VPE::VIntegerProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Opacity:")), settings);
              prop->setValue(qRound(t->GetOpacity() * 100));
              return prop;
          },
@@ -504,11 +504,11 @@ auto BackgroundPixmapItemProperties() -> std::vector<PropertyDesc>
 auto BackgroundSVGItemProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectName<VBackgroundSVGItem>(T("Name:")),
-        {VtoppbConstants::AttrHold, T("Hold:"), false,
+        MakeObjectName<VBackgroundSVGItem>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        {VtoppbConstants::AttrHold, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Hold:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VBackgroundSVGItem *>(tool);
-             auto *prop = new VPE::VBoolProperty(T("Hold:"));
+             auto *prop = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Hold:")));
              prop->setValue(t->IsHold());
              return prop;
          },
@@ -522,10 +522,10 @@ auto BackgroundSVGItemProperties() -> std::vector<PropertyDesc>
              if (auto *t = qgraphicsitem_cast<VBackgroundSVGItem *>(b->currentItem()))
                  prop->setValue(t->IsHold());
          }},
-        {VtoppbConstants::AttrVisible, T("Visible:"), false,
+        {VtoppbConstants::AttrVisible, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Visible:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VBackgroundSVGItem *>(tool);
-             auto *prop = new VPE::VBoolProperty(T("Visible:"));
+             auto *prop = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Visible:")));
              prop->setValue(t->IsVisible());
              return prop;
          },
@@ -539,12 +539,12 @@ auto BackgroundSVGItemProperties() -> std::vector<PropertyDesc>
              if (auto *t = qgraphicsitem_cast<VBackgroundSVGItem *>(b->currentItem()))
                  prop->setValue(t->IsVisible());
          }},
-        {VtoppbConstants::AttrOpacity, T("Opacity:"), false,
+        {VtoppbConstants::AttrOpacity, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Opacity:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VBackgroundSVGItem *>(tool);
              QMap<QString, QVariant> const settings{{QStringLiteral("Min"), 0}, {QStringLiteral("Max"), 100},
                                                      {QStringLiteral("Step"), 1}, {QStringLiteral("Suffix"), QChar('%')}};
-             auto *prop = new VPE::VIntegerProperty(T("Opacity:"), settings);
+             auto *prop = new VPE::VIntegerProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Opacity:")), settings);
              prop->setValue(qRound(t->GetOpacity() * 100));
              return prop;
          },

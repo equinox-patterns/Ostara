@@ -58,8 +58,8 @@ ODetailsFoldLineWidget::ODetailsFoldLineWidget(QWidget *parent)
     auto *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
-    auto *foldGroup = new QGroupBox(tr("Foldline"));
-    auto *foldLayout = new QVBoxLayout(foldGroup);
+    m_foldGroup = new QGroupBox(tr("Foldline"));
+    auto *foldLayout = new QVBoxLayout(m_foldGroup);
 
     m_defineBtn = new QPushButton(tr("Define foldline"));
     foldLayout->addWidget(m_defineBtn);
@@ -97,9 +97,33 @@ ODetailsFoldLineWidget::ODetailsFoldLineWidget(QWidget *parent)
     m_textEdit->setPlaceholderText(tr("Cut on fold"));
     foldLayout->addWidget(m_textEdit);
 
-    mainLayout->addWidget(foldGroup);
+    mainLayout->addWidget(m_foldGroup);
 
     ConnectControls();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsFoldLineWidget::RetranslateUI()
+{
+    m_foldGroup->setTitle(tr("Foldline"));
+    m_defineBtn->setText(m_selectState == FoldLineSelectState::Idle ? tr("Define foldline") : tr("Cancel"));
+    m_deactivateBtn->setText(tr("Deactivate foldline"));
+    m_showFullPieceCheck->setText(tr("Show unfolded piece"));
+    m_showMirrorLineCheck->setText(tr("Show symmetry line"));
+    m_textEdit->setPlaceholderText(tr("Cut on fold"));
+    for (auto *btn : m_typeGroup->buttons())
+    {
+        const auto type = static_cast<FoldLineType>(btn->property("foldLineType").toInt());
+        for (const auto &item : kFoldLineTypeItems)
+        {
+            if (item.type == type)
+            {
+                btn->setText(tr(item.text));
+                break;
+            }
+        }
+    }
+    UpdateFoldLineStatus(m_foldValid);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -229,6 +253,7 @@ void ODetailsFoldLineWidget::Show(const VPiece &det)
                               && det.GetMirrorLineEndPoint() != NULL_ID;
     const bool foldValid = hasMirrorPoints
                         && ValidateMirrorLinePoints(det.GetMirrorLineStartPoint(), det.GetMirrorLineEndPoint());
+    m_foldValid = foldValid;
 
     m_updating = true;
 

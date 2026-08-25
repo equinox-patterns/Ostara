@@ -62,6 +62,9 @@ public:
     /// Re-render (call after any template change).
     void Refresh();
 
+    /// Re-translate the painter literals (called on QEvent::LanguageChange).
+    void RetranslateUI();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 

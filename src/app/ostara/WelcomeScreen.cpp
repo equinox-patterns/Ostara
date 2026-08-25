@@ -82,9 +82,9 @@ static auto CreateSection(QWidget *parent, const QString &titleText,
     sectionLayout->addSpacing(16);
 
     // Recent list label — styled via QSS (#welcomeRecentLabel)
-    auto *recentLabel = new QLabel(QObject::tr("Recent:"));
-    recentLabel->setObjectName(QStringLiteral("welcomeRecentLabel"));
-    sectionLayout->addWidget(recentLabel);
+    s.recentLabel = new QLabel(QObject::tr("Recent:"));
+    s.recentLabel->setObjectName(QStringLiteral("welcomeRecentLabel"));
+    sectionLayout->addWidget(s.recentLabel);
 
     // Recent list — styled via QSS (#welcomeRecentList)
     s.recentList = new QListWidget();
@@ -192,21 +192,27 @@ void WelcomeScreen::CreateSections()
     mainLayout->addLayout(sectionsLayout, 1);
 
     // Features button — opens style guide window (dev-only)
-    auto *featuresBtn = new QPushButton(tr("🧪 Features"));
-    featuresBtn->setObjectName(QStringLiteral("welcomeNewBtn"));
-    connect(featuresBtn, &QPushButton::clicked,
+    m_featuresBtn = new QPushButton(tr("🧪 Features"));
+    m_featuresBtn->setObjectName(QStringLiteral("welcomeNewBtn"));
+    connect(m_featuresBtn, &QPushButton::clicked,
             this, &WelcomeScreen::FeaturesClicked);
-    mainLayout->addWidget(featuresBtn, 0, Qt::AlignCenter);
+    mainLayout->addWidget(m_featuresBtn, 0, Qt::AlignCenter);
 }
 
 void WelcomeScreen::RetranslateUI()
 {
     m_subtitleLabel->setText(tr("Sewing pattern design application"));
 
+    if (m_featuresBtn)
+    {
+        m_featuresBtn->setText(tr("🧪 Features"));
+    }
+    m_patternsSection.recentLabel->setText(QObject::tr("Recent:"));
     m_patternsSection.title->setText(tr("Patterns"));
     m_patternsSection.newBtn->setText(tr("+ New pattern"));
     m_patternsSection.openBtn->setText(tr("Open pattern..."));
 
+    m_measurementsSection.recentLabel->setText(QObject::tr("Recent:"));
     m_measurementsSection.title->setText(tr("Measurement tables"));
     m_measurementsSection.newBtn->setText(tr("+ New table"));
     m_measurementsSection.openBtn->setText(tr("Open table..."));

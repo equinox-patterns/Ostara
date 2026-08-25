@@ -58,6 +58,8 @@ public:
 
     void ShowGroupOptions(const QString &groupName, quint32 attachmentId);
 
+    void RetranslateUI();
+
 signals:
     void DetachAllRequested(quint32 attachmentId);
     void RenameRequested(quint32 attachmentId, const QString &name);

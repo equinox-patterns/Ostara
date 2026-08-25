@@ -33,6 +33,7 @@
 
 #include <QByteArray>
 #include <QCloseEvent>
+#include <QEvent>
 #include <QMessageBox>
 
 OInfoBlockWindow::OInfoBlockWindow(QWidget *parent) : QMainWindow(parent)
@@ -93,4 +94,17 @@ void OInfoBlockWindow::closeEvent(QCloseEvent *event)
     VAbstractValApplication::VApp()->ValentinaSettings()->setValue(QStringLiteral("infoBlockWindowGeometry"),
                                                                    saveGeometry());
     QMainWindow::closeEvent(event);
+}
+
+void OInfoBlockWindow::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        // The editor is a child widget — it does not receive QEvent::LanguageChange
+        // on its own, so forward the retranslation to it.
+        setWindowTitle(tr("Information block[*]"));
+        m_editor->RetranslateUI();
+    }
+
+    QMainWindow::changeEvent(event);
 }

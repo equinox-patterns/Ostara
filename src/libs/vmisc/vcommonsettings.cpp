@@ -39,6 +39,8 @@
 #include <QLocale>
 #include <QMarginsF>
 #include <QMessageLogger>
+#include <QProcess>
+#include <QRegularExpression>
 #include <QString>
 #include <QVariant>
 #include <QtDebug>
@@ -215,6 +217,34 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingsStatistictClientID, ("clientID"
 // Reading settings file is very expensive, cache curve approximation to speed up getting value
 qreal curveApproximationCached = -1;        // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 Q_GLOBAL_STATIC(QString, localeCached)      // NOLINT
+
+//---------------------------------------------------------------------------------------------------------------------
+// The app bundle's resolved language (used for LANG/QLocale) may differ from the
+// user's system language: macOS resolves a bundled app without .lproj folders to
+// its CFBundleDevelopmentRegion ("en") even on a French system. Read the system
+// preference (AppleLanguages) so a fresh install starts in the user's language.
+auto SystemPreferredLocale() -> QString
+{
+#ifdef Q_OS_MAC
+    QProcess proc;
+    proc.start(QStringLiteral("/usr/bin/defaults"),
+               {QStringLiteral("read"), QStringLiteral("-g"), QStringLiteral("AppleLanguages")});
+    if (proc.waitForFinished(1000) && proc.exitStatus() == QProcess::NormalExit)
+    {
+        const QString out = QString::fromUtf8(proc.readAllStandardOutput());
+        // "( "fr-FR", "en" )" → the first quoted entry is the top preferred language.
+        const QRegularExpression re(QStringLiteral("\"([^\"]+)\""));
+        const QRegularExpressionMatch m = re.match(out);
+        if (m.hasMatch())
+        {
+            QString locale = m.captured(1);
+            locale.replace(QLatin1Char('-'), QLatin1Char('_'));  // "fr-FR" → "fr_FR" (qm names)
+            return locale;
+        }
+    }
+#endif
+    return QLocale::system().name();
+}
 qreal lineWidthCached = 0;                  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 int labelFontSizeCached = 0;                // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 int pieceShowMainPath = -1;                 // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
@@ -589,7 +619,7 @@ auto VCommonSettings::GetLocale() const -> QString
 {
     if (localeCached->isEmpty())
     {
-        *localeCached = value(*settingConfigurationLocale, QLocale().name()).toString();
+        *localeCached = value(*settingConfigurationLocale, SystemPreferredLocale()).toString();
     }
     return *localeCached;
 }

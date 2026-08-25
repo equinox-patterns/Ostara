@@ -535,8 +535,9 @@ auto VAbstractApplication::GetPlaceholderTranslator() -> QSharedPointer<VTransla
     }
 
     auto translator = QSharedPointer<VTranslator>(new VTranslator);
-    const QString appQmDir = VAbstractApplication::translationsPath(settings->GetLocale());
-    if (translator->load(QStringLiteral("ostara_") + pieceLabelLocale, appQmDir))
+    // The .qm files are embedded in the binary (qt_add_translations resource), not
+    // deployed as loose files — load from the resource like the main translator.
+    if (translator->load(QStringLiteral(":/i18n/ostara_") + pieceLabelLocale + QStringLiteral(".qm")))
     {
         return translator;
     }

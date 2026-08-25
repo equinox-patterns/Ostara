@@ -92,11 +92,11 @@ auto CurveDisplayName(const QString &objectName) -> QString
     QString prefix;
     if (head == QLatin1String(SPL_) || head == splPath_V + QLatin1Char('_'))
     {
-        prefix = QStringLiteral("Curve_");
+        prefix = VAbstractApplication::VApp()->TrVars()->InternalVarToUser(QStringLiteral("Curve_"));
     }
     else if (head == QLatin1String(ARC_) || head == QLatin1String(ELARC_))
     {
-        prefix = head;
+        prefix = VAbstractApplication::VApp()->TrVars()->InternalVarToUser(head);
     }
     else
     {
@@ -113,7 +113,7 @@ auto CurveDisplayName(const QString &objectName) -> QString
         }
     }
 
-    return prefix + (suffix.isEmpty() ? T("(Unnamed)") : suffix);
+    return prefix + (suffix.isEmpty() ? T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "(Unnamed)")) : suffix);
 }
 
 // --- Helpers ---
@@ -326,14 +326,14 @@ auto MakeSplineHandleGroup(const QString &attrId, const QString &title,
                 group->setCollapsible(true);
                 group->setExpandedByDefault(true);
 
-                auto *lengthProp = new VFormulaProperty(T("Length:"));
+                auto *lengthProp = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
                 VFormula lenF((spl.*lengthFormulaGetter)(), t->getData());
                 lenF.setToolId(t->getId());
                 lenF.setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
                 lenF.Eval();
                 lengthProp->SetFormula(lenF);
 
-                auto *angleProp = new VFormulaProperty(T("Angle:"));
+                auto *angleProp = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:")));
                 VFormula angF((spl.*angleFormulaGetter)(), t->getData());
                 angF.setToolId(t->getId());
                 angF.setPostfix(degreeSymbol);
@@ -420,14 +420,14 @@ auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsize
 
                 for (int h = 0; h < handles.size(); ++h)
                 {
-                    auto *lengthProp = new VFormulaProperty(T("Length:"));
+                    auto *lengthProp = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
                     VFormula lenF((point.*handles[h].lengthFormulaGetter)(), t->getData());
                     lenF.setToolId(t->getId());
                     lenF.setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
                     lenF.Eval();
                     lengthProp->SetFormula(lenF);
 
-                    auto *angleProp = new VFormulaProperty(T("Angle:"));
+                    auto *angleProp = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:")));
                     VFormula angF((point.*handles[h].angleFormulaGetter)(), t->getData());
                     angF.setToolId(t->getId());
                     angF.setPostfix(degreeSymbol);
@@ -550,12 +550,12 @@ auto GraduatedCurveProperties() -> std::vector<PropertyDesc>;
 auto ArcProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolArc>(T("Name:")),
-        MakeStringPropWithValidator<VToolArc>(AttrAlias, T("Arc:"), &VToolArc::GetAliasSuffix, &VToolArc::SetAliasSuffix),
-        {QStringLiteral("createStartPoint"), T("Create start point"), false,
+        MakeObjectNameReadOnly<VToolArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        MakeStringPropWithValidator<VToolArc>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolArc::GetAliasSuffix, &VToolArc::SetAliasSuffix),
+        {QStringLiteral("createStartPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolArc *>(tool);
-             auto *p = new VPE::VBoolProperty(T("Create start point"));
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")));
              p->setValue(t->HasStartPoint());
              return p;
          },
@@ -569,10 +569,10 @@ auto ArcProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->HasStartPoint());
              }
          }},
-        {QStringLiteral("createEndPoint"), T("Create end point"), false,
+        {QStringLiteral("createEndPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create end point")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolArc *>(tool);
-             auto *p = new VPE::VBoolProperty(T("Create end point"));
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create end point")));
              p->setValue(t->HasEndPoint());
              return p;
          },
@@ -586,10 +586,10 @@ auto ArcProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->HasEndPoint());
              }
          }},
-        {AttrRadius, T("Radius:"), false,
+        {AttrRadius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolArc *>(tool);
-             auto *p = new VFormulaProperty(T("Radius:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius:")));
              p->SetFormula(t->GetFormulaRadius()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -603,10 +603,10 @@ auto ArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaRadius()); prop->setValue(v);
              }
          }},
-        {AttrAngle1, T("First angle:"), false,
+        {AttrAngle1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First angle:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolArc *>(tool);
-             auto *p = new VFormulaProperty(T("First angle:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First angle:")));
              p->SetFormula(t->GetFormulaF1()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -620,10 +620,10 @@ auto ArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaF1()); prop->setValue(v);
              }
          }},
-        {AttrAngle2, T("Second angle:"), false,
+        {AttrAngle2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second angle:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolArc *>(tool);
-             auto *p = new VFormulaProperty(T("Second angle:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second angle:")));
              p->SetFormula(t->GetFormulaF2()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -637,9 +637,9 @@ auto ArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaF2()); prop->setValue(v);
              }
          }},
-        MakeCurvePenStyle<VToolArc>(T("Pen style:")),
-        MakeLineColor<VToolArc>(T("Color:")),
-        MakeNotes<VToolArc>(T("Notes:")),
+        MakeCurvePenStyle<VToolArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
+        MakeLineColor<VToolArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
+        MakeNotes<VToolArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }
 
@@ -647,12 +647,12 @@ auto ArcProperties() -> std::vector<PropertyDesc>
 auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolArcWithLength>(T("Name:")),
-        MakeStringPropWithValidator<VToolArcWithLength>(AttrAlias, T("Arc:"), &VToolArcWithLength::GetAliasSuffix, &VToolArcWithLength::SetAliasSuffix),
-        {QStringLiteral("createStartPoint"), T("Create start point"), false,
+        MakeObjectNameReadOnly<VToolArcWithLength>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        MakeStringPropWithValidator<VToolArcWithLength>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolArcWithLength::GetAliasSuffix, &VToolArcWithLength::SetAliasSuffix),
+        {QStringLiteral("createStartPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolArcWithLength *>(tool);
-             auto *p = new VPE::VBoolProperty(T("Create start point"));
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")));
              p->setValue(t->HasStartPoint());
              return p;
          },
@@ -666,10 +666,10 @@ auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->HasStartPoint());
              }
          }},
-        {QStringLiteral("createEndPoint"), T("Create end point"), false,
+        {QStringLiteral("createEndPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create end point")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolArcWithLength *>(tool);
-             auto *p = new VPE::VBoolProperty(T("Create end point"));
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create end point")));
              p->setValue(t->HasEndPoint());
              return p;
          },
@@ -683,10 +683,10 @@ auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->HasEndPoint());
              }
          }},
-        {AttrRadius, T("Radius:"), false,
+        {AttrRadius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolArcWithLength *>(tool);
-             auto *p = new VFormulaProperty(T("Radius:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius:")));
              p->SetFormula(t->GetFormulaRadius()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -700,10 +700,10 @@ auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaRadius()); prop->setValue(v);
              }
          }},
-        {AttrAngle1, T("First angle:"), false,
+        {AttrAngle1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First angle:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolArcWithLength *>(tool);
-             auto *p = new VFormulaProperty(T("First angle:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First angle:")));
              p->SetFormula(t->GetFormulaF1()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -717,10 +717,10 @@ auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaF1()); prop->setValue(v);
              }
          }},
-        {AttrLength, T("Length:"), false,
+        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolArcWithLength *>(tool);
-             auto *p = new VFormulaProperty(T("Length:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
              p->SetFormula(t->GetFormulaLength()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -734,9 +734,9 @@ auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
              }
          }},
-        MakeCurvePenStyle<VToolArcWithLength>(T("Pen style:")),
-        MakeLineColor<VToolArcWithLength>(T("Color:")),
-        MakeNotes<VToolArcWithLength>(T("Notes:")),
+        MakeCurvePenStyle<VToolArcWithLength>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
+        MakeLineColor<VToolArcWithLength>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
+        MakeNotes<VToolArcWithLength>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }
 
@@ -744,16 +744,16 @@ auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
 auto CutArcProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeSourceCurve<VToolCutArc>(AttrArc, T("Arc:"), &VToolCutArc::CurveName),
+        MakeSourceCurve<VToolCutArc>(AttrArc, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolCutArc::CurveName),
         // Name1/Name2 stay auto-generated in the backend, they are just not shown any more.
-        MakeStringPropWithValidator<VToolCutArc>(AttrAlias1, T("Arc:"), &VToolCutArc::GetAliasSuffix1, &VToolCutArc::SetAliasSuffix1,
+        MakeStringPropWithValidator<VToolCutArc>(AttrAlias1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolCutArc::GetAliasSuffix1, &VToolCutArc::SetAliasSuffix1,
                                              SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolCutArc>(AttrAlias2, T("Arc:"), &VToolCutArc::GetAliasSuffix2, &VToolCutArc::SetAliasSuffix2,
+        MakeStringPropWithValidator<VToolCutArc>(AttrAlias2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolCutArc::GetAliasSuffix2, &VToolCutArc::SetAliasSuffix2,
                                              SegmentDotPixmap(VColorRole::VisSupportColor4)),
-        {AttrLength, T("Length:"), false,
+        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCutArc *>(tool);
-             auto *p = new VFormulaProperty(T("Length:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
              p->SetFormula(t->GetFormulaLength()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -767,8 +767,8 @@ auto CutArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
              }
          }},
-        MakeNotes<VToolCutArc>(T("Notes:")),
-        MakePointGroup<VToolCutArc>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeNotes<VToolCutArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolCutArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -777,14 +777,14 @@ auto CutSplineProperties() -> std::vector<PropertyDesc>
 {
     return {
         // Name1/Name2 stay auto-generated in the backend, they are just not shown any more.
-        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias1, T("Curve:"), &VToolCutSpline::GetAliasSuffix1, &VToolCutSpline::SetAliasSuffix1,
+        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCutSpline::GetAliasSuffix1, &VToolCutSpline::SetAliasSuffix1,
                                                 SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias2, T("Curve:"), &VToolCutSpline::GetAliasSuffix2, &VToolCutSpline::SetAliasSuffix2,
+        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCutSpline::GetAliasSuffix2, &VToolCutSpline::SetAliasSuffix2,
                                                 SegmentDotPixmap(VColorRole::VisSupportColor4)),
-        {AttrLength, T("Length:"), false,
+        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCutSpline *>(tool);
-             auto *p = new VFormulaProperty(T("Length:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
              p->SetFormula(t->GetFormulaLength()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -798,8 +798,8 @@ auto CutSplineProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
              }
          }},
-        MakeNotes<VToolCutSpline>(T("Notes:")),
-        MakePointGroup<VToolCutSpline>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeNotes<VToolCutSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolCutSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -808,14 +808,14 @@ auto CutSplinePathProperties() -> std::vector<PropertyDesc>
 {
     return {
         // Name1/Name2 stay auto-generated in the backend, they are just not shown any more.
-        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias1, T("Curve:"), &VToolCutSplinePath::GetAliasSuffix1, &VToolCutSplinePath::SetAliasSuffix1,
+        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCutSplinePath::GetAliasSuffix1, &VToolCutSplinePath::SetAliasSuffix1,
                                                    SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias2, T("Curve:"), &VToolCutSplinePath::GetAliasSuffix2, &VToolCutSplinePath::SetAliasSuffix2,
+        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCutSplinePath::GetAliasSuffix2, &VToolCutSplinePath::SetAliasSuffix2,
                                                    SegmentDotPixmap(VColorRole::VisSupportColor4)),
-        {AttrLength, T("Length:"), false,
+        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolCutSplinePath *>(tool);
-             auto *p = new VFormulaProperty(T("Length:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
              p->SetFormula(t->GetFormulaLength()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -829,8 +829,8 @@ auto CutSplinePathProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
              }
          }},
-        MakeNotes<VToolCutSplinePath>(T("Notes:")),
-        MakePointGroup<VToolCutSplinePath>(T("Point"), T("Point name:"), T("Show Point name")),
+        MakeNotes<VToolCutSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<VToolCutSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -838,17 +838,17 @@ auto CutSplinePathProperties() -> std::vector<PropertyDesc>
 auto SplineProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolSpline>(T("Name:")),
-        MakeStringPropWithValidator<VToolSpline>(AttrAlias, T("Curve:"), &VToolSpline::GetAliasSuffix, &VToolSpline::SetAliasSuffix),
-        MakeSplineHandleGroup<VToolSpline>(QStringLiteral("firstHandle"), T("First handle:"),
+        MakeObjectNameReadOnly<VToolSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        MakeStringPropWithValidator<VToolSpline>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolSpline::GetAliasSuffix, &VToolSpline::SetAliasSuffix),
+        MakeSplineHandleGroup<VToolSpline>(QStringLiteral("firstHandle"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First handle:")),
                                            &VSpline::GetC1LengthFormula, &VSpline::SetC1Length,
                                            &VSpline::GetStartAngleFormula, &VSpline::SetStartAngle),
-        MakeSplineHandleGroup<VToolSpline>(QStringLiteral("secondHandle"), T("Second handle:"),
+        MakeSplineHandleGroup<VToolSpline>(QStringLiteral("secondHandle"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second handle:")),
                                            &VSpline::GetC2LengthFormula, &VSpline::SetC2Length,
                                            &VSpline::GetEndAngleFormula, &VSpline::SetEndAngle),
-        MakeCurvePenStyle<VToolSpline>(T("Pen style:")),
-        MakeLineColor<VToolSpline>(T("Color:")),
-        MakeNotes<VToolSpline>(T("Notes:")),
+        MakeCurvePenStyle<VToolSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
+        MakeLineColor<VToolSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
+        MakeNotes<VToolSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }
 
@@ -856,11 +856,11 @@ auto SplineProperties() -> std::vector<PropertyDesc>
 auto CubicBezierProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolCubicBezier>(T("Name:")),
-        MakeStringPropWithValidator<VToolCubicBezier>(AttrAlias, T("Curve:"), &VToolCubicBezier::GetAliasSuffix, &VToolCubicBezier::SetAliasSuffix),
-        MakeCurvePenStyle<VToolCubicBezier>(T("Pen style:")),
-        MakeLineColor<VToolCubicBezier>(T("Color:")),
-        MakeNotes<VToolCubicBezier>(T("Notes:")),
+        MakeObjectNameReadOnly<VToolCubicBezier>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        MakeStringPropWithValidator<VToolCubicBezier>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCubicBezier::GetAliasSuffix, &VToolCubicBezier::SetAliasSuffix),
+        MakeCurvePenStyle<VToolCubicBezier>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
+        MakeLineColor<VToolCubicBezier>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
+        MakeNotes<VToolCubicBezier>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }
 
@@ -868,11 +868,11 @@ auto CubicBezierProperties() -> std::vector<PropertyDesc>
 auto ArmholeCurveProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolArmholeCurve>(T("Name:")),
-        MakeStringPropWithValidator<VToolArmholeCurve>(AttrAlias, T("Curve:"), &VToolArmholeCurve::GetAliasSuffix, &VToolArmholeCurve::SetAliasSuffix),
-        MakeCurvePenStyle<VToolArmholeCurve>(T("Pen style:")),
-        MakeLineColor<VToolArmholeCurve>(T("Color:")),
-        MakeNotes<VToolArmholeCurve>(T("Notes:")),
+        MakeObjectNameReadOnly<VToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        MakeStringPropWithValidator<VToolArmholeCurve>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolArmholeCurve::GetAliasSuffix, &VToolArmholeCurve::SetAliasSuffix),
+        MakeCurvePenStyle<VToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
+        MakeLineColor<VToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
+        MakeNotes<VToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }
 
@@ -880,8 +880,8 @@ auto ArmholeCurveProperties() -> std::vector<PropertyDesc>
 auto SplinePathProperties(const VToolSplinePath *tool) -> std::vector<PropertyDesc>
 {
     std::vector<PropertyDesc> descs = {
-        MakeObjectNameReadOnly<VToolSplinePath>(T("Name:")),
-        MakeStringPropWithValidator<VToolSplinePath>(AttrAlias, T("Curve:"), &VToolSplinePath::GetAliasSuffix, &VToolSplinePath::SetAliasSuffix),
+        MakeObjectNameReadOnly<VToolSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        MakeStringPropWithValidator<VToolSplinePath>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolSplinePath::GetAliasSuffix, &VToolSplinePath::SetAliasSuffix),
     };
 
     const vsizetype count = tool != nullptr ? tool->getSplinePath().CountPoints() : 0;
@@ -890,7 +890,7 @@ auto SplinePathProperties(const VToolSplinePath *tool) -> std::vector<PropertyDe
     {
         // Start point: only the outgoing handle (Angle2/Length2) is used.
         descs.push_back(MakeSplinePathPointGroup<VToolSplinePath>(
-            QStringLiteral("startPoint"), T("Start point"), 0,
+            QStringLiteral("startPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Start point")), 0,
             {{&VSplinePoint::Length2Formula, &VSplinePoint::SetLength2, &VSplinePoint::Angle2,
               &VSplinePoint::Angle2Formula, &VSplinePoint::SetAngle2}}));
     }
@@ -911,14 +911,14 @@ auto SplinePathProperties(const VToolSplinePath *tool) -> std::vector<PropertyDe
     {
         // End point: only the incoming handle (Angle1/Length1) is used.
         descs.push_back(MakeSplinePathPointGroup<VToolSplinePath>(
-            QStringLiteral("endPoint"), T("End point"), count - 1,
+            QStringLiteral("endPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "End point")), count - 1,
             {{&VSplinePoint::Length1Formula, &VSplinePoint::SetLength1, &VSplinePoint::Angle1,
               &VSplinePoint::Angle1Formula, &VSplinePoint::SetAngle1}}));
     }
 
-    descs.push_back(MakeCurvePenStyle<VToolSplinePath>(T("Pen style:")));
-    descs.push_back(MakeLineColor<VToolSplinePath>(T("Color:")));
-    descs.push_back(MakeNotes<VToolSplinePath>(T("Notes:")));
+    descs.push_back(MakeCurvePenStyle<VToolSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))));
+    descs.push_back(MakeLineColor<VToolSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))));
+    descs.push_back(MakeNotes<VToolSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))));
 
     return descs;
 }
@@ -927,11 +927,11 @@ auto SplinePathProperties(const VToolSplinePath *tool) -> std::vector<PropertyDe
 auto CubicBezierPathProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolCubicBezierPath>(T("Name:")),
-        MakeStringPropWithValidator<VToolCubicBezierPath>(AttrAlias, T("Curve:"), &VToolCubicBezierPath::GetAliasSuffix, &VToolCubicBezierPath::SetAliasSuffix),
-        MakeCurvePenStyle<VToolCubicBezierPath>(T("Pen style:")),
-        MakeLineColor<VToolCubicBezierPath>(T("Color:")),
-        MakeNotes<VToolCubicBezierPath>(T("Notes:")),
+        MakeObjectNameReadOnly<VToolCubicBezierPath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        MakeStringPropWithValidator<VToolCubicBezierPath>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCubicBezierPath::GetAliasSuffix, &VToolCubicBezierPath::SetAliasSuffix),
+        MakeCurvePenStyle<VToolCubicBezierPath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
+        MakeLineColor<VToolCubicBezierPath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
+        MakeNotes<VToolCubicBezierPath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }
 
@@ -939,12 +939,12 @@ auto CubicBezierPathProperties() -> std::vector<PropertyDesc>
 auto EllipticalArcProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolEllipticalArc>(T("Name:")),
-        MakeStringPropWithValidator<VToolEllipticalArc>(AttrAlias, T("ElArc:"), &VToolEllipticalArc::GetAliasSuffix, &VToolEllipticalArc::SetAliasSuffix),
-        {QStringLiteral("createStartPoint"), T("Create start point"), false,
+        MakeObjectNameReadOnly<VToolEllipticalArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        MakeStringPropWithValidator<VToolEllipticalArc>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "ElArc:")), &VToolEllipticalArc::GetAliasSuffix, &VToolEllipticalArc::SetAliasSuffix),
+        {QStringLiteral("createStartPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArc *>(tool);
-             auto *p = new VPE::VBoolProperty(T("Create start point"));
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")));
              p->setValue(t->HasStartPoint());
              return p;
          },
@@ -958,10 +958,10 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->HasStartPoint());
              }
          }},
-        {QStringLiteral("createEndPoint"), T("Create end point"), false,
+        {QStringLiteral("createEndPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create end point")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArc *>(tool);
-             auto *p = new VPE::VBoolProperty(T("Create end point"));
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create end point")));
              p->setValue(t->HasEndPoint());
              return p;
          },
@@ -975,10 +975,10 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->HasEndPoint());
              }
          }},
-        {AttrRadius1, T("Radius 1:"), false,
+        {AttrRadius1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius 1:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArc *>(tool);
-             auto *p = new VFormulaProperty(T("Radius 1:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius 1:")));
              p->SetFormula(t->GetFormulaRadius1()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -992,10 +992,10 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaRadius1()); prop->setValue(v);
              }
          }},
-        {AttrRadius2, T("Radius 2:"), false,
+        {AttrRadius2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius 2:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArc *>(tool);
-             auto *p = new VFormulaProperty(T("Radius 2:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius 2:")));
              p->SetFormula(t->GetFormulaRadius2()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -1009,10 +1009,10 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaRadius2()); prop->setValue(v);
              }
          }},
-        {AttrAngle1, T("First angle:"), false,
+        {AttrAngle1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First angle:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArc *>(tool);
-             auto *p = new VFormulaProperty(T("First angle:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First angle:")));
              p->SetFormula(t->GetFormulaF1()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -1026,10 +1026,10 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaF1()); prop->setValue(v);
              }
          }},
-        {AttrAngle2, T("Second angle:"), false,
+        {AttrAngle2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second angle:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArc *>(tool);
-             auto *p = new VFormulaProperty(T("Second angle:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second angle:")));
              p->SetFormula(t->GetFormulaF2()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -1043,10 +1043,10 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaF2()); prop->setValue(v);
              }
          }},
-        {AttrRotationAngle, T("Rotation angle:"), false,
+        {AttrRotationAngle, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Rotation angle:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArc *>(tool);
-             auto *p = new VFormulaProperty(T("Rotation angle:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Rotation angle:")));
              p->SetFormula(t->GetFormulaRotationAngle()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -1060,9 +1060,9 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaRotationAngle()); prop->setValue(v);
              }
          }},
-        MakeCurvePenStyle<VToolEllipticalArc>(T("Pen style:")),
-        MakeLineColor<VToolEllipticalArc>(T("Color:")),
-        MakeNotes<VToolEllipticalArc>(T("Notes:")),
+        MakeCurvePenStyle<VToolEllipticalArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
+        MakeLineColor<VToolEllipticalArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
+        MakeNotes<VToolEllipticalArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }
 
@@ -1070,12 +1070,12 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>
 auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolEllipticalArcWithLength>(T("Name:")),
-        MakeStringPropWithValidator<VToolEllipticalArcWithLength>(AttrAlias, T("ElArc:"), &VToolEllipticalArcWithLength::GetAliasSuffix, &VToolEllipticalArcWithLength::SetAliasSuffix),
-        {QStringLiteral("createStartPoint"), T("Create start point"), false,
+        MakeObjectNameReadOnly<VToolEllipticalArcWithLength>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        MakeStringPropWithValidator<VToolEllipticalArcWithLength>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "ElArc:")), &VToolEllipticalArcWithLength::GetAliasSuffix, &VToolEllipticalArcWithLength::SetAliasSuffix),
+        {QStringLiteral("createStartPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
-             auto *p = new VPE::VBoolProperty(T("Create start point"));
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")));
              p->setValue(t->HasStartPoint());
              return p;
          },
@@ -1089,10 +1089,10 @@ auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->HasStartPoint());
              }
          }},
-        {QStringLiteral("createEndPoint"), T("Create end point"), false,
+        {QStringLiteral("createEndPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create end point")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
-             auto *p = new VPE::VBoolProperty(T("Create end point"));
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create end point")));
              p->setValue(t->HasEndPoint());
              return p;
          },
@@ -1106,10 +1106,10 @@ auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->HasEndPoint());
              }
          }},
-        {AttrRadius1, T("Radius 1:"), false,
+        {AttrRadius1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius 1:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
-             auto *p = new VFormulaProperty(T("Radius 1:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius 1:")));
              p->SetFormula(t->GetFormulaRadius1()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -1123,10 +1123,10 @@ auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaRadius1()); prop->setValue(v);
              }
          }},
-        {AttrRadius2, T("Radius 2:"), false,
+        {AttrRadius2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius 2:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
-             auto *p = new VFormulaProperty(T("Radius 2:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius 2:")));
              p->SetFormula(t->GetFormulaRadius2()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -1140,10 +1140,10 @@ auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaRadius2()); prop->setValue(v);
              }
          }},
-        {AttrAngle1, T("First angle:"), false,
+        {AttrAngle1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First angle:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
-             auto *p = new VFormulaProperty(T("First angle:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First angle:")));
              p->SetFormula(t->GetFormulaF1()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -1157,10 +1157,10 @@ auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaF1()); prop->setValue(v);
              }
          }},
-        {AttrLength, T("Length:"), false,
+        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
-             auto *p = new VFormulaProperty(T("Length:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
              p->SetFormula(t->GetFormulaLength()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -1174,10 +1174,10 @@ auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
              }
          }},
-        {AttrRotationAngle, T("Rotation angle:"), false,
+        {AttrRotationAngle, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Rotation angle:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArcWithLength *>(tool);
-             auto *p = new VFormulaProperty(T("Rotation angle:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Rotation angle:")));
              p->SetFormula(t->GetFormulaRotationAngle()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -1191,9 +1191,9 @@ auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaRotationAngle()); prop->setValue(v);
              }
          }},
-        MakeCurvePenStyle<VToolEllipticalArcWithLength>(T("Pen style:")),
-        MakeLineColor<VToolEllipticalArcWithLength>(T("Color:")),
-        MakeNotes<VToolEllipticalArcWithLength>(T("Notes:")),
+        MakeCurvePenStyle<VToolEllipticalArcWithLength>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
+        MakeLineColor<VToolEllipticalArcWithLength>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
+        MakeNotes<VToolEllipticalArcWithLength>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }
 
@@ -1201,12 +1201,12 @@ auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>
 auto ParallelCurveProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolParallelCurve>(T("Name:")),
-        MakeStringPropWithValidator<VToolParallelCurve>(AttrAlias, T("Curve:"), &VToolParallelCurve::GetAliasSuffix, &VToolParallelCurve::SetAliasSuffix),
-        {QStringLiteral("createStartPoint"), T("Create start point"), false,
+        MakeObjectNameReadOnly<VToolParallelCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        MakeStringPropWithValidator<VToolParallelCurve>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolParallelCurve::GetAliasSuffix, &VToolParallelCurve::SetAliasSuffix),
+        {QStringLiteral("createStartPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolParallelCurve *>(tool);
-             auto *p = new VPE::VBoolProperty(T("Create start point"));
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")));
              p->setValue(t->HasStartPoint());
              return p;
          },
@@ -1220,10 +1220,10 @@ auto ParallelCurveProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->HasStartPoint());
              }
          }},
-        {QStringLiteral("createEndPoint"), T("Create end point"), false,
+        {QStringLiteral("createEndPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create end point")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolParallelCurve *>(tool);
-             auto *p = new VPE::VBoolProperty(T("Create end point"));
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create end point")));
              p->setValue(t->HasEndPoint());
              return p;
          },
@@ -1237,10 +1237,10 @@ auto ParallelCurveProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->HasEndPoint());
              }
          }},
-        {AttrWidth, T("Width:"), false,
+        {AttrWidth, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Width:")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolParallelCurve *>(tool);
-             auto *p = new VFormulaProperty(T("Width:"));
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Width:")));
              p->SetFormula(t->GetFormulaWidth()); return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -1254,8 +1254,8 @@ auto ParallelCurveProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaWidth()); prop->setValue(v);
              }
          }},
-        MakeLineColor<VToolParallelCurve>(T("Color:")),
-        MakeNotes<VToolParallelCurve>(T("Notes:")),
+        MakeLineColor<VToolParallelCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
+        MakeNotes<VToolParallelCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }
 
@@ -1263,14 +1263,14 @@ auto ParallelCurveProperties() -> std::vector<PropertyDesc>
 auto GraduatedCurveProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolGraduatedCurve>(T("Full name:")),
-        MakeSourceCurve<VToolGraduatedCurve>(AttrCurve, T("Curve:"), &VToolGraduatedCurve::CurveName),
+        MakeObjectNameReadOnly<VToolGraduatedCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Full name:"))),
+        MakeSourceCurve<VToolGraduatedCurve>(AttrCurve, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolGraduatedCurve::CurveName),
         // The subName property stays auto-generated in the backend, it is just not shown any more.
-        MakeStringPropWithValidator<VToolGraduatedCurve>(AttrAlias, T("Curve:"), &VToolGraduatedCurve::GetAliasSuffix, &VToolGraduatedCurve::SetAliasSuffix),
-        {QStringLiteral("createStartPoint"), T("Create start point"), false,
+        MakeStringPropWithValidator<VToolGraduatedCurve>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolGraduatedCurve::GetAliasSuffix, &VToolGraduatedCurve::SetAliasSuffix),
+        {QStringLiteral("createStartPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolGraduatedCurve *>(tool);
-             auto *p = new VPE::VBoolProperty(T("Create start point"));
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")));
              p->setValue(t->HasStartPoint());
              return p;
          },
@@ -1284,10 +1284,10 @@ auto GraduatedCurveProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->HasStartPoint());
              }
          }},
-        {QStringLiteral("createEndPoint"), T("Create end point"), false,
+        {QStringLiteral("createEndPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create end point")), false,
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolGraduatedCurve *>(tool);
-             auto *p = new VPE::VBoolProperty(T("Create end point"));
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create end point")));
              p->setValue(t->HasEndPoint());
              return p;
          },
@@ -1301,8 +1301,8 @@ auto GraduatedCurveProperties() -> std::vector<PropertyDesc>
                  prop->setValue(t->HasEndPoint());
              }
          }},
-        MakeCurvePenStyle<VToolGraduatedCurve>(T("Pen style:")),
-        MakeLineColor<VToolGraduatedCurve>(T("Color:")),
-        MakeNotes<VToolGraduatedCurve>(T("Notes:")),
+        MakeCurvePenStyle<VToolGraduatedCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
+        MakeLineColor<VToolGraduatedCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
+        MakeNotes<VToolGraduatedCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }

@@ -71,6 +71,8 @@ public:
 
     void RefreshList(const VPiece &detail);
 
+    void RetranslateUI();
+
 signals:
     void ShowStatusTip(const QString &text);
     void HighlightNode(quint32 nodeId, bool highlight, QColor color = QColor(255, 0, 255));

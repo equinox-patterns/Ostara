@@ -89,6 +89,25 @@ auto AlignIconBaseName(bool vertical, int value) -> QString
                             : QStringLiteral("align-center-horizontal-simple");
     }
 }
+
+struct AlignItem
+{
+    int value;
+    const char *text;
+};
+
+// Shared by the constructor and RetranslateUI() — QT_TRANSLATE_NOOP lets lupdate extract them.
+const AlignItem kAlignHItems[] = {
+    {1, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Left")},
+    {2, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Center")},
+    {3, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Right")},
+};
+
+const AlignItem kAlignVItems[] = {
+    {1, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Top")},
+    {2, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Center")},
+    {3, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Bottom")},
+};
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -111,6 +130,7 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
 
         m_nameEdit = new QLineEdit();
         form->addRow(tr("Name"), m_nameEdit);
+        m_nameLabel = qobject_cast<QLabel *>(form->labelForField(m_nameEdit));
 
         auto *numberRow = new QHBoxLayout();
         numberRow->setSpacing(4);
@@ -124,68 +144,51 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         numberRow->addWidget(m_pieceTotalLabel);
         numberRow->addStretch();
         form->addRow(tr("Number"), numberRow);
+        m_numberLabel = qobject_cast<QLabel *>(form->labelForField(numberRow));
 
         layout->addLayout(form);
 
         // Graded alignment
-        auto *alignGroupBox = new QGroupBox(tr("Graded alignment"));
-        auto *alignLayout = new QVBoxLayout(alignGroupBox);
+        m_alignGroupBox = new QGroupBox(tr("Graded alignment"));
+        auto *alignLayout = new QVBoxLayout(m_alignGroupBox);
 
         // Horizontal
-        auto *hLabel = new QLabel(tr("Horizontal"));
+        m_alignHLabel = new QLabel(tr("Horizontal"));
         auto *hLayout = new QHBoxLayout();
         m_alignHGroup = new QButtonGroup(this);
         m_alignHGroup->setExclusive(true);
 
-        const struct
-        {
-            int value;
-            const char *text;
-        } hItems[] = {
-            {1, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Left")},
-            {2, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Center")},
-            {3, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Right")},
-        };
         for (int i = 0; i < 3; ++i)
         {
-            auto *btn = new QPushButton(tr(hItems[i].text));
+            auto *btn = new QPushButton(tr(kAlignHItems[i].text));
             btn->setCheckable(true);
-            btn->setProperty("alignValue", hItems[i].value);
-            m_alignHGroup->addButton(btn, hItems[i].value);
+            btn->setProperty("alignValue", kAlignHItems[i].value);
+            m_alignHGroup->addButton(btn, kAlignHItems[i].value);
             hLayout->addWidget(btn);
             m_alignHBtns[i] = btn;
         }
-        alignLayout->addWidget(hLabel);
+        alignLayout->addWidget(m_alignHLabel);
         alignLayout->addLayout(hLayout);
 
         // Vertical
-        auto *vLabel = new QLabel(tr("Vertical"));
+        m_alignVLabel = new QLabel(tr("Vertical"));
         auto *vLayout = new QHBoxLayout();
         m_alignVGroup = new QButtonGroup(this);
         m_alignVGroup->setExclusive(true);
 
-        const struct
-        {
-            int value;
-            const char *text;
-        } vItems[] = {
-            {1, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Top")},
-            {2, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Center")},
-            {3, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Bottom")},
-        };
         for (int i = 0; i < 3; ++i)
         {
-            auto *btn = new QPushButton(tr(vItems[i].text));
+            auto *btn = new QPushButton(tr(kAlignVItems[i].text));
             btn->setCheckable(true);
-            btn->setProperty("alignValue", vItems[i].value);
-            m_alignVGroup->addButton(btn, vItems[i].value);
+            btn->setProperty("alignValue", kAlignVItems[i].value);
+            m_alignVGroup->addButton(btn, kAlignVItems[i].value);
             vLayout->addWidget(btn);
             m_alignVBtns[i] = btn;
         }
-        alignLayout->addWidget(vLabel);
+        alignLayout->addWidget(m_alignVLabel);
         alignLayout->addLayout(vLayout);
 
-        layout->addWidget(alignGroupBox);
+        layout->addWidget(m_alignGroupBox);
 
         // Passmark multi-selection
         auto *passmarkRow = new QHBoxLayout();
@@ -249,6 +252,51 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
     ConnectControls();
 
     RefreshAlignIcons();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::RetranslateUI()
+{
+    // General tab
+    if (m_nameLabel)
+    {
+        m_nameLabel->setText(tr("Name"));
+    }
+    if (m_numberLabel)
+    {
+        m_numberLabel->setText(tr("Number"));
+    }
+    m_pieceTotalLabel->setText(tr("/ auto total"));
+    if (m_alignGroupBox)
+    {
+        m_alignGroupBox->setTitle(tr("Graded alignment"));
+    }
+    if (m_alignHLabel)
+    {
+        m_alignHLabel->setText(tr("Horizontal"));
+    }
+    if (m_alignVLabel)
+    {
+        m_alignVLabel->setText(tr("Vertical"));
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        m_alignHBtns[i]->setText(tr(kAlignHItems[i].text));
+        m_alignVBtns[i]->setText(tr(kAlignVItems[i].text));
+    }
+    m_manageMainPathBtn->setText(tr("Manage main path"));
+    m_addPassmarksBtn->setText(m_passmarkSelectState == PassmarkSelectState::Adding ? tr("Cancel")
+                                                                                     : tr("+ Add passmarks"));
+    m_removePassmarksBtn->setText(m_passmarkSelectState == PassmarkSelectState::Removing ? tr("Cancel")
+                                                                                         : tr("- Remove passmarks"));
+    m_tabWidget->setTabText(0, tr("General"));
+    m_tabWidget->setTabText(1, tr("Grainline"));
+    m_tabWidget->setTabText(2, tr("Seam Allowance"));
+
+    // Sub-widgets (Grainline tab, Fold line, Seam Allowance)
+    m_grainlineWidget->RetranslateUI();
+    m_foldlineWidget->RetranslateUI();
+    m_saWidget->RetranslateUI();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

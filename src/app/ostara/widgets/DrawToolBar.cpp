@@ -296,6 +296,10 @@ void DrawToolBar::changeEvent(QEvent *event)
         ReloadIcons();
         UpdateBackground();
     }
+    else if (event->type() == QEvent::LanguageChange)
+    {
+        RetranslateGroups();
+    }
     QDockWidget::changeEvent(event);
 }
 
@@ -332,6 +336,11 @@ void DrawToolBar::InitializeGroups()
     const bool dark = IsDarkTheme();
 
     auto makeBtn = [&](const QString &id) -> QToolButton * {
+        // Idempotent: on a re-translate pass the buttons already exist — reuse them.
+        if (auto *existing = m_buttonMap.value(id, nullptr))
+        {
+            return existing;
+        }
         auto *btn = new QToolButton(m_root);
         btn->setObjectName(QStringLiteral("drawToolBtn"));
         btn->setAutoRaise(true);
@@ -425,6 +434,7 @@ void DrawToolBar::InitializeGroups()
     // The export tool uses a PNG icon (no SVG theme variants exist yet).
     // Create its button manually — don't go through makeBtn which would try
     // to load a non-existent SVG and spam the console.
+    if (!m_buttonMap.contains(QStringLiteral("detail_export")))
     {
         auto *btn = new QToolButton(m_root);
         btn->setObjectName(QStringLiteral("drawToolBtn"));
@@ -434,18 +444,26 @@ void DrawToolBar::InitializeGroups()
         btn->setIconSize(QSize(24, 24));
         btn->setIcon(QIcon(QStringLiteral(":/icon/32x32/export_to_picture_document.png")));
         m_buttonMap.insert(QStringLiteral("detail_export"), btn);
-        // Update the button pointer in the ToolItem
-        for (auto &group : m_groups)
+    }
+    // Update the button pointer in the ToolItem
+    for (auto &group : m_groups)
+    {
+        for (auto &tool : group.tools)
         {
-            for (auto &tool : group.tools)
+            if (tool.id == QStringLiteral("detail_export"))
             {
-                if (tool.id == QStringLiteral("detail_export"))
-                {
-                    tool.button = btn;
-                }
+                tool.button = m_buttonMap.value(QStringLiteral("detail_export"));
             }
         }
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DrawToolBar::RetranslateGroups()
+{
+    InitializeGroups();          // re-evaluates tr() names, reuses existing buttons
+    setWindowTitle(tr("Tools"));
+    BuildLayout();               // re-renders group headers + tooltips with the new names
 }
 
 //---------------------------------------------------------------------------------------------------------------------

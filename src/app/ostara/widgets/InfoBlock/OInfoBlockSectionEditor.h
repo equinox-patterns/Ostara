@@ -53,6 +53,9 @@ public:
     /// `table` gives read access to the loaded .omt for the table-driven controls.
     void SetSection(OPieceCartoucheTemplate *tpl, int index, const OPieceCartoucheTable *table);
 
+    /// Re-translate the dynamic content (called on QEvent::LanguageChange).
+    void RetranslateUI();
+
 signals:
     /// Fired when any option changes (the editor marks the template modified).
     void OptionsChanged();

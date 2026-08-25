@@ -36,6 +36,7 @@
 #include "../vpatterndb/vpiece.h"
 
 class QButtonGroup;
+class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
@@ -56,6 +57,8 @@ public:
 
     void Clear();
     void Show(VToolSeamAllowance *tool);
+
+    void RetranslateUI();
 
     auto IsSelectingPassmarkPoints() const -> bool;
     void OnNodeSelectedForPassmark(quint32 nodeId);
@@ -91,8 +94,13 @@ private:
 
     // General tab
     QLineEdit *m_nameEdit{nullptr};
+    QLabel *m_nameLabel{nullptr};
     QSpinBox *m_pieceNumberSpin{nullptr};
+    QLabel *m_numberLabel{nullptr};
     QLabel *m_pieceTotalLabel{nullptr};
+    QGroupBox *m_alignGroupBox{nullptr};
+    QLabel *m_alignHLabel{nullptr};
+    QLabel *m_alignVLabel{nullptr};
     QButtonGroup *m_alignHGroup{nullptr};
     QButtonGroup *m_alignVGroup{nullptr};
     QPushButton *m_alignHBtns[3]{};

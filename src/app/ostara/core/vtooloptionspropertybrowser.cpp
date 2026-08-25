@@ -529,6 +529,13 @@ void VToolOptionsPropertyBrowser::RefreshOptions()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolOptionsPropertyBrowser::RetranslateUI()
+{
+    // Re-open the current item's options so the property names/titles are re-evaluated.
+    RefreshOptions();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
 {
     // Walk up to the nearest registered property. A collapsible group (e.g. a spline handle)

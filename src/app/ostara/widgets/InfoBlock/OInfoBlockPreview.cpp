@@ -76,6 +76,12 @@ void OInfoBlockPreview::Refresh()
     update();
 }
 
+void OInfoBlockPreview::RetranslateUI()
+{
+    // paintEvent re-resolves tr() and the catalogue DisplayName() on every paint.
+    update();
+}
+
 void OInfoBlockPreview::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
@@ -123,7 +129,10 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
         }
 
         QString line = type.DisplayName();
-        const QString separator = options.value(QStringLiteral("separator")).toString();
+        // The separator values are language-neutral keys ("of", "-", "/"); translate
+        // the word ones at render ("of" → "sur").
+        const QString separator =
+            tr(qPrintable(options.value(QStringLiteral("separator")).toString()));
         if (type.Id() == QStringLiteral("axis"))
         {
             if (m_table == nullptr || !m_table->HasMultiSizeTable())
@@ -173,9 +182,12 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                 const char *display;
             };
             static const CutTab kCutTabs[] = {
-                {OPieceCartoucheCut::kFabricQty, OPieceCartoucheCut::kFabricOnFold, "fabric"},
-                {OPieceCartoucheCut::kInterfacingQty, OPieceCartoucheCut::kInterfacingOnFold, "interfacing"},
-                {OPieceCartoucheCut::kLiningQty, OPieceCartoucheCut::kLiningOnFold, "lining"},
+                {OPieceCartoucheCut::kFabricQty, OPieceCartoucheCut::kFabricOnFold,
+                 QT_TRANSLATE_NOOP("OInfoBlockPreview", "fabric")},
+                {OPieceCartoucheCut::kInterfacingQty, OPieceCartoucheCut::kInterfacingOnFold,
+                 QT_TRANSLATE_NOOP("OInfoBlockPreview", "interfacing")},
+                {OPieceCartoucheCut::kLiningQty, OPieceCartoucheCut::kLiningOnFold,
+                 QT_TRANSLATE_NOOP("OInfoBlockPreview", "lining")},
             };
 
             painter.setFont(font);
@@ -190,12 +202,12 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                 }
                 any = true;
                 const bool onFold = options.value(tab.foldKey, false).toBool();
-                QString text = QStringLiteral("Cut %1").arg(qty);
+                QString text = tr("Cut %1").arg(qty);
                 if (onFold)
                 {
-                    text += QStringLiteral(" on fold");
+                    text += tr(" on fold");
                 }
-                text += QStringLiteral(" (%1)").arg(QString::fromLatin1(tab.display));
+                text += tr(" (%1)").arg(tr(tab.display));
                 const QRectF lineRect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
                 painter.drawText(lineRect, Qt::AlignHCenter | Qt::AlignVCenter, text);
                 y += QFontMetricsF(font).height() + 6.0;
