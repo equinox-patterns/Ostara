@@ -205,7 +205,7 @@ void OInfoBlockSectionEditor::Rebuild()
                 }
                 if (fullNames.isEmpty())
                 {
-                    combo->setEnabled(false);  // no multi-size table loaded
+                    combo->setEnabled(false);  // no measurement table loaded
                 }
                 else
                 {

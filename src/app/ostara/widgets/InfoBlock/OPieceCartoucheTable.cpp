@@ -30,10 +30,41 @@
 #include "vabstractvalapplication.h"
 #include "vexception.h"
 #include "xml/oomtdocument.h"
+#include "xml/ootudocument.h"
 #include "xml/vabstractpattern.h"
 
 #include <QFileInfo>
 #include <QStringList>
+
+namespace
+{
+/// Resolve a stored full name (or a legacy @Name) back to the @Name key.
+/// Works on both OOmtDocument (.omt) and OOtuDocument (.otu): they share the
+/// same measurement API without a common base class.
+template <typename DocT> QString ResolveMNameFromFullName(const DocT *doc, const QString &fullName)
+{
+    if (doc == nullptr)
+    {
+        return QString();
+    }
+
+    const QStringList names = doc->GetAllMNames();
+    // Legacy fallback: an old .oct may store the @Name directly.
+    if (names.contains(fullName))
+    {
+        return fullName;
+    }
+
+    for (const QString &name : names)
+    {
+        if (doc->GetMFullName(name) == fullName)
+        {
+            return name;
+        }
+    }
+    return QString();
+}
+}  // namespace
 
 OPieceCartoucheTable::OPieceCartoucheTable() = default;
 
@@ -41,7 +72,8 @@ OPieceCartoucheTable::~OPieceCartoucheTable() = default;
 
 void OPieceCartoucheTable::Clear()
 {
-    m_doc.reset();
+    m_omtDoc.reset();
+    m_otuDoc.reset();
     m_sourcePath.clear();
 }
 
@@ -57,24 +89,37 @@ void OPieceCartoucheTable::Load()
 
     const QString absolute = AbsoluteMPath(app->GetPatternPath(), doc->MPath());
     const QFileInfo fi(absolute);
-    if (fi.suffix().toLower() != QStringLiteral("omt") || !fi.exists())
+    if (!fi.exists())
     {
-        // A single-size .otu table or a missing file is "no multi-size table".
-        Clear();
+        Clear();  // a missing table is "no table"
         return;
     }
 
-    if (absolute == m_sourcePath && m_doc != nullptr)
+    if (absolute == m_sourcePath && (m_omtDoc != nullptr || m_otuDoc != nullptr))
     {
         return;  // already parsed
     }
 
+    Clear();  // new path (or a previously failed parse) — re-parse from scratch
+
+    const QString suffix = fi.suffix().toLower();
     try
     {
-        auto table = std::make_unique<OOmtDocument>();
-        table->setXMLContent(absolute);
-        m_doc = std::move(table);
-        m_sourcePath = absolute;
+        if (suffix == QStringLiteral("omt"))
+        {
+            auto table = std::make_unique<OOmtDocument>();
+            table->setXMLContent(absolute);
+            m_omtDoc = std::move(table);
+            m_sourcePath = absolute;
+        }
+        else if (suffix == QStringLiteral("otu"))
+        {
+            auto table = std::make_unique<OOtuDocument>();
+            table->setXMLContent(absolute);
+            m_otuDoc = std::move(table);
+            m_sourcePath = absolute;
+        }
+        // else: a legacy .vst/.vit or unknown table is "no table" — nothing cached.
     }
     catch (const VException &)
     {
@@ -84,61 +129,72 @@ void OPieceCartoucheTable::Load()
 
 bool OPieceCartoucheTable::HasMultiSizeTable() const
 {
-    return m_doc != nullptr;
+    return m_omtDoc != nullptr;
+}
+
+bool OPieceCartoucheTable::HasTable() const
+{
+    return m_omtDoc != nullptr || m_otuDoc != nullptr;
 }
 
 QStringList OPieceCartoucheTable::AxisNames() const
 {
-    return m_doc != nullptr ? m_doc->GetSizeGroupNames() : QStringList();
+    return m_omtDoc != nullptr ? m_omtDoc->GetSizeGroupNames() : QStringList();
 }
 
 QString OPieceCartoucheTable::AnchorValue(const QString &axisName) const
 {
-    return m_doc != nullptr ? m_doc->GetAnchorValue(axisName) : QString();
+    return m_omtDoc != nullptr ? m_omtDoc->GetAnchorValue(axisName) : QString();
 }
 
 QStringList OPieceCartoucheTable::MeasurementNames() const
 {
-    return m_doc != nullptr ? m_doc->GetAllMNames() : QStringList();
+    if (m_omtDoc != nullptr)
+    {
+        return m_omtDoc->GetAllMNames();
+    }
+    return m_otuDoc != nullptr ? m_otuDoc->GetAllMNames() : QStringList();
 }
 
 QString OPieceCartoucheTable::MeasurementFullName(const QString &name) const
 {
-    return m_doc != nullptr ? m_doc->GetMFullName(name) : QString();
+    if (m_omtDoc != nullptr)
+    {
+        return m_omtDoc->GetMFullName(name);
+    }
+    return m_otuDoc != nullptr ? m_otuDoc->GetMFullName(name) : QString();
 }
 
 QString OPieceCartoucheTable::MeasurementNameFromFullName(const QString &fullName) const
 {
-    if (m_doc == nullptr || fullName.isEmpty())
+    if (fullName.isEmpty())
     {
         return QString();
     }
 
-    const QStringList names = m_doc->GetAllMNames();
-    // Legacy fallback: an old .oct may store the @Name directly.
-    if (names.contains(fullName))
+    if (m_omtDoc != nullptr)
     {
-        return fullName;
+        return ResolveMNameFromFullName(m_omtDoc.get(), fullName);
     }
-
-    for (const QString &name : names)
-    {
-        if (m_doc->GetMFullName(name) == fullName)
-        {
-            return name;
-        }
-    }
-    return QString();
+    return ResolveMNameFromFullName(m_otuDoc.get(), fullName);
 }
 
 double OPieceCartoucheTable::MeasurementValue(const QString &name) const
 {
-    return m_doc != nullptr ? m_doc->GetMValue(name) : 0.0;
+    if (m_omtDoc != nullptr)
+    {
+        return m_omtDoc->GetMValue(name);
+    }
+    return m_otuDoc != nullptr ? m_otuDoc->GetMValue(name) : 0.0;
 }
 
 QString OPieceCartoucheTable::UnitsStr() const
 {
-    return m_doc != nullptr ? UnitsToStr(m_doc->GetUnits(), true) : QString();
+    if (m_omtDoc != nullptr)
+    {
+        return UnitsToStr(m_omtDoc->GetUnits(), true);
+    }
+    return m_otuDoc != nullptr ? UnitsToStr(m_otuDoc->GetUnits(), true) : QString();
 }
 
 QString OPieceCartoucheTable::FormatValue(double value)

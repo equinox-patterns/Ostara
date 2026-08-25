@@ -116,9 +116,9 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
         }
         else if (type.Id() == QStringLiteral("measure"))
         {
-            if (m_table == nullptr || !m_table->HasMultiSizeTable())
+            if (m_table == nullptr || !m_table->HasTable())
             {
-                continue;  // dead data: no multi-size table
+                continue;  // dead data: no measurement table (.omt or .otu)
             }
             const QString storedFull = options.value(QStringLiteral("measureName")).toString();
             if (storedFull.isEmpty())
