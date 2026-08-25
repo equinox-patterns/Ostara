@@ -32,14 +32,19 @@
 #include <QWidget>
 
 class OPieceCartoucheTemplate;
+class OPieceCartoucheTable;
 
 /**
  * @brief Live preview — renders the template as a single stacked block
  * (the default dispatch), one line per section.
  *
- * Per-section font styling is applied from the section options (useDefaults /
- * fontFamily / fontWeight / fontSize). The preview only *reads* the data: it
- * is not a data source itself (spec §3).
+ * Per-section font styling is applied from the section options (fontFamily /
+ * fontWeight / fontSize). Each line starts from the widget's base font, so a
+ * section left unstyled does not inherit the previous section's font. The
+ * "Sizes" and "Measurement" sections resolve their real value from the loaded
+ * .omt table; when the table or the stored name is absent they are skipped
+ * (dead data, spec §4.3). The preview only *reads* the data: it is not a data
+ * source itself (spec §3).
  */
 class OInfoBlockPreview : public QWidget
 {
@@ -51,6 +56,9 @@ public:
     /// Point the preview at the template being edited (lifetime owned by the caller).
     void SetTemplate(const OPieceCartoucheTemplate *tpl);
 
+    /// Give read access to the loaded .omt table for the table-driven sections.
+    void SetTable(const OPieceCartoucheTable *table);
+
     /// Re-render (call after any template change).
     void Refresh();
 
@@ -59,6 +67,7 @@ protected:
 
 private:
     const OPieceCartoucheTemplate *m_template{nullptr};
+    const OPieceCartoucheTable *m_table{nullptr};
 };
 
 #endif // OINFOBLOCKPREVIEW_H

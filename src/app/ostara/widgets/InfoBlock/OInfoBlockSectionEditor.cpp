@@ -27,16 +27,20 @@
 #include "OInfoBlockSectionEditor.h"
 
 #include "OPieceCartoucheCatalogue.h"
+#include "OPieceCartoucheTable.h"
 
 #include "vabstractapplication.h"
 
-#include <QCheckBox>
+#include <QButtonGroup>
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QFileInfo>
 #include <QFontComboBox>
 #include <QFormLayout>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QRadioButton>
+#include <QSpinBox>
 #include <QStringList>
 #include <QVBoxLayout>
 
@@ -47,17 +51,16 @@ OInfoBlockSectionEditor::OInfoBlockSectionEditor(QWidget *parent) : QWidget(pare
     Rebuild();
 }
 
-void OInfoBlockSectionEditor::SetSection(OPieceCartoucheTemplate *tpl, int index)
+void OInfoBlockSectionEditor::SetSection(OPieceCartoucheTemplate *tpl, int index, const OPieceCartoucheTable *table)
 {
     m_template = tpl;
+    m_table = table;
     m_index = index;
     Rebuild();
 }
 
 void OInfoBlockSectionEditor::Rebuild()
 {
-    m_useDefaultsCheck = nullptr;
-    m_fontControls.clear();
     if (m_content != nullptr)
     {
         m_root->removeWidget(m_content);
@@ -95,16 +98,6 @@ void OInfoBlockSectionEditor::Rebuild()
     {
         switch (field.kind)
         {
-            case OPieceCartoucheOptionKind::UseDefaults:
-            {
-                auto *check = new QCheckBox(field.label, content);
-                check->setChecked(section.options.value(field.key, true).toBool());
-                connect(check, &QCheckBox::toggled, this,
-                        [this, field](bool on) { m_template->SetSectionOption(m_index, field.key, on); emit OptionsChanged(); });
-                form->addRow(QString(), check);
-                m_useDefaultsCheck = check;
-                break;
-            }
             case OPieceCartoucheOptionKind::FontFamily:
             {
                 auto *combo = new QFontComboBox(content);
@@ -117,7 +110,6 @@ void OInfoBlockSectionEditor::Rebuild()
                     m_template->SetSectionOption(m_index, field.key, f.family());
                     emit OptionsChanged();
                 });
-                m_fontControls.append(combo);
                 form->addRow(field.label, combo);
                 break;
             }
@@ -148,31 +140,44 @@ void OInfoBlockSectionEditor::Rebuild()
                     m_template->SetSectionOption(m_index, field.key, combo->currentData().toInt());
                     emit OptionsChanged();
                 });
-                m_fontControls.append(combo);
                 form->addRow(field.label, combo);
                 break;
             }
             case OPieceCartoucheOptionKind::FontSize:
             {
-                auto *spin = new QDoubleSpinBox(content);
-                spin->setRange(0.0, 288.0);
-                spin->setDecimals(1);
-                spin->setSuffix(QStringLiteral(" pt"));
-                spin->setSpecialValueText(tr("Default"));  // 0.0 = use default size
-                spin->setValue(section.options.value(field.key, 0.0).toDouble());
-                connect(spin, &QDoubleSpinBox::valueChanged, this, [this, field](double v) {
+                auto *spin = new QSpinBox(content);
+                spin->setRange(0, 288);
+                spin->setSuffix(QStringLiteral(" px"));
+                spin->setSpecialValueText(tr("Default"));  // 0 = use default size
+                spin->setValue(section.options.value(field.key, 0.0).toInt());
+                connect(spin, &QSpinBox::valueChanged, this, [this, field](int v) {
                     m_template->SetSectionOption(m_index, field.key, v);
                     emit OptionsChanged();
                 });
-                m_fontControls.append(spin);
                 form->addRow(field.label, spin);
                 break;
             }
             case OPieceCartoucheOptionKind::Axis:
             {
                 auto *combo = new QComboBox(content);
-                combo->addItems({QStringLiteral("X"), QStringLiteral("Y"), QStringLiteral("Z")});
-                combo->setCurrentText(section.options.value(field.key, QStringLiteral("X")).toString());
+                const QString stored = section.options.value(field.key).toString();
+                const QStringList axes = m_table != nullptr ? m_table->AxisNames() : QStringList();
+                if (axes.isEmpty())
+                {
+                    combo->setEnabled(false);  // no multi-size table loaded
+                }
+                else
+                {
+                    combo->addItems(axes);
+                    if (!stored.isEmpty() && axes.contains(stored))
+                    {
+                        combo->setCurrentText(stored);
+                    }
+                    else
+                    {
+                        combo->setCurrentIndex(-1);  // stored axis not in the current table
+                    }
+                }
                 connect(combo, &QComboBox::currentTextChanged, this, [this, field](const QString &v) {
                     m_template->SetSectionOption(m_index, field.key, v);
                     emit OptionsChanged();
@@ -183,14 +188,77 @@ void OInfoBlockSectionEditor::Rebuild()
             case OPieceCartoucheOptionKind::MeasureName:
             {
                 auto *combo = new QComboBox(content);
-                combo->setEditable(true);
-                combo->setInsertPolicy(QComboBox::NoInsert);
-                combo->setEditText(section.options.value(field.key).toString());
-                connect(combo, &QComboBox::editTextChanged, this, [this, field](const QString &v) {
+                const QString stored = section.options.value(field.key).toString();
+                QStringList fullNames;
+                if (m_table != nullptr)
+                {
+                    const QStringList names = m_table->MeasurementNames();
+                    fullNames.reserve(names.size());
+                    for (const QString &name : names)
+                    {
+                        const QString full = m_table->MeasurementFullName(name);
+                        if (!full.isEmpty())
+                        {
+                            fullNames.append(full);
+                        }
+                    }
+                }
+                if (fullNames.isEmpty())
+                {
+                    combo->setEnabled(false);  // no multi-size table loaded
+                }
+                else
+                {
+                    combo->addItems(fullNames);
+                    if (!stored.isEmpty() && fullNames.contains(stored))
+                    {
+                        combo->setCurrentText(stored);
+                    }
+                    else
+                    {
+                        combo->setCurrentIndex(-1);  // stored measurement not in the current table
+                    }
+                }
+                connect(combo, &QComboBox::currentTextChanged, this, [this, field](const QString &v) {
                     m_template->SetSectionOption(m_index, field.key, v);
                     emit OptionsChanged();
                 });
                 form->addRow(field.label, combo);
+                break;
+            }
+            case OPieceCartoucheOptionKind::Separator:
+            {
+                struct SeparatorEntry
+                {
+                    const char *label;
+                    const char *value;
+                };
+                static const SeparatorEntry kSeparators[] = {
+                    {"None", ""}, {":", ":"}, {"-", "-"}, {"/", "/"}, {"·", "·"},
+                };
+                auto *row = new QWidget(content);
+                auto *rowLayout = new QHBoxLayout(row);
+                rowLayout->setContentsMargins(0, 0, 0, 0);
+                rowLayout->setSpacing(8);
+                auto *group = new QButtonGroup(row);
+                const QString current = section.options.value(field.key).toString();
+                for (const SeparatorEntry &entry : kSeparators)
+                {
+                    auto *radio = new QRadioButton(tr(entry.label), row);
+                    radio->setObjectName(QStringLiteral("separatorRadio"));
+                    radio->setChecked(entry.value == current);
+                    group->addButton(radio);
+                    rowLayout->addWidget(radio);
+                    connect(radio, &QRadioButton::toggled, this, [this, field, entry](bool on) {
+                        if (on)
+                        {
+                            m_template->SetSectionOption(m_index, field.key, QString::fromUtf8(entry.value));
+                            emit OptionsChanged();
+                        }
+                    });
+                }
+                rowLayout->addStretch();
+                form->addRow(field.label, row);
                 break;
             }
             case OPieceCartoucheOptionKind::Logo:
@@ -258,21 +326,6 @@ void OInfoBlockSectionEditor::Rebuild()
 
     layout->addLayout(form);
     layout->addStretch();
-
-    if (m_useDefaultsCheck != nullptr)
-    {
-        connect(m_useDefaultsCheck, &QCheckBox::toggled, this, [this](bool on) {
-            for (QWidget *control : m_fontControls)
-            {
-                control->setEnabled(!on);
-            }
-        });
-        const bool useDefaults = section.options.value(QStringLiteral("useDefaults"), true).toBool();
-        for (QWidget *control : m_fontControls)
-        {
-            control->setEnabled(!useDefaults);
-        }
-    }
 
     m_root->addWidget(content);
     m_content = content;

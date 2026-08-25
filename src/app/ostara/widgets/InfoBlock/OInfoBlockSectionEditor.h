@@ -29,11 +29,10 @@
 
 #include "OPieceCartoucheTemplate.h"
 
-#include <QList>
 #include <QVBoxLayout>
 #include <QWidget>
 
-class QCheckBox;
+class OPieceCartoucheTable;
 
 /**
  * @brief Edit zone for the currently selected template section.
@@ -51,7 +50,8 @@ public:
     explicit OInfoBlockSectionEditor(QWidget *parent = nullptr);
 
     /// Edit section `index` of `tpl` (lifetime owned by the caller). -1 clears.
-    void SetSection(OPieceCartoucheTemplate *tpl, int index);
+    /// `table` gives read access to the loaded .omt for the table-driven controls.
+    void SetSection(OPieceCartoucheTemplate *tpl, int index, const OPieceCartoucheTable *table);
 
 signals:
     /// Fired when any option changes (the editor marks the template modified).
@@ -63,9 +63,8 @@ private:
     QVBoxLayout *m_root{nullptr};
     QWidget *m_content{nullptr};
     OPieceCartoucheTemplate *m_template{nullptr};
+    const OPieceCartoucheTable *m_table{nullptr};
     int m_index{-1};
-    QCheckBox *m_useDefaultsCheck{nullptr};
-    QList<QWidget *> m_fontControls;
 };
 
 #endif // OINFOBLOCKSECTIONEDITOR_H

@@ -86,8 +86,6 @@ auto OPieceCartoucheSection::DefaultValue(const QString &key) const -> QVariant
         }
         switch (field.kind)
         {
-            case OPieceCartoucheOptionKind::UseDefaults:
-                return true;
             case OPieceCartoucheOptionKind::FontFamily:
                 return QString();
             case OPieceCartoucheOptionKind::FontWeight:
@@ -95,8 +93,10 @@ auto OPieceCartoucheSection::DefaultValue(const QString &key) const -> QVariant
             case OPieceCartoucheOptionKind::FontSize:
                 return 0.0;
             case OPieceCartoucheOptionKind::Axis:
-                return QStringLiteral("X");
+                return QString();
             case OPieceCartoucheOptionKind::MeasureName:
+                return QString();
+            case OPieceCartoucheOptionKind::Separator:
                 return QString();
             case OPieceCartoucheOptionKind::Logo:
                 return QString();

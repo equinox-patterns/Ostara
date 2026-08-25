@@ -113,9 +113,9 @@ void OInfoBlockEditor::SetupEditorPage()
         connect(action, &QAction::triggered, this, [this, id = section.Id()]() { OnAddSection(id); });
     }
     m_addBtn->setMenu(menu);
-    topBar->addWidget(m_addBtn);
 
-    auto *upBtn = new QPushButton(tr("▲"));
+    auto *upBtn = new QPushButton();
+    upBtn->setObjectName(QStringLiteral("infoBlockUpBtn"));
     upBtn->setToolTip(tr("Move up"));
     connect(upBtn, &QPushButton::clicked, this, [this]() {
         const int row = m_sectionList->currentRow();
@@ -128,9 +128,9 @@ void OInfoBlockEditor::SetupEditorPage()
         m_sectionList->setCurrentRow(row - 1);
         SetModified(true);
     });
-    topBar->addWidget(upBtn);
 
-    auto *downBtn = new QPushButton(tr("▼"));
+    auto *downBtn = new QPushButton();
+    downBtn->setObjectName(QStringLiteral("infoBlockDownBtn"));
     downBtn->setToolTip(tr("Move down"));
     connect(downBtn, &QPushButton::clicked, this, [this]() {
         const int row = m_sectionList->currentRow();
@@ -143,7 +143,6 @@ void OInfoBlockEditor::SetupEditorPage()
         m_sectionList->setCurrentRow(row + 1);
         SetModified(true);
     });
-    topBar->addWidget(downBtn);
 
     topBar->addStretch();
 
@@ -169,11 +168,22 @@ void OInfoBlockEditor::SetupEditorPage()
 
     m_preview = new OInfoBlockPreview();
     m_preview->SetTemplate(&m_template);
+    m_preview->SetTable(&m_table);
 
     auto *left = new QWidget();
     auto *leftLayout = new QVBoxLayout(left);
     leftLayout->setContentsMargins(0, 0, 0, 0);
     leftLayout->setSpacing(4);
+
+    // Order bar just above the list: Add information + move up/down
+    auto *listBar = new QHBoxLayout();
+    listBar->setSpacing(4);
+    listBar->addWidget(m_addBtn);
+    listBar->addWidget(upBtn);
+    listBar->addWidget(downBtn);
+    listBar->addStretch();
+    leftLayout->addLayout(listBar);
+
     leftLayout->addWidget(m_sectionList, 1);
     leftLayout->addWidget(m_sectionEditor, 0);
 
@@ -286,12 +296,14 @@ void OInfoBlockEditor::RefreshSectionList()
 
 void OInfoBlockEditor::SelectSection(int index)
 {
-    m_sectionEditor->SetSection(&m_template, index);
+    m_table.Load();
+    m_sectionEditor->SetSection(&m_template, index, &m_table);
     RefreshPreview();
 }
 
 void OInfoBlockEditor::RefreshPreview()
 {
+    m_table.Load();  // no-op when the resolved .omt path has not changed
     m_preview->Refresh();
 }
 

@@ -42,12 +42,12 @@
  */
 enum class OPieceCartoucheOptionKind
 {
-    UseDefaults,  ///< bool — « Use default font settings » checkbox
     FontFamily,   ///< QString — font family
     FontWeight,   ///< int — QFont::Weight (0 = default)
-    FontSize,     ///< double — font size in points (0 = default)
-    Axis,         ///< QString — size axis "X"/"Y"/"Z"
-    MeasureName,  ///< QString — name of the measurement
+    FontSize,     ///< int — font size in px (0 = default)
+    Axis,         ///< QString — size-axis name from the loaded table
+    MeasureName,  ///< QString — measurement full name from the loaded table
+    Separator,    ///< QString — separator between name and value ("", ":", "-", "/", "·")
     Logo,         ///< QString — reference logo identifier
     LogoWidth,    ///< double — logo width in cm
     LogoHeight    ///< double — logo height in cm
@@ -59,7 +59,7 @@ enum class OPieceCartoucheOptionKind
 struct OPieceCartoucheOptionField
 {
     QString key;
-    OPieceCartoucheOptionKind kind{OPieceCartoucheOptionKind::UseDefaults};
+    OPieceCartoucheOptionKind kind{OPieceCartoucheOptionKind::FontFamily};
     QString label;
 };
 

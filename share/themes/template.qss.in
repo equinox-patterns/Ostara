@@ -659,6 +659,18 @@ QRadioButton::indicator:checked:disabled {
     image: url(:/icons/$theme/radio-button-fill_disabled.svg);
 }
 
+/* Information block — separator picker: plain regular/fill radio icons */
+QRadioButton#separatorRadio::indicator {
+    width: 16px;
+    height: 16px;
+}
+QRadioButton#separatorRadio::indicator:unchecked {
+    image: url(:/icons/$theme/circle_$theme.svg);
+}
+QRadioButton#separatorRadio::indicator:checked {
+    image: url(:/icons/$theme/radio-button-fill_$theme.svg);
+}
+
 /* =========================================================================
    QTabWidget / QTabBar — Onglets
    Design: inactive = $TableHeaderBg + $TextSecondary + $Border
@@ -840,6 +852,29 @@ QPushButton#dockDetachBtn:disabled {
 /* Close */
 QPushButton#dockCloseBtn {
     image: url(:/icons/$theme/x_$theme.svg);
+}
+
+/* Information block — order arrows (hover = regular dark, both themes) */
+QPushButton#infoBlockUpBtn,
+QPushButton#infoBlockDownBtn {
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    padding: 2px;
+}
+QPushButton#infoBlockUpBtn:hover,
+QPushButton#infoBlockDownBtn:hover {
+    background: $HoverBg;
+}
+QPushButton#infoBlockUpBtn {
+    image: url(:/icons/$theme/arrow-up_$theme.svg);
+}
+QPushButton#infoBlockDownBtn {
+    image: url(:/icons/$theme/arrow-down_$theme.svg);
 }
 
 /* Presets d'angle (0/90/180/270°) sous les champs de formule angle */

@@ -14,6 +14,8 @@
         <file alias="radio-button-fill_accent.svg">../../../../../share/themes/icons/light/radio-button-fill_accent.svg</file>
         <file alias="circle_disabled.svg">../../../../../share/themes/icons/light/circle_disabled.svg</file>
         <file alias="radio-button-fill_disabled.svg">../../../../../share/themes/icons/light/radio-button-fill_disabled.svg</file>
+        <file alias="circle_light.svg">../../../../../share/themes/icons/light/circle_light.svg</file>
+        <file alias="radio-button-fill_light.svg">../../../../../share/themes/icons/light/radio-button-fill_light.svg</file>
         <file alias="trash_disabled.svg">../../../../../share/themes/icons/light/trash_disabled.svg</file>
         <file alias="caret-up_light.svg">../../../../../share/themes/icons/light/caret-up_light.svg</file>
         <file alias="caret-down_light.svg">../../../../../share/themes/icons/light/caret-down_light.svg</file>
@@ -87,6 +89,8 @@
         <file alias="radio-button-fill_accent.svg">../../../../../share/themes/icons/dark/radio-button-fill_accent.svg</file>
         <file alias="circle_disabled.svg">../../../../../share/themes/icons/dark/circle_disabled.svg</file>
         <file alias="radio-button-fill_disabled.svg">../../../../../share/themes/icons/dark/radio-button-fill_disabled.svg</file>
+        <file alias="circle_dark.svg">../../../../../share/themes/icons/dark/circle_dark.svg</file>
+        <file alias="radio-button-fill_dark.svg">../../../../../share/themes/icons/dark/radio-button-fill_dark.svg</file>
         <file alias="trash_disabled.svg">../../../../../share/themes/icons/dark/trash_disabled.svg</file>
         <file alias="caret-up_dark.svg">../../../../../share/themes/icons/dark/caret-up_dark.svg</file>
         <file alias="caret-down_dark.svg">../../../../../share/themes/icons/dark/caret-down_dark.svg</file>

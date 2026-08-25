@@ -27,6 +27,7 @@
 #ifndef OINFOBLOCKEDITOR_H
 #define OINFOBLOCKEDITOR_H
 
+#include "OPieceCartoucheTable.h"
 #include "OPieceCartoucheTemplate.h"
 
 #include <QWidget>
@@ -79,6 +80,7 @@ private:
     void SetModified(bool modified);
 
     OPieceCartoucheTemplate m_template;
+    OPieceCartoucheTable m_table;  // read access to the loaded .omt (Sizes / Measurement)
     QString m_filePath;
     bool m_modified{false};
 

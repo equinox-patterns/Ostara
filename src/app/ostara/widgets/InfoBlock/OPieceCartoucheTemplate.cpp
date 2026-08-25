@@ -30,6 +30,7 @@
 
 #include <QDomDocument>
 #include <QDomText>
+#include <QStringList>
 
 namespace
 {
@@ -163,10 +164,6 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
             }
             switch (field.kind)
             {
-                case OPieceCartoucheOptionKind::UseDefaults:
-                    sectionEl.setAttribute(field.key, value.toBool() ? QStringLiteral("1")
-                                                                     : QStringLiteral("0"));
-                    break;
                 case OPieceCartoucheOptionKind::FontWeight:
                     sectionEl.setAttribute(field.key, QString::number(value.toInt()));
                     break;
@@ -178,6 +175,7 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
                 case OPieceCartoucheOptionKind::FontFamily:
                 case OPieceCartoucheOptionKind::Axis:
                 case OPieceCartoucheOptionKind::MeasureName:
+                case OPieceCartoucheOptionKind::Separator:
                 case OPieceCartoucheOptionKind::Logo:
                     sectionEl.setAttribute(field.key, value.toString());
                     break;
@@ -222,11 +220,6 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                 const QString attr = sectionEl.attribute(field.key);
                 switch (field.kind)
                 {
-                    case OPieceCartoucheOptionKind::UseDefaults:
-                        section.options.insert(
-                            field.key, attr == QStringLiteral("1")
-                                           || attr.compare(QStringLiteral("true"), Qt::CaseInsensitive) == 0);
-                        break;
                     case OPieceCartoucheOptionKind::FontWeight:
                         section.options.insert(field.key, attr.toInt());
                         break;
@@ -236,11 +229,14 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                         section.options.insert(field.key, attr.toDouble());
                         break;
                     case OPieceCartoucheOptionKind::Axis:
+                        // Axis names are user-defined in the table — stored verbatim.
+                        section.options.insert(field.key, attr);
+                        break;
+                    case OPieceCartoucheOptionKind::Separator:
                     {
-                        const QString value = attr.toUpper();
-                        section.options.insert(
-                            field.key, (value == QStringLiteral("X") || value == QStringLiteral("Y")
-                                        || value == QStringLiteral("Z")) ? value : QStringLiteral("X"));
+                        static const QStringList kSeparators = {QString(), QStringLiteral(":"), QStringLiteral("-"),
+                                                                QStringLiteral("/"), QStringLiteral("·")};
+                        section.options.insert(field.key, kSeparators.contains(attr) ? attr : QString());
                         break;
                     }
                     case OPieceCartoucheOptionKind::FontFamily:

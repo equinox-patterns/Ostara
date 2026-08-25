@@ -27,10 +27,28 @@
 #include "OInfoBlockPreview.h"
 
 #include "OPieceCartoucheCatalogue.h"
+#include "OPieceCartoucheTable.h"
 
 #include <QFontMetricsF>
 #include <QPainter>
 #include <QPaintEvent>
+
+namespace
+{
+// Compose "name [separator] value", e.g. "Stature : 168" or "Tour de poitrine 89 cm".
+QString ComposeLine(const QString &name, const QString &value, const QString &separator)
+{
+    if (value.isEmpty())
+    {
+        return name;
+    }
+    if (separator.isEmpty())
+    {
+        return name + QLatin1Char(' ') + value;
+    }
+    return name + QLatin1Char(' ') + separator + QLatin1Char(' ') + value;
+}
+}  // namespace
 
 OInfoBlockPreview::OInfoBlockPreview(QWidget *parent) : QWidget(parent)
 {
@@ -40,6 +58,12 @@ OInfoBlockPreview::OInfoBlockPreview(QWidget *parent) : QWidget(parent)
 void OInfoBlockPreview::SetTemplate(const OPieceCartoucheTemplate *tpl)
 {
     m_template = tpl;
+    update();
+}
+
+void OInfoBlockPreview::SetTable(const OPieceCartoucheTable *table)
+{
+    m_table = table;
     update();
 }
 
@@ -63,6 +87,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
     }
 
     const int margin = 16;
+    const QFont baseFont = font();  // widget's own font — reset per line, no style cascade
     qreal y = margin;
     for (int i = 0; i < m_template->SectionCount(); ++i)
     {
@@ -72,31 +97,65 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
             continue;
         }
 
-        QFont font = painter.font();
         const auto &options = m_template->SectionAt(i).options;
-        if (!options.value(QStringLiteral("useDefaults"), true).toBool())
+
+        QString line = type.DisplayName();
+        const QString separator = options.value(QStringLiteral("separator")).toString();
+        if (type.Id() == QStringLiteral("axis"))
         {
-            const QString family = options.value(QStringLiteral("fontFamily")).toString();
-            const int weight = options.value(QStringLiteral("fontWeight"), 0).toInt();
-            const double size = options.value(QStringLiteral("fontSize"), 0.0).toDouble();
-            if (!family.isEmpty())
+            if (m_table == nullptr || !m_table->HasMultiSizeTable())
             {
-                font.setFamily(family);
+                continue;  // dead data: no multi-size table
             }
-            if (weight > 0)
+            const QString axis = options.value(QStringLiteral("axis")).toString();
+            if (axis.isEmpty() || !m_table->AxisNames().contains(axis))
             {
-                font.setWeight(QFont::Weight(weight));
+                continue;  // dead data: axis not in the current table
             }
-            if (size > 0.0)
+            line = ComposeLine(axis, m_table->AnchorValue(axis), separator);
+        }
+        else if (type.Id() == QStringLiteral("measure"))
+        {
+            if (m_table == nullptr || !m_table->HasMultiSizeTable())
             {
-                font.setPointSizeF(size);
+                continue;  // dead data: no multi-size table
             }
+            const QString storedFull = options.value(QStringLiteral("measureName")).toString();
+            if (storedFull.isEmpty())
+            {
+                continue;
+            }
+            const QString name = m_table->MeasurementNameFromFullName(storedFull);
+            if (name.isEmpty())
+            {
+                continue;  // dead data: measurement not in the current table
+            }
+            const QString value = OPieceCartoucheTable::FormatValue(m_table->MeasurementValue(name))
+                                  + QLatin1Char(' ') + m_table->UnitsStr();
+            line = ComposeLine(storedFull, value, separator);
+        }
+
+        QFont font = baseFont;
+        const QString family = options.value(QStringLiteral("fontFamily")).toString();
+        const int weight = options.value(QStringLiteral("fontWeight"), 0).toInt();
+        const double size = options.value(QStringLiteral("fontSize"), 0.0).toDouble();
+        if (!family.isEmpty())
+        {
+            font.setFamily(family);
+        }
+        if (weight > 0)
+        {
+            font.setWeight(QFont::Weight(weight));
+        }
+        if (size > 0.0)
+        {
+            font.setPixelSize(qRound(size));
         }
 
         painter.setFont(font);
         painter.setPen(palette().text().color());
         const QRectF lineRect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
-        painter.drawText(lineRect, Qt::AlignLeft | Qt::AlignVCenter, type.DisplayName());
+        painter.drawText(lineRect, Qt::AlignHCenter | Qt::AlignVCenter, line);
 
         y += QFontMetricsF(font).height() + 6.0;
         if (y > height())

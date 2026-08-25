@@ -31,13 +31,13 @@
         <xs:complexType>
           <xs:attribute name="type" type="xs:string" use="required"/>
           <!-- Per-section styling (all types) -->
-          <xs:attribute name="useDefaults" type="xs:boolean" default="true"/>
           <xs:attribute name="fontFamily" type="xs:string"/>
           <xs:attribute name="fontWeight" type="xs:int" default="0"/>
           <xs:attribute name="fontSize" type="xs:double" default="0"/>
           <!-- Type-specific options -->
-          <xs:attribute name="axis" type="AxisEnum"/>
+          <xs:attribute name="axis" type="xs:string"/>
           <xs:attribute name="measureName" type="xs:string"/>
+          <xs:attribute name="separator" type="xs:string" default=""/>
           <xs:attribute name="logo" type="xs:string"/>
           <xs:attribute name="logoWidth" type="xs:double" default="2"/>
           <xs:attribute name="logoHeight" type="xs:double" default="2"/>
@@ -53,14 +53,6 @@
   <xs:simpleType name="FormatVersion">
     <xs:restriction base="xs:string">
       <xs:pattern value="[0-9]{1,}(\.[0-9]{1,}){1,2}"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="AxisEnum">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="X"/>
-      <xs:enumeration value="Y"/>
-      <xs:enumeration value="Z"/>
     </xs:restriction>
   </xs:simpleType>
 

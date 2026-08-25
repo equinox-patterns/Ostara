@@ -41,25 +41,24 @@ auto T(const char *source) -> QString
 
 auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
 {
-    const OPieceCartoucheOptionField kUseDefaults{QStringLiteral("useDefaults"),
-                                                  OPieceCartoucheOptionKind::UseDefaults,
-                                                  T("Use default font settings")};
     const OPieceCartoucheOptionField kFontFamily{QStringLiteral("fontFamily"),
                                                  OPieceCartoucheOptionKind::FontFamily, T("Font family")};
     const OPieceCartoucheOptionField kFontWeight{QStringLiteral("fontWeight"),
                                                  OPieceCartoucheOptionKind::FontWeight, T("Font weight")};
     const OPieceCartoucheOptionField kFontSize{QStringLiteral("fontSize"),
-                                               OPieceCartoucheOptionKind::FontSize, T("Font size (pt)")};
+                                               OPieceCartoucheOptionKind::FontSize, T("Font size (px)")};
     const OPieceCartoucheOptionField kAxis{QStringLiteral("axis"), OPieceCartoucheOptionKind::Axis, T("Axis")};
     const OPieceCartoucheOptionField kMeasureName{QStringLiteral("measureName"),
                                                   OPieceCartoucheOptionKind::MeasureName, T("Measurement")};
+    const OPieceCartoucheOptionField kSeparator{QStringLiteral("separator"),
+                                                OPieceCartoucheOptionKind::Separator, T("Separator")};
     const OPieceCartoucheOptionField kLogo{QStringLiteral("logo"), OPieceCartoucheOptionKind::Logo, T("Logo")};
     const OPieceCartoucheOptionField kLogoWidth{QStringLiteral("logoWidth"),
                                                 OPieceCartoucheOptionKind::LogoWidth, T("Logo width (cm)")};
     const OPieceCartoucheOptionField kLogoHeight{QStringLiteral("logoHeight"),
                                                  OPieceCartoucheOptionKind::LogoHeight, T("Logo height (cm)")};
 
-    const QList<OPieceCartoucheOptionField> textFields = {kUseDefaults, kFontFamily, kFontWeight, kFontSize};
+    const QList<OPieceCartoucheOptionField> textFields = {kFontFamily, kFontWeight, kFontSize};
 
     return {
         OPieceCartoucheSection(QStringLiteral("patternName"), T("Pattern name"),
@@ -76,17 +75,17 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
                                T("Cut quantity per fabric — only filled tabs are shown."), textFields),
         OPieceCartoucheSection(QStringLiteral("freeText"), T("Free text"),
                                T("Free text entered per piece in the information block."), textFields),
-        OPieceCartoucheSection(QStringLiteral("axis"), T("Axis"),
-                               T("A size-axis value shown under its user-given name."),
-                               {kAxis, kUseDefaults, kFontFamily, kFontWeight, kFontSize}),
+        OPieceCartoucheSection(QStringLiteral("axis"), T("Sizes (Height, Commercial size, Group...)"),
+                               T("Requires a multi-size table (.omt). Shows a size-axis value under its user-given "
+                                 "name. With a single-size table, this information is simply ignored."),
+                               {kAxis, kSeparator, kFontFamily, kFontWeight, kFontSize}),
         OPieceCartoucheSection(QStringLiteral("measure"), T("Measurement"),
-                               T("A measurement value from the pattern's size table."),
-                               {kMeasureName, kUseDefaults, kFontFamily, kFontWeight, kFontSize}),
+                               T("Read from the pattern's size table. Shows the measurement's full name, its "
+                                 "calculated value at the reference size and its unit."),
+                               {kMeasureName, kSeparator, kFontFamily, kFontWeight, kFontSize}),
         OPieceCartoucheSection(QStringLiteral("logo"), T("Logo"),
                                T("The reference logo (configured in the settings)."),
-                               {kLogo, kLogoWidth, kLogoHeight, kUseDefaults, kFontFamily, kFontWeight, kFontSize}),
-        OPieceCartoucheSection(QStringLiteral("guidelines"), T("Guidelines / Notes"),
-                               T("Guidelines / client notes stored in the document."), textFields),
+                               {kLogo, kLogoWidth, kLogoHeight, kFontFamily, kFontWeight, kFontSize}),
         OPieceCartoucheSection(QStringLiteral("collection"), T("Collection"),
                                T("The collection name."), textFields),
         OPieceCartoucheSection(QStringLiteral("fabricInfo"), T("Fabric info"),
