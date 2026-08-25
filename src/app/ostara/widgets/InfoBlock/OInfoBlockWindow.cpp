@@ -37,6 +37,11 @@
 
 OInfoBlockWindow::OInfoBlockWindow(QWidget *parent) : QMainWindow(parent)
 {
+    // Explicitly promote to top-level window (matches MeasurementWindow pattern).
+    // Without this, on macOS the native QFileDialog sheet attached during Save
+    // can leave the window deactivated behind its parent MainWindow.
+    setWindowModality(Qt::NonModal);
+
     m_editor = new OInfoBlockEditor(this);
     setCentralWidget(m_editor);
     setWindowTitle(tr("Information block[*]"));
