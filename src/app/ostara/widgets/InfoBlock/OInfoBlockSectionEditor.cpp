@@ -30,6 +30,8 @@
 #include "OPieceCartoucheStorage.h"
 #include "OPieceCartoucheTable.h"
 
+#include "vmisc/FactoryWidgets.h"
+
 #include <QButtonGroup>
 #include <QComboBox>
 #include <QDoubleSpinBox>
@@ -123,7 +125,7 @@ void OInfoBlockSectionEditor::Rebuild()
                     {500, "Medium"},     {600, "Demi Bold"},   {700, "Bold"},    {800, "Extra Bold"},
                     {900, "Black"},
                 };
-                auto *combo = new QComboBox(content);
+                auto *combo = MakeComboBox(content);
                 const int current = section.options.value(field.key, 0).toInt();
                 combo->addItem(tr("Default"), 0);  // 0 = use default weight
                 for (const WeightEntry &entry : kWeights)
@@ -157,7 +159,7 @@ void OInfoBlockSectionEditor::Rebuild()
             }
             case OPieceCartoucheOptionKind::Axis:
             {
-                auto *combo = new QComboBox(content);
+                auto *combo = MakeComboBox(content);
                 const QString stored = section.options.value(field.key).toString();
                 const QStringList axes = m_table != nullptr ? m_table->AxisNames() : QStringList();
                 if (axes.isEmpty())
@@ -185,7 +187,7 @@ void OInfoBlockSectionEditor::Rebuild()
             }
             case OPieceCartoucheOptionKind::MeasureName:
             {
-                auto *combo = new QComboBox(content);
+                auto *combo = MakeComboBox(content);
                 const QString stored = section.options.value(field.key).toString();
                 QStringList fullNames;
                 if (m_table != nullptr)
@@ -261,7 +263,7 @@ void OInfoBlockSectionEditor::Rebuild()
             }
             case OPieceCartoucheOptionKind::Logo:
             {
-                auto *combo = new QComboBox(content);
+                auto *combo = MakeComboBox(content);
                 const QString stored = section.options.value(field.key).toString();
                 const QList<OPieceCartoucheStorage::LogoEntry> logos = OPieceCartoucheStorage::LoadLogos();
                 if (logos.isEmpty())
