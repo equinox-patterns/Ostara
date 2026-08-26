@@ -57,6 +57,9 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
                                                  OPieceCartoucheOptionKind::FontWeight, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Font weight"))};
     const OPieceCartoucheOptionField kFontSize{QStringLiteral("fontSize"),
                                                OPieceCartoucheOptionKind::FontSize, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Font size (px)"))};
+    const OPieceCartoucheOptionField kLineSpacing{QStringLiteral("lineSpacing"),
+                                                  OPieceCartoucheOptionKind::LineSpacing,
+                                                  T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Line spacing (px)"))};
     const OPieceCartoucheOptionField kAxis{QStringLiteral("axis"), OPieceCartoucheOptionKind::Axis, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Axis"))};
     const OPieceCartoucheOptionField kMeasureName{QStringLiteral("measureName"),
                                                   OPieceCartoucheOptionKind::MeasureName, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Measurement"))};
@@ -79,11 +82,12 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
                                                OPieceCartoucheOptionKind::LogoSize, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Logo size (cm)"))};
     const OPieceCartoucheOptionField kCut{QStringLiteral("cut"), OPieceCartoucheOptionKind::Cut, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Cut"))};
 
-    const QList<OPieceCartoucheOptionField> textFields = {kFontFamily, kFontWeight, kFontSize};
+    const QList<OPieceCartoucheOptionField> textFields = {kFontFamily, kFontWeight, kFontSize, kLineSpacing};
     const OPieceCartoucheOptionField kMultilingual{QStringLiteral("multilingual"),
                                                    OPieceCartoucheOptionKind::Multilingual,
                                                    T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Write this information in each language of the block"))};
-    const QList<OPieceCartoucheOptionField> multilingualTextFields = {kMultilingual, kFontFamily, kFontWeight, kFontSize};
+    const QList<OPieceCartoucheOptionField> multilingualTextFields = {kMultilingual, kFontFamily, kFontWeight, kFontSize,
+                                                                      kLineSpacing};
     // Axis rename: per-language display aliases of the axis and its values
     // (the title shown above the per-language tabs). Reused by the Measurement
     // section with a per-language name only (no values).
@@ -108,14 +112,14 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Piece number"),
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The piece number and its total, e.g. 01 of 10. The total shown here is an "
                                       "example — it is computed automatically from the number of active pieces."),
-                    {kPieceSeparator, kFontFamily, kFontWeight, kFontSize}),
+                    {kPieceSeparator, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("cut",
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Cut (Fabric / Interfacing / Lining)"),
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "One section covers all three fabrics — no need to add Cut several times. "
                                       "The values here are only an example so you can see how the section "
                                       "renders: in the pieces, the cut quantities are entered per piece and are "
                                       "empty by default."),
-                    {kCut, kFontFamily, kFontWeight, kFontSize}),
+                    {kCut, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("freeText",
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Free text"),
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Free text entered per piece in the information block. It can span "
@@ -125,16 +129,16 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Sizes (Height, Commercial size, Group...)"),
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Requires a multi-size table (.omt). Shows a size-axis value under its user-given "
                                       "name. With a single-size table, this information is simply ignored."),
-                    {kAxis, kSeparatorNoDash, kAxisRename, kFontFamily, kFontWeight, kFontSize}),
+                    {kAxis, kSeparatorNoDash, kAxisRename, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("measure",
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Measurement"),
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Read from the pattern's size table. Shows the measurement's full name, its "
                                       "calculated value at the reference size and its unit."),
-                    {kMeasureName, kSeparator, kMeasureRename, kFontFamily, kFontWeight, kFontSize}),
+                    {kMeasureName, kSeparator, kMeasureRename, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("logo",
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Logo"),
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "A logo from your library (add your SVG logos in the Logo page)."),
-                    {kLogo, kLogoSize}),
+                    {kLogo, kLogoSize, kLineSpacing}),
         MakeSection("collection",
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Collection"),
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The collection name."), textFields),

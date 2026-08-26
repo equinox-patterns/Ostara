@@ -60,6 +60,8 @@
           <xs:attribute name="fontFamily" type="xs:string"/>
           <xs:attribute name="fontWeight" type="xs:int" default="0"/>
           <xs:attribute name="fontSize" type="xs:double" default="0"/>
+          <!-- Extra vertical space (px) with the next line; 0 = default, negative = tighter -->
+          <xs:attribute name="lineSpacing" type="xs:double" default="0"/>
           <!-- Type-specific options -->
           <xs:attribute name="axis" type="xs:string"/>
           <xs:attribute name="measureName" type="xs:string"/>

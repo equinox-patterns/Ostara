@@ -227,6 +227,7 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
             switch (field.kind)
             {
                 case OPieceCartoucheOptionKind::FontWeight:
+                case OPieceCartoucheOptionKind::LineSpacing:
                     sectionEl.setAttribute(field.key, QString::number(value.toInt()));
                     break;
                 case OPieceCartoucheOptionKind::FontSize:
@@ -388,6 +389,7 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                 switch (field.kind)
                 {
                     case OPieceCartoucheOptionKind::FontWeight:
+                    case OPieceCartoucheOptionKind::LineSpacing:
                         section.options.insert(field.key, attr.toInt());
                         break;
                     case OPieceCartoucheOptionKind::FontSize:

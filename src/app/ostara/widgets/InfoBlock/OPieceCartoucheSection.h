@@ -47,6 +47,7 @@ enum class OPieceCartoucheOptionKind
     FontFamily,   ///< QString — font family
     FontWeight,   ///< int — QFont::Weight (0 = default)
     FontSize,     ///< int — font size in px (0 = default)
+    LineSpacing,  ///< int — extra vertical space in px with the next line (0 = default, negative = tighter)
     Axis,         ///< QString — size-axis name from the loaded table
     MeasureName,  ///< QString — measurement full name from the loaded table
     Separator,    ///< QString — separator between name and value ("", ":", "-", "/", "·")

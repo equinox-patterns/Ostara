@@ -145,6 +145,10 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
             font.setPixelSize(qRound(size));
         }
 
+        // Extra vertical space (px) between this section's lines and the next
+        // one — the Line spacing option (0 = default, negative = tighter).
+        const int lineSpacing = options.value(QStringLiteral("lineSpacing"), 0).toInt();
+
         // Text sections — the sample line is the section's source name in the
         // main language (the catalogue translates it for the UI elsewhere).
         QString line = Tl(mainLocale, "OPieceCartoucheSection", qPrintable(type.SourceName()));
@@ -198,7 +202,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                 {
                     const QRectF rect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
                     painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, text);
-                    y += QFontMetricsF(font).height() + 6.0;
+                    y += QFontMetricsF(font).height() + 6.0 + lineSpacing;
                     if (y > height())
                     {
                         break;
@@ -211,7 +215,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                 const QRectF rect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
                 painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter,
                                  languageLines.join(QStringLiteral(" - ")));
-                y += QFontMetricsF(font).height() + 6.0;
+                y += QFontMetricsF(font).height() + 6.0 + lineSpacing;
             }
             continue;
         }
@@ -258,7 +262,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                                            qPrintable(options.value(QStringLiteral("separator")).toString()));
                     const QRectF rect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
                     painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, ComposeLine(names.at(i), value, sep));
-                    y += QFontMetricsF(font).height() + 6.0;
+                    y += QFontMetricsF(font).height() + 6.0 + lineSpacing;
                     if (y > height())
                     {
                         break;
@@ -277,7 +281,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                                        qPrintable(options.value(QStringLiteral("separator")).toString()));
                 const QRectF rect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
                 painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, ComposeLine(display, value, sep));
-                y += QFontMetricsF(font).height() + 6.0;
+                y += QFontMetricsF(font).height() + 6.0 + lineSpacing;
             }
             continue;
         }
@@ -330,7 +334,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                     text += Tl(locale, "OInfoBlockPreview", QT_TRANSLATE_NOOP("OInfoBlockPreview", " (%1)")).arg(Tl(locale, "OInfoBlockPreview", tab.display));
                     const QRectF lineRect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
                     painter.drawText(lineRect, Qt::AlignHCenter | Qt::AlignVCenter, text);
-                    y += QFontMetricsF(font).height() + 6.0;
+                    y += QFontMetricsF(font).height() + 6.0 + lineSpacing;
                     if (y > height())
                     {
                         break;
@@ -372,7 +376,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
             }
             const QRectF logoRect(margin + (width() - 2.0 * margin - drawW) / 2.0, y, drawW, drawH);
             renderer.render(&painter, logoRect);
-            y += drawH + 6.0;
+            y += drawH + 6.0 + lineSpacing;
             if (y > height())
             {
                 break;
@@ -385,7 +389,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
         const QRectF lineRect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
         painter.drawText(lineRect, Qt::AlignHCenter | Qt::AlignVCenter, line);
 
-        y += QFontMetricsF(font).height() + 6.0;
+        y += QFontMetricsF(font).height() + 6.0 + lineSpacing;
         if (y > height())
         {
             break;

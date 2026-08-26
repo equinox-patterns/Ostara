@@ -101,6 +101,8 @@ auto OPieceCartoucheSection::DefaultValue(const QString &key) const -> QVariant
                 return 0;
             case OPieceCartoucheOptionKind::FontSize:
                 return 0.0;
+            case OPieceCartoucheOptionKind::LineSpacing:
+                return 0;
             case OPieceCartoucheOptionKind::Axis:
                 return QString();
             case OPieceCartoucheOptionKind::MeasureName:

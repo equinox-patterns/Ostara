@@ -168,6 +168,21 @@ void OInfoBlockSectionEditor::Rebuild()
                 form->addRow(field.label, spin);
                 break;
             }
+            case OPieceCartoucheOptionKind::LineSpacing:
+            {
+                auto *spin = new QSpinBox(content);
+                spin->setRange(-100, 100);
+                spin->setSuffix(QStringLiteral(" px"));
+                spin->setToolTip(tr("Extra vertical space between this line and the next one. "
+                                    "0 = default spacing, negative = tighter, positive = more space."));
+                spin->setValue(section.options.value(field.key, 0).toInt());
+                connect(spin, &QSpinBox::valueChanged, this, [this, field](int v) {
+                    m_template->SetSectionOption(m_index, field.key, v);
+                    emit OptionsChanged();
+                });
+                form->addRow(field.label, spin);
+                break;
+            }
             case OPieceCartoucheOptionKind::Axis:
             {
                 auto *combo = MakeComboBox(content);
