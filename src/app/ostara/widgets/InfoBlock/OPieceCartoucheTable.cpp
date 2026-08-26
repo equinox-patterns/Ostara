@@ -147,6 +147,11 @@ QString OPieceCartoucheTable::AnchorValue(const QString &axisName) const
     return m_omtDoc != nullptr ? m_omtDoc->GetAnchorValue(axisName) : QString();
 }
 
+QStringList OPieceCartoucheTable::AxisValues(const QString &axisName) const
+{
+    return m_omtDoc != nullptr ? m_omtDoc->GetSizeGroupValues(axisName) : QStringList();
+}
+
 QStringList OPieceCartoucheTable::MeasurementNames() const
 {
     if (m_omtDoc != nullptr)

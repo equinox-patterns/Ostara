@@ -32,6 +32,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+class OAxisRenameEditor;
 class OPieceCartoucheTable;
 
 /**
@@ -62,12 +63,14 @@ signals:
 
 private:
     void Rebuild();
+    void UpdateAxisRenameEditor();
 
     QVBoxLayout *m_root{nullptr};
     QWidget *m_content{nullptr};
     OPieceCartoucheTemplate *m_template{nullptr};
     const OPieceCartoucheTable *m_table{nullptr};
     int m_index{-1};
+    OAxisRenameEditor *m_axisRenameEditor{nullptr};
 };
 
 #endif // OINFOBLOCKSECTIONEDITOR_H

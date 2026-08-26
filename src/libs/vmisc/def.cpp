@@ -41,6 +41,7 @@
 #include <QGlobalStatic>
 #include <QGraphicsItem>
 #include <QGuiApplication>
+#include <QHash>
 #include <QImage>
 #include <QLatin1Char>
 #include <QList>
@@ -52,6 +53,7 @@
 #include <QPrinterInfo>
 #include <QProcess>
 #include <QRgb>
+#include <QTranslator>
 #include <QUrl>
 #include <QtDebug>
 
@@ -94,47 +96,116 @@ auto LocalList() -> QStringList
 
     return fileNames;
 }
+} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-void InitLanguageList(QComboBox *combobox)
+auto AvailableUiLanguages() -> QStringList
 {
-    SCASSERT(combobox != nullptr)
-    combobox->clear();
+    QStringList result;
 
     const QStringList fileNames = LocalList();
     const QStringList supportedLocales = SupportedLocales();
 
     for (auto locale : fileNames)
     {
-        // get locale extracted by filename           "valentina_de_De.qm"
-        locale.truncate(locale.lastIndexOf('.'_L1));  // "valentina_de_De"
-        locale.remove(0, locale.indexOf('_'_L1) + 1); // "de_De"
+        // get locale extracted by filename           "ostara_de_DE.qm"
+        locale.truncate(locale.lastIndexOf('.'_L1));  // "ostara_de_DE"
+        locale.remove(0, locale.indexOf('_'_L1) + 1); // "de_DE"
 
         if (locale.startsWith("ru"_L1) || locale.startsWith("ir"_L1) || !supportedLocales.contains(locale))
         {
             continue;
         }
-
-        auto const loc = QLocale(locale);
-        QString const lang = loc.nativeLanguageName();
-        QString country = TerritoryToString(loc);
-        if (country == "Czechia"_L1)
-        {
-            country = "CzechRepublic"_L1;
-        }
-        QIcon const ico(u"://flags/%1.png"_s.arg(country));
-
-        combobox->addItem(ico, lang, locale);
+        result.append(locale);
     }
 
-    // English language is internal and doesn't have own *.qm file.
-    // Since Qt 5.12 country names have spaces
-    QIcon const ico(u"://flags/%1.png"_s.arg(TerritoryToString(QLocale::UnitedStates)));
-    const auto en_US = QStringLiteral("en_US");
-    QString const lang = QLocale(en_US).nativeLanguageName();
-    combobox->addItem(ico, lang, en_US);
+    // English language is internal and doesn't have its own *.qm file.
+    result.append(QStringLiteral("en_US"));
+
+    return result;
 }
-} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DefaultUiLanguage() -> QString
+{
+    auto *app = VAbstractApplication::VApp();
+    if (app != nullptr)
+    {
+        const QString current = app->Settings()->GetLocale();
+        if (AvailableUiLanguages().contains(current))
+        {
+            return current;
+        }
+    }
+    return QStringLiteral("en_US");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QString TranslateToLocale(const QString &locale, const char *context, const char *sourceText)
+{
+    if (locale.isEmpty() || locale == QStringLiteral("en_US"))
+    {
+        return QString::fromUtf8(sourceText);
+    }
+
+    // Translators are cached per locale for the app lifetime (they are only
+    // read, never modified after load).
+    static QHash<QString, QTranslator *> translators;
+    QTranslator *translator = translators.value(locale, nullptr);
+    if (translator == nullptr)
+    {
+        translator = new QTranslator();
+        if (translator->load(QStringLiteral(":/i18n/ostara_%1.qm").arg(locale)))
+        {
+            translators.insert(locale, translator);
+        }
+        else
+        {
+            delete translator;
+            translator = nullptr;
+        }
+    }
+
+    if (translator != nullptr)
+    {
+        const QString translated = translator->translate(context, sourceText);
+        if (!translated.isEmpty())
+        {
+            return translated;
+        }
+    }
+    return QString::fromUtf8(sourceText);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto LanguageFlagIcon(const QString &locale) -> QIcon
+{
+    const QLocale loc(locale);
+    QString country = TerritoryToString(loc);
+    if (country == "Czechia"_L1)
+    {
+        country = "CzechRepublic"_L1;
+    }
+    return QIcon(u"://flags/%1.png"_s.arg(country));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void AddLanguageItems(QComboBox *combobox, const QStringList &locales)
+{
+    for (const QString &locale : locales)
+    {
+        QIcon const ico = LanguageFlagIcon(locale);
+        combobox->addItem(ico, QLocale(locale).nativeLanguageName(), locale);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void InitLanguageList(QComboBox *combobox)
+{
+    SCASSERT(combobox != nullptr)
+    combobox->clear();
+    AddLanguageItems(combobox, AvailableUiLanguages());
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto QPixmapFromCache(const QString &pixmapPath) -> QPixmap
@@ -181,7 +252,6 @@ auto SupportedLocales() -> QStringList
     return QStringList{"uk_UA",
                        "de_DE",
                        "cs_CZ",
-                       "he_IL",
                        "fr_FR",
                        "it_IT",
                        "nl_NL",
@@ -195,7 +265,6 @@ auto SupportedLocales() -> QStringList
                        "pl_PL",
                        "hr_HR",
                        "hu_HU",
-                       "pt_PT",
                        "ja_JP"};
 }
 

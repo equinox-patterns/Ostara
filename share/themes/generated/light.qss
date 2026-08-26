@@ -877,6 +877,33 @@ QPushButton#infoBlockDownBtn {
     image: url(:/icons/light/arrow-down_light.svg);
 }
 
+/* Information block — remove a display language */
+QPushButton#infoBlockTrashBtn {
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    padding: 2px;
+    image: url(:/icons/light/trash_light.svg);
+}
+QPushButton#infoBlockTrashBtn:hover {
+    background: rgba(0,0,0,0.05);
+}
+QPushButton#infoBlockTrashBtn:disabled {
+    image: url(:/icons/light/trash_disabled.svg);
+}
+
+/* Information block — block display language row */
+QLabel#infoBlockLanguageHint {
+    color: #4c4c4c;
+}
+QFrame#infoBlockLanguageSeparator {
+    background-color: #d6d6d6;
+}
+
 /* Presets d'angle (0/90/180/270°) sous les champs de formule angle */
 QPushButton#anglePresetBtn0,
 QPushButton#anglePresetBtn90,

@@ -16,6 +16,9 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <!-- Block display language(s): the locales in which the block content
+             is written. Absent = default (English). -->
+        <xs:element name="languages" type="LanguagesType" minOccurs="0" maxOccurs="1"/>
         <xs:element name="sections" type="SectionsType" minOccurs="1" maxOccurs="1"/>
         <!-- Forward-compat: unknown top-level elements preserved -->
         <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -24,11 +27,34 @@
     </xs:complexType>
   </xs:element>
 
+  <!-- ===== LANGUAGES ===== -->
+  <xs:complexType name="LanguagesType">
+    <xs:sequence>
+      <xs:element name="language" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="code" type="xs:string" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
   <!-- ===== SECTIONS ===== -->
   <xs:complexType name="SectionsType">
     <xs:sequence>
       <xs:element name="section" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
+          <xs:sequence>
+            <!-- Per-language display aliases of an axis and its values -->
+            <xs:element name="rename" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="locale" type="xs:string" use="required"/>
+                <xs:attribute name="name" type="xs:string"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
           <xs:attribute name="type" type="xs:string" use="required"/>
           <!-- Per-section styling (all types) -->
           <xs:attribute name="fontFamily" type="xs:string"/>
@@ -47,6 +73,10 @@
           <xs:attribute name="interfacingOnFold" type="xs:boolean" default="false"/>
           <xs:attribute name="liningQty" type="xs:nonNegativeInteger" default="0"/>
           <xs:attribute name="liningOnFold" type="xs:boolean" default="false"/>
+          <!-- Written once per block language in the pattern/piece options -->
+          <xs:attribute name="multilingual" type="xs:boolean" default="false"/>
+          <!-- Sizes: render every block language on its own line -->
+          <xs:attribute name="axisOneLine" type="xs:boolean" default="false"/>
           <!-- Forward-compat: unknown attributes preserved -->
           <xs:anyAttribute processContents="lax"/>
         </xs:complexType>

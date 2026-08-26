@@ -778,6 +778,32 @@ void InitLanguages(QComboBox *combobox);
 void InitPieceLabelLanguages(QComboBox *combobox);
 Q_REQUIRED_RESULT auto SupportedLocales() -> QStringList;
 
+/// The locales offered in the Settings language combo (incl. the internal
+/// en_US), in display order — the same set the Information block editor
+/// offers for the block display language.
+Q_REQUIRED_RESULT auto AvailableUiLanguages() -> QStringList;
+
+/// The block display language chosen by default: the user's current app
+/// language when it is available, otherwise English.
+Q_REQUIRED_RESULT auto DefaultUiLanguage() -> QString;
+
+/// Translates \a sourceText (in \a context) into \a locale using the app's own
+/// translation catalogues (a QTranslator is loaded and cached per locale).
+/// Returns the source text when \a locale is empty or English, or when no
+/// translation is available. Lets the block preview render in the block's
+/// display language independently of the app's UI language.
+Q_REQUIRED_RESULT auto TranslateToLocale(const QString &locale, const char *context, const char *sourceText)
+    -> QString;
+
+/// The flag icon of a locale (e.g. `://flags/France.png`), resolved the same
+/// way the language combos do. Used outside combos (table columns, …).
+Q_REQUIRED_RESULT auto LanguageFlagIcon(const QString &locale) -> QIcon;
+
+/// Adds each locale to \a combobox as flag icon + native language name,
+/// itemData = the locale code. Shared by the Settings language combo and the
+/// Information block language row.
+void AddLanguageItems(QComboBox *combobox, const QStringList &locales);
+
 Q_REQUIRED_RESULT auto RelativeMPath(const QString &patternPath, const QString &absoluteMPath) -> QString;
 Q_REQUIRED_RESULT auto AbsoluteMPath(const QString &patternPath, const QString &relativeMPath) -> QString;
 

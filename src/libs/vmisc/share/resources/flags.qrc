@@ -4,7 +4,6 @@
         <file>flags/France.png</file>
         <file>flags/Germany.png</file>
         <file>flags/Indonesia.png</file>
-        <file>flags/Israel.png</file>
         <file>flags/Italy.png</file>
         <file>flags/Netherlands.png</file>
         <file>flags/Ukraine.png</file>
@@ -20,7 +19,6 @@
         <file>flags/China.png</file>
         <file>flags/Croatia.png</file>
         <file>flags/Hungary.png</file>
-        <file>flags/Portugal.png</file>
         <file>flags/Japan.png</file>
     </qresource>
 </RCC>

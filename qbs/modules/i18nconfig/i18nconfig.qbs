@@ -3,7 +3,6 @@ Module {
         "uk_UA",
         "de_DE",
         "cs_CZ",
-        "he_IL",
         "fr_FR",
         "it_IT",
         "nl_NL",
@@ -17,7 +16,6 @@ Module {
         "pl_PL",
         "hr_HR",
         "hu_HU",
-        "pt_PT",
         "ja_JP"
     ]
 

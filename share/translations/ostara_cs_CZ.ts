@@ -6195,33 +6195,28 @@ This action cannot be undone.</source>
 <context>
     <name>DialogPuzzlePreferences</name>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.ui" line="14"/>
         <source>Puzzle preferences</source>
-        <translation>Nastavení Puzzle</translation>
+        <translation type="vanished">Nastavení Puzzle</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.ui" line="60"/>
         <source>Configuration</source>
-        <translation>Nastavení</translation>
+        <translation type="vanished">Nastavení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.ui" line="87"/>
         <source>Paths</source>
-        <translation>Cesty</translation>
+        <translation type="vanished">Cesty</translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.cpp" line="159"/>
         <source>Followed %n option(s) require restart to take effect: %1.</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>Sledována %n volba vyžaduje opětovné spuštění, aby se projevilo %1.</numerusform>
             <numerusform>Sledovány %n volby vyžaduje opětovné spuštění, aby se projevilo %1.</numerusform>
             <numerusform>Sledováno %n voleb vyžaduje opětovné spuštění, aby se projevilo %1.</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.ui" line="75"/>
         <source>Layout</source>
-        <translation>Rozvržení</translation>
+        <translation type="vanished">Rozvržení</translation>
     </message>
 </context>
 <context>
@@ -6699,146 +6694,116 @@ This action cannot be undone.</source>
 <context>
     <name>DialogSaveManualLayout</name>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="26"/>
         <source>Path:</source>
-        <translation>Cesta:</translation>
+        <translation type="vanished">Cesta:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="39"/>
         <source>Destination folder</source>
-        <translation>Cílová složka</translation>
+        <translation type="vanished">Cílová složka</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="42"/>
         <source>Path to destination folder</source>
-        <translation>Popis umístění cílové složky</translation>
+        <translation type="vanished">Popis umístění cílové složky</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="55"/>
         <source>Select path to destination folder</source>
-        <translation>Vybrat cestu k cílové složce</translation>
+        <translation type="vanished">Vybrat cestu k cílové složce</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="58"/>
         <source>Browse…</source>
-        <translation>Procházet…</translation>
+        <translation type="vanished">Procházet…</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="75"/>
         <source>File format:</source>
-        <translation>Formát souboru:</translation>
+        <translation type="vanished">Formát souboru:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="116"/>
         <source>Options</source>
-        <translation>Volby</translation>
+        <translation type="vanished">Volby</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="122"/>
         <source>Not available</source>
-        <translation>Nedostupný</translation>
+        <translation type="vanished">Nedostupný</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="134"/>
         <source>Binary form</source>
-        <translation>Binární forma</translation>
+        <translation type="vanished">Binární forma</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="154"/>
         <source>Show grainline</source>
-        <translation>Zobrazit dráhu nitě</translation>
+        <translation type="vanished">Zobrazit dráhu nitě</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="164"/>
         <source>Hide ruler</source>
-        <translation>Skrýt pravítko</translation>
+        <translation type="vanished">Skrýt pravítko</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="178"/>
         <source>Text as paths</source>
-        <translation>Text jako cesty</translation>
+        <translation type="vanished">Text jako cesty</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="144"/>
         <source>Export unified</source>
-        <translation>Vyvést sjednoceno</translation>
+        <translation type="vanished">Vyvést sjednoceno</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="188"/>
         <source>Tiles scheme</source>
-        <translation>Schéma dlaždic</translation>
+        <translation type="vanished">Schéma dlaždic</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="197"/>
         <source>Compatibility:</source>
-        <translation>Slučitelnost:</translation>
+        <translation type="vanished">Slučitelnost:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="227"/>
         <source>File name:</source>
-        <translation>Název souboru:</translation>
+        <translation type="vanished">Název souboru:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="240"/>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="243"/>
         <source>File base name</source>
-        <translation>Název souboru databáze</translation>
+        <translation type="vanished">Název souboru databáze</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="101"/>
         <source>The base filename does not match a regular expression.</source>
-        <translation>Název souboru databáze neodpovídá regulárnímu výrazu (název souboru obsahuje nedovolené znaky).</translation>
+        <translation type="vanished">Název souboru databáze neodpovídá regulárnímu výrazu (název souboru obsahuje nedovolené znaky).</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="145"/>
         <source>Select folder</source>
-        <translation>Vybrat složku</translation>
+        <translation type="vanished">Vybrat složku</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="190"/>
         <source>Tried to use out of range file format type number.</source>
-        <translation>Použitý typ formátu souboru leží mimo rozsah.</translation>
+        <translation type="vanished">Použitý typ formátu souboru leží mimo rozsah.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="198"/>
         <source>Selected not present file format.</source>
-        <translation>Vybraný formát souboru není přítomen.</translation>
+        <translation type="vanished">Vybraný formát souboru není přítomen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="215"/>
         <source>Selected not present file format type.</source>
-        <translation>Vybraný typ formátu souboru není přítomen.</translation>
+        <translation type="vanished">Vybraný typ formátu souboru není přítomen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="388"/>
         <source>The destination directory doesn&apos;t exists or is not readable.</source>
-        <translation>Cílový adresář neexistuje, nebo není čitelný.</translation>
+        <translation type="vanished">Cílový adresář neexistuje, nebo není čitelný.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="527"/>
         <source>Name conflict</source>
-        <translation>Střet názvu</translation>
+        <translation type="vanished">Střet názvu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="528"/>
         <source>Folder already contain file with name %1. Rewrite all conflict file names?</source>
-        <translation>Složka již obsahuje soubor s názvem %1. Přepsat všechny názvy souborů, jež jsou ve střetu?</translation>
+        <translation type="vanished">Složka již obsahuje soubor s názvem %1. Přepsat všechny názvy souborů, jež jsou ve střetu?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="587"/>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="591"/>
         <source>Example:</source>
-        <translation>Příklad:</translation>
+        <translation type="vanished">Příklad:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="701"/>
         <source>By standard</source>
-        <translation>Standardní</translation>
+        <translation type="vanished">Standardní</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="14"/>
         <source>Save manual layout</source>
-        <translation>Uložit ruční rozvržení</translation>
+        <translation type="vanished">Uložit ruční rozvržení</translation>
     </message>
 </context>
 <context>
@@ -6907,10 +6872,10 @@ This action cannot be undone.</source>
         <translation>Jednotlivost (díl střihu)</translation>
     </message>
     <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="1769"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="112"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="204"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="228"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="1769"/>
         <source>Grainline</source>
         <translation>Dráha nitě</translation>
     </message>
@@ -7105,8 +7070,8 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2671"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="2215"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_foldline.cpp" line="251"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_contextmenus.cpp" line="461"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_foldline.cpp" line="251"/>
         <source>None</source>
         <translation>Žádný</translation>
     </message>
@@ -8570,7 +8535,7 @@ This action cannot be undone.</source>
 <context>
     <name>InitPieceLabelLanguages</name>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="601"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="670"/>
         <source>Default</source>
         <translation>Výchozí</translation>
     </message>
@@ -8578,7 +8543,6 @@ This action cannot be undone.</source>
 <context>
     <name>InternalStrings</name>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="157"/>
         <location filename="../../src/app/ostara/dialogs/dialogaboutapp.cpp" line="61"/>
         <source>The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
         <translation>Program je poskytován TAK JAK JE bez JAKÉKOLIV ZÁRUKY JAKÉHOKOLIV DRUHU, VČETNĚ ZÁRUKY VZHLEDU, PRODEJNOSTI A VHODNOSTI PRO DANÝ ÚČEL.</translation>
@@ -8592,240 +8556,240 @@ This action cannot be undone.</source>
         <translation>Valentina</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1612"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1618"/>
         <source>Point along perpendicular</source>
         <translation>Bod podél kolmice</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1702"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1708"/>
         <source>Perpendicular point along line</source>
         <translation>Kolmý bod na ose úsečky</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1630"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1636"/>
         <source>Point along bisector</source>
         <translation>Bod na ose úhlu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1432"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1438"/>
         <source>Point at distance and angle</source>
         <translation>Bod ve vzdálenosti a úhlu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1594"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1600"/>
         <source>Point at distance along line</source>
         <translation>Bod ve vzdálenosti podél čáry</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1774"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1780"/>
         <source>Line between points</source>
         <translation>Čára mezi body</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1756"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1762"/>
         <source>Point at line intersection</source>
         <translation>Bod na průsečíku čar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1810"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1816"/>
         <source>Curve</source>
         <translation>Křivka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1504"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1510"/>
         <source>Arc</source>
         <translation>Oblouk</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="128"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="127"/>
         <source>Measurements</source>
         <translation>Míry</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="148"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="153"/>
         <source>Window</source>
         <translation>Okno</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="207"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="213"/>
         <source>Tool options</source>
         <translation>Volby pro nástroje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="432"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="438"/>
         <source>Dependency tree</source>
         <translation>Strom závislostí</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="444"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="450"/>
         <source>New</source>
         <translation>Nový</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="447"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="453"/>
         <source>&amp;New</source>
         <translation>&amp;Nový</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="450"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="456"/>
         <source>Create a new pattern</source>
         <translation>Vytvořit nový střih</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="464"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="470"/>
         <source>Open</source>
         <translation>Otevřít</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="467"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="473"/>
         <source>&amp;Open</source>
         <translation>&amp;Otevřít</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="470"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="476"/>
         <source>Open file with pattern</source>
         <translation>Otevřít soubor se střihem</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="487"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="493"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="3964"/>
         <source>Save</source>
         <translation>Uložit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="490"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="496"/>
         <source>&amp;Save</source>
         <translation>&amp;Uložit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="493"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="499"/>
         <source>Save pattern</source>
         <translation>Uložit střih</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1075"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1081"/>
         <source>Load Measurements</source>
         <translation>Načíst míry</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2314"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2320"/>
         <source>Arc start point</source>
         <translation>Počáteční bod oblouku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2332"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2338"/>
         <source>Arc end point</source>
         <translation>Koncový bod oblouku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2346"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2352"/>
         <source>Boundary together with notches</source>
         <translation>Zahrnout přídavek na šev do zářezů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2354"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2360"/>
         <source>Settings Directory</source>
         <translation>Adresář s nastavením</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2403"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2409"/>
         <source>Elliptical arc with given length</source>
         <translation>Elipsovitý oblouk s danou délkou</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2421"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2427"/>
         <source>Parallel curve tool</source>
         <translation>Nástroj Rovnoběžná křivka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2439"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2442"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2445"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2448"/>
         <source>Graduated curve tool</source>
         <translation>Nástroj Odstupňovaná křivka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="513"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="519"/>
         <source>Save not yet saved pattern</source>
         <translation>Uložit dosud neuložený střih</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="537"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="543"/>
         <source>Draw</source>
         <translation>Výkres</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="561"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="567"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="1125"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="2610"/>
         <source>Details</source>
         <translation>Jednotlivosti</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="588"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="594"/>
         <source>Pointer tools</source>
         <translation>Nástroje ukazovátka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="606"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="612"/>
         <source>New pattern piece</source>
         <translation>Nový díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="609"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="615"/>
         <source>Add new pattern piece</source>
         <translation>Přidat nový díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="689"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="695"/>
         <source>About &amp;Qt</source>
         <translation>O &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="717"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="723"/>
         <source>E&amp;xit</source>
         <translation>&amp;Ukončit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="720"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="726"/>
         <source>Exit the application</source>
         <translation>Ukončit program</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="731"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="737"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="473"/>
         <source>Preferences</source>
         <translation>Nastavení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="745"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="751"/>
         <source>Pattern properties</source>
         <translation>Vlastnosti střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="361"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="762"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="367"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="768"/>
         <source>Zoom in</source>
         <translation>Přiblížit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="765"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="771"/>
         <source>zoom in</source>
         <translation>přiblížit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="374"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="782"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="785"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="380"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="788"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="791"/>
         <source>Zoom out</source>
         <translation>Oddálit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="822"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="828"/>
         <source>Zoom fit best</source>
         <translation>Přizpůsobit velikost oknu aplikace</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="836"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="842"/>
         <source>Report bug</source>
         <translation>Nahlásit chybu</translation>
     </message>
@@ -8961,9 +8925,9 @@ This action cannot be undone.</source>
         <translation>Nepodařilo se uložit soubor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_watermark.cpp" line="69"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="2910"/>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="453"/>
+        <location filename="../../src/app/ostara/mainwindow_watermark.cpp" line="69"/>
         <source>Open file</source>
         <translation>Otevřít soubor</translation>
     </message>
@@ -9062,67 +9026,67 @@ This action cannot be undone.</source>
         <translation>Znovu otevřít soubory.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1648"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1654"/>
         <source>Special point on shoulder</source>
         <translation>Zvláštní bod na rameni</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1666"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1672"/>
         <source>Triangle tool</source>
         <translation>Nástroj trojúhelníku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1684"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1690"/>
         <source>Point from X and Y of two other points</source>
         <translation>Bod se stejným X jednoho bodu a stejným Y jiného</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1720"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1726"/>
         <source>Point intersect line and axis</source>
         <translation>Bod průsečíku čáry a osy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1792"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1798"/>
         <source>Simple curve</source>
         <translation>Jednoduchá křivka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1900"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1906"/>
         <source>Curved path</source>
         <translation>Složená křivka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1828"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1834"/>
         <source>Segmenting a simple curve</source>
         <translation>Rozdělit jednoduchou křivku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1576"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1582"/>
         <source>Segment a curved path</source>
         <translation>Rozdělit složenou křivku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1522"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1528"/>
         <source>Point intersect curve and axis</source>
         <translation>Bod průsečíku křivky a osy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1486"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1492"/>
         <source>Segment an arc</source>
         <translation>Rozdělit oblouk</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2188"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2194"/>
         <source>Union tool</source>
         <translation>Nástroj Spojení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="867"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="873"/>
         <source>Last Tool</source>
         <translation>Naposledy použitý nástroj</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="870"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="876"/>
         <source>Activate last used tool again</source>
         <translation>Zapnout znovu naposledy použitý nástroj</translation>
     </message>
@@ -9132,28 +9096,28 @@ This action cannot be undone.</source>
         <translation>Vybrat bod pro hodnotu X (svislý)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="585"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="591"/>
         <source>Pointer</source>
         <translation>Ukazovátko</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="627"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="633"/>
         <source>Config pattern piece</source>
         <translation>Nastavit díl střihu</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="64"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="675"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="681"/>
         <source>Layout</source>
         <translation>Rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="887"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="893"/>
         <source>Show Curve Details</source>
         <translation>Ukázat podrobnosti křivky</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="890"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="896"/>
         <source>Show/hide control points and curve direction</source>
         <translation>Ukázat/Skrýt ovládací body a směr křivky</translation>
     </message>
@@ -9162,63 +9126,63 @@ This action cannot be undone.</source>
         <translation type="vanished">Nástroje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1450"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1456"/>
         <source>Point of intersection arcs</source>
         <translation>Bod průsečíku oblouků</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1954"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1960"/>
         <source>Point of intersection circles</source>
         <translation>Bod průsečíku kruhů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1990"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1996"/>
         <source>Point from circle and tangent</source>
         <translation>Bod průsečíku kruhu a tangenty</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1972"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1978"/>
         <source>Point from arc and tangent</source>
         <translation>Bod průsečíku oblouku a tangenty</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1936"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1942"/>
         <source>Arc with given length</source>
         <translation>Oblouk s danou délkou</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="222"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="228"/>
         <source>Layout pages</source>
         <translation>Zobrazit stránky v rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="927"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="933"/>
         <source>Print</source>
         <translation>Tisk</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="947"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="953"/>
         <source>Print tiled PDF</source>
         <translation>Tisk dlaždicového PDF</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="950"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="956"/>
         <source>Split and print a layout into smaller pages (for regular printers)</source>
         <translation>Rozdělit a uložit rozvržení do menších stran (pro běžné tiskárny)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="967"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="973"/>
         <source>Print preview</source>
         <translation>Náhled tisku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="970"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="976"/>
         <source>Print preview original layout</source>
         <translation>Náhled tisku s původním rozvržením</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1011"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1411"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1017"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1417"/>
         <source>Export original layout</source>
         <translation>Vyvést původní rozvržení</translation>
     </message>
@@ -9243,12 +9207,12 @@ This action cannot be undone.</source>
         <translation>Režim jednotlivosti</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="179"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="2677"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="2690"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="2715"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="2948"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="3027"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="179"/>
         <source>Layout mode</source>
         <translation>Režim rozvržení</translation>
     </message>
@@ -9290,7 +9254,7 @@ This action cannot be undone.</source>
         <translation>Nelze vyvést prázdný soubor (prázdné rozvržení).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1390"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1396"/>
         <source>Create new Layout</source>
         <translation>Vytvořit nové rozvržení</translation>
     </message>
@@ -9338,10 +9302,10 @@ This action cannot be undone.</source>
         <translation>Metoda %1 nepůsobí v režimu rozhraní</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="161"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="218"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="5556"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="5596"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="161"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="218"/>
         <source>Export error.</source>
         <translation>Chyba při vyvádění.</translation>
     </message>
@@ -9351,37 +9315,37 @@ This action cannot be undone.</source>
         <translation>Poskytněte, prosím, jeden vstupní soubor.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="930"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="936"/>
         <source>Print an original layout</source>
         <translation>Vytisknout původní rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="987"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="993"/>
         <source>Preview tiled PDF</source>
         <translation>Náhled dlaždicového PDF</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="990"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="996"/>
         <source>Print preview tiled layout</source>
         <translation>Náhled tisku s dlaždicovým rozvržením</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="540"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="546"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with pattern pieces. These pattern pieces are base for going to the next stage &amp;quot;Details mode&amp;quot;. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Režim pro práci s díly střihu. Tyto díly střihu jsou základem pro další krok v &amp;quot;režimu jednotlivosti&amp;quot;. Předtím než můžete dále pracovat v &amp;quot;režimu jednotlivosti&amp;quot;, musíte vytvořit alespoň jednu jednotlivost (díl střihu).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="564"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="570"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with details. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail on the stage &amp;quot;Draw mode&amp;quot;. Details created on this stage will be used for creating a layout. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Režim pro práci s jednotlivostmi (díly střihu). Předtím než můžete dále pracovat v &amp;quot;režimu jednotlivosti&amp;quot;, musíte alespoň jednu jednotlivost (díl střihu) vytvořit v &amp;quot;režimu výkresu&amp;quot;. Jednotlivosti (díly střihu) vytvořené v tomto kroku se použijí na vytvoření rozvržení.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="678"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="684"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for creating a layout of details. This mode avaliable if was created at least one detail on the stage &amp;quot;Details mode&amp;quot;. The layout can be exported to your prefered file format and saved to your harddirve.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Režim k vytváření rozvržení jednotlivostí (dílů střihu). Tento režim je dostupný, když byla vytvořena alespoň jedna jednotlivost (díl střihu) v &amp;quot;režimu jednotlivosti&amp;quot;. Rozvržení lze vyvést do upřednostňovaného souborového formátu a uložit na pevný disk.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2134"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2140"/>
         <source>True darts</source>
         <translation>Vyrovnat délku záševku</translation>
     </message>
@@ -9406,7 +9370,7 @@ This action cannot be undone.</source>
         <translation>Neukládat</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1540"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1546"/>
         <source>Point intersection curves</source>
         <translation>Bod průsečíku křivek</translation>
     </message>
@@ -9416,7 +9380,7 @@ This action cannot be undone.</source>
         <translation>Vybrat první křivku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1864"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1870"/>
         <source>Curve tool which uses point as control handle</source>
         <translation>Nástroj pro jednoduchou křivku s použitím bodů jako řídicích úchytů</translation>
     </message>
@@ -9431,24 +9395,24 @@ This action cannot be undone.</source>
         <translation>Vybrat bod cesty kubické bézierovy křivky</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2062"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2068"/>
         <source>Rotate objects</source>
         <translation>Otočit předměty</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="847"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="850"/>
         <location filename="../../src/app/ostara/mainwindow.ui" line="853"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="856"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="859"/>
         <source>Close pattern</source>
         <translation>Zavřít střih</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1738"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1744"/>
         <source>Midpoint between two points</source>
         <translation>Středový bod mezi dvěma body</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2116"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2122"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="1563"/>
         <source>Group</source>
         <translation>Skupina</translation>
@@ -9476,22 +9440,22 @@ This action cannot be undone.</source>
         <translation>Nepodařilo se najít soubor s mírami &lt;br/&gt;&lt;br/&gt; &lt;b&gt;%1&lt;/b&gt; &lt;br/&gt;&lt;br/&gt;. Chcete aktualizovat umístění souboru?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2044"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2050"/>
         <source>Flipping objects by line</source>
         <translation>Převrátit předměty podle čáry</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2026"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2032"/>
         <source>Flipping objects by axis</source>
         <translation>Převrátit předměty podle osy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2080"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2086"/>
         <source>Move objects</source>
         <translation>Posunout předměty</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1918"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1924"/>
         <source>Elliptical Arc</source>
         <translation>Elipsovitý oblouk</translation>
     </message>
@@ -9526,17 +9490,17 @@ This action cannot be undone.</source>
         <translation>Pouze pro čtení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="651"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="657"/>
         <source>Variables Table</source>
         <translation>Tabulka proměnných</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="654"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="660"/>
         <source>Contains information about increments and internal variables</source>
         <translation>Obsahuje údaje o přídavcích a vnitřních proměnných</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1092"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1098"/>
         <source>Edit Current</source>
         <translation>Upravit nynější</translation>
     </message>
@@ -9559,7 +9523,7 @@ This action cannot be undone.</source>
         <translation>Soubory se střihem</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2242"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2248"/>
         <source>Pin tool</source>
         <translation>Nástroj Špendlík</translation>
     </message>
@@ -9569,7 +9533,7 @@ This action cannot be undone.</source>
         <translation>Vybrat bod špendlíku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2260"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2266"/>
         <source>Insert node tool</source>
         <translation>Nástroj Vložit uzel</translation>
     </message>
@@ -9594,63 +9558,63 @@ This action cannot be undone.</source>
         <translation>Ještě nemůžete použít Režim rozvržení.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1025"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1031"/>
         <source>Zoom fit best current</source>
         <translation>Přizpůsobit nynější pohled</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1028"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1034"/>
         <source>zoom fit best current pattern piece</source>
         <translation>Přizpůsobit pohled nejlépe na nynější díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2296"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2302"/>
         <source>Export details skiping the Layout stage</source>
         <translation>Vyvést jednotlivosti (díly střihu) a přeskočit krok rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="180"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="2949"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="3028"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="180"/>
         <source>You don&apos;t have enough details to export. Please, include at least one detail in layout.</source>
         <translation>Nemáte dost jednotlivostí (dílů střihu) k vyvedení. Zahrňte, prosím, alespoň jednu jednotlivost (díl střihu) do rozvržení.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="193"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="2962"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="3041"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="193"/>
         <source>Export details</source>
         <translation>Vyvést jednotlivosti (díly střihu)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="193"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="2962"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="3041"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="193"/>
         <source>Can&apos;t export details.</source>
         <translation>Nelze vyvést jednotlivosti (díly střihu).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2170"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2176"/>
         <source>Workpiece tool</source>
         <translation>Nástroj pro vytažení hlavního obrysu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2224"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2230"/>
         <source>Internal path tool</source>
         <translation>Nástroj Vnitřní cesta</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="510"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="516"/>
         <source>Save &amp;As…</source>
         <translation>Uložit j&amp;ako…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="833"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="839"/>
         <source>Report Bug…</source>
         <translation>Nahlásit chybu…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1008"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1014"/>
         <source>Export As…</source>
         <translation>Vyvést jako…</translation>
     </message>
@@ -9675,57 +9639,57 @@ This action cannot be undone.</source>
         <translation>Cílová cesta je prázdná.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1123"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1129"/>
         <source>Next pattern piece</source>
         <translation>Další díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1126"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1132"/>
         <source>Ctrl+PgDown</source>
         <translation>Ctrl+PgDown</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1137"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1143"/>
         <source>Previous pattern piece</source>
         <translation>Předchozí díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1140"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1146"/>
         <source>Ctrl+PgUp</source>
         <translation>Ctrl+PgUp</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1370"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1376"/>
         <source>Tool &quot;Select&quot;</source>
         <translation>Nástroj Výběr</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1387"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1393"/>
         <source>Layout settings</source>
         <translation>Nastavení rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1408"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1414"/>
         <source>Layout export as</source>
         <translation>Vyvést rozvržení jako</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1846"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1852"/>
         <source>Segment a curve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1882"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1888"/>
         <source>Armhole curve passing through 3 points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2278"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2284"/>
         <source>Place label tool</source>
         <translation>Nástroj pro umístění popisu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2206"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2212"/>
         <source>Duplicate detail tool</source>
         <translation>Nástroj Zdvojit jednotlivost (díl střihu)</translation>
     </message>
@@ -9760,7 +9724,7 @@ This action cannot be undone.</source>
         <translation>Nelze uložit nastavení. Přístup odepřen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="473"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="479"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
@@ -9781,12 +9745,12 @@ This action cannot be undone.</source>
         <translation>Vyberte jeden nebo více předmětů, podržet &lt;b&gt;%1&lt;/b&gt; - pro vícenásobný výběr, &lt;b&gt;%2&lt;/b&gt; - dokončit vytvoření</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2008"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2014"/>
         <source>Point of intersection circle and segment</source>
         <translation>Průsečík kruhu a části</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1210"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1216"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="231"/>
         <source>Export recipe</source>
         <translation>Vyvést Recipe</translation>
@@ -9807,38 +9771,38 @@ This action cannot be undone.</source>
         <translation>Nepodařilo se uložit Recipe. %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1558"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1564"/>
         <source>Curved path tool which uses point as control handle</source>
         <translation>Nástroj pro složenou křivku s použitím bodů jako řídicích úchytů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1468"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1474"/>
         <source>Point of intersection arc and axis</source>
         <translation>Bod průsečíku oblouku a osy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1224"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1230"/>
         <source>Show main path</source>
         <translation>Ukázat hlavní cestu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1227"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1233"/>
         <source>Globally show pieces main path</source>
         <translation>Ukázat celkově hlavní cestu dílu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="298"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="304"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="6011"/>
         <source>Pattern messages</source>
         <translation>Zprávy střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="310"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="316"/>
         <source>Clear all messages</source>
         <translation>Smazat všechny zprávy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="354"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="360"/>
         <source>Filter</source>
         <translation>Filtr</translation>
     </message>
@@ -9868,12 +9832,12 @@ This action cannot be undone.</source>
         <translation>INFORMACE</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="323"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="329"/>
         <source>Auto refresh the list with each parse</source>
         <translation>Automaticky při každém zpracování obnovit seznam</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="156"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="161"/>
         <source>Watermark</source>
         <translation>Vodoznak</translation>
     </message>
@@ -9883,170 +9847,171 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="90"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="89"/>
         <source>&amp;Piece</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="104"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="103"/>
         <source>&amp;Display</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="142"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="141"/>
         <source>&amp;Libraries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="175"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="181"/>
         <source>Top bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="192"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="198"/>
         <source>Options</source>
         <translation type="unfinished">Volby</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="286"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2098"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="292"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2104"/>
         <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="630"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="636"/>
         <source>Change the name of pattern piece</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="703"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="709"/>
         <source>&amp;About Ostara</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="802"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="805"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="808"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="811"/>
         <source>Zoom 100%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="910"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="916"/>
         <source>Show segment point names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="913"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="919"/>
         <source>Allow segment point names to appear. Uncheck to hide them in all cases.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1042"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1048"/>
         <source>Final Measurements (Tape)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1053"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="147"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1059"/>
         <source>Information block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1067"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1073"/>
         <source>Export Final Measurements to CSV (Tape)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1078"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1084"/>
         <source>Load a measurement table (.omt/.otu) and connect it to the pattern</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1095"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1101"/>
         <source>Edit the measurement table currently loaded in the pattern</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1106"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1112"/>
         <source>Create New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1109"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1115"/>
         <source>Create a new measurement table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1154"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1160"/>
         <source>Increase point name font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1168"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1174"/>
         <source>Decrease point name font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1182"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1188"/>
         <source>Original point name font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1196"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1202"/>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="204"/>
         <source>Hide point names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1241"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1247"/>
         <source>Load</source>
         <translation>Nahrát</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1255"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1261"/>
         <source>Remove</source>
         <translation>Odstranit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1266"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1272"/>
         <source>Edit current</source>
         <translation>Upravit nynější</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1277"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1283"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1280"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1286"/>
         <source>Create or edit a watermark</source>
         <translation>Vytvořit nebo upravit vodoznak</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2365"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2371"/>
         <source>Reload point names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2368"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2374"/>
         <source>Reload piece point names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2382"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2388"/>
         <source>Auto-arrange point names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2385"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2391"/>
         <source>Auto-arrange point names to reduce overlaps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2450"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2456"/>
         <source>Measurement Tables</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2453"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2459"/>
         <source>Browse, open, and manage measurement tables in the library</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10056,32 +10021,32 @@ This action cannot be undone.</source>
         <translation>Soubory vodoznaku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1288"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1294"/>
         <source>Open Puzzle</source>
         <translation>Otevřít Puzzle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1291"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1297"/>
         <source>Open the Puzzle app</source>
         <translation>Otevřít program Puzzle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1302"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1308"/>
         <source>Create</source>
         <translation>Vytvořit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1305"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1311"/>
         <source>Create manual layout</source>
         <translation>Vytvořit ruční rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1316"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1322"/>
         <source>Update</source>
         <translation>Aktualizovat</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1319"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1325"/>
         <source>Update manual layout</source>
         <translation>Aktualizovat ruční rozvržení</translation>
     </message>
@@ -10191,7 +10156,7 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation>Nepodařilo se vytvořit soubor Recipe. %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1327"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1333"/>
         <source>Shop</source>
         <translation>Obchod</translation>
     </message>
@@ -10206,17 +10171,17 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation>Uložit výkres</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2152"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2158"/>
         <source>Draw export</source>
         <translation>Vyvedení výkresu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="423"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="429"/>
         <source>Background images</source>
         <translation>Obrázky pozadí</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1338"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1344"/>
         <source>Add background image</source>
         <translation>Přidat obrázek pozadí</translation>
     </message>
@@ -10277,13 +10242,13 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation>Uložit obrázek</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1352"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1358"/>
         <source>Show accuracy radius</source>
         <translation>Ukázat poloměr přesnosti</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="109"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="1116"/>
+        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="109"/>
         <source>Piece:</source>
         <translation type="unfinished">Díl:</translation>
     </message>
@@ -10759,6 +10724,14 @@ Do you want to overwrite it?</source>
     </message>
 </context>
 <context>
+    <name>OAxisRenameEditor</name>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OAxisRenameEditor.cpp" line="49"/>
+        <source>Write each language on its own line</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ODetailsFoldLineWidget</name>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="49"/>
@@ -11159,178 +11132,198 @@ Do you want to overwrite it?</source>
 <context>
     <name>OInfoBlockEditor</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="70"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="109"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="139"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="293"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="77"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="116"/>
         <source>Existing templates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="71"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="113"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="78"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="120"/>
         <source>Create new</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="72"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="117"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="146"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="342"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="480"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="496"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="538"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="79"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="124"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="156"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="544"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="682"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="698"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="740"/>
         <source>Logo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="121"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="186"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="128"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="196"/>
         <source>Template name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="122"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="193"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="129"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="203"/>
         <source>+ Add information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="125"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="205"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="132"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="215"/>
         <source>Move up</source>
         <translation type="unfinished">Posunout nahoru</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="126"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="220"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="133"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="230"/>
         <source>Move down</source>
         <translation type="unfinished">Posunout dolů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="123"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="235"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="130"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="245"/>
         <source>Save</source>
         <translation type="unfinished">Uložit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="124"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="239"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="131"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="249"/>
         <source>Save As…</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="152"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="321"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="486"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="162"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="523"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="688"/>
         <source>Add Logo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="153"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="324"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="529"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="163"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="526"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="731"/>
         <source>Remove Logo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="151"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="332"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="161"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="534"/>
         <source>Name</source>
         <translation type="unfinished">Název</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="150"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="151"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="332"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="350"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="160"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="161"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="534"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="552"/>
         <source>Notes</source>
         <translation type="unfinished">Poznámky</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="151"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="332"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="161"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="534"/>
         <source>Path</source>
         <translation type="unfinished">Cesta</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="149"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="345"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="159"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="547"/>
         <source>Logo name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="147"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="347"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="134"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="286"/>
+        <source>Remove information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="138"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="329"/>
+        <source>Block display language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="139"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="330"/>
+        <source>You can choose several for a multilingual block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="157"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="549"/>
         <source>Name:</source>
         <translation type="unfinished">Název:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="148"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="353"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="158"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="555"/>
         <source>Notes:</source>
         <translation type="unfinished">Poznámky:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="156"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="384"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="166"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="586"/>
         <source>No logos yet. Add one.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="487"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="420"/>
+        <source>Remove language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="426"/>
+        <source>Add language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="689"/>
         <source>SVG files (*.svg)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="512"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="714"/>
         <source>Logo added</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="529"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="731"/>
         <source>Remove the logo &quot;%1&quot; from the library?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="542"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="744"/>
         <source>Logo removed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="547"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="749"/>
         <source>Template 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="568"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="638"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="771"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="827"/>
         <source>Information block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="142"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="596"/>
-        <source>No templates yet. Create one.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="639"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="828"/>
         <source>Save failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="644"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="833"/>
         <source>Template saved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="669"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="858"/>
         <source>Save cartouche template</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="670"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="859"/>
         <source>Cartouche template (*.oct)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11338,43 +11331,43 @@ Do you want to overwrite it?</source>
 <context>
     <name>OInfoBlockPreview</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="95"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="96"/>
         <source>No sections yet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="186"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="301"/>
         <source>fabric</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="188"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="303"/>
         <source>interfacing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="190"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="305"/>
         <source>lining</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="205"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="325"/>
         <source>Cut %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="208"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="328"/>
         <source> on fold</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="210"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="330"/>
         <source> (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="58"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="59"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="75"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="76"/>
         <source>of</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11382,54 +11375,136 @@ Do you want to overwrite it?</source>
 <context>
     <name>OInfoBlockSectionEditor</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="82"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="84"/>
         <source>Select a section to edit its settings.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="139"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="160"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="141"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="162"/>
         <source>Default</source>
         <translation type="unfinished">Výchozí</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="249"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="257"/>
         <source>None</source>
         <translation type="unfinished">Žádný</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="260"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="268"/>
         <source>of</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="298"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="306"/>
         <source>No logos yet — add them in the Logo page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="339"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="348"/>
+        <source>When checked, you will write this information once for each language of the block, in the pattern (or piece) options. It is not translated automatically.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="385"/>
         <source>Fabric</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="341"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="387"/>
         <source>Interfacing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="343"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="389"/>
         <source>Lining</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="354"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="400"/>
         <source>Cut</source>
         <translation type="unfinished">Střih</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="366"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="412"/>
         <source>On fold</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OInfoBlockTemplatesPage</name>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="195"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="215"/>
+        <source>Search templates…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="196"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="260"/>
+        <source>Open folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="206"/>
+        <source>Existing templates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="226"/>
+        <source>Name</source>
+        <translation type="unfinished">Název</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="227"/>
+        <source>Languages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="273"/>
+        <source>No templates yet. Create one.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="299"/>
+        <source>This is the default cartouche</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="299"/>
+        <source>Make this the default cartouche</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="317"/>
+        <source>Edit</source>
+        <translation type="unfinished">Upravit</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="325"/>
+        <source>Delete</source>
+        <translation type="unfinished">Smazat</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="368"/>
+        <source>Confirm deletion</source>
+        <translation type="unfinished">Potvrdit smazání</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="369"/>
+        <source>Are you sure you want to delete &quot;%1&quot;?
+
+This action cannot be undone.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="387"/>
+        <source>Error</source>
+        <translation type="unfinished">Chyba</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="387"/>
+        <source>Could not delete the file.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11527,150 +11602,166 @@ Do you want to overwrite it?</source>
 <context>
     <name>OPieceCartoucheSection</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="45"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="55"/>
         <source>Font family</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="47"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="57"/>
         <source>Font weight</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="49"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="59"/>
         <source>Font size (px)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="50"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="60"/>
         <source>Axis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="52"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="92"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="62"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="130"/>
         <source>Measurement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="54"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="57"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="64"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="69"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="74"/>
         <source>Separator</source>
         <translation type="unfinished">Oddělovač</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="60"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="96"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="77"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="135"/>
         <source>Logo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="62"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="79"/>
         <source>Logo size (cm)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="63"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="80"/>
         <source>Cut</source>
         <translation type="unfinished">Střih</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="68"/>
-        <source>Pattern name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="69"/>
-        <source>The name of the pattern (set in the pattern toolbar).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="70"/>
-        <source>Client</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="71"/>
-        <source>The client&apos;s name, birth date and email from the document.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="72"/>
-        <source>Piece name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="73"/>
-        <source>The name of the piece (from the piece options).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="74"/>
-        <source>Piece number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="75"/>
-        <source>The piece number and its total, e.g. 01 of 10. The total shown here is an example — it is computed automatically from the number of active pieces.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="78"/>
-        <source>Cut (Fabric / Interfacing / Lining)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="79"/>
-        <source>One section covers all three fabrics — no need to add Cut several times. The values here are only an example so you can see how the section renders: in the pieces, the cut quantities are entered per piece and are empty by default.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="84"/>
-        <source>Free text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="85"/>
-        <source>Free text entered per piece in the information block. It can span several lines.</source>
+        <source>Write this information in each language of the block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="88"/>
-        <source>Sizes (Height, Commercial size, Group...)</source>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="92"/>
+        <source>Rename the axis and its values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="89"/>
-        <source>Requires a multi-size table (.omt). Shows a size-axis value under its user-given name. With a single-size table, this information is simply ignored.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="93"/>
-        <source>Read from the pattern&apos;s size table. Shows the measurement&apos;s full name, its calculated value at the reference size and its unit.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="97"/>
-        <source>A logo from your library (add your SVG logos in the Logo page).</source>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="95"/>
+        <source>Rename the measurement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="99"/>
-        <source>Collection</source>
+        <source>Pattern name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="100"/>
-        <source>The collection name.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="101"/>
-        <source>Fabric info</source>
+        <source>The name of the pattern (set in the pattern toolbar).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="102"/>
+        <source>Client</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="103"/>
+        <source>The client&apos;s name, birth date and email from the document.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="105"/>
+        <source>Piece name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="106"/>
+        <source>The name of the piece (from the piece options).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="108"/>
+        <source>Piece number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="109"/>
+        <source>The piece number and its total, e.g. 01 of 10. The total shown here is an example — it is computed automatically from the number of active pieces.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="113"/>
+        <source>Cut (Fabric / Interfacing / Lining)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="114"/>
+        <source>One section covers all three fabrics — no need to add Cut several times. The values here are only an example so you can see how the section renders: in the pieces, the cut quantities are entered per piece and are empty by default.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="120"/>
+        <source>Free text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="121"/>
+        <source>Free text entered per piece in the information block. It can span several lines.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="125"/>
+        <source>Sizes (Height, Commercial size, Group...)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="126"/>
+        <source>Requires a multi-size table (.omt). Shows a size-axis value under its user-given name. With a single-size table, this information is simply ignored.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="131"/>
+        <source>Read from the pattern&apos;s size table. Shows the measurement&apos;s full name, its calculated value at the reference size and its unit.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="136"/>
+        <source>A logo from your library (add your SVG logos in the Logo page).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="139"/>
+        <source>Collection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="140"/>
+        <source>The collection name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="142"/>
+        <source>Fabric info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="143"/>
         <source>Fabric information (nature, material, weight…).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12361,493 +12452,388 @@ Tato volba se projeví po opětovném spuštění.</translation>
 <context>
     <name>Puzzle</name>
     <message>
-        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="73"/>
         <source>Valentina&apos;s manual layout editor.</source>
-        <translation>Editor ručního rozvržení ve Valentině.</translation>
+        <translation type="vanished">Editor ručního rozvržení ve Valentině.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="76"/>
         <source>The manual layout file.</source>
-        <translation>Soubor s ručním rozvržením.</translation>
+        <translation type="vanished">Soubor s ručním rozvržením.</translation>
     </message>
 </context>
 <context>
     <name>PuzzlePreferencesConfigurationPage</name>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="45"/>
         <source>Language</source>
-        <translation>Jazyk</translation>
+        <translation type="vanished">Jazyk</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="54"/>
         <source>GUI language:</source>
-        <translation>Jazyk rozhraní:</translation>
+        <translation type="vanished">Jazyk rozhraní:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="67"/>
         <source>Toolbar</source>
-        <translation>Nástrojový panel</translation>
+        <translation type="vanished">Nástrojový panel</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="73"/>
         <source>The text appears under the icon (recommended for beginners).</source>
-        <translation>Text se ukáže pod symbolem (doporučeno pro začátečníky).</translation>
+        <translation type="vanished">Text se ukáže pod symbolem (doporučeno pro začátečníky).</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="86"/>
         <source>User Interface</source>
-        <translation>Uživatelské rozhraní</translation>
+        <translation type="vanished">Uživatelské rozhraní</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="112"/>
         <source>Don&apos;t use the native file dialog</source>
-        <translation>Nepoužívat dialogové okno nativního souboru</translation>
+        <translation type="vanished">Nepoužívat dialogové okno nativního souboru</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="24"/>
         <source>General</source>
-        <translation>Obecné</translation>
+        <translation type="vanished">Obecné</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="100"/>
         <source>Theme:</source>
-        <translation>Motiv:</translation>
+        <translation type="vanished">Motiv:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="122"/>
         <source>Graphical output</source>
-        <translation>Obrazový výstup</translation>
+        <translation type="vanished">Obrazový výstup</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="128"/>
         <source>Use antialiasing</source>
-        <translation>Použít vyhlazování</translation>
+        <translation type="vanished">Použít vyhlazování</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="135"/>
         <source>Use OpenGL to render a scene.
 This option will take an affect after restart.</source>
-        <translation>Použít na vykreslení scény OpenGL.
+        <translation type="vanished">Použít na vykreslení scény OpenGL.
 Tato volba se projeví po opětovném spuštění.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="139"/>
         <source>Use OpenGL render</source>
-        <translation>Použít vykreslování pomocí OpenGL</translation>
+        <translation type="vanished">Použít vykreslování pomocí OpenGL</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="152"/>
         <source>Font</source>
-        <translation>Písmo</translation>
+        <translation type="vanished">Písmo</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="158"/>
         <source>Allow single stroke outline fonts</source>
-        <translation>Povolit jednotahová obrysová písma</translation>
+        <translation type="vanished">Povolit jednotahová obrysová písma</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="165"/>
         <source>When this option is activated, the application will utilize SVG Fonts present in your system to render piece label text, instead of using outline fonts.</source>
-        <translation>Pokud je zapnuta tato volba, aplikace použije k vykreslení textu popisu místo obrysových písem písma SVG přítomná v systému.</translation>
+        <translation type="vanished">Pokud je zapnuta tato volba, aplikace použije k vykreslení textu popisu místo obrysových písem písma SVG přítomná v systému.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="168"/>
         <source>Use single-line fonts</source>
-        <translation>Použít jednotahové písmo</translation>
+        <translation type="vanished">Použít jednotahové písmo</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="178"/>
         <source>Undo</source>
-        <translation>Zpět</translation>
+        <translation type="vanished">Zpět</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="187"/>
         <source>Count steps (0 - no limit):</source>
-        <translation>Počítat kroky (0 - bez omezení):</translation>
+        <translation type="vanished">Počítat kroky (0 - bez omezení):</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="240"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="288"/>
         <source>Shortcuts</source>
-        <translation>Klávesové zkratky</translation>
+        <translation type="vanished">Klávesové zkratky</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="283"/>
         <source>Action</source>
-        <translation>Činnost</translation>
+        <translation type="vanished">Činnost</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="311"/>
         <source>Restore defaults</source>
-        <translation>Obnovit výchozí nastavení</translation>
+        <translation type="vanished">Obnovit výchozí nastavení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="321"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="470"/>
         <source>Scrolling</source>
-        <translation>Posun</translation>
+        <translation type="vanished">Posun</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="342"/>
         <source>Animation</source>
-        <translation>Animace</translation>
+        <translation type="vanished">Animace</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="351"/>
         <source>Duration:</source>
-        <translation>Doba trvání:</translation>
+        <translation type="vanished">Doba trvání:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="358"/>
         <source>Scrolling animation duration</source>
-        <translation>Doba trvání animace posunu</translation>
+        <translation type="vanished">Doba trvání animace posunu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="361"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="387"/>
         <source>ms</source>
         <comment>milliseconds</comment>
-        <translation>ms</translation>
+        <translation type="vanished">ms</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="377"/>
         <source>Update interval:</source>
-        <translation>Interval aktualizace:</translation>
+        <translation type="vanished">Interval aktualizace:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="384"/>
         <source>Time in milliseconds between each animation update</source>
-        <translation>Čas v milisekundách mezi každou aktualizací animace</translation>
+        <translation type="vanished">Čas v milisekundách mezi každou aktualizací animace</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="406"/>
         <source>Mouse scale</source>
-        <translation>Rozsah myši</translation>
+        <translation type="vanished">Rozsah myši</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="415"/>
         <source>Sensor:</source>
         <comment>sensor mouse</comment>
-        <translation>Čidlo:</translation>
+        <translation type="vanished">Čidlo:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="422"/>
         <source>Scale scrolling sensitivity for mouse with sensor</source>
-        <translation>Změnit velikost citlivosti posunu pro myš s čidlem</translation>
+        <translation type="vanished">Změnit velikost citlivosti posunu pro myš s čidlem</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="441"/>
         <source>Wheel:</source>
         <comment>mouse wheel</comment>
-        <translation>Kolečko:</translation>
+        <translation type="vanished">Kolečko:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="448"/>
         <source>Scale scrolling sensitivity for mouse with wheel</source>
-        <translation>Změnit velikost citlivosti posunu pro myš s kolečkem</translation>
+        <translation type="vanished">Změnit velikost citlivosti posunu pro myš s kolečkem</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="479"/>
         <source>Acceleration:</source>
-        <translation>Zrychlení:</translation>
+        <translation type="vanished">Zrychlení:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="523"/>
         <source>Privacy</source>
-        <translation>Soukromí</translation>
+        <translation type="vanished">Soukromí</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="529"/>
         <source>Usage statistic</source>
-        <translation>Statistika používání</translation>
+        <translation type="vanished">Statistika používání</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="535"/>
         <source>Send usage statistics</source>
-        <translation>Poslat statistiku používání</translation>
+        <translation type="vanished">Poslat statistiku používání</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="542"/>
         <source>Please help to improve Valentina&apos;s quality by automatically sending usage statistics. Sent data contains &lt;span style=&quot; font-weight:700;&quot;&gt;no potentially sensitive information&lt;/span&gt; like user names, email addresses, file contents or file paths.</source>
-        <translation>Pomozte prosím zlepšit kvalitu Valentiny automatickým zasíláním statistik o používání. Odeslaná data neobsahují &lt;span style=&quot; font-weight:700;&quot;&gt;žádné potenciálně citlivé informace,&lt;/span&gt; jako jsou uživatelská jména, e-mailové adresy, obsah souborů nebo cesty k souborům.</translation>
+        <translation type="vanished">Pomozte prosím zlepšit kvalitu Valentiny automatickým zasíláním statistik o používání. Odeslaná data neobsahují &lt;span style=&quot; font-weight:700;&quot;&gt;žádné potenciálně citlivé informace,&lt;/span&gt; jako jsou uživatelská jména, e-mailové adresy, obsah souborů nebo cesty k souborům.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="555"/>
         <source>Crash reports</source>
-        <translation>Hlášení o pádech</translation>
+        <translation type="vanished">Hlášení o pádech</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="561"/>
         <source>Send automatic crash reports</source>
-        <translation>Poslat automaticky hlášení o pádech</translation>
+        <translation type="vanished">Poslat automaticky hlášení o pádech</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="570"/>
         <source>Email:</source>
-        <translation>E-mail:</translation>
+        <translation type="vanished">E-mail:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="583"/>
         <source>Reporting crash reports will help us make Valentina more reliable. All information is treated as confidential and is only used to improve future versions of this program. Please activate sending automatic crash reports and fill your email address (optional). If provided, we may contact you with additional information about the crash.</source>
-        <translation>Nahlašování hlášení o pádech nám pomůže zvýšit spolehlivost systému Valentina. Všechny informace jsou považovány za důvěrné a slouží pouze ke zlepšení budoucích verzí tohoto programu. zapněte, prosím, zasílání automatických hlášení o pádech a vyplňte svou e-mailovou adresu (nepovinné). Pokud ji uvedete, můžeme se svámi spojit, abychom zjistili další informace o pádu.</translation>
+        <translation type="vanished">Nahlašování hlášení o pádech nám pomůže zvýšit spolehlivost systému Valentina. Všechny informace jsou považovány za důvěrné a slouží pouze ke zlepšení budoucích verzí tohoto programu. zapněte, prosím, zasílání automatických hlášení o pádech a vyplňte svou e-mailovou adresu (nepovinné). Pokud ji uvedete, můžeme se svámi spojit, abychom zjistili další informace o pádu.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="178"/>
         <source>undo limit</source>
-        <translation>Omezení počtu kroků zpět</translation>
+        <translation type="vanished">Omezení počtu kroků zpět</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="185"/>
         <source>antialiasing</source>
-        <translation>Vyhlazování</translation>
+        <translation type="vanished">Vyhlazování</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="191"/>
         <source>scene render</source>
-        <translation>Vykreslení scény</translation>
+        <translation type="vanished">Vykreslení scény</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="235"/>
         <source>send crash report</source>
-        <translation>Poslat hlášení o pádu</translation>
+        <translation type="vanished">Poslat hlášení o pádu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="242"/>
         <source>user email in case of crash</source>
-        <translation>Adresa elektronické pošty uživatele v případě pádu</translation>
+        <translation type="vanished">Adresa elektronické pošty uživatele v případě pádu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="281"/>
         <source>Dark</source>
         <comment>theme</comment>
-        <translation>Tmavý</translation>
+        <translation type="vanished">Tmavý</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="280"/>
         <source>Light</source>
         <comment>theme</comment>
-        <translation>Světlý</translation>
+        <translation type="vanished">Světlý</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="200"/>
         <source>Update</source>
-        <translation>Aktualizovat</translation>
+        <translation type="vanished">Aktualizovat</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="206"/>
         <source>Automatically check for updates each time the application starts</source>
-        <translation>Automaticky kontrolovat aktualizace při každém spuštění programu</translation>
+        <translation type="vanished">Automaticky kontrolovat aktualizace při každém spuštění programu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="209"/>
         <source>Automatically check for updates</source>
-        <translation>Automaticky kontrolovat aktualizace</translation>
+        <translation type="vanished">Automaticky kontrolovat aktualizace</translation>
     </message>
 </context>
 <context>
     <name>PuzzlePreferencesLayoutPage</name>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="22"/>
         <source>Sheet</source>
-        <translation>List</translation>
+        <translation type="vanished">List</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="31"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="436"/>
         <source>Format</source>
-        <translation>Formát</translation>
+        <translation type="vanished">Formát</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="51"/>
         <source>Unit:</source>
-        <translation>Jednotka:</translation>
+        <translation type="vanished">Jednotka:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="67"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="462"/>
         <source>Templates:</source>
-        <translation>Předlohy:</translation>
+        <translation type="vanished">Předlohy:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="138"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="533"/>
         <source>Width:</source>
-        <translation>Šířka:</translation>
+        <translation type="vanished">Šířka:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="151"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="546"/>
         <source>Height:</source>
-        <translation>Výška:</translation>
+        <translation type="vanished">Výška:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="195"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="590"/>
         <source>Margins</source>
-        <translation>Okraje</translation>
+        <translation type="vanished">Okraje</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="203"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="598"/>
         <source>Right:</source>
-        <translation>Pravý:</translation>
+        <translation type="vanished">Pravý:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="223"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="618"/>
         <source>Top:</source>
-        <translation>Nahoře:</translation>
+        <translation type="vanished">Nahoře:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="247"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="642"/>
         <source>Left:</source>
-        <translation>Levý:</translation>
+        <translation type="vanished">Levý:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="257"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="652"/>
         <source>Bottom:</source>
-        <translation>Dole:</translation>
+        <translation type="vanished">Dole:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="282"/>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="677"/>
         <source>Ignore margins</source>
-        <translation>Přehlížet okraje</translation>
+        <translation type="vanished">Přehlížet okraje</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="295"/>
         <source>Control</source>
-        <translation>Nastavení</translation>
+        <translation type="vanished">Nastavení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="301"/>
         <source>Warning superposition of pieces</source>
-        <translation>Varování ohledně překrývání se dílů</translation>
+        <translation type="vanished">Varování ohledně překrývání se dílů</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="308"/>
         <source>Warning pieces out of bound</source>
-        <translation>Varování díly mimo hranice</translation>
+        <translation type="vanished">Varování díly mimo hranice</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="315"/>
         <source>Warning piece gape position</source>
-        <translation>Upozornění při nedodržení rozestupů mezi díly</translation>
+        <translation type="vanished">Upozornění při nedodržení rozestupů mezi díly</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="322"/>
         <source>Sticky edges</source>
-        <translation>Lepivé okraje</translation>
+        <translation type="vanished">Lepivé okraje</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="329"/>
         <source>Follow grainline</source>
-        <translation>Následovat dráhu nitě</translation>
+        <translation type="vanished">Následovat dráhu nitě</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="344"/>
         <source>Pieces gap</source>
-        <translation>Dílová mezera</translation>
+        <translation type="vanished">Dílová mezera</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="404"/>
         <source>Tiles</source>
-        <translation>Dlaždice</translation>
+        <translation type="vanished">Dlaždice</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="416"/>
         <source>Show Tiles on sheet</source>
-        <translation>Ukázat dlaždice na listu</translation>
+        <translation type="vanished">Ukázat dlaždice na listu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="423"/>
         <source>Show watermark preview</source>
-        <translation>Ukázat náhled vodoznaku</translation>
+        <translation type="vanished">Ukázat náhled vodoznaku</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="426"/>
         <source>Show watermark</source>
-        <translation>Ukázat  vodoznak</translation>
+        <translation type="vanished">Ukázat  vodoznak</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="182"/>
         <source>default layout settings</source>
-        <translation>výchozí nastavení rozložení</translation>
+        <translation type="vanished">výchozí nastavení rozložení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="396"/>
         <source>Millimiters</source>
-        <translation>Milimetry</translation>
+        <translation type="vanished">Milimetry</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="397"/>
         <source>Centimeters</source>
-        <translation>Centimetry</translation>
+        <translation type="vanished">Centimetry</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="398"/>
         <source>Inches</source>
-        <translation>Palce</translation>
+        <translation type="vanished">Palce</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="399"/>
         <source>Pixels</source>
-        <translation>Pixely</translation>
+        <translation type="vanished">Pixely</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="364"/>
         <source>Line width:</source>
-        <translation>Šířka čáry:</translation>
+        <translation type="vanished">Šířka čáry:</translation>
     </message>
 </context>
 <context>
     <name>PuzzlePreferencesPathPage</name>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="20"/>
         <source>Paths that Valentina uses</source>
-        <translation>Cesty, které používá Valentina</translation>
+        <translation type="vanished">Cesty, které používá Valentina</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="45"/>
         <source>Type</source>
-        <translation>Typ</translation>
+        <translation type="vanished">Typ</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="50"/>
         <source>Path</source>
-        <translation>Cesta</translation>
+        <translation type="vanished">Cesta</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="72"/>
         <source>Default</source>
-        <translation>Výchozí</translation>
+        <translation type="vanished">Výchozí</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="101"/>
         <source>Edit</source>
-        <translation>Upravit</translation>
+        <translation type="vanished">Upravit</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.cpp" line="137"/>
         <source>Open Directory</source>
-        <translation>Otevřít adresář</translation>
+        <translation type="vanished">Otevřít adresář</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.cpp" line="164"/>
         <source>My SVG Fonts</source>
-        <translation>Moje písma SVG</translation>
+        <translation type="vanished">Moje písma SVG</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.cpp" line="171"/>
         <source>My font corrections</source>
-        <translation>Moje opravy písma</translation>
+        <translation type="vanished">Moje opravy písma</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.cpp" line="178"/>
         <source>My known measurements</source>
-        <translation>Moje známé míry</translation>
+        <translation type="vanished">Moje známé míry</translation>
     </message>
 </context>
 <context>
@@ -12941,12 +12927,12 @@ Tato volba se projeví po opětovném spuštění.</translation>
         <translation>Chyba kompatibility VTextManager: actualClassVersion = %1 a classVersion = %2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="640"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="709"/>
         <source>CustomSARecord prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
         <translation>Chyba v nesouladu předpony CustomSARecord: actualStreamHeader = 0x%1 a streamHeader = 0x%2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="652"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="721"/>
         <source>CustomSARecord compatibility error: actualClassVersion = %1 and classVersion = %2</source>
         <translation>Chyba kompatibility CustomSARecord: actualClassVersion = %1 a classVersion = %2</translation>
     </message>
@@ -12984,17 +12970,17 @@ Tato volba se projeví po opětovném spuštění.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="570"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="639"/>
         <source>mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="579"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="648"/>
         <source>cm</source>
         <translation>cm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="572"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="641"/>
         <source>inch</source>
         <translation>palec</translation>
     </message>
@@ -13012,7 +12998,7 @@ Tato volba se projeví po opětovném spuštění.</translation>
         <translation>Hodnota</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="574"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="643"/>
         <source>px</source>
         <translation>px</translation>
     </message>
@@ -13022,14 +13008,12 @@ Tato volba se projeví po opětovném spuštění.</translation>
         <translation>Posunout jednotlivost (díl střihu)</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1140"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="441"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="446"/>
         <source>Can&apos;t convert toUInt parameter</source>
         <translation>Nelze převést parametr toUInt</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1077"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="492"/>
         <source>Can&apos;t convert toBool parameter</source>
         <translation>Nelze převést parametr toBool</translation>
@@ -13040,7 +13024,6 @@ Tato volba se projeví po opětovném spuštění.</translation>
         <translation>Obdržen prázdný parametr</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1114"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="577"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="582"/>
         <source>Can&apos;t convert toDouble parameter</source>
@@ -13205,7 +13188,6 @@ Tato volba se projeví po opětovném spuštění.</translation>
         <translation>Neplatný vzorec &apos;%1&apos; pro nástroj s ID &apos;%2&apos;. %3.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1166"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="470"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="475"/>
         <source>Can&apos;t convert toInt parameter</source>
@@ -13297,27 +13279,20 @@ Tato volba se projeví po opětovném spuštění.</translation>
         <translation>Neplatná celková hodnota délky značky sestavení. Díl &apos;%1&apos;. Délka je menší než nejmenší povolená délka.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/undocommands/vpundopiecemove.cpp" line="132"/>
         <source>move pieces</source>
-        <translation>Posunout díly</translation>
+        <translation type="vanished">Posunout díly</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/undocommands/vpundopiecerotate.cpp" line="165"/>
         <source>rotate pieces</source>
-        <translation>Otočit díly</translation>
+        <translation type="vanished">Otočit díly</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="209"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="259"/>
         <source>Cannot set printer page size</source>
-        <translation>Nelze nastavit velikost strany tiskárny</translation>
+        <translation type="vanished">Nelze nastavit velikost strany tiskárny</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="220"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="270"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3231"/>
         <source>Cannot set printer margins</source>
-        <translation>Nelze nastavit okraje tiskárny</translation>
+        <translation type="vanished">Nelze nastavit okraje tiskárny</translation>
     </message>
     <message>
         <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="736"/>
@@ -13374,14 +13349,12 @@ Tato volba se projeví po opětovném spuštění.</translation>
         <translation>Opravdu chcete smazat?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/undocommands/vpundopiecezvaluemove.cpp" line="66"/>
         <source>z value move piece</source>
-        <translation>z hodnota posunuje díl</translation>
+        <translation type="vanished">z hodnota posunuje díl</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/undocommands/vpundopiecezvaluemove.cpp" line="275"/>
         <source>z value move pieces</source>
-        <translation>z hodnota posunuje díly</translation>
+        <translation type="vanished">z hodnota posunuje díly</translation>
     </message>
     <message>
         <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="730"/>
@@ -13462,10 +13435,10 @@ Tato volba se projeví po opětovném spuštění.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarmholecurve.cpp" line="125"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolspline.cpp" line="193"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.cpp" line="121"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolsplinepath.cpp" line="173"/>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolcubicbezier.cpp" line="121"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.cpp" line="121"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolspline.cpp" line="193"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolsplinepath.cpp" line="173"/>
         <source>Curve &apos;%1&apos; with id %2 has not unique name.</source>
         <translation>Křivka &apos;%1&apos; s ID %2 nemá jedinečný název.</translation>
     </message>
@@ -16352,7 +16325,6 @@ Do you want to continue?</source>
         <translation>Číslo odpovídající výstupnímu formátu (výchozí = 0, režim vyvedení):</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="108"/>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="799"/>
         <source>Disable high dpi scaling. Call this option if has problem with scaling (by default scaling enabled). Alternatively you can use the %1 environment variable.</source>
         <translation>Zakázat škálování pro obrazovky s velkým rozlišením. Tuto volbu zvolte, pokud máte potíže se škálováním (ve výchozím nastavení je škálování povoleno). Jinou možností je použít proměnnou prostředí %1.</translation>
@@ -16692,9 +16664,8 @@ Do you want to continue?</source>
         <translation>Základní hodnota rozměru C</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="106"/>
         <source>The raw layout data file</source>
-        <translation>Soubor nezpracovaných dat rozvržení</translation>
+        <translation type="vanished">Soubor nezpracovaných dat rozvržení</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="121"/>
@@ -16757,9 +16728,8 @@ Do you want to continue?</source>
         <translation>Jednotky rozvržení (papíru s výjimkou px, režim vyvedení). Výchozí jednotky cm.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="105"/>
         <source>Load pattern pieces from the raw layout data file.</source>
-        <translation>Nahrát díly střihu z nezpracovaného datového souboru rozvržení.</translation>
+        <translation type="vanished">Nahrát díly střihu z nezpracovaného datového souboru rozvržení.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="723"/>
@@ -16770,12 +16740,12 @@ Do you want to continue?</source>
 <context>
     <name>VContainer</name>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="262"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="276"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="325"/>
         <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="187"/>
         <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="207"/>
         <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="219"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="262"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="276"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="325"/>
         <source>Can&apos;t find object</source>
         <translation>Nelze najít předmět</translation>
     </message>
@@ -17754,150 +17724,121 @@ Do you want to continue?</source>
 <context>
     <name>VPApplication</name>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="355"/>
         <source>Error parsing file. Program will be terminated.</source>
-        <translation>Chyba při zpracování souboru. Program bude ukončen.</translation>
+        <translation type="vanished">Chyba při zpracování souboru. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="361"/>
         <source>Error bad id. Program will be terminated.</source>
-        <translation>Chyba. Špatný identifikátor. Program bude ukončen.</translation>
+        <translation type="vanished">Chyba. Špatný identifikátor. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="367"/>
         <source>Error can&apos;t convert value. Program will be terminated.</source>
-        <translation>Chyba. Nelze převést hodnotu. Program bude ukončen.</translation>
+        <translation type="vanished">Chyba. Nelze převést hodnotu. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="373"/>
         <source>Error empty parameter. Program will be terminated.</source>
-        <translation>Chyba. Prázdný parametr. Program bude ukončen.</translation>
+        <translation type="vanished">Chyba. Prázdný parametr. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="379"/>
         <source>Error wrong id. Program will be terminated.</source>
-        <translation>Chyba. Špatný identifikátor. Program bude ukončen.</translation>
+        <translation type="vanished">Chyba. Špatný identifikátor. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="392"/>
         <source>Something&apos;s wrong!!</source>
-        <translation>Něco je špatně!</translation>
+        <translation type="vanished">Něco je špatně!</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="398"/>
         <source>Exception thrown: %1. Program will be terminated.</source>
-        <translation>Způsobena chyba: %1. Program bude ukončen.</translation>
+        <translation type="vanished">Způsobena chyba: %1. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="741"/>
         <source>Can&apos;t begin to listen for incoming connections on name &apos;%1&apos;</source>
-        <translation>Nelze začít naslouchat příchozímu spojení &apos;%1&apos;</translation>
+        <translation type="vanished">Nelze začít naslouchat příchozímu spojení &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="760"/>
         <source>Export mode doesn&apos;t support opening several files.</source>
-        <translation>Režim vyvedení nepodporuje otevření více souborů.</translation>
+        <translation type="vanished">Režim vyvedení nepodporuje otevření více souborů.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="767"/>
         <source>Import raw layout data does not support opening several layout files.</source>
-        <translation>Zavedení nezpracovaných dat rozvržení nepodporuje otevření více souborů rozvržení.</translation>
+        <translation type="vanished">Zavedení nezpracovaných dat rozvržení nepodporuje otevření více souborů rozvržení.</translation>
     </message>
 </context>
 <context>
     <name>VPCarrousel</name>
     <message>
-        <location filename="../../src/app/puzzle/carousel/vpcarrousel.cpp" line="97"/>
-        <location filename="../../src/app/puzzle/carousel/vpcarrousel.cpp" line="169"/>
         <source>Unplaced pieces</source>
-        <translation>Neumístěné díly</translation>
+        <translation type="vanished">Neumístěné díly</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/carousel/vpcarrousel.cpp" line="300"/>
-        <location filename="../../src/app/puzzle/carousel/vpcarrousel.cpp" line="303"/>
         <source>Pieces of</source>
-        <translation>Díly</translation>
+        <translation type="vanished">Díly</translation>
     </message>
 </context>
 <context>
     <name>VPCarrouselPieceList</name>
     <message>
-        <location filename="../../src/app/puzzle/carousel/vpcarrouselpiecelist.cpp" line="261"/>
         <source>Move to Sheet</source>
-        <translation>Přesunout do listu</translation>
+        <translation type="vanished">Přesunout do listu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/carousel/vpcarrouselpiecelist.cpp" line="264"/>
         <source>Delete</source>
-        <translation>Smazat</translation>
+        <translation type="vanished">Smazat</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/carousel/vpcarrouselpiecelist.cpp" line="267"/>
         <source>Remove from Sheet</source>
-        <translation>Odstranit z listu</translation>
+        <translation type="vanished">Odstranit z listu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/carousel/vpcarrouselpiecelist.cpp" line="247"/>
         <source>Move to</source>
-        <translation>Přesunout do</translation>
+        <translation type="vanished">Přesunout do</translation>
     </message>
 </context>
 <context>
     <name>VPDialogAbout</name>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="26"/>
         <source>About Puzzle</source>
-        <translation>O programu Puzzle</translation>
+        <translation type="vanished">O programu Puzzle</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="100"/>
         <source>Puzzle version</source>
-        <translation>Verze programu Puzzle</translation>
+        <translation type="vanished">Verze programu Puzzle</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="118"/>
         <source>Build revision:</source>
-        <translation>Revize sestavení:</translation>
+        <translation type="vanished">Revize sestavení:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="131"/>
         <source>This program is part of Valentina project.</source>
-        <translation>Tento program je částí projektu Valentina.</translation>
+        <translation type="vanished">Tento program je částí projektu Valentina.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="273"/>
         <source>Special thanks</source>
-        <translation>Zvláštní poděkování</translation>
+        <translation type="vanished">Zvláštní poděkování</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="317"/>
         <source>Check For Updates</source>
-        <translation>Zkontrolovat aktualizace</translation>
+        <translation type="vanished">Zkontrolovat aktualizace</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="324"/>
         <source>Credits</source>
-        <translation>Zásluhy</translation>
+        <translation type="vanished">Zásluhy</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="66"/>
         <source>Cannot open your default browser</source>
-        <translation>Nelze otevřít váš výchozí prohlížeč</translation>
+        <translation type="vanished">Nelze otevřít váš výchozí prohlížeč</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="151"/>
         <source>Build revision: %1</source>
-        <translation>Revize sestavení: %1</translation>
+        <translation type="vanished">Revize sestavení: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="155"/>
         <source>Built on %1 at %2</source>
-        <translation>Sestaveno %1 v %2</translation>
+        <translation type="vanished">Sestaveno %1 v %2</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="162"/>
         <source>Web site : %1</source>
-        <translation>Stránky: %1</translation>
+        <translation type="vanished">Stránky: %1</translation>
     </message>
 </context>
 <context>
@@ -18022,1110 +17963,846 @@ Do you want to continue?</source>
 <context>
     <name>VPGraphicsPiece</name>
     <message>
-        <location filename="../../src/app/puzzle/scene/vpgraphicspiece.cpp" line="325"/>
         <source>Move to</source>
-        <translation>Přesunout do</translation>
+        <translation type="vanished">Přesunout do</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/scene/vpgraphicspiece.cpp" line="339"/>
         <source>Remove from Sheet</source>
-        <translation>Odstranit z listu</translation>
+        <translation type="vanished">Odstranit z listu</translation>
     </message>
 </context>
 <context>
     <name>VPGraphicsSheet</name>
     <message>
-        <location filename="../../src/app/puzzle/scene/vpgraphicssheet.cpp" line="900"/>
         <source>FOLD</source>
-        <translation>ZÁHYB</translation>
+        <translation type="vanished">ZÁHYB</translation>
     </message>
 </context>
 <context>
     <name>VPLayout</name>
     <message>
-        <location filename="../../src/app/puzzle/layout/vplayout.cpp" line="76"/>
         <source>Sheet %1</source>
-        <translation>List %1</translation>
+        <translation type="vanished">List %1</translation>
     </message>
 </context>
 <context>
     <name>VPLayoutFileReader</name>
     <message>
-        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="497"/>
         <source>Piece</source>
-        <translation>Díl</translation>
+        <translation type="vanished">Díl</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="655"/>
         <source>Error in line %1. Grainline main line is empty.</source>
-        <translation>Chyba na řádku %1. Hlavní řádek dráhy nitě je prázdný.</translation>
+        <translation type="vanished">Chyba na řádku %1. Hlavní řádek dráhy nitě je prázdný.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1057"/>
         <source>Got empty attribute &apos;%1&apos;</source>
-        <translation>Obdržena prázdná vlastnost &apos;%1&apos;</translation>
+        <translation type="vanished">Obdržena prázdná vlastnost &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="628"/>
         <source>Error in line %1. Seam allowance is empty.</source>
-        <translation>Chyba na řádku %1. Švová záložka je prázdná.</translation>
+        <translation type="vanished">Chyba na řádku %1. Švová záložka je prázdná.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="747"/>
         <source>Error in line %1. Internal path shape is empty.</source>
-        <translation>Chyba v řádku %1. Tvar vnitřní cesty je prázdný.</translation>
+        <translation type="vanished">Chyba v řádku %1. Tvar vnitřní cesty je prázdný.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1044"/>
         <source>Unexpected tag %1 in line %2</source>
-        <translation>Neočekávaná značka %1 v řádku %2</translation>
+        <translation type="vanished">Neočekávaná značka %1 v řádku %2</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="477"/>
         <source>Piece %1 invalid. %2</source>
-        <translation>Díl %1 je neplatný. %2</translation>
+        <translation type="vanished">Díl %1 je neplatný. %2</translation>
     </message>
 </context>
 <context>
     <name>VPMainGraphicsView</name>
     <message>
-        <location filename="../../src/app/puzzle/scene/vpmaingraphicsview.cpp" line="329"/>
         <source>Restore transformation origin</source>
-        <translation>Obnovit počátek proměny</translation>
+        <translation type="vanished">Obnovit počátek proměny</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/scene/vpmaingraphicsview.cpp" line="333"/>
         <source>Remove sheet</source>
-        <translation>Odstranit list</translation>
+        <translation type="vanished">Odstranit list</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/scene/vpmaingraphicsview.cpp" line="616"/>
         <source>Remove pieces</source>
-        <translation>Odstranit díly</translation>
+        <translation type="vanished">Odstranit díly</translation>
     </message>
 </context>
 <context>
     <name>VPMainWindow</name>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="14"/>
         <source>Puzzle</source>
-        <translation>Puzzle</translation>
+        <translation type="vanished">Puzzle</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="47"/>
         <source>&amp;File</source>
-        <translation>&amp;Soubor</translation>
+        <translation type="vanished">&amp;Soubor</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="76"/>
         <source>&amp;Window</source>
-        <translation>&amp;Okno</translation>
+        <translation type="vanished">&amp;Okno</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="82"/>
         <source>&amp;Help</source>
-        <translation>&amp;Nápověda</translation>
+        <translation type="vanished">&amp;Nápověda</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="121"/>
         <source>Menu</source>
-        <translation>Nabídka</translation>
+        <translation type="vanished">Nabídka</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="159"/>
         <source>Piece Carrousel</source>
-        <translation>Kolotoč s díly</translation>
+        <translation type="vanished">Kolotoč s díly</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="198"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2243"/>
         <source>Properties</source>
-        <translation>Vlastnosti</translation>
+        <translation type="vanished">Vlastnosti</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="243"/>
         <source>Current piece properties</source>
-        <translation>Nynější vlastnosti dílu</translation>
+        <translation type="vanished">Nynější vlastnosti dílu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="294"/>
         <source>Current piece</source>
-        <translation>Nynější díl</translation>
+        <translation type="vanished">Nynější díl</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="322"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="838"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1752"/>
         <source>Infos</source>
-        <translation>Údaje</translation>
+        <translation type="vanished">Údaje</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="328"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="846"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1760"/>
         <source>Name:</source>
-        <translation>Název:</translation>
+        <translation type="vanished">Název:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="687"/>
         <source>Show Seamline</source>
-        <translation>Ukázat čáru švu</translation>
+        <translation type="vanished">Ukázat čáru švu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="668"/>
         <source>Geometry</source>
-        <translation>Uspořádání</translation>
+        <translation type="vanished">Uspořádání</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="548"/>
         <source>Rotation</source>
-        <translation>Otáčení</translation>
+        <translation type="vanished">Otáčení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="624"/>
         <source>Angle:</source>
-        <translation>Úhel:</translation>
+        <translation type="vanished">Úhel:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="475"/>
         <source>Placement</source>
-        <translation>Umístění</translation>
+        <translation type="vanished">Umístění</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="748"/>
         <source>No piece selected</source>
-        <translation>Nebyl vybrán žádný díl</translation>
+        <translation type="vanished">Nebyl vybrán žádný díl</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="783"/>
         <source>Sheet properties</source>
-        <translation>Vlastnosti listu</translation>
+        <translation type="vanished">Vlastnosti listu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="828"/>
         <source>Current sheet</source>
-        <translation>Nynější list</translation>
+        <translation type="vanished">Nynější list</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="864"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1365"/>
         <source>Format</source>
-        <translation>Formát</translation>
+        <translation type="vanished">Formát</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1108"/>
         <source>Remove unused length</source>
-        <translation>Odstranit nepoužívanou délku</translation>
+        <translation type="vanished">Odstranit nepoužívanou délku</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1118"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1525"/>
         <source>Margins</source>
-        <translation>Okraje</translation>
+        <translation type="vanished">Okraje</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1126"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1533"/>
         <source>Right:</source>
-        <translation>Pravý:</translation>
+        <translation type="vanished">Pravý:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1146"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1553"/>
         <source>Top:</source>
-        <translation>Nahoře:</translation>
+        <translation type="vanished">Nahoře:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1170"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1577"/>
         <source>Left:</source>
-        <translation>Levý:</translation>
+        <translation type="vanished">Levý:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1180"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1587"/>
         <source>Bottom:</source>
-        <translation>Dole:</translation>
+        <translation type="vanished">Dole:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1215"/>
         <source>Placement Grid</source>
-        <translation>Mřížka umístění</translation>
+        <translation type="vanished">Mřížka umístění</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1226"/>
         <source>Show Grid</source>
-        <translation>Zobrazit mřížku</translation>
+        <translation type="vanished">Zobrazit mřížku</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1233"/>
         <source>Column width</source>
-        <translation>Šířka sloupce</translation>
+        <translation type="vanished">Šířka sloupce</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1247"/>
         <source>Row height</source>
-        <translation>Výška řádku</translation>
+        <translation type="vanished">Výška řádku</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1622"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1789"/>
         <source>Control</source>
-        <translation>Nastavení</translation>
+        <translation type="vanished">Nastavení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1823"/>
         <source>Follow grainline</source>
-        <translation>Následovat dráhu nitě</translation>
+        <translation type="vanished">Následovat dráhu nitě</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1816"/>
         <source>Sticky edges</source>
-        <translation>Lepivé okraje</translation>
+        <translation type="vanished">Lepivé okraje</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1266"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2034"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2370"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2422"/>
         <source>Export</source>
-        <translation>Vyvést</translation>
+        <translation type="vanished">Vyvést</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1272"/>
         <source>Export Sheet</source>
-        <translation>Vyvést list</translation>
+        <translation type="vanished">Vyvést list</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1307"/>
         <source>Tiles properties</source>
-        <translation>Vlastnosti dlaždic</translation>
+        <translation type="vanished">Vlastnosti dlaždic</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1352"/>
         <source>Tiled Pdf Export</source>
-        <translation>Vyvedení dlaždicového PDF</translation>
+        <translation type="vanished">Vyvedení dlaždicového PDF</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1628"/>
         <source>Show Tiles on sheet</source>
-        <translation>Ukázat dlaždice na listu</translation>
+        <translation type="vanished">Ukázat dlaždice na listu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1697"/>
         <source>Layout properties</source>
-        <translation>Vlastnosti rozvržení</translation>
+        <translation type="vanished">Vlastnosti rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1742"/>
         <source>Layout</source>
-        <translation>Rozvržení</translation>
+        <translation type="vanished">Rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1776"/>
         <source>Description</source>
-        <translation>Popis</translation>
+        <translation type="vanished">Popis</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1795"/>
         <source>Warning superposition of pieces</source>
-        <translation>Varování ohledně překrývání se dílů</translation>
+        <translation type="vanished">Varování ohledně překrývání se dílů</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1802"/>
         <source>Warning pieces out of bound</source>
-        <translation>Varování díly nedovoleny</translation>
+        <translation type="vanished">Varování díly nedovoleny</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2060"/>
         <source>zoom</source>
-        <translation>Zvětšení</translation>
+        <translation type="vanished">Zvětšení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1861"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2079"/>
         <source>Scale</source>
-        <translation>Měřítko</translation>
+        <translation type="vanished">Měřítko</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2128"/>
         <source>&amp;Open</source>
-        <translation>&amp;Otevřít</translation>
+        <translation type="vanished">&amp;Otevřít</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2145"/>
         <source>&amp;Save</source>
-        <translation>&amp;Uložit</translation>
+        <translation type="vanished">&amp;Uložit</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2162"/>
         <source>Save &amp;As</source>
-        <translation>Uložit j&amp;ako</translation>
+        <translation type="vanished">Uložit j&amp;ako</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2176"/>
         <source>&amp;Import Raw Layout Data</source>
-        <translation>&amp;Zavést nezpracovaná data rozvržení</translation>
+        <translation type="vanished">&amp;Zavést nezpracovaná data rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2190"/>
         <source>E&amp;xit</source>
-        <translation>&amp;Ukončit</translation>
+        <translation type="vanished">&amp;Ukončit</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2204"/>
         <source>&amp;New</source>
-        <translation>&amp;Nový</translation>
+        <translation type="vanished">&amp;Nový</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2215"/>
         <source>About &amp;Qt</source>
-        <translation>O &amp;Qt</translation>
+        <translation type="vanished">O &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2226"/>
         <source>About &amp;Puzzle</source>
-        <translation>O programu &amp;Puzzle</translation>
+        <translation type="vanished">O programu &amp;Puzzle</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2257"/>
         <source>Zoom in</source>
-        <translation>Přiblížit</translation>
+        <translation type="vanished">Přiblížit</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2271"/>
         <source>Zoom out</source>
-        <translation>Oddálit</translation>
+        <translation type="vanished">Oddálit</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2285"/>
         <source>Zoom 1:1</source>
-        <translation>Zvětšení 1:1</translation>
+        <translation type="vanished">Zvětšení 1:1</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2299"/>
         <source>Zoom fit best</source>
-        <translation>Přizpůsobit velikost oknu aplikace</translation>
+        <translation type="vanished">Přizpůsobit velikost oknu aplikace</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2302"/>
         <source>Zoom sheet</source>
-        <translation>Zvětšit list</translation>
+        <translation type="vanished">Zvětšit list</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2310"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="5132"/>
         <source>Preferences</source>
-        <translation>Nastavení</translation>
+        <translation type="vanished">Nastavení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="488"/>
         <source>File &apos;%1&apos; doesn&apos;t exist!</source>
-        <translation>Soubor &apos;%1&apos; není!</translation>
+        <translation type="vanished">Soubor &apos;%1&apos; není!</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="532"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="542"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="552"/>
         <source>File error.</source>
-        <translation>Chyba souboru.</translation>
+        <translation type="vanished">Chyba souboru.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="638"/>
         <source>Fail to create layout.</source>
-        <translation>Vytvoření rozvržení se nezdařilo.</translation>
+        <translation type="vanished">Vytvoření rozvržení se nezdařilo.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3452"/>
         <source>Could not extract data from file &apos;%1&apos;. %2</source>
-        <translation>Nepodařilo se vytáhnout data ze souboru &apos;%1&apos;. %2</translation>
+        <translation type="vanished">Nepodařilo se vytáhnout data ze souboru &apos;%1&apos;. %2</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="931"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1019"/>
         <source>Centimeters</source>
-        <translation>Centimetry</translation>
+        <translation type="vanished">Centimetry</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="930"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1018"/>
         <source>Millimiters</source>
-        <translation>Milimetry</translation>
+        <translation type="vanished">Milimetry</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="932"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1020"/>
         <source>Inches</source>
-        <translation>Palce</translation>
+        <translation type="vanished">Palce</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1803"/>
         <source>Scale:</source>
-        <translation>Měřítko:</translation>
+        <translation type="vanished">Měřítko:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1833"/>
         <source>untitled %1.vlt</source>
-        <translation>bez názvu %1.vlt</translation>
+        <translation type="vanished">bez názvu %1.vlt</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1833"/>
         <source>untitled.vlt</source>
-        <translation>bez_názvu.vlt</translation>
+        <translation type="vanished">bez_názvu.vlt</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1840"/>
         <source>read only</source>
-        <translation>Pouze pro čtení</translation>
+        <translation type="vanished">Pouze pro čtení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1906"/>
         <source>Cannot read settings from a malformed .INI file.</source>
-        <translation>Nelze číst nastavení z poškozeného souboru .INI.</translation>
+        <translation type="vanished">Nelze číst nastavení z poškozeného souboru .INI.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1923"/>
         <source>Cannot save settings. Access denied.</source>
-        <translation>Nelze uložit nastavení. Přístup odepřen.</translation>
+        <translation type="vanished">Nelze uložit nastavení. Přístup odepřen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2831"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3185"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3362"/>
         <source>Failed to open file, is it writable?</source>
-        <translation>Soubor se nepodařilo otevřít. Lze do něj zapisovat?</translation>
+        <translation type="vanished">Soubor se nepodařilo otevřít. Lze do něj zapisovat?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1978"/>
         <source>&amp;New Window</source>
-        <translation>&amp;Nové okno</translation>
+        <translation type="vanished">&amp;Nové okno</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1935"/>
         <source>Layout has been modified. Do you want to save your changes?</source>
-        <translation>Rozvržení bylo změněno. Chcete uložit své změny?</translation>
+        <translation type="vanished">Rozvržení bylo změněno. Chcete uložit své změny?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3785"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3847"/>
         <source>Layout files</source>
-        <translation>Soubory rozvržení</translation>
+        <translation type="vanished">Soubory rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3789"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3937"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4879"/>
         <source>Open file</source>
-        <translation>Otevřít soubor</translation>
+        <translation type="vanished">Otevřít soubor</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3830"/>
         <source>Could not save the file</source>
-        <translation>Nepodařilo se uložit soubor</translation>
+        <translation type="vanished">Nepodařilo se uložit soubor</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3849"/>
         <source>layout</source>
-        <translation>Rozvržení</translation>
+        <translation type="vanished">Rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3861"/>
         <source>Save as</source>
-        <translation>Uložit jako</translation>
+        <translation type="vanished">Uložit jako</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3891"/>
         <source>Failed to lock. This file already opened in another window.</source>
-        <translation>Nepodařilo se uzamknout. Tento soubor je již otevřen v jiném okně.</translation>
+        <translation type="vanished">Nepodařilo se uzamknout. Tento soubor je již otevřen v jiném okně.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3901"/>
         <source>Could not save file</source>
-        <translation>Nepodařilo se uložit soubor</translation>
+        <translation type="vanished">Nepodařilo se uložit soubor</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3922"/>
         <source>Failed to lock. This file already opened in another window. Expect collissions when run 2 copies of the program.</source>
-        <translation>Nepodařilo se uzamknout. Tento soubor je již otevřen v jiném okně. Při zdvojeném vykonávání (2 kopie programu) může dojít ke střetům.</translation>
+        <translation type="vanished">Nepodařilo se uzamknout. Tento soubor je již otevřen v jiném okně. Při zdvojeném vykonávání (2 kopie programu) může dojít ke střetům.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3932"/>
         <source>Raw Layout files</source>
-        <translation>Soubory s nezpracovaným rozvržením</translation>
+        <translation type="vanished">Soubory s nezpracovaným rozvržením</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3950"/>
         <source>About Qt</source>
-        <translation>O Qt</translation>
+        <translation type="vanished">O Qt</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="62"/>
         <source>&amp;Sheet</source>
-        <translation>&amp;List</translation>
+        <translation type="vanished">&amp;List</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="90"/>
         <source>&amp;Layout</source>
-        <translation>&amp;Rozvržení</translation>
+        <translation type="vanished">&amp;Rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="101"/>
         <source>Watermark</source>
-        <translation>Vodoznak</translation>
+        <translation type="vanished">Vodoznak</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="371"/>
         <source>Gradation id:</source>
-        <translation>ID odstupňování:</translation>
+        <translation type="vanished">ID odstupňování:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="385"/>
         <source>Copy number:</source>
-        <translation>Počet kopií:</translation>
+        <translation type="vanished">Počet kopií:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="402"/>
         <source>Status</source>
-        <translation>Stav</translation>
+        <translation type="vanished">Stav</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="415"/>
         <source>Out of bound</source>
-        <translation>Mimo oblast tisku</translation>
+        <translation type="vanished">Mimo oblast tisku</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="429"/>
         <source>Superposition of pieces</source>
-        <translation>Překrývání se dílů</translation>
+        <translation type="vanished">Překrývání se dílů</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="443"/>
         <source>Piece gape</source>
-        <translation>Rozestupy mezi díly</translation>
+        <translation type="vanished">Rozestupy mezi díly</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="459"/>
         <source>Transformation</source>
-        <translation>Proměna</translation>
+        <translation type="vanished">Proměna</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="469"/>
         <source>Translate</source>
         <comment>Translate piece</comment>
-        <translation>Přesunout</translation>
+        <translation type="vanished">Přesunout</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="483"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1875"/>
         <source>Horizontal:</source>
-        <translation>Vodorovná:</translation>
+        <translation type="vanished">Vodorovná:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="506"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1888"/>
         <source>Vertical:</source>
-        <translation>Svislá:</translation>
+        <translation type="vanished">Svislá:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="528"/>
         <source>Relative translation</source>
-        <translation>Na okolnostech závislý posun</translation>
+        <translation type="vanished">Na okolnostech závislý posun</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="542"/>
         <source>Rotate</source>
-        <translation>Otočit</translation>
+        <translation type="vanished">Otočit</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="651"/>
         <source>Apply to each piece separately</source>
-        <translation>Použít na každý díl zvlášť</translation>
+        <translation type="vanished">Použít na každý díl zvlášť</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="677"/>
         <source>Show full piece</source>
-        <translation>Ukázat celý díl</translation>
+        <translation type="vanished">Ukázat celý díl</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="697"/>
         <source>Show mirror line</source>
-        <translation>Ukázat čáru zrcadlení</translation>
+        <translation type="vanished">Ukázat čáru zrcadlení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="707"/>
         <source>Show grainline</source>
-        <translation>Zobrazit dráhu nitě</translation>
+        <translation type="vanished">Zobrazit dráhu nitě</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="717"/>
         <source>Vertically flipped</source>
-        <translation>Svisle převrácené</translation>
+        <translation type="vanished">Svisle převrácené</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="724"/>
         <source>Horizontally flipped</source>
-        <translation>Vodorovně převrácené</translation>
+        <translation type="vanished">Vodorovně převrácené</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="884"/>
         <source>Unit:</source>
-        <translation>Jednotka:</translation>
+        <translation type="vanished">Jednotka:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="900"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1391"/>
         <source>Templates:</source>
-        <translation>Předlohy:</translation>
+        <translation type="vanished">Předlohy:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="959"/>
         <source>Length:</source>
-        <translation>Délka:</translation>
+        <translation type="vanished">Délka:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1022"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1468"/>
         <source>Width:</source>
-        <translation>Šířka:</translation>
+        <translation type="vanished">Šířka:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1033"/>
         <source>Grainline orientation:</source>
-        <translation>Natočení dráhy nitě:</translation>
+        <translation type="vanished">Natočení dráhy nitě:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1045"/>
         <source>Force the grainline orientation to always be horizontal</source>
-        <translation>Vynutit, aby natočení dráhy nitě bylo vždy vodorovné</translation>
+        <translation type="vanished">Vynutit, aby natočení dráhy nitě bylo vždy vodorovné</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1068"/>
         <source>Force the grainline orientation to always be vertical</source>
-        <translation>Vynutit, aby natočení dráhy nitě bylo vždy svislé</translation>
+        <translation type="vanished">Vynutit, aby natočení dráhy nitě bylo vždy svislé</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1205"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1612"/>
         <source>Ignore margins</source>
-        <translation>Přehlížet okraje</translation>
+        <translation type="vanished">Přehlížet okraje</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1481"/>
         <source>Height:</source>
-        <translation>Výška:</translation>
+        <translation type="vanished">Výška:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1635"/>
         <source>Show watermark preview</source>
-        <translation>Ukázat náhled vodoznaku</translation>
+        <translation type="vanished">Ukázat náhled vodoznaku</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1638"/>
         <source>Show watermark</source>
-        <translation>Ukázat  vodoznak</translation>
+        <translation type="vanished">Ukázat  vodoznak</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1648"/>
         <source>Print tiles scheme</source>
-        <translation>Zobrazit schéma dlaždic</translation>
+        <translation type="vanished">Zobrazit schéma dlaždic</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1655"/>
         <source>Print text as paths</source>
-        <translation>Tisknout text jako cesty</translation>
+        <translation type="vanished">Tisknout text jako cesty</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1809"/>
         <source>Warning piece gape position</source>
-        <translation>Upozornění při nedodržení rozestupů mezi díly</translation>
+        <translation type="vanished">Upozornění při nedodržení rozestupů mezi díly</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1830"/>
         <source>Boundary together with notches</source>
-        <translation>Zahrnout přídavek na šev do zářezů</translation>
+        <translation type="vanished">Zahrnout přídavek na šev do zářezů</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1837"/>
         <source>Cut on fold</source>
-        <translation>Střihnout v záhybu</translation>
+        <translation type="vanished">Střihnout v záhybu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1846"/>
         <source>Pieces gap:</source>
-        <translation>Dílová mezera:</translation>
+        <translation type="vanished">Dílová mezera:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2040"/>
         <source>Export Layout</source>
-        <translation>Vyvést rozvržení</translation>
+        <translation type="vanished">Vyvést rozvržení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2093"/>
         <source>Undo commands</source>
-        <translation>Zpět příkazy</translation>
+        <translation type="vanished">Zpět příkazy</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2318"/>
         <source>Add Sheet</source>
-        <translation>Přidat list</translation>
+        <translation type="vanished">Přidat list</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2329"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2381"/>
         <source>Print</source>
-        <translation>Tisk</translation>
+        <translation type="vanished">Tisk</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2340"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2392"/>
         <source>Print preview</source>
-        <translation>Náhled tisku</translation>
+        <translation type="vanished">Náhled tisku</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2351"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2403"/>
         <source>Print tiled</source>
-        <translation>Zobrazit dlaždicové</translation>
+        <translation type="vanished">Zobrazit dlaždicové</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2362"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2414"/>
         <source>Print preview tiled</source>
-        <translation>Vytisknout dlaždicový náhled</translation>
+        <translation type="vanished">Vytisknout dlaždicový náhled</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2433"/>
         <source>Editor</source>
-        <translation>Editor</translation>
+        <translation type="vanished">Editor</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2436"/>
         <source>Create or edit a watermark</source>
-        <translation>Vytvořit nebo upravit vodoznak</translation>
+        <translation type="vanished">Vytvořit nebo upravit vodoznak</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2447"/>
         <source>Edit current</source>
-        <translation>Upravit nynější</translation>
+        <translation type="vanished">Upravit nynější</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2461"/>
         <source>Load</source>
-        <translation>Nahrát</translation>
+        <translation type="vanished">Nahrát</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2475"/>
         <source>Remove</source>
-        <translation>Odstranit</translation>
+        <translation type="vanished">Odstranit</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2527"/>
         <source>Settings Directory</source>
-        <translation>Adresář s nastavením</translation>
+        <translation type="vanished">Adresář s nastavením</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="533"/>
         <source>Unable to read a layout file. %1</source>
-        <translation>Nelze číst soubor rozvržení. %1</translation>
+        <translation type="vanished">Nelze číst soubor rozvržení. %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="543"/>
         <source>Failed to read %1</source>
-        <translation>Nepovedlo se přečíst %1</translation>
+        <translation type="vanished">Nepovedlo se přečíst %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="743"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3753"/>
         <source>&amp;Undo</source>
-        <translation>&amp;Zpět</translation>
+        <translation type="vanished">&amp;Zpět</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="749"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3754"/>
         <source>&amp;Redo</source>
-        <translation>&amp;Znovu</translation>
+        <translation type="vanished">&amp;Znovu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="933"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1021"/>
         <source>Pixels</source>
-        <translation>Pixely</translation>
+        <translation type="vanished">Pixely</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1934"/>
         <source>Unsaved changes</source>
-        <translation>Neuložené změny</translation>
+        <translation type="vanished">Neuložené změny</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1943"/>
         <source>Save…</source>
-        <translation>Uložit…</translation>
+        <translation type="vanished">Uložit…</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1943"/>
         <source>Save</source>
-        <translation>Uložit</translation>
+        <translation type="vanished">Uložit</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1948"/>
         <source>Don&apos;t Save</source>
-        <translation>Neukládat</translation>
+        <translation type="vanished">Neukládat</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2423"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2488"/>
         <source>Can&apos;t create a path</source>
-        <translation>Nelze vytvořit cestu</translation>
+        <translation type="vanished">Nelze vytvořit cestu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2710"/>
         <source>Can&apos;t open file &apos;%1&apos;</source>
-        <translation>Nelze otevřít soubor &apos;%1&apos;</translation>
+        <translation type="vanished">Nelze otevřít soubor &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2724"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3238"/>
         <source>Failed in flushing page to disk, disk full?</source>
-        <translation>Nepodařilo se dostat stránku na disk. Disk je plný?</translation>
+        <translation type="vanished">Nepodařilo se dostat stránku na disk. Disk je plný?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3073"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3100"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3129"/>
         <source>The layout is invalid.</source>
-        <translation>Rozvržení je neplatné.</translation>
+        <translation type="vanished">Rozvržení je neplatné.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3074"/>
         <source>The layout is invalid. Piece out of bound. Do you want to continue export?</source>
-        <translation>Rozvržení je neplatné. Díl mimo plochu. Chcete pokračovat ve vyvádění?</translation>
+        <translation type="vanished">Rozvržení je neplatné. Díl mimo plochu. Chcete pokračovat ve vyvádění?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3101"/>
         <source>The layout is invalid. Pieces superposition. Do you want to continue export?</source>
-        <translation>Rozvržení je neplatné. Překrývání se dílů. Chcete pokračovat ve vyvádění?</translation>
+        <translation type="vanished">Rozvržení je neplatné. Překrývání se dílů. Chcete pokračovat ve vyvádění?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3130"/>
         <source>The layout is invalid. One or several pieces are closer than minimally allowed. Do you want to continue export?</source>
-        <translation>Rozvržení je neplatné. Jeden nebo více dílů je blíže, než je nejméně povoleno. Chcete pokračovat ve vyvádění?</translation>
+        <translation type="vanished">Rozvržení je neplatné. Jeden nebo více dílů je blíže, než je nejméně povoleno. Chcete pokračovat ve vyvádění?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4219"/>
         <source>Sheet %1</source>
-        <translation>List %1</translation>
+        <translation type="vanished">List %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3528"/>
         <source>translate pieces</source>
-        <translation>Přesunout díly</translation>
+        <translation type="vanished">Přesunout díly</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3645"/>
         <source>rotate pieces</source>
-        <translation>Otočit díly</translation>
+        <translation type="vanished">Otočit díly</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4423"/>
         <source>untitled %1</source>
-        <translation>bez názvu %1</translation>
+        <translation type="vanished">bez názvu %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4423"/>
         <source>untitled</source>
-        <translation>bez názvu</translation>
+        <translation type="vanished">bez názvu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4508"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4559"/>
         <source>For printing multipages document all sheet should have the same size.</source>
-        <translation>Pro tisk vícestránkového dokumentu musí mít všechny listy stejnou velikost.</translation>
+        <translation type="vanished">Pro tisk vícestránkového dokumentu musí mít všechny listy stejnou velikost.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4520"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4571"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4606"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4644"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4699"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4743"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4776"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4812"/>
         <source>Print error</source>
-        <translation>Chyba při tisku</translation>
+        <translation type="vanished">Chyba při tisku</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4521"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4572"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4607"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4645"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4700"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4744"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4777"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4813"/>
         <source>Cannot proceed because there are no available printers in your system.</source>
-        <translation>Nelze pokračovat, protože ve vašem systému nejsou dostupné žádné tiskárny.</translation>
+        <translation type="vanished">Nelze pokračovat, protože ve vašem systému nejsou dostupné žádné tiskárny.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4876"/>
         <source>Watermark files</source>
-        <translation>Soubory vodoznaku</translation>
+        <translation type="vanished">Soubory vodoznaku</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4532"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4583"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4618"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4656"/>
         <source>Unable to get sheet page settings</source>
-        <translation>Nelze získat nastavení strany listu</translation>
+        <translation type="vanished">Nelze získat nastavení strany listu</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1662"/>
         <source>Show tile number</source>
-        <translation>Zobrazit číslo dlaždice</translation>
+        <translation type="vanished">Zobrazit číslo dlaždice</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2107"/>
         <source>Z value</source>
-        <translation>Hodnota Z</translation>
+        <translation type="vanished">Hodnota Z</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2486"/>
         <source>Bottom</source>
-        <translation>Dole</translation>
+        <translation type="vanished">Dole</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2497"/>
         <source>Down</source>
-        <translation>Dolů</translation>
+        <translation type="vanished">Dolů</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2508"/>
         <source>Up</source>
-        <translation>Nahoru</translation>
+        <translation type="vanished">Nahoru</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2519"/>
         <source>Top</source>
-        <translation>Nahoře</translation>
+        <translation type="vanished">Nahoře</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1645"/>
         <source>Has effect only when print in application. To export with tiles scheme use separate setting</source>
-        <translation>Působí pouze při tisku v aplikaci. Pro vyvedení se schématem dlaždic použijte samostatné nastavení</translation>
+        <translation type="vanished">Působí pouze při tisku v aplikaci. Pro vyvedení se schématem dlaždic použijte samostatné nastavení</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4473"/>
         <source>sheet</source>
-        <translation>list</translation>
+        <translation type="vanished">list</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3474"/>
         <source>Piece %1 invalid. %2</source>
-        <translation>Díl %1 je neplatný. %2</translation>
+        <translation type="vanished">Díl %1 je neplatný. %2</translation>
     </message>
 </context>
 <context>
     <name>VPPiece</name>
     <message>
-        <location filename="../../src/app/puzzle/layout/vppiece.cpp" line="486"/>
-        <location filename="../../src/app/puzzle/layout/vppiece.cpp" line="492"/>
         <source>Seam line is empty</source>
-        <translation>Čára švu není stanovena</translation>
+        <translation type="vanished">Čára švu není stanovena</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/layout/vppiece.cpp" line="498"/>
         <source>Seam allowance line is empty</source>
-        <translation>Čára švové záložky není stanovena</translation>
+        <translation type="vanished">Čára švové záložky není stanovena</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/layout/vppiece.cpp" line="504"/>
         <source>Grainline is empty</source>
-        <translation>Dráha nitě je prázdná</translation>
+        <translation type="vanished">Dráha nitě je prázdná</translation>
     </message>
 </context>
 <context>
     <name>VPTileFactory</name>
     <message>
-        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="943"/>
         <source>Grid ( %1 , %2 )</source>
-        <translation>Mřížka ( %1 , %2 )</translation>
+        <translation type="vanished">Mřížka ( %1 , %2 )</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="1080"/>
         <source>Page %1 of %2</source>
-        <translation>Strana %1 z %2</translation>
+        <translation type="vanished">Strana %1 z %2</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="1451"/>
         <source>Warning: Multiple single stroke outline fonts detected (%1). The font &quot;%2&quot; was selected.</source>
-        <translation>Varování: Bylo zjištěno více jednotahových obrysových písem (%1). Bylo vybráno písmo „%2“.</translation>
+        <translation type="vanished">Varování: Bylo zjištěno více jednotahových obrysových písem (%1). Bylo vybráno písmo „%2“.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="1513"/>
         <source>Warning: Multiple single-line SVG fonts detected (%1). The font &quot;%2&quot; was selected.</source>
-        <translation>Varování: Bylo zjištěno více jednočárových písem SVG (%1). Bylo vybráno písmo „%2“.</translation>
+        <translation type="vanished">Varování: Bylo zjištěno více jednočárových písem SVG (%1). Bylo vybráno písmo „%2“.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="480"/>
-        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="590"/>
         <source>cm</source>
         <comment>unit</comment>
-        <translation>cm</translation>
+        <translation type="vanished">cm</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="480"/>
-        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="590"/>
         <source>in</source>
         <comment>unit</comment>
-        <translation>palce</translation>
+        <translation type="vanished">palce</translation>
     </message>
 </context>
 <context>
     <name>VPUndoAddSheet</name>
     <message>
-        <location filename="../../src/app/puzzle/undocommands/vpundoaddsheet.cpp" line="40"/>
         <source>add sheet</source>
-        <translation>Přidat list</translation>
+        <translation type="vanished">Přidat list</translation>
     </message>
 </context>
 <context>
     <name>VPUndoMovePieceOnSheet</name>
     <message>
-        <location filename="../../src/app/puzzle/undocommands/vpundomovepieceonsheet.cpp" line="49"/>
         <source>move piece on sheet</source>
-        <translation>Posunout díl na listu</translation>
+        <translation type="vanished">Posunout díl na listu</translation>
     </message>
 </context>
 <context>
     <name>VPUndoOriginMove</name>
     <message>
-        <location filename="../../src/app/puzzle/undocommands/vpundooriginmove.cpp" line="44"/>
         <source>move transformation origin</source>
-        <translation>Posunout počátek proměny</translation>
+        <translation type="vanished">Posunout počátek proměny</translation>
     </message>
 </context>
 <context>
     <name>VPUndoPieceMove</name>
     <message>
-        <location filename="../../src/app/puzzle/undocommands/vpundopiecemove.cpp" line="44"/>
         <source>move piece</source>
-        <translation>Posunout díl</translation>
+        <translation type="vanished">Posunout díl</translation>
     </message>
 </context>
 <context>
     <name>VPUndoPieceRotate</name>
     <message>
-        <location filename="../../src/app/puzzle/undocommands/vpundopiecerotate.cpp" line="59"/>
         <source>rotate piece</source>
-        <translation>Otočit díl</translation>
+        <translation type="vanished">Otočit díl</translation>
     </message>
 </context>
 <context>
     <name>VPUndoRemoveSheet</name>
     <message>
-        <location filename="../../src/app/puzzle/undocommands/vpundoremovesheet.cpp" line="48"/>
         <source>add sheet</source>
-        <translation>Přidat list</translation>
+        <translation type="vanished">Přidat list</translation>
     </message>
 </context>
 <context>
@@ -20454,15 +20131,15 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <translation type="vanished">Barva</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="327"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="198"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="327"/>
         <location filename="../../src/app/ostara/core/vtoppb_templates.h" line="276"/>
         <source>First point</source>
         <translation>První bod</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="327"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="199"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="327"/>
         <location filename="../../src/app/ostara/core/vtoppb_templates.h" line="276"/>
         <source>Second point</source>
         <translation>Druhý bod</translation>
@@ -20498,34 +20175,42 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <translation>Nástroj na udělání bodu z oblouku a tangenty</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="375"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="228"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="375"/>
         <location filename="../../src/app/ostara/core/vtoppb_templates.h" line="286"/>
         <source>Highest point</source>
         <translation>Nejvyšší bod</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="375"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="229"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="375"/>
         <location filename="../../src/app/ostara/core/vtoppb_templates.h" line="286"/>
         <source>Lowest point</source>
         <translation>Nejnižší bod</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="399"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="258"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="399"/>
         <location filename="../../src/app/ostara/core/vtoppb_templates.h" line="296"/>
         <source>Leftmost point</source>
         <translation>Bod nejvíce vlevo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="399"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="259"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="399"/>
         <location filename="../../src/app/ostara/core/vtoppb_templates.h" line="296"/>
         <source>Rightmost point</source>
         <translation>Bod nejvíce vpravo</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="771"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="802"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="833"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="331"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="379"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="398"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="427"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="437"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="449"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="482"/>
@@ -20541,18 +20226,18 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="733"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="751"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="773"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="331"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="379"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="398"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="427"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="437"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="771"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="802"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="833"/>
         <source>Point</source>
         <translation type="unfinished">Bod</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="771"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="802"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="833"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="331"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="379"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="398"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="427"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="437"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="449"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="482"/>
@@ -20568,18 +20253,18 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="733"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="751"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="773"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="331"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="379"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="398"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="427"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="437"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="771"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="802"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="833"/>
         <source>Point name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="771"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="802"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="833"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="331"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="379"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="398"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="427"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="437"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="449"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="482"/>
@@ -20595,14 +20280,6 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="733"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="751"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="773"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="331"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="379"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="398"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="427"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="437"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="771"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="802"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="833"/>
         <source>Show Point name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20628,13 +20305,6 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="492"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="512"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="528"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="637"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="717"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="165"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="169"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="329"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="423"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="720"/>
@@ -20647,19 +20317,26 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="818"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1160"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1163"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="165"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="169"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="492"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="512"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="528"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="637"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="717"/>
         <source>Length:</source>
         <translation type="unfinished">Délka:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="493"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="747"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="769"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="336"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="430"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="79"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="83"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="137"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="141"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="336"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="430"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="493"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="747"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="769"/>
         <source>Angle:</source>
         <translation type="unfinished">Úhel:</translation>
     </message>
@@ -20757,18 +20434,18 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <translation type="unfinished">Třetí bod záševku:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="601"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="753"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="267"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="271"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="601"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="753"/>
         <source>First line point:</source>
         <translation type="unfinished">První bod čáry:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="602"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="754"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="283"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="287"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="602"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="754"/>
         <source>Second line point:</source>
         <translation type="unfinished">Druhý bod čáry:</translation>
     </message>
@@ -20799,12 +20476,12 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <translation type="unfinished">Dodatečný úhel:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="680"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="589"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="592"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="686"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="689"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="680"/>
         <source>Radius:</source>
         <translation type="unfinished">Poloměr:</translation>
     </message>
@@ -20834,12 +20511,6 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <translation type="unfinished">Bod osy střihu:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="763"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="765"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="389"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="391"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="393"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="395"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="780"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="782"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="811"/>
@@ -20852,6 +20523,12 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1205"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1267"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1269"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="389"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="391"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="393"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="395"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="763"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="765"/>
         <source>Curve:</source>
         <translation type="unfinished">Křivka:</translation>
     </message>
@@ -20876,15 +20553,15 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <translation>Nástroj pro otočení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="351"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="334"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="351"/>
         <location filename="../../src/app/ostara/core/vtoppb_templates.h" line="306"/>
         <source>Vertical axis</source>
         <translation>Svislá osa</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="351"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="335"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="351"/>
         <location filename="../../src/app/ostara/core/vtoppb_templates.h" line="306"/>
         <source>Horizontal axis</source>
         <translation>Vodorovná osa</translation>
@@ -21140,6 +20817,33 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <translation>Plný název:</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="642"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="739"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="770"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="801"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="832"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="851"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="863"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="875"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="921"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="934"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1065"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1196"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1258"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1306"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="330"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="378"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="397"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="426"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="436"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="107"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="111"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="237"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="241"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="299"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="303"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="383"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="387"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="448"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="457"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="481"/>
@@ -21157,33 +20861,6 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="732"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="750"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="772"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="330"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="378"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="397"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="426"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="436"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="107"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="111"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="237"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="241"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="299"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="303"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="383"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="387"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="642"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="739"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="770"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="801"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="832"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="851"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="863"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="875"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="921"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="934"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1065"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1196"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1258"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1306"/>
         <source>Notes:</source>
         <translation>Poznámky:</translation>
     </message>
@@ -21207,15 +20884,15 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <translation type="unfinished">Vzít:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="322"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="324"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="326"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="328"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="554"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="651"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="747"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="749"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="751"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="322"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="324"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="326"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="328"/>
         <source>Arc:</source>
         <translation type="unfinished">Oblouk:</translation>
     </message>
@@ -21248,8 +20925,6 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="445"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="507"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="553"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="650"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="841"/>
@@ -21260,6 +20935,8 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="942"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1073"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1204"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="445"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="507"/>
         <source>Name:</source>
         <translation type="unfinished">Název:</translation>
     </message>
@@ -21296,12 +20973,12 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
         <translation type="unfinished">Původní bod:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="193"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="197"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1046"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1049"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1177"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1180"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="193"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="197"/>
         <source>Rotation angle:</source>
         <translation type="unfinished">Úhel otáčení:</translation>
     </message>
@@ -23260,49 +22937,40 @@ Chyba kompatibility formátu nezpracovaného rozvržení: ActualFileVersion = %1
 <context>
     <name>mNoisyHandler</name>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="88"/>
         <source>DEBUG:</source>
-        <translation>LADĚNÍ:</translation>
+        <translation type="vanished">LADĚNÍ:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="95"/>
         <source>WARNING:</source>
-        <translation>VAROVÁNÍ:</translation>
+        <translation type="vanished">VAROVÁNÍ:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="102"/>
         <source>CRITICAL:</source>
-        <translation>VÁŽNÁ:</translation>
+        <translation type="vanished">VÁŽNÁ:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="109"/>
         <source>FATAL:</source>
-        <translation>ZÁSADNÍ:</translation>
+        <translation type="vanished">ZÁSADNÍ:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="116"/>
         <source>INFO:</source>
-        <translation>INFORMACE:</translation>
+        <translation type="vanished">INFORMACE:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="142"/>
         <source>Warning</source>
-        <translation>Upozornění</translation>
+        <translation type="vanished">Upozornění</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="146"/>
         <source>Critical error</source>
-        <translation>Vážná chyba</translation>
+        <translation type="vanished">Vážná chyba</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="150"/>
         <source>Fatal error</source>
-        <translation>Zásadní chyba</translation>
+        <translation type="vanished">Zásadní chyba</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpapplication.cpp" line="154"/>
         <source>Information</source>
-        <translation>Informace</translation>
+        <translation type="vanished">Informace</translation>
     </message>
 </context>
 <context>

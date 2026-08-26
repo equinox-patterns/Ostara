@@ -29,6 +29,7 @@
 
 #include <QHash>
 #include <QList>
+#include <QMap>
 #include <QString>
 #include <QStringList>
 #include <QVariant>
@@ -51,7 +52,9 @@ enum class OPieceCartoucheOptionKind
     Separator,    ///< QString — separator between name and value ("", ":", "-", "/", "·")
     Logo,         ///< QString — logo file name from the logo library
     LogoSize,     ///< double — logo size in cm
-    Cut           ///< composite — 3 tabs (fabric/interfacing/lining), qty + on fold
+    Cut,          ///< composite — 3 tabs (fabric/interfacing/lining), qty + on fold
+    Multilingual, ///< bool — write this information once per block language
+    AxisRename    ///< composite — per-language display aliases of an axis + its values
 };
 
 /**
@@ -72,6 +75,33 @@ inline const QStringList kFoldKeys = {kFabricOnFold, kInterfacingOnFold, kLining
 inline const QStringList kAllKeys = {kFabricQty, kFabricOnFold, kInterfacingQty, kInterfacingOnFold,
                                      kLiningQty, kLiningOnFold};
 }  // namespace OPieceCartoucheCut
+
+/**
+ * @brief Option keys of the axis-rename composite: per-language display aliases
+ * of an axis and its values (never "alias" in the UI).
+ */
+namespace OPieceCartoucheAxisRename
+{
+/// QVariantMap: locale → { "name": QString, "values": QVariantList }. Empty
+/// entries mean "keep the original table name" (no alias).
+inline const QString kRenames = QStringLiteral("axisRenames");
+/// bool — render every block language on its own line (default false).
+inline const QString kOneLine = QStringLiteral("axisOneLine");
+}  // namespace OPieceCartoucheAxisRename
+
+/// Per-language display aliases of an axis and its values (empty = keep the
+/// original table name).
+struct OAxisRename
+{
+    QString name;        ///< alias of the axis name
+    QStringList values;  ///< aliases of the axis values, in table order
+};
+
+/// Read the axis-rename option (a QVariantMap) into a locale-keyed map.
+Q_REQUIRED_RESULT auto ParseAxisRenames(const QVariant &var) -> QMap<QString, OAxisRename>;
+
+/// Serialize a locale-keyed map into the QVariant the option stores.
+Q_REQUIRED_RESULT auto MakeAxisRenames(const QMap<QString, OAxisRename> &renames) -> QVariant;
 
 /**
  * @brief Declarative description of one option of a section type.
@@ -96,14 +126,19 @@ class OPieceCartoucheSection
 {
 public:
     OPieceCartoucheSection() = default;
-    OPieceCartoucheSection(const QString &id, const QString &displayName, const QString &description,
-                           const QList<OPieceCartoucheOptionField> &fields);
+    OPieceCartoucheSection(const QString &id, const QString &sourceName, const QString &displayName,
+                           const QString &description, const QList<OPieceCartoucheOptionField> &fields);
 
     /// True when the section carries a non-empty id (i.e. it exists in the catalogue).
     auto IsValid() const -> bool;
 
     auto Id() const -> QString;
     auto DisplayName() const -> QString;
+
+    /// The untranslated (English) name — lets the preview render the block in
+    /// another display language through the app's own translation catalogues.
+    auto SourceName() const -> QString;
+
     auto Description() const -> QString;
     auto Fields() const -> const QList<OPieceCartoucheOptionField> &;
 
@@ -118,6 +153,7 @@ public:
 
 private:
     QString m_id;
+    QString m_sourceName;
     QString m_displayName;
     QString m_description;
     QList<OPieceCartoucheOptionField> m_fields;

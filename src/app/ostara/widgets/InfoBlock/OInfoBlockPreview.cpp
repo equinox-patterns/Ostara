@@ -32,6 +32,7 @@
 
 #include "def.h"
 
+#include <QCoreApplication>
 #include <QFontMetricsF>
 #include <QPainter>
 #include <QPaintEvent>
@@ -96,6 +97,22 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
         return;
     }
 
+    // Block display language(s). The software-managed sections (cut, piece
+    // number) render one line per language, in combo order; the other sections
+    // render their sample in the main language (combo 1). Each string is
+    // translated through the app's own catalogues; an empty locale means the
+    // app's UI language (no language chosen).
+    const QStringList languages = m_template->Languages();
+    const QStringList renderLanguages = languages.isEmpty() ? QStringList{QString()} : languages;
+    const QString mainLocale = renderLanguages.constFirst();
+    const auto Tl = [](const QString &locale, const char *context, const char *source) -> QString {
+        if (locale.isEmpty())
+        {
+            return QCoreApplication::translate(context, source);
+        }
+        return TranslateToLocale(locale, context, source);
+    };
+
     const int margin = 16;
     const QFont baseFont = font();  // widget's own font — reset per line, no style cascade
     qreal y = margin;
@@ -128,11 +145,14 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
             font.setPixelSize(qRound(size));
         }
 
-        QString line = type.DisplayName();
+        // Text sections — the sample line is the section's source name in the
+        // main language (the catalogue translates it for the UI elsewhere).
+        QString line = Tl(mainLocale, "OPieceCartoucheSection", qPrintable(type.SourceName()));
         // The separator values are language-neutral keys ("of", "-", "/"); translate
-        // the word ones at render ("of" → "sur").
+        // the word ones at render ("of" → "sur"). Main-language separator for the
+        // table-driven sections (axis / measurement).
         const QString separator =
-            tr(qPrintable(options.value(QStringLiteral("separator")).toString()));
+            Tl(mainLocale, "OInfoBlockPreview", qPrintable(options.value(QStringLiteral("separator")).toString()));
         if (type.Id() == QStringLiteral("axis"))
         {
             if (m_table == nullptr || !m_table->HasMultiSizeTable())
@@ -144,7 +164,56 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
             {
                 continue;  // dead data: axis not in the current table
             }
-            line = ComposeLine(axis, m_table->AnchorValue(axis), separator);
+
+            // Per-language display aliases of the axis and its values: the
+            // anchor value is looked up by its position in the axis values.
+            const QString anchorValue = m_table->AnchorValue(axis);
+            const QStringList axisValues = m_table->AxisValues(axis);
+            const int anchorIndex = static_cast<int>(axisValues.indexOf(anchorValue));
+            const QMap<QString, OAxisRename> renames =
+                ParseAxisRenames(options.value(OPieceCartoucheAxisRename::kRenames));
+            const bool oneLine = options.value(OPieceCartoucheAxisRename::kOneLine, false).toBool();
+
+            QStringList languageLines;
+            for (const QString &locale : renderLanguages)
+            {
+                const OAxisRename rename = renames.value(locale);
+                const QString displayName = rename.name.isEmpty() ? axis : rename.name;
+                QString displayValue = anchorValue;
+                if (anchorIndex >= 0 && anchorIndex < rename.values.size() && !rename.values.at(anchorIndex).isEmpty())
+                {
+                    displayValue = rename.values.at(anchorIndex);
+                }
+                const QString sep =
+                    Tl(locale, "OInfoBlockPreview", qPrintable(options.value(QStringLiteral("separator")).toString()));
+                languageLines.append(ComposeLine(displayName, displayValue, sep));
+            }
+
+            painter.setFont(font);
+            painter.setPen(palette().text().color());
+            if (oneLine)
+            {
+                // Every block language on its own line.
+                for (const QString &text : languageLines)
+                {
+                    const QRectF rect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
+                    painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, text);
+                    y += QFontMetricsF(font).height() + 6.0;
+                    if (y > height())
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                // All languages on a single line, joined by " - ".
+                const QRectF rect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
+                painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter,
+                                 languageLines.join(QStringLiteral(" - ")));
+                y += QFontMetricsF(font).height() + 6.0;
+            }
+            continue;
         }
         else if (type.Id() == QStringLiteral("measure"))
         {
@@ -164,7 +233,53 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
             }
             const QString value = OPieceCartoucheTable::FormatValue(m_table->MeasurementValue(name))
                                   + QLatin1Char(' ') + m_table->UnitsStr();
-            line = ComposeLine(storedFull, value, separator);
+
+            // Per-language display aliases of the measurement name (the value is
+            // computed from the active size, it is not renamed).
+            const QMap<QString, OAxisRename> renames =
+                ParseAxisRenames(options.value(OPieceCartoucheAxisRename::kRenames));
+            const bool oneLine = options.value(OPieceCartoucheAxisRename::kOneLine, false).toBool();
+
+            QStringList names;
+            for (const QString &locale : renderLanguages)
+            {
+                const OAxisRename rename = renames.value(locale);
+                names.append(rename.name.isEmpty() ? storedFull : rename.name);
+            }
+
+            painter.setFont(font);
+            painter.setPen(palette().text().color());
+            if (oneLine)
+            {
+                // Every block language on its own line.
+                for (int i = 0; i < names.size(); ++i)
+                {
+                    const QString sep = Tl(renderLanguages.at(i), "OInfoBlockPreview",
+                                           qPrintable(options.value(QStringLiteral("separator")).toString()));
+                    const QRectF rect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
+                    painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, ComposeLine(names.at(i), value, sep));
+                    y += QFontMetricsF(font).height() + 6.0;
+                    if (y > height())
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                // Main language first, the other languages in parentheses.
+                QString display = names.isEmpty() ? storedFull : names.constFirst();
+                if (names.size() > 1)
+                {
+                    display += QStringLiteral(" (") + names.mid(1).join(QStringLiteral(", ")) + QLatin1Char(')');
+                }
+                const QString sep = Tl(mainLocale, "OInfoBlockPreview",
+                                       qPrintable(options.value(QStringLiteral("separator")).toString()));
+                const QRectF rect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
+                painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, ComposeLine(display, value, sep));
+                y += QFontMetricsF(font).height() + 6.0;
+            }
+            continue;
         }
         else if (type.Id() == QStringLiteral("pieceNumber"))
         {
@@ -193,24 +308,34 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
             painter.setFont(font);
             painter.setPen(palette().text().color());
             bool any = false;
-            for (const CutTab &tab : kCutTabs)
+            // Software-managed: one line per filled tab AND per block language,
+            // in combo order (e.g. "Cut 1 on fold (fabric)" / "Couper 1 fois au
+            // pli (tissu)").
+            for (const QString &locale : renderLanguages)
             {
-                const int qty = options.value(tab.qtyKey, 0).toInt();
-                if (qty <= 0)
+                for (const CutTab &tab : kCutTabs)
                 {
-                    continue;  // empty tab → no line
+                    const int qty = options.value(tab.qtyKey, 0).toInt();
+                    if (qty <= 0)
+                    {
+                        continue;  // empty tab → no line
+                    }
+                    any = true;
+                    const bool onFold = options.value(tab.foldKey, false).toBool();
+                    QString text = Tl(locale, "OInfoBlockPreview", QT_TRANSLATE_NOOP("OInfoBlockPreview", "Cut %1")).arg(qty);
+                    if (onFold)
+                    {
+                        text += Tl(locale, "OInfoBlockPreview", QT_TRANSLATE_NOOP("OInfoBlockPreview", " on fold"));
+                    }
+                    text += Tl(locale, "OInfoBlockPreview", QT_TRANSLATE_NOOP("OInfoBlockPreview", " (%1)")).arg(Tl(locale, "OInfoBlockPreview", tab.display));
+                    const QRectF lineRect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
+                    painter.drawText(lineRect, Qt::AlignHCenter | Qt::AlignVCenter, text);
+                    y += QFontMetricsF(font).height() + 6.0;
+                    if (y > height())
+                    {
+                        break;
+                    }
                 }
-                any = true;
-                const bool onFold = options.value(tab.foldKey, false).toBool();
-                QString text = tr("Cut %1").arg(qty);
-                if (onFold)
-                {
-                    text += tr(" on fold");
-                }
-                text += tr(" (%1)").arg(tr(tab.display));
-                const QRectF lineRect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
-                painter.drawText(lineRect, Qt::AlignHCenter | Qt::AlignVCenter, text);
-                y += QFontMetricsF(font).height() + 6.0;
                 if (y > height())
                 {
                     break;

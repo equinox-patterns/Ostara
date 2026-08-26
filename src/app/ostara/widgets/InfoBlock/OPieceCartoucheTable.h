@@ -69,6 +69,10 @@ public:
     /// Empty when no multi-size (.omt) table is loaded.
     auto AnchorValue(const QString &axisName) const -> QString;
 
+    /// All values of an axis, verbatim, in table order (e.g. "160", "168", "176").
+    /// Empty when no multi-size (.omt) table is loaded.
+    auto AxisValues(const QString &axisName) const -> QStringList;
+
     /// The measurement formula names (@Name). Works for .omt and .otu tables.
     auto MeasurementNames() const -> QStringList;
 

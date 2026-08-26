@@ -32,6 +32,7 @@
 #include <QDomElement>
 #include <QList>
 #include <QString>
+#include <QStringList>
 
 class QDomDocument;
 
@@ -58,6 +59,13 @@ public:
     auto Name() const -> QString;
     void SetName(const QString &name);
 
+    /// The block display languages (ISO locale codes, display order).
+    auto Languages() const -> QStringList;
+    void SetLanguages(const QStringList &languages);
+    void AddLanguage(const QString &code);
+    void RemoveLanguage(const QString &code);
+    auto ContainsLanguage(const QString &code) const -> bool;
+
     auto SectionCount() const -> int;
     auto SectionTypeId(int index) const -> QString;
     auto SectionAt(int index) const -> const Section &;
@@ -80,6 +88,7 @@ public:
 
 private:
     QString m_name;
+    QStringList m_languages;
     QList<Section> m_sections;
 };
 

@@ -33,7 +33,9 @@
 
 #include <QWidget>
 
+class QComboBox;
 class QGroupBox;
+class QHBoxLayout;
 class QLabel;
 class QLineEdit;
 class QListWidget;
@@ -45,6 +47,7 @@ class QTreeWidget;
 class QTreeWidgetItem;
 class OInfoBlockPreview;
 class OInfoBlockSectionEditor;
+class OInfoBlockTemplatesPage;
 class OLogoPreview;
 
 /**
@@ -78,6 +81,11 @@ signals:
 private:
     void SetupUI();
     void SetupEditorPage();
+    void SetupLanguageRow();
+    void RebuildLanguageRow();
+    void OnLanguageChanged();
+    void OnAddLanguage();
+    void OnRemoveLanguage(const QString &code);
     void SetupTemplatesPage();
     void SetupLogosPage();
     void NewTemplate();
@@ -91,7 +99,6 @@ private:
     void OnLogoNameEdited(const QString &text);
     void OnLogoNotesChanged();
     void PersistLogos();
-    void RefreshTemplateList();
     void RefreshLogosList();
     void RefreshSectionList();
     void SelectSection(int index);
@@ -113,15 +120,24 @@ private:
     QMenu *m_addMenu{nullptr};
     QPushButton *m_upBtn{nullptr};
     QPushButton *m_downBtn{nullptr};
+    QPushButton *m_deleteBtn{nullptr};
     QPushButton *m_saveBtn{nullptr};
     QPushButton *m_saveAsBtn{nullptr};
+
+    // Block display language row
+    QLabel *m_languageLabel{nullptr};
+    QLabel *m_languageHint{nullptr};
+    QWidget *m_languagesContainer{nullptr};
+    QHBoxLayout *m_languagesLayout{nullptr};
+    QPushButton *m_addLanguageBtn{nullptr};
+    QList<QComboBox *> m_languageCombos;
+    bool m_updatingLanguages{false};
     QListWidget *m_sectionList{nullptr};
     OInfoBlockSectionEditor *m_sectionEditor{nullptr};
     OInfoBlockPreview *m_preview{nullptr};
 
     // Templates page
-    QLabel *m_templatesTitle{nullptr};
-    QListWidget *m_templatesList{nullptr};
+    OInfoBlockTemplatesPage *m_templatesPage{nullptr};
 
     // Logos page
     QGroupBox *m_logoEditGroup{nullptr};

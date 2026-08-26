@@ -26,6 +26,7 @@
 
 #include "OInfoBlockSectionEditor.h"
 
+#include "OAxisRenameEditor.h"
 #include "OPieceCartoucheCatalogue.h"
 #include "OPieceCartoucheStorage.h"
 #include "OPieceCartoucheTable.h"
@@ -76,6 +77,7 @@ void OInfoBlockSectionEditor::Rebuild()
         delete m_content;
         m_content = nullptr;
     }
+    m_axisRenameEditor = nullptr;
 
     if (m_template == nullptr || m_index < 0 || m_index >= m_template->SectionCount())
     {
@@ -189,7 +191,10 @@ void OInfoBlockSectionEditor::Rebuild()
                 }
                 connect(combo, &QComboBox::currentTextChanged, this, [this, field](const QString &v) {
                     m_template->SetSectionOption(m_index, field.key, v);
+                    // The axis changed — its per-language aliases no longer apply.
+                    m_template->SetSectionOption(m_index, OPieceCartoucheAxisRename::kRenames, QVariantMap{});
                     emit OptionsChanged();
+                    UpdateAxisRenameEditor();
                 });
                 form->addRow(field.label, combo);
                 break;
@@ -230,7 +235,10 @@ void OInfoBlockSectionEditor::Rebuild()
                 }
                 connect(combo, &QComboBox::currentTextChanged, this, [this, field](const QString &v) {
                     m_template->SetSectionOption(m_index, field.key, v);
+                    // The measurement changed — its per-language alias no longer applies.
+                    m_template->SetSectionOption(m_index, OPieceCartoucheAxisRename::kRenames, QVariantMap{});
                     emit OptionsChanged();
+                    UpdateAxisRenameEditor();
                 });
                 form->addRow(field.label, combo);
                 break;
@@ -327,6 +335,44 @@ void OInfoBlockSectionEditor::Rebuild()
                 form->addRow(field.label, spin);
                 break;
             }
+            case OPieceCartoucheOptionKind::Multilingual:
+            {
+                // Checkbox in plain language (no technical jargon) — it goes
+                // flush-left in the edit zone (not in the form's field column),
+                // aligned with the section description. When checked, the user
+                // fills this information once per block language in the pattern /
+                // piece options (icons = the theme's default square /
+                // square-logo-fill QCheckBox look).
+                auto *check = new QCheckBox(field.label, content);
+                check->setChecked(section.options.value(field.key, false).toBool());
+                check->setToolTip(tr("When checked, you will write this information once for each language "
+                                     "of the block, in the pattern (or piece) options. "
+                                     "It is not translated automatically."));
+                connect(check, &QCheckBox::toggled, this, [this, field](bool on) {
+                    m_template->SetSectionOption(m_index, field.key, on);
+                    emit OptionsChanged();
+                });
+                layout->addWidget(check);
+                break;
+            }
+            case OPieceCartoucheOptionKind::AxisRename:
+            {
+                m_axisRenameEditor = new OAxisRenameEditor(content);
+                m_axisRenameEditor->SetTitle(field.label);
+                connect(m_axisRenameEditor, &OAxisRenameEditor::RenamesChanged, this,
+                        [this](const QMap<QString, OAxisRename> &renames) {
+                            m_template->SetSectionOption(m_index, OPieceCartoucheAxisRename::kRenames,
+                                                         MakeAxisRenames(renames));
+                            emit OptionsChanged();
+                        });
+                connect(m_axisRenameEditor, &OAxisRenameEditor::OneLineChanged, this, [this](bool on) {
+                    m_template->SetSectionOption(m_index, OPieceCartoucheAxisRename::kOneLine, on);
+                    emit OptionsChanged();
+                });
+                layout->addWidget(m_axisRenameEditor);
+                UpdateAxisRenameEditor();
+                break;
+            }
             case OPieceCartoucheOptionKind::Cut:
             {
                 struct CutTab
@@ -385,4 +431,33 @@ void OInfoBlockSectionEditor::Rebuild()
 
     m_root->addWidget(content);
     m_content = content;
+}
+
+void OInfoBlockSectionEditor::UpdateAxisRenameEditor()
+{
+    if (m_axisRenameEditor == nullptr || m_template == nullptr || m_index < 0 || m_index >= m_template->SectionCount())
+    {
+        return;
+    }
+    const auto &section = m_template->SectionAt(m_index);
+    const QString typeId = m_template->SectionTypeId(m_index);
+
+    // The "original" the aliases override: the axis name + its values (Sizes),
+    // or the measurement name (Measurement — the value is computed).
+    QString originalName;
+    QStringList values;
+    if (typeId == QStringLiteral("axis"))
+    {
+        originalName = section.options.value(QStringLiteral("axis")).toString();
+        values = m_table != nullptr ? m_table->AxisValues(originalName) : QStringList();
+    }
+    else if (typeId == QStringLiteral("measure"))
+    {
+        originalName = section.options.value(QStringLiteral("measureName")).toString();
+    }
+
+    const QMap<QString, OAxisRename> renames =
+        ParseAxisRenames(section.options.value(OPieceCartoucheAxisRename::kRenames));
+    const bool oneLine = section.options.value(OPieceCartoucheAxisRename::kOneLine, false).toBool();
+    m_axisRenameEditor->SetData(renames, oneLine, m_template->Languages(), originalName, values);
 }

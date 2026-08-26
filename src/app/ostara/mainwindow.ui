@@ -80,7 +80,6 @@
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
     <addaction name="actionPattern_properties"/>
-    <addaction name="actionInfoBlock"/>
     <addaction name="separator"/>
     <addaction name="actionClosePattern"/>
     <addaction name="actionExit"/>
@@ -143,6 +142,12 @@
     </property>
     <addaction name="actionManageMeasurements"/>
    </widget>
+   <widget class="QMenu" name="menuInfoBlock">
+    <property name="title">
+     <string>Information block</string>
+    </property>
+    <addaction name="actionInfoBlock"/>
+   </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
      <string>Window</string>
@@ -166,6 +171,7 @@
    <addaction name="menuView"/>
    <addaction name="menuMeasurements"/>
    <addaction name="menuLibraries"/>
+   <addaction name="menuInfoBlock"/>
    <addaction name="menuWatermark"/>
    <addaction name="menuWindow"/>
   </widget>
