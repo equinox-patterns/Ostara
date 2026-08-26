@@ -1,0 +1,190 @@
+/************************************************************************
+ **
+ **  @file   ODockManager.h
+ **  @author Sophie Denys <contact@sophiedenys.com>
+ **  @date   26/08/2026
+ **
+ **  @brief  Ownership and orchestration of the MainWindow docks: custom
+ **          title bars, Window-menu toggle actions, dock visibility
+ **          booleans and per-mode dock layouts.
+ **
+ **  @copyright
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+ **
+ **  This program is free software: you can redistribute it and/or modify
+ **  it under the terms of the GNU General Public License as published by
+ **  the Free Software Foundation, either version 3 of the License, or
+ **  (at your option) any later version.
+ **
+ **  This program is distributed in the hope that it will be useful,
+ **  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ **  GNU General Public License for more details.
+ **
+ **  You should have received a copy of the GNU General Public License
+ **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **
+ *************************************************************************/
+
+#ifndef ODOCKMANAGER_H
+#define ODOCKMANAGER_H
+
+#include <QByteArray>
+#include <QHash>
+#include <QObject>
+
+#include "def.h"
+
+class QAction;
+class QDockWidget;
+class QMainWindow;
+class ODockTitleBar;
+class QStackedWidget;
+class VToolOptionsPropertyBrowser;
+class ODetailsPropertyBrowser;
+class VWidgetGroups;
+class VWidgetDetails;
+class VWidgetDependencies;
+class VWidgetBackgroundImages;
+class VContainer;
+class VPattern;
+
+namespace Ui
+{
+class MainWindow;
+}
+
+/**
+ * @brief The ODockManager class owns the MainWindow dock widgets and their
+ *        per-mode behaviour: custom title bars, Window-menu toggle actions,
+ *        visibility booleans and per-mode dock layouts. Extracted from the
+ *        MainWindow god object (dispatch Phase 1 — continuation): MainWindow
+ *        stays a composition root, this class carries the dock orchestration.
+ */
+class ODockManager final : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit ODockManager(Ui::MainWindow *ui, QMainWindow *host, QObject *parent = nullptr);
+
+    /**
+     * @brief Build dock content widgets, install custom title bars and create
+     *        the Window-menu toggle actions. Called once from
+     *        MainWindow::InitDocksContain().
+     */
+    void init(VContainer *pattern, VPattern *doc);
+
+    // ── Content widgets (owned by the manager) ──
+
+    VToolOptionsPropertyBrowser *toolOptions() const;
+    ODetailsPropertyBrowser *detailsOptions() const;
+    VWidgetGroups *groupsWidget() const;
+    VWidgetDetails *detailsWidget() const;
+    VWidgetBackgroundImages *backgroundImagesWidget() const;
+    VWidgetDependencies *dependenciesWidget() const;
+
+    // ── Dock orchestration ──
+
+    /** @brief Sync each preference dock's visibility to its boolean member. */
+    void applyDockPreferences();
+
+    /** @brief Sync boolean members from the docks' actual visibility. */
+    void syncVisibilityFromDocks();
+
+    /** @brief Hide every editor dock (WelcomeScreen state). */
+    void hideAllDocks();
+
+    /** @brief Remember the editor dock layout before hiding for the Welcome screen. */
+    void captureEditorDockState();
+
+    /** @brief Restore the editor dock layout saved by ShowWelcomeScreen(). */
+    void restoreEditorDockState();
+
+    /** @brief Remember the current dock layout for the given mode. */
+    void saveDockStateForMode(Draw mode);
+
+    /** @brief Restore the dock layout saved for the given mode. */
+    void restoreDockStateForMode(Draw mode);
+
+    /** @brief Apply the per-mode dock content/visibility (one "Options" dock,
+     *        per-mode title, Options/Groups stack pages). Ends by restoring the
+     *        mode's persisted dock layout. */
+    void applyModeDocks(Draw mode);
+
+    /** @brief Re-apply per-mode dock titles/tooltips (LanguageChange). */
+    void retranslate();
+
+    // ── Window-menu toggle actions ──
+
+    QAction *actionOptions() const;
+    QAction *actionGroups() const;
+    QAction *actionBackgroundImages() const;
+    QAction *actionDependencies() const;
+    QAction *actionMessages() const;
+
+    // ── Dock visibility booleans ──
+
+    bool groupsActive() const;
+    bool optionsActive() const;
+    bool patternMessagesActive() const;
+    bool backgroundImagesActive() const;
+    bool dependenciesActive() const;
+
+    void setGroupsActive(bool active);
+    void setOptionsActive(bool active);
+    void setPatternMessagesActive(bool active);
+    void setBackgroundImagesActive(bool active);
+    void setDependenciesActive(bool active);
+
+    // ── Per-mode + editor dock layouts ──
+
+    QByteArray editorDockState() const;
+    QByteArray drawModeDockState() const;
+    QByteArray detailsModeDockState() const;
+    QByteArray layoutModeDockState() const;
+
+    void setEditorDockState(const QByteArray &state);
+    void setDrawModeDockState(const QByteArray &state);
+    void setDetailsModeDockState(const QByteArray &state);
+    void setLayoutModeDockState(const QByteArray &state);
+
+private:
+    void installTitleBar(QDockWidget *dock);
+    void buildOptionsDock();
+    void buildGroupsDock();
+
+    Ui::MainWindow *m_ui{nullptr};
+    QMainWindow *m_host{nullptr};
+
+    VToolOptionsPropertyBrowser *m_toolOptionsBrowser{nullptr};
+    ODetailsPropertyBrowser *m_detailsOptionsBrowser{nullptr};
+    VWidgetGroups *m_groupsContent{nullptr};
+    VWidgetDetails *m_detailsContent{nullptr};
+    VWidgetBackgroundImages *m_backgroundImagesContent{nullptr};
+    VWidgetDependencies *m_dependenciesContent{nullptr};
+
+    QAction *m_actionOptions{nullptr};
+    QAction *m_actionGroups{nullptr};
+    QAction *m_actionBackgroundImages{nullptr};
+    QAction *m_actionDependencies{nullptr};
+    QAction *m_actionMessages{nullptr};
+
+    bool m_groupsActive{false};
+    bool m_optionsActive{false};
+    bool m_patternMessagesActive{false};
+    bool m_backgroundImagesActive{false};
+    bool m_dependenciesActive{false};
+
+    QByteArray m_editorDockState{};
+    QByteArray m_drawModeDockState{};
+    QByteArray m_detailsModeDockState{};
+    QByteArray m_layoutModeDockState{};
+
+    QStackedWidget *m_optionsStack{nullptr};
+    QStackedWidget *m_groupsStack{nullptr};
+
+    QHash<QDockWidget *, ODockTitleBar *> m_titleBars{};
+};
+
+#endif // ODOCKMANAGER_H

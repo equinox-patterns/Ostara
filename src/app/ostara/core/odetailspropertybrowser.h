@@ -35,6 +35,7 @@ class QDockWidget;
 class QLabel;
 class QStackedWidget;
 class ODetailsPieceWidget;
+class QScrollArea;
 class VToolSeamAllowance;
 
 class ODetailsPropertyBrowser : public QObject
@@ -42,8 +43,11 @@ class ODetailsPropertyBrowser : public QObject
     Q_OBJECT // NOLINT
 
 public:
-    explicit ODetailsPropertyBrowser(QDockWidget *parent);
+    explicit ODetailsPropertyBrowser(QWidget *parent);
     ~ODetailsPropertyBrowser() override = default;
+
+    /** @brief The scroll area the browser built its content into. */
+    QWidget *widget() const;
 
     void ShowEmpty();
     void ShowPieceOptions(VToolSeamAllowance *tool);
@@ -78,6 +82,7 @@ private:
     QStackedWidget *m_stack{nullptr};
     ODetailsPieceWidget *m_pieceWidget{nullptr};
     QLabel *m_emptyLabel{nullptr};
+    QScrollArea *m_scroll{nullptr};
 };
 
 #endif // ODETAILSPROPERTYBROWSER_H

@@ -49,8 +49,11 @@ class VToolOptionsPropertyBrowser : public QObject
     Q_OBJECT // NOLINT
 
 public:
-    explicit VToolOptionsPropertyBrowser(QDockWidget *parent);
+    explicit VToolOptionsPropertyBrowser(QWidget *parent);
     ~VToolOptionsPropertyBrowser() override = default;
+
+    /** @brief The scroll area the browser built its content into. */
+    QWidget *widget() const;
 
     void ClearPropertyBrowser();
     QGraphicsItem *currentItem() const { return m_currentItem; }
@@ -78,6 +81,7 @@ private:
 
     VPE::VPropertyModel *m_PropertyModel{nullptr};
     VPE::VPropertyFormView *m_formView{nullptr};
+    QScrollArea *m_scroll{nullptr};
 
     quint32 m_groupAttachmentId{};
 

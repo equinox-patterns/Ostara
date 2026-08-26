@@ -33,10 +33,10 @@
 
 #include "vtheme.h"
 
-void WrapDockContent(QDockWidget *dock, QWidget *content)
+QWidget *WrapDockContentWidget(QWidget *content, QWidget *parent)
 {
     // ── Root widget — 8px $DockBody gap between ODockTitleBar and QScrollArea ──
-    auto *root = new QWidget(dock);
+    auto *root = new QWidget(parent);
     auto *rootLayout = new QVBoxLayout(root);
     rootLayout->setContentsMargins(0, 8, 0, 0);
     rootLayout->setSpacing(0);
@@ -72,5 +72,10 @@ void WrapDockContent(QDockWidget *dock, QWidget *content)
     scrollLayout->addWidget(groupBox);
     scroll->setWidget(scrollContents);
     rootLayout->addWidget(scroll);
-    dock->setWidget(root);
+    return root;
+}
+
+void WrapDockContent(QDockWidget *dock, QWidget *content)
+{
+    dock->setWidget(WrapDockContentWidget(content, dock));
 }

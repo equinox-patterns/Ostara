@@ -70,4 +70,7 @@ auto AutosavePrefix() -> const QString &;
 // Strip Valentina label elements from a pattern DOM. Returns true if any labels were found.
 auto StripLabelElements(QDomDocument *doc) -> bool;
 
+// Refresh scale- and theme-dependent item state (labels, pens) for a whole scene.
+void RefreshSceneItemPens(const VMainGraphicsScene *scene);
+
 #endif // MAINWINDOW_HELPERS_H

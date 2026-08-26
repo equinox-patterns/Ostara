@@ -29,6 +29,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "widgets/ODockManager.h"
 #include "../vtools/tools/backgroundimage/vbackgroundimageitem.h"
 #include "../vtools/tools/backgroundimage/vbackgroundimagecontrols.h"
 #include "../vtools/tools/backgroundimage/vbackgroundpixmapitem.h"
@@ -128,9 +129,9 @@ auto MainWindow::InitBackgroundImageItem(const VBackgroundPatternImage &image) -
         connect(this, &MainWindow::EnableBackgroundImageSelection, item, &VBackgroundImageItem::EnableSelection);
         connect(item, &VBackgroundImageItem::ShowImageInExplorer, this, &MainWindow::ShowBackgroundImageInExplorer);
         connect(item, &VBackgroundImageItem::SaveImage, this, &MainWindow::SaveBackgroundImage);
-        connect(m_backgroudcontrols, &VBackgroundImageControls::ActiveImageChanged, m_backgroundImagesWidget,
+        connect(m_backgroudcontrols, &VBackgroundImageControls::ActiveImageChanged, m_dockManager->backgroundImagesWidget(),
                 &VWidgetBackgroundImages::ImageSelected);
-        connect(m_backgroundImagesWidget, &VWidgetBackgroundImages::SelectImage, m_backgroudcontrols,
+        connect(m_dockManager->backgroundImagesWidget(), &VWidgetBackgroundImages::SelectImage, m_backgroudcontrols,
                 &VBackgroundImageControls::ActivateControls);
     }
 
@@ -191,9 +192,9 @@ void MainWindow::AddBackgroundImageItem(const QUuid &id)
 {
     NewBackgroundImageItem(doc->GetBackgroundImage(id));
 
-    if (m_backgroundImagesWidget != nullptr)
+    if (m_dockManager->backgroundImagesWidget() != nullptr)
     {
-        m_backgroundImagesWidget->UpdateImages();
+        m_dockManager->backgroundImagesWidget()->UpdateImages();
     }
 }
 
@@ -211,9 +212,9 @@ void MainWindow::DeleteBackgroundImageItem(const QUuid &id)
             m_backgroudcontrols->ActivateControls(QUuid());
         }
 
-        if (m_backgroundImagesWidget != nullptr)
+        if (m_dockManager->backgroundImagesWidget() != nullptr)
         {
-            m_backgroundImagesWidget->UpdateImages();
+            m_dockManager->backgroundImagesWidget()->UpdateImages();
         }
     }
 }
@@ -291,6 +292,6 @@ void MainWindow::ParseBackgroundImages()
     {
         NewBackgroundImageItem(image);
     }
-    m_backgroundImagesWidget->UpdateImages();
+    m_dockManager->backgroundImagesWidget()->UpdateImages();
 }
 

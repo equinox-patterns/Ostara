@@ -51,4 +51,12 @@ class QWidget;
  */
 void WrapDockContent(QDockWidget *dock, QWidget *content);
 
+/**
+ * @brief WrapDockContentWidget builds the standard dock content structure
+ *        (root → QScrollArea → scrollContents → QGroupBox → content) as a
+ *        plain widget tree under @p parent, WITHOUT installing it on a dock.
+ *        Used for QStackedWidget pages (e.g. the merged Options dock).
+ */
+QWidget *WrapDockContentWidget(QWidget *content, QWidget *parent);
+
 #endif // DOCKWRAPPER_H

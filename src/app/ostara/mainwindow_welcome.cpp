@@ -29,6 +29,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "WelcomeScreen.h"
+#include "StyleGuideWindow.h"
+#include "widgets/DrawToolBar.h"
+#include "widgets/ODockManager.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "dialogs/DialogNewMeasurements.h"
@@ -36,6 +39,7 @@
 #include "widgets/MeasurementWorkspace/MeasurementWindow.h"
 #include "widgets/MeasurementWorkspace/MeasurementWorkspace.h"
 #include <QFileInfo>
+#include <QStackedWidget>
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::AddRecentMeasurementAndRefresh(const QString &path)
@@ -114,4 +118,83 @@ void MainWindow::WelcomeOpenRecentMeasurement(const QString &path)
     mw->show();
     mw->LoadFile(path);
     AddRecentMeasurementAndRefresh(path);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::InitWelcomePage()
+{
+    // Pattern signals
+    connect(m_welcomeScreen, &WelcomeScreen::NewPatternClicked, this, &MainWindow::on_actionNew_triggered);
+    connect(m_welcomeScreen, &WelcomeScreen::OpenPatternClicked, this, &MainWindow::on_actionOpen_triggered);
+    connect(m_welcomeScreen, &WelcomeScreen::OpenRecentPattern, this,
+            [this](const QString &path) { LoadPattern(path); });
+
+    // Measurement signals (implemented in mainwindow_welcome.cpp)
+    connect(m_welcomeScreen, &WelcomeScreen::NewMeasurementClicked, this, &MainWindow::WelcomeNewMeasurement);
+    connect(m_welcomeScreen, &WelcomeScreen::OpenMeasurementClicked, this, &MainWindow::WelcomeOpenMeasurement);
+    connect(m_welcomeScreen, &WelcomeScreen::OpenRecentMeasurement, this, &MainWindow::WelcomeOpenRecentMeasurement);
+
+    // Features button (dev-only)
+    connect(m_welcomeScreen, &WelcomeScreen::FeaturesClicked, this,
+            []() { (new StyleGuideWindow())->show(); });
+}
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ShowWelcomeScreen()
+{
+    m_stackedWidget->setCurrentWidget(m_welcomeScreen);
+
+    // Apply user dock preferences so the saved editor state reflects the user's
+    // choices, not the current mode's forced dock visibility (e.g. Tool options
+    // hidden in Details mode). Only once the window is shown: during construction
+    // isVisible() is false for every dock, so the boolean members are all false
+    // and must not be applied to the layout.
+    if (isVisible())
+    {
+        m_dockManager->applyDockPreferences();
+    }
+
+    // Save editor dock state before hiding, so ShowEditor() can restore it
+    m_dockManager->captureEditorDockState();
+
+    // Hide editor chrome
+    ui->topBar->setVisible(false);
+    m_drawToolBar->setVisible(false);
+    m_dockManager->hideAllDocks();
+    statusBar()->setVisible(false);
+
+    // Disable editor-specific actions
+    SetEnableTool(false);
+    SetEnableWidgets(false);
+    ui->actionClosePattern->setEnabled(false);
+
+    // Neutral window title
+    setWindowTitle(tr("Ostara"));
+    setWindowFilePath(QString());
+    setWindowModified(false);
+
+    // Refresh recent lists
+    VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+    m_welcomeScreen->UpdateRecentItems(settings->GetRecentFileList(),
+                                       settings->GetRecentMeasurementFileList());
+}
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ShowEditor()
+{
+    m_stackedWidget->setCurrentIndex(0); // index 0 = oldCentral (wraps ui->view)
+
+    // Show editor chrome
+    ui->topBar->setVisible(true);
+    m_drawToolBar->setVisible(true);
+    statusBar()->setVisible(true);
+    ui->actionClosePattern->setEnabled(true);
+
+    // Restore dock layout saved by ShowWelcomeScreen() (or from ReadSettings at startup)
+    m_dockManager->restoreEditorDockState();
+
+    // Sync boolean members with actual dock state after restore
+    m_dockManager->syncVisibilityFromDocks();
+
+    // LayoutPages dock is hidden except in Layout mode
+
+    UpdateWindowTitle();
 }

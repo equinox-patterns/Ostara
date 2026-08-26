@@ -53,6 +53,7 @@ class DialogTool;
 class DialogHistory;
 class DialogFinalMeasurements;
 class OInfoBlockWindow;
+class ODockManager;
 class VWidgetGroups;
 class VWidgetDetails;
 class VWidgetDependencies;
@@ -355,12 +356,7 @@ private:
     QPointer<QToolButton> m_btnZoomOut{nullptr};
     QPointer<QLabel> m_measurementFileNameLabel{nullptr};
     QPointer<QLabel> m_measurementSeparator{nullptr};
-    VToolOptionsPropertyBrowser *m_toolOptions{nullptr};
-    ODetailsPropertyBrowser *m_detailsOptions{nullptr};
-    VWidgetGroups *m_groupsWidget{nullptr};
-    VWidgetDetails *m_detailsWidget{nullptr};
-    VWidgetDependencies *m_dependenciesWidget{nullptr};
-    VWidgetBackgroundImages *m_backgroundImagesWidget{nullptr};
+    ODockManager *m_dockManager{nullptr};
     QSharedPointer<VLockGuard<char>> m_lock{nullptr};
 
     QProgressBar *m_progressBar;
@@ -379,19 +375,7 @@ private:
     QMap<QUuid, VBackgroundImageItem *> m_backgroundImages{};
     VBackgroundImageControls *m_backgroudcontrols{nullptr};
 
-    bool m_groupsActive{false};
-    bool m_toolOptionsActive{false};
-    bool m_detailsOptionsActive{false};
-    bool m_patternMessagesActive{false};
-    bool m_backgroundImagesActive{false};
-    bool m_dependenciesActive{false};
-
-    QByteArray m_editorDockState{};
-
-    // Per-mode dock layouts (size + visibility), restored on mode re-entry.
-    QByteArray m_drawModeDockState{};
-    QByteArray m_detailsModeDockState{};
-    QByteArray m_layoutModeDockState{};
+    // Dock visibility booleans and per-mode dock layouts live in ODockManager.
 
     // True while a tool options (edit) dialog is open. Undo/redo are blocked during this time because
     // running them triggers a full reparse that destroys the tool and pattern container the open dialog
@@ -466,7 +450,6 @@ private:
     void EndVisualization(bool click = false);
     void ZoomFirstShow();
 
-    void AddDocks();
     void InitDocksContain();
     auto OpenNewValentina(const QString &fileName = QString()) const -> bool;
     void FileClosedCorrect();
@@ -479,14 +462,7 @@ private:
     void InitWelcomePage();
     void ShowWelcomeScreen();
     void ShowEditor();
-
-    // Preserve dock layout (size + visibility) across Draw/Details/Layout mode switches.
-    void SaveDockStateForMode(Draw mode);
-    void RestoreDockStateForMode(Draw mode);
-
-    // Sync each preference dock's visibility to its boolean member, so persisted
-    // layouts reflect the user's choices, not the current mode's forced visibility.
-    void ApplyDockPreferences();
+    auto switchScene(Draw mode, const QVector<DetailForLayout> &details = {}) -> bool;
 
     // Measurement slots (from embedded WelcomeScreen)
     void WelcomeNewMeasurement();

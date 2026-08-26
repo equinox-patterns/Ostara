@@ -42,6 +42,7 @@
 #include "../vtools/tools/vabstracttool.h"
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../vtools/undocommands/renamepp.h"
+#include "../vwidgets/vmaingraphicsview.h"
 #include "../vwidgets/vwidgetpopup.h"
 #include "core/vapplication.h"
 #include <QAction>
@@ -52,6 +53,7 @@
 #include <QIcon>
 #include <QLabel>
 #include <QPixmap>
+#include <QStyleFactory>
 #include <QToolButton>
 
 using namespace Qt::Literals::StringLiterals;
@@ -373,4 +375,38 @@ void MainWindow::UpdateMeasurementSeparatorIcon()
 
     const int h = m_measurementSeparator->fontMetrics().height();
     m_measurementSeparator->setPixmap(pix.scaledToHeight(h, Qt::SmoothTransformation));
+}
+
+#if defined(Q_OS_MAC)
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolBarStyle(QToolBar *bar) const
+{
+    MainWindowsNoGUI::ToolBarStyle(bar);
+
+    // Temporary fix issue with toolbar black background on mac with OpenGL render
+    if (VAbstractValApplication::VApp()->getSceneView() &&
+        VAbstractValApplication::VApp()->getSceneView()->IsOpenGLRender())
+    {
+        bar->setStyle(QStyleFactory::create("fusion"));
+    }
+}
+#endif
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolBarStyles()
+{
+    MainWindow::ToolBarStyle(ui->topBar);
+    ui->topBar->setMovable(false);
+    ui->topBar->toggleViewAction()->setVisible(false);
+}
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolboxIconSize()
+{
+    auto SetIconSize = [](QToolBar *bar)
+    {
+        VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
+        QSize const size = settings->GetToolboxIconSizeSmall() ? QSize(24, 24) : QSize(32, 32);
+        bar->setIconSize(size);
+    };
+
+    SetIconSize(ui->topBar);
 }

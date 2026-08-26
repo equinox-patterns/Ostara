@@ -29,6 +29,7 @@
 
 #include "mainwindow.h"
 #include "widgets/BreadcrumbBar.h"
+#include "widgets/ODockManager.h"
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
 #include "vtheme.h"
@@ -132,6 +133,7 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtooltriangle.h"
 #include "../vtools/tools/drawTools/vtoolline.h"
+#include "../vtools/tools/vabstracttool.h"
 #include "../vtools/tools/nodeDetails/vtoolpiecepath.h"
 #include "../vtools/tools/nodeDetails/vtoolpin.h"
 #include "../vtools/tools/vtoolseamallowance.h"
@@ -153,8 +155,11 @@
 #include <QAction>
 #include <QApplication>
 #include <QComboBox>
+#include <QtDebug>
+#include <QIODevice>
 #include <QMessageBox>
 #include <QPointer>
+#include <QProcess>
 
 using namespace Qt::Literals::StringLiterals;
 
@@ -716,7 +721,7 @@ void MainWindow::ClosedDialogGroup(int result)
                 !group.isNull())
         {
             auto *addGroup = new AddGroup(group, doc);
-            connect(addGroup, &AddGroup::UpdateGroups, m_groupsWidget, &VWidgetGroups::UpdateGroups);
+            connect(addGroup, &AddGroup::UpdateGroups, m_dockManager->groupsWidget(), &VWidgetGroups::UpdateGroups);
             VAbstractApplication::VApp()->getUndoStack()->push(addGroup);
         }
     }
@@ -1121,7 +1126,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
 
     // A full reparse (e.g. deleting a tool from the dependencies dock) would clear the scene and destroy this
     // dialog's visualization. Block tool deletion until the creation is finished.
-    m_dependenciesWidget->SetToolCreationActive(true);
+    m_dockManager->dependenciesWidget()->SetToolCreationActive(true);
 
     // A full reparse while this creation dialog is open destroys its visualization (vis becomes null).
     // Drop the scene event in that state — ChosenObject overrides dereference vis and would crash.
@@ -1321,3 +1326,566 @@ void MainWindow::ClosedCurveDialog(int result)
     }
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief CancelTool cancel tool.
+ */
+void MainWindow::CancelTool()
+{
+    // This check helps to find missed tools in the switch
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
+
+    qCDebug(vMainWindow, "Canceling tool.");
+    if (not m_dialogTool.isNull())
+    {
+        m_dialogTool->hide();
+        m_dialogTool->deleteLater();
+    }
+    m_dockManager->dependenciesWidget()->SetToolCreationActive(false); // Creation finished/cancelled: allow deletion again.
+    qCDebug(vMainWindow, "Dialog closed.");
+
+    currentScene->setFocus(Qt::OtherFocusReason);
+    currentScene->clearSelection();
+    emit ui->view->itemClicked(nullptr); // Hide visualization to avoid a crash
+
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_GCC("-Wswitch-default")
+    QT_WARNING_DISABLE_CLANG("-Wswitch-default")
+
+    switch (m_currentTool)
+    {
+        case Tool::Arrow:
+            ui->actionToolSelect->setChecked(false);
+            m_statusLabel->setText(QString());
+            m_comboBoxDraws->setEnabled(false);
+
+            // Crash: using CRTL+Z while using line tool.
+            // related bug report:
+            // https://bitbucket.org/dismine/valentina/issues/454/crash-using-crtl-z-while-using-line-tool
+            undoAction->setEnabled(false);
+            redoAction->setEnabled(false);
+            VAbstractTool::m_suppressContextMenu = true;
+            return;
+        case Tool::BasePoint:
+        case Tool::SinglePoint:
+        case Tool::DoublePoint:
+        case Tool::LinePoint:
+        case Tool::AbstractSpline:
+        case Tool::Cut:
+        case Tool::ArcPoint:
+        case Tool::CurvePoint:
+        case Tool::LAST_ONE_DO_NOT_USE:
+        case Tool::NodePoint:
+        case Tool::NodeArc:
+        case Tool::NodeElArc:
+        case Tool::NodeSpline:
+        case Tool::NodeSplinePath:
+        case Tool::BackgroundImage:
+        case Tool::BackgroundImageControls:
+        case Tool::BackgroundPixmapImage:
+        case Tool::BackgroundSVGImage:
+            Q_UNREACHABLE(); //-V501
+            // Nothing to do here because we can't create this tool from main window.
+            break;
+        case Tool::EndLine:
+            ui->actionEndLineTool->setChecked(false);
+            break;
+        case Tool::Line:
+            ui->actionLineTool->setChecked(false);
+            break;
+        case Tool::AlongLine:
+            ui->actionAlongLineTool->setChecked(false);
+            break;
+        case Tool::Midpoint:
+            ui->actionMidpointTool->setChecked(false);
+            break;
+        case Tool::ShoulderPoint:
+            ui->actionShoulderPointTool->setChecked(false);
+            break;
+        case Tool::Normal:
+            ui->actionNormalTool->setChecked(false);
+            break;
+        case Tool::Bisector:
+            ui->actionBisectorTool->setChecked(false);
+            break;
+        case Tool::LineIntersect:
+            ui->actionLineIntersectTool->setChecked(false);
+            break;
+        case Tool::Curve:
+            ui->actionCurveTool->setChecked(false);
+            break;
+        case Tool::Spline:
+            ui->actionSplineTool->setChecked(false);
+            break;
+        case Tool::CubicBezier:
+            ui->actionCubicBezierTool->setChecked(false);
+            break;
+        case Tool::ArmholeCurve:
+            ui->actionArmholeCurveTool->setChecked(false);
+            break;
+        case Tool::Arc:
+            ui->actionArcTool->setChecked(false);
+            break;
+        case Tool::ArcWithLength:
+            ui->actionArcWithLengthTool->setChecked(false);
+            break;
+        case Tool::SplinePath:
+            ui->actionSplinePathTool->setChecked(false);
+            break;
+        case Tool::CubicBezierPath:
+            ui->actionCubicBezierPathTool->setChecked(false);
+            break;
+        case Tool::PointOfContact:
+            ui->actionPointOfContactTool->setChecked(false);
+            break;
+        case Tool::Piece:
+            ui->actionNewDetailTool->setChecked(false);
+            break;
+        case Tool::PiecePath:
+            ui->actionInternalPathTool->setChecked(false);
+            break;
+        case Tool::Height:
+            ui->actionHeightTool->setChecked(false);
+            break;
+        case Tool::Triangle:
+            ui->actionTriangleTool->setChecked(false);
+            break;
+        case Tool::PointOfIntersection:
+            ui->actionPointOfIntersectionTool->setChecked(false);
+            break;
+        case Tool::CutCurve:
+            ui->actionCutCurveTool->setChecked(false);
+            break;
+        case Tool::CutSpline:
+            ui->actionSplineCutPointTool->setChecked(false);
+            break;
+        case Tool::CutSplinePath:
+            ui->actionSplinePathCutPointTool->setChecked(false);
+            break;
+        case Tool::UnionDetails:
+            ui->actionUnionDetailsTool->setChecked(false);
+            break;
+        case Tool::DuplicateDetail:
+            ui->actionDuplicateDetailTool->setChecked(false);
+            break;
+        case Tool::CutArc:
+            ui->actionArcCutPointTool->setChecked(false);
+            break;
+        case Tool::LineIntersectAxis:
+            ui->actionLineIntersectAxisTool->setChecked(false);
+            break;
+        case Tool::CurveIntersectAxis:
+            ui->actionCurveIntersectAxisTool->setChecked(false);
+            break;
+        case Tool::ArcIntersectAxis:
+            ui->actionArcIntersectAxisTool->setChecked(false);
+            break;
+        case Tool::PointOfIntersectionArcs:
+            ui->actionPointOfIntersectionArcsTool->setChecked(false);
+            break;
+        case Tool::PointOfIntersectionCircles:
+            ui->actionPointOfIntersectionCirclesTool->setChecked(false);
+            break;
+        case Tool::PointOfIntersectionCurves:
+            ui->actionIntersectionCurvesTool->setChecked(false);
+            break;
+        case Tool::PointFromCircleAndTangent:
+            ui->actionPointFromCircleAndTangentTool->setChecked(false);
+            break;
+        case Tool::PointFromArcAndTangent:
+            ui->actionPointFromArcAndTangentTool->setChecked(false);
+            break;
+        case Tool::TrueDarts:
+            ui->actionTrueDartsTool->setChecked(false);
+            break;
+        case Tool::Group:
+            ui->actionGroupTool->setChecked(false);
+            break;
+        case Tool::Attach:
+            ui->actionAttachTool->setChecked(false);
+            break;
+        case Tool::Rotation:
+            ui->actionRotationTool->setChecked(false);
+            break;
+        case Tool::FlippingByLine:
+            ui->actionFlippingByLineTool->setChecked(false);
+            break;
+        case Tool::FlippingByAxis:
+            ui->actionFlippingByAxisTool->setChecked(false);
+            break;
+        case Tool::Move:
+            ui->actionMoveTool->setChecked(false);
+            break;
+        case Tool::EllipticalArc:
+            ui->actionEllipticalArcTool->setChecked(false);
+            break;
+        case Tool::Pin:
+            ui->actionPinTool->setChecked(false);
+            break;
+        case Tool::InsertNode:
+            ui->actionInsertNodeTool->setChecked(false);
+            break;
+        case Tool::PlaceLabel:
+            ui->actionPlaceLabelTool->setChecked(false);
+            break;
+        case Tool::ArcStart:
+            ui->actionArcStartPointTool->setChecked(false);
+            break;
+        case Tool::ArcEnd:
+            ui->actionArcEndPointTool->setChecked(false);
+            break;
+        case Tool::EllipticalArcWithLength:
+            ui->actionEllipticalArcWithLengthTool->setChecked(false);
+            break;
+        case Tool::ParallelCurve:
+            ui->actionParallelCurveTool->setChecked(false);
+            break;
+        case Tool::GraduatedCurve:
+            ui->actionGraduatedCurveTool->setChecked(false);
+            break;
+    }
+
+    QT_WARNING_POP
+
+    // Crash: using CRTL+Z while using line tool.
+    // related bug report:
+    // https://bitbucket.org/dismine/valentina/issues/454/crash-using-crtl-z-while-using-line-tool
+    undoAction->setEnabled(not m_toolOptionsDialogVisible &&
+                           VAbstractApplication::VApp()->getUndoStack()->canUndo());
+    redoAction->setEnabled(not m_toolOptionsDialogVisible &&
+                           VAbstractApplication::VApp()->getUndoStack()->canRedo());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ArrowTool enable arrow tool.
+ */
+void MainWindow::ArrowTool(bool checked)
+{
+    if (checked && m_currentTool != Tool::Arrow)
+    {
+        qCDebug(vMainWindow, "Arrow tool.");
+        CancelTool();
+        ui->actionToolSelect->setChecked(true);
+        m_comboBoxDraws->setEnabled(true);
+        m_currentTool = Tool::Arrow;
+        emit EnableItemMove(true);
+        emit ItemsSelection(SelectionType::ByMouseRelease);
+        VAbstractTool::m_suppressContextMenu = false;
+
+        // Only true for rubber band selection
+        emit EnablePointSelection(false);
+        emit EnableLineSelection(false);
+        emit EnableArcSelection(false);
+        emit EnableElArcSelection(false);
+        emit EnableSplineSelection(false);
+        emit EnableSplinePathSelection(false);
+        emit EnableNodePointSelection(true);
+        emit EnableDetailSelection(true); // Disable when done visualization details
+        emit EnableBackgroundImageSelection(true);
+
+        // Hovering
+        emit EnablePointHover(true);
+        emit EnableLineHover(true);
+        emit EnableArcHover(true);
+        emit EnableElArcHover(true);
+        emit EnableSplineHover(true);
+        emit EnableSplinePathHover(true);
+        emit EnableNodePointHover(true);
+        emit EnableDetailHover(true);
+        emit EnableImageBackgroundHover(true);
+
+        ui->view->AllowRubberBand(true);
+        ui->view->viewport()->unsetCursor();
+        ui->view->viewport()->setCursor(QCursor(Qt::ArrowCursor));
+        ui->view->setCurrentCursorShape(); // Hack to fix problem with a cursor
+        m_statusLabel->setText(QString());
+        ui->view->setShowToolOptions(true);
+        qCDebug(vMainWindow, "Enabled arrow tool.");
+    }
+    else
+    {
+        ui->actionToolSelect->setChecked(true);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::LastUsedTool()
+{
+    // This check helps to find missed tools in the switch
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
+
+    if (m_currentTool == m_lastUsedTool)
+    {
+        return;
+    }
+
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_GCC("-Wswitch-default")
+    QT_WARNING_DISABLE_CLANG("-Wswitch-default")
+
+    switch (m_lastUsedTool)
+    {
+        case Tool::Arrow:
+            ui->actionToolSelect->setChecked(true);
+            ArrowTool(true);
+            break;
+        case Tool::BasePoint:
+        case Tool::SinglePoint:
+        case Tool::DoublePoint:
+        case Tool::LinePoint:
+        case Tool::AbstractSpline:
+        case Tool::Cut:
+        case Tool::ArcPoint:
+        case Tool::CurvePoint:
+        case Tool::LAST_ONE_DO_NOT_USE:
+        case Tool::NodePoint:
+        case Tool::NodeArc:
+        case Tool::NodeElArc:
+        case Tool::NodeSpline:
+        case Tool::NodeSplinePath:
+        case Tool::BackgroundImage:
+        case Tool::BackgroundImageControls:
+        case Tool::BackgroundPixmapImage:
+        case Tool::BackgroundSVGImage:
+            Q_UNREACHABLE(); //-V501
+            // Nothing to do here because we can't create this tool from main window.
+            break;
+        case Tool::EndLine:
+            ui->actionEndLineTool->setChecked(true);
+            ToolEndLine(true);
+            break;
+        case Tool::Line:
+            ui->actionLineTool->setChecked(true);
+            ToolLine(true);
+            break;
+        case Tool::AlongLine:
+            ui->actionAlongLineTool->setChecked(true);
+            ToolAlongLine(true);
+            break;
+        case Tool::Midpoint:
+            ui->actionMidpointTool->setChecked(true);
+            ToolMidpoint(true);
+            break;
+        case Tool::ShoulderPoint:
+            ui->actionShoulderPointTool->setChecked(true);
+            ToolShoulderPoint(true);
+            break;
+        case Tool::Normal:
+            ui->actionNormalTool->setChecked(true);
+            ToolNormal(true);
+            break;
+        case Tool::Bisector:
+            ui->actionBisectorTool->setChecked(true);
+            ToolBisector(true);
+            break;
+        case Tool::LineIntersect:
+            ui->actionLineIntersectTool->setChecked(true);
+            ToolLineIntersect(true);
+            break;
+        case Tool::Curve:
+            ui->actionCurveTool->setChecked(true);
+            ToolCurve(true);
+            break;
+        case Tool::Spline:
+            ui->actionSplineTool->setChecked(true);
+            ToolSpline(true);
+            break;
+        case Tool::CubicBezier:
+            ui->actionCubicBezierTool->setChecked(true);
+            ToolCubicBezier(true);
+            break;
+        case Tool::ArmholeCurve:
+            ui->actionArmholeCurveTool->setChecked(true);
+            ToolArmholeCurve(true);
+            break;
+        case Tool::Arc:
+            ui->actionArcTool->setChecked(true);
+            ToolArc(true);
+            break;
+        case Tool::SplinePath:
+            ui->actionSplinePathTool->setChecked(true);
+            ToolSplinePath(true);
+            break;
+        case Tool::CubicBezierPath:
+            ui->actionCubicBezierPathTool->setChecked(true);
+            ToolCubicBezierPath(true);
+            break;
+        case Tool::PointOfContact:
+            ui->actionPointOfContactTool->setChecked(true);
+            ToolPointOfContact(true);
+            break;
+        case Tool::Piece:
+            ui->actionNewDetailTool->setChecked(true);
+            ToolDetail(true);
+            break;
+        case Tool::PiecePath:
+            ui->actionInternalPathTool->setChecked(true);
+            ToolPiecePath(true);
+            break;
+        case Tool::Height:
+            ui->actionHeightTool->setChecked(true);
+            ToolHeight(true);
+            break;
+        case Tool::Triangle:
+            ui->actionTriangleTool->setChecked(true);
+            ToolTriangle(true);
+            break;
+        case Tool::PointOfIntersection:
+            ui->actionPointOfIntersectionTool->setChecked(true);
+            ToolPointOfIntersection(true);
+            break;
+        case Tool::PointOfIntersectionArcs:
+            ui->actionPointOfIntersectionArcsTool->setChecked(true);
+            ToolPointOfIntersectionArcs(true);
+            break;
+        case Tool::CutCurve:
+            ui->actionCutCurveTool->setChecked(true);
+            ToolCutCurve(true);
+            break;
+        case Tool::CutSpline:
+            ui->actionSplineCutPointTool->setChecked(true);
+            ToolCutSpline(true);
+            break;
+        case Tool::CutSplinePath:
+            ui->actionSplinePathCutPointTool->setChecked(true);
+            ToolCutSplinePath(true);
+            break;
+        case Tool::UnionDetails:
+            ui->actionUnionDetailsTool->setChecked(true);
+            ToolUnionDetails(true);
+            break;
+        case Tool::DuplicateDetail:
+            ui->actionDuplicateDetailTool->setChecked(true);
+            ToolDuplicateDetail(true);
+            break;
+        case Tool::CutArc:
+            ui->actionArcCutPointTool->setChecked(true);
+            ToolCutArc(true);
+            break;
+        case Tool::LineIntersectAxis:
+            ui->actionLineIntersectAxisTool->setChecked(true);
+            ToolLineIntersectAxis(true);
+            break;
+        case Tool::CurveIntersectAxis:
+            ui->actionCurveIntersectAxisTool->setChecked(true);
+            ToolCurveIntersectAxis(true);
+            break;
+        case Tool::ArcIntersectAxis:
+            ui->actionArcIntersectAxisTool->setChecked(true);
+            ToolArcIntersectAxis(true);
+            break;
+        case Tool::PointOfIntersectionCircles:
+            ui->actionPointOfIntersectionCirclesTool->setChecked(true);
+            ToolPointOfIntersectionCircles(true);
+            break;
+        case Tool::PointOfIntersectionCurves:
+            ui->actionIntersectionCurvesTool->setChecked(true);
+            ToolPointOfIntersectionCurves(true);
+            break;
+        case Tool::PointFromCircleAndTangent:
+            ui->actionPointFromCircleAndTangentTool->setChecked(true);
+            ToolPointFromCircleAndTangent(true);
+            break;
+        case Tool::PointFromArcAndTangent:
+            ui->actionPointFromArcAndTangentTool->setChecked(true);
+            ToolPointFromArcAndTangent(true);
+            break;
+        case Tool::ArcWithLength:
+            ui->actionArcWithLengthTool->setChecked(true);
+            ToolArcWithLength(true);
+            break;
+        case Tool::TrueDarts:
+            ui->actionTrueDartsTool->setChecked(true);
+            ToolTrueDarts(true);
+            break;
+        case Tool::Group:
+            ui->actionGroupTool->setChecked(true);
+            ToolGroup(true);
+            break;
+        case Tool::Attach:
+            ui->actionAttachTool->setChecked(true);
+            ToolAttach(true);
+            break;
+        case Tool::Rotation:
+            ui->actionRotationTool->setChecked(true);
+            ToolRotation(true);
+            break;
+        case Tool::FlippingByLine:
+            ui->actionFlippingByLineTool->setChecked(true);
+            ToolFlippingByLine(true);
+            break;
+        case Tool::FlippingByAxis:
+            ui->actionFlippingByAxisTool->setChecked(true);
+            ToolFlippingByAxis(true);
+            break;
+        case Tool::Move:
+            ui->actionMoveTool->setChecked(true);
+            ToolMove(true);
+            break;
+        case Tool::EllipticalArc:
+            ui->actionEllipticalArcTool->setChecked(true);
+            ToolEllipticalArc(true);
+            break;
+        case Tool::Pin:
+            ui->actionPinTool->setChecked(true);
+            ToolPin(true);
+            break;
+        case Tool::InsertNode:
+            ui->actionInsertNodeTool->setChecked(true);
+            ToolInsertNode(true);
+            break;
+        case Tool::PlaceLabel:
+            ui->actionPlaceLabelTool->setChecked(true);
+            ToolPlaceLabel(true);
+            break;
+        case Tool::ArcStart:
+            ui->actionArcStartPointTool->setChecked(true);
+            ToolArcStart(true);
+            break;
+        case Tool::ArcEnd:
+            ui->actionArcEndPointTool->setChecked(true);
+            ToolArcEnd(true);
+            break;
+        case Tool::EllipticalArcWithLength:
+            ui->actionEllipticalArcWithLengthTool->setChecked(true);
+            ToolEllipticalArcWithLength(true);
+            break;
+        case Tool::ParallelCurve:
+            ui->actionParallelCurveTool->setChecked(true);
+            ToolParallelCurve(true);
+            break;
+        case Tool::GraduatedCurve:
+            ui->actionGraduatedCurveTool->setChecked(true);
+            ToolGraduatedCurve(true);
+            break;
+    }
+
+    QT_WARNING_POP
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ShowTool  highlight tool.Tip show tools tooltip.
+ * @param toolTip tooltip text.
+ */
+void MainWindow::ShowToolTip(const QString &toolTip)
+{
+    m_statusLabel->setText(toolTip);
+}
+//---------------------------------------------------------------------------------------------------------------------
+#if defined(Q_OS_MAC)
+void MainWindow::OpenAt(QAction *where)
+{
+    const QString path = VAbstractValApplication::VApp()->GetPatternPath().left(
+                             VAbstractValApplication::VApp()->GetPatternPath().indexOf(where->text())) +
+                         where->text();
+    if (path == VAbstractValApplication::VApp()->GetPatternPath())
+    {
+        return;
+    }
+    QProcess process;
+    process.start(QStringLiteral("/usr/bin/open"), QStringList() << path, QIODevice::ReadOnly);
+    process.waitForFinished();
+}
+#endif // defined(Q_OS_MAC)

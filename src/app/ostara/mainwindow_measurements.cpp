@@ -44,6 +44,7 @@
 #include "../vmisc/vsysexits.h"
 #include "core/vapplication.h"
 #include <QComboBox>
+#include <QFontMetrics>
 #include <QLabel>
 #include <QTimer>
 #include <QFileInfo>
@@ -570,5 +571,399 @@ auto MainWindow::CheckPathToMeasurements(const QString &patternPath, const QStri
     VAbstractValApplication::VApp()->SetMeasurementsType(patternType);
     doc->SetMPath(RelativeMPath(patternPath, mPath));
     return mPath;
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+auto MainWindow::UpdateMeasurements(const QSharedPointer<VMeasurements> &mFile, qreal baseA, qreal baseB, qreal baseC,
+                                    bool rebuildGradation) -> bool
+{
+    if (mFile.isNull())
+    {
+        qCWarning(vMainWindow, "UpdateMeasurements called with null measurement file; keeping existing data.");
+        return false;
+    }
+
+    m_m = mFile;
+
+    if (VAbstractValApplication::VApp()->GetMeasurementsType() != m_m->Type())
+    {
+        qCCritical(vMainWindow, "%s", qUtf8Printable(tr("Measurement files types have not match.")));
+        if (not VApplication::IsGUIMode())
+        {
+            QCoreApplication::exit(V_EX_DATAERR);
+        }
+        return false;
+    }
+
+    try
+    {
+        ReadMeasurements(baseA, baseB, baseC, rebuildGradation);
+    }
+    catch (VExceptionEmptyParameter &e)
+    {
+        qCCritical(vMainWindow, "%s\n\n%s\n\n%s", qUtf8Printable(tr("File error.")), qUtf8Printable(e.ErrorMessage()),
+                   qUtf8Printable(e.DetailedInformation()));
+        if (not VApplication::IsGUIMode())
+        {
+            QCoreApplication::exit(V_EX_NOINPUT);
+        }
+        return false;
+    }
+
+    return true;
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::StoreMultisizeMDimension(const QList<MeasurementDimension_p> &dimensions, int index, qreal currentBase)
+{
+    if (dimensions.size() > index)
+    {
+        const MeasurementDimension_p &dimension = dimensions.at(index);
+        const DimesionLabels labels = dimension->Labels();
+
+        switch (dimension->Type())
+        {
+            case MeasurementDimension::X:
+                VAbstractValApplication::VApp()->SetDimensionHeight(currentBase);
+                VAbstractValApplication::VApp()->SetDimensionHeightLabel(
+                    VFuzzyValue(labels, currentBase, QString::number(currentBase)));
+                break;
+            case MeasurementDimension::Y:
+            {
+                const bool fc = m_m->IsFullCircumference();
+                VAbstractValApplication::VApp()->SetDimensionSize(fc ? currentBase * 2 : currentBase);
+                VAbstractValApplication::VApp()->SetDimensionSizeLabel(
+                    VFuzzyValue(labels, currentBase, QString::number(fc ? currentBase * 2 : currentBase)));
+                const bool measurement = dimension->IsBodyMeasurement();
+                VAbstractValApplication::VApp()->SetDimensionSizeUnits(measurement ? m_m->Units()
+                                                                                   : Unit::LAST_UNIT_DO_NOT_USE);
+                break;
+            }
+            case MeasurementDimension::W:
+            {
+                const bool fc = m_m->IsFullCircumference();
+                VAbstractValApplication::VApp()->SetDimensionWaist(fc ? currentBase * 2 : currentBase);
+                VAbstractValApplication::VApp()->SetDimensionWaistLabel(
+                    VFuzzyValue(labels, currentBase, QString::number(fc ? currentBase * 2 : currentBase)));
+                break;
+            }
+            case MeasurementDimension::Z:
+            {
+                const bool fc = m_m->IsFullCircumference();
+                VAbstractValApplication::VApp()->SetDimensionHip(fc ? currentBase * 2 : currentBase);
+                VAbstractValApplication::VApp()->SetDimensionHipLabel(
+                    VFuzzyValue(labels, currentBase, QString::number(fc ? currentBase * 2 : currentBase)));
+                break;
+            }
+            default:
+                break;
+        }
+    }
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::StoreIndividualMDimension(const QMap<QString, QSharedPointer<VMeasurement>> &measurements, IMD type)
+{
+    const QString name = VAbstractApplication::VApp()->TrVars()->VarToUser(m_m->MeasurementForDimension(type));
+    const bool valid = not name.isEmpty() && measurements.contains(name);
+    const qreal value = valid ? *measurements.value(name)->GetValue() : 0;
+    switch (type)
+    {
+        case IMD::X:
+            VAbstractValApplication::VApp()->SetDimensionHeight(value);
+            VAbstractValApplication::VApp()->SetDimensionHeightLabel(QString::number(value));
+            break;
+        case IMD::Y:
+            VAbstractValApplication::VApp()->SetDimensionSize(value);
+            VAbstractValApplication::VApp()->SetDimensionSizeLabel(QString::number(value));
+            break;
+        case IMD::W:
+            VAbstractValApplication::VApp()->SetDimensionWaist(value);
+            VAbstractValApplication::VApp()->SetDimensionWaistLabel(QString::number(value));
+            break;
+        case IMD::Z:
+            VAbstractValApplication::VApp()->SetDimensionHip(value);
+            VAbstractValApplication::VApp()->SetDimensionHipLabel(QString::number(value));
+            break;
+        case IMD::N:
+        default:
+            break;
+    }
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+auto MainWindow::DimensionRestrictedValues(int index, const MeasurementDimension_p &dimension) -> QVector<qreal>
+{
+    VDimensionRestriction restriction;
+    if (index == 0)
+    {
+        restriction = m_m->Restriction(0);
+    }
+    else if (index == 1)
+    {
+        restriction = m_m->Restriction(m_currentDimensionA);
+    }
+    else
+    {
+        restriction = m_m->Restriction(m_currentDimensionA, m_currentDimensionB);
+    }
+
+    const QVector<qreal> bases = dimension->ValidBases();
+
+    qreal min = VFuzzyIndexOf(bases, restriction.GetMin()) != -1 ? restriction.GetMin() : dimension->MinValue();
+    qreal max = VFuzzyIndexOf(bases, restriction.GetMax()) != -1 ? restriction.GetMax() : dimension->MaxValue();
+
+    if (min > max)
+    {
+        min = dimension->MinValue();
+        max = dimension->MaxValue();
+    }
+
+    return VAbstartMeasurementDimension::ValidBases(min, max, dimension->Step(), restriction.GetExcludeValues());
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::InitDimensionGradation(int index, const MeasurementDimension_p &dimension,
+                                        const QPointer<QComboBox> &control)
+{
+    SCASSERT(control != nullptr)
+
+    qreal current = -1;
+    if (control->currentIndex() != -1)
+    {
+        current = control->currentData().toDouble();
+    }
+
+    QSignalBlocker blocker(control);
+    control->clear();
+
+    const QVector<qreal> bases = DimensionRestrictedValues(index, dimension);
+    const DimesionLabels labels = dimension->Labels();
+
+    if (dimension->Type() == MeasurementDimension::X)
+    {
+        InitDimensionXGradation(bases, labels, control);
+    }
+    else if (dimension->Type() == MeasurementDimension::Y || dimension->Type() == MeasurementDimension::W ||
+             dimension->Type() == MeasurementDimension::Z)
+    {
+        InitDimensionYWZGradation(bases, labels, control, dimension->IsBodyMeasurement());
+    }
+
+    // Calculate the width of the largest item using QFontMetrics
+    QFontMetrics const fontMetrics(control->font());
+    int maxWidth = 0;
+    for (int i = 0; i < control->count(); ++i)
+    {
+        int const itemWidth = fontMetrics.horizontalAdvance(control->itemText(i));
+        if (itemWidth > maxWidth)
+        {
+            maxWidth = itemWidth;
+        }
+    }
+
+    // Set the minimum width of the view to the largest item width
+    control->view()->setMinimumWidth(maxWidth);
+
+    // after initialization the current index is 0. The signal for changing the index will not be triggered if not make
+    // it invalid first
+    control->setCurrentIndex(-1);
+
+    int const i = control->findData(current);
+    if (i != -1)
+    {
+        control->setCurrentIndex(i);
+        blocker.unblock();
+    }
+    else
+    {
+        blocker.unblock();
+        control->setCurrentIndex(0);
+    }
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::InitDimensionXGradation(const QVector<qreal> &bases, const DimesionLabels &labels,
+                                         const QPointer<QComboBox> &control)
+{
+    const QString unit = UnitsToStr(VAbstractValApplication::VApp()->MeasurementsUnits(), true);
+
+    for (auto base : bases)
+    {
+        if (VFuzzyContains(labels, base) && not VFuzzyValue(labels, base).isEmpty())
+        {
+            control->addItem(VFuzzyValue(labels, base), base);
+        }
+        else
+        {
+            control->addItem(QStringLiteral("%1 %2").arg(base).arg(unit), base);
+        }
+    }
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::InitDimensionYWZGradation(const QVector<qreal> &bases, const DimesionLabels &labels,
+                                           const QPointer<QComboBox> &control, bool bodyMeasurement)
+{
+    const bool fc = m_m->IsFullCircumference();
+    const QString unit = UnitsToStr(VAbstractValApplication::VApp()->MeasurementsUnits(), true);
+
+    for (auto base : bases)
+    {
+        if (VFuzzyContains(labels, base) && not VFuzzyValue(labels, base).isEmpty())
+        {
+            control->addItem(VFuzzyValue(labels, base), base);
+        }
+        else
+        {
+            if (bodyMeasurement)
+            {
+                control->addItem(QStringLiteral("%1 %2").arg(fc ? base * 2 : base).arg(unit), base);
+            }
+            else
+            {
+                control->addItem(QString::number(base), base);
+            }
+        }
+    }
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+auto MainWindow::SetDimensionA(int value) -> bool
+{
+    if (not VApplication::IsGUIMode())
+    {
+        if (this->isWindowModified() || not VAbstractValApplication::VApp()->GetPatternPath().isEmpty())
+        {
+            if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
+            {
+                const qint32 index = m_dimensionA ? m_dimensionA->findData(value) : -1;
+                if (index != -1)
+                {
+                    m_dimensionA->setCurrentIndex(index);
+                }
+                else
+                {
+                    qCCritical(
+                        vMainWindow, "%s",
+                        qUtf8Printable(tr("Not supported dimension A value '%1' for this pattern file.").arg(value)));
+                    return false;
+                }
+            }
+            else
+            {
+                qCCritical(vMainWindow, "%s",
+                           qUtf8Printable(tr("Couldn't set dimension A. Need a file with multisize measurements.")));
+                return false;
+            }
+        }
+        else
+        {
+            qCCritical(vMainWindow, "%s", qUtf8Printable(tr("Couldn't set dimension A. File wasn't opened.")));
+            return false;
+        }
+    }
+    else
+    {
+        qCWarning(vMainWindow, "%s", qUtf8Printable(tr("The method %1 does nothing in GUI mode").arg(Q_FUNC_INFO)));
+        return false;
+    }
+    return true;
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+auto MainWindow::SetDimensionB(int value) -> bool
+{
+    if (not VApplication::IsGUIMode())
+    {
+        if (this->isWindowModified() || not VAbstractValApplication::VApp()->GetPatternPath().isEmpty())
+        {
+            if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
+            {
+                const qint32 index = m_dimensionB ? m_dimensionB->findData(value) : -1;
+                if (index != -1)
+                {
+                    m_dimensionB->setCurrentIndex(index);
+                }
+                else
+                {
+                    qCCritical(
+                        vMainWindow, "%s",
+                        qUtf8Printable(tr("Not supported dimension B value '%1' for this pattern file.").arg(value)));
+                    return false;
+                }
+            }
+            else
+            {
+                qCCritical(vMainWindow, "%s",
+                           qUtf8Printable(tr("Couldn't set dimension B. Need a file with multisize measurements.")));
+                return false;
+            }
+        }
+        else
+        {
+            qCCritical(vMainWindow, "%s", qUtf8Printable(tr("Couldn't set dimension B. File wasn't opened.")));
+            return false;
+        }
+    }
+    else
+    {
+        qCWarning(vMainWindow, "%s", qUtf8Printable(tr("The method %1 does nothing in GUI mode").arg(Q_FUNC_INFO)));
+        return false;
+    }
+    return true;
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+auto MainWindow::SetDimensionC(int value) -> bool
+{
+    if (not VApplication::IsGUIMode())
+    {
+        if (this->isWindowModified() || not VAbstractValApplication::VApp()->GetPatternPath().isEmpty())
+        {
+            if (VAbstractValApplication::VApp()->GetMeasurementsType() == MeasurementsType::Multisize)
+            {
+                const qint32 index = m_dimensionC ? m_dimensionC->findData(value) : -1;
+                if (index != -1)
+                {
+                    m_dimensionC->setCurrentIndex(index);
+                }
+                else
+                {
+                    qCCritical(
+                        vMainWindow, "%s",
+                        qUtf8Printable(tr("Not supported dimension C value '%1' for this pattern file.").arg(value)));
+                    return false;
+                }
+            }
+            else
+            {
+                qCCritical(vMainWindow, "%s",
+                           qUtf8Printable(tr("Couldn't set dimension C. Need a file with multisize measurements.")));
+                return false;
+            }
+        }
+        else
+        {
+            qCCritical(vMainWindow, "%s", qUtf8Printable(tr("Couldn't set dimension C. File wasn't opened.")));
+            return false;
+        }
+    }
+    else
+    {
+        qCWarning(vMainWindow, "%s", qUtf8Printable(tr("The method %1 does nothing in GUI mode").arg(Q_FUNC_INFO)));
+        return false;
+    }
+    return true;
 }
 

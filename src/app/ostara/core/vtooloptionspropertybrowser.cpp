@@ -163,7 +163,7 @@ auto ParallelCurveProperties() -> std::vector<PropertyDesc>;
 auto GraduatedCurveProperties() -> std::vector<PropertyDesc>;
 
 //---------------------------------------------------------------------------------------------------------------------
-VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QDockWidget *parent)
+VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QWidget *parent)
   : QObject(parent)
 {
     m_PropertyModel = new VPE::VPropertyModel(this);
@@ -184,10 +184,16 @@ VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QDockWidget *parent)
     scrollLayout->addWidget(m_formView);
     scroll->setWidget(scrollContents);
 
-    parent->setWidget(scroll);
+    m_scroll = scroll;
 
     connect(m_PropertyModel, &VPE::VPropertyModel::onDataChangedByEditor, this,
             &VToolOptionsPropertyBrowser::userChangedData);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QWidget *VToolOptionsPropertyBrowser::widget() const
+{
+    return m_scroll;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

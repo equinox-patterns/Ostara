@@ -62,7 +62,7 @@ public:
 };
 } // namespace
 
-ODetailsPropertyBrowser::ODetailsPropertyBrowser(QDockWidget *parent)
+ODetailsPropertyBrowser::ODetailsPropertyBrowser(QWidget *parent)
   : QObject(parent)
 {
     // ── Contextual stack — empty page shown until a piece (or point / place label / group) is selected ──
@@ -99,7 +99,13 @@ ODetailsPropertyBrowser::ODetailsPropertyBrowser(QDockWidget *parent)
     scrollLayout->addWidget(m_stack);
     scroll->setWidget(scrollContents);
 
-    parent->setWidget(scroll);
+    m_scroll = scroll;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QWidget *ODetailsPropertyBrowser::widget() const
+{
+    return m_scroll;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

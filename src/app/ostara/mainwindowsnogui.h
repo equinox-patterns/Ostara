@@ -107,11 +107,6 @@ protected:
 
     QAction *undoAction{nullptr};                       // NOLINT(misc-non-private-member-variables-in-classes)
     QAction *redoAction{nullptr};                       // NOLINT(misc-non-private-member-variables-in-classes)
-    QAction *actionDockWidgetToolOptions{nullptr};      // NOLINT(misc-non-private-member-variables-in-classes)
-    QAction *actionDockWidgetDetailsOptions{nullptr};   // NOLINT(misc-non-private-member-variables-in-classes)
-    QAction *actionDockWidgetGroups{nullptr};           // NOLINT(misc-non-private-member-variables-in-classes)
-    QAction *actionDockWidgetBackgroundImages{nullptr}; // NOLINT(misc-non-private-member-variables-in-classes)
-    QAction *actionDockWidgetDependencies{nullptr};     // NOLINT(misc-non-private-member-variables-in-classes)
 
     bool isNoScaling{false};                                // NOLINT(misc-non-private-member-variables-in-classes)
     bool isNeedAutosave{false};                             // NOLINT(misc-non-private-member-variables-in-classes)
