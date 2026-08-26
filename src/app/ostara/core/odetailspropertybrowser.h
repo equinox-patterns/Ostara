@@ -46,7 +46,8 @@ public:
     explicit ODetailsPropertyBrowser(QWidget *parent);
     ~ODetailsPropertyBrowser() override = default;
 
-    /** @brief The scroll area the browser built its content into. */
+    /** @brief The scroll area the browser built its content into. Owned by the
+     *         dock's QStackedWidget — callers must not delete or reparent it. */
     QWidget *widget() const;
 
     void ShowEmpty();

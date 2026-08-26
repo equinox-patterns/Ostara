@@ -31,6 +31,7 @@
 #include <QMenu>
 #include <QScrollArea>
 #include <QVBoxLayout>
+#include <QtDebug>
 
 #include "../ui_mainwindow.h"
 #include "../xml/vpattern.h"
@@ -146,7 +147,6 @@ void ODockManager::installTitleBar(QDockWidget *dock)
 {
     auto *titleBar = new ODockTitleBar(dock->windowTitle(), dock);
     dock->setTitleBarWidget(titleBar);
-    m_titleBars.insert(dock, titleBar);
 
     // Keep title in sync
     connect(dock, &QDockWidget::windowTitleChanged, titleBar, &ODockTitleBar::setTitle);
@@ -158,7 +158,7 @@ void ODockManager::installTitleBar(QDockWidget *dock)
                 if (auto *w = dock->widget())
                 {
                     w->setVisible(true); // must stay visible for width
-                    w->setMinimumHeight(collapsed ? 0 : 0);
+                    w->setMinimumHeight(0);
                     w->setMaximumHeight(collapsed ? 0 : QWIDGETSIZE_MAX);
                 }
             });
@@ -169,8 +169,14 @@ void ODockManager::installTitleBar(QDockWidget *dock)
     // Track floating state — disable detach button when already floating
     connect(dock, &QDockWidget::topLevelChanged, titleBar, &ODockTitleBar::setFloating);
 
-    // Close: hide the dock (re-open via Window menu)
-    connect(titleBar, &ODockTitleBar::closeRequested, dock, [dock]() { dock->setVisible(false); });
+    // Close: hide the dock (re-open via Window menu). Re-sync the visibility
+    // booleans — a title-bar close does not emit the toggle action's triggered.
+    connect(titleBar, &ODockTitleBar::closeRequested, this,
+            [this, dock]()
+            {
+                dock->setVisible(false);
+                syncVisibilityFromDocks();
+            });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -240,9 +246,9 @@ void ODockManager::captureEditorDockState()
 //---------------------------------------------------------------------------------------------------------------------
 void ODockManager::restoreEditorDockState()
 {
-    if (!m_editorDockState.isEmpty())
+    if (!m_editorDockState.isEmpty() && !m_host->restoreState(m_editorDockState, kToolbarStateVersion))
     {
-        m_host->restoreState(m_editorDockState, kToolbarStateVersion);
+        qWarning() << "ODockManager: failed to restore editor dock state";
     }
 }
 
@@ -282,21 +288,24 @@ void ODockManager::restoreDockStateForMode(Draw mode)
     switch (mode)
     {
         case Draw::Calculation:
-            if (!m_drawModeDockState.isEmpty())
+            if (!m_drawModeDockState.isEmpty() &&
+                !m_host->restoreState(m_drawModeDockState, kToolbarStateVersion))
             {
-                m_host->restoreState(m_drawModeDockState, kToolbarStateVersion);
+                qWarning() << "ODockManager: failed to restore Draw dock state";
             }
             break;
         case Draw::Modeling:
-            if (!m_detailsModeDockState.isEmpty())
+            if (!m_detailsModeDockState.isEmpty() &&
+                !m_host->restoreState(m_detailsModeDockState, kToolbarStateVersion))
             {
-                m_host->restoreState(m_detailsModeDockState, kToolbarStateVersion);
+                qWarning() << "ODockManager: failed to restore Details dock state";
             }
             break;
         case Draw::Layout:
-            if (!m_layoutModeDockState.isEmpty())
+            if (!m_layoutModeDockState.isEmpty() &&
+                !m_host->restoreState(m_layoutModeDockState, kToolbarStateVersion))
             {
-                m_host->restoreState(m_layoutModeDockState, kToolbarStateVersion);
+                qWarning() << "ODockManager: failed to restore Layout dock state";
             }
             break;
     }
@@ -305,6 +314,12 @@ void ODockManager::restoreDockStateForMode(Draw mode)
 //---------------------------------------------------------------------------------------------------------------------
 void ODockManager::applyModeDocks(Draw mode)
 {
+    // init() must have run (it creates the stacks + toggle actions).
+    if (m_optionsStack == nullptr || m_groupsStack == nullptr || m_actionOptions == nullptr)
+    {
+        return;
+    }
+
     switch (mode)
     {
         case Draw::Calculation:
@@ -349,6 +364,7 @@ void ODockManager::applyModeDocks(Draw mode)
             m_ui->dockWidgetDependencies->setVisible(false);
             m_actionOptions->setDisabled(true);
             m_actionGroups->setDisabled(true);
+            m_actionMessages->setDisabled(true);
             m_actionBackgroundImages->setDisabled(true);
             m_actionDependencies->setDisabled(true);
             break;
@@ -396,78 +412,6 @@ QAction *ODockManager::actionBackgroundImages() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-QAction *ODockManager::actionDependencies() const
-{
-    return m_actionDependencies;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-QAction *ODockManager::actionMessages() const
-{
-    return m_actionMessages;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-bool ODockManager::groupsActive() const
-{
-    return m_groupsActive;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-bool ODockManager::optionsActive() const
-{
-    return m_optionsActive;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-bool ODockManager::patternMessagesActive() const
-{
-    return m_patternMessagesActive;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-bool ODockManager::backgroundImagesActive() const
-{
-    return m_backgroundImagesActive;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-bool ODockManager::dependenciesActive() const
-{
-    return m_dependenciesActive;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODockManager::setGroupsActive(bool active)
-{
-    m_groupsActive = active;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODockManager::setOptionsActive(bool active)
-{
-    m_optionsActive = active;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODockManager::setPatternMessagesActive(bool active)
-{
-    m_patternMessagesActive = active;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODockManager::setBackgroundImagesActive(bool active)
-{
-    m_backgroundImagesActive = active;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODockManager::setDependenciesActive(bool active)
-{
-    m_dependenciesActive = active;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 QByteArray ODockManager::editorDockState() const
 {
     return m_editorDockState;
@@ -489,12 +433,6 @@ QByteArray ODockManager::detailsModeDockState() const
 QByteArray ODockManager::layoutModeDockState() const
 {
     return m_layoutModeDockState;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODockManager::setEditorDockState(const QByteArray &state)
-{
-    m_editorDockState = state;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

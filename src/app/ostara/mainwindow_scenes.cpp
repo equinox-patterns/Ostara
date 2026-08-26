@@ -142,10 +142,6 @@ auto MainWindow::switchScene(Draw mode, const QVector<DetailForLayout> &details)
             currentScene = m_sceneDraw;
             ui->view->setScene(currentScene);
             RestoreCurrentScene();
-            // Scale-dependent item state (e.g. label visibility) lives in RefreshScale(), not paint().
-            // It is not refreshed while a scene is inactive, so re-run the dispatch now that the scene is
-            // shown and the view transform is valid; otherwise stale state lingers until the next zoom.
-            ScaleChanged(ui->view->transform().m11());
             VAbstractValApplication::VApp()->SetDrawMode(Draw::Calculation);
             m_comboBoxDraws->setCurrentIndex(m_currentDrawIndex); // restore current pattern piece
             m_drawMode = true;
@@ -166,7 +162,6 @@ auto MainWindow::switchScene(Draw mode, const QVector<DetailForLayout> &details)
             emit ui->view->itemClicked(nullptr);
             ui->view->setScene(currentScene);
             RestoreCurrentScene();
-            ScaleChanged(ui->view->transform().m11());
             VAbstractValApplication::VApp()->SetDrawMode(Draw::Modeling);
             SetEnableTool(true);
             m_drawToolBar->SetMode(Draw::Modeling);

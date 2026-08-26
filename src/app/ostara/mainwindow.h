@@ -43,8 +43,6 @@ namespace Ui
 class MainWindow;
 }
 
-class VToolOptionsPropertyBrowser;
-class ODetailsPropertyBrowser;
 class VMeasurements;
 class QFileSystemWatcher;
 class QLabel;
@@ -54,16 +52,12 @@ class DialogHistory;
 class DialogFinalMeasurements;
 class OInfoBlockWindow;
 class ODockManager;
-class VWidgetGroups;
-class VWidgetDetails;
-class VWidgetDependencies;
 class QToolButton;
 class QProgressBar;
 class WatermarkWindow;
 class Quuid;
 class VBackgroundImageItem;
 class VBackgroundImageControls;
-class VWidgetBackgroundImages;
 class DrawToolBar;
 class TopBar;
 class BreadcrumbBar;

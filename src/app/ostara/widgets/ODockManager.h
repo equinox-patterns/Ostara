@@ -30,7 +30,6 @@
 #define ODOCKMANAGER_H
 
 #include <QByteArray>
-#include <QHash>
 #include <QObject>
 
 #include "def.h"
@@ -38,7 +37,6 @@
 class QAction;
 class QDockWidget;
 class QMainWindow;
-class ODockTitleBar;
 class QStackedWidget;
 class VToolOptionsPropertyBrowser;
 class ODetailsPropertyBrowser;
@@ -75,7 +73,7 @@ public:
      */
     void init(VContainer *pattern, VPattern *doc);
 
-    // ── Content widgets (owned by the manager) ──
+    // ── Content widgets (created by the manager; owned by the dock tree) ──
 
     VToolOptionsPropertyBrowser *toolOptions() const;
     ODetailsPropertyBrowser *detailsOptions() const;
@@ -120,22 +118,9 @@ public:
     QAction *actionOptions() const;
     QAction *actionGroups() const;
     QAction *actionBackgroundImages() const;
-    QAction *actionDependencies() const;
-    QAction *actionMessages() const;
 
-    // ── Dock visibility booleans ──
-
-    bool groupsActive() const;
-    bool optionsActive() const;
-    bool patternMessagesActive() const;
-    bool backgroundImagesActive() const;
-    bool dependenciesActive() const;
-
-    void setGroupsActive(bool active);
-    void setOptionsActive(bool active);
-    void setPatternMessagesActive(bool active);
-    void setBackgroundImagesActive(bool active);
-    void setDependenciesActive(bool active);
+    // Dock visibility booleans are internal; per-mode visibility persists via
+    // the per-mode dock layouts (saveState/restoreState).
 
     // ── Per-mode + editor dock layouts ──
 
@@ -144,7 +129,6 @@ public:
     QByteArray detailsModeDockState() const;
     QByteArray layoutModeDockState() const;
 
-    void setEditorDockState(const QByteArray &state);
     void setDrawModeDockState(const QByteArray &state);
     void setDetailsModeDockState(const QByteArray &state);
     void setLayoutModeDockState(const QByteArray &state);
@@ -183,8 +167,6 @@ private:
 
     QStackedWidget *m_optionsStack{nullptr};
     QStackedWidget *m_groupsStack{nullptr};
-
-    QHash<QDockWidget *, ODockTitleBar *> m_titleBars{};
 };
 
 #endif // ODOCKMANAGER_H
