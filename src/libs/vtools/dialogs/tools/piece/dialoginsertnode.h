@@ -26,6 +26,8 @@
  **
  *************************************************************************/
 
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+
 #ifndef DIALOGINSERTNODE_H
 #define DIALOGINSERTNODE_H
 
@@ -62,29 +64,22 @@ public slots:
 protected:
     auto IsValid() const -> bool override;
 
-private slots:
-    void ShowContextMenu(const QPoint &pos);
-    void NodeSelected();
-    void NodeNumberChanged(int val);
-
 private:
     Q_DISABLE_COPY_MOVE(DialogInsertNode) // NOLINT
     Ui::DialogInsertNode *ui;
 
     QVector<VPieceNode> m_nodes{};
-    bool m_flagNodes{false};
     bool m_flagError{false};
 
-    QMap<quint32, int> nodeNumbers{};
-
     void CheckPieces();
-    void CheckNodes();
 };
 
 //---------------------------------------------------------------------------------------------------------------------
 inline auto DialogInsertNode::IsValid() const -> bool
 {
-    return m_flagNodes && m_flagError;
+    // The dialog only opens with a non-empty node selection (ShowDialog), so
+    // the piece selection is the only remaining gate.
+    return m_flagError;
 }
 
 #endif // DIALOGINSERTNODE_H

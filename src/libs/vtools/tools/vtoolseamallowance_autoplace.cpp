@@ -232,6 +232,118 @@ auto IsCollinearWith(const QPointF &a, const QPointF &b, const QPointF &p) -> bo
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+// The maximal contiguous run of path point nodes around `anchorIndex` that lie
+// on the straight line through (lineA, lineB). The anchor itself is included.
+// Stops at the first non-point node or at a point not collinear with the line;
+// the path is cyclic, so the run wraps.
+auto BuildStraightRun(const QVector<VPieceNode> &path, int anchorIndex, const QPointF &lineA,
+                      const QPointF &lineB, VContainer *data, VAbstractPattern *doc) -> QVector<int>
+{
+    QVector<int> run;
+    if (path.isEmpty())
+    {
+        return run;
+    }
+    const int size = static_cast<int>(path.size());
+
+    // Backward from the anchor (inclusive).
+    int i = anchorIndex;
+    while (true)
+    {
+        const int idx = (i + size) % size;
+        if (run.contains(idx))
+        {
+            break;
+        }
+        const VPieceNode &node = path.at(idx);
+        if (node.GetTypeTool() != Tool::NodePoint)
+        {
+            break;
+        }
+        const QPointF p = PointCoordinates(NodeObjectId(node, data, doc), data);
+        if (p.isNull() || not IsCollinearWith(lineA, lineB, p))
+        {
+            break;
+        }
+        run.prepend(idx);
+        i = idx - 1;
+    }
+
+    // Forward from the anchor (exclusive).
+    i = anchorIndex + 1;
+    while (true)
+    {
+        const int idx = (i + size) % size;
+        if (run.contains(idx))
+        {
+            break;
+        }
+        const VPieceNode &node = path.at(idx);
+        if (node.GetTypeTool() != Tool::NodePoint)
+        {
+            break;
+        }
+        const QPointF p = PointCoordinates(NodeObjectId(node, data, doc), data);
+        if (p.isNull() || not IsCollinearWith(lineA, lineB, p))
+        {
+            break;
+        }
+        run.append(idx);
+        i = idx + 1;
+    }
+
+    return run;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// The insertion index for `point` on a straight `run` of path indices, by its
+// parametric position along the run: before the first point, between two
+// consecutive points, or after the last. Returns -1 if the run is too small to
+// define a line.
+auto PlaceInRun(const QVector<VPieceNode> &path, const QVector<int> &run, const QPointF &point,
+                VContainer *data, VAbstractPattern *doc) -> int
+{
+    if (run.size() < 2)
+    {
+        return -1;
+    }
+
+    const QPointF first = PointCoordinates(NodeObjectId(path.at(run.first()), data, doc), data);
+    const QPointF last = PointCoordinates(NodeObjectId(path.at(run.last()), data, doc), data);
+    if (first.isNull() || last.isNull())
+    {
+        return -1;
+    }
+
+    const qreal t = SegmentParametric(first, last, point);
+    if (t < 0.0)
+    {
+        return run.first(); // before the run
+    }
+    if (t > 1.0)
+    {
+        return run.last() + 1; // after the run
+    }
+
+    for (int i = 0; i < run.size() - 1; ++i)
+    {
+        const QPointF a = PointCoordinates(NodeObjectId(path.at(run.at(i)), data, doc), data);
+        const QPointF b = PointCoordinates(NodeObjectId(path.at(run.at(i + 1)), data, doc), data);
+        if (a.isNull() || b.isNull())
+        {
+            continue;
+        }
+        const qreal ti = SegmentParametric(a, b, point);
+        if (ti >= 0.0 && ti <= 1.0)
+        {
+            return run.at(i) + 1; // between the two points
+        }
+    }
+
+    return -1; // defensive: t in [0,1], no pair matched — fall back to the anchor logic
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 // The curve start/end coordinates for a curve object id.
 auto CurveEndPoints(quint32 curveObjectId, VContainer *data, QPointF &start, QPointF &end) -> bool
 {
@@ -386,6 +498,63 @@ auto FindGraphPlacement(const QVector<VPieceNode> &path, quint32 pointObjectId, 
         return false;
     }
 
+    // Geometric verification: the construction graph gives the anchor but not the
+    // order of collinear points along a straight edge. If the inserted point is
+    // collinear with a straight edge through an anchor, place it by its position
+    // along that edge's line (before/between/after the straight run).
+    const QPointF p = PointCoordinates(pointObjectId, data);
+    const int n = static_cast<int>(path.size());
+    if (not p.isNull())
+    {
+        for (const quint32 anchor : anchors)
+        {
+            const int aIdx = PathIndexByObjectId(path, anchor, data, doc);
+            if (aIdx < 0)
+            {
+                continue;
+            }
+            const QPointF a = PointCoordinates(anchor, data);
+            if (a.isNull())
+            {
+                continue;
+            }
+
+            // Place the point on a straight edge (neighbor → anchor) when it is
+            // collinear with that edge's line.
+            const auto tryPlaceOnEdge = [&](int neighborIdx) -> bool {
+                if (path.at(neighborIdx).GetTypeTool() != Tool::NodePoint)
+                {
+                    return false;
+                }
+                const QPointF b = PointCoordinates(NodeObjectId(path.at(neighborIdx), data, doc), data);
+                if (b.isNull() || not IsCollinearWith(a, b, p))
+                {
+                    return false;
+                }
+                const QVector<int> run = BuildStraightRun(path, aIdx, a, b, data, doc);
+                const int index = PlaceInRun(path, run, p, data, doc);
+                if (index < 0)
+                {
+                    return false;
+                }
+                placement.index = index;
+                placement.placed = true;
+                return true;
+            };
+
+            // Upstream edge: predecessor → anchor.
+            if (tryPlaceOnEdge((aIdx - 1 + n) % n))
+            {
+                return true;
+            }
+            // Downstream edge: anchor → successor.
+            if (tryPlaceOnEdge((aIdx + 1) % n))
+            {
+                return true;
+            }
+        }
+    }
+
     // Corner: two anchors joined by a straight edge (one is the other's successor).
     if (anchors.size() >= 2)
     {
@@ -406,7 +575,6 @@ auto FindGraphPlacement(const QVector<VPieceNode> &path, quint32 pointObjectId, 
             // along the line: a point on a line can sit beyond one endpoint.
             const QPointF a = PointCoordinates(anchor, data);
             const QPointF b = PointCoordinates(successorOrig, data);
-            const QPointF p = PointCoordinates(pointObjectId, data);
             if (not a.isNull() && not b.isNull() && not p.isNull() && IsCollinearWith(a, b, p))
             {
                 const qreal t = SegmentParametric(a, b, p);

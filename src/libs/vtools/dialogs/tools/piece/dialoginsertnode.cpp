@@ -26,14 +26,15 @@
  **
  *************************************************************************/
 
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+
 #include "dialoginsertnode.h"
 #include "themeDef.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vtools/tools/toolsdef.h"
 #include "../vtools/visualization/path/vistoolinsertnode.h"
+#include "../../../../vmisc/FactoryWidgets.h"
 #include "ui_dialoginsertnode.h"
-
-#include <QMenu>
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogInsertNode::DialogInsertNode(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent)
@@ -43,14 +44,13 @@ DialogInsertNode::DialogInsertNode(const VContainer *data, VAbstractPattern *doc
     ui->setupUi(this);
     InitOkCancel(ui);
 
+    // The piece combo comes from the WidgetFactory: styled dropdown (QListView),
+    // so the global QSS is respected (the native macOS popup ignores it).
+    ApplyComboBoxView(ui->comboBoxPiece);
+
     CheckPieces();
 
     connect(ui->comboBoxPiece, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this]() { CheckPieces(); });
-
-    connect(ui->listWidget, &QListWidget::customContextMenuRequested, this, &DialogInsertNode::ShowContextMenu);
-    connect(ui->listWidget, &QListWidget::itemSelectionChanged, this, &DialogInsertNode::NodeSelected);
-    connect(ui->spinBoxNodeNumber, QOverload<int>::of(&QSpinBox::valueChanged), this,
-            &DialogInsertNode::NodeNumberChanged);
 
     vis = new VisToolInsertNode(&this->data);
 }
@@ -103,16 +103,7 @@ void DialogInsertNode::SetPieceId(quint32 id)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogInsertNode::GetNodes() const -> QVector<VPieceNode>
 {
-    QVector<VPieceNode> nodes;
-    for (qint32 i = 0; i < ui->listWidget->count(); ++i)
-    {
-        auto const node = qvariant_cast<VPieceNode>(ui->listWidget->item(i)->data(Qt::UserRole));
-        for (int n = 1; n <= nodeNumbers.value(node.GetId(), 1); ++n)
-        {
-            nodes.append(node);
-        }
-    }
-    return nodes;
+    return m_nodes;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -125,14 +116,8 @@ void DialogInsertNode::ShowDialog(bool click)
             return;
         }
 
-        for (auto &node : m_nodes)
-        {
-            NewNodeItem(ui->listWidget, node, false, false);
-        }
-
-        m_nodes.clear();
-
-        CheckNodes();
+        // No object list: the selection is already visible on the canvas (VisToolInsertNode).
+        CheckPieces();
 
         prepare = true;
         setModal(true);
@@ -222,64 +207,6 @@ void DialogInsertNode::ChosenObject(quint32 id, const SceneObject &type)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogInsertNode::ShowContextMenu(const QPoint &pos)
-{
-    const int row = ui->listWidget->currentRow();
-    if (ui->listWidget->count() == 0 || row == -1 || row >= ui->listWidget->count())
-    {
-        return;
-    }
-
-    QScopedPointer<QMenu> const menu(new QMenu());
-
-    QListWidgetItem  const*rowItem = ui->listWidget->item(row);
-    SCASSERT(rowItem != nullptr)
-
-    const QAction *actionDelete = menu->addAction(FromTheme(VThemeIcon::EditDelete), tr("Delete"));
-
-    QAction  const*selectedAction = menu->exec(ui->listWidget->viewport()->mapToGlobal(pos));
-    if (selectedAction == actionDelete)
-    {
-        delete rowItem;
-    }
-
-    CheckNodes();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogInsertNode::NodeSelected()
-{
-    QListWidgetItem  const*item = ui->listWidget->currentItem();
-
-    if (item == nullptr)
-    {
-        ui->spinBoxNodeNumber->setDisabled(true);
-        const QSignalBlocker blocker(ui->spinBoxNodeNumber);
-        ui->spinBoxNodeNumber->setValue(1);
-        return;
-    }
-
-    auto const node = qvariant_cast<VPieceNode>(item->data(Qt::UserRole));
-    ui->spinBoxNodeNumber->setEnabled(true);
-    const QSignalBlocker blocker(ui->spinBoxNodeNumber);
-    ui->spinBoxNodeNumber->setValue(nodeNumbers.value(node.GetId(), 1));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogInsertNode::NodeNumberChanged(int val)
-{
-    QListWidgetItem  const*item = ui->listWidget->currentItem();
-
-    if (item == nullptr)
-    {
-        return;
-    }
-
-    auto const node = qvariant_cast<VPieceNode>(item->data(Qt::UserRole));
-    nodeNumbers[node.GetId()] = val;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogInsertNode::CheckPieces()
 {
     QColor color;
@@ -297,9 +224,3 @@ void DialogInsertNode::CheckPieces()
     CheckState();
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void DialogInsertNode::CheckNodes()
-{
-    m_flagNodes = ui->listWidget->count() > 0;
-    CheckState();
-}

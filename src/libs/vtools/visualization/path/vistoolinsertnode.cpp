@@ -25,6 +25,9 @@
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
  *************************************************************************/
+
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+
 #include "vistoolinsertnode.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/scalesceneitems.h"
@@ -137,7 +140,7 @@ auto VisToolInsertNode::CreateNodeCurve(quint32 id, int &i) -> QGraphicsPathItem
     const QSharedPointer<VAbstractCurve> curve = GetData()->template GeometricObject<VAbstractCurve>(id);
 
     ++i;
-    VCurvePathItem *path = GetCurve(static_cast<quint32>(i), VColorRole::VisSupportColor2);
+    VCurvePathItem *path = GetCurve(static_cast<quint32>(i), VColorRole::ActivePointColor);
     DrawPath(path, curve->GetPath(), curve->DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
 
     return path;
@@ -149,7 +152,7 @@ auto VisToolInsertNode::CreateNodePoint(quint32 id, int &i) -> VScaledEllipse *
     const QSharedPointer<VPointF> p = GetData()->GeometricObject<VPointF>(id);
 
     ++i;
-    VScaledEllipse *point = GetPoint(static_cast<quint32>(i), VColorRole::VisSupportColor2);
+    VScaledEllipse *point = GetPoint(static_cast<quint32>(i), VColorRole::ActivePointColor);
     DrawPoint(point, static_cast<QPointF>(*p));
 
     return point;
