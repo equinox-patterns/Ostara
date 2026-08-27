@@ -257,14 +257,19 @@ private:
     auto PointIsOnCurve(quint32 pointId, quint32 curveId) const -> bool;
     auto CurveEntryPoint(quint32 curveId, QPointF &entry) const -> bool;
     auto ComputeReverseFromEntry(const QPointF &entry, quint32 curveId, bool &reverse) const -> bool;
+    auto ComputeReverseFromExit(quint32 exitPointId, quint32 curveId, bool &reverse) const -> bool;
+    auto CurvePointParam(quint32 curveId, quint32 pointId) const -> qreal;
     auto LastCurveReverse(quint32 curveId, bool &reverse) const -> bool;
     void AddCurveNode(quint32 id, Tool nodeTool);
     void AutoExtendCurve(quint32 pointId);
     void ApplyReverseToCurveRows(quint32 curveId, bool reverse);
     void ReconcilePendingReverse();
+    void ResolvePendingReverseFromExit(quint32 exitPointId);
+    auto CompleteClosingCurve(bool endpointsOnly) -> bool;
     void ShowSenseMessage();
 
     QSet<quint32> m_pendingReverseCurves{};
+    bool m_hasPrematureClosingCurve{false};
 
     void SetCurrentSABefore(const QString &formula);
     void SetCurrentSAAfter(const QString &formula);

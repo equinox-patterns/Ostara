@@ -27,6 +27,7 @@
  *************************************************************************/
 
 #include "vtoolseamallowance.h"
+#include "vtoolseamallowance_autoplace.h"
 #include "../dialogs/tools/piece/dialogduplicatedetail.h"
 #include "../dialogs/tools/piece/dialogseamallowance.h"
 #include "../ifc/exception/vexceptionwrongid.h"
@@ -729,8 +730,8 @@ void VToolSeamAllowance::RemoveWithConfirm(bool ask)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::InsertNodes(const QVector<VPieceNode> &nodes, quint32 pieceId, VMainGraphicsScene *scene,
-                                     VContainer *data, VAbstractPattern *doc)
+auto VToolSeamAllowance::InsertNodes(const QVector<VPieceNode> &nodes, quint32 pieceId, VMainGraphicsScene *scene,
+                                     VContainer *data, VAbstractPattern *doc) -> bool
 {
     SCASSERT(scene != nullptr)
     SCASSERT(data != nullptr)
@@ -738,7 +739,7 @@ void VToolSeamAllowance::InsertNodes(const QVector<VPieceNode> &nodes, quint32 p
 
     if (pieceId == NULL_ID || nodes.isEmpty())
     {
-        return;
+        return false;
     }
 
     VPiece oldDet;
@@ -748,30 +749,70 @@ void VToolSeamAllowance::InsertNodes(const QVector<VPieceNode> &nodes, quint32 p
     }
     catch (const VExceptionBadId &)
     {
-        return;
+        return false;
     }
 
     VPiece newDet = oldDet;
+    QVector<VPieceNode> path = newDet.GetPath().GetNodes();
 
+    // Seam allowance tool already initializated and can't init the node
+    auto *saTool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
+    SCASSERT(saTool != nullptr);
+
+    bool placedAny = false;
     for (auto node : nodes)
     {
+        // Auto-placement: find where this node goes in the current path.
+        VNodePlacement placement;
+        if (not ComputeNodePlacement(path, node, data, doc, placement))
+        {
+            continue; // not placeable: skip the node, never crash
+        }
+        placedAny = true;
+
+        if (node.GetTypeTool() != Tool::NodePoint)
+        {
+            node.SetReverse(placement.reverse); // whole curve: contour-imposed sense
+        }
+
         const quint32 id = PrepareNode(node, scene, doc, data);
         if (id == NULL_ID)
         {
-            return;
+            continue;
         }
-
         node.SetId(id);
-        newDet.GetPath().Append(node);
+        node.SetExcluded(false); // auto-included: the node is correctly placed
 
-        // Seam allowance tool already initializated and can't init the node
-        auto *saTool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
-        SCASSERT(saTool != nullptr);
-
+        qsizetype idx = placement.index;
+        if (idx < 0)
+        {
+            idx = 0;
+        }
+        if (idx > path.size())
+        {
+            idx = path.size();
+        }
+        path.insert(idx, node);
         InitNode(node, scene, saTool);
+
+        // A point that cuts a curve: also insert the curve portion after it.
+        if (placement.hasCurvePortion)
+        {
+            VPieceNode curve = placement.curvePortion;
+            const quint32 curveToolId = PrepareNode(curve, scene, doc, data);
+            if (curveToolId != NULL_ID)
+            {
+                curve.SetId(curveToolId);
+                curve.SetExcluded(false);
+                path.insert(idx + 1, curve);
+                InitNode(curve, scene, saTool);
+            }
+        }
     }
 
+    newDet.GetPath().SetNodes(path);
     VAbstractApplication::VApp()->getUndoStack()->push(new SavePieceOptions(oldDet, newDet, doc, pieceId));
+    return placedAny;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

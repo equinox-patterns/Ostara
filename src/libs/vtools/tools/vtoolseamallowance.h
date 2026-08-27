@@ -26,6 +26,8 @@
  **
  *************************************************************************/
 
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+
 #ifndef VTOOLSEAMALLOWANCE_H
 #define VTOOLSEAMALLOWANCE_H
 
@@ -113,8 +115,8 @@ public:
 
     void RemoveWithConfirm(bool ask);
 
-    static void InsertNodes(const QVector<VPieceNode> &nodes, quint32 pieceId, VMainGraphicsScene *scene,
-                            VContainer *data, VAbstractPattern *doc);
+    static auto InsertNodes(const QVector<VPieceNode> &nodes, quint32 pieceId, VMainGraphicsScene *scene,
+                            VContainer *data, VAbstractPattern *doc) -> bool;
 
     static void AddAttributes(VAbstractPattern *doc, QDomElement &domElement, quint32 id, const VPiece &piece);
     static void AddCSARecord(VAbstractPattern *doc, QDomElement &domElement, CustomSARecord record);

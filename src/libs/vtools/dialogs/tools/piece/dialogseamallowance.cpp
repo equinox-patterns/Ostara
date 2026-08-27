@@ -378,6 +378,24 @@ void DialogSeamAllowance::ChosenObject(quint32 id, const SceneObject &type)
         return;
     }
 
+    // A prematurely auto-added closing curve: a new object either cuts it (a cut
+    // point on the closing portion — keep it and split it), or continues the
+    // contour elsewhere and the closing curve is dropped.
+    QListWidget *const mainList = uiTabPaths->listWidgetMainPath;
+    bool cuttingPremature = false;
+    VPieceNode prematureCurve;
+    if (m_hasPrematureClosingCurve && mainList->count() > 0
+        && RowNode(mainList, mainList->count() - 1).GetTypeTool() != Tool::NodePoint)
+    {
+        prematureCurve = RowNode(mainList, mainList->count() - 1);
+        cuttingPremature = type == SceneObject::Point && PointIsOnCurve(id, prematureCurve.GetId());
+        if (not cuttingPremature)
+        {
+            delete mainList->takeItem(mainList->count() - 1);
+            m_hasPrematureClosingCurve = false;
+        }
+    }
+
     const auto attachmentItems = m_doc->IsIsolated() ? QVector<QPair<quint32, quint32>>{}
                                                      : m_doc->GetAttachmentItemsForObject(id);
 
@@ -396,6 +414,22 @@ void DialogSeamAllowance::ChosenObject(quint32 id, const SceneObject &type)
                 case SceneObject::Point:
                     AutoExtendCurve(id);
                     NewMainPathItem(VPieceNode(id, Tool::NodePoint));
+                    ResolvePendingReverseFromExit(id);
+                    if (cuttingPremature)
+                    {
+                        // The point cuts the premature closing curve: split it by
+                        // adding a continuation curve node (same traversal sense).
+                        bool rev = false;
+                        LastCurveReverse(prematureCurve.GetId(), rev);
+                        NewMainPathItem(VPieceNode(prematureCurve.GetId(), prematureCurve.GetTypeTool(), rev));
+                        ValidObjects(MainPathIsValid());
+                        ListChanged();
+                        m_hasPrematureClosingCurve = true;
+                    }
+                    else
+                    {
+                        m_hasPrematureClosingCurve = CompleteClosingCurve(true);
+                    }
                     break;
                 case SceneObject::Spline:
                     AddCurveNode(id, Tool::NodeSpline);
@@ -425,12 +459,14 @@ void DialogSeamAllowance::ChosenObject(quint32 id, const SceneObject &type)
                 {
                     AutoExtendCurve(item.first);
                     NewMainPathItem(VPieceNode(item.first, nodeTool));
+                    ResolvePendingReverseFromExit(item.first);
                 }
                 else
                 {
                     AddCurveNode(item.first, nodeTool);
                 }
             }
+            m_hasPrematureClosingCurve = CompleteClosingCurve(true);
         }
     }
     else
@@ -481,6 +517,8 @@ void DialogSeamAllowance::ShowDialog(bool click)
 
         // The contour is complete: resolve the sense of curves whose entry was unknown.
         ReconcilePendingReverse();
+        // A straight closing edge that follows an already used curve completes the loop.
+        CompleteClosingCurve(false);
         if (not m_pendingReverseCurves.isEmpty())
         {
             ShowSenseMessage();

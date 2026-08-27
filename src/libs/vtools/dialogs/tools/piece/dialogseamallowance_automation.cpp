@@ -44,6 +44,10 @@
 #include "../vpatterndb/vpiecepath.h"
 #include "ui_tabpaths.h"
 
+#include <QLineF>
+
+#include <limits>
+
 namespace
 {
 
@@ -219,6 +223,71 @@ auto DialogSeamAllowance::ComputeReverseFromEntry(const QPointF &entry, quint32 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+// The sense of a curve whose ENTRY is an interior point is determined by its
+// EXIT (the next selected point): exit == curve start → reversed traversal,
+// exit == curve end → intrinsic traversal.
+auto DialogSeamAllowance::ComputeReverseFromExit(quint32 exitPointId, quint32 curveId, bool &reverse) const -> bool
+{
+    QPointF start, end;
+    if (not GetCurveEndPoints(curveId, start, end))
+    {
+        return false;
+    }
+    QPointF exit;
+    try
+    {
+        exit = data.GeometricObject<VPointF>(exitPointId)->toQPointF();
+    }
+    catch (const VExceptionBadId &)
+    {
+        return false;
+    }
+    if (SamePoint(exit, start))
+    {
+        reverse = true; // traversed toward the curve start
+        return true;
+    }
+    if (SamePoint(exit, end))
+    {
+        reverse = false; // traversed toward the curve end
+        return true;
+    }
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// The position (0..1) of a point along the curve's sampled points, or -1.
+auto DialogSeamAllowance::CurvePointParam(quint32 curveId, quint32 pointId) const -> qreal
+{
+    try
+    {
+        const QSharedPointer<VAbstractCurve> curve = data.GeometricObject<VAbstractCurve>(curveId);
+        const QPointF p = data.GeometricObject<VPointF>(pointId)->toQPointF();
+        const QVector<QPointF> pts = curve->GetPoints();
+        if (pts.size() < 2)
+        {
+            return -1.0;
+        }
+        int best = -1;
+        qreal bestDist = std::numeric_limits<qreal>::max();
+        for (int i = 0; i < pts.size(); ++i)
+        {
+            const qreal d = QLineF(pts.at(i), p).length();
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = i;
+            }
+        }
+        return best >= 0 ? qreal(best) / qreal(pts.size() - 1) : -1.0;
+    }
+    catch (const VExceptionBadId &)
+    {
+        return -1.0;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto DialogSeamAllowance::LastCurveReverse(quint32 curveId, bool &reverse) const -> bool
 {
     QListWidget *const list = uiTabPaths->listWidgetMainPath;
@@ -245,9 +314,15 @@ void DialogSeamAllowance::AddCurveNode(quint32 id, Tool nodeTool)
         if (not ComputeReverseFromEntry(entry, id, reverse))
         {
             // The entry is not an endpoint: either a continuation of an already selected
-            // curve (keep its sense) or a curve selected without enough point context.
+            // curve (keep its sense) or a new curve entered at an interior point.
             if (not LastCurveReverse(id, reverse))
             {
+                // An interior cut point as entry: a clockwise contour traverses the curve
+                // toward its start, so it is reversed by default. Kept pending so the exit
+                // point can correct it if the actual sense is different.
+                QListWidget *const list = uiTabPaths->listWidgetMainPath;
+                const VPieceNode prev = list->count() > 0 ? RowNode(list, list->count() - 1) : VPieceNode();
+                reverse = prev.GetTypeTool() == Tool::NodePoint && PointIsOnCurve(prev.GetId(), id);
                 m_pendingReverseCurves.insert(id);
                 ShowSenseMessage();
             }
@@ -355,6 +430,134 @@ void DialogSeamAllowance::ReconcilePendingReverse()
         ValidObjects(MainPathIsValid());
         ListChanged();
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogSeamAllowance::ResolvePendingReverseFromExit(quint32 exitPointId)
+{
+    if (m_pendingReverseCurves.isEmpty())
+    {
+        return;
+    }
+
+    QListWidget *const list = uiTabPaths->listWidgetMainPath;
+    const int count = list->count();
+    if (count < 3)
+    {
+        return; // need [entry point, curve, exit point]
+    }
+
+    const VPieceNode curve = RowNode(list, count - 2);
+    if (not IsCurveNode(curve) || not m_pendingReverseCurves.contains(curve.GetId()))
+    {
+        return;
+    }
+
+    // The exit must lie on the curve; the entry is the point before the curve node.
+    if (not PointIsOnCurve(exitPointId, curve.GetId()))
+    {
+        return;
+    }
+    const VPieceNode entry = RowNode(list, count - 3);
+    if (entry.GetTypeTool() != Tool::NodePoint)
+    {
+        return;
+    }
+
+    // The sense is imposed by the contour: reverse when the exit comes before the
+    // entry along the curve's intrinsic order (works for interior points too).
+    const qreal entryParam = CurvePointParam(curve.GetId(), entry.GetId());
+    const qreal exitParam = CurvePointParam(curve.GetId(), exitPointId);
+    if (entryParam < 0.0 || exitParam < 0.0)
+    {
+        return;
+    }
+
+    const bool reverse = exitParam < entryParam;
+    ApplyReverseToCurveRows(curve.GetId(), reverse);
+    m_pendingReverseCurves.remove(curve.GetId());
+    ValidObjects(MainPathIsValid());
+    ListChanged();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogSeamAllowance::CompleteClosingCurve(bool endpointsOnly) -> bool
+{
+    QListWidget *const list = uiTabPaths->listWidgetMainPath;
+    const int count = list->count();
+    if (count < 3)
+    {
+        return false;
+    }
+
+    // The closing edge (last → first) is straight only if both ends are point nodes.
+    const VPieceNode last = RowNode(list, count - 1);
+    const VPieceNode first = RowNode(list, 0);
+    if (last.GetTypeTool() != Tool::NodePoint || first.GetTypeTool() != Tool::NodePoint)
+    {
+        return false;
+    }
+
+    QPointF lastPt;
+    try
+    {
+        lastPt = data.GeometricObject<VPointF>(last.GetId())->toQPointF();
+    }
+    catch (const VExceptionBadId &)
+    {
+        return false;
+    }
+
+    // A curve of the path carrying one closing point completes the loop if it also
+    // carries the other: take its remaining portion.
+    for (int i = 0; i < count; ++i)
+    {
+        const VPieceNode &node = RowNode(list, i);
+        if (not IsCurveNode(node))
+        {
+            continue;
+        }
+        if (not PointIsOnCurve(last.GetId(), node.GetId()) || not PointIsOnCurve(first.GetId(), node.GetId()))
+        {
+            continue;
+        }
+
+        // During collection, only an ENDPOINT is a credible premature closing point:
+        // an interior point is a cut point and the curve continues through it.
+        if (endpointsOnly)
+        {
+            QPointF start, end;
+            if (not GetCurveEndPoints(node.GetId(), start, end))
+            {
+                continue;
+            }
+            if (not SamePoint(lastPt, start) && not SamePoint(lastPt, end))
+            {
+                continue;
+            }
+        }
+
+        // The closing edge is traversed from the last point toward the first.
+        bool reverse = false;
+        if (not ComputeReverseFromEntry(lastPt, node.GetId(), reverse))
+        {
+            if (not ComputeReverseFromExit(first.GetId(), node.GetId(), reverse))
+            {
+                // Interior closing points: inherit the traversal direction of the
+                // curve's already taken portions (the whole curve shares one sense).
+                if (not LastCurveReverse(node.GetId(), reverse))
+                {
+                    continue; // no known sense: keep the straight closing edge
+                }
+            }
+        }
+
+        NewMainPathItem(VPieceNode(node.GetId(), node.GetTypeTool(), reverse));
+        ValidObjects(MainPathIsValid());
+        ListChanged();
+        return true;
+    }
+    return false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

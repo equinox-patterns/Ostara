@@ -27,6 +27,8 @@
  **
  *************************************************************************/
 
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+
 #include "mainwindow.h"
 #include "widgets/BreadcrumbBar.h"
 #include "widgets/ODockManager.h"
@@ -797,7 +799,13 @@ void MainWindow::ClosedDialogInsertNode(int result)
     {
         const QPointer<DialogInsertNode> dTool = qobject_cast<DialogInsertNode *>(m_dialogTool);
         SCASSERT(not dTool.isNull())
-        VToolSeamAllowance::InsertNodes(dTool->GetNodes(), dTool->GetPieceId(), m_sceneDetails, pattern, doc);
+        const bool placed = VToolSeamAllowance::InsertNodes(dTool->GetNodes(), dTool->GetPieceId(), m_sceneDetails,
+                                                            pattern, doc);
+        if (not placed)
+        {
+            QMessageBox::information(this, tr("Insert node"),
+                                     tr("None of the selected nodes could be placed in the piece."));
+        }
     }
     ArrowTool(true);
     doc->LiteParseTree(Document::LiteParse);
