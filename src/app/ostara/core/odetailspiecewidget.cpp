@@ -53,6 +53,7 @@
 #include <QIcon>
 #include <QLabel>
 #include <QLineEdit>
+#include <QPointer>
 #include <QPushButton>
 #include <QSize>
 #include <QSpinBox>
@@ -325,15 +326,23 @@ void ODetailsPieceWidget::ConnectControls()
     // while CommitPending() is mid-flight (indexChanged fires synchronously during push).
     connect(VAbstractApplication::VApp()->getUndoStack(), &QUndoStack::indexChanged, this, [this](int)
     {
-        QTimer::singleShot(0, this, [this]()
+        // Snapshot the tool as a QPointer at schedule time (still valid here): if the
+        // tool is destroyed before the deferred lambda runs, the pointer auto-nulls.
+        const QPointer<VToolSeamAllowance> currentTool = m_currentTool;
+        QTimer::singleShot(0, this, [this, currentTool]()
         {
-            if (!m_currentTool)
+            if (!currentTool)
             {
                 return;
             }
-            const VPiece detail = m_currentTool->getData()->GetPiece(m_currentTool->getId());
+            if (not currentTool->getData()->DataPieces()->contains(currentTool->getId()))
+            {
+                // The piece was deleted: nothing to refresh.
+                return;
+            }
+            const VPiece detail = currentTool->getData()->GetPiece(currentTool->getId());
             m_pendingDet = detail;
-            m_grainlineWidget->Show(detail, m_currentTool->getData());
+            m_grainlineWidget->Show(detail, currentTool->getData());
             m_foldlineWidget->Show(detail);
             m_saWidget->RefreshList(detail);
         });

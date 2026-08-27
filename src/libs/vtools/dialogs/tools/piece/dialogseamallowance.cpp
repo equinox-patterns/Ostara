@@ -26,6 +26,8 @@
  **
  *************************************************************************/
 
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+
 #include "dialogseamallowance.h"
 #include "dialogseamallowance_helpers.h"
 #include "../../../tools/vtoolseamallowance.h"
@@ -376,12 +378,6 @@ void DialogSeamAllowance::ChosenObject(quint32 id, const SceneObject &type)
         return;
     }
 
-    bool reverse = false;
-    if (QGuiApplication::keyboardModifiers() == Qt::ShiftModifier)
-    {
-        reverse = true;
-    }
-
     const auto attachmentItems = m_doc->IsIsolated() ? QVector<QPair<quint32, quint32>>{}
                                                      : m_doc->GetAttachmentItemsForObject(id);
 
@@ -392,19 +388,20 @@ void DialogSeamAllowance::ChosenObject(quint32 id, const SceneObject &type)
             switch (type)
             {
                 case SceneObject::Arc:
-                    NewMainPathItem(VPieceNode(id, Tool::NodeArc, reverse));
+                    AddCurveNode(id, Tool::NodeArc);
                     break;
                 case SceneObject::ElArc:
-                    NewMainPathItem(VPieceNode(id, Tool::NodeElArc, reverse));
+                    AddCurveNode(id, Tool::NodeElArc);
                     break;
                 case SceneObject::Point:
+                    AutoExtendCurve(id);
                     NewMainPathItem(VPieceNode(id, Tool::NodePoint));
                     break;
                 case SceneObject::Spline:
-                    NewMainPathItem(VPieceNode(id, Tool::NodeSpline, reverse));
+                    AddCurveNode(id, Tool::NodeSpline);
                     break;
                 case SceneObject::SplinePath:
-                    NewMainPathItem(VPieceNode(id, Tool::NodeSplinePath, reverse));
+                    AddCurveNode(id, Tool::NodeSplinePath);
                     break;
                 case SceneObject::Line:
                 case SceneObject::Detail:
@@ -424,7 +421,15 @@ void DialogSeamAllowance::ChosenObject(quint32 id, const SceneObject &type)
                 {
                     continue;
                 }
-                NewMainPathItem(VPieceNode(item.first, nodeTool, item.first == id && reverse));
+                if (nodeTool == Tool::NodePoint)
+                {
+                    AutoExtendCurve(item.first);
+                    NewMainPathItem(VPieceNode(item.first, nodeTool));
+                }
+                else
+                {
+                    AddCurveNode(item.first, nodeTool);
+                }
             }
         }
     }
@@ -447,9 +452,8 @@ void DialogSeamAllowance::ChosenObject(quint32 id, const SceneObject &type)
 
         if (p.GetPath().CountNodes() == 1)
         {
-            emit ToolTip(tr("Select main path objects clockwise, <b>%1</b> - reverse direction curve, "
-                            "<b>%2</b> - finish creation")
-                             .arg(VModifierKey::Shift(), VModifierKey::EnterKey()));
+            emit ToolTip(tr("Select main path objects clockwise, <b>%1</b> - finish creation")
+                             .arg(VModifierKey::EnterKey()));
 
             if (not VAbstractValApplication::VApp()->getCurrentScene()->items().contains(visPath))
             {
@@ -474,6 +478,14 @@ void DialogSeamAllowance::ShowDialog(bool click)
     {
         emit ToolTip(QString());
         prepare = true;
+
+        // The contour is complete: resolve the sense of curves whose entry was unknown.
+        ReconcilePendingReverse();
+        if (not m_pendingReverseCurves.isEmpty())
+        {
+            ShowSenseMessage();
+        }
+        m_pendingReverseCurves.clear();
 
         if (not applyAllowed)
         {

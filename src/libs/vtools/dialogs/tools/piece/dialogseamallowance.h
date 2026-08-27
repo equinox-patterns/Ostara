@@ -26,8 +26,12 @@
  **
  *************************************************************************/
 
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+
 #ifndef DIALOGSEAMALLOWANCE_H
 #define DIALOGSEAMALLOWANCE_H
+
+#include <QSet>
 
 #include "../dialogtool.h"
 #include "../vgeometry/vplacelabelitem.h"
@@ -247,6 +251,20 @@ private:
     auto GetItemById(quint32 id) -> QListWidgetItem *;
 
     auto GetLastId() const -> quint32;
+
+    // ---- Curve sense automation (auto-reverse + cut point auto-extension) ----
+    auto GetCurveEndPoints(quint32 curveId, QPointF &start, QPointF &end) const -> bool;
+    auto PointIsOnCurve(quint32 pointId, quint32 curveId) const -> bool;
+    auto CurveEntryPoint(quint32 curveId, QPointF &entry) const -> bool;
+    auto ComputeReverseFromEntry(const QPointF &entry, quint32 curveId, bool &reverse) const -> bool;
+    auto LastCurveReverse(quint32 curveId, bool &reverse) const -> bool;
+    void AddCurveNode(quint32 id, Tool nodeTool);
+    void AutoExtendCurve(quint32 pointId);
+    void ApplyReverseToCurveRows(quint32 curveId, bool reverse);
+    void ReconcilePendingReverse();
+    void ShowSenseMessage();
+
+    QSet<quint32> m_pendingReverseCurves{};
 
     void SetCurrentSABefore(const QString &formula);
     void SetCurrentSAAfter(const QString &formula);
