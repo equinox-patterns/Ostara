@@ -874,7 +874,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
             {
                 QMessageBox::information(this, tr("Labels not supported"),
                     tr("This pattern contains Valentina labels. Ostara does not use them — this feature "
-                       "will be replaced by XX. Conversion is not automatic, your labels have not been "
+                       "will be replaced by Information block. Conversion is not automatic, your labels have not been "
                        "preserved. The original .val file remains intact."));
             }
         }

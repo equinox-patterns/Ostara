@@ -24,6 +24,7 @@
  **  You should have received a copy of the GNU General Public License
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
+ // Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
  *************************************************************************/
 
 #include "vabstractpattern.h"
@@ -847,6 +848,16 @@ void VAbstractPattern::SetNotes(const QString &text)
 auto VAbstractPattern::GetPatternName() const -> QString
 {
     return m_patternName;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetPatternName(const QString &name)
+{
+    CheckTagExists(TagPatternName);
+    setTagText(TagPatternName, name);
+    m_patternName = name;
+    modified = true;
+    emit patternChanged(false);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

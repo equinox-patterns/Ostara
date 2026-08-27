@@ -28,6 +28,7 @@
 
 #include "vtooloptionspropertybrowser.h"
 #include "vtoppb_templates.h"
+#include "opatternpropertieswidget.h"
 using namespace VtoppbConstants;
 #include "../qmuparser/qmudef.h"
 #include "../vgeometry/vcubicbezier.h"
@@ -111,6 +112,7 @@ using namespace VtoppbConstants;
 #include <QRegularExpression>
 #include <QScrollArea>
 #include <QPushButton>
+#include <QStackedWidget>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"
@@ -186,6 +188,13 @@ VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QWidget *parent)
 
     m_scroll = scroll;
 
+    m_stack = new QStackedWidget(parent);
+    m_stack->addWidget(m_scroll); // page 0: tool options
+
+    m_patternWidget = new OPatternPropertiesWidget(parent);
+    m_stack->addWidget(m_patternWidget); // page 1: pattern work fields (Draw empty state)
+    m_stack->setCurrentWidget(m_patternWidget);
+
     connect(m_PropertyModel, &VPE::VPropertyModel::onDataChangedByEditor, this,
             &VToolOptionsPropertyBrowser::userChangedData);
 }
@@ -193,7 +202,7 @@ VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QWidget *parent)
 //---------------------------------------------------------------------------------------------------------------------
 QWidget *VToolOptionsPropertyBrowser::widget() const
 {
-    return m_scroll;
+    return m_stack;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -204,6 +213,8 @@ void VToolOptionsPropertyBrowser::ClearPropertyBrowser()
     m_idToProperty.clear();
     m_currentItem = nullptr;
     m_currentObject = nullptr;
+    m_stack->setCurrentWidget(m_patternWidget);
+    m_patternWidget->Refresh();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -752,10 +763,12 @@ void VToolOptionsPropertyBrowser::itemClicked(QGraphicsItem *item)
     m_currentObject = dynamic_cast<QObject *>(m_currentItem);
     if (m_currentItem == nullptr)
     {
-        m_formView->setTitle(QString());
+        m_stack->setCurrentWidget(m_patternWidget);
+        m_patternWidget->Refresh();
         return;
     }
 
+    m_stack->setCurrentWidget(m_scroll);
     ShowItemOptions(m_currentItem);
 
     if (auto *newPoint = dynamic_cast<VScenePoint *>(m_currentItem))

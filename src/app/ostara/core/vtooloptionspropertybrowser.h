@@ -40,7 +40,9 @@
 class QDockWidget;
 class QGraphicsItem;
 class QScrollArea;
+class QStackedWidget;
 class VFormula;
+class OPatternPropertiesWidget;
 
 struct PropertyDesc;
 
@@ -52,8 +54,9 @@ public:
     explicit VToolOptionsPropertyBrowser(QWidget *parent);
     ~VToolOptionsPropertyBrowser() override = default;
 
-    /** @brief The scroll area the browser built its content into. Owned by the
-     *         dock's QStackedWidget — callers must not delete or reparent it. */
+    /** @brief The stacked widget the browser built its content into: page 0 is
+     *         the tool options form, page 1 the pattern work fields. Owned by
+     *         the dock's QStackedWidget — callers must not delete or reparent it. */
     QWidget *widget() const;
 
     void ClearPropertyBrowser();
@@ -83,6 +86,8 @@ private:
     VPE::VPropertyModel *m_PropertyModel{nullptr};
     VPE::VPropertyFormView *m_formView{nullptr};
     QScrollArea *m_scroll{nullptr};
+    QStackedWidget *m_stack{nullptr};
+    OPatternPropertiesWidget *m_patternWidget{nullptr};
 
     quint32 m_groupAttachmentId{};
 

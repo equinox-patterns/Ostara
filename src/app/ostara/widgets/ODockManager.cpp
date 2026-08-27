@@ -325,7 +325,7 @@ void ODockManager::applyModeDocks(Draw mode)
         case Draw::Calculation:
             m_ui->dockWidgetLayoutPages->setVisible(false);
             m_optionsStack->setCurrentIndex(0); // tool options
-            m_ui->dockWidgetOptions->setWindowTitle(tr("Tool options"));
+            m_ui->dockWidgetOptions->setWindowTitle(tr("Options"));
             m_ui->dockWidgetOptions->setVisible(m_optionsActive);
             m_groupsStack->setCurrentIndex(0); // Layers
             m_ui->dockWidgetGroups->setWindowTitle(tr("Layers"));
@@ -381,7 +381,7 @@ void ODockManager::retranslate()
         case Draw::Calculation:
             m_ui->dockWidgetGroups->setWindowTitle(tr("Layers"));
             m_ui->dockWidgetGroups->setToolTip(tr("Contains all layers"));
-            m_ui->dockWidgetOptions->setWindowTitle(tr("Tool options"));
+            m_ui->dockWidgetOptions->setWindowTitle(tr("Options"));
             break;
         case Draw::Modeling:
             m_ui->dockWidgetGroups->setWindowTitle(tr("Details"));

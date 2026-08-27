@@ -24,6 +24,7 @@
  **  You should have received a copy of the GNU General Public License
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
+ // Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
  *************************************************************************/
 
 #ifndef VABSTRACTPATTERN_H
@@ -191,6 +192,7 @@ public:
     void SetNotes(const QString &text);
 
     auto GetPatternName() const -> QString;
+    void SetPatternName(const QString &name);
 
     auto GetCompanyName() const -> QString;
 
