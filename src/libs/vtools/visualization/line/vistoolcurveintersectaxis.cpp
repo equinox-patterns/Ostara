@@ -26,6 +26,8 @@
  **
  *************************************************************************/
 
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+
 #include "vistoolcurveintersectaxis.h"
 
 #include <QColor>
@@ -120,6 +122,8 @@ void VisToolCurveIntersectAxis::DrawSegments(const VAbstractCurve *curve, const 
 {
     const qreal segLength = curve->GetLengthByPoint(p);
 
+    // The two cut segments keep their own colors (green/red) and stay solid:
+    // the line style belongs to the created axis only, not to the segments.
     switch (curve->getType())
     {
         case GOType::Spline:
@@ -137,8 +141,8 @@ void VisToolCurveIntersectAxis::DrawSegments(const VAbstractCurve *curve, const 
             sp1.SetApproximationScale(spl->GetApproximationScale());
             sp2.SetApproximationScale(spl->GetApproximationScale());
 
-            DrawPath(m_curve1, sp1.GetPath(), sp1.DirectionArrows(), LineStyle(), Qt::RoundCap);
-            DrawPath(m_curve2, sp2.GetPath(), sp2.DirectionArrows(), LineStyle(), Qt::RoundCap);
+            DrawPath(m_curve1, sp1.GetPath(), sp1.DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
+            DrawPath(m_curve2, sp2.GetPath(), sp2.DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
             break;
         }
         case GOType::SplinePath:
@@ -153,8 +157,8 @@ void VisToolCurveIntersectAxis::DrawSegments(const VAbstractCurve *curve, const 
             SCASSERT(spPath1 != nullptr)
             SCASSERT(spPath2 != nullptr)
 
-            DrawPath(m_curve1, spPath1->GetPath(), spPath1->DirectionArrows(), LineStyle(), Qt::RoundCap);
-            DrawPath(m_curve2, spPath2->GetPath(), spPath2->DirectionArrows(), LineStyle(), Qt::RoundCap);
+            DrawPath(m_curve1, spPath1->GetPath(), spPath1->DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
+            DrawPath(m_curve2, spPath2->GetPath(), spPath2->DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
 
             delete spPath1;
             delete spPath2;
@@ -166,8 +170,8 @@ void VisToolCurveIntersectAxis::DrawSegments(const VAbstractCurve *curve, const 
             VArc ar1;
             VArc ar2;
             arc->CutArc(segLength, &ar1, &ar2, QString());
-            DrawPath(m_curve1, ar1.GetPath(), ar1.DirectionArrows(), LineStyle(), Qt::RoundCap);
-            DrawPath(m_curve2, ar2.GetPath(), ar2.DirectionArrows(), LineStyle(), Qt::RoundCap);
+            DrawPath(m_curve1, ar1.GetPath(), ar1.DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
+            DrawPath(m_curve2, ar2.GetPath(), ar2.DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
             break;
         }
         case GOType::EllipticalArc:
@@ -176,8 +180,8 @@ void VisToolCurveIntersectAxis::DrawSegments(const VAbstractCurve *curve, const 
             VEllipticalArc ar1;
             VEllipticalArc ar2;
             arc->CutArc(segLength, &ar1, &ar2, QString());
-            DrawPath(m_curve1, ar1.GetPath(), ar1.DirectionArrows(), LineStyle(), Qt::RoundCap);
-            DrawPath(m_curve2, ar2.GetPath(), ar2.DirectionArrows(), LineStyle(), Qt::RoundCap);
+            DrawPath(m_curve1, ar1.GetPath(), ar1.DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
+            DrawPath(m_curve2, ar2.GetPath(), ar2.DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
             break;
         }
         case GOType::Point:
