@@ -37,6 +37,7 @@
 #include "../vgeometry/vplacelabelitem.h"
 #include "../vpatterndb/vpiece.h"
 #include "../vpatterndb/vpiecepath.h"
+#include "opieceautomation.h"
 
 namespace Ui
 {
@@ -252,24 +253,10 @@ private:
 
     auto GetLastId() const -> quint32;
 
-    // ---- Curve sense automation (auto-reverse + cut point auto-extension) ----
-    auto GetCurveEndPoints(quint32 curveId, QPointF &start, QPointF &end) const -> bool;
-    auto PointIsOnCurve(quint32 pointId, quint32 curveId) const -> bool;
-    auto CurveEntryPoint(quint32 curveId, QPointF &entry) const -> bool;
-    auto ComputeReverseFromEntry(const QPointF &entry, quint32 curveId, bool &reverse) const -> bool;
-    auto ComputeReverseFromExit(quint32 exitPointId, quint32 curveId, bool &reverse) const -> bool;
-    auto CurvePointParam(quint32 curveId, quint32 pointId) const -> qreal;
-    auto LastCurveReverse(quint32 curveId, bool &reverse) const -> bool;
-    void AddCurveNode(quint32 id, Tool nodeTool);
-    void AutoExtendCurve(quint32 pointId);
-    void ApplyReverseToCurveRows(quint32 curveId, bool reverse);
-    void ReconcilePendingReverse();
-    void ResolvePendingReverseFromExit(quint32 exitPointId);
-    auto CompleteClosingCurve(bool endpointsOnly) -> bool;
-    void ShowSenseMessage();
+    void SyncMainPathWidget();
 
-    QSet<quint32> m_pendingReverseCurves{};
-    bool m_hasPrematureClosingCurve{false};
+    // ---- Curve sense automation lives in the shared OPieceAutomation module ----
+    OPieceAutomation m_automation{&data};
 
     void SetCurrentSABefore(const QString &formula);
     void SetCurrentSAAfter(const QString &formula);

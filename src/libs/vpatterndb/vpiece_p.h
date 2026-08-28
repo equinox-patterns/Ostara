@@ -25,6 +25,7 @@
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
  *************************************************************************/
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
 
 #ifndef VPIECE_P_H
 #define VPIECE_P_H
@@ -79,6 +80,20 @@ public:
     int m_gradedAlignH{2}; // NOLINT(misc-non-private-member-variables-in-classes)
     /** @brief Graded alignment: vertical (1=top, 2=center, 3=bottom). */
     int m_gradedAlignV{2}; // NOLINT(misc-non-private-member-variables-in-classes)
+
+    /** @brief Piece number displayed on the cartouche (0 = none). */
+    uint m_pieceNumber{0}; // NOLINT(misc-non-private-member-variables-in-classes)
+
+    /** @brief Cut quantities and fold flags per fabric layer (cartouche). */
+    int m_cutFabricQty{0};       // NOLINT(misc-non-private-member-variables-in-classes)
+    bool m_cutFabricOnFold{false};       // NOLINT(misc-non-private-member-variables-in-classes)
+    int m_cutInterfacingQty{0};  // NOLINT(misc-non-private-member-variables-in-classes)
+    bool m_cutInterfacingOnFold{false};  // NOLINT(misc-non-private-member-variables-in-classes)
+    int m_cutLiningQty{0};       // NOLINT(misc-non-private-member-variables-in-classes)
+    bool m_cutLiningOnFold{false};       // NOLINT(misc-non-private-member-variables-in-classes)
+
+    /** @brief Free text shown on the cartouche (piece level). */
+    QString m_freeText{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     quint32 m_mirrorLineStartPoint{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
     quint32 m_mirrorLineEndPoint{NULL_ID};   // NOLINT(misc-non-private-member-variables-in-classes)

@@ -95,6 +95,7 @@
 #include "../vtools/dialogs/tools/piece/dialogpiecepath.h"
 #include "../vtools/dialogs/tools/piece/dialogpin.h"
 #include "../vtools/dialogs/tools/piece/dialogseamallowance.h"
+#include "opiecedialog.h"
 
 // VTool headers (one per tool)
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
@@ -493,10 +494,8 @@ void MainWindow::ToolPointOfContact(bool checked)
 void MainWindow::ToolDetail(bool checked)
 {
     ToolSelectAllDrawObjects();
-    SetToolButtonWithApply<DialogSeamAllowance>(checked, Tool::Piece, QStringLiteral("new_detail_cursor.png"),
-                                                tr("Select main path objects clockwise."),
-                                                &MainWindow::ClosedDetailsDialogWithApply<VToolSeamAllowance>,
-                                                &MainWindow::ApplyDetailsDialog<VToolSeamAllowance>);
+    SetToolButton<OPieceDialog>(checked, Tool::Piece, QStringLiteral("new_detail_cursor.png"),
+                                tr("Select main path objects clockwise."), &MainWindow::ClosedPieceDialog);
     LogPatternToolUsed(checked, QStringLiteral("Piece tool"));
 }
 
@@ -1331,6 +1330,79 @@ void MainWindow::ClosedCurveDialog(int result)
     {
         emit ui->view->itemClicked(tool);
         tool->setFocus();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ClosedPieceDialog closes the two-step piece creation dialog and creates the piece.
+ * @param result dialog result.
+ */
+void MainWindow::ClosedPieceDialog(int result)
+{
+    SCASSERT(not m_dialogTool.isNull())
+    if (result == QDialog::Accepted)
+    {
+        // Pieces are final details: create them in the Details scene, like the legacy
+        // ClosedDetailsDialogWithApply did.
+        ApplyPieceDialog(m_sceneDetails);
+    }
+    // If before Cancel was used Apply we have an item.
+    auto *vtool = qobject_cast<VToolSeamAllowance *>(m_dialogTool->GetAssociatedTool()); // Don't check for nullptr here
+    if (m_dialogTool->GetAssociatedTool() != nullptr)
+    {
+        SCASSERT(vtool != nullptr)
+        vtool->DialogLinkDestroy();
+        connect(vtool, &VToolSeamAllowance::ToolTip, this, &MainWindow::ShowToolTip);
+    }
+    ArrowTool(true);
+    ui->view->itemClicked(vtool); // Don't check for nullptr here
+    if (vtool)
+    {
+        vtool->setFocus();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ApplyPieceDialog creates the piece from the two-step dialog (OPieceDialog is
+ * an app class, so VToolSeamAllowance::Create(dialog,…) cannot see it — the app
+ * builds VToolSeamAllowanceInitData itself and calls Create(initData)).
+ * @param scene draw scene.
+ */
+void MainWindow::ApplyPieceDialog(VMainGraphicsScene *scene)
+{
+    SCASSERT(not m_dialogTool.isNull())
+
+    if (m_dialogTool->GetAssociatedTool() == nullptr)
+    {
+        SCASSERT(scene != nullptr)
+        auto *pieceDialog = qobject_cast<OPieceDialog *>(m_dialogTool.data());
+        SCASSERT(pieceDialog != nullptr)
+
+        VToolSeamAllowanceInitData initData;
+        initData.detail = pieceDialog->GetPiece();
+        initData.width = initData.detail.GetFormulaSAWidth();
+        initData.scene = scene;
+        initData.doc = doc;
+        initData.data = pattern;
+        initData.parse = Document::FullParse;
+        initData.typeCreation = Source::FromGui;
+
+        initData.detail.GetPath().SetNodes(VAbstractTool::PrepareNodes(initData.detail.GetPath(), scene, doc, pattern));
+
+        VToolSeamAllowance *piece = VToolSeamAllowance::Create(initData);
+        if (piece != nullptr)
+        {
+            m_dialogTool->SetAssociatedTool(piece);
+            piece->RefreshGeometry(true); // Refresh internal paths
+        }
+    }
+    else
+    {
+        auto *vtool = qobject_cast<VToolSeamAllowance *>(m_dialogTool->GetAssociatedTool());
+        SCASSERT(vtool != nullptr)
+        vtool->FullUpdateFromGuiApply();
     }
 }
 

@@ -127,6 +127,14 @@ void VPattern::ParseDetailElement(QDomElement &domElement, const Document &parse
         initData.detail.SetTrueZeroWidth(GetParametrBool(domElement, AttrTrueZeroWidth, falseStr));
         initData.detail.SetGradedAlignH(GetParametrInt(domElement, AttrGradedAlignH, QStringLiteral("2")));
         initData.detail.SetGradedAlignV(GetParametrInt(domElement, AttrGradedAlignV, QStringLiteral("2")));
+        initData.detail.SetPieceNumber(GetParametrUInt(domElement, AttrPieceNumber, QChar('0')));
+        initData.detail.SetCutFabricQty(GetParametrInt(domElement, AttrCutFabricQty, QStringLiteral("0")));
+        initData.detail.SetCutFabricOnFold(GetParametrBool(domElement, AttrCutFabricOnFold, falseStr));
+        initData.detail.SetCutInterfacingQty(GetParametrInt(domElement, AttrCutInterfacingQty, QStringLiteral("0")));
+        initData.detail.SetCutInterfacingOnFold(GetParametrBool(domElement, AttrCutInterfacingOnFold, falseStr));
+        initData.detail.SetCutLiningQty(GetParametrInt(domElement, AttrCutLiningQty, QStringLiteral("0")));
+        initData.detail.SetCutLiningOnFold(GetParametrBool(domElement, AttrCutLiningOnFold, falseStr));
+        initData.detail.SetFreeText(GetParametrEmptyString(domElement, AttrFreeText));
 
         initData.width = GetParametrString(domElement, AttrWidth, QStringLiteral("0.0"));
         const QString w = initData.width; // need for saving fixed formula;

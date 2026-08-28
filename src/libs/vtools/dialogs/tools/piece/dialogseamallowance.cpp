@@ -104,6 +104,13 @@ DialogSeamAllowance::DialogSeamAllowance(const VContainer *data, VAbstractPatter
 {
     ui->setupUi(this);
 
+    connect(&m_automation, &OPieceAutomation::ListChanged, this, [this]() {
+        SyncMainPathWidget();
+        ValidObjects(MainPathIsValid());
+    });
+    connect(&m_automation, &OPieceAutomation::ToolTipMessage, this,
+            [this](const QString &msg) { emit ToolTip(msg); });
+
     InitOkCancelApply(ui);
     InitFancyTabBar();
     EnableApply(applyAllowed);
@@ -199,6 +206,8 @@ void DialogSeamAllowance::SetPiece(const VPiece &piece)
     {
         NewMainPathItem(piece.GetPath().at(i));
     }
+    // Keep the shared automation in sync with the loaded path (edit mode).
+    m_automation.SetNodes(GetListInternals<VPieceNode>(uiTabPaths->listWidgetMainPath));
 
     uiTabPaths->checkBoxHideMainPath->setChecked(piece.IsHideMainPath());
     {
@@ -331,40 +340,6 @@ void DialogSeamAllowance::SetPiece(const VPiece &piece)
     ListChanged();
 }
 
-namespace
-{
-// Maps a SceneObject to its piece-node tool type; LAST_ONE_DO_NOT_USE means "not a piece object".
-auto NodeToolForSceneObject(const SceneObject &type) -> Tool
-{
-    switch (type)
-    {
-        case SceneObject::Arc: return Tool::NodeArc;
-        case SceneObject::ElArc: return Tool::NodeElArc;
-        case SceneObject::Point: return Tool::NodePoint;
-        case SceneObject::Spline: return Tool::NodeSpline;
-        case SceneObject::SplinePath: return Tool::NodeSplinePath;
-        default: return Tool::LAST_ONE_DO_NOT_USE;
-    }
-}
-
-// Resolves the SceneObject type of a drawing object from its tool id.
-auto SceneTypeForTool(vidtype toolId) -> SceneObject
-{
-    if (VDataTool *tool = VAbstractPattern::getTool(toolId); tool != nullptr)
-    {
-        if (auto *curve = qobject_cast<VToolAbstractCurve *>(tool))
-        {
-            return curve->GetSceneType();
-        }
-        if (qobject_cast<VAbstractPoint *>(tool))
-        {
-            return SceneObject::Point;
-        }
-    }
-    return SceneObject::Unknown;
-}
-} // namespace
-
 //---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief ChoosedObject gets id and type of selected object. Save right data and ignore wrong.
@@ -378,105 +353,11 @@ void DialogSeamAllowance::ChosenObject(quint32 id, const SceneObject &type)
         return;
     }
 
-    // A prematurely auto-added closing curve: a new object either cuts it (a cut
-    // point on the closing portion — keep it and split it), or continues the
-    // contour elsewhere and the closing curve is dropped.
-    QListWidget *const mainList = uiTabPaths->listWidgetMainPath;
-    bool cuttingPremature = false;
-    VPieceNode prematureCurve;
-    if (m_hasPrematureClosingCurve && mainList->count() > 0
-        && RowNode(mainList, mainList->count() - 1).GetTypeTool() != Tool::NodePoint)
-    {
-        prematureCurve = RowNode(mainList, mainList->count() - 1);
-        cuttingPremature = type == SceneObject::Point && PointIsOnCurve(id, prematureCurve.GetId());
-        if (not cuttingPremature)
-        {
-            delete mainList->takeItem(mainList->count() - 1);
-            m_hasPrematureClosingCurve = false;
-        }
-    }
+    const QVector<QPair<quint32, quint32>> attachmentItems =
+        m_doc->IsIsolated() ? QVector<QPair<quint32, quint32>>{} : m_doc->GetAttachmentItemsForObject(id);
 
-    const auto attachmentItems = m_doc->IsIsolated() ? QVector<QPair<quint32, quint32>>{}
-                                                     : m_doc->GetAttachmentItemsForObject(id);
-
-    if (id != GetLastId())
-    {
-        if (attachmentItems.isEmpty())
-        {
-            switch (type)
-            {
-                case SceneObject::Arc:
-                    AddCurveNode(id, Tool::NodeArc);
-                    break;
-                case SceneObject::ElArc:
-                    AddCurveNode(id, Tool::NodeElArc);
-                    break;
-                case SceneObject::Point:
-                    AutoExtendCurve(id);
-                    NewMainPathItem(VPieceNode(id, Tool::NodePoint));
-                    ResolvePendingReverseFromExit(id);
-                    if (cuttingPremature)
-                    {
-                        // The point cuts the premature closing curve: split it by
-                        // adding a continuation curve node (same traversal sense).
-                        bool rev = false;
-                        LastCurveReverse(prematureCurve.GetId(), rev);
-                        NewMainPathItem(VPieceNode(prematureCurve.GetId(), prematureCurve.GetTypeTool(), rev));
-                        ValidObjects(MainPathIsValid());
-                        ListChanged();
-                        m_hasPrematureClosingCurve = true;
-                    }
-                    else
-                    {
-                        m_hasPrematureClosingCurve = CompleteClosingCurve(true);
-                    }
-                    break;
-                case SceneObject::Spline:
-                    AddCurveNode(id, Tool::NodeSpline);
-                    break;
-                case SceneObject::SplinePath:
-                    AddCurveNode(id, Tool::NodeSplinePath);
-                    break;
-                case SceneObject::Line:
-                case SceneObject::Detail:
-                case SceneObject::Unknown:
-                default:
-                    qDebug() << "Got wrong scene object. Ignore.";
-                    break;
-            }
-        }
-        else
-        {
-            // The clicked object belongs to an attachment: add every member as a piece node.
-            for (const auto &item : attachmentItems)
-            {
-                const Tool nodeTool = NodeToolForSceneObject(SceneTypeForTool(item.second));
-                if (nodeTool == Tool::LAST_ONE_DO_NOT_USE)
-                {
-                    continue;
-                }
-                if (nodeTool == Tool::NodePoint)
-                {
-                    AutoExtendCurve(item.first);
-                    NewMainPathItem(VPieceNode(item.first, nodeTool));
-                    ResolvePendingReverseFromExit(item.first);
-                }
-                else
-                {
-                    AddCurveNode(item.first, nodeTool);
-                }
-            }
-            m_hasPrematureClosingCurve = CompleteClosingCurve(true);
-        }
-    }
-    else
-    {
-        if (uiTabPaths->listWidgetMainPath->count() > 1)
-        {
-            delete GetItemById(id);
-        }
-    }
-
+    m_automation.HandleObjectChosen(id, type, attachmentItems);
+    SyncMainPathWidget();
     ValidObjects(MainPathIsValid());
 
     if (not applyAllowed)
@@ -510,20 +391,21 @@ void DialogSeamAllowance::ChosenObject(quint32 id, const SceneObject &type)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSeamAllowance::ShowDialog(bool click)
 {
-    if (!click && uiTabPaths->listWidgetMainPath->count() > 0)
+    if (!click && m_automation.NodeCount() > 0)
     {
         emit ToolTip(QString());
         prepare = true;
 
         // The contour is complete: resolve the sense of curves whose entry was unknown.
-        ReconcilePendingReverse();
+        m_automation.ReconcilePendingReverse();
         // A straight closing edge that follows an already used curve completes the loop.
-        CompleteClosingCurve(false);
-        if (not m_pendingReverseCurves.isEmpty())
+        m_automation.CompleteClosingCurve(false);
+        if (not m_automation.PendingReverseCurves().isEmpty())
         {
-            ShowSenseMessage();
+            m_automation.ShowSenseMessage();
         }
-        m_pendingReverseCurves.clear();
+        m_automation.ClearPendingReverse();
+        SyncMainPathWidget();
 
         if (not applyAllowed)
         {
@@ -1472,6 +1354,17 @@ auto DialogSeamAllowance::CreatePiece() const -> VPiece
 void DialogSeamAllowance::NewMainPathItem(const VPieceNode &node)
 {
     NewNodeItem(uiTabPaths->listWidgetMainPath, node);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogSeamAllowance::SyncMainPathWidget()
+{
+    QListWidget *const list = uiTabPaths->listWidgetMainPath;
+    list->clear();
+    for (const auto &node : m_automation.Nodes())
+    {
+        NewMainPathItem(node);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2570,23 +2463,7 @@ auto DialogSeamAllowance::CurrentPlaceLabel(quint32 id) const -> VPlaceLabelItem
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogSeamAllowance::GetDefaultPieceName() const -> QString
 {
-    QList<VPiece> const pieces = data.DataPieces()->values();
-    QSet<QString> names;
-
-    for (const auto &piece : pieces)
-    {
-        names.insert(piece.GetName());
-    }
-
-    const QString defName = tr("Detail");
-    QString name = defName;
-    int i = 0;
-
-    while (names.contains(name))
-    {
-        name = defName + QStringLiteral("_%1").arg(++i);
-    }
-    return name;
+    return DefaultPieceName(&data);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

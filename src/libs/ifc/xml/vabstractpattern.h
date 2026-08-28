@@ -194,6 +194,32 @@ public:
     auto GetPatternName() const -> QString;
     void SetPatternName(const QString &name);
 
+    auto GetCustomer() const -> QString;
+    void SetCustomer(const QString &text);
+
+    auto GetCustomerBirthDate() const -> QString;
+    void SetCustomerBirthDate(const QString &text);
+
+    auto GetCustomerEmail() const -> QString;
+    void SetCustomerEmail(const QString &text);
+
+    auto GetCollection() const -> QString;
+    void SetCollection(const QString &text);
+
+    auto GetFabricInfo() const -> QString;
+    void SetFabricInfo(const QString &text);
+
+    /** @brief Pattern-level seed "activate seam allowances" applied to pieces created
+     *         afterwards. Defaults to true when the pattern attribute is absent. */
+    auto GetDefaultActivateSA() const -> bool;
+    void SetDefaultActivateSA(bool on);
+
+    /** @brief Pattern-level seed "hide main path" applied to pieces created afterwards.
+     *         Defaults to the application setting (IsHideMainPath) when the pattern
+     *         attribute is absent. */
+    auto GetDefaultHideMainPath() const -> bool;
+    void SetDefaultHideMainPath(bool on);
+
     auto GetCompanyName() const -> QString;
 
     auto GetPatternNumber() const -> QString;
@@ -322,6 +348,8 @@ public:
     static const QString TagCustomerName;
     static const QString TagCustomerBirthDate;
     static const QString TagCustomerEmail;
+    static const QString TagCollection;
+    static const QString TagFabricInfo;
     static const QString TagWatermark;
     static const QString TagFinalMeasurements;
     static const QString TagMaterial;
@@ -362,6 +390,8 @@ public:
     static const QString AttrCheckUniqueness;
     static const QString AttrManualPassmarkLength;
     static const QString AttrPassmarkLength;
+    static const QString AttrDefaultActivateSA;
+    static const QString AttrDefaultHideMainPath;
     static const QString AttrManualPassmarkWidth;
     static const QString AttrPassmarkWidth;
     static const QString AttrManualPassmarkAngle;

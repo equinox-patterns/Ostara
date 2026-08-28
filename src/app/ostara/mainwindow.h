@@ -240,6 +240,8 @@ private slots:
     void ClosedDialogPlaceLabel(int result);
     void ClosedCutCurveDialog(int result);
     void ClosedCurveDialog(int result);
+    void ClosedPieceDialog(int result);
+    void ApplyPieceDialog(VMainGraphicsScene *scene);
 
     // Ostara Measurement
     void OnLoadMeasurements();

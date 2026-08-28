@@ -25,6 +25,7 @@
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
  *************************************************************************/
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
 
 #ifndef VPIECE_H
 #define VPIECE_H
@@ -103,6 +104,27 @@ public:
     void SetGradedAlignH(int val);
     auto GetGradedAlignV() const -> int;
     void SetGradedAlignV(int val);
+
+    auto GetPieceNumber() const -> uint;
+    void SetPieceNumber(uint number);
+
+    auto GetCutFabricQty() const -> int;
+    void SetCutFabricQty(int qty);
+    auto IsCutFabricOnFold() const -> bool;
+    void SetCutFabricOnFold(bool on);
+
+    auto GetCutInterfacingQty() const -> int;
+    void SetCutInterfacingQty(int qty);
+    auto IsCutInterfacingOnFold() const -> bool;
+    void SetCutInterfacingOnFold(bool on);
+
+    auto GetCutLiningQty() const -> int;
+    void SetCutLiningQty(int qty);
+    auto IsCutLiningOnFold() const -> bool;
+    void SetCutLiningOnFold(bool on);
+
+    auto GetFreeText() const -> QString;
+    void SetFreeText(const QString &text);
 
     auto GetInternalPaths() const -> QVector<quint32>;
     auto GetInternalPaths() -> QVector<quint32> &;

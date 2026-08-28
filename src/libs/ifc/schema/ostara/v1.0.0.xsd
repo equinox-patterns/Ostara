@@ -17,6 +17,8 @@
         </xs:element>
         <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="notes" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="fabricInfo" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="collection" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="patternName" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="patternNumber" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="company" type="xs:string" minOccurs="0" maxOccurs="1"/>
@@ -812,6 +814,14 @@
                         <xs:attribute name="priority" type="piecePriorityType"/>
                         <xs:attribute name="gradedAlignH" type="xs:int"/>
                         <xs:attribute name="gradedAlignV" type="xs:int"/>
+                        <xs:attribute name="pieceNumber" type="xs:unsignedInt"/>
+                        <xs:attribute name="cutFabricQty" type="xs:int"/>
+                        <xs:attribute name="cutFabricOnFold" type="xs:boolean"/>
+                        <xs:attribute name="cutInterfacingQty" type="xs:int"/>
+                        <xs:attribute name="cutInterfacingOnFold" type="xs:boolean"/>
+                        <xs:attribute name="cutLiningQty" type="xs:int"/>
+                        <xs:attribute name="cutLiningOnFold" type="xs:boolean"/>
+                        <xs:attribute name="freeText" type="xs:string"/>
                         <xs:attribute name="gravity" type="layoutSideGravityType"/>
                         <xs:attribute name="cuttingTime" type="cuttingTime"/>
                         <xs:attribute name="nestTogethWithNext" type="xs:boolean"/>
@@ -872,6 +882,8 @@
       <xs:attribute name="labelPrefix" type="labelPrefixType"/>
       <xs:attribute name="passmarkLength" type="xs:string"/>
       <xs:attribute name="passmarkWidth" type="xs:string"/>
+      <xs:attribute name="defaultActivateSA" type="xs:boolean"/>
+      <xs:attribute name="defaultHideMainPath" type="xs:boolean"/>
     </xs:complexType>
     <xs:unique name="incrementName">
       <xs:selector xpath=".//increment"/>

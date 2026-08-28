@@ -25,6 +25,7 @@
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
  *************************************************************************/
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
 
 #include "vtoolseamallowance.h"
 #include "vtoolseamallowance_autoplace.h"
@@ -858,6 +859,22 @@ void VToolSeamAllowance::AddAttributes(VAbstractPattern *doc, QDomElement &domEl
                                      [](int val) noexcept { return val == 2; });
     doc->SetAttributeOrRemoveIf<int>(domElement, AttrGradedAlignV, piece.GetGradedAlignV(),
                                      [](int val) noexcept { return val == 2; });
+    doc->SetAttributeOrRemoveIf<uint>(domElement, AttrPieceNumber, piece.GetPieceNumber(),
+                                      [](uint number) noexcept { return number == 0; });
+    doc->SetAttributeOrRemoveIf<int>(domElement, AttrCutFabricQty, piece.GetCutFabricQty(),
+                                     [](int qty) noexcept { return qty == 0; });
+    doc->SetAttributeOrRemoveIf<bool>(domElement, AttrCutFabricOnFold, piece.IsCutFabricOnFold(),
+                                      [](bool on) noexcept { return not on; });
+    doc->SetAttributeOrRemoveIf<int>(domElement, AttrCutInterfacingQty, piece.GetCutInterfacingQty(),
+                                     [](int qty) noexcept { return qty == 0; });
+    doc->SetAttributeOrRemoveIf<bool>(domElement, AttrCutInterfacingOnFold, piece.IsCutInterfacingOnFold(),
+                                      [](bool on) noexcept { return not on; });
+    doc->SetAttributeOrRemoveIf<int>(domElement, AttrCutLiningQty, piece.GetCutLiningQty(),
+                                     [](int qty) noexcept { return qty == 0; });
+    doc->SetAttributeOrRemoveIf<bool>(domElement, AttrCutLiningOnFold, piece.IsCutLiningOnFold(),
+                                      [](bool on) noexcept { return not on; });
+    doc->SetAttributeOrRemoveIf<QString>(domElement, AttrFreeText, piece.GetFreeText(),
+                                         [](const QString &text) noexcept { return text.isEmpty(); });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

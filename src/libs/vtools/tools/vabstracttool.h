@@ -25,6 +25,7 @@
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
  *************************************************************************/
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
 
 #ifndef VABSTRACTTOOL_H
 #define VABSTRACTTOOL_H
@@ -115,6 +116,13 @@ public slots:
     virtual void AllowHover(bool enabled) = 0;
     virtual void AllowSelecting(bool enabled) = 0;
     virtual void ToolSelectionType(const SelectionType &selectionType);
+
+    /**
+     * @brief PrepareNodes convert scene objects of a piece path into piece nodes.
+     * Public so the app can build a piece from the new creation dialog (OPieceDialog).
+     */
+    static auto PrepareNodes(const VPiecePath &path, VMainGraphicsScene *scene, VAbstractPattern *doc, VContainer *data)
+        -> QVector<VPieceNode>;
 signals:
     /**
      * @brief toolhaveChange emit if tool create change that need save.
@@ -165,8 +173,6 @@ protected:
     static auto AddSANode(VAbstractPattern *doc, const QString &tagName, const VPieceNode &node) -> QDomElement;
     static void AddNode(VAbstractPattern *doc, QDomElement &domElement, const VPieceNode &node);
 
-    static auto PrepareNodes(const VPiecePath &path, VMainGraphicsScene *scene, VAbstractPattern *doc, VContainer *data)
-        -> QVector<VPieceNode>;
     static auto PrepareNode(const VPieceNode &node, VMainGraphicsScene *scene, VAbstractPattern *doc, VContainer *data)
         -> quint32;
 

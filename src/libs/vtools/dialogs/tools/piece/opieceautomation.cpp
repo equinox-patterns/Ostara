@@ -1,11 +1,13 @@
 /************************************************************************
  **
- **  @file   dialogseamallowance_automation.cpp
+ **  @file   opieceautomation.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
- **  @date   27 August, 2026
+ **  @date   28 August, 2026
  **
- **  @brief  Curve sense automation for the piece tool: auto-reverse of
- **          curves (clockwise contour) and cut point auto-extension.
+ **  @brief  Shared curve sense automation for the piece tool.
+ **          Migrated from DialogSeamAllowance (dialogseamallowance_automation.cpp)
+ **          so the legacy edit dialog and the new creation dialog share the
+ **          exact same behavior without duplication.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -25,9 +27,12 @@
  **
  *************************************************************************/
 
-#include "dialogseamallowance.h"
+#include "opieceautomation.h"
 
-#include "../../dialogtoolbox.h"
+#include "../../../tools/drawTools/toolcurve/vtoolabstractcurve.h"
+#include "../../../tools/drawTools/toolpoint/vabstractpoint.h"
+#include "../../../tools/vdatatool.h"
+#include "../../../../ifc/xml/vabstractpattern.h"
 #include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/varc.h"
 #include "../vgeometry/vcubicbezier.h"
@@ -38,12 +43,11 @@
 #include "../vgeometry/vpointf.h"
 #include "../vgeometry/vspline.h"
 #include "../vgeometry/vsplinepath.h"
-#include "../vmisc/def.h"
+#include "../vmisc/typedef.h"
 #include "../vpatterndb/vcontainer.h"
-#include "../vpatterndb/vpiecenode.h"
 #include "../vpatterndb/vpiecepath.h"
-#include "ui_tabpaths.h"
 
+#include <QDebug>
 #include <QLineF>
 
 #include <limits>
@@ -72,14 +76,55 @@ inline auto IsCurveNode(const VPieceNode &node) -> bool
     }
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+// Maps a SceneObject to its piece-node tool type; LAST_ONE_DO_NOT_USE means "not a piece object".
+auto NodeToolForSceneObject(const SceneObject &type) -> Tool
+{
+    switch (type)
+    {
+        case SceneObject::Arc: return Tool::NodeArc;
+        case SceneObject::ElArc: return Tool::NodeElArc;
+        case SceneObject::Point: return Tool::NodePoint;
+        case SceneObject::Spline: return Tool::NodeSpline;
+        case SceneObject::SplinePath: return Tool::NodeSplinePath;
+        default: return Tool::LAST_ONE_DO_NOT_USE;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// Resolves the SceneObject type of a drawing object from its tool id.
+auto SceneTypeForTool(vidtype toolId) -> SceneObject
+{
+    if (VDataTool *tool = VAbstractPattern::getTool(toolId); tool != nullptr)
+    {
+        if (auto *curve = qobject_cast<VToolAbstractCurve *>(tool))
+        {
+            return curve->GetSceneType();
+        }
+        if (qobject_cast<VAbstractPoint *>(tool))
+        {
+            return SceneObject::Point;
+        }
+    }
+    return SceneObject::Unknown;
+}
+
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogSeamAllowance::GetCurveEndPoints(quint32 curveId, QPointF &start, QPointF &end) const -> bool
+OPieceAutomation::OPieceAutomation(const VContainer *data, QObject *parent)
+  : QObject(parent),
+    m_data(data)
+{
+    SCASSERT(m_data != nullptr)
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceAutomation::GetCurveEndPoints(quint32 curveId, QPointF &start, QPointF &end) const -> bool
 {
     try
     {
-        const QSharedPointer<VGObject> obj = data.GetGObject(curveId);
+        const QSharedPointer<VGObject> obj = m_data->GetGObject(curveId);
 
         switch (obj->getType())
         {
@@ -136,12 +181,12 @@ auto DialogSeamAllowance::GetCurveEndPoints(quint32 curveId, QPointF &start, QPo
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogSeamAllowance::PointIsOnCurve(quint32 pointId, quint32 curveId) const -> bool
+auto OPieceAutomation::PointIsOnCurve(quint32 pointId, quint32 curveId) const -> bool
 {
     try
     {
-        const QSharedPointer<VPointF> point = data.GeometricObject<VPointF>(pointId);
-        const QSharedPointer<VGObject> obj = data.GetGObject(curveId);
+        const QSharedPointer<VPointF> point = m_data->GeometricObject<VPointF>(pointId);
+        const QSharedPointer<VGObject> obj = m_data->GetGObject(curveId);
         const QSharedPointer<VAbstractCurve> curve = qSharedPointerDynamicCast<VAbstractCurve>(obj);
         if (curve.isNull())
         {
@@ -156,21 +201,19 @@ auto DialogSeamAllowance::PointIsOnCurve(quint32 pointId, quint32 curveId) const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogSeamAllowance::CurveEntryPoint(quint32 curveId, QPointF &entry) const -> bool
+auto OPieceAutomation::CurveEntryPoint(quint32 curveId, QPointF &entry) const -> bool
 {
-    QListWidget *const list = uiTabPaths->listWidgetMainPath;
-    const int count = list->count();
-    if (count == 0)
+    if (m_nodes.isEmpty())
     {
         return false;
     }
 
-    const VPieceNode last = RowNode(list, count - 1);
+    const VPieceNode last = m_nodes.last();
     if (last.GetTypeTool() == Tool::NodePoint)
     {
         try
         {
-            const QSharedPointer<VPointF> point = data.GeometricObject<VPointF>(last.GetId());
+            const QSharedPointer<VPointF> point = m_data->GeometricObject<VPointF>(last.GetId());
             entry = point->toQPointF();
             return true;
         }
@@ -201,7 +244,7 @@ auto DialogSeamAllowance::CurveEntryPoint(quint32 curveId, QPointF &entry) const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogSeamAllowance::ComputeReverseFromEntry(const QPointF &entry, quint32 curveId, bool &reverse) const -> bool
+auto OPieceAutomation::ComputeReverseFromEntry(const QPointF &entry, quint32 curveId, bool &reverse) const -> bool
 {
     QPointF start, end;
     if (not GetCurveEndPoints(curveId, start, end))
@@ -226,7 +269,7 @@ auto DialogSeamAllowance::ComputeReverseFromEntry(const QPointF &entry, quint32 
 // The sense of a curve whose ENTRY is an interior point is determined by its
 // EXIT (the next selected point): exit == curve start → reversed traversal,
 // exit == curve end → intrinsic traversal.
-auto DialogSeamAllowance::ComputeReverseFromExit(quint32 exitPointId, quint32 curveId, bool &reverse) const -> bool
+auto OPieceAutomation::ComputeReverseFromExit(quint32 exitPointId, quint32 curveId, bool &reverse) const -> bool
 {
     QPointF start, end;
     if (not GetCurveEndPoints(curveId, start, end))
@@ -236,7 +279,7 @@ auto DialogSeamAllowance::ComputeReverseFromExit(quint32 exitPointId, quint32 cu
     QPointF exit;
     try
     {
-        exit = data.GeometricObject<VPointF>(exitPointId)->toQPointF();
+        exit = m_data->GeometricObject<VPointF>(exitPointId)->toQPointF();
     }
     catch (const VExceptionBadId &)
     {
@@ -257,12 +300,12 @@ auto DialogSeamAllowance::ComputeReverseFromExit(quint32 exitPointId, quint32 cu
 
 //---------------------------------------------------------------------------------------------------------------------
 // The position (0..1) of a point along the curve's sampled points, or -1.
-auto DialogSeamAllowance::CurvePointParam(quint32 curveId, quint32 pointId) const -> qreal
+auto OPieceAutomation::CurvePointParam(quint32 curveId, quint32 pointId) const -> qreal
 {
     try
     {
-        const QSharedPointer<VAbstractCurve> curve = data.GeometricObject<VAbstractCurve>(curveId);
-        const QPointF p = data.GeometricObject<VPointF>(pointId)->toQPointF();
+        const QSharedPointer<VAbstractCurve> curve = m_data->GeometricObject<VAbstractCurve>(curveId);
+        const QPointF p = m_data->GeometricObject<VPointF>(pointId)->toQPointF();
         const QVector<QPointF> pts = curve->GetPoints();
         if (pts.size() < 2)
         {
@@ -288,12 +331,11 @@ auto DialogSeamAllowance::CurvePointParam(quint32 curveId, quint32 pointId) cons
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogSeamAllowance::LastCurveReverse(quint32 curveId, bool &reverse) const -> bool
+auto OPieceAutomation::LastCurveReverse(quint32 curveId, bool &reverse) const -> bool
 {
-    QListWidget *const list = uiTabPaths->listWidgetMainPath;
-    for (int i = list->count() - 1; i >= 0; --i)
+    for (int i = static_cast<int>(m_nodes.size()) - 1; i >= 0; --i)
     {
-        const VPieceNode node = RowNode(list, i);
+        const VPieceNode node = m_nodes.at(i);
         if (IsCurveNode(node) && node.GetId() == curveId)
         {
             reverse = node.GetReverse();
@@ -304,7 +346,7 @@ auto DialogSeamAllowance::LastCurveReverse(quint32 curveId, bool &reverse) const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::AddCurveNode(quint32 id, Tool nodeTool)
+void OPieceAutomation::AddCurveNode(quint32 id, Tool nodeTool)
 {
     bool reverse = false;
     QPointF entry;
@@ -320,8 +362,7 @@ void DialogSeamAllowance::AddCurveNode(quint32 id, Tool nodeTool)
                 // An interior cut point as entry: a clockwise contour traverses the curve
                 // toward its start, so it is reversed by default. Kept pending so the exit
                 // point can correct it if the actual sense is different.
-                QListWidget *const list = uiTabPaths->listWidgetMainPath;
-                const VPieceNode prev = list->count() > 0 ? RowNode(list, list->count() - 1) : VPieceNode();
+                const VPieceNode prev = m_nodes.isEmpty() ? VPieceNode() : m_nodes.last();
                 reverse = prev.GetTypeTool() == Tool::NodePoint && PointIsOnCurve(prev.GetId(), id);
                 m_pendingReverseCurves.insert(id);
                 ShowSenseMessage();
@@ -335,27 +376,25 @@ void DialogSeamAllowance::AddCurveNode(quint32 id, Tool nodeTool)
         ShowSenseMessage();
     }
 
-    NewMainPathItem(VPieceNode(id, nodeTool, reverse));
+    AppendNode(VPieceNode(id, nodeTool, reverse));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::AutoExtendCurve(quint32 pointId)
+void OPieceAutomation::AutoExtendCurve(quint32 pointId)
 {
-    QListWidget *const list = uiTabPaths->listWidgetMainPath;
-    const int count = list->count();
     // Need the last point plus the curve node before it to detect a continuation.
-    if (count < 2)
+    if (m_nodes.size() < 2)
     {
         return;
     }
 
-    const VPieceNode last = RowNode(list, count - 1);
+    const VPieceNode last = m_nodes.last();
     if (last.GetTypeTool() != Tool::NodePoint)
     {
         return;
     }
 
-    const VPieceNode prev = RowNode(list, count - 2);
+    const VPieceNode prev = m_nodes.at(m_nodes.size() - 2);
     if (not IsCurveNode(prev))
     {
         return;
@@ -368,49 +407,37 @@ void DialogSeamAllowance::AutoExtendCurve(quint32 pointId)
 
     // The clicked point continues the curve: re-insert the curve node (same id, same
     // reverse) so the contour follows the curve through the cut point.
-    NewMainPathItem(prev);
+    AppendNode(prev);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::ApplyReverseToCurveRows(quint32 curveId, bool reverse)
+void OPieceAutomation::ApplyReverseToCurveRows(quint32 curveId, bool reverse)
 {
-    QListWidget *const list = uiTabPaths->listWidgetMainPath;
-    for (int i = 0; i < list->count(); ++i)
+    for (auto &node : m_nodes)
     {
-        QListWidgetItem *const item = list->item(i);
-        if (item == nullptr)
-        {
-            continue;
-        }
-
-        auto node = qvariant_cast<VPieceNode>(item->data(Qt::UserRole));
         if (IsCurveNode(node) && node.GetId() == curveId && node.GetReverse() != reverse)
         {
             node.SetReverse(reverse);
-            item->setData(Qt::UserRole, QVariant::fromValue(node));
-            item->setText(GetNodeName(&data, node, true));
         }
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::ReconcilePendingReverse()
+void OPieceAutomation::ReconcilePendingReverse()
 {
     if (m_pendingReverseCurves.isEmpty())
     {
         return;
     }
 
-    QListWidget *const list = uiTabPaths->listWidgetMainPath;
-    const int count = list->count();
     // The closure entry needs at least the first curve node plus one more node.
-    if (count < 2)
+    if (m_nodes.size() < 2)
     {
         return;
     }
 
     // The contour closes on itself: the last node is the entry of the first node.
-    const VPieceNode first = RowNode(list, 0);
+    const VPieceNode first = m_nodes.first();
     if (not IsCurveNode(first) || not m_pendingReverseCurves.contains(first.GetId()))
     {
         return;
@@ -427,27 +454,24 @@ void DialogSeamAllowance::ReconcilePendingReverse()
     {
         ApplyReverseToCurveRows(first.GetId(), reverse);
         m_pendingReverseCurves.remove(first.GetId());
-        ValidObjects(MainPathIsValid());
-        ListChanged();
+        emit ListChanged();
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::ResolvePendingReverseFromExit(quint32 exitPointId)
+void OPieceAutomation::ResolvePendingReverseFromExit(quint32 exitPointId)
 {
     if (m_pendingReverseCurves.isEmpty())
     {
         return;
     }
 
-    QListWidget *const list = uiTabPaths->listWidgetMainPath;
-    const int count = list->count();
-    if (count < 3)
+    if (m_nodes.size() < 3)
     {
         return; // need [entry point, curve, exit point]
     }
 
-    const VPieceNode curve = RowNode(list, count - 2);
+    const VPieceNode curve = m_nodes.at(m_nodes.size() - 2);
     if (not IsCurveNode(curve) || not m_pendingReverseCurves.contains(curve.GetId()))
     {
         return;
@@ -458,7 +482,7 @@ void DialogSeamAllowance::ResolvePendingReverseFromExit(quint32 exitPointId)
     {
         return;
     }
-    const VPieceNode entry = RowNode(list, count - 3);
+    const VPieceNode entry = m_nodes.at(m_nodes.size() - 3);
     if (entry.GetTypeTool() != Tool::NodePoint)
     {
         return;
@@ -476,23 +500,20 @@ void DialogSeamAllowance::ResolvePendingReverseFromExit(quint32 exitPointId)
     const bool reverse = exitParam < entryParam;
     ApplyReverseToCurveRows(curve.GetId(), reverse);
     m_pendingReverseCurves.remove(curve.GetId());
-    ValidObjects(MainPathIsValid());
-    ListChanged();
+    emit ListChanged();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogSeamAllowance::CompleteClosingCurve(bool endpointsOnly) -> bool
+auto OPieceAutomation::CompleteClosingCurve(bool endpointsOnly) -> bool
 {
-    QListWidget *const list = uiTabPaths->listWidgetMainPath;
-    const int count = list->count();
-    if (count < 3)
+    if (m_nodes.size() < 3)
     {
         return false;
     }
 
     // The closing edge (last → first) is straight only if both ends are point nodes.
-    const VPieceNode last = RowNode(list, count - 1);
-    const VPieceNode first = RowNode(list, 0);
+    const VPieceNode last = m_nodes.last();
+    const VPieceNode first = m_nodes.first();
     if (last.GetTypeTool() != Tool::NodePoint || first.GetTypeTool() != Tool::NodePoint)
     {
         return false;
@@ -501,7 +522,7 @@ auto DialogSeamAllowance::CompleteClosingCurve(bool endpointsOnly) -> bool
     QPointF lastPt;
     try
     {
-        lastPt = data.GeometricObject<VPointF>(last.GetId())->toQPointF();
+        lastPt = m_data->GeometricObject<VPointF>(last.GetId())->toQPointF();
     }
     catch (const VExceptionBadId &)
     {
@@ -510,9 +531,8 @@ auto DialogSeamAllowance::CompleteClosingCurve(bool endpointsOnly) -> bool
 
     // A curve of the path carrying one closing point completes the loop if it also
     // carries the other: take its remaining portion.
-    for (int i = 0; i < count; ++i)
+    for (const auto &node : m_nodes)
     {
-        const VPieceNode &node = RowNode(list, i);
         if (not IsCurveNode(node))
         {
             continue;
@@ -552,16 +572,194 @@ auto DialogSeamAllowance::CompleteClosingCurve(bool endpointsOnly) -> bool
             }
         }
 
-        NewMainPathItem(VPieceNode(node.GetId(), node.GetTypeTool(), reverse));
-        ValidObjects(MainPathIsValid());
-        ListChanged();
+        AppendNode(VPieceNode(node.GetId(), node.GetTypeTool(), reverse));
+        emit ListChanged();
         return true;
     }
     return false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogSeamAllowance::ShowSenseMessage()
+void OPieceAutomation::ShowSenseMessage()
 {
-    emit ToolTip(tr("Select at least two points of a curve to determine its direction"));
+    emit ToolTipMessage(tr("Select at least two points of a curve to determine its direction"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceAutomation::HandleObjectChosen(quint32 id, const SceneObject &type,
+                                          const QVector<QPair<quint32, quint32>> &attachmentItems)
+{
+    // A prematurely auto-added closing curve: a new object either cuts it (a cut
+    // point on the closing portion — keep it and split it), or continues the
+    // contour elsewhere and the closing curve is dropped.
+    bool cuttingPremature = false;
+    VPieceNode prematureCurve;
+    if (m_hasPrematureClosingCurve && not m_nodes.isEmpty() && m_nodes.last().GetTypeTool() != Tool::NodePoint)
+    {
+        prematureCurve = m_nodes.last();
+        cuttingPremature = type == SceneObject::Point && PointIsOnCurve(id, prematureCurve.GetId());
+        if (not cuttingPremature)
+        {
+            m_nodes.removeLast();
+            m_hasPrematureClosingCurve = false;
+        }
+    }
+
+    if (id != LastId())
+    {
+        if (attachmentItems.isEmpty())
+        {
+            switch (type)
+            {
+                case SceneObject::Arc:
+                    AddCurveNode(id, Tool::NodeArc);
+                    break;
+                case SceneObject::ElArc:
+                    AddCurveNode(id, Tool::NodeElArc);
+                    break;
+                case SceneObject::Point:
+                    AutoExtendCurve(id);
+                    AppendNode(VPieceNode(id, Tool::NodePoint));
+                    ResolvePendingReverseFromExit(id);
+                    if (cuttingPremature)
+                    {
+                        // The point cuts the premature closing curve: split it by
+                        // adding a continuation curve node (same traversal sense).
+                        bool rev = false;
+                        LastCurveReverse(prematureCurve.GetId(), rev);
+                        AppendNode(VPieceNode(prematureCurve.GetId(), prematureCurve.GetTypeTool(), rev));
+                        emit ListChanged();
+                        m_hasPrematureClosingCurve = true;
+                    }
+                    else
+                    {
+                        m_hasPrematureClosingCurve = CompleteClosingCurve(true);
+                    }
+                    break;
+                case SceneObject::Spline:
+                    AddCurveNode(id, Tool::NodeSpline);
+                    break;
+                case SceneObject::SplinePath:
+                    AddCurveNode(id, Tool::NodeSplinePath);
+                    break;
+                case SceneObject::Line:
+                case SceneObject::Detail:
+                case SceneObject::Unknown:
+                default:
+                    qDebug() << "Got wrong scene object. Ignore.";
+                    break;
+            }
+        }
+        else
+        {
+            // The clicked object belongs to an attachment: add every member as a piece node.
+            for (const auto &item : attachmentItems)
+            {
+                const Tool nodeTool = NodeToolForSceneObject(SceneTypeForTool(item.second));
+                if (nodeTool == Tool::LAST_ONE_DO_NOT_USE)
+                {
+                    continue;
+                }
+                if (nodeTool == Tool::NodePoint)
+                {
+                    AutoExtendCurve(item.first);
+                    AppendNode(VPieceNode(item.first, nodeTool));
+                    ResolvePendingReverseFromExit(item.first);
+                }
+                else
+                {
+                    AddCurveNode(item.first, nodeTool);
+                }
+            }
+            m_hasPrematureClosingCurve = CompleteClosingCurve(true);
+        }
+    }
+    else
+    {
+        if (m_nodes.size() > 1)
+        {
+            RemoveNodeById(id);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceAutomation::Nodes() const -> const QVector<VPieceNode> &
+{
+    return m_nodes;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceAutomation::SetNodes(const QVector<VPieceNode> &nodes)
+{
+    m_nodes = nodes;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceAutomation::LastId() const -> quint32
+{
+    return m_nodes.isEmpty() ? NULL_ID : m_nodes.last().GetId();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceAutomation::NodeCount() const -> int
+{
+    return static_cast<int>(m_nodes.size());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceAutomation::PendingReverseCurves() const -> const QSet<quint32> &
+{
+    return m_pendingReverseCurves;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceAutomation::ClearPendingReverse()
+{
+    m_pendingReverseCurves.clear();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceAutomation::AppendNode(const VPieceNode &node)
+{
+    // Same deduplication as DialogTool::NewNodeItem: never twice the same id in a row.
+    if (m_nodes.isEmpty() || m_nodes.last().GetId() != node.GetId())
+    {
+        m_nodes.append(node);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceAutomation::RemoveNodeById(quint32 id)
+{
+    for (int i = 0; i < m_nodes.size(); ++i)
+    {
+        if (m_nodes.at(i).GetId() == id)
+        {
+            m_nodes.removeAt(i);
+            return;
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DefaultPieceName(const VContainer *data) -> QString
+{
+    const QList<VPiece> pieces = data->DataPieces()->values();
+    QSet<QString> names;
+
+    for (const auto &piece : pieces)
+    {
+        names.insert(piece.GetName());
+    }
+
+    const QString defName = QStringLiteral("Detail");
+    QString name = defName;
+    int i = 0;
+
+    while (names.contains(name))
+    {
+        name = defName + QStringLiteral("_%1").arg(++i);
+    }
+    return name;
 }

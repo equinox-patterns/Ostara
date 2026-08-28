@@ -100,6 +100,8 @@ const QString VAbstractPattern::TagPatternNum = QStringLiteral("patternNumber");
 const QString VAbstractPattern::TagCustomerName = QStringLiteral("customer");
 const QString VAbstractPattern::TagCustomerBirthDate = QStringLiteral("birthDate");
 const QString VAbstractPattern::TagCustomerEmail = QStringLiteral("email");
+const QString VAbstractPattern::TagCollection = QStringLiteral("collection");
+const QString VAbstractPattern::TagFabricInfo = QStringLiteral("fabricInfo");
 const QString VAbstractPattern::TagCompanyName = QStringLiteral("company");
 const QString VAbstractPattern::TagWatermark = QStringLiteral("watermark");
 const QString VAbstractPattern::TagFinalMeasurements = QStringLiteral("finalMeasurements");
@@ -143,6 +145,8 @@ const QString VAbstractPattern::AttrManualPassmarkLength = QStringLiteral("manua
 const QString VAbstractPattern::AttrPassmarkLength = QStringLiteral("passmarkLength");
 const QString VAbstractPattern::AttrManualPassmarkWidth = QStringLiteral("manualPassmarkWidth");
 const QString VAbstractPattern::AttrPassmarkWidth = QStringLiteral("passmarkWidth");
+const QString VAbstractPattern::AttrDefaultActivateSA = QStringLiteral("defaultActivateSA");
+const QString VAbstractPattern::AttrDefaultHideMainPath = QStringLiteral("defaultHideMainPath");
 const QString VAbstractPattern::AttrManualPassmarkAngle = QStringLiteral("manualPassmarkAngle");
 const QString VAbstractPattern::AttrPassmarkAngle = QStringLiteral("passmarkAngleFormula");
 const QString VAbstractPattern::AttrPassmarkVisibility = QStringLiteral("passmarkVisibilityFormula");
@@ -861,6 +865,111 @@ void VAbstractPattern::SetPatternName(const QString &name)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetCustomer() const -> QString
+{
+    return UniqueTagText(TagCustomerName);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetCustomer(const QString &text)
+{
+    CheckTagExists(TagCustomerName);
+    setTagText(TagCustomerName, text);
+    modified = true;
+    emit patternChanged(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetCustomerBirthDate() const -> QString
+{
+    return UniqueTagText(TagCustomerBirthDate);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetCustomerBirthDate(const QString &text)
+{
+    CheckTagExists(TagCustomerBirthDate);
+    setTagText(TagCustomerBirthDate, text);
+    modified = true;
+    emit patternChanged(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetCustomerEmail() const -> QString
+{
+    return UniqueTagText(TagCustomerEmail);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetCustomerEmail(const QString &text)
+{
+    CheckTagExists(TagCustomerEmail);
+    setTagText(TagCustomerEmail, text);
+    modified = true;
+    emit patternChanged(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetCollection() const -> QString
+{
+    return UniqueTagText(TagCollection);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetCollection(const QString &text)
+{
+    CheckTagExists(TagCollection);
+    setTagText(TagCollection, text);
+    modified = true;
+    emit patternChanged(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetFabricInfo() const -> QString
+{
+    return UniqueTagText(TagFabricInfo);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetFabricInfo(const QString &text)
+{
+    CheckTagExists(TagFabricInfo);
+    setTagText(TagFabricInfo, text);
+    modified = true;
+    emit patternChanged(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetDefaultActivateSA() const -> bool
+{
+    const QString value = GetPatternVariable(AttrDefaultActivateSA);
+    return value.isEmpty() ? true : value == QLatin1String("true");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetDefaultActivateSA(bool on)
+{
+    SePatternVariable(AttrDefaultActivateSA, on ? QStringLiteral("true") : QStringLiteral("false"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetDefaultHideMainPath() const -> bool
+{
+    const QString value = GetPatternVariable(AttrDefaultHideMainPath);
+    if (not value.isEmpty())
+    {
+        return value == QLatin1String("true");
+    }
+    return VAbstractValApplication::VApp()->ValentinaSettings()->IsHideMainPath();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetDefaultHideMainPath(bool on)
+{
+    SePatternVariable(AttrDefaultHideMainPath, on ? QStringLiteral("true") : QStringLiteral("false"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GetCompanyName() const -> QString
 {
     return m_companyName;
@@ -1327,7 +1436,9 @@ auto VAbstractPattern::CheckTagExists(const QString &tag) -> QDomElement
             TagCustomerEmail,     // 9
             TagWatermark,         // 10
             TagFinalMeasurements, // 11
-            TagBackgroundImages   // 12
+            TagBackgroundImages,  // 12
+            TagCollection,        // 13
+            TagFabricInfo         // 14
         };
 
         switch (tags.indexOf(tag))
@@ -1367,6 +1478,12 @@ auto VAbstractPattern::CheckTagExists(const QString &tag) -> QDomElement
                 break;
             case 12: // TagBackgroundImages
                 element = createElement(TagBackgroundImages);
+                break;
+            case 13: // TagCollection
+                element = createElement(TagCollection);
+                break;
+            case 14: // TagFabricInfo
+                element = createElement(TagFabricInfo);
                 break;
             case 0: // TagUnit (Mandatory tag)
             default:

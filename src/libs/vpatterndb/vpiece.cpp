@@ -25,6 +25,7 @@
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
  *************************************************************************/
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
 
 #include "vpiece.h"
 #include "../ifc/exception/vexceptioninvalidnotch.h"
@@ -603,6 +604,102 @@ auto VPiece::GetGradedAlignV() const -> int
 void VPiece::SetGradedAlignV(int val)
 {
     d->m_gradedAlignV = val;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetPieceNumber() const -> uint
+{
+    return d->m_pieceNumber;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetPieceNumber(uint number)
+{
+    d->m_pieceNumber = number;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetCutFabricQty() const -> int
+{
+    return d->m_cutFabricQty;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetCutFabricQty(int qty)
+{
+    d->m_cutFabricQty = qty;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::IsCutFabricOnFold() const -> bool
+{
+    return d->m_cutFabricOnFold;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetCutFabricOnFold(bool on)
+{
+    d->m_cutFabricOnFold = on;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetCutInterfacingQty() const -> int
+{
+    return d->m_cutInterfacingQty;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetCutInterfacingQty(int qty)
+{
+    d->m_cutInterfacingQty = qty;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::IsCutInterfacingOnFold() const -> bool
+{
+    return d->m_cutInterfacingOnFold;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetCutInterfacingOnFold(bool on)
+{
+    d->m_cutInterfacingOnFold = on;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetCutLiningQty() const -> int
+{
+    return d->m_cutLiningQty;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetCutLiningQty(int qty)
+{
+    d->m_cutLiningQty = qty;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::IsCutLiningOnFold() const -> bool
+{
+    return d->m_cutLiningOnFold;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetCutLiningOnFold(bool on)
+{
+    d->m_cutLiningOnFold = on;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetFreeText() const -> QString
+{
+    return d->m_freeText;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetFreeText(const QString &text)
+{
+    d->m_freeText = text;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

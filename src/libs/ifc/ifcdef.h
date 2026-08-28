@@ -25,6 +25,7 @@
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
  *************************************************************************/
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
 
 #ifndef IFCDEF_H
 #define IFCDEF_H
@@ -54,6 +55,14 @@ extern const QString AttrShortName;
 extern const QString AttrUUID;
 extern const QString AttrGradedAlignH;
 extern const QString AttrGradedAlignV;
+extern const QString AttrPieceNumber;
+extern const QString AttrCutFabricQty;
+extern const QString AttrCutFabricOnFold;
+extern const QString AttrCutInterfacingQty;
+extern const QString AttrCutInterfacingOnFold;
+extern const QString AttrCutLiningQty;
+extern const QString AttrCutLiningOnFold;
+extern const QString AttrFreeText;
 extern const QString AttrMx1;
 extern const QString AttrMy1;
 extern const QString AttrName1;

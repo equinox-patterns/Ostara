@@ -25,6 +25,7 @@
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
  *************************************************************************/
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
 
 #include "ifcdef.h"
 
@@ -54,6 +55,14 @@ const QString AttrShortName = QStringLiteral("shortName");
 const QString AttrUUID = QStringLiteral("uuid");
 const QString AttrGradedAlignH = QStringLiteral("gradedAlignH");
 const QString AttrGradedAlignV = QStringLiteral("gradedAlignV");
+const QString AttrPieceNumber = QStringLiteral("pieceNumber");
+const QString AttrCutFabricQty = QStringLiteral("cutFabricQty");
+const QString AttrCutFabricOnFold = QStringLiteral("cutFabricOnFold");
+const QString AttrCutInterfacingQty = QStringLiteral("cutInterfacingQty");
+const QString AttrCutInterfacingOnFold = QStringLiteral("cutInterfacingOnFold");
+const QString AttrCutLiningQty = QStringLiteral("cutLiningQty");
+const QString AttrCutLiningOnFold = QStringLiteral("cutLiningOnFold");
+const QString AttrFreeText = QStringLiteral("freeText");
 const QString AttrMx1 = QStringLiteral("mx1");
 const QString AttrMy1 = QStringLiteral("my1");
 const QString AttrName1 = QStringLiteral("name1");
