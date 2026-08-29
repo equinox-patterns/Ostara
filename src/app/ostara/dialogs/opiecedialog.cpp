@@ -270,7 +270,8 @@ void OPieceDialog::DialogAccepted()
         m_doc->SetFabricInfo(m_patternStep->GetFabricInfo());
         m_doc->SetDefaultActivateSA(m_patternStep->IsActivateSA());
         m_doc->SetDefaultHideMainPath(m_patternStep->IsHideMainPath());
-        // Cartouche selection is not persisted yet (dedicated spec later).
+        // Information block: the chosen template (empty when the user did not opt in).
+        m_doc->SetCartoucheTemplate(m_patternStep->GetCartouche());
     }
     DialogTool::DialogAccepted();
 }

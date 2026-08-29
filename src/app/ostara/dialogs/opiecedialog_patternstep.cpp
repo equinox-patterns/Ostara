@@ -39,6 +39,8 @@
 #include <QComboBox>
 #include <QFileInfo>
 #include <QFormLayout>
+#include <QFrame>
+#include <QGroupBox>
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QVBoxLayout>
@@ -52,25 +54,6 @@ OPiecePatternStep::OPiecePatternStep(VAbstractPattern *doc, QWidget *parent)
 
     auto *mainLayout = new QVBoxLayout(this);
     auto *form = new QFormLayout();
-
-    // Cartouche (template) — default from settings, "No cartouche" as an explicit option.
-    OPieceCartoucheStorage::EnsureDefaultTemplate();
-    m_cartoucheCombo = MakeComboBox(this);
-    m_cartoucheCombo->addItem(tr("No cartouche"), QString());
-    const QStringList templates = OPieceCartoucheStorage::ScanDirectory(OPieceCartoucheStorage::DefaultDirectory());
-    const QString defaultName = VAbstractValApplication::VApp()->Settings()->GetDefaultCartoucheTemplate();
-    int defaultIndex = 0;
-    for (const QString &path : templates)
-    {
-        const QString base = QFileInfo(path).completeBaseName();
-        m_cartoucheCombo->addItem(base, path);
-        if (base == defaultName)
-        {
-            defaultIndex = m_cartoucheCombo->count() - 1;
-        }
-    }
-    m_cartoucheCombo->setCurrentIndex(defaultIndex);
-    form->addRow(tr("Cartouche"), m_cartoucheCombo);
 
     m_patternNameEdit = new QLineEdit(m_doc->GetPatternName());
     form->addRow(tr("Pattern name"), m_patternNameEdit);
@@ -152,13 +135,60 @@ OPiecePatternStep::OPiecePatternStep(VAbstractPattern *doc, QWidget *parent)
 
     mainLayout->addLayout(form);
 
+    auto *separator = new QFrame;
+    separator->setFrameShape(QFrame::HLine);
+    separator->setFrameShadow(QFrame::Sunken);
+    mainLayout->addWidget(separator);
+
+    // Seam allowances — pattern-level seeds applied to every piece created afterwards.
+    auto *seamAllowanceGroup = new QGroupBox(tr("Seam Allowances"));
+    auto *saLayout = new QVBoxLayout(seamAllowanceGroup);
     m_activateSACheck = new QCheckBox(tr("Activate seam allowances for all pieces"));
     m_activateSACheck->setChecked(m_doc->GetDefaultActivateSA());
-    mainLayout->addWidget(m_activateSACheck);
-
+    saLayout->addWidget(m_activateSACheck);
     m_hideMainPathCheck = new QCheckBox(tr("Hide main path for all pieces"));
     m_hideMainPathCheck->setChecked(m_doc->GetDefaultHideMainPath());
-    mainLayout->addWidget(m_hideMainPathCheck);
+    saLayout->addWidget(m_hideMainPathCheck);
+    mainLayout->addWidget(seamAllowanceGroup);
+
+    // Information block — display is opted-in per pattern: the checkbox activates
+    // the label for every piece created afterwards (same seed semantics as the
+    // seam allowance checkboxes), and the combo picks the template. The combo only
+    // appears once the box is checked and is pre-filled with the favourite template
+    // or the shipped "Default" (the templates directory is never empty).
+    OPieceCartoucheStorage::EnsureDefaultTemplate();
+    auto *infoBlockGroup = new QGroupBox(tr("Information block"));
+    auto *ibLayout = new QVBoxLayout(infoBlockGroup);
+    const QString currentTemplate = m_doc->GetCartoucheTemplate();
+    m_activateInfoBlockCheck = new QCheckBox(tr("Activate information block for all pieces"));
+    m_activateInfoBlockCheck->setChecked(not currentTemplate.isEmpty());
+    ibLayout->addWidget(m_activateInfoBlockCheck);
+    m_cartoucheCombo = MakeComboBox(this);
+    const QStringList templates = OPieceCartoucheStorage::ScanDirectory(OPieceCartoucheStorage::DefaultDirectory());
+    const QString defaultName = VAbstractValApplication::VApp()->Settings()->GetDefaultCartoucheTemplate();
+    int defaultIndex = 0;
+    bool foundCurrent = false;
+    for (const QString &path : templates)
+    {
+        const QString base = QFileInfo(path).completeBaseName();
+        m_cartoucheCombo->addItem(base, base);
+        // The pattern's existing template wins over the favourite; the favourite is
+        // only a fallback while no template is set on the pattern yet.
+        if (base == currentTemplate)
+        {
+            defaultIndex = m_cartoucheCombo->count() - 1;
+            foundCurrent = true;
+        }
+        else if (not foundCurrent && base == defaultName)
+        {
+            defaultIndex = m_cartoucheCombo->count() - 1;
+        }
+    }
+    m_cartoucheCombo->setCurrentIndex(defaultIndex);
+    m_cartoucheCombo->setVisible(m_activateInfoBlockCheck->isChecked());
+    connect(m_activateInfoBlockCheck, &QCheckBox::toggled, m_cartoucheCombo, &QWidget::setVisible);
+    ibLayout->addWidget(m_cartoucheCombo);
+    mainLayout->addWidget(infoBlockGroup);
 
     mainLayout->addStretch();
 }
@@ -166,7 +196,9 @@ OPiecePatternStep::OPiecePatternStep(VAbstractPattern *doc, QWidget *parent)
 //---------------------------------------------------------------------------------------------------------------------
 auto OPiecePatternStep::GetCartouche() const -> QString
 {
-    return m_cartoucheCombo->currentData().toString();
+    // The template name only counts when the user opted in: unchecked means "no
+    // information block" and the pattern keeps no cartouche reference.
+    return m_activateInfoBlockCheck->isChecked() ? m_cartoucheCombo->currentData().toString() : QString();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

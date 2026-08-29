@@ -102,6 +102,7 @@ const QString VAbstractPattern::TagCustomerBirthDate = QStringLiteral("birthDate
 const QString VAbstractPattern::TagCustomerEmail = QStringLiteral("email");
 const QString VAbstractPattern::TagCollection = QStringLiteral("collection");
 const QString VAbstractPattern::TagFabricInfo = QStringLiteral("fabricInfo");
+const QString VAbstractPattern::TagCartouche = QStringLiteral("cartouche");
 const QString VAbstractPattern::TagCompanyName = QStringLiteral("company");
 const QString VAbstractPattern::TagWatermark = QStringLiteral("watermark");
 const QString VAbstractPattern::TagFinalMeasurements = QStringLiteral("finalMeasurements");
@@ -147,6 +148,7 @@ const QString VAbstractPattern::AttrManualPassmarkWidth = QStringLiteral("manual
 const QString VAbstractPattern::AttrPassmarkWidth = QStringLiteral("passmarkWidth");
 const QString VAbstractPattern::AttrDefaultActivateSA = QStringLiteral("defaultActivateSA");
 const QString VAbstractPattern::AttrDefaultHideMainPath = QStringLiteral("defaultHideMainPath");
+const QString VAbstractPattern::AttrTemplate = QStringLiteral("template");
 const QString VAbstractPattern::AttrManualPassmarkAngle = QStringLiteral("manualPassmarkAngle");
 const QString VAbstractPattern::AttrPassmarkAngle = QStringLiteral("passmarkAngleFormula");
 const QString VAbstractPattern::AttrPassmarkVisibility = QStringLiteral("passmarkVisibilityFormula");
@@ -970,6 +972,38 @@ void VAbstractPattern::SetDefaultHideMainPath(bool on)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetCartoucheTemplate() const -> QString
+{
+    const QDomElement element = UniqueTag(TagCartouche);
+    return element.isNull() ? QString() : element.attribute(AttrTemplate);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetCartoucheTemplate(const QString &name)
+{
+    // Empty name = no information block: remove the whole element (presence of the
+    // tag carries both the activation and the template reference).
+    if (name.isEmpty())
+    {
+        const QDomElement element = UniqueTag(TagCartouche);
+        if (not element.isNull())
+        {
+            documentElement().removeChild(element);
+            modified = true;
+            emit patternChanged(false);
+        }
+        return;
+    }
+
+    // The empty case was handled above (whole element removed); here the name is
+    // never empty, so a plain setAttribute is all that is needed.
+    QDomElement element = CheckTagExists(TagCartouche);
+    element.setAttribute(AttrTemplate, name);
+    modified = true;
+    emit patternChanged(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GetCompanyName() const -> QString
 {
     return m_companyName;
@@ -1423,22 +1457,26 @@ auto VAbstractPattern::CheckTagExists(const QString &tag) -> QDomElement
     QDomElement element;
     if (list.isEmpty())
     {
+        // Canonical insertion order MUST match the <xs:sequence> order of the Ostara
+        // schema (ostara/v1.0.0.xsd): the serialized document is validated against it
+        // before every save, so out-of-sequence elements make saving fail.
         const QStringList tags{
             TagUnit,              // 0
             TagImage,             // 1
             TagDescription,       // 2
             TagNotes,             // 3
-            TagPatternName,       // 4
-            TagPatternNum,        // 5
-            TagCompanyName,       // 6
-            TagCustomerName,      // 7
-            TagCustomerBirthDate, // 8
-            TagCustomerEmail,     // 9
-            TagWatermark,         // 10
-            TagFinalMeasurements, // 11
-            TagBackgroundImages,  // 12
-            TagCollection,        // 13
-            TagFabricInfo         // 14
+            TagFabricInfo,        // 4
+            TagCollection,        // 5
+            TagPatternName,       // 6
+            TagPatternNum,        // 7
+            TagCompanyName,       // 8
+            TagCustomerName,      // 9
+            TagCustomerBirthDate, // 10
+            TagCustomerEmail,     // 11
+            TagWatermark,         // 12
+            TagCartouche,         // 13
+            TagFinalMeasurements, // 14
+            TagBackgroundImages   // 15
         };
 
         switch (tags.indexOf(tag))
@@ -1452,38 +1490,41 @@ auto VAbstractPattern::CheckTagExists(const QString &tag) -> QDomElement
             case 3: // TagNotes
                 element = createElement(TagNotes);
                 break;
-            case 4: // TagPatternName
-                element = createElement(TagPatternName);
+            case 4: // TagFabricInfo
+                element = createElement(TagFabricInfo);
                 break;
-            case 5: // TagPatternNum
-                element = createElement(TagPatternNum);
-                break;
-            case 6: // TagCompanyName
-                element = createElement(TagCompanyName);
-                break;
-            case 7: // TagCustomerName
-                element = createElement(TagCustomerName);
-                break;
-            case 8: // TagCustomerBirthDate
-                element = createElement(TagCustomerBirthDate);
-                break;
-            case 9: // TagCustomerEmail
-                element = createElement(TagCustomerEmail);
-                break;
-            case 10: // TagWatermark
-                element = createElement(TagWatermark);
-                break;
-            case 11: // TagFinalMeasurements
-                element = createElement(TagFinalMeasurements);
-                break;
-            case 12: // TagBackgroundImages
-                element = createElement(TagBackgroundImages);
-                break;
-            case 13: // TagCollection
+            case 5: // TagCollection
                 element = createElement(TagCollection);
                 break;
-            case 14: // TagFabricInfo
-                element = createElement(TagFabricInfo);
+            case 6: // TagPatternName
+                element = createElement(TagPatternName);
+                break;
+            case 7: // TagPatternNum
+                element = createElement(TagPatternNum);
+                break;
+            case 8: // TagCompanyName
+                element = createElement(TagCompanyName);
+                break;
+            case 9: // TagCustomerName
+                element = createElement(TagCustomerName);
+                break;
+            case 10: // TagCustomerBirthDate
+                element = createElement(TagCustomerBirthDate);
+                break;
+            case 11: // TagCustomerEmail
+                element = createElement(TagCustomerEmail);
+                break;
+            case 12: // TagWatermark
+                element = createElement(TagWatermark);
+                break;
+            case 13: // TagCartouche
+                element = createElement(TagCartouche);
+                break;
+            case 14: // TagFinalMeasurements
+                element = createElement(TagFinalMeasurements);
+                break;
+            case 15: // TagBackgroundImages
+                element = createElement(TagBackgroundImages);
                 break;
             case 0: // TagUnit (Mandatory tag)
             default:

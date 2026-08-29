@@ -60,6 +60,7 @@ public:
 
 private:
     VAbstractPattern *m_doc{nullptr};
+    QCheckBox *m_activateInfoBlockCheck{nullptr};
     QComboBox *m_cartoucheCombo{nullptr};
     QLineEdit *m_patternNameEdit{nullptr};
     QComboBox *m_clientCombo{nullptr};

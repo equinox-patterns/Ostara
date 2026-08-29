@@ -220,6 +220,12 @@ public:
     auto GetDefaultHideMainPath() const -> bool;
     void SetDefaultHideMainPath(bool on);
 
+    /** @brief Pattern-level reference to the information block (cartouche) template
+     *         shown on every piece created afterwards. Absent or empty = no information
+     *         block. The template is referenced by name and resolved at render. */
+    auto GetCartoucheTemplate() const -> QString;
+    void SetCartoucheTemplate(const QString &name);
+
     auto GetCompanyName() const -> QString;
 
     auto GetPatternNumber() const -> QString;
@@ -350,6 +356,7 @@ public:
     static const QString TagCustomerEmail;
     static const QString TagCollection;
     static const QString TagFabricInfo;
+    static const QString TagCartouche;
     static const QString TagWatermark;
     static const QString TagFinalMeasurements;
     static const QString TagMaterial;
@@ -392,6 +399,7 @@ public:
     static const QString AttrPassmarkLength;
     static const QString AttrDefaultActivateSA;
     static const QString AttrDefaultHideMainPath;
+    static const QString AttrTemplate;
     static const QString AttrManualPassmarkWidth;
     static const QString AttrPassmarkWidth;
     static const QString AttrManualPassmarkAngle;
