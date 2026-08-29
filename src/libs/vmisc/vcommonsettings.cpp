@@ -105,6 +105,8 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsMeasurementLibrary, ("paths
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCartoucheTemplates, ("paths/cartoucheTemplates"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsLogos, ("paths/logos"_L1))                              // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsClients, ("paths/clients"_L1))                          // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCollections, ("paths/collections"_L1))                  // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCollectionsSortAscending, ("infoBlock/collectionsSortAscending"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingMeasurementFavorites, ("paths/measurementFavorites"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationOsSeparator, ("configuration/osSeparator"_L1)) // NOLINT
 // NOLINTNEXTLINE
@@ -559,6 +561,36 @@ void VCommonSettings::SetPathClients(const QString &value) const
 {
     QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
     settings.setValue(*settingPathsClients, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetPathCollections() const -> QString
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingPathsCollections, QDir::homePath() + QStringLiteral("/Ostara/Collections")).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetPathCollections(const QString &value) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingPathsCollections, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetCollectionsSortAscending() const -> bool
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingCollectionsSortAscending, false).toBool();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetCollectionsSortAscending(const bool &value)
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingCollectionsSortAscending, value);
     settings.sync();
 }
 

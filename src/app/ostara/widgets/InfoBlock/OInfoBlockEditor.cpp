@@ -35,9 +35,12 @@
 
 #include "def.h"
 #include "FactoryWidgets.h"
+#include "vmisc/vabstractvalapplication.h"
+#include "vmisc/vcommonsettings.h"
 
 #include <QAction>
 #include <QComboBox>
+#include <QDate>
 #include <QDir>
 #include <QFrame>
 #include <QStandardItemModel>
@@ -53,6 +56,7 @@
 #include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QSpinBox>
 #include <QSplitter>
 #include <QStackedWidget>
 #include <QStringList>
@@ -78,6 +82,7 @@ void OInfoBlockEditor::SetupUI()
     m_menuList->addItem(tr("Create new"));
     m_menuList->addItem(tr("Logo"));
     m_menuList->addItem(tr("Clients"));
+    m_menuList->addItem(tr("Collections"));
     connect(m_menuList, &QListWidget::itemClicked, this, [this](QListWidgetItem *item) {
         const int row = m_menuList->row(item);
         if (row == 0)
@@ -96,14 +101,19 @@ void OInfoBlockEditor::SetupUI()
         {
             ShowClientsPage();
         }
+        else if (row == 4)
+        {
+            ShowCollectionsPage();
+        }
     });
     outer->addWidget(m_menuList);
 
     m_stack = new QStackedWidget();
-    SetupEditorPage();     // index 0
-    SetupTemplatesPage();  // index 1
-    SetupLogosPage();      // index 2
-    SetupClientsPage();    // index 3
+    SetupEditorPage();        // index 0
+    SetupTemplatesPage();     // index 1
+    SetupLogosPage();         // index 2
+    SetupClientsPage();       // index 3
+    SetupCollectionsPage();   // index 4
     outer->addWidget(m_stack, 1);
 
     m_menuList->setCurrentRow(1);
@@ -116,7 +126,7 @@ void OInfoBlockEditor::RetranslateUI()
     // rebuild below (menu, section list) resolves in the new language.
     OPieceCartoucheCatalogue::InvalidateCache();
 
-    // Left menu — 4 fixed entries.
+    // Left menu — 5 fixed entries.
     if (m_menuList->count() > 0)
     {
         m_menuList->item(0)->setText(tr("Existing templates"));
@@ -132,6 +142,10 @@ void OInfoBlockEditor::RetranslateUI()
     if (m_menuList->count() > 3)
     {
         m_menuList->item(3)->setText(tr("Clients"));
+    }
+    if (m_menuList->count() > 4)
+    {
+        m_menuList->item(4)->setText(tr("Collections"));
     }
 
     // Editor page — top bar.
@@ -194,6 +208,28 @@ void OInfoBlockEditor::RetranslateUI()
     if (m_clientEntries.isEmpty() && m_clientsTree->topLevelItemCount() > 0)
     {
         m_clientsTree->topLevelItem(0)->setText(0, tr("No clients yet. Add one."));
+    }
+
+    // Collections page.
+    m_collectionEditGroup->setTitle(tr("Collection"));
+    m_collectionNameLabel->setText(tr("Name:"));
+    m_collectionYearLabel->setText(tr("Year:"));
+    m_collectionPeriodLabel->setText(tr("Period:"));
+    m_collectionDescriptionLabel->setText(tr("Description:"));
+    m_collectionNameEdit->setPlaceholderText(tr("Collection name"));
+    m_collectionPeriodEdit->setPlaceholderText(tr("Period"));
+    m_collectionDescriptionEdit->setPlaceholderText(tr("Description"));
+    m_collectionsTree->setHeaderLabels({tr("Name"), tr("Year"), tr("Period")});
+    m_addCollectionBtn->setText(tr("Add Collection"));
+    m_removeCollectionBtn->setText(tr("Remove Collection"));
+    m_collectionsSortLabel->setText(tr("Sort by year:"));
+    m_collectionsSortCombo->setItemText(0, tr("Newest first"));
+    m_collectionsSortCombo->setItemText(1, tr("Oldest first"));
+    m_collectionsHistoryGroup->setTitle(tr("History"));
+    m_collectionsHistoryPlaceholder->setText(tr("No associated patterns yet."));
+    if (m_collectionEntries.isEmpty() && m_collectionsTree->topLevelItemCount() > 0)
+    {
+        m_collectionsTree->topLevelItem(0)->setText(0, tr("No collections yet. Add one."));
     }
 
     // Section names come from the catalogue — refresh the ordered list. Keep the
@@ -1065,6 +1101,324 @@ void OInfoBlockEditor::OnRemoveClient()
     }
     ShowClientsPage();
     emit StatusMessage(tr("Client removed"));
+}
+
+void OInfoBlockEditor::SetupCollectionsPage()
+{
+    auto *collectionsPage = new QWidget();
+    auto *vbox = new QVBoxLayout(collectionsPage);
+    vbox->setContentsMargins(8, 8, 8, 8);
+
+    auto *left = new QWidget();
+    auto *leftLayout = new QVBoxLayout(left);
+    leftLayout->setContentsMargins(0, 0, 0, 0);
+    leftLayout->setSpacing(4);
+
+    auto *listBar = new QHBoxLayout();
+    m_addCollectionBtn = new QPushButton(tr("Add Collection"));
+    connect(m_addCollectionBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnAddCollection);
+    listBar->addWidget(m_addCollectionBtn);
+    m_removeCollectionBtn = new QPushButton(tr("Remove Collection"));
+    connect(m_removeCollectionBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnRemoveCollection);
+    listBar->addWidget(m_removeCollectionBtn);
+    listBar->addStretch();
+    m_collectionsSortLabel = new QLabel(tr("Sort by year:"));
+    listBar->addWidget(m_collectionsSortLabel);
+    m_collectionsSortCombo = MakeComboBox();
+    m_collectionsSortCombo->addItem(tr("Newest first"), false);
+    m_collectionsSortCombo->addItem(tr("Oldest first"), true);
+    connect(m_collectionsSortCombo, &QComboBox::currentIndexChanged, this, &OInfoBlockEditor::OnSortChanged);
+    listBar->addWidget(m_collectionsSortCombo);
+    leftLayout->addLayout(listBar);
+
+    m_collectionsTree = new QTreeWidget();
+    m_collectionsTree->setColumnCount(3);
+    m_collectionsTree->setHeaderLabels({tr("Name"), tr("Year"), tr("Period")});
+    m_collectionsTree->setRootIsDecorated(false);
+    m_collectionsTree->setUniformRowHeights(true);
+    connect(m_collectionsTree, &QTreeWidget::currentItemChanged, this,
+            [this](QTreeWidgetItem *current, QTreeWidgetItem *previous) {
+                Q_UNUSED(previous)
+                OnCollectionSelected(current);
+            });
+    leftLayout->addWidget(m_collectionsTree, 1);
+
+    m_collectionEditGroup = new QGroupBox(tr("Collection"));
+    auto *form = new QFormLayout(m_collectionEditGroup);
+    m_collectionNameEdit = new QLineEdit();
+    m_collectionNameEdit->setPlaceholderText(tr("Collection name"));
+    connect(m_collectionNameEdit, &QLineEdit::textChanged, this, &OInfoBlockEditor::OnCollectionNameEdited);
+    m_collectionNameLabel = new QLabel(tr("Name:"));
+    form->addRow(m_collectionNameLabel, m_collectionNameEdit);
+    m_collectionYearSpin = new QSpinBox();
+    m_collectionYearSpin->setRange(1900, 2100);
+    connect(m_collectionYearSpin, &QSpinBox::valueChanged, this, &OInfoBlockEditor::OnCollectionYearEdited);
+    m_collectionYearLabel = new QLabel(tr("Year:"));
+    form->addRow(m_collectionYearLabel, m_collectionYearSpin);
+    m_collectionPeriodEdit = new QLineEdit();
+    m_collectionPeriodEdit->setPlaceholderText(tr("Period"));
+    connect(m_collectionPeriodEdit, &QLineEdit::textChanged, this, &OInfoBlockEditor::OnCollectionPeriodEdited);
+    m_collectionPeriodLabel = new QLabel(tr("Period:"));
+    form->addRow(m_collectionPeriodLabel, m_collectionPeriodEdit);
+    m_collectionDescriptionEdit = new QPlainTextEdit();
+    m_collectionDescriptionEdit->setPlaceholderText(tr("Description"));
+    m_collectionDescriptionEdit->setFixedHeight(70);
+    connect(m_collectionDescriptionEdit, &QPlainTextEdit::textChanged, this,
+            &OInfoBlockEditor::OnCollectionDescriptionChanged);
+    m_collectionDescriptionLabel = new QLabel(tr("Description:"));
+    form->addRow(m_collectionDescriptionLabel, m_collectionDescriptionEdit);
+    leftLayout->addWidget(m_collectionEditGroup);
+
+    m_collectionsHistoryGroup = new QGroupBox(tr("History"));
+    auto *historyLayout = new QVBoxLayout(m_collectionsHistoryGroup);
+    m_collectionsHistoryPlaceholder = new QLabel(tr("No associated patterns yet."));
+    m_collectionsHistoryPlaceholder->setAlignment(Qt::AlignCenter);
+    m_collectionsHistoryPlaceholder->setWordWrap(true);
+    historyLayout->addWidget(m_collectionsHistoryPlaceholder, 1);
+    // The pattern list appears here once the pattern library exists
+    // (spec collections.md §3, Historique — for now always empty).
+
+    auto *splitter = new QSplitter(Qt::Horizontal);
+    splitter->addWidget(left);
+    splitter->addWidget(m_collectionsHistoryGroup);
+    splitter->setStretchFactor(0, 1);
+    splitter->setStretchFactor(1, 1);
+    splitter->setSizes({400, 400});  // 50/50 at open — ratio kept on window resize
+    vbox->addWidget(splitter, 1);
+
+    m_stack->addWidget(collectionsPage);
+}
+
+void OInfoBlockEditor::ShowCollectionsPage()
+{
+    const bool ascending = VAbstractValApplication::VApp()->Settings()->GetCollectionsSortAscending();
+    m_collectionsSortCombo->setCurrentIndex(ascending ? 1 : 0);
+    m_collectionEntries = OPieceCartoucheStorage::LoadCollections(ascending);
+    RefreshCollectionsList();
+    m_collectionsTree->setCurrentItem(nullptr);
+    OnCollectionSelected(nullptr);
+    m_stack->setCurrentIndex(4);
+}
+
+void OInfoBlockEditor::RefreshCollectionsList()
+{
+    m_collectionsTree->clear();
+    if (m_collectionEntries.isEmpty())
+    {
+        auto *item = new QTreeWidgetItem();
+        item->setText(0, tr("No collections yet. Add one."));
+        item->setFlags(Qt::NoItemFlags);
+        m_collectionsTree->addTopLevelItem(item);
+        return;
+    }
+    for (const OPieceCartoucheStorage::CollectionEntry &entry : m_collectionEntries)
+    {
+        auto *item = new QTreeWidgetItem();
+        item->setText(0, entry.name.isEmpty() ? tr("(unnamed)") : entry.name);
+        item->setText(1, QString::number(entry.year));
+        item->setText(2, entry.period);
+        item->setData(0, Qt::UserRole, entry.id);
+        m_collectionsTree->addTopLevelItem(item);
+    }
+}
+
+void OInfoBlockEditor::OnCollectionSelected(QTreeWidgetItem *current)
+{
+    m_updatingCollections = true;
+    if (current == nullptr)
+    {
+        m_collectionNameEdit->clear();
+        m_collectionYearSpin->setValue(QDate::currentDate().year());
+        m_collectionPeriodEdit->clear();
+        m_collectionDescriptionEdit->clear();
+    }
+    else
+    {
+        const QString id = current->data(0, Qt::UserRole).toString();
+        for (const OPieceCartoucheStorage::CollectionEntry &entry : m_collectionEntries)
+        {
+            if (entry.id == id)
+            {
+                m_collectionNameEdit->setText(entry.name);
+                m_collectionYearSpin->setValue(entry.year);
+                m_collectionPeriodEdit->setText(entry.period);
+                m_collectionDescriptionEdit->setPlainText(entry.description);
+                break;
+            }
+        }
+    }
+    m_updatingCollections = false;
+}
+
+void OInfoBlockEditor::OnCollectionNameEdited(const QString &text)
+{
+    if (m_updatingCollections)
+    {
+        return;
+    }
+    QTreeWidgetItem *item = m_collectionsTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString id = item->data(0, Qt::UserRole).toString();
+    for (OPieceCartoucheStorage::CollectionEntry &entry : m_collectionEntries)
+    {
+        if (entry.id == id)
+        {
+            entry.name = text;
+            item->setText(0, text.isEmpty() ? tr("(unnamed)") : text);
+            break;
+        }
+    }
+    PersistCollections();
+}
+
+void OInfoBlockEditor::OnCollectionYearEdited(int year)
+{
+    if (m_updatingCollections)
+    {
+        return;
+    }
+    QTreeWidgetItem *item = m_collectionsTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString id = item->data(0, Qt::UserRole).toString();
+    for (OPieceCartoucheStorage::CollectionEntry &entry : m_collectionEntries)
+    {
+        if (entry.id == id)
+        {
+            entry.year = year;
+            item->setText(1, QString::number(year));
+            break;
+        }
+    }
+    PersistCollections();
+}
+
+void OInfoBlockEditor::OnCollectionPeriodEdited(const QString &text)
+{
+    if (m_updatingCollections)
+    {
+        return;
+    }
+    QTreeWidgetItem *item = m_collectionsTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString id = item->data(0, Qt::UserRole).toString();
+    for (OPieceCartoucheStorage::CollectionEntry &entry : m_collectionEntries)
+    {
+        if (entry.id == id)
+        {
+            entry.period = text;
+            item->setText(2, text);
+            break;
+        }
+    }
+    PersistCollections();
+}
+
+void OInfoBlockEditor::OnCollectionDescriptionChanged()
+{
+    if (m_updatingCollections)
+    {
+        return;
+    }
+    QTreeWidgetItem *item = m_collectionsTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString id = item->data(0, Qt::UserRole).toString();
+    const QString description = m_collectionDescriptionEdit->toPlainText();
+    for (OPieceCartoucheStorage::CollectionEntry &entry : m_collectionEntries)
+    {
+        if (entry.id == id)
+        {
+            entry.description = description;
+            break;
+        }
+    }
+    PersistCollections();
+}
+
+void OInfoBlockEditor::OnSortChanged()
+{
+    const bool ascending = m_collectionsSortCombo->currentData().toBool();
+    VAbstractValApplication::VApp()->Settings()->SetCollectionsSortAscending(ascending);
+    m_collectionEntries = OPieceCartoucheStorage::LoadCollections(ascending);
+    RefreshCollectionsList();
+    m_collectionsTree->setCurrentItem(nullptr);
+    OnCollectionSelected(nullptr);
+}
+
+void OInfoBlockEditor::PersistCollections()
+{
+    QString err;
+    if (!OPieceCartoucheStorage::SaveCollections(m_collectionEntries, &err))
+    {
+        QMessageBox::critical(this, tr("Collection"), err);
+    }
+}
+
+void OInfoBlockEditor::OnAddCollection()
+{
+    QString err;
+    const QString newId = OPieceCartoucheStorage::AddCollection(&err);
+    if (newId.isEmpty())
+    {
+        QMessageBox::critical(this, tr("Add Collection"), err);
+        return;
+    }
+
+    ShowCollectionsPage();
+    // Select the freshly added collection.
+    for (int i = 0; i < m_collectionsTree->topLevelItemCount(); ++i)
+    {
+        QTreeWidgetItem *item = m_collectionsTree->topLevelItem(i);
+        if (item->data(0, Qt::UserRole).toString() == newId)
+        {
+            m_collectionsTree->setCurrentItem(item);
+            m_collectionNameEdit->setFocus();
+            break;
+        }
+    }
+    emit StatusMessage(tr("Collection added"));
+}
+
+void OInfoBlockEditor::OnRemoveCollection()
+{
+    QTreeWidgetItem *item = m_collectionsTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString id = item->data(0, Qt::UserRole).toString();
+    if (id.isEmpty())
+    {
+        return;  // the empty-state hint item
+    }
+
+    const auto answer = QMessageBox::question(
+        this, tr("Remove Collection"),
+        tr("Remove the collection \"%1\" from the library?").arg(item->text(0)));
+    if (answer != QMessageBox::Yes)
+    {
+        return;
+    }
+
+    QString err;
+    if (!OPieceCartoucheStorage::RemoveCollection(id, &err))
+    {
+        QMessageBox::critical(this, tr("Collection"), err);
+        return;
+    }
+    ShowCollectionsPage();
+    emit StatusMessage(tr("Collection removed"));
 }
 
 void OInfoBlockEditor::NewTemplate()

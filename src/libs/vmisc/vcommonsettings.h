@@ -105,6 +105,12 @@ public:
     auto GetPathClients() const -> QString;
     void SetPathClients(const QString &value) const;
 
+    auto GetPathCollections() const -> QString;
+    void SetPathCollections(const QString &value) const;
+
+    auto GetCollectionsSortAscending() const -> bool;
+    void SetCollectionsSortAscending(const bool &value);
+
     auto GetMeasurementFavorites() const -> QStringList;
     void SetMeasurementFavorites(const QStringList &value) const;
 

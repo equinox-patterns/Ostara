@@ -56,6 +56,18 @@ struct ClientEntry
     QString info;   ///< free-form information
 };
 
+/// One collection of the library: a stable id plus the year (sort key), a
+/// free-form period and a description. All the data lives in a
+/// `collections.xml` metadata file (no per-collection file).
+struct CollectionEntry
+{
+    QString id;      ///< stable id, never changes (uuid)
+    QString name;    ///< display name
+    int year{0};     ///< sort key — current year at creation
+    QString period;  ///< free-form period (e.g. "Autumn Winter") or date
+    QString description;  ///< free-form description
+};
+
 /// Default folder from settings (GetPathCartoucheTemplates).
 auto DefaultDirectory() -> QString;
 
@@ -106,6 +118,30 @@ auto RemoveClient(const QString &id, QString *error = nullptr) -> bool;
 /// fills `error` on failure.
 auto UpdateClientMeta(const QString &id, const QString &name, const QString &mail,
                       const QString &phone, const QString &info, QString *error = nullptr) -> bool;
+
+/// Default collection library folder from settings (GetPathCollections).
+auto CollectionsDirectory() -> QString;
+
+/// List the collection library, sorted by year (ascending or descending) then
+/// by name (case-insensitive) within the same year.
+auto LoadCollections(bool ascending) -> QList<CollectionEntry>;
+
+/// Persist the collection library (`collections.xml`, atomic write). Returns
+/// false and fills `error` on failure.
+auto SaveCollections(const QList<CollectionEntry> &collections, QString *error = nullptr) -> bool;
+
+/// Create a new empty collection in the library (year = current year). Returns
+/// its id, or an empty string on failure (with `error` filled).
+auto AddCollection(QString *error = nullptr) -> QString;
+
+/// Remove a collection from the library by id. Returns false and fills
+/// `error` on failure.
+auto RemoveCollection(const QString &id, QString *error = nullptr) -> bool;
+
+/// Set the fields of one collection (creates the entry if needed). Returns
+/// false and fills `error` on failure.
+auto UpdateCollectionMeta(const QString &id, const QString &name, int year, const QString &period,
+                          const QString &description, QString *error = nullptr) -> bool;
 
 /// List of `.oct` files in the given folder (absolute paths), alphabetical.
 auto ScanDirectory(const QString &dirPath) -> QStringList;

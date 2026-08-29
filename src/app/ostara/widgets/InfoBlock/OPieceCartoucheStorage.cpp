@@ -37,6 +37,7 @@
 #include <QFileInfo>
 #include <QHash>
 #include <QList>
+#include <QDate>
 #include <QSaveFile>
 #include <QUuid>
 
@@ -148,6 +149,52 @@ QList<OPieceCartoucheStorage::ClientEntry> ReadClientsMeta()
     }
     return entries;
 }
+
+/// Path of the collection library metadata file.
+QString CollectionsMetaPath()
+{
+    return OPieceCartoucheStorage::CollectionsDirectory() + QLatin1Char('/') + QStringLiteral("collections.xml");
+}
+
+/// Read the collection library metadata (`collections.xml`). Missing or
+/// malformed file → empty list.
+QList<OPieceCartoucheStorage::CollectionEntry> ReadCollectionsMeta()
+{
+    QList<OPieceCartoucheStorage::CollectionEntry> entries;
+    QFile file(CollectionsMetaPath());
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        return entries;
+    }
+
+    QDomDocument doc;
+    if (!doc.setContent(&file))
+    {
+        return entries;
+    }
+
+    const QDomElement root = doc.documentElement();
+    if (root.tagName() != QStringLiteral("collections"))
+    {
+        return entries;
+    }
+
+    for (QDomElement el = root.firstChildElement(QStringLiteral("collection")); !el.isNull();
+         el = el.nextSiblingElement(QStringLiteral("collection")))
+    {
+        OPieceCartoucheStorage::CollectionEntry entry;
+        entry.id = el.attribute(QStringLiteral("id"));
+        entry.name = el.firstChildElement(QStringLiteral("name")).text();
+        entry.year = el.firstChildElement(QStringLiteral("year")).text().toInt();
+        entry.period = el.firstChildElement(QStringLiteral("period")).text();
+        entry.description = el.firstChildElement(QStringLiteral("description")).text();
+        if (!entry.id.isEmpty())
+        {
+            entries.append(entry);
+        }
+    }
+    return entries;
+}
 }  // namespace
 
 namespace OPieceCartoucheStorage
@@ -165,6 +212,11 @@ auto LogosDirectory() -> QString
 auto ClientsDirectory() -> QString
 {
     return VAbstractApplication::VApp()->Settings()->GetPathClients();
+}
+
+auto CollectionsDirectory() -> QString
+{
+    return VAbstractApplication::VApp()->Settings()->GetPathCollections();
 }
 
 auto LoadLogos() -> QList<LogoEntry>
@@ -464,6 +516,138 @@ auto UpdateClientMeta(const QString &id, const QString &name, const QString &mai
         entries.append(entry);
     }
     return SaveClients(entries, error);
+}
+
+auto LoadCollections(bool ascending) -> QList<CollectionEntry>
+{
+    QList<CollectionEntry> entries = ReadCollectionsMeta();
+    std::sort(entries.begin(), entries.end(),
+              [ascending](const CollectionEntry &a, const CollectionEntry &b) {
+                  if (a.year != b.year)
+                  {
+                      return ascending ? a.year < b.year : a.year > b.year;
+                  }
+                  return a.name.compare(b.name, Qt::CaseInsensitive) < 0;
+              });
+    return entries;
+}
+
+auto SaveCollections(const QList<CollectionEntry> &collections, QString *error) -> bool
+{
+    QDomDocument doc;
+    QDomElement root = doc.createElement(QStringLiteral("collections"));
+    doc.appendChild(root);
+    for (const CollectionEntry &entry : collections)
+    {
+        QDomElement el = doc.createElement(QStringLiteral("collection"));
+        el.setAttribute(QStringLiteral("id"), entry.id);
+
+        QDomElement name = doc.createElement(QStringLiteral("name"));
+        name.appendChild(doc.createTextNode(entry.name));
+        el.appendChild(name);
+
+        QDomElement year = doc.createElement(QStringLiteral("year"));
+        year.appendChild(doc.createTextNode(QString::number(entry.year)));
+        el.appendChild(year);
+
+        QDomElement period = doc.createElement(QStringLiteral("period"));
+        period.appendChild(doc.createTextNode(entry.period));
+        el.appendChild(period);
+
+        QDomElement description = doc.createElement(QStringLiteral("description"));
+        description.appendChild(doc.createTextNode(entry.description));
+        el.appendChild(description);
+
+        root.appendChild(el);
+    }
+
+    QSaveFile file(CollectionsMetaPath());
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        if (error != nullptr)
+        {
+            *error = file.errorString();
+        }
+        return false;
+    }
+    file.write(doc.toByteArray(2));
+    if (!file.commit())
+    {
+        if (error != nullptr)
+        {
+            *error = file.errorString();
+        }
+        return false;
+    }
+    return true;
+}
+
+auto AddCollection(QString *error) -> QString
+{
+    const QString dir = CollectionsDirectory();
+    if (!QDir().mkpath(dir))
+    {
+        if (error != nullptr)
+        {
+            *error = QStringLiteral("Cannot create the collections folder.");
+        }
+        return {};
+    }
+
+    CollectionEntry entry;
+    entry.id = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    entry.year = QDate::currentDate().year();
+    QList<CollectionEntry> entries = LoadCollections(false);
+    entries.append(entry);
+    if (!SaveCollections(entries, error))
+    {
+        return {};
+    }
+    return entry.id;
+}
+
+auto RemoveCollection(const QString &id, QString *error) -> bool
+{
+    QList<CollectionEntry> entries = LoadCollections(false);
+    const qsizetype oldCount = entries.size();
+    entries.erase(std::remove_if(entries.begin(), entries.end(),
+                                 [&id](const CollectionEntry &entry) { return entry.id == id; }),
+                  entries.end());
+    if (entries.size() != oldCount)
+    {
+        return SaveCollections(entries, error);
+    }
+    return true;
+}
+
+auto UpdateCollectionMeta(const QString &id, const QString &name, int year, const QString &period,
+                          const QString &description, QString *error) -> bool
+{
+    QList<CollectionEntry> entries = LoadCollections(false);
+    bool updated = false;
+    for (CollectionEntry &entry : entries)
+    {
+        if (entry.id == id)
+        {
+            entry.name = name;
+            entry.year = year;
+            entry.period = period;
+            entry.description = description;
+            updated = true;
+            break;
+        }
+    }
+    if (!updated)
+    {
+        CollectionEntry entry;
+        entry.id = id;
+        entry.name = name;
+        entry.year = year;
+        entry.period = period;
+        entry.description = description;
+        entries.append(entry);
+    }
+    return SaveCollections(entries, error);
 }
 
 auto ScanDirectory(const QString &dirPath) -> QStringList

@@ -42,6 +42,7 @@ class QListWidget;
 class QMenu;
 class QPlainTextEdit;
 class QPushButton;
+class QSpinBox;
 class QStackedWidget;
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -111,6 +112,18 @@ private:
     void OnClientInfoChanged();
     void PersistClients();
     void RefreshClientsList();
+    void SetupCollectionsPage();
+    void ShowCollectionsPage();
+    void OnAddCollection();
+    void OnRemoveCollection();
+    void OnCollectionSelected(QTreeWidgetItem *current);
+    void OnCollectionNameEdited(const QString &text);
+    void OnCollectionYearEdited(int year);
+    void OnCollectionPeriodEdited(const QString &text);
+    void OnCollectionDescriptionChanged();
+    void OnSortChanged();
+    void PersistCollections();
+    void RefreshCollectionsList();
     void RefreshSectionList();
     void SelectSection(int index);
     void RefreshPreview();
@@ -180,6 +193,26 @@ private:
     QLabel *m_historyPlaceholder{nullptr};
     QList<OPieceCartoucheStorage::ClientEntry> m_clientEntries;
     bool m_updatingClients{false};
+
+    // Collections page
+    QGroupBox *m_collectionEditGroup{nullptr};
+    QLabel *m_collectionNameLabel{nullptr};
+    QLabel *m_collectionYearLabel{nullptr};
+    QLabel *m_collectionPeriodLabel{nullptr};
+    QLabel *m_collectionDescriptionLabel{nullptr};
+    QPushButton *m_addCollectionBtn{nullptr};
+    QPushButton *m_removeCollectionBtn{nullptr};
+    QLabel *m_collectionsSortLabel{nullptr};
+    QComboBox *m_collectionsSortCombo{nullptr};
+    QTreeWidget *m_collectionsTree{nullptr};
+    QLineEdit *m_collectionNameEdit{nullptr};
+    QSpinBox *m_collectionYearSpin{nullptr};
+    QLineEdit *m_collectionPeriodEdit{nullptr};
+    QPlainTextEdit *m_collectionDescriptionEdit{nullptr};
+    QGroupBox *m_collectionsHistoryGroup{nullptr};
+    QLabel *m_collectionsHistoryPlaceholder{nullptr};
+    QList<OPieceCartoucheStorage::CollectionEntry> m_collectionEntries;
+    bool m_updatingCollections{false};
 };
 
 #endif // OINFOBLOCKEDITOR_H
