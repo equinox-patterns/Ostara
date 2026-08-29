@@ -29,6 +29,7 @@
 #include "../widgets/InfoBlock/OPieceCartoucheStorage.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vmisc/def.h"
+#include "../vmisc/FactoryWidgets.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
 
@@ -54,7 +55,7 @@ OPiecePatternStep::OPiecePatternStep(VAbstractPattern *doc, QWidget *parent)
 
     // Cartouche (template) — default from settings, "No cartouche" as an explicit option.
     OPieceCartoucheStorage::EnsureDefaultTemplate();
-    m_cartoucheCombo = new QComboBox();
+    m_cartoucheCombo = MakeComboBox(this);
     m_cartoucheCombo->addItem(tr("No cartouche"), QString());
     const QStringList templates = OPieceCartoucheStorage::ScanDirectory(OPieceCartoucheStorage::DefaultDirectory());
     const QString defaultName = VAbstractValApplication::VApp()->Settings()->GetDefaultCartoucheTemplate();
@@ -74,8 +75,34 @@ OPiecePatternStep::OPiecePatternStep(VAbstractPattern *doc, QWidget *parent)
     m_patternNameEdit = new QLineEdit(m_doc->GetPatternName());
     form->addRow(tr("Pattern name"), m_patternNameEdit);
 
-    m_clientEdit = new QLineEdit(m_doc->GetCustomer());
-    form->addRow(tr("Client"), m_clientEdit);
+    // Client — from the client library (Information block > Clients); "No client"
+    // as an explicit option. An unnamed client is not selectable. A customer
+    // already set on the document but absent from the library is kept selectable
+    // so accepting the dialog never silently drops it.
+    m_clientCombo = MakeComboBox(this);
+    m_clientCombo->addItem(tr("No client"), QString());
+    const QString currentClient = m_doc->GetCustomer();
+    const QList<OPieceCartoucheStorage::ClientEntry> clients = OPieceCartoucheStorage::LoadClients();
+    int clientIndex = 0;  // "No client"
+    for (const OPieceCartoucheStorage::ClientEntry &client : clients)
+    {
+        if (client.name.isEmpty())
+        {
+            continue;
+        }
+        m_clientCombo->addItem(client.name, client.name);
+        if (client.name == currentClient)
+        {
+            clientIndex = m_clientCombo->count() - 1;
+        }
+    }
+    if (!currentClient.isEmpty() && clientIndex == 0)
+    {
+        m_clientCombo->addItem(currentClient, currentClient);
+        clientIndex = m_clientCombo->count() - 1;
+    }
+    m_clientCombo->setCurrentIndex(clientIndex);
+    form->addRow(tr("Client"), m_clientCombo);
 
     m_collectionEdit = new QLineEdit(m_doc->GetCollection());
     form->addRow(tr("Collection"), m_collectionEdit);
@@ -123,7 +150,7 @@ auto OPiecePatternStep::GetPatternName() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto OPiecePatternStep::GetClient() const -> QString
 {
-    return m_clientEdit->text().trimmed();
+    return m_clientCombo->currentData().toString();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -62,7 +62,7 @@ private:
     VAbstractPattern *m_doc{nullptr};
     QComboBox *m_cartoucheCombo{nullptr};
     QLineEdit *m_patternNameEdit{nullptr};
-    QLineEdit *m_clientEdit{nullptr};
+    QComboBox *m_clientCombo{nullptr};
     QLineEdit *m_collectionEdit{nullptr};
     QPlainTextEdit *m_fabricInfoEdit{nullptr};
     QCheckBox *m_activateSACheck{nullptr};
