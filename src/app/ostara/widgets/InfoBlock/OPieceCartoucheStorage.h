@@ -45,6 +45,17 @@ struct LogoEntry
     QString notes;     ///< free-form notes
 };
 
+/// One client of the library: a stable id plus contact fields. All the data
+/// lives in a `clients.xml` metadata file (no per-client file).
+struct ClientEntry
+{
+    QString id;     ///< stable id, never changes (uuid)
+    QString name;   ///< display name
+    QString mail;   ///< e-mail
+    QString phone;  ///< phone number
+    QString info;   ///< free-form information
+};
+
 /// Default folder from settings (GetPathCartoucheTemplates).
 auto DefaultDirectory() -> QString;
 
@@ -72,6 +83,29 @@ auto RemoveLogo(const QString &fileName, QString *error = nullptr) -> bool;
 /// Returns false and fills `error` on failure.
 auto UpdateLogoMeta(const QString &fileName, const QString &name, const QString &notes,
                     QString *error = nullptr) -> bool;
+
+/// Default client library folder from settings (GetPathClients).
+auto ClientsDirectory() -> QString;
+
+/// List the client library, sorted by name.
+auto LoadClients() -> QList<ClientEntry>;
+
+/// Persist the client library (`clients.xml`, atomic write). Returns false and
+/// fills `error` on failure.
+auto SaveClients(const QList<ClientEntry> &clients, QString *error = nullptr) -> bool;
+
+/// Create a new empty client in the library. Returns its id, or an empty string
+/// on failure (with `error` filled).
+auto AddClient(QString *error = nullptr) -> QString;
+
+/// Remove a client from the library by id. Returns false and fills `error`
+/// on failure.
+auto RemoveClient(const QString &id, QString *error = nullptr) -> bool;
+
+/// Set the fields of one client (creates the entry if needed). Returns false and
+/// fills `error` on failure.
+auto UpdateClientMeta(const QString &id, const QString &name, const QString &mail,
+                      const QString &phone, const QString &info, QString *error = nullptr) -> bool;
 
 /// List of `.oct` files in the given folder (absolute paths), alphabetical.
 auto ScanDirectory(const QString &dirPath) -> QStringList;

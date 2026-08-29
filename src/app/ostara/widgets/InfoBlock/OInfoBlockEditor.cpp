@@ -77,6 +77,7 @@ void OInfoBlockEditor::SetupUI()
     m_menuList->addItem(tr("Existing templates"));
     m_menuList->addItem(tr("Create new"));
     m_menuList->addItem(tr("Logo"));
+    m_menuList->addItem(tr("Clients"));
     connect(m_menuList, &QListWidget::itemClicked, this, [this](QListWidgetItem *item) {
         const int row = m_menuList->row(item);
         if (row == 0)
@@ -91,6 +92,10 @@ void OInfoBlockEditor::SetupUI()
         {
             ShowLogosPage();
         }
+        else if (row == 3)
+        {
+            ShowClientsPage();
+        }
     });
     outer->addWidget(m_menuList);
 
@@ -98,6 +103,7 @@ void OInfoBlockEditor::SetupUI()
     SetupEditorPage();     // index 0
     SetupTemplatesPage();  // index 1
     SetupLogosPage();      // index 2
+    SetupClientsPage();    // index 3
     outer->addWidget(m_stack, 1);
 
     m_menuList->setCurrentRow(1);
@@ -110,7 +116,7 @@ void OInfoBlockEditor::RetranslateUI()
     // rebuild below (menu, section list) resolves in the new language.
     OPieceCartoucheCatalogue::InvalidateCache();
 
-    // Left menu — 3 fixed entries.
+    // Left menu — 4 fixed entries.
     if (m_menuList->count() > 0)
     {
         m_menuList->item(0)->setText(tr("Existing templates"));
@@ -122,6 +128,10 @@ void OInfoBlockEditor::RetranslateUI()
     if (m_menuList->count() > 2)
     {
         m_menuList->item(2)->setText(tr("Logo"));
+    }
+    if (m_menuList->count() > 3)
+    {
+        m_menuList->item(3)->setText(tr("Clients"));
     }
 
     // Editor page — top bar.
@@ -164,6 +174,26 @@ void OInfoBlockEditor::RetranslateUI()
     if (m_logoEntries.isEmpty() && m_logosTree->topLevelItemCount() > 0)
     {
         m_logosTree->topLevelItem(0)->setText(0, tr("No logos yet. Add one."));
+    }
+
+    // Clients page.
+    m_clientEditGroup->setTitle(tr("Client"));
+    m_clientNameLabel->setText(tr("Name:"));
+    m_clientMailLabel->setText(tr("Email:"));
+    m_clientPhoneLabel->setText(tr("Phone:"));
+    m_clientInfoLabel->setText(tr("Information:"));
+    m_clientNameEdit->setPlaceholderText(tr("Client name"));
+    m_clientMailEdit->setPlaceholderText(tr("Email"));
+    m_clientPhoneEdit->setPlaceholderText(tr("Phone"));
+    m_clientInfoEdit->setPlaceholderText(tr("Information"));
+    m_clientsTree->setHeaderLabels({tr("Name")});
+    m_addClientBtn->setText(tr("Add Client"));
+    m_removeClientBtn->setText(tr("Remove Client"));
+    m_historyGroup->setTitle(tr("History"));
+    m_historyPlaceholder->setText(tr("No associated patterns yet."));
+    if (m_clientEntries.isEmpty() && m_clientsTree->topLevelItemCount() > 0)
+    {
+        m_clientsTree->topLevelItem(0)->setText(0, tr("No clients yet. Add one."));
     }
 
     // Section names come from the catalogue — refresh the ordered list. Keep the
@@ -742,6 +772,299 @@ void OInfoBlockEditor::OnRemoveLogo()
     }
     ShowLogosPage();
     emit StatusMessage(tr("Logo removed"));
+}
+
+void OInfoBlockEditor::SetupClientsPage()
+{
+    auto *clientsPage = new QWidget();
+    auto *vbox = new QVBoxLayout(clientsPage);
+    vbox->setContentsMargins(8, 8, 8, 8);
+
+    auto *left = new QWidget();
+    auto *leftLayout = new QVBoxLayout(left);
+    leftLayout->setContentsMargins(0, 0, 0, 0);
+    leftLayout->setSpacing(4);
+
+    auto *listBar = new QHBoxLayout();
+    m_addClientBtn = new QPushButton(tr("Add Client"));
+    connect(m_addClientBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnAddClient);
+    listBar->addWidget(m_addClientBtn);
+    m_removeClientBtn = new QPushButton(tr("Remove Client"));
+    connect(m_removeClientBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnRemoveClient);
+    listBar->addWidget(m_removeClientBtn);
+    listBar->addStretch();
+    leftLayout->addLayout(listBar);
+
+    m_clientsTree = new QTreeWidget();
+    m_clientsTree->setColumnCount(1);
+    m_clientsTree->setHeaderLabels({tr("Name")});
+    m_clientsTree->setRootIsDecorated(false);
+    m_clientsTree->setUniformRowHeights(true);
+    connect(m_clientsTree, &QTreeWidget::currentItemChanged, this,
+            [this](QTreeWidgetItem *current, QTreeWidgetItem *previous) {
+                Q_UNUSED(previous)
+                OnClientSelected(current);
+            });
+    leftLayout->addWidget(m_clientsTree, 1);
+
+    m_clientEditGroup = new QGroupBox(tr("Client"));
+    auto *form = new QFormLayout(m_clientEditGroup);
+    m_clientNameEdit = new QLineEdit();
+    m_clientNameEdit->setPlaceholderText(tr("Client name"));
+    connect(m_clientNameEdit, &QLineEdit::textChanged, this, &OInfoBlockEditor::OnClientNameEdited);
+    m_clientNameLabel = new QLabel(tr("Name:"));
+    form->addRow(m_clientNameLabel, m_clientNameEdit);
+    m_clientMailEdit = new QLineEdit();
+    m_clientMailEdit->setPlaceholderText(tr("Email"));
+    connect(m_clientMailEdit, &QLineEdit::textChanged, this, &OInfoBlockEditor::OnClientMailEdited);
+    m_clientMailLabel = new QLabel(tr("Email:"));
+    form->addRow(m_clientMailLabel, m_clientMailEdit);
+    m_clientPhoneEdit = new QLineEdit();
+    m_clientPhoneEdit->setPlaceholderText(tr("Phone"));
+    connect(m_clientPhoneEdit, &QLineEdit::textChanged, this, &OInfoBlockEditor::OnClientPhoneEdited);
+    m_clientPhoneLabel = new QLabel(tr("Phone:"));
+    form->addRow(m_clientPhoneLabel, m_clientPhoneEdit);
+    m_clientInfoEdit = new QPlainTextEdit();
+    m_clientInfoEdit->setPlaceholderText(tr("Information"));
+    m_clientInfoEdit->setFixedHeight(70);
+    connect(m_clientInfoEdit, &QPlainTextEdit::textChanged, this, &OInfoBlockEditor::OnClientInfoChanged);
+    m_clientInfoLabel = new QLabel(tr("Information:"));
+    form->addRow(m_clientInfoLabel, m_clientInfoEdit);
+    leftLayout->addWidget(m_clientEditGroup);
+
+    m_historyGroup = new QGroupBox(tr("History"));
+    auto *historyLayout = new QVBoxLayout(m_historyGroup);
+    m_historyPlaceholder = new QLabel(tr("No associated patterns yet."));
+    m_historyPlaceholder->setAlignment(Qt::AlignCenter);
+    m_historyPlaceholder->setWordWrap(true);
+    historyLayout->addWidget(m_historyPlaceholder, 1);
+    // The pattern list appears here once the pattern library exists
+    // (spec clients.md §3, Historique — for now always empty).
+
+    auto *splitter = new QSplitter(Qt::Horizontal);
+    splitter->addWidget(left);
+    splitter->addWidget(m_historyGroup);
+    splitter->setStretchFactor(0, 1);
+    splitter->setStretchFactor(1, 1);
+    splitter->setSizes({400, 400});  // 50/50 at open — ratio kept on window resize
+    vbox->addWidget(splitter, 1);
+
+    m_stack->addWidget(clientsPage);
+}
+
+void OInfoBlockEditor::ShowClientsPage()
+{
+    m_clientEntries = OPieceCartoucheStorage::LoadClients();
+    RefreshClientsList();
+    m_clientsTree->setCurrentItem(nullptr);
+    OnClientSelected(nullptr);
+    m_stack->setCurrentIndex(3);
+}
+
+void OInfoBlockEditor::RefreshClientsList()
+{
+    m_clientsTree->clear();
+    if (m_clientEntries.isEmpty())
+    {
+        auto *item = new QTreeWidgetItem();
+        item->setText(0, tr("No clients yet. Add one."));
+        item->setFlags(Qt::NoItemFlags);
+        m_clientsTree->addTopLevelItem(item);
+        return;
+    }
+    for (const OPieceCartoucheStorage::ClientEntry &entry : m_clientEntries)
+    {
+        auto *item = new QTreeWidgetItem();
+        item->setText(0, entry.name.isEmpty() ? tr("(unnamed)") : entry.name);
+        item->setData(0, Qt::UserRole, entry.id);
+        m_clientsTree->addTopLevelItem(item);
+    }
+}
+
+void OInfoBlockEditor::OnClientSelected(QTreeWidgetItem *current)
+{
+    m_updatingClients = true;
+    if (current == nullptr)
+    {
+        m_clientNameEdit->clear();
+        m_clientMailEdit->clear();
+        m_clientPhoneEdit->clear();
+        m_clientInfoEdit->clear();
+    }
+    else
+    {
+        const QString id = current->data(0, Qt::UserRole).toString();
+        for (const OPieceCartoucheStorage::ClientEntry &entry : m_clientEntries)
+        {
+            if (entry.id == id)
+            {
+                m_clientNameEdit->setText(entry.name);
+                m_clientMailEdit->setText(entry.mail);
+                m_clientPhoneEdit->setText(entry.phone);
+                m_clientInfoEdit->setPlainText(entry.info);
+                break;
+            }
+        }
+    }
+    m_updatingClients = false;
+}
+
+void OInfoBlockEditor::OnClientNameEdited(const QString &text)
+{
+    if (m_updatingClients)
+    {
+        return;
+    }
+    QTreeWidgetItem *item = m_clientsTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString id = item->data(0, Qt::UserRole).toString();
+    for (OPieceCartoucheStorage::ClientEntry &entry : m_clientEntries)
+    {
+        if (entry.id == id)
+        {
+            entry.name = text;
+            item->setText(0, text.isEmpty() ? tr("(unnamed)") : text);
+            break;
+        }
+    }
+    PersistClients();
+}
+
+void OInfoBlockEditor::OnClientMailEdited(const QString &text)
+{
+    if (m_updatingClients)
+    {
+        return;
+    }
+    QTreeWidgetItem *item = m_clientsTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString id = item->data(0, Qt::UserRole).toString();
+    for (OPieceCartoucheStorage::ClientEntry &entry : m_clientEntries)
+    {
+        if (entry.id == id)
+        {
+            entry.mail = text;
+            break;
+        }
+    }
+    PersistClients();
+}
+
+void OInfoBlockEditor::OnClientPhoneEdited(const QString &text)
+{
+    if (m_updatingClients)
+    {
+        return;
+    }
+    QTreeWidgetItem *item = m_clientsTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString id = item->data(0, Qt::UserRole).toString();
+    for (OPieceCartoucheStorage::ClientEntry &entry : m_clientEntries)
+    {
+        if (entry.id == id)
+        {
+            entry.phone = text;
+            break;
+        }
+    }
+    PersistClients();
+}
+
+void OInfoBlockEditor::OnClientInfoChanged()
+{
+    if (m_updatingClients)
+    {
+        return;
+    }
+    QTreeWidgetItem *item = m_clientsTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString id = item->data(0, Qt::UserRole).toString();
+    const QString info = m_clientInfoEdit->toPlainText();
+    for (OPieceCartoucheStorage::ClientEntry &entry : m_clientEntries)
+    {
+        if (entry.id == id)
+        {
+            entry.info = info;
+            break;
+        }
+    }
+    PersistClients();
+}
+
+void OInfoBlockEditor::PersistClients()
+{
+    QString err;
+    if (!OPieceCartoucheStorage::SaveClients(m_clientEntries, &err))
+    {
+        QMessageBox::critical(this, tr("Client"), err);
+    }
+}
+
+void OInfoBlockEditor::OnAddClient()
+{
+    QString err;
+    const QString newId = OPieceCartoucheStorage::AddClient(&err);
+    if (newId.isEmpty())
+    {
+        QMessageBox::critical(this, tr("Add Client"), err);
+        return;
+    }
+
+    ShowClientsPage();
+    // Select the freshly added client.
+    for (int i = 0; i < m_clientsTree->topLevelItemCount(); ++i)
+    {
+        QTreeWidgetItem *item = m_clientsTree->topLevelItem(i);
+        if (item->data(0, Qt::UserRole).toString() == newId)
+        {
+            m_clientsTree->setCurrentItem(item);
+            m_clientNameEdit->setFocus();
+            break;
+        }
+    }
+    emit StatusMessage(tr("Client added"));
+}
+
+void OInfoBlockEditor::OnRemoveClient()
+{
+    QTreeWidgetItem *item = m_clientsTree->currentItem();
+    if (item == nullptr)
+    {
+        return;
+    }
+    const QString id = item->data(0, Qt::UserRole).toString();
+    if (id.isEmpty())
+    {
+        return;  // the empty-state hint item
+    }
+
+    const auto answer = QMessageBox::question(
+        this, tr("Remove Client"), tr("Remove the client \"%1\" from the library?").arg(item->text(0)));
+    if (answer != QMessageBox::Yes)
+    {
+        return;
+    }
+
+    QString err;
+    if (!OPieceCartoucheStorage::RemoveClient(id, &err))
+    {
+        QMessageBox::critical(this, tr("Client"), err);
+        return;
+    }
+    ShowClientsPage();
+    emit StatusMessage(tr("Client removed"));
 }
 
 void OInfoBlockEditor::NewTemplate()

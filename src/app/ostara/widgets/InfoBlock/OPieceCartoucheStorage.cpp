@@ -38,6 +38,7 @@
 #include <QHash>
 #include <QList>
 #include <QSaveFile>
+#include <QUuid>
 
 #include <algorithm>
 
@@ -102,6 +103,51 @@ QList<OPieceCartoucheStorage::LogoEntry> ReadLogosMeta()
     }
     return entries;
 }
+
+/// Path of the client library metadata file.
+QString ClientsMetaPath()
+{
+    return OPieceCartoucheStorage::ClientsDirectory() + QLatin1Char('/') + QStringLiteral("clients.xml");
+}
+
+/// Read the client library metadata (`clients.xml`). Missing or malformed file → empty list.
+QList<OPieceCartoucheStorage::ClientEntry> ReadClientsMeta()
+{
+    QList<OPieceCartoucheStorage::ClientEntry> entries;
+    QFile file(ClientsMetaPath());
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        return entries;
+    }
+
+    QDomDocument doc;
+    if (!doc.setContent(&file))
+    {
+        return entries;
+    }
+
+    const QDomElement root = doc.documentElement();
+    if (root.tagName() != QStringLiteral("clients"))
+    {
+        return entries;
+    }
+
+    for (QDomElement el = root.firstChildElement(QStringLiteral("client")); !el.isNull();
+         el = el.nextSiblingElement(QStringLiteral("client")))
+    {
+        OPieceCartoucheStorage::ClientEntry entry;
+        entry.id = el.attribute(QStringLiteral("id"));
+        entry.name = el.firstChildElement(QStringLiteral("name")).text();
+        entry.mail = el.firstChildElement(QStringLiteral("mail")).text();
+        entry.phone = el.firstChildElement(QStringLiteral("phone")).text();
+        entry.info = el.firstChildElement(QStringLiteral("info")).text();
+        if (!entry.id.isEmpty())
+        {
+            entries.append(entry);
+        }
+    }
+    return entries;
+}
 }  // namespace
 
 namespace OPieceCartoucheStorage
@@ -114,6 +160,11 @@ auto DefaultDirectory() -> QString
 auto LogosDirectory() -> QString
 {
     return VAbstractApplication::VApp()->Settings()->GetPathLogos();
+}
+
+auto ClientsDirectory() -> QString
+{
+    return VAbstractApplication::VApp()->Settings()->GetPathClients();
 }
 
 auto LoadLogos() -> QList<LogoEntry>
@@ -286,6 +337,133 @@ auto UpdateLogoMeta(const QString &fileName, const QString &name, const QString 
         entries.append(entry);
     }
     return SaveLogos(entries, error);
+}
+
+auto LoadClients() -> QList<ClientEntry>
+{
+    QList<ClientEntry> entries = ReadClientsMeta();
+    std::sort(entries.begin(), entries.end(),
+              [](const ClientEntry &a, const ClientEntry &b) {
+                  return a.name.compare(b.name, Qt::CaseInsensitive) < 0;
+              });
+    return entries;
+}
+
+auto SaveClients(const QList<ClientEntry> &clients, QString *error) -> bool
+{
+    QDomDocument doc;
+    QDomElement root = doc.createElement(QStringLiteral("clients"));
+    doc.appendChild(root);
+    for (const ClientEntry &entry : clients)
+    {
+        QDomElement el = doc.createElement(QStringLiteral("client"));
+        el.setAttribute(QStringLiteral("id"), entry.id);
+
+        QDomElement name = doc.createElement(QStringLiteral("name"));
+        name.appendChild(doc.createTextNode(entry.name));
+        el.appendChild(name);
+
+        QDomElement mail = doc.createElement(QStringLiteral("mail"));
+        mail.appendChild(doc.createTextNode(entry.mail));
+        el.appendChild(mail);
+
+        QDomElement phone = doc.createElement(QStringLiteral("phone"));
+        phone.appendChild(doc.createTextNode(entry.phone));
+        el.appendChild(phone);
+
+        QDomElement info = doc.createElement(QStringLiteral("info"));
+        info.appendChild(doc.createTextNode(entry.info));
+        el.appendChild(info);
+
+        root.appendChild(el);
+    }
+
+    QSaveFile file(ClientsMetaPath());
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        if (error != nullptr)
+        {
+            *error = file.errorString();
+        }
+        return false;
+    }
+    file.write(doc.toByteArray(2));
+    if (!file.commit())
+    {
+        if (error != nullptr)
+        {
+            *error = file.errorString();
+        }
+        return false;
+    }
+    return true;
+}
+
+auto AddClient(QString *error) -> QString
+{
+    const QString dir = ClientsDirectory();
+    if (!QDir().mkpath(dir))
+    {
+        if (error != nullptr)
+        {
+            *error = QStringLiteral("Cannot create the clients folder.");
+        }
+        return {};
+    }
+
+    ClientEntry entry;
+    entry.id = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    QList<ClientEntry> entries = LoadClients();
+    entries.append(entry);
+    if (!SaveClients(entries, error))
+    {
+        return {};
+    }
+    return entry.id;
+}
+
+auto RemoveClient(const QString &id, QString *error) -> bool
+{
+    QList<ClientEntry> entries = LoadClients();
+    const qsizetype oldCount = entries.size();
+    entries.erase(std::remove_if(entries.begin(), entries.end(),
+                                 [&id](const ClientEntry &entry) { return entry.id == id; }),
+                  entries.end());
+    if (entries.size() != oldCount)
+    {
+        return SaveClients(entries, error);
+    }
+    return true;
+}
+
+auto UpdateClientMeta(const QString &id, const QString &name, const QString &mail, const QString &phone,
+                      const QString &info, QString *error) -> bool
+{
+    QList<ClientEntry> entries = LoadClients();
+    bool updated = false;
+    for (ClientEntry &entry : entries)
+    {
+        if (entry.id == id)
+        {
+            entry.name = name;
+            entry.mail = mail;
+            entry.phone = phone;
+            entry.info = info;
+            updated = true;
+            break;
+        }
+    }
+    if (!updated)
+    {
+        ClientEntry entry;
+        entry.id = id;
+        entry.name = name;
+        entry.mail = mail;
+        entry.phone = phone;
+        entry.info = info;
+        entries.append(entry);
+    }
+    return SaveClients(entries, error);
 }
 
 auto ScanDirectory(const QString &dirPath) -> QStringList

@@ -88,18 +88,29 @@ private:
     void OnRemoveLanguage(const QString &code);
     void SetupTemplatesPage();
     void SetupLogosPage();
+    void SetupClientsPage();
     void NewTemplate();
     void ShowTemplatesList();
     void ShowLogosPage();
+    void ShowClientsPage();
     void LoadFile(const QString &filePath);
     void OnAddSection(const QString &typeId);
     void OnAddLogo();
     void OnRemoveLogo();
+    void OnAddClient();
+    void OnRemoveClient();
     void OnLogoSelected(QTreeWidgetItem *current);
     void OnLogoNameEdited(const QString &text);
     void OnLogoNotesChanged();
     void PersistLogos();
     void RefreshLogosList();
+    void OnClientSelected(QTreeWidgetItem *current);
+    void OnClientNameEdited(const QString &text);
+    void OnClientMailEdited(const QString &text);
+    void OnClientPhoneEdited(const QString &text);
+    void OnClientInfoChanged();
+    void PersistClients();
+    void RefreshClientsList();
     void RefreshSectionList();
     void SelectSection(int index);
     void RefreshPreview();
@@ -151,6 +162,24 @@ private:
     OLogoPreview *m_logoPreview{nullptr};
     QList<OPieceCartoucheStorage::LogoEntry> m_logoEntries;
     bool m_updatingLogos{false};
+
+    // Clients page
+    QGroupBox *m_clientEditGroup{nullptr};
+    QLabel *m_clientNameLabel{nullptr};
+    QLabel *m_clientMailLabel{nullptr};
+    QLabel *m_clientPhoneLabel{nullptr};
+    QLabel *m_clientInfoLabel{nullptr};
+    QPushButton *m_addClientBtn{nullptr};
+    QPushButton *m_removeClientBtn{nullptr};
+    QTreeWidget *m_clientsTree{nullptr};
+    QLineEdit *m_clientNameEdit{nullptr};
+    QLineEdit *m_clientMailEdit{nullptr};
+    QLineEdit *m_clientPhoneEdit{nullptr};
+    QPlainTextEdit *m_clientInfoEdit{nullptr};
+    QGroupBox *m_historyGroup{nullptr};
+    QLabel *m_historyPlaceholder{nullptr};
+    QList<OPieceCartoucheStorage::ClientEntry> m_clientEntries;
+    bool m_updatingClients{false};
 };
 
 #endif // OINFOBLOCKEDITOR_H

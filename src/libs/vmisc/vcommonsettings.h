@@ -102,6 +102,9 @@ public:
     auto GetPathLogos() const -> QString;
     void SetPathLogos(const QString &value) const;
 
+    auto GetPathClients() const -> QString;
+    void SetPathClients(const QString &value) const;
+
     auto GetMeasurementFavorites() const -> QStringList;
     void SetMeasurementFavorites(const QStringList &value) const;
 
