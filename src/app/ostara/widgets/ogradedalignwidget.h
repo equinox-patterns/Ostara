@@ -52,6 +52,9 @@ public:
     void SetAlignV(int value);
     auto GetAlignV() const -> int;
 
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) override;
+
 private:
     void RefreshAlignIcons();
 

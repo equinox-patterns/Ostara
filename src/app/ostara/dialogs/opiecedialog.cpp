@@ -59,13 +59,17 @@ OPieceDialog::OPieceDialog(const VContainer *data, VAbstractPattern *doc, quint3
 
     auto *buttonRow = new QHBoxLayout();
     buttonRow->addStretch();
-    m_skipButton = new QPushButton(tr("Skip"));
+    // Cancel aborts the whole tool: the collected contour is discarded, no piece is
+    // created and the tool returns to idle (DialogRejected → DialogClosed(Rejected)
+    // → CancelTool in the MainWindow). The pattern fields stay uncommitted — they are
+    // only written on acceptance.
+    m_cancelButton = new QPushButton(tr("Cancel"));
     m_nextButton = new QPushButton(tr("Next"));
     m_okButton = new QPushButton(tr("OK"));
     bOk = m_okButton;
-    m_skipButton->setAutoDefault(false);
+    m_cancelButton->setAutoDefault(false);
     m_nextButton->setAutoDefault(false);
-    buttonRow->addWidget(m_skipButton);
+    buttonRow->addWidget(m_cancelButton);
     buttonRow->addWidget(m_nextButton);
     buttonRow->addWidget(m_okButton);
 
@@ -73,7 +77,7 @@ OPieceDialog::OPieceDialog(const VContainer *data, VAbstractPattern *doc, quint3
     mainLayout->addWidget(m_stack);
     mainLayout->addLayout(buttonRow);
 
-    connect(m_skipButton, &QPushButton::clicked, this, &OPieceDialog::OnPatternSkip);
+    connect(m_cancelButton, &QPushButton::clicked, this, &DialogTool::DialogRejected);
     connect(m_nextButton, &QPushButton::clicked, this, &OPieceDialog::OnPatternNext);
     connect(m_okButton, &QPushButton::clicked, this, &OPieceDialog::DialogAccepted);
 
@@ -226,8 +230,8 @@ void OPieceDialog::BuildPreviewPiece()
 //---------------------------------------------------------------------------------------------------------------------
 void OPieceDialog::UpdateButtons()
 {
+    // Cancel stays available on both pages: aborting the tool is always possible.
     const bool patternPage = m_stack->currentWidget() == m_patternStep;
-    m_skipButton->setVisible(patternPage);
     m_nextButton->setVisible(patternPage);
     m_okButton->setVisible(not patternPage);
 }
@@ -237,15 +241,6 @@ void OPieceDialog::OnPatternNext()
 {
     // Pattern fields are committed on acceptance (DialogAccepted), not here:
     // Next alone must not leave the document modified if the user then cancels.
-    m_patternCommitted = true;
-    m_stack->setCurrentWidget(m_pieceStep);
-    UpdateButtons();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void OPieceDialog::OnPatternSkip()
-{
-    // Skip commits nothing (defaults stay); only the pattern step is left.
     m_patternCommitted = true;
     m_stack->setCurrentWidget(m_pieceStep);
     UpdateButtons();

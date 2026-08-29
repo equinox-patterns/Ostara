@@ -34,6 +34,7 @@
 #include <QFontMetrics>
 #include <QFormLayout>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QSpinBox>
@@ -92,14 +93,16 @@ OPiecePieceStep::OPiecePieceStep(QWidget *parent)
 void OPiecePieceStep::InitCutTab(const QString &title, QSpinBox **qtySpin, QCheckBox **onFoldCheck)
 {
     auto *page = new QWidget();
-    auto *layout = new QFormLayout(page);
+    auto *layout = new QHBoxLayout(page);
 
+    // Quantity + spin + on-fold flag on a single row.
+    layout->addWidget(new QLabel(tr("Quantity")));
     *qtySpin = new QSpinBox();
     (*qtySpin)->setRange(0, 99);
-    layout->addRow(tr("Quantity"), *qtySpin);
-
+    layout->addWidget(*qtySpin);
     *onFoldCheck = new QCheckBox(tr("On fold"));
-    layout->addRow(*onFoldCheck);
+    layout->addWidget(*onFoldCheck);
+    layout->addStretch();
 
     m_cutTabs->addTab(page, title);
 }

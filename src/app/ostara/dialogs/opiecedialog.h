@@ -73,13 +73,12 @@ private:
     void BuildPreviewPiece();
     void UpdateButtons();
     void OnPatternNext();
-    void OnPatternSkip();
 
     OPieceAutomation m_automation{&data};
     OPiecePatternStep *m_patternStep{nullptr};
     OPiecePieceStep *m_pieceStep{nullptr};
     QStackedWidget *m_stack{nullptr};
-    QPushButton *m_skipButton{nullptr};
+    QPushButton *m_cancelButton{nullptr};
     QPushButton *m_nextButton{nullptr};
     QPushButton *m_okButton{nullptr};
     bool m_patternCommitted{false};
