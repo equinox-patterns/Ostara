@@ -63,7 +63,7 @@ private:
     QComboBox *m_cartoucheCombo{nullptr};
     QLineEdit *m_patternNameEdit{nullptr};
     QComboBox *m_clientCombo{nullptr};
-    QLineEdit *m_collectionEdit{nullptr};
+    QComboBox *m_collectionCombo{nullptr};
     QPlainTextEdit *m_fabricInfoEdit{nullptr};
     QCheckBox *m_activateSACheck{nullptr};
     QCheckBox *m_hideMainPathCheck{nullptr};

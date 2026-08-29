@@ -104,8 +104,36 @@ OPiecePatternStep::OPiecePatternStep(VAbstractPattern *doc, QWidget *parent)
     m_clientCombo->setCurrentIndex(clientIndex);
     form->addRow(tr("Client"), m_clientCombo);
 
-    m_collectionEdit = new QLineEdit(m_doc->GetCollection());
-    form->addRow(tr("Collection"), m_collectionEdit);
+    // Collection — from the collection library (Information block > Collections),
+    // shown in the user's chosen year order; "No collection" as an explicit
+    // option. An unnamed collection is not selectable. A collection already set
+    // on the document but absent from the library is kept selectable so
+    // accepting the dialog never silently drops it.
+    m_collectionCombo = MakeComboBox(this);
+    m_collectionCombo->addItem(tr("No collection"), QString());
+    const QString currentCollection = m_doc->GetCollection();
+    const bool ascending = VAbstractValApplication::VApp()->Settings()->GetCollectionsSortAscending();
+    const QList<OPieceCartoucheStorage::CollectionEntry> collections = OPieceCartoucheStorage::LoadCollections(ascending);
+    int collectionIndex = 0;  // "No collection"
+    for (const OPieceCartoucheStorage::CollectionEntry &collection : collections)
+    {
+        if (collection.name.isEmpty())
+        {
+            continue;
+        }
+        m_collectionCombo->addItem(collection.name, collection.name);
+        if (collection.name == currentCollection)
+        {
+            collectionIndex = m_collectionCombo->count() - 1;
+        }
+    }
+    if (!currentCollection.isEmpty() && collectionIndex == 0)
+    {
+        m_collectionCombo->addItem(currentCollection, currentCollection);
+        collectionIndex = m_collectionCombo->count() - 1;
+    }
+    m_collectionCombo->setCurrentIndex(collectionIndex);
+    form->addRow(tr("Collection"), m_collectionCombo);
 
     // Fabric info — grows with its content (3 visible lines minimum).
     m_fabricInfoEdit = new QPlainTextEdit(m_doc->GetFabricInfo());
@@ -156,7 +184,7 @@ auto OPiecePatternStep::GetClient() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto OPiecePatternStep::GetCollection() const -> QString
 {
-    return m_collectionEdit->text().trimmed();
+    return m_collectionCombo->currentData().toString();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
