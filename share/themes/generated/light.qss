@@ -7,12 +7,12 @@
    See design-system.md §6 for QScrollArea viewport (C++ workaround, not QSS). */
 
 /* =========================================================================
-   GLOBAL — Police de base (Inter, 15px)
+   GLOBAL — Police de base (Inter, 14px)
    ========================================================================= */
 
 QWidget {
     font-family: "Inter";
-    font-size: 15px;
+    font-size: 14px;
 }
 
 /* =========================================================================
