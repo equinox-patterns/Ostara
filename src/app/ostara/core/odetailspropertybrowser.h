@@ -32,9 +32,9 @@
 #include <QObject>
 
 class QDockWidget;
-class QLabel;
 class QStackedWidget;
 class ODetailsPieceWidget;
+class OPatternInfoWidget;
 class QScrollArea;
 class VToolSeamAllowance;
 
@@ -82,7 +82,7 @@ private:
 
     QStackedWidget *m_stack{nullptr};
     ODetailsPieceWidget *m_pieceWidget{nullptr};
-    QLabel *m_emptyLabel{nullptr};
+    OPatternInfoWidget *m_patternInfoWidget{nullptr};
     QScrollArea *m_scroll{nullptr};
 };
 

@@ -28,6 +28,7 @@
 #define ODETAILSPIECEWIDGET_H
 
 #include <QColor>
+#include <QPointer>
 #include <QSet>
 #include <QWidget>
 
@@ -40,11 +41,11 @@ class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
-class QSpinBox;
 class QTabWidget;
 class ODetailsFoldLineWidget;
 class ODetailsGrainlineWidget;
 class ODetailsSeamAllowanceWidget;
+class OPieceInfoWidget;
 class VToolSeamAllowance;
 
 class ODetailsPieceWidget : public QWidget
@@ -95,9 +96,8 @@ private:
     // General tab
     QLineEdit *m_nameEdit{nullptr};
     QLabel *m_nameLabel{nullptr};
-    QSpinBox *m_pieceNumberSpin{nullptr};
-    QLabel *m_numberLabel{nullptr};
-    QLabel *m_pieceTotalLabel{nullptr};
+    OPieceInfoWidget *m_pieceInfoWidget{nullptr};
+    QGroupBox *m_pieceGroupBox{nullptr};
     QGroupBox *m_alignGroupBox{nullptr};
     QLabel *m_alignHLabel{nullptr};
     QLabel *m_alignVLabel{nullptr};
@@ -126,8 +126,9 @@ private:
     void OnRemovePassmarks();
 
     QTabWidget *m_tabWidget{nullptr};
+    QTabWidget *m_infoSubTabs{nullptr}; // Information tab placeholder (content to be defined)
 
-    VToolSeamAllowance *m_currentTool{nullptr};
+    QPointer<VToolSeamAllowance> m_currentTool;
     quint32 m_pieceId{0};
     bool m_updating{false};
     VPiece m_pendingDet{};

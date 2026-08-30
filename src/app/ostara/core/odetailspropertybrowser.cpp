@@ -27,9 +27,9 @@
 #include "odetailspropertybrowser.h"
 
 #include "odetailspiecewidget.h"
+#include "opatterninfowidget.h"
 
 #include <QDockWidget>
-#include <QLabel>
 #include <QScrollArea>
 #include <QStackedWidget>
 #include <QStyle>
@@ -65,17 +65,12 @@ public:
 ODetailsPropertyBrowser::ODetailsPropertyBrowser(QWidget *parent)
   : QObject(parent)
 {
-    // ── Contextual stack — empty page shown until a piece (or point / place label / group) is selected ──
+    // ── Contextual stack — pattern information page shown until a piece (or point / place label / group) is selected ──
     m_stack = new QStackedWidget();
 
-    auto *emptyPage = new QWidget(m_stack);
-    auto *emptyLayout = new QVBoxLayout(emptyPage);
-    emptyLayout->setContentsMargins(0, 0, 0, 0);
-    m_emptyLabel = new QLabel(tr("Select a piece"), emptyPage);
-    m_emptyLabel->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
-    emptyLayout->addWidget(m_emptyLabel);
-    emptyLayout->addStretch();
-    m_stack->addWidget(emptyPage);
+    // Pattern information page — pattern name, client, collection, fabric info.
+    m_patternInfoWidget = new OPatternInfoWidget(m_stack);
+    m_stack->addWidget(m_patternInfoWidget);
 
     // Piece page — the contextual property browser for a selected piece.
     m_pieceWidget = new ODetailsPieceWidget(m_stack);
@@ -111,7 +106,7 @@ QWidget *ODetailsPropertyBrowser::widget() const
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPropertyBrowser::RetranslateUI()
 {
-    m_emptyLabel->setText(tr("Select a piece"));
+    m_patternInfoWidget->RetranslateUI();
     m_pieceWidget->RetranslateUI();
 }
 

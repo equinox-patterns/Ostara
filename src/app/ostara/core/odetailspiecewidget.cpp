@@ -29,6 +29,7 @@
 #include "odetailsfoldlinewidget.h"
 #include "odetailsgrainlinewidget.h"
 #include "odetailsseamallowancewidget.h"
+#include "opieceinfowidget.h"
 
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractapplication.h"
@@ -56,7 +57,6 @@
 #include <QPointer>
 #include <QPushButton>
 #include <QSize>
-#include <QSpinBox>
 #include <QTabWidget>
 #include <QTimer>
 #include <QUndoStack>
@@ -127,27 +127,21 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         tab->setFrameStyle(QFrame::NoFrame);
         tab->setObjectName(QStringLiteral("detailsOptionsTabPage"));
         auto *layout = new QVBoxLayout(tab);
-        auto *form = new QFormLayout();
 
+        // Piece information group — name, number, cut, free text.
+        m_pieceGroupBox = new QGroupBox(tr("Piece"), tab);
+        auto *pieceLayout = new QVBoxLayout(m_pieceGroupBox);
+
+        auto *form = new QFormLayout();
         m_nameEdit = new QLineEdit();
         form->addRow(tr("Name"), m_nameEdit);
         m_nameLabel = qobject_cast<QLabel *>(form->labelForField(m_nameEdit));
+        pieceLayout->addLayout(form);
 
-        auto *numberRow = new QHBoxLayout();
-        numberRow->setSpacing(4);
-        m_pieceNumberSpin = new QSpinBox();
-        m_pieceNumberSpin->setRange(0, 99);
-        m_pieceNumberSpin->setSpecialValueText(QStringLiteral("—"));
-        // Number is a placeholder until OPieceCartouche (Phase C) provides the backend.
-        m_pieceNumberSpin->setEnabled(false);
-        numberRow->addWidget(m_pieceNumberSpin);
-        m_pieceTotalLabel = new QLabel(tr("/ auto total"));
-        numberRow->addWidget(m_pieceTotalLabel);
-        numberRow->addStretch();
-        form->addRow(tr("Number"), numberRow);
-        m_numberLabel = qobject_cast<QLabel *>(form->labelForField(numberRow));
+        m_pieceInfoWidget = new OPieceInfoWidget(m_pieceGroupBox);
+        pieceLayout->addWidget(m_pieceInfoWidget);
 
-        layout->addLayout(form);
+        layout->addWidget(m_pieceGroupBox);
 
         // Graded alignment
         m_alignGroupBox = new QGroupBox(tr("Graded alignment"));
@@ -248,6 +242,22 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         m_tabWidget->addTab(tab, tr("Seam Allowance"));
     }
 
+    // ── Information tab — placeholder. Its own sub-tabs (cartouche content,
+    //    annotations, thumbnail, blocks) are defined in a later iteration. ──
+    {
+        auto *tab = new QFrame();
+        tab->setFrameStyle(QFrame::NoFrame);
+        tab->setObjectName(QStringLiteral("detailsOptionsTabPage"));
+        auto *layout = new QVBoxLayout(tab);
+        layout->setContentsMargins(0, 0, 0, 0);
+
+        m_infoSubTabs = new QTabWidget();
+        m_infoSubTabs->setObjectName(QStringLiteral("informationTabWidget"));
+        layout->addWidget(m_infoSubTabs);
+
+        m_tabWidget->addTab(tab, tr("Information"));
+    }
+
     mainLayout->addWidget(m_tabWidget);
 
     ConnectControls();
@@ -263,11 +273,11 @@ void ODetailsPieceWidget::RetranslateUI()
     {
         m_nameLabel->setText(tr("Name"));
     }
-    if (m_numberLabel)
+    m_pieceInfoWidget->RetranslateUI();
+    if (m_pieceGroupBox)
     {
-        m_numberLabel->setText(tr("Number"));
+        m_pieceGroupBox->setTitle(tr("Piece"));
     }
-    m_pieceTotalLabel->setText(tr("/ auto total"));
     if (m_alignGroupBox)
     {
         m_alignGroupBox->setTitle(tr("Graded alignment"));
@@ -293,6 +303,7 @@ void ODetailsPieceWidget::RetranslateUI()
     m_tabWidget->setTabText(0, tr("General"));
     m_tabWidget->setTabText(1, tr("Grainline"));
     m_tabWidget->setTabText(2, tr("Seam Allowance"));
+    m_tabWidget->setTabText(3, tr("Information"));
 
     // Sub-widgets (Grainline tab, Fold line, Seam Allowance)
     m_grainlineWidget->RetranslateUI();
@@ -306,6 +317,7 @@ void ODetailsPieceWidget::ConnectControls()
     // Sub-widgets commit through the same snapshot + undo pipeline as the General tab.
     m_grainlineWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
     m_foldlineWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
+    m_pieceInfoWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
     connect(m_foldlineWidget, &ODetailsFoldLineWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);
     connect(m_foldlineWidget, &ODetailsFoldLineWidget::HighlightNode, this,
             [this](quint32 nodeId, bool highlight)
@@ -333,6 +345,17 @@ void ODetailsPieceWidget::ConnectControls()
         {
             if (!currentTool)
             {
+                // The captured tool died. Clear the stale page only when nothing
+                // else is selected; a replacement tool already repopulated it.
+                if (!m_currentTool)
+                {
+                    Clear();
+                }
+                return;
+            }
+            if (currentTool != m_currentTool)
+            {
+                // The selection moved to another tool: the current page is up to date.
                 return;
             }
             if (not currentTool->getData()->DataPieces()->contains(currentTool->getId()))
@@ -342,6 +365,7 @@ void ODetailsPieceWidget::ConnectControls()
             }
             const VPiece detail = currentTool->getData()->GetPiece(currentTool->getId());
             m_pendingDet = detail;
+            m_pieceInfoWidget->Show(detail, currentTool->getData());
             m_grainlineWidget->Show(detail, currentTool->getData());
             m_foldlineWidget->Show(detail);
             m_saWidget->RefreshList(detail);
@@ -440,8 +464,7 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
     m_nameEdit->setText(detail.GetName());
     m_nameEdit->setCursorPosition(0);
 
-    // Number is a placeholder — its backend is OPieceCartouche (Phase C).
-    m_pieceNumberSpin->setValue(0);
+    m_pieceInfoWidget->Show(detail, tool->getData());
 
     int h = detail.GetGradedAlignH();
     if (h == 0)
@@ -479,6 +502,7 @@ void ODetailsPieceWidget::Clear()
     m_pendingDet = VPiece{};
     m_passmarkSelectState = PassmarkSelectState::Idle;
     m_selectedPassmarkNodeIds.clear();
+    m_pieceInfoWidget->Clear();
     m_grainlineWidget->Clear();
     m_foldlineWidget->Clear();
     m_saWidget->Clear();
