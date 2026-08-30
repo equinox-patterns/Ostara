@@ -34,6 +34,7 @@
 #include <QPointer>
 #include <QWidget>
 
+class QCheckBox;
 class QComboBox;
 class QLabel;
 class QLineEdit;
@@ -44,11 +45,13 @@ class VAbstractPattern;
 /**
  * @brief Pattern information fields for the Details dock (no piece selected).
  *
- * Owns the editing surface of four document fields: pattern name, client,
- * collection and fabric info. One field, one source (VAbstractPattern); the
- * widget reads/writes it and refreshes on document changes. Pattern name is
- * the shared field also surfaced by the Draw pattern block and the dialog
- * step 1.
+ * Owns the editing surface of four document fields — pattern name, client,
+ * collection and fabric info — plus the pattern-level seeds applied to pieces
+ * created afterwards: seam allowances (activate + hide main path) and the
+ * information-block cartouche template. One field, one source
+ * (VAbstractPattern); the widget reads/writes it and refreshes on document
+ * changes. Pattern name is the shared field also surfaced by the Draw pattern
+ * block and the dialog step 1.
  */
 class OPatternInfoWidget : public QWidget
 {
@@ -69,6 +72,10 @@ private slots:
     void CommitPatternName();
     void CommitClient(int index);
     void CommitCollection(int index);
+    void CommitActivateSA(bool on);
+    void CommitHideMainPath(bool on);
+    void CommitCartoucheActivation(bool on);
+    void CommitCartoucheTemplate(int index);
     void ScheduleCommit();
     void CommitDelayed();
     void OnFullUpdate();
@@ -84,18 +91,23 @@ private:
     QLineEdit *m_patternNameEdit{nullptr};
     QComboBox *m_clientCombo{nullptr};
     QComboBox *m_collectionCombo{nullptr};
+    QCheckBox *m_activateSACheck{nullptr};
+    QCheckBox *m_hideMainPathCheck{nullptr};
+    QCheckBox *m_activateInfoBlockCheck{nullptr};
+    QComboBox *m_cartoucheCombo{nullptr};
     QPlainTextEdit *m_fabricInfoEdit{nullptr};
     QLabel *m_patternNameLabel{nullptr};
     QLabel *m_clientLabel{nullptr};
     QLabel *m_collectionLabel{nullptr};
     QLabel *m_fabricLabel{nullptr};
     QTimer *m_commitTimer{nullptr};
-    bool m_loading{false};
+    bool m_loading = false;
 
-    // Parsed client/collection libraries — reloaded on document change or full
-    // update only, so a plain show does not hit the disk again.
+    // Parsed client/collection/template libraries — reloaded on document change
+    // or full update only, so a plain show does not hit the disk again.
     QList<OPieceCartoucheStorage::ClientEntry> m_clients;
     QList<OPieceCartoucheStorage::CollectionEntry> m_collections;
+    QStringList m_templates;
 };
 
 #endif // OPATTERNINFOWIDGET_H

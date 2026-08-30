@@ -34,7 +34,9 @@
 
 #include <algorithm>
 
+#include <QCheckBox>
 #include <QComboBox>
+#include <QFileInfo>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
@@ -42,6 +44,13 @@
 #include <QTextDocument>
 #include <QTimer>
 #include <QVBoxLayout>
+
+namespace
+{
+// Debounce delay for the fabric-info text edit — one commit per pause, not one
+// per keystroke (Valentina anti-pattern: one undo command per keypress).
+constexpr int kCommitDebounceMs = 600;
+}  // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
@@ -93,15 +102,47 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
     layout->setSpacing(0);
     layout->addWidget(groupBox);
 
+    // Seam allowances — pattern-level seeds applied to every piece created
+    // afterwards (same semantics as the dialog step 1).
+    auto *seamAllowanceGroup = new QGroupBox(tr("Seam Allowances"), this);
+    auto *saLayout = new QVBoxLayout(seamAllowanceGroup);
+    saLayout->setSpacing(6);
+    m_activateSACheck = new QCheckBox(tr("Activate seam allowances for all pieces"), seamAllowanceGroup);
+    saLayout->addWidget(m_activateSACheck);
+    m_hideMainPathCheck = new QCheckBox(tr("Hide main path for all pieces"), seamAllowanceGroup);
+    saLayout->addWidget(m_hideMainPathCheck);
+    layout->addWidget(seamAllowanceGroup);
+
+    // Information block — opted in per pattern; the combo is revealed once the
+    // box is checked and picks the template (the pattern's template wins over
+    // the settings favourite). Same seed semantics as the seam allowances.
+    OPieceCartoucheStorage::EnsureDefaultTemplate();
+    auto *infoBlockGroup = new QGroupBox(tr("Information block"), this);
+    auto *ibLayout = new QVBoxLayout(infoBlockGroup);
+    ibLayout->setSpacing(6);
+    m_activateInfoBlockCheck = new QCheckBox(tr("Activate information block for all pieces"), infoBlockGroup);
+    ibLayout->addWidget(m_activateInfoBlockCheck);
+    m_cartoucheCombo = MakeComboBox(infoBlockGroup);
+    m_cartoucheCombo->setVisible(false);
+    ibLayout->addWidget(m_cartoucheCombo);
+    layout->addWidget(infoBlockGroup);
+
+    layout->addStretch();
+
     m_commitTimer = new QTimer(this);
     m_commitTimer->setSingleShot(true);
-    m_commitTimer->setInterval(600);
+    m_commitTimer->setInterval(kCommitDebounceMs);
 
     connect(m_patternNameEdit, &QLineEdit::editingFinished, this, &OPatternInfoWidget::CommitPatternName);
     connect(m_clientCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             &OPatternInfoWidget::CommitClient);
     connect(m_collectionCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             &OPatternInfoWidget::CommitCollection);
+    connect(m_activateSACheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitActivateSA);
+    connect(m_hideMainPathCheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitHideMainPath);
+    connect(m_activateInfoBlockCheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitCartoucheActivation);
+    connect(m_cartoucheCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &OPatternInfoWidget::CommitCartoucheTemplate);
     connect(m_commitTimer, &QTimer::timeout, this, &OPatternInfoWidget::CommitDelayed);
 }
 
@@ -148,10 +189,13 @@ void OPatternInfoWidget::Refresh()
 //---------------------------------------------------------------------------------------------------------------------
 void OPatternInfoWidget::OnFullUpdate()
 {
+    // Stop any pending commit first: the document is about to change, and a
+    // stale delayed commit must not write the previous document's text into it.
+    m_commitTimer->stop();
     m_clients = OPieceCartoucheStorage::LoadClients();
     const bool ascending = VAbstractValApplication::VApp()->Settings()->GetCollectionsSortAscending();
     m_collections = OPieceCartoucheStorage::LoadCollections(ascending);
-    m_commitTimer->stop();
+    m_templates = OPieceCartoucheStorage::ScanDirectory(OPieceCartoucheStorage::DefaultDirectory());
     Populate();
 }
 
@@ -219,6 +263,38 @@ void OPatternInfoWidget::Populate()
 
     m_fabricInfoEdit->setPlainText(doc != nullptr ? doc->GetFabricInfo() : QString());
 
+    // Seam allowance / cartouche seeds — pattern-level, read at piece creation
+    // only. Existing pieces are never rewritten.
+    m_activateSACheck->setChecked(doc != nullptr && doc->GetDefaultActivateSA());
+    m_hideMainPathCheck->setChecked(doc != nullptr && doc->GetDefaultHideMainPath());
+
+    const QString currentTemplate = doc != nullptr ? doc->GetCartoucheTemplate() : QString();
+    m_activateInfoBlockCheck->setChecked(!currentTemplate.isEmpty());
+
+    // Template combo — the pattern's template wins over the settings favourite
+    // (shared helper, identical selection in the dialog step 1).
+    m_cartoucheCombo->blockSignals(true);
+    m_cartoucheCombo->clear();
+    const QString defaultName = VAbstractValApplication::VApp()->Settings()->GetDefaultCartoucheTemplate();
+    QStringList baseNames;
+    for (const QString &path : m_templates)
+    {
+        const QString base = QFileInfo(path).completeBaseName();
+        baseNames.append(base);
+        m_cartoucheCombo->addItem(base, base);
+    }
+    int preferredIndex = OPieceCartoucheStorage::PreferredTemplateIndex(baseNames, currentTemplate, defaultName);
+    if (!currentTemplate.isEmpty() && !baseNames.contains(currentTemplate))
+    {
+        // The pattern's template file is gone (deleted/renamed): keep it
+        // selectable so an activation toggle never silently overwrites it.
+        m_cartoucheCombo->addItem(currentTemplate, currentTemplate);
+        preferredIndex = m_cartoucheCombo->count() - 1;
+    }
+    m_cartoucheCombo->setCurrentIndex(preferredIndex);
+    m_cartoucheCombo->blockSignals(false);
+    m_cartoucheCombo->setVisible(!currentTemplate.isEmpty());
+
     m_loading = false;
 }
 
@@ -250,6 +326,18 @@ void OPatternInfoWidget::RetranslateUI()
     {
         m_collectionCombo->setItemText(0, tr("No collection"));
         m_collectionCombo->setItemData(0, QString());
+    }
+    if (m_activateSACheck)
+    {
+        m_activateSACheck->setText(tr("Activate seam allowances for all pieces"));
+    }
+    if (m_hideMainPathCheck)
+    {
+        m_hideMainPathCheck->setText(tr("Hide main path for all pieces"));
+    }
+    if (m_activateInfoBlockCheck)
+    {
+        m_activateInfoBlockCheck->setText(tr("Activate information block for all pieces"));
     }
 }
 
@@ -307,6 +395,97 @@ void OPatternInfoWidget::CommitCollection(int index)
     if (collection != doc->GetCollection())
     {
         doc->SetCollection(collection);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPatternInfoWidget::CommitActivateSA(bool on)
+{
+    if (m_loading)
+    {
+        return;
+    }
+    VAbstractPattern *doc = CurrentDocument();
+    if (doc == nullptr || doc != m_doc)
+    {
+        return;
+    }
+    if (on != doc->GetDefaultActivateSA())
+    {
+        doc->SetDefaultActivateSA(on);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPatternInfoWidget::CommitHideMainPath(bool on)
+{
+    if (m_loading)
+    {
+        return;
+    }
+    VAbstractPattern *doc = CurrentDocument();
+    if (doc == nullptr || doc != m_doc)
+    {
+        return;
+    }
+    if (on != doc->GetDefaultHideMainPath())
+    {
+        doc->SetDefaultHideMainPath(on);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPatternInfoWidget::CommitCartoucheActivation(bool on)
+{
+    // The combo is revealed exactly when the block is activated — including
+    // while Populate() runs, so the two states never drift apart.
+    m_cartoucheCombo->setVisible(on);
+    if (m_loading)
+    {
+        return;
+    }
+    VAbstractPattern *doc = CurrentDocument();
+    if (doc == nullptr || doc != m_doc)
+    {
+        return;
+    }
+    if (on)
+    {
+        // Nothing selectable (degraded templates folder) — do not write an empty
+        // cartouche reference on a bare activation.
+        if (m_cartoucheCombo->currentIndex() < 0)
+        {
+            return;
+        }
+        const QString name = m_cartoucheCombo->itemData(m_cartoucheCombo->currentIndex()).toString();
+        if (name != doc->GetCartoucheTemplate())
+        {
+            doc->SetCartoucheTemplate(name);
+        }
+    }
+    else if (!doc->GetCartoucheTemplate().isEmpty())
+    {
+        // Deactivating removes the pattern-level cartouche reference.
+        doc->SetCartoucheTemplate(QString());
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPatternInfoWidget::CommitCartoucheTemplate(int index)
+{
+    if (m_loading || !m_activateInfoBlockCheck->isChecked())
+    {
+        return;
+    }
+    VAbstractPattern *doc = CurrentDocument();
+    if (doc == nullptr || doc != m_doc)
+    {
+        return;
+    }
+    const QString name = m_cartoucheCombo->itemData(index).toString();
+    if (name != doc->GetCartoucheTemplate())
+    {
+        doc->SetCartoucheTemplate(name);
     }
 }
 

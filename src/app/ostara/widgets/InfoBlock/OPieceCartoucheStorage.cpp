@@ -670,6 +670,18 @@ auto ScanDirectory(const QString &dirPath) -> QStringList
     return paths;
 }
 
+auto PreferredTemplateIndex(const QStringList &baseNames, const QString &currentTemplate,
+                            const QString &defaultName) -> int
+{
+    const qsizetype current = baseNames.indexOf(currentTemplate);
+    if (current >= 0)
+    {
+        return static_cast<int>(current);
+    }
+    const qsizetype fallback = baseNames.indexOf(defaultName);
+    return fallback >= 0 ? static_cast<int>(fallback) : 0;
+}
+
 auto Load(const QString &filePath, OPieceCartoucheTemplate *tpl, QString *error) -> bool
 {
     if (tpl == nullptr)

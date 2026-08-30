@@ -129,7 +129,7 @@ OPiecePatternStep::OPiecePatternStep(VAbstractPattern *doc, QWidget *parent)
     connect(m_fabricInfoEdit->document(), &QTextDocument::contentsChanged, this, [this, minFabricHeight]() {
         const int h = static_cast<int>(m_fabricInfoEdit->document()->size().height())
                       + m_fabricInfoEdit->frameWidth() * 2;
-        m_fabricInfoEdit->setFixedHeight(std::max(h, minFabricHeight()));
+        m_fabricInfoEdit->setFixedHeight((std::max)(h, minFabricHeight()));
     });
     form->addRow(tr("Fabric info"), m_fabricInfoEdit);
 
@@ -166,25 +166,24 @@ OPiecePatternStep::OPiecePatternStep(VAbstractPattern *doc, QWidget *parent)
     m_cartoucheCombo = MakeComboBox(this);
     const QStringList templates = OPieceCartoucheStorage::ScanDirectory(OPieceCartoucheStorage::DefaultDirectory());
     const QString defaultName = VAbstractValApplication::VApp()->Settings()->GetDefaultCartoucheTemplate();
-    int defaultIndex = 0;
-    bool foundCurrent = false;
+    QStringList baseNames;
     for (const QString &path : templates)
     {
         const QString base = QFileInfo(path).completeBaseName();
+        baseNames.append(base);
         m_cartoucheCombo->addItem(base, base);
-        // The pattern's existing template wins over the favourite; the favourite is
-        // only a fallback while no template is set on the pattern yet.
-        if (base == currentTemplate)
-        {
-            defaultIndex = m_cartoucheCombo->count() - 1;
-            foundCurrent = true;
-        }
-        else if (not foundCurrent && base == defaultName)
-        {
-            defaultIndex = m_cartoucheCombo->count() - 1;
-        }
     }
-    m_cartoucheCombo->setCurrentIndex(defaultIndex);
+    // The pattern's existing template wins over the favourite; the favourite is
+    // only a fallback while no template is set on the pattern yet.
+    int preferredIndex = OPieceCartoucheStorage::PreferredTemplateIndex(baseNames, currentTemplate, defaultName);
+    if (!currentTemplate.isEmpty() && !baseNames.contains(currentTemplate))
+    {
+        // The pattern's template file is gone (deleted/renamed): keep it
+        // selectable so accepting the dialog never drops the reference.
+        m_cartoucheCombo->addItem(currentTemplate, currentTemplate);
+        preferredIndex = m_cartoucheCombo->count() - 1;
+    }
+    m_cartoucheCombo->setCurrentIndex(preferredIndex);
     m_cartoucheCombo->setVisible(m_activateInfoBlockCheck->isChecked());
     connect(m_activateInfoBlockCheck, &QCheckBox::toggled, m_cartoucheCombo, &QWidget::setVisible);
     ibLayout->addWidget(m_cartoucheCombo);

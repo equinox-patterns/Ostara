@@ -63,7 +63,7 @@ struct CollectionEntry
 {
     QString id;      ///< stable id, never changes (uuid)
     QString name;    ///< display name
-    int year{0};     ///< sort key — current year at creation
+    int year = 0;    ///< sort key — current year at creation
     QString period;  ///< free-form period (e.g. "Autumn Winter") or date
     QString description;  ///< free-form description
 };
@@ -145,6 +145,13 @@ auto UpdateCollectionMeta(const QString &id, const QString &name, int year, cons
 
 /// List of `.oct` files in the given folder (absolute paths), alphabetical.
 auto ScanDirectory(const QString &dirPath) -> QStringList;
+
+/// Index of the template a combo should select, given the scanned base names:
+/// the pattern's current template when present, otherwise the favourite from
+/// settings, otherwise the first entry. Shared by the dialog step 1 and the
+/// Details dock so the two dropdowns never drift apart.
+auto PreferredTemplateIndex(const QStringList &baseNames, const QString &currentTemplate,
+                            const QString &defaultName) -> int;
 
 /// Load a `.oct` file into `tpl`. Returns false and fills `error` on failure.
 auto Load(const QString &filePath, OPieceCartoucheTemplate *tpl, QString *error = nullptr) -> bool;
