@@ -36,6 +36,7 @@
 #include "../vmisc/def.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
+#include "../vpatterndb/oinfoblockdata.h"
 #include "../vpatterndb/vnodedetail.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vtools/tools/vtoolseamallowance.h"
@@ -81,6 +82,58 @@ auto VPattern::ParseDetailNode(const QDomElement &domElement) -> VNodeDetail
             throw VException(tr("Wrong tag name '%1'.").arg(t));
     }
     return {id, tool, nodeType, mx, my, reverse};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPattern::ParsePieceCartoucheBlocks(const QDomElement &domElement) const -> OInfoBlockData
+{
+    OInfoBlockData info;
+    info.SetSet(true);
+    info.SetActive(GetParametrBool(domElement, VToolSeamAllowance::AttrActive, falseStr));
+    info.SetTemplate(GetParametrEmptyString(domElement, VAbstractPattern::AttrTemplate));
+
+    QHash<QString, int> dispatch;
+    QHash<int, OInfoBlockGeom> geoms;
+    const QDomNodeList children = domElement.childNodes();
+    QDOM_LOOP(children, i)
+    {
+        const QDomElement element = QDOM_ELEMENT(children, i).toElement();
+        if (element.isNull())
+        {
+            continue;
+        }
+        if (element.tagName() == VToolSeamAllowance::TagDispatch)
+        {
+            const QString type = element.attribute(AttrType);
+            const int block = element.attribute(VToolSeamAllowance::AttrBlock).toInt();
+            if (not type.isEmpty() && block >= 1 && block <= 11)
+            {
+                dispatch.insert(type, block);
+            }
+        }
+        else if (element.tagName() == VToolSeamAllowance::TagBlock)
+        {
+            const int index = element.attribute(VToolSeamAllowance::AttrIndex).toInt();
+            if (index < 1 || index > 11)
+            {
+                continue;
+            }
+            OInfoBlockGeom geom;
+            geom.pos = QPointF(GetParametrDouble(element, AttrMx, QStringLiteral("0.0")),
+                               GetParametrDouble(element, AttrMy, QStringLiteral("0.0")));
+            geom.width = GetParametrDouble(element, AttrWidth, QStringLiteral("0.0"));
+            geom.height = GetParametrDouble(element, AttrHeight, QStringLiteral("0.0"));
+            geom.rotation = GetParametrDouble(element, VAbstractPattern::AttrRotation, QStringLiteral("0.0"));
+            geom.fontScale = GetParametrDouble(element, VToolSeamAllowance::AttrFontScale, QStringLiteral("1.0"));
+            geoms.insert(index, geom);
+        }
+    }
+    info.SetDispatch(dispatch);
+    for (auto it = geoms.constBegin(); it != geoms.constEnd(); ++it)
+    {
+        info.SetBlockGeom(it.key(), it.value());
+    }
+    return info;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -179,7 +232,8 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
                            VToolSeamAllowance::TagPins,
                            VToolSeamAllowance::TagPlaceLabels,
                            VAbstractPattern::TagMirrorLine,
-                           VToolSeamAllowance::TagSaMarginProperties};
+                           VToolSeamAllowance::TagSaMarginProperties,
+                           VToolSeamAllowance::TagCartoucheBlocks};
 
     QFuture<QVector<VPieceNode>> futurePathV1;
     QFuture<VPiecePath> futurePathV2;
@@ -275,6 +329,9 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
                     detail.SetSAMarginGroupShowStates(saShows);
                     break;
                 }
+                case 8: // VToolSeamAllowance::TagCartoucheBlocks
+                    detail.SetInfoBlockData(ParsePieceCartoucheBlocks(element));
+                    break;
                 default:
                     break;
             }

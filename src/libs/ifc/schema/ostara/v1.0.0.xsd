@@ -790,6 +790,31 @@
                               <xs:attribute name="visible" type="xs:boolean"/>
                             </xs:complexType>
                           </xs:element>
+                          <xs:element name="cartoucheBlocks" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="dispatch" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:attribute name="type" type="xs:string" use="required"/>
+                                    <xs:attribute name="block" type="xs:int"/>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="block" minOccurs="0" maxOccurs="11">
+                                  <xs:complexType>
+                                    <xs:attribute name="index" type="xs:int" use="required"/>
+                                    <xs:attribute name="mx" type="xs:double"/>
+                                    <xs:attribute name="my" type="xs:double"/>
+                                    <xs:attribute name="width" type="xs:double"/>
+                                    <xs:attribute name="height" type="xs:double"/>
+                                    <xs:attribute name="rotation" type="xs:double"/>
+                                    <xs:attribute name="fontScale" type="xs:double"/>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                              <xs:attribute name="active" type="xs:boolean"/>
+                              <xs:attribute name="template" type="xs:string"/>
+                            </xs:complexType>
+                          </xs:element>
                         </xs:sequence>
                         <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
                         <xs:attribute name="version" type="pieceVersion"/>

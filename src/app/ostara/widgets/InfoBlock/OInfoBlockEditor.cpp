@@ -1508,6 +1508,7 @@ void OInfoBlockEditor::DoSave(const QString &filePath)
     m_filePath = filePath;
     SetModified(false);
     emit StatusMessage(tr("Template saved"));
+    emit TemplateSaved();
 }
 
 void OInfoBlockEditor::OnSave()

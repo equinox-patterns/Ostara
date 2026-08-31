@@ -1,6 +1,7 @@
 # VPatternDBLib — Pattern data model, container, pieces, formulas, calculator
 
 set(VPATTERN_SOURCES
+    oinfoblockdata.cpp
     testpassmark.cpp
     vcontainer.cpp
     calculator.cpp
@@ -11,6 +12,7 @@ set(VPATTERN_SOURCES
     vpiecenode.cpp
     vpiecepath.cpp
     vpassmark.cpp
+    oinfoblockdata.h
     testpassmark.h
     vcontainer.h
     calculator.h

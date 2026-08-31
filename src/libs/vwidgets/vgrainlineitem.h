@@ -72,7 +72,11 @@ private:
     QPolygonF m_polyBound{};
     QPointF m_ptStartPos{};
     QPointF m_ptStartMove{};
-    QPolygonF m_polyResize{};
+    /** @brief Two full-width resize bars: index 0 = start end, 1 = finish end. */
+    QPolygonF m_polyResize[2]{};
+    /** @brief Invisible, slightly taller hit zones of the two bars (grab margin). */
+    QPolygonF m_resizeHit[2]{};
+    bool m_resizeFromEnd{false};  // which bar was grabbed (true = finish end)
     qreal m_dStartLength{0};
     QPointF m_ptStart{};
     QPointF m_ptFinish{};

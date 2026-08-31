@@ -46,6 +46,10 @@ class OInfoBlockWindow : public QMainWindow
 public:
     explicit OInfoBlockWindow(QWidget *parent = nullptr);
 
+signals:
+    /** @brief Relayed from the editor when a template is saved (refresh the canvas blocks). */
+    void TemplateSaved();
+
 protected:
     void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;

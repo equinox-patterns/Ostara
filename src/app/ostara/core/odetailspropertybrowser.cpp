@@ -131,6 +131,18 @@ void ODetailsPropertyBrowser::ShowPieceOptions(VToolSeamAllowance *tool)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::ShowGrainlineTab()
+{
+    m_pieceWidget->ShowGrainlineTab();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::ShowBlocksTab()
+{
+    m_pieceWidget->ShowBlocksTab();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto ODetailsPropertyBrowser::IsSelectingPassmarkPoints() const -> bool
 {
     return m_pieceWidget->IsSelectingPassmarkPoints();

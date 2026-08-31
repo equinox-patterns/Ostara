@@ -38,6 +38,7 @@
 #include "vabstractapplication.h"
 #include "widgets/InfoBlock/OInfoBlockWindow.h"
 #include "../vmisc/dialogs/dialogselectlanguage.h"
+#include "../ifc/xml/vabstractpattern.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vwidgets/vmaingraphicsview.h"
@@ -126,6 +127,14 @@ void MainWindow::ActionInfoBlock_triggered()
         auto *window = new OInfoBlockWindow(this);
         m_infoBlockWindow = window;
         window->setAttribute(Qt::WA_DeleteOnClose);
+        // When a template is saved, refresh the canvas blocks (the tools read the
+        // template file from disk; CheckLayout re-runs UpdateInfoBlocks on every piece).
+        connect(window, &OInfoBlockWindow::TemplateSaved, this, []() {
+            if (VAbstractPattern *doc = VAbstractValApplication::VApp()->getCurrentDocument())
+            {
+                doc->CheckLayout();
+            }
+        });
         window->show();
     }
     else

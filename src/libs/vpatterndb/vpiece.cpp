@@ -879,6 +879,32 @@ auto VPiece::GetGrainlineGeometry() const -> const VGrainlineData &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetInfoBlockData(const OInfoBlockData &data)
+{
+    d->m_infoBlocks = data;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief VDetail::GetInfoBlockData returns the read-only reference to the per-piece information block state
+ * @return reference to the information block state
+ */
+auto VPiece::GetInfoBlockData() const -> const OInfoBlockData &
+{
+    return d->m_infoBlocks;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief VDetail::GetInfoBlockData full access to the per-piece information block state
+ * @return reference to the information block state
+ */
+auto VPiece::GetInfoBlockData() -> OInfoBlockData &
+{
+    return d->m_infoBlocks;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VPiece::SetMirrorLineStartPoint(quint32 id)
 {
     d->m_mirrorLineStartPoint = id;

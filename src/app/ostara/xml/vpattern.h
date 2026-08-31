@@ -38,6 +38,7 @@ class VNodeDetail;
 struct VToolSinglePointInitData;
 struct VToolLinePointInitData;
 class VToolSeamAllowance;
+class OInfoBlockData;
 class QTimer;
 
 /**
@@ -163,6 +164,7 @@ private:
     void ParseDetailInternals(const QDomElement &domElement, VPiece &detail) const;
     auto ParseDetailNodes(const QDomElement &domElement, qreal width, bool closed) const -> QVector<VPieceNode>;
     auto ParsePieceGrainline(const QDomElement &domElement, VGrainlineData gGeometry) const -> VGrainlineData;
+    auto ParsePieceCartoucheBlocks(const QDomElement &domElement) const -> OInfoBlockData;
     void ParseDetails(const QDomElement &domElement, const Document &parse);
     void ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse,
                            const QString &type);

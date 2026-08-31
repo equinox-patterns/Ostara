@@ -74,8 +74,10 @@
 #include "vtheme.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
+#include "../vtools/tools/oinfoblockitem.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/undocommands/undoattachment.h"
+#include "../vwidgets/vgrainlineitem.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vtools/tools/vabstracttool.h"
 #include "../vtools/tools/nodeDetails/vnodepoint.h"
@@ -847,6 +849,34 @@ void MainWindow::InitDocksContain()
         if (auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(id)))
         {
             m_dockManager->detailsOptions()->ShowPieceOptions(tool);
+        }
+    });
+
+    // Clicking a child overlay (grainline or info block) selects the parent piece
+    // in the Details dock and shows the matching tab; the child itself stays
+    // active (edit handles) on the canvas.
+    connect(m_sceneDetails, &VMainGraphicsScene::ItemByMousePress, this,
+            [this](QGraphicsItem *pItem)
+    {
+        VToolSeamAllowance *piece = qgraphicsitem_cast<VToolSeamAllowance *>(pItem);
+        if (piece == nullptr && pItem != nullptr)
+        {
+            piece = qgraphicsitem_cast<VToolSeamAllowance *>(pItem->parentItem());
+        }
+        if (piece == nullptr)
+        {
+            return;
+        }
+
+        if (qgraphicsitem_cast<VGrainlineItem *>(pItem) != nullptr)
+        {
+            doc->SelectedDetail(piece->getId());
+            m_dockManager->detailsOptions()->ShowGrainlineTab();
+        }
+        else if (qgraphicsitem_cast<OInfoBlockItem *>(pItem) != nullptr)
+        {
+            doc->SelectedDetail(piece->getId());
+            m_dockManager->detailsOptions()->ShowBlocksTab();
         }
     });
 

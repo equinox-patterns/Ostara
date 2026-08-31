@@ -28,8 +28,10 @@
 
 #include "../fervor/fvupdater.h"
 #include "../vpatterndb/vpiecenode.h"
+#include "../vtools/tools/vtoolseamallowance.h"
 #include "core/vapplication.h"
 #include "mainwindow.h"
+#include "widgets/InfoBlock/OInfoBlockResolver.h"
 
 #include "vabstractapplication.h"
 #include "vvalentinasettings.h"
@@ -123,6 +125,13 @@ auto main(int argc, char *argv[]) -> int
 
     VApplication app(argc, argv);
     app.InitOptions();
+
+    // Register the app-side information block content builder so the piece tools
+    // (libs) can resolve real block content without a libs -> app dependency.
+    VToolSeamAllowance::SetInfoBlockContentBuilder(
+        [](const VPiece &piece, VAbstractPattern *doc, const VContainer *data) -> OInfoBlockEffectiveState {
+            return OInfoBlockResolver::ResolveEffectiveState(piece, doc, data);
+        });
 
     // Select all text on a single click in every QLineEdit / QTextEdit / QPlainTextEdit.
     VClickSelectAllFilter::InstallOnApplication();

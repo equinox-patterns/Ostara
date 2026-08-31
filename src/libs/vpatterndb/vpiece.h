@@ -43,6 +43,7 @@ class VContainer;
 class QPainterPath;
 class VPointF;
 class VPassmark;
+class OInfoBlockData;
 
 class VPiece : public VAbstractPiece
 {
@@ -156,6 +157,10 @@ public:
     void SetGrainlineGeometry(const VGrainlineData &data);
     auto GetGrainlineGeometry() -> VGrainlineData &;
     auto GetGrainlineGeometry() const -> const VGrainlineData &;
+
+    void SetInfoBlockData(const OInfoBlockData &data);
+    auto GetInfoBlockData() const -> const OInfoBlockData &;
+    auto GetInfoBlockData() -> OInfoBlockData &;
 
     void SetMirrorLineStartPoint(quint32 id);
     auto GetMirrorLineStartPoint() const -> quint32;

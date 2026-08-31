@@ -38,11 +38,13 @@
 #include "../vlayout/vfoldline.h"
 #include "../vwidgets/osamarginhighlights.h"
 #include "../vwidgets/vgrainlineitem.h"
+#include "oinfoblockcontent.h"
 #include "vinteractivetool.h"
 
 class DialogTool;
 class VNoBrushScalePathItem;
 class VPatternGraph;
+class OInfoBlockItem;
 
 struct VToolSeamAllowanceInitData : VAbstractToolInitData
 {
@@ -99,6 +101,9 @@ public:
     static const QString TagPins;
     static const QString TagPlaceLabels;
     static const QString TagSaMarginProperties;
+    static const QString TagCartoucheBlocks;
+    static const QString TagDispatch;
+    static const QString TagBlock;
 
     static const QString AttrSeamAllowance;
     static const QString AttrHideMainPath;
@@ -112,6 +117,10 @@ public:
     static const QString AttrTopPin;
     static const QString AttrBottomPin;
     static const QString AttrPiecePriority;
+    static const QString AttrActive;
+    static const QString AttrBlock;
+    static const QString AttrIndex;
+    static const QString AttrFontScale;
 
     void RemoveWithConfirm(bool ask);
 
@@ -127,6 +136,10 @@ public:
     static void AddGrainline(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
     static void AddSAMarginProperties(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
     static void AddMirrorLine(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
+    static void AddCartoucheBlocks(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
+
+    /** @brief Registers the app-side content builder (called once at app startup). */
+    static void SetInfoBlockContentBuilder(OInfoBlockContentBuilder builder);
 
     void SetName(const QString &name);
     void Move(qreal x, qreal y);
@@ -176,6 +189,9 @@ private slots:
     void SaveMoveGrainline(const QPointF &ptPos);
     void SaveResizeGrainline(qreal dLength);
     void SaveRotateGrainline(qreal dRot, const QPointF &ptPos);
+    void UpdateInfoBlocks();
+    void SaveMoveInfoBlock(int blockIndex, const QPointF &pos);
+    void SaveResizeInfoBlock(int blockIndex, qreal newW, qreal newH, qreal origW, qreal origH);
     void ToggleInLayout(bool checked);
     void ToggleHideMainPath(bool checked);
     void ToggleForbidFlipping(bool checked);
@@ -207,6 +223,12 @@ private:
     QGraphicsPathItem *m_foldLineLabel;
     QGraphicsSimpleTextItem *m_foldLineLabelText;
     OSAMarginHighlights m_saHighlights;
+
+    /** @brief On-piece information block items (one per block 1..11), hidden by default. */
+    QList<OInfoBlockItem *> m_infoBlockItems;
+
+    /** @brief App-registered content builder (layering bridge). */
+    static OInfoBlockContentBuilder s_infoBlockContentBuilder;
 
     bool m_acceptHoverEvents{true};
 

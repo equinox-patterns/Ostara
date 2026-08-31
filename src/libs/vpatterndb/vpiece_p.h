@@ -36,6 +36,7 @@
 #include "../vmisc/def.h"
 #include "../vmisc/typedef.h"
 #include "floatItemData/vgrainlinedata.h"
+#include "oinfoblockdata.h"
 #include "vpiecepath.h"
 
 QT_WARNING_PUSH
@@ -71,6 +72,9 @@ public:
 
     /** @brief m_glGrainline grainline geometry object*/
     VGrainlineData m_glGrainline{}; // NOLINT(misc-non-private-member-variables-in-classes)
+
+    /** @brief Per-piece information block state (cartouche). */
+    OInfoBlockData m_infoBlocks{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     QString m_formulaWidth{'0'}; // NOLINT(misc-non-private-member-variables-in-classes)
 

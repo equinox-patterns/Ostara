@@ -28,6 +28,7 @@
 // Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
 
 #include "vtoolseamallowance.h"
+#include "oinfoblockitem.h"
 #include "vtoolseamallowance_autoplace.h"
 #include "../dialogs/tools/piece/dialogduplicatedetail.h"
 #include "../dialogs/tools/piece/dialogseamallowance.h"
@@ -57,6 +58,7 @@
 #include "../vtheme/vtheme.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
+#include "../vpatterndb/oinfoblockdata.h"
 #include "../vpatterndb/variables/vincrement.h"
 #include "../vpatterndb/vformula.h"
 #include "../vpatterndb/vpiecenode.h"
@@ -98,12 +100,17 @@ using namespace std::chrono_literals;
 // Current version of seam allowance tag need for backward compatibility
 const quint8 VToolSeamAllowance::pieceVersion = 2;
 
+OInfoBlockContentBuilder VToolSeamAllowance::s_infoBlockContentBuilder; // NOLINT(cert-err58-cpp)
+
 const QString VToolSeamAllowance::TagCSA = QStringLiteral("csa");                 // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagRecord = QStringLiteral("record");           // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagIPaths = QStringLiteral("iPaths");           // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagPins = QStringLiteral("pins");               // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagPlaceLabels = QStringLiteral("placeLabels"); // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagSaMarginProperties = QStringLiteral("saMarginProperties"); // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagCartoucheBlocks = QStringLiteral("cartoucheBlocks");       // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagDispatch = QStringLiteral("dispatch");                     // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagBlock = QStringLiteral("block");                           // NOLINT(cert-err58-cpp)
 
 const QString VToolSeamAllowance::AttrSeamAllowance = QStringLiteral("seamAllowance"); // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrHideMainPath = QStringLiteral("hideMainPath");   // NOLINT(cert-err58-cpp)
@@ -112,6 +119,10 @@ const QString VToolSeamAllowance::AttrShowFullPiece = QStringLiteral("showFullPi
 const QString VToolSeamAllowance::AttrSeamAllowanceBuiltIn = QStringLiteral("seamAllowanceBuiltIn");
 const QString VToolSeamAllowance::AttrUnited = QStringLiteral("united");                 // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrFont = QStringLiteral("fontSize");                 // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::AttrActive = QStringLiteral("active");                 // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::AttrBlock = QStringLiteral("block");                   // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::AttrIndex = QStringLiteral("index");                   // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::AttrFontScale = QStringLiteral("fontScale");           // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrTopLeftPin = QStringLiteral("topLeftPin");         // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrBottomRightPin = QStringLiteral("bottomRightPin"); // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrCenterPin = QStringLiteral("centerPin");           // NOLINT(cert-err58-cpp)
@@ -997,6 +1008,58 @@ void VToolSeamAllowance::AddMirrorLine(VAbstractPattern *doc, QDomElement &domEl
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::AddCartoucheBlocks(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece)
+{
+    const OInfoBlockData &info = piece.GetInfoBlockData();
+    if (not info.IsSet())
+    {
+        return;
+    }
+
+    QDomElement cartoucheEl = doc->createElement(VToolSeamAllowance::TagCartoucheBlocks);
+    doc->SetAttributeOrRemoveIf<bool>(cartoucheEl, VToolSeamAllowance::AttrActive, info.IsActive(),
+                                      [](bool active) noexcept { return not active; });
+    doc->SetAttributeOrRemoveIf<QString>(cartoucheEl, VAbstractPattern::AttrTemplate, info.Template(),
+                                         [](const QString &name) noexcept { return name.isEmpty(); });
+
+    const QHash<QString, int> &dispatch = info.Dispatch();
+    for (auto it = dispatch.constBegin(); it != dispatch.constEnd(); ++it)
+    {
+        QDomElement dispatchEl = doc->createElement(VToolSeamAllowance::TagDispatch);
+        doc->SetAttribute(dispatchEl, AttrType, it.key());
+        doc->SetAttribute(dispatchEl, VToolSeamAllowance::AttrBlock, it.value());
+        cartoucheEl.appendChild(dispatchEl);
+    }
+
+    const QList<int> blockIndexes = info.StoredBlockIndexes();
+    for (int index : blockIndexes)
+    {
+        const OInfoBlockGeom geom = info.BlockGeom(index);
+        QDomElement blockEl = doc->createElement(VToolSeamAllowance::TagBlock);
+        doc->SetAttribute(blockEl, VToolSeamAllowance::AttrIndex, index);
+        doc->SetAttribute(blockEl, AttrMx, geom.pos.x());
+        doc->SetAttribute(blockEl, AttrMy, geom.pos.y());
+        doc->SetAttributeOrRemoveIf<qreal>(blockEl, AttrWidth, geom.width,
+                                           [](qreal width) noexcept { return qFuzzyIsNull(width); });
+        doc->SetAttributeOrRemoveIf<qreal>(blockEl, AttrHeight, geom.height,
+                                           [](qreal height) noexcept { return qFuzzyIsNull(height); });
+        doc->SetAttributeOrRemoveIf<qreal>(blockEl, VAbstractPattern::AttrRotation, geom.rotation,
+                                           [](qreal rotation) noexcept { return qFuzzyIsNull(rotation); });
+        doc->SetAttributeOrRemoveIf<qreal>(blockEl, VToolSeamAllowance::AttrFontScale, geom.fontScale,
+                                           [](qreal scale) noexcept { return qFuzzyCompare(scale, 1.0); });
+        cartoucheEl.appendChild(blockEl);
+    }
+
+    domElement.appendChild(cartoucheEl);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::SetInfoBlockContentBuilder(OInfoBlockContentBuilder builder)
+{
+    s_infoBlockContentBuilder = std::move(builder);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::AddSAMarginProperties(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece)
 {
     const QVector<QVector<quint32>> saNodeIdGroups = piece.GetSAMarginGroupNodeIds();
@@ -1095,6 +1158,7 @@ void VToolSeamAllowance::ConnectOutsideSignals()
 
     connect(doc, &VAbstractPattern::CheckLayout, this, &VToolSeamAllowance::UpdateGrainline);
     connect(doc, &VAbstractPattern::CheckLayout, this, &VToolSeamAllowance::RefreshFoldLine);
+    connect(doc, &VAbstractPattern::CheckLayout, this, &VToolSeamAllowance::UpdateInfoBlocks);
 
     connect(m_sceneDetails, &VMainGraphicsScene::EnableToolMove, this, &VToolSeamAllowance::EnableToolMove);
     connect(m_sceneDetails, &VMainGraphicsScene::ItemByMousePress, this, &VToolSeamAllowance::ResetChildren);
@@ -1142,6 +1206,11 @@ void VToolSeamAllowance::EnableToolMove(bool move)
     setFlag(QGraphicsItem::ItemIsMovable, move);
 
     m_grainLine->setFlag(QGraphicsItem::ItemIsMovable, move);
+
+    for (OInfoBlockItem *blockItem : m_infoBlockItems)
+    {
+        blockItem->SetReadOnly(!move);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1150,6 +1219,11 @@ void VToolSeamAllowance::AllowHover(bool enabled)
     // Manually handle hover events. Need for setting cursor for not selectable paths.
     m_acceptHoverEvents = enabled;
     m_grainLine->setAcceptHoverEvents(enabled);
+
+    for (OInfoBlockItem *blockItem : m_infoBlockItems)
+    {
+        blockItem->setAcceptHoverEvents(enabled);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1164,15 +1238,31 @@ void VToolSeamAllowance::ResetChildren(QGraphicsItem *pItem)
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
     const auto *pGLI = qgraphicsitem_cast<VGrainlineItem *>(pItem);
 
-    // If the pressed item is one of this piece's children (grainline), keep the piece selected
-    // so the child stays interactive. This used to be polled via IsIdle() inside paint(), which
-    // mutates selection state during paint and crashes on Windows under Qt 6.
-    const bool myChildPressed = pGLI != nullptr && pGLI == m_grainLine;
+    // If the pressed item is one of this piece's children (grainline or an info
+    // block), keep the piece selected so the child stays interactive. This used
+    // to be polled via IsIdle() inside paint(), which mutates selection state
+    // during paint and crashes on Windows under Qt 6.
+    OInfoBlockItem *pBlock = nullptr;
+    for (OInfoBlockItem *blockItem : m_infoBlockItems)
+    {
+        if (blockItem == pItem)
+        {
+            pBlock = blockItem;
+            break;
+        }
+    }
+    const bool myChildPressed = (pGLI != nullptr && pGLI == m_grainLine) || pBlock != nullptr;
     const bool selected = isSelected() || myChildPressed;
 
     if (pGLI != m_grainLine && detail.GetGrainlineGeometry().IsEnabled())
     {
         m_grainLine->Reset();
+    }
+
+    // Only the clicked block shows its editing outline + handles.
+    for (OInfoBlockItem *blockItem : m_infoBlockItems)
+    {
+        blockItem->SetActive(blockItem == pBlock);
     }
 
     setSelected(selected);
@@ -1290,6 +1380,111 @@ void VToolSeamAllowance::SaveRotateGrainline(qreal dRot, const QPointF &ptPos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::UpdateInfoBlocks()
+{
+    if (!s_infoBlockContentBuilder)
+    {
+        return;  // no app-side resolver registered
+    }
+    constexpr qreal kBlockStackingGap = 12.0;
+    const VPiece detail = VAbstractTool::data.GetPiece(m_id);
+    const OInfoBlockEffectiveState state = s_infoBlockContentBuilder(detail, doc, getData());
+
+    for (int block = 1; block <= 11; ++block)
+    {
+        OInfoBlockItem *blockItem = m_infoBlockItems.at(block - 1);
+        const bool exists = state.active && state.blockContent.contains(block);
+        if (!exists)
+        {
+            blockItem->SetActive(false);
+            blockItem->hide();
+            continue;
+        }
+
+        OInfoBlockGeom geom = detail.GetInfoBlockData().BlockGeom(block);
+        const QVector<OCartoucheRenderLine> lines = state.blockContent.value(block).toVector();
+
+        // The block always fits its content at the current zoom (fontScale): the
+        // size is recomputed on every refresh, so a template edit resizes the block
+        // to its new content while keeping the user's resize (the zoom) intact.
+        // The painter scales the margins with the zoom, so the fitted size is
+        // simply the natural size times the scale.
+        const QSizeF natural = OCartouchePainter::NaturalSize(lines);
+        const qreal scale = geom.fontScale > 0.0 ? geom.fontScale : 1.0;
+        geom.width = scale * natural.width();
+        geom.height = scale * natural.height();
+
+        if (!detail.GetInfoBlockData().HasStoredGeometry(block))
+        {
+            // Auto-place: centered on the piece; further blocks stacked below.
+            geom.pos = m_pieceBoundingRect.center() + QPointF(0.0, (block - 1) * (geom.height + kBlockStackingGap));
+        }
+
+        blockItem->setVisible(true);
+        blockItem->SetBlockGeom(geom);
+        blockItem->SetContent(lines, geom.fontScale);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::SaveMoveInfoBlock(int blockIndex, const QPointF &pos)
+{
+    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
+    VPiece newDet = oldDet;
+    OInfoBlockData data = std::as_const(newDet).GetInfoBlockData();
+    if (!data.IsSet() && s_infoBlockContentBuilder)
+    {
+        // First edit: snapshot the effective (seed-derived) state so the seed is never lost.
+        const OInfoBlockEffectiveState st = s_infoBlockContentBuilder(oldDet, doc, getData());
+        data.SetActive(st.active);
+        data.SetTemplate(st.templateName);
+        data.SetDispatch(st.dispatch);
+        data.SetSet(true);
+    }
+    OInfoBlockGeom geom = data.BlockGeom(blockIndex);
+    geom.pos = pos;
+    data.SetBlockGeom(blockIndex, geom);
+    newDet.SetInfoBlockData(data);
+
+    auto *moveCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
+    moveCommand->setText(tr("move information block"));
+    VAbstractApplication::VApp()->getUndoStack()->push(moveCommand);
+    UpdateInfoBlocks();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::SaveResizeInfoBlock(int blockIndex, qreal newW, qreal newH, qreal origW, qreal origH)
+{
+    Q_UNUSED(origH)
+
+    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
+    VPiece newDet = oldDet;
+    OInfoBlockData data = std::as_const(newDet).GetInfoBlockData();
+    if (!data.IsSet() && s_infoBlockContentBuilder)
+    {
+        // First edit: snapshot the effective (seed-derived) state so the seed is never lost.
+        const OInfoBlockEffectiveState st = s_infoBlockContentBuilder(oldDet, doc, getData());
+        data.SetActive(st.active);
+        data.SetTemplate(st.templateName);
+        data.SetDispatch(st.dispatch);
+        data.SetSet(true);
+    }
+    OInfoBlockGeom geom = data.BlockGeom(blockIndex);
+    geom.pos = m_infoBlockItems.at(blockIndex - 1)->pos();
+    geom.width = newW;
+    geom.height = newH;
+    // Resize is always proportional: the content scales with the block.
+    geom.fontScale *= (newW / origW);
+    data.SetBlockGeom(blockIndex, geom);
+    newDet.SetInfoBlockData(data);
+
+    auto *resizeCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
+    resizeCommand->setText(tr("resize information block"));
+    VAbstractApplication::VApp()->getUndoStack()->push(resizeCommand);
+    UpdateInfoBlocks();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief VToolDetail::paint draws a bounding box around detail, if one of its text or grainline items is not idle.
  */
@@ -1390,6 +1585,7 @@ void VToolSeamAllowance::AddToFile()
     AddPlaceLabels(doc, domElement, piece.GetPlaceLabels());
     AddSAMarginProperties(doc, domElement, piece);
     AddMirrorLine(doc, domElement, piece);
+    AddCartoucheBlocks(doc, domElement, piece);
 
     VAbstractApplication::VApp()->getUndoStack()->push(
         new AddPiece(domElement, doc, VAbstractTool::data, m_sceneDetails, m_drawName));
@@ -1425,6 +1621,7 @@ void VToolSeamAllowance::RefreshDataInFile()
         AddPlaceLabels(doc, domElement, piece.GetPlaceLabels());
         AddSAMarginProperties(doc, domElement, piece);
         AddMirrorLine(doc, domElement, piece);
+        AddCartoucheBlocks(doc, domElement, piece);
     }
 }
 
@@ -1736,6 +1933,17 @@ VToolSeamAllowance::VToolSeamAllowance(const VToolSeamAllowanceInitData &initDat
     const QBrush foldLineBrush(VSceneStylesheet::PatternPieceStyle().PieceColor());
     m_foldLineMark->setBrush(foldLineBrush);
     m_foldLineLabelText->setBrush(foldLineBrush);
+
+    // On-piece information blocks (one per block 1..11), hidden until a piece
+    // configures them (UpdateInfoBlocks decides visibility).
+    m_infoBlockItems.reserve(11);
+    for (int block = 1; block <= 11; ++block)
+    {
+        auto *blockItem = new OInfoBlockItem(block, this);
+        connect(blockItem, &OInfoBlockItem::Moved, this, &VToolSeamAllowance::SaveMoveInfoBlock);
+        connect(blockItem, &OInfoBlockItem::Resized, this, &VToolSeamAllowance::SaveResizeInfoBlock);
+        m_infoBlockItems.append(blockItem);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1916,6 +2124,7 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
                            {
                                this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
                                UpdateGrainline();
+                               UpdateInfoBlocks();
                                UpdateExcludeState();
                                if (updateChildren)
                                {
@@ -1927,6 +2136,7 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
     else
     {
         UpdateGrainline();
+        UpdateInfoBlocks();
         UpdateExcludeState();
         if (updateChildren)
         {

@@ -78,6 +78,8 @@ public slots:
 signals:
     void DocumentModified();
     void StatusMessage(const QString &message);
+    /** @brief Emitted after a template has been written to disk (refresh the canvas blocks). */
+    void TemplateSaved();
 
 private:
     void SetupUI();

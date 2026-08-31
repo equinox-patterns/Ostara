@@ -42,6 +42,7 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QTabWidget;
+class OBlockConfigWidget;
 class ODetailsFoldLineWidget;
 class ODetailsGrainlineWidget;
 class ODetailsSeamAllowanceWidget;
@@ -58,6 +59,11 @@ public:
 
     void Clear();
     void Show(VToolSeamAllowance *tool);
+
+    /** @brief Show the Grainline tab (outer tab 1). */
+    void ShowGrainlineTab();
+    /** @brief Show the Information tab (outer tab 3) and its Blocks sub-tab. */
+    void ShowBlocksTab();
 
     void RetranslateUI();
 
@@ -92,6 +98,9 @@ private:
 
     // Seam allowance tab
     ODetailsSeamAllowanceWidget *m_saWidget{nullptr};
+
+    // Information tab — Blocks sub-tab
+    OBlockConfigWidget *m_blockConfigWidget{nullptr};
 
     // General tab
     QLineEdit *m_nameEdit{nullptr};

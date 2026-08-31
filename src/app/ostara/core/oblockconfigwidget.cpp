@@ -1,0 +1,288 @@
+/************************************************************************
+ **
+ **  @file   oblockconfigwidget.cpp
+ **  @author Sophie Denys <contact@sophiedenys.com>
+ **  @date   31 August, 2026
+ **
+ **  @brief  Blocks sub-tab of the Information dock tab (see oblockconfigwidget.h).
+ **
+ **  @copyright
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+ **
+ **  This program is free software: you can redistribute it and/or modify
+ **  it under the terms of the GNU General Public License as published by
+ **  the Free Software Foundation, either version 3 of the License, or
+ **  (at your option) any later version.
+ **
+ **  This program is distributed in the hope that it will be useful,
+ **  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ **  GNU General Public License for more details.
+ **
+ **  You should have received a copy of the GNU General Public License
+ **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **
+ *************************************************************************/
+
+#include "oblockconfigwidget.h"
+
+#include "../widgets/InfoBlock/OInfoBlockResolver.h"
+#include "../widgets/InfoBlock/OPieceCartoucheCatalogue.h"
+#include "../widgets/InfoBlock/OPieceCartoucheStorage.h"
+#include "../widgets/InfoBlock/OPieceCartoucheTemplate.h"
+
+#include "../vmisc/FactoryWidgets.h"
+#include "../vmisc/vabstractvalapplication.h"
+#include "../vmisc/vcommonsettings.h"
+
+#include <QCheckBox>
+#include <QComboBox>
+#include <QFileInfo>
+#include <QFormLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QVBoxLayout>
+
+namespace
+{
+constexpr int kMaxBlocks = 11;
+}  // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+OBlockConfigWidget::OBlockConfigWidget(QWidget *parent) : QWidget(parent)
+{
+    // Same content style as the other dock tabs: group box sections, labels
+    // above the fields, 0/8/0/0 outer margins.
+    auto *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(0, 8, 0, 0);
+    layout->setSpacing(16);  // clear gap between the template row and the group box
+
+    // The checkbox and template row are indented to align with the group box
+    // frame (which has margin-left 8px in the theme).
+    auto *topSection = new QVBoxLayout();
+    topSection->setContentsMargins(8, 0, 0, 0);
+    topSection->setSpacing(6);
+
+    m_activeCheck = new QCheckBox(tr("Activate information block"), this);
+    topSection->addWidget(m_activeCheck);
+
+    auto *templateRow = new QHBoxLayout();
+    templateRow->setContentsMargins(0, 0, 0, 0);
+    templateRow->setSpacing(6);
+    m_templateLabel = new QLabel(tr("Template:"), this);
+    m_templateCombo = MakeComboBox(this);
+    m_templateCombo->setEnabled(false);
+    templateRow->addWidget(m_templateLabel);
+    templateRow->addWidget(m_templateCombo);
+    templateRow->addStretch();
+    topSection->addLayout(templateRow);
+
+    layout->addLayout(topSection);
+
+    // No inner scroll area: the dispatch list lives directly in the group box so
+    // it shares the group's $DockBody background (a QScrollArea viewport would be
+    // forced to $DockTitle by ApplyThemeToWindows — SubtiliteCode §13).
+    m_dispatchGroup = new QGroupBox(tr("Split into multiple blocks"), this);
+    auto *groupLayout = new QVBoxLayout(m_dispatchGroup);
+    groupLayout->setSpacing(6);
+    m_dispatchGroup->setEnabled(false);
+    m_listLayout = new QFormLayout();
+    m_listLayout->setContentsMargins(0, 0, 0, 0);
+    m_listLayout->setSpacing(4);
+    groupLayout->addLayout(m_listLayout);
+    groupLayout->addStretch();
+    layout->addWidget(m_dispatchGroup, 1);
+
+    connect(m_activeCheck, &QCheckBox::toggled, this, [this](bool on) {
+        m_templateCombo->setEnabled(on);
+        m_dispatchGroup->setEnabled(on);
+        if (m_loading)
+        {
+            return;
+        }
+        Commit();
+    });
+    connect(m_templateCombo, &QComboBox::currentIndexChanged, this, [this](int) {
+        if (m_loading)
+        {
+            return;
+        }
+        const QHash<QString, int> oldDispatch = ReadDispatch();
+        m_loading = true;
+        RebuildInfoList(m_templateCombo->currentData().toString(), oldDispatch);
+        m_loading = false;
+        Commit();
+    });
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OBlockConfigWidget::SetModifyPending(std::function<void(std::function<void(VPiece &)>)> callback)
+{
+    m_modifyPending = std::move(callback);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OBlockConfigWidget::Show(const VPiece &detail, const VContainer *data)
+{
+    m_loading = true;
+
+    VAbstractPattern *doc = VAbstractValApplication::VApp()->getCurrentDocument();
+    const OInfoBlockEffectiveState state = OInfoBlockResolver::ResolveEffectiveConfig(detail, doc, data);
+
+    m_activeCheck->setChecked(state.active);
+    m_templateCombo->setEnabled(state.active);
+    m_dispatchGroup->setEnabled(state.active);
+
+    m_templatePaths = OPieceCartoucheStorage::ScanDirectory(OPieceCartoucheStorage::DefaultDirectory());
+    m_templateCombo->blockSignals(true);
+    m_templateCombo->clear();
+    QStringList baseNames;
+    for (const QString &path : m_templatePaths)
+    {
+        const QString base = QFileInfo(path).completeBaseName();
+        baseNames.append(base);
+        m_templateCombo->addItem(base, base);
+    }
+    const QString defaultName = VAbstractValApplication::VApp()->Settings()->GetDefaultCartoucheTemplate();
+    int preferredIndex = OPieceCartoucheStorage::PreferredTemplateIndex(baseNames, state.templateName, defaultName);
+    if (!state.templateName.isEmpty() && !baseNames.contains(state.templateName))
+    {
+        // The template file is gone (deleted/renamed): keep it selectable so an
+        // edit never silently overwrites the piece's effective template.
+        m_templateCombo->addItem(state.templateName, state.templateName);
+        preferredIndex = m_templateCombo->count() - 1;
+    }
+    m_templateCombo->setCurrentIndex(preferredIndex);
+    m_templateCombo->blockSignals(false);
+
+    RebuildInfoList(state.templateName, state.dispatch);
+
+    m_lastTemplateName = state.templateName;
+    m_lastDispatch = state.dispatch;
+    m_hasState = true;
+
+    m_loading = false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OBlockConfigWidget::Clear()
+{
+    m_loading = true;
+    m_activeCheck->setChecked(false);
+    m_templateCombo->blockSignals(true);
+    m_templateCombo->clear();
+    m_templateCombo->blockSignals(false);
+    m_dispatchGroup->setEnabled(false);
+    ClearRows();
+    m_hasState = false;
+    m_loading = false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OBlockConfigWidget::RetranslateUI()
+{
+    m_activeCheck->setText(tr("Activate information block"));
+    m_templateLabel->setText(tr("Template:"));
+    m_dispatchGroup->setTitle(tr("Split into multiple blocks"));
+    if (m_hasState)
+    {
+        m_loading = true;
+        RebuildInfoList(m_lastTemplateName, m_lastDispatch);
+        m_loading = false;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OBlockConfigWidget::ClearRows()
+{
+    while (m_listLayout->rowCount() > 0)
+    {
+        m_listLayout->removeRow(0);  // removes and deletes the row widgets
+    }
+    m_rows.clear();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OBlockConfigWidget::RebuildInfoList(const QString &templateName, const QHash<QString, int> &dispatch)
+{
+    ClearRows();
+    if (templateName.isEmpty())
+    {
+        return;
+    }
+
+    OPieceCartoucheTemplate tpl;
+    for (const QString &path : m_templatePaths)
+    {
+        if (QFileInfo(path).completeBaseName() == templateName)
+        {
+            QString error;
+            if (OPieceCartoucheStorage::Load(path, &tpl, &error))
+            {
+                break;
+            }
+        }
+    }
+    if (tpl.IsEmpty())
+    {
+        return;
+    }
+
+    for (int i = 0; i < tpl.SectionCount(); ++i)
+    {
+        const QString typeId = tpl.SectionTypeId(i);
+        const OPieceCartoucheSection section = OPieceCartoucheCatalogue::Section(typeId);
+        const QString displayName = section.IsValid() ? section.DisplayName() : typeId;
+
+        auto *label = new QLabel(displayName, this);
+        auto *combo = MakeComboBox(this);
+        for (int block = 1; block <= kMaxBlocks; ++block)
+        {
+            combo->addItem(tr("Block %1").arg(block), block);
+        }
+        const int currentBlock = dispatch.value(typeId, 1);
+        combo->setCurrentIndex(currentBlock - 1);
+        connect(combo, &QComboBox::currentIndexChanged, this, [this](int) {
+            if (!m_loading)
+            {
+                Commit();
+            }
+        });
+
+        m_listLayout->addRow(label, combo);
+        m_rows.append({typeId, combo});
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OBlockConfigWidget::ReadDispatch() const -> QHash<QString, int>
+{
+    QHash<QString, int> dispatch;
+    for (const auto &row : m_rows)
+    {
+        dispatch.insert(row.first, row.second->currentData().toInt());
+    }
+    return dispatch;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OBlockConfigWidget::BuildData() const -> OInfoBlockData
+{
+    OInfoBlockData data;
+    data.SetSet(true);
+    data.SetActive(m_activeCheck->isChecked());
+    data.SetTemplate(m_templateCombo->currentData().toString());
+    data.SetDispatch(ReadDispatch());
+    return data;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OBlockConfigWidget::Commit()
+{
+    if (m_loading || m_modifyPending == nullptr)
+    {
+        return;
+    }
+    m_modifyPending([this](VPiece &det) { det.SetInfoBlockData(BuildData()); });
+}

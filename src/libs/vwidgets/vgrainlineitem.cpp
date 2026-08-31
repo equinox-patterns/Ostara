@@ -51,6 +51,7 @@
 
 constexpr int rectWidth = 30;
 constexpr int resizeRectSize = 10;
+constexpr double kResizeHitMargin = 10.0;  // invisible grab zone above/below each bar
 constexpr int rotateCircR = 7;
 constexpr int activeZ = 10;
 
@@ -73,13 +74,16 @@ VGrainlineItem::VGrainlineItem(VColorRole role, QGraphicsItem *pParent)
 //---------------------------------------------------------------------------------------------------------------------
 auto VGrainlineItem::shape() const -> QPainterPath
 {
-    if (m_eMode == mNormal)
-    {
-        return MainShape();
-    }
-
-    QPainterPath path;
+    // The whole block (m_polyBound) is part of the click target so a click
+    // anywhere in the 30px-wide zone activates the grainline, not just the thin
+    // line itself. The resize bars' enlarged hit zones are added in edit mode.
+    QPainterPath path = MainShape();
     path.addPolygon(m_polyBound);
+    if (m_eMode != mNormal)
+    {
+        path.addPolygon(m_resizeHit[0]);
+        path.addPolygon(m_resizeHit[1]);
+    }
     return path;
 }
 
@@ -152,7 +156,8 @@ void VGrainlineItem::paint(QPainter *pP, const QStyleOptionGraphicsItem *pOption
         {
             pP->setBrush(clr);
             UpdatePolyResize();
-            pP->drawPolygon(m_polyResize);
+            pP->drawPolygon(m_polyResize[0]);
+            pP->drawPolygon(m_polyResize[1]);
         }
 
         pP->setBrush(Qt::NoBrush);
@@ -334,7 +339,9 @@ void VGrainlineItem::mouseMoveEvent(QGraphicsSceneMouseEvent *pME)
     {
         qreal dLen = qSqrt(ptDiff.x() * ptDiff.x() + ptDiff.y() * ptDiff.y());
         qreal const dAng = qAtan2(-ptDiff.y(), ptDiff.x());
-        dLen = -dLen * qCos(dAng - m_dRotation);
+        // The sign depends on which bar was grabbed: the start bar grows the line
+        // backward (finish stays), the finish bar grows it forward (start stays).
+        dLen = (m_resizeFromEnd ? 1 : -1) * dLen * qCos(dAng - m_dRotation);
         qreal const dPrevLen = m_dLength;
         // try with new length
         if (not(m_moveType & IsMovable))
@@ -351,7 +358,12 @@ void VGrainlineItem::mouseMoveEvent(QGraphicsSceneMouseEvent *pME)
 
         QPointF pos;
 
-        if (m_moveType & IsMovable)
+        if (m_resizeFromEnd && (m_moveType & IsMovable))
+        {
+            // Grow from the finish end: the start end (the item position) stays fixed.
+            pos = m_ptStartPos;
+        }
+        else if (m_moveType & IsMovable)
         {
             QLineF grainline(this->pos().x(), this->pos().y(), this->pos().x() + dPrevLen, this->pos().y());
             grainline.setAngle(qRadiansToDegrees(m_dRotation));
@@ -490,11 +502,12 @@ void VGrainlineItem::hoverMoveEvent(QGraphicsSceneHoverEvent *pME)
 {
     if (flags() & QGraphicsItem::ItemIsMovable)
     {
-        // The resize handle (small filled square at the selection-box corner) must
-        // show the resize cursor on hover, not only while dragging.
-        if (m_eMode != mNormal && m_polyResize.containsPoint(pME->pos(), Qt::OddEvenFill))
+        // The full-width resize bars (with their enlarged hit zones) must show the
+        // resize cursor on hover, not only while dragging.
+        if (m_eMode != mNormal && (m_resizeHit[0].containsPoint(pME->pos(), Qt::OddEvenFill)
+                                   || m_resizeHit[1].containsPoint(pME->pos(), Qt::OddEvenFill)))
         {
-            setCursor(Qt::SizeFDiagCursor);
+            setCursor(Qt::SizeVerCursor);
         }
         else
         {
@@ -708,10 +721,17 @@ void VGrainlineItem::UserRotateAndMove()
 //---------------------------------------------------------------------------------------------------------------------
 void VGrainlineItem::UserMoveAndResize(const QPointF &pos)
 {
-    if (m_polyResize.containsPoint(pos, Qt::OddEvenFill))
+    if (m_resizeHit[0].containsPoint(pos, Qt::OddEvenFill))
     {
         m_eMode = mResize;
-        setCursor(Qt::SizeFDiagCursor);
+        m_resizeFromEnd = false;  // grow from the start end
+        setCursor(Qt::SizeVerCursor);
+    }
+    else if (m_resizeHit[1].containsPoint(pos, Qt::OddEvenFill))
+    {
+        m_eMode = mResize;
+        m_resizeFromEnd = true;  // grow from the finish end
+        setCursor(Qt::SizeVerCursor);
     }
     else
     {
@@ -723,20 +743,30 @@ void VGrainlineItem::UserMoveAndResize(const QPointF &pos)
 //---------------------------------------------------------------------------------------------------------------------
 void VGrainlineItem::UpdatePolyResize()
 {
-    m_polyResize.clear();
-    QPointF ptA = m_polyBound.at(1);
-    m_polyResize << ptA;
+    // Two full-width bars, one at each end, spanning the grainline's width and
+    // extending resizeRectSize along the line. Each has an invisible, slightly
+    // taller hit zone (kResizeHitMargin above and below) that also grabs the
+    // resize. The along direction matches the grainline's drawing
+    // (p2 = p1 + length * (cos, -sin)).
+    const QPointF dir(cos(m_dRotation), -sin(m_dRotation));
     const double dSize = resizeRectSize;
+    const double dHit = dSize + 2.0 * kResizeHitMargin;
 
-    ptA.setX(ptA.x() - dSize * cos(m_dRotation - M_PI / 2));
-    ptA.setY(ptA.y() + dSize * sin(m_dRotation - M_PI / 2));
-    m_polyResize << ptA;
+    // Bar 0 — start end (p1): visible bar + enlarged hit zone.
+    m_polyResize[0].clear();
+    m_polyResize[0] << m_polyBound.at(1) << m_polyBound.at(0) << m_polyBound.at(0) + dSize * dir
+                    << m_polyBound.at(1) + dSize * dir;
+    m_resizeHit[0].clear();
+    m_resizeHit[0] << m_polyBound.at(1) - kResizeHitMargin * dir
+                   << m_polyBound.at(0) - kResizeHitMargin * dir
+                   << m_polyBound.at(0) + dHit * dir << m_polyBound.at(1) + dHit * dir;
 
-    ptA.setX(ptA.x() + dSize * cos(m_dRotation));
-    ptA.setY(ptA.y() - dSize * sin(m_dRotation));
-    m_polyResize << ptA;
-
-    ptA.setX(ptA.x() - dSize * cos(m_dRotation + M_PI / 2));
-    ptA.setY(ptA.y() + dSize * sin(m_dRotation + M_PI / 2));
-    m_polyResize << ptA;
+    // Bar 1 — finish end (p2): visible bar + enlarged hit zone.
+    m_polyResize[1].clear();
+    m_polyResize[1] << m_polyBound.at(2) << m_polyBound.at(3) << m_polyBound.at(3) - dSize * dir
+                    << m_polyBound.at(2) - dSize * dir;
+    m_resizeHit[1].clear();
+    m_resizeHit[1] << m_polyBound.at(2) + kResizeHitMargin * dir
+                   << m_polyBound.at(3) + kResizeHitMargin * dir
+                   << m_polyBound.at(3) - dHit * dir << m_polyBound.at(2) - dHit * dir;
 }

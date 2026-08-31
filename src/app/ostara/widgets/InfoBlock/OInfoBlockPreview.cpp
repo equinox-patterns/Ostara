@@ -30,13 +30,17 @@
 #include "OPieceCartoucheStorage.h"
 #include "OPieceCartoucheTable.h"
 
+#include "vwidgets/ocartouchepainter.h"
+
 #include "def.h"
 
 #include <QCoreApplication>
-#include <QFontMetricsF>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QPixmap>
 #include <QSvgRenderer>
+
+#include <algorithm>
 
 namespace
 {
@@ -113,9 +117,8 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
         return TranslateToLocale(locale, context, source);
     };
 
-    const int margin = 16;
+    QVector<OCartoucheRenderLine> lines;
     const QFont baseFont = font();  // widget's own font — reset per line, no style cascade
-    qreal y = margin;
     for (int i = 0; i < m_template->SectionCount(); ++i)
     {
         const auto &type = OPieceCartoucheCatalogue::Section(m_template->SectionTypeId(i));
@@ -125,28 +128,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
         }
 
         const auto &options = m_template->SectionAt(i).options;
-
-        // Section font — computed once, shared by every line the section draws
-        // (a cut section renders one line per filled fabric tab).
-        QFont font = baseFont;
-        const QString family = options.value(QStringLiteral("fontFamily")).toString();
-        const int weight = options.value(QStringLiteral("fontWeight"), 0).toInt();
-        const double size = options.value(QStringLiteral("fontSize"), 0.0).toDouble();
-        if (!family.isEmpty())
-        {
-            font.setFamily(family);
-        }
-        if (weight > 0)
-        {
-            font.setWeight(QFont::Weight(weight));
-        }
-        if (size > 0.0)
-        {
-            font.setPixelSize(qRound(size));
-        }
-
-        // Extra vertical space (px) between this section's lines and the next
-        // one — the Line spacing option (0 = default, negative = tighter).
+        const QFont font = OCartouchePainter::SectionFont(options, baseFont);
         const int lineSpacing = options.value(QStringLiteral("lineSpacing"), 0).toInt();
 
         // Text sections — the sample line is the section's source name in the
@@ -193,29 +175,18 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                 languageLines.append(ComposeLine(displayName, displayValue, sep));
             }
 
-            painter.setFont(font);
-            painter.setPen(palette().text().color());
             if (oneLine)
             {
                 // Every block language on its own line.
                 for (const QString &text : languageLines)
                 {
-                    const QRectF rect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
-                    painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, text);
-                    y += QFontMetricsF(font).height() + 6.0 + lineSpacing;
-                    if (y > height())
-                    {
-                        break;
-                    }
+                    lines.append(OCartouchePainter::TextLine(text, font, lineSpacing));
                 }
             }
             else
             {
                 // All languages on a single line, joined by " - ".
-                const QRectF rect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
-                painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter,
-                                 languageLines.join(QStringLiteral(" - ")));
-                y += QFontMetricsF(font).height() + 6.0 + lineSpacing;
+                lines.append(OCartouchePainter::TextLine(languageLines.join(QStringLiteral(" - ")), font, lineSpacing));
             }
             continue;
         }
@@ -251,8 +222,6 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                 names.append(rename.name.isEmpty() ? storedFull : rename.name);
             }
 
-            painter.setFont(font);
-            painter.setPen(palette().text().color());
             if (oneLine)
             {
                 // Every block language on its own line.
@@ -260,13 +229,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                 {
                     const QString sep = Tl(renderLanguages.at(i), "OInfoBlockPreview",
                                            qPrintable(options.value(QStringLiteral("separator")).toString()));
-                    const QRectF rect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
-                    painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, ComposeLine(names.at(i), value, sep));
-                    y += QFontMetricsF(font).height() + 6.0 + lineSpacing;
-                    if (y > height())
-                    {
-                        break;
-                    }
+                    lines.append(OCartouchePainter::TextLine(ComposeLine(names.at(i), value, sep), font, lineSpacing));
                 }
             }
             else
@@ -279,9 +242,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                 }
                 const QString sep = Tl(mainLocale, "OInfoBlockPreview",
                                        qPrintable(options.value(QStringLiteral("separator")).toString()));
-                const QRectF rect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
-                painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, ComposeLine(display, value, sep));
-                y += QFontMetricsF(font).height() + 6.0 + lineSpacing;
+                lines.append(OCartouchePainter::TextLine(ComposeLine(display, value, sep), font, lineSpacing));
             }
             continue;
         }
@@ -309,8 +270,6 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                  QT_TRANSLATE_NOOP("OInfoBlockPreview", "lining")},
             };
 
-            painter.setFont(font);
-            painter.setPen(palette().text().color());
             bool any = false;
             // Software-managed: one line per filled tab AND per block language,
             // in combo order (e.g. "Cut 1 on fold (fabric)" / "Couper 1 fois au
@@ -326,23 +285,17 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                     }
                     any = true;
                     const bool onFold = options.value(tab.foldKey, false).toBool();
-                    QString text = Tl(locale, "OInfoBlockPreview", QT_TRANSLATE_NOOP("OInfoBlockPreview", "Cut %1")).arg(qty);
+                    QString text = Tl(locale, "OInfoBlockPreview",
+                                      QT_TRANSLATE_NOOP("OInfoBlockPreview", "Cut %1"))
+                                       .arg(qty);
                     if (onFold)
                     {
-                        text += Tl(locale, "OInfoBlockPreview", QT_TRANSLATE_NOOP("OInfoBlockPreview", " on fold"));
+                        text += Tl(locale, "OInfoBlockPreview",
+                                   QT_TRANSLATE_NOOP("OInfoBlockPreview", " on fold"));
                     }
-                    text += Tl(locale, "OInfoBlockPreview", QT_TRANSLATE_NOOP("OInfoBlockPreview", " (%1)")).arg(Tl(locale, "OInfoBlockPreview", tab.display));
-                    const QRectF lineRect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
-                    painter.drawText(lineRect, Qt::AlignHCenter | Qt::AlignVCenter, text);
-                    y += QFontMetricsF(font).height() + 6.0 + lineSpacing;
-                    if (y > height())
-                    {
-                        break;
-                    }
-                }
-                if (y > height())
-                {
-                    break;
+                    text += Tl(locale, "OInfoBlockPreview", QT_TRANSLATE_NOOP("OInfoBlockPreview", " (%1)"))
+                                .arg(Tl(locale, "OInfoBlockPreview", tab.display));
+                    lines.append(OCartouchePainter::TextLine(text, font, lineSpacing));
                 }
             }
             if (!any)
@@ -366,33 +319,25 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
                 continue;  // dead data: missing or invalid SVG
             }
             const double sizeCm = options.value(QStringLiteral("logoSize"), 2.0).toDouble();
-            const double targetH = qMax(8.0, ToPixel(sizeCm, Unit::Cm));
+            const double targetH = (std::max)(8.0, ToPixel(sizeCm, Unit::Cm));
             const QSize base = renderer.defaultSize();
             double drawW = targetH;
-            const double drawH = targetH;
             if (base.isValid() && base.width() > 0 && base.height() > 0)
             {
                 drawW = targetH * (static_cast<double>(base.width()) / base.height());
             }
-            const QRectF logoRect(margin + (width() - 2.0 * margin - drawW) / 2.0, y, drawW, drawH);
-            renderer.render(&painter, logoRect);
-            y += drawH + 6.0 + lineSpacing;
-            if (y > height())
-            {
-                break;
-            }
+            QPixmap pixmap(qCeil(drawW), qCeil(targetH));
+            pixmap.fill(Qt::transparent);
+            QPainter pixmapPainter(&pixmap);
+            renderer.render(&pixmapPainter);
+            pixmapPainter.end();
+            lines.append(OCartouchePainter::LogoLine(pixmap, targetH, lineSpacing));
             continue;
         }
 
-        painter.setFont(font);
-        painter.setPen(palette().text().color());
-        const QRectF lineRect(margin, y, width() - 2.0 * margin, QFontMetricsF(font).height());
-        painter.drawText(lineRect, Qt::AlignHCenter | Qt::AlignVCenter, line);
-
-        y += QFontMetricsF(font).height() + 6.0 + lineSpacing;
-        if (y > height())
-        {
-            break;
-        }
+        lines.append(OCartouchePainter::TextLine(line, font, lineSpacing));
     }
+
+    painter.setPen(palette().text().color());
+    OCartouchePainter::Paint(painter, rect(), lines);
 }

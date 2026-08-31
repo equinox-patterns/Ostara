@@ -26,6 +26,7 @@
 
 #include "odetailspiecewidget.h"
 
+#include "oblockconfigwidget.h"
 #include "odetailsfoldlinewidget.h"
 #include "odetailsgrainlinewidget.h"
 #include "odetailsseamallowancewidget.h"
@@ -255,6 +256,9 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         m_infoSubTabs->setObjectName(QStringLiteral("informationTabWidget"));
         layout->addWidget(m_infoSubTabs);
 
+        m_blockConfigWidget = new OBlockConfigWidget(m_infoSubTabs);
+        m_infoSubTabs->addTab(m_blockConfigWidget, tr("Blocks"));
+
         m_tabWidget->addTab(tab, tr("Information"));
     }
 
@@ -304,11 +308,13 @@ void ODetailsPieceWidget::RetranslateUI()
     m_tabWidget->setTabText(1, tr("Grainline"));
     m_tabWidget->setTabText(2, tr("Seam Allowance"));
     m_tabWidget->setTabText(3, tr("Information"));
+    m_infoSubTabs->setTabText(0, tr("Blocks"));
 
     // Sub-widgets (Grainline tab, Fold line, Seam Allowance)
     m_grainlineWidget->RetranslateUI();
     m_foldlineWidget->RetranslateUI();
     m_saWidget->RetranslateUI();
+    m_blockConfigWidget->RetranslateUI();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -326,6 +332,7 @@ void ODetailsPieceWidget::ConnectControls()
     });
 
     m_saWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
+    m_blockConfigWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::HighlightNode, this,
             [this](quint32 nodeId, bool highlight, QColor color)
@@ -369,6 +376,7 @@ void ODetailsPieceWidget::ConnectControls()
             m_grainlineWidget->Show(detail, currentTool->getData());
             m_foldlineWidget->Show(detail);
             m_saWidget->RefreshList(detail);
+            m_blockConfigWidget->Show(detail, currentTool->getData());
         });
     });
 
@@ -465,6 +473,7 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
     m_nameEdit->setCursorPosition(0);
 
     m_pieceInfoWidget->Show(detail, tool->getData());
+    m_blockConfigWidget->Show(detail, tool->getData());
 
     int h = detail.GetGradedAlignH();
     if (h == 0)
@@ -506,6 +515,20 @@ void ODetailsPieceWidget::Clear()
     m_grainlineWidget->Clear();
     m_foldlineWidget->Clear();
     m_saWidget->Clear();
+    m_blockConfigWidget->Clear();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::ShowGrainlineTab()
+{
+    m_tabWidget->setCurrentIndex(1);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::ShowBlocksTab()
+{
+    m_tabWidget->setCurrentIndex(3);
+    m_infoSubTabs->setCurrentIndex(0);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
