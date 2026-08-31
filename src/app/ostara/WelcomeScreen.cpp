@@ -229,7 +229,8 @@ void WelcomeScreen::UpdateRecentItems(const QStringList &patternPaths, const QSt
             continue;
         }
         QFileInfo fi(path);
-        auto *item = new QListWidgetItem(fi.fileName());
+        // Patterns are always .ostara — show the file name without the extension.
+        auto *item = new QListWidgetItem(fi.completeBaseName());
         item->setToolTip(path);
         item->setData(Qt::UserRole, path);
         m_patternsSection.recentList->addItem(item);
