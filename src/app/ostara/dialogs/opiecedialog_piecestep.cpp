@@ -52,10 +52,18 @@ OPiecePieceStep::OPiecePieceStep(QWidget *parent)
     form->addRow(tr("Piece name"), m_nameEdit);
     connect(m_nameEdit, &QLineEdit::textChanged, this, [this]() { SetPieceNameInvalid(false); });
 
+    // Piece number with a dynamic total ("/ N" where N = total piece count,
+    // including the piece being created) — mirrors OPieceInfoWidget.
+    auto *numberRow = new QHBoxLayout();
+    numberRow->setSpacing(4);
     m_numberSpin = new QSpinBox();
     m_numberSpin->setRange(0, 99);
     m_numberSpin->setSpecialValueText(QStringLiteral("—"));
-    form->addRow(tr("Piece number"), m_numberSpin);
+    numberRow->addWidget(m_numberSpin);
+    m_totalLabel = new QLabel();
+    numberRow->addWidget(m_totalLabel);
+    numberRow->addStretch();
+    form->addRow(tr("Piece number"), numberRow);
 
     mainLayout->addLayout(form);
 
@@ -123,6 +131,12 @@ void OPiecePieceStep::SetPieceNameInvalid(bool invalid)
 auto OPiecePieceStep::GetPieceNumber() const -> uint
 {
     return static_cast<uint>(m_numberSpin->value());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPiecePieceStep::SetPieceTotal(int count)
+{
+    m_totalLabel->setText(QStringLiteral("/ %1").arg(QString::number(count)));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

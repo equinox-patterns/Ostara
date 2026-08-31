@@ -279,7 +279,7 @@ private slots:
     void ActionNewDraw_triggered();
     void ActionTable_triggered();
     void ActionFinalMeasurements_triggered();
-    void ActionInfoBlock_triggered();
+    void ActionInfoBlock_triggered(int page);
     void ActionManageMeasurements();
     void ActionShowMainPath_triggered(bool checked);
     void ActionBoundaryTogetherWithNotches_triggered(bool checked);

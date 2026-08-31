@@ -127,6 +127,18 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
         btn->setFocusPolicy(Qt::NoFocus);
         btn->setProperty("alignValue", kAlignHItems[i].value);
         btn->installEventFilter(this); // hover icon swap
+        connect(btn, &QAbstractButton::toggled, this, [btn](bool checked) {
+            // A selected button has no hover: restore its theme rendering under the cursor.
+            if (not btn->underMouse())
+            {
+                return;
+            }
+            const QVariant prop = checked ? btn->property("normalIcon") : btn->property("hoverIcon");
+            if (prop.isValid())
+            {
+                btn->setIcon(prop.value<QIcon>());
+            }
+        });
         m_alignHGroup->addButton(btn, kAlignHItems[i].value);
         hLayout->addWidget(btn);
         m_alignHBtns[i] = btn;
@@ -148,6 +160,18 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
         btn->setFocusPolicy(Qt::NoFocus);
         btn->setProperty("alignValue", kAlignVItems[i].value);
         btn->installEventFilter(this); // hover icon swap
+        connect(btn, &QAbstractButton::toggled, this, [btn](bool checked) {
+            // A selected button has no hover: restore its theme rendering under the cursor.
+            if (not btn->underMouse())
+            {
+                return;
+            }
+            const QVariant prop = checked ? btn->property("normalIcon") : btn->property("hoverIcon");
+            if (prop.isValid())
+            {
+                btn->setIcon(prop.value<QIcon>());
+            }
+        });
         m_alignVGroup->addButton(btn, kAlignVItems[i].value);
         vLayout->addWidget(btn);
         m_alignVBtns[i] = btn;
@@ -189,7 +213,8 @@ bool OGradedAlignWidget::eventFilter(QObject *obj, QEvent *event)
     if (event->type() == QEvent::Enter)
     {
         auto *btn = qobject_cast<QPushButton *>(obj);
-        if (btn && btn->isEnabled() && btn->property("hoverIcon").isValid())
+        // Hover swap applies to unselected buttons only — a selected button has no hover.
+        if (btn && btn->isEnabled() && not btn->isChecked() && btn->property("hoverIcon").isValid())
         {
             btn->setIcon(btn->property("hoverIcon").value<QIcon>());
         }

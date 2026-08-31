@@ -87,6 +87,9 @@ signals:
     void HighlightTemporaryNode(quint32 nodeId, bool selected);
     void ClearHighlight();
 
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) override;
+
 private:
     void ConnectControls();
     void CommitPending();

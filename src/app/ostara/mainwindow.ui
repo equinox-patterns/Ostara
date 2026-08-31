@@ -146,7 +146,11 @@
     <property name="title">
      <string>Information block</string>
     </property>
-    <addaction name="actionInfoBlock"/>
+    <addaction name="actionInfoBlockTemplates"/>
+    <addaction name="actionInfoBlockCreate"/>
+    <addaction name="actionInfoBlockLogo"/>
+    <addaction name="actionInfoBlockClients"/>
+    <addaction name="actionInfoBlockCollections"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -1039,12 +1043,41 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionInfoBlock">
+  <action name="actionInfoBlockTemplates">
    <property name="text">
-    <string>Information block</string>
+    <string>Existing templates</string>
    </property>
-   <property name="shortcut">
-    <string notr="true"/>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionInfoBlockCreate">
+   <property name="text">
+    <string>Create new</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionInfoBlockLogo">
+   <property name="text">
+    <string>Logo</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionInfoBlockClients">
+   <property name="text">
+    <string>Clients</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionInfoBlockCollections">
+   <property name="text">
+    <string>Collections</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

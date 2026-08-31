@@ -5,7 +5,8 @@
  **  @date   28 August, 2026
  **
  **  @brief  Graded alignment selector (horizontal + vertical, 3 buttons each).
- **          Shared by the piece tool dialog (step 2) and the Options dock.
+ **          Used by the piece tool dialog (step 2); the Options dock carries an
+ **          equivalent implementation.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>

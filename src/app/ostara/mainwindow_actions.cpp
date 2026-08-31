@@ -330,7 +330,11 @@ void MainWindow::CreateActions()
     connect(ui->actionExportFinalMeasurementsToCSV, &QAction::triggered, this, &MainWindow::ExportFMeasurementsToCSV);
     connect(ui->actionTable, &QAction::triggered, this, &MainWindow::ActionTable_triggered);
     connect(ui->actionFinalMeasurements, &QAction::triggered, this, &MainWindow::ActionFinalMeasurements_triggered);
-    connect(ui->actionInfoBlock, &QAction::triggered, this, &MainWindow::ActionInfoBlock_triggered);
+    connect(ui->actionInfoBlockTemplates, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(0); });
+    connect(ui->actionInfoBlockCreate, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(1); });
+    connect(ui->actionInfoBlockLogo, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(2); });
+    connect(ui->actionInfoBlockClients, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(3); });
+    connect(ui->actionInfoBlockCollections, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(4); });
 
     connect(ui->actionAbout_Qt, &QAction::triggered, this, [this]() { QMessageBox::aboutQt(this, tr("About Qt")); });
 

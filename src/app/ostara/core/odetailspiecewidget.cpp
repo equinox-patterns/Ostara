@@ -43,11 +43,13 @@
 #include "../vtools/undocommands/savepieceoptions.h"
 #include "../vtheme/vtheme.h"
 
+#include <QAbstractButton>
 #include <QButtonGroup>
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QEvent>
 #include <QFormLayout>
 #include <QFrame>
 #include <QGroupBox>
@@ -61,6 +63,7 @@
 #include <QTabWidget>
 #include <QTimer>
 #include <QUndoStack>
+#include <QVariant>
 #include <QVBoxLayout>
 
 namespace
@@ -74,6 +77,18 @@ auto MakeAlignIcon(const QString &baseName, bool dark) -> QIcon
     icon.addFile(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, baseName));                    // Off = regular
     icon.addFile(QStringLiteral(":/icons/%1/%2-fill_%1.svg").arg(theme, baseName), QSize(),
                  QIcon::Normal, QIcon::On);                                                       // On = fill
+    return icon;
+}
+
+// Hover icon: the button background turns accent on hover (QSS QPushButton:hover), and on an
+// accent background the icon must always be the Dark fill set (Icons.md "fond accent" rule),
+// whatever the active theme. Both states map to the same file.
+auto MakeAlignHoverIcon(const QString &baseName) -> QIcon
+{
+    const QString file = QStringLiteral(":/icons/dark/%1-fill_dark.svg").arg(baseName);
+    QIcon icon;
+    icon.addFile(file);                                    // Off = fill dark
+    icon.addFile(file, QSize(), QIcon::Normal, QIcon::On); // On = fill dark
     return icon;
 }
 
@@ -159,6 +174,19 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
             auto *btn = new QPushButton(tr(kAlignHItems[i].text));
             btn->setCheckable(true);
             btn->setProperty("alignValue", kAlignHItems[i].value);
+            btn->installEventFilter(this); // hover icon swap
+            connect(btn, &QAbstractButton::toggled, this, [btn](bool checked) {
+                // A selected button has no hover: restore its theme rendering under the cursor.
+                if (not btn->underMouse())
+                {
+                    return;
+                }
+                const QVariant prop = checked ? btn->property("normalIcon") : btn->property("hoverIcon");
+                if (prop.isValid())
+                {
+                    btn->setIcon(prop.value<QIcon>());
+                }
+            });
             m_alignHGroup->addButton(btn, kAlignHItems[i].value);
             hLayout->addWidget(btn);
             m_alignHBtns[i] = btn;
@@ -177,6 +205,19 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
             auto *btn = new QPushButton(tr(kAlignVItems[i].text));
             btn->setCheckable(true);
             btn->setProperty("alignValue", kAlignVItems[i].value);
+            btn->installEventFilter(this); // hover icon swap
+            connect(btn, &QAbstractButton::toggled, this, [btn](bool checked) {
+                // A selected button has no hover: restore its theme rendering under the cursor.
+                if (not btn->underMouse())
+                {
+                    return;
+                }
+                const QVariant prop = checked ? btn->property("normalIcon") : btn->property("hoverIcon");
+                if (prop.isValid())
+                {
+                    btn->setIcon(prop.value<QIcon>());
+                }
+            });
             m_alignVGroup->addButton(btn, kAlignVItems[i].value);
             vLayout->addWidget(btn);
             m_alignVBtns[i] = btn;
@@ -445,11 +486,44 @@ void ODetailsPieceWidget::RefreshAlignIcons()
     const QSize iconSize(16, 16);
     for (int i = 0; i < 3; ++i)
     {
-        m_alignHBtns[i]->setIcon(MakeAlignIcon(AlignIconBaseName(false, i + 1), dark));
+        const QIcon hNormal = MakeAlignIcon(AlignIconBaseName(false, i + 1), dark);
+        m_alignHBtns[i]->setIcon(hNormal);
         m_alignHBtns[i]->setIconSize(iconSize);
-        m_alignVBtns[i]->setIcon(MakeAlignIcon(AlignIconBaseName(true, i + 1), dark));
+        m_alignHBtns[i]->setProperty("normalIcon", QVariant::fromValue(hNormal));
+        m_alignHBtns[i]->setProperty("hoverIcon",
+                                     QVariant::fromValue(MakeAlignHoverIcon(AlignIconBaseName(false, i + 1))));
+
+        const QIcon vNormal = MakeAlignIcon(AlignIconBaseName(true, i + 1), dark);
+        m_alignVBtns[i]->setIcon(vNormal);
         m_alignVBtns[i]->setIconSize(iconSize);
+        m_alignVBtns[i]->setProperty("normalIcon", QVariant::fromValue(vNormal));
+        m_alignVBtns[i]->setProperty("hoverIcon",
+                                     QVariant::fromValue(MakeAlignHoverIcon(AlignIconBaseName(true, i + 1))));
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool ODetailsPieceWidget::eventFilter(QObject *obj, QEvent *event)
+{
+    // Hover icon swap for the graded alignment buttons: an unselected button gets the dark-fill
+    // hover icon on enter (accent background), a selected button has no hover.
+    if (event->type() == QEvent::Enter)
+    {
+        auto *btn = qobject_cast<QPushButton *>(obj);
+        if (btn && btn->isEnabled() && not btn->isChecked() && btn->property("hoverIcon").isValid())
+        {
+            btn->setIcon(btn->property("hoverIcon").value<QIcon>());
+        }
+    }
+    else if (event->type() == QEvent::Leave)
+    {
+        auto *btn = qobject_cast<QPushButton *>(obj);
+        if (btn && btn->property("normalIcon").isValid())
+        {
+            btn->setIcon(btn->property("normalIcon").value<QIcon>());
+        }
+    }
+    return QWidget::eventFilter(obj, event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -32,6 +32,7 @@
 #include "core/vapplication.h"
 #include "mainwindow.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
+#include "widgets/InfoBlock/OPieceCartoucheStorage.h"
 
 #include "vabstractapplication.h"
 #include "vvalentinasettings.h"
@@ -158,6 +159,10 @@ auto main(int argc, char *argv[]) -> int
 
     if (VApplication::IsGUIMode())
     {
+        // First launch of the installed software: seed the default cartouche template
+        // (idempotent — skipped when the templates folder already holds a template).
+        OPieceCartoucheStorage::EnsureDefaultTemplate();
+
         mw->show();
 
         // Auto-updater

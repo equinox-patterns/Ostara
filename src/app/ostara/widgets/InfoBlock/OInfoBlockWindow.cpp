@@ -69,6 +69,12 @@ OInfoBlockWindow::OInfoBlockWindow(QWidget *parent) : QMainWindow(parent)
     }
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+void OInfoBlockWindow::OpenOnPage(int page)
+{
+    m_editor->OpenOnPage(page);
+}
+
 void OInfoBlockWindow::closeEvent(QCloseEvent *event)
 {
     if (m_editor->IsModified())

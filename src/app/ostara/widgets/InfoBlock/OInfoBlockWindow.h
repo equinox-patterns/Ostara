@@ -46,6 +46,9 @@ class OInfoBlockWindow : public QMainWindow
 public:
     explicit OInfoBlockWindow(QWidget *parent = nullptr);
 
+    /** @brief Open the editor on the given page (0..4), see OInfoBlockEditor::OpenOnPage. */
+    void OpenOnPage(int page);
+
 signals:
     /** @brief Relayed from the editor when a template is saved (refresh the canvas blocks). */
     void TemplateSaved();

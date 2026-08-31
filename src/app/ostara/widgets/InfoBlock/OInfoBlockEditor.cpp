@@ -1439,6 +1439,36 @@ void OInfoBlockEditor::ShowTemplatesList()
     m_stack->setCurrentIndex(1);
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+void OInfoBlockEditor::OpenOnPage(int page)
+{
+    switch (page)
+    {
+        case 0:
+            m_menuList->setCurrentRow(0);
+            ShowTemplatesList();
+            break;
+        case 1:
+            m_menuList->setCurrentRow(1);
+            NewTemplate();
+            break;
+        case 2:
+            m_menuList->setCurrentRow(2);
+            ShowLogosPage();
+            break;
+        case 3:
+            m_menuList->setCurrentRow(3);
+            ShowClientsPage();
+            break;
+        case 4:
+            m_menuList->setCurrentRow(4);
+            ShowCollectionsPage();
+            break;
+        default:
+            break;
+    }
+}
+
 void OInfoBlockEditor::LoadFile(const QString &filePath)
 {
     OPieceCartoucheTemplate tpl;

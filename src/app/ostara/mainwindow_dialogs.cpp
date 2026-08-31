@@ -120,7 +120,7 @@ void MainWindow::ActionFinalMeasurements_triggered()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ActionInfoBlock_triggered()
+void MainWindow::ActionInfoBlock_triggered(int page)
 {
     if (m_infoBlockWindow.isNull())
     {
@@ -135,10 +135,12 @@ void MainWindow::ActionInfoBlock_triggered()
                 doc->CheckLayout();
             }
         });
+        window->OpenOnPage(page);
         window->show();
     }
     else
     {
+        m_infoBlockWindow->OpenOnPage(page);
         m_infoBlockWindow->activateWindow();
     }
 }

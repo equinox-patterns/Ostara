@@ -71,6 +71,10 @@ public:
     /// Re-translate all fixed literals (called on QEvent::LanguageChange).
     void RetranslateUI();
 
+    /** @brief Open the editor directly on the given page.
+     *  0 = Existing templates, 1 = Create new, 2 = Logo, 3 = Clients, 4 = Collections. */
+    void OpenOnPage(int page);
+
 public slots:
     void OnSave();
     void OnSaveAs();

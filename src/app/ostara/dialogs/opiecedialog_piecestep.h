@@ -31,6 +31,7 @@
 #include <QWidget>
 
 class QCheckBox;
+class QLabel;
 class QLineEdit;
 class QPlainTextEdit;
 class QSpinBox;
@@ -53,6 +54,7 @@ public:
     auto GetPieceName() const -> QString;
     void SetPieceNameInvalid(bool invalid);
     auto GetPieceNumber() const -> uint;
+    void SetPieceTotal(int count);
     auto GetCutFabricQty() const -> int;
     auto IsCutFabricOnFold() const -> bool;
     auto GetCutInterfacingQty() const -> int;
@@ -68,6 +70,7 @@ private:
 
     QLineEdit *m_nameEdit{nullptr};
     QSpinBox *m_numberSpin{nullptr};
+    QLabel *m_totalLabel{nullptr};
     QTabWidget *m_cutTabs{nullptr};
     QSpinBox *m_fabricQtySpin{nullptr};
     QCheckBox *m_fabricOnFoldCheck{nullptr};
