@@ -192,5 +192,7 @@ bw-output
 /deactivate_conanrun.sh
 /deactivate_conanbuild.sh
 /compile_commands.json
+# Exception : lien vers la base de compilation du build pour clangd
+!/compile_commands.json
 
 .cache
