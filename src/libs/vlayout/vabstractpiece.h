@@ -81,7 +81,7 @@ public:
     VAbstractPiece(VAbstractPiece &&piece) noexcept;
     auto operator=(VAbstractPiece &&piece) noexcept -> VAbstractPiece &;
 
-    auto GetName() const -> QString;
+    virtual auto GetName() const -> QString;
     void SetName(const QString &value);
 
     auto IsForbidFlipping() const -> bool;

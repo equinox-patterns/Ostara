@@ -39,6 +39,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vpatterndb/vpiecepath.h"
+#include "../vgeometry/vpointf.h"
 #include "../vtools/dialogs/tools/piece/dialogmainpath.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/undocommands/savepieceoptions.h"
@@ -374,9 +375,12 @@ void ODetailsPieceWidget::RetranslateUI()
 void ODetailsPieceWidget::ConnectControls()
 {
     // Sub-widgets commit through the same snapshot + undo pipeline as the General tab.
-    m_grainlineWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
+    m_grainlineWidget->SetModifyPending([this](std::function<void(VGrainlineData &)> func)
+    {
+        ModifyPiece([func](VPiece &det) { func(det.GetGrainlineGeometry()); });
+    });
     m_foldlineWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
-    m_pieceInfoWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
+    m_pieceInfoWidget->SetModifyPending([this](std::function<void(IPieceInfo &)> func) { ModifyPiece(func); });
     connect(m_foldlineWidget, &ODetailsFoldLineWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);
     connect(m_foldlineWidget, &ODetailsFoldLineWidget::HighlightNode, this,
             [this](quint32 nodeId, bool highlight)
@@ -385,8 +389,8 @@ void ODetailsPieceWidget::ConnectControls()
     });
 
     m_saWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
-    m_blockConfigWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
-    m_annotationsConfigWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
+    m_blockConfigWidget->SetModifyPending([this](std::function<void(IPieceInfo &)> func) { ModifyPiece(func); });
+    m_annotationsConfigWidget->SetModifyPending([this](std::function<void(IPieceInfo &)> func) { ModifyPiece(func); });
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::HighlightNode, this,
             [this](quint32 nodeId, bool highlight, QColor color)
@@ -427,7 +431,11 @@ void ODetailsPieceWidget::ConnectControls()
             const VPiece detail = currentTool->getData()->GetPiece(currentTool->getId());
             m_pendingDet = detail;
             m_pieceInfoWidget->Show(detail, currentTool->getData());
-            m_grainlineWidget->Show(detail, currentTool->getData());
+            m_grainlineWidget->Show(detail.GetGrainlineGeometry(),
+                                    [this, &detail, currentTool]() -> std::optional<QPointF>
+            {
+                return GrainlineCenter(detail, currentTool->getData());
+            });
             m_foldlineWidget->Show(detail);
             m_saWidget->RefreshList(detail);
             m_blockConfigWidget->Show(detail, currentTool->getData());
@@ -494,6 +502,18 @@ void ODetailsPieceWidget::ModifyPiece(std::function<void(VPiece &)> func)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::ModifyPiece(std::function<void(IPieceInfo &)> func)
+{
+    if (m_updating || !m_currentTool)
+    {
+        return;
+    }
+    // VPiece is-a IPieceInfo: the piece-like mutation applies to the pending detail.
+    func(m_pendingDet);
+    CommitPending();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODetailsPieceWidget::RefreshAlignIcons()
 {
     const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
@@ -541,6 +561,24 @@ bool ODetailsPieceWidget::eventFilter(QObject *obj, QEvent *event)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto ODetailsPieceWidget::GrainlineCenter(const VPiece &det, const VContainer *data) -> std::optional<QPointF>
+{
+    const QVector<VPointF> points = det.MainPathNodePoints(data);
+    if (points.isEmpty())
+    {
+        return std::nullopt;
+    }
+    QRectF bbox;
+    for (const auto &p : points)
+    {
+        const QPointF pt = p.toQPointF();
+        bbox = bbox.isNull() ? QRectF(pt, QSizeF(0, 0)) : bbox.united(QRectF(pt, QSizeF(0, 0)));
+    }
+    // Local center of the piece bbox (the grainline is a child of the piece).
+    return bbox.center() - QPointF(det.GetMx(), det.GetMy());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
 {
     if (!tool)
@@ -585,7 +623,11 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
     }
 
     // ── Grainline tab ────────────────────────────────────────────
-    m_grainlineWidget->Show(detail, tool->getData());
+    m_grainlineWidget->Show(detail.GetGrainlineGeometry(),
+                            [this, &detail, tool]() -> std::optional<QPointF>
+    {
+        return GrainlineCenter(detail, tool->getData());
+    });
     m_foldlineWidget->Show(detail);
     m_saWidget->Show(detail);
 

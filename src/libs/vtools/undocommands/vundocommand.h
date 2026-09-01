@@ -66,7 +66,10 @@ enum class UndoCommand : qint8
     RotateBackGroundImage,
     RenamePiece,
     MoveToolUp,
-    MoveToolDown
+    MoveToolDown,
+    LinkPieceGroup,
+    UnlinkPieceGroup,
+    SavePieceGroupOptions
 };
 
 class VPattern;

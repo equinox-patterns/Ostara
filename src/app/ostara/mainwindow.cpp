@@ -84,6 +84,7 @@
 #include "../vtools/tools/nodeDetails/vnodepoint.h"
 #include "core/vapplication.h"
 #include "core/odetailspropertybrowser.h"
+#include "core/opiecegroupholderitem.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "WelcomeScreen.h"
 #include <QStackedWidget>
@@ -839,6 +840,23 @@ void MainWindow::InitDocksContain()
     // Owns dock content widgets, per-dock structure, title bars and toggle actions.
     m_dockManager->init(pattern, doc);
 
+    // Re-apply group member offsets after load (Val Fork bug: ApplyGroupNodeAlignments
+    // was never called). A shared point yields zero offsets in Ostara, but the mechanism
+    // must be correct for any stored offset.
+    ApplyGroupNodeAlignments();
+    RefreshGroupHolders();
+
+    // Keep the group holders in sync with any undo/redo (Link, Unlink, group edits).
+    connect(VAbstractApplication::VApp()->getUndoStack(), &QUndoStack::indexChanged, this,
+            [this](int) { RefreshGroupHolders(); });
+
+    // Hide the group holders while the Link tool is running so members stay clickable.
+    connect(m_dockManager->detailsWidget(), &VWidgetDetails::GroupToolStateChanged, this,
+            [this](VWidgetDetails::GroupToolState state)
+    {
+        SetAllGroupHoldersVisible(state == VWidgetDetails::GroupToolState::Idle);
+    });
+
     // ── Details options browser: piece selection + passmark routing ──
     connect(doc, &VPattern::ShowDetail, this, [this](quint32 id)
     {
@@ -849,6 +867,8 @@ void MainWindow::InitDocksContain()
         }
         if (auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(id)))
         {
+            // A member piece opens its own browser; the group's browser is reached via the
+            // group node in the tree or the canvas holder (Clicked → ShowGroupOptions).
             m_dockManager->detailsOptions()->ShowPieceOptions(tool);
         }
     });
@@ -1042,6 +1062,24 @@ void MainWindow::InitDocksContain()
     connect(doc, &VPattern::UpdateInLayoutList, m_dockManager->detailsWidget(), &VWidgetDetails::UpdateList);
     connect(doc, &VPattern::ShowDetail, m_dockManager->detailsWidget(), &VWidgetDetails::SelectDetail);
     connect(m_dockManager->detailsWidget(), &VWidgetDetails::Highlight, m_sceneDetails, &VMainGraphicsScene::HighlightItem);
+    connect(m_dockManager->detailsWidget(), &VWidgetDetails::ShowStatusTip, this,
+            [this](const QString &text) { m_statusLabel->setText(text); });
+    connect(m_dockManager->detailsWidget(), &VWidgetDetails::GroupSelected, this,
+            [this](quint32 groupId)
+    {
+        m_dockManager->detailsOptions()->ShowGroupOptions(groupId, pattern, doc);
+        m_dockManager->detailsWidget()->SelectDetail(groupId);
+    });
+    // A member piece in the tree opens its OWN property browser (Val Fork OnItemClicked);
+    // the group's browser is only opened via the group node or the canvas holder.
+    connect(m_dockManager->detailsWidget(), &VWidgetDetails::PieceSelected, this,
+            [this](quint32 id)
+    {
+        if (auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(id)))
+        {
+            m_dockManager->detailsOptions()->ShowPieceOptions(tool);
+        }
+    });
 
     connect(m_dockManager->backgroundImagesWidget(), &VWidgetBackgroundImages::DeleteImage, this, &MainWindow::RemoveBackgroundImage);
 
@@ -1064,6 +1102,115 @@ void MainWindow::InitDocksContain()
             &VToolOptionsPropertyBrowser::itemClicked, Qt::QueuedConnection);
     connect(m_dockManager->dependenciesWidget(), &VWidgetDependencies::ShowTool, ui->view, &VMainGraphicsView::EnsureToolVisible,
             Qt::QueuedConnection);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ApplyGroupNodeAlignments()
+{
+    const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
+    if (groups == nullptr)
+    {
+        return;
+    }
+
+    for (auto git = groups->cbegin(); git != groups->cend(); ++git)
+    {
+        const OPieceGroup &group = git.value();
+        for (auto it = group.memberOffsets.cbegin(); it != group.memberOffsets.cend(); ++it)
+        {
+            if (qFuzzyIsNull(it.value().x()) && qFuzzyIsNull(it.value().y()))
+            {
+                continue;
+            }
+            auto *memberTool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key()));
+            if (memberTool != nullptr)
+            {
+                memberTool->setPos(memberTool->pos() + it.value());
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RefreshGroupHolders()
+{
+    const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
+    if (groups == nullptr)
+    {
+        return;
+    }
+
+    // Remove holders for deleted groups.
+    for (auto it = m_groupHolders.cbegin(); it != m_groupHolders.cend();)
+    {
+        if (!groups->contains(it.key()))
+        {
+            m_sceneDetails->removeItem(it.value());
+            delete it.value();
+            it = m_groupHolders.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    for (auto git = groups->cbegin(); git != groups->cend(); ++git)
+    {
+        OPieceGroupHolderItem *holder = m_groupHolders.value(git.key(), nullptr);
+        if (holder == nullptr)
+        {
+            holder = new OPieceGroupHolderItem(git.key());
+            m_sceneDetails->addItem(holder);
+            // Activate a clicked group child (outline + resize handles), like a piece.
+            connect(m_sceneDetails, &VMainGraphicsScene::ItemByMousePress, holder,
+                    &OPieceGroupHolderItem::ResetChildren);
+            connect(holder, &OPieceGroupHolderItem::Clicked, this,
+                    [this](quint32 groupId)
+            {
+                m_dockManager->detailsOptions()->ShowGroupOptions(groupId, pattern, doc);
+            });
+            m_groupHolders.insert(git.key(), holder);
+        }
+        holder->Refresh(git.value(), doc, pattern);
+    }
+
+    // « Un groupe = 1 pièce » : creating/removing a group changes the effective piece
+    // count. Re-render every piece's information blocks (their "/ N" total) — the
+    // resolver already masks a member's own blocks. Only re-renders when the count
+    // actually changed, and never touches the geometry.
+    if (pattern != nullptr)
+    {
+        const int effectiveCount = pattern->GetEffectivePieceCount();
+        if (effectiveCount != m_lastEffectivePieceCount)
+        {
+            m_lastEffectivePieceCount = effectiveCount;
+            const auto *pieces = pattern->DataPieces();
+            if (pieces != nullptr)
+            {
+                for (auto it = pieces->cbegin(); it != pieces->cend(); ++it)
+                {
+                    auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key()));
+                    if (tool != nullptr)
+                    {
+                        tool->UpdateInfoBlocks();
+                    }
+                }
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::SetAllGroupHoldersVisible(bool visible)
+{
+    for (OPieceGroupHolderItem *holder : m_groupHolders)
+    {
+        if (holder != nullptr)
+        {
+            holder->setVisible(visible);
+        }
+    }
 }
 
 

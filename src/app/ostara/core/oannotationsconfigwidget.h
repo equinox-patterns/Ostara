@@ -37,7 +37,8 @@
 
 #include <functional>
 
-#include "../vpatterndb/vpiece.h"
+#include "../vpatterndb/ipieceinfo.h"
+#include "../vpatterndb/oannotationdata.h"
 
 class QGroupBox;
 class QLabel;
@@ -61,10 +62,10 @@ public:
     explicit OAnnotationsConfigWidget(QWidget *parent = nullptr);
     ~OAnnotationsConfigWidget() override = default;
 
-    /** Callback that applies a VPiece mutation and commits it to the undo stack. */
-    void SetModifyPending(std::function<void(std::function<void(VPiece &)>)> callback);
+    /** Callback that applies a piece-like mutation and commits it to the undo stack. */
+    void SetModifyPending(std::function<void(std::function<void(IPieceInfo &)>)> callback);
 
-    void Show(const VPiece &detail, const VContainer *data);
+    void Show(const IPieceInfo &detail, const VContainer *data);
     void Clear();
     void RetranslateUI();
 
@@ -89,7 +90,7 @@ private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(OAnnotationsConfigWidget) // NOLINT
 
-    std::function<void(std::function<void(VPiece &)>)> m_modifyPending;
+    std::function<void(std::function<void(IPieceInfo &)>)> m_modifyPending;
 
     QPushButton *m_addBtn{nullptr};
     QGroupBox *m_listGroup{nullptr};
@@ -97,7 +98,7 @@ private:
     QLabel *m_emptyLabel{nullptr};
 
     QList<AnnotationRow> m_rows;
-    VPiece m_currentDet;
+    OAnnotationData m_currentAnnotations;
     const VContainer *m_data{nullptr};
     bool m_loading{false};
     bool m_hasState{false};

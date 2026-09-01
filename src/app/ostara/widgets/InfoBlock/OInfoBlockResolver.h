@@ -32,6 +32,7 @@
 
 #include "vtools/tools/oinfoblockcontent.h"
 
+class IPieceInfo;
 class VAbstractPattern;
 class VContainer;
 class OPieceCartoucheSection;
@@ -49,17 +50,17 @@ class OInfoBlockResolver
 {
 public:
     /** @brief Active / effective template / dispatch only (no content resolution). */
-    static auto ResolveEffectiveConfig(const VPiece &piece, VAbstractPattern *doc, const VContainer *data)
+    static auto ResolveEffectiveConfig(const IPieceInfo &piece, VAbstractPattern *doc, const VContainer *data)
         -> OInfoBlockEffectiveState;
 
     /** @brief Full effective state including the rendered lines of every block. */
-    static auto ResolveEffectiveState(const VPiece &piece, VAbstractPattern *doc, const VContainer *data)
+    static auto ResolveEffectiveState(const IPieceInfo &piece, VAbstractPattern *doc, const VContainer *data)
         -> OInfoBlockEffectiveState;
 
 private:
     static auto ResolveSectionLines(const OPieceCartoucheSection &type,
                                     const QHash<QString, QVariant> &options, const VAbstractPattern *doc,
-                                    const VPiece &piece, const VContainer *data,
+                                    const IPieceInfo &piece, const VContainer *data,
                                     const OPieceCartoucheTable *table, const QStringList &renderLanguages,
                                     const QString &mainLocale) -> QList<OCartoucheRenderLine>;
 };

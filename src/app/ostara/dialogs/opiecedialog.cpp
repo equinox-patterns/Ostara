@@ -128,8 +128,8 @@ void OPieceDialog::ShowDialog(bool click)
     // First piece → two steps; later pieces → piece step only (pattern data is fixed).
     m_stack->setCurrentWidget(data.DataPieces()->isEmpty() ? static_cast<QWidget *>(m_patternStep)
                                                            : static_cast<QWidget *>(m_pieceStep));
-    // Piece number total: existing pieces + the one being created (not yet in the container).
-    m_pieceStep->SetPieceTotal(static_cast<int>(data.DataPieces()->size()) + 1);
+    // Piece number total: existing effective pieces (standalone + groups) + the one being created.
+    m_pieceStep->SetPieceTotal(data.GetEffectivePieceCount() + 1);
     UpdateButtons();
 
     // Fix issue #526. Dialog Detail is not on top after selection second object on Mac.

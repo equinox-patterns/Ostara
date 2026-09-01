@@ -60,6 +60,7 @@
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
 #include "../vpatterndb/oinfoblockdata.h"
+#include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/variables/vincrement.h"
 #include "../vpatterndb/vformula.h"
 #include "../vpatterndb/vpiecenode.h"
@@ -103,6 +104,8 @@ const quint8 VToolSeamAllowance::pieceVersion = 2;
 
 OInfoBlockContentBuilder VToolSeamAllowance::s_infoBlockContentBuilder; // NOLINT(cert-err58-cpp)
 OAnnotationStyleResolver VToolSeamAllowance::s_annotationStyleResolver; // NOLINT(cert-err58-cpp)
+
+bool VToolSeamAllowance::s_isInGroupMoveMacro = false;
 
 const QString VToolSeamAllowance::TagCSA = QStringLiteral("csa");                 // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagRecord = QStringLiteral("record");           // NOLINT(cert-err58-cpp)
@@ -953,11 +956,10 @@ void VToolSeamAllowance::AddPlaceLabels(VAbstractPattern *doc, QDomElement &domE
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::AddGrainline(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece)
+void VToolSeamAllowance::AddGrainline(VAbstractPattern *doc, QDomElement &domElement, const VGrainlineData &glGeom)
 {
     // grainline
     QDomElement domData = doc->createElement(VAbstractPattern::TagGrainline);
-    const VGrainlineData &glGeom = piece.GetGrainlineGeometry();
     doc->SetAttribute(domData, VAbstractPattern::AttrEnabled, glGeom.IsEnabled());
     doc->SetAttribute(domData, VAbstractPattern::AttrVisible, glGeom.IsVisible());
     doc->SetAttribute(domData, AttrMx, glGeom.GetPos().x());
@@ -1014,9 +1016,8 @@ void VToolSeamAllowance::AddMirrorLine(VAbstractPattern *doc, QDomElement &domEl
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::AddCartoucheBlocks(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece)
+void VToolSeamAllowance::AddCartoucheBlocks(VAbstractPattern *doc, QDomElement &domElement, const OInfoBlockData &info)
 {
-    const OInfoBlockData &info = piece.GetInfoBlockData();
     if (not info.IsSet())
     {
         return;
@@ -1060,9 +1061,8 @@ void VToolSeamAllowance::AddCartoucheBlocks(VAbstractPattern *doc, QDomElement &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::AddAnnotations(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece)
+void VToolSeamAllowance::AddAnnotations(VAbstractPattern *doc, QDomElement &domElement, const OAnnotationData &data)
 {
-    const OAnnotationData &data = piece.GetAnnotationData();
     if (not data.IsSet() || data.Annotations().isEmpty())
     {
         return;  // the <annotations> element is present only when the list is non-empty
@@ -1098,6 +1098,99 @@ void VToolSeamAllowance::AddAnnotations(VAbstractPattern *doc, QDomElement &domE
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::AddPieceGroups(VAbstractPattern *doc, QDomElement &domElement, const VContainer *data)
+{
+    // <pieceGroups> is a single sibling element under the pattern root — replace any stale copy.
+    for (QDomElement stale = domElement.firstChildElement(VAbstractPattern::TagPieceGroups); not stale.isNull();
+         stale = domElement.firstChildElement(VAbstractPattern::TagPieceGroups))
+    {
+        domElement.removeChild(stale);
+    }
+
+    const auto *groups = data != nullptr ? data->DataPieceGroups() : nullptr;
+    if (!groups || groups->isEmpty())
+    {
+        return;
+    }
+
+    QDomElement pieceGroupsEl = doc->createElement(VAbstractPattern::TagPieceGroups);
+    for (auto git = groups->cbegin(); git != groups->cend(); ++git)
+    {
+        const OPieceGroup &group = git.value();
+
+        QDomElement groupElement = doc->createElement(VAbstractPattern::TagPieceGroup);
+        doc->SetAttribute(groupElement, VDomDocument::AttrId, group.id);
+        doc->SetAttributeOrRemoveIf<QString>(groupElement, VAbstractPattern::AttrName, group.name,
+                                             [](const QString &name) noexcept { return name.isEmpty(); });
+        doc->SetAttributeOrRemoveIf<int>(groupElement, AttrGradedAlignH, group.alignH,
+                                         [](int align) noexcept { return align == 2; });
+        doc->SetAttributeOrRemoveIf<int>(groupElement, AttrGradedAlignV, group.alignV,
+                                         [](int align) noexcept { return align == 2; });
+        doc->SetAttributeOrRemoveIf<uint>(groupElement, AttrPieceNumber, group.m_pieceNumber,
+                                          [](uint number) noexcept { return number == 0; });
+        doc->SetAttributeOrRemoveIf<int>(groupElement, AttrCutFabricQty, group.m_cutFabricQty,
+                                         [](int qty) noexcept { return qty == 0; });
+        doc->SetAttributeOrRemoveIf<bool>(groupElement, AttrCutFabricOnFold, group.m_cutFabricOnFold,
+                                          [](bool on) noexcept { return not on; });
+        doc->SetAttributeOrRemoveIf<int>(groupElement, AttrCutInterfacingQty, group.m_cutInterfacingQty,
+                                         [](int qty) noexcept { return qty == 0; });
+        doc->SetAttributeOrRemoveIf<bool>(groupElement, AttrCutInterfacingOnFold, group.m_cutInterfacingOnFold,
+                                          [](bool on) noexcept { return not on; });
+        doc->SetAttributeOrRemoveIf<int>(groupElement, AttrCutLiningQty, group.m_cutLiningQty,
+                                         [](int qty) noexcept { return qty == 0; });
+        doc->SetAttributeOrRemoveIf<bool>(groupElement, AttrCutLiningOnFold, group.m_cutLiningOnFold,
+                                          [](bool on) noexcept { return not on; });
+        doc->SetAttributeOrRemoveIf<QString>(groupElement, AttrFreeText, group.m_freeText,
+                                             [](const QString &text) noexcept { return text.isEmpty(); });
+
+        // Members — one <member> per piece; offset omitted when the common point is shared (zero).
+        for (quint32 pieceId : group.pieceIds)
+        {
+            QDomElement memberElement = doc->createElement(VAbstractPattern::TagMember);
+            doc->SetAttribute(memberElement, QStringLiteral("piece"), pieceId);
+
+            if (group.memberOffsets.contains(pieceId))
+            {
+                const QPointF &offset = group.memberOffsets.value(pieceId);
+                if (!qFuzzyIsNull(offset.x()) || !qFuzzyIsNull(offset.y()))
+                {
+                    doc->SetAttribute(memberElement, QStringLiteral("offset"),
+                                      QStringLiteral("%1,%2").arg(offset.x()).arg(offset.y()));
+                }
+            }
+            groupElement.appendChild(memberElement);
+        }
+
+        // Children — same tags as a piece, fed from the group's own data.
+        AddGrainline(doc, groupElement, group.m_glGrainline);
+        AddCartoucheBlocks(doc, groupElement, group.m_infoBlocks);
+        AddAnnotations(doc, groupElement, group.m_annotations);
+
+        // Fold formulas only — the mirror-line geometry lives on the member piece that carries it.
+        QDomElement mirrorEl = doc->createElement(VAbstractPattern::TagMirrorLine);
+        doc->SetAttributeOrRemoveIf<bool>(mirrorEl, VAbstractPattern::AttrFoldLineManualHeight,
+                                          group.m_manualFoldHeight, [](bool manual) noexcept { return not manual; });
+        doc->SetAttributeOrRemoveIf<bool>(mirrorEl, VAbstractPattern::AttrFoldLineManualWidth,
+                                          group.m_manualFoldWidth, [](bool manual) noexcept { return not manual; });
+        doc->SetAttributeOrRemoveIf<bool>(mirrorEl, VAbstractPattern::AttrFoldLineManualCenter,
+                                          group.m_manualFoldCenter, [](bool manual) noexcept { return not manual; });
+        doc->SetAttributeOrRemoveIf<QString>(
+            mirrorEl, VAbstractPattern::AttrFoldLineHeightFormula, group.m_formulaFoldHeight,
+            [group](const QString &height) noexcept { return not group.m_manualFoldHeight || height.isEmpty(); });
+        doc->SetAttributeOrRemoveIf<QString>(
+            mirrorEl, VAbstractPattern::AttrFoldLineWidthFormula, group.m_formulaFoldWidth,
+            [group](const QString &width) noexcept { return not group.m_manualFoldWidth || width.isEmpty(); });
+        doc->SetAttributeOrRemoveIf<QString>(
+            mirrorEl, VAbstractPattern::AttrFoldLineCenterFormula, group.m_formulaFoldCenter,
+            [group](const QString &center) noexcept { return not group.m_manualFoldCenter || center.isEmpty(); });
+        groupElement.appendChild(mirrorEl);
+
+        pieceGroupsEl.appendChild(groupElement);
+    }
+    domElement.appendChild(pieceGroupsEl);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::SetInfoBlockContentBuilder(OInfoBlockContentBuilder builder)
 {
     s_infoBlockContentBuilder = std::move(builder);
@@ -1107,6 +1200,12 @@ void VToolSeamAllowance::SetInfoBlockContentBuilder(OInfoBlockContentBuilder bui
 void VToolSeamAllowance::SetAnnotationStyleResolver(OAnnotationStyleResolver resolver)
 {
     s_annotationStyleResolver = std::move(resolver);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::AnnotationStyleResolver() -> const OAnnotationStyleResolver &
+{
+    return s_annotationStyleResolver;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1292,6 +1391,104 @@ void VToolSeamAllowance::AllowSelecting(bool enabled)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::EnterPieceIsolation()
+{
+    if (m_isPieceIsolated)
+    {
+        return;
+    }
+
+    m_isPieceIsolated = true;
+
+    // Freeze the piece itself — only children remain movable, but keep it selectable for Escape.
+    setFlag(QGraphicsItem::ItemIsMovable, false);
+    setSelected(true);
+    setFocus();
+
+    // Raise z-value so children become accessible above other pieces in the group.
+    setZValue(10);
+
+    // Freeze ALL other pieces on the canvas — isolation locks everything except this piece.
+    const auto *allPieces = getData()->DataPieces();
+    if (allPieces)
+    {
+        for (auto it = allPieces->cbegin(); it != allPieces->cend(); ++it)
+        {
+            if (it.key() == m_id)
+            {
+                continue;
+            }
+            auto *otherTool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key()));
+            if (otherTool)
+            {
+                otherTool->EnableToolMove(false);
+                otherTool->AllowSelecting(false);
+            }
+        }
+    }
+
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::ExitPieceIsolation()
+{
+    if (!m_isPieceIsolated)
+    {
+        return;
+    }
+
+    m_isPieceIsolated = false;
+    setZValue(0);
+    EnableToolMove(true);
+    AllowSelecting(true);
+
+    // Unfreeze all other pieces.
+    const auto *allPieces = getData()->DataPieces();
+    if (allPieces)
+    {
+        for (auto it = allPieces->cbegin(); it != allPieces->cend(); ++it)
+        {
+            if (it.key() == m_id)
+            {
+                continue;
+            }
+            auto *otherTool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key()));
+            if (otherTool && !otherTool->IsInPieceIsolation())
+            {
+                otherTool->EnableToolMove(true);
+                otherTool->AllowSelecting(true);
+            }
+        }
+    }
+
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::SetGroupSelectionHighlight(bool highlight)
+{
+    if (m_groupSelectionHighlight == highlight)
+    {
+        return;
+    }
+    m_groupSelectionHighlight = highlight;
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::RefreshGroupedChildren()
+{
+    // Re-derive the visibility of the piece's own children from its group membership
+    // (masking option A): called after a Link / Unlink so members show or hide
+    // their grainline, blocks and annotations accordingly.
+    UpdateGrainline();
+    UpdateInfoBlocks();
+    UpdateAnnotations();
+    RefreshFoldLine();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::ResetChildren(QGraphicsItem *pItem)
 {
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
@@ -1375,6 +1572,13 @@ void VToolSeamAllowance::UpdatePassmarks()
  */
 void VToolSeamAllowance::UpdateGrainline()
 {
+    // A group member's own grainline is masked: the group carries the common one.
+    if (VAbstractTool::data.GetPieceGroupId(m_id) != NULL_ID)
+    {
+        m_grainLine->hide();
+        return;
+    }
+
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
     const VGrainlineData &geom = detail.GetGrainlineGeometry();
     const QVector<quint32> &pins = detail.GetPins();
@@ -1459,6 +1663,15 @@ void VToolSeamAllowance::UpdateInfoBlocks()
     if (!s_infoBlockContentBuilder)
     {
         return;  // no app-side resolver registered
+    }
+    // A group member's own blocks are masked: the group carries the common cartouche.
+    if (VAbstractTool::data.GetPieceGroupId(m_id) != NULL_ID)
+    {
+        for (OInfoBlockItem *blockItem : m_infoBlockItems)
+        {
+            blockItem->hide();
+        }
+        return;
     }
     constexpr qreal kBlockStackingGap = 12.0;
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
@@ -1561,6 +1774,15 @@ void VToolSeamAllowance::SaveResizeInfoBlock(int blockIndex, qreal newW, qreal n
 //---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::UpdateAnnotations()
 {
+    // A group member's own annotations are masked: the group carries the common ones.
+    if (VAbstractTool::data.GetPieceGroupId(m_id) != NULL_ID)
+    {
+        for (OAnnotationItem *item : m_annotationItems)
+        {
+            item->hide();
+        }
+        return;
+    }
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
     const QList<OAnnotation> annotations = detail.GetAnnotationData().Annotations();
 
@@ -1696,6 +1918,20 @@ void VToolSeamAllowance::paint(QPainter *painter, const QStyleOptionGraphicsItem
     // brushes live in RefreshScale(); keeping the piece selected while one of its child labels
     // is manipulated is handled in ResetChildren().
     PaintWithFixItemHighlightSelected<QGraphicsPathItem>(this, painter, option, widget);
+
+    // Group Link selection: orange frame (Val Fork vtoolseamallowance.cpp:855-865). drawPath(path())
+    // would trace the inner seam line — often masked or covered by the seam-allowance band — so a
+    // cosmetic frame around the piece bounding rect is used instead (always 1 px on screen).
+    if (m_groupSelectionHighlight)
+    {
+        const QRectF r = boundingRect();
+        const qreal pad = pen().widthF() / 2;
+        painter->save();
+        painter->setPen(QPen(QColor(255, 165, 0), 0));  // cosmetic pen: 1 px on screen
+        painter->setBrush(Qt::NoBrush);
+        painter->drawRect(r.adjusted(pad, pad, -pad, -pad));
+        painter->restore();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1775,7 +2011,7 @@ void VToolSeamAllowance::AddToFile()
     QDomElement domElement = doc->createElement(VToolSeamAllowance::getTagName());
 
     AddAttributes(doc, domElement, m_id, piece);
-    AddGrainline(doc, domElement, piece);
+    AddGrainline(doc, domElement, piece.GetGrainlineGeometry());
 
     // nodes
     AddNodes(doc, domElement, piece);
@@ -1786,8 +2022,8 @@ void VToolSeamAllowance::AddToFile()
     AddPlaceLabels(doc, domElement, piece.GetPlaceLabels());
     AddSAMarginProperties(doc, domElement, piece);
     AddMirrorLine(doc, domElement, piece);
-    AddCartoucheBlocks(doc, domElement, piece);
-    AddAnnotations(doc, domElement, piece);
+    AddCartoucheBlocks(doc, domElement, piece.GetInfoBlockData());
+    AddAnnotations(doc, domElement, piece.GetAnnotationData());
 
     VAbstractApplication::VApp()->getUndoStack()->push(
         new AddPiece(domElement, doc, VAbstractTool::data, m_sceneDetails, m_drawName));
@@ -1815,7 +2051,7 @@ void VToolSeamAllowance::RefreshDataInFile()
         doc->SetAttribute(domElement, AttrVersion, QString().setNum(pieceVersion));
 
         VAbstractPattern::RemoveAllChildren(domElement); // Very important to clear before rewrite
-        AddGrainline(doc, domElement, piece);
+        AddGrainline(doc, domElement, piece.GetGrainlineGeometry());
         AddNodes(doc, domElement, piece);
         AddCSARecords(doc, domElement, piece.GetCustomSARecords());
         AddInternalPaths(doc, domElement, piece.GetInternalPaths());
@@ -1823,8 +2059,8 @@ void VToolSeamAllowance::RefreshDataInFile()
         AddPlaceLabels(doc, domElement, piece.GetPlaceLabels());
         AddSAMarginProperties(doc, domElement, piece);
         AddMirrorLine(doc, domElement, piece);
-        AddCartoucheBlocks(doc, domElement, piece);
-        AddAnnotations(doc, domElement, piece);
+        AddCartoucheBlocks(doc, domElement, piece.GetInfoBlockData());
+        AddAnnotations(doc, domElement, piece.GetAnnotationData());
     }
 }
 
@@ -1842,6 +2078,44 @@ auto VToolSeamAllowance::itemChange(QGraphicsItem::GraphicsItemChange change, co
 
             // value - this is new position.
             const QPointF newPos = value.toPointF();
+
+            // Ported from Val Fork events.cpp: dragging a member piece moves the whole group.
+            const quint32 groupId = getData()->GetPieceGroupId(m_id);
+            if (groupId != NULL_ID && not s_isInGroupMoveMacro && not m_isPieceIsolated)
+            {
+                VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("Move piece group"));
+                s_isInGroupMoveMacro = true;
+            }
+
+            if (groupId != NULL_ID && not m_isPieceIsolated)
+            {
+                const QPointF oldPos = this->pos();
+                const QPointF delta = newPos - oldPos;
+
+                if (not qFuzzyIsNull(delta.x()) || not qFuzzyIsNull(delta.y()))
+                {
+                    const auto *groups = getData()->DataPieceGroups();
+                    if (groups != nullptr && groups->contains(groupId))
+                    {
+                        const OPieceGroup &group = groups->value(groupId);
+                        for (quint32 pid : group.pieceIds)
+                        {
+                            if (pid == m_id)
+                            {
+                                continue;
+                            }
+                            auto *memberTool =
+                                qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pid));
+                            if (memberTool != nullptr && not memberTool->IsInPieceIsolation())
+                            {
+                                VAbstractApplication::VApp()->getUndoStack()->push(
+                                    new MovePiece(doc, memberTool->pos().x() + delta.x(),
+                                                  memberTool->pos().y() + delta.y(), pid, scene()));
+                            }
+                        }
+                    }
+                }
+            }
 
             VAbstractApplication::VApp()->getUndoStack()->push(
                 new MovePiece(doc, newPos.x(), newPos.y(), m_id, scene()));
@@ -1915,6 +2189,13 @@ void VToolSeamAllowance::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::LeftButton && (flags() & QGraphicsItem::ItemIsMovable))
     {
         SetItemOverrideCursor(this, cursorArrowOpenHand, 1, 1);
+    }
+
+    // Close the "Move piece group" undo macro opened in itemChange.
+    if (s_isInGroupMoveMacro)
+    {
+        VAbstractApplication::VApp()->getUndoStack()->endMacro();
+        s_isInGroupMoveMacro = false;
     }
 
     if (m_selectionType == SelectionType::ByMouseRelease && IsSelectedByReleaseEvent(this, event))
@@ -3107,6 +3388,17 @@ void VToolSeamAllowance::RefreshFoldLine()
 void VToolSeamAllowance::UpdateFoldLine(const VFoldLine &foldLine)
 {
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
+
+    // A group member's own fold line / symmetry line is masked: the group carries the fold
+    // formulas and the chosen member renders the common line.
+    if (VAbstractTool::data.GetPieceGroupId(m_id) != NULL_ID)
+    {
+        m_foldLineLabelText->setVisible(false);
+        m_foldLineMark->setPath(QPainterPath());
+        m_foldLineLabel->setPath(QPainterPath());
+        m_mirrorLine->setPath(QPainterPath());
+        return;
+    }
 
     if (detail.GetFoldLineType() == FoldLineType::None || (detail.IsShowFullPiece() && !detail.IsShowMirrorLine()))
     {

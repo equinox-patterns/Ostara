@@ -53,6 +53,10 @@ public:
     void SetAlignV(int value);
     auto GetAlignV() const -> int;
 
+signals:
+    void AlignHChanged(int value);
+    void AlignVChanged(int value);
+
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
 

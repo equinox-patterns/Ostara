@@ -15,6 +15,8 @@ set(VPATTERN_SOURCES
     vpassmark.cpp
     oannotationdata.h
     oinfoblockdata.h
+    ipieceinfo.h
+    opiecegroup.h
     testpassmark.h
     vcontainer.h
     calculator.h

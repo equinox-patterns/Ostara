@@ -607,6 +607,13 @@ void VPiece::SetGradedAlignV(int val)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+// Disambiguates GetName between VAbstractPiece (virtual now) and IPieceInfo.
+auto VPiece::GetName() const -> QString
+{
+    return VAbstractPiece::GetName();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VPiece::GetPieceNumber() const -> uint
 {
     return d->m_pieceNumber;

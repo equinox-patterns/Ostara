@@ -629,7 +629,7 @@ void VPattern::customEvent(QEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void VPattern::ParseRootElement(const Document &parse, const QDomNode &node)
 {
-    static const QStringList tags({TagLineNames, TagDraw, TagIncrements, TagPreviewCalculations});
+    static const QStringList tags({TagLineNames, TagDraw, TagIncrements, TagPreviewCalculations, TagPieceGroups});
 
     if (not node.isElement())
     {
@@ -675,8 +675,123 @@ void VPattern::ParseRootElement(const Document &parse, const QDomNode &node)
                 ParseIncrementsElement(domElement, parse);
             }
             break;
+        case 4: // TagPieceGroups
+            if (parse != Document::LiteParse)
+            {
+                ParsePieceGroups(domElement);
+            }
+            break;
         default:
             break;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParsePieceGroups(const QDomElement &domElement)
+{
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+
+    QDomNode domNode = domElement.firstChild();
+    while (not domNode.isNull())
+    {
+        if (domNode.isElement())
+        {
+            const QDomElement groupElement = domNode.toElement();
+            if (groupElement.tagName() == TagPieceGroup)
+            {
+                OPieceGroup group;
+                group.id = GetParametrId(groupElement);
+                data->UpdateId(group.id);
+                group.name = GetParametrString(groupElement, VAbstractPattern::AttrName);
+                group.alignH = GetParametrInt(groupElement, AttrGradedAlignH, QStringLiteral("2"));
+                group.alignV = GetParametrInt(groupElement, AttrGradedAlignV, QStringLiteral("2"));
+
+                const uint groupPieceNumber = GetParametrUInt(groupElement, AttrPieceNumber, QChar('0'));
+                group.m_cutFabricQty = GetParametrInt(groupElement, AttrCutFabricQty, QChar('0'));
+                group.m_cutFabricOnFold = GetParametrBool(groupElement, AttrCutFabricOnFold, QStringLiteral("false"));
+                group.m_cutInterfacingQty = GetParametrInt(groupElement, AttrCutInterfacingQty, QChar('0'));
+                group.m_cutInterfacingOnFold =
+                    GetParametrBool(groupElement, AttrCutInterfacingOnFold, QStringLiteral("false"));
+                group.m_cutLiningQty = GetParametrInt(groupElement, AttrCutLiningQty, QChar('0'));
+                group.m_cutLiningOnFold = GetParametrBool(groupElement, AttrCutLiningOnFold, QStringLiteral("false"));
+                group.m_freeText = GetParametrString(groupElement, AttrFreeText);
+
+                QDomNode memberNode = groupElement.firstChild();
+                while (not memberNode.isNull())
+                {
+                    if (memberNode.isElement())
+                    {
+                        const QDomElement childElement = memberNode.toElement();
+                        const QString tagName = childElement.tagName();
+                        if (tagName == TagMember)
+                        {
+                            const quint32 pieceId =
+                                GetParametrUInt(childElement, QStringLiteral("piece"), NULL_ID_STR);
+                            if (pieceId != NULL_ID)
+                            {
+                                group.pieceIds.append(pieceId);
+
+                                const QString offsetStr =
+                                    GetParametrEmptyString(childElement, QStringLiteral("offset"));
+                                if (not offsetStr.isEmpty())
+                                {
+                                    const QStringList parts = offsetStr.split(QLatin1Char(','));
+                                    if (parts.size() == 2)
+                                    {
+                                        bool okX = false;
+                                        bool okY = false;
+                                        const qreal x = parts.at(0).toDouble(&okX);
+                                        const qreal y = parts.at(1).toDouble(&okY);
+                                        if (okX && okY)
+                                        {
+                                            group.memberOffsets[pieceId] = QPointF(x, y);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (tagName == TagGrainline)
+                        {
+                            group.m_glGrainline = ParsePieceGrainline(childElement, group.m_glGrainline);
+                        }
+                        else if (tagName == VToolSeamAllowance::TagCartoucheBlocks)
+                        {
+                            group.m_infoBlocks = ParsePieceCartoucheBlocks(childElement);
+                        }
+                        else if (tagName == VToolSeamAllowance::TagAnnotations)
+                        {
+                            group.m_annotations = ParsePieceAnnotations(childElement);
+                        }
+                        else if (tagName == VAbstractPattern::TagMirrorLine)
+                        {
+                            group.m_manualFoldHeight =
+                                GetParametrBool(childElement, VAbstractPattern::AttrFoldLineManualHeight,
+                                                QStringLiteral("false"));
+                            group.m_manualFoldWidth =
+                                GetParametrBool(childElement, VAbstractPattern::AttrFoldLineManualWidth,
+                                                QStringLiteral("false"));
+                            group.m_manualFoldCenter =
+                                GetParametrBool(childElement, VAbstractPattern::AttrFoldLineManualCenter,
+                                                QStringLiteral("false"));
+                            group.m_formulaFoldHeight =
+                                GetParametrString(childElement, VAbstractPattern::AttrFoldLineHeightFormula);
+                            group.m_formulaFoldWidth =
+                                GetParametrString(childElement, VAbstractPattern::AttrFoldLineWidthFormula);
+                            group.m_formulaFoldCenter =
+                                GetParametrString(childElement, VAbstractPattern::AttrFoldLineCenterFormula);
+                        }
+                    }
+                    memberNode = memberNode.nextSibling();
+                }
+
+                if (groupPieceNumber > 0)
+                {
+                    group.m_pieceNumber = groupPieceNumber;
+                }
+                data->AddPieceGroup(group);
+            }
+        }
+        domNode = domNode.nextSibling();
     }
 }
 

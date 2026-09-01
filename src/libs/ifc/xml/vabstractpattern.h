@@ -339,6 +339,9 @@ public:
     static const QString TagGroups;
     static const QString TagGroup;
     static const QString TagGroupItem;
+    static const QString TagPieceGroups;
+    static const QString TagPieceGroup;
+    static const QString TagMember;
     static const QString TagAttachments;
     static const QString TagAttachment;
     static const QString TagAttachmentItem;

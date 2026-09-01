@@ -26,10 +26,8 @@
 
 #include "odetailsgrainlinewidget.h"
 
-#include "../vgeometry/vpointf.h"
 #include "../vmisc/typedef.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
-#include "../vpatterndb/vcontainer.h"
 
 #include <QButtonGroup>
 #include <QCheckBox>
@@ -164,9 +162,8 @@ void ODetailsGrainlineWidget::ConnectControls()
         {
             return;
         }
-        m_modifyPending([this, checked](VPiece &det)
+        m_modifyPending([this, checked](VGrainlineData &geom)
         {
-            auto &geom = det.GetGrainlineGeometry();
             geom.SetEnabled(checked);
             geom.SetVisible(checked);
             if (!checked)
@@ -204,22 +201,14 @@ void ODetailsGrainlineWidget::ConnectControls()
             }
             geom.SetRotation(QStringLiteral("90"));
 
-            // Center the grainline on the piece bounding box.
-            if (m_data != nullptr)
+            // Center the grainline when a provider is given; otherwise leave the
+            // position to the canvas (a group holder centers it itself).
+            if (m_centerProvider)
             {
-                const QVector<VPointF> points = det.MainPathNodePoints(m_data);
-                if (!points.isEmpty())
+                const std::optional<QPointF> centerOpt = m_centerProvider();
+                if (centerOpt.has_value())
                 {
-                    QRectF bbox;
-                    for (const auto &p : points)
-                    {
-                        const QPointF pt = p.toQPointF();
-                        bbox = bbox.isNull() ? QRectF(pt, QSizeF(0, 0))
-                                             : bbox.united(QRectF(pt, QSizeF(0, 0)));
-                    }
-                    const QPointF pieceOffset(det.GetMx(), det.GetMy());
-                    const QPointF center = bbox.center() - pieceOffset;
-
+                    const QPointF center = *centerOpt;
                     // Offset so the grainline midpoint sits at the bbox center
                     // (not its tail). For a vertical (90°) grainline.
                     const qreal rad = qDegreesToRadians(90.0);
@@ -249,9 +238,9 @@ void ODetailsGrainlineWidget::ConnectControls()
         {
             return;
         }
-        m_modifyPending([length](VPiece &det)
+        m_modifyPending([length](VGrainlineData &geom)
         {
-            det.GetGrainlineGeometry().SetLength(QString::number(length));
+            geom.SetLength(QString::number(length));
         });
     });
 
@@ -266,9 +255,9 @@ void ODetailsGrainlineWidget::ConnectControls()
         {
             return;
         }
-        m_modifyPending([value](VPiece &det)
+        m_modifyPending([value](VGrainlineData &geom)
         {
-            det.GetGrainlineGeometry().SetRotation(QString::number(value));
+            geom.SetRotation(QString::number(value));
         });
     });
 
@@ -284,16 +273,15 @@ void ODetailsGrainlineWidget::ConnectControls()
         {
             return;
         }
-        m_modifyPending([arrowType](VPiece &det) { det.GetGrainlineGeometry().SetArrowType(arrowType); });
+        m_modifyPending([arrowType](VGrainlineData &geom) { geom.SetArrowType(arrowType); });
     });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsGrainlineWidget::Show(const VPiece &det, const VContainer *data)
+void ODetailsGrainlineWidget::Show(const VGrainlineData &grainline,
+                                   std::function<std::optional<QPointF>()> centerProvider)
 {
-    m_data = data;
-
-    const VGrainlineData &grainline = det.GetGrainlineGeometry();
+    m_centerProvider = std::move(centerProvider);
 
     m_updating = true;
 
@@ -339,12 +327,12 @@ void ODetailsGrainlineWidget::UpdatePresetsState(bool grainlineEnabled)
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsGrainlineWidget::Clear()
 {
-    m_data = nullptr;
+    m_centerProvider = {};
     m_updating = false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsGrainlineWidget::SetModifyPending(std::function<void(std::function<void(VPiece &)>)> modify)
+void ODetailsGrainlineWidget::SetModifyPending(std::function<void(std::function<void(VGrainlineData &)>)> modify)
 {
     m_modifyPending = std::move(modify);
 }

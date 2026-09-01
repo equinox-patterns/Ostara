@@ -36,6 +36,7 @@
 #include "core/vapplication.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "dialogs/vwidgetdependencies.h"
+#include "dialogs/vwidgetdetails.h"
 #include "vtheme.h"
 #include "widgets/BreadcrumbBar.h"
 #include "widgets/DrawToolBar.h"
@@ -47,6 +48,7 @@
 #include "../vtools/dialogs/dialogtoolbox.h"
 #include "../vtools/dialogs/tools/dialogtool.h"
 #include "../vtools/tools/nodeDetails/vnodepoint.h"
+#include "../vtools/tools/vtoolseamallowance.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 
 #include <QAction>
@@ -319,6 +321,61 @@ void MainWindow::dropEvent(QDropEvent* event)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::HandleItemClicked(QGraphicsItem *item)
 {
+    // Group Link — step 1: route piece clicks to the pieces dock.
+    if (item != nullptr && m_dockManager->detailsWidget() != nullptr && m_dockManager->detailsWidget()->IsSelectingLinkPieces())
+    {
+        auto *pieceTool = dynamic_cast<VToolSeamAllowance *>(item);
+        if (pieceTool == nullptr)
+        {
+            if (auto *parentItem = item->parentItem())
+            {
+                pieceTool = dynamic_cast<VToolSeamAllowance *>(parentItem);
+            }
+        }
+        if (pieceTool != nullptr)
+        {
+            m_dockManager->detailsWidget()->OnPieceClickedForGroup(pieceTool->getId());
+            return;
+        }
+    }
+
+    // Group Link — step 2: route the common-point clicks to the pieces dock.
+    if (item != nullptr && m_dockManager->detailsWidget() != nullptr && m_dockManager->detailsWidget()->IsSelectingLinkNode())
+    {
+        auto *node = dynamic_cast<VNodePoint *>(item);
+        if (node == nullptr)
+        {
+            if (auto *parentItem = item->parentItem())
+            {
+                node = dynamic_cast<VNodePoint *>(parentItem);
+            }
+        }
+        if (node != nullptr)
+        {
+            m_dockManager->detailsWidget()->OnNodeSelected(node->getId());
+            return;
+        }
+    }
+
+    // Group member foldline definition — route node clicks to the group widget.
+    if (item != nullptr && m_dockManager->detailsOptions() != nullptr &&
+        m_dockManager->detailsOptions()->IsSelectingGroupFoldLinePoints())
+    {
+        auto *node = dynamic_cast<VNodePoint *>(item);
+        if (node == nullptr)
+        {
+            if (auto *parentItem = item->parentItem())
+            {
+                node = dynamic_cast<VNodePoint *>(parentItem);
+            }
+        }
+        if (node != nullptr)
+        {
+            m_dockManager->detailsOptions()->OnNodeSelectedForGroupFoldLine(node->getId());
+            return;
+        }
+    }
+
     // Passmark multi-selection — route node clicks to the details property browser.
     if (item != nullptr && m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingPassmarkPoints())
     {
@@ -496,6 +553,13 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
         case Qt::Key_Escape:
+            if (m_dockManager->detailsWidget() != nullptr &&
+                (m_dockManager->detailsWidget()->IsSelectingLinkPieces() ||
+                 m_dockManager->detailsWidget()->IsSelectingLinkNode()))
+            {
+                m_dockManager->detailsWidget()->CancelGroupSelection();
+                break;
+            }
             if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingPassmarkPoints())
             {
                 m_dockManager->detailsOptions()->CancelPassmarkSelection();
@@ -504,6 +568,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingFoldLinePoints())
             {
                 m_dockManager->detailsOptions()->CancelFoldLineSelection();
+                break;
+            }
+            if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingGroupFoldLinePoints())
+            {
+                m_dockManager->detailsOptions()->CancelGroupFoldLineSelection();
                 break;
             }
             if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingSAPoints())
@@ -518,6 +587,13 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             break;
         case Qt::Key_Return:
         case Qt::Key_Enter:
+            if (m_dockManager->detailsWidget() != nullptr &&
+                (m_dockManager->detailsWidget()->IsSelectingLinkPieces() ||
+                 m_dockManager->detailsWidget()->IsSelectingLinkNode()))
+            {
+                m_dockManager->detailsWidget()->FinishGroupSelection();
+                break;
+            }
             if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingPassmarkPoints())
             {
                 m_dockManager->detailsOptions()->FinishPassmarkSelection();

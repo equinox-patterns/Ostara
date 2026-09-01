@@ -7,7 +7,7 @@
  **  @brief
  **  @copyright
  **  This source code is part of the Valentina project, a pattern making
- **  program, whose allow create and modeling patterns of clothing.
+ **  program, whose allow create and model patterns of clothing.
  **  Copyright (C) 2016 Valentina project
  **  <https://gitlab.com/smart-pattern/valentina> All Rights Reserved.
  **
@@ -29,17 +29,22 @@
 #ifndef VWIDGETDETAILS_H
 #define VWIDGETDETAILS_H
 
+#include <QSet>
 #include <QWidget>
 
+#include "ui_vwidgetdetails.h"
+
+#include "../vpatterndb/vcontainer.h"
+#include "../vpatterndb/vpiece.h"
+
+class QEvent;
+class QMenu;
+class QPoint;
+class QTimer;
+class QTreeWidget;
+class QTreeWidgetItem;
 class VAbstractPattern;
 class VContainer;
-class VPiece;
-class QTableWidgetItem;
-
-namespace Ui
-{
-class VWidgetDetails;
-}
 
 class VWidgetDetails : public QWidget
 {
@@ -49,23 +54,46 @@ public:
     explicit VWidgetDetails(VContainer *data, VAbstractPattern *doc, QWidget *parent = nullptr);
     ~VWidgetDetails() override;
 
+    /** @brief Link workflow states (pattern of the passmark machine in ODetailsPieceWidget). */
+    enum class GroupToolState
+    {
+        Idle,
+        Selecting,     // clicking pieces to link
+        NodeSelecting  // clicking the common point
+    };
+
 signals:
     void Highlight(quint32 id);
+    void ShowStatusTip(const QString &text);
+    void GroupSelected(quint32 groupId);
+    void PieceSelected(quint32 id);
+    void GroupToolStateChanged(GroupToolState state);
+
+public:
+    auto IsSelectingLinkPieces() const -> bool { return m_groupToolState == GroupToolState::Selecting; }
+    auto IsSelectingLinkNode() const -> bool { return m_groupToolState == GroupToolState::NodeSelecting; }
 
 public slots:
     void UpdateList();
     void SelectDetail(quint32 id);
     void ToggledPiece(quint32 id);
 
+    // Link workflow — driven by MainWindow canvas routing.
+    void OnPieceClickedForGroup(quint32 pieceId);
+    void OnNodeSelected(quint32 nodeId);
+    void FinishGroupSelection();
+    void CancelGroupSelection();
+    void SetGroupToolState(GroupToolState state);
+
 protected:
     void changeEvent(QEvent *event) override;
 
 private slots:
-    void InLayoutStateChanged(int row, int column);
-    void RenameDetail(int row, int column);
+    void ItemClicked(QTreeWidgetItem *item, int column);
+    void ItemChanged(QTreeWidgetItem *item, int column);
     void ShowContextMenu(const QPoint &pos);
-
     void on_checkBoxHideNotInLayout_stateChanged();
+    void on_linkPiecesButton_clicked();
 
 private:
     // cppcheck-suppress unknownMacro
@@ -75,12 +103,24 @@ private:
     VContainer *m_data;
     QTimer *m_updateListTimer;
 
-    void FillTable(const QHash<quint32, VPiece> *details);
+    void FillTree();
+    void AddChildrenRows(QTreeWidgetItem *parent, const VPiece &det);
+    void AddChildrenRows(QTreeWidgetItem *parent, const OPieceGroup &group);
     void ToggleSectionDetails(bool select);
-    void ToggledPieceItem(QTableWidgetItem *item);
+    void ToggledPieceItem(QTreeWidgetItem *item);
+    void ToggleInLayout(quint32 id);
+    void SelectGroup(quint32 groupId);
+    void ValidateGroupSelection();
+    void EnterNodeSelectMode();
+    void CompleteGroupCreation();
+    void UnlinkGroup(quint32 groupId);
+    void DeselectSelectedPieces();
+    void RefreshGroupedChildren(const QVector<quint32> &pieceIds);
 
-    Q_REQUIRED_RESULT static auto PrepareInLayoutColumnCell(const VPiece &det, quint32 id) -> QTableWidgetItem *;
-    Q_REQUIRED_RESULT static auto PreparePieceNameColumnCell(const VPiece &det) -> QTableWidgetItem *;
+    QSet<quint32> m_selectedPiecesForGroup;
+    QHash<quint32, QPointF> m_tempOffsets;
+    GroupToolState m_groupToolState{GroupToolState::Idle};
+    bool m_filling{false};
 };
 
 #endif // VWIDGETDETAILS_H

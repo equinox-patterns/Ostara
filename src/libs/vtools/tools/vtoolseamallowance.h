@@ -43,6 +43,9 @@
 #include "vinteractivetool.h"
 
 class DialogTool;
+class VContainer;
+class VGrainlineData;
+class OInfoBlockData;
 class VNoBrushScalePathItem;
 class VPatternGraph;
 class OAnnotationItem;
@@ -139,14 +142,16 @@ public:
     static void AddInternalPaths(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &paths);
     static void AddPins(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &pins);
     static void AddPlaceLabels(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &placeLabels);
-    static void AddGrainline(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
+    static void AddGrainline(VAbstractPattern *doc, QDomElement &domElement, const VGrainlineData &glGeom);
     static void AddSAMarginProperties(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
     static void AddMirrorLine(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
-    static void AddCartoucheBlocks(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
-    static void AddAnnotations(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
+    static void AddCartoucheBlocks(VAbstractPattern *doc, QDomElement &domElement, const OInfoBlockData &info);
+    static void AddAnnotations(VAbstractPattern *doc, QDomElement &domElement, const OAnnotationData &data);
+    static void AddPieceGroups(VAbstractPattern *doc, QDomElement &domElement, const VContainer *data);
 
     /** @brief Registers the app-side content builder (called once at app startup). */
     static void SetInfoBlockContentBuilder(OInfoBlockContentBuilder builder);
+    static auto AnnotationStyleResolver() -> const OAnnotationStyleResolver &;
     /** @brief Registers the app-side annotation style resolver (called once at app startup). */
     static void SetAnnotationStyleResolver(OAnnotationStyleResolver resolver);
 
@@ -178,6 +183,13 @@ public:
     auto boundingRect() const -> QRectF override;
     auto shape() const -> QPainterPath override;
 
+public:
+    void EnterPieceIsolation();
+    void ExitPieceIsolation();
+    auto IsInPieceIsolation() const -> bool { return m_isPieceIsolated; }
+    void SetGroupSelectionHighlight(bool highlight);
+    void RefreshGroupedChildren();
+
 public slots:
     void FullUpdateFromGuiApply() override;
     void FullUpdateFromFile() override;
@@ -191,6 +203,10 @@ public slots:
     void UpdatePassmarks();
     void ShowOptions();
     void DeleteFromMenu();
+    /** @brief Re-render this piece's information blocks (e.g. when the effective piece
+     *  count changes because a group is created/removed). Public so the main window can
+     *  re-render every piece's blocks without touching the geometry. */
+    void UpdateInfoBlocks();
 
 private slots:
     void UpdateGrainline();
@@ -198,7 +214,6 @@ private slots:
     void SaveMoveGrainline(const QPointF &ptPos);
     void SaveResizeGrainline(qreal dLength);
     void SaveRotateGrainline(qreal dRot, const QPointF &ptPos);
-    void UpdateInfoBlocks();
     void SaveMoveInfoBlock(int blockIndex, const QPointF &pos);
     void SaveResizeInfoBlock(int blockIndex, qreal newW, qreal newH, qreal origW, qreal origH);
     void UpdateAnnotations();
@@ -249,6 +264,15 @@ private:
     static OAnnotationStyleResolver s_annotationStyleResolver;
 
     bool m_acceptHoverEvents{true};
+
+    /** @brief Piece isolation: only this piece's children are editable (foldline definition). */
+    bool m_isPieceIsolated{false};
+
+    /** @brief Guards the "Move piece group" undo macro (ported from Val Fork events.cpp). */
+    static bool s_isInGroupMoveMacro;
+
+    /** @brief Group Link selection: draw the orange contour. */
+    bool m_groupSelectionHighlight{false};
 
     /** @brief m_geometryIsReady is true when a piece's geometry is ready and checks for validity can be enabled. */
     bool m_geometryIsReady{false};

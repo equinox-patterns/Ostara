@@ -51,6 +51,11 @@ class OPiecePieceStep final : public QWidget
 public:
     explicit OPiecePieceStep(QWidget *parent = nullptr);
 
+signals:
+    /** @brief Emitted on every piece-name edit (host dialogs drive their OK button from it). */
+    void NameChanged(const QString &name);
+
+public:
     auto GetPieceName() const -> QString;
     void SetPieceNameInvalid(bool invalid);
     auto GetPieceNumber() const -> uint;

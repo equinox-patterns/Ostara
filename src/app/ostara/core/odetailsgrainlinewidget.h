@@ -30,8 +30,9 @@
 #include <QWidget>
 
 #include <functional>
+#include <optional>
 
-#include "../vpatterndb/vpiece.h"
+#include "../vpatterndb/floatItemData/vgrainlinedata.h"
 
 class QButtonGroup;
 class QCheckBox;
@@ -39,7 +40,6 @@ class QDoubleSpinBox;
 class QGroupBox;
 class QLabel;
 class QPushButton;
-class VContainer;
 
 class ODetailsGrainlineWidget : public QWidget
 {
@@ -49,10 +49,13 @@ public:
     explicit ODetailsGrainlineWidget(QWidget *parent = nullptr);
     ~ODetailsGrainlineWidget() override = default;
 
-    void Show(const VPiece &det, const VContainer *data);
+    // Edits a VGrainlineData (piece or group). centerProvider, when set, returns the
+    // scene position used to center a newly-activated grainline; returning std::nullopt
+    // keeps the stored position (a group holder centers it itself).
+    void Show(const VGrainlineData &grainline, std::function<std::optional<QPointF>()> centerProvider = {});
     void Clear();
 
-    void SetModifyPending(std::function<void(std::function<void(VPiece &)>)> modify);
+    void SetModifyPending(std::function<void(std::function<void(VGrainlineData &)>)> modify);
 
     void RetranslateUI();
 
@@ -71,8 +74,8 @@ private:
     QPushButton *m_simpleBtn{nullptr};
     QPushButton *m_doubleBtn{nullptr};
 
-    std::function<void(std::function<void(VPiece &)>)> m_modifyPending;
-    const VContainer *m_data{nullptr};
+    std::function<void(std::function<void(VGrainlineData &)>)> m_modifyPending;
+    std::function<std::optional<QPointF>()> m_centerProvider{};
     bool m_updating{false};
 
     Q_DISABLE_COPY_MOVE(ODetailsGrainlineWidget) // NOLINT

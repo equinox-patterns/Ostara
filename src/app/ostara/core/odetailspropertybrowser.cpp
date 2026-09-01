@@ -26,6 +26,7 @@
 
 #include "odetailspropertybrowser.h"
 
+#include "odetailsgroupwidget.h"
 #include "odetailspiecewidget.h"
 #include "opatterninfowidget.h"
 
@@ -76,11 +77,19 @@ ODetailsPropertyBrowser::ODetailsPropertyBrowser(QWidget *parent)
     m_pieceWidget = new ODetailsPieceWidget(m_stack);
     m_stack->addWidget(m_pieceWidget);
 
+    // Group page — the contextual property browser for a selected piece group.
+    m_groupWidget = new ODetailsGroupWidget(m_stack);
+    m_stack->addWidget(m_groupWidget);
+
     // Re-emit piece widget signals through the browser.
     connect(m_pieceWidget, &ODetailsPieceWidget::ShowStatusTip, this, &ODetailsPropertyBrowser::ShowStatusTip);
     connect(m_pieceWidget, &ODetailsPieceWidget::HighlightNode, this, &ODetailsPropertyBrowser::HighlightNode);
     connect(m_pieceWidget, &ODetailsPieceWidget::HighlightTemporaryNode, this, &ODetailsPropertyBrowser::HighlightTemporaryNode);
     connect(m_pieceWidget, &ODetailsPieceWidget::ClearHighlight, this, &ODetailsPropertyBrowser::ClearHighlight);
+
+    // Re-emit group widget signals through the browser.
+    connect(m_groupWidget, &ODetailsGroupWidget::ShowStatusTip, this, &ODetailsPropertyBrowser::ShowStatusTip);
+    connect(m_groupWidget, &ODetailsGroupWidget::StartFoldLineMember, this, &ODetailsPropertyBrowser::StartFoldLineMember);
 
     // ── Same structure as the draw-mode Options dock (VToolOptionsPropertyBrowser):
     //    QDockWidget → QScrollArea → scrollContents → content ──
@@ -120,6 +129,7 @@ void ODetailsPropertyBrowser::ShowEmpty()
 void ODetailsPropertyBrowser::Clear()
 {
     m_pieceWidget->Clear();
+    m_groupWidget->Clear();
     m_stack->setCurrentIndex(0);
 }
 
@@ -128,6 +138,13 @@ void ODetailsPropertyBrowser::ShowPieceOptions(VToolSeamAllowance *tool)
 {
     m_pieceWidget->Show(tool);
     m_stack->setCurrentWidget(m_pieceWidget);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::ShowGroupOptions(quint32 groupId, VContainer *data, VAbstractPattern *doc)
+{
+    m_groupWidget->Show(groupId, data, doc);
+    m_stack->setCurrentWidget(m_groupWidget);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -188,6 +205,24 @@ void ODetailsPropertyBrowser::OnNodeSelectedForFoldLine(quint32 nodeId)
 void ODetailsPropertyBrowser::CancelFoldLineSelection()
 {
     m_pieceWidget->CancelFoldLineSelection();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsPropertyBrowser::IsSelectingGroupFoldLinePoints() const -> bool
+{
+    return m_groupWidget->IsSelectingFoldLinePoint();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::OnNodeSelectedForGroupFoldLine(quint32 nodeId)
+{
+    m_groupWidget->OnNodeSelectedForFoldLine(nodeId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::CancelGroupFoldLineSelection()
+{
+    m_groupWidget->CancelFoldLineSelection();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

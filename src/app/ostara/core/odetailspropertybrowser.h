@@ -33,9 +33,12 @@
 
 class QDockWidget;
 class QStackedWidget;
+class ODetailsGroupWidget;
 class ODetailsPieceWidget;
 class OPatternInfoWidget;
 class QScrollArea;
+class VAbstractPattern;
+class VContainer;
 class VToolSeamAllowance;
 
 class ODetailsPropertyBrowser : public QObject
@@ -52,6 +55,7 @@ public:
 
     void ShowEmpty();
     void ShowPieceOptions(VToolSeamAllowance *tool);
+    void ShowGroupOptions(quint32 groupId, VContainer *data, VAbstractPattern *doc);
     void ShowGrainlineTab();
     void ShowBlocksTab();
     void ShowAnnotationsTab();
@@ -68,6 +72,10 @@ public:
     void OnNodeSelectedForFoldLine(quint32 nodeId);
     void CancelFoldLineSelection();
 
+    auto IsSelectingGroupFoldLinePoints() const -> bool;
+    void OnNodeSelectedForGroupFoldLine(quint32 nodeId);
+    void CancelGroupFoldLineSelection();
+
     auto IsSelectingSAPoints() const -> bool;
     void OnNodeSelectedForSA(quint32 nodeId);
     void OnNodeHoveredForSA(quint32 nodeId);
@@ -78,6 +86,7 @@ signals:
     void HighlightNode(quint32 nodeId, bool highlight, QColor color = Qt::red);
     void HighlightTemporaryNode(quint32 nodeId, bool selected);
     void ClearHighlight();
+    void StartFoldLineMember(quint32 pieceId);
 
 private:
     // cppcheck-suppress unknownMacro
@@ -85,6 +94,7 @@ private:
 
     QStackedWidget *m_stack{nullptr};
     ODetailsPieceWidget *m_pieceWidget{nullptr};
+    ODetailsGroupWidget *m_groupWidget{nullptr};
     OPatternInfoWidget *m_patternInfoWidget{nullptr};
     QScrollArea *m_scroll{nullptr};
 };

@@ -34,6 +34,7 @@
 #include <QtGlobal>
 
 #include "../vlayout/vabstractpiece.h"
+#include "ipieceinfo.h"
 
 class VPieceData;
 class VPieceNode;
@@ -46,7 +47,7 @@ class VPassmark;
 class OInfoBlockData;
 class OAnnotationData;
 
-class VPiece : public VAbstractPiece
+class VPiece : public VAbstractPiece, public IPieceInfo
 {
     Q_DECLARE_TR_FUNCTIONS(VPiece) // NOLINT
 
@@ -107,26 +108,28 @@ public:
     auto GetGradedAlignV() const -> int;
     void SetGradedAlignV(int val);
 
-    auto GetPieceNumber() const -> uint;
-    void SetPieceNumber(uint number);
+    auto GetName() const -> QString override;
 
-    auto GetCutFabricQty() const -> int;
-    void SetCutFabricQty(int qty);
-    auto IsCutFabricOnFold() const -> bool;
-    void SetCutFabricOnFold(bool on);
+    auto GetPieceNumber() const -> uint override;
+    void SetPieceNumber(uint number) override;
 
-    auto GetCutInterfacingQty() const -> int;
-    void SetCutInterfacingQty(int qty);
-    auto IsCutInterfacingOnFold() const -> bool;
-    void SetCutInterfacingOnFold(bool on);
+    auto GetCutFabricQty() const -> int override;
+    void SetCutFabricQty(int qty) override;
+    auto IsCutFabricOnFold() const -> bool override;
+    void SetCutFabricOnFold(bool on) override;
 
-    auto GetCutLiningQty() const -> int;
-    void SetCutLiningQty(int qty);
-    auto IsCutLiningOnFold() const -> bool;
-    void SetCutLiningOnFold(bool on);
+    auto GetCutInterfacingQty() const -> int override;
+    void SetCutInterfacingQty(int qty) override;
+    auto IsCutInterfacingOnFold() const -> bool override;
+    void SetCutInterfacingOnFold(bool on) override;
 
-    auto GetFreeText() const -> QString;
-    void SetFreeText(const QString &text);
+    auto GetCutLiningQty() const -> int override;
+    void SetCutLiningQty(int qty) override;
+    auto IsCutLiningOnFold() const -> bool override;
+    void SetCutLiningOnFold(bool on) override;
+
+    auto GetFreeText() const -> QString override;
+    void SetFreeText(const QString &text) override;
 
     auto GetInternalPaths() const -> QVector<quint32>;
     auto GetInternalPaths() -> QVector<quint32> &;
@@ -159,13 +162,13 @@ public:
     auto GetGrainlineGeometry() -> VGrainlineData &;
     auto GetGrainlineGeometry() const -> const VGrainlineData &;
 
-    void SetInfoBlockData(const OInfoBlockData &data);
-    auto GetInfoBlockData() const -> const OInfoBlockData &;
-    auto GetInfoBlockData() -> OInfoBlockData &;
+    void SetInfoBlockData(const OInfoBlockData &data) override;
+    auto GetInfoBlockData() const -> const OInfoBlockData & override;
+    auto GetInfoBlockData() -> OInfoBlockData & override;
 
-    void SetAnnotationData(const OAnnotationData &data);
-    auto GetAnnotationData() const -> const OAnnotationData &;
-    auto GetAnnotationData() -> OAnnotationData &;
+    void SetAnnotationData(const OAnnotationData &data) override;
+    auto GetAnnotationData() const -> const OAnnotationData & override;
+    auto GetAnnotationData() -> OAnnotationData & override;
 
     void SetMirrorLineStartPoint(quint32 id);
     auto GetMirrorLineStartPoint() const -> quint32;

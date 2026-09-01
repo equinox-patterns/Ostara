@@ -120,13 +120,13 @@ OBlockConfigWidget::OBlockConfigWidget(QWidget *parent) : QWidget(parent)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OBlockConfigWidget::SetModifyPending(std::function<void(std::function<void(VPiece &)>)> callback)
+void OBlockConfigWidget::SetModifyPending(std::function<void(std::function<void(IPieceInfo &)>)> callback)
 {
     m_modifyPending = std::move(callback);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OBlockConfigWidget::Show(const VPiece &detail, const VContainer *data)
+void OBlockConfigWidget::Show(const IPieceInfo &detail, const VContainer *data)
 {
     m_loading = true;
 
@@ -159,9 +159,14 @@ void OBlockConfigWidget::Show(const VPiece &detail, const VContainer *data)
     m_templateCombo->setCurrentIndex(preferredIndex);
     m_templateCombo->blockSignals(false);
 
-    RebuildInfoList(state.templateName, state.dispatch);
+    // Build the dispatch rows from the template actually shown in the combo (which falls
+    // back to the user's preferred template), not from state.templateName — that one is
+    // empty when the seed is unset, leaving "Repartir en plusieurs blocs" empty until the
+    // user manually toggles the cartouche.
+    const QString effectiveTemplate = m_templateCombo->currentData().toString();
+    RebuildInfoList(effectiveTemplate, state.dispatch);
 
-    m_lastTemplateName = state.templateName;
+    m_lastTemplateName = effectiveTemplate;
     m_lastDispatch = state.dispatch;
     m_hasState = true;
 
@@ -287,5 +292,5 @@ void OBlockConfigWidget::Commit()
     {
         return;
     }
-    m_modifyPending([this](VPiece &det) { det.SetInfoBlockData(BuildData()); });
+    m_modifyPending([this](IPieceInfo &det) { det.SetInfoBlockData(BuildData()); });
 }

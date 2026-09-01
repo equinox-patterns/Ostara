@@ -33,7 +33,7 @@
 
 #include <functional>
 
-#include "../vpatterndb/vpiece.h"
+#include "../vpatterndb/ipieceinfo.h"
 
 class QCheckBox;
 class QLabel;
@@ -57,10 +57,10 @@ public:
     explicit OPieceInfoWidget(QWidget *parent = nullptr);
     ~OPieceInfoWidget() override = default;
 
-    /** Callback that applies a VPiece mutation and commits it to the undo stack. */
-    void SetModifyPending(std::function<void(std::function<void(VPiece &)>)> callback);
+    /** Callback that applies a piece-like mutation and commits it to the undo stack. */
+    void SetModifyPending(std::function<void(std::function<void(IPieceInfo &)>)> callback);
 
-    void Show(const VPiece &detail, const VContainer *data);
+    void Show(const IPieceInfo &detail, const VContainer *data);
     void Clear();
     void RetranslateUI();
 
@@ -70,7 +70,7 @@ private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(OPieceInfoWidget) // NOLINT
 
-    std::function<void(std::function<void(VPiece &)>)> m_modifyPending;
+    std::function<void(std::function<void(IPieceInfo &)>)> m_modifyPending;
 
     QSpinBox *m_numberSpin{nullptr};
     QLabel *m_numberLabel{nullptr};

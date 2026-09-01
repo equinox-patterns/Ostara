@@ -63,7 +63,7 @@ void SavePieceOptions::undo()
 
     VToolSeamAllowance::AddAttributes(Doc(), domElement, ElementId(), m_oldDet);
     VAbstractPattern::RemoveAllChildren(domElement); // Very important to clear before rewrite
-    VToolSeamAllowance::AddGrainline(Doc(), domElement, m_oldDet);
+    VToolSeamAllowance::AddGrainline(Doc(), domElement, m_oldDet.GetGrainlineGeometry());
     VToolSeamAllowance::AddNodes(Doc(), domElement, m_oldDet);
     VToolSeamAllowance::AddCSARecords(Doc(), domElement, m_oldDet.GetCustomSARecords());
     VToolSeamAllowance::AddInternalPaths(Doc(), domElement, m_oldDet.GetInternalPaths());
@@ -71,8 +71,8 @@ void SavePieceOptions::undo()
     VToolSeamAllowance::AddPlaceLabels(Doc(), domElement, m_oldDet.GetPlaceLabels());
     VToolSeamAllowance::AddSAMarginProperties(Doc(), domElement, m_oldDet);
     VToolSeamAllowance::AddMirrorLine(Doc(), domElement, m_oldDet);
-    VToolSeamAllowance::AddCartoucheBlocks(Doc(), domElement, m_oldDet);
-    VToolSeamAllowance::AddAnnotations(Doc(), domElement, m_oldDet);
+    VToolSeamAllowance::AddCartoucheBlocks(Doc(), domElement, m_oldDet.GetInfoBlockData());
+    VToolSeamAllowance::AddAnnotations(Doc(), domElement, m_oldDet.GetAnnotationData());
     qCDebug(vUndo, "Undo: dom element for id = %u rewritten.", ElementId());
 
     VPatternGraph *patternGraph = Doc()->PatternGraph();
@@ -114,7 +114,7 @@ void SavePieceOptions::redo()
 
     VToolSeamAllowance::AddAttributes(Doc(), domElement, ElementId(), m_newDet);
     VAbstractPattern::RemoveAllChildren(domElement); // Very important to clear before rewrite
-    VToolSeamAllowance::AddGrainline(Doc(), domElement, m_newDet);
+    VToolSeamAllowance::AddGrainline(Doc(), domElement, m_newDet.GetGrainlineGeometry());
     VToolSeamAllowance::AddNodes(Doc(), domElement, m_newDet);
     VToolSeamAllowance::AddCSARecords(Doc(), domElement, m_newDet.GetCustomSARecords());
     VToolSeamAllowance::AddInternalPaths(Doc(), domElement, m_newDet.GetInternalPaths());
@@ -122,8 +122,8 @@ void SavePieceOptions::redo()
     VToolSeamAllowance::AddPlaceLabels(Doc(), domElement, m_newDet.GetPlaceLabels());
     VToolSeamAllowance::AddSAMarginProperties(Doc(), domElement, m_newDet);
     VToolSeamAllowance::AddMirrorLine(Doc(), domElement, m_newDet);
-    VToolSeamAllowance::AddCartoucheBlocks(Doc(), domElement, m_newDet);
-    VToolSeamAllowance::AddAnnotations(Doc(), domElement, m_newDet);
+    VToolSeamAllowance::AddCartoucheBlocks(Doc(), domElement, m_newDet.GetInfoBlockData());
+    VToolSeamAllowance::AddAnnotations(Doc(), domElement, m_newDet.GetAnnotationData());
     qCDebug(vUndo, "Redo: dom element for id = %u rewritten.", ElementId());
 
     VPatternGraph *patternGraph = Doc()->PatternGraph();

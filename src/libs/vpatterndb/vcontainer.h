@@ -50,6 +50,7 @@
 #include "../vgeometry/vgobject.h"
 #include "../vmisc/def.h"
 #include "variables/vinternalvariable.h"
+#include "opiecegroup.h"
 #include "vpiece.h"
 #include "vpiecepath.h"
 #include "vtranslatevars.h"
@@ -99,6 +100,8 @@ public:
 
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     QSharedPointer<QHash<quint32, VPiece>> pieces{QSharedPointer<QHash<quint32, VPiece>>::create()};
+    // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
+    QSharedPointer<QHash<quint32, OPieceGroup>> pieceGroups{QSharedPointer<QHash<quint32, OPieceGroup>>::create()};
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     QSharedPointer<QHash<quint32, VPiecePath>> piecePaths{QSharedPointer<QHash<quint32, VPiecePath>>::create()};
 
@@ -154,6 +157,7 @@ public:
     auto AddGObject(VGObject *obj) -> quint32;
     auto AddGObject(const QSharedPointer<VGObject> &obj) -> quint32;
     auto AddPiece(const VPiece &detail) -> quint32;
+    auto AddPieceGroup(const OPieceGroup &group) -> quint32;
     auto AddPiecePath(const VPiecePath &path) -> quint32;
     void AddLine(quint32 firstPointId, quint32 secondPointId, quint32 mainReference = NULL_ID);
     void SetLineRoleName(const QString &pairKey, const QString &suffix);
@@ -172,10 +176,12 @@ public:
     template <typename T> void AddVariable(const QSharedPointer<T> &var);
     void RemoveVariable(const QString &name);
     void RemovePiece(quint32 id);
+    void RemovePieceGroup(quint32 id);
 
     template <class T> void UpdateGObject(quint32 id, T *obj);
     template <class T> void UpdateGObject(quint32 id, const QSharedPointer<T> &obj);
     void UpdatePiece(quint32 id, const VPiece &detail);
+    void UpdatePieceGroup(quint32 id, const OPieceGroup &group);
     void UpdatePiecePath(quint32 id, const VPiecePath &path);
 
     void Clear();
@@ -196,6 +202,10 @@ public:
 
     auto CalculationGObjects() const -> const QHash<quint32, QSharedPointer<VGObject>> *;
     auto DataPieces() const -> QHash<quint32, VPiece> *;
+    auto DataPieceGroups() const -> QHash<quint32, OPieceGroup> *;
+    auto DataPieceGroups() -> QHash<quint32, OPieceGroup> *;
+    auto GetPieceGroupId(quint32 pieceId) const -> quint32;
+    auto GetEffectivePieceCount() const -> int;
     auto DataVariables() const -> const QHash<QString, QSharedPointer<VInternalVariable>> *;
 
     auto DataMeasurements() const -> QMap<QString, QSharedPointer<VMeasurement>>;

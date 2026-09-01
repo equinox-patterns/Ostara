@@ -94,15 +94,15 @@ void OAnnotationsConfigWidget::ClearRows()
 
 //---------------------------------------------------------------------------------------------------------------------
 void OAnnotationsConfigWidget::SetModifyPending(
-    std::function<void(std::function<void(VPiece &)>)> callback)
+    std::function<void(std::function<void(IPieceInfo &)>)> callback)
 {
     m_modifyPending = std::move(callback);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OAnnotationsConfigWidget::Show(const VPiece &detail, const VContainer *data)
+void OAnnotationsConfigWidget::Show(const IPieceInfo &detail, const VContainer *data)
 {
-    m_currentDet = detail;
+    m_currentAnnotations = detail.GetAnnotationData();
     m_data = data;
     m_loading = true;
 
@@ -141,7 +141,7 @@ void OAnnotationsConfigWidget::Show(const VPiece &detail, const VContainer *data
 void OAnnotationsConfigWidget::Clear()
 {
     m_loading = true;
-    m_currentDet = VPiece();
+    m_currentAnnotations = OAnnotationData();
     m_data = nullptr;
     ClearRows();
     m_emptyLabel->setVisible(true);
@@ -154,7 +154,7 @@ void OAnnotationsConfigWidget::RebuildList()
 {
     ClearRows();
 
-    const QList<OAnnotation> annotations = m_currentDet.GetAnnotationData().Annotations();
+    const QList<OAnnotation> annotations = m_currentAnnotations.Annotations();
     m_emptyLabel->setVisible(annotations.isEmpty());
 
     for (int i = 0; i < annotations.size(); ++i)
@@ -232,7 +232,7 @@ void OAnnotationsConfigWidget::CommitText(int index)
         return;
     }
     const QString text = m_rows.at(index).textEdit->toPlainText();
-    m_modifyPending([index, text](VPiece &det) {
+    m_modifyPending([index, text](IPieceInfo &det) {
         OAnnotationData data = det.GetAnnotationData();
         QList<OAnnotation> annotations = data.Annotations();
         if (index >= 0 && index < annotations.size())
@@ -258,7 +258,7 @@ void OAnnotationsConfigWidget::AddAnnotation()
         const QString templateName = dialog.TemplateName();
         const QString text = dialog.Text();
         const QString rotationFormula = dialog.RotationFormula();
-        m_modifyPending([templateName, text, rotationFormula](VPiece &det) {
+        m_modifyPending([templateName, text, rotationFormula](IPieceInfo &det) {
             OAnnotationData data = det.GetAnnotationData();
             QList<OAnnotation> annotations = data.Annotations();
             OAnnotation annotation;
@@ -286,7 +286,7 @@ void OAnnotationsConfigWidget::EditAnnotation(int index)
         m_rows.at(index).timer->stop();
         CommitText(index);
     }
-    const QList<OAnnotation> annotations = m_currentDet.GetAnnotationData().Annotations();
+    const QList<OAnnotation> annotations = m_currentAnnotations.Annotations();
     if (index >= annotations.size())
     {
         return;
@@ -305,7 +305,7 @@ void OAnnotationsConfigWidget::EditAnnotation(int index)
         const QString templateName = dialog.TemplateName();
         const QString text = dialog.Text();
         const QString rotationFormula = dialog.RotationFormula();
-        m_modifyPending([index, templateName, text, rotationFormula](VPiece &det) {
+        m_modifyPending([index, templateName, text, rotationFormula](IPieceInfo &det) {
             OAnnotationData data = det.GetAnnotationData();
             QList<OAnnotation> list = data.Annotations();
             if (index >= 0 && index < list.size())
@@ -333,7 +333,7 @@ void OAnnotationsConfigWidget::RemoveAnnotation(int index)
         m_rows.at(index).timer->stop();
         CommitText(index);
     }
-    const QList<OAnnotation> annotations = m_currentDet.GetAnnotationData().Annotations();
+    const QList<OAnnotation> annotations = m_currentAnnotations.Annotations();
     if (index >= annotations.size())
     {
         return;
@@ -347,7 +347,7 @@ void OAnnotationsConfigWidget::RemoveAnnotation(int index)
     {
         return;
     }
-    m_modifyPending([index](VPiece &det) {
+    m_modifyPending([index](IPieceInfo &det) {
         OAnnotationData data = det.GetAnnotationData();
         QList<OAnnotation> list = data.Annotations();
         if (index >= 0 && index < list.size())

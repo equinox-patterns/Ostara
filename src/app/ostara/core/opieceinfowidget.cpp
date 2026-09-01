@@ -92,7 +92,7 @@ OPieceInfoWidget::OPieceInfoWidget(QWidget *parent)
             return;
         }
         const QString text = m_freeTextEdit->toPlainText();
-        m_modifyPending([text](VPiece &det) { det.SetFreeText(text); });
+        m_modifyPending([text](IPieceInfo &det) { det.SetFreeText(text); });
     });
 
     connect(m_freeTextEdit, &QPlainTextEdit::textChanged, this, [this, minFreeTextHeight]() {
@@ -112,7 +112,7 @@ OPieceInfoWidget::OPieceInfoWidget(QWidget *parent)
         {
             return;
         }
-        m_modifyPending([value](VPiece &det) { det.SetPieceNumber(static_cast<uint>(value)); });
+        m_modifyPending([value](IPieceInfo &det) { det.SetPieceNumber(static_cast<uint>(value)); });
     });
 
     connect(m_fabricQtySpin, QOverload<int>::of(&QSpinBox::valueChanged), this, [this](int qty) {
@@ -120,21 +120,21 @@ OPieceInfoWidget::OPieceInfoWidget(QWidget *parent)
         {
             return;
         }
-        m_modifyPending([qty](VPiece &det) { det.SetCutFabricQty(qty); });
+        m_modifyPending([qty](IPieceInfo &det) { det.SetCutFabricQty(qty); });
     });
     connect(m_interfacingQtySpin, QOverload<int>::of(&QSpinBox::valueChanged), this, [this](int qty) {
         if (m_loading || !m_modifyPending)
         {
             return;
         }
-        m_modifyPending([qty](VPiece &det) { det.SetCutInterfacingQty(qty); });
+        m_modifyPending([qty](IPieceInfo &det) { det.SetCutInterfacingQty(qty); });
     });
     connect(m_liningQtySpin, QOverload<int>::of(&QSpinBox::valueChanged), this, [this](int qty) {
         if (m_loading || !m_modifyPending)
         {
             return;
         }
-        m_modifyPending([qty](VPiece &det) { det.SetCutLiningQty(qty); });
+        m_modifyPending([qty](IPieceInfo &det) { det.SetCutLiningQty(qty); });
     });
 
     connect(m_fabricOnFoldCheck, &QCheckBox::toggled, this, [this](bool on) {
@@ -142,21 +142,21 @@ OPieceInfoWidget::OPieceInfoWidget(QWidget *parent)
         {
             return;
         }
-        m_modifyPending([on](VPiece &det) { det.SetCutFabricOnFold(on); });
+        m_modifyPending([on](IPieceInfo &det) { det.SetCutFabricOnFold(on); });
     });
     connect(m_interfacingOnFoldCheck, &QCheckBox::toggled, this, [this](bool on) {
         if (m_loading || !m_modifyPending)
         {
             return;
         }
-        m_modifyPending([on](VPiece &det) { det.SetCutInterfacingOnFold(on); });
+        m_modifyPending([on](IPieceInfo &det) { det.SetCutInterfacingOnFold(on); });
     });
     connect(m_liningOnFoldCheck, &QCheckBox::toggled, this, [this](bool on) {
         if (m_loading || !m_modifyPending)
         {
             return;
         }
-        m_modifyPending([on](VPiece &det) { det.SetCutLiningOnFold(on); });
+        m_modifyPending([on](IPieceInfo &det) { det.SetCutLiningOnFold(on); });
     });
 }
 
@@ -180,20 +180,21 @@ void OPieceInfoWidget::InitCutTab(int index, const QString &title, QSpinBox **qt
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OPieceInfoWidget::SetModifyPending(std::function<void(std::function<void(VPiece &)>)> callback)
+void OPieceInfoWidget::SetModifyPending(std::function<void(std::function<void(IPieceInfo &)>)> callback)
 {
     m_modifyPending = std::move(callback);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OPieceInfoWidget::Show(const VPiece &detail, const VContainer *data)
+void OPieceInfoWidget::Show(const IPieceInfo &detail, const VContainer *data)
 {
     m_loading = true;
     m_freeTextTimer->stop();
 
     m_numberSpin->setValue(static_cast<int>(detail.GetPieceNumber()));
-    const auto *pieces = data != nullptr ? data->DataPieces() : nullptr;
-    m_totalLabel->setText(QStringLiteral("/ %1").arg(QString::number(pieces != nullptr ? pieces->size() : 0)));
+    // « Un groupe = 1 pièce » : the total counts standalone pieces + groups.
+    m_totalLabel->setText(
+        QStringLiteral("/ %1").arg(QString::number(data != nullptr ? data->GetEffectivePieceCount() : 0)));
 
     m_fabricQtySpin->setValue(detail.GetCutFabricQty());
     m_fabricOnFoldCheck->setChecked(detail.IsCutFabricOnFold());

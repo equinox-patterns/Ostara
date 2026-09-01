@@ -313,6 +313,22 @@ auto VContainer::AddPiece(const VPiece &detail) -> quint32
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VContainer::AddPieceGroup(const OPieceGroup &group) -> quint32
+{
+    // Insert under the group's own id when it is already assigned (undo/redo stability),
+    // otherwise auto-assign a fresh id.
+    quint32 id = group.id;
+    if (id == NULL_ID)
+    {
+        id = getNextId();
+    }
+    OPieceGroup stored = group;
+    stored.id = id;  // keep the stored group's id in sync with its hash key (round-trip integrity)
+    d->pieceGroups->insert(id, stored);
+    return id;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VContainer::AddPiecePath(const VPiecePath &path) -> quint32
 {
     const quint32 id = getNextId();
@@ -624,6 +640,28 @@ void VContainer::RemoveVariable(const QString &name)
 void VContainer::RemovePiece(quint32 id)
 {
     d->pieces->remove(id);
+
+    // A deleted member must leave its group(s) — a dangling id in a group's
+    // pieceIds would make later group rendering throw VExceptionBadId.
+    for (auto it = d->pieceGroups->begin(); it != d->pieceGroups->end();)
+    {
+        it.value().pieceIds.removeAll(id);
+        it.value().memberOffsets.remove(id);
+        if (it.value().pieceIds.size() < 2)
+        {
+            it = d->pieceGroups->erase(it);  // a group needs at least 2 members
+        }
+        else
+        {
+            ++it;
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::RemovePieceGroup(quint32 id)
+{
+    d->pieceGroups->remove(id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -631,6 +669,14 @@ void VContainer::UpdatePiece(quint32 id, const VPiece &detail)
 {
     Q_ASSERT_X(id != NULL_ID, Q_FUNC_INFO, "id == 0"); //-V654 //-V712
     d->pieces->insert(id, detail);
+    UpdateId(id);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::UpdatePieceGroup(quint32 id, const OPieceGroup &group)
+{
+    Q_ASSERT_X(id != NULL_ID, Q_FUNC_INFO, "id == 0"); //-V654 //-V712
+    d->pieceGroups->insert(id, group);
     UpdateId(id);
 }
 
@@ -898,6 +944,73 @@ auto VContainer::CalculationGObjects() const -> const QHash<quint32, QSharedPoin
 auto VContainer::DataPieces() const -> QHash<quint32, VPiece> *
 {
     return d->pieces.data();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::DataPieceGroups() const -> QHash<quint32, OPieceGroup> *
+{
+    return d->pieceGroups.data();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::DataPieceGroups() -> QHash<quint32, OPieceGroup> *
+{
+    return d->pieceGroups.data();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::GetPieceGroupId(quint32 pieceId) const -> quint32
+{
+    for (auto it = d->pieceGroups->cbegin(); it != d->pieceGroups->cend(); ++it)
+    {
+        if (it.value().pieceIds.contains(pieceId))
+        {
+            return it.key();
+        }
+    }
+    return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::GetEffectivePieceCount() const -> int
+{
+    const auto *groups = DataPieceGroups();
+    if (!groups || groups->isEmpty())
+    {
+        // All pieces count (in-layout or not): the total is the piece count.
+        return DataPieces() != nullptr ? static_cast<int>(DataPieces()->size()) : 0;
+    }
+
+    // « Un groupe = 1 pièce » : member pieces do not count, each group counts for 1.
+    QSet<quint32> excludedPieceIds;
+    int groupCount = 0;
+
+    for (auto it = groups->cbegin(); it != groups->cend(); ++it)
+    {
+        if (it.value().pieceIds.size() >= 2)
+        {
+            for (quint32 pid : it.value().pieceIds)
+            {
+                excludedPieceIds.insert(pid);
+            }
+            groupCount++;
+        }
+    }
+
+    int standaloneCount = 0;
+    const auto *pieces = DataPieces();
+    if (pieces != nullptr)
+    {
+        for (auto it = pieces->cbegin(); it != pieces->cend(); ++it)
+        {
+            if (!excludedPieceIds.contains(it.key()))
+            {
+                standaloneCount++;
+            }
+        }
+    }
+
+    return standaloneCount + groupCount;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

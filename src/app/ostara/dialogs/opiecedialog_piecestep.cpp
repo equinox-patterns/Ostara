@@ -50,7 +50,10 @@ OPiecePieceStep::OPiecePieceStep(QWidget *parent)
 
     m_nameEdit = new QLineEdit();
     form->addRow(tr("Piece name"), m_nameEdit);
-    connect(m_nameEdit, &QLineEdit::textChanged, this, [this]() { SetPieceNameInvalid(false); });
+    connect(m_nameEdit, &QLineEdit::textChanged, this, [this](const QString &name) {
+        SetPieceNameInvalid(false);
+        emit NameChanged(name);
+    });
 
     // Piece number with a dynamic total ("/ N" where N = total piece count,
     // including the piece being created) — mirrors OPieceInfoWidget.

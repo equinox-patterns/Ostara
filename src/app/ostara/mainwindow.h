@@ -304,6 +304,12 @@ private:
     /** @brief sceneDetails details scene. */
     VMainGraphicsScene *m_sceneDetails{nullptr};
 
+    /** @brief Canvas holders rendering each piece group's common children. */
+    QHash<quint32, class OPieceGroupHolderItem *> m_groupHolders;
+
+    /** @brief Last effective piece count seen, to re-render info blocks only when it changes. */
+    int m_lastEffectivePieceCount{-1};
+
     /** @brief isInitialized true after first show window. */
     bool m_isInitialized{false};
 
@@ -447,6 +453,9 @@ private:
     void ZoomFirstShow();
 
     void InitDocksContain();
+    void ApplyGroupNodeAlignments();
+    void RefreshGroupHolders();
+    void SetAllGroupHoldersVisible(bool visible);
     auto OpenNewValentina(const QString &fileName = QString()) const -> bool;
     void FileClosedCorrect();
     static auto GetUnlokedRestoreFileList() -> QStringList;

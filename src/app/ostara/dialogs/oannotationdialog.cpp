@@ -52,14 +52,36 @@ OAnnotationDialog::OAnnotationDialog(const VContainer *data, QWidget *parent)
 
     auto *form = new QFormLayout();
     m_templateCombo = MakeComboBox(this);
-    // "Default" first (the built-in real style, fallback key of the render);
-    // the data is empty for Default (templateName "" = Default).
-    m_templateCombo->addItem(tr("Default"), QString());  // no-style fallback (default render)
     const QList<OPieceCartoucheStorage::AnnotationStyleEntry> styles =
         OPieceCartoucheStorage::LoadAnnotationStyles();
+    // Only add the translated fallback entry when no style file is literally named
+    // "Default": otherwise the combo shows both "Défaut" (translated) and "Default"
+    // (the real style file), a duplicate that has no reason to be.
+    bool hasDefaultStyle = false;
+    for (const OPieceCartoucheStorage::AnnotationStyleEntry &style : styles)
+    {
+        if (style.name.compare(QStringLiteral("Default"), Qt::CaseInsensitive) == 0)
+        {
+            hasDefaultStyle = true;
+            break;
+        }
+    }
+    if (!hasDefaultStyle)
+    {
+        m_templateCombo->addItem(tr("Default"), QString());  // no-style fallback (default render)
+    }
     for (const OPieceCartoucheStorage::AnnotationStyleEntry &style : styles)
     {
         m_templateCombo->addItem(style.name, style.name);
+    }
+    if (hasDefaultStyle)
+    {
+        // A freshly-added annotation starts on the real "Default" style.
+        const int defIndex = m_templateCombo->findData(QStringLiteral("Default"));
+        if (defIndex >= 0)
+        {
+            m_templateCombo->setCurrentIndex(defIndex);
+        }
     }
     m_templateLabel = new QLabel(tr("Template:"), this);
     form->addRow(m_templateLabel, m_templateCombo);
@@ -154,6 +176,11 @@ void OAnnotationDialog::SetTemplateName(const QString &name)
         if (name.isEmpty())
         {
             index = m_templateCombo->findData(QString());
+            if (index < 0)
+            {
+                // No fallback entry (a real "Default" style file covers it).
+                index = m_templateCombo->findData(QStringLiteral("Default"));
+            }
         }
         else
         {

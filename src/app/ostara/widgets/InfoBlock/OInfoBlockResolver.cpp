@@ -37,7 +37,7 @@
 #include "vmisc/vcommonsettings.h"
 #include "vpatterndb/oinfoblockdata.h"
 #include "vpatterndb/vcontainer.h"
-#include "vpatterndb/vpiece.h"
+#include "vpatterndb/ipieceinfo.h"
 #include "vwidgets/ocartouchepainter.h"
 
 #include <QApplication>
@@ -84,7 +84,7 @@ struct OInfoBlockResolvedConfig
     OPieceCartoucheTemplate tpl;
 };
 
-OInfoBlockResolvedConfig ResolveConfig(const VPiece &piece, VAbstractPattern *doc, const VContainer *data)
+OInfoBlockResolvedConfig ResolveConfig(const IPieceInfo &piece, VAbstractPattern *doc, const VContainer *data)
 {
     OInfoBlockResolvedConfig config;
     OInfoBlockEffectiveState &state = config.state;
@@ -158,14 +158,14 @@ OInfoBlockResolvedConfig ResolveConfig(const VPiece &piece, VAbstractPattern *do
 }  // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OInfoBlockResolver::ResolveEffectiveConfig(const VPiece &piece, VAbstractPattern *doc, const VContainer *data)
+auto OInfoBlockResolver::ResolveEffectiveConfig(const IPieceInfo &piece, VAbstractPattern *doc, const VContainer *data)
     -> OInfoBlockEffectiveState
 {
     return ResolveConfig(piece, doc, data).state;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OInfoBlockResolver::ResolveEffectiveState(const VPiece &piece, VAbstractPattern *doc, const VContainer *data)
+auto OInfoBlockResolver::ResolveEffectiveState(const IPieceInfo &piece, VAbstractPattern *doc, const VContainer *data)
     -> OInfoBlockEffectiveState
 {
     OInfoBlockResolvedConfig config = ResolveConfig(piece, doc, data);
@@ -229,7 +229,7 @@ auto OInfoBlockResolver::ResolveEffectiveState(const VPiece &piece, VAbstractPat
 //---------------------------------------------------------------------------------------------------------------------
 auto OInfoBlockResolver::ResolveSectionLines(const OPieceCartoucheSection &type,
                                              const QHash<QString, QVariant> &options, const VAbstractPattern *doc,
-                                             const VPiece &piece, const VContainer *data,
+                                             const IPieceInfo &piece, const VContainer *data,
                                              const OPieceCartoucheTable *table, const QStringList &renderLanguages,
                                              const QString &mainLocale) -> QList<OCartoucheRenderLine>
 {
@@ -345,7 +345,9 @@ auto OInfoBlockResolver::ResolveSectionLines(const OPieceCartoucheSection &type,
         {
             return {};  // dead data: no piece number
         }
-        const qint64 total = static_cast<qint64>(data->DataPieces()->size());
+        // « Un groupe = 1 pièce » : the total must be the effective count, not the raw
+        // piece hash (which still includes the members of a group).
+        const qint64 total = static_cast<qint64>(data->GetEffectivePieceCount());
         lines.append(OCartouchePainter::TextLine(
             ComposeLine(QString::number(number), QString::number(total), separator), font, lineSpacing));
         return lines;

@@ -33,6 +33,7 @@
 #include <QWidget>
 
 #include <functional>
+#include <optional>
 
 #include "../vpatterndb/vpiece.h"
 
@@ -97,6 +98,10 @@ private:
     void ConnectControls();
     void CommitPending();
     void ModifyPiece(std::function<void(VPiece &)> func);
+    void ModifyPiece(std::function<void(IPieceInfo &)> func);
+
+    // Grainline activation centering: local center of the piece bbox, or nullopt.
+    auto GrainlineCenter(const VPiece &det, const VContainer *data) -> std::optional<QPointF>;
 
     // Grainline tab
     ODetailsGrainlineWidget *m_grainlineWidget{nullptr};

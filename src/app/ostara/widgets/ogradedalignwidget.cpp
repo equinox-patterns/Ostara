@@ -127,7 +127,11 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
         btn->setFocusPolicy(Qt::NoFocus);
         btn->setProperty("alignValue", kAlignHItems[i].value);
         btn->installEventFilter(this); // hover icon swap
-        connect(btn, &QAbstractButton::toggled, this, [btn](bool checked) {
+        connect(btn, &QAbstractButton::toggled, this, [this, btn](bool checked) {
+            if (checked)
+            {
+                emit AlignHChanged(btn->property("alignValue").toInt());
+            }
             // A selected button has no hover: restore its theme rendering under the cursor.
             if (not btn->underMouse())
             {
@@ -160,7 +164,11 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
         btn->setFocusPolicy(Qt::NoFocus);
         btn->setProperty("alignValue", kAlignVItems[i].value);
         btn->installEventFilter(this); // hover icon swap
-        connect(btn, &QAbstractButton::toggled, this, [btn](bool checked) {
+        connect(btn, &QAbstractButton::toggled, this, [this, btn](bool checked) {
+            if (checked)
+            {
+                emit AlignVChanged(btn->property("alignValue").toInt());
+            }
             // A selected button has no hover: restore its theme rendering under the cursor.
             if (not btn->underMouse())
             {
@@ -183,6 +191,22 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
 
     RefreshAlignIcons();
     connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, &OGradedAlignWidget::RefreshAlignIcons);
+
+    // Uniform button widths: the H and V rows are independent QHBoxLayouts, so in a narrow
+    // window each row keeps its own natural size and "Left" (longer text) renders wider than
+    // "Top". Share one minimum width across all six buttons so the selector looks like every
+    // other alignment selector in the app (Dialog Piece step 2, PB Details general tab).
+    int maxAlignWidth = 0;
+    for (int i = 0; i < 3; ++i)
+    {
+        maxAlignWidth = qMax(maxAlignWidth, m_alignHBtns[i]->sizeHint().width());
+        maxAlignWidth = qMax(maxAlignWidth, m_alignVBtns[i]->sizeHint().width());
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        m_alignHBtns[i]->setMinimumWidth(maxAlignWidth);
+        m_alignVBtns[i]->setMinimumWidth(maxAlignWidth);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

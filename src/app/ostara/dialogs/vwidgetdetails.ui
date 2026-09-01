@@ -28,7 +28,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QTableWidget" name="tableWidget">
+    <widget class="QTreeWidget" name="treeWidget">
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
@@ -38,30 +38,28 @@
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="sortingEnabled">
-      <bool>false</bool>
+     <property name="indentation">
+      <number>16</number>
      </property>
-     <attribute name="horizontalHeaderVisible">
+     <attribute name="headerVisible">
       <bool>false</bool>
      </attribute>
-     <attribute name="horizontalHeaderMinimumSectionSize">
+     <attribute name="headerMinimumSectionSize">
       <number>16</number>
      </attribute>
-     <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+     <attribute name="headerShowSortIndicator" stdset="0">
       <bool>false</bool>
      </attribute>
-     <attribute name="horizontalHeaderStretchLastSection">
+     <attribute name="headerStretchLastSection">
       <bool>true</bool>
      </attribute>
-     <attribute name="verticalHeaderVisible">
-      <bool>false</bool>
-     </attribute>
-     <attribute name="verticalHeaderMinimumSectionSize">
-      <number>10</number>
-     </attribute>
-     <attribute name="verticalHeaderHighlightSections">
-      <bool>false</bool>
-     </attribute>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="linkPiecesButton">
+     <property name="text">
+      <string>Link pieces…</string>
+     </property>
     </widget>
    </item>
   </layout>
