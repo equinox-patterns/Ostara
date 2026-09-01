@@ -335,6 +335,7 @@ void MainWindow::CreateActions()
     connect(ui->actionInfoBlockLogo, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(2); });
     connect(ui->actionInfoBlockClients, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(3); });
     connect(ui->actionInfoBlockCollections, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(4); });
+    connect(ui->actionInfoBlockAnnotations, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(5); });
 
     connect(ui->actionAbout_Qt, &QAction::triggered, this, [this]() { QMessageBox::aboutQt(this, tr("About Qt")); });
 

@@ -27,8 +27,11 @@
  *************************************************************************/
 
 #include "../fervor/fvupdater.h"
+#include "../vpatterndb/oannotationdata.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vtools/tools/vtoolseamallowance.h"
+
+#include <QHash>
 #include "core/vapplication.h"
 #include "mainwindow.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
@@ -132,6 +135,36 @@ auto main(int argc, char *argv[]) -> int
     VToolSeamAllowance::SetInfoBlockContentBuilder(
         [](const VPiece &piece, VAbstractPattern *doc, const VContainer *data) -> OInfoBlockEffectiveState {
             return OInfoBlockResolver::ResolveEffectiveState(piece, doc, data);
+        });
+
+    // Register the app-side annotation style resolver so the piece tools (libs)
+    // can resolve the render style of an annotation without a libs -> app dependency.
+    VToolSeamAllowance::SetAnnotationStyleResolver(
+        [](const QString &name) -> OAnnotationRenderStyle {
+            // Cache the library — the resolver runs per annotation on every
+            // layout refresh; only a successful save bumps the version.
+            static quint64 version = 0;
+            static bool loaded = false;
+            static QHash<QString, OAnnotationRenderStyle> cache;
+            const quint64 current = OPieceCartoucheStorage::AnnotationStylesVersion();
+            if (!loaded || current != version)
+            {
+                cache.clear();
+                for (const OPieceCartoucheStorage::AnnotationStyleEntry &entry :
+                     OPieceCartoucheStorage::LoadAnnotationStyles())
+                {
+                    OAnnotationRenderStyle style;
+                    style.fontFamily = entry.fontFamily;
+                    style.fontWeight = entry.fontWeight;
+                    style.fontSize = entry.fontSize;
+                    style.backgroundColor = entry.backgroundColor;
+                    style.textColor = entry.textColor;
+                    cache.insert(entry.name, style);
+                }
+                version = current;
+                loaded = true;
+            }
+            return cache.value(name);  // Default / unknown → default font, transparent, black
         });
 
     // Select all text on a single click in every QLineEdit / QTextEdit / QPlainTextEdit.

@@ -54,6 +54,7 @@ public:
     void ShowPieceOptions(VToolSeamAllowance *tool);
     void ShowGrainlineTab();
     void ShowBlocksTab();
+    void ShowAnnotationsTab();
     void Clear();
 
     void RetranslateUI();

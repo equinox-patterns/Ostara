@@ -43,6 +43,7 @@ class QLineEdit;
 class QPushButton;
 class QTabWidget;
 class OBlockConfigWidget;
+class OAnnotationsConfigWidget;
 class ODetailsFoldLineWidget;
 class ODetailsGrainlineWidget;
 class ODetailsSeamAllowanceWidget;
@@ -64,6 +65,8 @@ public:
     void ShowGrainlineTab();
     /** @brief Show the Information tab (outer tab 3) and its Blocks sub-tab. */
     void ShowBlocksTab();
+    /** @brief Show the Information tab (outer tab 3) and its Annotations sub-tab. */
+    void ShowAnnotationsTab();
 
     void RetranslateUI();
 
@@ -105,11 +108,15 @@ private:
     // Information tab — Blocks sub-tab
     OBlockConfigWidget *m_blockConfigWidget{nullptr};
 
-    // General tab
+    // Information tab — Annotations sub-tab
+    OAnnotationsConfigWidget *m_annotationsConfigWidget{nullptr};
+
+    // Piece sub-tab (Information) — name + piece info widget
     QLineEdit *m_nameEdit{nullptr};
     QLabel *m_nameLabel{nullptr};
     OPieceInfoWidget *m_pieceInfoWidget{nullptr};
-    QGroupBox *m_pieceGroupBox{nullptr};
+
+    // General tab
     QGroupBox *m_alignGroupBox{nullptr};
     QLabel *m_alignHLabel{nullptr};
     QLabel *m_alignVLabel{nullptr};

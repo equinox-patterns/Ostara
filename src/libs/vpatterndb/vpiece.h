@@ -44,6 +44,7 @@ class QPainterPath;
 class VPointF;
 class VPassmark;
 class OInfoBlockData;
+class OAnnotationData;
 
 class VPiece : public VAbstractPiece
 {
@@ -161,6 +162,10 @@ public:
     void SetInfoBlockData(const OInfoBlockData &data);
     auto GetInfoBlockData() const -> const OInfoBlockData &;
     auto GetInfoBlockData() -> OInfoBlockData &;
+
+    void SetAnnotationData(const OAnnotationData &data);
+    auto GetAnnotationData() const -> const OAnnotationData &;
+    auto GetAnnotationData() -> OAnnotationData &;
 
     void SetMirrorLineStartPoint(quint32 id);
     auto GetMirrorLineStartPoint() const -> quint32;

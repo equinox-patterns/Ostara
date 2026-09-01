@@ -28,6 +28,7 @@
 // Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
 
 #include "vtoolseamallowance.h"
+#include "oannotationitem.h"
 #include "oinfoblockitem.h"
 #include "vtoolseamallowance_autoplace.h"
 #include "../dialogs/tools/piece/dialogduplicatedetail.h"
@@ -101,6 +102,7 @@ using namespace std::chrono_literals;
 const quint8 VToolSeamAllowance::pieceVersion = 2;
 
 OInfoBlockContentBuilder VToolSeamAllowance::s_infoBlockContentBuilder; // NOLINT(cert-err58-cpp)
+OAnnotationStyleResolver VToolSeamAllowance::s_annotationStyleResolver; // NOLINT(cert-err58-cpp)
 
 const QString VToolSeamAllowance::TagCSA = QStringLiteral("csa");                 // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagRecord = QStringLiteral("record");           // NOLINT(cert-err58-cpp)
@@ -111,6 +113,10 @@ const QString VToolSeamAllowance::TagSaMarginProperties = QStringLiteral("saMarg
 const QString VToolSeamAllowance::TagCartoucheBlocks = QStringLiteral("cartoucheBlocks");       // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagDispatch = QStringLiteral("dispatch");                     // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagBlock = QStringLiteral("block");                           // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagAnnotations = QStringLiteral("annotations");               // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagAnnotation = QStringLiteral("annotation");                 // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagText = QStringLiteral("text");                             // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagGeom = QStringLiteral("geom");                             // NOLINT(cert-err58-cpp)
 
 const QString VToolSeamAllowance::AttrSeamAllowance = QStringLiteral("seamAllowance"); // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrHideMainPath = QStringLiteral("hideMainPath");   // NOLINT(cert-err58-cpp)
@@ -1054,9 +1060,53 @@ void VToolSeamAllowance::AddCartoucheBlocks(VAbstractPattern *doc, QDomElement &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::AddAnnotations(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece)
+{
+    const OAnnotationData &data = piece.GetAnnotationData();
+    if (not data.IsSet() || data.Annotations().isEmpty())
+    {
+        return;  // the <annotations> element is present only when the list is non-empty
+    }
+
+    QDomElement annotationsEl = doc->createElement(VToolSeamAllowance::TagAnnotations);
+    for (const OAnnotation &annotation : data.Annotations())
+    {
+        QDomElement annotationEl = doc->createElement(VToolSeamAllowance::TagAnnotation);
+        doc->SetAttributeOrRemoveIf<QString>(annotationEl, VAbstractPattern::AttrTemplate, annotation.templateName,
+                                             [](const QString &name) noexcept { return name.isEmpty(); });
+        doc->SetAttributeOrRemoveIf<QString>(annotationEl, VAbstractPattern::AttrRotation, annotation.rotationFormula,
+                                             [](const QString &formula) noexcept { return formula.isEmpty(); });
+
+        QDomElement textEl = doc->createElement(VToolSeamAllowance::TagText);
+        textEl.appendChild(doc->createTextNode(annotation.text));
+        annotationEl.appendChild(textEl);
+
+        QDomElement geomEl = doc->createElement(VToolSeamAllowance::TagGeom);
+        doc->SetAttribute(geomEl, AttrMx, annotation.geom.pos.x());
+        doc->SetAttribute(geomEl, AttrMy, annotation.geom.pos.y());
+        doc->SetAttributeOrRemoveIf<qreal>(geomEl, AttrWidth, annotation.geom.boxWidth,
+                                           [](qreal width) noexcept { return qFuzzyIsNull(width); });
+        doc->SetAttributeOrRemoveIf<qreal>(geomEl, AttrHeight, annotation.geom.boxHeight,
+                                           [](qreal height) noexcept { return qFuzzyIsNull(height); });
+        doc->SetAttributeOrRemoveIf<qreal>(geomEl, VToolSeamAllowance::AttrFontScale, annotation.geom.fontScale,
+                                           [](qreal scale) noexcept { return qFuzzyCompare(scale, 1.0); });
+        annotationEl.appendChild(geomEl);
+
+        annotationsEl.appendChild(annotationEl);
+    }
+    domElement.appendChild(annotationsEl);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::SetInfoBlockContentBuilder(OInfoBlockContentBuilder builder)
 {
     s_infoBlockContentBuilder = std::move(builder);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::SetAnnotationStyleResolver(OAnnotationStyleResolver resolver)
+{
+    s_annotationStyleResolver = std::move(resolver);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1159,6 +1209,7 @@ void VToolSeamAllowance::ConnectOutsideSignals()
     connect(doc, &VAbstractPattern::CheckLayout, this, &VToolSeamAllowance::UpdateGrainline);
     connect(doc, &VAbstractPattern::CheckLayout, this, &VToolSeamAllowance::RefreshFoldLine);
     connect(doc, &VAbstractPattern::CheckLayout, this, &VToolSeamAllowance::UpdateInfoBlocks);
+    connect(doc, &VAbstractPattern::CheckLayout, this, &VToolSeamAllowance::UpdateAnnotations);
 
     connect(m_sceneDetails, &VMainGraphicsScene::EnableToolMove, this, &VToolSeamAllowance::EnableToolMove);
     connect(m_sceneDetails, &VMainGraphicsScene::ItemByMousePress, this, &VToolSeamAllowance::ResetChildren);
@@ -1211,6 +1262,10 @@ void VToolSeamAllowance::EnableToolMove(bool move)
     {
         blockItem->SetReadOnly(!move);
     }
+    for (OAnnotationItem *annotationItem : m_annotationItems)
+    {
+        annotationItem->SetReadOnly(!move);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1223,6 +1278,10 @@ void VToolSeamAllowance::AllowHover(bool enabled)
     for (OInfoBlockItem *blockItem : m_infoBlockItems)
     {
         blockItem->setAcceptHoverEvents(enabled);
+    }
+    for (OAnnotationItem *annotationItem : m_annotationItems)
+    {
+        annotationItem->setAcceptHoverEvents(enabled);
     }
 }
 
@@ -1251,7 +1310,17 @@ void VToolSeamAllowance::ResetChildren(QGraphicsItem *pItem)
             break;
         }
     }
-    const bool myChildPressed = (pGLI != nullptr && pGLI == m_grainLine) || pBlock != nullptr;
+    OAnnotationItem *pAnnotation = nullptr;
+    for (OAnnotationItem *annotationItem : m_annotationItems)
+    {
+        if (annotationItem == pItem)
+        {
+            pAnnotation = annotationItem;
+            break;
+        }
+    }
+    const bool myChildPressed = (pGLI != nullptr && pGLI == m_grainLine) || pBlock != nullptr
+                                || pAnnotation != nullptr;
     const bool selected = isSelected() || myChildPressed;
 
     if (pGLI != m_grainLine && detail.GetGrainlineGeometry().IsEnabled())
@@ -1263,6 +1332,11 @@ void VToolSeamAllowance::ResetChildren(QGraphicsItem *pItem)
     for (OInfoBlockItem *blockItem : m_infoBlockItems)
     {
         blockItem->SetActive(blockItem == pBlock);
+    }
+    // Only the clicked annotation shows its editing outline + handles.
+    for (OAnnotationItem *annotationItem : m_annotationItems)
+    {
+        annotationItem->SetActive(annotationItem == pAnnotation);
     }
 
     setSelected(selected);
@@ -1485,6 +1559,133 @@ void VToolSeamAllowance::SaveResizeInfoBlock(int blockIndex, qreal newW, qreal n
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::UpdateAnnotations()
+{
+    const VPiece detail = VAbstractTool::data.GetPiece(m_id);
+    const QList<OAnnotation> annotations = detail.GetAnnotationData().Annotations();
+
+    // Grow the item pool on demand — never delete/recreate (leaks + duplicate
+    // connections); hidden items stay pooled, pattern of the 11 blocks.
+    while (m_annotationItems.size() < annotations.size())
+    {
+        const int index = static_cast<int>(m_annotationItems.size());
+        auto *item = new OAnnotationItem(index, this);
+        connect(item, &OAnnotationItem::Moved, this, &VToolSeamAllowance::SaveMoveAnnotation);
+        connect(item, &OAnnotationItem::Resized, this, &VToolSeamAllowance::SaveResizeAnnotation);
+        item->hide();
+        m_annotationItems.append(item);
+    }
+
+    for (int i = 0; i < m_annotationItems.size(); ++i)
+    {
+        OAnnotationItem *item = m_annotationItems.at(i);
+        const bool exists = i < annotations.size() && !annotations.at(i).text.isEmpty();
+        if (!exists)
+        {
+            item->SetActive(false);
+            item->hide();
+            continue;
+        }
+
+        const OAnnotation &annotation = annotations.at(i);
+        item->SetIndex(i);
+        item->SetContent(annotation.text, ResolveAnnotationStyle(annotation.templateName));
+        OAnnotationGeom geom = annotation.geom;
+        if (qFuzzyIsNull(geom.pos.x()) && qFuzzyIsNull(geom.pos.y()))
+        {
+            // Never moved (pos still the default): auto-place centered on the piece.
+            geom.pos = m_pieceBoundingRect.center();
+        }
+        item->SetAnnotationGeom(geom, EvaluateAnnotationRotation(annotation.rotationFormula));
+        item->setVisible(true);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::ResolveAnnotationStyle(const QString &name) const -> OAnnotationRenderStyle
+{
+    if (s_annotationStyleResolver)
+    {
+        return s_annotationStyleResolver(name);
+    }
+    return OAnnotationRenderStyle();  // default font, transparent background, black text
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::EvaluateAnnotationRotation(const QString &formula) const -> qreal
+{
+    if (formula.isEmpty())
+    {
+        return 0.0;
+    }
+    Calculator cal;
+    const qreal value = cal.EvalFormula(VAbstractTool::data.DataVariables(), formula);
+    if (qIsNaN(value) || qIsInf(value))
+    {
+        return 0.0;  // invalid at render time → fallback 0° (spec §10)
+    }
+    return value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::SaveMoveAnnotation(int index, const QPointF &pos)
+{
+    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
+    VPiece newDet = oldDet;
+    OAnnotationData data = std::as_const(newDet).GetAnnotationData();
+    QList<OAnnotation> annotations = data.Annotations();
+    if (index < 0 || index >= annotations.size())
+    {
+        return;
+    }
+    annotations[index].geom.pos = pos;
+    data.SetAnnotations(annotations);
+    data.SetSet(true);
+    newDet.SetAnnotationData(data);
+
+    auto *moveCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
+    moveCommand->setText(tr("move annotation"));
+    VAbstractApplication::VApp()->getUndoStack()->push(moveCommand);
+    UpdateAnnotations();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::SaveResizeAnnotation(int index, qreal newW, qreal newH, qreal origW, qreal origH)
+{
+    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
+    VPiece newDet = oldDet;
+    OAnnotationData data = std::as_const(newDet).GetAnnotationData();
+    QList<OAnnotation> annotations = data.Annotations();
+    if (index < 0 || index >= annotations.size())
+    {
+        return;
+    }
+    OAnnotation &annotation = annotations[index];
+    // The drag kept the opposite corner/edge fixed by moving the item — persist
+    // that final position too, or the refresh would snap the box back to the old
+    // stored position (spec §7.2: pos/width/height are stored as-is).
+    annotation.geom.pos = m_annotationItems.at(index)->pos();
+    annotation.geom.boxWidth = newW;
+    annotation.geom.boxHeight = newH;
+    // A corner resize scales the content too; an edge resize only grows the box
+    // (the two ratios match only for a proportional corner scale).
+    const qreal rx = newW / origW;
+    const qreal ry = newH / origH;
+    if (qFuzzyCompare(rx, ry))
+    {
+        annotation.geom.fontScale *= rx;
+    }
+    data.SetAnnotations(annotations);
+    data.SetSet(true);
+    newDet.SetAnnotationData(data);
+
+    auto *resizeCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
+    resizeCommand->setText(tr("resize annotation"));
+    VAbstractApplication::VApp()->getUndoStack()->push(resizeCommand);
+    UpdateAnnotations();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief VToolDetail::paint draws a bounding box around detail, if one of its text or grainline items is not idle.
  */
@@ -1586,6 +1787,7 @@ void VToolSeamAllowance::AddToFile()
     AddSAMarginProperties(doc, domElement, piece);
     AddMirrorLine(doc, domElement, piece);
     AddCartoucheBlocks(doc, domElement, piece);
+    AddAnnotations(doc, domElement, piece);
 
     VAbstractApplication::VApp()->getUndoStack()->push(
         new AddPiece(domElement, doc, VAbstractTool::data, m_sceneDetails, m_drawName));
@@ -1622,6 +1824,7 @@ void VToolSeamAllowance::RefreshDataInFile()
         AddSAMarginProperties(doc, domElement, piece);
         AddMirrorLine(doc, domElement, piece);
         AddCartoucheBlocks(doc, domElement, piece);
+        AddAnnotations(doc, domElement, piece);
     }
 }
 
@@ -2125,6 +2328,7 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
                                this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
                                UpdateGrainline();
                                UpdateInfoBlocks();
+                               UpdateAnnotations();
                                UpdateExcludeState();
                                if (updateChildren)
                                {
@@ -2137,6 +2341,7 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
     {
         UpdateGrainline();
         UpdateInfoBlocks();
+        UpdateAnnotations();
         UpdateExcludeState();
         if (updateChildren)
         {

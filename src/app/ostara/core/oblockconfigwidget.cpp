@@ -53,15 +53,16 @@ constexpr int kMaxBlocks = 11;
 OBlockConfigWidget::OBlockConfigWidget(QWidget *parent) : QWidget(parent)
 {
     // Same content style as the other dock tabs: group box sections, labels
-    // above the fields, 0/8/0/0 outer margins.
+    // above the fields. Side margins on the tab content: the top section and
+    // the group box are no longer glued to the tab edges.
     auto *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(0, 8, 0, 0);
+    layout->setContentsMargins(8, 8, 8, 0);
     layout->setSpacing(16);  // clear gap between the template row and the group box
 
-    // The checkbox and template row are indented to align with the group box
-    // frame (which has margin-left 8px in the theme).
+    // The checkbox and template row align with the group box frame (the group's
+    // side margin is suppressed below, so both sit at x = 0).
     auto *topSection = new QVBoxLayout();
-    topSection->setContentsMargins(8, 0, 0, 0);
+    topSection->setContentsMargins(0, 0, 0, 0);
     topSection->setSpacing(6);
 
     m_activeCheck = new QCheckBox(tr("Activate information block"), this);
@@ -84,6 +85,8 @@ OBlockConfigWidget::OBlockConfigWidget(QWidget *parent) : QWidget(parent)
     // it shares the group's $DockBody background (a QScrollArea viewport would be
     // forced to $DockTitle by ApplyThemeToWindows — SubtiliteCode §13).
     m_dispatchGroup = new QGroupBox(tr("Split into multiple blocks"), this);
+    // Less side margin than the theme default (8px) for this group only.
+    m_dispatchGroup->setStyleSheet(QStringLiteral("QGroupBox { margin-left: 0px; margin-right: 0px; }"));
     auto *groupLayout = new QVBoxLayout(m_dispatchGroup);
     groupLayout->setSpacing(6);
     m_dispatchGroup->setEnabled(false);

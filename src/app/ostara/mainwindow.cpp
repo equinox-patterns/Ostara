@@ -74,6 +74,7 @@
 #include "vtheme.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
+#include "../vtools/tools/oannotationitem.h"
 #include "../vtools/tools/oinfoblockitem.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/undocommands/undoattachment.h"
@@ -877,6 +878,11 @@ void MainWindow::InitDocksContain()
         {
             doc->SelectedDetail(piece->getId());
             m_dockManager->detailsOptions()->ShowBlocksTab();
+        }
+        else if (qgraphicsitem_cast<OAnnotationItem *>(pItem) != nullptr)
+        {
+            doc->SelectedDetail(piece->getId());
+            m_dockManager->detailsOptions()->ShowAnnotationsTab();
         }
     });
 

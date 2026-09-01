@@ -905,6 +905,32 @@ auto VPiece::GetInfoBlockData() -> OInfoBlockData &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetAnnotationData(const OAnnotationData &data)
+{
+    d->m_annotations = data;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief VDetail::GetAnnotationData returns the read-only reference to the per-piece annotations
+ * @return reference to the annotations
+ */
+auto VPiece::GetAnnotationData() const -> const OAnnotationData &
+{
+    return d->m_annotations;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief VDetail::GetAnnotationData full access to the per-piece annotations
+ * @return reference to the annotations
+ */
+auto VPiece::GetAnnotationData() -> OAnnotationData &
+{
+    return d->m_annotations;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VPiece::SetMirrorLineStartPoint(quint32 id)
 {
     d->m_mirrorLineStartPoint = id;

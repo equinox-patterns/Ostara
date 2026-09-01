@@ -26,6 +26,7 @@
 
 #include "odetailspiecewidget.h"
 
+#include "oannotationsconfigwidget.h"
 #include "oblockconfigwidget.h"
 #include "odetailsfoldlinewidget.h"
 #include "odetailsgrainlinewidget.h"
@@ -143,21 +144,6 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         tab->setFrameStyle(QFrame::NoFrame);
         tab->setObjectName(QStringLiteral("detailsOptionsTabPage"));
         auto *layout = new QVBoxLayout(tab);
-
-        // Piece information group — name, number, cut, free text.
-        m_pieceGroupBox = new QGroupBox(tr("Piece"), tab);
-        auto *pieceLayout = new QVBoxLayout(m_pieceGroupBox);
-
-        auto *form = new QFormLayout();
-        m_nameEdit = new QLineEdit();
-        form->addRow(tr("Name"), m_nameEdit);
-        m_nameLabel = qobject_cast<QLabel *>(form->labelForField(m_nameEdit));
-        pieceLayout->addLayout(form);
-
-        m_pieceInfoWidget = new OPieceInfoWidget(m_pieceGroupBox);
-        pieceLayout->addWidget(m_pieceInfoWidget);
-
-        layout->addWidget(m_pieceGroupBox);
 
         // Graded alignment
         m_alignGroupBox = new QGroupBox(tr("Graded alignment"));
@@ -284,8 +270,7 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         m_tabWidget->addTab(tab, tr("Seam Allowance"));
     }
 
-    // ── Information tab — placeholder. Its own sub-tabs (cartouche content,
-    //    annotations, thumbnail, blocks) are defined in a later iteration. ──
+    // ── Information tab — sub-tabs: Piece, Blocks, Annotations (Thumbnail later). ──
     {
         auto *tab = new QFrame();
         tab->setFrameStyle(QFrame::NoFrame);
@@ -297,8 +282,36 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         m_infoSubTabs->setObjectName(QStringLiteral("informationTabWidget"));
         layout->addWidget(m_infoSubTabs);
 
+        // Piece sub-tab (index 0) — moved out of the General tab: these fields
+        // are filled through the step-2 dialog, no need to keep them constantly
+        // under the user's eyes. Same structure as the Blocks tab: the tab
+        // content IS the container (QFrame#detailsOptionsTabPage, §14 — the
+        // DockBody background of the group boxes), with the fields directly
+        // inside and the container margins.
+        auto *pieceTab = new QFrame(m_infoSubTabs);
+        pieceTab->setFrameStyle(QFrame::NoFrame);
+        pieceTab->setObjectName(QStringLiteral("detailsOptionsTabPage"));
+        auto *pieceLayout = new QVBoxLayout(pieceTab);
+        pieceLayout->setContentsMargins(8, 8, 8, 0);
+        pieceLayout->setSpacing(8);
+
+        auto *form = new QFormLayout();
+        m_nameEdit = new QLineEdit(pieceTab);
+        form->addRow(tr("Name"), m_nameEdit);
+        m_nameLabel = qobject_cast<QLabel *>(form->labelForField(m_nameEdit));
+        pieceLayout->addLayout(form);
+
+        m_pieceInfoWidget = new OPieceInfoWidget(pieceTab);
+        pieceLayout->addWidget(m_pieceInfoWidget);
+        pieceLayout->addStretch(1);
+
+        m_infoSubTabs->addTab(pieceTab, tr("Piece"));
+
         m_blockConfigWidget = new OBlockConfigWidget(m_infoSubTabs);
         m_infoSubTabs->addTab(m_blockConfigWidget, tr("Blocks"));
+
+        m_annotationsConfigWidget = new OAnnotationsConfigWidget(m_infoSubTabs);
+        m_infoSubTabs->addTab(m_annotationsConfigWidget, tr("Annotations"));
 
         m_tabWidget->addTab(tab, tr("Information"));
     }
@@ -319,10 +332,6 @@ void ODetailsPieceWidget::RetranslateUI()
         m_nameLabel->setText(tr("Name"));
     }
     m_pieceInfoWidget->RetranslateUI();
-    if (m_pieceGroupBox)
-    {
-        m_pieceGroupBox->setTitle(tr("Piece"));
-    }
     if (m_alignGroupBox)
     {
         m_alignGroupBox->setTitle(tr("Graded alignment"));
@@ -349,13 +358,16 @@ void ODetailsPieceWidget::RetranslateUI()
     m_tabWidget->setTabText(1, tr("Grainline"));
     m_tabWidget->setTabText(2, tr("Seam Allowance"));
     m_tabWidget->setTabText(3, tr("Information"));
-    m_infoSubTabs->setTabText(0, tr("Blocks"));
+    m_infoSubTabs->setTabText(0, tr("Piece"));
+    m_infoSubTabs->setTabText(1, tr("Blocks"));
+    m_infoSubTabs->setTabText(2, tr("Annotations"));
 
     // Sub-widgets (Grainline tab, Fold line, Seam Allowance)
     m_grainlineWidget->RetranslateUI();
     m_foldlineWidget->RetranslateUI();
     m_saWidget->RetranslateUI();
     m_blockConfigWidget->RetranslateUI();
+    m_annotationsConfigWidget->RetranslateUI();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -374,6 +386,7 @@ void ODetailsPieceWidget::ConnectControls()
 
     m_saWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
     m_blockConfigWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
+    m_annotationsConfigWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::HighlightNode, this,
             [this](quint32 nodeId, bool highlight, QColor color)
@@ -418,6 +431,7 @@ void ODetailsPieceWidget::ConnectControls()
             m_foldlineWidget->Show(detail);
             m_saWidget->RefreshList(detail);
             m_blockConfigWidget->Show(detail, currentTool->getData());
+            m_annotationsConfigWidget->Show(detail, currentTool->getData());
         });
     });
 
@@ -548,6 +562,7 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
 
     m_pieceInfoWidget->Show(detail, tool->getData());
     m_blockConfigWidget->Show(detail, tool->getData());
+    m_annotationsConfigWidget->Show(detail, tool->getData());
 
     int h = detail.GetGradedAlignH();
     if (h == 0)
@@ -590,6 +605,7 @@ void ODetailsPieceWidget::Clear()
     m_foldlineWidget->Clear();
     m_saWidget->Clear();
     m_blockConfigWidget->Clear();
+    m_annotationsConfigWidget->Clear();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -602,7 +618,14 @@ void ODetailsPieceWidget::ShowGrainlineTab()
 void ODetailsPieceWidget::ShowBlocksTab()
 {
     m_tabWidget->setCurrentIndex(3);
-    m_infoSubTabs->setCurrentIndex(0);
+    m_infoSubTabs->setCurrentIndex(1);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::ShowAnnotationsTab()
+{
+    m_tabWidget->setCurrentIndex(3);
+    m_infoSubTabs->setCurrentIndex(2);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

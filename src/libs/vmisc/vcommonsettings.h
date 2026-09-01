@@ -105,6 +105,9 @@ public:
     auto GetPathClients() const -> QString;
     void SetPathClients(const QString &value) const;
 
+    auto GetPathAnnotationStyles() const -> QString;
+    void SetPathAnnotationStyles(const QString &value) const;
+
     auto GetPathCollections() const -> QString;
     void SetPathCollections(const QString &value) const;
 

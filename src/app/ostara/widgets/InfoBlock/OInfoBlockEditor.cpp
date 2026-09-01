@@ -32,6 +32,7 @@
 #include "OLogoPreview.h"
 #include "OPieceCartoucheCatalogue.h"
 #include "OPieceCartoucheStorage.h"
+#include "oannotationstylespage.h"
 
 #include "def.h"
 #include "FactoryWidgets.h"
@@ -83,6 +84,7 @@ void OInfoBlockEditor::SetupUI()
     m_menuList->addItem(tr("Logo"));
     m_menuList->addItem(tr("Clients"));
     m_menuList->addItem(tr("Collections"));
+    m_menuList->addItem(tr("Annotations"));
     connect(m_menuList, &QListWidget::itemClicked, this, [this](QListWidgetItem *item) {
         const int row = m_menuList->row(item);
         if (row == 0)
@@ -105,6 +107,10 @@ void OInfoBlockEditor::SetupUI()
         {
             ShowCollectionsPage();
         }
+        else if (row == 5)
+        {
+            ShowAnnotationsPage();
+        }
     });
     outer->addWidget(m_menuList);
 
@@ -114,6 +120,7 @@ void OInfoBlockEditor::SetupUI()
     SetupLogosPage();         // index 2
     SetupClientsPage();       // index 3
     SetupCollectionsPage();   // index 4
+    SetupAnnotationsPage();   // index 5
     outer->addWidget(m_stack, 1);
 
     m_menuList->setCurrentRow(1);
@@ -146,6 +153,10 @@ void OInfoBlockEditor::RetranslateUI()
     if (m_menuList->count() > 4)
     {
         m_menuList->item(4)->setText(tr("Collections"));
+    }
+    if (m_menuList->count() > 5)
+    {
+        m_menuList->item(5)->setText(tr("Annotations"));
     }
 
     // Editor page — top bar.
@@ -641,6 +652,19 @@ void OInfoBlockEditor::ShowLogosPage()
     m_logosTree->setCurrentItem(nullptr);
     OnLogoSelected(nullptr);
     m_stack->setCurrentIndex(2);
+}
+
+void OInfoBlockEditor::SetupAnnotationsPage()
+{
+    m_annotationStylesPage = new OAnnotationStylesPage();
+    connect(m_annotationStylesPage, &OAnnotationStylesPage::StatusMessage, this, &OInfoBlockEditor::StatusMessage);
+    m_stack->addWidget(m_annotationStylesPage);  // index 5
+}
+
+void OInfoBlockEditor::ShowAnnotationsPage()
+{
+    m_annotationStylesPage->Show();
+    m_stack->setCurrentIndex(5);
 }
 
 void OInfoBlockEditor::RefreshLogosList()
@@ -1463,6 +1487,10 @@ void OInfoBlockEditor::OpenOnPage(int page)
         case 4:
             m_menuList->setCurrentRow(4);
             ShowCollectionsPage();
+            break;
+        case 5:
+            m_menuList->setCurrentRow(5);
+            ShowAnnotationsPage();
             break;
         default:
             break;

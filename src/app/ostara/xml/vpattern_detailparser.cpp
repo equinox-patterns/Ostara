@@ -36,6 +36,7 @@
 #include "../vmisc/def.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
+#include "../vpatterndb/oannotationdata.h"
 #include "../vpatterndb/oinfoblockdata.h"
 #include "../vpatterndb/vnodedetail.h"
 #include "../vpatterndb/vpiecenode.h"
@@ -137,6 +138,55 @@ auto VPattern::ParsePieceCartoucheBlocks(const QDomElement &domElement) const ->
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VPattern::ParsePieceAnnotations(const QDomElement &domElement) const -> OAnnotationData
+{
+    OAnnotationData annotations;
+    annotations.SetSet(true);
+
+    QList<OAnnotation> list;
+    const QDomNodeList children = domElement.childNodes();
+    QDOM_LOOP(children, i)
+    {
+        const QDomElement element = QDOM_ELEMENT(children, i).toElement();
+        if (element.isNull() || element.tagName() != VToolSeamAllowance::TagAnnotation)
+        {
+            continue;
+        }
+
+        OAnnotation annotation;
+        annotation.templateName = GetParametrEmptyString(element, VAbstractPattern::AttrTemplate);
+        annotation.rotationFormula = GetParametrEmptyString(element, VAbstractPattern::AttrRotation);
+
+        const QDomNodeList annotationChildren = element.childNodes();
+        QDOM_LOOP(annotationChildren, k)
+        {
+            const QDomElement child = QDOM_ELEMENT(annotationChildren, k).toElement();
+            if (child.isNull())
+            {
+                continue;
+            }
+            if (child.tagName() == VToolSeamAllowance::TagText)
+            {
+                annotation.text = child.text();
+            }
+            else if (child.tagName() == VToolSeamAllowance::TagGeom)
+            {
+                annotation.geom.pos =
+                    QPointF(GetParametrDouble(child, AttrMx, QStringLiteral("0.0")),
+                            GetParametrDouble(child, AttrMy, QStringLiteral("0.0")));
+                annotation.geom.boxWidth = GetParametrDouble(child, AttrWidth, QStringLiteral("0.0"));
+                annotation.geom.boxHeight = GetParametrDouble(child, AttrHeight, QStringLiteral("0.0"));
+                annotation.geom.fontScale =
+                    GetParametrDouble(child, VToolSeamAllowance::AttrFontScale, QStringLiteral("1.0"));
+            }
+        }
+        list.append(annotation);
+    }
+    annotations.SetAnnotations(list);
+    return annotations;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief ParseDetailElement parse detail tag.
  * @param domElement tag in xml tree.
@@ -233,7 +283,8 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
                            VToolSeamAllowance::TagPlaceLabels,
                            VAbstractPattern::TagMirrorLine,
                            VToolSeamAllowance::TagSaMarginProperties,
-                           VToolSeamAllowance::TagCartoucheBlocks};
+                           VToolSeamAllowance::TagCartoucheBlocks,
+                           VToolSeamAllowance::TagAnnotations};
 
     QFuture<QVector<VPieceNode>> futurePathV1;
     QFuture<VPiecePath> futurePathV2;
@@ -331,6 +382,9 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
                 }
                 case 8: // VToolSeamAllowance::TagCartoucheBlocks
                     detail.SetInfoBlockData(ParsePieceCartoucheBlocks(element));
+                    break;
+                case 9: // VToolSeamAllowance::TagAnnotations
+                    detail.SetAnnotationData(ParsePieceAnnotations(element));
                     break;
                 default:
                     break;

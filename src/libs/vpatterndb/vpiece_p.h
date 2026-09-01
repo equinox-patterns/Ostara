@@ -36,6 +36,7 @@
 #include "../vmisc/def.h"
 #include "../vmisc/typedef.h"
 #include "floatItemData/vgrainlinedata.h"
+#include "oannotationdata.h"
 #include "oinfoblockdata.h"
 #include "vpiecepath.h"
 
@@ -75,6 +76,9 @@ public:
 
     /** @brief Per-piece information block state (cartouche). */
     OInfoBlockData m_infoBlocks{}; // NOLINT(misc-non-private-member-variables-in-classes)
+
+    /** @brief Per-piece floating annotations. */
+    OAnnotationData m_annotations{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     QString m_formulaWidth{'0'}; // NOLINT(misc-non-private-member-variables-in-classes)
 

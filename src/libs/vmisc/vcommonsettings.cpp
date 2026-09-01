@@ -105,6 +105,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsMeasurementLibrary, ("paths
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCartoucheTemplates, ("paths/cartoucheTemplates"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsLogos, ("paths/logos"_L1))                              // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsClients, ("paths/clients"_L1))                          // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsAnnotationStyles, ("paths/annotationstyles"_L1))        // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCollections, ("paths/collections"_L1))                  // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCollectionsSortAscending, ("infoBlock/collectionsSortAscending"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingMeasurementFavorites, ("paths/measurementFavorites"_L1))     // NOLINT
@@ -561,6 +562,22 @@ void VCommonSettings::SetPathClients(const QString &value) const
 {
     QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
     settings.setValue(*settingPathsClients, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetPathAnnotationStyles() const -> QString
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingPathsAnnotationStyles, QDir::homePath() + QStringLiteral("/Ostara/AnnotationStyles"))
+        .toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetPathAnnotationStyles(const QString &value) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingPathsAnnotationStyles, value);
     settings.sync();
 }
 

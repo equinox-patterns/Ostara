@@ -38,12 +38,14 @@
 #include "../vlayout/vfoldline.h"
 #include "../vwidgets/osamarginhighlights.h"
 #include "../vwidgets/vgrainlineitem.h"
+#include "oannotationdata.h"
 #include "oinfoblockcontent.h"
 #include "vinteractivetool.h"
 
 class DialogTool;
 class VNoBrushScalePathItem;
 class VPatternGraph;
+class OAnnotationItem;
 class OInfoBlockItem;
 
 struct VToolSeamAllowanceInitData : VAbstractToolInitData
@@ -104,6 +106,10 @@ public:
     static const QString TagCartoucheBlocks;
     static const QString TagDispatch;
     static const QString TagBlock;
+    static const QString TagAnnotations;
+    static const QString TagAnnotation;
+    static const QString TagText;
+    static const QString TagGeom;
 
     static const QString AttrSeamAllowance;
     static const QString AttrHideMainPath;
@@ -137,9 +143,12 @@ public:
     static void AddSAMarginProperties(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
     static void AddMirrorLine(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
     static void AddCartoucheBlocks(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
+    static void AddAnnotations(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
 
     /** @brief Registers the app-side content builder (called once at app startup). */
     static void SetInfoBlockContentBuilder(OInfoBlockContentBuilder builder);
+    /** @brief Registers the app-side annotation style resolver (called once at app startup). */
+    static void SetAnnotationStyleResolver(OAnnotationStyleResolver resolver);
 
     void SetName(const QString &name);
     void Move(qreal x, qreal y);
@@ -192,6 +201,9 @@ private slots:
     void UpdateInfoBlocks();
     void SaveMoveInfoBlock(int blockIndex, const QPointF &pos);
     void SaveResizeInfoBlock(int blockIndex, qreal newW, qreal newH, qreal origW, qreal origH);
+    void UpdateAnnotations();
+    void SaveMoveAnnotation(int index, const QPointF &pos);
+    void SaveResizeAnnotation(int index, qreal newW, qreal newH, qreal origW, qreal origH);
     void ToggleInLayout(bool checked);
     void ToggleHideMainPath(bool checked);
     void ToggleForbidFlipping(bool checked);
@@ -227,8 +239,14 @@ private:
     /** @brief On-piece information block items (one per block 1..11), hidden by default. */
     QList<OInfoBlockItem *> m_infoBlockItems;
 
+    /** @brief On-piece annotation items (one per annotation, grown on demand, never recreated). */
+    QList<OAnnotationItem *> m_annotationItems;
+
     /** @brief App-registered content builder (layering bridge). */
     static OInfoBlockContentBuilder s_infoBlockContentBuilder;
+
+    /** @brief App-registered annotation style resolver (layering bridge). */
+    static OAnnotationStyleResolver s_annotationStyleResolver;
 
     bool m_acceptHoverEvents{true};
 
@@ -240,6 +258,9 @@ private:
     VToolSeamAllowanceGeometry m_batchGeometry{};
 
     explicit VToolSeamAllowance(const VToolSeamAllowanceInitData &initData, QGraphicsItem *parent = nullptr);
+
+    auto ResolveAnnotationStyle(const QString &name) const -> OAnnotationRenderStyle;
+    auto EvaluateAnnotationRotation(const QString &formula) const -> qreal;
 
     void AddToFile() override;
     void RefreshDataInFile() override;

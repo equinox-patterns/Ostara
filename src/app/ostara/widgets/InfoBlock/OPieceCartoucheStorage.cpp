@@ -45,6 +45,8 @@
 
 namespace
 {
+quint64 g_annotationStylesVersion{0};  // bumped by SaveAnnotationStyles (resolver cache)
+
 /**
  * @brief VDomDocument subclass bound to the cartouche template XSD, so that
  * SaveDocument validates the serialized content before the atomic commit.
@@ -156,6 +158,12 @@ QString CollectionsMetaPath()
     return OPieceCartoucheStorage::CollectionsDirectory() + QLatin1Char('/') + QStringLiteral("collections.xml");
 }
 
+/// Path of the annotation styles metadata file.
+QString AnnotationStylesMetaPath()
+{
+    return OPieceCartoucheStorage::AnnotationStylesDirectory() + QLatin1Char('/') + QStringLiteral("annotationstyles.xml");
+}
+
 /// Read the collection library metadata (`collections.xml`). Missing or
 /// malformed file → empty list.
 QList<OPieceCartoucheStorage::CollectionEntry> ReadCollectionsMeta()
@@ -195,6 +203,47 @@ QList<OPieceCartoucheStorage::CollectionEntry> ReadCollectionsMeta()
     }
     return entries;
 }
+
+/// Read the annotation styles metadata (`annotationstyles.xml`). Missing or
+/// malformed file → empty list.
+QList<OPieceCartoucheStorage::AnnotationStyleEntry> ReadAnnotationStylesMeta()
+{
+    QList<OPieceCartoucheStorage::AnnotationStyleEntry> entries;
+    QFile file(AnnotationStylesMetaPath());
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        return entries;
+    }
+
+    QDomDocument doc;
+    if (!doc.setContent(&file))
+    {
+        return entries;
+    }
+
+    const QDomElement root = doc.documentElement();
+    if (root.tagName() != QStringLiteral("styles"))
+    {
+        return entries;
+    }
+
+    for (QDomElement el = root.firstChildElement(QStringLiteral("style")); !el.isNull();
+         el = el.nextSiblingElement(QStringLiteral("style")))
+    {
+        OPieceCartoucheStorage::AnnotationStyleEntry entry;
+        entry.name = el.attribute(QStringLiteral("name"));
+        entry.fontFamily = el.firstChildElement(QStringLiteral("fontFamily")).text();
+        entry.fontWeight = el.firstChildElement(QStringLiteral("fontWeight")).text().toInt();
+        entry.fontSize = el.firstChildElement(QStringLiteral("fontSize")).text().toInt();
+        entry.backgroundColor = el.firstChildElement(QStringLiteral("backgroundColor")).text();
+        entry.textColor = el.firstChildElement(QStringLiteral("textColor")).text();
+        if (!entry.name.isEmpty())
+        {
+            entries.append(entry);
+        }
+    }
+    return entries;
+}
 }  // namespace
 
 namespace OPieceCartoucheStorage
@@ -217,6 +266,16 @@ auto ClientsDirectory() -> QString
 auto CollectionsDirectory() -> QString
 {
     return VAbstractApplication::VApp()->Settings()->GetPathCollections();
+}
+
+auto AnnotationStylesDirectory() -> QString
+{
+    return VAbstractApplication::VApp()->Settings()->GetPathAnnotationStyles();
+}
+
+auto AnnotationStylesVersion() -> quint64
+{
+    return g_annotationStylesVersion;
 }
 
 auto LoadLogos() -> QList<LogoEntry>
@@ -648,6 +707,202 @@ auto UpdateCollectionMeta(const QString &id, const QString &name, int year, cons
         entries.append(entry);
     }
     return SaveCollections(entries, error);
+}
+
+auto LoadAnnotationStyles() -> QList<AnnotationStyleEntry>
+{
+    QList<AnnotationStyleEntry> entries = ReadAnnotationStylesMeta();
+    if (entries.isEmpty() && !QFile::exists(AnnotationStylesMetaPath()))
+    {
+        // First launch: the library starts with the built-in Default style so the
+        // combo and the render always have their fallback key.
+        AnnotationStyleEntry def;
+        def.name = QStringLiteral("Default");
+        entries.append(def);
+        QString err;
+        SaveAnnotationStyles(entries, &err);
+    }
+    std::sort(entries.begin(), entries.end(),
+              [](const AnnotationStyleEntry &a, const AnnotationStyleEntry &b) {
+                  return a.name.compare(b.name, Qt::CaseInsensitive) < 0;
+              });
+    return entries;
+}
+
+auto SaveAnnotationStyles(const QList<AnnotationStyleEntry> &styles, QString *error) -> bool
+{
+    QList<AnnotationStyleEntry> out = styles;
+
+    // First save (missing file): pre-install the built-in Default style so the
+    // library is never written without its fallback key.
+    const bool missingFile = !QFile::exists(AnnotationStylesMetaPath());
+    const bool hasDefault =
+        std::any_of(out.cbegin(), out.cend(),
+                    [](const AnnotationStyleEntry &entry) { return entry.name == QStringLiteral("Default"); });
+    if (missingFile && !hasDefault)
+    {
+        AnnotationStyleEntry def;
+        def.name = QStringLiteral("Default");
+        out.prepend(def);
+    }
+
+    QDomDocument doc;
+    QDomElement root = doc.createElement(QStringLiteral("styles"));
+    doc.appendChild(root);
+    for (const AnnotationStyleEntry &entry : out)
+    {
+        QDomElement el = doc.createElement(QStringLiteral("style"));
+        el.setAttribute(QStringLiteral("name"), entry.name);
+
+        // Omission of the null fields (default font / transparent background /
+        // black text) — the read defaults match these predicates.
+        if (!entry.fontFamily.isEmpty())
+        {
+            QDomElement fontFamily = doc.createElement(QStringLiteral("fontFamily"));
+            fontFamily.appendChild(doc.createTextNode(entry.fontFamily));
+            el.appendChild(fontFamily);
+        }
+        if (entry.fontWeight != 0)
+        {
+            QDomElement fontWeight = doc.createElement(QStringLiteral("fontWeight"));
+            fontWeight.appendChild(doc.createTextNode(QString::number(entry.fontWeight)));
+            el.appendChild(fontWeight);
+        }
+        if (entry.fontSize != 0)
+        {
+            QDomElement fontSize = doc.createElement(QStringLiteral("fontSize"));
+            fontSize.appendChild(doc.createTextNode(QString::number(entry.fontSize)));
+            el.appendChild(fontSize);
+        }
+        if (!entry.backgroundColor.isEmpty())
+        {
+            QDomElement backgroundColor = doc.createElement(QStringLiteral("backgroundColor"));
+            backgroundColor.appendChild(doc.createTextNode(entry.backgroundColor));
+            el.appendChild(backgroundColor);
+        }
+        // textColor is omitted when black (#000000) — the render default.
+        const QString textColor = entry.textColor.isEmpty() ? QStringLiteral("#000000") : entry.textColor;
+        if (textColor != QStringLiteral("#000000"))
+        {
+            QDomElement text = doc.createElement(QStringLiteral("textColor"));
+            text.appendChild(doc.createTextNode(textColor));
+            el.appendChild(text);
+        }
+
+        root.appendChild(el);
+    }
+
+    QSaveFile file(AnnotationStylesMetaPath());
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        if (error != nullptr)
+        {
+            *error = file.errorString();
+        }
+        return false;
+    }
+    file.write(doc.toByteArray(2));
+    if (!file.commit())
+    {
+        if (error != nullptr)
+        {
+            *error = file.errorString();
+        }
+        return false;
+    }
+    ++g_annotationStylesVersion;  // invalidate resolver caches
+    return true;
+}
+
+auto AddAnnotationStyle(QString *error) -> QString
+{
+    const QString dir = AnnotationStylesDirectory();
+    if (!QDir().mkpath(dir))
+    {
+        if (error != nullptr)
+        {
+            *error = QStringLiteral("Cannot create the annotation styles folder.");
+        }
+        return {};
+    }
+
+    QList<AnnotationStyleEntry> entries = LoadAnnotationStyles();
+    const QString base = QStringLiteral("New style");
+    QString name = base;
+    int suffix = 2;
+    const auto taken = [&entries](const QString &n) {
+        return std::any_of(entries.cbegin(), entries.cend(),
+                           [&n](const AnnotationStyleEntry &entry) { return entry.name == n; });
+    };
+    while (taken(name))
+    {
+        name = base + QLatin1Char(' ') + QString::number(suffix++);
+    }
+
+    AnnotationStyleEntry entry;
+    entry.name = name;
+    entries.append(entry);
+    if (!SaveAnnotationStyles(entries, error))
+    {
+        return {};
+    }
+    return name;
+}
+
+auto RemoveAnnotationStyle(const QString &name, QString *error) -> bool
+{
+    QList<AnnotationStyleEntry> entries = LoadAnnotationStyles();
+    const qsizetype oldCount = entries.size();
+    entries.erase(std::remove_if(entries.begin(), entries.end(),
+                                 [&name](const AnnotationStyleEntry &entry) { return entry.name == name; }),
+                  entries.end());
+    if (entries.size() != oldCount)
+    {
+        return SaveAnnotationStyles(entries, error);
+    }
+    return true;
+}
+
+auto UpdateAnnotationStyleMeta(const QString &oldName, const QString &newName, const QString &fontFamily,
+                               int fontWeight, int fontSize, const QString &backgroundColor,
+                               const QString &textColor, QString *error) -> bool
+{
+    QList<AnnotationStyleEntry> entries = LoadAnnotationStyles();
+    if (oldName != newName)
+    {
+        // A rename must not collide with an existing key.
+        entries.erase(std::remove_if(entries.begin(), entries.end(),
+                                     [&newName](const AnnotationStyleEntry &entry) { return entry.name == newName; }),
+                      entries.end());
+    }
+
+    bool updated = false;
+    for (AnnotationStyleEntry &entry : entries)
+    {
+        if (entry.name == oldName)
+        {
+            entry.name = newName;
+            entry.fontFamily = fontFamily;
+            entry.fontWeight = fontWeight;
+            entry.fontSize = fontSize;
+            entry.backgroundColor = backgroundColor;
+            entry.textColor = textColor;
+            updated = true;
+            break;
+        }
+    }
+    if (!updated)
+    {
+        AnnotationStyleEntry entry;
+        entry.name = newName;
+        entry.fontFamily = fontFamily;
+        entry.fontWeight = fontWeight;
+        entry.fontSize = fontSize;
+        entry.backgroundColor = backgroundColor;
+        entry.textColor = textColor;
+        entries.append(entry);
+    }
+    return SaveAnnotationStyles(entries, error);
 }
 
 auto ScanDirectory(const QString &dirPath) -> QStringList

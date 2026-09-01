@@ -83,11 +83,6 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
     const OPieceCartoucheOptionField kCut{QStringLiteral("cut"), OPieceCartoucheOptionKind::Cut, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Cut"))};
 
     const QList<OPieceCartoucheOptionField> textFields = {kFontFamily, kFontWeight, kFontSize, kLineSpacing};
-    const OPieceCartoucheOptionField kMultilingual{QStringLiteral("multilingual"),
-                                                   OPieceCartoucheOptionKind::Multilingual,
-                                                   T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Write this information in each language of the block"))};
-    const QList<OPieceCartoucheOptionField> multilingualTextFields = {kMultilingual, kFontFamily, kFontWeight, kFontSize,
-                                                                      kLineSpacing};
     // Axis rename: per-language display aliases of the axis and its values
     // (the title shown above the per-language tabs). Reused by the Measurement
     // section with a per-language name only (no values).
@@ -101,13 +96,13 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
     return {
         MakeSection("patternName",
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Pattern name"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The name of the pattern (set in the pattern toolbar)."), multilingualTextFields),
+                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The name of the pattern (set in the pattern toolbar)."), textFields),
         MakeSection("client",
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Client"),
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The client's name, birth date and email from the document."), textFields),
         MakeSection("pieceName",
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Piece name"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The name of the piece (from the piece options)."), multilingualTextFields),
+                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The name of the piece (from the piece options)."), textFields),
         MakeSection("pieceNumber",
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Piece number"),
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The piece number and its total, e.g. 01 of 10. The total shown here is an "

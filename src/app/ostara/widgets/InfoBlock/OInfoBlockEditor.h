@@ -50,6 +50,7 @@ class OInfoBlockPreview;
 class OInfoBlockSectionEditor;
 class OInfoBlockTemplatesPage;
 class OLogoPreview;
+class OAnnotationStylesPage;
 
 /**
  * @brief Information block editor — the template editing widget.
@@ -72,7 +73,8 @@ public:
     void RetranslateUI();
 
     /** @brief Open the editor directly on the given page.
-     *  0 = Existing templates, 1 = Create new, 2 = Logo, 3 = Clients, 4 = Collections. */
+     *  0 = Existing templates, 1 = Create new, 2 = Logo, 3 = Clients, 4 = Collections,
+     *  5 = Annotations. */
     void OpenOnPage(int page);
 
 public slots:
@@ -96,10 +98,12 @@ private:
     void SetupTemplatesPage();
     void SetupLogosPage();
     void SetupClientsPage();
+    void SetupAnnotationsPage();
     void NewTemplate();
     void ShowTemplatesList();
     void ShowLogosPage();
     void ShowClientsPage();
+    void ShowAnnotationsPage();
     void LoadFile(const QString &filePath);
     void OnAddSection(const QString &typeId);
     void OnAddLogo();
@@ -181,6 +185,9 @@ private:
     OLogoPreview *m_logoPreview{nullptr};
     QList<OPieceCartoucheStorage::LogoEntry> m_logoEntries;
     bool m_updatingLogos{false};
+
+    // Annotation styles page
+    OAnnotationStylesPage *m_annotationStylesPage{nullptr};
 
     // Clients page
     QGroupBox *m_clientEditGroup{nullptr};

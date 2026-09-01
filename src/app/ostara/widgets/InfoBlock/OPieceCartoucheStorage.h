@@ -68,6 +68,19 @@ struct CollectionEntry
     QString description;  ///< free-form description
 };
 
+/// One annotation style of the library: a named style (the name is the stable
+/// key the pieces reference) plus font, background and text colors. All the
+/// data lives in `annotationstyles.xml`.
+struct AnnotationStyleEntry
+{
+    QString name;            ///< stable key, referenced by the pieces
+    QString fontFamily;      ///< font family; empty = default
+    int fontWeight = 0;      ///< weight; 0 = default
+    int fontSize = 0;        ///< size in px; 0 = default
+    QString backgroundColor; ///< hex "#RRGGBB"; empty = transparent
+    QString textColor;       ///< hex; empty = black #000000
+};
+
 /// Default folder from settings (GetPathCartoucheTemplates).
 auto DefaultDirectory() -> QString;
 
@@ -142,6 +155,36 @@ auto RemoveCollection(const QString &id, QString *error = nullptr) -> bool;
 /// false and fills `error` on failure.
 auto UpdateCollectionMeta(const QString &id, const QString &name, int year, const QString &period,
                           const QString &description, QString *error = nullptr) -> bool;
+
+/// Default annotation style library folder from settings (GetPathAnnotationStyles).
+auto AnnotationStylesDirectory() -> QString;
+
+/// List the annotation styles, sorted by name. On a first launch (missing
+/// file) the built-in Default style is pre-installed.
+auto LoadAnnotationStyles() -> QList<AnnotationStyleEntry>;
+
+/// Persist the annotation styles (`annotationstyles.xml`, atomic write).
+/// Returns false and fills `error` on failure.
+auto SaveAnnotationStyles(const QList<AnnotationStyleEntry> &styles, QString *error = nullptr) -> bool;
+
+/// Create a new empty annotation style in the library. Returns its name, or an
+/// empty string on failure (with `error` filled).
+auto AddAnnotationStyle(QString *error = nullptr) -> QString;
+
+/// Remove an annotation style by name. Returns false and fills `error` on
+/// failure.
+auto RemoveAnnotationStyle(const QString &name, QString *error = nullptr) -> bool;
+
+/// Set the fields of one annotation style (renames from `oldName` to `newName`
+/// when they differ; creates the entry if needed). Returns false and fills
+/// `error` on failure.
+auto UpdateAnnotationStyleMeta(const QString &oldName, const QString &newName, const QString &fontFamily,
+                               int fontWeight, int fontSize, const QString &backgroundColor,
+                               const QString &textColor, QString *error = nullptr) -> bool;
+
+/// Monotonic version bumped by every successful SaveAnnotationStyles — lets
+/// callers cache the library and reload only after a write.
+auto AnnotationStylesVersion() -> quint64;
 
 /// List of `.oct` files in the given folder (absolute paths), alphabetical.
 auto ScanDirectory(const QString &dirPath) -> QStringList;

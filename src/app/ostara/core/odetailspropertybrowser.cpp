@@ -143,6 +143,12 @@ void ODetailsPropertyBrowser::ShowBlocksTab()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::ShowAnnotationsTab()
+{
+    m_pieceWidget->ShowAnnotationsTab();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto ODetailsPropertyBrowser::IsSelectingPassmarkPoints() const -> bool
 {
     return m_pieceWidget->IsSelectingPassmarkPoints();
