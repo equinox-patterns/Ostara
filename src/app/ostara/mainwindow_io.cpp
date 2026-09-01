@@ -508,6 +508,10 @@ void MainWindow::Clear()
     m_sceneDraw->clear();
     qCDebug(vMainWindow, "Draw scene cleared.");
     m_sceneDraw->SetAcceptDrop(false);
+    // The group holders live in the details scene: forget them BEFORE the scene destroys
+    // them, so RefreshGroupHolders (fired by the undo-stack clear below) never touches a
+    // dangling holder during teardown (use-after-free, SIGSEGV in QGraphicsItem::setPos).
+    m_groupHolders.clear();
     m_sceneDetails->clear();
     qCDebug(vMainWindow, "Details scene cleared.");
     ArrowTool(true);
