@@ -840,15 +840,19 @@ void MainWindow::InitDocksContain()
     // Owns dock content widgets, per-dock structure, title bars and toggle actions.
     m_dockManager->init(pattern, doc);
 
-    // Re-apply group member offsets after load (Val Fork bug: ApplyGroupNodeAlignments
-    // was never called). A shared point yields zero offsets in Ostara, but the mechanism
-    // must be correct for any stored offset.
-    ApplyGroupNodeAlignments();
+    // At construction no pattern is loaded yet, so this refresh is a no-op; the holders are
+    // (re)built on every CheckLayout once the pieces' geometry is applied.
     RefreshGroupHolders();
 
     // Keep the group holders in sync with any undo/redo (Link, Unlink, group edits).
     connect(VAbstractApplication::VApp()->getUndoStack(), &QUndoStack::indexChanged, this,
             [this](int) { RefreshGroupHolders(); });
+
+    // The pieces' geometry (positions) is applied asynchronously after a parse (debounce timer,
+    // and only in Modeling mode), so holders built earlier use members still at their default
+    // position — their frames would be wrong and scatter the group's children. Rebuild them from
+    // the final geometry on every CheckLayout (emitted at the end of the geometry application).
+    connect(doc, &VAbstractPattern::CheckLayout, this, &MainWindow::RefreshGroupHolders);
 
     // Hide the group holders while the Link tool is running so members stay clickable.
     connect(m_dockManager->detailsWidget(), &VWidgetDetails::GroupToolStateChanged, this,
@@ -1105,33 +1109,6 @@ void MainWindow::InitDocksContain()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ApplyGroupNodeAlignments()
-{
-    const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
-    if (groups == nullptr)
-    {
-        return;
-    }
-
-    for (auto git = groups->cbegin(); git != groups->cend(); ++git)
-    {
-        const OPieceGroup &group = git.value();
-        for (auto it = group.memberOffsets.cbegin(); it != group.memberOffsets.cend(); ++it)
-        {
-            if (qFuzzyIsNull(it.value().x()) && qFuzzyIsNull(it.value().y()))
-            {
-                continue;
-            }
-            auto *memberTool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key()));
-            if (memberTool != nullptr)
-            {
-                memberTool->setPos(memberTool->pos() + it.value());
-            }
-        }
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::RefreshGroupHolders()
 {
     const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
@@ -1169,6 +1146,10 @@ void MainWindow::RefreshGroupHolders()
                     [this](quint32 groupId)
             {
                 m_dockManager->detailsOptions()->ShowGroupOptions(groupId, pattern, doc);
+                // Like a piece (SelectedDetail → SelectDetail), a canvas click on the group
+                // must activate the group node in the pieces tree — it never was, so the
+                // group was never visually active (unlike a selected piece).
+                m_dockManager->detailsWidget()->SelectDetail(groupId);
             });
             m_groupHolders.insert(git.key(), holder);
         }

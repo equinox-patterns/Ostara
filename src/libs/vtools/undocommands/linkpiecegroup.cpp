@@ -28,6 +28,9 @@
 
 #include <QDomElement>
 
+#include "../ifc/ifcdef.h"
+#include "../vmisc/vabstractvalapplication.h"
+
 LinkPieceGroup::LinkPieceGroup(const OPieceGroup &group, VAbstractPattern *doc, VContainer *data,
                                QUndoCommand *parent)
   : VUndoCommand(doc, parent), m_group(group), m_data(data)
@@ -47,7 +50,8 @@ void LinkPieceGroup::undo()
     QDomElement rootElement = Doc()->documentElement();
     VToolSeamAllowance::AddPieceGroups(Doc(), rootElement, m_data);
 
-    // Restore the members' original position (Mx/My) and their own children.
+    // Restore the members' original position (Mx/My) and their own children: redo baked the
+    // superimposed position into Mx/My, so move each member back by its stored offset.
     for (quint32 pid : m_group.pieceIds)
     {
         try
@@ -56,9 +60,17 @@ void LinkPieceGroup::undo()
             if (tool != nullptr)
             {
                 const VPiece piece = m_data->GetPiece(pid);
-                tool->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
-                tool->setPos(QPointF(piece.GetMx(), piece.GetMy()));
-                tool->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+                const QPointF offset = m_group.memberOffsets.value(pid, QPointF());
+                const QPointF original(piece.GetMx() - offset.x(), piece.GetMy() - offset.y());
+                QDomElement domElement = Doc()->FindElementById(pid, VAbstractPattern::TagDetail);
+                if (domElement.isElement())
+                {
+                    Doc()->SetAttribute(domElement, AttrMx,
+                                        QString().setNum(VAbstractValApplication::VApp()->fromPixel(original.x())));
+                    Doc()->SetAttribute(domElement, AttrMy,
+                                        QString().setNum(VAbstractValApplication::VApp()->fromPixel(original.y())));
+                }
+                tool->Move(original.x(), original.y());
                 tool->RefreshGroupedChildren();
             }
         }
@@ -84,10 +96,11 @@ void LinkPieceGroup::redo()
 
     m_data->AddPieceGroup(m_group);
 
-    // Val Fork alignment (vwidgetdetails.cpp:1234-1238): superimpose the common point by
-    // translating each member whose node is not already at the reference position. The raw
-    // setPos keeps Mx/My untouched — persistence goes through memberOffsets +
-    // ApplyGroupNodeAlignments on load.
+    // Superimpose the common point by translating each member whose node is not already at the
+    // reference position (Val Fork vwidgetdetails.cpp:1234-1238). The superimposed position is
+    // BAKED into Mx/My (DOM + container + scene), like a piece: the file stores the members'
+    // actual position, so reload needs no alignment and a later group move never leaves a stale
+    // offset behind. memberOffsets keeps the delta for undo.
     for (quint32 pid : m_group.pieceIds)
     {
         const QPointF offset = m_group.memberOffsets.value(pid, QPointF());
@@ -100,9 +113,16 @@ void LinkPieceGroup::redo()
         {
             continue;
         }
-        tool->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
-        tool->setPos(tool->pos() + offset);
-        tool->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+        const QPointF superimposed = tool->pos() + offset;
+        QDomElement domElement = Doc()->FindElementById(pid, VAbstractPattern::TagDetail);
+        if (domElement.isElement())
+        {
+            Doc()->SetAttribute(domElement, AttrMx,
+                                QString().setNum(VAbstractValApplication::VApp()->fromPixel(superimposed.x())));
+            Doc()->SetAttribute(domElement, AttrMy,
+                                QString().setNum(VAbstractValApplication::VApp()->fromPixel(superimposed.y())));
+        }
+        tool->Move(superimposed.x(), superimposed.y());
     }
 
     QDomElement rootElement = Doc()->documentElement();

@@ -70,6 +70,10 @@ public:
 
     void Clear();
     void Show(quint32 groupId, VContainer *data, VAbstractPattern *doc);
+    /** @brief True if this group is the one currently displayed. The canvas holder re-emits
+     *  Clicked on the press that starts a drag, so the property browser skips a redundant
+     *  re-population that would flicker the lists once. */
+    auto IsShowing(quint32 groupId) const -> bool { return m_groupId == groupId; }
 
     void OnNodeSelectedForFoldLine(quint32 nodeId);
     void CancelFoldLineSelection();

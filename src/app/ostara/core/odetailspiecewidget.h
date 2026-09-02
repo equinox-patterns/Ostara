@@ -43,6 +43,7 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QTabWidget;
+class QTimer;
 class OBlockConfigWidget;
 class OAnnotationsConfigWidget;
 class ODetailsFoldLineWidget;
@@ -153,6 +154,11 @@ private:
     QTabWidget *m_infoSubTabs{nullptr}; // Information tab placeholder (content to be defined)
 
     QPointer<VToolSeamAllowance> m_currentTool;
+    // Debounced tab re-population: a drag pushes a MovePiece per mouse move and each push fires
+    // indexChanged, so rebuilding the tabs immediately flickers them. The single-shot collapses
+    // the burst into one refresh once the interaction settles.
+    QTimer *m_repopulateTimer{nullptr};
+    QPointer<VToolSeamAllowance> m_repopulateTool;
     quint32 m_pieceId{0};
     bool m_updating{false};
     VPiece m_pendingDet{};

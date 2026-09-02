@@ -702,7 +702,7 @@ void VPattern::ParsePieceGroups(const QDomElement &domElement)
                 OPieceGroup group;
                 group.id = GetParametrId(groupElement);
                 data->UpdateId(group.id);
-                group.name = GetParametrString(groupElement, VAbstractPattern::AttrName);
+                group.name = GetParametrEmptyString(groupElement, VAbstractPattern::AttrName);
                 group.alignH = GetParametrInt(groupElement, AttrGradedAlignH, QStringLiteral("2"));
                 group.alignV = GetParametrInt(groupElement, AttrGradedAlignV, QStringLiteral("2"));
 
@@ -714,7 +714,7 @@ void VPattern::ParsePieceGroups(const QDomElement &domElement)
                     GetParametrBool(groupElement, AttrCutInterfacingOnFold, QStringLiteral("false"));
                 group.m_cutLiningQty = GetParametrInt(groupElement, AttrCutLiningQty, QChar('0'));
                 group.m_cutLiningOnFold = GetParametrBool(groupElement, AttrCutLiningOnFold, QStringLiteral("false"));
-                group.m_freeText = GetParametrString(groupElement, AttrFreeText);
+                group.m_freeText = GetParametrEmptyString(groupElement, AttrFreeText);
 
                 QDomNode memberNode = groupElement.firstChild();
                 while (not memberNode.isNull())
@@ -774,11 +774,11 @@ void VPattern::ParsePieceGroups(const QDomElement &domElement)
                                 GetParametrBool(childElement, VAbstractPattern::AttrFoldLineManualCenter,
                                                 QStringLiteral("false"));
                             group.m_formulaFoldHeight =
-                                GetParametrString(childElement, VAbstractPattern::AttrFoldLineHeightFormula);
+                                GetParametrEmptyString(childElement, VAbstractPattern::AttrFoldLineHeightFormula);
                             group.m_formulaFoldWidth =
-                                GetParametrString(childElement, VAbstractPattern::AttrFoldLineWidthFormula);
+                                GetParametrEmptyString(childElement, VAbstractPattern::AttrFoldLineWidthFormula);
                             group.m_formulaFoldCenter =
-                                GetParametrString(childElement, VAbstractPattern::AttrFoldLineCenterFormula);
+                                GetParametrEmptyString(childElement, VAbstractPattern::AttrFoldLineCenterFormula);
                         }
                     }
                     memberNode = memberNode.nextSibling();

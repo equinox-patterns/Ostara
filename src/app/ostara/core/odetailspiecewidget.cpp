@@ -136,6 +136,52 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
     auto *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
+    // Debounced tab re-population (see the indexChanged connect in ConnectControls): a drag
+    // pushes a MovePiece per mouse move and each push fires indexChanged, so rebuilding the tabs
+    // immediately would flicker their lists. The single-shot collapses the burst into one refresh
+    // once the interaction settles, while keeping undo/redo updates prompt.
+    m_repopulateTimer = new QTimer(this);
+    m_repopulateTimer->setSingleShot(true);
+    m_repopulateTimer->setInterval(100);
+    connect(m_repopulateTimer, &QTimer::timeout, this, [this]()
+    {
+        if (!m_repopulateTool)
+        {
+            // The captured tool died. Clear the stale page only when nothing else is selected;
+            // a replacement tool already repopulated it.
+            if (!m_currentTool)
+            {
+                Clear();
+            }
+            return;
+        }
+        if (m_repopulateTool != m_currentTool)
+        {
+            // The selection moved to another tool: the current page is up to date.
+            return;
+        }
+        const QPointer<VToolSeamAllowance> currentTool = m_repopulateTool;
+        if (not currentTool->getData()->DataPieces()->contains(currentTool->getId()))
+        {
+            // The piece was deleted: nothing to refresh.
+            return;
+        }
+        const VPiece detail = currentTool->getData()->GetPiece(currentTool->getId());
+        m_pendingDet = detail;
+        m_pieceInfoWidget->Show(detail, currentTool->getData());
+        m_grainlineWidget->Show(detail.GetGrainlineGeometry(),
+                                [this, detail, currentTool]() -> std::optional<QPointF>
+        {
+            // detail captured by value: the provider outlives this lambda, so a reference would
+            // dangle and crash on the next grainline activation.
+            return GrainlineCenter(detail, currentTool->getData());
+        });
+        m_foldlineWidget->Show(detail);
+        m_saWidget->RefreshList(detail);
+        m_blockConfigWidget->Show(detail, currentTool->getData());
+        m_annotationsConfigWidget->Show(detail, currentTool->getData());
+    });
+
     m_tabWidget = new QTabWidget();
     m_tabWidget->setObjectName(QStringLiteral("detailsOptionsTabWidget"));
 
@@ -399,48 +445,16 @@ void ODetailsPieceWidget::ConnectControls()
     });
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::ClearHighlight, this, &ODetailsPieceWidget::ClearHighlight);
 
-    // Re-populate the tabs after undo/redo. Deferred via singleShot to avoid re-entrancy
-    // while CommitPending() is mid-flight (indexChanged fires synchronously during push).
+    // Re-populate the tabs after undo/redo, debounced: a drag pushes a MovePiece per mouse move
+    // (each fires indexChanged), so rebuilding immediately would flicker the lists; the timer
+    // collapses the burst into one refresh once the interaction settles. The deferred run also
+    // avoids re-entrancy while CommitPending() is mid-flight (indexChanged fires synchronously
+    // during push). The tool is snapshotted into m_repopulateTool at schedule time; the timeout
+    // lambda (in the constructor) re-checks it against m_currentTool.
     connect(VAbstractApplication::VApp()->getUndoStack(), &QUndoStack::indexChanged, this, [this](int)
     {
-        // Snapshot the tool as a QPointer at schedule time (still valid here): if the
-        // tool is destroyed before the deferred lambda runs, the pointer auto-nulls.
-        const QPointer<VToolSeamAllowance> currentTool = m_currentTool;
-        QTimer::singleShot(0, this, [this, currentTool]()
-        {
-            if (!currentTool)
-            {
-                // The captured tool died. Clear the stale page only when nothing
-                // else is selected; a replacement tool already repopulated it.
-                if (!m_currentTool)
-                {
-                    Clear();
-                }
-                return;
-            }
-            if (currentTool != m_currentTool)
-            {
-                // The selection moved to another tool: the current page is up to date.
-                return;
-            }
-            if (not currentTool->getData()->DataPieces()->contains(currentTool->getId()))
-            {
-                // The piece was deleted: nothing to refresh.
-                return;
-            }
-            const VPiece detail = currentTool->getData()->GetPiece(currentTool->getId());
-            m_pendingDet = detail;
-            m_pieceInfoWidget->Show(detail, currentTool->getData());
-            m_grainlineWidget->Show(detail.GetGrainlineGeometry(),
-                                    [this, &detail, currentTool]() -> std::optional<QPointF>
-            {
-                return GrainlineCenter(detail, currentTool->getData());
-            });
-            m_foldlineWidget->Show(detail);
-            m_saWidget->RefreshList(detail);
-            m_blockConfigWidget->Show(detail, currentTool->getData());
-            m_annotationsConfigWidget->Show(detail, currentTool->getData());
-        });
+        m_repopulateTool = m_currentTool;
+        m_repopulateTimer->start();
     });
 
     // ── General tab connections ──────────────────────────────────
@@ -624,8 +638,10 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
 
     // ── Grainline tab ────────────────────────────────────────────
     m_grainlineWidget->Show(detail.GetGrainlineGeometry(),
-                            [this, &detail, tool]() -> std::optional<QPointF>
+                            [this, detail, tool]() -> std::optional<QPointF>
     {
+        // detail captured by value: the provider outlives this lambda, so a
+        // reference would dangle and crash on the next grainline activation.
         return GrainlineCenter(detail, tool->getData());
     });
     m_foldlineWidget->Show(detail);

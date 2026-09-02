@@ -104,6 +104,12 @@ void MainWindow::FullParseFile()
 
     m_dockManager->toolOptions()->ClearPropertyBrowser();
 
+    // The full reparse below clears and rebuilds the details scene (PrepareForParse →
+    // sceneDetail->clear()), which destroys the group holders. Forget them before the teardown
+    // so RefreshGroupHolders (fired by CheckLayout after the geometry is applied) never touches
+    // a dangling holder.
+    m_groupHolders.clear();
+
     if (not FullParsePattern())
     {
         return;
@@ -142,6 +148,10 @@ void MainWindow::FullParseFile()
 
     SetEnableTool(m_comboBoxDraws->count() > 0);
     m_dockManager->detailsWidget()->UpdateList();
+    // The group holders are NOT built here: a full parse defers the pieces' geometry refresh
+    // (debounce timer, Modeling mode only), so members are still at their default position.
+    // CheckLayout (emitted when the geometry is applied) → RefreshGroupHolders rebuilds them
+    // from the final geometry, with the members re-superimposed first.
 
     VMainGraphicsView::NewSceneRect(m_sceneDraw, VAbstractValApplication::VApp()->getSceneView());
     VMainGraphicsView::NewSceneRect(m_sceneDetails, VAbstractValApplication::VApp()->getSceneView());

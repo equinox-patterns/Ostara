@@ -143,6 +143,12 @@ void ODetailsPropertyBrowser::ShowPieceOptions(VToolSeamAllowance *tool)
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPropertyBrowser::ShowGroupOptions(quint32 groupId, VContainer *data, VAbstractPattern *doc)
 {
+    // The canvas holder re-emits Clicked on the press that starts a drag. Re-populating the same
+    // group would rebuild its lists and flicker them once — skip when it is already displayed.
+    if (m_groupWidget->IsShowing(groupId) && m_stack->currentWidget() == m_groupWidget)
+    {
+        return;
+    }
     m_groupWidget->Show(groupId, data, doc);
     m_stack->setCurrentWidget(m_groupWidget);
 }

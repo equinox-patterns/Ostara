@@ -366,6 +366,7 @@ void OPieceGroupHolderItem::CommitGroup(std::function<void(OPieceGroup &)> func)
 //---------------------------------------------------------------------------------------------------------------------
 void OPieceGroupHolderItem::ResetChildren(QGraphicsItem *pItem)
 {
+    auto *pGLI = qgraphicsitem_cast<VGrainlineItem *>(pItem);
     OInfoBlockItem *pBlock = nullptr;
     for (OInfoBlockItem *blockItem : m_blockItems)
     {
@@ -384,6 +385,12 @@ void OPieceGroupHolderItem::ResetChildren(QGraphicsItem *pItem)
             break;
         }
     }
+
+    // Only the clicked grainline keeps its editing handles (mirror of the piece).
+    if (pGLI != m_grainlineItem && m_grainlineItem->isVisible())
+    {
+        m_grainlineItem->Reset();
+    }
     for (OInfoBlockItem *blockItem : m_blockItems)
     {
         blockItem->SetActive(blockItem == pBlock);
@@ -392,7 +399,7 @@ void OPieceGroupHolderItem::ResetChildren(QGraphicsItem *pItem)
     {
         annotationItem->SetActive(annotationItem == pAnnotation);
     }
-    if (pBlock != nullptr || pAnnotation != nullptr)
+    if (pGLI != nullptr || pBlock != nullptr || pAnnotation != nullptr)
     {
         emit Clicked(m_groupId);  // selecting a group child selects the group (like a piece)
     }
@@ -492,9 +499,7 @@ void OPieceGroupHolderItem::OnAnnotationMoved(int index, const QPointF &pos)
 //---------------------------------------------------------------------------------------------------------------------
 void OPieceGroupHolderItem::OnAnnotationResized(int index, qreal newW, qreal newH, qreal origW, qreal origH)
 {
-    Q_UNUSED(origW)
-    Q_UNUSED(origH)
-    CommitGroup([this, index, newW, newH](OPieceGroup &group)
+    CommitGroup([this, index, newW, newH, origW, origH](OPieceGroup &group)
     {
         QList<OAnnotation> annotations = group.m_annotations.Annotations();
         if (index < 0 || index >= annotations.size())
@@ -504,6 +509,15 @@ void OPieceGroupHolderItem::OnAnnotationResized(int index, qreal newW, qreal new
         annotations[index].geom.pos = m_annotationItems.at(index)->pos();
         annotations[index].geom.boxWidth = newW;
         annotations[index].geom.boxHeight = newH;
+        // A corner resize scales the content too; an edge resize only grows the box
+        // (the two ratios match only for a proportional corner scale) — mirror
+        // VToolSeamAllowance::SaveResizeAnnotation.
+        const qreal rx = newW / origW;
+        const qreal ry = newH / origH;
+        if (qFuzzyCompare(rx, ry))
+        {
+            annotations[index].geom.fontScale *= rx;
+        }
         group.m_annotations.SetAnnotations(annotations);
         group.m_annotations.SetSet(true);
     });

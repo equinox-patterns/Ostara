@@ -453,8 +453,8 @@ private:
     void ZoomFirstShow();
 
     void InitDocksContain();
-    void ApplyGroupNodeAlignments();
     void RefreshGroupHolders();
+
     void SetAllGroupHoldersVisible(bool visible);
     auto OpenNewValentina(const QString &fileName = QString()) const -> bool;
     void FileClosedCorrect();
