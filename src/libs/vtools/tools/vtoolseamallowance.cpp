@@ -1126,6 +1126,8 @@ void VToolSeamAllowance::AddPieceGroups(VAbstractPattern *doc, QDomElement &domE
                                          [](int align) noexcept { return align == 2; });
         doc->SetAttributeOrRemoveIf<int>(groupElement, AttrGradedAlignV, group.alignV,
                                          [](int align) noexcept { return align == 2; });
+        doc->SetAttributeOrRemoveIf<bool>(groupElement, AttrInLayout, group.IsInLayout(),
+                                          [](bool inLayout) noexcept { return inLayout; });
         doc->SetAttributeOrRemoveIf<uint>(groupElement, AttrPieceNumber, group.m_pieceNumber,
                                           [](uint number) noexcept { return number == 0; });
         doc->SetAttributeOrRemoveIf<int>(groupElement, AttrCutFabricQty, group.m_cutFabricQty,
@@ -1183,6 +1185,8 @@ void VToolSeamAllowance::AddPieceGroups(VAbstractPattern *doc, QDomElement &domE
         doc->SetAttributeOrRemoveIf<QString>(
             mirrorEl, VAbstractPattern::AttrFoldLineCenterFormula, group.m_formulaFoldCenter,
             [group](const QString &center) noexcept { return not group.m_manualFoldCenter || center.isEmpty(); });
+        doc->SetAttributeOrRemoveIf<quint32>(mirrorEl, QStringLiteral("foldLineMember"), group.m_foldLineMemberId,
+                                             [](quint32 id) noexcept { return id == NULL_ID; });
         groupElement.appendChild(mirrorEl);
 
         pieceGroupsEl.appendChild(groupElement);
@@ -3389,15 +3393,23 @@ void VToolSeamAllowance::UpdateFoldLine(const VFoldLine &foldLine)
 {
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
 
-    // A group member's own fold line / symmetry line is masked: the group carries the fold
-    // formulas and the chosen member renders the common line.
-    if (VAbstractTool::data.GetPieceGroupId(m_id) != NULL_ID)
+    // A group member's OWN fold line / symmetry line is masked: the group carries the fold
+    // formulas and the chosen member (m_foldLineMemberId) renders the common line like a
+    // normal piece — its foldline must NOT be masked.
+    const quint32 groupId = VAbstractTool::data.GetPieceGroupId(m_id);
+    if (groupId != NULL_ID)
     {
-        m_foldLineLabelText->setVisible(false);
-        m_foldLineMark->setPath(QPainterPath());
-        m_foldLineLabel->setPath(QPainterPath());
-        m_mirrorLine->setPath(QPainterPath());
-        return;
+        const auto *groups = VAbstractTool::data.DataPieceGroups();
+        const bool isGroupFoldCarrier = groups != nullptr && groups->contains(groupId)
+                                        && groups->value(groupId).m_foldLineMemberId == m_id;
+        if (!isGroupFoldCarrier)
+        {
+            m_foldLineLabelText->setVisible(false);
+            m_foldLineMark->setPath(QPainterPath());
+            m_foldLineLabel->setPath(QPainterPath());
+            m_mirrorLine->setPath(QPainterPath());
+            return;
+        }
     }
 
     if (detail.GetFoldLineType() == FoldLineType::None || (detail.IsShowFullPiece() && !detail.IsShowMirrorLine()))

@@ -1014,11 +1014,13 @@
                         <xs:attribute name="manualHeight" type="xs:boolean"/>
                         <xs:attribute name="manualWidth" type="xs:boolean"/>
                         <xs:attribute name="manualCenter" type="xs:boolean"/>
+                        <xs:attribute name="foldLineMember" type="xs:unsignedInt"/>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
                   <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
                   <xs:attribute name="name" type="xs:string"/>
+                  <xs:attribute name="inLayout" type="xs:boolean"/>
                   <xs:attribute name="gradedAlignH" type="xs:int"/>
                   <xs:attribute name="gradedAlignV" type="xs:int"/>
                   <xs:attribute name="pieceNumber" type="xs:unsignedInt"/>

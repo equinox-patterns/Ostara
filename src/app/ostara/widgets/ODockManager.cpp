@@ -342,7 +342,7 @@ void ODockManager::applyModeDocks(Draw mode)
         case Draw::Modeling:
             m_ui->dockWidgetLayoutPages->setVisible(false);
             m_groupsStack->setCurrentIndex(1); // Details
-            m_ui->dockWidgetGroups->setWindowTitle(tr("Details"));
+            m_ui->dockWidgetGroups->setWindowTitle(tr("Pieces"));
             m_ui->dockWidgetGroups->setVisible(m_groupsActive);
             m_ui->dockWidgetGroups->setToolTip(tr("Show which details will go in layout"));
             m_optionsStack->setCurrentIndex(1); // details options
@@ -384,7 +384,7 @@ void ODockManager::retranslate()
             m_ui->dockWidgetOptions->setWindowTitle(tr("Options"));
             break;
         case Draw::Modeling:
-            m_ui->dockWidgetGroups->setWindowTitle(tr("Details"));
+            m_ui->dockWidgetGroups->setWindowTitle(tr("Pieces"));
             m_ui->dockWidgetGroups->setToolTip(tr("Show which details will go in layout"));
             m_ui->dockWidgetOptions->setWindowTitle(tr("Options"));
             break;

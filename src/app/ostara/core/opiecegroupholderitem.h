@@ -57,6 +57,13 @@ public:
 
     auto type() const -> int override { return UserType + 90; }
     void Refresh(const OPieceGroup &group, VAbstractPattern *doc, VContainer *data);
+    /** @brief Toggle mouse interaction on the holder and its children. During the Link tool the
+     *  holders stay visible (their children must not vanish) but become click-transparent so the
+     *  clicks reach the member pieces beneath (which the workflow rejects, being already grouped). */
+    void SetInteractive(bool interactive);
+    /** @brief Mark the group selected on the canvas — draws the selection block (dashed rect +
+     *  handles), like a selected piece. */
+    void SetSelected(bool selected);
 
 signals:
     void Clicked(quint32 groupId);
@@ -91,6 +98,7 @@ private:
     Q_DISABLE_COPY_MOVE(OPieceGroupHolderItem) // NOLINT
 
     quint32 m_groupId{NULL_ID};
+    bool m_selected{false};
     /** @brief Drag state: the holder moves the whole group (Val Fork master-piece behaviour). */
     QPointF m_pressScenePos;
     bool m_dragging{false};

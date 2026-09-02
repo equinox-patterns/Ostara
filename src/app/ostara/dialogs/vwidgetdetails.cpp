@@ -29,6 +29,7 @@
 #include "vwidgetdetails.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vmisc/vabstractapplication.h"
+#include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vtools/tools/nodeDetails/vnodepoint.h"
@@ -37,10 +38,12 @@
 #include "../vtools/undocommands/linkpiecegroup.h"
 #include "../vtools/undocommands/renamepiece.h"
 #include "../vtools/undocommands/togglepiecestate.h"
+#include "../vtools/undocommands/togglegroupinlayout.h"
 #include "../vtools/undocommands/unlinkpiecegroup.h"
 #include "opiecegroupdialog.h"
 #include "ui_vwidgetdetails.h"
 
+#include <QIcon>
 #include <QMenu>
 #include <QMessageBox>
 #include <QTimer>
@@ -72,6 +75,15 @@ auto FindNodeScenePos(quint32 nodeId) -> QPointF
         return nodeTool->scenePos();
     }
     return QPointF();
+}
+
+// In-layout indicator icons of the Details tree: the library `check` / `x` icons, theme-aware.
+auto LayoutIcon(bool inLayout) -> QIcon
+{
+    const bool dark = VAbstractApplication::VApp()->Settings()->GetThemeMode() == VThemeMode::Dark;
+    const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
+    const QString name = inLayout ? QStringLiteral("check") : QStringLiteral("x");
+    return QIcon(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, name));
 }
 
 // Resolve a node id to its construction source. Two pieces sharing a construction point each
@@ -135,8 +147,16 @@ VWidgetDetails::VWidgetDetails(VContainer *data, VAbstractPattern *doc, QWidget 
     // Two columns: icon (InLayout) in 0, piece name in 1. Without an explicit column count
     // the tree keeps a single column and the name column never renders.
     ui->treeWidget->setColumnCount(2);
+    // The in-layout icon column fits its icon tightly so it reads as part of the name row,
+    // not as an extra editable column.
+    ui->treeWidget->header()->setSectionResizeMode(PieceColumn::InLayout, QHeaderView::ResizeToContents);
 
     ui->checkBoxHideNotInLayout->setChecked(false);
+
+    // The Link button stays visually pressed (checked) for the whole group workflow; the
+    // checked state is driven by SetGroupToolState.
+    ui->linkPiecesButton->setCheckable(true);
+    ui->linkPiecesButton->setChecked(false);
 
     FillTree();
 
@@ -231,7 +251,16 @@ void VWidgetDetails::ItemClicked(QTreeWidgetItem *item, int column)
 
     if (type == QLatin1String(kGroupType))
     {
-        SelectGroup(id);
+        // Clicking the in-layout icon toggles the group's state (like a piece); clicking the
+        // name opens the group's property browser.
+        if (column == PieceColumn::InLayout)
+        {
+            ToggleGroupInLayout(id);
+        }
+        else
+        {
+            SelectGroup(id);
+        }
         return;
     }
 
@@ -284,38 +313,6 @@ void VWidgetDetails::FillTree()
 
     QSet<quint32> groupedPieceIds;
 
-    const auto addChildRows = [](QTreeWidgetItem *parent, const VGrainlineData &grainline, const OInfoBlockData &info,
-                                 const OAnnotationData &annotations)
-    {
-        if (grainline.IsEnabled())
-        {
-            auto *item = new QTreeWidgetItem();
-            item->setText(PieceColumn::PieceName, QObject::tr("Grainline"));
-            item->setIcon(PieceColumn::InLayout, FromTheme(VThemeIcon::GtkOk));
-            item->setData(0, kTypeRole, QStringLiteral("grainline"));
-            parent->addChild(item);
-        }
-        if (info.IsSet())
-        {
-            auto *item = new QTreeWidgetItem();
-            item->setText(PieceColumn::PieceName, QObject::tr("Cartouche"));
-            item->setIcon(PieceColumn::InLayout, FromTheme(VThemeIcon::GtkOk));
-            item->setData(0, kTypeRole, QStringLiteral("cartouche"));
-            parent->addChild(item);
-        }
-        for (const OAnnotation &annotation : annotations.Annotations())
-        {
-            if (annotation.text.isEmpty())
-            {
-                continue;
-            }
-            auto *item = new QTreeWidgetItem();
-            item->setText(PieceColumn::PieceName, annotation.text.left(24));
-            item->setData(0, kTypeRole, QStringLiteral("annotation"));
-            parent->addChild(item);
-        }
-    };
-
     // Group items first — group top-level, members as children (without their own children).
     if (groups != nullptr && not groups->isEmpty())
     {
@@ -325,10 +322,10 @@ void VWidgetDetails::FillTree()
 
             auto *groupItem = new QTreeWidgetItem();
             groupItem->setText(PieceColumn::PieceName, group.name);
+            groupItem->setIcon(PieceColumn::InLayout, LayoutIcon(group.m_inLayout));
             groupItem->setData(0, kIdRole, git.key());
             groupItem->setData(0, kTypeRole, QLatin1String(kGroupType));
-
-            addChildRows(groupItem, group.m_glGrainline, group.m_infoBlocks, group.m_annotations);
+            groupItem->setData(0, kTreeInLayoutRole, group.m_inLayout);
 
             for (quint32 pieceId : group.pieceIds)
             {
@@ -341,9 +338,10 @@ void VWidgetDetails::FillTree()
                     pieceItem->setText(PieceColumn::PieceName,
                                        det.GetName().isEmpty() ? tr("Unnamed") : det.GetName());
                     pieceItem->setIcon(PieceColumn::InLayout,
-                                       FromTheme(det.IsInLayout() ? VThemeIcon::GtkOk : VThemeIcon::GtkNo));
+                                       LayoutIcon(det.IsInLayout()));
                     pieceItem->setData(0, kIdRole, pieceId);
                     pieceItem->setData(0, kTypeRole, QLatin1String(kPieceType));
+                    pieceItem->setData(0, kTreeInLayoutRole, det.IsInLayout());
 
                     // Member pieces hide their own children (preserved for unlink).
                     groupItem->addChild(pieceItem);
@@ -366,12 +364,11 @@ void VWidgetDetails::FillTree()
             const VPiece det = it.value();
             auto *pieceItem = new QTreeWidgetItem();
             pieceItem->setText(PieceColumn::PieceName, det.GetName().isEmpty() ? tr("Unnamed") : det.GetName());
-            pieceItem->setIcon(PieceColumn::InLayout, FromTheme(det.IsInLayout() ? VThemeIcon::GtkOk : VThemeIcon::GtkNo));
+            pieceItem->setIcon(PieceColumn::InLayout, LayoutIcon(det.IsInLayout()));
             pieceItem->setData(0, kIdRole, it.key());
             pieceItem->setData(0, kTypeRole, QLatin1String(kPieceType));
+            pieceItem->setData(0, kTreeInLayoutRole, det.IsInLayout());
             pieceItem->setFlags(pieceItem->flags() | Qt::ItemIsEditable);
-
-            addChildRows(pieceItem, det.GetGrainlineGeometry(), det.GetInfoBlockData(), det.GetAnnotationData());
 
             ui->treeWidget->addTopLevelItem(pieceItem);
         }
@@ -421,8 +418,18 @@ void VWidgetDetails::ToggledPieceItem(QTreeWidgetItem *item)
         return;
     }
 
-    const bool inLayout = details->value(id).IsInLayout();
-    item->setIcon(PieceColumn::InLayout, FromTheme(inLayout ? VThemeIcon::GtkOk : VThemeIcon::GtkNo));
+    // A member piece's visibility follows its GROUP (a group behaves like one piece).
+    bool inLayout = details->value(id).IsInLayout();
+    if (const quint32 groupId = m_data->GetPieceGroupId(id); groupId != NULL_ID)
+    {
+        const auto *groups = m_data->DataPieceGroups();
+        if (groups != nullptr && groups->contains(groupId))
+        {
+            inLayout = groups->value(groupId).IsInLayout();
+        }
+    }
+    item->setIcon(PieceColumn::InLayout, LayoutIcon(inLayout));
+    item->setData(0, kTreeInLayoutRole, inLayout);
 
     VToolSeamAllowance *tool = nullptr;
     try
@@ -452,6 +459,59 @@ void VWidgetDetails::ToggleInLayout(quint32 id)
     auto *togglePrint = new TogglePieceInLayout(id, inLayout, m_data, m_doc);
     connect(togglePrint, &TogglePieceInLayout::Toggled, this, &VWidgetDetails::ToggledPiece);
     VAbstractApplication::VApp()->getUndoStack()->push(togglePrint);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetDetails::ToggleGroupInLayout(quint32 groupId)
+{
+    auto *groups = m_data->DataPieceGroups();
+    if (groups == nullptr || not groups->contains(groupId))
+    {
+        return;
+    }
+
+    const bool inLayout = not groups->value(groupId).IsInLayout();
+    auto *toggleCommand = new ::ToggleGroupInLayout(groupId, inLayout, m_data, m_doc);
+    connect(toggleCommand, &::ToggleGroupInLayout::Toggled, this, &VWidgetDetails::ToggledGroup);
+    VAbstractApplication::VApp()->getUndoStack()->push(toggleCommand);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetDetails::ToggledGroup(quint32 groupId)
+{
+    QTreeWidgetItemIterator it(ui->treeWidget);
+    while (*it)
+    {
+        QTreeWidgetItem *item = *it;
+        if (item->data(0, kIdRole).toUInt() == groupId)
+        {
+            ToggledGroupItem(item);
+            return;
+        }
+        ++it;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetDetails::ToggledGroupItem(QTreeWidgetItem *item)
+{
+    SCASSERT(item != nullptr)
+
+    const quint32 groupId = item->data(0, kIdRole).toUInt();
+    auto *groups = m_data->DataPieceGroups();
+    if (groups == nullptr || not groups->contains(groupId))
+    {
+        return;
+    }
+
+    const bool inLayout = groups->value(groupId).IsInLayout();
+    item->setIcon(PieceColumn::InLayout, LayoutIcon(inLayout));
+    item->setData(0, kTreeInLayoutRole, inLayout);
+
+    // The group behaves like one piece: its state + the "Hide not in layout" checkbox drive
+    // the visibility of the whole group on the canvas (holder + members).
+    const bool visible = ui->checkBoxHideNotInLayout->isChecked() ? inLayout : true;
+    emit GroupVisibilityChanged(groupId, visible);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -612,7 +672,12 @@ void VWidgetDetails::on_checkBoxHideNotInLayout_stateChanged()
     {
         QTreeWidgetItem *item = *it;
         const QString type = item->data(0, kTypeRole).toString();
-        if (type != QLatin1String(kGroupType))
+        if (type == QLatin1String(kGroupType))
+        {
+            // Groups are masked like one piece: their state + the checkbox drive the holder.
+            ToggledGroupItem(item);
+        }
+        else
         {
             ToggledPieceItem(item);
         }
@@ -841,6 +906,11 @@ void VWidgetDetails::SetGroupToolState(GroupToolState state)
         return;
     }
     m_groupToolState = state;
+    // The button is a toggle: it starts the merge workflow and stays visually selected with a
+    // "Cancel" label while the workflow is active (Idle → unchecked, "Merge pieces into one").
+    const bool active = state != GroupToolState::Idle;
+    ui->linkPiecesButton->setChecked(active);
+    ui->linkPiecesButton->setText(active ? tr("Cancel") : tr("Merge pieces into one"));
     emit GroupToolStateChanged(state);
 }
 

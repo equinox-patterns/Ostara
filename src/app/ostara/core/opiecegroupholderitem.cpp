@@ -38,6 +38,7 @@
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/undocommands/movepiece.h"
 #include "../vtools/undocommands/savepiecegroupoptions.h"
+#include "../vwidgets/global.h"
 #include "../vwidgets/vgrainlineitem.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
 
@@ -105,6 +106,33 @@ OPieceGroupHolderItem::OPieceGroupHolderItem(quint32 groupId, QGraphicsItem *par
 
 //---------------------------------------------------------------------------------------------------------------------
 OPieceGroupHolderItem::~OPieceGroupHolderItem() = default;
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceGroupHolderItem::SetInteractive(bool interactive)
+{
+    const Qt::MouseButtons buttons = interactive ? Qt::LeftButton : Qt::NoButton;
+    setAcceptedMouseButtons(buttons);
+    m_grainlineItem->setAcceptedMouseButtons(buttons);
+    for (OInfoBlockItem *blockItem : m_blockItems)
+    {
+        blockItem->setAcceptedMouseButtons(buttons);
+    }
+    for (OAnnotationItem *annotationItem : m_annotationItems)
+    {
+        annotationItem->setAcceptedMouseButtons(buttons);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceGroupHolderItem::SetSelected(bool selected)
+{
+    if (m_selected == selected)
+    {
+        return;
+    }
+    m_selected = selected;
+    update();
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 void OPieceGroupHolderItem::Refresh(const OPieceGroup &group, VAbstractPattern *doc, VContainer *data)
@@ -267,10 +295,13 @@ QPainterPath OPieceGroupHolderItem::shape() const
 //---------------------------------------------------------------------------------------------------------------------
 void OPieceGroupHolderItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    Q_UNUSED(painter)
-    Q_UNUSED(option)
     Q_UNUSED(widget)
-    // Nothing to paint: the children render the group's content.
+    if (m_selected)
+    {
+        // Selection block like a selected piece: dashed rect + contrasting outline (cosmetic).
+        GraphicsItemHighlightSelected(boundingRect(), 0.0, painter, option);
+    }
+    // The rest of the group's content is rendered by the child items.
 }
 
 //---------------------------------------------------------------------------------------------------------------------

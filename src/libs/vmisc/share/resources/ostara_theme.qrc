@@ -25,6 +25,7 @@
         <file alias="caret-down_disabled.svg">../../../../../share/themes/icons/light/caret-down_disabled.svg</file>
         <file alias="house-fill_light.svg">../../../../../share/themes/icons/light/house-fill_light.svg</file>
         <file alias="x_light.svg">../../../../../share/themes/icons/light/x_light.svg</file>
+        <file alias="check_light.svg">../../../../../share/themes/icons/light/check_light.svg</file>
         <file alias="download_light.svg">../../../../../share/themes/icons/light/download_light.svg</file>
         <file alias="trash_light.svg">../../../../../share/themes/icons/light/trash_light.svg</file>
         <file alias="magnifying-glass_light.svg">../../../../../share/themes/icons/light/magnifying-glass_light.svg</file>
@@ -100,6 +101,7 @@
         <file alias="caret-down_disabled.svg">../../../../../share/themes/icons/dark/caret-down_disabled.svg</file>
         <file alias="house-fill_dark.svg">../../../../../share/themes/icons/dark/house-fill_dark.svg</file>
         <file alias="x_dark.svg">../../../../../share/themes/icons/dark/x_dark.svg</file>
+        <file alias="check_dark.svg">../../../../../share/themes/icons/dark/check_dark.svg</file>
         <file alias="download_dark.svg">../../../../../share/themes/icons/dark/download_dark.svg</file>
         <file alias="trash_dark.svg">../../../../../share/themes/icons/dark/trash_dark.svg</file>
         <file alias="magnifying-glass_dark.svg">../../../../../share/themes/icons/dark/magnifying-glass_dark.svg</file>

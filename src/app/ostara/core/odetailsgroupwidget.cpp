@@ -29,10 +29,13 @@
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QEnterEvent>
+#include <QEvent>
 #include <QFrame>
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
@@ -57,6 +60,58 @@
 
 namespace
 {
+//---------------------------------------------------------------------------------------------------------------------
+// Toggle button of a member fold line: theme-aware caret-right (collapsed) / caret-down
+// (expanded); while collapsed, the caret-right switches to the dark set on hover so it stays
+// visible on the hover/accent background (dark theme already uses the dark set → no change).
+class MemberFoldToggleButton : public QPushButton
+{
+public:
+    explicit MemberFoldToggleButton(const QString &text, const QString &theme, QWidget *parent)
+      : QPushButton(text, parent), m_theme(theme)
+    {
+        connect(this, &QPushButton::toggled, this, [this]() { UpdateIcon(); });
+        UpdateIcon(); // initial state: collapsed, not hovered → theme caret-right
+    }
+
+    void SetTheme(const QString &theme)
+    {
+        m_theme = theme;
+        UpdateIcon();
+    }
+
+protected:
+    void enterEvent(QEnterEvent *event) override
+    {
+        QPushButton::enterEvent(event);
+        UpdateIcon();
+    }
+    void leaveEvent(QEvent *event) override
+    {
+        QPushButton::leaveEvent(event);
+        UpdateIcon();
+    }
+
+private:
+    void UpdateIcon()
+    {
+        if (isChecked())
+        {
+            setIcon(QIcon(QStringLiteral(":/icons/%1/caret-down_%1.svg").arg(m_theme)));
+        }
+        else if (underMouse())
+        {
+            setIcon(QIcon(QStringLiteral(":/icons/dark/caret-right_dark.svg")));
+        }
+        else
+        {
+            setIcon(QIcon(QStringLiteral(":/icons/%1/caret-right_%1.svg").arg(m_theme)));
+        }
+    }
+
+    QString m_theme;
+};
+
 //---------------------------------------------------------------------------------------------------------------------
 auto FoldLineDefined(const VPiece &det) -> bool
 {
@@ -330,6 +385,26 @@ void ODetailsGroupWidget::ModifyMemberPiece(quint32 pieceId, std::function<void(
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::RefreshGroupMemberFoldLines()
+{
+    // The foldline mask decision (UpdateFoldLine) depends on which member is the group's foldline
+    // carrier — re-render every member so the new carrier shows and the previous one re-masks.
+    const auto *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;
+    if (groups == nullptr || not groups->contains(m_groupId))
+    {
+        return;
+    }
+    for (quint32 pid : groups->value(m_groupId).pieceIds)
+    {
+        auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pid));
+        if (tool != nullptr)
+        {
+            tool->RefreshGroupedChildren(); // re-derives the mask; includes RefreshFoldLine
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODetailsGroupWidget::BuildMemberFoldLines()
 {
     // Drop stale rows (delete the tracked widgets; deleting a widget also removes it from its layout).
@@ -360,7 +435,12 @@ void ODetailsGroupWidget::BuildMemberFoldLines()
 
         MemberFLRow row;
 
-        auto *toggleBtn = new QPushButton(QStringLiteral("▶ %1").arg(name), this);
+        // Toggle button: caret-right (collapsed) / caret-down (expanded), regular set, theme-aware,
+        // with the dark-set caret-right on hover while collapsed (MemberFoldToggleButton).
+        const bool dark = VAbstractApplication::VApp()->Settings()->GetThemeMode() == VThemeMode::Dark;
+        const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
+
+        auto *toggleBtn = new MemberFoldToggleButton(name, theme, this);
         toggleBtn->setCheckable(true);
         toggleBtn->setObjectName(QStringLiteral("memberFoldToggle"));
         row.toggleBtn = toggleBtn;
@@ -368,8 +448,10 @@ void ODetailsGroupWidget::BuildMemberFoldLines()
         connect(toggleBtn, &QPushButton::toggled, this, [this, pid](bool expanded) { OnMemberToggle(pid, expanded); });
         m_memberFLLayout->addWidget(toggleBtn);
 
+        // Transparent container: the "Member fold lines" QGroupBox carries the background
+        // (SubtiliteCode §23 — no inner box with a background).
         row.content = new QFrame(this);
-        row.content->setFrameShape(QFrame::StyledPanel);
+        row.content->setFrameStyle(QFrame::NoFrame);
         auto *contentLayout = new QVBoxLayout(row.content);
 
         row.statusLabel = new QLabel(row.content);
@@ -387,20 +469,25 @@ void ODetailsGroupWidget::BuildMemberFoldLines()
         contentLayout->addWidget(row.showFullPieceCheck);
         contentLayout->addWidget(row.showMirrorLineCheck);
 
-        auto *typeRow = new QHBoxLayout();
-        typeRow->addWidget(new QLabel(tr("Type"), row.content));
-        row.typeCombo = new QComboBox(row.content);
-        row.typeCombo->addItem(tr("No text"), static_cast<int>(FoldLineType::TwoArrows));
-        row.typeCombo->addItem(tr("With text"), static_cast<int>(FoldLineType::TwoArrowsTextAbove));
-        typeRow->addWidget(row.typeCombo);
-        contentLayout->addLayout(typeRow);
+        // Foldline type — the same "No text" / "With text" buttons as the piece foldline widget
+        // ("With text" is the default foldline type). Both rows (buttons + label edit) span the
+        // member content width (~85% of the Member fold lines group box), like the piece.
+        auto *typeLayout = new QHBoxLayout();
+        row.typeGroup = new QButtonGroup(row.content);
+        row.typeGroup->setExclusive(true);
+        auto *noTextBtn = new QPushButton(tr("No text"), row.content);
+        noTextBtn->setCheckable(true);
+        row.typeGroup->addButton(noTextBtn, static_cast<int>(FoldLineType::TwoArrows));
+        typeLayout->addWidget(noTextBtn);
+        auto *withTextBtn = new QPushButton(tr("With text"), row.content);
+        withTextBtn->setCheckable(true);
+        row.typeGroup->addButton(withTextBtn, static_cast<int>(FoldLineType::TwoArrowsTextAbove));
+        typeLayout->addWidget(withTextBtn);
+        contentLayout->addLayout(typeLayout);
 
-        auto *labelRow = new QHBoxLayout();
-        labelRow->addWidget(new QLabel(tr("Label"), row.content));
         row.labelEdit = new QLineEdit(row.content);
         row.labelEdit->setPlaceholderText(tr("Cut on fold"));
-        labelRow->addWidget(row.labelEdit);
-        contentLayout->addLayout(labelRow);
+        contentLayout->addWidget(row.labelEdit);
 
         row.content->hide();
         m_memberFLLayout->addWidget(row.content);
@@ -432,14 +519,14 @@ void ODetailsGroupWidget::BuildMemberFoldLines()
             ModifyMemberPiece(pid, [checked](VPiece &det) { det.SetShowMirrorLine(checked); });
             UpdateMemberFoldLineStatus(pid);
         });
-        connect(row.typeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-                [this, pid, row](int index)
+        connect(row.typeGroup, QOverload<QAbstractButton *, bool>::of(&QButtonGroup::buttonToggled), this,
+                [this, pid, row](QAbstractButton *button, bool checked)
         {
-            if (m_updating || index < 0)
+            if (m_updating || !checked)
             {
                 return;
             }
-            const auto lineType = static_cast<FoldLineType>(row.typeCombo->itemData(index).toInt());
+            const auto lineType = static_cast<FoldLineType>(row.typeGroup->id(button));
             ModifyMemberPiece(pid, [lineType](VPiece &det) { det.SetFoldLineType(lineType); });
         });
         connect(row.labelEdit, &QLineEdit::editingFinished, this, [this, pid, row]
@@ -532,6 +619,15 @@ void ODetailsGroupWidget::OnMemberDeactivate(quint32 pieceId)
         det.SetShowMirrorLine(false);
         det.SetShowFullPiece(false);
     });
+    // This member no longer carries the group's foldline.
+    Commit([pieceId](OPieceGroup &group)
+    {
+        if (group.m_foldLineMemberId == pieceId)
+        {
+            group.m_foldLineMemberId = NULL_ID;
+        }
+    });
+    RefreshGroupMemberFoldLines();
     UpdateMemberFoldLineStatus(pieceId);
 }
 
@@ -589,6 +685,10 @@ void ODetailsGroupWidget::OnNodeSelectedForFoldLine(quint32 nodeId)
         det.SetShowFullPiece(false);
         det.SetFoldLineType(FoldLineType::TwoArrowsTextAbove);
     });
+    // The group's foldline is carried by this member — its VToolSeamAllowance renders it.
+    Commit([pieceId](OPieceGroup &group) { group.m_foldLineMemberId = pieceId; });
+    // The mask decision depends on the carrier: re-render every member's foldline now.
+    RefreshGroupMemberFoldLines();
     UpdateMemberFoldLineStatus(pieceId);
 }
 
@@ -637,10 +737,9 @@ void ODetailsGroupWidget::UpdateMemberFoldLineStatus(quint32 pieceId)
     row.showFullPieceCheck->setChecked(det.IsShowFullPiece());
     row.showMirrorLineCheck->setChecked(det.IsShowMirrorLine());
     row.showMirrorLineCheck->setEnabled(det.IsShowFullPiece());
-    const int typeIdx = row.typeCombo->findData(static_cast<int>(det.GetFoldLineType()));
-    if (typeIdx >= 0)
+    if (auto *typeBtn = row.typeGroup->button(static_cast<int>(det.GetFoldLineType())); typeBtn != nullptr)
     {
-        row.typeCombo->setCurrentIndex(typeIdx);
+        typeBtn->setChecked(true);
     }
     row.labelEdit->setText(det.GetFoldLineLabel());
     m_updating = false;

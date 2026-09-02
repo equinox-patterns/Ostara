@@ -705,6 +705,7 @@ void VPattern::ParsePieceGroups(const QDomElement &domElement)
                 group.name = GetParametrEmptyString(groupElement, VAbstractPattern::AttrName);
                 group.alignH = GetParametrInt(groupElement, AttrGradedAlignH, QStringLiteral("2"));
                 group.alignV = GetParametrInt(groupElement, AttrGradedAlignV, QStringLiteral("2"));
+                group.m_inLayout = GetParametrBool(groupElement, AttrInLayout, QStringLiteral("true"));
 
                 const uint groupPieceNumber = GetParametrUInt(groupElement, AttrPieceNumber, QChar('0'));
                 group.m_cutFabricQty = GetParametrInt(groupElement, AttrCutFabricQty, QChar('0'));
@@ -779,6 +780,8 @@ void VPattern::ParsePieceGroups(const QDomElement &domElement)
                                 GetParametrEmptyString(childElement, VAbstractPattern::AttrFoldLineWidthFormula);
                             group.m_formulaFoldCenter =
                                 GetParametrEmptyString(childElement, VAbstractPattern::AttrFoldLineCenterFormula);
+                            group.m_foldLineMemberId =
+                                GetParametrUInt(childElement, QStringLiteral("foldLineMember"), NULL_ID_STR);
                         }
                     }
                     memberNode = memberNode.nextSibling();

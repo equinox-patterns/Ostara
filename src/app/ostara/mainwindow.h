@@ -455,7 +455,8 @@ private:
     void InitDocksContain();
     void RefreshGroupHolders();
 
-    void SetAllGroupHoldersVisible(bool visible);
+    void SetAllGroupHoldersInteractive(bool interactive);
+    void UpdateGroupHolderSelection(quint32 groupId);
     auto OpenNewValentina(const QString &fileName = QString()) const -> bool;
     void FileClosedCorrect();
     static auto GetUnlokedRestoreFileList() -> QStringList;

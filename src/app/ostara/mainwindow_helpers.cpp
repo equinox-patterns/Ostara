@@ -43,6 +43,7 @@
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vexception/vexception.h"
+#include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiece.h"
 #include "../vwidgets/vabstractsimple.h"
 #include "../vwidgets/vgraphicssimpletextitem.h"
@@ -85,17 +86,30 @@ void LogPatternToolUsed(bool checked, const QString &toolName)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto SortDetailsForLayout(const QHash<quint32, VPiece> *allDetails, const QString &nameRegex)
-    -> QVector<DetailForLayout>
+auto SortDetailsForLayout(const QHash<quint32, VPiece> *allDetails, const VContainer *data,
+                          const QString &nameRegex) -> QVector<DetailForLayout>
 {
     QVector<DetailForLayout> details;
     details.reserve(allDetails->size());
+
+    const auto isInLayout = [data](const VPiece &piece, quint32 id) -> bool
+    {
+        // A member piece's in-layout state follows its GROUP (a group behaves like one piece):
+        // toggling the group to "x" excludes the whole group from export.
+        const quint32 groupId = data != nullptr ? data->GetPieceGroupId(id) : NULL_ID;
+        if (groupId != NULL_ID)
+        {
+            const auto *groups = data->DataPieceGroups();
+            return groups != nullptr && groups->contains(groupId) && groups->value(groupId).IsInLayout();
+        }
+        return piece.IsInLayout();
+    };
 
     if (auto i = allDetails->constBegin(); nameRegex.isEmpty())
     {
         while (i != allDetails->constEnd())
         {
-            if (i.value().IsInLayout())
+            if (isInLayout(i.value(), i.key()))
             {
                 details.append({.id = i.key(), .piece = i.value()});
             }

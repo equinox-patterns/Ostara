@@ -38,6 +38,7 @@
 #include "../vpatterndb/vpiecepath.h"
 
 class QCheckBox;
+class QButtonGroup;
 class QComboBox;
 class QFrame;
 class QLabel;
@@ -93,12 +94,13 @@ private:
         QLabel *statusLabel{nullptr};
         QCheckBox *showFullPieceCheck{nullptr};
         QCheckBox *showMirrorLineCheck{nullptr};
-        QComboBox *typeCombo{nullptr};
+        QButtonGroup *typeGroup{nullptr}; // "No text" / "With text" — same buttons as the piece foldline
         QLineEdit *labelEdit{nullptr};
     };
 
     void Commit(std::function<void(OPieceGroup &)> func);
     void ModifyMemberPiece(quint32 pieceId, std::function<void(VPiece &)> func);
+    void RefreshGroupMemberFoldLines();
     void BuildMemberFoldLines();
     void OnMemberToggle(quint32 pieceId, bool expanded);
     void OnMemberDefineClicked(quint32 pieceId);

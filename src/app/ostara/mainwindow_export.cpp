@@ -186,7 +186,7 @@ void MainWindow::ExportDetailsAs(bool checked)
 
     auto Uncheck = qScopeGuard([this] { ui->actionDetailExportAs->setChecked(false); });
 
-    QVector<DetailForLayout> const detailsInLayout = SortDetailsForLayout(pattern->DataPieces());
+    QVector<DetailForLayout> const detailsInLayout = SortDetailsForLayout(pattern->DataPieces(), pattern);
 
     if (detailsInLayout.isEmpty())
     {
@@ -284,7 +284,7 @@ void MainWindow::on_actionCreateManualLayout_triggered()
     QTemporaryFile rldFile(QDir::tempPath() + "/puzzle.rld.XXXXXX"_L1);
     if (rldFile.open())
     {
-        QVector<DetailForLayout> const detailsInLayout = SortDetailsForLayout(pattern->DataPieces());
+        QVector<DetailForLayout> const detailsInLayout = SortDetailsForLayout(pattern->DataPieces(), pattern);
 
         if (detailsInLayout.isEmpty())
         {
@@ -362,7 +362,7 @@ void MainWindow::on_actionUpdateManualLayout_triggered()
     rldFile.setAutoRemove(false);
     if (rldFile.open())
     {
-        QVector<DetailForLayout> const detailsInLayout = SortDetailsForLayout(pattern->DataPieces());
+        QVector<DetailForLayout> const detailsInLayout = SortDetailsForLayout(pattern->DataPieces(), pattern);
 
         if (detailsInLayout.isEmpty())
         {
@@ -427,7 +427,7 @@ auto MainWindow::DoExport(const VCommandLinePtr &expParams) -> bool
             return false;
         }
 
-        details = SortDetailsForLayout(allDetails, expParams->OptExportSuchDetails());
+        details = SortDetailsForLayout(allDetails, pattern, expParams->OptExportSuchDetails());
 
         if (details.isEmpty())
         {

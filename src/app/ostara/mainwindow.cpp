@@ -27,6 +27,7 @@
  *************************************************************************/
 
 #include "mainwindow.h"
+#include "../vexception/vexception.h"
 #include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
 #include "widgets/TopBar.h"
@@ -739,7 +740,7 @@ void MainWindow::ActionLayout(bool checked)
         }
 
         WarningNotUniquePieceName(allDetails);
-        details = SortDetailsForLayout(allDetails);
+        details = SortDetailsForLayout(allDetails, pattern);
 
         if (details.isEmpty())
         {
@@ -854,16 +855,50 @@ void MainWindow::InitDocksContain()
     // the final geometry on every CheckLayout (emitted at the end of the geometry application).
     connect(doc, &VAbstractPattern::CheckLayout, this, &MainWindow::RefreshGroupHolders);
 
-    // Hide the group holders while the Link tool is running so members stay clickable.
+    // The group behaves like one piece: its in-layout state (or the "Hide not in layout"
+    // checkbox) drives the visibility of the whole group on the canvas — the holder (the
+    // group's children) and the member pieces.
+    connect(m_dockManager->detailsWidget(), &VWidgetDetails::GroupVisibilityChanged, this,
+            [this](quint32 groupId, bool visible)
+    {
+        if (auto *holder = m_groupHolders.value(groupId, nullptr); holder != nullptr)
+        {
+            holder->setVisible(visible);
+        }
+        if (auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
+            groups != nullptr && groups->contains(groupId))
+        {
+            for (quint32 pid : groups->value(groupId).pieceIds)
+            {
+                try
+                {
+                    if (auto *memberTool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pid)))
+                    {
+                        memberTool->setVisible(visible);
+                    }
+                }
+                catch (const VExceptionBadId &)
+                {
+                    // Member tool not registered (mid-parse) — skip it.
+                }
+            }
+        }
+    });
+
+    // During the Link tool the group holders stay VISIBLE (their children must not vanish) but
+    // become click-transparent, so the clicks on a member reach the piece beneath (which the
+    // workflow rejects, being already grouped).
     connect(m_dockManager->detailsWidget(), &VWidgetDetails::GroupToolStateChanged, this,
             [this](VWidgetDetails::GroupToolState state)
     {
-        SetAllGroupHoldersVisible(state == VWidgetDetails::GroupToolState::Idle);
+        SetAllGroupHoldersInteractive(state == VWidgetDetails::GroupToolState::Idle);
     });
 
     // ── Details options browser: piece selection + passmark routing ──
     connect(doc, &VPattern::ShowDetail, this, [this](quint32 id)
     {
+        // A piece (or empty canvas) selection deselects any group on the canvas.
+        UpdateGroupHolderSelection(NULL_ID);
         if (id == NULL_ID)
         {
             m_dockManager->detailsOptions()->ShowEmpty();
@@ -1071,6 +1106,7 @@ void MainWindow::InitDocksContain()
     connect(m_dockManager->detailsWidget(), &VWidgetDetails::GroupSelected, this,
             [this](quint32 groupId)
     {
+        UpdateGroupHolderSelection(groupId);
         m_dockManager->detailsOptions()->ShowGroupOptions(groupId, pattern, doc);
         m_dockManager->detailsWidget()->SelectDetail(groupId);
     });
@@ -1145,6 +1181,8 @@ void MainWindow::RefreshGroupHolders()
             connect(holder, &OPieceGroupHolderItem::Clicked, this,
                     [this](quint32 groupId)
             {
+                // A selected group shows its selection block on the canvas, like a piece.
+                UpdateGroupHolderSelection(groupId);
                 m_dockManager->detailsOptions()->ShowGroupOptions(groupId, pattern, doc);
                 // Like a piece (SelectedDetail → SelectDetail), a canvas click on the group
                 // must activate the group node in the pieces tree — it never was, so the
@@ -1171,10 +1209,18 @@ void MainWindow::RefreshGroupHolders()
             {
                 for (auto it = pieces->cbegin(); it != pieces->cend(); ++it)
                 {
-                    auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key()));
-                    if (tool != nullptr)
+                    try
                     {
-                        tool->UpdateInfoBlocks();
+                        // A piece may be in the container but its tool not yet registered (a
+                        // creation/reparse is mid-flight when this runs via undo indexChanged).
+                        if (auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key())))
+                        {
+                            tool->UpdateInfoBlocks();
+                        }
+                    }
+                    catch (const VExceptionBadId &)
+                    {
+                        // Tool not created yet — skip it.
                     }
                 }
             }
@@ -1183,13 +1229,25 @@ void MainWindow::RefreshGroupHolders()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::SetAllGroupHoldersVisible(bool visible)
+void MainWindow::SetAllGroupHoldersInteractive(bool interactive)
 {
     for (OPieceGroupHolderItem *holder : m_groupHolders)
     {
         if (holder != nullptr)
         {
-            holder->setVisible(visible);
+            holder->SetInteractive(interactive);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::UpdateGroupHolderSelection(quint32 groupId)
+{
+    for (auto it = m_groupHolders.cbegin(); it != m_groupHolders.cend(); ++it)
+    {
+        if (it.value() != nullptr)
+        {
+            it.value()->SetSelected(it.key() == groupId);
         }
     }
 }

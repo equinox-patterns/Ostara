@@ -52,6 +52,10 @@ struct OPieceGroup : public IPieceInfo
     QString name{};                          // User-defined group name
     QVector<quint32> pieceIds{};             // Member piece IDs (min 2)
     QHash<quint32, QPointF> memberOffsets{}; // Offset per member (scene coords): refNode - memberNode
+    bool m_inLayout{true};                   // In-layout state (check/x) — governs export AND canvas masking
+                                             // of the whole group (a group behaves like one piece)
+    quint32 m_foldLineMemberId{NULL_ID};     // Member whose VToolSeamAllowance renders the group's foldline
+                                             // (the geometry lives on that member; the others are masked)
 
     int alignH{2}; // Graded alignment horizontal: 1=left, 2=center, 3=right
     int alignV{2}; // Graded alignment vertical: 1=top, 2=center, 3=bottom
@@ -77,6 +81,9 @@ struct OPieceGroup : public IPieceInfo
     bool m_manualFoldCenter{false};
 
     auto GetName() const -> QString override { return name; }
+
+    auto IsInLayout() const -> bool { return m_inLayout; }
+    void SetInLayout(bool inLayout) { m_inLayout = inLayout; }
 
     auto GetPieceNumber() const -> uint override { return m_pieceNumber; }
     void SetPieceNumber(uint number) override { m_pieceNumber = number; }

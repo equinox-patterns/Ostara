@@ -68,6 +68,9 @@ signals:
     void GroupSelected(quint32 groupId);
     void PieceSelected(quint32 id);
     void GroupToolStateChanged(GroupToolState state);
+    // The group's in-layout state (or the "Hide not in layout" checkbox) changed: MainWindow
+    // uses this to hide/show the whole group on the canvas (holder + members).
+    void GroupVisibilityChanged(quint32 groupId, bool visible);
 
 public:
     auto IsSelectingLinkPieces() const -> bool { return m_groupToolState == GroupToolState::Selecting; }
@@ -77,6 +80,7 @@ public slots:
     void UpdateList();
     void SelectDetail(quint32 id);
     void ToggledPiece(quint32 id);
+    void ToggledGroup(quint32 groupId);
 
     // Link workflow — driven by MainWindow canvas routing.
     void OnPieceClickedForGroup(quint32 pieceId);
@@ -108,7 +112,9 @@ private:
     void AddChildrenRows(QTreeWidgetItem *parent, const OPieceGroup &group);
     void ToggleSectionDetails(bool select);
     void ToggledPieceItem(QTreeWidgetItem *item);
+    void ToggledGroupItem(QTreeWidgetItem *item);
     void ToggleInLayout(quint32 id);
+    void ToggleGroupInLayout(quint32 groupId);
     void SelectGroup(quint32 groupId);
     void ValidateGroupSelection();
     void EnterNodeSelectMode();
