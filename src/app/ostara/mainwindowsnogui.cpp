@@ -31,6 +31,7 @@
 #include "../ifc/xml/vvstconverter.h"
 #include "../vdxf/libdxfrw/drw_base.h"
 #include "../vformat/vmeasurements.h"
+#include "../vlayout/vgraphicsfillitem.h"
 #include "../vlayout/vlayoutexporter.h"
 #include "../vlayout/vlayoutgenerator.h"
 #include "../vmisc/compatibility.h"
@@ -40,13 +41,19 @@
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/vcontainer.h"
+#include "../vpatterndb/opiecegroup.h"
+#include "../vpatterndb/vpiece.h"
 #include "../vtools/tools/vabstracttool.h"
+#include "../vtools/tools/vtoolseamallowance.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "core/vapplication.h"
 #include "dialogs/dialoglayoutprogress.h"
 #include "dialogs/dialoglayoutsettings.h"
 #include "dialogs/dialogsavelayout.h"
+#include "widgets/InfoBlock/OInfoBlockResolver.h"
+#include "widgets/InfoBlock/oinfoblockexport.h"
 #include <QAction>
+#include <QSet>
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include "../vmisc/vtextcodec.h"
@@ -58,7 +65,10 @@ using QTextCodec = VTextCodec;
 #include <QDebug>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QFont>
+#include <QFontMetricsF>
 #include <QGraphicsScene>
+#include <QGraphicsSimpleTextItem>
 #include <QMessageBox>
 #include <QPageSize>
 #include <QPrintDialog>
@@ -68,6 +78,7 @@ using QTextCodec = VTextCodec;
 #include <QProgressDialog>
 #include <QToolButton>
 #include <QtConcurrent>
+#include <QtMath>
 #include <QtSvg>
 #include <functional>
 
@@ -588,6 +599,9 @@ void MainWindowsNoGUI::ExportDetailsAsFlatLayout(const QVector<VLayoutPiece> &li
 
     QList<QGraphicsItem *> list;
     list.reserve(listDetails.count());
+
+    const bool svgFormat = (m_dialogSaveLayout->Format() == LayoutExportFormats::SVG);
+
     for (auto piece : listDetails)
     {
         QGraphicsItem *item = piece.GetItem(m_dialogSaveLayout->IsTextAsPaths(),
@@ -610,7 +624,136 @@ void MainWindowsNoGUI::ExportDetailsAsFlatLayout(const QVector<VLayoutPiece> &li
         {
             item->setPos(piece.GetMx(), piece.GetMy());
         }
+
+        // On the canvas a grouped piece masks its own grainline (the group holder shows the
+        // group's) and masks its own fold line unless this member is the one that carries the
+        // group's fold line. Mirror that in the SVG export by hiding those children.
+        if (svgFormat)
+        {
+            const quint32 gid = pattern->GetPieceGroupId(piece.GetId());
+            if (gid != NULL_ID)
+            {
+                const OPieceGroup &group = pattern->DataPieceGroups()->value(gid);
+                const bool foldCarrier = (group.m_foldLineMemberId == piece.GetId());
+                const QList<QGraphicsItem *> children = item->childItems();
+                for (QGraphicsItem *child : children)
+                {
+                    if (child->type() == VGraphicsFillItem::Type)
+                    {
+                        child->hide();
+                    }
+                    else if (!foldCarrier && (child->type() == VGraphicsFoldLineItem::Type
+                                              || child->type() == QGraphicsSimpleTextItem::Type))
+                    {
+                        child->hide();
+                    }
+                }
+            }
+        }
+
         list.append(item);
+    }
+
+    // --- Groups (SVG only) ------------------------------------------------
+    // On the canvas a grouped piece masks its own information blocks and the
+    // group (OPieceGroupHolder) shows its own blocks. Add a geometry-less
+    // placeholder per group (it carries the group's grainline and, at export,
+    // the group's blocks) so the SVG writer emits them at the right origin,
+    // like the holder (origin = union of the member boxes).
+    QList<int> groupPlaceholderIdx;  // aligned: index of the placeholder in `list`
+    QList<int> groupFirstMemberIdx;  // index in `list` of the group's first member
+    QList<quint32> groupIds;
+    QHash<int, QVector<int>> groupMembers;  // placeholder index -> member piece indices
+    if (svgFormat)
+    {
+        const QHash<quint32, OPieceGroup> *const groups = pattern->DataPieceGroups();
+        if (groups != nullptr && !groups->isEmpty())
+        {
+            for (auto it = groups->cbegin(); it != groups->cend(); ++it)
+            {
+                const OPieceGroup &group = it.value();
+                int firstMember = -1;
+                int present = 0;
+                QVector<int> gMembers;
+                for (int gi = 0; gi < listDetails.size(); ++gi)
+                {
+                    if (group.pieceIds.contains(listDetails.at(gi).GetId()))
+                    {
+                        ++present;
+                        gMembers.append(gi);
+                        if (firstMember < 0)
+                        {
+                            firstMember = gi;
+                        }
+                    }
+                }
+                if (present == 0 || firstMember < 0)
+                {
+                    continue;
+                }
+                QRectF box;
+                bool have = false;
+                for (int gi = 0; gi < listDetails.size(); ++gi)  // members only live among the source pieces
+                {
+                    if (group.pieceIds.contains(listDetails.at(gi).GetId()))
+                    {
+                        const QRectF r = QRectF(list.at(gi)->pos() + list.at(gi)->boundingRect().topLeft(),
+                                                list.at(gi)->boundingRect().size());
+                        box = have ? box.united(r) : r;
+                        have = true;
+                    }
+                }
+                auto *holder = new QGraphicsPathItem();
+                holder->setPos(box.topLeft());
+
+                // Group grainline: reproduce OPieceGroupHolderItem::RefreshGrainline semantics,
+                // but as a plain path child of the placeholder so the SVG writer serializes it
+                // (it only knows path items). Shape/path built exactly like a piece grainline.
+                const VGrainlineData &gl = group.m_glGrainline;
+                if (gl.IsEnabled() && gl.IsVisible())
+                {
+                    QPointF glPos = gl.GetPos();  // stored positions are relative to the group origin
+                    if (qFuzzyIsNull(glPos.x()) && qFuzzyIsNull(glPos.y()))
+                    {
+                        QGraphicsItem *const firstMemberItem = list.at(firstMember);
+                        glPos = firstMemberItem->pos() + firstMemberItem->boundingRect().center()
+                                - box.topLeft();
+                    }
+
+                    qreal rotationDeg = 0.0;
+                    const QString rotationFormula = gl.GetRotation();
+                    if (!rotationFormula.isEmpty())
+                    {
+                        bool ok = false;
+                        const qreal value = rotationFormula.toDouble(&ok);
+                        rotationDeg = ok ? value : 0.0;
+                    }
+                    const qreal lengthCm = gl.GetLength().isEmpty() ? 10.0 : gl.GetLength().toDouble();
+                    const qreal lengthPx = ToPixel(lengthCm, *pattern->GetPatternUnit());
+
+                    const VPieceGrainline grainline(glPos, lengthPx, qDegreesToRadians(rotationDeg),
+                                                    gl.GetArrowType());
+                    const GrainlineShape shape = grainline.Shape();
+                    if (!shape.isEmpty())
+                    {
+                        auto *grainlineItem = new VGraphicsFillItem(VLayoutPiece::GrainlinePath(shape), holder);
+                        grainlineItem->SetCustomPen(true);
+                        QPen pen = grainlineItem->pen();
+                        pen.setWidthF(VAbstractApplication::VApp()->Settings()->WidthHairLine());
+                        pen.setCapStyle(Qt::RoundCap);
+                        pen.setJoinStyle(Qt::RoundJoin);
+                        grainlineItem->setPen(pen);
+                    }
+                }
+
+                const int gIdx = static_cast<int>(list.size());
+                groupPlaceholderIdx.append(gIdx);
+                groupFirstMemberIdx.append(firstMember);
+                groupIds.append(it.key());
+                groupMembers.insert(gIdx, gMembers);
+                list.append(holder);
+            }
+        }
     }
 
     for (auto *item : list)
@@ -633,6 +776,237 @@ void MainWindowsNoGUI::ExportDetailsAsFlatLayout(const QVector<VLayoutPiece> &li
     }
 
     rect = scene->itemsBoundingRect().toRect();
+
+    if (svgFormat)
+    {
+        const QString path = m_dialogSaveLayout->Path();
+        bool const notExistedDir = CreateLayoutPath(path);
+        if (not notExistedDir)
+        {
+            qCritical() << tr("Can't create a path");
+            return;
+        }
+        VAbstractValApplication::VApp()->ValentinaSettings()->SetPathLayoutExport(path);
+
+        Q_RELAXED_CONSTEXPR qreal marginPx = ToPixel(1, Unit::Cm);
+        QMarginsF const svgMargins(marginPx, marginPx, marginPx, marginPx);
+
+        auto blocksFromState = [](const OInfoBlockData &info, const OInfoBlockEffectiveState &state,
+                                  const QPointF &centerLocal, bool flipped) -> QVector<OInfoBlockSvg::Block>
+        {
+            QVector<OInfoBlockSvg::Block> out;
+            const QList<int> blockIndexes = state.blockContent.keys();
+            for (int blockIndex : blockIndexes)
+            {
+                const QVector<OCartoucheRenderLine> lines = state.blockContent.value(blockIndex).toVector();
+                if (lines.isEmpty())
+                {
+                    continue;
+                }
+                const OInfoBlockGeom geom = info.BlockGeom(blockIndex);
+                const qreal fontScale = geom.fontScale > 0.0 ? geom.fontScale : 1.0;
+                const QSizeF natural = OCartouchePainter::NaturalSize(lines);
+                const QSizeF size(natural.width() * fontScale, natural.height() * fontScale);
+                QPointF topLeft;
+                qreal rotation = 0.0;
+                if (info.HasStoredGeometry(blockIndex))
+                {
+                    topLeft = geom.pos;
+                    rotation = geom.rotation;
+                }
+                else
+                {
+                    topLeft = centerLocal
+                              + QPointF(0.0, (blockIndex - 1) * (size.height() + 12.0));
+                }
+                if (flipped)
+                {
+                    topLeft.setX(-topLeft.x());
+                    rotation = -rotation;
+                }
+                OInfoBlockSvg::Block block;
+                block.lines = lines;
+                block.fontScale = fontScale;
+                block.rect = QRectF(topLeft, size);
+                block.rotation = rotation;
+                out.append(block);
+            }
+            return out;
+        };
+
+        auto evalAnnotationRotation = [&](const QString &formula) -> qreal
+        {
+            // Mirrors VToolSeamAllowance::EvaluateAnnotationRotation: a rotation
+            // formula is evaluated against the pattern variables; NaN/Inf → 0°.
+            if (formula.isEmpty())
+            {
+                return 0.0;
+            }
+            Calculator cal;
+            const qreal value = cal.EvalFormula(pattern->DataVariables(), formula);
+            return (qIsNaN(value) || qIsInf(value)) ? 0.0 : value;
+        };
+
+        auto evalGroupAnnotationRotation = [](const QString &formula) -> qreal
+        {
+            // Mirrors OPieceGroupHolderItem::EvaluateRotation: a group rotation
+            // is a plain angle literal ("90"), not a variable formula.
+            if (formula.isEmpty())
+            {
+                return 0.0;
+            }
+            bool ok = false;
+            const qreal value = formula.toDouble(&ok);
+            return ok ? value : 0.0;
+        };
+
+        // Build the per-annotation SVG records exactly like the canvas item:
+        // the box is at least the natural content size × fontScale and the text
+        // style is the resolver-resolved render style.
+        auto annotationsFromState = [](const OAnnotationData &annData, const QPointF &centerLocal,
+                                       bool flipped,
+                                       const std::function<qreal(const QString &)> &evalRotation)
+            -> QVector<OInfoBlockSvg::Annotation>
+        {
+            QVector<OInfoBlockSvg::Annotation> out;
+            const QList<OAnnotation> annotations = annData.Annotations();
+            out.reserve(annotations.size());
+            for (const OAnnotation &annotation : annotations)
+            {
+                if (annotation.text.isEmpty())
+                {
+                    continue;
+                }
+                const OAnnotationStyleResolver &resolver = VToolSeamAllowance::AnnotationStyleResolver();
+                const OAnnotationRenderStyle style =
+                    resolver ? resolver(annotation.templateName) : OAnnotationRenderStyle();
+
+                // Natural content size at fontScale 1.0 (same as OAnnotationItem::SetContent).
+                QFont font;
+                if (!style.fontFamily.isEmpty())
+                {
+                    font.setFamily(style.fontFamily);
+                }
+                if (style.fontWeight != 0)
+                {
+                    font.setWeight(static_cast<QFont::Weight>(style.fontWeight));
+                }
+                if (style.fontSize > 0)
+                {
+                    font.setPixelSize(style.fontSize);
+                }
+                const QFontMetricsF fm(font);
+                const QRectF br = fm.boundingRect(QRectF(0.0, 0.0, 0.0, 0.0), Qt::AlignLeft,
+                                                  annotation.text);
+
+                // Box geometry (OAnnotationItem::SetAnnotationGeom semantics).
+                const qreal fontScale = annotation.geom.fontScale > 0.0 ? annotation.geom.fontScale
+                                                                        : 1.0;
+                const qreal contentW = br.width() * fontScale;
+                const qreal contentH = br.height() * fontScale;
+                qreal w = annotation.geom.boxWidth;
+                qreal h = annotation.geom.boxHeight;
+                w = qFuzzyIsNull(w) ? contentW : qMax(w, contentW);
+                h = qFuzzyIsNull(h) ? contentH : qMax(h, contentH);
+
+                QPointF topLeft;
+                if (qFuzzyIsNull(annotation.geom.pos.x()) && qFuzzyIsNull(annotation.geom.pos.y()))
+                {
+                    topLeft = centerLocal;  // never moved: auto-place, centered
+                }
+                else
+                {
+                    topLeft = annotation.geom.pos;
+                }
+                qreal rotation = evalRotation(annotation.rotationFormula);
+                if (flipped)
+                {
+                    topLeft.setX(-topLeft.x());
+                    rotation = -rotation;
+                }
+
+                OInfoBlockSvg::Annotation ann;
+                ann.text = annotation.text;
+                ann.fontFamily = style.fontFamily;
+                ann.fontWeight = style.fontWeight;
+                ann.fontSizePx = style.fontSize;
+                ann.textColor = style.textColor.isEmpty() ? QStringLiteral("#000000")
+                                                          : style.textColor;
+                ann.backgroundColor = style.backgroundColor;
+                ann.fontScale = fontScale;
+                ann.rotation = rotation;
+                ann.rect = QRectF(topLeft, QSizeF(w, h));
+                out.append(ann);
+            }
+            return out;
+        };
+
+        QList<QVector<OInfoBlockSvg::Block>> blocksByPiece;
+        QList<QVector<OInfoBlockSvg::Annotation>> annotationsByPiece;
+        QStringList pieceNames;
+        blocksByPiece.reserve(list.size());
+        annotationsByPiece.reserve(list.size());
+        pieceNames.reserve(list.size());
+
+        for (int i = 0; i < list.size(); ++i)
+        {
+            QVector<OInfoBlockSvg::Block> pieceBlocks;
+            QVector<OInfoBlockSvg::Annotation> pieceAnnotations;
+            QString baseName;
+            if (i < listDetails.size())
+            {
+                const VLayoutPiece layout = listDetails.at(i);
+                const VPiece source = pattern->DataPieces()->value(layout.GetId());
+                baseName = source.GetName();
+                // A grouped piece masks its own blocks/annotations on the canvas:
+                // emit none, the group placeholder below carries them.
+                const bool member = pattern->GetPieceGroupId(layout.GetId()) != NULL_ID;
+                if (!member)
+                {
+                    const OInfoBlockEffectiveState state =
+                        OInfoBlockResolver::ResolveEffectiveState(source, doc, pattern);
+                    const QPointF centerLocal = list.at(i)->boundingRect().center();
+                    pieceBlocks = blocksFromState(source.GetInfoBlockData(), state, centerLocal,
+                                                  layout.IsForceFlipping());
+                    pieceAnnotations = annotationsFromState(source.GetAnnotationData(), centerLocal,
+                                                            layout.IsForceFlipping(),
+                                                            evalAnnotationRotation);
+                }
+            }
+            else
+            {
+                const int gpos = static_cast<int>(groupPlaceholderIdx.indexOf(i));
+                const quint32 gid = groupIds.at(gpos);
+                const OPieceGroup &group = pattern->DataPieceGroups()->value(gid);
+                baseName = group.name;
+                const OInfoBlockEffectiveState state =
+                    OInfoBlockResolver::ResolveEffectiveState(group, doc, pattern);
+                const QPointF origin = list.at(i)->mapToScene(QPointF(0.0, 0.0));
+                const QPointF firstCenter =
+                    list.at(groupFirstMemberIdx.at(gpos))->sceneBoundingRect().center();
+                pieceBlocks = blocksFromState(group.GetInfoBlockData(), state, firstCenter - origin,
+                                              false);
+                pieceAnnotations = annotationsFromState(group.GetAnnotationData(),
+                                                        firstCenter - origin, false,
+                                                        evalGroupAnnotationRotation);
+            }
+            pieceNames.append(baseName.isEmpty() ? QStringLiteral("piece_%1").arg(i + 1) : baseName);
+            blocksByPiece.append(pieceBlocks);
+            annotationsByPiece.append(pieceAnnotations);
+        }
+
+        const QString name = path + '/'_L1 + m_dialogSaveLayout->FileName()
+                             + VLayoutExporter::ExportFormatSuffix(m_dialogSaveLayout->Format());
+        OInfoBlockSvg::WriteSvg(name, list, blocksByPiece, annotationsByPiece, pieceNames, rect,
+                                svgMargins, m_dialogSaveLayout->GetXScale(),
+                                m_dialogSaveLayout->GetYScale(), tr("Pattern"),
+                                doc->GetDescription().toHtmlEscaped(),
+                                m_dialogSaveLayout->IsTextAsPaths(),
+                                m_dialogSaveLayout->IsShowGrainline(), groupMembers);
+
+        RemoveLayoutPath(path, notExistedDir);
+        return;
+    }
 
     auto *paper = new QGraphicsRectItem(rect);
     paper->setPen(QPen(Qt::black, 1));

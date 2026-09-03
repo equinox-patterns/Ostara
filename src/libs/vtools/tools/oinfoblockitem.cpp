@@ -33,28 +33,6 @@
 #include <QPalette>
 #include <QStyleOptionGraphicsItem>
 
-#include <algorithm>
-
-namespace
-{
-// Scale the text lines by fontScale (fonts without an explicit pixel size keep
-// their size — they are rare and their relative layout still follows the box).
-QVector<OCartoucheRenderLine> ScaledLines(const QVector<OCartoucheRenderLine> &lines, qreal fontScale)
-{
-    QVector<OCartoucheRenderLine> scaled = lines;
-    for (OCartoucheRenderLine &line : scaled)
-    {
-        if (line.kind == OCartoucheRenderLine::Kind::Text && line.font.pixelSize() > 0)
-        {
-            QFont font = line.font;
-            font.setPixelSize(qRound(font.pixelSize() * fontScale));
-            line.font = font;
-        }
-    }
-    return scaled;
-}
-}  // namespace
-
 //---------------------------------------------------------------------------------------------------------------------
 OInfoBlockItem::OInfoBlockItem(int blockIndex, QGraphicsItem *parent)
   : QGraphicsRectItem(parent), m_blockIndex(blockIndex)
@@ -161,7 +139,7 @@ void OInfoBlockItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     }
     else
     {
-        OCartouchePainter::Paint(*painter, r, ScaledLines(m_lines, m_fontScale), m_fontScale);
+        OCartouchePainter::Paint(*painter, r, OCartouchePainter::ScaledLines(m_lines, m_fontScale), m_fontScale);
     }
     painter->restore();
 

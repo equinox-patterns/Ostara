@@ -34,6 +34,7 @@
 #include <QHash>
 #include <QPainter>
 #include <QPixmap>
+#include <QPointF>
 #include <QRectF>
 #include <QString>
 #include <QSizeF>
@@ -61,6 +62,32 @@ struct OCartoucheRenderLine
     int lineSpacing = 0;  // Kind::Text — extra px below the line (0 = default).
     QPixmap logo;         // Kind::Logo — pre-rendered logo pixmap.
     qreal logoHeight = 0; // Kind::Logo — rendered height in px.
+    QString sourcePath;   // Kind::Logo — original SVG file path; Paint ignores it,
+                          // the SVG writer re-inlines this file (Val Fork behaviour).
+};
+
+/**
+ * @brief One fully placed element of a block, ready to draw or to serialize.
+ *
+ * Produced by Layout() from the render lines: text lines carry the resolved
+ * font and the drawText origin (penX, baseline); logo lines carry the target
+ * draw rect plus the original SVG path for the writer.
+ */
+struct OCartoucheRenderItem
+{
+    enum class Kind
+    {
+        Text,
+        Logo
+    };
+
+    Kind kind = Kind::Text;
+    QString text;       // Kind::Text — the line text.
+    QFont font;         // Kind::Text — fully styled font.
+    QPointF pen;        // Kind::Text — drawText origin (penX, baseline).
+    QPixmap pixmap;     // Kind::Logo — pre-rendered pixmap (screen painter).
+    QRectF target;      // Kind::Logo — target draw rect.
+    QString sourcePath; // Kind::Logo — original SVG file path (SVG writer only).
 };
 
 /**
@@ -81,8 +108,12 @@ QFont SectionFont(const QHash<QString, QVariant> &options, const QFont &baseFont
 /** @brief Build a text render line. */
 OCartoucheRenderLine TextLine(const QString &text, const QFont &font, int lineSpacing);
 
-/** @brief Build a logo render line (pre-rendered pixmap). */
-OCartoucheRenderLine LogoLine(const QPixmap &logo, qreal logoHeight, int lineSpacing);
+/** @brief Build a logo render line (pre-rendered pixmap + original SVG source). */
+OCartoucheRenderLine LogoLine(const QPixmap &logo, qreal logoHeight, int lineSpacing,
+                              const QString &sourcePath = {});
+
+/** @brief Return the lines with every text pixel size multiplied by fontScale. */
+QVector<OCartoucheRenderLine> ScaledLines(const QVector<OCartoucheRenderLine> &lines, qreal fontScale);
 
 /**
  * @brief Vertical advance of a text line: font height + (6px + line spacing) × scale.
@@ -100,9 +131,20 @@ qreal LogoLineHeight(qreal logoHeight, int lineSpacing, qreal scale = 1.0);
 QSizeF NaturalSize(const QVector<OCartoucheRenderLine> &lines);
 
 /**
+ * @brief Lay the lines out inside rect, fully placed.
+ *
+ * Single source of the placement formula (margins, ink-centering, baselines,
+ * inter-line gap) shared by Paint() (draws) and the SVG writer (serializes) —
+ * the two outputs can never drift apart.
+ */
+QVector<OCartoucheRenderItem> Layout(const QRectF &rect, const QVector<OCartoucheRenderLine> &lines,
+                                     qreal scale = 1.0);
+
+/**
  * @brief Paint the lines stacked, each centered. Uses painter.pen() for text.
- * @param scale proportional content scale (block fontScale) — scales the
- *        inter-line gap, the line-spacing option and the logo draw size.
+ *
+ * Draws exactly the elements produced by Layout(); a scale factor resizes the
+ * content proportionally (see Layout).
  */
 void Paint(QPainter &painter, const QRectF &rect, const QVector<OCartoucheRenderLine> &lines, qreal scale = 1.0);
 }  // namespace OCartouchePainter

@@ -426,7 +426,7 @@ auto OInfoBlockResolver::ResolveSectionLines(const OPieceCartoucheSection &type,
         QPainter painter(&pixmap);
         renderer.render(&painter);
         painter.end();
-        lines.append(OCartouchePainter::LogoLine(pixmap, targetH, lineSpacing));
+        lines.append(OCartouchePainter::LogoLine(pixmap, targetH, lineSpacing, fullPath));
         return lines;
     }
 

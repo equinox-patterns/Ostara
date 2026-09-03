@@ -42,14 +42,31 @@ OCartoucheRenderLine TextLine(const QString &text, const QFont &font, int lineSp
     return line;
 }
 
-OCartoucheRenderLine LogoLine(const QPixmap &logo, qreal logoHeight, int lineSpacing)
+OCartoucheRenderLine LogoLine(const QPixmap &logo, qreal logoHeight, int lineSpacing,
+                              const QString &sourcePath)
 {
     OCartoucheRenderLine line;
     line.kind = OCartoucheRenderLine::Kind::Logo;
     line.logo = logo;
     line.logoHeight = logoHeight;
     line.lineSpacing = lineSpacing;
+    line.sourcePath = sourcePath;
     return line;
+}
+
+QVector<OCartoucheRenderLine> ScaledLines(const QVector<OCartoucheRenderLine> &lines, qreal fontScale)
+{
+    QVector<OCartoucheRenderLine> scaled = lines;
+    for (OCartoucheRenderLine &line : scaled)
+    {
+        if (line.kind == OCartoucheRenderLine::Kind::Text && line.font.pixelSize() > 0)
+        {
+            QFont font = line.font;
+            font.setPixelSize(qRound(font.pixelSize() * fontScale));
+            line.font = font;
+        }
+    }
+    return scaled;
 }
 
 QFont SectionFont(const QHash<QString, QVariant> &options, const QFont &baseFont)
@@ -112,9 +129,9 @@ QSizeF NaturalSize(const QVector<OCartoucheRenderLine> &lines)
     return {width + 2.0 * kMargin, y};
 }
 
-void Paint(QPainter &painter, const QRectF &rect, const QVector<OCartoucheRenderLine> &lines, qreal scale)
+QVector<OCartoucheRenderItem> Layout(const QRectF &rect, const QVector<OCartoucheRenderLine> &lines, qreal scale)
 {
-    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    QVector<OCartoucheRenderItem> items;
     // The margins scale with the content so a zoomed block stays a clean
     // proportional copy of its content (a fixed margin would shrink the padding
     // on every resize).
@@ -126,6 +143,7 @@ void Paint(QPainter &painter, const QRectF &rect, const QVector<OCartoucheRender
         {
             break;
         }
+        OCartoucheRenderItem item;
         if (line.kind == OCartoucheRenderLine::Kind::Text)
         {
             const QFontMetricsF fm(line.font);
@@ -134,19 +152,42 @@ void Paint(QPainter &painter, const QRectF &rect, const QVector<OCartoucheRender
             // glyphs overhang their advance, so advance-based centering shifts
             // the line sideways. Vertical placement stays consistent (ascent +
             // descent centered in the line band).
-            const qreal baseline = y + (fm.height() - fm.ascent() - fm.descent()) / 2.0 + fm.ascent();
-            const qreal penX = rect.left() + rect.width() / 2.0 - ink.left() - ink.width() / 2.0;
-            painter.setFont(line.font);
-            painter.drawText(QPointF(penX, baseline), line.text);
+            item.kind = OCartoucheRenderItem::Kind::Text;
+            item.text = line.text;
+            item.font = line.font;
+            item.pen = QPointF(rect.left() + rect.width() / 2.0 - ink.left() - ink.width() / 2.0,
+                               y + (fm.height() - fm.ascent() - fm.descent()) / 2.0 + fm.ascent());
             y += LineHeight(line.font, line.lineSpacing, scale);
         }
         else
         {
+            item.kind = OCartoucheRenderItem::Kind::Logo;
+            item.pixmap = line.logo;
+            item.sourcePath = line.sourcePath;
             const qreal drawW = line.logo.width() * scale;
             const qreal drawH = line.logoHeight * scale;
-            const QRectF logoRect(rect.left() + (rect.width() - drawW) / 2.0, y, drawW, drawH);
-            painter.drawPixmap(logoRect, line.logo, QRectF(line.logo.rect()));
+            item.target = QRectF(rect.left() + (rect.width() - drawW) / 2.0, y, drawW, drawH);
             y += LogoLineHeight(line.logoHeight, line.lineSpacing, scale);
+        }
+        items.append(item);
+    }
+    return items;
+}
+
+void Paint(QPainter &painter, const QRectF &rect, const QVector<OCartoucheRenderLine> &lines, qreal scale)
+{
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    const QVector<OCartoucheRenderItem> items = Layout(rect, lines, scale);
+    for (const OCartoucheRenderItem &item : items)
+    {
+        if (item.kind == OCartoucheRenderItem::Kind::Text)
+        {
+            painter.setFont(item.font);
+            painter.drawText(item.pen, item.text);
+        }
+        else
+        {
+            painter.drawPixmap(item.target, item.pixmap, QRectF(item.pixmap.rect()));
         }
     }
 }
