@@ -41,7 +41,6 @@
 
 #include "vtheme.h"
 #include "../vmisc/vabstractvalapplication.h"
-#include "../vmisc/vvalentinasettings.h"
 #include "../vexception/vexception.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiece.h"
@@ -57,7 +56,6 @@
 #include "../vtools/tools/vabstracttool.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "mainwindowsnogui.h"
-#include "core/vapplication.h"
 
 #include <QtDebug>
 
@@ -339,24 +337,42 @@ auto StripLabelElements(QDomDocument *doc) -> bool
             detail.removeAttribute(QStringLiteral("gradationLabel"));
         }
 
-        // 6. Remove <data> elements (piece label data)
+        // 6. Remove <data> elements (piece label data). Valentina serializes an empty, invisible <data> on
+        //    every piece, so presence alone must NOT flag the warning — only a block carrying real label text
+        //    (template <line>s, visible, or a non-empty letter/annotation) does.
         const QDomNodeList dataElements = detail.elementsByTagName(QStringLiteral("data"));
         for (int j = dataElements.size() - 1; j >= 0; --j)
         {
-            foundLabels = true;
+            const QDomElement dataElement = dataElements.at(j).toElement();
+            const bool hasLabelText = not dataElement.isNull() &&
+                                      (not dataElement.elementsByTagName(QStringLiteral("line")).isEmpty() ||
+                                       dataElement.attribute(QStringLiteral("visible")) == QStringLiteral("true") ||
+                                       not dataElement.attribute(QStringLiteral("letter")).isEmpty() ||
+                                       not dataElement.attribute(QStringLiteral("annotation")).isEmpty());
+            if (hasLabelText)
+            {
+                foundLabels = true;
+            }
             detail.removeChild(dataElements.at(j));
         }
 
-        // 7. Remove <patternInfo> elements (pattern info labels)
+        // 7. Remove <patternInfo> elements (pattern info labels) — likewise only flagged when actually visible.
         const QDomNodeList patternInfos = detail.elementsByTagName(QStringLiteral("patternInfo"));
         for (int j = patternInfos.size() - 1; j >= 0; --j)
         {
-            foundLabels = true;
+            const QDomElement infoElement = patternInfos.at(j).toElement();
+            if (not infoElement.isNull() && infoElement.attribute(QStringLiteral("visible")) == QStringLiteral("true"))
+            {
+                foundLabels = true;
+            }
             detail.removeChild(patternInfos.at(j));
         }
     }
 
-    // 8. Remove obsolete "showLabel"/"showLabel1"/"showLabel2" attributes (renamed to "showPointName" in Ostara)
+    // 8. Migrate obsolete "showLabel"/"showLabel1"/"showLabel2" point attributes (renamed "showPointName" in Ostara).
+    //    These only control whether a point's name is displayed — they are not label text — so stripping them must NOT
+    //    flag the labels-not-supported dialog: an old .val with shown point names would otherwise warn on a label-free
+    //    pattern (old Valentina files serialize showLabel="true" on ordinary points).
     for (const QString &tag : {QStringLiteral("point"), QStringLiteral("item")})
     {
         const QDomNodeList nodes = root.elementsByTagName(tag);
@@ -370,7 +386,6 @@ auto StripLabelElements(QDomDocument *doc) -> bool
             if (elem.hasAttribute(QStringLiteral("showLabel")) || elem.hasAttribute(QStringLiteral("showLabel1")) ||
                 elem.hasAttribute(QStringLiteral("showLabel2")))
             {
-                foundLabels = true;
                 elem.removeAttribute(QStringLiteral("showLabel"));
                 elem.removeAttribute(QStringLiteral("showLabel1"));
                 elem.removeAttribute(QStringLiteral("showLabel2"));

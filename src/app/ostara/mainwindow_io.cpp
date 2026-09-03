@@ -33,7 +33,6 @@
 #include "widgets/ODockManager.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
-#include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vsysexits.h"
 #include "../vmisc/def.h"
 #include "core/vapplication.h"
@@ -398,13 +397,10 @@ auto MainWindow::on_actionSave_triggered() -> bool
         return on_actionSaveAs_triggered();
     }
 
-    if (m_curFileFormatVersion < FormatVersion(1, 0, 0) &&
-        not ContinueFormatRewrite(m_curFileFormatVersionStr, QStringLiteral("1.0.0")))
-    {
-        return false;
-    }
-
-    QString savePath = VAbstractValApplication::VApp()->GetPatternPath();
+    // A .val source is never rewritten in place: Save always redirects to a fresh .ostara,
+    // so the "format rewrite" warning (a Valentina in-place-save relic) is obsolete here.
+    const QString originalPath = VAbstractValApplication::VApp()->GetPatternPath();
+    QString savePath = originalPath;
     // If the current file is a .val, convert the path to .ostara
     if (savePath.endsWith(".val"_L1))
     {
@@ -421,7 +417,10 @@ auto MainWindow::on_actionSave_triggered() -> bool
     bool const result = SavePattern(savePath, error);
     if (result)
     {
-        QFile::remove(VAbstractValApplication::VApp()->GetPatternPath() + AutosavePrefix());
+        // SavePattern() already switched the current path to savePath (the .ostara). Remove the
+        // autosave of the path that was open *before* the redirect, or a stale "foo.val.autosave"
+        // (with upgraded content) is left orphaned next to the .val and could feed a crash restore.
+        QFile::remove(originalPath + AutosavePrefix());
         m_curFileFormatVersion = FormatVersion(1, 0, 0);
         m_curFileFormatVersionStr = QStringLiteral("1.0.0");
     }
