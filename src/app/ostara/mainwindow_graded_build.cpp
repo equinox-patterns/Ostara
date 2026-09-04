@@ -1,0 +1,425 @@
+/************************************************************************
+ **
+ **  @file   mainwindow_graded_build.cpp
+ **  @author Sophie Denys <contact@sophiedenys.com>
+ **  @date   05/09/2026
+ **
+ **  @brief  Graded mode: build the stacked graded scene (one layer per size of the active range).
+ **
+ **  @copyright
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+ **
+ **  This program is free software: you can redistribute it and/or modify
+ **  it under the terms of the GNU General Public License as published by
+ **  the Free Software Foundation, either version 3 of the License, or
+ **  (at your option) any later version.
+ **
+ **  This program is distributed in the hope that it will be useful,
+ **  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ **  GNU General Public License for more details.
+ **
+ **  You should have received a copy of the GNU General Public License
+ **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **
+ *************************************************************************/
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+#include "mainwindow_helpers.h"
+#include "mainwindowsnogui.h"
+#include "mainwindow_graded_helpers.h"
+#include "widgets/InfoBlock/OPieceCartoucheTable.h"
+#include "xml/vpattern.h"
+#include "../ifc/xml/vabstractpattern.h"
+#include "../vformat/vmeasurements.h"
+#include "../vlayout/vlayoutpiece.h"
+#include "../vexception/vexception.h"
+#include "../vmisc/def.h"
+#include "../vtools/tools/oannotationitem.h"
+#include "../vtools/tools/oinfoblockitem.h"
+#include "../vtools/tools/vtoolseamallowance.h"
+#include "../vmisc/vabstractapplication.h"
+#include "../vmisc/vabstractvalapplication.h"
+#include "../vpatterndb/vcontainer.h"
+#include "../vpatterndb/vpiecenode.h"
+#include "../vpatterndb/vpiecepath.h"
+#include "../vwidgets/vmaingraphicsscene.h"
+#include "../vwidgets/vmaingraphicsview.h"
+
+#include <QGraphicsItem>
+#include <QHash>
+#include <QMap>
+#include <QObject>
+#include <QScopeGuard>
+#include <QStringList>
+#include <QTimer>
+#include <QtGlobal>
+#include <QUndoStack>
+#include <QVector>
+
+#include <algorithm>
+
+//---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+/// .omt dimension base == 1-based index of the CSV label inside the axis values.
+auto GradedBaseForLabel(const QStringList &axisValues, const QString &label) -> qreal
+{
+    const qsizetype idx = axisValues.indexOf(label);
+    return idx >= 0 ? static_cast<qreal>(idx + 1) : 1.0;
+}
+
+/// Deterministic "silhouette content" fingerprint of a piece for the graded structure
+/// signature. Covers the piece-content edits that must refresh the graded canvas (seam
+/// allowance/margins + hide/show main path, mounting notches, internal paths, place labels)
+/// but DELIBERATELY excludes mx/my (a plain Details move must not relocate the graded canvas)
+/// and excludes info-blocks/annotations (those refresh on every apply instead).
+auto GradedPieceContentDigest(const VPiece &piece) -> QString
+{
+    QStringList parts;
+    parts.append(QStringLiteral("sa=%1%2%3%4%5")
+                     .arg(piece.IsSeamAllowance() ? 1 : 0)
+                     .arg(piece.IsSeamAllowanceBuiltIn() ? 1 : 0)
+                     .arg(piece.IsHideMainPath() ? 1 : 0)
+                     .arg(piece.IsShowFullPiece() ? 1 : 0)
+                     .arg(piece.IsTrueZeroWidth() ? 1 : 0));
+    parts.append(QStringLiteral("saw=%1").arg(piece.GetFormulaSAWidth()));
+
+    for (const CustomSARecord &record : piece.GetCustomSARecords())
+    {
+        parts.append(QStringLiteral("csa=%1,%2,%3,%4,%5")
+                         .arg(record.startPoint)
+                         .arg(record.path)
+                         .arg(record.endPoint)
+                         .arg(record.reverse ? 1 : 0)
+                         .arg(static_cast<int>(record.includeType)));
+    }
+
+    QVector<quint32> internalPaths = piece.GetInternalPaths();
+    std::sort(internalPaths.begin(), internalPaths.end());
+    for (quint32 id : internalPaths)
+    {
+        parts.append(QStringLiteral("ip=%1").arg(id));
+    }
+
+    QVector<quint32> placeLabels = piece.GetPlaceLabels();
+    std::sort(placeLabels.begin(), placeLabels.end());
+    for (quint32 id : placeLabels)
+    {
+        parts.append(QStringLiteral("pl=%1").arg(id));
+    }
+
+    // Mounting notches ("repère de montage") live on the main-path nodes (IsPassmark).
+    const QVector<VPieceNode> nodes = piece.GetPath().GetNodes();
+    for (const VPieceNode &node : nodes)
+    {
+        if (node.IsPassmark())
+        {
+            parts.append(QStringLiteral("nm=%1").arg(node.GetId()));
+        }
+    }
+
+    return parts.join(QLatin1Char('|'));
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::BuildGradedScene()
+{
+    if (m_gradedBuilding)
+    {
+        return; // re-entrancy guard (undo/redo can re-enter)
+    }
+    m_gradedBuilding = true;
+    const QScopeGuard buildingGuard([this]() { m_gradedBuilding = false; });
+
+    // A deferred rebuild (undo hook) may fire after the user already left Graded — do not
+    // mutate the (possibly no longer visible) graded scene in that case.
+    if (VAbstractValApplication::VApp()->GetDrawMode() != Draw::Graded)
+    {
+        return;
+    }
+
+    // Entry from another mode forces a full re-capture so ANY piece-shape change (not just the
+    // structural ones) is reflected; the flag is consumed by this single call.
+    const bool fullCapture = m_gradedForceCapture;
+    m_gradedForceCapture = false;
+
+    if (m_sceneGraded == nullptr || doc == nullptr || m_m.isNull() || m_activeGradedRangeName.isEmpty())
+    {
+        return;
+    }
+
+    // Structural signature of the pattern content that feeds the graded canvas. The canvas
+    // is rebuilt only when this changes (pieces/groups added or removed, active range). A
+    // plain MOVE in Details only changes mx/my — the graded canvas keeps its own positions,
+    // so Details and Graded never communicate through moves.
+    const auto structureSignature = [this]() -> QString {
+        QStringList parts;
+        parts.append(m_activeGradedRangeName);
+        if (const auto *pieces = pattern->DataPieces(); pieces != nullptr)
+        {
+            QList<quint32> ids = pieces->keys();
+            std::sort(ids.begin(), ids.end());
+            for (quint32 id : ids)
+            {
+                parts.append(QString::number(id));
+                // Child digest: adding/removing a piece's grainline in Details propagates to
+                // Graded (a child change is a structural event, like adding/removing a piece).
+                const VPiece &piece = pieces->value(id);
+                parts.append(QStringLiteral("gl%1=%2").arg(id).arg(piece.GetGrainlineGeometry().IsEnabled() ? 1 : 0));
+                // Piece-content digest: seam allowance/margins + hide/show main path, mounting
+                // notches, internal paths, place labels (mx/my deliberately excluded).
+                parts.append(GradedPieceContentDigest(piece));
+            }
+        }
+        if (const auto *groups = pattern->DataPieceGroups(); groups != nullptr)
+        {
+            QList<quint32> ids = groups->keys();
+            std::sort(ids.begin(), ids.end());
+            for (quint32 groupId : ids)
+            {
+                parts.append(QLatin1Char('g') + QString::number(groupId));
+                const OPieceGroup &group = groups->value(groupId);
+                parts.append(QStringLiteral("ggl%1=%2").arg(groupId).arg(group.m_glGrainline.IsEnabled() ? 1 : 0));
+                QList<quint32> members = group.pieceIds;
+                std::sort(members.begin(), members.end());
+                for (quint32 member : members)
+                {
+                    parts.append(QString::number(member));
+                }
+            }
+        }
+        return parts.join(QLatin1Char('|'));
+    };
+    const QString signature = structureSignature();
+
+    if (!fullCapture && signature == m_gradedSceneSignature && not m_sceneGraded->items().isEmpty())
+    {
+        ApplyGradedLayoutOffsets(); // keep the (idempotent) positions in sync with the model
+        return;
+    }
+
+    // Always drop stale silhouettes before (re)building.
+    m_sceneGraded->clear();
+
+    const auto *ranges = pattern->SizeRanges();
+    if (ranges == nullptr || !ranges->contains(m_activeGradedRangeName))
+    {
+        return;
+    }
+    const OSizerange &range = ranges->value(m_activeGradedRangeName);
+
+    // Suppress heavy doc emissions during the capture loop (RAII).
+    const QSignalBlocker signalBlocker(doc);
+
+    OPieceCartoucheTable reader;
+    reader.Load();
+    if (not reader.HasMultiSizeTable())
+    {
+        return;
+    }
+
+    const QStringList axes = reader.AxisNames();
+    const int gradedAxisPos = static_cast<int>(axes.indexOf(range.sizeAxis));
+    if (gradedAxisPos < 0)
+    {
+        return;
+    }
+
+    QMap<QString, QStringList> axisValues;
+    for (const QString &axis : axes)
+    {
+        axisValues.insert(axis, reader.AxisValues(axis));
+    }
+
+    const QStringList gradedValues = axisValues.value(range.sizeAxis);
+    const int minIdx = static_cast<int>(gradedValues.indexOf(range.minValue));
+    const int maxIdx = static_cast<int>(gradedValues.indexOf(range.maxValue));
+    if (minIdx < 0 || maxIdx < 0 || minIdx > maxIdx)
+    {
+        return;
+    }
+
+    // Base value of a fixed (non graded) axis slot.
+    auto FixedBase = [&axes, &axisValues, &range](int slot) -> qreal {
+        const QString label = range.axisValues.value(axes.value(slot));
+        return GradedBaseForLabel(axisValues.value(axes.value(slot)), label);
+    };
+
+    // Snapshot the live state.
+    const qreal origA = m_currentDimensionA;
+    const qreal origB = m_currentDimensionB;
+    const qreal origC = m_currentDimensionC;
+    const bool wasModified = doc->IsModified();
+    if (m_gradation != nullptr)
+    {
+        m_gradation->stop();
+    }
+
+    const int layerCount = maxIdx - minIdx + 1;
+    for (int idx = minIdx; idx <= maxIdx; ++idx)
+    {
+        qreal baseA = 1.0, baseB = 1.0, baseC = 1.0;
+        const qreal gradedBase = static_cast<qreal>(idx + 1);
+        if (gradedAxisPos == 0)
+        {
+            baseA = gradedBase;
+        }
+        else
+        {
+            baseA = FixedBase(0);
+        }
+        if (gradedAxisPos == 1)
+        {
+            baseB = gradedBase;
+        }
+        else
+        {
+            baseB = FixedBase(1);
+        }
+        if (gradedAxisPos == 2)
+        {
+            baseC = gradedBase;
+        }
+        else
+        {
+            baseC = FixedBase(2);
+        }
+
+        pattern->ClearVariables({VarType::Measurement, VarType::MeasurementSeparator});
+        m_m->StoreNames(false);
+        m_m->ReadMeasurements(baseA, baseB, baseC);
+        doc->LiteParseTree(Document::FullLiteParse);
+
+        QVector<DetailForLayout> details;
+        QVector<VLayoutPiece> pieces;
+        try
+        {
+            details = SortDetailsForLayout(pattern->DataPieces(), pattern);
+            pieces = PrepareDetailsForLayout(details);
+        }
+        catch (const VException &e)
+        {
+            // A piece that cannot be prepared for a graded size must not crash the mode entry —
+            // skip the remaining sizes; the restore below still runs and the partial scene is shown.
+            qWarning("Graded capture failed for a size — %s", qUtf8Printable(e.ErrorMessage()));
+            break;
+        }
+
+        // One real piece render per (piece × size); z = N − layer → reference (min size) on
+        // top. Render the piece the same way Val Fork's graded scene does (piece.GetItem):
+        // main path + seam allowance + internal paths + passmarks + place labels + grainline
+        // + fold line — NOT an invented silhouette.
+        const int layerPos = idx - minIdx;
+        const int z = layerCount - layerPos;
+        const bool isReference = (layerPos == 0);
+
+        for (int k = 0; k < pieces.size() && k < details.size(); ++k)
+        {
+            const quint32 pieceId = details.at(k).id;
+            // Frozen base: captured the first time the piece enters a graded build. A plain
+            // Details move afterwards must NOT relocate the graded canvas, even across captures.
+            const QPointF livePos(pieces.at(k).GetMx(), pieces.at(k).GetMy());
+            const QPointF basePos = m_gradedFrozenBases.value(pieceId, livePos);
+            if (!m_gradedFrozenBases.contains(pieceId))
+            {
+                m_gradedFrozenBases.insert(pieceId, livePos);
+            }
+
+            QGraphicsItem *item = pieces.at(k).GetItem(false, false, false);
+            item->setPos(basePos);
+            item->setData(kGradedBasePosRole, basePos); // frozen base for idempotent re-applies
+            item->setZValue(z);
+            item->setFlag(QGraphicsItem::ItemIsSelectable, false);
+            item->setFlag(QGraphicsItem::ItemIsMovable, isReference);
+            item->setData(kGradedPieceIdRole, pieceId);
+            item->setData(kGradedIsRefRole, isReference);
+            m_sceneGraded->addItem(item);
+        }
+    }
+
+    // Restore the live combination without leaving the DOM dirty.
+    pattern->ClearVariables({VarType::Measurement, VarType::MeasurementSeparator});
+    m_m->StoreNames(false);
+    m_m->ReadMeasurements(origA, origB, origC);
+    doc->LiteParseTree(Document::FullLiteParse);
+    doc->RefreshPieceGeometry();
+    doc->SetModified(wasModified);
+
+    // Alignment + per-range content offsets (recomputed from the model).
+    ApplyGradedLayoutOffsets();
+
+    // Reference drag bookkeeping: base positions + one-time hooks (mouse release,
+    // undo stack) driving the fan-out and the rebuild after undo/redo.
+    m_gradedBasePositions.clear();
+    const auto allItems = m_sceneGraded->items();
+    for (auto *baseItem : allItems)
+    {
+        if (GradedIsReference(baseItem))
+        {
+            m_gradedBasePositions.insert(GradedPieceId(baseItem), baseItem->pos());
+        }
+    }
+
+    if (not m_gradedDragHooked)
+    {
+        m_gradedDragHooked = true;
+        connect(ui->view, &VMainGraphicsView::MouseRelease, this, &MainWindow::GradedMouseReleased,
+                Qt::UniqueConnection);
+
+        // Details-like block selection: only the clicked info block shows its editing outline
+        // + handles (the others are deactivated).
+        connect(m_sceneGraded, &VMainGraphicsScene::ItemByMousePress, this, [this](QGraphicsItem *pressed) {
+            auto *pressedBlock = dynamic_cast<OInfoBlockItem *>(pressed);
+            auto *pressedAnnotation = dynamic_cast<OAnnotationItem *>(pressed);
+            const auto sceneItems = m_sceneGraded->items();
+            for (auto *it : sceneItems)
+            {
+                if (auto *blk = dynamic_cast<OInfoBlockItem *>(it))
+                {
+                    blk->SetActive(blk == pressedBlock);
+                }
+                else if (auto *ann = dynamic_cast<OAnnotationItem *>(it))
+                {
+                    ann->SetActive(ann == pressedAnnotation);
+                }
+            }
+        });
+
+        auto *undoStack = VAbstractApplication::VApp()->getUndoStack();
+        // Note: no Qt::UniqueConnection here — it is only legal for pointer-to-member
+        // functions, not lambdas (Qt warns and drops the connection). The surrounding
+        // m_gradedDragHooked guard already ensures this block runs once.
+        connect(undoStack, &QUndoStack::indexChanged, this,
+                [this]() {
+                    if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded
+                        && not m_activeGradedRangeName.isEmpty())
+                    {
+                        // Defer out of the current event; route through BuildGradedScene so the
+                        // structure/content signature decides: unchanged → apply-only offsets,
+                        // changed (e.g. an undone piece-content edit) → full re-capture.
+                        QTimer::singleShot(0, this, [this]() { BuildGradedScene(); });
+                    }
+                });
+    }
+
+    // Drop frozen bases of pieces that no longer exist (removed in Details).
+    if (const auto *currentPieces = pattern->DataPieces(); currentPieces != nullptr)
+    {
+        for (auto it = m_gradedFrozenBases.begin(); it != m_gradedFrozenBases.end();)
+        {
+            if (currentPieces->contains(it.key()))
+            {
+                ++it;
+            }
+            else
+            {
+                it = m_gradedFrozenBases.erase(it);
+            }
+        }
+    }
+
+    m_gradedSceneSignature = signature;
+}
