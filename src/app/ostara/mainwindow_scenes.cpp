@@ -64,6 +64,10 @@ void MainWindow::ScaleChanged(qreal scale)
     {
         scene = m_sceneDetails;
     }
+    else if (ui->view->scene() == m_sceneGraded)
+    {
+        scene = m_sceneGraded;
+    }
     else
     {
         return;
@@ -166,6 +170,24 @@ auto MainWindow::switchScene(Draw mode, const QVector<DetailForLayout> &details)
             SetEnableTool(true);
             m_drawToolBar->SetMode(Draw::Modeling);
             break;
+        case Draw::Graded:
+            if (m_drawMode)
+            {
+                m_currentDrawIndex = m_comboBoxDraws->currentIndex(); // save current pattern piece
+                m_drawMode = false;
+            }
+            m_comboBoxDraws->setCurrentIndex(m_comboBoxDraws->count() - 1); // Need to get data about all details
+            m_leftGoToStage->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/go-previous.png")));
+            m_rightGoToStage->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/go-next.png")));
+            SaveCurrentScene();
+            currentScene = m_sceneGraded;
+            ui->view->setScene(currentScene);
+            RestoreCurrentScene();
+            VAbstractValApplication::VApp()->SetDrawMode(Draw::Graded);
+            SetEnableTool(true);
+            m_drawToolBar->SetMode(Draw::Graded);
+            m_drawToolBar->hide();
+            break;
         case Draw::Layout:
             if (m_drawMode)
             {
@@ -244,10 +266,14 @@ void MainWindow::InitScenes()
 
     connect(m_sceneDetails, &VMainGraphicsScene::mouseMove, this, &MainWindow::MouseMove);
 
+    m_sceneGraded = new VMainGraphicsScene(this);
+    connect(m_sceneGraded, &VMainGraphicsScene::mouseMove, this, &MainWindow::MouseMove);
+
     ui->view->setScene(currentScene);
 
     m_sceneDraw->setTransform(ui->view->transform());
     m_sceneDetails->setTransform(ui->view->transform());
+    m_sceneGraded->setTransform(ui->view->transform());
 
     connect(ui->view, &VMainGraphicsView::MouseRelease, this, [this]() -> void { EndVisualization(true); });
     connect(ui->view, &VMainGraphicsView::ScaleChanged, this, &MainWindow::ScaleChanged);

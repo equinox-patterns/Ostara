@@ -169,6 +169,7 @@ private:
     auto ParsePieceAnnotations(const QDomElement &domElement) const -> OAnnotationData;
     void ParseDetails(const QDomElement &domElement, const Document &parse);
     void ParsePieceGroups(const QDomElement &domElement);
+    void ParseSizeRanges(const QDomElement &domElement);
     void ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse,
                            const QString &type);
     void ParseLineElement(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);

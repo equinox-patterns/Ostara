@@ -51,6 +51,7 @@
 #include "../vmisc/def.h"
 #include "variables/vinternalvariable.h"
 #include "opiecegroup.h"
+#include "osizerange.h"
 #include "vpiece.h"
 #include "vpiecepath.h"
 #include "vtranslatevars.h"
@@ -102,6 +103,9 @@ public:
     QSharedPointer<QHash<quint32, VPiece>> pieces{QSharedPointer<QHash<quint32, VPiece>>::create()};
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     QSharedPointer<QHash<quint32, OPieceGroup>> pieceGroups{QSharedPointer<QHash<quint32, OPieceGroup>>::create()};
+    // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
+    QSharedPointer<QHash<QString, OSizerange>> sizeRanges{
+        QSharedPointer<QHash<QString, OSizerange>>::create()};
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     QSharedPointer<QHash<quint32, VPiecePath>> piecePaths{QSharedPointer<QHash<quint32, VPiecePath>>::create()};
 
@@ -178,6 +182,11 @@ public:
     void RemovePiece(quint32 id);
     void RemovePieceGroup(quint32 id);
 
+    /** @brief Before a group is erased, spread its stored graded offset (groupContent) onto
+     *  each surviving member's pieceContent so a Graded move is not lost when the group
+     *  dissolves. */
+    void TransferGroupOffsetToMembers(quint32 groupId);
+
     template <class T> void UpdateGObject(quint32 id, T *obj);
     template <class T> void UpdateGObject(quint32 id, const QSharedPointer<T> &obj);
     void UpdatePiece(quint32 id, const VPiece &detail);
@@ -204,6 +213,8 @@ public:
     auto DataPieces() const -> QHash<quint32, VPiece> *;
     auto DataPieceGroups() const -> QHash<quint32, OPieceGroup> *;
     auto DataPieceGroups() -> QHash<quint32, OPieceGroup> *;
+    auto SizeRanges() const -> const QHash<QString, OSizerange> *;
+    void SetSizeRanges(const QHash<QString, OSizerange> &ranges);
     auto GetPieceGroupId(quint32 pieceId) const -> quint32;
     auto GetEffectivePieceCount() const -> int;
     auto DataVariables() const -> const QHash<QString, QSharedPointer<VInternalVariable>> *;

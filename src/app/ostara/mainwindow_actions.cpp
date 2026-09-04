@@ -62,6 +62,7 @@ void MainWindow::InitActionShortcuts()
     m_shortcutActions.insert(VShortcutAction::SaveAs, ui->actionSaveAs);
     m_shortcutActions.insert(VShortcutAction::DrawMode, ui->actionDraw);
     m_shortcutActions.insert(VShortcutAction::DetailsMode, ui->actionDetails);
+    m_shortcutActions.insert(VShortcutAction::GradedMode, ui->actionGraded);
     m_shortcutActions.insert(VShortcutAction::LayoutMode, ui->actionLayout);
     m_shortcutActions.insert(VShortcutAction::NewPatternPiece, ui->actionNewDraw);
     m_shortcutActions.insert(VShortcutAction::NextPatternPiece, ui->actionNextPatternPiece);
@@ -103,6 +104,7 @@ void MainWindow::SetEnableWidgets(bool enable)
     ui->actionNewDraw->setEnabled(enableOnDrawStage);
     ui->actionDraw->setEnabled(enable);
     ui->actionDetails->setEnabled(enable);
+    ui->actionGraded->setEnabled(enable);
     ui->actionLayout->setEnabled(enable);
     ui->actionTable->setEnabled(enableOnDesignStage);
     ui->actionExportFinalMeasurementsToCSV->setEnabled(enable);
@@ -177,6 +179,9 @@ void MainWindow::SetEnableTool(bool enable)
             break;
         case Draw::Layout:
             layoutTools = enable;
+            break;
+        case Draw::Graded:
+            // Non-creative mode: no tool is enabled in Graded.
             break;
     }
 
@@ -324,6 +329,7 @@ void MainWindow::CreateActions()
     connect(ui->actionArrowTool, &QAction::triggered, this, &MainWindow::ArrowTool);
     connect(ui->actionDraw, &QAction::triggered, this, &MainWindow::ActionDraw);
     connect(ui->actionDetails, &QAction::triggered, this, &MainWindow::ActionDetails);
+    connect(ui->actionGraded, &QAction::triggered, this, &MainWindow::ActionGraded);
     connect(ui->actionLayout, &QAction::triggered, this, &MainWindow::ActionLayout);
     connect(ui->actionExportRecipe, &QAction::triggered, this, &MainWindow::ActionExportRecipe_triggered);
     connect(ui->actionNewDraw, &QAction::triggered, this, &MainWindow::ActionNewDraw_triggered);

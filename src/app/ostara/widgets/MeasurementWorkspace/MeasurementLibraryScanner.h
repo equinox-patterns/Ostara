@@ -56,6 +56,9 @@ auto ScanLibrary(const QString &libPath, const QStringList &favorites) -> QList<
 /// Values and increments are NOT copied.
 auto ExtractStructure(const QString &filePath) -> QVector<MeasurementRecord>;
 
+/// Whether a canonical measurements-file path lies inside the library folder.
+auto IsInLibrary(const QString &libPath, const QString &canonicalPath) -> bool;
+
 } // namespace MeasurementLibraryScanner
 
 #endif // MEASUREMENTLIBRARYSCANNER_H

@@ -98,10 +98,11 @@ void MainWindow::ToolBarStages()
     m_rightGoToStage = new QLabel(this);
     m_rightGoToStage->setVisible(false);
 
-    m_topBar->SetModeActions(ui->actionDraw, ui->actionDetails, ui->actionLayout);
+    m_topBar->SetModeActions(ui->actionDraw, ui->actionDetails, ui->actionGraded, ui->actionLayout);
 
     ui->actionDraw->setToolTip(FormatActionToolTip(ui->actionDraw));
     ui->actionDetails->setToolTip(FormatActionToolTip(ui->actionDetails));
+    ui->actionGraded->setToolTip(FormatActionToolTip(ui->actionGraded));
     ui->actionLayout->setToolTip(FormatActionToolTip(ui->actionLayout));
 }
 
@@ -274,6 +275,8 @@ void MainWindow::UpdateTopBarIcons()
         QIcon(QStringLiteral(":/icons/%1/polygon-fill_%1.svg").arg(themeDir)));
     ui->actionDetails->setIcon(
         QIcon(QStringLiteral(":/icons/%1/sliders-fill_%1.svg").arg(themeDir)));
+    ui->actionGraded->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/stack-fill_%1.svg").arg(themeDir)));
     ui->actionLayout->setIcon(
         QIcon(QStringLiteral(":/icons/%1/printer-fill_%1.svg").arg(themeDir)));
     ui->actionNewDraw->setIcon(

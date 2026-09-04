@@ -274,6 +274,9 @@ void ODockManager::saveDockStateForMode(Draw mode)
         case Draw::Layout:
             m_layoutModeDockState = m_host->saveState(kToolbarStateVersion);
             break;
+        case Draw::Graded:
+            m_gradedModeDockState = m_host->saveState(kToolbarStateVersion);
+            break;
     }
 }
 
@@ -306,6 +309,13 @@ void ODockManager::restoreDockStateForMode(Draw mode)
                 !m_host->restoreState(m_layoutModeDockState, kToolbarStateVersion))
             {
                 qWarning() << "ODockManager: failed to restore Layout dock state";
+            }
+            break;
+        case Draw::Graded:
+            if (!m_gradedModeDockState.isEmpty() &&
+                !m_host->restoreState(m_gradedModeDockState, kToolbarStateVersion))
+            {
+                qWarning() << "ODockManager: failed to restore Graded dock state";
             }
             break;
     }
@@ -368,6 +378,20 @@ void ODockManager::applyModeDocks(Draw mode)
             m_actionBackgroundImages->setDisabled(true);
             m_actionDependencies->setDisabled(true);
             break;
+        case Draw::Graded:
+            // Tranche 1: Graded shows no dock at all.
+            m_ui->dockWidgetLayoutPages->setVisible(false);
+            m_ui->dockWidgetOptions->setVisible(false);
+            m_ui->dockWidgetGroups->setVisible(false);
+            m_ui->dockWidgetMessages->setVisible(false);
+            m_ui->dockWidgetBackgroundImages->setVisible(false);
+            m_ui->dockWidgetDependencies->setVisible(false);
+            m_actionOptions->setDisabled(true);
+            m_actionGroups->setDisabled(true);
+            m_actionMessages->setDisabled(true);
+            m_actionBackgroundImages->setDisabled(true);
+            m_actionDependencies->setDisabled(true);
+            break;
     }
 
     restoreDockStateForMode(mode);
@@ -389,6 +413,8 @@ void ODockManager::retranslate()
             m_ui->dockWidgetOptions->setWindowTitle(tr("Options"));
             break;
         case Draw::Layout:
+            break;
+        case Draw::Graded:
             break;
     }
 }
@@ -436,6 +462,12 @@ QByteArray ODockManager::layoutModeDockState() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+QByteArray ODockManager::gradedModeDockState() const
+{
+    return m_gradedModeDockState;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODockManager::setDrawModeDockState(const QByteArray &state)
 {
     m_drawModeDockState = state;
@@ -451,6 +483,12 @@ void ODockManager::setDetailsModeDockState(const QByteArray &state)
 void ODockManager::setLayoutModeDockState(const QByteArray &state)
 {
     m_layoutModeDockState = state;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODockManager::setGradedModeDockState(const QByteArray &state)
+{
+    m_gradedModeDockState = state;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

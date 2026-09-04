@@ -44,6 +44,7 @@
         <file alias="polygon-fill_light.svg">../../../../../share/themes/icons/light/polygon-fill_light.svg</file>
         <file alias="sliders-fill_light.svg">../../../../../share/themes/icons/light/sliders-fill_light.svg</file>
         <file alias="printer-fill_light.svg">../../../../../share/themes/icons/light/printer-fill_light.svg</file>
+        <file alias="stack-fill_light.svg">../../../../../share/themes/icons/light/stack-fill_light.svg</file>
         <file alias="plus-circle-fill_light.svg">../../../../../share/themes/icons/light/plus-circle-fill_light.svg</file>
         <file alias="table-fill_light.svg">../../../../../share/themes/icons/light/table-fill_light.svg</file>
         <file alias="ruler-fill_light.svg">../../../../../share/themes/icons/light/ruler-fill_light.svg</file>
@@ -120,6 +121,7 @@
         <file alias="polygon-fill_dark.svg">../../../../../share/themes/icons/dark/polygon-fill_dark.svg</file>
         <file alias="sliders-fill_dark.svg">../../../../../share/themes/icons/dark/sliders-fill_dark.svg</file>
         <file alias="printer-fill_dark.svg">../../../../../share/themes/icons/dark/printer-fill_dark.svg</file>
+        <file alias="stack-fill_dark.svg">../../../../../share/themes/icons/dark/stack-fill_dark.svg</file>
         <file alias="plus-circle-fill_dark.svg">../../../../../share/themes/icons/dark/plus-circle-fill_dark.svg</file>
         <file alias="table-fill_dark.svg">../../../../../share/themes/icons/dark/table-fill_dark.svg</file>
         <file alias="ruler-fill_dark.svg">../../../../../share/themes/icons/dark/ruler-fill_dark.svg</file>

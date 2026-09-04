@@ -513,6 +513,16 @@ void MainWindow::Clear()
     m_groupHolders.clear();
     m_sceneDetails->clear();
     qCDebug(vMainWindow, "Details scene cleared.");
+
+    if (m_sceneGraded != nullptr)
+    {
+        m_sceneGraded->clear();
+    }
+    m_activeGradedRangeName.clear();
+    m_gradedBasePositions.clear();
+    m_gradedSceneSignature.clear();
+    m_gradedFrozenBases.clear();
+    m_gradedForceCapture = false;
     ArrowTool(true);
     {
         const QSignalBlocker blocker(m_comboBoxDraws);
@@ -521,6 +531,7 @@ void MainWindow::Clear()
     }
     ui->actionDraw->setEnabled(false);
     ui->actionDetails->setEnabled(false);
+    ui->actionGraded->setEnabled(false);
     ui->actionLayout->setEnabled(false);
     ui->actionNewDraw->setEnabled(false);
     ui->actionOptionDraw->setEnabled(false);

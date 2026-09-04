@@ -641,7 +641,13 @@ void MainWindow::ActionDraw(bool checked)
 
         ui->actionDraw->setChecked(true);
         ui->actionDetails->setChecked(false);
+        ui->actionGraded->setChecked(false);
         ui->actionLayout->setChecked(false);
+
+        if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
+        {
+            m_topBar->SetGradedChrome(false);
+        }
 
         if (!switchScene(Draw::Calculation))
         {
@@ -650,6 +656,9 @@ void MainWindow::ActionDraw(bool checked)
 
         SetEnableWidgets(true);
         m_dockManager->applyModeDocks(Draw::Calculation);
+        // The work toolbar is not managed by the dock manager — make sure leaving Graded (or
+        // any state where it was hidden) never leaves Draw without it.
+        m_drawToolBar->show();
         m_topBar->SetPatternPieceVisible(true);
     }
     else
@@ -671,6 +680,7 @@ void MainWindow::ActionDetails(bool checked)
 
         ui->actionDraw->setChecked(false);
         ui->actionDetails->setChecked(true);
+        ui->actionGraded->setChecked(false);
         ui->actionLayout->setChecked(false);
 
         if (not VAbstractValApplication::VApp()->getOpeningPattern() && pattern->DataPieces()->isEmpty())
@@ -687,6 +697,12 @@ void MainWindow::ActionDetails(bool checked)
 
         qCDebug(vMainWindow, "Show details scene");
         m_dockManager->saveDockStateForMode(VAbstractValApplication::VApp()->GetDrawMode());
+
+        if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
+        {
+            m_topBar->SetGradedChrome(false);
+        }
+
         if (!switchScene(Draw::Modeling))
         {
             return;
@@ -694,6 +710,8 @@ void MainWindow::ActionDetails(bool checked)
 
         SetEnableWidgets(true);
         m_dockManager->applyModeDocks(Draw::Modeling);
+        // Same guarantee as ActionDraw: the work toolbar must be back when leaving Graded.
+        m_drawToolBar->show();
 
         m_statusLabel->setText(QString());
         WarningNotUniquePieceName(pattern->DataPieces());
@@ -723,6 +741,7 @@ void MainWindow::ActionLayout(bool checked)
 
     ui->actionDraw->setChecked(false);
     ui->actionDetails->setChecked(false);
+    ui->actionGraded->setChecked(false);
     ui->actionLayout->setChecked(true);
 
     QVector<DetailForLayout> details;
@@ -756,6 +775,12 @@ void MainWindow::ActionLayout(bool checked)
 
     qCDebug(vMainWindow, "Show layout scene");
     m_dockManager->saveDockStateForMode(VAbstractValApplication::VApp()->GetDrawMode());
+
+    if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
+    {
+        m_topBar->SetGradedChrome(false);
+        m_drawToolBar->show();
+    }
 
     if (not switchScene(Draw::Layout, details))
     {

@@ -32,11 +32,14 @@
 #include "../vformat/vdimensions.h"
 #include "../vmisc/vabstractshortcutmanager.h"
 #include "../vmisc/vlockguard.h"
+#include "../vpatterndb/osizerange.h"
 #include "core/vcmdexport.h"
 #include "mainwindowsnogui.h"
 
 #include <QDoubleSpinBox>
+#include <QHash>
 #include <QPointer>
+#include <QPointF>
 
 namespace Ui
 {
@@ -209,6 +212,7 @@ private slots:
     void ActionDraw(bool checked);
     void ActionDetails(bool checked);
     void ActionLayout(bool checked);
+    void ActionGraded(bool checked);
 
     void on_actionNew_triggered();
     bool hasOpenPattern() const;
@@ -303,6 +307,25 @@ private:
 
     /** @brief sceneDetails details scene. */
     VMainGraphicsScene *m_sceneDetails{nullptr};
+    VMainGraphicsScene *m_sceneGraded{nullptr};
+
+    /// Name of the active size range in Graded mode (empty when none yet).
+    QString m_activeGradedRangeName{};
+
+    /// Graded reference drag: base (un-moved) position of each reference piece.
+    QHash<quint32, QPointF> m_gradedBasePositions{};
+    bool m_gradedDragHooked{false};
+    /// Re-entrancy guard around the (expensive) graded scene capture.
+    bool m_gradedBuilding{false};
+    /// Structural signature of the last built graded scene (range + piece/group set). The
+    /// canvas is only rebuilt when it changes — plain moves in Details must not relocate it.
+    QString m_gradedSceneSignature{};
+    /// Frozen Details base (mx/my) per piece, captured when the piece first enters a graded
+    /// build. Details moves afterwards never relocate the graded canvas.
+    QHash<quint32, QPointF> m_gradedFrozenBases{};
+    /// When true, the next BuildGradedScene always re-captures (entry from another mode), so
+    /// ANY piece-shape change in Details is picked up — not only the structural ones.
+    bool m_gradedForceCapture{false};
 
     /** @brief Canvas holders rendering each piece group's common children. */
     QHash<quint32, class OPieceGroupHolderItem *> m_groupHolders;
@@ -469,6 +492,47 @@ private:
     void ShowWelcomeScreen();
     void ShowEditor();
     auto switchScene(Draw mode, const QVector<DetailForLayout> &details = {}) -> bool;
+
+    /// Graded mode: create/reuse the active size range for the loaded measurements
+    /// table. Returns true when a range is available and the graded canvas may show.
+    bool EnterGradedMode();
+
+    /// Build the stacked graded scene (one layer per size of the active range).
+    void BuildGradedScene();
+
+    /// Re-apply alignment + per-range content offsets onto the existing graded
+    /// items (no re-capture). Used after undo/redo and at the end of a capture.
+    void ApplyGradedLayoutOffsets();
+
+    /// End of a graded reference drag: fan the offset out to all layers / groups
+    /// and push an undo command saving the range content.
+    void GradedMouseReleased();
+
+    /// (Re)build the interactive grainlines (lone pieces + groups) on the graded reference
+    /// layer, from the Details base geometry or the per-range override, and wire move/resize
+    /// to save into the active size range. Positions must be final when called.
+    void RefreshGradedReferenceGrainlines();
+
+    /// Persist a grainline move/resize of a lone piece (isGroup=false) or of a group into the
+    /// active size range and push the undo command.
+    void StoreGradedGrainline(quint32 ownerId, bool isGroup, const OSizerange::GrainlineOverride &grainline);
+
+    /// (Re)build the interactive info blocks (lone pieces + groups) on the graded reference
+    /// layer — Details-identical hosting, with per-range geometry overrides. Positions must be
+    /// final when called.
+    void RefreshGradedReferenceInfoBlocks();
+
+    /// Persist an info-block move/resize of a lone piece (isGroup=false) or of a group into
+    /// the active size range and push the undo command.
+    void StoreGradedInfoBlock(quint32 ownerId, bool isGroup, int block, const OInfoBlockGeom &geom);
+
+    /// (Re)build the interactive annotations (lone pieces + groups) on the graded reference
+    /// layer — Details-identical hosting, per-range geometry overrides, fixed base rotation.
+    void RefreshGradedReferenceAnnotations();
+
+    /// Persist an annotation move/resize of a lone piece (isGroup=false) or of a group into
+    /// the active size range and push the undo command. Rotation is never stored.
+    void StoreGradedAnnotation(quint32 ownerId, bool isGroup, int index, const OAnnotationGeom &geom);
 
     // Measurement slots (from embedded WelcomeScreen)
     void WelcomeNewMeasurement();

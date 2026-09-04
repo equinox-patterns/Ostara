@@ -1036,6 +1036,97 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="sizeRanges" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="sizeRange" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="axisValue" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="axis" type="xs:string" use="required"/>
+                        <xs:attribute name="value" type="xs:string" use="required"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="piece" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="grainline" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:attribute name="mx" type="xs:double"/>
+                              <xs:attribute name="my" type="xs:double"/>
+                              <xs:attribute name="length" type="xs:double"/>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="block" minOccurs="0" maxOccurs="11">
+                            <xs:complexType>
+                              <xs:attribute name="index" type="xs:int" use="required"/>
+                              <xs:attribute name="mx" type="xs:double"/>
+                              <xs:attribute name="my" type="xs:double"/>
+                              <xs:attribute name="fontScale" type="xs:double"/>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="annotation" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="index" type="xs:int" use="required"/>
+                              <xs:attribute name="mx" type="xs:double"/>
+                              <xs:attribute name="my" type="xs:double"/>
+                              <xs:attribute name="width" type="xs:double"/>
+                              <xs:attribute name="height" type="xs:double"/>
+                              <xs:attribute name="fontScale" type="xs:double"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="pieceId" type="xs:unsignedInt" use="required"/>
+                        <xs:attribute name="dx" type="xs:double"/>
+                        <xs:attribute name="dy" type="xs:double"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="group" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="grainline" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:attribute name="mx" type="xs:double"/>
+                              <xs:attribute name="my" type="xs:double"/>
+                              <xs:attribute name="length" type="xs:double"/>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="block" minOccurs="0" maxOccurs="11">
+                            <xs:complexType>
+                              <xs:attribute name="index" type="xs:int" use="required"/>
+                              <xs:attribute name="mx" type="xs:double"/>
+                              <xs:attribute name="my" type="xs:double"/>
+                              <xs:attribute name="fontScale" type="xs:double"/>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="annotation" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="index" type="xs:int" use="required"/>
+                              <xs:attribute name="mx" type="xs:double"/>
+                              <xs:attribute name="my" type="xs:double"/>
+                              <xs:attribute name="width" type="xs:double"/>
+                              <xs:attribute name="height" type="xs:double"/>
+                              <xs:attribute name="fontScale" type="xs:double"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="groupId" type="xs:unsignedInt" use="required"/>
+                        <xs:attribute name="dx" type="xs:double"/>
+                        <xs:attribute name="dy" type="xs:double"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="name" type="xs:string" use="required"/>
+                  <xs:attribute name="measurement" type="xs:string"/>
+                  <xs:attribute name="sizeAxis" type="xs:string"/>
+                  <xs:attribute name="min" type="xs:string"/>
+                  <xs:attribute name="max" type="xs:string"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
       <xs:attribute name="readOnly" type="xs:boolean"/>
       <xs:attribute name="labelPrefix" type="labelPrefixType"/>

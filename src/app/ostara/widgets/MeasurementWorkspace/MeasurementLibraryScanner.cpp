@@ -114,4 +114,28 @@ auto ExtractStructure(const QString &filePath) -> QVector<MeasurementRecord>
     return records;
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+auto IsInLibrary(const QString &libPath, const QString &canonicalPath) -> bool
+{
+    if (libPath.isEmpty() || canonicalPath.isEmpty())
+    {
+        return false;
+    }
+
+    const QString root = QDir(libPath).canonicalPath();
+    if (root.isEmpty())
+    {
+        return false;
+    }
+
+    const QFileInfo info(canonicalPath);
+    const QString file = info.canonicalFilePath();
+    if (file.isEmpty())
+    {
+        return false;
+    }
+
+    return file == root || file.startsWith(root + QDir::separator());
+}
+
 } // namespace MeasurementLibraryScanner

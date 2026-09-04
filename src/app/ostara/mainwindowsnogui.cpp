@@ -55,6 +55,8 @@
 #include <QAction>
 #include <QSet>
 
+#include <memory>
+
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include "../vmisc/vtextcodec.h"
 using QTextCodec = VTextCodec;
@@ -1253,40 +1255,42 @@ auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &d
         return {};
     }
 
-    std::function<VLayoutPiece(const DetailForLayout &data)> const PrepareDetail = [](const DetailForLayout &data)
+    // Prepared SERIALLY on the calling (GUI) thread. The previous QtConcurrent::mapped +
+    // modal QProgressDialog::exec() version was a correctness hazard: VLayoutPiece::Create
+    // re-submits inner QtConcurrent tasks to the same global pool and blocks on them (deadlock
+    // risk), the workers read the shared VContainer while the modal nested event loop could
+    // re-enter the doc, and Create touches VApp/QSettings from pool threads. Serial execution
+    // removes all of those; the outer callers already parallelize at a higher level if needed.
+    QVector<VLayoutPiece> layoutDetails;
+    layoutDetails.reserve(details.size());
+
+    std::unique_ptr<QProgressDialog> progress;
+    if (VApplication::IsGUIMode())
+    {
+        progress = std::make_unique<QProgressDialog>(
+            QCoreApplication::translate("MainWindowsNoGUI", "Preparing details for layout"), QString(), 0,
+            static_cast<int>(details.size()));
+        progress->setWindowModality(Qt::ApplicationModal);
+        progress->setWindowTitle(QCoreApplication::translate("MainWindowsNoGUI", "Preparing details for layout"));
+        progress->show();
+    }
+
+    int done = 0;
+    for (const DetailForLayout &data : details)
     {
         auto *tool = qobject_cast<VAbstractTool *>(VAbstractPattern::getTool(data.id));
         SCASSERT(tool != nullptr)
-        return VLayoutPiece::Create(data.piece, data.id, tool->getData());
-    };
-
-    QProgressDialog progress(QCoreApplication::translate("MainWindowsNoGUI", "Preparing details for layout"), QString(),
-                             0, static_cast<int>(details.size()));
-    progress.setWindowModality(Qt::ApplicationModal);
-
-    QFutureWatcher<VLayoutPiece> futureWatcher;
-    QObject::connect(&futureWatcher, &QFutureWatcher<VLayoutPiece>::finished, &progress, &QProgressDialog::reset);
-    QObject::connect(&futureWatcher, &QFutureWatcher<VLayoutPiece>::progressRangeChanged, &progress,
-                     &QProgressDialog::setRange);
-    QObject::connect(&futureWatcher, &QFutureWatcher<VLayoutPiece>::progressValueChanged, &progress,
-                     &QProgressDialog::setValue);
-
-    futureWatcher.setFuture(QtConcurrent::mapped(details, PrepareDetail));
-
-    if (VApplication::IsGUIMode())
-    {
-        progress.exec();
+        layoutDetails.append(VLayoutPiece::Create(data.piece, data.id, tool->getData())); // may throw → caller catches
+        if (progress != nullptr)
+        {
+            progress->setValue(++done);
+            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents); // keep the dialog painted
+        }
     }
 
-    futureWatcher.waitForFinished();
-
-    QVector<VLayoutPiece> layoutDetails;
-    layoutDetails.reserve(details.size());
-    const QFuture<VLayoutPiece> future = futureWatcher.future();
-
-    for (auto i = future.constBegin(); i != future.constEnd(); ++i)
+    if (progress != nullptr)
     {
-        layoutDetails.append(*i);
+        progress->close();
     }
 
     return layoutDetails;

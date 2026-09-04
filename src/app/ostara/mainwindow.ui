@@ -159,6 +159,7 @@
     </property>
     <addaction name="actionDraw"/>
     <addaction name="actionDetails"/>
+    <addaction name="actionGraded"/>
     <addaction name="actionLayout"/>
    </widget>
    <widget class="QMenu" name="menuWatermark">
@@ -675,6 +676,26 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+L</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionGraded">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Graded</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with graded sizes of the details. To enable &amp;quot;Graded mode&amp;quot; you need at least one detail on the stage &amp;quot;Details mode&amp;quot; and a multi-size measurements table loaded.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+G</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

@@ -56,6 +56,7 @@ constexpr int kCaretH     = 16;
 constexpr int kModeDraw   = 1 << 0; // Draw::Calculation
 constexpr int kModeDetail = 1 << 1; // Draw::Modeling
 constexpr int kModeLayout = 1 << 2; // Draw::Layout
+constexpr int kModeGraded = 1 << 3; // Draw::Graded
 
 int ModeToMask(Draw mode)
 {
@@ -64,6 +65,7 @@ int ModeToMask(Draw mode)
         case Draw::Calculation: return kModeDraw;
         case Draw::Modeling:    return kModeDetail;
         case Draw::Layout:      return kModeLayout;
+        case Draw::Graded:      return kModeGraded;
     }
     return 0;
 }

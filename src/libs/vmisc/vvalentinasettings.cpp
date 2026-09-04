@@ -1197,6 +1197,8 @@ auto VValentinaSettings::GetModeToolbarsState(Draw mode) const -> QByteArray
             return value(*settingModeToolbarsStateDetails).toByteArray();
         case Draw::Layout:
             return value(*settingModeToolbarsStateLayout).toByteArray();
+        case Draw::Graded:
+            return {};
     }
     return {};
 }
@@ -1215,6 +1217,8 @@ void VValentinaSettings::SetModeToolbarsState(Draw mode, const QByteArray &value
         case Draw::Layout:
             setValue(*settingModeToolbarsStateLayout, value);
             break;
+        case Draw::Graded:
+            break; // Graded shows no toolbar; nothing to persist.
     }
 }
 

@@ -109,6 +109,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsAnnotationStyles, ("paths/a
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCollections, ("paths/collections"_L1))                  // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCollectionsSortAscending, ("infoBlock/collectionsSortAscending"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingMeasurementFavorites, ("paths/measurementFavorites"_L1))     // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedSizeAxis, ("graded/sizeAxis"_L1))                       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationOsSeparator, ("configuration/osSeparator"_L1)) // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationAutosaveState, ("configuration/autosave/state"_L1))
@@ -623,6 +624,31 @@ void VCommonSettings::SetMeasurementFavorites(const QStringList &value) const
 {
     QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
     settings.setValue(*settingMeasurementFavorites, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetSizeAxisForMeasurement(const QString &canonicalPath) const -> QString
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    const QVariantMap axes = settings.value(*settingGradedSizeAxis).toMap();
+    return axes.value(canonicalPath).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetSizeAxisForMeasurement(const QString &canonicalPath, const QString &axisName) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    QVariantMap axes = settings.value(*settingGradedSizeAxis).toMap();
+    if (axisName.isEmpty())
+    {
+        axes.remove(canonicalPath); // undeclare the table
+    }
+    else
+    {
+        axes.insert(canonicalPath, axisName);
+    }
+    settings.setValue(*settingGradedSizeAxis, axes);
     settings.sync();
 }
 

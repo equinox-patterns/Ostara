@@ -26,6 +26,9 @@
 #ifndef TOPBAR_H
 #define TOPBAR_H
 
+#include <QHash>
+#include <QPointer>
+#include <QVector>
 #include <QWidget>
 
 class QAction;
@@ -41,7 +44,7 @@ class TopBar : public QWidget
 public:
     explicit TopBar(QWidget *parent = nullptr);
 
-    void SetModeActions(QAction *draw, QAction *details, QAction *layout);
+    void SetModeActions(QAction *draw, QAction *details, QAction *graded, QAction *layout);
     void SetPatternPieceWidgets(QLabel *pieceLabel, QComboBox *combo, QAction *newPieceAction);
     void SetMeasurementWidgets(QAction *loadAction, QLabel *fileNameLabel,
                                QLabel *separator, QAction *tableAction);
@@ -61,6 +64,13 @@ public:
     /// Show/hide the dimension separator before the first dim combo.
     void SetDimensionSeparatorVisible(bool visible);
 
+    /// Show/hide the dimension drop-downs inserted in the center zone (label + combo).
+    void SetDimensionWidgetsVisible(bool visible);
+
+    /// Apply/restore the Graded-mode center chrome. In Graded only the measurement
+    /// file-name label stays visible; the dimension and piece widgets are hidden.
+    void SetGradedChrome(bool graded);
+
     /// Show/hide the pattern piece section (label + combo + new piece button + separator).
     void SetPatternPieceVisible(bool visible);
 
@@ -77,9 +87,11 @@ private:
     // --- Left buttons -----------------------------------------------------
     QToolButton *m_btnDraw    = nullptr;
     QToolButton *m_btnDetails = nullptr;
+    QToolButton *m_btnGraded  = nullptr;
     QToolButton *m_btnLayout  = nullptr;
-    QLabel *m_sepDrawDetails   = nullptr;
-    QLabel *m_sepDetailsLayout = nullptr;
+    QLabel *m_sepDrawDetails    = nullptr;
+    QLabel *m_sepDetailsGraded  = nullptr; // between Details and Graded
+    QLabel *m_sepGradedLayout   = nullptr; // between Graded and Layout
 
     // --- Center: pattern piece --------------------------------------------
     QComboBox   *m_comboDraws         = nullptr;
@@ -90,6 +102,17 @@ private:
     // --- Center: measurement ----------------------------------------------
     QLabel *m_measurementFileNameLabel = nullptr;
     QLabel *m_dimSeparator = nullptr; // line-vertical before first dim combo (multisize only)
+
+    // --- Center: widgets hidden in Graded mode (kept out of it: only the
+    //     measurement file-name label stays visible) -----------------------
+    QToolButton            *m_btnLoadTable = nullptr; // load measurement button
+    QLabel                 *m_sepAfterDims = nullptr; // always-visible separator before table button
+    QToolButton            *m_btnTable     = nullptr; // measurement table button
+    QVector<QPointer<QWidget>> m_dimWidgets{};        // dimension label/combo pairs inserted
+
+    /// Visibility snapshot of the center widgets taken when entering Graded,
+    /// restored when leaving the mode.
+    QHash<QWidget *, bool> m_gradedSavedVisibility{};
 };
 
 #endif // TOPBAR_H

@@ -3,6 +3,7 @@
 set(VPATTERN_SOURCES
     oannotationdata.cpp
     oinfoblockdata.cpp
+    osizerange.cpp
     testpassmark.cpp
     vcontainer.cpp
     calculator.cpp
@@ -15,6 +16,7 @@ set(VPATTERN_SOURCES
     vpassmark.cpp
     oannotationdata.h
     oinfoblockdata.h
+    osizerange.h
     ipieceinfo.h
     opiecegroup.h
     testpassmark.h

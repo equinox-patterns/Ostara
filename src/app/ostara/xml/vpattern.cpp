@@ -629,7 +629,8 @@ void VPattern::customEvent(QEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void VPattern::ParseRootElement(const Document &parse, const QDomNode &node)
 {
-    static const QStringList tags({TagLineNames, TagDraw, TagIncrements, TagPreviewCalculations, TagPieceGroups});
+    static const QStringList tags(
+        {TagLineNames, TagDraw, TagIncrements, TagPreviewCalculations, TagPieceGroups, QStringLiteral("sizeRanges")});
 
     if (not node.isElement())
     {
@@ -679,6 +680,12 @@ void VPattern::ParseRootElement(const Document &parse, const QDomNode &node)
             if (parse != Document::LiteParse)
             {
                 ParsePieceGroups(domElement);
+            }
+            break;
+        case 5: // sizeRanges
+            if (parse != Document::LiteParse)
+            {
+                ParseSizeRanges(domElement);
             }
             break;
         default:

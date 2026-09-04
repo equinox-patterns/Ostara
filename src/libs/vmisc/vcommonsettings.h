@@ -117,6 +117,11 @@ public:
     auto GetMeasurementFavorites() const -> QStringList;
     void SetMeasurementFavorites(const QStringList &value) const;
 
+    /// Size axis (the graded axis) declared for a measurements table, stored per
+    /// canonical path (software-level store, never in the .omt / .ostara).
+    auto GetSizeAxisForMeasurement(const QString &canonicalPath) const -> QString;
+    void SetSizeAxisForMeasurement(const QString &canonicalPath, const QString &axisName) const;
+
     auto GetOsSeparator() const -> bool;
     void SetOsSeparator(const bool &value);
 

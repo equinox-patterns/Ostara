@@ -56,6 +56,7 @@ enum class VShortcutAction : quint8
     DrawMode,
     DetailsMode,
     LayoutMode,
+    GradedMode,
     NewPatternPiece,
     NextPatternPiece,
     PreviusPatternPiece,

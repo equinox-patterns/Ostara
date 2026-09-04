@@ -39,7 +39,7 @@
 VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
   : VAbstractShortcutManager{parent}
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 94, "Check if all actions were used.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 95, "Check if all actions were used.");
 
     AddShortcut({VShortcutAction::ZoomIn, KeyBindingsToStringList(QKeySequence::ZoomIn), {}});
     AddShortcut({VShortcutAction::ZoomOut, KeyBindingsToStringList(QKeySequence::ZoomOut), {}});
@@ -77,6 +77,8 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
         {VShortcutAction::DetailsMode, {QKeySequence(Qt::ControlModifier | Qt::Key_E).toString()}, {}});
     AddShortcut(
         {VShortcutAction::LayoutMode, {QKeySequence(Qt::ControlModifier | Qt::Key_L).toString()}, {}});
+    AddShortcut(
+        {VShortcutAction::GradedMode, {QKeySequence(Qt::ControlModifier | Qt::Key_G).toString()}, {}});
     AddShortcut(
         {VShortcutAction::NewPatternPiece,
          {QKeySequence(Qt::ControlModifier | Qt::ShiftModifier | Qt::Key_N).toString()},

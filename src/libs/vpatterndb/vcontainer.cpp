@@ -397,6 +397,7 @@ void VContainer::Clear()
 
     d->pieces->clear();
     d->piecePaths->clear();
+    d->sizeRanges->clear(); // graded ranges belong to one pattern — never leak across files
     ClearVariables();
     ClearGObjects();
     ClearUniqueNames();
@@ -409,6 +410,7 @@ void VContainer::ClearForFullParse()
 
     d->pieces->clear();
     d->piecePaths->clear();
+    d->sizeRanges->clear(); // graded ranges belong to one pattern — never leak across files
     Q_STATIC_ASSERT_X(static_cast<int>(VarType::Unknown) == 12, "Check that you used all types");
     ClearVariables(QVector<VarType>{VarType::Increment, VarType::IncrementSeparator, VarType::LineAngle,
                                     VarType::LineLength, VarType::CurveLength, VarType::CurveCLength,
@@ -637,6 +639,44 @@ void VContainer::RemoveVariable(const QString &name)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VContainer::TransferGroupOffsetToMembers(quint32 groupId)
+{
+    if (!d->pieceGroups->contains(groupId))
+    {
+        return;
+    }
+    const OPieceGroup &group = d->pieceGroups->value(groupId);
+
+    bool changed = false;
+    QHash<QString, OSizerange> ranges = *d->sizeRanges;
+    for (auto it = ranges.begin(); it != ranges.end(); ++it)
+    {
+        const auto gc = it->groupContent.constFind(groupId);
+        if (gc == it->groupContent.cend())
+        {
+            continue;
+        }
+        const qreal dx = gc->dx;
+        const qreal dy = gc->dy;
+        for (quint32 memberId : group.pieceIds)
+        {
+            if (d->pieces->contains(memberId))
+            {
+                OSizerange::PieceContent &pc = it->pieceContent[memberId];
+                pc.dx += dx;
+                pc.dy += dy;
+            }
+        }
+        it->groupContent.remove(groupId);
+        changed = true;
+    }
+    if (changed)
+    {
+        SetSizeRanges(ranges);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VContainer::RemovePiece(quint32 id)
 {
     d->pieces->remove(id);
@@ -649,6 +689,9 @@ void VContainer::RemovePiece(quint32 id)
         it.value().memberOffsets.remove(id);
         if (it.value().pieceIds.size() < 2)
         {
+            // Keep the graded move of the dissolving group: spread its offset onto the
+            // surviving members before the group is erased.
+            TransferGroupOffsetToMembers(it.key());
             it = d->pieceGroups->erase(it);  // a group needs at least 2 members
         }
         else
@@ -656,12 +699,55 @@ void VContainer::RemovePiece(quint32 id)
             ++it;
         }
     }
+
+    // Graded ranges reference pieces/groups by id — drop the deleted piece from
+    // every stored range, plus any group that the cascade just erased.
+    for (auto it = d->sizeRanges->begin(); it != d->sizeRanges->end(); ++it)
+    {
+        it->pieceContent.remove(id);
+        for (auto g = it->groupContent.begin(); g != it->groupContent.end();)
+        {
+            if (!d->pieceGroups->contains(g.key()))
+            {
+                g = it->groupContent.erase(g);
+            }
+            else
+            {
+                ++g;
+            }
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VContainer::RemovePieceGroup(quint32 id)
 {
+    // Dissolving a group keeps its graded move: spread the group offset onto the members
+    // before the group (and its stored groupContent) is erased.
+    TransferGroupOffsetToMembers(id);
+
     d->pieceGroups->remove(id);
+
+    for (auto it = d->sizeRanges->begin(); it != d->sizeRanges->end(); ++it)
+    {
+        it->groupContent.remove(id);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::SizeRanges() const -> const QHash<QString, OSizerange> *
+{
+    return d->sizeRanges.data();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::SetSizeRanges(const QHash<QString, OSizerange> &ranges)
+{
+    // Mutate in place, like piece groups: sizeRanges is a QSharedPointer<QHash> shared across
+    // every VContainer copy (tool data snapshots). Replacing the pointer here would make the new
+    // hash visible only to this container — the next VPattern::setCurrentData() (`*data =
+    // vTool->GetDataCopy()`) would restore an older snapshot and the ranges would vanish.
+    *d->sizeRanges = ranges;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

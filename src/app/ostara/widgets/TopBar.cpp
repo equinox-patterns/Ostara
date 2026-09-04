@@ -80,10 +80,11 @@ auto TopBar::MakeModeButton(QAction *action) -> QToolButton *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void TopBar::SetModeActions(QAction *draw, QAction *details, QAction *layout)
+void TopBar::SetModeActions(QAction *draw, QAction *details, QAction *graded, QAction *layout)
 {
     m_btnDraw    = MakeModeButton(draw);
     m_btnDetails = MakeModeButton(details);
+    m_btnGraded  = MakeModeButton(graded);
     m_btnLayout  = MakeModeButton(layout);
 
     auto MakeSeparator = [&]() {
@@ -103,14 +104,19 @@ void TopBar::SetModeActions(QAction *draw, QAction *details, QAction *layout)
         return lbl;
     };
 
-    m_sepDrawDetails = MakeSeparator();
-    m_sepDetailsLayout = MakeSeparator();
+    m_sepDrawDetails   = MakeSeparator();
+    m_sepDetailsGraded = MakeSeparator();
+    m_sepGradedLayout  = MakeSeparator();
 
     m_leftLayout->addWidget(m_btnDraw);
     m_leftLayout->addWidget(m_sepDrawDetails);
     m_leftLayout->addWidget(m_btnDetails);
-    m_leftLayout->addWidget(m_sepDetailsLayout);
+    m_leftLayout->addWidget(m_sepDetailsGraded);
+    m_leftLayout->addWidget(m_btnGraded);
+    m_leftLayout->addWidget(m_sepGradedLayout);
     m_leftLayout->addWidget(m_btnLayout);
+
+    UpdateModeButtonIcons();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -151,12 +157,12 @@ void TopBar::SetPatternPieceWidgets(QLabel *pieceLabel, QComboBox *combo, QActio
 void TopBar::SetMeasurementWidgets(QAction *loadAction, QLabel *fileNameLabel,
                                     QLabel *separator, QAction *tableAction)
 {
-    auto *btnRuler = new QToolButton(this);
-    btnRuler->setDefaultAction(loadAction);
-    btnRuler->setAutoRaise(true);
-    btnRuler->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    btnRuler->setIconSize(QSize(24, 24));
-    m_centerLayout->addWidget(btnRuler);
+    m_btnLoadTable = new QToolButton(this);
+    m_btnLoadTable->setDefaultAction(loadAction);
+    m_btnLoadTable->setAutoRaise(true);
+    m_btnLoadTable->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    m_btnLoadTable->setIconSize(QSize(24, 24));
+    m_centerLayout->addWidget(m_btnLoadTable);
 
     fileNameLabel->setParent(this);
     m_measurementFileNameLabel = fileNameLabel;
@@ -168,15 +174,16 @@ void TopBar::SetMeasurementWidgets(QAction *loadAction, QLabel *fileNameLabel,
     m_centerLayout->addWidget(m_dimSeparator);
 
     // Vertical separator icon (always visible, between dims and table button)
+    m_sepAfterDims = separator;
     separator->setParent(this);
     m_centerLayout->addWidget(separator);
 
-    auto *btnTable = new QToolButton(this);
-    btnTable->setDefaultAction(tableAction);
-    btnTable->setAutoRaise(true);
-    btnTable->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    btnTable->setIconSize(QSize(24, 24));
-    m_centerLayout->addWidget(btnTable);
+    m_btnTable = new QToolButton(this);
+    m_btnTable->setDefaultAction(tableAction);
+    m_btnTable->setAutoRaise(true);
+    m_btnTable->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    m_btnTable->setIconSize(QSize(24, 24));
+    m_centerLayout->addWidget(m_btnTable);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -189,9 +196,10 @@ void TopBar::SetZoomWidget(QWidget *zoomBlock)
 //---------------------------------------------------------------------------------------------------------------------
 void TopBar::ClearDimensionWidgets()
 {
-    // Dimension widgets are children of this TopBar; remove them from the layout
-    // by reparenting to nullptr (they'll be deleted by the caller via QPointer).
-    // We rely on the caller (InitDimensionControls) to delete the old widgets first.
+    // Dimension widgets are children of this TopBar; the caller (InitDimensionControls)
+    // deletes the old widgets first, so the tracked pointers are reset by their QPointer.
+    m_dimWidgets.clear();
+    m_gradedSavedVisibility.clear();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -204,6 +212,9 @@ void TopBar::InsertDimensionWidgets(QLabel *label, QComboBox *combo)
 
     label->setParent(this);
     combo->setParent(this);
+
+    m_dimWidgets.append(label);
+    m_dimWidgets.append(combo);
 
     // Insert before the vertical separator (second-to-last item in center layout),
     // which is right before the table button.
@@ -258,6 +269,83 @@ void TopBar::SetDimensionSeparatorVisible(bool visible)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void TopBar::SetDimensionWidgetsVisible(bool visible)
+{
+    for (const auto &w : m_dimWidgets)
+    {
+        if (w)
+        {
+            w->setVisible(visible);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TopBar::SetGradedChrome(bool graded)
+{
+    auto CenterWidgets = [this]() {
+        QList<QWidget *> widgets;
+        if (m_btnLoadTable)
+        {
+            widgets.append(m_btnLoadTable);
+        }
+        if (m_dimSeparator)
+        {
+            widgets.append(m_dimSeparator);
+        }
+        if (m_sepAfterDims)
+        {
+            widgets.append(m_sepAfterDims);
+        }
+        if (m_btnTable)
+        {
+            widgets.append(m_btnTable);
+        }
+        for (const auto &w : m_dimWidgets)
+        {
+            if (w)
+            {
+                widgets.append(w);
+            }
+        }
+        return widgets;
+    };
+
+    if (graded)
+    {
+        m_gradedSavedVisibility.clear();
+        const auto widgets = CenterWidgets();
+        for (QWidget *w : widgets)
+        {
+            m_gradedSavedVisibility.insert(w, w->isVisible());
+            w->hide();
+        }
+        SetPatternPieceVisible(false);
+    }
+    else
+    {
+        SetDimensionWidgetsVisible(true);
+        if (m_btnLoadTable)
+        {
+            m_btnLoadTable->setVisible(m_gradedSavedVisibility.value(m_btnLoadTable, true));
+        }
+        if (m_sepAfterDims)
+        {
+            m_sepAfterDims->setVisible(m_gradedSavedVisibility.value(m_sepAfterDims, true));
+        }
+        if (m_btnTable)
+        {
+            m_btnTable->setVisible(m_gradedSavedVisibility.value(m_btnTable, true));
+        }
+        if (m_dimSeparator)
+        {
+            m_dimSeparator->setVisible(m_gradedSavedVisibility.value(m_dimSeparator, false));
+        }
+        m_gradedSavedVisibility.clear();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void TopBar::ReloadIcons()
 {
     UpdateModeButtonIcons();
@@ -279,7 +367,8 @@ void TopBar::ReloadIcons()
     };
 
     ReloadSep(m_sepDrawDetails);
-    ReloadSep(m_sepDetailsLayout);
+    ReloadSep(m_sepDetailsGraded);
+    ReloadSep(m_sepGradedLayout);
     ReloadSep(m_sepPatternMeasure);
 
     // Refresh dim separator if visible
@@ -308,5 +397,6 @@ void TopBar::UpdateModeButtonIcons()
 
     SetIcon(m_btnDraw,    QStringLiteral("polygon"));
     SetIcon(m_btnDetails, QStringLiteral("sliders"));
+    SetIcon(m_btnGraded,  QStringLiteral("stack"));
     SetIcon(m_btnLayout,  QStringLiteral("printer"));
 }
