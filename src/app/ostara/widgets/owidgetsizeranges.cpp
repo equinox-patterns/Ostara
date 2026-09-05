@@ -29,6 +29,7 @@
 #include <QAbstractItemView>
 #include <QHeaderView>
 #include <QIcon>
+#include <QMap>
 #include <QPainter>
 #include <QPushButton>
 #include <QSize>
@@ -158,7 +159,7 @@ void OWidgetSizeRanges::BuildUi()
     rootLayout->setContentsMargins(0, 0, 0, 0);
     rootLayout->setSpacing(6);
 
-    // ── "Add a size range" trigger (visual only for now) ──
+    // ── "Add a size range" trigger (opens the creation dialog) ──
     m_addButton = new QPushButton(this);
     m_addButton->setObjectName(QStringLiteral("addSizeRangeButton"));
     m_addButton->setText(tr("Add a size range"));
@@ -199,8 +200,8 @@ void OWidgetSizeRanges::BuildUi()
         m_table->setItemDelegateForColumn(col, new IconDelegate(m_table));
     }
 
-    // Route clicks on the action icon columns (edit/delete are wired; the rest
-    // are placed visually and will be wired later).
+    // Route clicks: activate (dot/name), favorite toggle, edit, duplicate, delete.
+    // Only the export column (kExport) is still visual-only.
     connect(m_table, &QTableWidget::cellClicked, this, [this](int row, int column) {
         if (row < 0 || row >= m_table->rowCount())
         {
@@ -230,7 +231,7 @@ void OWidgetSizeRanges::BuildUi()
             case kDelete:
                 emit deleteRequested(rangeName);
                 break;
-            default: // favorite / export — visual only for now
+            default: // kExport — export SVG, not wired yet
                 break;
         }
     });
@@ -305,6 +306,10 @@ void OWidgetSizeRanges::Populate()
     const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
     auto *settings = VAbstractApplication::VApp()->Settings();
 
+    // Read each (table, axis) favorite set once instead of re-opening the
+    // settings file per row (all rows of a table usually share the same pair).
+    QMap<QString, QVariantMap> favoriteCache;
+
     QStringList names = ranges->keys();
     names.sort();
 
@@ -331,8 +336,13 @@ void OWidgetSizeRanges::Populate()
         auto *favoriteItem = new QTableWidgetItem();
         favoriteItem->setFlags(favoriteItem->flags() & ~Qt::ItemIsEditable);
         const OSizerange range = ranges->value(name);
-        const bool favorite =
-            OGradedFavorites::IsFavorite(settings, range.measurement, range.sizeAxis, name);
+        const QString favoriteKey = range.measurement + QLatin1Char('\n') + range.sizeAxis;
+        if (not favoriteCache.contains(favoriteKey))
+        {
+            favoriteCache.insert(favoriteKey,
+                                 settings->GetGradedFavorites(range.measurement, range.sizeAxis));
+        }
+        const bool favorite = favoriteCache.value(favoriteKey).contains(name);
         const bool inLibrary = MeasurementLibraryScanner::IsInLibrary(
             settings->GetPathMeasurementLibrary(), range.measurement);
         favoriteItem->setIcon(MakeCellIcon(favorite ? "star-fill" : "star", dark));

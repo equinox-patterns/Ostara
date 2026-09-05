@@ -125,10 +125,7 @@ void MainWindow::ActionGraded(bool checked)
     ui->view->ZoomFitBest();
 
     // Keep the Size Ranges dock in sync with the range that is now active.
-    if (m_dockManager->sizeRangesWidget() != nullptr)
-    {
-        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
-    }
+    RefreshSizeRangesDock();
 
     m_statusLabel->setText(QString());
 }
@@ -144,9 +141,9 @@ bool MainWindow::EnterGradedMode()
     const QString canonical =
         AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
 
-    OPieceCartoucheTable reader;
-    reader.Load();
-    if (not reader.HasMultiSizeTable() || reader.AxisNames().isEmpty())
+    QStringList axes;
+    QMap<QString, QStringList> axisValues;
+    if (not LoadGradedTableAxes(&axes, &axisValues))
     {
         QMessageBox::information(this, tr("Graded mode"),
                                  tr("Graded mode needs a multi-size measurements table (.omt)."),
@@ -154,17 +151,15 @@ bool MainWindow::EnterGradedMode()
         return false;
     }
 
-    const QStringList axes = reader.AxisNames();
-    QMap<QString, QStringList> axisValues;
-    for (const QString &axis : axes)
-    {
-        axisValues.insert(axis, reader.AxisValues(axis));
-    }
-
-    // Reuse an existing range for this table — only if still coherent with the current
-    // table (graded axis + frozen values of every OTHER axis must still exist).
+    // Reuse an existing range for this table — deterministic: keep the previously
+    // active range when it is still coherent, otherwise the coherent range with the
+    // lowest name. Stale ranges (table changed) are only dropped on the accept path
+    // (a Cancel must not lose stored ranges — undo-free destructive edit otherwise).
     const auto *existing = pattern->SizeRanges();
-    QString staleRangeToDrop; // dropped only on the accept path (never on Cancel)
+    QString staleRangeToDrop;
+
+    QStringList coherent;
+    QStringList stale;
     for (auto it = existing->cbegin(); it != existing->cend(); ++it)
     {
         if (it->measurement != canonical)
@@ -188,22 +183,48 @@ bool MainWindow::EnterGradedMode()
 
         if (axes.contains(it->sizeAxis) && lo >= 0 && hi >= 0 && lo <= hi && frozenValuesOk)
         {
-            m_activeGradedRangeName = it.key();
-            return true;
+            coherent.append(it.key());
         }
+        else
+        {
+            stale.append(it.key());
+        }
+    }
 
-        // Stale range (table changed): defer the removal until the user accepts a new one —
-        // a Cancel must NOT lose the stored range (undo-free destructive edit otherwise).
-        staleRangeToDrop = it.key();
+    if (not coherent.isEmpty())
+    {
+        if (m_activeGradedRangeName.isEmpty() || !coherent.contains(m_activeGradedRangeName))
+        {
+            m_activeGradedRangeName = coherent.first();
+            for (int i = 1; i < coherent.size(); ++i)
+            {
+                if (coherent.at(i) < m_activeGradedRangeName)
+                {
+                    m_activeGradedRangeName = coherent.at(i);
+                }
+            }
+        }
+        return true;
+    }
+
+    if (not stale.isEmpty())
+    {
+        staleRangeToDrop = stale.first();
+        for (int i = 1; i < stale.size(); ++i)
+        {
+            if (stale.at(i) < staleRangeToDrop)
+            {
+                staleRangeToDrop = stale.at(i);
+            }
+        }
         QMessageBox::warning(this, tr("Graded mode"),
                              tr("The stored size range no longer matches the loaded "
                                 "measurements table. It was removed — please, create a new one."),
                              QMessageBox::Ok);
-        break;
     }
 
     // Creation dialog + store — shared with the dock's "Add a size range" flow.
-    const QString newName = CreateGradedRange(staleRangeToDrop);
+    const QString newName = CreateGradedRange(canonical, axes, axisValues, staleRangeToDrop);
     if (newName.isEmpty())
     {
         return false;
@@ -214,28 +235,13 @@ bool MainWindow::EnterGradedMode()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-QString MainWindow::CreateGradedRange(const QString &staleNameToDrop)
+QString MainWindow::CreateGradedRange(const QString &canonical, const QStringList &axes,
+                                      const QMap<QString, QStringList> &axisValues,
+                                      const QString &staleNameToDrop)
 {
-    if (doc == nullptr || doc->MPath().isEmpty())
+    if (doc == nullptr)
     {
         return {};
-    }
-
-    const QString canonical =
-        AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
-
-    OPieceCartoucheTable reader;
-    reader.Load();
-    if (not reader.HasMultiSizeTable() || reader.AxisNames().isEmpty())
-    {
-        return {};
-    }
-
-    const QStringList axes = reader.AxisNames();
-    QMap<QString, QStringList> axisValues;
-    for (const QString &axis : axes)
-    {
-        axisValues.insert(axis, reader.AxisValues(axis));
     }
 
     const auto *existing = pattern->SizeRanges();
@@ -307,9 +313,76 @@ QString MainWindow::CreateGradedRange(const QString &staleNameToDrop)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto MainWindow::LoadGradedTableAxes(QStringList *axes, QMap<QString, QStringList> *axisValues) -> bool
+{
+    OPieceCartoucheTable reader;
+    reader.Load();
+    if (not reader.HasMultiSizeTable() || reader.AxisNames().isEmpty())
+    {
+        return false;
+    }
+
+    if (axes != nullptr)
+    {
+        *axes = reader.AxisNames();
+    }
+    if (axisValues != nullptr)
+    {
+        axisValues->clear();
+        for (const QString &axis : reader.AxisNames())
+        {
+            axisValues->insert(axis, reader.AxisValues(axis));
+        }
+    }
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RefreshSizeRangesDock()
+{
+    if (m_dockManager != nullptr && m_dockManager->sizeRangesWidget() != nullptr)
+    {
+        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RebuildGradedCanvas(bool zoomFitBest)
+{
+    if (m_sceneGraded == nullptr || VAbstractValApplication::VApp()->GetDrawMode() != Draw::Graded)
+    {
+        return;
+    }
+
+    m_gradedForceCapture = true;
+    BuildGradedScene();
+    if (zoomFitBest)
+    {
+        ui->view->ZoomFitBest();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 bool MainWindow::AddGradedRange()
 {
-    const QString newName = CreateGradedRange(QString());
+    if (doc == nullptr || doc->MPath().isEmpty())
+    {
+        return false;
+    }
+
+    const QString canonical =
+        AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
+    QStringList axes;
+    QMap<QString, QStringList> axisValues;
+    if (not LoadGradedTableAxes(&axes, &axisValues))
+    {
+        QMessageBox::information(this, tr("Graded mode"),
+                                 tr("Graded mode needs a multi-size measurements table (.omt)."),
+                                 QMessageBox::Ok);
+        return false;
+    }
+
+    const QString newName = CreateGradedRange(canonical, axes, axisValues, QString());
     if (newName.isEmpty())
     {
         return false;
@@ -317,17 +390,8 @@ bool MainWindow::AddGradedRange()
 
     // The new range becomes the active one and its layout is captured.
     m_activeGradedRangeName = newName;
-    if (m_sceneGraded != nullptr && VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
-    {
-        m_gradedForceCapture = true;
-        BuildGradedScene();
-        ui->view->ZoomFitBest();
-    }
-
-    if (m_dockManager->sizeRangesWidget() != nullptr)
-    {
-        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
-    }
+    RebuildGradedCanvas(true);
+    RefreshSizeRangesDock();
     return true;
 }
 
@@ -345,17 +409,8 @@ void MainWindow::ActivateGradedRange(const QString &rangeName)
     }
 
     m_activeGradedRangeName = rangeName;
-    if (m_sceneGraded != nullptr && VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
-    {
-        m_gradedForceCapture = true;
-        BuildGradedScene();
-        ui->view->ZoomFitBest();
-    }
-
-    if (m_dockManager->sizeRangesWidget() != nullptr)
-    {
-        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
-    }
+    RebuildGradedCanvas(true);
+    RefreshSizeRangesDock();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -394,17 +449,8 @@ bool MainWindow::DuplicateGradedRange(const QString &rangeName)
 
     // The copy becomes the active range so its (identical) layout is shown.
     m_activeGradedRangeName = copyName;
-    if (m_sceneGraded != nullptr && VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
-    {
-        m_gradedForceCapture = true;
-        BuildGradedScene();
-        ui->view->ZoomFitBest();
-    }
-
-    if (m_dockManager->sizeRangesWidget() != nullptr)
-    {
-        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
-    }
+    RebuildGradedCanvas(true);
+    RefreshSizeRangesDock();
     return true;
 }
 
@@ -434,18 +480,11 @@ bool MainWindow::EditGradedRange(const QString &rangeName)
         return false;
     }
 
-    OPieceCartoucheTable reader;
-    reader.Load();
-    if (not reader.HasMultiSizeTable() || reader.AxisNames().isEmpty())
+    QStringList axes;
+    QMap<QString, QStringList> axisValues;
+    if (not LoadGradedTableAxes(&axes, &axisValues))
     {
         return false;
-    }
-
-    const QStringList axes = reader.AxisNames();
-    QMap<QString, QStringList> axisValues;
-    for (const QString &axis : axes)
-    {
-        axisValues.insert(axis, reader.AxisValues(axis));
     }
 
     OGradedRangeDialog::Config config;
@@ -516,17 +555,10 @@ bool MainWindow::EditGradedRange(const QString &rangeName)
     if (m_activeGradedRangeName == rangeName)
     {
         m_activeGradedRangeName = edited.name;
-        if (m_sceneGraded != nullptr && VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
-        {
-            m_gradedForceCapture = true;
-            BuildGradedScene();
-        }
+        RebuildGradedCanvas();
     }
 
-    if (m_dockManager->sizeRangesWidget() != nullptr)
-    {
-        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
-    }
+    RefreshSizeRangesDock();
     return true;
 }
 
@@ -574,16 +606,12 @@ bool MainWindow::DeleteGradedRange(const QString &rangeName)
             }
             else
             {
-                m_gradedForceCapture = true;
-                BuildGradedScene();
+                RebuildGradedCanvas();
             }
         }
     }
 
-    if (m_dockManager->sizeRangesWidget() != nullptr)
-    {
-        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
-    }
+    RefreshSizeRangesDock();
     return true;
 }
 
@@ -594,10 +622,7 @@ void MainWindow::RenameGradedRange(const QString &oldName, const QString &newNam
     if (existing == nullptr || !existing->contains(oldName) || existing->contains(newName))
     {
         // Nothing to rename — refresh the list so the widget reverts if needed.
-        if (m_dockManager->sizeRangesWidget() != nullptr)
-        {
-            m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
-        }
+        RefreshSizeRangesDock();
         return;
     }
 
@@ -613,10 +638,7 @@ void MainWindow::RenameGradedRange(const QString &oldName, const QString &newNam
     if (wasFavorite && newName != oldRange.name
         && OGradedFavorites::IsFavorite(settings, oldRange.measurement, oldRange.sizeAxis, newName))
     {
-        if (m_dockManager->sizeRangesWidget() != nullptr)
-        {
-            m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
-        }
+        RefreshSizeRangesDock();
         return;
     }
 
@@ -640,8 +662,5 @@ void MainWindow::RenameGradedRange(const QString &oldName, const QString &newNam
         m_activeGradedRangeName = newName;
     }
 
-    if (m_dockManager->sizeRangesWidget() != nullptr)
-    {
-        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
-    }
+    RefreshSizeRangesDock();
 }

@@ -38,8 +38,10 @@
 
 #include <QDoubleSpinBox>
 #include <QHash>
+#include <QMap>
 #include <QPointer>
 #include <QPointF>
+#include <QStringList>
 
 namespace Ui
 {
@@ -530,7 +532,19 @@ private:
     /// Shared "create a size range" dialog + store, used by EnterGradedMode and
     /// AddGradedRange. @p staleNameToDrop (empty = none) is only removed on the
     /// accept path. Returns the new range name, or an empty string when cancelled.
-    QString CreateGradedRange(const QString &staleNameToDrop);
+    QString CreateGradedRange(const QString &canonical, const QStringList &axes,
+                              const QMap<QString, QStringList> &axisValues,
+                              const QString &staleNameToDrop);
+
+    /// Load the current measurements table's axes once (multi-size check). Returns
+    /// false when the table is missing/not multi-size.
+    auto LoadGradedTableAxes(QStringList *axes, QMap<QString, QStringList> *axisValues) -> bool;
+
+    /// Refresh the Size Ranges dock list (no-op when the dock is not built).
+    void RefreshSizeRangesDock();
+
+    /// Re-capture the graded scene when Graded is the active mode (optional zoom-fit).
+    void RebuildGradedCanvas(bool zoomFitBest = false);
 
     /// Build the stacked graded scene (one layer per size of the active range).
     void BuildGradedScene();
