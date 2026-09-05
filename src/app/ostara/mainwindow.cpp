@@ -30,6 +30,7 @@
 #include "../vexception/vexception.h"
 #include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
+#include "widgets/owidgetsizeranges.h"
 #include "widgets/TopBar.h"
 #include "widgets/BreadcrumbBar.h"
 
@@ -1167,6 +1168,23 @@ void MainWindow::InitDocksContain()
             &VToolOptionsPropertyBrowser::itemClicked, Qt::QueuedConnection);
     connect(m_dockManager->dependenciesWidget(), &VWidgetDependencies::ShowTool, ui->view, &VMainGraphicsView::EnsureToolVisible,
             Qt::QueuedConnection);
+
+    // Size Ranges dock → MainWindow (Add / Edit / Rename / Delete wired; the dock
+    // refreshes its list on Graded entry and after each of those).
+    connect(m_dockManager->sizeRangesWidget(), &OWidgetSizeRanges::addRequested, this,
+            &MainWindow::AddGradedRange);
+    connect(m_dockManager->sizeRangesWidget(), &OWidgetSizeRanges::editRequested, this,
+            &MainWindow::EditGradedRange);
+    // Queued: the rename is emitted from inside the item editor's commitData — the
+    // pattern write + list refresh must run only once the editor has closed.
+    connect(m_dockManager->sizeRangesWidget(), &OWidgetSizeRanges::renameRequested, this,
+            &MainWindow::RenameGradedRange, Qt::QueuedConnection);
+    connect(m_dockManager->sizeRangesWidget(), &OWidgetSizeRanges::duplicateRequested, this,
+            &MainWindow::DuplicateGradedRange);
+    connect(m_dockManager->sizeRangesWidget(), &OWidgetSizeRanges::deleteRequested, this,
+            &MainWindow::DeleteGradedRange);
+    connect(m_dockManager->sizeRangesWidget(), &OWidgetSizeRanges::rangeActivated, this,
+            &MainWindow::ActivateGradedRange);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

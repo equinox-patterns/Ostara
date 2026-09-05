@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   04/09/2026
  **
- **  @brief  Graded-mode entry dialog (2 steps).
+ **  @brief  Graded-mode size-range dialog (3 steps, favorites aware).
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -34,6 +34,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QRadioButton>
 #include <QStackedWidget>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -52,11 +53,14 @@ OGradedRangeDialog::OGradedRangeDialog(const Config &config, QWidget *parent)
     rootLayout->addWidget(m_stack);
 
     m_step1 = new QWidget(this);
+    m_modePage = new QWidget(this);
     m_step2 = new QWidget(this);
-    m_stack->addWidget(m_step1);
-    m_stack->addWidget(m_step2);
+    m_stack->addWidget(m_step1);   // page 0 — axis (only when needed)
+    m_stack->addWidget(m_modePage); // page 1 — create / load from favorite
+    m_stack->addWidget(m_step2);   // page 2 — range form
 
     BuildStep1Page();
+    BuildModePage();
 
     // Buttons: Cancel / Next / OK
     auto *buttonLayout = new QHBoxLayout();
@@ -72,21 +76,27 @@ OGradedRangeDialog::OGradedRangeDialog(const Config &config, QWidget *parent)
     rootLayout->addLayout(buttonLayout);
 
     connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);
-    connect(m_nextButton, &QPushButton::clicked, this, &OGradedRangeDialog::GoToStep2);
+    connect(m_nextButton, &QPushButton::clicked, this, &OGradedRangeDialog::OnNext);
     connect(m_okButton, &QPushButton::clicked, this, &QDialog::accept);
 
     m_okButton->setEnabled(false);
 
-    if (m_config.axisStepNeeded)
+    if (m_config.editing)
     {
-        m_stack->setCurrentWidget(m_step1);
+        // Edit: open straight on the range form, pre-filled (no axis, no favorite).
+        BuildStep2Page();
+        m_stack->setCurrentWidget(m_step2);
+        CheckState();
+        LoadExistingRange();
+    }
+    else if (m_config.axisStepNeeded)
+    {
+        m_stack->setCurrentWidget(m_step1); // step 1 first (axis still unknown)
     }
     else
     {
-        // Axis already declared — go straight to step 2.
-        BuildStep2Page();
-        m_stack->setCurrentWidget(m_step2);
-        CheckState(); // leave OK disabled until name + min/max are valid
+        // Axis already known — ask create vs favorite.
+        ShowModePage();
     }
 
     UpdateButtons();
@@ -112,14 +122,115 @@ void OGradedRangeDialog::BuildStep1Page()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OGradedRangeDialog::GoToStep2()
+void OGradedRangeDialog::BuildModePage()
 {
-    if (m_axisCombo == nullptr || m_axisCombo->currentIndex() < 0)
+    auto *layout = new QVBoxLayout(m_modePage);
+
+    m_newRadio = new QRadioButton(tr("Create a new size range"), m_modePage);
+    m_loadRadio = new QRadioButton(tr("Load existing from favorite"), m_modePage);
+    m_newRadio->setChecked(true);
+
+    auto *favoriteLabel = new QLabel(tr("Favorite:"), m_modePage);
+    m_favoriteCombo = MakeComboBox(m_modePage);
+    m_favoriteCombo->setEnabled(false);
+
+    layout->addWidget(m_newRadio);
+    layout->addWidget(m_loadRadio);
+    layout->addSpacing(6);
+    layout->addWidget(favoriteLabel);
+    layout->addWidget(m_favoriteCombo);
+    layout->addStretch(1);
+
+    auto updateMode = [this]() {
+        const bool load = m_loadRadio != nullptr && m_loadRadio->isChecked();
+        if (m_favoriteCombo != nullptr)
+        {
+            m_favoriteCombo->setEnabled(load);
+        }
+        UpdateModeState();
+    };
+    connect(m_newRadio, &QRadioButton::toggled, this, updateMode);
+    connect(m_loadRadio, &QRadioButton::toggled, this, updateMode);
+    connect(m_favoriteCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, updateMode);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedRangeDialog::ShowModePage()
+{
+    m_favoriteCombo->clear();
+    if (m_config.favoriteNames)
+    {
+        m_favoriteCombo->addItems(m_config.favoriteNames(m_sizeAxis));
+    }
+
+    const bool hasFavorites = m_favoriteCombo->count() > 0;
+    m_loadRadio->setEnabled(hasFavorites);
+    // Default: load a favorite when at least one exists, otherwise create new.
+    if (hasFavorites)
+    {
+        m_loadRadio->setChecked(true);
+    }
+    else
+    {
+        m_newRadio->setChecked(true);
+    }
+
+    UpdateModeState();
+    m_stack->setCurrentWidget(m_modePage);
+    UpdateButtons();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedRangeDialog::UpdateModeState()
+{
+    if (m_stack == nullptr || m_stack->currentWidget() != m_modePage)
     {
         return;
     }
 
-    m_sizeAxis = m_axisCombo->currentText();
+    const bool load = m_loadRadio != nullptr && m_loadRadio->isChecked();
+    const bool loadOk = load && m_favoriteCombo != nullptr && m_favoriteCombo->currentIndex() >= 0;
+    const bool createOk = m_newRadio != nullptr && m_newRadio->isChecked();
+    m_nextButton->setEnabled(createOk || loadOk);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedRangeDialog::OnNext()
+{
+    if (m_stack->currentWidget() == m_step1)
+    {
+        // Axis chosen → move to create/load.
+        if (m_axisCombo != nullptr)
+        {
+            m_sizeAxis = m_axisCombo->currentText();
+        }
+        ShowModePage();
+        return;
+    }
+
+    if (m_stack->currentWidget() == m_modePage)
+    {
+        if (m_loadRadio != nullptr && m_loadRadio->isChecked()
+            && m_favoriteCombo != nullptr && m_favoriteCombo->currentIndex() >= 0)
+        {
+            // Load from favorite: build directly from the stored definition.
+            m_favoriteName = m_favoriteCombo->currentText();
+            m_loadedFromFavorite = true;
+            accept();
+        }
+        else
+        {
+            GoToStep3(); // create a new range → range form
+        }
+        return;
+    }
+
+    accept();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedRangeDialog::GoToStep3()
+{
     BuildStep2Page();
     m_stack->setCurrentWidget(m_step2);
     UpdateButtons();
@@ -129,7 +240,7 @@ void OGradedRangeDialog::GoToStep2()
 //---------------------------------------------------------------------------------------------------------------------
 void OGradedRangeDialog::BuildStep2Page()
 {
-    // Rebuild (idempotent: GoToStep2 may only run once, but keep it clean anyway).
+    // Rebuild (idempotent: navigation may run more than once).
     if (QLayout *oldLayout = m_step2->layout(); oldLayout != nullptr)
     {
         while (QLayoutItem *item = oldLayout->takeAt(0))
@@ -192,9 +303,9 @@ void OGradedRangeDialog::BuildStep2Page()
 //---------------------------------------------------------------------------------------------------------------------
 void OGradedRangeDialog::UpdateButtons()
 {
-    const bool onStep2 = m_stack->currentWidget() == m_step2;
-    m_nextButton->setVisible(!onStep2);
-    m_okButton->setVisible(onStep2);
+    const bool onStep3 = m_stack->currentWidget() == m_step2;
+    m_nextButton->setVisible(!onStep3);
+    m_okButton->setVisible(onStep3);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -210,6 +321,55 @@ void OGradedRangeDialog::CheckState()
     const bool rangeOk = m_minCombo->currentIndex() >= 0 && m_maxCombo->currentIndex() >= 0
                          && m_minCombo->currentIndex() <= m_maxCombo->currentIndex();
     m_okButton->setEnabled(nameOk && rangeOk);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedRangeDialog::LoadExistingRange()
+{
+    if (not m_config.editing)
+    {
+        return;
+    }
+
+    const OSizerange &range = m_config.initial;
+
+    if (m_nameEdit != nullptr)
+    {
+        m_nameEdit->setText(range.name);
+    }
+
+    const QStringList values = m_config.axisValues.value(m_sizeAxis);
+    if (m_minCombo != nullptr)
+    {
+        const int idx = static_cast<int>(values.indexOf(range.minValue));
+        if (idx >= 0)
+        {
+            m_minCombo->setCurrentIndex(idx);
+        }
+    }
+    if (m_maxCombo != nullptr)
+    {
+        const int idx = static_cast<int>(values.indexOf(range.maxValue));
+        if (idx >= 0)
+        {
+            m_maxCombo->setCurrentIndex(idx);
+        }
+    }
+
+    for (const auto &pair : m_otherCombos)
+    {
+        const QString current = range.axisValues.value(pair.first);
+        if (not current.isEmpty())
+        {
+            const int idx = pair.second->findText(current);
+            if (idx >= 0)
+            {
+                pair.second->setCurrentIndex(idx);
+            }
+        }
+    }
+
+    CheckState();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -244,4 +404,16 @@ auto OGradedRangeDialog::range() const -> OSizerange
     }
 
     return range;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OGradedRangeDialog::LoadedFromFavorite() const -> bool
+{
+    return m_loadedFromFavorite;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OGradedRangeDialog::FavoriteName() const -> QString
+{
+    return m_favoriteName;
 }

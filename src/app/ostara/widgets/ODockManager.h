@@ -40,6 +40,7 @@ class QMainWindow;
 class QStackedWidget;
 class VToolOptionsPropertyBrowser;
 class ODetailsPropertyBrowser;
+class OWidgetSizeRanges;
 class VWidgetGroups;
 class VWidgetDetails;
 class VWidgetDependencies;
@@ -79,6 +80,7 @@ public:
     ODetailsPropertyBrowser *detailsOptions() const;
     VWidgetGroups *groupsWidget() const;
     VWidgetDetails *detailsWidget() const;
+    OWidgetSizeRanges *sizeRangesWidget() const;
     VWidgetBackgroundImages *backgroundImagesWidget() const;
     VWidgetDependencies *dependenciesWidget() const;
 
@@ -147,11 +149,13 @@ private:
     ODetailsPropertyBrowser *m_detailsOptionsBrowser{nullptr};
     VWidgetGroups *m_groupsContent{nullptr};
     VWidgetDetails *m_detailsContent{nullptr};
+    OWidgetSizeRanges *m_sizeRangesContent{nullptr};
     VWidgetBackgroundImages *m_backgroundImagesContent{nullptr};
     VWidgetDependencies *m_dependenciesContent{nullptr};
 
     QAction *m_actionOptions{nullptr};
     QAction *m_actionGroups{nullptr};
+    QAction *m_actionSizeRanges{nullptr};
     QAction *m_actionBackgroundImages{nullptr};
     QAction *m_actionDependencies{nullptr};
     QAction *m_actionMessages{nullptr};
@@ -161,6 +165,7 @@ private:
     bool m_patternMessagesActive{false};
     bool m_backgroundImagesActive{false};
     bool m_dependenciesActive{false};
+    bool m_sizeRangesActive{false};
 
     QByteArray m_editorDockState{};
     QByteArray m_drawModeDockState{};

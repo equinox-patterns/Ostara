@@ -500,6 +500,38 @@ private:
     /// table. Returns true when a range is available and the graded canvas may show.
     bool EnterGradedMode();
 
+    /// Edit the definition of an existing size range (Size Ranges dock, dialog
+    /// pre-filled with the current values). Range content is preserved. Returns
+    /// false when cancelled/invalid.
+    bool EditGradedRange(const QString &rangeName);
+
+    /// Delete an existing size range (Size Ranges dock). When the active range is
+    /// deleted, another remaining range (lowest name) becomes active; an empty list
+    /// clears the graded canvas. Returns false when the range does not exist.
+    bool DeleteGradedRange(const QString &rangeName);
+
+    /// Rename a size range (inline edit in the dock list). No-op when the range
+    /// does not exist or the new name is already taken (the dock already rejects
+    /// those before emitting).
+    void RenameGradedRange(const QString &oldName, const QString &newName);
+
+    /// Make @p rangeName the active size range (single click in the dock list).
+    void ActivateGradedRange(const QString &rangeName);
+
+    /// Create a brand-new size range (Add button of the Size Ranges dock). Same
+    /// creation flow as the entry dialog; the new range becomes the active one.
+    bool AddGradedRange();
+
+    /// Duplicate @p rangeName (Duplicate button): definition AND range content are
+    /// copied under a fresh unique name; the copy becomes the active range. The two
+    /// ranges stay independent — later edits touch only one of them.
+    bool DuplicateGradedRange(const QString &rangeName);
+
+    /// Shared "create a size range" dialog + store, used by EnterGradedMode and
+    /// AddGradedRange. @p staleNameToDrop (empty = none) is only removed on the
+    /// accept path. Returns the new range name, or an empty string when cancelled.
+    QString CreateGradedRange(const QString &staleNameToDrop);
+
     /// Build the stacked graded scene (one layer per size of the active range).
     void BuildGradedScene();
 

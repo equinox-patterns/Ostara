@@ -37,6 +37,7 @@
 #include <QSize>
 #include <QString>
 #include <QStringList>
+#include <QVariant>
 #include <QtGlobal>
 
 #include "../vlayout/vlayoutdef.h"
@@ -121,6 +122,14 @@ public:
     /// canonical path (software-level store, never in the .omt / .ostara).
     auto GetSizeAxisForMeasurement(const QString &canonicalPath) const -> QString;
     void SetSizeAxisForMeasurement(const QString &canonicalPath, const QString &axisName) const;
+
+    /// Graded size-range favorites, stored per canonical path + size axis in the
+    /// software store (never in the .omt / .ostara). Returns name -> record, where
+    /// a record is a QVariantMap with "min", "max" and "axisValues" (other axes).
+    auto GetGradedFavorites(const QString &canonicalPath, const QString &axisName) const -> QVariantMap;
+    void SetGradedFavorite(const QString &canonicalPath, const QString &axisName, const QString &name,
+                           const QVariantMap &record) const;
+    void RemoveGradedFavorite(const QString &canonicalPath, const QString &axisName, const QString &name) const;
 
     auto GetOsSeparator() const -> bool;
     void SetOsSeparator(const bool &value);

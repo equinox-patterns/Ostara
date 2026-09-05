@@ -4,9 +4,13 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   04/09/2026
  **
- **  @brief  Graded-mode entry dialog (2 steps): choose the graded axis (step 1)
- **          then build the size range (name, min/max, frozen values of the other
- **          axes) (step 2). Step 1 is skipped when the axis is already declared.
+ **  @brief  Graded-mode size-range dialog (up to 3 steps):
+ **          step 1 — choose the graded axis (skipped when already declared);
+ **          step 2 — "create a new range" / "load existing from favorite"
+ **                   (+ favorite combo, only relevant when loading);
+ **          step 3 — the range form (name, min/max, frozen other axes).
+ **          "Load from favorite" accepts directly on step 2 (no step 3).
+ **          In Edit mode the dialog opens directly on step 3, pre-filled.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -35,11 +39,14 @@
 #include <QStringList>
 #include <QVector>
 
+#include <functional>
+
 #include "../vpatterndb/osizerange.h"
 
 class QComboBox;
 class QLineEdit;
 class QPushButton;
+class QRadioButton;
 class QStackedWidget;
 class QWidget;
 
@@ -60,39 +67,59 @@ public:
         bool axisStepNeeded = false;           // step 1 (choose the size axis) shown
         QString declaredAxis;                  // axis to use when step 1 is skipped
         QStringList takenNames;                // range names already used in the pattern
+        bool editing = false;                  // Edit mode: prefill step 3 from @p initial
+        OSizerange initial;                    // range being edited (definition only)
+        std::function<QStringList(const QString &axisName)> favoriteNames; // favorite provider (optional)
     };
 
     explicit OGradedRangeDialog(const Config &config, QWidget *parent = nullptr);
 
-    /// The graded axis chosen (from step 1, or the declared axis when skipped).
+    /// The graded axis chosen (step 1, or the declared axis when skipped).
     auto sizeAxis() const -> QString;
 
-    /// The size range definition built from the current page state.
+    /// The size range definition built from the current form state (new path).
     auto range() const -> OSizerange;
+
+    /// True when the dialog was accepted straight from a chosen favorite.
+    auto LoadedFromFavorite() const -> bool;
+
+    /// The chosen favorite name (valid when LoadedFromFavorite()).
+    auto FavoriteName() const -> QString;
 
 private:
     void BuildStep1Page();
     void BuildStep2Page();
-    void GoToStep2();
+    void BuildModePage();
+    void ShowModePage();
+    void GoToStep3();
+    void OnNext();
     void UpdateButtons();
+    void UpdateModeState();
     void CheckState();
+    void LoadExistingRange();
 
     Config m_config;
     QString m_sizeAxis;
+    QString m_favoriteName;
+    bool m_loadedFromFavorite{false};
 
     QStackedWidget *m_stack = nullptr;
     QWidget *m_step1 = nullptr;
+    QWidget *m_modePage = nullptr;
     QWidget *m_step2 = nullptr;
 
     QComboBox *m_axisCombo = nullptr; // step 1: size axis
-    QComboBox *m_minCombo = nullptr;  // step 2
-    QComboBox *m_maxCombo = nullptr;  // step 2
-    QLineEdit *m_nameEdit = nullptr;  // step 2
+    QRadioButton *m_newRadio = nullptr;
+    QRadioButton *m_loadRadio = nullptr;
+    QComboBox *m_favoriteCombo = nullptr; // step 2
+    QComboBox *m_minCombo = nullptr;      // step 3
+    QComboBox *m_maxCombo = nullptr;      // step 3
+    QLineEdit *m_nameEdit = nullptr;      // step 3
 
     QPushButton *m_nextButton = nullptr;
     QPushButton *m_okButton = nullptr;
 
-    QVector<QPair<QString, QComboBox *>> m_otherCombos; // other axes rows of step 2
+    QVector<QPair<QString, QComboBox *>> m_otherCombos; // other axes rows of step 3
 };
 
 #endif // OGRADEDRANGEDIALOG_H

@@ -41,6 +41,7 @@
 #include "dialogs/vwidgetdependencies.h"
 #include "dialogs/vwidgetdetails.h"
 #include "dialogs/vwidgetgroups.h"
+#include "owidgetsizeranges.h"
 #include "DockWrapper.h"
 #include "ODockTitleBar.h"
 #include "projectversion.h"
@@ -93,6 +94,11 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
     m_dependenciesContent = new VWidgetDependencies(doc, m_host);
     WrapDockContent(m_ui->dockWidgetDependencies, m_dependenciesContent);
 
+    // Size Ranges dock — shown in Graded mode only.
+    m_sizeRangesContent = new OWidgetSizeRanges(pattern, m_host);
+    WrapDockContent(m_ui->dockWidgetSizeRanges, m_sizeRangesContent);
+    m_ui->dockWidgetSizeRanges->setWindowTitle(tr("Size Ranges"));
+
     // ── Messages dock — wrap existing .ui content ──
     {
         QWidget *messagesContent = m_ui->dockWidgetMessages->widget(); // dockWidgetContents_4
@@ -110,6 +116,7 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
     installTitleBar(m_ui->dockWidgetOptions);
     installTitleBar(m_ui->dockWidgetLayoutPages);
     installTitleBar(m_ui->dockWidgetGroups);
+    installTitleBar(m_ui->dockWidgetSizeRanges);
     installTitleBar(m_ui->dockWidgetMessages);
     installTitleBar(m_ui->dockWidgetBackgroundImages);
     installTitleBar(m_ui->dockWidgetDependencies);
@@ -140,6 +147,11 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
     connect(m_actionDependencies, &QAction::triggered, this,
             [this](bool checked) { m_dependenciesActive = checked; });
     m_ui->menuWindow->addAction(m_actionDependencies);
+
+    m_actionSizeRanges = m_ui->dockWidgetSizeRanges->toggleViewAction();
+    connect(m_actionSizeRanges, &QAction::triggered, this,
+            [this](bool checked) { m_sizeRangesActive = checked; });
+    m_ui->menuWindow->addAction(m_actionSizeRanges);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -214,6 +226,7 @@ void ODockManager::applyDockPreferences()
     m_ui->dockWidgetMessages->setVisible(m_patternMessagesActive);
     m_ui->dockWidgetBackgroundImages->setVisible(m_backgroundImagesActive);
     m_ui->dockWidgetDependencies->setVisible(m_dependenciesActive);
+    m_ui->dockWidgetSizeRanges->setVisible(m_sizeRangesActive);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -224,6 +237,7 @@ void ODockManager::syncVisibilityFromDocks()
     m_patternMessagesActive = m_ui->dockWidgetMessages->isVisible();
     m_backgroundImagesActive = m_ui->dockWidgetBackgroundImages->isVisible();
     m_dependenciesActive = m_ui->dockWidgetDependencies->isVisible();
+    m_sizeRangesActive = m_ui->dockWidgetSizeRanges->isVisible();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -235,6 +249,7 @@ void ODockManager::hideAllDocks()
     m_ui->dockWidgetMessages->setVisible(false);
     m_ui->dockWidgetBackgroundImages->setVisible(false);
     m_ui->dockWidgetDependencies->setVisible(false);
+    m_ui->dockWidgetSizeRanges->setVisible(false);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -334,6 +349,8 @@ void ODockManager::applyModeDocks(Draw mode)
     {
         case Draw::Calculation:
             m_ui->dockWidgetLayoutPages->setVisible(false);
+            m_ui->dockWidgetSizeRanges->setVisible(false);
+            m_actionSizeRanges->setDisabled(true);
             m_optionsStack->setCurrentIndex(0); // tool options
             m_ui->dockWidgetOptions->setWindowTitle(tr("Options"));
             m_ui->dockWidgetOptions->setVisible(m_optionsActive);
@@ -351,6 +368,8 @@ void ODockManager::applyModeDocks(Draw mode)
             break;
         case Draw::Modeling:
             m_ui->dockWidgetLayoutPages->setVisible(false);
+            m_ui->dockWidgetSizeRanges->setVisible(false);
+            m_actionSizeRanges->setDisabled(true);
             m_groupsStack->setCurrentIndex(1); // Details
             m_ui->dockWidgetGroups->setWindowTitle(tr("Pieces"));
             m_ui->dockWidgetGroups->setVisible(m_groupsActive);
@@ -372,25 +391,30 @@ void ODockManager::applyModeDocks(Draw mode)
             m_ui->dockWidgetMessages->setVisible(false);
             m_ui->dockWidgetBackgroundImages->setVisible(false);
             m_ui->dockWidgetDependencies->setVisible(false);
+            m_ui->dockWidgetSizeRanges->setVisible(false);
             m_actionOptions->setDisabled(true);
             m_actionGroups->setDisabled(true);
+            m_actionSizeRanges->setDisabled(true);
             m_actionMessages->setDisabled(true);
             m_actionBackgroundImages->setDisabled(true);
             m_actionDependencies->setDisabled(true);
             break;
         case Draw::Graded:
-            // Tranche 1: Graded shows no dock at all.
+            // Only the Size Ranges dock is shown in Graded mode.
             m_ui->dockWidgetLayoutPages->setVisible(false);
             m_ui->dockWidgetOptions->setVisible(false);
             m_ui->dockWidgetGroups->setVisible(false);
             m_ui->dockWidgetMessages->setVisible(false);
             m_ui->dockWidgetBackgroundImages->setVisible(false);
             m_ui->dockWidgetDependencies->setVisible(false);
+            m_ui->dockWidgetSizeRanges->setVisible(true);
+            m_ui->dockWidgetSizeRanges->setWindowTitle(tr("Size Ranges"));
             m_actionOptions->setDisabled(true);
             m_actionGroups->setDisabled(true);
             m_actionMessages->setDisabled(true);
             m_actionBackgroundImages->setDisabled(true);
             m_actionDependencies->setDisabled(true);
+            m_actionSizeRanges->setEnabled(true);
             break;
     }
 
@@ -415,6 +439,11 @@ void ODockManager::retranslate()
         case Draw::Layout:
             break;
         case Draw::Graded:
+            m_ui->dockWidgetSizeRanges->setWindowTitle(tr("Size Ranges"));
+            if (m_sizeRangesContent != nullptr)
+            {
+                m_sizeRangesContent->RetranslateUI();
+            }
             break;
     }
 }
@@ -513,6 +542,12 @@ VWidgetGroups *ODockManager::groupsWidget() const
 VWidgetDetails *ODockManager::detailsWidget() const
 {
     return m_detailsContent;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+OWidgetSizeRanges *ODockManager::sizeRangesWidget() const
+{
+    return m_sizeRangesContent;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

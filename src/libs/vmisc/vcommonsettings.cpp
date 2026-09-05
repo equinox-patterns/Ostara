@@ -110,6 +110,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCollections, ("paths/collec
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCollectionsSortAscending, ("infoBlock/collectionsSortAscending"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingMeasurementFavorites, ("paths/measurementFavorites"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedSizeAxis, ("graded/sizeAxis"_L1))                       // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedFavorites, ("graded/favorites"_L1))                     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationOsSeparator, ("configuration/osSeparator"_L1)) // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationAutosaveState, ("configuration/autosave/state"_L1))
@@ -649,6 +650,63 @@ void VCommonSettings::SetSizeAxisForMeasurement(const QString &canonicalPath, co
         axes.insert(canonicalPath, axisName);
     }
     settings.setValue(*settingGradedSizeAxis, axes);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetGradedFavorites(const QString &canonicalPath, const QString &axisName) const -> QVariantMap
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingGradedFavorites).toMap()
+        .value(canonicalPath).toMap()
+        .value(axisName).toMap();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetGradedFavorite(const QString &canonicalPath, const QString &axisName, const QString &name,
+                                        const QVariantMap &record) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+
+    QVariantMap outer = settings.value(*settingGradedFavorites).toMap();
+    QVariantMap perAxis = outer.value(canonicalPath).toMap();
+    QVariantMap names = perAxis.value(axisName).toMap();
+    names.insert(name, record);
+    perAxis.insert(axisName, names);
+    outer.insert(canonicalPath, perAxis);
+
+    settings.setValue(*settingGradedFavorites, outer);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::RemoveGradedFavorite(const QString &canonicalPath, const QString &axisName,
+                                           const QString &name) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+
+    QVariantMap outer = settings.value(*settingGradedFavorites).toMap();
+    QVariantMap perAxis = outer.value(canonicalPath).toMap();
+    QVariantMap names = perAxis.value(axisName).toMap();
+    names.remove(name);
+    if (names.isEmpty())
+    {
+        perAxis.remove(axisName);
+    }
+    else
+    {
+        perAxis.insert(axisName, names);
+    }
+    if (perAxis.isEmpty())
+    {
+        outer.remove(canonicalPath);
+    }
+    else
+    {
+        outer.insert(canonicalPath, perAxis);
+    }
+
+    settings.setValue(*settingGradedFavorites, outer);
     settings.sync();
 }
 

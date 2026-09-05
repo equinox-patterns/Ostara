@@ -27,11 +27,13 @@
 #include "ui_mainwindow.h"
 
 #include "dialogs/ogradedrangedialog.h"
+#include "core/ogradedfavorites.h"
 #include "mainwindow_helpers.h"
 #include "mainwindowsnogui.h"
 #include "widgets/InfoBlock/OPieceCartoucheTable.h"
 #include "widgets/MeasurementWorkspace/MeasurementLibraryScanner.h"
 #include "widgets/ODockManager.h"
+#include "widgets/owidgetsizeranges.h"
 #include "widgets/TopBar.h"
 #include "xml/vpattern.h"
 #include "xml/vpattern_graded.h"
@@ -122,6 +124,12 @@ void MainWindow::ActionGraded(bool checked)
     // Frame the whole graded arrangement on entry (same as the "Zoom fit best" action).
     ui->view->ZoomFitBest();
 
+    // Keep the Size Ranges dock in sync with the range that is now active.
+    if (m_dockManager->sizeRangesWidget() != nullptr)
+    {
+        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
+    }
+
     m_statusLabel->setText(QString());
 }
 
@@ -194,6 +202,43 @@ bool MainWindow::EnterGradedMode()
         break;
     }
 
+    // Creation dialog + store — shared with the dock's "Add a size range" flow.
+    const QString newName = CreateGradedRange(staleRangeToDrop);
+    if (newName.isEmpty())
+    {
+        return false;
+    }
+
+    m_activeGradedRangeName = newName;
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QString MainWindow::CreateGradedRange(const QString &staleNameToDrop)
+{
+    if (doc == nullptr || doc->MPath().isEmpty())
+    {
+        return {};
+    }
+
+    const QString canonical =
+        AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
+
+    OPieceCartoucheTable reader;
+    reader.Load();
+    if (not reader.HasMultiSizeTable() || reader.AxisNames().isEmpty())
+    {
+        return {};
+    }
+
+    const QStringList axes = reader.AxisNames();
+    QMap<QString, QStringList> axisValues;
+    for (const QString &axis : axes)
+    {
+        axisValues.insert(axis, reader.AxisValues(axis));
+    }
+
+    const auto *existing = pattern->SizeRanges();
     auto *settings = VAbstractApplication::VApp()->Settings();
     const QString libPath = settings->GetPathMeasurementLibrary();
     const bool inLibrary = MeasurementLibraryScanner::IsInLibrary(libPath, canonical);
@@ -205,35 +250,51 @@ bool MainWindow::EnterGradedMode()
     config.axisValues = axisValues;
     config.axisStepNeeded = declared.isEmpty();
     config.declaredAxis = declared;
-    QStringList takenNames = existing->keys();
-    takenNames.removeAll(staleRangeToDrop); // the stale range's own name may be reused
+    QStringList takenNames = existing != nullptr ? existing->keys() : QStringList();
+    takenNames.removeAll(staleNameToDrop); // a dropped stale range may reuse its name
     config.takenNames = takenNames;
+
+    // Offer the table's favorites (per chosen axis) in the create/load step.
+    config.favoriteNames = [settings, canonical](const QString &axisName) -> QStringList {
+        return OGradedFavorites::FavoriteNames(settings, canonical, axisName);
+    };
 
     OGradedRangeDialog dialog(config, this);
     if (dialog.exec() != QDialog::Accepted)
     {
-        return false;
+        return {};
     }
 
-    // Persist the axis declaration (software store) when the table lives in the library.
+    // Persist the axis declaration (software store) when the table is in the library.
     if (config.axisStepNeeded && inLibrary)
     {
         settings->SetSizeAxisForMeasurement(canonical, dialog.sizeAxis());
     }
 
-    OSizerange range = dialog.range();
+    OSizerange range;
+    if (dialog.LoadedFromFavorite())
+    {
+        // Load from a favorite: rebuild the range straight from the stored definition.
+        range = OGradedFavorites::RangeFromFavorite(settings, canonical, dialog.sizeAxis(),
+                                                    dialog.FavoriteName());
+    }
+    else
+    {
+        range = dialog.range();
+    }
     if (not range.IsValid())
     {
-        return false;
+        return {};
     }
 
-    QHash<QString, OSizerange> ranges = *pattern->SizeRanges();
-    ranges.remove(staleRangeToDrop); // deferred stale drop — only now that a new range is accepted
+    QHash<QString, OSizerange> ranges =
+        existing != nullptr ? *existing : QHash<QString, OSizerange>();
+    ranges.remove(staleNameToDrop);
     if (ranges.contains(range.name))
     {
         QMessageBox::warning(this, tr("Graded mode"),
                              tr("A size range with this name already exists."), QMessageBox::Ok);
-        return false;
+        return {};
     }
     ranges.insert(range.name, range);
     pattern->SetSizeRanges(ranges);
@@ -242,6 +303,345 @@ bool MainWindow::EnterGradedMode()
     AddSizeRanges(doc, rootElement, pattern);
     doc->SetModified(true);
 
-    m_activeGradedRangeName = range.name;
+    return range.name;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool MainWindow::AddGradedRange()
+{
+    const QString newName = CreateGradedRange(QString());
+    if (newName.isEmpty())
+    {
+        return false;
+    }
+
+    // The new range becomes the active one and its layout is captured.
+    m_activeGradedRangeName = newName;
+    if (m_sceneGraded != nullptr && VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
+    {
+        m_gradedForceCapture = true;
+        BuildGradedScene();
+        ui->view->ZoomFitBest();
+    }
+
+    if (m_dockManager->sizeRangesWidget() != nullptr)
+    {
+        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
+    }
     return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ActivateGradedRange(const QString &rangeName)
+{
+    const auto *existing = pattern->SizeRanges();
+    if (existing == nullptr || !existing->contains(rangeName))
+    {
+        return;
+    }
+    if (m_activeGradedRangeName == rangeName)
+    {
+        return; // already active
+    }
+
+    m_activeGradedRangeName = rangeName;
+    if (m_sceneGraded != nullptr && VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
+    {
+        m_gradedForceCapture = true;
+        BuildGradedScene();
+        ui->view->ZoomFitBest();
+    }
+
+    if (m_dockManager->sizeRangesWidget() != nullptr)
+    {
+        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool MainWindow::DuplicateGradedRange(const QString &rangeName)
+{
+    const auto *existing = pattern->SizeRanges();
+    if (existing == nullptr || !existing->contains(rangeName))
+    {
+        return false;
+    }
+
+    const OSizerange source = existing->value(rangeName);
+
+    // Fresh unique name: "<name> copy", "<name> copy 2", …
+    QString copyName = source.name + QLatin1String(" copy");
+    int suffix = 2;
+    while (existing->contains(copyName))
+    {
+        copyName = source.name + QStringLiteral(" copy %1").arg(suffix);
+        ++suffix;
+    }
+
+    // Copy the WHOLE range: definition AND content (piece/group positions,
+    // children geometry). The copy is a distinct range — later edits never
+    // touch the source.
+    OSizerange copy = source;
+    copy.name = copyName;
+
+    QHash<QString, OSizerange> ranges = *existing;
+    ranges.insert(copyName, copy);
+    pattern->SetSizeRanges(ranges);
+
+    QDomElement rootElement = doc->documentElement();
+    AddSizeRanges(doc, rootElement, pattern);
+    doc->SetModified(true);
+
+    // The copy becomes the active range so its (identical) layout is shown.
+    m_activeGradedRangeName = copyName;
+    if (m_sceneGraded != nullptr && VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
+    {
+        m_gradedForceCapture = true;
+        BuildGradedScene();
+        ui->view->ZoomFitBest();
+    }
+
+    if (m_dockManager->sizeRangesWidget() != nullptr)
+    {
+        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
+    }
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool MainWindow::EditGradedRange(const QString &rangeName)
+{
+    if (doc == nullptr || doc->MPath().isEmpty())
+    {
+        return false;
+    }
+
+    const auto *existing = pattern->SizeRanges();
+    if (existing == nullptr || !existing->contains(rangeName))
+    {
+        return false;
+    }
+    const OSizerange stored = existing->value(rangeName);
+
+    const QString canonical =
+        AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
+    if (stored.measurement != canonical)
+    {
+        QMessageBox::information(this, tr("Graded mode"),
+                                 tr("This size range belongs to another measurements table. Load "
+                                    "its table to edit it."),
+                                 QMessageBox::Ok);
+        return false;
+    }
+
+    OPieceCartoucheTable reader;
+    reader.Load();
+    if (not reader.HasMultiSizeTable() || reader.AxisNames().isEmpty())
+    {
+        return false;
+    }
+
+    const QStringList axes = reader.AxisNames();
+    QMap<QString, QStringList> axisValues;
+    for (const QString &axis : axes)
+    {
+        axisValues.insert(axis, reader.AxisValues(axis));
+    }
+
+    OGradedRangeDialog::Config config;
+    config.canonicalPath = canonical;
+    config.axisNames = axes;
+    config.axisValues = axisValues;
+    config.axisStepNeeded = false; // Edit keeps the range's own graded axis
+    config.declaredAxis = stored.sizeAxis;
+    QStringList takenNames = existing->keys();
+    takenNames.removeAll(rangeName); // the edited range may keep its name
+    config.takenNames = takenNames;
+    config.editing = true;
+    config.initial = stored;
+
+    OGradedRangeDialog dialog(config, this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        return false;
+    }
+
+    OSizerange edited = dialog.range();
+    if (not edited.IsValid())
+    {
+        return false;
+    }
+
+    // The dialog returns the definition only — keep the range content untouched.
+    edited.pieceContent = stored.pieceContent;
+    edited.groupContent = stored.groupContent;
+
+    auto *settings = VAbstractApplication::VApp()->Settings();
+    const bool wasFavorite =
+        OGradedFavorites::IsFavorite(settings, stored.measurement, stored.sizeAxis, stored.name);
+    // Renaming a favorited range onto another favorite's name is refused.
+    if (wasFavorite && edited.name != stored.name
+        && OGradedFavorites::IsFavorite(settings, stored.measurement, stored.sizeAxis, edited.name))
+    {
+        QMessageBox::warning(this, tr("Graded mode"),
+                             tr("A favorite already has this name. Choose another name."),
+                             QMessageBox::Ok);
+        return false;
+    }
+
+    QHash<QString, OSizerange> ranges = *existing;
+    ranges.remove(rangeName);
+    if (ranges.contains(edited.name))
+    {
+        QMessageBox::warning(this, tr("Graded mode"),
+                             tr("A size range with this name already exists."), QMessageBox::Ok);
+        return false;
+    }
+    ranges.insert(edited.name, edited);
+    pattern->SetSizeRanges(ranges);
+
+    QDomElement rootElement = doc->documentElement();
+    AddSizeRanges(doc, rootElement, pattern);
+    doc->SetModified(true);
+
+    // Keep the software favorite in sync when the edited range was a favorite.
+    if (wasFavorite)
+    {
+        OGradedFavorites::RemoveFavorite(settings, stored);
+        OGradedFavorites::StoreFavorite(settings, edited);
+    }
+
+    // The active range may have been renamed, or its size interval changed (the
+    // layer count depends on min/max) → force a full re-capture.
+    if (m_activeGradedRangeName == rangeName)
+    {
+        m_activeGradedRangeName = edited.name;
+        if (m_sceneGraded != nullptr && VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
+        {
+            m_gradedForceCapture = true;
+            BuildGradedScene();
+        }
+    }
+
+    if (m_dockManager->sizeRangesWidget() != nullptr)
+    {
+        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
+    }
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool MainWindow::DeleteGradedRange(const QString &rangeName)
+{
+    const auto *existing = pattern->SizeRanges();
+    if (existing == nullptr || !existing->contains(rangeName))
+    {
+        return false;
+    }
+
+    QHash<QString, OSizerange> ranges = *existing;
+    ranges.remove(rangeName);
+    pattern->SetSizeRanges(ranges);
+
+    QDomElement rootElement = doc->documentElement();
+    AddSizeRanges(doc, rootElement, pattern);
+    doc->SetModified(true);
+
+    // Deleting the active range: activate the remaining one with the lowest name,
+    // or clear the canvas when none is left (the list is then empty).
+    if (m_activeGradedRangeName == rangeName)
+    {
+        QString next;
+        if (not ranges.isEmpty())
+        {
+            auto it = ranges.cbegin();
+            next = it.key();
+            for (++it; it != ranges.cend(); ++it)
+            {
+                if (it.key() < next)
+                {
+                    next = it.key();
+                }
+            }
+        }
+        m_activeGradedRangeName = next;
+
+        if (m_sceneGraded != nullptr && VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
+        {
+            if (next.isEmpty())
+            {
+                m_sceneGraded->clear();
+            }
+            else
+            {
+                m_gradedForceCapture = true;
+                BuildGradedScene();
+            }
+        }
+    }
+
+    if (m_dockManager->sizeRangesWidget() != nullptr)
+    {
+        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
+    }
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RenameGradedRange(const QString &oldName, const QString &newName)
+{
+    const auto *existing = pattern->SizeRanges();
+    if (existing == nullptr || !existing->contains(oldName) || existing->contains(newName))
+    {
+        // Nothing to rename — refresh the list so the widget reverts if needed.
+        if (m_dockManager->sizeRangesWidget() != nullptr)
+        {
+            m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
+        }
+        return;
+    }
+
+    QHash<QString, OSizerange> ranges = *existing;
+    OSizerange range = ranges.take(oldName);
+    const OSizerange oldRange = range; // favorite bookkeeping uses the pre-rename range
+
+    auto *settings = VAbstractApplication::VApp()->Settings();
+    const bool wasFavorite =
+        OGradedFavorites::IsFavorite(settings, oldRange.measurement, oldRange.sizeAxis, oldRange.name);
+    // Renaming a favorited range onto another favorite's name is refused — nothing
+    // has been stored yet, so the dock list refresh reverts the edited cell.
+    if (wasFavorite && newName != oldRange.name
+        && OGradedFavorites::IsFavorite(settings, oldRange.measurement, oldRange.sizeAxis, newName))
+    {
+        if (m_dockManager->sizeRangesWidget() != nullptr)
+        {
+            m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
+        }
+        return;
+    }
+
+    range.name = newName; // definition and content are untouched
+    ranges.insert(newName, range);
+    pattern->SetSizeRanges(ranges);
+
+    QDomElement rootElement = doc->documentElement();
+    AddSizeRanges(doc, rootElement, pattern);
+    doc->SetModified(true);
+
+    // Keep the software favorite in sync (the favorite follows the range name).
+    if (wasFavorite)
+    {
+        OGradedFavorites::RemoveFavorite(settings, oldRange);
+        OGradedFavorites::StoreFavorite(settings, range);
+    }
+
+    if (m_activeGradedRangeName == oldName)
+    {
+        m_activeGradedRangeName = newName;
+    }
+
+    if (m_dockManager->sizeRangesWidget() != nullptr)
+    {
+        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
+    }
 }
