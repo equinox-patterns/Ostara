@@ -31,6 +31,7 @@
 #include <QVariant>
 #include <QtGlobal>
 
+class QColor;
 class QGraphicsScene;
 class VContainer;
 
@@ -65,5 +66,15 @@ inline auto GradedIsReference(const QGraphicsItem *item) -> bool
 /// grouped members' own grainline/fold and (re)anchor each group's invisible host onto the union
 /// of its graded reference members. Positions must be final when called.
 void RefreshGradedReferenceGroupDecor(VContainer *pattern, QGraphicsScene *scene);
+
+/// Re-color the item tree produced by VLayoutPiece::GetItem (piece silhouette roots + their static
+/// layout children) with the theme's piece color (VSceneStylesheet PieceColor) — the same color the
+/// Details mode paints every piece trace with. Interactive children (info blocks, annotations,
+/// grainline) are skipped: they manage their own colors. Defined in mainwindow_graded_build.cpp.
+void RecolorGradedItemPens(QGraphicsItem *root);
+
+/// Re-color every graded piece root already present in the scene (used on theme change so the
+/// graded canvas follows Light/Dark like Draw/Details do). Defined in mainwindow_graded_build.cpp.
+void RecolorGradedScenePens(QGraphicsScene *scene);
 
 #endif // MAINWINDOW_GRADED_HELPERS_H

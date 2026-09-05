@@ -45,16 +45,22 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vpatterndb/vpiecepath.h"
+#include "../vtheme/vscenestylesheet.h"
+#include "../vwidgets/vgrainlineitem.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vmaingraphicsview.h"
 
 #include <QCoreApplication>
 #include <QElapsedTimer>
+#include <QBrush>
 #include <QEventLoop>
 #include <QGraphicsItem>
+#include <QGraphicsPathItem>
+#include <QGraphicsSimpleTextItem>
 #include <QHash>
 #include <QMap>
 #include <QObject>
+#include <QPen>
 #include <QScopeGuard>
 #include <QStringList>
 #include <QTimer>
@@ -357,6 +363,9 @@ void MainWindow::BuildGradedScene()
             }
 
             QGraphicsItem *item = pieces.at(k).GetItem(false, false, false);
+            // GetItem paints every trace with a default (black) pen — apply the theme's piece
+            // color, the same one Details paints piece/group silhouettes with (VColorRole::PieceColor).
+            RecolorGradedItemPens(item);
             item->setPos(basePos);
             item->setData(kGradedBasePosRole, basePos); // frozen base for idempotent re-applies
             item->setZValue(z);
@@ -474,4 +483,77 @@ void MainWindow::BuildGradedScene()
     }
 
     m_gradedSceneSignature = signature;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+/// Re-color one layout item subtree (the silhouette tree returned by VLayoutPiece::GetItem) with
+/// the theme's piece color, mirroring what Details paints every piece trace with (VColorRole::PieceColor).
+/// Interactive children (info blocks, annotations, grainline) manage their own colors and are skipped.
+void RecolorGradedLayoutSubtree(QGraphicsItem *item, const QColor &color)
+{
+    if (item == nullptr)
+    {
+        return;
+    }
+    // Interactive children of a graded piece/host resolve their own colors → leave them untouched
+    // (and do not descend: their interior text/fills are theirs to color).
+    if (item->type() == OInfoBlockItem::Type || item->type() == OAnnotationItem::Type
+        || item->type() == VGrainlineItem::Type)
+    {
+        return;
+    }
+
+    if (auto *path = dynamic_cast<QGraphicsPathItem *>(item))
+    {
+        QPen pen = path->pen();
+        if (pen.style() != Qt::NoPen)
+        {
+            pen.setColor(color);
+            path->setPen(pen);
+        }
+        // A layout fill/fold item paints its interior with the pen color (VGraphicsFillItem paint),
+        // so re-tinting the pen recolors both the stroke and any filled area.
+    }
+    else if (auto *text = dynamic_cast<QGraphicsSimpleTextItem *>(item))
+    {
+        text->setBrush(QBrush(color));
+    }
+
+    const auto children = item->childItems();
+    for (auto *child : children)
+    {
+        RecolorGradedLayoutSubtree(child, color);
+    }
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+void RecolorGradedItemPens(QGraphicsItem *root)
+{
+    if (root == nullptr)
+    {
+        return;
+    }
+    const QColor color = VSceneStylesheet::PatternPieceStyle().PieceColor();
+    RecolorGradedLayoutSubtree(root, color);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void RecolorGradedScenePens(QGraphicsScene *scene)
+{
+    if (scene == nullptr)
+    {
+        return;
+    }
+    const QColor color = VSceneStylesheet::PatternPieceStyle().PieceColor();
+    const auto items = scene->items();
+    for (auto *item : items)
+    {
+        if (GradedPieceId(item) != 0) // a silhouette root (reference or ghost layer) of a piece
+        {
+            RecolorGradedLayoutSubtree(item, color);
+        }
+    }
 }

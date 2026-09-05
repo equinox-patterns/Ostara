@@ -30,6 +30,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
+#include "mainwindow_graded_helpers.h"
 
 #include "WelcomeScreen.h"
 #include "core/odetailspropertybrowser.h"
@@ -201,6 +202,13 @@ void MainWindow::changeEvent(QEvent *event)
         // Re-resolve the color of every canvas item from the freshly loaded theme tables.
         RefreshSceneItemPens(m_sceneDraw);
         RefreshSceneItemPens(m_sceneDetails);
+
+        // The graded silhouettes are layout items (not VToolSeamAllowance) → re-tint them with the
+        // freshly loaded piece color so Graded follows Light/Dark like Draw/Details do.
+        if (m_sceneGraded != nullptr && not m_sceneGraded->items().isEmpty())
+        {
+            RecolorGradedScenePens(m_sceneGraded);
+        }
     }
 
     // remember to call base class implementation
