@@ -431,12 +431,30 @@ void MainWindow::BuildGradedScene()
                     if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded
                         && not m_activeGradedRangeName.isEmpty())
                     {
+                        // A right-click alignment edit flags a single unit: refresh the geometry
+                        // of THAT unit only (RealignGradedUnit) instead of the whole canvas.
+                        if (m_gradedPendingAlignUnit != 0)
+                        {
+                            const quint32 unitId = m_gradedPendingAlignUnit;
+                            const bool isGroup = m_gradedPendingAlignIsGroup;
+                            m_gradedPendingAlignUnit = 0;
+                            m_gradedPendingAlignIsGroup = false;
+                            QTimer::singleShot(0, this,
+                                               [this, unitId, isGroup]() { RealignGradedUnit(unitId, isGroup); });
+                            return;
+                        }
                         // Defer out of the current event; route through BuildGradedScene so the
                         // structure/content signature decides: unchanged → apply-only offsets,
                         // changed (e.g. an undone piece-content edit) → full re-capture.
                         QTimer::singleShot(0, this, [this]() { BuildGradedScene(); });
                     }
                 });
+
+        // Right-click on a graded piece/group opens the alignment menu (mode + range guarded
+        // inside the handler). The signal is emitted by the view for any non-tool item under the
+        // cursor; the graded silhouette roots and group hosts are plain path items, so they fire it.
+        connect(ui->view, &VMainGraphicsView::SceneContextMenuRequested, this,
+                &MainWindow::GradedAlignContextMenu, Qt::UniqueConnection);
     }
 
     // Drop frozen bases of pieces that no longer exist (removed in Details).

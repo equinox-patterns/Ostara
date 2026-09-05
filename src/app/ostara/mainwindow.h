@@ -40,6 +40,7 @@
 #include <QHash>
 #include <QMap>
 #include <QPointer>
+#include <QPoint>
 #include <QPointF>
 #include <QStringList>
 
@@ -332,6 +333,12 @@ private:
     /// deferred rebuild diffs it against the current range to decide the targeted refresh scope.
     OSizerange m_gradedAppliedRange{};
 
+    /// Right-click alignment edit pending: when set, the deferred undo-stack hook runs
+    /// RealignGradedUnit(unit) instead of the whole-canvas BuildGradedScene — the alignment
+    /// change refreshes geometry of that single unit only, never the other units nor their decor.
+    quint32 m_gradedPendingAlignUnit{0};
+    bool m_gradedPendingAlignIsGroup{false};
+
     /** @brief Canvas holders rendering each piece group's common children. */
     QHash<quint32, class OPieceGroupHolderItem *> m_groupHolders;
 
@@ -558,6 +565,17 @@ private:
     /// End of a graded reference drag: fan the offset out to all layers / groups
     /// and push an undo command saving the range content.
     void GradedMouseReleased();
+
+    /// Right-click alignment menu on a graded piece/group (Horizontal/Vertical submenus, the
+    /// current alignment marked with the check icon). Writes the model through the same undo
+    /// commands as the Details dock, then flags a single-unit realign for the deferred hook.
+    void GradedAlignContextMenu(const QPoint &globalPos);
+
+    /// Re-align geometry of ONE graded unit (piece or group) after an alignment edit — reset to
+    /// frozen base → alignment delta → stored range offset, restricted to that unit; group host
+    /// is re-anchored. Children are parented to their reference item/host and follow: nothing else
+    /// is refreshed (no decor rebuild, no whole-canvas re-apply).
+    void RealignGradedUnit(quint32 unitId, bool isGroup);
 
     /// (Re)build the interactive grainlines (lone pieces + groups) on the graded reference
     /// layer, from the Details base geometry or the per-range override, and wire move/resize
