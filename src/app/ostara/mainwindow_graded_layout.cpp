@@ -49,7 +49,128 @@
 #include <algorithm>
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ApplyGradedLayoutOffsets()
+namespace
+{
+/// Classification used by the deferred apply. Independent of any undo command: the scope is
+/// recomputed from the range-content diff, which stays reliable across push, redo and undo.
+enum class GradedChangeKind
+{
+    None,
+    PieceOffset,
+    GroupOffset,
+    PieceChild,
+    GroupChild
+};
+
+/// Describes the single-owner difference between two size-range contents — the scope a deferred
+/// graded apply must refresh. Anything not reducible to exactly one owner whose change is purely
+/// an offset (dx/dy) or purely child overrides stays "ambiguous" → full refresh.
+struct GradedContentDiff
+{
+    quint32 ownerId = 0; // 0 → no single usable owner
+    bool isGroup = false;
+    bool offsetOnly = false;
+    bool ambiguous = true;
+};
+
+GradedContentDiff DiffGradedRangeContent(const OSizerange &applied, const OSizerange &current)
+{
+    GradedContentDiff result;
+    if (applied.name != current.name)
+    {
+        return result;
+    }
+
+    quint32 pieceDiff = 0;
+    bool pieceMulti = false;
+    bool pieceMoved = false;
+    bool pieceChild = false;
+    const OSizerange::PieceContent emptyPiece;
+    for (auto it = current.pieceContent.cbegin(); it != current.pieceContent.cend(); ++it)
+    {
+        const auto at = applied.pieceContent.constFind(it.key());
+        const OSizerange::PieceContent &a = at == applied.pieceContent.cend() ? emptyPiece : at.value();
+        if (a == it.value())
+        {
+            continue;
+        }
+        if (pieceDiff != 0)
+        {
+            pieceMulti = true;
+        }
+        pieceDiff = it.key();
+        const bool moved =
+            !qFuzzyCompare(a.dx, it.value().dx) || !qFuzzyCompare(a.dy, it.value().dy);
+        const bool child =
+            !(a.grainline == it.value().grainline && a.blocks == it.value().blocks
+              && a.annotations == it.value().annotations && a.annotationsFp == it.value().annotationsFp);
+        pieceMoved = pieceMoved || moved;
+        pieceChild = pieceChild || child;
+    }
+    for (auto it = applied.pieceContent.cbegin(); it != applied.pieceContent.cend(); ++it)
+    {
+        if (!current.pieceContent.contains(it.key()))
+        {
+            pieceMulti = true;
+            pieceDiff = pieceDiff != 0 ? pieceDiff : it.key();
+        }
+    }
+
+    quint32 groupDiff = 0;
+    bool groupMulti = false;
+    bool groupMoved = false;
+    bool groupChild = false;
+    const OSizerange::GroupContent emptyGroup;
+    for (auto it = current.groupContent.cbegin(); it != current.groupContent.cend(); ++it)
+    {
+        const auto at = applied.groupContent.constFind(it.key());
+        const OSizerange::GroupContent &a = at == applied.groupContent.cend() ? emptyGroup : at.value();
+        if (a == it.value())
+        {
+            continue;
+        }
+        if (groupDiff != 0)
+        {
+            groupMulti = true;
+        }
+        groupDiff = it.key();
+        const bool moved =
+            !qFuzzyCompare(a.dx, it.value().dx) || !qFuzzyCompare(a.dy, it.value().dy);
+        const bool child =
+            !(a.grainline == it.value().grainline && a.blocks == it.value().blocks
+              && a.annotations == it.value().annotations && a.annotationsFp == it.value().annotationsFp);
+        groupMoved = groupMoved || moved;
+        groupChild = groupChild || child;
+    }
+    for (auto it = applied.groupContent.cbegin(); it != applied.groupContent.cend(); ++it)
+    {
+        if (!current.groupContent.contains(it.key()))
+        {
+            groupMulti = true;
+            groupDiff = groupDiff != 0 ? groupDiff : it.key();
+        }
+    }
+
+    if (pieceDiff != 0 && groupDiff == 0 && !pieceMulti && pieceMoved != pieceChild)
+    {
+        result.ownerId = pieceDiff;
+        result.isGroup = false;
+        result.offsetOnly = pieceMoved;
+        result.ambiguous = false;
+    }
+    else if (groupDiff != 0 && pieceDiff == 0 && !groupMulti && groupMoved != groupChild)
+    {
+        result.ownerId = groupDiff;
+        result.isGroup = true;
+        result.offsetOnly = groupMoved;
+        result.ambiguous = false;
+    }
+    return result;
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ApplyGradedLayoutOffsets(bool forceFull)
 {
     if (m_sceneGraded == nullptr || pattern == nullptr || m_activeGradedRangeName.isEmpty())
     {
@@ -277,14 +398,65 @@ void MainWindow::ApplyGradedLayoutOffsets()
         }
     }
 
-    // Positions are final: mask grouped members' own grainline/fold and (re)anchor the group
-    // grainline host (Details rule — a group shows its own children instead of the members').
-    RefreshGradedReferenceGroupDecor(pattern, m_sceneGraded);
+    // Positions are final. Refresh the decor + children according to the change scope. forceFull
+    // (a fresh capture) or any change that cannot be attributed to a single owner → full refresh
+    // (always-correct default). A lone-piece drag touches nothing (its children are parented to
+    // the piece and follow it); a child override refreshes only the affected piece or group — the
+    // expensive content resolution (info blocks / annotations) never runs for the other owners.
+    using ChangeKind = GradedChangeKind;
+    ChangeKind kind = ChangeKind::None;
+    quint32 ownerId = 0;
+    if (!forceFull)
+    {
+        const GradedContentDiff diff = DiffGradedRangeContent(m_gradedAppliedRange, range);
+        if (!diff.ambiguous)
+        {
+            kind = diff.isGroup ? (diff.offsetOnly ? ChangeKind::GroupOffset : ChangeKind::GroupChild)
+                                : (diff.offsetOnly ? ChangeKind::PieceOffset : ChangeKind::PieceChild);
+            ownerId = diff.ownerId;
+        }
+    }
 
-    // Interactive grainlines, info blocks then annotations on the reference layer — Details-like.
-    RefreshGradedReferenceGrainlines();
-    RefreshGradedReferenceInfoBlocks();
-    RefreshGradedReferenceAnnotations();
+    const bool pieceIsGrouped = ownerId != 0 && kind != ChangeKind::None
+                                && kind != ChangeKind::GroupOffset && kind != ChangeKind::GroupChild
+                                && pattern->GetPieceGroupId(ownerId) != NULL_ID;
+
+    if (forceFull || kind == ChangeKind::None || kind == ChangeKind::GroupOffset || pieceIsGrouped)
+    {
+        // Full decor + children: entry/structural change, group drag (hosts are re-anchored and
+        // every group child re-hosted) or a change not reducible to a single owner.
+        RefreshGradedReferenceGroupDecor(pattern, m_sceneGraded);
+        RefreshGradedReferenceGrainlines();
+        RefreshGradedReferenceInfoBlocks();
+        RefreshGradedReferenceAnnotations();
+    }
+    else if (kind == ChangeKind::PieceOffset)
+    {
+        // Lone-piece drag: the children are parented to the reference item and follow it, so the
+        // group hosts and every other owner's children are untouched — nothing to rebuild.
+    }
+    else if (kind == ChangeKind::PieceChild)
+    {
+        RefreshGradedReferenceGrainlines(ownerId, 0);
+        RefreshGradedReferenceInfoBlocks(ownerId, 0);
+        RefreshGradedReferenceAnnotations(ownerId, 0);
+    }
+    else // GroupChild
+    {
+        RefreshGradedReferenceGrainlines(0, ownerId);
+        RefreshGradedReferenceInfoBlocks(0, ownerId);
+        RefreshGradedReferenceAnnotations(0, ownerId);
+    }
+
+    // Remember the applied content so the next deferred apply can diff against it.
+    if (ranges != nullptr && ranges->contains(m_activeGradedRangeName))
+    {
+        m_gradedAppliedRange = ranges->value(m_activeGradedRangeName);
+    }
+    else
+    {
+        m_gradedAppliedRange = OSizerange{};
+    }
 }
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::GradedMouseReleased()

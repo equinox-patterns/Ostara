@@ -79,7 +79,7 @@ void MainWindow::StoreGradedGrainline(quint32 ownerId, bool isGroup, const OSize
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::RefreshGradedReferenceGrainlines()
+void MainWindow::RefreshGradedReferenceGrainlines(quint32 onlyPieceId, quint32 onlyGroupId)
 {
     if (m_sceneGraded == nullptr || pattern == nullptr || m_activeGradedRangeName.isEmpty())
     {
@@ -93,10 +93,22 @@ void MainWindow::RefreshGradedReferenceGrainlines()
     const OSizerange &range = ranges->value(m_activeGradedRangeName);
 
     // 1) Drop previous interactive grainline items (children of reference pieces / group hosts).
+    //    When a targeted owner is given, only that owner's children are dropped.
     auto items = m_sceneGraded->items();
     for (auto *owner : items)
     {
-        if (GradedPieceId(owner) == 0 && owner->data(kGradedHostGroupIdRole).isNull())
+        const quint32 ownerPiece = GradedPieceId(owner);
+        const quint32 ownerGroup =
+            ownerPiece == 0 ? owner->data(kGradedHostGroupIdRole).toUInt() : 0;
+        if (ownerPiece == 0 && ownerGroup == 0)
+        {
+            continue;
+        }
+        if (onlyPieceId != 0 && (ownerPiece == 0 || ownerPiece != onlyPieceId))
+        {
+            continue;
+        }
+        if (onlyGroupId != 0 && (ownerGroup == 0 || ownerGroup != onlyGroupId))
         {
             continue;
         }
@@ -130,6 +142,14 @@ void MainWindow::RefreshGradedReferenceGrainlines()
         if (pieceId == 0 || piecesMap == nullptr || !piecesMap->contains(pieceId))
         {
             continue;
+        }
+        if (onlyGroupId != 0)
+        {
+            continue; // targeted rebuild of a group only
+        }
+        if (onlyPieceId != 0 && pieceId != onlyPieceId)
+        {
+            continue; // targeted rebuild of another lone piece
         }
         if (pattern->GetPieceGroupId(pieceId) != NULL_ID)
         {
@@ -212,6 +232,14 @@ void MainWindow::RefreshGradedReferenceGrainlines()
         if (!groups->contains(groupId))
         {
             continue;
+        }
+        if (onlyPieceId != 0)
+        {
+            continue; // targeted rebuild of a lone piece only
+        }
+        if (onlyGroupId != 0 && groupId != onlyGroupId)
+        {
+            continue; // targeted rebuild of another group
         }
         const OPieceGroup &group = groups->value(groupId);
         const VGrainlineData geom = group.m_glGrainline;

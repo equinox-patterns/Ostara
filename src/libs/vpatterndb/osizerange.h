@@ -36,6 +36,7 @@
 #include <QMap>
 #include <QPointF>
 #include <QString>
+#include <QtGlobal>
 
 /**
  * @brief One size range of the Graded mode.
@@ -54,6 +55,11 @@ public:
         bool valid = false;     // an override exists → it wins over the Details base geometry
         QPointF pos{};          // parent-local px
         qreal lengthPx = 0.0;   // length in px
+
+        friend bool operator==(const GrainlineOverride &l, const GrainlineOverride &r)
+        {
+            return l.valid == r.valid && l.pos == r.pos && qFuzzyCompare(l.lengthPx, r.lengthPx);
+        }
     };
 
     /** @brief Optional per-range info-block override (a move/resize done in Graded). */
@@ -61,6 +67,16 @@ public:
     {
         bool valid = false;     // an override exists → wins over the Details base geometry
         OInfoBlockGeom geom{};  // pos + fontScale (width/height are re-derived from content)
+
+        friend bool operator==(const BlockOverride &l, const BlockOverride &r)
+        {
+            return l.valid == r.valid
+                   && (!l.valid
+                       || (l.geom.pos == r.geom.pos && qFuzzyCompare(l.geom.width, r.geom.width)
+                           && qFuzzyCompare(l.geom.height, r.geom.height)
+                           && qFuzzyCompare(l.geom.rotation, r.geom.rotation)
+                           && qFuzzyCompare(l.geom.fontScale, r.geom.fontScale)));
+        }
     };
 
     /** @brief Optional per-range annotation override (a move/resize done in Graded). */
@@ -69,6 +85,16 @@ public:
         bool valid = false;     // an override exists → wins over the Details base geometry
         OAnnotationGeom geom{}; // pos + boxWidth/boxHeight + fontScale (rotation is NOT stored —
                                 // it stays fixed from the base annotation's rotation formula)
+
+        friend bool operator==(const AnnotationOverride &l, const AnnotationOverride &r)
+        {
+            return l.valid == r.valid
+                   && (!l.valid
+                       || (l.geom.pos == r.geom.pos
+                           && qFuzzyCompare(l.geom.boxWidth, r.geom.boxWidth)
+                           && qFuzzyCompare(l.geom.boxHeight, r.geom.boxHeight)
+                           && qFuzzyCompare(l.geom.fontScale, r.geom.fontScale)));
+        }
     };
 
     /** @brief Content recorded for one piece inside this range. */
@@ -81,6 +107,13 @@ public:
         QHash<int, AnnotationOverride> annotations; // annotation list index → override (0-based)
         QString annotationsFp;                    // fingerprint of the annotation list that the
                                                   // overrides were made against (empty = none)
+
+        friend bool operator==(const PieceContent &l, const PieceContent &r)
+        {
+            return qFuzzyCompare(l.dx, r.dx) && qFuzzyCompare(l.dy, r.dy) && l.grainline == r.grainline
+                   && l.blocks == r.blocks && l.annotations == r.annotations
+                   && l.annotationsFp == r.annotationsFp;
+        }
     };
 
     /** @brief Content recorded for one group inside this range. */
@@ -92,6 +125,13 @@ public:
         QHash<int, BlockOverride> blocks;         // block index 1..11 → override
         QHash<int, AnnotationOverride> annotations; // annotation list index → override (0-based)
         QString annotationsFp;                    // fingerprint of the annotation list (see above)
+
+        friend bool operator==(const GroupContent &l, const GroupContent &r)
+        {
+            return qFuzzyCompare(l.dx, r.dx) && qFuzzyCompare(l.dy, r.dy) && l.grainline == r.grainline
+                   && l.blocks == r.blocks && l.annotations == r.annotations
+                   && l.annotationsFp == r.annotationsFp;
+        }
     };
 
     QString name;                          // unique within the pattern (the key)

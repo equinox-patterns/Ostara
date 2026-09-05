@@ -326,6 +326,9 @@ private:
     /// When true, the next BuildGradedScene always re-captures (entry from another mode), so
     /// ANY piece-shape change in Details is picked up — not only the structural ones.
     bool m_gradedForceCapture{false};
+    /// Content of the active size range as it was when the graded scene was last applied. The
+    /// deferred rebuild diffs it against the current range to decide the targeted refresh scope.
+    OSizerange m_gradedAppliedRange{};
 
     /** @brief Canvas holders rendering each piece group's common children. */
     QHash<quint32, class OPieceGroupHolderItem *> m_groupHolders;
@@ -502,7 +505,9 @@ private:
 
     /// Re-apply alignment + per-range content offsets onto the existing graded
     /// items (no re-capture). Used after undo/redo and at the end of a capture.
-    void ApplyGradedLayoutOffsets();
+    /// When forceFull is false (a deferred rebuild after an undo/redo command), the
+    /// children refresh is limited to what actually changed in the active size range.
+    void ApplyGradedLayoutOffsets(bool forceFull = false);
 
     /// End of a graded reference drag: fan the offset out to all layers / groups
     /// and push an undo command saving the range content.
@@ -511,7 +516,9 @@ private:
     /// (Re)build the interactive grainlines (lone pieces + groups) on the graded reference
     /// layer, from the Details base geometry or the per-range override, and wire move/resize
     /// to save into the active size range. Positions must be final when called.
-    void RefreshGradedReferenceGrainlines();
+    /// onlyPieceId/onlyGroupId (0 = all owners) restrict the rebuild to a single owner — the
+    /// targeted path used after a single-owner content change.
+    void RefreshGradedReferenceGrainlines(quint32 onlyPieceId = 0, quint32 onlyGroupId = 0);
 
     /// Persist a grainline move/resize of a lone piece (isGroup=false) or of a group into the
     /// active size range and push the undo command.
@@ -519,8 +526,8 @@ private:
 
     /// (Re)build the interactive info blocks (lone pieces + groups) on the graded reference
     /// layer — Details-identical hosting, with per-range geometry overrides. Positions must be
-    /// final when called.
-    void RefreshGradedReferenceInfoBlocks();
+    /// final when called. onlyPieceId/onlyGroupId (0 = all owners) restrict the rebuild.
+    void RefreshGradedReferenceInfoBlocks(quint32 onlyPieceId = 0, quint32 onlyGroupId = 0);
 
     /// Persist an info-block move/resize of a lone piece (isGroup=false) or of a group into
     /// the active size range and push the undo command.
@@ -528,7 +535,8 @@ private:
 
     /// (Re)build the interactive annotations (lone pieces + groups) on the graded reference
     /// layer — Details-identical hosting, per-range geometry overrides, fixed base rotation.
-    void RefreshGradedReferenceAnnotations();
+    /// onlyPieceId/onlyGroupId (0 = all owners) restrict the rebuild.
+    void RefreshGradedReferenceAnnotations(quint32 onlyPieceId = 0, quint32 onlyGroupId = 0);
 
     /// Persist an annotation move/resize of a lone piece (isGroup=false) or of a group into
     /// the active size range and push the undo command. Rotation is never stored.

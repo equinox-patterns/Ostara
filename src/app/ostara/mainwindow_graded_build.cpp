@@ -348,8 +348,9 @@ void MainWindow::BuildGradedScene()
     doc->RefreshPieceGeometry();
     doc->SetModified(wasModified);
 
-    // Alignment + per-range content offsets (recomputed from the model).
-    ApplyGradedLayoutOffsets();
+    // Alignment + per-range content offsets (recomputed from the model). A fresh capture always
+    // (re)builds the full decor + children — the active-range content may differ from the last apply.
+    ApplyGradedLayoutOffsets(true);
 
     // Reference drag bookkeeping: base positions + one-time hooks (mouse release,
     // undo stack) driving the fan-out and the rebuild after undo/redo.

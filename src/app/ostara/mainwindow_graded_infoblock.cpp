@@ -82,7 +82,7 @@ void MainWindow::StoreGradedInfoBlock(quint32 ownerId, bool isGroup, int block, 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::RefreshGradedReferenceInfoBlocks()
+void MainWindow::RefreshGradedReferenceInfoBlocks(quint32 onlyPieceId, quint32 onlyGroupId)
 {
     if (m_sceneGraded == nullptr || pattern == nullptr || m_activeGradedRangeName.isEmpty())
     {
@@ -96,10 +96,22 @@ void MainWindow::RefreshGradedReferenceInfoBlocks()
     const OSizerange &range = ranges->value(m_activeGradedRangeName);
 
     // Drop previous interactive block items, then re-fetch (the old list must not be reused).
+    // When a targeted owner is given, only that owner's children are dropped.
     auto items = m_sceneGraded->items();
     for (auto *owner : items)
     {
-        if (GradedPieceId(owner) == 0 && owner->data(kGradedHostGroupIdRole).isNull())
+        const quint32 ownerPiece = GradedPieceId(owner);
+        const quint32 ownerGroup =
+            ownerPiece == 0 ? owner->data(kGradedHostGroupIdRole).toUInt() : 0;
+        if (ownerPiece == 0 && ownerGroup == 0)
+        {
+            continue;
+        }
+        if (onlyPieceId != 0 && (ownerPiece == 0 || ownerPiece != onlyPieceId))
+        {
+            continue;
+        }
+        if (onlyGroupId != 0 && (ownerGroup == 0 || ownerGroup != onlyGroupId))
         {
             continue;
         }
@@ -247,6 +259,14 @@ void MainWindow::RefreshGradedReferenceInfoBlocks()
         {
             continue;
         }
+        if (onlyGroupId != 0)
+        {
+            continue; // targeted rebuild of a group only
+        }
+        if (onlyPieceId != 0 && pieceId != onlyPieceId)
+        {
+            continue; // targeted rebuild of another lone piece
+        }
         if (pattern->GetPieceGroupId(pieceId) != NULL_ID)
         {
             continue; // grouped → the group hosts the (single) set of blocks
@@ -271,6 +291,14 @@ void MainWindow::RefreshGradedReferenceInfoBlocks()
         if (!groups->contains(groupId))
         {
             continue;
+        }
+        if (onlyPieceId != 0)
+        {
+            continue; // targeted rebuild of a lone piece only
+        }
+        if (onlyGroupId != 0 && groupId != onlyGroupId)
+        {
+            continue; // targeted rebuild of another group
         }
         const OPieceGroup &group = groups->value(groupId);
         const OInfoBlockEffectiveState state = OInfoBlockResolver::ResolveEffectiveState(group, doc, pattern);
