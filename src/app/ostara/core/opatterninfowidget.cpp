@@ -357,6 +357,7 @@ void OPatternInfoWidget::CommitPatternName()
     if (name != doc->GetPatternName())
     {
         doc->SetPatternName(name);
+        doc->CheckLayout();
     }
 }
 
@@ -376,6 +377,7 @@ void OPatternInfoWidget::CommitClient(int index)
     if (client != doc->GetCustomer())
     {
         doc->SetCustomer(client);
+        doc->CheckLayout();
     }
 }
 
@@ -395,6 +397,7 @@ void OPatternInfoWidget::CommitCollection(int index)
     if (collection != doc->GetCollection())
     {
         doc->SetCollection(collection);
+        doc->CheckLayout();
     }
 }
 
@@ -516,5 +519,6 @@ void OPatternInfoWidget::CommitDelayed()
     if (fabricInfo != doc->GetFabricInfo())
     {
         doc->SetFabricInfo(fabricInfo);
+        doc->CheckLayout();
     }
 }
