@@ -26,6 +26,8 @@
  **
  *************************************************************************/
 
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+
 #ifndef MAINWINDOWSNOGUI_H
 #define MAINWINDOWSNOGUI_H
 
@@ -123,7 +125,8 @@ protected:
     QWinTaskbarProgress *m_taskbarProgress{nullptr}; // NOLINT(misc-non-private-member-variables-in-classes)
 #endif
 
-    static auto PrepareDetailsForLayout(const QVector<DetailForLayout> &details) -> QVector<VLayoutPiece>;
+    static auto PrepareDetailsForLayout(const QVector<DetailForLayout> &details,
+                                        bool showProgress = true) -> QVector<VLayoutPiece>;
 
     void ExportData(const QVector<VLayoutPiece> &listDetails);
 

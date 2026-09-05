@@ -26,6 +26,8 @@
  **
  *************************************************************************/
 
+// Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+
 #include "mainwindowsnogui.h"
 #include "../ifc/xml/vvitconverter.h"
 #include "../ifc/xml/vvstconverter.h"
@@ -1248,7 +1250,8 @@ void MainWindowsNoGUI::PrintTiled()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &details) -> QVector<VLayoutPiece>
+auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &details,
+                                               bool showProgress) -> QVector<VLayoutPiece>
 {
     if (details.isEmpty())
     {
@@ -1265,7 +1268,7 @@ auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &d
     layoutDetails.reserve(details.size());
 
     std::unique_ptr<QProgressDialog> progress;
-    if (VApplication::IsGUIMode())
+    if (showProgress && VApplication::IsGUIMode())
     {
         progress = std::make_unique<QProgressDialog>(
             QCoreApplication::translate("MainWindowsNoGUI", "Preparing details for layout"), QString(), 0,

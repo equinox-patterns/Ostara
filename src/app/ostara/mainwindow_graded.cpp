@@ -45,7 +45,9 @@
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vmaingraphicsview.h"
 
+#include <QCoreApplication>
 #include <QDomDocument>
+#include <QEventLoop>
 #include <QHash>
 #include <QMap>
 #include <QMessageBox>
@@ -109,6 +111,11 @@ void MainWindow::ActionGraded(bool checked)
         prevMode == Draw::Calculation ? ActionDraw(true) : ActionDetails(true);
         return;
     }
+
+    // Paint the just-switched Graded scene before the (potentially long) capture starts, so a
+    // later "please wait" dialog appears over the Graded canvas — not over the mode that was
+    // left. On the very first build the entry dialog's own event loop already painted it.
+    QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 
     m_gradedForceCapture = true; // entering from another mode → always refresh the silhouettes
     BuildGradedScene();

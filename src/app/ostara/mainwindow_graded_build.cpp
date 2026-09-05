@@ -28,6 +28,7 @@
 
 #include "mainwindow_helpers.h"
 #include "mainwindowsnogui.h"
+#include "dialogs/owaitdialog.h"
 #include "mainwindow_graded_helpers.h"
 #include "widgets/InfoBlock/OPieceCartoucheTable.h"
 #include "xml/vpattern.h"
@@ -47,6 +48,9 @@
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vmaingraphicsview.h"
 
+#include <QCoreApplication>
+#include <QElapsedTimer>
+#include <QEventLoop>
 #include <QGraphicsItem>
 #include <QHash>
 #include <QMap>
@@ -59,6 +63,7 @@
 #include <QVector>
 
 #include <algorithm>
+#include <memory>
 
 //---------------------------------------------------------------------------------------------------------------------
 namespace
@@ -201,6 +206,29 @@ void MainWindow::BuildGradedScene()
         return;
     }
 
+    // Single "please wait" feedback for the whole capture. The shared seam helper runs silently
+    // in this loop (PrepareDetailsForLayout(details, false)), so no progress bar flashes here;
+    // instead a static wait dialog appears only once the build has really taken the threshold.
+    // Fast builds end before the dialog is ever painted — nothing flashes.
+    constexpr int kGradedWaitThresholdMs = 400;
+    QElapsedTimer waitTimer;
+    waitTimer.start();
+    std::unique_ptr<OWaitDialog> waitDialog; // RAII: closed/destroyed on every path out of this scope
+    const auto ShowWaitDialogIfLong = [this, &waitTimer, &waitDialog]() {
+        if (waitDialog == nullptr && waitTimer.elapsed() >= kGradedWaitThresholdMs)
+        {
+            waitDialog.reset(new OWaitDialog(tr("Preparing the graded scene…"), this));
+            waitDialog->show();
+            // The window system needs a few event turns to map and paint the dialog — a single
+            // pump can leave the paint pending, notably right after the modal size-range dialog
+            // has closed (first graded build).
+            for (int i = 0; i < 4; ++i)
+            {
+                QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+            }
+        }
+    };
+
     // Always drop stale silhouettes before (re)building.
     m_sceneGraded->clear();
 
@@ -298,7 +326,7 @@ void MainWindow::BuildGradedScene()
         try
         {
             details = SortDetailsForLayout(pattern->DataPieces(), pattern);
-            pieces = PrepareDetailsForLayout(details);
+            pieces = PrepareDetailsForLayout(details, false);
         }
         catch (const VException &e)
         {
@@ -338,6 +366,9 @@ void MainWindow::BuildGradedScene()
             item->setData(kGradedIsRefRole, isReference);
             m_sceneGraded->addItem(item);
         }
+
+        // Let a long build surface its wait dialog between sizes (never mid-parse).
+        ShowWaitDialogIfLong();
     }
 
     // Restore the live combination without leaving the DOM dirty.
@@ -347,6 +378,8 @@ void MainWindow::BuildGradedScene()
     doc->LiteParseTree(Document::FullLiteParse);
     doc->RefreshPieceGeometry();
     doc->SetModified(wasModified);
+
+    ShowWaitDialogIfLong();
 
     // Alignment + per-range content offsets (recomputed from the model). A fresh capture always
     // (re)builds the full decor + children — the active-range content may differ from the last apply.
