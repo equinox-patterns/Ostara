@@ -64,6 +64,7 @@ signals:
     void renameRequested(const QString &oldName, const QString &newName);
     void duplicateRequested(const QString &rangeName);
     void deleteRequested(const QString &rangeName);
+    void exportRequested(const QString &rangeName);
     void rangeActivated(const QString &rangeName);
 
 protected:

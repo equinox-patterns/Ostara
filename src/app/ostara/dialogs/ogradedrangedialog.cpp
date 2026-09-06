@@ -28,13 +28,20 @@
 
 #include "../vmisc/FactoryWidgets.h"
 
+#include <QCheckBox>
 #include <QComboBox>
+#include <QDir>
+#include <QFileDialog>
 #include <QFormLayout>
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QList>
 #include <QLineEdit>
+#include <QtMath>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QSpinBox>
 #include <QStackedWidget>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -243,35 +250,42 @@ void OGradedRangeDialog::BuildStep2Page()
     // Rebuild (idempotent: navigation may run more than once).
     if (QLayout *oldLayout = m_step2->layout(); oldLayout != nullptr)
     {
-        while (QLayoutItem *item = oldLayout->takeAt(0))
-        {
-            if (QWidget *w = item->widget(); w != nullptr)
-            {
-                w->deleteLater();
-            }
-            delete item;
-        }
         delete oldLayout;
+        const QList<QWidget *> stale =
+            m_step2->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly);
+        for (QWidget *w : stale)
+        {
+            delete w;
+        }
     }
     m_otherCombos.clear();
-
-    auto *layout = new QFormLayout(m_step2);
-
-    m_nameEdit = new QLineEdit(m_step2);
-    m_nameEdit->setPlaceholderText(tr("Size range name"));
-    layout->addRow(tr("Name:"), m_nameEdit);
+    m_fileNameManual = false;
+    m_layoutLayerManual = false;
 
     const QStringList values = m_config.axisValues.value(m_sizeAxis);
+    auto *layout = new QVBoxLayout(m_step2);
 
-    m_minCombo = MakeComboBox(m_step2);
+    // Ligne 1 — the range name.
+    m_nameEdit = new QLineEdit(m_step2);
+    m_nameEdit->setPlaceholderText(tr("Size range name"));
+    auto *nameRow = new QHBoxLayout();
+    nameRow->addWidget(new QLabel(tr("Name:"), m_step2));
+    nameRow->addWidget(m_nameEdit, 1);
+    layout->addLayout(nameRow);
+
+    // Ligne 2 — the size interval (min/max) and the frozen other axes.
+    auto *rangeGroup = new QGroupBox(tr("Size range"), m_step2);
+    auto *rangeLayout = new QFormLayout(rangeGroup);
+
+    m_minCombo = MakeComboBox(rangeGroup);
     m_minCombo->addItems(values);
     m_minCombo->setCurrentIndex(0);
-    layout->addRow(tr("Minimum:"), m_minCombo);
+    rangeLayout->addRow(tr("Minimum:"), m_minCombo);
 
-    m_maxCombo = MakeComboBox(m_step2);
+    m_maxCombo = MakeComboBox(rangeGroup);
     m_maxCombo->addItems(values);
     m_maxCombo->setCurrentIndex(values.size() > 0 ? static_cast<int>(values.size() - 1) : 0);
-    layout->addRow(tr("Maximum:"), m_maxCombo);
+    rangeLayout->addRow(tr("Maximum:"), m_maxCombo);
 
     // One row per other axis — dynamic label = the real axis name; default 1st value.
     for (const QString &axis : m_config.axisNames)
@@ -281,12 +295,63 @@ void OGradedRangeDialog::BuildStep2Page()
             continue;
         }
 
-        QComboBox *combo = MakeComboBox(m_step2);
+        QComboBox *combo = MakeComboBox(rangeGroup);
         combo->addItems(m_config.axisValues.value(axis));
         combo->setCurrentIndex(0);
         m_otherCombos.append({axis, combo});
-        layout->addRow(axis + QLatin1Char(':'), combo);
+        rangeLayout->addRow(axis + QLatin1Char(':'), combo);
     }
+    layout->addWidget(rangeGroup);
+
+    // Ligne 3 — the export settings consumed by the graded SVG export.
+    auto *exportGroup = new QGroupBox(tr("Export"), m_step2);
+    auto *exportLayout = new QFormLayout(exportGroup);
+
+    m_pathEdit = new QLineEdit(exportGroup);
+    m_pathEdit->setText(m_config.exportPath);
+    auto *pathRow = new QHBoxLayout();
+    pathRow->addWidget(m_pathEdit, 1);
+    auto *browseButton = new QPushButton(tr("Browse…"), exportGroup);
+    pathRow->addWidget(browseButton);
+    exportLayout->addRow(tr("Path:"), pathRow);
+    connect(browseButton, &QPushButton::clicked, this, &OGradedRangeDialog::BrowseExportPath);
+
+    m_fileNameEdit = new QLineEdit(exportGroup);
+    exportLayout->addRow(tr("File name:"), m_fileNameEdit);
+
+    // Scale H/V — "100%" checked by default; the spin boxes (in %) stay disabled
+    // until their checkbox is unchecked. Scale = spin value / 100.
+    auto *scaleGroup = new QGroupBox(tr("Scale"), exportGroup);
+    auto *scaleLayout = new QFormLayout(scaleGroup);
+    const auto addScaleRow = [scaleGroup, scaleLayout](const QString &label,
+                                                             QCheckBox **outCheck,
+                                                             QSpinBox **outSpin) {
+        auto *check = new QCheckBox(tr("100%"), scaleGroup);
+        check->setChecked(true);
+        auto *spin = new QSpinBox(scaleGroup);
+        spin->setRange(1, 1000);
+        spin->setValue(100);
+        spin->setSuffix(QStringLiteral("%"));
+        spin->setEnabled(false);
+        auto *row = new QHBoxLayout();
+        row->addWidget(check);
+        row->addWidget(new QLabel(tr("Or"), scaleGroup));
+        row->addWidget(spin);
+        row->addStretch(1);
+        scaleLayout->addRow(label, row);
+        connect(check, &QCheckBox::toggled, spin, &QSpinBox::setEnabled);
+        *outCheck = check;
+        *outSpin = spin;
+    };
+    addScaleRow(tr("Horizontal:"), &m_hScale100, &m_hScaleSpin);
+    addScaleRow(tr("Vertical:"), &m_vScale100, &m_vScaleSpin);
+    exportLayout->addRow(scaleGroup);
+
+    m_layoutLayerEdit = new QLineEdit(exportGroup);
+    m_layoutLayerEdit->setText(tr("Layout"));
+    exportLayout->addRow(tr("Layout layer:"), m_layoutLayerEdit);
+
+    layout->addWidget(exportGroup);
 
     connect(m_nameEdit, &QLineEdit::textChanged, this, &OGradedRangeDialog::CheckState);
     connect(m_minCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
@@ -298,6 +363,24 @@ void OGradedRangeDialog::BuildStep2Page()
         connect(pair.second, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
                 &OGradedRangeDialog::CheckState);
     }
+
+    // The export file name is autogenerated from the current interval/axes unless
+    // the user has typed an override.
+    connect(m_minCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &OGradedRangeDialog::UpdateExportFileName);
+    connect(m_maxCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &OGradedRangeDialog::UpdateExportFileName);
+    for (const auto &pair : m_otherCombos)
+    {
+        connect(pair.second, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+                &OGradedRangeDialog::UpdateExportFileName);
+    }
+    connect(m_fileNameEdit, &QLineEdit::textEdited, this,
+            [this]() { m_fileNameManual = true; });
+    connect(m_layoutLayerEdit, &QLineEdit::textEdited, this,
+            [this]() { m_layoutLayerManual = true; });
+
+    UpdateExportFileName();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -369,6 +452,32 @@ void OGradedRangeDialog::LoadExistingRange()
         }
     }
 
+    // Export group — restore what was stored on the range (overrides + scales).
+    if (m_pathEdit != nullptr && not range.exportPath.isEmpty())
+    {
+        m_pathEdit->setText(range.exportPath);
+    }
+    if (m_fileNameEdit != nullptr && not range.exportFileName.isEmpty())
+    {
+        m_fileNameEdit->setText(range.exportFileName);
+        m_fileNameManual = true;
+    }
+    if (m_layoutLayerEdit != nullptr && not range.exportLayoutLayerName.isEmpty())
+    {
+        m_layoutLayerEdit->setText(range.exportLayoutLayerName);
+        m_layoutLayerManual = true;
+    }
+    if (m_hScaleSpin != nullptr && range.exportXScale != 1.0)
+    {
+        m_hScale100->setChecked(false);
+        m_hScaleSpin->setValue(qRound(range.exportXScale * 100.0));
+    }
+    if (m_vScaleSpin != nullptr && range.exportYScale != 1.0)
+    {
+        m_vScale100->setChecked(false);
+        m_vScaleSpin->setValue(qRound(range.exportYScale * 100.0));
+    }
+
     CheckState();
 }
 
@@ -403,7 +512,99 @@ auto OGradedRangeDialog::range() const -> OSizerange
         range.axisValues.insert(pair.first, pair.second->currentText());
     }
 
+    // Export group (stored on the range so the graded SVG export can reuse them).
+    range.exportPath = exportPath();
+    range.exportFileName = m_fileNameManual ? exportFileName() : QString();
+    range.exportLayoutLayerName = m_layoutLayerManual ? exportLayoutLayerName() : QString();
+    range.exportXScale = exportXScale();
+    range.exportYScale = exportYScale();
+
     return range;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedRangeDialog::BrowseExportPath()
+{
+    QString dir = m_pathEdit != nullptr ? m_pathEdit->text().trimmed() : QString();
+    if (dir.isEmpty())
+    {
+        dir = QDir::homePath();
+    }
+    const QString selected = QFileDialog::getExistingDirectory(this, tr("Select folder"), dir);
+    if (not selected.isEmpty() && m_pathEdit != nullptr)
+    {
+        m_pathEdit->setText(selected);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OGradedRangeDialog::GenerateExportFileName() const -> QString
+{
+    QStringList parts;
+    if (not m_config.patternBaseName.isEmpty())
+    {
+        parts.append(m_config.patternBaseName);
+    }
+    if (m_minCombo != nullptr)
+    {
+        parts.append(m_minCombo->currentText());
+    }
+    if (m_maxCombo != nullptr)
+    {
+        parts.append(m_maxCombo->currentText());
+    }
+    for (const auto &pair : m_otherCombos)
+    {
+        parts.append(pair.second->currentText());
+    }
+    return parts.join(QLatin1Char('_'));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedRangeDialog::UpdateExportFileName()
+{
+    if (m_fileNameEdit != nullptr && not m_fileNameManual)
+    {
+        m_fileNameEdit->setText(GenerateExportFileName());
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OGradedRangeDialog::exportPath() const -> QString
+{
+    return m_pathEdit != nullptr ? m_pathEdit->text().trimmed() : m_config.exportPath;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OGradedRangeDialog::exportFileName() const -> QString
+{
+    return m_fileNameEdit != nullptr ? m_fileNameEdit->text().trimmed() : QString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OGradedRangeDialog::exportLayoutLayerName() const -> QString
+{
+    return m_layoutLayerEdit != nullptr ? m_layoutLayerEdit->text().trimmed() : tr("Layout");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OGradedRangeDialog::exportXScale() const -> qreal
+{
+    if (m_hScale100 != nullptr && m_hScale100->isChecked())
+    {
+        return 1.0;
+    }
+    return m_hScaleSpin != nullptr ? m_hScaleSpin->value() / 100.0 : 1.0;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OGradedRangeDialog::exportYScale() const -> qreal
+{
+    if (m_vScale100 != nullptr && m_vScale100->isChecked())
+    {
+        return 1.0;
+    }
+    return m_vScaleSpin != nullptr ? m_vScaleSpin->value() / 100.0 : 1.0;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -231,7 +231,8 @@ void OWidgetSizeRanges::BuildUi()
             case kDelete:
                 emit deleteRequested(rangeName);
                 break;
-            default: // kExport — export SVG, not wired yet
+            case kExport: // Export the range as a layered graded SVG (direct).
+                emit exportRequested(rangeName);
                 break;
         }
     });

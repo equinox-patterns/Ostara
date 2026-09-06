@@ -536,6 +536,12 @@ private:
     /// ranges stay independent — later edits touch only one of them.
     bool DuplicateGradedRange(const QString &rangeName);
 
+    /// Export the range of a Size Ranges dock row to a layered SVG (one layer per
+    /// size, grand → petit, plus a "Layout" layer with the reference decor).
+    /// Direct export (no dialog), headless per-size recapture — the live canvas is
+    /// never touched. Uses the range's stored export settings when present.
+    void ExportGradedRange(const QString &rangeName);
+
     /// Shared "create a size range" dialog + store, used by EnterGradedMode and
     /// AddGradedRange. @p staleNameToDrop (empty = none) is only removed on the
     /// accept path. Returns the new range name, or an empty string when cancelled.

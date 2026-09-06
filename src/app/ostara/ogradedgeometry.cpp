@@ -1,0 +1,251 @@
+/************************************************************************
+ **
+ **  @file   ogradedgeometry.cpp
+ **  @author Sophie Denys <contact@sophiedenys.com>
+ **  @date   06/09/2026
+ **
+ **  @brief  Implementation of the reusable graded alignment/offsets pass (see
+ **          header). The body mirrors the "positions" part of
+ **          MainWindow::ApplyGradedLayoutOffsets so canvas and export never
+ **          drift apart.
+ **
+ **  @copyright
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+ **
+ **  This program is free software: you can redistribute it and/or modify
+ **  it under the terms of the GNU General Public License as published by
+ **  the Free Software Foundation, either version 3 of the License, or
+ **  (at your option) any later version.
+ **
+ **  This program is distributed in the hope that it will be useful,
+ **  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ **  GNU General Public License for more details.
+ **
+ **  You should have received a copy of the GNU General Public License
+ **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **
+ *************************************************************************/
+
+#include "ogradedgeometry.h"
+
+#include "mainwindow_graded_helpers.h"
+#include "../vpatterndb/opiecegroup.h"
+#include "../vpatterndb/osizerange.h"
+#include "../vpatterndb/vcontainer.h"
+#include "../vpatterndb/vpiece.h"
+
+#include <QGraphicsItem>
+#include <QGraphicsScene>
+#include <QHash>
+#include <QList>
+#include <QMap>
+#include <QRectF>
+
+namespace OGraded
+{
+namespace
+{
+auto AnchorPoint(const QRectF &rect, int h, int v) -> QPointF
+{
+    const qreal hFrac = h == 1 ? 0.0 : (h == 3 ? 1.0 : 0.5);
+    const qreal vFrac = v == 1 ? 0.0 : (v == 3 ? 1.0 : 0.5);
+    return QPointF(rect.left() + rect.width() * hFrac, rect.top() + rect.height() * vFrac);
+}
+}  // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+void ApplyOffsets(const QList<QGraphicsItem *> &items, const OSizerange &range, const VContainer *pattern)
+{
+    if (items.isEmpty() || pattern == nullptr)
+    {
+        return;
+    }
+
+    // Idempotent re-apply: reset every piece item to its frozen base first, so the alignment
+    // deltas and the stored offsets never stack on already-offset positions.
+    for (auto *item : items)
+    {
+        if (GradedPieceId(item) != 0 && !item->data(kGradedBasePosRole).isNull())
+        {
+            item->setPos(item->data(kGradedBasePosRole).toPointF());
+        }
+    }
+
+    QHash<quint32, QList<QGraphicsItem *>> byPiece;
+    for (auto *baseItem : items)
+    {
+        if (GradedPieceId(baseItem) != 0)
+        {
+            byPiece[GradedPieceId(baseItem)].append(baseItem);
+        }
+    }
+
+    // Group membership: a member piece is never aligned/offset as an individual — the group is
+    // the unit (same rule as Details). Groups with < 2 members are ignored (like the canvas).
+    QHash<quint32, quint32> pieceGroupOf;  // member piece id -> group id
+    const auto *groups = pattern->DataPieceGroups();
+    if (groups != nullptr)
+    {
+        for (auto git = groups->cbegin(); git != groups->cend(); ++git)
+        {
+            if (git.value().pieceIds.size() < 2)
+            {
+                continue;
+            }
+            for (quint32 memberId : git.value().pieceIds)
+            {
+                pieceGroupOf.insert(memberId, git.key());
+            }
+        }
+    }
+
+    // Pass 1 — align each non-grouped piece's size layers (additive delta, base preserved).
+    const auto *piecesMap = pattern->DataPieces();
+    for (auto it = byPiece.cbegin(); it != byPiece.cend(); ++it)
+    {
+        if (pieceGroupOf.contains(it.key()))
+        {
+            continue;
+        }
+        const QList<QGraphicsItem *> &pieceItems = it.value();
+        if (pieceItems.size() < 2)
+        {
+            continue;  // a single layer keeps its Details (mx/my) position
+        }
+
+        int alignH = 2;
+        int alignV = 2;
+        if (piecesMap != nullptr && piecesMap->contains(it.key()))
+        {
+            const VPiece &piece = piecesMap->value(it.key());
+            alignH = piece.GetGradedAlignH();
+            alignV = piece.GetGradedAlignV();
+        }
+
+        QVector<QRectF> rects;
+        rects.reserve(pieceItems.size());
+        QRectF unionRect;
+        for (const auto *item : pieceItems)
+        {
+            const QRectF r = item->sceneBoundingRect();
+            rects.append(r);
+            unionRect = unionRect.isNull() ? r : unionRect.united(r);
+        }
+
+        const QPointF target = AnchorPoint(unionRect, alignH, alignV);
+        for (int i = 0; i < pieceItems.size(); ++i)
+        {
+            const QPointF delta = target - AnchorPoint(rects.at(i), alignH, alignV);
+            if (!qFuzzyIsNull(delta.x()) || !qFuzzyIsNull(delta.y()))
+            {
+                pieceItems.at(i)->setPos(pieceItems.at(i)->pos() + delta);
+            }
+        }
+    }
+
+    // Pass 2 — align each GROUP as a rigid unit: per layer the union of the members, cross-layer
+    // overall union, then shift every member of a layer by the same anchor delta.
+    if (groups != nullptr)
+    {
+        for (auto git = groups->cbegin(); git != groups->cend(); ++git)
+        {
+            const OPieceGroup &group = git.value();
+            if (group.pieceIds.size() < 2)
+            {
+                continue;
+            }
+
+            QMap<qreal, QList<QGraphicsItem *>> itemsByLayer;  // z -> items
+            QMap<qreal, QRectF> rectByLayer;                   // z -> pre-move member union
+            int totalItems = 0;
+            for (quint32 memberId : group.pieceIds)
+            {
+                const auto found = byPiece.constFind(memberId);
+                if (found == byPiece.cend())
+                {
+                    continue;
+                }
+                for (auto *item : *found)
+                {
+                    const qreal z = item->zValue();
+                    itemsByLayer[z].append(item);
+                    ++totalItems;
+                    const QRectF r = item->sceneBoundingRect();
+                    QRectF &lr = rectByLayer[z];
+                    lr = lr.isNull() ? r : lr.united(r);
+                }
+            }
+            if (totalItems < 2)
+            {
+                continue;
+            }
+
+            QRectF overallRect;
+            for (auto it = rectByLayer.cbegin(); it != rectByLayer.cend(); ++it)
+            {
+                overallRect = overallRect.isNull() ? it.value() : overallRect.united(it.value());
+            }
+
+            for (auto it = rectByLayer.cbegin(); it != rectByLayer.cend(); ++it)
+            {
+                const QPointF delta = AnchorPoint(overallRect, group.alignH, group.alignV)
+                                      - AnchorPoint(it.value(), group.alignH, group.alignV);
+                if (qFuzzyIsNull(delta.x()) && qFuzzyIsNull(delta.y()))
+                {
+                    continue;
+                }
+                for (auto *item : itemsByLayer[it.key()])
+                {
+                    item->setPos(item->pos() + delta);
+                }
+            }
+        }
+    }
+
+    // Per-range content offsets (drag deltas persisted in the size range). A group member only
+    // ever moves through its group's offset — never through a per-piece one.
+    for (auto pc = range.pieceContent.cbegin(); pc != range.pieceContent.cend(); ++pc)
+    {
+        if (pieceGroupOf.contains(pc.key()))
+        {
+            continue;
+        }
+        const auto found = byPiece.constFind(pc.key());
+        if (found == byPiece.cend())
+        {
+            continue;
+        }
+        const QPointF delta(pc.value().dx, pc.value().dy);
+        for (auto *item : *found)
+        {
+            item->setPos(item->pos() + delta);
+        }
+    }
+
+    if (groups != nullptr)
+    {
+        for (auto git = groups->cbegin(); git != groups->cend(); ++git)
+        {
+            const auto content = range.groupContent.constFind(git.key());
+            if (content == range.groupContent.cend())
+            {
+                continue;
+            }
+            const QPointF delta(content->dx, content->dy);
+            for (quint32 memberId : git.value().pieceIds)
+            {
+                const auto found = byPiece.constFind(memberId);
+                if (found == byPiece.cend())
+                {
+                    continue;
+                }
+                for (auto *item : *found)
+                {
+                    item->setPos(item->pos() + delta);
+                }
+            }
+        }
+    }
+}
+}  // namespace OGraded

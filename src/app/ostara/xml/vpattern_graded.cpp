@@ -48,6 +48,11 @@ const QString kAttrMeasurement = QStringLiteral("measurement");
 const QString kAttrSizeAxis    = QStringLiteral("sizeAxis");
 const QString kAttrMin         = QStringLiteral("min");
 const QString kAttrMax         = QStringLiteral("max");
+const QString kAttrExportPath         = QStringLiteral("exportPath");
+const QString kAttrExportFileName     = QStringLiteral("exportFileName");
+const QString kAttrExportLayoutLayer  = QStringLiteral("exportLayoutLayerName");
+const QString kAttrExportXScale       = QStringLiteral("exportXScale");
+const QString kAttrExportYScale       = QStringLiteral("exportYScale");
 const QString kAttrAxis        = QStringLiteral("axis");
 const QString kAttrValue       = QStringLiteral("value");
 const QString kAttrDx          = QStringLiteral("dx");
@@ -247,6 +252,21 @@ void VPattern::ParseSizeRanges(const QDomElement &domElement)
         range.minValue = GetParametrEmptyString(rangeElement, kAttrMin);
         range.maxValue = GetParametrEmptyString(rangeElement, kAttrMax);
 
+        // Export settings of the graded SVG export (optional on <sizeRange>).
+        range.exportPath = GetParametrEmptyString(rangeElement, kAttrExportPath);
+        range.exportFileName = GetParametrEmptyString(rangeElement, kAttrExportFileName);
+        range.exportLayoutLayerName = GetParametrEmptyString(rangeElement, kAttrExportLayoutLayer);
+        {
+            bool ok = false;
+            const double x = rangeElement.attribute(kAttrExportXScale).toDouble(&ok);
+            range.exportXScale = ok && x > 0.0 ? x : 1.0;
+        }
+        {
+            bool ok = false;
+            const double y = rangeElement.attribute(kAttrExportYScale).toDouble(&ok);
+            range.exportYScale = ok && y > 0.0 ? y : 1.0;
+        }
+
         for (QDomNode child = rangeElement.firstChild(); not child.isNull(); child = child.nextSibling())
         {
             if (not child.isElement())
@@ -332,6 +352,28 @@ void AddSizeRanges(VAbstractPattern *doc, QDomElement &rootElement, const VConta
         doc->SetAttribute(rangeElement, kAttrSizeAxis, range.sizeAxis);
         doc->SetAttribute(rangeElement, kAttrMin, range.minValue);
         doc->SetAttribute(rangeElement, kAttrMax, range.maxValue);
+
+        // Export settings of the graded SVG export (only the overrides/non-defaults).
+        if (not range.exportPath.isEmpty())
+        {
+            doc->SetAttribute(rangeElement, kAttrExportPath, range.exportPath);
+        }
+        if (not range.exportFileName.isEmpty())
+        {
+            doc->SetAttribute(rangeElement, kAttrExportFileName, range.exportFileName);
+        }
+        if (not range.exportLayoutLayerName.isEmpty())
+        {
+            doc->SetAttribute(rangeElement, kAttrExportLayoutLayer, range.exportLayoutLayerName);
+        }
+        if (range.exportXScale != 1.0)
+        {
+            doc->SetAttribute(rangeElement, kAttrExportXScale, range.exportXScale);
+        }
+        if (range.exportYScale != 1.0)
+        {
+            doc->SetAttribute(rangeElement, kAttrExportYScale, range.exportYScale);
+        }
 
         for (auto av = range.axisValues.cbegin(); av != range.axisValues.cend(); ++av)
         {

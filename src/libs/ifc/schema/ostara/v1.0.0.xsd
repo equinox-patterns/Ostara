@@ -1122,6 +1122,11 @@
                   <xs:attribute name="sizeAxis" type="xs:string"/>
                   <xs:attribute name="min" type="xs:string"/>
                   <xs:attribute name="max" type="xs:string"/>
+                  <xs:attribute name="exportPath" type="xs:string"/>
+                  <xs:attribute name="exportFileName" type="xs:string"/>
+                  <xs:attribute name="exportLayoutLayerName" type="xs:string"/>
+                  <xs:attribute name="exportXScale" type="xs:double"/>
+                  <xs:attribute name="exportYScale" type="xs:double"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

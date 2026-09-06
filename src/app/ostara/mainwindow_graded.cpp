@@ -50,6 +50,7 @@
 #include <QCoreApplication>
 #include <QDomDocument>
 #include <QEventLoop>
+#include <QFileInfo>
 #include <QHash>
 #include <QMap>
 #include <QMessageBox>
@@ -262,6 +263,9 @@ QString MainWindow::CreateGradedRange(const QString &canonical, const QStringLis
     QStringList takenNames = existing != nullptr ? existing->keys() : QStringList();
     takenNames.removeAll(staleNameToDrop); // a dropped stale range may reuse its name
     config.takenNames = takenNames;
+    config.exportPath = settings->GetPathLayoutExport();
+    const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
+    config.patternBaseName = patternPath.isEmpty() ? QString() : QFileInfo(patternPath).baseName();
 
     // Offer the table's favorites (per chosen axis) in the create/load step.
     config.favoriteNames = [settings, canonical](const QString &axisName) -> QStringList {
@@ -501,6 +505,10 @@ bool MainWindow::EditGradedRange(const QString &rangeName)
     config.takenNames = takenNames;
     config.editing = true;
     config.initial = stored;
+    auto *settings = VAbstractApplication::VApp()->Settings();
+    config.exportPath = settings->GetPathLayoutExport();
+    const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
+    config.patternBaseName = patternPath.isEmpty() ? QString() : QFileInfo(patternPath).baseName();
 
     OGradedRangeDialog dialog(config, this);
     if (dialog.exec() != QDialog::Accepted)
@@ -518,7 +526,6 @@ bool MainWindow::EditGradedRange(const QString &rangeName)
     edited.pieceContent = stored.pieceContent;
     edited.groupContent = stored.groupContent;
 
-    auto *settings = VAbstractApplication::VApp()->Settings();
     const bool wasFavorite =
         OGradedFavorites::IsFavorite(settings, stored.measurement, stored.sizeAxis, stored.name);
     // Renaming a favorited range onto another favorite's name is refused.

@@ -1,0 +1,500 @@
+/************************************************************************
+ **
+ **  @file   ogradedsvgdecor.cpp
+ **  @author Sophie Denys <contact@sophiedenys.com>
+ **  @date   06/09/2026
+ **
+ **  @brief  Reference decor resolution for the graded "Layout" layer (see
+ **          header). Mirrors the live Graded canvas: group members' own decor
+ **          is masked in favour of the group's, and every child is placed at
+ **          its RANGE position (overrides of the exported range win, otherwise
+ **          the resolved design geometry/centres) — never at the static
+ **          Details-mode GetItem positions.
+ **
+ **  @copyright
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+ **
+ **  This program is free software: you can redistribute it and/or modify
+ **  it under the terms of the GNU General Public License as published by
+ **  the Free Software Foundation, either version 3 of the License, or
+ **  (at your option) any later version.
+ **
+ **  This program is distributed in the hope that it will be useful,
+ **  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ **  GNU General Public License for more details.
+ **
+ **  You should have received a copy of the GNU General Public License
+ **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **
+ *************************************************************************/
+
+#include "ogradedsvgdecor.h"
+
+#include "mainwindow_graded_helpers.h"
+#include "osvgutils.h"
+#include "widgets/InfoBlock/OInfoBlockResolver.h"
+#include "widgets/InfoBlock/oinfoblockexport.h"
+#include "../vpatterndb/calculator.h"
+#include "../vpatterndb/floatItemData/vgrainlinedata.h"
+#include "../vpatterndb/oannotationdata.h"
+#include "../vpatterndb/oinfoblockdata.h"
+#include "../vpatterndb/opiecegroup.h"
+#include "../vpatterndb/osizerange.h"
+#include "../vpatterndb/vcontainer.h"
+#include "../vpatterndb/vpiece.h"
+#include "../vlayout/vgraphicsfillitem.h"
+#include "../vlayout/vlayoutpiece.h"
+#include "../vmisc/vabstractapplication.h"
+#include "../vmisc/vcommonsettings.h"
+#include "../vtools/tools/vtoolseamallowance.h"
+#include "../vwidgets/vpiecegrainline.h"
+
+#include <QColor>
+#include <QFont>
+#include <QFontMetricsF>
+#include <QGraphicsItem>
+#include <QGraphicsPathItem>
+#include <QGraphicsScene>
+#include <QGraphicsSimpleTextItem>
+#include <QList>
+#include <QMap>
+#include <QPen>
+#include <QPointF>
+#include <QRectF>
+#include <QtMath>
+
+namespace OGradedDecor
+{
+namespace
+{
+/// Pixel-per-cm at the SVG 96 dpi reference (1 cm = 96/2.54 px).
+constexpr qreal kPxPerCm = 96.0 / 2.54;
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Rotation of an annotation: formula for a piece, literal for a group.
+auto RotationDeg(const QString &formula, bool isGroup, const VContainer *pattern) -> qreal
+{
+    if (formula.isEmpty())
+    {
+        return 0.0;
+    }
+    if (isGroup)
+    {
+        bool ok = false;
+        const qreal value = formula.toDouble(&ok);
+        return ok ? value : 0.0;
+    }
+    Calculator cal;
+    const qreal value = cal.EvalFormula(pattern->DataVariables(), formula);
+    return (qIsNaN(value) || qIsInf(value)) ? 0.0 : value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Build the grainline path item (a VGraphicsFillItem, like the canvas/holder)
+/// parented to @p parentItem, anchored at @p pos (parent-local).
+auto MakeGrainlineItem(QGraphicsItem *parentItem, const QPointF &pos, qreal rotationDeg,
+                       qreal lengthPx, GrainlineArrowDirection arrowType) -> QGraphicsItem *
+{
+    const VPieceGrainline grainline(pos, lengthPx, qDegreesToRadians(rotationDeg), arrowType);
+    const GrainlineShape shape = grainline.Shape();
+    if (shape.isEmpty())
+    {
+        return nullptr;
+    }
+    auto *item = new VGraphicsFillItem(VLayoutPiece::GrainlinePath(shape), parentItem);
+    item->SetCustomPen(true);
+    QPen pen = item->pen();
+    pen.setWidthF(VAbstractApplication::VApp()->Settings()->WidthHairLine());
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setJoinStyle(Qt::RoundJoin);
+    item->setPen(pen);
+    return item;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Length in px of a grainline (override length wins, else the design length).
+auto GrainlineLengthPx(const VGrainlineData &geom, const OSizerange::GrainlineOverride &ov) -> qreal
+{
+    if (ov.valid && ov.lengthPx > 0.0)
+    {
+        return ov.lengthPx;
+    }
+    const qreal cm = geom.GetLength().isEmpty() ? 10.0 : geom.GetLength().toDouble();
+    return cm * kPxPerCm;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Records of the info blocks of one owner (piece or group): the classic Details
+/// exporter geometry, PLUS the exported range's block overrides (a move/resize done
+/// in Graded) so the block sits where it is shown on the range's canvas.
+auto OwnerBlocks(const OInfoBlockData &info, const OSizerange::PieceContent &pc,
+                 const OSizerange::GroupContent &gc, bool isGroup,
+                 const OInfoBlockEffectiveState &state, const QPointF &centerLocal)
+    -> QVector<OInfoBlockSvg::Block>
+{
+    QVector<OInfoBlockSvg::Block> out;
+    const QList<int> blockIndexes = state.blockContent.keys();
+    for (int blockIndex : blockIndexes)
+    {
+        const QVector<OCartoucheRenderLine> lines = state.blockContent.value(blockIndex).toVector();
+        if (lines.isEmpty())
+        {
+            continue;
+        }
+        OInfoBlockGeom geom = info.BlockGeom(blockIndex);
+        const QHash<int, OSizerange::BlockOverride> &ovs = isGroup ? gc.blocks : pc.blocks;
+        const auto oit = ovs.constFind(blockIndex);
+        const bool ov = (oit != ovs.cend() && oit->valid);
+        if (ov)
+        {
+            geom.pos = oit->geom.pos;
+            if (oit->geom.fontScale > 0.0)
+            {
+                geom.fontScale = oit->geom.fontScale;
+            }
+        }
+        const qreal fontScale = geom.fontScale > 0.0 ? geom.fontScale : 1.0;
+        const QSizeF natural = OCartouchePainter::NaturalSize(lines);
+        const QSizeF size(natural.width() * fontScale, natural.height() * fontScale);
+        QPointF topLeft;
+        qreal rotation = 0.0;
+        if (ov || info.HasStoredGeometry(blockIndex))
+        {
+            topLeft = geom.pos;
+            rotation = geom.rotation;
+        }
+        else
+        {
+            topLeft = centerLocal + QPointF(0.0, (blockIndex - 1) * (size.height() + 12.0));
+        }
+
+        OInfoBlockSvg::Block block;
+        block.lines = lines;
+        block.fontScale = fontScale;
+        block.rect = QRectF(topLeft, size);
+        block.rotation = rotation;
+        out.append(block);
+    }
+    return out;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Records of the floating annotations of one owner: classic Details geometry,
+/// PLUS the exported range's annotation overrides (guarded by the annotation-list
+/// fingerprint) so a moved/rotated annotation sits where it is shown on the range.
+auto OwnerAnnotations(const OAnnotationData &annData, bool isGroup, const OSizerange::PieceContent &pc,
+                      const OSizerange::GroupContent &gc, const VContainer *pattern,
+                      const QPointF &centerLocal) -> QVector<OInfoBlockSvg::Annotation>
+{
+    QVector<OInfoBlockSvg::Annotation> out;
+    const QList<OAnnotation> annotations = annData.Annotations();
+    out.reserve(annotations.size());
+    const OAnnotationStyleResolver &resolver = VToolSeamAllowance::AnnotationStyleResolver();
+    const QHash<int, OSizerange::AnnotationOverride> &ovs =
+        isGroup ? gc.annotations : pc.annotations;
+    int index = 0;
+    for (const OAnnotation &annotation : annotations)
+    {
+        if (annotation.text.isEmpty())
+        {
+            ++index;
+            continue;
+        }
+        OAnnotationGeom geom = annotation.geom;
+        const auto oit = ovs.constFind(index);
+        if (oit != ovs.cend() && oit->valid)
+        {
+            geom = oit->geom;  // pos + boxWidth/boxHeight + fontScale (range move/resize)
+        }
+
+        const OAnnotationRenderStyle style =
+            resolver ? resolver(annotation.templateName) : OAnnotationRenderStyle();
+
+        QFont font;
+        if (!style.fontFamily.isEmpty())
+        {
+            font.setFamily(style.fontFamily);
+        }
+        if (style.fontWeight != 0)
+        {
+            font.setWeight(static_cast<QFont::Weight>(style.fontWeight));
+        }
+        if (style.fontSize > 0)
+        {
+            font.setPixelSize(style.fontSize);
+        }
+        const QFontMetricsF fm(font);
+        const QRectF br = fm.boundingRect(QRectF(0.0, 0.0, 0.0, 0.0), Qt::AlignLeft, annotation.text);
+
+        const qreal fontScale = geom.fontScale > 0.0 ? geom.fontScale : 1.0;
+        const qreal contentW = br.width() * fontScale;
+        const qreal contentH = br.height() * fontScale;
+        qreal w = geom.boxWidth;
+        qreal h = geom.boxHeight;
+        w = qFuzzyIsNull(w) ? contentW : qMax(w, contentW);
+        h = qFuzzyIsNull(h) ? contentH : qMax(h, contentH);
+
+        QPointF topLeft;
+        if (qFuzzyIsNull(geom.pos.x()) && qFuzzyIsNull(geom.pos.y()))
+        {
+            topLeft = centerLocal;  // never moved: auto-place, centered
+        }
+        else
+        {
+            topLeft = geom.pos;
+        }
+        const qreal rotation = RotationDeg(annotation.rotationFormula, isGroup, pattern);
+
+        OInfoBlockSvg::Annotation ann;
+        ann.text = annotation.text;
+        ann.fontFamily = style.fontFamily;
+        ann.fontWeight = style.fontWeight;
+        ann.fontSizePx = style.fontSize;
+        ann.textColor = style.textColor.isEmpty() ? QStringLiteral("#000000") : style.textColor;
+        ann.backgroundColor = style.backgroundColor;
+        ann.fontScale = fontScale;
+        ann.rotation = rotation;
+        ann.rect = QRectF(topLeft, QSizeF(w, h));
+        out.append(ann);
+        ++index;
+    }
+    return out;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Reference (first size) item of a piece in a scene, or nullptr.
+auto ReferenceItemOf(QGraphicsScene *scene, quint32 pieceId) -> QGraphicsItem *
+{
+    const auto items = scene->items();
+    for (auto *item : items)
+    {
+        if (GradedPieceId(item) == pieceId && GradedIsReference(item))
+        {
+            return item;
+        }
+    }
+    return nullptr;
+}
+}  // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+QList<OGradedSvg::LayoutObject> BuildReferenceDecor(QGraphicsScene *scene, const OSizerange &range,
+                                                    const VContainer *pattern, VAbstractPattern *doc,
+                                                    const QList<quint32> &lonePieceIds,
+                                                    const QList<quint32> &groupIds)
+{
+    QList<OGradedSvg::LayoutObject> out;
+    if (scene == nullptr || pattern == nullptr || doc == nullptr)
+    {
+        return out;
+    }
+
+    const auto *piecesMap = pattern->DataPieces();
+    const auto *groups = pattern->DataPieceGroups();
+
+    // Map every piece to its group (>= 2 members), like the canvas.
+    QHash<quint32, quint32> pieceGroupOf;
+    if (groups != nullptr)
+    {
+        for (auto git = groups->cbegin(); git != groups->cend(); ++git)
+        {
+            if (git.value().pieceIds.size() < 2)
+            {
+                continue;
+            }
+            for (quint32 memberId : git.value().pieceIds)
+            {
+                pieceGroupOf.insert(memberId, git.key());
+            }
+        }
+    }
+
+    // Mask the reference items of group members: hide their own grainline and their
+    // fold/text unless the member carries the group's fold — the group shows its own decor.
+    for (auto it = pieceGroupOf.cbegin(); it != pieceGroupOf.cend(); ++it)
+    {
+        QGraphicsItem *const ref = ReferenceItemOf(scene, it.key());
+        if (ref == nullptr)
+        {
+            continue;
+        }
+        const OPieceGroup &group = groups->value(it.value());
+        const bool foldCarrier = (group.m_foldLineMemberId == it.key());
+        const auto children = ref->childItems();
+        for (QGraphicsItem *child : children)
+        {
+            if (child->type() == VGraphicsFillItem::Type)
+            {
+                child->hide();
+            }
+            else if (!foldCarrier && (child->type() == VGraphicsFoldLineItem::Type
+                                      || child->type() == QGraphicsSimpleTextItem::Type))
+            {
+                child->hide();
+            }
+        }
+    }
+
+    // --- Lone pieces ---------------------------------------------------------
+    for (quint32 pieceId : lonePieceIds)
+    {
+        if (piecesMap == nullptr || !piecesMap->contains(pieceId) || pieceGroupOf.contains(pieceId))
+        {
+            continue;
+        }
+        QGraphicsItem *const ref = ReferenceItemOf(scene, pieceId);
+        if (ref == nullptr)
+        {
+            continue;
+        }
+        const VPiece &piece = piecesMap->value(pieceId);
+        const auto pit = range.pieceContent.constFind(pieceId);
+        const OSizerange::PieceContent &content =
+            pit == range.pieceContent.cend() ? OSizerange::PieceContent{} : pit.value();
+
+        OGradedSvg::LayoutObject object;
+        object.name = piece.GetName();
+        object.origin = ref->mapToScene(QPointF(0.0, 0.0));
+
+        // Hide the static Details grainline child; it is replaced below at the range position.
+        const auto children = ref->childItems();
+        for (QGraphicsItem *child : children)
+        {
+            if (child->type() == VGraphicsFillItem::Type)
+            {
+                child->hide();
+            }
+        }
+
+        // Grainline at its RANGE position (override | design geometry | centre).
+        const VGrainlineData geom = piece.GetGrainlineGeometry();
+        if (geom.IsEnabled() && geom.IsVisible())
+        {
+            QPointF pos = content.grainline.valid ? content.grainline.pos : geom.GetPos();
+            if (qFuzzyIsNull(pos.x()) && qFuzzyIsNull(pos.y()))
+            {
+                pos = ref->boundingRect().center();  // parent-local default
+            }
+            bool ok = false;
+            const QString rotText = geom.GetRotation();
+            const qreal rotation = rotText.isEmpty() ? 0.0 : rotText.toDouble(&ok);
+            MakeGrainlineItem(ref, pos, ok ? rotation : 0.0, GrainlineLengthPx(geom, content.grainline),
+                              geom.GetArrowType());
+        }
+
+        // Remaining visible decor children (the rebuilt grainline + fold + fold text).
+        for (QGraphicsItem *child : ref->childItems())
+        {
+            if (child->isVisible() && OSvg::IsInfoChild(child))
+            {
+                object.decorChildren.append(child);
+            }
+        }
+
+        // Info blocks + annotations (range overrides win over the design geometry).
+        const OInfoBlockEffectiveState state =
+            OInfoBlockResolver::ResolveEffectiveState(piece, doc, pattern);
+        const QPointF centerLocal = ref->boundingRect().center();
+        object.blocks =
+            OwnerBlocks(piece.GetInfoBlockData(), content, {}, false, state, centerLocal);
+        object.annotations =
+            OwnerAnnotations(piece.GetAnnotationData(), false, content, {}, pattern, centerLocal);
+        out.append(object);
+    }
+
+    // --- Groups --------------------------------------------------------------
+    for (quint32 groupId : groupIds)
+    {
+        if (groups == nullptr || !groups->contains(groupId))
+        {
+            continue;
+        }
+        const OPieceGroup &group = groups->value(groupId);
+        const auto git = range.groupContent.constFind(groupId);
+        const OSizerange::GroupContent &content =
+            git == range.groupContent.cend() ? OSizerange::GroupContent{} : git.value();
+
+        // Union box of the reference members → group origin + union centre.
+        QRectF box;
+        for (quint32 memberId : group.pieceIds)
+        {
+            QGraphicsItem *const ref = ReferenceItemOf(scene, memberId);
+            if (ref == nullptr)
+            {
+                continue;
+            }
+            const QRectF r = ref->sceneBoundingRect();
+            box = box.isNull() ? r : box.united(r);
+        }
+        if (box.isNull())
+        {
+            continue;
+        }
+
+        OGradedSvg::LayoutObject object;
+        object.name = group.name;
+        object.origin = box.topLeft();
+        const QPointF unionCenterLocal(box.width() / 2.0, box.height() / 2.0);
+
+        // Group grainline (shared, at its range position): plain path hosted at the union origin.
+        const VGrainlineData geom = group.m_glGrainline;
+        if (geom.IsEnabled() && geom.IsVisible())
+        {
+            QPointF pos = content.grainline.valid ? content.grainline.pos : geom.GetPos();
+            if (qFuzzyIsNull(pos.x()) && qFuzzyIsNull(pos.y()))
+            {
+                pos = unionCenterLocal;
+            }
+            bool ok = false;
+            const QString rotText = geom.GetRotation();
+            const qreal rotation = rotText.isEmpty() ? 0.0 : rotText.toDouble(&ok);
+            auto *host = new QGraphicsPathItem();
+            host->setPos(box.topLeft());
+            scene->addItem(host);
+            QGraphicsItem *const gl =
+                MakeGrainlineItem(host, pos, ok ? rotation : 0.0,
+                                  GrainlineLengthPx(geom, content.grainline), geom.GetArrowType());
+            if (gl != nullptr)
+            {
+                object.decorChildren.append(gl);
+            }
+        }
+
+        // The group's fold lives on the fold-carrier member (kept visible above).
+        for (quint32 memberId : group.pieceIds)
+        {
+            if (group.m_foldLineMemberId != memberId)
+            {
+                continue;
+            }
+            QGraphicsItem *const ref = ReferenceItemOf(scene, memberId);
+            if (ref == nullptr)
+            {
+                continue;
+            }
+            const auto children = ref->childItems();
+            for (QGraphicsItem *child : children)
+            {
+                if (child->isVisible()
+                    && (child->type() == VGraphicsFoldLineItem::Type
+                        || child->type() == QGraphicsSimpleTextItem::Type))
+                {
+                    object.decorChildren.append(child);
+                }
+            }
+        }
+
+        // Group info blocks + annotations (union centre, range overrides win).
+        const OInfoBlockEffectiveState state =
+            OInfoBlockResolver::ResolveEffectiveState(group, doc, pattern);
+        object.blocks =
+            OwnerBlocks(group.GetInfoBlockData(), {}, content, true, state, unionCenterLocal);
+        object.annotations =
+            OwnerAnnotations(group.GetAnnotationData(), true, {}, content, pattern, unionCenterLocal);
+        out.append(object);
+    }
+
+    return out;
+}
+}  // namespace OGradedDecor
