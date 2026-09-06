@@ -204,10 +204,11 @@ void MainWindow::changeEvent(QEvent *event)
         RefreshSceneItemPens(m_sceneDetails);
 
         // The graded silhouettes are layout items (not VToolSeamAllowance) → re-tint them with the
-        // freshly loaded piece color so Graded follows Light/Dark like Draw/Details do.
+        // freshly loaded piece color so Graded follows Light/Dark like Draw/Details do. This is also
+        // the "gate" for the per-size trace styles: their fallback color is the very same piece color.
         if (m_sceneGraded != nullptr && not m_sceneGraded->items().isEmpty())
         {
-            RecolorGradedScenePens(m_sceneGraded);
+            ApplyGradedSizeStylesToScene();
         }
     }
 

@@ -127,6 +127,9 @@ void MainWindow::ActionGraded(bool checked)
     // Keep the Size Ranges dock in sync with the range that is now active.
     RefreshSizeRangesDock();
 
+    // Size Styles dock: rows = the size axis values of the loaded table.
+    RefreshSizeStylesDock();
+
     m_statusLabel->setText(QString());
 }
 

@@ -31,6 +31,7 @@
 #include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
 #include "widgets/owidgetsizeranges.h"
+#include "widgets/owidgetsizestyles.h"
 #include "widgets/TopBar.h"
 #include "widgets/BreadcrumbBar.h"
 
@@ -1185,6 +1186,12 @@ void MainWindow::InitDocksContain()
             &MainWindow::DeleteGradedRange);
     connect(m_dockManager->sizeRangesWidget(), &OWidgetSizeRanges::rangeActivated, this,
             &MainWindow::ActivateGradedRange);
+
+    // Size Styles dock → MainWindow (edit dialog + global "Show in canvas" gate).
+    connect(m_dockManager->sizeStylesWidget(), &OWidgetSizeStyles::editRequested, this,
+            &MainWindow::EditSizeStyles);
+    connect(m_dockManager->sizeStylesWidget(), &OWidgetSizeStyles::showInCanvasChanged, this,
+            &MainWindow::ShowGradedSizeStylesInCanvas);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

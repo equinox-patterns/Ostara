@@ -141,11 +141,9 @@ void MainWindow::InitWelcomePage()
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ShowWelcomeScreen()
 {
-    // The Graded dock layout is deterministic (only the Size Ranges dock). Dropping
-    // the remembered state here prevents a stale/polluted snapshot captured while
-    // closing a document in Graded mode from re-showing Draw docks on the next entry.
-    m_dockManager->setGradedModeDockState(QByteArray());
-
+    // The Graded dock layout is user-arrangeable (Size Ranges + Size Styles) and is
+    // persisted per mode like Draw/Details/Layout — it is NOT dropped here, so its
+    // order/sizes survive a pattern close and the next entry into Graded restores them.
     m_stackedWidget->setCurrentWidget(m_welcomeScreen);
 
     // Apply user dock preferences so the saved editor state reflects the user's

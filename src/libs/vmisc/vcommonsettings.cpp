@@ -111,6 +111,9 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCollectionsSortAscending, ("info
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingMeasurementFavorites, ("paths/measurementFavorites"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedSizeAxis, ("graded/sizeAxis"_L1))                       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedFavorites, ("graded/favorites"_L1))                     // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedSizeStyles, ("graded/sizeStyles"_L1))                   // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedSizeStylesShowInCanvas,
+                          ("graded/showSizeStylesInCanvas"_L1))                                                // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationOsSeparator, ("configuration/osSeparator"_L1)) // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationAutosaveState, ("configuration/autosave/state"_L1))
@@ -707,6 +710,59 @@ void VCommonSettings::RemoveGradedFavorite(const QString &canonicalPath, const Q
     }
 
     settings.setValue(*settingGradedFavorites, outer);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetGradedSizeStyles(const QString &canonicalPath, const QString &axisName) const -> QVariantMap
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingGradedSizeStyles).toMap()
+        .value(canonicalPath).toMap()
+        .value(axisName).toMap();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetGradedSizeStyles(const QString &canonicalPath, const QString &axisName,
+                                          const QVariantMap &styles) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+
+    QVariantMap outer = settings.value(*settingGradedSizeStyles).toMap();
+    QVariantMap perAxis = outer.value(canonicalPath).toMap();
+    if (styles.isEmpty())
+    {
+        perAxis.remove(axisName); // no styles left for that axis → drop the level
+    }
+    else
+    {
+        perAxis.insert(axisName, styles);
+    }
+    if (perAxis.isEmpty())
+    {
+        outer.remove(canonicalPath); // no axes left for that table → drop the level
+    }
+    else
+    {
+        outer.insert(canonicalPath, perAxis);
+    }
+
+    settings.setValue(*settingGradedSizeStyles, outer);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetGradedSizeStylesShowInCanvas() const -> bool
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingGradedSizeStylesShowInCanvas, true).toBool();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetGradedSizeStylesShowInCanvas(const bool &value) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingGradedSizeStylesShowInCanvas, value);
     settings.sync();
 }
 

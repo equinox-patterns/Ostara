@@ -296,6 +296,15 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetSizeRangesContent"/>
   </widget>
+  <widget class="QDockWidget" name="dockWidgetSizeStyles">
+   <property name="windowTitle">
+    <string>Size Styles</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetSizeStylesContent"/>
+  </widget>
   <widget class="QDockWidget" name="dockWidgetMessages">
    <property name="floating">
     <bool>false</bool>

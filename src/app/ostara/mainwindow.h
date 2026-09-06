@@ -556,6 +556,32 @@ private:
     /// Build the stacked graded scene (one layer per size of the active range).
     void BuildGradedScene();
 
+    // ── Graded Size Styles dock ──
+
+    /// (Re)apply the per-size trace styles (color + px dashes) onto the existing
+    /// graded scene — no rebuild. Gate "Show in canvas" + the store decide per
+    /// size; sizes without a style keep the theme piece color. Used on capture,
+    /// theme change, dialog OK and the gate toggle.
+    void ApplyGradedSizeStylesToScene();
+
+    /// Refresh the Size Styles dock list from the active size axis (no-op when
+    /// the dock is not built).
+    void RefreshSizeStylesDock();
+
+    /// Open the "Edit size styles…" dialog for the current table's size axis;
+    /// on OK: store the styles (software-level) and re-apply them on the canvas.
+    void EditSizeStyles();
+
+    /// Persist the global "Show in canvas" gate and re-apply on the scene.
+    void ShowGradedSizeStylesInCanvas(bool on);
+
+    /// Resolve the (canonical path, size axis, axis values, in-library) context the
+    /// Size Styles dock, its dialog and the style pass run against. False when there
+    /// is no usable table / size axis. The axis is the table's declared size axis,
+    /// falling back to the active range's axis (external table, or not yet declared).
+    auto GradedSizeStyleContext(QString *canonicalPath, QString *axisName, QStringList *axisValues,
+                                bool *inLibrary) -> bool;
+
     /// Re-apply alignment + per-range content offsets onto the existing graded
     /// items (no re-capture). Used after undo/redo and at the end of a capture.
     /// When forceFull is false (a deferred rebuild after an undo/redo command), the

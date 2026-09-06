@@ -44,6 +44,12 @@ constexpr int kGradedPieceIdRole     = Qt::UserRole + 900;
 constexpr int kGradedIsRefRole       = Qt::UserRole + 901;
 constexpr int kGradedBasePosRole     = Qt::UserRole + 902;
 constexpr int kGradedHostGroupIdRole = Qt::UserRole + 903; // invisible group host (holds group children)
+/// Size axis label ("38", "40", ...) of the layer a silhouette root belongs to — set at capture so a
+/// later re-apply pass can resolve "size → style" without knowing the active range (Graded Size Styles).
+constexpr int kGradedSizeRole        = Qt::UserRole + 907;
+/// Native (pre-style) QPen of a trace item the first time a size style overrides its dash — lets a
+/// later "no style / gate off" pass restore the original pen (mirror line dash, internal paths...).
+constexpr int kGradedBasePenRole     = Qt::UserRole + 908;
 
 /// Piece id carried by an item (or 0 if the item isn't a graded piece item).
 inline auto GradedPieceId(const QGraphicsItem *item) -> quint32
@@ -72,9 +78,5 @@ void RefreshGradedReferenceGroupDecor(VContainer *pattern, QGraphicsScene *scene
 /// Details mode paints every piece trace with. Interactive children (info blocks, annotations,
 /// grainline) are skipped: they manage their own colors. Defined in mainwindow_graded_build.cpp.
 void RecolorGradedItemPens(QGraphicsItem *root);
-
-/// Re-color every graded piece root already present in the scene (used on theme change so the
-/// graded canvas follows Light/Dark like Draw/Details do). Defined in mainwindow_graded_build.cpp.
-void RecolorGradedScenePens(QGraphicsScene *scene);
 
 #endif // MAINWINDOW_GRADED_HELPERS_H

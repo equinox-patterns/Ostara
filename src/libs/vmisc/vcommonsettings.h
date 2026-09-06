@@ -131,6 +131,22 @@ public:
                            const QVariantMap &record) const;
     void RemoveGradedFavorite(const QString &canonicalPath, const QString &axisName, const QString &name) const;
 
+    /// Graded trace styles (color + pt dashes + optional layer-name override) for
+    /// the graded mode, stored per canonical path + size axis in the software store
+    /// (never in the .omt / .ostara). Returns size-value label -> record, where a
+    /// record holds "layerName" ("" = derived), "color" ("#RRGGBB" or "" = unstyled)
+    /// and "dash" (pt [dash, space, ...] pairs; empty = solid — Ostara converts pt
+    /// to px at canvas render / export).
+    auto GetGradedSizeStyles(const QString &canonicalPath, const QString &axisName) const -> QVariantMap;
+    void SetGradedSizeStyles(const QString &canonicalPath, const QString &axisName,
+                             const QVariantMap &styles) const;
+
+    /// Global switch applying the graded size styles on the canvas — the user may
+    /// keep it off under dark themes (trace colors target paper, not a dark
+    /// background). Software-level, independent of the table and the pattern.
+    auto GetGradedSizeStylesShowInCanvas() const -> bool;
+    void SetGradedSizeStylesShowInCanvas(const bool &value) const;
+
     auto GetOsSeparator() const -> bool;
     void SetOsSeparator(const bool &value);
 

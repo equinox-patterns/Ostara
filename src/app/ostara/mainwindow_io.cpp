@@ -93,6 +93,7 @@ void MainWindow::ReadSettings()
         m_dockManager->setDrawModeDockState(settings->GetModeToolbarsState(Draw::Calculation));
         m_dockManager->setDetailsModeDockState(settings->GetModeToolbarsState(Draw::Modeling));
         m_dockManager->setLayoutModeDockState(settings->GetModeToolbarsState(Draw::Layout));
+        m_dockManager->setGradedModeDockState(settings->GetModeToolbarsState(Draw::Graded));
 
         // Dock visibility is handled by saveState()/restoreState() — sync the
         // boolean members from actual dock state so ShowEditor() can restore
@@ -151,26 +152,13 @@ void MainWindow::WriteSettings()
     const QByteArray drawState = m_dockManager->drawModeDockState();
     const QByteArray detailsState = m_dockManager->detailsModeDockState();
     const QByteArray layoutState = m_dockManager->layoutModeDockState();
+    const QByteArray gradedState = m_dockManager->gradedModeDockState();
 
-    // Save dock state BEFORE ActionDraw(true) — ActionDraw resets dock visibility
-    // from stale boolean members, which would reopen docks the user closed.
-    // When on the WelcomeScreen all docks are hidden, so save the last known editor
-    // state instead.
+    // When on the WelcomeScreen all docks are hidden — save the last known editor
+    // state instead of the (empty) current layout.
     if (m_stackedWidget->currentIndex() == 1 && !m_dockManager->editorDockState().isEmpty())
     {
         settings->SetToolbarsState(m_dockManager->editorDockState());
-    }
-    else
-    {
-        // Normalize dock visibility to the user's preferences before persisting —
-        // the current mode may have force-hidden docks (e.g. Tool options in Details
-        // mode), which must not leak into the persisted layout. Only when the window
-        // is visible: during construction isVisible() is false for every dock.
-        if (isVisible())
-        {
-            m_dockManager->applyDockPreferences();
-        }
-        settings->SetToolbarsState(saveState(kToolbarStateVersion));
     }
 
     // Persist each mode's own dock layout, so a mode change never overwrites
@@ -179,6 +167,7 @@ void MainWindow::WriteSettings()
     settings->SetModeToolbarsState(Draw::Calculation, drawState);
     settings->SetModeToolbarsState(Draw::Modeling, detailsState);
     settings->SetModeToolbarsState(Draw::Layout, layoutState);
+    settings->SetModeToolbarsState(Draw::Graded, gradedState);
 
     settings->sync();
 
@@ -190,6 +179,19 @@ void MainWindow::WriteSettings()
     m_dockManager->setDrawModeDockState(drawState);
     m_dockManager->setDetailsModeDockState(detailsState);
     m_dockManager->setLayoutModeDockState(layoutState);
+    m_dockManager->setGradedModeDockState(gradedState);
+
+    // Startup layout = the Draw mode every run opens on. Capture the global toolbar
+    // state AFTER ActionDraw (which normalized the window back to Draw's own dock
+    // geometry) so the previous mode's widths — e.g. the Graded Size Styles/Ranges
+    // docks — cannot leak into Draw's first shown layout on the next run.
+    if (m_stackedWidget->currentIndex() == 0 && isVisible())
+    {
+        // Normalize dock visibility to the user's preferences before persisting —
+        // Draw may have force-hidden docks (e.g. Tool options in Details/Graded).
+        m_dockManager->applyDockPreferences();
+        settings->SetToolbarsState(saveState(kToolbarStateVersion));
+    }
 
     if (settings->status() == QSettings::AccessError)
     {

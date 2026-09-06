@@ -368,6 +368,7 @@ void MainWindow::BuildGradedScene()
             RecolorGradedItemPens(item);
             item->setPos(basePos);
             item->setData(kGradedBasePosRole, basePos); // frozen base for idempotent re-applies
+            item->setData(kGradedSizeRole, gradedValues.at(idx)); // size label → per-size styling
             item->setZValue(z);
             item->setFlag(QGraphicsItem::ItemIsSelectable, false);
             item->setFlag(QGraphicsItem::ItemIsMovable, isReference);
@@ -482,6 +483,9 @@ void MainWindow::BuildGradedScene()
         }
     }
 
+    // Trace styles by size (color + px dashes): fresh capture → re-apply on the new scene.
+    ApplyGradedSizeStylesToScene();
+
     m_gradedSceneSignature = signature;
 }
 
@@ -538,22 +542,4 @@ void RecolorGradedItemPens(QGraphicsItem *root)
     }
     const QColor color = VSceneStylesheet::PatternPieceStyle().PieceColor();
     RecolorGradedLayoutSubtree(root, color);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void RecolorGradedScenePens(QGraphicsScene *scene)
-{
-    if (scene == nullptr)
-    {
-        return;
-    }
-    const QColor color = VSceneStylesheet::PatternPieceStyle().PieceColor();
-    const auto items = scene->items();
-    for (auto *item : items)
-    {
-        if (GradedPieceId(item) != 0) // a silhouette root (reference or ghost layer) of a piece
-        {
-            RecolorGradedLayoutSubtree(item, color);
-        }
-    }
 }
