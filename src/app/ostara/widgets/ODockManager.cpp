@@ -27,6 +27,7 @@
 #include "ODockManager.h"
 
 #include <QAction>
+#include <QList>
 #include <QMainWindow>
 #include <QMenu>
 #include <QScrollArea>
@@ -443,6 +444,47 @@ void ODockManager::applyModeDocks(Draw mode)
     }
 
     restoreDockStateForMode(mode);
+
+    // restoreState() re-applies the dock visibility stored in the mode's saved
+    // layout, which can carry docks that do not belong to this mode (e.g. a Graded
+    // layout saved while the Draw chrome was showing). Enforce the exclusions after
+    // the restore so a foreign dock can never resurface; the mode's own docks remain
+    // user-arrangeable through the restored state.
+    enforceModeDockExclusions(mode);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODockManager::enforceModeDockExclusions(Draw mode)
+{
+    // Docks that can never be visible in the given mode, whatever the restored
+    // per-mode layout says. Only these are force-hidden here — visibility of the
+    // mode's own docks comes from the restored state (user-arrangeable).
+    QList<QDockWidget *> excluded;
+    switch (mode)
+    {
+        case Draw::Calculation:
+            excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles};
+            break;
+        case Draw::Modeling:
+            excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles,
+                        m_ui->dockWidgetBackgroundImages, m_ui->dockWidgetDependencies};
+            break;
+        case Draw::Layout:
+            excluded = {m_ui->dockWidgetOptions, m_ui->dockWidgetGroups, m_ui->dockWidgetMessages,
+                        m_ui->dockWidgetBackgroundImages, m_ui->dockWidgetDependencies,
+                        m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles};
+            break;
+        case Draw::Graded:
+            excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetOptions, m_ui->dockWidgetGroups,
+                        m_ui->dockWidgetMessages, m_ui->dockWidgetBackgroundImages,
+                        m_ui->dockWidgetDependencies};
+            break;
+    }
+
+    for (QDockWidget *dock : excluded)
+    {
+        dock->setVisible(false);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -32,6 +32,7 @@
 #include "mainwindowsnogui.h"
 #include "widgets/InfoBlock/OPieceCartoucheTable.h"
 #include "widgets/MeasurementWorkspace/MeasurementLibraryScanner.h"
+#include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
 #include "widgets/owidgetsizeranges.h"
 #include "widgets/TopBar.h"
@@ -105,6 +106,14 @@ void MainWindow::ActionGraded(bool checked)
 
     SetEnableWidgets(true);
     m_dockManager->applyModeDocks(Draw::Graded);
+
+    // applyModeDocks() ends by restoring the Graded dock layout, and restoreState()
+    // can re-show the work toolbar — it is part of the QMainWindow state even though
+    // it is not managed by the dock manager. Draw/Details re-show it after
+    // applyModeDocks(); Graded must re-hide it symmetrically, since the toolbar is
+    // structurally empty in Graded mode.
+    m_drawToolBar->hide();
+
     m_topBar->SetGradedChrome(true);
 
     // Entry flow: create or reuse the size range for the active measurements table.

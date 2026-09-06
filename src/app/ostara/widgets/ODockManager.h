@@ -144,6 +144,11 @@ private:
     void buildOptionsDock();
     void buildGroupsDock();
 
+    /** @brief Force-hide the docks that can never appear in the given mode. Called
+     *         after restoreState(), which would otherwise re-show them from the
+     *         mode's saved layout. The mode's own docks stay user-arrangeable. */
+    void enforceModeDockExclusions(Draw mode);
+
     Ui::MainWindow *m_ui{nullptr};
     QMainWindow *m_host{nullptr};
 
