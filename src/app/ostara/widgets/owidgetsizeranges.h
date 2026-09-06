@@ -34,6 +34,8 @@
 #include <QIcon>
 #include <QWidget>
 
+class QGroupBox;
+class QLineEdit;
 class QPushButton;
 class QTableWidget;
 class VContainer;
@@ -65,6 +67,7 @@ signals:
     void duplicateRequested(const QString &rangeName);
     void deleteRequested(const QString &rangeName);
     void exportRequested(const QString &rangeName);
+    void exportAllRequested(const QString &dirPath);
     void rangeActivated(const QString &rangeName);
 
 protected:
@@ -76,12 +79,18 @@ private:
     void UpdateAddButtonIcon();
     void OnNameEdited(QTableWidgetItem *item);
     void ToggleFavorite(int row, const QString &rangeName);
+    void BrowseExportAllPath();
 
     VContainer *m_pattern{nullptr};
     QString m_activeRangeName;
 
     QTableWidget *m_table{nullptr};
     QPushButton *m_addButton{nullptr};
+
+    QGroupBox *m_exportGroup{nullptr};   // "Export all size ranges" below the list
+    QLineEdit *m_exportPathEdit{nullptr};
+    QPushButton *m_browseButton{nullptr};
+    QPushButton *m_exportAllButton{nullptr};
 
     bool m_filling{false}; // true while Populate() rebuilds the rows
 

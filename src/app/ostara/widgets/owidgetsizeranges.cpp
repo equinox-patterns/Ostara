@@ -27,8 +27,13 @@
 #include "owidgetsizeranges.h"
 
 #include <QAbstractItemView>
+#include <QDir>
+#include <QFileDialog>
+#include <QGroupBox>
 #include <QHeaderView>
+#include <QHBoxLayout>
 #include <QIcon>
+#include <QLineEdit>
 #include <QMap>
 #include <QPainter>
 #include <QPushButton>
@@ -241,6 +246,35 @@ void OWidgetSizeRanges::BuildUi()
     connect(m_table, &QTableWidget::itemChanged, this, &OWidgetSizeRanges::OnNameEdited);
 
     rootLayout->addWidget(m_table, 1);
+
+    // ── Export every size range in one pass (one SVG per range) ──
+    m_exportGroup = new QGroupBox(tr("Export all size ranges"), this);
+    m_exportGroup->setObjectName(QStringLiteral("exportAllGroup"));
+    auto *exportLayout = new QVBoxLayout(m_exportGroup);
+
+    auto *pathRow = new QHBoxLayout;
+    m_exportPathEdit = new QLineEdit(m_exportGroup);
+    m_exportPathEdit->setText(
+        VAbstractApplication::VApp()->Settings()->GetPathLayoutExport());
+    m_browseButton = new QPushButton(tr("Browse…"), m_exportGroup);
+    m_browseButton->setAutoDefault(false);
+    m_browseButton->setFocusPolicy(Qt::NoFocus);
+    pathRow->addWidget(m_exportPathEdit, 1);
+    pathRow->addWidget(m_browseButton);
+    exportLayout->addLayout(pathRow);
+
+    m_exportAllButton = new QPushButton(tr("Export all size ranges (SVG)"), m_exportGroup);
+    m_exportAllButton->setAutoDefault(false);
+    m_exportAllButton->setFocusPolicy(Qt::NoFocus);
+    exportLayout->addWidget(m_exportAllButton);
+
+    rootLayout->addWidget(m_exportGroup, 0);
+
+    connect(m_browseButton, &QPushButton::clicked, this,
+            &OWidgetSizeRanges::BrowseExportAllPath);
+    connect(m_exportAllButton, &QPushButton::clicked, this, [this]() {
+        emit exportAllRequested(m_exportPathEdit->text().trimmed());
+    });
 
     UpdateAddButtonIcon();
 }
@@ -459,9 +493,31 @@ void OWidgetSizeRanges::ToggleFavorite(int row, const QString &rangeName)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OWidgetSizeRanges::BrowseExportAllPath()
+{
+    QString dir = m_exportPathEdit->text().trimmed();
+    if (dir.isEmpty())
+    {
+        dir = QDir::homePath();
+    }
+    const QString chosen =
+        QFileDialog::getExistingDirectory(this, tr("Select the export folder"), dir);
+    if (chosen.isEmpty())
+    {
+        return;
+    }
+    m_exportPathEdit->setText(chosen);
+    // Remember it — same default as the size-range export dialog.
+    VAbstractApplication::VApp()->Settings()->SetPathLayoutExport(chosen);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OWidgetSizeRanges::RetranslateUI()
 {
     m_addButton->setText(tr("Add a size range"));
+    m_exportGroup->setTitle(tr("Export all size ranges"));
+    m_browseButton->setText(tr("Browse…"));
+    m_exportAllButton->setText(tr("Export all size ranges (SVG)"));
     UpdateAddButtonIcon();
     Populate();
 }

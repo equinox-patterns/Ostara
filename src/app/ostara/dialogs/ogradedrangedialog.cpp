@@ -541,9 +541,9 @@ void OGradedRangeDialog::BrowseExportPath()
 auto OGradedRangeDialog::GenerateExportFileName() const -> QString
 {
     QStringList parts;
-    if (not m_config.patternBaseName.isEmpty())
+    if (not m_config.patternNameToken.isEmpty())
     {
-        parts.append(m_config.patternBaseName);
+        parts.append(m_config.patternNameToken);
     }
     if (m_minCombo != nullptr)
     {

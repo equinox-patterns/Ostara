@@ -10369,46 +10369,56 @@ Ostara utilise le format .omt/.otu. Choisissez comment procéder :</translation>
         <translation>Charger un tableau de mensurations</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="85"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="151"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="223"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="304"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="382"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="479"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="528"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="538"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="87"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="161"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="233"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="316"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="394"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="491"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="542"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="552"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="173"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="215"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="250"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="402"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="594"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="606"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="632"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="640"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="700"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="704"/>
         <source>Graded mode</source>
         <translation>Mode de gradation</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="86"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="88"/>
         <source>You can&apos;t use Graded mode yet. Please, create at least one workpiece and load a measurements table.</source>
         <translation>Vous ne pouvez pas utiliser le mode de gradation à ce stade. Créez SVP au moins une pièce de patron et chargez un tableau de mensurations.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="152"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="383"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="162"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="395"/>
         <source>Graded mode needs a multi-size measurements table (.omt).</source>
         <translation>Le mode de gradation nécessite une table de mensurations multi-tailles (.omt).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="224"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="234"/>
         <source>The stored size range no longer matches the loaded measurements table. It was removed — please, create a new one.</source>
         <translation>Le panel de tailles enregistré ne correspond plus à la table de mensurations chargée. Il a été supprimé — veuillez en créer un nouveau.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="305"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="539"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="317"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="553"/>
         <source>A size range with this name already exists.</source>
         <translation>Un panel de tailles portant ce nom existe déjà.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="480"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="492"/>
         <source>This size range belongs to another measurements table. Load its table to edit it.</source>
         <translation>Ce panel de tailles appartient à une autre table de mensurations. Chargez cette table pour pouvoir le modifier.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="529"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="543"/>
         <source>A favorite already has this name. Choose another name.</source>
         <translation>Un favori porte déjà ce nom. Choisissez un autre nom.</translation>
     </message>
@@ -10418,14 +10428,78 @@ Ostara utilise le format .omt/.otu. Choisissez comment procéder :</translation>
         <translation>Préparation de la scène de gradation…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="193"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="194"/>
         <source>Horizontal alignment</source>
         <translation>Alignement horizontal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="194"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="195"/>
         <source>Vertical alignment</source>
         <translation>Alignement vertical</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="174"/>
+        <source>This size range needs its measurements table loaded.</source>
+        <translation>Ce panel de tailles nécessite le chargement de sa table de mesures.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="211"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="215"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="632"/>
+        <source>Cannot create the export folder.</source>
+        <translation>Impossible de créer le dossier d'export.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="251"/>
+        <source>The file &quot;%1&quot; already exists in the export folder.
+Do you want to replace it?</source>
+        <translation>Le fichier « %1 » existe déjà dans le dossier d’export.
+Voulez-vous le remplacer ?</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="264"/>
+        <source>Layout</source>
+        <comment>Decor layout layer default name in a graded SVG export</comment>
+        <translation>Mise en page</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="398"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="403"/>
+        <source>The graded export failed.</source>
+        <translation>L'export de gradation a échoué.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="590"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="594"/>
+        <source>The SVG file could not be written.</source>
+        <translation>Le fichier SVG n'a pas pu être écrit.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="607"/>
+        <source>The file &quot;%1&quot; was successfully exported to:
+%2</source>
+        <translation>Le fichier « %1 » a bien été exporté vers :
+%2</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="640"/>
+        <source>No size range to export.</source>
+        <translation>Aucun panel de tailles à exporter.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="677"/>
+        <source>The following files were exported to:</source>
+        <translation>Les fichiers suivants ont été exportés vers :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="685"/>
+        <source>%1 file(s) were not exported (replace declined).</source>
+        <translation>%1 fichier(s) non exporté(s) (remplacement refusé).</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="689"/>
+        <source>The following size ranges could not be exported: %1.</source>
+        <translation>Les panels de tailles suivants n'ont pas pu être exportés : %1.</translation>
     </message>
 </context>
 <context>
@@ -11769,48 +11843,48 @@ Voulez-vous le remplacer ?</translation>
 <context>
     <name>ODockManager</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="101"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="432"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="466"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="102"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="433"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="508"/>
         <source>Size Ranges</source>
         <translation>Panel de tailles</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="106"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="434"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="467"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="107"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="435"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="509"/>
         <source>Size Styles</source>
         <translation>Styles de tailles</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="372"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="397"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="456"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="461"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="373"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="398"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="498"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="503"/>
         <source>Options</source>
         <translation>Options</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="375"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="454"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="376"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="496"/>
         <source>Layers</source>
         <translation>Calques</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="377"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="455"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="378"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="497"/>
         <source>Contains all layers</source>
         <translation>Contient tous les calques</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="393"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="459"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="394"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="501"/>
         <source>Pieces</source>
         <translation>Pièces</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="395"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="460"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="396"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="502"/>
         <source>Show which details will go in layout</source>
         <translation>Pièces de patrons qui seront intégrées au plan de coupe</translation>
     </message>
@@ -11818,33 +11892,33 @@ Voulez-vous le remplacer ?</translation>
 <context>
     <name>OGradedAlignWidget</name>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="84"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="85"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="54"/>
         <source>Left</source>
         <translation>À gauche</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="85"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="91"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="86"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="92"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="55"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="61"/>
         <source>Center</source>
         <translation>Centre</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="86"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="87"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="56"/>
         <source>Right</source>
         <translation>À droite</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="90"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="91"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="60"/>
         <source>Top</source>
         <translation>En haut</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="92"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="93"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="62"/>
         <source>Bottom</source>
         <translation>En bas</translation>
@@ -11868,64 +11942,130 @@ Voulez-vous le remplacer ?</translation>
 <context>
     <name>OGradedRangeDialog</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="48"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="55"/>
         <source>Graded mode — size range</source>
         <translation>Mode de gradation — panel de tailles</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="69"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="76"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="70"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="77"/>
         <source>Next</source>
         <translation>Suivant</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="71"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="78"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="110"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="117"/>
         <source>Which axis of the table is the size axis (the graded one)?</source>
         <translation>Quel axe du tableau est l&apos;axe des tailles (celui de la gradation) ?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="129"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="136"/>
         <source>Create a new size range</source>
         <translation>Créer un panel de tailles</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="130"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="137"/>
         <source>Load existing from favorite</source>
         <translation>Charger un panel existant depuis un favori</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="133"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="140"/>
         <source>Favorite:</source>
         <translation>Favori :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="261"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="270"/>
         <source>Size range name</source>
         <translation>Nom du panel de tailles</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="262"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="272"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="269"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="277"/>
+        <source>Size range</source>
+        <translation>Panel de tailles</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="283"/>
         <source>Minimum:</source>
         <translation>Minimum :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="274"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="288"/>
         <source>Maximum:</source>
         <translation>Maximum :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="307"/>
+        <source>Export</source>
+        <translation>Exporter</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="314"/>
+        <source>Browse…</source>
+        <translation>Parcourir…</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="316"/>
+        <source>Path:</source>
+        <translation>Chemin :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="320"/>
+        <source>File name:</source>
+        <translation>Nom du fichier :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="324"/>
+        <source>Scale</source>
+        <translation>Échelle</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="329"/>
+        <source>100%</source>
+        <translation>100 %</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="338"/>
+        <source>Or</source>
+        <translation>ou</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="346"/>
+        <source>Horizontal:</source>
+        <translation>Horizontal :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="347"/>
+        <source>Vertical:</source>
+        <translation>Vertical :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="351"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="587"/>
+        <source>Layout</source>
+        <translation>Mise en page</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="352"/>
+        <source>Layout layer:</source>
+        <translation>Calque de mise en page :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="533"/>
+        <source>Select folder</source>
+        <translation>Sélectionner un dossier</translation>
     </message>
 </context>
 <context>
@@ -13172,45 +13312,68 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>OWidgetSizeRanges</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="165"/>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="463"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="170"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="517"/>
         <source>Add a size range</source>
         <translation>Ajouter un panel de tailles</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="351"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="251"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="518"/>
+        <source>Export all size ranges</source>
+        <translation>Exporter tous les panels de tailles</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="259"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="519"/>
+        <source>Browse…</source>
+        <translation>Parcourir…</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="266"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="520"/>
+        <source>Export all size ranges (SVG)</source>
+        <translation>Exporter tous les panels de tailles (SVG)</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="386"/>
         <source>Remove from favorites</source>
         <translation>Retirer des favoris</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="351"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="386"/>
         <source>Add to favorites</source>
         <translation>Ajouter aux favoris</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="356"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="391"/>
         <source>Favorites need a measurements table from the library</source>
         <translation>Les favoris nécessitent une table de mensurations provenant de la bibliothèque</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="364"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="399"/>
         <source>Edit</source>
         <translation>Modifier</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="369"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="404"/>
         <source>Duplicate</source>
         <translation>Dupliquer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="374"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="409"/>
         <source>Export SVG</source>
         <translation>Exporter SVG</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="379"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="414"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="504"/>
+        <source>Select the export folder</source>
+        <translation>Sélectionner le dossier d'export</translation>
     </message>
 </context>
 <context>

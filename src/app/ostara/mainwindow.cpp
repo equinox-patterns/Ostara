@@ -1186,6 +1186,8 @@ void MainWindow::InitDocksContain()
             &MainWindow::DeleteGradedRange);
     connect(m_dockManager->sizeRangesWidget(), &OWidgetSizeRanges::exportRequested, this,
             &MainWindow::ExportGradedRange);
+    connect(m_dockManager->sizeRangesWidget(), &OWidgetSizeRanges::exportAllRequested, this,
+            &MainWindow::ExportAllGradedRanges);
     connect(m_dockManager->sizeRangesWidget(), &OWidgetSizeRanges::rangeActivated, this,
             &MainWindow::ActivateGradedRange);
 

@@ -130,14 +130,37 @@ void StyleTraceSubtree(QGraphicsItem *root, const OGradedSizeStyle *style)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ExportGradedRange(const QString &rangeName)
 {
+    ExportGradedRangeTo(rangeName, QString(), true, nullptr, nullptr);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QString MainWindow::GradedPatternNameToken() const
+{
+    if (doc != nullptr)
+    {
+        const QString name = doc->GetPatternName().trimmed();
+        if (!name.isEmpty())
+        {
+            return name;
+        }
+    }
+    const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
+    return patternPath.isEmpty() ? QString() : QFileInfo(patternPath).completeBaseName();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &forcedDir,
+                                     const bool showDialogs, QString *writtenFilePath,
+                                     QString *errorOut)
+{
     if (doc == nullptr || pattern == nullptr || m_m.isNull())
     {
-        return;
+        return false;
     }
     const auto *ranges = pattern->SizeRanges();
     if (ranges == nullptr || !ranges->contains(rangeName))
     {
-        return;
+        return false;
     }
     const OSizerange &range = ranges->value(rangeName);
 
@@ -145,10 +168,13 @@ void MainWindow::ExportGradedRange(const QString &rangeName)
     QMap<QString, QStringList> axisValues;
     if (!LoadGradedTableAxes(&axes, &axisValues))
     {
-        QMessageBox::information(this, tr("Graded mode"),
-                                 tr("This size range needs its measurements table loaded."),
-                                 QMessageBox::Ok);
-        return;
+        if (showDialogs)
+        {
+            QMessageBox::information(this, tr("Graded mode"),
+                                     tr("This size range needs its measurements table loaded."),
+                                     QMessageBox::Ok);
+        }
+        return false;
     }
 
     const QStringList gradedValues = axisValues.value(range.sizeAxis);
@@ -156,7 +182,7 @@ void MainWindow::ExportGradedRange(const QString &rangeName)
     const int maxIdx = static_cast<int>(gradedValues.indexOf(range.maxValue));
     if (minIdx < 0 || maxIdx < 0 || minIdx > maxIdx)
     {
-        return;
+        return false;
     }
 
     // --- Destination (range settings, else software defaults). -----------------
@@ -172,7 +198,7 @@ void MainWindow::ExportGradedRange(const QString &rangeName)
         styles = OGradedSizeStyles::StylesForAxis(settings, canonical, range.sizeAxis);
     }
 
-    QString outDir = range.exportPath;
+    QString outDir = !forcedDir.isEmpty() ? forcedDir : range.exportPath;
     if (outDir.isEmpty())
     {
         outDir = settings->GetPathLayoutExport();
@@ -180,19 +206,28 @@ void MainWindow::ExportGradedRange(const QString &rangeName)
     QDir dir(outDir);
     if (!dir.exists() && !dir.mkpath(QStringLiteral(".")))
     {
-        QMessageBox::warning(this, tr("Graded mode"), tr("Cannot create the export folder."),
-                             QMessageBox::Ok);
-        return;
+        if (errorOut != nullptr)
+        {
+            *errorOut = tr("Cannot create the export folder.");
+        }
+        if (showDialogs)
+        {
+            QMessageBox::warning(this, tr("Graded mode"), tr("Cannot create the export folder."),
+                                 QMessageBox::Ok);
+        }
+        return false;
     }
 
     QString baseName = range.exportFileName;
     if (baseName.isEmpty())
     {
         QStringList parts;
-        const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
-        if (!patternPath.isEmpty())
+        // Pattern-name field first, pattern FILE base name as fallback — same
+        // token the dialog pre-fills, so the preview matches the written file.
+        const QString nameToken = GradedPatternNameToken();
+        if (!nameToken.isEmpty())
         {
-            parts.append(QFileInfo(patternPath).completeBaseName());
+            parts.append(nameToken);
         }
         parts.append(range.minValue);
         parts.append(range.maxValue);
@@ -208,10 +243,26 @@ void MainWindow::ExportGradedRange(const QString &rangeName)
     }
     const QString filePath = dir.filePath(baseName);
 
+    // Ask before overwriting an existing export (the recompute below is expensive).
+    if (QFileInfo::exists(filePath))
+    {
+        const auto answer = QMessageBox::question(
+            this, tr("Graded mode"),
+            tr("The file \"%1\" already exists in the export folder.\n"
+               "Do you want to replace it?")
+                .arg(baseName),
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        if (answer != QMessageBox::Yes)
+        {
+            return false; // user declined to replace this export — not an error
+        }
+    }
+
     const qreal xScale = range.exportXScale > 0.0 ? range.exportXScale : 1.0;
     const qreal yScale = range.exportYScale > 0.0 ? range.exportYScale : 1.0;
     const QString layoutLayerName = range.exportLayoutLayerName.isEmpty()
-                                        ? tr("Layout")
+                                        ? tr("Layout",
+                                              "Decor layout layer default name in a graded SVG export")
                                         : range.exportLayoutLayerName;
 
     // --- Headless per-size capture into a private scene (canvas untouched). ----
@@ -248,7 +299,7 @@ void MainWindow::ExportGradedRange(const QString &rangeName)
     const int gradedAxisPos = static_cast<int>(axes.indexOf(range.sizeAxis));
     if (gradedAxisPos < 0)
     {
-        return;
+        return false;
     }
     const auto fixedBase = [&axes, &axisValues, &range](int slot) -> qreal {
         const QString label = range.axisValues.value(axes.value(slot));
@@ -342,10 +393,17 @@ void MainWindow::ExportGradedRange(const QString &rangeName)
 
     if (!ok || ascLabels.isEmpty())
     {
-        QMessageBox::warning(this, tr("Graded mode"),
-                             error.isEmpty() ? tr("The graded export failed.") : error,
-                             QMessageBox::Ok);
-        return;
+        if (errorOut != nullptr)
+        {
+            *errorOut = error.isEmpty() ? tr("The graded export failed.") : error;
+        }
+        if (showDialogs)
+        {
+            QMessageBox::warning(this, tr("Graded mode"),
+                                 error.isEmpty() ? tr("The graded export failed.") : error,
+                                 QMessageBox::Ok);
+        }
+        return false;
     }
 
     // Alignment + per-range content offsets (same as the live canvas).
@@ -527,7 +585,122 @@ void MainWindow::ExportGradedRange(const QString &rangeName)
                                                     yScale, QString(), QString());
     if (!written)
     {
-        QMessageBox::warning(this, tr("Graded mode"), tr("The SVG file could not be written."),
+        if (errorOut != nullptr)
+        {
+            *errorOut = tr("The SVG file could not be written.");
+        }
+        if (showDialogs)
+        {
+            QMessageBox::warning(this, tr("Graded mode"), tr("The SVG file could not be written."),
+                                 QMessageBox::Ok);
+        }
+        return false;
+    }
+
+    if (writtenFilePath != nullptr)
+    {
+        *writtenFilePath = filePath;
+    }
+    if (showDialogs)
+    {
+        QMessageBox::information(this, tr("Graded mode"),
+                                 tr("The file \"%1\" was successfully exported to:\n%2")
+                                     .arg(baseName, QFileInfo(filePath).absolutePath()),
+                                 QMessageBox::Ok);
+    }
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ExportAllGradedRanges(const QString &dirPath)
+{
+    if (doc == nullptr || pattern == nullptr || m_m.isNull())
+    {
+        return;
+    }
+    auto *settings = VAbstractApplication::VApp()->Settings();
+
+    // Destination: the folder picked in the dock (fallback: software default).
+    QString outDir = dirPath.trimmed();
+    if (outDir.isEmpty())
+    {
+        outDir = settings->GetPathLayoutExport();
+    }
+    QDir dir(outDir);
+    if (!dir.exists() && !dir.mkpath(QStringLiteral(".")))
+    {
+        QMessageBox::warning(this, tr("Graded mode"), tr("Cannot create the export folder."),
                              QMessageBox::Ok);
+        return;
+    }
+
+    const auto *ranges = pattern->SizeRanges();
+    if (ranges == nullptr || ranges->isEmpty())
+    {
+        QMessageBox::information(this, tr("Graded mode"), tr("No size range to export."),
+                                 QMessageBox::Ok);
+        return;
+    }
+
+    // Same alphabetical order as the dock rows — one layered SVG per range.
+    QStringList names = ranges->keys();
+    names.sort();
+
+    QStringList writtenFiles; // file names actually exported
+    QStringList failedRanges; // ranges that errored
+    int skipped = 0;          // overwrite declined by the user
+
+    for (const QString &rangeName : names)
+    {
+        QString writtenPath;
+        QString error;
+        // Batch mode: no per-range dialog — the overwrite-ask still shows per file
+        // (inside ExportGradedRangeTo), results are reported once in the recap.
+        if (ExportGradedRangeTo(rangeName, outDir, false, &writtenPath, &error))
+        {
+            writtenFiles.append(QFileInfo(writtenPath).fileName());
+        }
+        else if (error.isEmpty())
+        {
+            ++skipped; // user answered "No" to the replace question
+        }
+        else
+        {
+            failedRanges.append(rangeName);
+        }
+    }
+
+    // --- Recap (single dialog for the whole batch) ---------------------------
+    QStringList lines;
+    if (!writtenFiles.isEmpty())
+    {
+        lines << tr("The following files were exported to:") << dir.absolutePath();
+        for (const QString &file : writtenFiles)
+        {
+            lines << QStringLiteral("• ") + file;
+        }
+    }
+    if (skipped > 0)
+    {
+        lines << tr("%1 file(s) were not exported (replace declined).").arg(skipped);
+    }
+    if (!failedRanges.isEmpty())
+    {
+        lines << tr("The following size ranges could not be exported: %1.")
+                     .arg(failedRanges.join(QStringLiteral(", ")));
+    }
+    if (lines.isEmpty())
+    {
+        return;
+    }
+
+    const QString text = lines.join(QLatin1Char('\n'));
+    if (writtenFiles.isEmpty() && !failedRanges.isEmpty())
+    {
+        QMessageBox::warning(this, tr("Graded mode"), text, QMessageBox::Ok);
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Graded mode"), text, QMessageBox::Ok);
     }
 }

@@ -273,8 +273,7 @@ QString MainWindow::CreateGradedRange(const QString &canonical, const QStringLis
     takenNames.removeAll(staleNameToDrop); // a dropped stale range may reuse its name
     config.takenNames = takenNames;
     config.exportPath = settings->GetPathLayoutExport();
-    const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
-    config.patternBaseName = patternPath.isEmpty() ? QString() : QFileInfo(patternPath).baseName();
+    config.patternNameToken = GradedPatternNameToken();
 
     // Offer the table's favorites (per chosen axis) in the create/load step.
     config.favoriteNames = [settings, canonical](const QString &axisName) -> QStringList {
@@ -516,8 +515,7 @@ bool MainWindow::EditGradedRange(const QString &rangeName)
     config.initial = stored;
     auto *settings = VAbstractApplication::VApp()->Settings();
     config.exportPath = settings->GetPathLayoutExport();
-    const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
-    config.patternBaseName = patternPath.isEmpty() ? QString() : QFileInfo(patternPath).baseName();
+    config.patternNameToken = GradedPatternNameToken();
 
     OGradedRangeDialog dialog(config, this);
     if (dialog.exec() != QDialog::Accepted)

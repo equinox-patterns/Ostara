@@ -70,7 +70,7 @@ public:
         QString declaredAxis;                  // axis to use when step 1 is skipped
         QStringList takenNames;                // range names already used in the pattern
         QString exportPath;                    // default export folder (software level) — prefill
-        QString patternBaseName;               // active pattern base name (autogen file name), may be empty
+        QString patternNameToken;              // autogen file-name prefix: pattern name field, else pattern FILE base name; may be empty
         bool editing = false;                  // Edit mode: prefill step 3 from @p initial
         OSizerange initial;                    // range being edited (definition only)
         std::function<QStringList(const QString &axisName)> favoriteNames; // favorite provider (optional)
