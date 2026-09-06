@@ -41,6 +41,7 @@
 #include "../vtheme/vtheme.h"
 
 #include <QAction>
+#include <QCoreApplication>
 #include <QGraphicsItem>
 #include <QIcon>
 #include <QMenu>
@@ -194,7 +195,9 @@ void MainWindow::GradedAlignContextMenu(const QPoint &globalPos)
     QMenu *vSub = topMenu->addMenu(tr("Vertical alignment"));
 
     const auto AddOption = [](QMenu *sub, const AlignMenuOption &option, int current) {
-        QAction *action = sub->addAction(tr(option.text));
+        // The option texts are declared with QT_TRANSLATE_NOOP("OGradedAlignWidget", …) —
+        // translate them back with that SAME context (a MainWindow tr() here would miss them).
+        QAction *action = sub->addAction(QCoreApplication::translate("OGradedAlignWidget", option.text));
         action->setData(option.value);
         if (option.value == current)
         {
