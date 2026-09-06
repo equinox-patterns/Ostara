@@ -211,7 +211,7 @@ void OWidgetSizeStyles::BuildUi()
     m_table->horizontalHeader()->setSectionResizeMode(kOutline, QHeaderView::Stretch);
     m_table->setColumnWidth(kSize, 48);
     m_table->setColumnWidth(kName, 120);
-    m_table->setColumnWidth(kColor, 64);
+    m_table->setColumnWidth(kColor, 90); // header "Couleur" must not be elided
 
     m_table->verticalHeader()->setVisible(false);
     m_table->verticalHeader()->setDefaultSectionSize(36);

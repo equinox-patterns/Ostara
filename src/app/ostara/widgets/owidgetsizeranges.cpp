@@ -357,24 +357,27 @@ void OWidgetSizeRanges::Populate()
         }
         m_table->setItem(i, kFavorite, favoriteItem);
 
-        // Remaining action icons (right)
-        struct Action
-        {
-            int column;
-            const char *base;
-            const char *toolTip;
-        };
-        const Action actions[] = {{kEdit, "gear-six", "Edit"},
-                                  {kDuplicate, "copy-fill", "Duplicate"},
-                                  {kExport, "file-svg", "Export SVG"},
-                                  {kDelete, "trash", "Delete"}};
-        for (const Action &action : actions)
-        {
-            auto *item = new QTableWidgetItem(MakeCellIcon(action.base, dark), QString());
-            item->setFlags(item->flags() & ~Qt::ItemIsEditable);
-            item->setToolTip(tr(action.toolTip));
-            m_table->setItem(i, action.column, item);
-        }
+        // Remaining action icons (right) — tooltips use literal tr() calls so lupdate
+        // can extract them (a tr() on a variable would stay untranslated).
+        auto *editItem = new QTableWidgetItem(MakeCellIcon("gear-six", dark), QString());
+        editItem->setFlags(editItem->flags() & ~Qt::ItemIsEditable);
+        editItem->setToolTip(tr("Edit"));
+        m_table->setItem(i, kEdit, editItem);
+
+        auto *duplicateItem = new QTableWidgetItem(MakeCellIcon("copy-fill", dark), QString());
+        duplicateItem->setFlags(duplicateItem->flags() & ~Qt::ItemIsEditable);
+        duplicateItem->setToolTip(tr("Duplicate"));
+        m_table->setItem(i, kDuplicate, duplicateItem);
+
+        auto *exportItem = new QTableWidgetItem(MakeCellIcon("file-svg", dark), QString());
+        exportItem->setFlags(exportItem->flags() & ~Qt::ItemIsEditable);
+        exportItem->setToolTip(tr("Export SVG"));
+        m_table->setItem(i, kExport, exportItem);
+
+        auto *deleteItem = new QTableWidgetItem(MakeCellIcon("trash", dark), QString());
+        deleteItem->setFlags(deleteItem->flags() & ~Qt::ItemIsEditable);
+        deleteItem->setToolTip(tr("Delete"));
+        m_table->setItem(i, kDelete, deleteItem);
     }
 }
 

@@ -123,8 +123,6 @@ OGradedSizeStylesDialog::OGradedSizeStylesDialog(const QStringList &sizeValues,
     rowsLayout->setContentsMargins(4, 8, 4, 8);
     rowsLayout->setSpacing(6);
 
-    const char *dashCaptions[6] = {"Dash", "Space", "Dash", "Space", "Dash", "Space"};
-
     for (const QString &value : sizeValues)
     {
         Row row;
@@ -177,7 +175,10 @@ OGradedSizeStylesDialog::OGradedSizeStylesDialog(const QStringList &sizeValues,
             columnLayout->setContentsMargins(0, 0, 0, 0);
             columnLayout->setSpacing(1);
 
-            auto *caption = new QLabel(tr(dashCaptions[k]), column);
+            // Literal tr() calls so lupdate can extract them (a tr() on a variable
+            // like dashCaptions[k] would stay untranslated).
+            const QString captionText = (k % 2 == 0) ? tr("Dash") : tr("Space");
+            auto *caption = new QLabel(captionText, column);
             caption->setAlignment(Qt::AlignHCenter);
             const int columnWidth = qMax(60, caption->sizeHint().width() + 8);
 
