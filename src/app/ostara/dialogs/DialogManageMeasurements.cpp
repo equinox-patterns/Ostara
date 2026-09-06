@@ -31,8 +31,14 @@
 #include "vcommonsettings.h"
 #include "widgets/MeasurementWorkspace/MeasurementLibraryScanner.h"
 
+#include "../vmisc/FactoryWidgets.h"
+#include "vexception.h"
+#include "xml/oomtdocument.h"
+
+#include <QComboBox>
 #include <QDateTime>
 #include <QDesktopServices>
+#include <memory>
 #include <QDialogButtonBox>
 #include <QFile>
 #include <QFileDialog>
@@ -63,9 +69,33 @@ namespace
         return QStringLiteral(":/icons/%1/%2_accent.svg")
             .arg(dark ? QStringLiteral("dark") : QStringLiteral("light"), baseName);
     }
+
+    /// Size-group (axis) names of a library .omt file, read only. A single-size
+    /// .otu file — or any unreadable file — has no axis and returns an empty list.
+    auto OmtAxisNames(const QString &filePath) -> QStringList
+    {
+        const QFileInfo info(filePath);
+        if (info.suffix().compare(QStringLiteral("omt"), Qt::CaseInsensitive) != 0)
+        {
+            return {};
+        }
+
+        try
+        {
+            auto doc = std::make_unique<OOmtDocument>();
+            doc->setXMLContent(filePath);
+            return doc->GetSizeGroupNames();
+        }
+        catch (const VException &)
+        {
+            return {};
+        }
+    }
 } // anonymous namespace
 
-/// Delegate for icon-only cells: centers the icon, uses dark variant on hover/selected.
+/// Cell delegate for the whole table. For icon-only cells it centers the icon and
+/// uses the dark variant when selected. It also clears State_MouseOver so the
+/// theme hover (QAbstractItemView::item:hover) never paints on this table.
 class IconDelegate : public QStyledItemDelegate
 {
 public:
@@ -74,6 +104,9 @@ public:
     void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const override
     {
         QStyledItemDelegate::initStyleOption(option, index);
+        // No hover feedback on rows or cells: dropping State_MouseOver means the
+        // theme rule QAbstractItemView::item:hover never matches for this table.
+        option->state &= ~QStyle::State_MouseOver;
         option->icon = QIcon(); // Prevent base paint() from drawing the icon left-aligned
     }
 
@@ -86,8 +119,8 @@ public:
         if (icon.isNull()) return;
 
         QIcon::Mode mode = QIcon::Normal;
-        if (option.state & (QStyle::State_Selected | QStyle::State_MouseOver))
-            mode = QIcon::Selected;
+        if (option.state & QStyle::State_Selected)
+            mode = QIcon::Selected;   // dark variant only when actually selected, never on hover
 
         QSize iconSize(20, 20);
         QPoint center = option.rect.center();
@@ -149,34 +182,43 @@ void DialogManageMeasurements::SetupUI()
     // --- Table ---
     m_table = new QTableWidget();
     m_table->setObjectName(QStringLiteral("measurementTable"));
-    m_table->setColumnCount(7);
+    m_table->setColumnCount(8);
     m_table->setHorizontalHeaderLabels({
         QString(),                     // Column 0: star
         tr("Name"),                    // Column 1: file name
-        tr("Created"),                 // Column 2: creation date
-        tr("Modified"),                // Column 3: modification date
-        QString(),                     // Column 4: edit
-        QString(),                     // Column 5: export
-        QString()                      // Column 6: delete
+        tr("Size axis"),               // Column 2: graded size axis of an .omt
+        tr("Created"),                 // Column 3: creation date
+        tr("Modified"),                // Column 4: modification date
+        QString(),                     // Column 5: edit
+        QString(),                     // Column 6: export
+        QString()                      // Column 7: delete
     });
 
     m_table->setColumnWidth(0, 44);
     m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-    m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Interactive);
     m_table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
-    m_table->setColumnWidth(4, 44);
+    m_table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
+    m_table->setColumnWidth(2, 170);
     m_table->setColumnWidth(5, 44);
     m_table->setColumnWidth(6, 44);
+    m_table->setColumnWidth(7, 44);
 
     m_table->setIconSize(QSize(20, 20));
-    m_table->setItemDelegateForColumn(0, new IconDelegate(this));
-    m_table->setItemDelegateForColumn(4, new IconDelegate(this));
-    m_table->setItemDelegateForColumn(5, new IconDelegate(this));
-    m_table->setItemDelegateForColumn(6, new IconDelegate(this));
+    // Single delegate for the whole table: it strips State_MouseOver so no cell
+    // ever reports a hover (no row/cell background, no icon hover, no hover text
+    // color — in both themes). Plus the validated QSS rule below for the row whose
+    // cell hosts the QComboBox (same pattern as DialogRangeGroups, "combo cells").
+    m_table->setItemDelegate(new IconDelegate(this));
+    m_table->setStyleSheet(QStringLiteral("QTableWidget::item:hover { background: none; }"));
 
     m_table->verticalHeader()->hide();
     m_table->verticalHeader()->setDefaultSectionSize(36);
-    m_table->setSelectionBehavior(QAbstractItemView::SelectRows);
+    // NoSelection + no item:hover (below) — the exact validated recipe for a table
+    // whose cells embed a QComboBox (see DialogRangeGroups "combo cells"). Row
+    // selection would otherwise stay stuck/highlighted while the mouse is over the
+    // interactive child widget (subtilite-code 04 §25).
+    m_table->setSelectionMode(QAbstractItemView::NoSelection);
     m_table->setAlternatingRowColors(true);
     m_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
@@ -196,11 +238,11 @@ void DialogManageMeasurements::SetupUI()
             VAbstractApplication::VApp()->Settings()->SetMeasurementFavorites(m_favorites);
             QTimer::singleShot(0, this, &DialogManageMeasurements::RefreshData);
             break;
-        case 4: // Edit
+        case 5: // Edit
             m_selectedPath = path;
             accept();
             break;
-        case 5: // Export
+        case 6: // Export
         {
             QFileInfo fi(path);
             QString ext = fi.suffix();
@@ -220,7 +262,7 @@ void DialogManageMeasurements::SetupUI()
             }
             break;
         }
-        case 6: // Delete
+        case 7: // Delete
         {
             auto result = QMessageBox::question(this, tr("Confirm deletion"),
                 tr("Are you sure you want to delete \"%1\"?\n\n"
@@ -331,19 +373,49 @@ void DialogManageMeasurements::PopulateTable()
         nameItem->setData(Qt::UserRole, entry.filePath);
         m_table->setItem(i, 1, nameItem);
 
-        // --- Column 2: Creation date ---
+        // --- Column 2: Size axis (graded) ---
+        // A single-size table (.otu) has no axis: the cell stays empty. A
+        // multi-size (.omt) table gets a combo whose default item is
+        // "Not defined"; choosing an axis writes the software store that
+        // graded mode reads at entry (once declared, step 1 is skipped).
+        auto *axisItem = new QTableWidgetItem();
+        axisItem->setTextAlignment(Qt::AlignCenter);
+        m_table->setItem(i, 2, axisItem);
+
+        const QStringList axes = OmtAxisNames(entry.filePath);
+        if (not axes.isEmpty())
+        {
+            auto *settings = VAbstractApplication::VApp()->Settings();
+            auto *combo = MakeComboBox(m_table);
+            combo->addItem(tr("Not defined"));
+            combo->addItems(axes);
+
+            const QString declared = settings->GetSizeAxisForMeasurement(entry.filePath);
+            const int declaredIndex = combo->findText(declared);
+            combo->setCurrentIndex(declaredIndex > 0 ? declaredIndex : 0);
+
+            connect(combo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+                    [combo, path = entry.filePath](int) {
+                        const bool undeclared = combo->currentIndex() == 0;
+                        VAbstractApplication::VApp()->Settings()->SetSizeAxisForMeasurement(
+                            path, undeclared ? QString() : combo->currentText());
+                    });
+            m_table->setCellWidget(i, 2, combo);
+        }
+
+        // --- Column 3: Creation date ---
         QString createdStr = entry.created.isValid()
             ? entry.created.toString(QStringLiteral("dd/MM/yyyy HH:mm"))
             : QStringLiteral("—");
-        m_table->setItem(i, 2, new QTableWidgetItem(createdStr));
+        m_table->setItem(i, 3, new QTableWidgetItem(createdStr));
 
-        // --- Column 3: Modification date ---
+        // --- Column 4: Modification date ---
         QString modifiedStr = entry.modified.isValid()
             ? entry.modified.toString(QStringLiteral("dd/MM/yyyy HH:mm"))
             : QStringLiteral("—");
-        m_table->setItem(i, 3, new QTableWidgetItem(modifiedStr));
+        m_table->setItem(i, 4, new QTableWidgetItem(modifiedStr));
 
-        // --- Column 4: Edit ---
+        // --- Column 5: Edit ---
         {
             QIcon editIcon;
             editIcon.addFile(IconResPath(QStringLiteral("gear-six"), dark),
@@ -352,10 +424,10 @@ void DialogManageMeasurements::PopulateTable()
                              QSize(), QIcon::Selected);
             auto *editItem = new QTableWidgetItem(editIcon, QString());
             editItem->setToolTip(tr("Edit"));
-            m_table->setItem(i, 4, editItem);
+            m_table->setItem(i, 5, editItem);
         }
 
-        // --- Column 5: Export ---
+        // --- Column 6: Export ---
         {
             QIcon exportIcon;
             exportIcon.addFile(IconResPath(QStringLiteral("floppy-disk"), dark),
@@ -364,10 +436,10 @@ void DialogManageMeasurements::PopulateTable()
                                QSize(), QIcon::Selected);
             auto *exportItem = new QTableWidgetItem(exportIcon, QString());
             exportItem->setToolTip(tr("Export"));
-            m_table->setItem(i, 5, exportItem);
+            m_table->setItem(i, 6, exportItem);
         }
 
-        // --- Column 6: Delete ---
+        // --- Column 7: Delete ---
         {
             QIcon deleteIcon;
             deleteIcon.addFile(IconResPath(QStringLiteral("trash"), dark),
@@ -376,7 +448,7 @@ void DialogManageMeasurements::PopulateTable()
                                QSize(), QIcon::Selected);
             auto *deleteItem = new QTableWidgetItem(deleteIcon, QString());
             deleteItem->setToolTip(tr("Delete"));
-            m_table->setItem(i, 6, deleteItem);
+            m_table->setItem(i, 7, deleteItem);
         }
     }
 }

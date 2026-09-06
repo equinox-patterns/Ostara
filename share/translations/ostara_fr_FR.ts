@@ -4012,6 +4012,16 @@ Appliquer quand même les réglages ?</translation>
 <context>
     <name>DialogManageMeasurements</name>
     <message>
+        <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="184"/>
+        <source>Size axis</source>
+        <translation>Axe des tailles</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="379"/>
+        <source>Not defined</source>
+        <translation>Non défini</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="109"/>
         <source>Measurement tables</source>
         <translation>Tableaux de mensurations</translation>
