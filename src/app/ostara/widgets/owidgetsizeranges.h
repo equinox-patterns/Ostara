@@ -57,6 +57,14 @@ public:
     /** @brief Re-read the pattern ranges and show @p activeRangeName as active. */
     void UpdateList(const QString &activeRangeName);
 
+    /**
+     * @brief Restrict the list to the ranges of the current measurements table
+     *        (canonical path) and, when @p axis is not empty, to its declared
+     *        grading axis. A range must match BOTH to be listed — the others stay
+     *        stored in the pattern but are hidden. Empty values lift the filter.
+     */
+    void SetTableFilter(const QString &canonicalMeasurement, const QString &axis);
+
     /** @brief Re-label the chrome (LanguageChange); re-pops the list (icons too). */
     void RetranslateUI();
 
@@ -83,6 +91,10 @@ private:
 
     VContainer *m_pattern{nullptr};
     QString m_activeRangeName;
+    // List filter: only the ranges of this (table, axis) context are shown.
+    // Empty canonical → no table constraint; empty axis → no axis constraint.
+    QString m_tableFilterMeasurement;
+    QString m_tableFilterAxis;
 
     QTableWidget *m_table{nullptr};
     QPushButton *m_addButton{nullptr};

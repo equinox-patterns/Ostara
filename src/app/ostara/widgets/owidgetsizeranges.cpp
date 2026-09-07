@@ -316,6 +316,15 @@ void OWidgetSizeRanges::UpdateList(const QString &activeRangeName)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OWidgetSizeRanges::SetTableFilter(const QString &canonicalMeasurement, const QString &axis)
+{
+    m_tableFilterMeasurement = canonicalMeasurement;
+    m_tableFilterAxis = axis;
+    // The caller refreshes the list (UpdateList) right after; Populate() reads the
+    // stored filter, so a theme change / RetranslateUI re-populates consistently.
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OWidgetSizeRanges::Populate()
 {
     FillGuard guard(m_filling); // ignore itemChanged while we rebuild the rows
@@ -345,7 +354,26 @@ void OWidgetSizeRanges::Populate()
     // settings file per row (all rows of a table usually share the same pair).
     QMap<QString, QVariantMap> favoriteCache;
 
-    QStringList names = ranges->keys();
+    // A range is listed only when BOTH conditions hold: it belongs to the current
+    // measurements table and (when the table declares a grading axis) to that
+    // axis. Ranges outside this (table, axis) context stay stored — just hidden.
+    QStringList names;
+    const QStringList storedNames = ranges->keys();
+    names.reserve(storedNames.size());
+    for (const QString &rangeName : storedNames)
+    {
+        const OSizerange range = ranges->value(rangeName);
+        if (not m_tableFilterMeasurement.isEmpty() &&
+            range.measurement != m_tableFilterMeasurement)
+        {
+            continue;
+        }
+        if (not m_tableFilterAxis.isEmpty() && range.sizeAxis != m_tableFilterAxis)
+        {
+            continue;
+        }
+        names.append(rangeName);
+    }
     names.sort();
 
     m_table->setRowCount(static_cast<int>(names.size()));

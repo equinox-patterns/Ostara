@@ -581,6 +581,17 @@ private:
     /// Build the stacked graded scene (one layer per size of the active range).
     void BuildGradedScene();
 
+    /// Declared size axis of the currently loaded measurements table — empty when
+    /// the table is outside the library or no axis is declared yet.
+    QString CurrentLoadedTableAxis() const;
+
+    /// The measurements-library dialog edits the declared size axis live, so when
+    /// it changed for the loaded table while Graded mode is active nothing would
+    /// refresh. Re-run the entry selection (filter to the new axis, re-pick or
+    /// create the active range) and redraw — the same result as leaving and
+    /// re-entering Graded mode.
+    void RefreshGradedAfterTableAxisChange();
+
     // ── Graded Size Styles dock ──
 
     /// (Re)apply the per-size trace styles (color + px dashes) onto the existing

@@ -203,52 +203,61 @@ void MainWindow::OnNewMeasurements()
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ActionManageMeasurements()
 {
+    // The library dialog writes the declared size axis live (per combo cell), so
+    // Graded mode would not see the change on its own. Remember the loaded table's
+    // axis before the dialog and refresh Graded afterwards when it changed.
+    const QString axisBefore = CurrentLoadedTableAxis();
+
     DialogManageMeasurements dlg(this);
-    if (dlg.exec() != QDialog::Accepted)
+    QString path;
+    if (dlg.exec() == QDialog::Accepted)
     {
-        return;
+        path = dlg.selectedPath();
     }
 
-    const QString path = dlg.selectedPath();
-    if (path.isEmpty())
+    if (not path.isEmpty())
     {
-        return;
-    }
+        auto *mw = new MeasurementWindow(this);
+        mw->setAttribute(Qt::WA_DeleteOnClose);
+        mw->SetOrigin(MeasurementWorkspace::Origin::FromDraw);
+        mw->SetModeless(true);
 
-    auto *mw = new MeasurementWindow(this);
-    mw->setAttribute(Qt::WA_DeleteOnClose);
-    mw->SetOrigin(MeasurementWorkspace::Origin::FromDraw);
-    mw->SetModeless(true);
-
-    if (!mw->LoadFile(path))
-    {
-        delete mw;
-        return;
-    }
-
-    // When saved, if this file is the one currently loaded in the canvas, reload it
-    connect(mw, &MeasurementWindow::measurementsSaved, this,
-            [this](const QString &savedPath) {
-        if (savedPath.isEmpty())
+        if (mw->LoadFile(path))
         {
-            return;
-        }
-        if (!doc->MPath().isEmpty())
-        {
-            const QString currentMPath = AbsoluteMPath(
-                VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
-            if (currentMPath == savedPath)
-            {
-                const QString patternPath = VAbstractValApplication::VApp()->GetPatternPath();
-                QString mutablePath = savedPath;
-                if (LoadMeasurements(patternPath, mutablePath))
+            // When saved, if this file is the one currently loaded in the canvas, reload it
+            connect(mw, &MeasurementWindow::measurementsSaved, this,
+                    [this](const QString &savedPath) {
+                if (savedPath.isEmpty())
                 {
-                    doc->LiteParseTree(Document::FullLiteParse);
-                    VWidgetPopup::PopupMessage(this, tr("Measurements reloaded"));
+                    return;
                 }
-            }
+                if (!doc->MPath().isEmpty())
+                {
+                    const QString currentMPath = AbsoluteMPath(
+                        VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
+                    if (currentMPath == savedPath)
+                    {
+                        const QString patternPath =
+                            VAbstractValApplication::VApp()->GetPatternPath();
+                        QString mutablePath = savedPath;
+                        if (LoadMeasurements(patternPath, mutablePath))
+                        {
+                            doc->LiteParseTree(Document::FullLiteParse);
+                            VWidgetPopup::PopupMessage(this, tr("Measurements reloaded"));
+                        }
+                    }
+                }
+            });
+            mw->show();
         }
-    });
+        else
+        {
+            delete mw;
+        }
+    }
 
-    mw->show();
+    if (axisBefore != CurrentLoadedTableAxis())
+    {
+        RefreshGradedAfterTableAxisChange();
+    }
 }

@@ -59,6 +59,43 @@
 #include <QStringList>
 #include <QtGlobal>
 
+namespace
+{
+
+/// The (measurements table, declared grading axis) pair that gates which stored
+/// size ranges are usable in Graded mode. A range is only usable when BOTH match:
+/// the loaded table (measurement) AND its declared grading axis. The axis is a
+/// software-level, per-table declaration; when the table is not in the library
+/// (or no axis has been declared yet) the axis is empty — no axis constraint then
+/// (an out-of-library table never persists its axis, the user re-picks each time).
+struct GradedRangeContext
+{
+    QString canonical;
+    QString axis; // declared size axis of the table; empty → keep every axis of the table
+};
+
+//---------------------------------------------------------------------------------------------------------------------
+auto CurrentGradedRangeContext(VPattern *document) -> GradedRangeContext
+{
+    if (document == nullptr || document->MPath().isEmpty())
+    {
+        return {};
+    }
+    const QString canonical = AbsoluteMPath(
+        VAbstractValApplication::VApp()->GetPatternPath(), document->MPath());
+    if (canonical.isEmpty())
+    {
+        return {};
+    }
+
+    auto *settings = VAbstractApplication::VApp()->Settings();
+    const bool inLibrary = MeasurementLibraryScanner::IsInLibrary(
+        settings->GetPathMeasurementLibrary(), canonical);
+    return {canonical, inLibrary ? settings->GetSizeAxisForMeasurement(canonical) : QString()};
+}
+
+} // namespace
+
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ActionGraded(bool checked)
@@ -151,8 +188,8 @@ bool MainWindow::EnterGradedMode()
         return false;
     }
 
-    const QString canonical =
-        AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
+    const GradedRangeContext context = CurrentGradedRangeContext(doc);
+    const QString canonical = context.canonical;
 
     QStringList axes;
     QMap<QString, QStringList> axisValues;
@@ -176,6 +213,13 @@ bool MainWindow::EnterGradedMode()
     for (auto it = existing->cbegin(); it != existing->cend(); ++it)
     {
         if (it->measurement != canonical)
+        {
+            continue;
+        }
+        // Both conditions must hold: right table AND right grading axis. A range
+        // saved under another axis of the same table stays in the file but is
+        // never offered here (not coherent, not stale — it must never be dropped).
+        if (not context.axis.isEmpty() && it->sizeAxis != context.axis)
         {
             continue;
         }
@@ -355,10 +399,41 @@ auto MainWindow::LoadGradedTableAxes(QStringList *axes, QMap<QString, QStringLis
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::RefreshSizeRangesDock()
 {
-    if (m_dockManager != nullptr && m_dockManager->sizeRangesWidget() != nullptr)
+    auto *widget = m_dockManager != nullptr ? m_dockManager->sizeRangesWidget() : nullptr;
+    if (widget == nullptr)
     {
-        m_dockManager->sizeRangesWidget()->UpdateList(m_activeGradedRangeName);
+        return;
     }
+    const GradedRangeContext context = CurrentGradedRangeContext(doc);
+    widget->SetTableFilter(context.canonical, context.axis);
+    widget->UpdateList(m_activeGradedRangeName);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QString MainWindow::CurrentLoadedTableAxis() const
+{
+    return CurrentGradedRangeContext(doc).axis;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RefreshGradedAfterTableAxisChange()
+{
+    if (VAbstractValApplication::VApp()->GetDrawMode() != Draw::Graded)
+    {
+        return; // Draw/Details re-filters when Graded is next entered
+    }
+
+    // Re-run the entry selection against the NEW declared axis: it re-filters the
+    // stored ranges, re-picks (or creates) the active range, and drops nothing —
+    // exactly what "leave Graded, re-enter" would do, minus the scene switch.
+    if (EnterGradedMode())
+    {
+        m_gradedForceCapture = true; // the axis changed → silhouettes must be recaptured
+        BuildGradedScene();
+        ui->view->ZoomFitBest();
+    }
+    RefreshSizeRangesDock();
+    RefreshSizeStylesDock();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
