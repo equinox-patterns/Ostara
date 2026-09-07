@@ -54,6 +54,11 @@ OGradedRangeDialog::OGradedRangeDialog(const Config &config, QWidget *parent)
 {
     setWindowTitle(tr("Graded mode — size range"));
 
+    // The step-3 form (range + export settings) must stay wide enough for the
+    // export path field — the form would otherwise hug its minimum width and the
+    // path edit would barely show the folder (the "Browse…" button eats the rest).
+    setMinimumWidth(560);
+
     auto *rootLayout = new QVBoxLayout(this);
 
     m_stack = new QStackedWidget(this);
@@ -114,7 +119,7 @@ void OGradedRangeDialog::BuildStep1Page()
 {
     auto *layout = new QVBoxLayout(m_step1);
 
-    auto *label = new QLabel(tr("Which axis of the table is the size axis (the graded one)?"), m_step1);
+    auto *label = new QLabel(tr("Which axis of the table is the grading axis?"), m_step1);
     label->setWordWrap(true);
     layout->addWidget(label);
 
@@ -276,6 +281,10 @@ void OGradedRangeDialog::BuildStep2Page()
     // Ligne 2 — the size interval (min/max) and the frozen other axes.
     auto *rangeGroup = new QGroupBox(tr("Size range"), m_step2);
     auto *rangeLayout = new QFormLayout(rangeGroup);
+    // Right-aligned labels: each label hugs its field — a shared label column
+    // sized to the longest label would otherwise leave a dead gap after the
+    // short labels ("Minimum:", "Maximum:", …).
+    rangeLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     m_minCombo = MakeComboBox(rangeGroup);
     m_minCombo->addItems(values);
@@ -306,6 +315,8 @@ void OGradedRangeDialog::BuildStep2Page()
     // Ligne 3 — the export settings consumed by the graded SVG export.
     auto *exportGroup = new QGroupBox(tr("Export"), m_step2);
     auto *exportLayout = new QFormLayout(exportGroup);
+    // Same label alignment as the "Size range" group (see above).
+    exportLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     m_pathEdit = new QLineEdit(exportGroup);
     m_pathEdit->setText(m_config.exportPath);
@@ -323,6 +334,7 @@ void OGradedRangeDialog::BuildStep2Page()
     // until their checkbox is unchecked. Scale = spin value / 100.
     auto *scaleGroup = new QGroupBox(tr("Scale"), exportGroup);
     auto *scaleLayout = new QFormLayout(scaleGroup);
+    scaleLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
     const auto addScaleRow = [scaleGroup, scaleLayout](const QString &label,
                                                              QCheckBox **outCheck,
                                                              QSpinBox **outSpin) {

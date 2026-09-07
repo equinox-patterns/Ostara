@@ -4012,9 +4012,9 @@ Appliquer quand même les réglages ?</translation>
 <context>
     <name>DialogManageMeasurements</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="184"/>
-        <source>Size axis</source>
-        <translation>Axe des tailles</translation>
+        <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="189"/>
+        <source>Grading axis</source>
+        <translation>Axe de gradation</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="379"/>
@@ -11972,9 +11972,9 @@ Voulez-vous le remplacer ?</translation>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="117"/>
-        <source>Which axis of the table is the size axis (the graded one)?</source>
-        <translation>Quel axe du tableau est l&apos;axe des tailles (celui de la gradation) ?</translation>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="122"/>
+        <source>Which axis of the table is the grading axis?</source>
+        <translation>Quel axe du tableau est l&apos;axe de gradation ?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="136"/>

@@ -186,7 +186,7 @@ void DialogManageMeasurements::SetupUI()
     m_table->setHorizontalHeaderLabels({
         QString(),                     // Column 0: star
         tr("Name"),                    // Column 1: file name
-        tr("Size axis"),               // Column 2: graded size axis of an .omt
+        tr("Grading axis"),            // Column 2: axis a size range grades along
         tr("Created"),                 // Column 3: creation date
         tr("Modified"),                // Column 4: modification date
         QString(),                     // Column 5: edit
