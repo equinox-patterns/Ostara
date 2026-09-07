@@ -2349,6 +2349,9 @@
    <property name="text">
     <string>Place label tool</string>
    </property>
+   <property name="toolTip">
+    <string>Internal mark</string>
+   </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
    </property>

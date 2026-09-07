@@ -92,6 +92,7 @@ enum class SceneObject : qint8
     ElArc,
     SplinePath,
     Detail,
+    PlaceLabel,
     Unknown
 };
 enum class MeasurementsType : qint8

@@ -1,4 +1,4 @@
-﻿/************************************************************************
+/************************************************************************
  **
  **  @file   dialogplacelabel.h
  **  @author Roman Telezhynskyi <dismine(at)gmail.com>
@@ -28,12 +28,17 @@
 #ifndef DIALOGPLACELABEL_H
 #define DIALOGPLACELABEL_H
 
+#include <QVector>
+
 #include "../dialogtool.h"
 
-namespace Ui
-{
-class DialogPlaceLabel;
-}
+class QCheckBox;
+class QComboBox;
+class QGridLayout;
+class QLabel;
+class QLineEdit;
+class QTimer;
+class QToolButton;
 
 class VPlaceLabelItem;
 
@@ -49,6 +54,12 @@ public:
 
     auto GetCenterPoint() const -> quint32;
     void SetCenterPoint(quint32 id);
+
+    /** @brief Ancres de construction retenues pendant la collecte multi-points. */
+    auto GetCenterPoints() const -> QVector<quint32>;
+
+    /** @brief Fin de la collecte (Entrée) : ouvre la dialog modale si des points sont retenus. */
+    void ShowDialog(bool click) override;
 
     auto GetLabelType() const -> PlaceLabelType;
     void SetLabelType(PlaceLabelType type);
@@ -80,16 +91,10 @@ public slots:
 
 protected:
     void ShowVisualization() override;
-    void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
     auto IsValid() const -> bool override;
 
 private slots:
-    void DeployFormulaWidthEdit();
-    void DeployFormulaHeightEdit();
-    void DeployFormulaAngleEdit();
-    void DeployVisibleFormulaTextEdit();
-
     void EvalWidth();
     void EvalHeight();
     void EvalAngle();
@@ -102,19 +107,44 @@ private slots:
 
 private:
     Q_DISABLE_COPY_MOVE(DialogPlaceLabel) // NOLINT
-    Ui::DialogPlaceLabel *ui;
     bool m_showMode;
 
-    /** @brief formulaBaseHeight base height defined by dialogui */
-    int m_formulaBaseHeightWidth;
-    int m_formulaBaseHeightHeight;
-    int m_formulaBaseHeightAngle;
-    int m_formulaBaseVisible;
+    /** @brief Ancre du repère édité (mode édition, verrouillée — pas de champ Point). */
+    quint32 m_centerPoint{NULL_ID};
+
+    /** @brief Points retenus pendant la collecte (mode création lot). */
+    QVector<quint32> m_collectedPoints{};
 
     QTimer *timerAngle;
     QTimer *timerWidth;
     QTimer *timerHeight;
     QTimer *m_timerVisible;
+
+    // ---- Widgets (fenêtre unique, réplique du layout du PB details) ----
+    QLabel *m_pieceLabel{nullptr};
+    QComboBox *m_pieceCombo{nullptr};
+
+    QLabel *m_widthLabel{nullptr};
+    QLineEdit *m_widthEdit{nullptr};
+    QToolButton *m_widthFx{nullptr};
+
+    QLabel *m_heightLabel{nullptr};
+    QLineEdit *m_heightEdit{nullptr};
+    QToolButton *m_heightFx{nullptr};
+
+    QLabel *m_angleLabel{nullptr};
+    QLineEdit *m_angleEdit{nullptr};
+    QToolButton *m_angleFx{nullptr};
+
+    QLabel *m_typeLabel{nullptr};
+    QComboBox *m_typeCombo{nullptr};
+
+    QLabel *m_visibleLabel{nullptr};
+    QLineEdit *m_visibleEdit{nullptr};
+    QToolButton *m_visibleFx{nullptr};
+    QLabel *m_visibleHint{nullptr};
+
+    QCheckBox *m_notMirroredCheck{nullptr};
 
     bool m_flagPoint;
     bool m_flagWidth;
@@ -123,21 +153,24 @@ private:
     bool m_flagFormulaVisible;
     bool m_flagError;
 
-    void InitPlaceLabelTab();
-    void InitControlTab();
-
+    void BuildUi();
+    void RetranslateUi();
+    void SetFxIcons();
     void FillPlaceLabelTypes();
+    void EvalFormulaField(QLineEdit *edit, QLabel *label, bool &flag, const QString &postfix,
+                          const bool checkLessThanZero);
 
     void CheckPieces();
     void CheckPoint();
-
-    void InitIcons();
 };
 
 //---------------------------------------------------------------------------------------------------------------------
 inline auto DialogPlaceLabel::IsValid() const -> bool
 {
-    return m_flagPoint && m_flagError && m_flagWidth && m_flagHeight && m_flagAngle && m_flagFormulaVisible;
+    // Mode édition (m_showMode) : la validité repose sur le point verrouillé du repère édité.
+    // Mode création en lot : pas de point dans la combo — la validité repose sur la collecte non vide.
+    const bool pointOk = m_showMode ? m_flagPoint : not m_collectedPoints.isEmpty();
+    return pointOk && m_flagError && m_flagWidth && m_flagHeight && m_flagAngle && m_flagFormulaVisible;
 }
 
 #endif // DIALOGPLACELABEL_H

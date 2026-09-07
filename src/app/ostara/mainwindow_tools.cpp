@@ -526,8 +526,12 @@ void MainWindow::ToolPin(bool checked)
 void MainWindow::ToolPlaceLabel(bool checked)
 {
     ToolSelectPointByRelease();
-    SetToolButton<DialogPlaceLabel>(checked, Tool::PlaceLabel, QStringLiteral("place_label_cursor.png"),
-                                    tr("Select placelabel center point"), &MainWindow::ClosedDialogPlaceLabel);
+    const QString tooltip = tr("Select all the points of the internal marks to place, <b>%1</b> - confirm selection. "
+                               "Every mark will be attached to the piece you choose in the dialog, so select only "
+                               "points lying on that piece.")
+                                .arg(VModifierKey::EnterKey());
+    SetToolButton<DialogPlaceLabel>(checked, Tool::PlaceLabel, QStringLiteral("place_label_cursor.png"), tooltip,
+                                    &MainWindow::ClosedDialogPlaceLabel);
     LogPatternToolUsed(checked, QStringLiteral("Place label tool"));
 }
 
@@ -770,7 +774,7 @@ void MainWindow::ClosedDialogPlaceLabel(int result)
     SCASSERT(m_dialogTool != nullptr);
     if (result == QDialog::Accepted)
     {
-        VToolPlaceLabel::Create(m_dialogTool, doc, pattern);
+        VToolPlaceLabel::CreateBatch(m_dialogTool, doc, pattern);
     }
     ArrowTool(true);
     doc->LiteParseTree(Document::LiteParse);

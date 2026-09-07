@@ -50,6 +50,7 @@ class VNoBrushScalePathItem;
 class VPatternGraph;
 class OAnnotationItem;
 class OInfoBlockItem;
+class ONodePlaceLabel;
 
 struct VToolSeamAllowanceInitData : VAbstractToolInitData
 {
@@ -163,6 +164,8 @@ public:
     void ReinitInternals(const VPiece &detail, VMainGraphicsScene *scene);
     void RefreshGeometry(bool updateChildren = true);
     void RefreshScale();
+    /** @brief Deselects every place-label handle of this piece (clears their Qt selection). */
+    void ClearPlaceLabelSelection();
 
     // Two-phase refresh for batch updates. PrepareRefreshGeometry() computes the geometry off the
     // GUI thread (safe to call concurrently for different pieces); ApplyBatchGeometry() applies the
@@ -257,6 +260,11 @@ private:
     /** @brief On-piece annotation items (one per annotation, grown on demand, never recreated). */
     QList<OAnnotationItem *> m_annotationItems;
 
+    /** @brief Per-place-label clickable handles (one per label, grown on demand, never
+     *  recreated). The labels themselves stay drawn by the aggregated m_placeLabels path;
+     *  these handles give each label a "real point" to hover/click in Details. */
+    QList<ONodePlaceLabel *> m_placeLabelItems;
+
     /** @brief App-registered content builder (layering bridge). */
     static OInfoBlockContentBuilder s_infoBlockContentBuilder;
 
@@ -303,6 +311,7 @@ private:
 
     void UpdateExcludeState();
     void UpdateInternalPaths();
+    void UpdatePlaceLabels();
 
     auto FindGrainlineGeometry(const VGrainlineData &geom, const QVector<quint32> &pins, qreal &length,
                                qreal &rotationAngle, QPointF &pos) -> VPieceItem::MoveTypes;

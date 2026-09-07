@@ -34,6 +34,7 @@
 class QDockWidget;
 class QStackedWidget;
 class ODetailsGroupWidget;
+class ODetailsPlaceLabelWidget;
 class ODetailsPieceWidget;
 class OPatternInfoWidget;
 class QScrollArea;
@@ -59,6 +60,8 @@ public:
     void ShowGrainlineTab();
     void ShowBlocksTab();
     void ShowAnnotationsTab();
+    /** @brief Shows the property page of a clicked place label (an "internal mark"). */
+    void ShowPlaceLabelOptions(VToolSeamAllowance *piece, quint32 labelId);
     void Clear();
 
     void RetranslateUI();
@@ -95,6 +98,7 @@ private:
     QStackedWidget *m_stack{nullptr};
     ODetailsPieceWidget *m_pieceWidget{nullptr};
     ODetailsGroupWidget *m_groupWidget{nullptr};
+    ODetailsPlaceLabelWidget *m_placeLabelWidget{nullptr};
     OPatternInfoWidget *m_patternInfoWidget{nullptr};
     QScrollArea *m_scroll{nullptr};
 };

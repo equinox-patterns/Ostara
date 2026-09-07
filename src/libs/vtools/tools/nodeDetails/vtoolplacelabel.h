@@ -52,8 +52,8 @@ class VToolPlaceLabel : public VAbstractNode
 
 public:
     ~VToolPlaceLabel() override = default;
-    static auto Create(const QPointer<DialogTool> &dialog, VAbstractPattern *doc, VContainer *data)
-        -> VToolPlaceLabel *;
+    /** @brief Crée un repère par point retenu par la dialog (lot), en une seule étape undo. */
+    static void CreateBatch(const QPointer<DialogTool> &dialog, VAbstractPattern *doc, VContainer *data);
     static auto Create(VToolPlaceLabelInitData &initData) -> VToolPlaceLabel *;
 
     static const QString ToolType;

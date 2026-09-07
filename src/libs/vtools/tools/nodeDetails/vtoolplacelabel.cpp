@@ -38,28 +38,40 @@
 const QString VToolPlaceLabel::ToolType = QStringLiteral("placeLabel");
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolPlaceLabel::Create(const QPointer<DialogTool> &dialog, VAbstractPattern *doc, VContainer *data)
-    -> VToolPlaceLabel *
+void VToolPlaceLabel::CreateBatch(const QPointer<DialogTool> &dialog, VAbstractPattern *doc, VContainer *data)
 {
     SCASSERT(not dialog.isNull());
     const QPointer<DialogPlaceLabel> dialogTool = qobject_cast<DialogPlaceLabel *>(dialog);
     SCASSERT(not dialogTool.isNull())
 
-    VToolPlaceLabelInitData initData;
-    initData.width = dialogTool->GetWidth();
-    initData.height = dialogTool->GetHeight();
-    initData.angle = dialogTool->GetAngle();
-    initData.visibilityTrigger = dialogTool->GetFormulaVisible();
-    initData.notMirrored = dialogTool->IsNotMirrored();
-    initData.type = dialogTool->GetLabelType();
-    initData.centerPoint = dialogTool->GetCenterPoint();
-    initData.idObject = dialogTool->GetPieceId();
-    initData.doc = doc;
-    initData.data = data;
-    initData.parse = Document::FullParse;
-    initData.typeCreation = Source::FromGui;
+    const QVector<quint32> points = dialogTool->GetCenterPoints();
+    const quint32 pieceId = dialogTool->GetPieceId();
+    if (points.isEmpty() || pieceId == NULL_ID)
+    {
+        return;
+    }
 
-    return Create(initData);
+    // Un repère par point retenu, mêmes paramètres pour tous. Le lot est groupé en UNE étape undo.
+    VAbstractValApplication::VApp()->getUndoStack()->beginMacro(tr("place labels"));
+    for (quint32 center : points)
+    {
+        VToolPlaceLabelInitData initData;
+        initData.width = dialogTool->GetWidth();
+        initData.height = dialogTool->GetHeight();
+        initData.angle = dialogTool->GetAngle();
+        initData.visibilityTrigger = dialogTool->GetFormulaVisible();
+        initData.notMirrored = dialogTool->IsNotMirrored();
+        initData.type = dialogTool->GetLabelType();
+        initData.centerPoint = center;
+        initData.idObject = pieceId;
+        initData.doc = doc;
+        initData.data = data;
+        initData.parse = Document::FullParse;
+        initData.typeCreation = Source::FromGui;
+
+        Create(initData);
+    }
+    VAbstractValApplication::VApp()->getUndoStack()->endMacro();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

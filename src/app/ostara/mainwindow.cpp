@@ -85,6 +85,7 @@
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vtools/tools/vabstracttool.h"
 #include "../vtools/tools/nodeDetails/vnodepoint.h"
+#include "../vtools/tools/nodeDetails/onodeplacelabel.h"
 #include "core/vapplication.h"
 #include "core/odetailspropertybrowser.h"
 #include "core/opiecegroupholderitem.h"
@@ -926,6 +927,26 @@ void MainWindow::InitDocksContain()
     {
         // A piece (or empty canvas) selection deselects any group on the canvas.
         UpdateGroupHolderSelection(NULL_ID);
+
+        // A new selection clears any selected place-label handle. Qt single-selection would clear
+        // it when another selectable item is picked anyway; this also covers empty-canvas clicks and
+        // clicks on non-selectable overlays (grainline / info block / annotation), which leave the
+        // piece current and so would otherwise leave the handle highlighted.
+        if (pattern != nullptr)
+        {
+            const auto *pieces = pattern->DataPieces();
+            if (pieces != nullptr)
+            {
+                for (auto it = pieces->constBegin(); it != pieces->constEnd(); ++it)
+                {
+                    if (auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key())))
+                    {
+                        tool->ClearPlaceLabelSelection();
+                    }
+                }
+            }
+        }
+
         if (id == NULL_ID)
         {
             m_dockManager->detailsOptions()->ShowEmpty();
@@ -945,6 +966,32 @@ void MainWindow::InitDocksContain()
     connect(m_sceneDetails, &VMainGraphicsScene::ItemByMousePress, this,
             [this](QGraphicsItem *pItem)
     {
+        // A place-label handle (or its name text) selects the owning piece, mirroring the
+        // other on-piece overlays (grainline / info block / annotation). The handle is only a
+        // canvas point — its options come from the owning piece in the Details dock.
+        QGraphicsItem *probe = pItem;
+        while (probe != nullptr && qgraphicsitem_cast<ONodePlaceLabel *>(probe) == nullptr)
+        {
+            probe = probe->parentItem();
+        }
+        if (probe != nullptr)
+        {
+            QGraphicsItem *owner = probe->parentItem();
+            while (owner != nullptr && qgraphicsitem_cast<VToolSeamAllowance *>(owner) == nullptr)
+            {
+                owner = owner->parentItem();
+            }
+            if (auto *pieceOwner = qgraphicsitem_cast<VToolSeamAllowance *>(owner); pieceOwner != nullptr)
+            {
+                // Select the piece (dock context), then open the clicked label's own PB page.
+                auto *labelNode = qgraphicsitem_cast<ONodePlaceLabel *>(probe);
+                doc->SelectedDetail(pieceOwner->getId());
+                m_dockManager->detailsOptions()->ShowPlaceLabelOptions(
+                    pieceOwner, labelNode != nullptr ? labelNode->getId() : NULL_ID);
+            }
+            return;
+        }
+
         VToolSeamAllowance *piece = qgraphicsitem_cast<VToolSeamAllowance *>(pItem);
         if (piece == nullptr && pItem != nullptr)
         {

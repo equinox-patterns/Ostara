@@ -27,6 +27,7 @@
 #include "odetailspropertybrowser.h"
 
 #include "odetailsgroupwidget.h"
+#include "odetailsplacelabelwidget.h"
 #include "odetailspiecewidget.h"
 #include "opatterninfowidget.h"
 
@@ -81,6 +82,10 @@ ODetailsPropertyBrowser::ODetailsPropertyBrowser(QWidget *parent)
     m_groupWidget = new ODetailsGroupWidget(m_stack);
     m_stack->addWidget(m_groupWidget);
 
+    // Place label page — the contextual property browser of a clicked place label ("internal mark").
+    m_placeLabelWidget = new ODetailsPlaceLabelWidget(m_stack);
+    m_stack->addWidget(m_placeLabelWidget);
+
     // Re-emit piece widget signals through the browser.
     connect(m_pieceWidget, &ODetailsPieceWidget::ShowStatusTip, this, &ODetailsPropertyBrowser::ShowStatusTip);
     connect(m_pieceWidget, &ODetailsPieceWidget::HighlightNode, this, &ODetailsPropertyBrowser::HighlightNode);
@@ -117,6 +122,7 @@ void ODetailsPropertyBrowser::RetranslateUI()
 {
     m_patternInfoWidget->RetranslateUI();
     m_pieceWidget->RetranslateUI();
+    m_placeLabelWidget->RetranslateUI();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -169,6 +175,13 @@ void ODetailsPropertyBrowser::ShowBlocksTab()
 void ODetailsPropertyBrowser::ShowAnnotationsTab()
 {
     m_pieceWidget->ShowAnnotationsTab();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::ShowPlaceLabelOptions(VToolSeamAllowance *piece, quint32 labelId)
+{
+    m_placeLabelWidget->Show(piece, labelId);
+    m_stack->setCurrentWidget(m_placeLabelWidget);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

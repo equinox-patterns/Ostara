@@ -70,6 +70,7 @@
 #include "../vwidgets/vmaingraphicsview.h"
 #include "../vwidgets/vnobrushscalepathitem.h"
 #include "../vwidgets/vpiecegrainline.h"
+#include "nodeDetails/onodeplacelabel.h"
 #include "nodeDetails/vnodearc.h"
 #include "nodeDetails/vnodeellipticalarc.h"
 #include "nodeDetails/vnodepoint.h"
@@ -1828,6 +1829,60 @@ void VToolSeamAllowance::UpdateAnnotations()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::UpdatePlaceLabels()
+{
+    const VPiece detail = VAbstractTool::data.GetPiece(m_id);
+    const QVector<quint32> labels = detail.GetPlaceLabels();
+
+    // Grow the handle pool on demand (mirror of m_annotationItems) — never delete/recreate; hidden
+    // items stay pooled. The labels themselves remain drawn by the aggregated m_placeLabels path.
+    while (m_placeLabelItems.size() < labels.size())
+    {
+        auto *item = new ONodePlaceLabel(this);
+        item->hide();
+        m_placeLabelItems.append(item);
+    }
+
+    for (int i = 0; i < m_placeLabelItems.size(); ++i)
+    {
+        ONodePlaceLabel *item = m_placeLabelItems.at(i);
+        const bool exists = i < labels.size();
+        if (!exists)
+        {
+            item->hide();
+            continue;
+        }
+
+        const quint32 labelId = labels.at(i);
+        try
+        {
+            const auto label = VAbstractTool::data.GeometricObject<VPlaceLabelItem>(labelId);
+            if (label.isNull() || !label->IsVisible())
+            {
+                // Mirrors VPiece::PlaceLabelPath, which skips invisible labels.
+                item->hide();
+                continue;
+            }
+            item->UpdateFromLabel(labelId, *label);
+            item->setVisible(true);
+        }
+        catch (const VExceptionBadId &)
+        {
+            item->hide();
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::ClearPlaceLabelSelection()
+{
+    for (ONodePlaceLabel *item : m_placeLabelItems)
+    {
+        item->setSelected(false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VToolSeamAllowance::ResolveAnnotationStyle(const QString &name) const -> OAnnotationRenderStyle
 {
     if (s_annotationStyleResolver)
@@ -2614,6 +2669,7 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
                                UpdateGrainline();
                                UpdateInfoBlocks();
                                UpdateAnnotations();
+                               UpdatePlaceLabels();
                                UpdateExcludeState();
                                if (updateChildren)
                                {
@@ -2627,6 +2683,7 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
         UpdateGrainline();
         UpdateInfoBlocks();
         UpdateAnnotations();
+        UpdatePlaceLabels();
         UpdateExcludeState();
         if (updateChildren)
         {

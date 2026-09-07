@@ -416,7 +416,7 @@ void DrawToolBar::InitializeGroups()
             {QStringLiteral("path"),                     tr("Internal path tool"),                nullptr, makeBtn("path")},
             {QStringLiteral("pin"),                      tr("Pin tool"),                          nullptr, makeBtn("pin")},
             {QStringLiteral("insert_node"),              tr("Insert node tool"),                  nullptr, makeBtn("insert_node")},
-            {QStringLiteral("place_label"),              tr("Place label tool"),                  nullptr, makeBtn("place_label")},
+            {QStringLiteral("place_label"),              tr("Internal mark"),                      nullptr, makeBtn("place_label")},
         }, kModeDraw},
         {tr("Pieces"), {
             {QStringLiteral("union"),                    tr("Union tool"),                        nullptr, makeBtn("union")},
