@@ -44,13 +44,16 @@
 //---------------------------------------------------------------------------------------------------------------------
 DialogPreferences::DialogPreferences(QWidget *parent)
   : QDialog(parent),
-    ui(new Ui::DialogPreferences),
-    m_configurePage(new PreferencesConfigurationPage),
-    m_patternPage(new PreferencesPatternPage),
-    m_pathPage(new PreferencesPathPage),
-    m_appearancePage(new PreferencesAppearancePage)
+    ui(new Ui::DialogPreferences)
 {
+    // setupUi() must run before the pages are built: their constructors can re-enter the event loop and
+    // changeEvent() would dereference ui->buttonBox while it is still indeterminate (upstream 4703e19e6).
     ui->setupUi(this);
+
+    m_configurePage = new PreferencesConfigurationPage;
+    m_patternPage = new PreferencesPatternPage;
+    m_pathPage = new PreferencesPathPage;
+    m_appearancePage = new PreferencesAppearancePage;
 
 #if defined(Q_OS_MAC)
     setWindowFlags(Qt::Window);

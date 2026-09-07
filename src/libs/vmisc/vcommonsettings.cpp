@@ -35,6 +35,7 @@
 #include <QDate>
 #include <QDir>
 #include <QFont>
+#include <QDebug>
 #include <QGlobalStatic>
 #include <QLocale>
 #include <QMarginsF>
@@ -263,6 +264,7 @@ qreal scrollingSensorMouseScaleCached = -1; // NOLINT(cppcoreguidelines-avoid-no
 qreal scrollingWheelMouseScaleCached = -1;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 qreal scrollingAccelerationCached = -1;     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 int patternTranslateFormulaCached = -1;     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+int themeModeCached = -1;                   // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 } // namespace
 
@@ -285,6 +287,46 @@ VCommonSettings::VCommonSettings(Format format, Scope scope, const QString &orga
 VCommonSettings::VCommonSettings(const QString &fileName, QSettings::Format format, QObject *parent)
   : QSettings(fileName, format, parent)
 {
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// Upstream 81758f77d: a settings value can only be corrupt if it is enormous - drop it instead of letting Qt
+// rewrite the whole ini on every change (which freezes the interface).
+auto VCommonSettings::ValueSize(const QVariant &value) -> qsizetype
+{
+    if (value.userType() == QMetaType::QStringList)
+    {
+        qsizetype size = 0;
+        for (const auto &item : value.toStringList())
+        {
+            size += item.size() + 2;
+        }
+        return size;
+    }
+
+    return value.toString().size();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::RemoveOversizedValues() -> QStringList
+{
+    QStringList oversized;
+    for (const auto &key : allKeys())
+    {
+        if (ValueSize(value(key)) > oversizedValueThreshold)
+        {
+            oversized.append(key);
+        }
+    }
+
+    for (const auto &key : oversized)
+    {
+        qInfo("Dropping corrupt settings value \"%s\" of %lld characters.", qUtf8Printable(key),
+              static_cast<long long>(ValueSize(value(key))));
+        remove(key);
+    }
+
+    return oversized;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -936,22 +978,22 @@ void VCommonSettings::SetToolboxIconSizeSmall(bool value)
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetThemeMode() const -> VThemeMode
 {
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    int val = settings.value(*settingConfigurationThemeMode, static_cast<int>(VThemeMode::Light)).toInt();
-
-    if (val < 0 || val > 1)
+    if (themeModeCached < 0)
     {
-        val = 0;
+        QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+        int val = settings.value(*settingConfigurationThemeMode, static_cast<int>(VThemeMode::Light)).toInt();
+        themeModeCached = (val < 0 || val > 1) ? 0 : val;
     }
 
-    return static_cast<VThemeMode>(val);
+    return static_cast<VThemeMode>(themeModeCached);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VCommonSettings::SetThemeMode(VThemeMode mode) const
 {
+    themeModeCached = static_cast<int>(mode);
     QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingConfigurationThemeMode, static_cast<int>(mode));
+    settings.setValue(*settingConfigurationThemeMode, themeModeCached);
     settings.sync();
 }
 

@@ -73,7 +73,7 @@ auto main(int argc, char *argv[]) -> int
     Q_INIT_RESOURCE(win_dark_theme);  // NOLINT
 
 #ifdef CRASH_REPORTING
-    InitializeCrashpad(QStringLiteral(VER_PRODUCTNAME_STR));
+    InitializeCrashpad(QStringLiteral(VER_PRODUCTNAME_STR), QStringLiteral(VER_INTERNALNAME_STR));
 #endif
 
 #if defined(Q_OS_WIN)

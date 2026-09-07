@@ -70,6 +70,8 @@ public:
 
     auto SecondPointName() const -> QString;
 
+    auto GetFormulaLength() const -> VFormula override;
+
     auto GetLineRoleName() const -> QString;
     void SetLineRoleName(const QString &suffix);
 

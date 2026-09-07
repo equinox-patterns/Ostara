@@ -548,6 +548,7 @@ void VPApplication::OpenSettings()
 #endif
     settings = new VPSettings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(),
                               QCoreApplication::applicationName(), this);
+    settings->RemoveOversizedValues();
     connect(settings, &VPSettings::SVGFontsPathChanged, this, &VPApplication::SVGFontsPathChanged);
 }
 

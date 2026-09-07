@@ -510,3 +510,24 @@ void VToolAlongLine::SetSecondLineRoleName(const QString &suffix)
     connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     VAbstractApplication::VApp()->getUndoStack()->push(command);
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+// Upstream 98ad5f895: evaluate the transient 'current length' variable through the persistent container so the
+// property browser (fx) reading VFormula's pointer after the call does not hit a dangling/stale value.
+auto VToolAlongLine::GetFormulaLength() const -> VFormula
+{
+    auto *container = const_cast<VContainer *>(getData());
+    const QSharedPointer<VPointF> firstPoint = container->GeometricObject<VPointF>(basePointId);
+    const QSharedPointer<VPointF> secondPoint = container->GeometricObject<VPointF>(m_secondPointId);
+
+    auto *length = new VLengthLine(firstPoint.data(), basePointId, secondPoint.data(), m_secondPointId,
+                                   *container->GetPatternUnit());
+    length->SetName(currentLength);
+    container->AddVariable(length);
+
+    VFormula val(formulaLength, container);
+    val.setToolId(m_id);
+    val.setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits()));
+    val.Eval();
+    return val;
+}
