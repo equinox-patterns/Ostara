@@ -31,6 +31,11 @@
 
 #include "../dialogtool.h"
 
+class QLabel;
+class QLineEdit;
+class QToolButton;
+class QWidget;
+
 namespace Ui
 {
 class DialogPiecePath;
@@ -44,7 +49,14 @@ public:
     explicit DialogPiecePath(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent = nullptr);
     ~DialogPiecePath() override;
 
-    void EnbleShowMode(bool disable);
+    /**
+     * @brief Switch the dialog to "edit an existing path".
+     * @param disable true in edit mode (the path already belongs to a piece).
+     * @param attachNodeList when false, the node list stays detached: the path
+     *        geometry is locked and only the attribute fields are editable
+     *        (used by the Details dock, where a path is edited in place).
+     */
+    void EnbleShowMode(bool disable, bool attachNodeList = true);
     void HideVisibilityTrigger();
 
     auto GetPiecePath() const -> VPiecePath;
@@ -122,6 +134,15 @@ private:
     bool m_showMode{false};
     qreal m_saWidth{0};
 
+    PiecePathType m_pathType{PiecePathType::InternalPath};
+    bool m_nodeListAttached{false};
+
+    QWidget *m_visibleBox{nullptr};
+    QLabel *m_visibleLabel{nullptr};
+    QLineEdit *m_visibleEdit{nullptr};
+    QToolButton *m_visibleFx{nullptr};
+    QLabel *m_visibleResult{nullptr}; // Hidden: required by the shared formula evaluator.
+
     QTimer *m_timerWidth{nullptr};
     QTimer *m_timerWidthBefore{nullptr};
     QTimer *m_timerWidthAfter{nullptr};
@@ -158,6 +179,11 @@ private:
     void InitPathTypes();
     void InitNodesList();
     void InitPassmarksList();
+
+    void SetNodeZoneVisible(bool visible);
+    void DetachHiddenCreationWidgets();
+    void AttachNodeListForEdit();
+    void UpdatePieceComboStyle();
     void NodeAngleChanged(int index);
 
     auto CreatePath() const -> VPiecePath;
@@ -178,6 +204,8 @@ private:
     auto GetItemById(quint32 id) -> QListWidgetItem *;
 
     auto GetLastId() const -> quint32;
+
+    auto AutoReverse(quint32 curveId, bool shift) const -> bool;
 
     void SetCurrentSABefore(const QString &formula);
     void SetCurrentSAAfter(const QString &formula);

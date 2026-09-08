@@ -322,7 +322,7 @@
           <string>The path is a cut contour. Use to control export to DXF-AAMA</string>
          </property>
          <property name="text">
-          <string>Cut on fabric</string>
+          <string>Cut on fabric (DXF export only)</string>
          </property>
         </widget>
        </item>

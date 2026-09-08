@@ -506,7 +506,9 @@ void MainWindow::ToolPiecePath(bool checked)
     ToolSelectAllDrawObjects();
     SetToolButton<DialogPiecePath>(
         checked, Tool::PiecePath, QStringLiteral("path_cursor.png"),
-        tr("Select path objects, <b>%1</b> - reverse direction curve").arg(VModifierKey::Shift()),
+        tr("Select the path objects in order - the direction is free, no clockwise rule. A full curve is reversed "
+           "automatically; hold <b>%1</b> to reverse a curve, <b>%2</b> to finish.")
+            .arg(VModifierKey::Shift(), VModifierKey::EnterKey()),
         &MainWindow::ClosedDialogPiecePath);
     LogPatternToolUsed(checked, QStringLiteral("Piece path tool"));
 }

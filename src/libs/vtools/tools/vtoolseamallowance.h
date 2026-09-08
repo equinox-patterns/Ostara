@@ -192,6 +192,9 @@ public:
     auto IsInPieceIsolation() const -> bool { return m_isPieceIsolated; }
     void SetGroupSelectionHighlight(bool highlight);
     void RefreshGroupedChildren();
+    /** @brief Highlight or clear a whole internal path of this piece: its trace
+     *  (VToolPiecePath) and its point nodes (VNodePoint). */
+    void SetInternalPathHighlight(quint32 pathId, bool highlight);
 
 public slots:
     void FullUpdateFromGuiApply() override;
@@ -311,6 +314,7 @@ private:
 
     void UpdateExcludeState();
     void UpdateInternalPaths();
+    void HideOrphanInternalPaths(const QVector<quint32> &currentPaths);
     void UpdatePlaceLabels();
 
     auto FindGrainlineGeometry(const VGrainlineData &geom, const QVector<quint32> &pins, qreal &length,

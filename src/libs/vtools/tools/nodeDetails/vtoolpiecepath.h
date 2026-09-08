@@ -60,6 +60,10 @@ public:
 
     void RefreshGeometry();
 
+    /** @brief Toggle the whole-path highlight (active row in the Details dock): the
+     *  trace is then painted orange with the main-line width in paint(). */
+    void SetHighlight(bool highlighted);
+
     static void AddAttributes(VAbstractPattern *doc, QDomElement &domElement, quint32 id, const VPiecePath &path);
 public slots:
     void FullUpdateFromFile() override;
@@ -75,6 +79,7 @@ private:
     Q_DISABLE_COPY_MOVE(VToolPiecePath) // NOLINT
 
     quint32 m_pieceId;
+    bool m_highlighted{false}; // whole-path highlight (active row in the Details dock)
 
     explicit VToolPiecePath(const VToolPiecePathInitData &initData,
                             QObject *qoParent = nullptr,

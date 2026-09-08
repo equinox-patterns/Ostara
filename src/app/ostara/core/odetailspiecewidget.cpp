@@ -30,6 +30,7 @@
 #include "oblockconfigwidget.h"
 #include "odetailsfoldlinewidget.h"
 #include "odetailsgrainlinewidget.h"
+#include "odetailsinternalpathwidget.h"
 #include "odetailsseamallowancewidget.h"
 #include "opieceinfowidget.h"
 
@@ -40,9 +41,14 @@
 #include "../vpatterndb/vpiecenode.h"
 #include "../vpatterndb/vpiecepath.h"
 #include "../vgeometry/vpointf.h"
+#include "../ifc/xml/vabstractpattern.h"
 #include "../vtools/dialogs/tools/piece/dialogmainpath.h"
+#include "../vtools/dialogs/tools/piece/dialogpiecepath.h"
+#include "../vtools/dialogs/tools/piece/dialogpiecepathoptions.h"
 #include "../vtools/tools/vtoolseamallowance.h"
+#include "../vtools/undocommands/deltool.h"
 #include "../vtools/undocommands/savepieceoptions.h"
+#include "../vtools/undocommands/savepiecepathoptions.h"
 #include "../vtheme/vtheme.h"
 
 #include <QAbstractButton>
@@ -59,6 +65,7 @@
 #include <QIcon>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QPointer>
 #include <QPushButton>
 #include <QSize>
@@ -127,6 +134,9 @@ const AlignItem kAlignVItems[] = {
     {2, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Center")},
     {3, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Bottom")},
 };
+
+// Outer-tab index that hosts the "Internal outline" list — the Seam Allowance tab (order of addTab).
+constexpr int kSeamAllowanceTabIndex = 2;
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -178,6 +188,11 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         });
         m_foldlineWidget->Show(detail);
         m_saWidget->RefreshList(detail);
+        if (m_internalPathWidget->RefreshList(detail, currentTool->getData()))
+        {
+            // The active path disappeared (undo/redo of a delete) — clear the canvas.
+            emit ClearHighlight();
+        }
         m_blockConfigWidget->Show(detail, currentTool->getData());
         m_annotationsConfigWidget->Show(detail, currentTool->getData());
     });
@@ -312,6 +327,20 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         m_saWidget = new ODetailsSeamAllowanceWidget(tab);
         layout->addWidget(m_saWidget);
 
+        // Internal outline list — lives in the Seam Allowance tab, right below the "Manage saved
+        // custom seam allowances" button (the last control of the SA widget).
+        auto *separator = new QFrame(tab);
+        separator->setFrameShape(QFrame::HLine);
+        separator->setFrameShadow(QFrame::Sunken);
+        layout->addWidget(separator);
+
+        auto *internalOutlineLabel = new QLabel(tr("Internal outline"), tab);
+        internalOutlineLabel->setAlignment(Qt::AlignCenter);
+        layout->addWidget(internalOutlineLabel);
+
+        m_internalPathWidget = new ODetailsInternalPathWidget(tab);
+        layout->addWidget(m_internalPathWidget, 0, Qt::AlignTop); // hug the top, do not stretch
+
         layout->addStretch();
 
         m_tabWidget->addTab(tab, tr("Seam Allowance"));
@@ -409,10 +438,11 @@ void ODetailsPieceWidget::RetranslateUI()
     m_infoSubTabs->setTabText(1, tr("Blocks"));
     m_infoSubTabs->setTabText(2, tr("Annotations"));
 
-    // Sub-widgets (Grainline tab, Fold line, Seam Allowance)
+    // Sub-widgets (Grainline tab, Fold line, Seam Allowance, Internal path)
     m_grainlineWidget->RetranslateUI();
     m_foldlineWidget->RetranslateUI();
     m_saWidget->RetranslateUI();
+    m_internalPathWidget->RetranslateUI();
     m_blockConfigWidget->RetranslateUI();
     m_annotationsConfigWidget->RetranslateUI();
 }
@@ -444,6 +474,25 @@ void ODetailsPieceWidget::ConnectControls()
         emit HighlightNode(nodeId, highlight, color);
     });
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::ClearHighlight, this, &ODetailsPieceWidget::ClearHighlight);
+
+    connect(m_internalPathWidget, &ODetailsInternalPathWidget::ShowStatusTip, this,
+            &ODetailsPieceWidget::ShowStatusTip);
+    connect(m_internalPathWidget, &ODetailsInternalPathWidget::EditRequested, this,
+            &ODetailsPieceWidget::OnEditInternalPath);
+    connect(m_internalPathWidget, &ODetailsInternalPathWidget::DeleteRequested, this,
+            &ODetailsPieceWidget::DeleteInternalPath);
+    connect(m_internalPathWidget, &ODetailsInternalPathWidget::InternalPathActivated, this,
+            &ODetailsPieceWidget::OnInternalPathActivated);
+
+    // The active internal outline row follows the tab focus: it lives in the Seam Allowance tab,
+    // so leaving that tab (any other sub-tab) drops the row and its canvas highlight.
+    connect(m_tabWidget, &QTabWidget::currentChanged, this, [this](int index)
+    {
+        if (index != kSeamAllowanceTabIndex)
+        {
+            ClearInternalPathActivation();
+        }
+    });
 
     // Re-populate the tabs after undo/redo, debounced: a drag pushes a MovePiece per mouse move
     // (each fires indexChanged), so rebuilding immediately would flicker the lists; the timer
@@ -603,6 +652,7 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
 
     const VPiece detail = tool->getData()->GetPiece(tool->getId());
 
+    const quint32 previousPieceId = m_pieceId;
     m_currentTool = tool;
     m_pieceId = tool->getId();
     m_pendingDet = detail;
@@ -646,8 +696,18 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
     });
     m_foldlineWidget->Show(detail);
     m_saWidget->Show(detail);
+    const bool hadInternalPathHighlight = m_internalPathWidget->HasActivePath();
+    m_internalPathWidget->Show(detail, tool->getData());
 
     m_updating = false;
+
+    // The internal path highlight only lives while its tab is on screen with an active row.
+    // Switching piece, or re-selecting the piece (Show() rebuilds the list from scratch and
+    // drops the row) → clear the canvas highlight.
+    if (previousPieceId != m_pieceId || hadInternalPathHighlight)
+    {
+        emit ClearHighlight();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -662,8 +722,38 @@ void ODetailsPieceWidget::Clear()
     m_grainlineWidget->Clear();
     m_foldlineWidget->Clear();
     m_saWidget->Clear();
+    m_internalPathWidget->Clear();
     m_blockConfigWidget->Clear();
     m_annotationsConfigWidget->Clear();
+
+    // Nothing selected anymore — drop any canvas highlight.
+    emit ClearHighlight();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::ClearInternalPathActivation()
+{
+    // The Seam Allowance tab / piece page lost the focus: drop the active row (dot back to
+    // circle) and turn the canvas highlight off.
+    m_internalPathWidget->Deactivate();
+    emit ClearHighlight();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::RefreshPieceAfterParse()
+{
+    // A full parse (undo/redo of a delete…) destroyed every tool and rebuilt the container. If the
+    // piece page is still current and we know which piece it showed, resolve the recreated tool by
+    // id and repopulate — otherwise the internal path list keeps its pre-parse state (an internal
+    // path restored by undo never reappears).
+    if (m_pieceId == 0 || m_currentTool)
+    {
+        return; // nothing to refresh, or the tool survived (page already up to date)
+    }
+    if (auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(m_pieceId)); tool != nullptr)
+    {
+        Show(tool);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -684,6 +774,106 @@ void ODetailsPieceWidget::ShowAnnotationsTab()
 {
     m_tabWidget->setCurrentIndex(3);
     m_infoSubTabs->setCurrentIndex(2);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::OnInternalPathActivated(quint32 pathId)
+{
+    // One highlight at a time: drop any previous one, then light the activated path.
+    emit ClearHighlight();
+    // pathId == 0 is the toggle-off sentinel (re-click on the active row) — clear only.
+    if (pathId != 0 && m_currentTool)
+    {
+        emit InternalPathHighlight(m_currentTool->getId(), pathId, true);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::OnEditInternalPath(quint32 pathId)
+{
+    if (!m_currentTool)
+    {
+        return;
+    }
+    const auto *data = m_currentTool->getData();
+    if (!data->ContainsPiecePath(pathId))
+    {
+        return;
+    }
+
+    const quint32 pieceId = m_currentTool->getId();
+    const VPiecePath currentPath = data->GetPiecePath(pathId);
+    auto *doc = VAbstractValApplication::VApp()->getCurrentDocument();
+
+    // Dedicated attribute-edit dialog (DialogPiecePathOptions), built directly on the QDialog like
+    // the "Internal mark" dialog: no Piece combo, no node list, no tab container → no "fond".
+    auto *dialog = new DialogPiecePathOptions(data, pathId, this);
+    dialog->SetPath(currentPath); // pre-fills every attribute field, keeps the path geometry
+
+    // Highlight the edited path on the canvas while the dialog is open.
+    emit InternalPathHighlight(pieceId, pathId, true);
+    const int result = dialog->exec();
+    emit InternalPathHighlight(pieceId, pathId, false);
+
+    if (result == QDialog::Accepted)
+    {
+        const VPiecePath newPath = dialog->GetPath();
+        VAbstractApplication::VApp()->getUndoStack()->push(
+            new SavePiecePathOptions(pieceId, currentPath, newPath, doc, pathId));
+        m_pendingDet = data->GetPiece(pieceId); // resync after the command's redo
+    }
+    dialog->deleteLater();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::DeleteInternalPath(quint32 pathId)
+{
+    if (!m_currentTool)
+    {
+        return;
+    }
+    const auto *data = m_currentTool->getData();
+    if (!data->ContainsPiecePath(pathId))
+    {
+        return;
+    }
+
+    const quint32 pieceId = m_currentTool->getId();
+    const QString name = data->GetPiecePath(pathId).GetName();
+
+    if (QMessageBox::question(this, tr("Delete internal path"),
+                              tr("Delete internal path \"%1\"?").arg(name),
+                              QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+    {
+        return;
+    }
+
+    const VPiece oldDet = data->GetPiece(pieceId);
+    VPiece newDet = oldDet;
+    newDet.GetInternalPaths().removeAll(pathId); // detach the path from the piece's <iPaths>
+
+    auto *doc = VAbstractValApplication::VApp()->getCurrentDocument();
+    QUndoStack *stack = VAbstractApplication::VApp()->getUndoStack();
+
+    // One undo step: detach the path from the piece, then really delete the path tool and its
+    // <path> XML element (full parse). This is a true deletion — nothing stays masked/orphaned.
+    stack->beginMacro(tr("Delete internal path"));
+    stack->push(new SavePieceOptions(oldDet, newDet, doc, pieceId));
+    auto *delTool = new DelTool(doc, pathId);
+    connect(delTool, &DelTool::NeedFullParsing, doc, &VAbstractPattern::NeedFullParsing);
+    stack->push(delTool);
+    stack->endMacro();
+
+    emit ClearHighlight();
+
+    if (m_currentTool)
+    {
+        m_pendingDet = m_currentTool->getData()->GetPiece(pieceId);
+    }
+    else
+    {
+        m_pendingDet = VPiece{};
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -86,6 +86,7 @@
 #include "../vtools/tools/vabstracttool.h"
 #include "../vtools/tools/nodeDetails/vnodepoint.h"
 #include "../vtools/tools/nodeDetails/onodeplacelabel.h"
+#include "../vtools/tools/nodeDetails/vtoolpiecepath.h"
 #include "core/vapplication.h"
 #include "core/odetailspropertybrowser.h"
 #include "core/opiecegroupholderitem.h"
@@ -1110,12 +1111,30 @@ void MainWindow::InitDocksContain()
                     nodePoint->SetTemporarySelected(false);
                     nodePoint->RefreshScale();
                 }
+                else if (auto *pathTool = qgraphicsitem_cast<VToolPiecePath *>(item))
+                {
+                    pathTool->SetHighlight(false);
+                }
                 for (auto *child : item->childItems())
                 {
                     restorePens(child);
                 }
             };
             restorePens(tool);
+        }
+    });
+
+    connect(m_dockManager->detailsOptions(), &ODetailsPropertyBrowser::InternalPathHighlight, this,
+            [this](quint32 pieceId, quint32 pathId, bool highlight)
+    {
+        if (pattern == nullptr)
+        {
+            return;
+        }
+        auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
+        if (tool != nullptr)
+        {
+            tool->SetInternalPathHighlight(pathId, highlight);
         }
     });
 

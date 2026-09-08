@@ -723,7 +723,13 @@ void VToolSeamAllowance::AddPieceDependencies(quint32 id,
     const QVector<quint32> paths = piece.GetInternalPaths();
     for (auto iPath : paths)
     {
-        patternGraph->AddEdge(iPath, id);
+        // During an undo/redo the full parse that recreates the path vertex is deferred (queued):
+        // SavePieceOptions::undo() may run while the path's vertex is not in the graph yet. The
+        // graph is rebuilt by the following parse anyway, so skip a vertex that does not exist.
+        if (patternGraph->HasVertex(iPath))
+        {
+            patternGraph->AddEdge(iPath, id);
+        }
     }
 
     for (auto point : piece.GetPins())
@@ -2497,11 +2503,50 @@ void VToolSeamAllowance::UpdateExcludeState()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::HideOrphanInternalPaths(const QVector<quint32> &currentPaths)
+{
+    // Internal paths are adopted additively: nothing ever removed the scene items of a path that was deleted
+    // from the piece, so a deleted path stayed drawn. On every refresh, hide the path tools (and their node
+    // points) that are still children of this piece but are no longer listed in its internal paths.
+    const QList<QGraphicsItem *> children = childItems();
+    for (auto *child : children)
+    {
+        auto *tool = qgraphicsitem_cast<VToolPiecePath *>(child);
+        if (tool == nullptr || currentPaths.contains(tool->getId()))
+        {
+            continue;
+        }
+
+        tool->setVisible(false);
+        try
+        {
+            const VPiecePath pathItem = VAbstractTool::data.GetPiecePath(tool->getId());
+            for (int i = 0; i < pathItem.CountNodes(); ++i)
+            {
+                const VPieceNode &node = pathItem.at(i);
+                if (node.GetTypeTool() != Tool::NodePoint)
+                {
+                    continue;
+                }
+                if (auto *point = qobject_cast<VNodePoint *>(VAbstractPattern::getTool(node.GetId())))
+                {
+                    point->setVisible(false);
+                }
+            }
+        }
+        catch (const VExceptionBadId &)
+        { // Orphan path already gone from the container. Just keep the tool hidden.
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::UpdateInternalPaths()
 {
     VPiece piece = VAbstractTool::data.GetPiece(m_id);
     piece.TestInternalPaths(&(VAbstractTool::data));
     const QVector<quint32> paths = piece.GetInternalPaths();
+    HideOrphanInternalPaths(paths);
     for (auto pathId : paths)
     {
         try
@@ -2521,6 +2566,42 @@ void VToolSeamAllowance::UpdateInternalPaths()
         {
             // ignore
         }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::SetInternalPathHighlight(quint32 pathId, bool highlight)
+{
+    // Trace: find the path tool among the piece's children (adopted in InitInternalPaths).
+    for (auto *child : childItems())
+    {
+        auto *tool = qgraphicsitem_cast<VToolPiecePath *>(child);
+        if (tool != nullptr && tool->getId() == pathId)
+        {
+            tool->SetHighlight(highlight);
+            break;
+        }
+    }
+
+    // Point nodes of the path (curve/arc nodes have no point handle).
+    try
+    {
+        const VPiecePath pathItem = VAbstractTool::data.GetPiecePath(pathId);
+        for (int i = 0; i < pathItem.CountNodes(); ++i)
+        {
+            const VPieceNode &node = pathItem.at(i);
+            if (node.GetTypeTool() != Tool::NodePoint)
+            {
+                continue;
+            }
+            if (auto *point = qobject_cast<VNodePoint *>(VAbstractPattern::getTool(node.GetId())))
+            {
+                point->SetActivePoint(highlight);
+            }
+        }
+    }
+    catch (const VExceptionBadId &)
+    { // Path already gone from the container — nothing to highlight.
     }
 }
 
@@ -2658,37 +2739,18 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
 
     UpdateFoldLine(geom.foldLine);
 
-    if (VAbstractApplication::VApp()->IsAppInGUIMode())
+    // Children (grainline, info blocks, annotations, place labels, internal paths) are refreshed
+    // synchronously with the geometry application. Deferring them to a later pass repaints the
+    // piece a second time shortly after a change (e.g. at the release of an overlay drag), which
+    // makes the internal paths blink once.
+    UpdateGrainline();
+    UpdateInfoBlocks();
+    UpdateAnnotations();
+    UpdatePlaceLabels();
+    UpdateExcludeState();
+    if (updateChildren)
     {
-        QTimer::singleShot(100ms,
-                           Qt::CoarseTimer,
-                           this,
-                           [this, updateChildren]() -> void
-                           {
-                               this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
-                               UpdateGrainline();
-                               UpdateInfoBlocks();
-                               UpdateAnnotations();
-                               UpdatePlaceLabels();
-                               UpdateExcludeState();
-                               if (updateChildren)
-                               {
-                                   UpdateInternalPaths();
-                               }
-                               this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-                           });
-    }
-    else
-    {
-        UpdateGrainline();
-        UpdateInfoBlocks();
-        UpdateAnnotations();
-        UpdatePlaceLabels();
-        UpdateExcludeState();
-        if (updateChildren)
-        {
-            UpdateInternalPaths();
-        }
+        UpdateInternalPaths();
     }
 
     m_passmarks->setPath(!geom.combineTogether ? geom.passmarks : QPainterPath());
@@ -3160,6 +3222,7 @@ void VToolSeamAllowance::InitInternalNode(const VPieceNode &node, VToolSeamAllow
 void VToolSeamAllowance::InitInternalPaths(const VPiece &detail)
 {
     const QVector<quint32> paths = detail.GetInternalPaths();
+    HideOrphanInternalPaths(paths);
     for (auto pathId : paths)
     {
         auto *tool = qobject_cast<VToolPiecePath *>(VAbstractPattern::getTool(pathId));

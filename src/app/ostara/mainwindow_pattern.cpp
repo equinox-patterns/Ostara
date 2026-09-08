@@ -47,6 +47,7 @@
 
 #include "core/vapplication.h"
 #include "core/vtooloptionspropertybrowser.h"
+#include "core/odetailspropertybrowser.h"
 #include "dialogs/vwidgetdetails.h"
 #include "dialogs/vwidgetdependencies.h"
 #include "dialogs/vwidgetgroups.h"
@@ -148,10 +149,16 @@ void MainWindow::FullParseFile()
 
     SetEnableTool(m_comboBoxDraws->count() > 0);
     m_dockManager->detailsWidget()->UpdateList();
-    // The group holders are NOT built here: a full parse defers the pieces' geometry refresh
-    // (debounce timer, Modeling mode only), so members are still at their default position.
-    // CheckLayout (emitted when the geometry is applied) → RefreshGroupHolders rebuilds them
-    // from the final geometry, with the members re-superimposed first.
+    // A full parse recreated the tools: if the details-options dock still shows the piece page,
+    // repopulate it with the recreated tool, so an undo/redo of a delete refreshes the internal
+    // path list (otherwise the restored path stays off the list).
+    m_dockManager->detailsOptions()->RefreshPieceAfterParse();
+    // Flush the pieces' geometry synchronously instead of waiting for the 250 ms debounce timer:
+    // otherwise the first paint after a full parse shows empty pieces (silhouette not yet applied)
+    // with only the node points → a white "flash". RefreshPieceGeometry() stops the debounce timer
+    // and applies the geometry now (Modeling mode). CheckLayout (emitted when the geometry is
+    // applied) → RefreshGroupHolders rebuilds the group holders from the final geometry.
+    doc->RefreshPieceGeometry();
 
     VMainGraphicsView::NewSceneRect(m_sceneDraw, VAbstractValApplication::VApp()->getSceneView());
     VMainGraphicsView::NewSceneRect(m_sceneDetails, VAbstractValApplication::VApp()->getSceneView());

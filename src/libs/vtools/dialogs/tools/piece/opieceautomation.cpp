@@ -27,6 +27,8 @@
  **
  *************************************************************************/
 
+#include "ocurvesense.h"
+
 #include "opieceautomation.h"
 
 #include "../../../tools/drawTools/toolcurve/vtoolabstractcurve.h"
@@ -34,15 +36,9 @@
 #include "../../../tools/vdatatool.h"
 #include "../../../../ifc/xml/vabstractpattern.h"
 #include "../vgeometry/vabstractcurve.h"
-#include "../vgeometry/varc.h"
-#include "../vgeometry/vcubicbezier.h"
-#include "../vgeometry/vcubicbezierpath.h"
-#include "../vgeometry/vellipticalarc.h"
 #include "../vgeometry/vgeometrydef.h"
 #include "../vgeometry/vgobject.h"
 #include "../vgeometry/vpointf.h"
-#include "../vgeometry/vspline.h"
-#include "../vgeometry/vsplinepath.h"
 #include "../vmisc/typedef.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiecepath.h"
@@ -122,62 +118,7 @@ OPieceAutomation::OPieceAutomation(const VContainer *data, QObject *parent)
 //---------------------------------------------------------------------------------------------------------------------
 auto OPieceAutomation::GetCurveEndPoints(quint32 curveId, QPointF &start, QPointF &end) const -> bool
 {
-    try
-    {
-        const QSharedPointer<VGObject> obj = m_data->GetGObject(curveId);
-
-        switch (obj->getType())
-        {
-            case GOType::Arc:
-            {
-                const auto arc = qSharedPointerCast<VArc>(obj);
-                start = arc->GetP1();
-                end = arc->GetP2();
-                return true;
-            }
-            case GOType::EllipticalArc:
-            {
-                const auto elArc = qSharedPointerCast<VEllipticalArc>(obj);
-                start = elArc->GetP1();
-                end = elArc->GetP2();
-                return true;
-            }
-            case GOType::Spline:
-            {
-                const auto spline = qSharedPointerCast<VSpline>(obj);
-                start = spline->GetP1().toQPointF();
-                end = spline->GetP4().toQPointF();
-                return true;
-            }
-            case GOType::SplinePath:
-            {
-                const auto splinePath = qSharedPointerCast<VSplinePath>(obj);
-                start = splinePath->FirstPoint().toQPointF();
-                end = splinePath->LastPoint().toQPointF();
-                return true;
-            }
-            case GOType::CubicBezier:
-            {
-                const auto bezier = qSharedPointerCast<VCubicBezier>(obj);
-                start = bezier->GetP1().toQPointF();
-                end = bezier->GetP4().toQPointF();
-                return true;
-            }
-            case GOType::CubicBezierPath:
-            {
-                const auto bezierPath = qSharedPointerCast<VCubicBezierPath>(obj);
-                start = bezierPath->FirstPoint().toQPointF();
-                end = bezierPath->LastPoint().toQPointF();
-                return true;
-            }
-            default:
-                return false;
-        }
-    }
-    catch (const VExceptionBadId &)
-    {
-        return false;
-    }
+    return OCurveSense::CurveEndPoints(m_data, curveId, start, end);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -208,61 +149,13 @@ auto OPieceAutomation::CurveEntryPoint(quint32 curveId, QPointF &entry) const ->
         return false;
     }
 
-    const VPieceNode last = m_nodes.last();
-    if (last.GetTypeTool() == Tool::NodePoint)
-    {
-        try
-        {
-            const QSharedPointer<VPointF> point = m_data->GeometricObject<VPointF>(last.GetId());
-            entry = point->toQPointF();
-            return true;
-        }
-        catch (const VExceptionBadId &)
-        {
-            return false;
-        }
-    }
-
-    // The previous node is a curve: the entry is the endpoint shared with the current curve.
-    QPointF curStart, curEnd, prevStart, prevEnd;
-    if (not GetCurveEndPoints(curveId, curStart, curEnd) || not GetCurveEndPoints(last.GetId(), prevStart, prevEnd))
-    {
-        return false;
-    }
-
-    if (SamePoint(curStart, prevStart) || SamePoint(curStart, prevEnd))
-    {
-        entry = curStart;
-        return true;
-    }
-    if (SamePoint(curEnd, prevStart) || SamePoint(curEnd, prevEnd))
-    {
-        entry = curEnd;
-        return true;
-    }
-    return false;
+    return OCurveSense::EntryFromLast(m_data, m_nodes.last(), curveId, entry);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OPieceAutomation::ComputeReverseFromEntry(const QPointF &entry, quint32 curveId, bool &reverse) const -> bool
 {
-    QPointF start, end;
-    if (not GetCurveEndPoints(curveId, start, end))
-    {
-        return false;
-    }
-
-    if (SamePoint(entry, start))
-    {
-        reverse = false;
-        return true;
-    }
-    if (SamePoint(entry, end))
-    {
-        reverse = true;
-        return true;
-    }
-    return false;
+    return OCurveSense::ReverseFromEntry(entry, m_data, curveId, reverse);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

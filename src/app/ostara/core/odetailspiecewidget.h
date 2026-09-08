@@ -48,6 +48,7 @@ class OBlockConfigWidget;
 class OAnnotationsConfigWidget;
 class ODetailsFoldLineWidget;
 class ODetailsGrainlineWidget;
+class ODetailsInternalPathWidget;
 class ODetailsSeamAllowanceWidget;
 class OPieceInfoWidget;
 class VToolSeamAllowance;
@@ -62,6 +63,14 @@ public:
 
     void Clear();
     void Show(VToolSeamAllowance *tool);
+
+    /** @brief Drop the active Internal path row and its canvas highlight — the
+     *         Internal path tab / piece page no longer has the focus. */
+    void ClearInternalPathActivation();
+
+    /** @brief After a full parse recreated the tools, repopulate the current piece page from the
+     *         recreated tool (undo/redo of a delete otherwise leaves the internal path list stale). */
+    void RefreshPieceAfterParse();
 
     /** @brief Show the Grainline tab (outer tab 1). */
     void ShowGrainlineTab();
@@ -91,6 +100,8 @@ signals:
     void HighlightNode(quint32 nodeId, bool highlight, QColor color = Qt::red);
     void HighlightTemporaryNode(quint32 nodeId, bool selected);
     void ClearHighlight();
+    /** @brief Ask the canvas to highlight/clear a whole internal path (trace + points). */
+    void InternalPathHighlight(quint32 pieceId, quint32 pathId, bool highlight);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
@@ -110,6 +121,12 @@ private:
 
     // Seam allowance tab
     ODetailsSeamAllowanceWidget *m_saWidget{nullptr};
+
+    // Internal path tab
+    ODetailsInternalPathWidget *m_internalPathWidget{nullptr};
+    void OnEditInternalPath(quint32 pathId);
+    void DeleteInternalPath(quint32 pathId);
+    void OnInternalPathActivated(quint32 pathId);
 
     // Information tab — Blocks sub-tab
     OBlockConfigWidget *m_blockConfigWidget{nullptr};

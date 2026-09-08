@@ -91,6 +91,8 @@ ODetailsPropertyBrowser::ODetailsPropertyBrowser(QWidget *parent)
     connect(m_pieceWidget, &ODetailsPieceWidget::HighlightNode, this, &ODetailsPropertyBrowser::HighlightNode);
     connect(m_pieceWidget, &ODetailsPieceWidget::HighlightTemporaryNode, this, &ODetailsPropertyBrowser::HighlightTemporaryNode);
     connect(m_pieceWidget, &ODetailsPieceWidget::ClearHighlight, this, &ODetailsPropertyBrowser::ClearHighlight);
+    connect(m_pieceWidget, &ODetailsPieceWidget::InternalPathHighlight, this,
+            &ODetailsPropertyBrowser::InternalPathHighlight);
 
     // Re-emit group widget signals through the browser.
     connect(m_groupWidget, &ODetailsGroupWidget::ShowStatusTip, this, &ODetailsPropertyBrowser::ShowStatusTip);
@@ -128,6 +130,8 @@ void ODetailsPropertyBrowser::RetranslateUI()
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPropertyBrowser::ShowEmpty()
 {
+    // Leaving the piece page: the internal path highlight only lives while its tab is shown.
+    m_pieceWidget->ClearInternalPathActivation();
     m_stack->setCurrentIndex(0);
 }
 
@@ -156,6 +160,8 @@ void ODetailsPropertyBrowser::ShowGroupOptions(quint32 groupId, VContainer *data
         return;
     }
     m_groupWidget->Show(groupId, data, doc);
+    // Leaving the piece page: drop any active internal path highlight.
+    m_pieceWidget->ClearInternalPathActivation();
     m_stack->setCurrentWidget(m_groupWidget);
 }
 
@@ -181,7 +187,18 @@ void ODetailsPropertyBrowser::ShowAnnotationsTab()
 void ODetailsPropertyBrowser::ShowPlaceLabelOptions(VToolSeamAllowance *piece, quint32 labelId)
 {
     m_placeLabelWidget->Show(piece, labelId);
+    // Leaving the piece page: drop any active internal path highlight.
+    m_pieceWidget->ClearInternalPathActivation();
     m_stack->setCurrentWidget(m_placeLabelWidget);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::RefreshPieceAfterParse()
+{
+    if (m_stack->currentWidget() == m_pieceWidget)
+    {
+        m_pieceWidget->RefreshPieceAfterParse();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

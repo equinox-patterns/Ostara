@@ -27,18 +27,28 @@
  *************************************************************************/
 
 #include "dialogpiecepath.h"
+#include "ocurvesense.h"
 #include "../../../tools/vtoolseamallowance.h"
 #include "../../../visualization/path/vistoolpiecepath.h"
 #include "../../support/dialogeditwrongformula.h"
 #include "vtheme.h"
+#include "../vmisc/FactoryWidgets.h"
 #include "../vmisc/vmodifierkey.h"
 #include "../vpatterndb/variables/vincrement.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "ui_dialogpiecepath.h"
 
+#include <QFrame>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLayout>
+#include <QLineEdit>
 #include <QMenu>
 #include <QScopeGuard>
 #include <QTimer>
+#include <QToolButton>
+#include <QVBoxLayout>
 
 namespace
 {
@@ -74,6 +84,50 @@ auto CuttingPath(quint32 id, const VContainer *data) -> QVector<QPointF>
 
     return path;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto IndexOfWidget(const QLayout *layout, const QWidget *widget) -> int
+{
+    for (int i = 0; i < layout->count(); ++i)
+    {
+        if (layout->itemAt(i)->widget() == widget)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// Remove a whole QFormLayout row (label + field) no matter how uic built it. Locating the row by
+// the field via getWidgetPosition() is independent of the label/field pairing; takeRow(row) then
+// removes it and the widgets below move up — no blank slot remains.
+void RemoveFormRow(QFormLayout *form, QWidget *label, QWidget *field)
+{
+    if (form == nullptr)
+    {
+        return;
+    }
+    QWidget *anchor = field != nullptr ? field : label;
+    if (anchor == nullptr)
+    {
+        return;
+    }
+    int rowIdx = -1;
+    QFormLayout::ItemRole role = QFormLayout::LabelRole;
+    form->getWidgetPosition(anchor, &rowIdx, &role);
+    const QFormLayout::TakeRowResult removed =
+        rowIdx >= 0 ? form->takeRow(rowIdx)
+                    : (label != nullptr ? form->takeRow(label) : QFormLayout::TakeRowResult{});
+    if (removed.labelItem != nullptr && removed.labelItem->widget() != nullptr)
+    {
+        removed.labelItem->widget()->hide(); // keep alive (GetPieceId still reads the combo)
+    }
+    if (removed.fieldItem != nullptr && removed.fieldItem->widget() != nullptr)
+    {
+        removed.fieldItem->widget()->hide();
+    }
+    form->invalidate();
+}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -92,12 +146,16 @@ DialogPiecePath::DialogPiecePath(const VContainer *data, VAbstractPattern *doc, 
     ui->setupUi(this);
     InitOkCancel(ui);
 
+    // Combo factory correction (macOS native popup ignores QSS) — see rules.md.
+    ApplyComboBoxView(ui->comboBoxPiece);
+    ApplyComboBoxView(ui->comboBoxPenType);
+
     InitIcons();
 
     InitPathTab();
+    InitControlTab(); // Creates the inline Visibility row used by CreatePath() below.
     InitSeamAllowanceTab();
     InitPassmarksTab();
-    InitControlTab();
 
     EvalVisible();
 
@@ -107,9 +165,28 @@ DialogPiecePath::DialogPiecePath(const VContainer *data, VAbstractPattern *doc, 
 
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabSeamAllowance));
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabPassmarks));
+    ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabControl));
+
+    // Creation/editing single page: the path type is fixed to internal path for new
+    // paths and the node list stays as a hidden backing store (shown again in edit mode).
+    DetachHiddenCreationWidgets();
+    if (ui->tabWidget->count() <= 1)
+    {
+        ui->tabWidget->tabBar()->hide(); // Single-page creation/editing window.
+    }
+    SetType(PiecePathType::InternalPath);
+    UpdatePieceComboStyle();
 
     connect(ui->comboBoxPiece, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            [this]() { ValidObjects(PathIsValid()); });
+            [this]() {
+                ValidObjects(PathIsValid());
+                UpdatePieceComboStyle();
+            });
+
+    resize(sizeHint()); // Compact window: do not stretch the content in a taller dialog.
+    // Keep the window exactly as tall as its content — the layout re-applies this at show, so the
+    // content is never stretched vertically (which spread the Visibility hint over a blank line).
+    ui->verticalLayout_2->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -119,13 +196,18 @@ DialogPiecePath::~DialogPiecePath()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogPiecePath::EnbleShowMode(bool disable)
+void DialogPiecePath::EnbleShowMode(bool disable, bool attachNodeList)
 {
     m_showMode = disable;
     ui->comboBoxType->setDisabled(m_showMode);
     ui->comboBoxPiece->setDisabled(m_showMode);
+    if (m_showMode && attachNodeList)
+    {
+        AttachNodeListForEdit();
+    }
     RefreshPathList(GetPiecePath());
     ValidObjects(PathIsValid());
+    UpdatePieceComboStyle();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -135,29 +217,99 @@ void DialogPiecePath::HideVisibilityTrigger()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void DialogPiecePath::SetNodeZoneVisible(bool visible)
+{
+    ui->toolButtonReverse->setVisible(visible);
+    ui->toolButtonExcluded->setVisible(visible);
+    ui->toolButtonTurnPoint->setVisible(visible);
+    ui->toolButtonCheckUniqness->setVisible(visible);
+    ui->toolButtonPassmark->setVisible(visible);
+    ui->toolButtonDelete->setVisible(visible);
+    ui->listWidget->setVisible(visible);
+    ui->toolButtonTop->setVisible(visible);
+    ui->toolButtonUp->setVisible(visible);
+    ui->toolButtonDown->setVisible(visible);
+    ui->toolButtonBottom->setVisible(visible);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogPiecePath::DetachHiddenCreationWidgets()
+{
+    // The "Type" row and the node editing zone belong to the legacy editor layout. In the
+    // single-page creation window they are detached so no blank space remains; the node list
+    // is re-attached when editing an existing path (see AttachNodeListForEdit). The whole form
+    // row is removed (RemoveFormRow) — no blank slot stays behind.
+    RemoveFormRow(ui->formLayout, ui->labelType, ui->comboBoxType);
+
+    // No status/warning messages in this dialog.
+    ui->helpLabel->hide();
+
+    for (int i = ui->verticalLayout->count() - 1; i >= 0; --i)
+    {
+        if (QLayoutItem *item = ui->verticalLayout->itemAt(i);
+            item != nullptr && item->widget() == ui->listWidget)
+        {
+            ui->verticalLayout->takeAt(i);
+        }
+    }
+    for (int i = ui->verticalLayout->count() - 1; i >= 0; --i)
+    {
+        if (QLayoutItem *item = ui->verticalLayout->itemAt(i);
+            item != nullptr && item->layout() != nullptr &&
+            (item->layout()->objectName() == QStringLiteral("horizontalLayout_8") ||
+             item->layout()->objectName() == QStringLiteral("horizontalLayout_3")))
+        {
+            ui->verticalLayout->takeAt(i);
+        }
+    }
+
+    SetNodeZoneVisible(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogPiecePath::AttachNodeListForEdit()
+{
+    if (m_nodeListAttached)
+    {
+        return;
+    }
+    const int cut = IndexOfWidget(ui->verticalLayout, ui->checkBoxCut);
+    ui->verticalLayout->insertWidget(cut >= 0 ? cut : ui->verticalLayout->count(), ui->listWidget);
+    ui->listWidget->setVisible(true);
+    m_nodeListAttached = true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogPiecePath::UpdatePieceComboStyle()
+{
+    const bool noPiece = ui->comboBoxPiece->currentIndex() < 0;
+    ui->comboBoxPiece->setStyleSheet(noPiece ? QStringLiteral("QComboBox { border: 1px solid red; }") : QString());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogPiecePath::ChosenObject(quint32 id, const SceneObject &type)
 {
     if (not prepare)
     {
-        const bool reverse = QGuiApplication::keyboardModifiers() == Qt::ShiftModifier;
+        const bool shift = QGuiApplication::keyboardModifiers() == Qt::ShiftModifier;
         if (id != GetLastId())
         {
             switch (type)
             {
                 case SceneObject::Arc:
-                    NewItem(VPieceNode(id, Tool::NodeArc, reverse));
+                    NewItem(VPieceNode(id, Tool::NodeArc, AutoReverse(id, shift)));
                     break;
                 case SceneObject::ElArc:
-                    NewItem(VPieceNode(id, Tool::NodeElArc, reverse));
+                    NewItem(VPieceNode(id, Tool::NodeElArc, AutoReverse(id, shift)));
                     break;
                 case SceneObject::Point:
                     NewItem(VPieceNode(id, Tool::NodePoint));
                     break;
                 case SceneObject::Spline:
-                    NewItem(VPieceNode(id, Tool::NodeSpline, reverse));
+                    NewItem(VPieceNode(id, Tool::NodeSpline, AutoReverse(id, shift)));
                     break;
                 case SceneObject::SplinePath:
-                    NewItem(VPieceNode(id, Tool::NodeSplinePath, reverse));
+                    NewItem(VPieceNode(id, Tool::NodeSplinePath, AutoReverse(id, shift)));
                     break;
                 case SceneObject::Line:
                 case SceneObject::Detail:
@@ -187,11 +339,6 @@ void DialogPiecePath::ChosenObject(quint32 id, const SceneObject &type)
 
             if (p.CountNodes() == 1)
             {
-                emit ToolTip(QCoreApplication::translate(
-                                 "DialogPiecePath", "Select main path objects, <b>%1</b> - reverse direction curve, "
-                                                    "<b>%2</b> - finish creation")
-                                 .arg(VModifierKey::Shift(), VModifierKey::EnterKey()));
-
                 if (not VAbstractValApplication::VApp()->getCurrentScene()->items().contains(visPath))
                 {
                     visPath->VisualMode(NULL_ID);
@@ -945,10 +1092,10 @@ void DialogPiecePath::EvalWidthAfter()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPiecePath::EvalVisible()
 {
-    Eval({.formula = ui->plainTextEditFormulaVisible->toPlainText(),
+    Eval({.formula = m_visibleEdit->text(),
           .variables = data.DataVariables(),
-          .labelEditFormula = ui->labelEditVisible,
-          .labelResult = ui->labelResultVisible,
+          .labelEditFormula = m_visibleLabel,
+          .labelResult = m_visibleResult,
           .checkLessThanZero = true},
          m_flagFormulaVisible);
 }
@@ -1654,25 +1801,72 @@ void DialogPiecePath::InitPassmarksTab()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPiecePath::InitControlTab()
 {
-    this->m_formulaBaseVisible = ui->plainTextEditFormulaVisible->height();
+    // Inline "Visibility" section in the style of the Internal Mark dialog (DialogPlaceLabel):
+    // label + QLineEdit + fx button, hint under the field in the value column, word-wrapped —
+    // two lines, no blank line.
+    m_visibleBox = new QWidget(ui->tabPath);
+    auto *grid = new QGridLayout(m_visibleBox);
+    grid->setContentsMargins(0, 0, 0, 0);
+    grid->setHorizontalSpacing(6);
+    grid->setVerticalSpacing(6);
+    grid->setColumnStretch(1, 1);
 
-    ui->plainTextEditFormulaVisible->installEventFilter(this);
+    int visRow = 0;
+    auto *separator = new QFrame(m_visibleBox);
+    separator->setFrameShape(QFrame::HLine);
+    separator->setFrameShadow(QFrame::Sunken);
+    grid->addWidget(separator, visRow, 0, 1, 3);
+    ++visRow;
+
+    m_visibleLabel = new QLabel(m_visibleBox);
+    grid->addWidget(m_visibleLabel, visRow, 0);
+
+    m_visibleEdit = new QLineEdit(m_visibleBox);
+    m_visibleEdit->setText(QStringLiteral("1"));
+    grid->addWidget(m_visibleEdit, visRow, 1);
+
+    m_visibleFx = new QToolButton(m_visibleBox);
+    m_visibleFx->setFocusPolicy(Qt::NoFocus);
+    m_visibleFx->setFixedSize(24, 24);
+    m_visibleFx->setIconSize(QSize(16, 16));
+    grid->addWidget(m_visibleFx, visRow, 2);
+    ++visRow;
+
+    auto *hint = new QLabel(m_visibleBox);
+    hint->setWordWrap(true);
+    grid->addWidget(hint, visRow, 1, 1, 2);
+
+    // Hidden result label required by the shared formula evaluator.
+    m_visibleResult = new QLabel(m_visibleBox);
+    m_visibleResult->hide();
+
+    // Keep the status label (helpLabel) at the bottom.
+    const int idx = IndexOfWidget(ui->verticalLayout, ui->helpLabel);
+    if (idx >= 0)
+    {
+        ui->verticalLayout->insertWidget(idx, m_visibleBox);
+    }
+    else
+    {
+        ui->verticalLayout->addWidget(m_visibleBox);
+    }
+
+    m_visibleLabel->setText(tr("Visibility"));
+    hint->setText(tr("1 = visible, 0 = invisible, formulas allowed"));
+    m_visibleFx->setToolTip(tr("Edit expression"));
+    m_visibleFx->setIcon(VTheme::GetIconResource(QStringLiteral("icon"), QStringLiteral("24x24/fx.png")));
 
     m_timerVisible->setSingleShot(true);
 
     connect(m_timerVisible, &QTimer::timeout, this, &DialogPiecePath::EvalVisible);
-    connect(ui->toolButtonExprVisible, &QPushButton::clicked, this, &DialogPiecePath::FXVisible);
-    connect(ui->plainTextEditFormulaVisible,
-            &QPlainTextEdit::textChanged,
-            this,
-            [this]() -> void { m_timerVisible->start(formulaTimerTimeout); });
-    connect(ui->pushButtonGrowVisible, &QPushButton::clicked, this, &DialogPiecePath::DeployVisibleFormulaTextEdit);
+    connect(m_visibleEdit, &QLineEdit::textChanged, this, [this]() { m_timerVisible->start(formulaTimerTimeout); });
+    connect(m_visibleFx, &QToolButton::clicked, this, &DialogPiecePath::FXVisible);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPiecePath::InitPathTypes()
 {
-    ui->comboBoxType->addItem(tr("Internal path"), static_cast<int>(PiecePathType::InternalPath));
+    ui->comboBoxType->addItem(tr("Internal outline"), static_cast<int>(PiecePathType::InternalPath));
     ui->comboBoxType->addItem(tr("Custom seam allowance"), static_cast<int>(PiecePathType::CustomSeamAllowance));
 
     ui->comboBoxPenType->setEnabled(GetType() == PiecePathType::InternalPath);
@@ -1815,22 +2009,32 @@ void DialogPiecePath::SetPiecePath(const VPiecePath &path)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogPiecePath::GetType() const -> PiecePathType
 {
-    return static_cast<PiecePathType>(ui->comboBoxType->currentData().toInt());
+    return m_pathType;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPiecePath::SetType(PiecePathType type)
 {
-    const qint32 index = ui->comboBoxType->findData(static_cast<int>(type));
-    if (index != -1)
+    m_pathType = type;
+
+    if (ui->comboBoxType != nullptr)
     {
-        ui->comboBoxType->setCurrentIndex(index);
+        const qint32 index = ui->comboBoxType->findData(static_cast<int>(type));
+        if (index != -1)
+        {
+            ui->comboBoxType->setCurrentIndex(index);
+        }
     }
 
-    ui->comboBoxPenType->setEnabled(type == PiecePathType::InternalPath);
-    ui->checkBoxCut->setEnabled(type == PiecePathType::InternalPath);
-    ui->checkBoxFirstPointToCuttingContour->setEnabled(type == PiecePathType::InternalPath);
-    ui->checkBoxLastPointToCuttingContour->setEnabled(type == PiecePathType::InternalPath);
+    const bool isInternal = type == PiecePathType::InternalPath;
+    ui->comboBoxPenType->setEnabled(isInternal);
+    ui->checkBoxCut->setEnabled(isInternal);
+    ui->checkBoxFirstPointToCuttingContour->setEnabled(isInternal);
+    ui->checkBoxLastPointToCuttingContour->setEnabled(isInternal);
+    if (m_visibleBox != nullptr)
+    {
+        m_visibleBox->setVisible(isInternal);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1886,6 +2090,30 @@ auto DialogPiecePath::GetLastId() const -> quint32
     }
 
     return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogPiecePath::AutoReverse(quint32 curveId, bool shift) const -> bool
+{
+    bool natural = false; // Default: intrinsic start-to-end traversal.
+
+    if (not shift)
+    {
+        const int count = ui->listWidget->count();
+        if (count > 0)
+        {
+            const QListWidgetItem *lastItem = ui->listWidget->item(count - 1);
+            const VPieceNode last = qvariant_cast<VPieceNode>(lastItem->data(Qt::UserRole));
+            QPointF entry;
+            if (OCurveSense::EntryFromLast(&data, last, curveId, entry))
+            {
+                (void)OCurveSense::ReverseFromEntry(entry, &data, curveId, natural);
+            }
+        }
+    }
+
+    // Shift overrides the automatic sense with the opposite one.
+    return shift ? !natural : natural;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2090,6 +2318,8 @@ void DialogPiecePath::SetFormulaSAWidth(const QString &formula)
         ui->tabWidget->addTab(ui->tabPassmarks, tr("Passmarks"));
     }
 
+    ui->tabWidget->tabBar()->show();
+
     MoveCursorToEnd(ui->plainTextEditFormulaWidth);
 }
 
@@ -2131,6 +2361,7 @@ auto DialogPiecePath::GetFormulaSAWidth() const -> QString
 void DialogPiecePath::SetPiecesList(const QVector<quint32> &list)
 {
     FillComboBoxPiecesList(ui->comboBoxPiece, list);
+    UpdatePieceComboStyle();
 
     if (list.isEmpty())
     {
@@ -2209,16 +2440,9 @@ auto DialogPiecePath::PathIsValid() const -> bool
         return false;
     }
 
-    if (not m_showMode && ui->comboBoxPiece->count() <= 0)
+    if (not m_showMode && (ui->comboBoxPiece->count() <= 0 || ui->comboBoxPiece->currentIndex() == -1))
     {
-        ui->helpLabel->setText(DialogWarningIcon(ui->helpLabel) + tr("List of details is empty!"));
-        return false;
-    }
-
-    if (not m_showMode && ui->comboBoxPiece->currentIndex() == -1)
-    {
-        ui->helpLabel->setText(DialogWarningIcon(ui->helpLabel) + tr("Please, select a detail to insert into!"));
-        return false;
+        return false; // No piece chosen — signalled by the red border on the Piece combo.
     }
 
     error.clear();
@@ -2263,7 +2487,11 @@ auto DialogPiecePath::GetFormulaSAWidthAfter() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogPiecePath::GetFormulaVisible() const -> QString
 {
-    QString const formula = ui->plainTextEditFormulaVisible->toPlainText();
+    if (m_visibleEdit == nullptr)
+    {
+        return QStringLiteral("1");
+    }
+    QString const formula = m_visibleEdit->text();
     return VTranslateVars::TryFormulaFromUser(formula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
 }
 
@@ -2272,13 +2500,8 @@ void DialogPiecePath::SetFormulaVisible(const QString &formula)
 {
     const QString f = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
         formula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (f.length() > 80)
-    {
-        this->DeployVisibleFormulaTextEdit();
-    }
-    ui->plainTextEditFormulaVisible->setPlainText(f);
-    MoveCursorToEnd(ui->plainTextEditFormulaVisible);
+    m_visibleEdit->setText(f);
+    m_visibleEdit->setCursorPosition(static_cast<int>(m_visibleEdit->text().size()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

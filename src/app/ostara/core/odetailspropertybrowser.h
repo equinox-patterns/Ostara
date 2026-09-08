@@ -64,6 +64,10 @@ public:
     void ShowPlaceLabelOptions(VToolSeamAllowance *piece, quint32 labelId);
     void Clear();
 
+    /** @brief If the piece page is the current page, repopulate it after a full parse recreated
+     *         the tools (undo/redo of a delete). No-op otherwise. */
+    void RefreshPieceAfterParse();
+
     void RetranslateUI();
 
     auto IsSelectingPassmarkPoints() const -> bool;
@@ -90,6 +94,8 @@ signals:
     void HighlightTemporaryNode(quint32 nodeId, bool selected);
     void ClearHighlight();
     void StartFoldLineMember(quint32 pieceId);
+    /** @brief Ask the canvas to highlight/clear a whole internal path (trace + points). */
+    void InternalPathHighlight(quint32 pieceId, quint32 pathId, bool highlight);
 
 private:
     // cppcheck-suppress unknownMacro

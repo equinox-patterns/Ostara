@@ -829,4 +829,8 @@ void VNodePoint::SetInternalPathNode(bool internalPathNode)
     }
 
     SetOnlyPoint(onlyPoint);
+    // SetOnlyPoint() force-shows the label when onlyPoint is false, without consulting m_showLabel / the
+    // global "show all labels" flag. Recompute through the standard predicate so an internal-path node name
+    // is hidden unless explicitly shown.
+    RefreshScale();
 }

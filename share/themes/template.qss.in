@@ -7,12 +7,12 @@
    See design-system.md §6 for QScrollArea viewport (C++ workaround, not QSS). */
 
 /* =========================================================================
-   GLOBAL — Police de base (Inter, 14px)
+   GLOBAL — Police de base (Inter, 12px)
    ========================================================================= */
 
 QWidget {
     font-family: "Inter";
-    font-size: 14px;
+    font-size: 12px;
 }
 
 /* =========================================================================
@@ -573,6 +573,13 @@ QAbstractItemView::item:selected {
     color: $AccentText;
 }
 
+/* Internal path dock list (ODetailsInternalPathWidget): the item-view base is
+   $InputBg (pane color), which paints the empty area below the rows as a panel
+   against the $DockBody tab page. Make the base match the tab page. */
+QTableWidget#internalPathTable {
+    background-color: $DockBody;
+}
+
 /* =========================================================================
    QTreeView — Branches (expand/collapse arrows)
    Drawn natively by Fusion — no SVG images
@@ -736,6 +743,14 @@ QDialog QTabBar::tab {
 QDialog QTabBar::tab:selected {
     background: $DialogTabBg;
     border-bottom-color: $DialogTabBg;
+}
+
+/* DialogPiecePath — single-page window (creation dialog, tab bar hidden): the dialog-tab pane uses
+   $DialogTabBg, a color distinct from $DialogBg, which reads as a "fond" behind the content. Blend
+   the pane with the dialog background and drop its frame. */
+QDialog#DialogPiecePath QTabWidget::pane {
+    background: $DialogBg;
+    border: none;
 }
 
 /* =========================================================================

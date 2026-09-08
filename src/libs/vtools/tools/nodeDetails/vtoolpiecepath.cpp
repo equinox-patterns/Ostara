@@ -160,21 +160,41 @@ auto VToolPiecePath::getTagName() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 void VToolPiecePath::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    qreal width = VAbstractApplication::VApp()->Settings()->WidthHairLine();
-
     const qreal scale = SceneScale(scene());
-    if (scale > 1)
-    {
-        width = qMax(1., width / scale);
-    }
 
     QPen toolPen = pen();
-    toolPen.setWidthF(width);
-    toolPen.setColor(VSceneStylesheet::PatternPieceStyle().PieceColor());
+    if (m_highlighted)
+    {
+        // Whole-path highlight (active row in the Details dock): orange + main-line width,
+        // mirroring the active-point rendering (VScenePoint::ScaleMainPenWidth).
+        toolPen.setColor(VSceneStylesheet::Color(VColorRole::ActivePointColor));
+        toolPen.setWidthF(ScaleWidth(VAbstractApplication::VApp()->Settings()->WidthMainLine(), scale));
+    }
+    else
+    {
+        qreal width = VAbstractApplication::VApp()->Settings()->WidthHairLine();
+        if (scale > 1)
+        {
+            width = qMax(1., width / scale);
+        }
+        toolPen.setWidthF(width);
+        toolPen.setColor(VSceneStylesheet::PatternPieceStyle().PieceColor());
+    }
 
     setPen(toolPen);
 
     PaintWithFixItemHighlightSelected<QGraphicsPathItem>(this, painter, option, widget);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolPiecePath::SetHighlight(bool highlighted)
+{
+    if (m_highlighted == highlighted)
+    {
+        return;
+    }
+    m_highlighted = highlighted;
+    update();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
