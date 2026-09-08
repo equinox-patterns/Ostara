@@ -33,6 +33,7 @@
 #include <QCheckBox>
 #include <QFontMetrics>
 #include <QFormLayout>
+#include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -94,10 +95,61 @@ OPiecePieceStep::OPiecePieceStep(QWidget *parent)
     mainLayout->addWidget(new QLabel(tr("Free text")));
     mainLayout->addWidget(m_freeTextEdit);
 
+    // Separator between the free text and the graded alignment group.
+    m_preAlignSeparator = new QFrame();
+    m_preAlignSeparator->setFrameShape(QFrame::HLine);
+    m_preAlignSeparator->setFrameShadow(QFrame::Sunken);
+    mainLayout->addWidget(m_preAlignSeparator);
+
     m_alignWidget = new OGradedAlignWidget();
     mainLayout->addWidget(m_alignWidget);
 
+    // Layout flags — grouped in one container so a host that does not expose them
+    // (Link pieces) can hide the whole block in one call.
+    m_flagsBlock = new QWidget();
+    auto *flagsLayout = new QVBoxLayout(m_flagsBlock);
+    flagsLayout->setContentsMargins(0, 0, 0, 0);
+
+    auto *flagsSeparator = new QFrame();
+    flagsSeparator->setFrameShape(QFrame::HLine);
+    flagsSeparator->setFrameShadow(QFrame::Sunken);
+    flagsLayout->addWidget(flagsSeparator);
+
+    m_forbidFlippingCheck = new QCheckBox(tr("Forbid flipping"));
+    m_forbidFlippingCheck->setToolTip(tr("Forbid piece be mirrored in a layout."));
+    flagsLayout->addWidget(m_forbidFlippingCheck);
+
+    m_forceFlippingCheck = new QCheckBox(tr("Force flipping"));
+    m_forceFlippingCheck->setToolTip(tr("Force piece to be always flipped in a layout."));
+    flagsLayout->addWidget(m_forceFlippingCheck);
+
+    m_symmetricalCopyCheck = new QCheckBox(tr("Symmetrical copy"));
+    m_symmetricalCopyCheck->setToolTip(tr("When the number of copies is greater than 1 and either 'Force Flipping' or 'Forbid Flipping' is selected, each even-numbered copy of the piece will be flipped vertically. The 'Force Flipping' or 'Forbid Flipping' setting will also toggle for each copy, applying the opposite of the initially selected option for each subsequent copy."));
+    flagsLayout->addWidget(m_symmetricalCopyCheck);
+
+    m_followGrainlineCheck = new QCheckBox(tr("Follow grainline"));
+    m_followGrainlineCheck->setToolTip(tr("Force piece to always follow grainline direction regardless of layout settings."));
+    flagsLayout->addWidget(m_followGrainlineCheck);
+
+    mainLayout->addWidget(m_flagsBlock);
+
     mainLayout->addStretch();
+
+    // Forbid ↔ Force flipping are mutually exclusive.
+    connect(m_forbidFlippingCheck, &QCheckBox::toggled, this, [this](bool checked)
+    {
+        if (checked && m_forceFlippingCheck->isChecked())
+        {
+            m_forceFlippingCheck->setChecked(false);
+        }
+    });
+    connect(m_forceFlippingCheck, &QCheckBox::toggled, this, [this](bool checked)
+    {
+        if (checked && m_forbidFlippingCheck->isChecked())
+        {
+            m_forbidFlippingCheck->setChecked(false);
+        }
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -194,4 +246,35 @@ auto OPiecePieceStep::GetGradedAlignH() const -> int
 auto OPiecePieceStep::GetGradedAlignV() const -> int
 {
     return m_alignWidget->GetAlignV();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPiecePieceStep::IsForbidFlipping() const -> bool
+{
+    return m_forbidFlippingCheck->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPiecePieceStep::IsForceFlipping() const -> bool
+{
+    return m_forceFlippingCheck->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPiecePieceStep::IsSymmetricalCopy() const -> bool
+{
+    return m_symmetricalCopyCheck->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPiecePieceStep::IsFollowGrainline() const -> bool
+{
+    return m_followGrainlineCheck->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPiecePieceStep::SetFlippingFlagsVisible(bool visible)
+{
+    m_preAlignSeparator->setVisible(visible);
+    m_flagsBlock->setVisible(visible);
 }

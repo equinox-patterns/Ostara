@@ -38,6 +38,7 @@
 #include "../vpatterndb/vpiece.h"
 
 class QButtonGroup;
+class QCheckBox;
 class QGroupBox;
 class QLabel;
 class QLineEdit;
@@ -148,6 +149,12 @@ private:
     QPushButton *m_alignHBtns[3]{};
     QPushButton *m_alignVBtns[3]{};
     void RefreshAlignIcons();
+
+    // Layout flags — flipping & grainline constraints (mirror of the piece creation dialog step 2).
+    QCheckBox *m_forbidFlippingCheck{nullptr};
+    QCheckBox *m_forceFlippingCheck{nullptr};
+    QCheckBox *m_symmetricalCopyCheck{nullptr};
+    QCheckBox *m_followGrainlineCheck{nullptr};
 
     // Manage main path
     QPushButton *m_manageMainPathBtn{nullptr};

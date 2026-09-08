@@ -166,10 +166,8 @@ auto OPieceDialog::GetPiece() const -> VPiece
 
     piece.GetPath().SetNodes(m_automation.Nodes());
 
-    // Creation defaults from the settings, mirroring DialogSeamAllowance::InitPieceTab.
+    // Drawing default from the settings, mirroring DialogSeamAllowance::InitPieceTab.
     VCommonSettings *settings = VAbstractValApplication::VApp()->Settings();
-    piece.SetForbidFlipping(settings->GetForbidWorkpieceFlipping());
-    piece.SetForceFlipping(settings->GetForceWorkpieceFlipping());
     piece.SetSewLineOnDrawing(settings->GetSewLineOnDrawing());
 
     // Pattern seeds (Activate SA + Hide main path) apply to every piece created afterwards.
@@ -197,6 +195,12 @@ auto OPieceDialog::GetPiece() const -> VPiece
     piece.SetFreeText(m_pieceStep->GetFreeText());
     piece.SetGradedAlignH(m_pieceStep->GetGradedAlignH());
     piece.SetGradedAlignV(m_pieceStep->GetGradedAlignV());
+
+    // Layout flags, as chosen in the step-2 dialog (all unchecked by default).
+    piece.SetForbidFlipping(m_pieceStep->IsForbidFlipping());
+    piece.SetForceFlipping(m_pieceStep->IsForceFlipping());
+    piece.SetSymmetricalCopy(m_pieceStep->IsSymmetricalCopy());
+    piece.SetFollowGrainline(m_pieceStep->IsFollowGrainline());
 
     return piece;
 }

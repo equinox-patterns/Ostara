@@ -31,6 +31,7 @@
 #include <QWidget>
 
 class QCheckBox;
+class QFrame;
 class QLabel;
 class QLineEdit;
 class QPlainTextEdit;
@@ -69,6 +70,13 @@ public:
     auto GetFreeText() const -> QString;
     auto GetGradedAlignH() const -> int;
     auto GetGradedAlignV() const -> int;
+    auto IsForbidFlipping() const -> bool;
+    auto IsForceFlipping() const -> bool;
+    auto IsSymmetricalCopy() const -> bool;
+    auto IsFollowGrainline() const -> bool;
+    /** @brief Toggle the layout-flag block (Free text ↔ Graded alignment separators + 4 checkboxes).
+     *         Hosts that do not expose those flags (e.g. Link pieces) hide the whole block. */
+    void SetFlippingFlagsVisible(bool visible);
 
 private:
     void InitCutTab(const QString &title, QSpinBox **qtySpin, QCheckBox **onFoldCheck);
@@ -84,7 +92,13 @@ private:
     QSpinBox *m_liningQtySpin{nullptr};
     QCheckBox *m_liningOnFoldCheck{nullptr};
     QPlainTextEdit *m_freeTextEdit{nullptr};
+    QFrame *m_preAlignSeparator{nullptr}; // Free text ↔ Graded alignment separator
+    QWidget *m_flagsBlock{nullptr};       // container: separator + layout-flag checkboxes
     OGradedAlignWidget *m_alignWidget{nullptr};
+    QCheckBox *m_forbidFlippingCheck{nullptr};
+    QCheckBox *m_forceFlippingCheck{nullptr};
+    QCheckBox *m_symmetricalCopyCheck{nullptr};
+    QCheckBox *m_followGrainlineCheck{nullptr};
 };
 
 #endif // OPIECEDIALOG_PIECESTEP_H
