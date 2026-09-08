@@ -57,10 +57,6 @@ using namespace Qt::Literals::StringLiterals;
 
 auto main(int argc, char *argv[]) -> int
 {
-#ifdef Q_OS_WIN
-    std::setlocale(LC_ALL, ".UTF8");
-#endif
-
     Q_INIT_RESOURCE(puzzleicon);   // NOLINT
     Q_INIT_RESOURCE(icon);         // NOLINT
     Q_INIT_RESOURCE(schema);       // NOLINT
