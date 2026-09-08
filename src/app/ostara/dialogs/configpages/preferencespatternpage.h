@@ -50,6 +50,9 @@ public:
     auto Apply() -> QStringList;
     void InitDefaultSeamAllowance();
 
+    /** @brief True when Apply() changed the curve approximation scale (drives a full reparse, upstream dc0d27fdc). */
+    auto IsCurveApproximationScaleChanged() const -> bool { return m_curveApproximationScaleChanged; }
+
 protected:
     void changeEvent(QEvent *event) override;
 
@@ -62,6 +65,7 @@ private:
     Ui::PreferencesPatternPage *ui;
     QStringList m_knownMaterials{};
     Unit m_oldLineUnit{Unit::Mm};
+    bool m_curveApproximationScaleChanged{false};
 
     void InitSingleLineFonts();
     void InitUnits();

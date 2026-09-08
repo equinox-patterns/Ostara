@@ -200,6 +200,8 @@ void MainWindow::Preferences()
         connect(dlg.data(), &DialogPreferences::UpdateProperties, this, [this]() { emit doc->CheckLayout(); });
         connect(dlg.data(), &DialogPreferences::UpdateProperties, ui->view,
                 &VMainGraphicsView::ResetScrollingAnimation);
+        connect(dlg.data(), &DialogPreferences::RequestFullParse, this, &MainWindow::FullParseFile,
+                Qt::QueuedConnection); // Queued: the reparse tears the tool tree down in the middle of Apply().
         QGuiApplication::restoreOverrideCursor();
 
         if (guard->exec() == QDialog::Accepted)

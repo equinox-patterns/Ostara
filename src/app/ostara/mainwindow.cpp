@@ -1363,6 +1363,12 @@ MainWindow::~MainWindow()
     CancelTool();
 
     delete doc;
+    // Delete the scenes while the window widgets (m_statusLabel lives in the status bar) are still alive: a tool
+    // visualization or item emitting ToolTip() during scene teardown would otherwise write into freed memory
+    // (upstream 8a5caf9e3).
+    delete m_sceneDraw;
+    delete m_sceneDetails;
+    delete m_sceneGraded;
     delete ui;
 }
 

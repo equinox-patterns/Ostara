@@ -52,6 +52,7 @@ public:
     ~DialogPreferences() override;
 signals:
     void UpdateProperties();
+    void RequestFullParse();
 
 protected:
     void showEvent(QShowEvent *event) override;

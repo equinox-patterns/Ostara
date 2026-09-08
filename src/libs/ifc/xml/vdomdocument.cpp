@@ -674,6 +674,19 @@ void VDomDocument::RefreshElementIdCache()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+// Upstream 51adb0101: after a full reparse the id cache still records orphaned nodes that survive (broken
+// relationship ignored), so the generator must be resynced to the highest still-present id, not reset to zero.
+auto VDomDocument::MaxRecordedId() const -> quint32
+{
+    quint32 maxId = NULL_ID;
+    for (auto it = m_elementIdCache.cbegin(); it != m_elementIdCache.cend(); ++it)
+    {
+        maxId = qMax(maxId, it.key());
+    }
+    return maxId;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VDomDocument::Clear()
 {
     clear();

@@ -969,6 +969,7 @@ void VPattern::PrepareForParse(const Document &parse)
         sceneDraw->clear();
         sceneDetail->clear();
         data->ClearForFullParse();
+        data->UpdateId(MaxRecordedId()); // Resync against orphaned nodes that keep their id (upstream 51adb0101).
         PatternBlockMapper()->Clear();
 
         qDeleteAll(toolsOnRemove); // Remove all invisible on a scene objects.

@@ -137,6 +137,8 @@ public:
     static auto SafeCopy(const QString &source, const QString &destination, QString &error) -> bool;
 
     void TestUniqueId() const;
+    /** @brief Highest object id recorded in the current element id cache (or NULL_ID if the cache is empty). */
+    auto MaxRecordedId() const -> quint32;
 
     void RefreshElementIdCache();
     static void RemoveAllChildren(QDomElement &domElement);

@@ -168,6 +168,13 @@ void DialogPreferences::Apply()
 
     m_patternPage->InitDefaultSeamAllowance();
 
+    // A change of curve approximation scale requires a full reparse of the pattern so curves (and everything
+    // derived from them: lengths, cut points, exports) pick up the new value (upstream dc0d27fdc).
+    if (m_patternPage->IsCurveApproximationScaleChanged())
+    {
+        emit RequestFullParse();
+    }
+
     VAbstractValApplication::VApp()->ValentinaSettings()->GetOsSeparator() ? setLocale(QLocale())
                                                                            : setLocale(QLocale::c());
     emit UpdateProperties();
