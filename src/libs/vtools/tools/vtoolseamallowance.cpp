@@ -1198,7 +1198,20 @@ void VToolSeamAllowance::AddPieceGroups(VAbstractPattern *doc, QDomElement &domE
 
         pieceGroupsEl.appendChild(groupElement);
     }
-    domElement.appendChild(pieceGroupsEl);
+
+    // The schema content model of the pattern root is (…, draw+, pieceGroups?, sizeRanges?). When the
+    // document already holds <sizeRanges> (a graded pattern), appending at the end would place
+    // <pieceGroups> AFTER <sizeRanges>, which fails XSD validation on save (issue: save blocked after
+    // linking/unlinking a group). Insert before <sizeRanges> when present.
+    if (QDomElement const sizeRanges = domElement.firstChildElement(QStringLiteral("sizeRanges"));
+        not sizeRanges.isNull())
+    {
+        domElement.insertBefore(pieceGroupsEl, sizeRanges);
+    }
+    else
+    {
+        domElement.appendChild(pieceGroupsEl);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
