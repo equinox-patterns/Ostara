@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   vpattern_graded.h
+ **  @file   opattern_graded.h
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   04/09/2026
  **
@@ -24,8 +24,8 @@
  **
  *************************************************************************/
 
-#ifndef VPATTERN_GRADED_H
-#define VPATTERN_GRADED_H
+#ifndef OPATTERN_GRADED_H
+#define OPATTERN_GRADED_H
 
 class QDomElement;
 class VAbstractPattern;
@@ -35,4 +35,4 @@ class VContainer;
 /// stored in @p data (replace any stale copy first). No-op when there is no range.
 void AddSizeRanges(VAbstractPattern *doc, QDomElement &rootElement, const VContainer *data);
 
-#endif // VPATTERN_GRADED_H
+#endif // OPATTERN_GRADED_H

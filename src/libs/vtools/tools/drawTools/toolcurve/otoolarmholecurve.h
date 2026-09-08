@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   vtoolarmholecurve.h
+ **  @file   otoolarmholecurve.h
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   12/08/2026
  **
@@ -26,8 +26,8 @@
  **
  *************************************************************************/
 
-#ifndef VTOOLARMHOLECURVE_H
-#define VTOOLARMHOLECURVE_H
+#ifndef OTOOLARMHOLECURVE_H
+#define OTOOLARMHOLECURVE_H
 
 #include <QGraphicsItem>
 #include <QMetaObject>
@@ -54,23 +54,23 @@ struct ArmholeHandles
     VPointF h2a{}; // Segment 2, C1 — outgoing from chest/back width (mirrored by GetSpline)
 };
 
-struct VToolArmholeCurveInitData : VDrawToolInitData
+struct OToolArmholeCurveInitData : VDrawToolInitData
 {
     VCubicBezierPath *path{nullptr}; // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
 QT_WARNING_POP
 
-class VToolArmholeCurve : public VToolAbstractBezier
+class OToolArmholeCurve : public VToolAbstractBezier
 {
     Q_OBJECT // NOLINT
 
 public:
-    ~VToolArmholeCurve() override = default;
+    ~OToolArmholeCurve() override = default;
     void SetDialog() override;
     static auto Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *scene, VAbstractPattern *doc,
-                       VContainer *data) -> VToolArmholeCurve *;
-    static auto Create(VToolArmholeCurveInitData initData) -> VToolArmholeCurve *;
+                       VContainer *data) -> OToolArmholeCurve *;
+    static auto Create(OToolArmholeCurveInitData initData) -> OToolArmholeCurve *;
     static const QString ToolType;
     auto type() const -> int override { return Type; }
     enum
@@ -113,13 +113,13 @@ protected:
     void ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement) override;
 
 private:
-    Q_DISABLE_COPY_MOVE(VToolArmholeCurve) // NOLINT
+    Q_DISABLE_COPY_MOVE(OToolArmholeCurve) // NOLINT
 
-    explicit VToolArmholeCurve(const VToolArmholeCurveInitData &initData, QGraphicsItem *parent = nullptr);
+    explicit OToolArmholeCurve(const OToolArmholeCurveInitData &initData, QGraphicsItem *parent = nullptr);
 
     void SetPathAttributes(QDomElement &domElement, const VCubicBezierPath &path);
 
     auto GatherToolChanges() const -> ToolChanges;
 };
 
-#endif // VTOOLARMHOLECURVE_H
+#endif // OTOOLARMHOLECURVE_H

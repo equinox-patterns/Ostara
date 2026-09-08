@@ -1,11 +1,12 @@
 /************************************************************************
  **
- **  @file   vtoolarcpoint.h
+ **  @file   otoolcurvepoint.h
  **  @author Sophie Denys <contact@sophiedenys.com>
- **  @date   17/08/2026
+ **  @date   20/08/2026
  **
- **  @brief  Point at the start (P1) or end (P2) of an arc, without
- **          cutting the arc into sub-arcs.
+ **  @brief  Point at the start (FirstPoint) or end (LastPoint) of an
+ **          offset curve (parallel or graduated), without cutting the
+ **          curve into sub-curves.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -25,8 +26,8 @@
  **
  *************************************************************************/
 
-#ifndef VTOOLARCPOINT_H
-#define VTOOLARCPOINT_H
+#ifndef OTOOLCURVEPOINT_H
+#define OTOOLCURVEPOINT_H
 
 #include <QDomElement>
 #include <QGraphicsItem>
@@ -40,37 +41,38 @@
 #include "vtoolsinglepoint.h"
 
 template <class T> class QSharedPointer;
-class VArc;
 
-/// Which end of the arc the point materializes.
-enum class ArcPointPosition : qint8
+/// Which end of the offset curve the point materializes.
+enum class CurvePointPosition : qint8
 {
     Start,
     End
 };
 
-struct VToolArcPointInitData : VToolSinglePointInitData
+struct OToolCurvePointInitData : VToolSinglePointInitData
 {
-    quint32 arcId{NULL_ID};
-    ArcPointPosition position{ArcPointPosition::Start};
+    quint32 splineId{NULL_ID};
+    CurvePointPosition position{CurvePointPosition::Start};
 };
 
 /**
- * @brief The VToolArcPoint class point at the start (P1) or end (P2) of an arc.
+ * @brief The OToolCurvePoint class point at the start (FirstPoint) or end
+ *        (LastPoint) of an offset curve.
  *
- * Unlike VToolCutArc, this tool does not cut the arc into sub-arcs: it only
- * materializes one of the arc's two endpoints as a real, named point. The
- * point's position is not persisted — it is recomputed from the parent arc on
- * every (re)parse, so it follows the arc when its radius or angles change.
+ * Unlike VToolCutSplinePath, this tool does not cut the curve into sub-curves:
+ * it only materializes one of the curve's two endpoints as a real, named point.
+ * The point's position is not persisted — it is recomputed from the parent
+ * offset curve on every (re)parse, so it follows the curve when its width or
+ * source curve change.
  */
-class VToolArcPoint : public VToolSinglePoint
+class OToolCurvePoint : public VToolSinglePoint
 {
     Q_OBJECT // NOLINT
 
 public:
-    ~VToolArcPoint() override = default;
+    ~OToolCurvePoint() override = default;
 
-    static auto Create(VToolArcPointInitData initData) -> VToolArcPoint *;
+    static auto Create(OToolCurvePointInitData initData) -> OToolCurvePoint *;
 
     static const QString ToolTypeStart;
     static const QString ToolTypeEnd;
@@ -78,14 +80,14 @@ public:
     auto type() const -> int override { return Type; }
     enum
     {
-        Type = UserType + static_cast<int>(Tool::ArcPoint)
+        Type = UserType + static_cast<int>(Tool::CurvePoint)
     };
 
-    auto ArcName() const -> QString;
+    auto SplineName() const -> QString;
 
     auto TypeString() const -> QString;
 
-    auto GetPosition() const -> ArcPointPosition;
+    auto GetPosition() const -> CurvePointPosition;
 
     void ShowVisualization(bool show) override;
 
@@ -99,12 +101,12 @@ protected:
     void SetVisualization() override {}
 
 private:
-    Q_DISABLE_COPY_MOVE(VToolArcPoint) // NOLINT
+    Q_DISABLE_COPY_MOVE(OToolCurvePoint) // NOLINT
 
-    quint32 arcId{NULL_ID};
-    ArcPointPosition position{ArcPointPosition::Start};
+    quint32 splineId{NULL_ID};
+    CurvePointPosition position{CurvePointPosition::Start};
 
-    explicit VToolArcPoint(const VToolArcPointInitData &initData, QGraphicsItem *parent = nullptr);
+    explicit OToolCurvePoint(const OToolCurvePointInitData &initData, QGraphicsItem *parent = nullptr);
 };
 
-#endif // VTOOLARCPOINT_H
+#endif // OTOOLCURVEPOINT_H

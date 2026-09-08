@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   vtoolseamallowance_autoplace.h
+ **  @file   otoolseamallowance_autoplace.h
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   27 August, 2026
  **
@@ -26,8 +26,8 @@
  **
  *************************************************************************/
 
-#ifndef VTOOLSEAMALLOWANCE_AUTOPLACE_H
-#define VTOOLSEAMALLOWANCE_AUTOPLACE_H
+#ifndef OTOOLSEAMALLOWANCE_AUTOPLACE_H
+#define OTOOLSEAMALLOWANCE_AUTOPLACE_H
 
 #include <QVector>
 
@@ -37,13 +37,13 @@ class VContainer;
 class VAbstractPattern;
 
 /**
- * @brief VNodePlacement — where an inserted node goes in the current path.
+ * @brief ONodePlacement — where an inserted node goes in the current path.
  *
  * index is the insertion index in the current node list. hasCurvePortion
  * means a curve portion (same curve object) must also be inserted right
  * after the node — used when a point cuts a curve.
  */
-struct VNodePlacement
+struct ONodePlacement
 {
     bool placed{false};
     int index{-1};
@@ -59,6 +59,6 @@ struct VNodePlacement
  * should skip the node, never crash).
  */
 auto ComputeNodePlacement(const QVector<VPieceNode> &path, const VPieceNode &node, VContainer *data,
-                          VAbstractPattern *doc, VNodePlacement &placement) -> bool;
+                          VAbstractPattern *doc, ONodePlacement &placement) -> bool;
 
-#endif // VTOOLSEAMALLOWANCE_AUTOPLACE_H
+#endif // OTOOLSEAMALLOWANCE_AUTOPLACE_H

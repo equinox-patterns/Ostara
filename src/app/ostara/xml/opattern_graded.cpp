@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   vpattern_graded.cpp
+ **  @file   opattern_graded.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   04/09/2026
  **
@@ -25,7 +25,7 @@
  **
  *************************************************************************/
 
-#include "vpattern_graded.h"
+#include "opattern_graded.h"
 
 #include "vpattern.h"
 

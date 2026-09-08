@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   vclickselectallfilter.h
+ **  @file   oclickselectallfilter.h
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   18/08/2026
  **
@@ -25,8 +25,8 @@
  **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **
  *************************************************************************/
-#ifndef VCLICKSELECTALLFILTER_H
-#define VCLICKSELECTALLFILTER_H
+#ifndef OCLICKSELECTALLFILTER_H
+#define OCLICKSELECTALLFILTER_H
 
 #include <QObject>
 #include <QPoint>
@@ -38,14 +38,14 @@ class QWidget;
 // This is a state-based behaviour, not a timing one.
 //
 // Install once on the application:
-//   VClickSelectAllFilter::InstallOnApplication();
-class VClickSelectAllFilter : public QObject
+//   OClickSelectAllFilter::InstallOnApplication();
+class OClickSelectAllFilter : public QObject
 {
     Q_OBJECT // NOLINT
 
 public:
-    explicit VClickSelectAllFilter(QObject *parent = nullptr);
-    ~VClickSelectAllFilter() override = default;
+    explicit OClickSelectAllFilter(QObject *parent = nullptr);
+    ~OClickSelectAllFilter() override = default;
 
     static void InstallOnApplication();
 
@@ -58,7 +58,7 @@ private:
     static void PlaceCursor(QWidget *w, const QPoint &pos);
     static auto HasFullSelection(const QWidget *w) -> bool;
 
-    Q_DISABLE_COPY_MOVE(VClickSelectAllFilter) // NOLINT
+    Q_DISABLE_COPY_MOVE(OClickSelectAllFilter) // NOLINT
 };
 
-#endif // VCLICKSELECTALLFILTER_H
+#endif // OCLICKSELECTALLFILTER_H

@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   vistoolarmholecurve.cpp
+ **  @file   ovistoolarmholecurve.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   12/08/2026
  **
@@ -24,7 +24,7 @@
  **
  *************************************************************************/
 
-#include "vistoolarmholecurve.h"
+#include "ovistoolarmholecurve.h"
 
 #include <QGraphicsLineItem>
 #include <QLineF>
@@ -36,14 +36,14 @@
 #include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/vcubicbezierpath.h"
 #include "../vgeometry/vpointf.h"
-#include "../../tools/drawTools/toolcurve/vtoolarmholecurve.h"
+#include "../../tools/drawTools/toolcurve/otoolarmholecurve.h"
 #include "../visualization.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/scalesceneitems.h"
 #include "vispath.h"
 
 //---------------------------------------------------------------------------------------------------------------------
-VisToolArmholeCurve::VisToolArmholeCurve(const VContainer *data, QGraphicsItem *parent)
+OVisToolArmholeCurve::OVisToolArmholeCurve(const VContainer *data, QGraphicsItem *parent)
   : VisPath(data, parent)
 {
     m_helpLine1 = InitItem<VScaledLine>(VColorRole::VisMainColor, this);
@@ -56,10 +56,10 @@ VisToolArmholeCurve::VisToolArmholeCurve(const VContainer *data, QGraphicsItem *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-VisToolArmholeCurve::~VisToolArmholeCurve() = default;
+OVisToolArmholeCurve::~OVisToolArmholeCurve() = default;
 
 //---------------------------------------------------------------------------------------------------------------------
-void VisToolArmholeCurve::RefreshGeometry()
+void OVisToolArmholeCurve::RefreshGeometry()
 {
     if (GetMode() == Mode::Show)
     {
@@ -80,7 +80,7 @@ void VisToolArmholeCurve::RefreshGeometry()
         const auto carrure = GetData()->GeometricObject<VPointF>(m_point2Id);
         const auto perp = GetData()->GeometricObject<VPointF>(m_point3Id);
         const auto epaule = GetData()->GeometricObject<VPointF>(m_point4Id);
-        const ArmholeHandles handles = VToolArmholeCurve::SolveHandles(*em, *carrure, 0.30);
+        const ArmholeHandles handles = OToolArmholeCurve::SolveHandles(*em, *carrure, 0.30);
 
         QVector<VPointF> pts;
         pts.append(*em);
@@ -117,7 +117,7 @@ void VisToolArmholeCurve::RefreshGeometry()
     DrawPoint(m_point2, static_cast<QPointF>(*carrure));
     DrawLine(m_helpLine1, QLineF(static_cast<QPointF>(*em), static_cast<QPointF>(*carrure)), Qt::DashLine);
 
-    const ArmholeHandles handles = VToolArmholeCurve::SolveHandles(*em, *carrure, 0.30);
+    const ArmholeHandles handles = OToolArmholeCurve::SolveHandles(*em, *carrure, 0.30);
 
     if (m_point3Id <= NULL_ID)
     {
@@ -175,7 +175,7 @@ void VisToolArmholeCurve::RefreshGeometry()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VisToolArmholeCurve::VisualMode(quint32 id)
+void OVisToolArmholeCurve::VisualMode(quint32 id)
 {
     m_point1Id = id;
     StartVisualMode();

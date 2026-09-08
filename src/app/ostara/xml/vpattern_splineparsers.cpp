@@ -37,7 +37,7 @@
 #include "../vmisc/vvalentinasettings.h"
 #include "../qmuparser/qmuparsererror.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolarmholecurve.h"
+#include "../vtools/tools/drawTools/toolcurve/otoolarmholecurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolspline.h"
@@ -241,7 +241,7 @@ void VPattern::ParseToolArmholeCurve(VMainGraphicsScene *scene, const QDomElemen
 
     try
     {
-        VToolArmholeCurveInitData initData;
+        OToolArmholeCurveInitData initData;
         initData.scene = scene;
         initData.doc = this;
         initData.data = data;
@@ -270,7 +270,7 @@ void VPattern::ParseToolArmholeCurve(VMainGraphicsScene *scene, const QDomElemen
         // are NOT container GObjects (no graph vertices), so their IDs stay stable across
         // delete/undo cycles — mirroring VToolCubicBezierPath.
         const double t = 0.30; // default; could be stored as attribute in future
-        const ArmholeHandles handles = VToolArmholeCurve::SolveHandles(*p1, *pCarrure, t);
+        const ArmholeHandles handles = OToolArmholeCurve::SolveHandles(*p1, *pCarrure, t);
 
         // Build the 7-point path: armhole, V, V1, chest/back width, h2a, perpendicular, shoulder
         QVector<VPointF> pathPoints;
@@ -292,7 +292,7 @@ void VPattern::ParseToolArmholeCurve(VMainGraphicsScene *scene, const QDomElemen
         initData.path->SetApproximationScale(approximationScale);
         initData.path->SetAliasSuffix(alias);
 
-        VToolArmholeCurve::Create(initData);
+        OToolArmholeCurve::Create(initData);
     }
     catch (const VExceptionBadId &e)
     {
@@ -720,7 +720,7 @@ void VPattern::ParseSplineElement(VMainGraphicsScene *scene, QDomElement &domEle
                                       VToolCubicBezierPath::ToolType,  /*7*/
                                       VToolParallelCurve::ToolType,    /*8*/
                                       VToolGraduatedCurve::ToolType,   /*9*/
-                                      VToolArmholeCurve::ToolType});   /*10*/
+                                      OToolArmholeCurve::ToolType});   /*10*/
     switch (splines.indexOf(type))
     {
         case 0: // VToolSpline::OldToolType
@@ -758,7 +758,7 @@ void VPattern::ParseSplineElement(VMainGraphicsScene *scene, QDomElement &domEle
         case 9: // VToolGraduatedCurve::ToolType
             ParseToolGraduatedCurve(scene, domElement, parse);
             break;
-        case 10: // VToolArmholeCurve::ToolType
+        case 10: // OToolArmholeCurve::ToolType
             ParseToolArmholeCurve(scene, domElement, parse);
             break;
         default:

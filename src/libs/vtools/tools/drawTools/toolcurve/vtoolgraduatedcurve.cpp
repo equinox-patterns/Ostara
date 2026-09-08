@@ -35,7 +35,7 @@
 #include "../ifc/xml/vpatterngraph.h"
 #include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/vsplinepath.h"
-#include "../toolpoint/toolsinglepoint/vtoolcurvepoint.h"
+#include "../toolpoint/toolsinglepoint/otoolcurvepoint.h"
 #include "../vmisc/compatibility.h"
 #include "../vpatterndb/variables/vincrement.h"
 
@@ -173,7 +173,7 @@ auto VToolGraduatedCurve::Create(VToolGraduatedCurveInitData &initData) -> VTool
         {
             if (initData.createStartPoint)
             {
-                VToolCurvePointInitData pointData;
+                OToolCurvePointInitData pointData;
                 pointData.splineId = initData.id;
                 pointData.position = CurvePointPosition::Start;
                 pointData.name = initData.startPointName;
@@ -183,11 +183,11 @@ auto VToolGraduatedCurve::Create(VToolGraduatedCurveInitData &initData) -> VTool
                 pointData.data = initData.data;
                 pointData.parse = initData.parse;
                 pointData.typeCreation = Source::FromGui;
-                VToolCurvePoint::Create(pointData);
+                OToolCurvePoint::Create(pointData);
             }
             if (initData.createEndPoint)
             {
-                VToolCurvePointInitData pointData;
+                OToolCurvePointInitData pointData;
                 pointData.splineId = initData.id;
                 pointData.position = CurvePointPosition::End;
                 pointData.name = initData.endPointName;
@@ -197,7 +197,7 @@ auto VToolGraduatedCurve::Create(VToolGraduatedCurveInitData &initData) -> VTool
                 pointData.data = initData.data;
                 pointData.parse = initData.parse;
                 pointData.typeCreation = Source::FromGui;
-                VToolCurvePoint::Create(pointData);
+                OToolCurvePoint::Create(pointData);
             }
         }
 

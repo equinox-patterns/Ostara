@@ -35,7 +35,7 @@
 #include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/vsplinepath.h"
 #include "../vpatterndb/vformula.h"
-#include "../toolpoint/toolsinglepoint/vtoolcurvepoint.h"
+#include "../toolpoint/toolsinglepoint/otoolcurvepoint.h"
 #include "ifcdef.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -154,7 +154,7 @@ auto VToolParallelCurve::Create(VToolParallelCurveInitData &initData) -> VToolPa
         {
             if (initData.createStartPoint)
             {
-                VToolCurvePointInitData pointData;
+                OToolCurvePointInitData pointData;
                 pointData.splineId = initData.id;
                 pointData.position = CurvePointPosition::Start;
                 pointData.name = initData.startPointName;
@@ -164,11 +164,11 @@ auto VToolParallelCurve::Create(VToolParallelCurveInitData &initData) -> VToolPa
                 pointData.data = initData.data;
                 pointData.parse = initData.parse;
                 pointData.typeCreation = Source::FromGui;
-                VToolCurvePoint::Create(pointData);
+                OToolCurvePoint::Create(pointData);
             }
             if (initData.createEndPoint)
             {
-                VToolCurvePointInitData pointData;
+                OToolCurvePointInitData pointData;
                 pointData.splineId = initData.id;
                 pointData.position = CurvePointPosition::End;
                 pointData.name = initData.endPointName;
@@ -178,7 +178,7 @@ auto VToolParallelCurve::Create(VToolParallelCurveInitData &initData) -> VToolPa
                 pointData.data = initData.data;
                 pointData.parse = initData.parse;
                 pointData.typeCreation = Source::FromGui;
-                VToolCurvePoint::Create(pointData);
+                OToolCurvePoint::Create(pointData);
             }
         }
 

@@ -37,8 +37,8 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersection.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolarcpoint.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolcurvepoint.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolarcpoint.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolcurvepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolnormal.h"
@@ -441,21 +441,21 @@ auto CurvePointProperties() -> std::vector<PropertyDesc>;
 
 // ====== Tool descriptors ======
 
-// --- VToolArcPoint (point at arc start/end) ---
+// --- OToolArcPoint (point at arc start/end) ---
 auto ArcPointProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeNotes<VToolArcPoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
-        MakePointGroup<VToolArcPoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
+        MakeNotes<OToolArcPoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<OToolArcPoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
-// --- VToolCurvePoint (point at offset curve start/end) ---
+// --- OToolCurvePoint (point at offset curve start/end) ---
 auto CurvePointProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeNotes<VToolCurvePoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
-        MakePointGroup<VToolCurvePoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
+        MakeNotes<OToolCurvePoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<OToolCurvePoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 

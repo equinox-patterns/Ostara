@@ -114,7 +114,7 @@ VLineEdit::VLineEdit(const QString &contents, QWidget *parent)
 void VLineEdit::focusInEvent(QFocusEvent *e)
 {
     QLineEdit::focusInEvent(e);
-    // The global VClickSelectAllFilter owns the mouse-click selection; keep
+    // The global OClickSelectAllFilter owns the mouse-click selection; keep
     // select-all only for keyboard focus (Tab / Backtab), not for mouse focus.
     if (e->reason() != Qt::MouseFocusReason)
     {

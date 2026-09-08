@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   vistoolarmholecurve.h
+ **  @file   ovistoolarmholecurve.h
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   12/08/2026
  **
@@ -25,8 +25,8 @@
  **
  *************************************************************************/
 
-#ifndef VISTOOLARMHOLECURVE_H
-#define VISTOOLARMHOLECURVE_H
+#ifndef OVISTOOLARMHOLECURVE_H
+#define OVISTOOLARMHOLECURVE_H
 
 #include <QGraphicsItem>
 #include <QMetaObject>
@@ -37,12 +37,12 @@
 #include "../vmisc/def.h"
 #include "vispath.h"
 
-class VisToolArmholeCurve : public VisPath
+class OVisToolArmholeCurve : public VisPath
 {
     Q_OBJECT // NOLINT
 public:
-    explicit VisToolArmholeCurve(const VContainer *data, QGraphicsItem *parent = nullptr);
-    ~VisToolArmholeCurve() override;
+    explicit OVisToolArmholeCurve(const VContainer *data, QGraphicsItem *parent = nullptr);
+    ~OVisToolArmholeCurve() override;
 
     void RefreshGeometry() override;
     void VisualMode(quint32 id) override;
@@ -59,7 +59,7 @@ public:
     };
 
 private:
-    Q_DISABLE_COPY_MOVE(VisToolArmholeCurve) // NOLINT
+    Q_DISABLE_COPY_MOVE(OVisToolArmholeCurve) // NOLINT
     quint32 m_point1Id{NULL_ID}; // armhole
     quint32 m_point2Id{NULL_ID}; // chest/back width
     quint32 m_point3Id{NULL_ID}; // perpendicular
@@ -73,27 +73,27 @@ private:
 };
 
 //---------------------------------------------------------------------------------------------------------------------
-inline void VisToolArmholeCurve::SetPoint1Id(quint32 value)
+inline void OVisToolArmholeCurve::SetPoint1Id(quint32 value)
 {
     m_point1Id = value;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-inline void VisToolArmholeCurve::SetPoint2Id(quint32 value)
+inline void OVisToolArmholeCurve::SetPoint2Id(quint32 value)
 {
     m_point2Id = value;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-inline void VisToolArmholeCurve::SetPoint3Id(quint32 value)
+inline void OVisToolArmholeCurve::SetPoint3Id(quint32 value)
 {
     m_point3Id = value;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-inline void VisToolArmholeCurve::SetPoint4Id(quint32 value)
+inline void OVisToolArmholeCurve::SetPoint4Id(quint32 value)
 {
     m_point4Id = value;
 }
 
-#endif // VISTOOLARMHOLECURVE_H
+#endif // OVISTOOLARMHOLECURVE_H

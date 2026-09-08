@@ -31,7 +31,7 @@
 #include "vtoppb_templates.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolarmholecurve.h"
+#include "../vtools/tools/drawTools/toolcurve/otoolarmholecurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarc.h"
@@ -864,15 +864,15 @@ auto CubicBezierProperties() -> std::vector<PropertyDesc>
     };
 }
 
-// --- VToolArmholeCurve ---
+// --- OToolArmholeCurve ---
 auto ArmholeCurveProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
-        MakeStringPropWithValidator<VToolArmholeCurve>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolArmholeCurve::GetAliasSuffix, &VToolArmholeCurve::SetAliasSuffix),
-        MakeCurvePenStyle<VToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
-        MakeLineColor<VToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
-        MakeNotes<VToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakeObjectNameReadOnly<OToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        MakeStringPropWithValidator<OToolArmholeCurve>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &OToolArmholeCurve::GetAliasSuffix, &OToolArmholeCurve::SetAliasSuffix),
+        MakeCurvePenStyle<OToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
+        MakeLineColor<OToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
+        MakeNotes<OToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
     };
 }
 

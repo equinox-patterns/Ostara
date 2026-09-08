@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   vtoolarmholecurve.cpp
+ **  @file   otoolarmholecurve.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   12/08/2026
  **
@@ -26,7 +26,7 @@
  **
  *************************************************************************/
 
-#include "vtoolarmholecurve.h"
+#include "otoolarmholecurve.h"
 
 #include <QDomElement>
 #include <QPen>
@@ -36,7 +36,7 @@
 
 #include "../../../dialogs/tools/dialogarmholecurve.h"
 #include "../../../dialogs/tools/dialogtool.h"
-#include "../../../visualization/path/vistoolarmholecurve.h"
+#include "../../../visualization/path/ovistoolarmholecurve.h"
 #include "../../../visualization/visualization.h"
 #include "../../vabstracttool.h"
 #include "../ifc/xml/vpatternblockmapper.h"
@@ -50,10 +50,10 @@
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "vtoolabstractcurve.h"
 
-const QString VToolArmholeCurve::ToolType = QStringLiteral("armholeCurve");
+const QString OToolArmholeCurve::ToolType = QStringLiteral("armholeCurve");
 
 //---------------------------------------------------------------------------------------------------------------------
-VToolArmholeCurve::VToolArmholeCurve(const VToolArmholeCurveInitData &initData, QGraphicsItem *parent)
+OToolArmholeCurve::OToolArmholeCurve(const OToolArmholeCurveInitData &initData, QGraphicsItem *parent)
   : VToolAbstractBezier(initData.doc, initData.data, initData.id, initData.notes, parent)
 {
     SetSceneType(SceneObject::SplinePath);
@@ -64,7 +64,7 @@ VToolArmholeCurve::VToolArmholeCurve(const VToolArmholeCurveInitData &initData, 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArmholeCurve::SetDialog()
+void OToolArmholeCurve::SetDialog()
 {
     SCASSERT(not m_dialog.isNull())
     auto *dialogTool = qobject_cast<DialogArmholeCurve *>(m_dialog);
@@ -76,8 +76,8 @@ void VToolArmholeCurve::SetDialog()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArmholeCurve::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *scene, VAbstractPattern *doc,
-                               VContainer *data) -> VToolArmholeCurve *
+auto OToolArmholeCurve::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *scene, VAbstractPattern *doc,
+                               VContainer *data) -> OToolArmholeCurve *
 {
     SCASSERT(not dialog.isNull())
     const QPointer<DialogArmholeCurve> dialogTool = qobject_cast<DialogArmholeCurve *>(dialog);
@@ -86,7 +86,7 @@ auto VToolArmholeCurve::Create(const QPointer<DialogTool> &dialog, VMainGraphics
     // The dialog's path already holds the 7 points (4 user points + 3 local handles).
     // The 3 handles are derived points (computed by SolveHandles) — they are not
     // container GObjects and carry no graph vertices, mirroring VToolCubicBezierPath.
-    VToolArmholeCurveInitData initData;
+    OToolArmholeCurveInitData initData;
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;
@@ -105,7 +105,7 @@ auto VToolArmholeCurve::Create(const QPointer<DialogTool> &dialog, VMainGraphics
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArmholeCurve::Create(VToolArmholeCurveInitData initData) -> VToolArmholeCurve *
+auto OToolArmholeCurve::Create(OToolArmholeCurveInitData initData) -> OToolArmholeCurve *
 {
     const bool curveUnique = initData.data->IsUnique(initData.path->name());
 
@@ -152,7 +152,7 @@ auto VToolArmholeCurve::Create(VToolArmholeCurveInitData initData) -> VToolArmho
     if (initData.parse == Document::FullParse)
     {
         VAbstractTool::AddRecord(initData.id, Tool::ArmholeCurve, initData.doc);
-        auto *_spl = new VToolArmholeCurve(initData);
+        auto *_spl = new OToolArmholeCurve(initData);
         initData.scene->addItem(_spl);
         InitSplineToolConnections(initData.scene, _spl);
         VAbstractPattern::AddTool(initData.id, _spl);
@@ -162,7 +162,7 @@ auto VToolArmholeCurve::Create(VToolArmholeCurveInitData initData) -> VToolArmho
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArmholeCurve::SolveHandles(const VPointF &em, const VPointF &carrure, double t) -> ArmholeHandles
+auto OToolArmholeCurve::SolveHandles(const VPointF &em, const VPointF &carrure, double t) -> ArmholeHandles
 {
     // Segment 1 (armhole → chest/back width):
     //   C1 = V = (Carrure.x, Em.y) — same horizontal handle as clicking V in standard CubicBezier
@@ -204,42 +204,42 @@ auto VToolArmholeCurve::SolveHandles(const VPointF &em, const VPointF &carrure, 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArmholeCurve::FirstPointName() const -> QString
+auto OToolArmholeCurve::FirstPointName() const -> QString
 {
     auto path = VAbstractTool::data.GeometricObject<VCubicBezierPath>(m_id);
     return path->at(0).name(); // armhole
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArmholeCurve::SecondPointName() const -> QString
+auto OToolArmholeCurve::SecondPointName() const -> QString
 {
     auto path = VAbstractTool::data.GeometricObject<VCubicBezierPath>(m_id);
     return path->at(3).name(); // chest/back width
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArmholeCurve::ThirdPointName() const -> QString
+auto OToolArmholeCurve::ThirdPointName() const -> QString
 {
     auto path = VAbstractTool::data.GeometricObject<VCubicBezierPath>(m_id);
     return path->at(5).name(); // perpendicular
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArmholeCurve::FourthPointName() const -> QString
+auto OToolArmholeCurve::FourthPointName() const -> QString
 {
     auto path = VAbstractTool::data.GeometricObject<VCubicBezierPath>(m_id);
     return path->at(6).name(); // shoulder
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArmholeCurve::GetPath() const -> VCubicBezierPath
+auto OToolArmholeCurve::GetPath() const -> VCubicBezierPath
 {
     auto path = VAbstractTool::data.GeometricObject<VCubicBezierPath>(m_id);
     return *path.data();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArmholeCurve::SetPath(const VCubicBezierPath &path)
+void OToolArmholeCurve::SetPath(const VCubicBezierPath &path)
 {
     QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
     QSharedPointer<VCubicBezierPath> const splinePath = qSharedPointerDynamicCast<VCubicBezierPath>(obj);
@@ -248,13 +248,13 @@ void VToolArmholeCurve::SetPath(const VCubicBezierPath &path)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArmholeCurve::ShowVisualization(bool show)
+void OToolArmholeCurve::ShowVisualization(bool show)
 {
-    ShowToolVisualization<VisToolArmholeCurve>(show);
+    ShowToolVisualization<OVisToolArmholeCurve>(show);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArmholeCurve::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id)
+void OToolArmholeCurve::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id)
 {
     Q_UNUSED(id)
     try
@@ -269,7 +269,7 @@ void VToolArmholeCurve::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, q
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArmholeCurve::SaveDialog(QDomElement &domElement)
+void OToolArmholeCurve::SaveDialog(QDomElement &domElement)
 {
     SCASSERT(not m_dialog.isNull())
     auto *dialogTool = qobject_cast<DialogArmholeCurve *>(m_dialog);
@@ -282,7 +282,7 @@ void VToolArmholeCurve::SaveDialog(QDomElement &domElement)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArmholeCurve::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
+void OToolArmholeCurve::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
 {
     VToolAbstractBezier::SaveOptions(tag, obj);
 
@@ -292,11 +292,11 @@ void VToolArmholeCurve::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArmholeCurve::SetVisualization()
+void OToolArmholeCurve::SetVisualization()
 {
     if (not vis.isNull())
     {
-        auto *visual = qobject_cast<VisToolArmholeCurve *>(vis);
+        auto *visual = qobject_cast<OVisToolArmholeCurve *>(vis);
         SCASSERT(visual != nullptr)
 
         const QSharedPointer<VCubicBezierPath> path = VAbstractTool::data.GeometricObject<VCubicBezierPath>(m_id);
@@ -312,7 +312,7 @@ void VToolArmholeCurve::SetVisualization()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArmholeCurve::RefreshGeometry()
+void OToolArmholeCurve::RefreshGeometry()
 {
     const QSharedPointer<VCubicBezierPath> path = VAbstractTool::data.GeometricObject<VCubicBezierPath>(m_id);
     this->setPath(path->GetPath());
@@ -321,13 +321,13 @@ void VToolArmholeCurve::RefreshGeometry()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArmholeCurve::ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement)
+void OToolArmholeCurve::ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement)
 {
     ProcessSplineToolOptions(oldDomElement, newDomElement, GatherToolChanges());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArmholeCurve::SetPathAttributes(QDomElement &domElement, const VCubicBezierPath &path)
+void OToolArmholeCurve::SetPathAttributes(QDomElement &domElement, const VCubicBezierPath &path)
 {
     SCASSERT(doc != nullptr)
 
@@ -348,7 +348,7 @@ void VToolArmholeCurve::SetPathAttributes(QDomElement &domElement, const VCubicB
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArmholeCurve::GatherToolChanges() const -> VToolAbstractBezier::ToolChanges
+auto OToolArmholeCurve::GatherToolChanges() const -> VToolAbstractBezier::ToolChanges
 {
     SCASSERT(not m_dialog.isNull())
     const QPointer<DialogArmholeCurve> dialogTool = qobject_cast<DialogArmholeCurve *>(m_dialog);

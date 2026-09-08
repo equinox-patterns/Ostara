@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   vtoolcurvepoint.cpp
+ **  @file   otoolcurvepoint.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   20/08/2026
  **
@@ -26,7 +26,7 @@
  **
  *************************************************************************/
 
-#include "vtoolcurvepoint.h"
+#include "otoolcurvepoint.h"
 
 #include <QSharedPointer>
 #include <new>
@@ -42,11 +42,11 @@
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "vtoolsinglepoint.h"
 
-const QString VToolCurvePoint::ToolTypeStart = QStringLiteral("curveStartPoint");
-const QString VToolCurvePoint::ToolTypeEnd = QStringLiteral("curveEndPoint");
+const QString OToolCurvePoint::ToolTypeStart = QStringLiteral("curveStartPoint");
+const QString OToolCurvePoint::ToolTypeEnd = QStringLiteral("curveEndPoint");
 
 //---------------------------------------------------------------------------------------------------------------------
-VToolCurvePoint::VToolCurvePoint(const VToolCurvePointInitData &initData, QGraphicsItem *parent)
+OToolCurvePoint::OToolCurvePoint(const OToolCurvePointInitData &initData, QGraphicsItem *parent)
   : VToolSinglePoint(initData.doc, initData.data, initData.id, initData.notes, parent),
     splineId(initData.splineId),
     position(initData.position)
@@ -55,7 +55,7 @@ VToolCurvePoint::VToolCurvePoint(const VToolCurvePointInitData &initData, QGraph
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolCurvePoint::Create(VToolCurvePointInitData initData) -> VToolCurvePoint *
+auto OToolCurvePoint::Create(OToolCurvePointInitData initData) -> OToolCurvePoint *
 {
     const QSharedPointer<VAbstractCubicBezierPath> curve =
         initData.data->GeometricObject<VAbstractCubicBezierPath>(initData.splineId);
@@ -87,7 +87,7 @@ auto VToolCurvePoint::Create(VToolCurvePointInitData initData) -> VToolCurvePoin
     if (initData.parse == Document::FullParse)
     {
         VAbstractTool::AddRecord(initData.id, Tool::CurvePoint, initData.doc);
-        auto *pointTool = new VToolCurvePoint(initData);
+        auto *pointTool = new OToolCurvePoint(initData);
         initData.scene->addItem(pointTool);
         InitPointToolConnections(initData.scene, pointTool);
         VAbstractPattern::AddTool(initData.id, pointTool);
@@ -97,31 +97,31 @@ auto VToolCurvePoint::Create(VToolCurvePointInitData initData) -> VToolCurvePoin
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolCurvePoint::SplineName() const -> QString
+auto OToolCurvePoint::SplineName() const -> QString
 {
     return VAbstractTool::data.GetGObject(splineId)->ObjectName();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolCurvePoint::TypeString() const -> QString
+auto OToolCurvePoint::TypeString() const -> QString
 {
     return position == CurvePointPosition::Start ? ToolTypeStart : ToolTypeEnd;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolCurvePoint::GetPosition() const -> CurvePointPosition
+auto OToolCurvePoint::GetPosition() const -> CurvePointPosition
 {
     return position;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolCurvePoint::ShowVisualization(bool show)
+void OToolCurvePoint::ShowVisualization(bool show)
 {
     Q_UNUSED(show) // No visualization for this point.
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolCurvePoint::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id)
+void OToolCurvePoint::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id)
 {
     Q_UNUSED(event)
     Q_UNUSED(id)
@@ -129,13 +129,13 @@ void VToolCurvePoint::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, qui
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolCurvePoint::SaveDialog(QDomElement &domElement)
+void OToolCurvePoint::SaveDialog(QDomElement &domElement)
 {
     doc->SetAttribute(domElement, AttrSpline, QString().setNum(splineId));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolCurvePoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
+void OToolCurvePoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
 {
     VToolSinglePoint::SaveOptions(tag, obj);
 
@@ -144,7 +144,7 @@ void VToolCurvePoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &ob
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolCurvePoint::ReadToolAttributes(const QDomElement &domElement)
+void OToolCurvePoint::ReadToolAttributes(const QDomElement &domElement)
 {
     VToolSinglePoint::ReadToolAttributes(domElement);
 

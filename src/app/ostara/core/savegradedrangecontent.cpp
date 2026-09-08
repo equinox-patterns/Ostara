@@ -28,7 +28,7 @@
 
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vpatterndb/vcontainer.h"
-#include "../xml/vpattern_graded.h"
+#include "../xml/opattern_graded.h"
 
 #include <QDomElement>
 #include <QHash>

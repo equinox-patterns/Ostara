@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   vtoolseamallowance_autoplace.cpp
+ **  @file   otoolseamallowance_autoplace.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   27 August, 2026
  **
@@ -24,7 +24,7 @@
  **
  *************************************************************************/
 
-#include "vtoolseamallowance_autoplace.h"
+#include "otoolseamallowance_autoplace.h"
 
 #include "../ifc/exception/vexceptionbadid.h"
 #include "../ifc/xml/vpatterngraph.h"
@@ -408,7 +408,7 @@ auto CurveEndPoints(quint32 curveObjectId, VContainer *data, QPointF &start, QPo
 // Case 1 — the point lies on a curve node of the path: cut point. Split the
 // curve segment: insert the point after the curve node + a curve portion.
 auto FindCutPointPlacement(const QVector<VPieceNode> &path, quint32 pointObjectId, VContainer *data,
-                           VAbstractPattern *doc, VNodePlacement &placement) -> bool
+                           VAbstractPattern *doc, ONodePlacement &placement) -> bool
 {
     const QPointF p = PointCoordinates(pointObjectId, data);
     if (p.isNull())
@@ -455,7 +455,7 @@ auto FindCutPointPlacement(const QVector<VPieceNode> &path, quint32 pointObjectI
 // Cases 2-4 — trace the construction graph to find the anchor path point(s).
 // The point is placed right after an anchor whose successor is a straight edge.
 auto FindGraphPlacement(const QVector<VPieceNode> &path, quint32 pointObjectId, VContainer *data,
-                        VAbstractPattern *doc, VNodePlacement &placement) -> bool
+                        VAbstractPattern *doc, ONodePlacement &placement) -> bool
 {
     VPatternGraph const *const graph = doc->PatternGraph();
     if (graph == nullptr || not graph->HasVertex(pointObjectId))
@@ -616,7 +616,7 @@ auto FindGraphPlacement(const QVector<VPieceNode> &path, quint32 pointObjectId, 
 //---------------------------------------------------------------------------------------------------------------------
 // Case 3 — a whole curve: place it between its two endpoint path points.
 auto FindCurvePlacement(const QVector<VPieceNode> &path, quint32 curveObjectId, VContainer *data,
-                        VAbstractPattern *doc, VNodePlacement &placement) -> bool
+                        VAbstractPattern *doc, ONodePlacement &placement) -> bool
 {
     QPointF start, end;
     if (not CurveEndPoints(curveObjectId, data, start, end))
@@ -660,7 +660,7 @@ auto FindCurvePlacement(const QVector<VPieceNode> &path, quint32 curveObjectId, 
 
 //---------------------------------------------------------------------------------------------------------------------
 auto ComputeNodePlacement(const QVector<VPieceNode> &path, const VPieceNode &node, VContainer *data,
-                          VAbstractPattern *doc, VNodePlacement &placement) -> bool
+                          VAbstractPattern *doc, ONodePlacement &placement) -> bool
 {
     if (path.isEmpty())
     {

@@ -56,8 +56,8 @@
 #include "../vgeometry/vspline.h"
 #include "vexception.h"
 #include "vscenestylesheet.h"
-#include "../toolpoint/toolsinglepoint/vtoolarcpoint.h"
-#include "../toolpoint/toolsinglepoint/vtoolcurvepoint.h"
+#include "../toolpoint/toolsinglepoint/otoolarcpoint.h"
+#include "../toolpoint/toolsinglepoint/otoolcurvepoint.h"
 #include "../../../undocommands/deltool.h"
 #include "../ifc/xml/vpatterngraph.h"
 #include "../vmisc/vabstractapplication.h"
@@ -829,7 +829,7 @@ auto VToolAbstractOffsetCurve::FindPointId(bool isStart) const -> quint32
 
     for (const auto &node : deps)
     {
-        if (auto *point = qobject_cast<VToolCurvePoint *>(VAbstractPattern::getTool(node.id)))
+        if (auto *point = qobject_cast<OToolCurvePoint *>(VAbstractPattern::getTool(node.id)))
         {
             if (point->GetPosition() == position)
             {
@@ -860,7 +860,7 @@ void VToolAbstractOffsetCurve::SetCreateStartPoint(bool create)
     {
         if (not HasStartPoint())
         {
-            VToolCurvePointInitData pointData;
+            OToolCurvePointInitData pointData;
             pointData.splineId = m_id;
             pointData.position = CurvePointPosition::Start;
             pointData.name = doc->GenerateLabel(LabelType::NewLabel);
@@ -870,7 +870,7 @@ void VToolAbstractOffsetCurve::SetCreateStartPoint(bool create)
             pointData.data = getData();
             pointData.parse = Document::FullParse;
             pointData.typeCreation = Source::FromGui;
-            VToolCurvePoint::Create(pointData);
+            OToolCurvePoint::Create(pointData);
         }
     }
     else
@@ -901,7 +901,7 @@ void VToolAbstractOffsetCurve::SetCreateEndPoint(bool create)
     {
         if (not HasEndPoint())
         {
-            VToolCurvePointInitData pointData;
+            OToolCurvePointInitData pointData;
             pointData.splineId = m_id;
             pointData.position = CurvePointPosition::End;
             pointData.name = doc->GenerateLabel(LabelType::NewLabel);
@@ -911,7 +911,7 @@ void VToolAbstractOffsetCurve::SetCreateEndPoint(bool create)
             pointData.data = getData();
             pointData.parse = Document::FullParse;
             pointData.typeCreation = Source::FromGui;
-            VToolCurvePoint::Create(pointData);
+            OToolCurvePoint::Create(pointData);
         }
     }
     else
@@ -1117,7 +1117,7 @@ auto VToolAbstractArc::FindPointId(bool isStart) const -> quint32
 
     for (const auto &node : deps)
     {
-        if (auto *point = qobject_cast<VToolArcPoint *>(VAbstractPattern::getTool(node.id)))
+        if (auto *point = qobject_cast<OToolArcPoint *>(VAbstractPattern::getTool(node.id)))
         {
             if (point->GetPosition() == position)
             {
@@ -1148,7 +1148,7 @@ void VToolAbstractArc::SetCreateStartPoint(bool create)
     {
         if (not HasStartPoint())
         {
-            VToolArcPointInitData pointData;
+            OToolArcPointInitData pointData;
             pointData.arcId = m_id;
             pointData.position = ArcPointPosition::Start;
             pointData.name = doc->GenerateLabel(LabelType::NewLabel);
@@ -1158,7 +1158,7 @@ void VToolAbstractArc::SetCreateStartPoint(bool create)
             pointData.data = getData();
             pointData.parse = Document::FullParse;
             pointData.typeCreation = Source::FromGui;
-            VToolArcPoint::Create(pointData);
+            OToolArcPoint::Create(pointData);
         }
     }
     else
@@ -1189,7 +1189,7 @@ void VToolAbstractArc::SetCreateEndPoint(bool create)
     {
         if (not HasEndPoint())
         {
-            VToolArcPointInitData pointData;
+            OToolArcPointInitData pointData;
             pointData.arcId = m_id;
             pointData.position = ArcPointPosition::End;
             pointData.name = doc->GenerateLabel(LabelType::NewLabel);
@@ -1199,7 +1199,7 @@ void VToolAbstractArc::SetCreateEndPoint(bool create)
             pointData.data = getData();
             pointData.parse = Document::FullParse;
             pointData.typeCreation = Source::FromGui;
-            VToolArcPoint::Create(pointData);
+            OToolArcPoint::Create(pointData);
         }
     }
     else

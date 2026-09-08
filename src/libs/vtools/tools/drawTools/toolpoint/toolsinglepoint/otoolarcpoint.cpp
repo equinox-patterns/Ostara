@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   vtoolarcpoint.cpp
+ **  @file   otoolarcpoint.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   17/08/2026
  **
@@ -25,7 +25,7 @@
  **
  *************************************************************************/
 
-#include "vtoolarcpoint.h"
+#include "otoolarcpoint.h"
 
 #include <QSharedPointer>
 #include <new>
@@ -41,11 +41,11 @@
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "vtoolsinglepoint.h"
 
-const QString VToolArcPoint::ToolTypeStart = QStringLiteral("arcStartPoint");
-const QString VToolArcPoint::ToolTypeEnd = QStringLiteral("arcEndPoint");
+const QString OToolArcPoint::ToolTypeStart = QStringLiteral("arcStartPoint");
+const QString OToolArcPoint::ToolTypeEnd = QStringLiteral("arcEndPoint");
 
 //---------------------------------------------------------------------------------------------------------------------
-VToolArcPoint::VToolArcPoint(const VToolArcPointInitData &initData, QGraphicsItem *parent)
+OToolArcPoint::OToolArcPoint(const OToolArcPointInitData &initData, QGraphicsItem *parent)
   : VToolSinglePoint(initData.doc, initData.data, initData.id, initData.notes, parent),
     arcId(initData.arcId),
     position(initData.position)
@@ -54,7 +54,7 @@ VToolArcPoint::VToolArcPoint(const VToolArcPointInitData &initData, QGraphicsIte
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArcPoint::Create(VToolArcPointInitData initData) -> VToolArcPoint *
+auto OToolArcPoint::Create(OToolArcPointInitData initData) -> OToolArcPoint *
 {
     const QSharedPointer<VAbstractArc> arc = initData.data->GeometricObject<VAbstractArc>(initData.arcId);
     const QPointF point = (initData.position == ArcPointPosition::Start) ? arc->GetP1() : arc->GetP2();
@@ -85,7 +85,7 @@ auto VToolArcPoint::Create(VToolArcPointInitData initData) -> VToolArcPoint *
     if (initData.parse == Document::FullParse)
     {
         VAbstractTool::AddRecord(initData.id, Tool::ArcPoint, initData.doc);
-        auto *pointTool = new VToolArcPoint(initData);
+        auto *pointTool = new OToolArcPoint(initData);
         initData.scene->addItem(pointTool);
         InitPointToolConnections(initData.scene, pointTool);
         VAbstractPattern::AddTool(initData.id, pointTool);
@@ -95,31 +95,31 @@ auto VToolArcPoint::Create(VToolArcPointInitData initData) -> VToolArcPoint *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArcPoint::ArcName() const -> QString
+auto OToolArcPoint::ArcName() const -> QString
 {
     return VAbstractTool::data.GetGObject(arcId)->ObjectName();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArcPoint::TypeString() const -> QString
+auto OToolArcPoint::TypeString() const -> QString
 {
     return position == ArcPointPosition::Start ? ToolTypeStart : ToolTypeEnd;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolArcPoint::GetPosition() const -> ArcPointPosition
+auto OToolArcPoint::GetPosition() const -> ArcPointPosition
 {
     return position;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArcPoint::ShowVisualization(bool show)
+void OToolArcPoint::ShowVisualization(bool show)
 {
     Q_UNUSED(show) // No visualization for this point.
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArcPoint::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id)
+void OToolArcPoint::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id)
 {
     Q_UNUSED(event)
     Q_UNUSED(id)
@@ -127,13 +127,13 @@ void VToolArcPoint::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArcPoint::SaveDialog(QDomElement &domElement)
+void OToolArcPoint::SaveDialog(QDomElement &domElement)
 {
     doc->SetAttribute(domElement, AttrArc, QString().setNum(arcId));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArcPoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
+void OToolArcPoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
 {
     VToolSinglePoint::SaveOptions(tag, obj);
 
@@ -142,7 +142,7 @@ void VToolArcPoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolArcPoint::ReadToolAttributes(const QDomElement &domElement)
+void OToolArcPoint::ReadToolAttributes(const QDomElement &domElement)
 {
     VToolSinglePoint::ReadToolAttributes(domElement);
 

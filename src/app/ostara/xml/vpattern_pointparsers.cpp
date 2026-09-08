@@ -58,8 +58,8 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolarcpoint.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolcurvepoint.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolarcpoint.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolcurvepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromarcandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromcircleandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.h"
@@ -119,10 +119,10 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
                                      VToolPointOfIntersectionCurves::ToolType,  /*22*/
                                      VToolPin::ToolType,                         /*23*/
                                      VToolPlaceLabel::ToolType,                  /*24*/
-                                     VToolArcPoint::ToolTypeStart,               /*25*/
-                                     VToolArcPoint::ToolTypeEnd,                 /*26*/
-                                     VToolCurvePoint::ToolTypeStart,             /*27*/
-                                     VToolCurvePoint::ToolTypeEnd});             /*28*/
+                                     OToolArcPoint::ToolTypeStart,               /*25*/
+                                     OToolArcPoint::ToolTypeEnd,                 /*26*/
+                                     OToolCurvePoint::ToolTypeStart,             /*27*/
+                                     OToolCurvePoint::ToolTypeEnd});             /*28*/
     switch (points.indexOf(type))
     {
         case 0: // VToolBasePoint::ToolType
@@ -200,16 +200,16 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
         case 24: // VToolPlaceLabel::ToolType
             ParsePlaceLabel(domElement, parse);
             break;
-        case 25: // VToolArcPoint::ToolTypeStart
+        case 25: // OToolArcPoint::ToolTypeStart
             ParseToolArcPoint(scene, domElement, parse, true);
             break;
-        case 26: // VToolArcPoint::ToolTypeEnd
+        case 26: // OToolArcPoint::ToolTypeEnd
             ParseToolArcPoint(scene, domElement, parse, false);
             break;
-        case 27: // VToolCurvePoint::ToolTypeStart
+        case 27: // OToolCurvePoint::ToolTypeStart
             ParseToolCurvePoint(scene, domElement, parse, true);
             break;
-        case 28: // VToolCurvePoint::ToolTypeEnd
+        case 28: // OToolCurvePoint::ToolTypeEnd
             ParseToolCurvePoint(scene, domElement, parse, false);
             break;
         default:
@@ -1483,7 +1483,7 @@ void VPattern::ParseToolArcPoint(VMainGraphicsScene *scene, const QDomElement &d
 
     try
     {
-        VToolArcPointInitData initData;
+        OToolArcPointInitData initData;
         initData.scene = scene;
         initData.doc = this;
         initData.data = data;
@@ -1494,7 +1494,7 @@ void VPattern::ParseToolArcPoint(VMainGraphicsScene *scene, const QDomElement &d
         initData.arcId = GetParametrUInt(domElement, AttrArc, NULL_ID_STR);
         initData.position = isStart ? ArcPointPosition::Start : ArcPointPosition::End;
 
-        VToolArcPoint::Create(initData);
+        OToolArcPoint::Create(initData);
     }
     catch (const VExceptionBadId &e)
     {
@@ -1513,7 +1513,7 @@ void VPattern::ParseToolCurvePoint(VMainGraphicsScene *scene, const QDomElement 
 
     try
     {
-        VToolCurvePointInitData initData;
+        OToolCurvePointInitData initData;
         initData.scene = scene;
         initData.doc = this;
         initData.data = data;
@@ -1524,7 +1524,7 @@ void VPattern::ParseToolCurvePoint(VMainGraphicsScene *scene, const QDomElement 
         initData.splineId = GetParametrUInt(domElement, AttrSpline, NULL_ID_STR);
         initData.position = isStart ? CurvePointPosition::Start : CurvePointPosition::End;
 
-        VToolCurvePoint::Create(initData);
+        OToolCurvePoint::Create(initData);
     }
     catch (const VExceptionBadId &e)
     {

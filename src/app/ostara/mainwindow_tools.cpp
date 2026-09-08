@@ -104,7 +104,7 @@
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolarmholecurve.h"
+#include "../vtools/tools/drawTools/toolcurve/otoolarmholecurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarc.h"
@@ -1030,8 +1030,8 @@ void MainWindow::ToolArmholeCurve(bool checked)
     SetToolButtonWithApply<DialogArmholeCurve>(
         checked, Tool::ArmholeCurve, QStringLiteral("cubic_bezier_cursor.png"),
         tr("⚠ Perpendicular to the shoulder line required — Select the armhole point"),
-        &MainWindow::ClosedDrawDialogWithApply<VToolArmholeCurve>,
-        &MainWindow::ApplyDrawDialog<VToolArmholeCurve>);
+        &MainWindow::ClosedDrawDialogWithApply<OToolArmholeCurve>,
+        &MainWindow::ApplyDrawDialog<OToolArmholeCurve>);
     LogPatternToolUsed(checked, QStringLiteral("Armhole curve tool"));
 }
 

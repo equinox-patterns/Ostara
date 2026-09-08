@@ -52,7 +52,7 @@
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "vtoolabstractcurve.h"
-#include "../toolpoint/toolsinglepoint/vtoolarcpoint.h"
+#include "../toolpoint/toolsinglepoint/otoolarcpoint.h"
 #include "../../../undocommands/deltool.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -219,7 +219,7 @@ auto VToolArc::Create(VToolArcInitData &initData) -> VToolArc *
         {
             if (initData.createStartPoint)
             {
-                VToolArcPointInitData pointData;
+                OToolArcPointInitData pointData;
                 pointData.arcId = initData.id;
                 pointData.position = ArcPointPosition::Start;
                 pointData.name = initData.startPointName;
@@ -229,11 +229,11 @@ auto VToolArc::Create(VToolArcInitData &initData) -> VToolArc *
                 pointData.data = initData.data;
                 pointData.parse = initData.parse;
                 pointData.typeCreation = Source::FromGui;
-                VToolArcPoint::Create(pointData);
+                OToolArcPoint::Create(pointData);
             }
             if (initData.createEndPoint)
             {
-                VToolArcPointInitData pointData;
+                OToolArcPointInitData pointData;
                 pointData.arcId = initData.id;
                 pointData.position = ArcPointPosition::End;
                 pointData.name = initData.endPointName;
@@ -243,7 +243,7 @@ auto VToolArc::Create(VToolArcInitData &initData) -> VToolArc *
                 pointData.data = initData.data;
                 pointData.parse = initData.parse;
                 pointData.typeCreation = Source::FromGui;
-                VToolArcPoint::Create(pointData);
+                OToolArcPoint::Create(pointData);
             }
         }
 

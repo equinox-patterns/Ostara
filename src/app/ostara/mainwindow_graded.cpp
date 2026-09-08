@@ -37,7 +37,7 @@
 #include "widgets/owidgetsizeranges.h"
 #include "widgets/TopBar.h"
 #include "xml/vpattern.h"
-#include "xml/vpattern_graded.h"
+#include "xml/opattern_graded.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vformat/vmeasurements.h"
 #include "../vmisc/def.h"

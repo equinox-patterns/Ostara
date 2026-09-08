@@ -32,9 +32,9 @@
 #include <QLineEdit>
 #include <QPointer>
 
-#include "../../visualization/path/vistoolarmholecurve.h"
+#include "../../visualization/path/ovistoolarmholecurve.h"
 #include "../../visualization/visualization.h"
-#include "../../tools/drawTools/toolcurve/vtoolarmholecurve.h"
+#include "../../tools/drawTools/toolcurve/otoolarmholecurve.h"
 #include "../qmuparser/qmudef.h"
 #include "../vgeometry/vpointf.h"
 #include "../vmisc/vvalentinasettings.h"
@@ -69,7 +69,7 @@ DialogArmholeCurve::DialogArmholeCurve(const VContainer *data, VAbstractPattern 
 
     connect(ui->lineEditAlias, &QLineEdit::textEdited, this, &DialogArmholeCurve::ValidateAlias);
 
-    vis = new VisToolArmholeCurve(&this->data);
+    vis = new OVisToolArmholeCurve(&this->data);
 
     ui->tabWidget->setCurrentIndex(0);
     SetTabStopDistance(ui->plainTextEditToolNotes);
@@ -106,7 +106,7 @@ void DialogArmholeCurve::SetPath(const VCubicBezierPath &path)
     ui->lineEditAlias->setText(originAliasSuffix);
     ValidateAlias();
 
-    auto *visPath = qobject_cast<VisToolArmholeCurve *>(vis);
+    auto *visPath = qobject_cast<OVisToolArmholeCurve *>(vis);
     SCASSERT(visPath != nullptr)
     visPath->SetApproximationScale(m_path.GetApproximationScale());
     visPath->SetPoint1Id(m_path.at(0).id()); // armhole
@@ -132,7 +132,7 @@ void DialogArmholeCurve::ChosenObject(quint32 id, const SceneObject &type)
 {
     if (prepare == false && type == SceneObject::Point) // After first choose we ignore all objects
     {
-        auto *visPath = qobject_cast<VisToolArmholeCurve *>(vis);
+        auto *visPath = qobject_cast<OVisToolArmholeCurve *>(vis);
         SCASSERT(visPath != nullptr)
         if (Q_UNLIKELY(visPath == nullptr))
         {
@@ -226,7 +226,7 @@ void DialogArmholeCurve::ShowDialog(bool click)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogArmholeCurve::ShowVisualization()
 {
-    AddVisualization<VisToolArmholeCurve>();
+    AddVisualization<OVisToolArmholeCurve>();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -244,7 +244,7 @@ void DialogArmholeCurve::SaveData()
         }
     }
 
-    auto *visPath = qobject_cast<VisToolArmholeCurve *>(vis);
+    auto *visPath = qobject_cast<OVisToolArmholeCurve *>(vis);
     SCASSERT(visPath != nullptr)
     visPath->SetApproximationScale(m_path.GetApproximationScale());
     visPath->SetPoint1Id(GetP1()->id());
@@ -312,7 +312,7 @@ void DialogArmholeCurve::SavePath()
 
     // Compute the 3 auto-computed control handles for the 2-segment path.
     // The perpendicular point (path[5]) and shoulder (path[6]) are user-selected.
-    const ArmholeHandles handles = VToolArmholeCurve::SolveHandles(*GetP1(), *GetP2(), t);
+    const ArmholeHandles handles = OToolArmholeCurve::SolveHandles(*GetP1(), *GetP2(), t);
 
     // Build the 7-point path: armhole, V, V1, chest/back width, h2a, perpendicular, shoulder
     QVector<VPointF> pathPoints;

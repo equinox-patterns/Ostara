@@ -3,7 +3,7 @@
 set(VWIDGETS_SOURCES
     vaspectratiopixmaplabel.cpp
     vaspectratiopixmaplabel.h
-    vclickselectallfilter.cpp
+    oclickselectallfilter.cpp
     vcomboboxdelegate.cpp
     vdecorationaligningdelegate.cpp
     velidedlabel.cpp
@@ -42,7 +42,7 @@ set(VWIDGETS_SOURCES
     fancytabbar/fancytabbar.cpp
     fancytabbar/stylehelper.cpp
     # Headers
-    vclickselectallfilter.h
+    oclickselectallfilter.h
     vcomboboxdelegate.h
     vdecorationaligningdelegate.h
     velidedlabel.h

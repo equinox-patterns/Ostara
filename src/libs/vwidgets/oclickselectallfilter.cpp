@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   vclickselectallfilter.cpp
+ **  @file   oclickselectallfilter.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   18/08/2026
  **
@@ -25,7 +25,7 @@
  **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **
  *************************************************************************/
-#include "vclickselectallfilter.h"
+#include "oclickselectallfilter.h"
 
 #include <QApplication>
 #include <QLineEdit>
@@ -37,19 +37,19 @@
 #include "vlineedit.h"
 
 //---------------------------------------------------------------------------------------------------------------------
-VClickSelectAllFilter::VClickSelectAllFilter(QObject *parent)
+OClickSelectAllFilter::OClickSelectAllFilter(QObject *parent)
   : QObject{parent}
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VClickSelectAllFilter::InstallOnApplication()
+void OClickSelectAllFilter::InstallOnApplication()
 {
-    qApp->installEventFilter(new VClickSelectAllFilter(qApp));
+    qApp->installEventFilter(new OClickSelectAllFilter(qApp));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VClickSelectAllFilter::eventFilter(QObject *o, QEvent *e) -> bool
+auto OClickSelectAllFilter::eventFilter(QObject *o, QEvent *e) -> bool
 {
     if (e->type() != QEvent::MouseButtonPress && e->type() != QEvent::MouseButtonDblClick)
     {
@@ -87,7 +87,7 @@ auto VClickSelectAllFilter::eventFilter(QObject *o, QEvent *e) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VClickSelectAllFilter::TargetWidget(QObject *o) -> QWidget *
+auto OClickSelectAllFilter::TargetWidget(QObject *o) -> QWidget *
 {
     if (auto *lineEdit = qobject_cast<QLineEdit *>(o))
     {
@@ -120,7 +120,7 @@ auto VClickSelectAllFilter::TargetWidget(QObject *o) -> QWidget *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VClickSelectAllFilter::SelectAll(QWidget *w)
+void OClickSelectAllFilter::SelectAll(QWidget *w)
 {
     if (auto *lineEdit = qobject_cast<QLineEdit *>(w))
     {
@@ -137,7 +137,7 @@ void VClickSelectAllFilter::SelectAll(QWidget *w)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VClickSelectAllFilter::PlaceCursor(QWidget *w, const QPoint &pos)
+void OClickSelectAllFilter::PlaceCursor(QWidget *w, const QPoint &pos)
 {
     if (auto *lineEdit = qobject_cast<QLineEdit *>(w))
     {
@@ -154,7 +154,7 @@ void VClickSelectAllFilter::PlaceCursor(QWidget *w, const QPoint &pos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VClickSelectAllFilter::HasFullSelection(const QWidget *w) -> bool
+auto OClickSelectAllFilter::HasFullSelection(const QWidget *w) -> bool
 {
     if (const auto *lineEdit = qobject_cast<const QLineEdit *>(w))
     {

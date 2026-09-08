@@ -64,11 +64,11 @@ using namespace VtoppbConstants;
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolarcpoint.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolcurvepoint.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolarcpoint.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolcurvepoint.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolarmholecurve.h"
+#include "../vtools/tools/drawTools/toolcurve/otoolarmholecurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarc.h"
@@ -245,11 +245,11 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
         case VToolBasePoint::Type:
             ShowToolOptions<VToolBasePoint>(item, tr("Base point"), SinglePointProperties());
             break;
-        case VToolArcPoint::Type:
-            ShowToolOptions<VToolArcPoint>(item, tr("Arc point"), ArcPointProperties());
+        case OToolArcPoint::Type:
+            ShowToolOptions<OToolArcPoint>(item, tr("Arc point"), ArcPointProperties());
             break;
-        case VToolCurvePoint::Type:
-            ShowToolOptions<VToolCurvePoint>(item, tr("Curve point"), CurvePointProperties());
+        case OToolCurvePoint::Type:
+            ShowToolOptions<OToolCurvePoint>(item, tr("Curve point"), CurvePointProperties());
             break;
         case VToolEndLine::Type:
             ShowToolOptions<VToolEndLine>(item, tr("Point at distance and angle"), EndLineProperties());
@@ -311,8 +311,8 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
         case VToolCubicBezier::Type:
             ShowToolOptions<VToolCubicBezier>(item, tr("Cubic bezier curve"), CubicBezierProperties());
             break;
-        case VToolArmholeCurve::Type:
-            ShowToolOptions<VToolArmholeCurve>(item, tr("Armhole curve"), ArmholeCurveProperties());
+        case OToolArmholeCurve::Type:
+            ShowToolOptions<OToolArmholeCurve>(item, tr("Armhole curve"), ArmholeCurveProperties());
             break;
         case VToolSplinePath::Type:
             ShowToolOptions<VToolSplinePath>(item, tr("Curve tool"),
@@ -400,11 +400,11 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
         case VToolBasePoint::Type:
             UpdateToolOptions<VToolBasePoint>(SinglePointProperties());
             break;
-        case VToolArcPoint::Type:
-            UpdateToolOptions<VToolArcPoint>(ArcPointProperties());
+        case OToolArcPoint::Type:
+            UpdateToolOptions<OToolArcPoint>(ArcPointProperties());
             break;
-        case VToolCurvePoint::Type:
-            UpdateToolOptions<VToolCurvePoint>(CurvePointProperties());
+        case OToolCurvePoint::Type:
+            UpdateToolOptions<OToolCurvePoint>(CurvePointProperties());
             break;
         case VToolEndLine::Type:
             UpdateToolOptions<VToolEndLine>(EndLineProperties());
@@ -466,8 +466,8 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
         case VToolCubicBezier::Type:
             UpdateToolOptions<VToolCubicBezier>(CubicBezierProperties());
             break;
-        case VToolArmholeCurve::Type:
-            UpdateToolOptions<VToolArmholeCurve>(ArmholeCurveProperties());
+        case OToolArmholeCurve::Type:
+            UpdateToolOptions<OToolArmholeCurve>(ArmholeCurveProperties());
             break;
         case VToolSplinePath::Type:
             UpdateToolOptions<VToolSplinePath>(
@@ -590,11 +590,11 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
         case VToolBasePoint::Type:
             ChangeToolData<VToolBasePoint>(prop, SinglePointProperties());
             break;
-        case VToolArcPoint::Type:
-            ChangeToolData<VToolArcPoint>(prop, ArcPointProperties());
+        case OToolArcPoint::Type:
+            ChangeToolData<OToolArcPoint>(prop, ArcPointProperties());
             break;
-        case VToolCurvePoint::Type:
-            ChangeToolData<VToolCurvePoint>(prop, CurvePointProperties());
+        case OToolCurvePoint::Type:
+            ChangeToolData<OToolCurvePoint>(prop, CurvePointProperties());
             break;
         case VToolEndLine::Type:
             ChangeToolData<VToolEndLine>(prop, EndLineProperties());
@@ -656,8 +656,8 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
         case VToolCubicBezier::Type:
             ChangeToolData<VToolCubicBezier>(prop, CubicBezierProperties());
             break;
-        case VToolArmholeCurve::Type:
-            ChangeToolData<VToolArmholeCurve>(prop, ArmholeCurveProperties());
+        case OToolArmholeCurve::Type:
+            ChangeToolData<OToolArmholeCurve>(prop, ArmholeCurveProperties());
             break;
         case VToolSplinePath::Type:
             ChangeToolData<VToolSplinePath>(

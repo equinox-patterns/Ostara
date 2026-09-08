@@ -30,7 +30,7 @@
 #include "vtoolseamallowance.h"
 #include "oannotationitem.h"
 #include "oinfoblockitem.h"
-#include "vtoolseamallowance_autoplace.h"
+#include "otoolseamallowance_autoplace.h"
 #include "../dialogs/tools/piece/dialogduplicatedetail.h"
 #include "../dialogs/tools/piece/dialogseamallowance.h"
 #include "../ifc/exception/vexceptionwrongid.h"
@@ -785,7 +785,7 @@ auto VToolSeamAllowance::InsertNodes(const QVector<VPieceNode> &nodes, quint32 p
     for (auto node : nodes)
     {
         // Auto-placement: find where this node goes in the current path.
-        VNodePlacement placement;
+        ONodePlacement placement;
         if (not ComputeNodePlacement(path, node, data, doc, placement))
         {
             continue; // not placeable: skip the node, never crash

@@ -69,8 +69,8 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolarcpoint.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolcurvepoint.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolarcpoint.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolcurvepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromarcandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromcircleandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.h"
@@ -1073,7 +1073,7 @@ auto VPatternRecipe::PointFromArcAndTangent(const VToolRecord &record) -> QDomEl
 //---------------------------------------------------------------------------------------------------------------------
 auto VPatternRecipe::ArcPoint(const VToolRecord &record) -> QDomElement
 {
-    auto *tool = GetPatternTool<VToolArcPoint>(record.GetId());
+    auto *tool = GetPatternTool<OToolArcPoint>(record.GetId());
 
     QDomElement step = createElement(TagStep);
 
@@ -1088,7 +1088,7 @@ auto VPatternRecipe::ArcPoint(const VToolRecord &record) -> QDomElement
 //---------------------------------------------------------------------------------------------------------------------
 auto VPatternRecipe::CurvePoint(const VToolRecord &record) -> QDomElement
 {
-    auto *tool = GetPatternTool<VToolCurvePoint>(record.GetId());
+    auto *tool = GetPatternTool<OToolCurvePoint>(record.GetId());
 
     QDomElement step = createElement(TagStep);
 
