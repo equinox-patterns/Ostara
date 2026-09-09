@@ -10,6 +10,11 @@
  **          (grainline, fold, info blocks, annotations) of the reference size.
  **          Size layers carry geometry only; the layout layer carries no
  **          contour. Text is ALWAYS emitted as editable <text> (never paths).
+ **          The layout layer gets a FIXED, non-localized id ("Layout" — machine
+ **          contract with Rabnest), while its inkscape:label / <title> carry the
+ **          localized or user-editable display name. Each decor object wrapper of
+ **          the layout layer is marked i:layer="yes" so Rabnest moves it together
+ **          with its piece (see WriteGradedSvg).
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>

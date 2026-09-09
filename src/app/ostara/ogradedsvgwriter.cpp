@@ -60,6 +60,14 @@ namespace
 {
 constexpr qreal kDefaultStrokeWidth = 0.1;
 
+/** @brief Fixed, non-localized id of the Layout (decor) layer in the graded SVG.
+ *
+ *  Machine contract shared with Rabnest: the reader identifies the decor layer
+ *  by comparing this exact id. It must NOT be derived from layoutLayerName
+ *  (localized / user-editable) — that name is only kept in inkscape:label and
+ *  <title>. Keep both sides in sync if this value ever changes. */
+constexpr auto kGradedLayoutLayerId = "Layout";
+
 /** @brief Serialize one visible trace (path item) — mirrors the flat writer. */
 void WriteTrace(QXmlStreamWriter &writer, const QTransform &toSVG, const QPen &defaultPen,
                 QGraphicsItem *gitem)
@@ -514,7 +522,10 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
         };
 
         writer.writeStartElement(QStringLiteral("g"));
-        writer.writeAttribute(QStringLiteral("id"), OSvg::SanitizeSvgId(layoutLayerName));
+        // Fixed, non-localized id — the exact value Rabnest matches to identify
+        // the decor layer, independent of the localized/user-editable display
+        // name kept in inkscape:label and <title> below.
+        writer.writeAttribute(QStringLiteral("id"), QLatin1String(kGradedLayoutLayerId));
         writer.writeAttribute(QStringLiteral("i:layer"), QStringLiteral("yes"));
         writer.writeAttribute(QStringLiteral("inkscape:label"), layoutLayerName);
         writer.writeAttribute(QStringLiteral("inkscape:groupmode"), QStringLiteral("layer"));
@@ -524,6 +535,10 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
         {
             writer.writeStartElement(QStringLiteral("g"));
             writer.writeAttribute(QStringLiteral("id"), uniqueId(object.name));
+            // Mark every decor object wrapper as a layer (like Val Fork did) so
+            // Rabnest's NestedSvgWriter moves it together with the piece — its
+            // filter only transforms <g i:layer="yes"> children of this layer.
+            writer.writeAttribute(QStringLiteral("i:layer"), QStringLiteral("yes"));
 
             for (QGraphicsItem *child : object.decorChildren)
             {
