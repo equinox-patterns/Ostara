@@ -144,7 +144,16 @@ auto PassmarkLength(const VPiecePassmarkData &passmarkData, qreal width, bool &o
             return passmarkData.globalPassmarkLength;
         }
 
-        length = qMin(width * VSAPoint::passmarkFactor, VSAPoint::maxPassmarkLength);
+        if (width <= accuracyPointOnLine)
+        {
+            // No seam allowance (0 or disabled) — the notch cannot be half of nothing. Use a fixed default length
+            // instead (0.5 cm), like the reference fork.
+            length = MmToPixel(5.0);
+        }
+        else
+        {
+            length = qMin(width * VSAPoint::passmarkFactor, VSAPoint::maxPassmarkLength);
+        }
         if (not ValidateLength(length))
         {
             ok = false;
@@ -669,6 +678,11 @@ auto VPassmark::FullPassmark(const VPiece &piece, const VContainer *data) const 
 
     if (not piece.IsSeamAllowanceBuiltIn())
     {
+        if (not piece.IsSeamAllowance())
+        {
+            return BuiltInSAPassmark(piece, data);
+        }
+
         QVector<QLineF> lines;
         lines += SAPassmark(piece, data, PassmarkSide::All);
         if (VAbstractApplication::VApp()->Settings()->IsDoublePassmark() &&
@@ -698,6 +712,14 @@ auto VPassmark::SAPassmark(const VPiece &piece, const VContainer *data, Passmark
 
     if (not piece.IsSeamAllowanceBuiltIn())
     {
+        if (not piece.IsSeamAllowance())
+        {
+            // No seam allowance — draw passmarks on the main path instead.
+            QVector<QPointF> mainPath;
+            CastTo(piece.FullMainPathPoints(data), mainPath);
+            return SAPassmark(mainPath, mainPath, side);
+        }
+
         // Because rollback cannot be calulated if passmark is not first point in main path we rotate it.
         QVector<QPointF> rotatedSeamAllowance;
         CastTo(piece.FullSeamAllowancePointsWithRotation(data, m_data.passmarkIndex), rotatedSeamAllowance);
@@ -1002,6 +1024,23 @@ auto VPassmark::BuiltInSAPassmark(const VPiece &piece, const VContainer *data) c
 auto VPassmark::CalculatePassmarkLength(const VPiece &piece) const -> qreal
 {
     qreal length = 0;
+
+    if (!piece.IsSeamAllowance())
+    {
+        // Seam allowance disabled — the notch is drawn on the main path with a fixed default length (0.5 cm),
+        // unless a manual length was provided.
+        if (m_data.passmarkSAPoint.IsManualPasskmarkLength())
+        {
+            length = m_data.passmarkSAPoint.GetPasskmarkLength();
+            if (length <= accuracyPointOnLine)
+            {
+                length = MmToPixel(5.0); // Manual length field empty — fallback to default.
+            }
+            return length;
+        }
+
+        return MmToPixel(5.0);
+    }
 
     if (!piece.IsSeamAllowanceBuiltIn())
     {

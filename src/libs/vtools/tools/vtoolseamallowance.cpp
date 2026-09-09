@@ -295,11 +295,6 @@ auto RenderPassmarks(const VPiece &detail, const VContainer *data) -> QPainterPa
 {
     if (const QLineF mirrorLine = detail.SeamMirrorLine(data); !mirrorLine.isNull() && detail.IsShowFullPiece())
     {
-        if (!detail.IsSeamAllowance())
-        {
-            return {};
-        }
-
         QPainterPath path;
         const QTransform matrix = VGObject::FlippingMatrix(mirrorLine);
         const QVector<VLayoutPassmark> passmarks = VLayoutPiece::ConvertPassmarks(detail, data);

@@ -375,7 +375,7 @@ auto VPiece::PassmarksLines(const VContainer *data) const -> QVector<QLineF>
 auto VPiece::Passmarks(const VContainer *data) const -> QVector<VPassmark>
 {
     const QVector<VPieceNode> unitedPath = GetUnitedPath(data);
-    if (not IsSeamAllowance() || not IsPassmarksPossible(unitedPath))
+    if (not IsPassmarksPossible(unitedPath))
     {
         return {};
     }
@@ -476,8 +476,7 @@ auto VPiece::PassmarksPath(const VContainer *data) const -> QPainterPath
     const QVector<QLineF> passmarks = PassmarksLines(data);
     QPainterPath path;
 
-    // seam allowence
-    if (IsSeamAllowance() && not passmarks.isEmpty())
+    if (not passmarks.isEmpty())
     {
         for (qint32 i = 0; i < passmarks.count(); ++i)
         {
