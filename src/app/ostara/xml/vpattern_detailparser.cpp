@@ -227,7 +227,6 @@ void VPattern::ParseDetailElement(QDomElement &domElement, const Document &parse
         initData.detail.SetInLayout(GetParametrBool(domElement, AttrInLayout, trueStr));
         initData.detail.SetUnited(GetParametrBool(domElement, VToolSeamAllowance::AttrUnited, falseStr));
         initData.detail.SetPriority(GetParametrUInt(domElement, VToolSeamAllowance::AttrPiecePriority, QChar('0')));
-        initData.detail.SetTrueZeroWidth(GetParametrBool(domElement, AttrTrueZeroWidth, falseStr));
         initData.detail.SetGradedAlignH(GetParametrInt(domElement, AttrGradedAlignH, QStringLiteral("2")));
         initData.detail.SetGradedAlignV(GetParametrInt(domElement, AttrGradedAlignV, QStringLiteral("2")));
         initData.detail.SetPieceNumber(GetParametrUInt(domElement, AttrPieceNumber, QChar('0')));

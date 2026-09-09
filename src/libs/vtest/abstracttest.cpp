@@ -175,10 +175,6 @@ void AbstractTest::PassmarkDataFromJson(const QString &json, VPiecePassmarkData 
         QFAIL(qUtf8Printable(error));
     }
 
-    bool trueZeroWidth = false;
-    AbstractTest::ReadBooleanValue(passmarkData, QStringLiteral("trueZeroWidth"), trueZeroWidth, QChar('0'));
-    data.trueZeroWidth = trueZeroWidth;
-
     qreal saWidth = 0;
     AbstractTest::ReadDoubleValue(passmarkData, QStringLiteral("saWidth"), saWidth);
     data.saWidth = saWidth;
@@ -969,9 +965,6 @@ void AbstractTest::DBFromJson(const QJsonObject &dbObject, QSharedPointer<VConta
 //---------------------------------------------------------------------------------------------------------------------
 void AbstractTest::MainPathFromJson(const QJsonObject &pieceObject, VPiece &piece)
 {
-    bool trueZeroWidth = false;
-    AbstractTest::ReadBooleanValue(pieceObject, QStringLiteral("trueZeroWidth"), trueZeroWidth, QChar('0'));
-
     qreal saWidth = 0;
     AbstractTest::ReadDoubleValue(pieceObject, QStringLiteral("saWidth"), saWidth);
 
@@ -980,7 +973,6 @@ void AbstractTest::MainPathFromJson(const QJsonObject &pieceObject, VPiece &piec
 
     piece.SetSeamAllowance(seamAllowance);
     piece.SetSAWidth(saWidth);
-    piece.SetTrueZeroWidth(trueZeroWidth);
 
     piece.GetPath().Clear();
 

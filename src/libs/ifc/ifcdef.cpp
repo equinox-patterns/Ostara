@@ -154,7 +154,6 @@ const QString AttrShowLabel = QStringLiteral("showPointName");
 const QString AttrShowLabel1 = QStringLiteral("showPointName1");
 const QString AttrShowLabel2 = QStringLiteral("showPointName2");
 const QString AttrWidth = QStringLiteral("width");
-const QString AttrTrueZeroWidth = QStringLiteral("trueZeroWidth");
 const QString AttrHeight = QStringLiteral("height");
 const QString AttrPlaceLabelType = QStringLiteral("placeLabelType");
 const QString AttrVersion = QStringLiteral("version");

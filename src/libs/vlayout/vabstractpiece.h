@@ -111,9 +111,6 @@ public:
     auto IsShowFullPiece() const -> bool;
     void SetShowFullPiece(bool value);
 
-    auto IsTrueZeroWidth() const -> bool;
-    void SetTrueZeroWidth(bool value);
-
     auto GetSAWidth() const -> qreal;
     void SetSAWidth(qreal value);
 
@@ -157,7 +154,7 @@ public:
      */
     virtual auto GetUniqueID() const -> QString;
 
-    static auto Equidistant(QVector<VSAPoint> points, qreal width, bool trueZeroWidth, const QString &name)
+    static auto Equidistant(QVector<VSAPoint> points, qreal width, const QString &name)
         -> QVector<VLayoutPoint>;
     static auto SumTrapezoids(const QVector<QPointF> &points) -> qreal;
     static auto EkvPoint(QVector<VRawSAPoint> points,
@@ -166,9 +163,8 @@ public:
                          const VSAPoint &p1Line2,
                          const VSAPoint &p2Line2,
                          qreal width,
-                         bool trueZeroWidth,
                          bool *needRollback = nullptr) -> QVector<VRawSAPoint>;
-    static auto ParallelLine(const VSAPoint &p1, const VSAPoint &p2, qreal width, bool trueZeroWidth) -> QLineF;
+    static auto ParallelLine(const VSAPoint &p1, const VSAPoint &p2, qreal width) -> QLineF;
     static auto IsAllowanceValid(const QVector<QPointF> &base, const QVector<QPointF> &allowance) -> bool;
     template <class T>
     static auto IsInsidePolygon(const QVector<T> &path, const QVector<T> &polygon, qreal accuracy = accuracyPointOnLine)

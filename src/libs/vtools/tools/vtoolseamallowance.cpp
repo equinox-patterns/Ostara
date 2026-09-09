@@ -873,10 +873,6 @@ void VToolSeamAllowance::AddAttributes(VAbstractPattern *doc, QDomElement &domEl
                                       [](bool builtin) noexcept { return not builtin; });
     doc->SetAttributeOrRemoveIf<bool>(domElement, AttrShowFullPiece, piece.IsShowFullPiece(),
                                       [](bool show) noexcept { return show; });
-    doc->SetAttributeOrRemoveIf<bool>(domElement,
-                                      AttrTrueZeroWidth,
-                                      piece.IsTrueZeroWidth(),
-                                      [](bool value) noexcept { return !value; });
     doc->SetAttribute(domElement, AttrWidth, piece.GetFormulaSAWidth());
     doc->SetAttributeOrRemoveIf<bool>(domElement, AttrUnited, piece.IsUnited(),
                                       [](bool united) noexcept { return not united; });

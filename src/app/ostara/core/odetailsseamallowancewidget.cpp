@@ -269,6 +269,9 @@ void ODetailsSeamAllowanceWidget::RetranslateUI()
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsSeamAllowanceWidget::ConnectControls()
 {
+    // A value typed by the user (including an explicit 0) must never be mistaken for an unset field.
+    connect(m_valueEdit, &QLineEdit::textEdited, this, [this]() { m_valueEdited = true; });
+
     // --- Active checkbox ---
     connect(m_activeCheck, &QCheckBox::toggled, this, [this](bool checked)
     {
@@ -281,7 +284,9 @@ void ODetailsSeamAllowanceWidget::ConnectControls()
         {
             bool okDefault = false;
             const double currentVal = ParseDecimal(m_valueEdit->text(), &okDefault);
-            if (!okDefault || qFuzzyIsNull(currentVal))
+            // Inject the configured default only into an untouched field (still showing 0). A 0 the user
+            // typed themselves is preserved — activating seam allowances must not swallow an explicit 0.
+            if (!okDefault || (qFuzzyIsNull(currentVal) && !m_valueEdited))
             {
                 const double defaultVal = UnitConvertor(VAbstractApplication::VApp()->Settings()->GetDefaultSeamAllowance(),
                                                         StrToUnits(VAbstractApplication::VApp()->Settings()->GetUnit()),
@@ -356,6 +361,7 @@ void ODetailsSeamAllowanceWidget::Show(const VPiece &det)
     m_path = det.GetPath();
 
     m_updating = true;
+    m_valueEdited = false;
 
     m_activeCheck->setChecked(det.IsSeamAllowance());
     m_hideMainPathCheck->setChecked(det.IsHideMainPath());
@@ -375,6 +381,7 @@ void ODetailsSeamAllowanceWidget::Clear()
     m_selectedNodeIds.clear();
     m_addCustomBtn->setText(tr("+ Add custom seam allowance"));
     m_updating = false;
+    m_valueEdited = false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

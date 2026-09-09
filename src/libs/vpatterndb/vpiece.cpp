@@ -535,28 +535,53 @@ auto VPiece::PlaceLabelPath(const VContainer *data) const -> QPainterPath
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+static auto HasSeamOnAllowanceBoundary(const QVector<QPointF> &mainPath, const QVector<QPointF> &allowance) -> bool
+{
+    // A genuine zero seam allowance (e.g. a fold edge at 0, or any seam the user set to 0) makes the seam
+    // path run exactly ON the seam-allowance outline. The two point sets are not index-paired (different
+    // build pipelines) and the seam usually lies along an SA EDGE rather than on its vertices (fold seam at
+    // 0: SA and seam share the fold line), so compare each seam point against every closed SA edge.
+    if (allowance.size() < 3)
+    {
+        return false;
+    }
+
+    for (const QPointF &mp : mainPath)
+    {
+        for (int j = 0; j < allowance.size(); ++j)
+        {
+            if (IsPointOnLineSegment(mp, allowance.at(j), allowance.at((j + 1) % allowance.size())))
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VPiece::IsSeamAllowanceValid(const VContainer *data) const -> bool
 {
     if (IsSeamAllowance() && not IsSeamAllowanceBuiltIn())
     {
-        if (!IsTrueZeroWidth())
-        {
-            QVector<QPointF> mainPathPoints;
-            CastTo<QPointF>(UniteMainPathPoints(data), mainPathPoints);
+        QVector<QPointF> mainPathPoints;
+        CastTo<QPointF>(UniteMainPathPoints(data), mainPathPoints);
 
-            QVector<QPointF> seamAllowancePoints;
-            CastTo<QPointF>(SeamAllowancePoints(data), seamAllowancePoints);
+        QVector<QPointF> seamAllowancePoints;
+        CastTo<QPointF>(SeamAllowancePoints(data), seamAllowancePoints);
 
-            return VAbstractPiece::IsAllowanceValid(mainPathPoints, seamAllowancePoints);
-        }
-
-        // True zero: the strict IsAllowanceValid() test cannot run because a zero seam allowance puts the
-        // seam path ON the seam allowance outline, which IsInsidePolygon() rejects. Keep the guards that
+        // A true zero seam allowance puts the seam path ON the seam allowance outline, which the strict
+        // IsInsidePolygon() test inside IsAllowanceValid() rejects (the seam allowance itself being zero is
+        // legitimate — the user typed 0). Detect that case geometrically and fall back to the guards that
         // still matter: the seam allowance must remain a usable polygon, and an explicitly unfolded piece
         // must resolve to a real full outline — not silently collapse to the ~4-point zero-margin trace
         // (the seam-allowance mirror line truncation bug).
-        QVector<QPointF> seamAllowancePoints;
-        CastTo<QPointF>(SeamAllowancePoints(data), seamAllowancePoints);
+        if (not HasSeamOnAllowanceBoundary(mainPathPoints, seamAllowancePoints))
+        {
+            return VAbstractPiece::IsAllowanceValid(mainPathPoints, seamAllowancePoints);
+        }
+
         if (seamAllowancePoints.size() < 3)
         {
             return false;
@@ -1020,7 +1045,7 @@ auto VPiece::SeamAllowancePointsWithRotation(const VContainer *data, vsizetype m
                                                          : GetUnitedPath(data);
     const QVector<VSAPoint> pointsEkv = BuildSeamAllowancePoints(data, unitedPath, width);
 
-    return Equidistant(pointsEkv, width, IsTrueZeroWidth(), GetName());
+    return Equidistant(pointsEkv, width, GetName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1516,7 +1541,6 @@ auto VPiece::CreatePassmark(const QVector<VPieceNode> &path, vsizetype previousI
     return VPassmark({.previousSAPoint = previousSAPoint,
                       .passmarkSAPoint = passmarkSAPoint,
                       .nextSAPoint = nextSAPoint,
-                      .trueZeroWidth = IsTrueZeroWidth(),
                       .saWidth = ToPixel(GetSAWidth(), *data->GetPatternUnit()),
                       .nodeName = VPiecePath::NodeName(path, passmarkIndex, data),
                       .pieceName = GetName(),
@@ -1718,7 +1742,6 @@ auto VPiece::MainPathToJson() const -> QJsonObject
 {
     QJsonObject pieceObject{
         {"seamAllowance", IsSeamAllowance()},
-        {"trueZeroWidth", IsTrueZeroWidth()},
         {"saWidth", GetSAWidth()},
     };
 

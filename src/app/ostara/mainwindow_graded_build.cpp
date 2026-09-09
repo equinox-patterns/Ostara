@@ -89,12 +89,11 @@ auto GradedBaseForLabel(const QStringList &axisValues, const QString &label) -> 
 auto GradedPieceContentDigest(const VPiece &piece) -> QString
 {
     QStringList parts;
-    parts.append(QStringLiteral("sa=%1%2%3%4%5")
+    parts.append(QStringLiteral("sa=%1%2%3%4")
                      .arg(piece.IsSeamAllowance() ? 1 : 0)
                      .arg(piece.IsSeamAllowanceBuiltIn() ? 1 : 0)
                      .arg(piece.IsHideMainPath() ? 1 : 0)
-                     .arg(piece.IsShowFullPiece() ? 1 : 0)
-                     .arg(piece.IsTrueZeroWidth() ? 1 : 0));
+                     .arg(piece.IsShowFullPiece() ? 1 : 0));
     parts.append(QStringLiteral("saw=%1").arg(piece.GetFormulaSAWidth()));
 
     for (const CustomSARecord &record : piece.GetCustomSARecords())

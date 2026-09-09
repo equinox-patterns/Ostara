@@ -110,6 +110,7 @@ private:
     VPiecePath m_path{};
     std::function<void(std::function<void(VPiece &)>)> m_modifyPending;
     bool m_updating{false};
+    bool m_valueEdited{false};
 
     Q_DISABLE_COPY_MOVE(ODetailsSeamAllowanceWidget) // NOLINT
 };

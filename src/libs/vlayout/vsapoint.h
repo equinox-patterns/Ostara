@@ -67,8 +67,8 @@ public:
 
     constexpr auto IsPasskmarkVisible() const -> bool;
 
-    constexpr auto GetSABefore(qreal width, bool trueZeroWidth) const -> qreal;
-    constexpr auto GetSAAfter(qreal width, bool trueZeroWidth) const -> qreal;
+    constexpr auto GetSABefore(qreal width) const -> qreal;
+    constexpr auto GetSAAfter(qreal width) const -> qreal;
 
     constexpr void SetSABefore(qreal value);
     constexpr void SetSAAfter(qreal value);
@@ -85,8 +85,8 @@ public:
 
     constexpr void SetPasskmarkVisible(bool value);
 
-    constexpr auto MaxLocalSA(qreal width, bool trueZeroWidth) const -> qreal;
-    constexpr auto PassmarkLength(qreal width, bool trueZeroWidth) const -> qreal;
+    constexpr auto MaxLocalSA(qreal width) const -> qreal;
+    constexpr auto PassmarkLength(qreal width) const -> qreal;
 
     constexpr auto IsPassmarkClockwiseOpening() const -> bool;
     constexpr void SetPassmarkClockwiseOpening(bool clockwise);
@@ -148,19 +148,19 @@ constexpr auto VSAPoint::GetSABefore() const -> qreal
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-constexpr auto VSAPoint::GetSABefore(qreal width, bool trueZeroWidth) const -> qreal
+constexpr auto VSAPoint::GetSABefore(qreal width) const -> qreal
 {
     if (m_before < 0)
-    {
+    { // no local override - inherit the global width
         return width;
     }
 
-    if (!trueZeroWidth)
-    {
-        return qMax(m_before, minSAWidth);
+    if (m_before <= 0)
+    { // exact 0: a genuine local zero is honored as true zero (negatives are normalized to -1 above)
+        return 0;
     }
 
-    return m_before;
+    return qMax(m_before, minSAWidth); // positive-but-tiny local widths still hit the floor
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -176,19 +176,19 @@ constexpr auto VSAPoint::GetSAAfter() const -> qreal
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-constexpr auto VSAPoint::GetSAAfter(qreal width, bool trueZeroWidth) const -> qreal
+constexpr auto VSAPoint::GetSAAfter(qreal width) const -> qreal
 {
     if (m_after < 0)
-    {
+    { // no local override - inherit the global width
         return width;
     }
 
-    if (!trueZeroWidth)
-    {
-        return qMax(m_after, minSAWidth);
+    if (m_after <= 0)
+    { // exact 0: a genuine local zero is honored as true zero (negatives are normalized to -1 above)
+        return 0;
     }
 
-    return m_after;
+    return qMax(m_after, minSAWidth); // positive-but-tiny local widths still hit the floor
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -294,17 +294,17 @@ constexpr void VSAPoint::SetPasskmarkVisible(bool value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-constexpr auto VSAPoint::MaxLocalSA(qreal width, bool trueZeroWidth) const -> qreal
+constexpr auto VSAPoint::MaxLocalSA(qreal width) const -> qreal
 {
-    return qMax(GetSAAfter(width, trueZeroWidth), GetSABefore(width, trueZeroWidth));
+    return qMax(GetSAAfter(width), GetSABefore(width));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-constexpr auto VSAPoint::PassmarkLength(qreal width, bool trueZeroWidth) const -> qreal
+constexpr auto VSAPoint::PassmarkLength(qreal width) const -> qreal
 {
     if (not m_manualPassmarkLength)
     {
-        qreal passmarkLength = MaxLocalSA(width, trueZeroWidth) * passmarkFactor;
+        qreal passmarkLength = MaxLocalSA(width) * passmarkFactor;
         passmarkLength = qMin(passmarkLength, maxPassmarkLength);
         return passmarkLength;
     }
