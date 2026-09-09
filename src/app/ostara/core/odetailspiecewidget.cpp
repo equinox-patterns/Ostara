@@ -136,7 +136,11 @@ const AlignItem kAlignVItems[] = {
     {3, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Bottom")},
 };
 
-// Outer-tab index that hosts the "Internal outline" list — the Seam Allowance tab (order of addTab).
+// Outer-tab indices of the piece options (order of addTab). Each tab hosts its own
+// node-picking workflow: passmarks (General), fold line (Grainline), custom seam
+// allowance + the "Internal outline" list (Seam Allowance).
+constexpr int kGeneralTabIndex = 0;
+constexpr int kGrainlineTabIndex = 1;
 constexpr int kSeamAllowanceTabIndex = 2;
 } // namespace
 
@@ -529,13 +533,24 @@ void ODetailsPieceWidget::ConnectControls()
     connect(m_internalPathWidget, &ODetailsInternalPathWidget::InternalPathActivated, this,
             &ODetailsPieceWidget::OnInternalPathActivated);
 
-    // The active internal outline row follows the tab focus: it lives in the Seam Allowance tab,
-    // so leaving that tab (any other sub-tab) drops the row and its canvas highlight.
+    // Leaving a tab drops the node-picking workflow it hosts: its "Cancel" button (passmarks,
+    // fold line, custom seam allowance) would otherwise stay armed while the user is on another
+    // tab, and canvas node clicks would keep routing to the hidden workflow. Same rule for the
+    // active internal-outline row, which lives in the Seam Allowance tab.
     connect(m_tabWidget, &QTabWidget::currentChanged, this, [this](int index)
     {
+        if (index != kGeneralTabIndex && IsSelectingPassmarkPoints())
+        {
+            CancelPassmarkSelection();
+        }
+        if (index != kGrainlineTabIndex && IsSelectingFoldLinePoints())
+        {
+            CancelFoldLineSelection();
+        }
         if (index != kSeamAllowanceTabIndex)
         {
             ClearInternalPathActivation();
+            CancelSASelection(); // internally guarded: no-op when no SA selection is running
         }
     });
 
