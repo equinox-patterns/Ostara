@@ -40,6 +40,9 @@
 #include <QPoint>
 #include <QRectF>
 #include <QSharedPointer>
+#include <QVariant>
+
+#include <memory>
 
 #include "../ifc/ifcdef.h"
 #include "../ifc/xml/vdomdocument.h"
@@ -49,6 +52,7 @@
 #include "../vdatatool.h"
 #include "../vgeometry/vpointf.h"
 #include "themeDef.h"
+#include "../vtheme/vtheme.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiecenode.h"
@@ -108,6 +112,84 @@ enum class ContextMenuOption : std::uint8_t
     TurnPoint,
     LAST_ONE_DO_NOT_USE
 };
+
+// Theme-aware glyphs for the node context menu (see Icons.md): `check` marks an active toggle,
+// `trash` the delete action. A highlighted menu row has a dark accent background in both themes,
+// so under the cursor the glyph is swapped to the dark (light-colored) variant.
+QString NodeIconTheme()
+{
+    const bool dark = VTheme::ColorSheme() == VColorSheme::Dark;
+    return dark ? QStringLiteral("dark") : QStringLiteral("light");
+}
+
+QIcon NodeThemeIcon(const QString &name)
+{
+    return QIcon(QStringLiteral(":/icons/%1/%2_%1.svg").arg(NodeIconTheme(), name));
+}
+
+QIcon NodeHoverIcon(const QString &name)
+{
+    return QIcon(QStringLiteral(":/icons/dark/%1_dark.svg").arg(name));
+}
+
+QAction *AddNodeToggle(QMenu *menu, const QString &text, bool active)
+{
+    QAction *action = menu->addAction(text);
+    action->setProperty("active", active);
+    if (active)
+    {
+        const QIcon check = NodeThemeIcon(QStringLiteral("check"));
+        action->setIcon(check);
+        action->setProperty("restIcon", QVariant::fromValue(check));
+        action->setProperty("hoverIcon", QVariant::fromValue(NodeHoverIcon(QStringLiteral("check"))));
+    }
+    return action;
+}
+
+void AddNodeHoverIcon(QAction *action, const QString &name)
+{
+    const QIcon icon = NodeThemeIcon(name);
+    action->setIcon(icon);
+    action->setProperty("restIcon", QVariant::fromValue(icon));
+    action->setProperty("hoverIcon", QVariant::fromValue(NodeHoverIcon(name)));
+}
+
+struct GlyphHoverState
+{
+    QAction *lastHovered{nullptr};
+};
+
+void ApplyGlyphHover(const std::shared_ptr<GlyphHoverState> &state, QAction *action)
+{
+    if (action == state->lastHovered)
+    {
+        return;
+    }
+    if (state->lastHovered != nullptr)
+    {
+        const QVariant rest = state->lastHovered->property("restIcon");
+        if (rest.isValid())
+        {
+            state->lastHovered->setIcon(rest.value<QIcon>());
+        }
+    }
+    state->lastHovered = action;
+    if (action != nullptr)
+    {
+        const QVariant hover = action->property("hoverIcon");
+        if (hover.isValid())
+        {
+            action->setIcon(hover.value<QIcon>());
+        }
+    }
+}
+
+void InstallGlyphHover(QMenu *menu, QObject *context)
+{
+    auto state = std::make_shared<GlyphHoverState>();
+    QObject::connect(menu, &QMenu::hovered, context, [state](QAction *action) { ApplyGlyphHover(state, action); });
+    QObject::connect(menu, &QMenu::aboutToHide, context, [state]() { ApplyGlyphHover(state, nullptr); });
+}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -376,17 +458,17 @@ auto VNodePoint::InitContextMenu(QMenu *menu, vidtype pieceId, RemoveStatus stat
 
     QHash<int, QAction *> contextMenu;
 
-    QAction *actionShowLabel = menu->addAction(QCoreApplication::translate("VNodePoint", "Show Point name"));
-    actionShowLabel->setCheckable(true);
-
+    bool showLabel = false;
     if (const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(m_id); !m_internalPathNode)
     {
-        actionShowLabel->setChecked(point->IsShowLabel());
+        showLabel = point->IsShowLabel();
     }
     else
     {
-        actionShowLabel->setChecked(point->IsShowLabelExplicit() ? point->IsShowLabel() : false);
+        showLabel = point->IsShowLabelExplicit() ? point->IsShowLabel() : false;
     }
+    QAction *actionShowLabel =
+        AddNodeToggle(menu, QCoreApplication::translate("VNodePoint", "Show Point name"), showLabel);
     contextMenu.insert(static_cast<int>(ContextMenuOption::ShowLabel), actionShowLabel);
 
     InitPassmarkMenu(menu, pieceId, contextMenu);
@@ -401,44 +483,36 @@ auto VNodePoint::InitContextMenu(QMenu *menu, vidtype pieceId, RemoveStatus stat
     separatorAct->setSeparator(true);
     menu->addAction(separatorAct);
 
-    contextMenu.insert(
-        static_cast<int>(ContextMenuOption::Option),
-        menu->addAction(FromTheme(VThemeIcon::PreferencesOther), QCoreApplication::translate("VNodePoint", "Options")));
+    // "Options" (which opened DialogSeamAllowance) is no longer offered in the node menu.
 
     const VPiece detail = VAbstractTool::data.GetPiece(pieceId);
 
-    QAction *inLayoutOption = menu->addAction(QCoreApplication::translate("VNodePoint", "In layout"));
-    inLayoutOption->setCheckable(true);
-    inLayoutOption->setChecked(detail.IsInLayout());
+    QAction *inLayoutOption =
+        AddNodeToggle(menu, QCoreApplication::translate("VNodePoint", "In layout"), detail.IsInLayout());
     contextMenu.insert(static_cast<int>(ContextMenuOption::InLayout), inLayoutOption);
 
-    QAction *forbidFlippingOption = menu->addAction(QCoreApplication::translate("VNodePoint", "Forbid flipping"));
-    forbidFlippingOption->setCheckable(true);
-    forbidFlippingOption->setChecked(detail.IsForbidFlipping());
+    QAction *forbidFlippingOption = AddNodeToggle(menu, QCoreApplication::translate("VNodePoint", "Forbid flipping"),
+                                                  detail.IsForbidFlipping());
     contextMenu.insert(static_cast<int>(ContextMenuOption::ForbidFlipping), forbidFlippingOption);
 
-    QAction *forceFlippingOption = menu->addAction(QCoreApplication::translate("VNodePoint", "Force flipping"));
-    forceFlippingOption->setCheckable(true);
-    forceFlippingOption->setChecked(detail.IsForceFlipping());
+    QAction *forceFlippingOption = AddNodeToggle(menu, QCoreApplication::translate("VNodePoint", "Force flipping"),
+                                                 detail.IsForceFlipping());
     contextMenu.insert(static_cast<int>(ContextMenuOption::ForceFlipping), forceFlippingOption);
 
-    QAction *showFullPieceOption = menu->addAction(QCoreApplication::translate("VNodePoint", "Show full piece"));
-    showFullPieceOption->setCheckable(true);
+    QAction *showFullPieceOption = nullptr;
     {
         // We cannot use current VContainer because it doesn't have current seam allowance value
         const VContainer pData = VAbstractPattern::getTool(pieceId)->GetDataCopy();
         const QLineF mirrorLine = detail.SeamAllowanceMirrorLine(&pData);
-        showFullPieceOption->setEnabled(not mirrorLine.isNull());
-        showFullPieceOption->setChecked(true);
-        if (not mirrorLine.isNull())
-        {
-            showFullPieceOption->setChecked(detail.IsShowFullPiece());
-        }
+        const bool enabled = not mirrorLine.isNull();
+        showFullPieceOption = AddNodeToggle(menu, QCoreApplication::translate("VNodePoint", "Show full piece"),
+                                            enabled && detail.IsShowFullPiece());
+        showFullPieceOption->setEnabled(enabled);
     }
     contextMenu.insert(static_cast<int>(ContextMenuOption::ShowFullPiece), showFullPieceOption);
 
-    QAction *actionRemove =
-        menu->addAction(FromTheme(VThemeIcon::EditDelete), QCoreApplication::translate("VNodePoint", "Delete"));
+    QAction *actionRemove = menu->addAction(QCoreApplication::translate("VNodePoint", "Delete"));
+    AddNodeHoverIcon(actionRemove, QStringLiteral("trash"));
     actionRemove->setEnabled(status == RemoveStatus::Removable);
     if (status == RemoveStatus::Pending)
     {
@@ -467,9 +541,7 @@ void VNodePoint::InitPassmarkMenu(QMenu *menu, vidtype pieceId, QHash<int, QActi
 
     QMenu *passmarkSubmenu = menu->addMenu(tr("Passmark"));
 
-    QAction *actionNonePassmark = passmarkSubmenu->addAction(tr("None"));
-    actionNonePassmark->setCheckable(true);
-    actionNonePassmark->setChecked(!node.IsPassmark());
+    QAction *actionNonePassmark = AddNodeToggle(passmarkSubmenu, tr("None"), !node.IsPassmark());
     contextMenu.insert(static_cast<int>(ContextMenuOption::NonePassmark), actionNonePassmark);
 
     Q_STATIC_ASSERT_X(static_cast<int>(PassmarkLineType::LAST_ONE_DO_NOT_USE) == 9, "Not all types were handled.");
@@ -477,10 +549,7 @@ void VNodePoint::InitPassmarkMenu(QMenu *menu, vidtype pieceId, QHash<int, QActi
     auto InitPassmarkLineTypeAction = [passmarkSubmenu, node](const QString &name,
                                                               PassmarkLineType lineType) -> QAction *
     {
-        QAction *action = passmarkSubmenu->addAction(name);
-        action->setCheckable(true);
-        action->setChecked(node.IsPassmark() && lineType == node.GetPassmarkLineType());
-        return action;
+        return AddNodeToggle(passmarkSubmenu, name, node.IsPassmark() && lineType == node.GetPassmarkLineType());
     };
 
     contextMenu.insert(static_cast<int>(ContextMenuOption::OneLine),
@@ -502,10 +571,10 @@ void VNodePoint::InitPassmarkMenu(QMenu *menu, vidtype pieceId, QHash<int, QActi
     contextMenu.insert(static_cast<int>(ContextMenuOption::CheckMark),
                        InitPassmarkLineTypeAction(tr("Check mark"), PassmarkLineType::CheckMark));
 
-    QAction *actionTurnPoint = menu->addAction(tr("Turn point"));
-    actionTurnPoint->setCheckable(true);
-    actionTurnPoint->setChecked(node.IsTurnPoint());
+    QAction *actionTurnPoint = AddNodeToggle(menu, tr("Turn point (for DXF)"), node.IsTurnPoint());
     contextMenu.insert(static_cast<int>(ContextMenuOption::TurnPoint), actionTurnPoint);
+
+    InstallGlyphHover(passmarkSubmenu, this);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -525,10 +594,7 @@ void VNodePoint::InitAngleTypeMenu(QMenu *menu, vidtype pieceId, QHash<int, QAct
 
     auto InitAngleAction = [angleTypeMenu, curType](const QString &name, PieceNodeAngle checkType) -> QAction *
     {
-        QAction *action = angleTypeMenu->addAction(name);
-        action->setCheckable(true);
-        action->setChecked(curType == checkType);
-        return action;
+        return AddNodeToggle(angleTypeMenu, name, curType == checkType);
     };
 
     Q_STATIC_ASSERT_X(static_cast<int>(PieceNodeAngle::LAST_ONE_DO_NOT_USE) == 7, "Not all types were handled.");
@@ -544,6 +610,8 @@ void VNodePoint::InitAngleTypeMenu(QMenu *menu, vidtype pieceId, QHash<int, QAct
                        InitAngleAction(tr("by first edge right angle"), PieceNodeAngle::ByFirstEdgeRightAngle));
     contextMenu.insert(static_cast<int>(ContextMenuOption::BySecondEdgeRightAngle),
                        InitAngleAction(tr("by second edge right angle"), PieceNodeAngle::BySecondEdgeRightAngle));
+
+    InstallGlyphHover(angleTypeMenu, this);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -563,9 +631,8 @@ void VNodePoint::InitPassmarkAngleTypeMenu(QMenu *menu, vidtype pieceId, QHash<i
 
     auto InitPassmarkAngleAction = [passmarkAngleMenu, node](const QString &name, PassmarkAngleType checkType)
     {
-        QAction *action = passmarkAngleMenu->addAction(name);
-        action->setCheckable(true);
-        action->setChecked(node.IsPassmark() && node.GetPassmarkAngleType() == checkType);
+        QAction *action =
+            AddNodeToggle(passmarkAngleMenu, name, node.IsPassmark() && node.GetPassmarkAngleType() == checkType);
         action->setEnabled(node.IsPassmark());
         return action;
     };
@@ -591,6 +658,8 @@ void VNodePoint::InitPassmarkAngleTypeMenu(QMenu *menu, vidtype pieceId, QHash<i
     contextMenu.insert(
         static_cast<int>(ContextMenuOption::Intersection2OnlyRight),
         InitPassmarkAngleAction(tr("Intersection 2 (only right)"), PassmarkAngleType::Intersection2OnlyRight));
+
+    InstallGlyphHover(passmarkAngleMenu, this);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -651,6 +720,10 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         }
     };
 
+    // Swap the glyph to its dark variant while a row is highlighted (a highlighted row has a
+    // dark accent background in both themes); restore when the highlight moves away.
+    InstallGlyphHover(&menu, this);
+
     QAction *selectedAction = menu.exec(event->screenPos());
     auto const selectedOption = static_cast<ContextMenuOption>(
         contextMenu.key(selectedAction, static_cast<int>(ContextMenuOption::NoSelection)));
@@ -669,19 +742,18 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         case ContextMenuOption::NoSelection:
             return;
         case ContextMenuOption::Option:
-            emit ShowOptions();
-            break;
+            break; // "Options" is no longer offered in the node context menu
         case ContextMenuOption::InLayout:
-            emit ToggleInLayout(selectedAction->isChecked());
+            emit ToggleInLayout(not selectedAction->property("active").toBool());
             break;
         case ContextMenuOption::ForbidFlipping:
-            emit ToggleForbidFlipping(selectedAction->isChecked());
+            emit ToggleForbidFlipping(not selectedAction->property("active").toBool());
             break;
         case ContextMenuOption::ForceFlipping:
-            emit ToggleForceFlipping(selectedAction->isChecked());
+            emit ToggleForceFlipping(not selectedAction->property("active").toBool());
             break;
         case ContextMenuOption::ShowFullPiece:
-            emit ToggleShowFullPiece(selectedAction->isChecked());
+            emit ToggleShowFullPiece(not selectedAction->property("active").toBool());
             break;
         case ContextMenuOption::Remove:
             try
@@ -695,7 +767,7 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
             }
             return; // Leave this method immediately after call!!!
         case ContextMenuOption::ShowLabel:
-            SetLabelVisible(m_id, selectedAction->isChecked());
+            SetLabelVisible(m_id, not selectedAction->property("active").toBool());
             break;
         case ContextMenuOption::Exclude:
             emit ToggleExcludeState(m_id);

@@ -166,6 +166,9 @@ public:
     void RefreshScale();
     /** @brief Deselects every place-label handle of this piece (clears their Qt selection). */
     void ClearPlaceLabelSelection();
+    /** @brief Sets a place label's Type through an undo command (canvas context menu).
+     *  @a type is the PlaceLabelType enum value passed as int to keep the enum out of this header. */
+    void ChangePlaceLabelType(quint32 labelId, int type);
 
     // Two-phase refresh for batch updates. PrepareRefreshGeometry() computes the geometry off the
     // GUI thread (safe to call concurrently for different pieces); ApplyBatchGeometry() applies the

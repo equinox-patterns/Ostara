@@ -43,6 +43,8 @@
 #include <QListWidget>
 #include <QMenu>
 #include <QMessageBox>
+
+#include <memory>
 #include <QPushButton>
 #include <QToolButton>
 #include <QVBoxLayout>
@@ -72,6 +74,85 @@ enum class MainPathContextMenuOption : int
     LAST_ONE_DO_NOT_USE
 };
 
+// App theme glyphs (see Icons.md): `MainPathIcon` returns the current theme variant for toolbar
+// buttons; menu entries keep their rest icon plus the dark hover variant (a highlighted row has a
+// dark accent background in both themes).
+QString MainPathIconTheme()
+{
+    const bool dark = VTheme::ColorSheme() == VColorSheme::Dark;
+    return dark ? QStringLiteral("dark") : QStringLiteral("light");
+}
+
+QIcon MainPathIcon(const QString &name)
+{
+    return QIcon(QStringLiteral(":/icons/%1/%2_%1.svg").arg(MainPathIconTheme(), name));
+}
+
+QIcon MainPathDarkIcon(const QString &name)
+{
+    return QIcon(QStringLiteral(":/icons/dark/%1_dark.svg").arg(name));
+}
+
+void SetMenuGlyph(QAction *action, const QString &name)
+{
+    const QIcon rest = MainPathIcon(name);
+    action->setIcon(rest);
+    action->setProperty("restIcon", QVariant::fromValue(rest));
+    action->setProperty("hoverIcon", QVariant::fromValue(MainPathDarkIcon(name)));
+}
+
+// A checkable-style row whose active state is shown by our `check` glyph (no native check mark):
+// rest uses the current theme variant, the dark variant under the cursor.
+QAction *AddMenuCheck(QMenu *menu, const QString &text, bool active)
+{
+    QAction *action = menu->addAction(text);
+    if (active)
+    {
+        const QIcon check = MainPathIcon(QStringLiteral("check"));
+        action->setIcon(check);
+        action->setProperty("restIcon", QVariant::fromValue(check));
+        action->setProperty("hoverIcon", QVariant::fromValue(MainPathDarkIcon(QStringLiteral("check"))));
+    }
+    return action;
+}
+
+struct MainPathGlyphHoverState
+{
+    QAction *lastHovered{nullptr};
+};
+
+void MainPathApplyHover(const std::shared_ptr<MainPathGlyphHoverState> &state, QAction *action)
+{
+    if (action == state->lastHovered)
+    {
+        return;
+    }
+    if (state->lastHovered != nullptr)
+    {
+        const QVariant rest = state->lastHovered->property("restIcon");
+        if (rest.isValid())
+        {
+            state->lastHovered->setIcon(rest.value<QIcon>());
+        }
+    }
+    state->lastHovered = action;
+    if (action != nullptr)
+    {
+        const QVariant hover = action->property("hoverIcon");
+        if (hover.isValid())
+        {
+            action->setIcon(hover.value<QIcon>());
+        }
+    }
+}
+
+void MainPathInstallGlyphHover(QMenu *menu, QObject *context)
+{
+    auto state = std::make_shared<MainPathGlyphHoverState>();
+    QObject::connect(menu, &QMenu::hovered, context, [state](QAction *action) { MainPathApplyHover(state, action); });
+    QObject::connect(menu, &QMenu::aboutToHide, context, [state]() { MainPathApplyHover(state, nullptr); });
+}
+
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -95,48 +176,48 @@ void DialogMainPath::BuildUi()
 
     m_btnReverse = new QToolButton();
     m_btnReverse->setToolTip(tr("Reverse node direction"));
-    m_btnReverse->setIcon(FromTheme(VThemeIcon::ListRemove));
+    m_btnReverse->setIcon(MainPathIcon(QStringLiteral("arrow-u-up-left")));
     m_btnReverse->setCheckable(true);
     m_btnReverse->setEnabled(false);
     toolbarLayout->addWidget(m_btnReverse);
 
     m_btnExcluded = new QToolButton();
     m_btnExcluded->setToolTip(tr("Excluded node"));
-    m_btnExcluded->setIcon(FromTheme(VThemeIcon::FormatTextStrikethrough));
+    m_btnExcluded->setIcon(MainPathIcon(QStringLiteral("text-strikethrough")));
     m_btnExcluded->setCheckable(true);
     m_btnExcluded->setEnabled(false);
     toolbarLayout->addWidget(m_btnExcluded);
 
     m_btnTurnPoint = new QToolButton();
     m_btnTurnPoint->setToolTip(tr("Turn point"));
-    m_btnTurnPoint->setIcon(FromTheme(VThemeIcon::SnapNodesRotationCenter));
+    m_btnTurnPoint->setIcon(MainPathIcon(QStringLiteral("arrows-clockwise")));
     m_btnTurnPoint->setCheckable(true);
     m_btnTurnPoint->setEnabled(false);
     toolbarLayout->addWidget(m_btnTurnPoint);
 
     m_btnCheckUniqueness = new QToolButton();
     m_btnCheckUniqueness->setToolTip(tr("Check node uniqueness"));
-    m_btnCheckUniqueness->setIcon(FromTheme(VThemeIcon::DrawStar));
+    m_btnCheckUniqueness->setIcon(MainPathIcon(QStringLiteral("brackets-square")));
     m_btnCheckUniqueness->setCheckable(true);
     m_btnCheckUniqueness->setEnabled(false);
     toolbarLayout->addWidget(m_btnCheckUniqueness);
 
     m_btnPassmark = new QToolButton();
     m_btnPassmark->setToolTip(tr("Notch"));
-    m_btnPassmark->setIcon(FromTheme(VThemeIcon::AddPlacemark));
+    m_btnPassmark->setIcon(MainPathIcon(QStringLiteral("line-vertical")));
     m_btnPassmark->setCheckable(true);
     m_btnPassmark->setEnabled(false);
     toolbarLayout->addWidget(m_btnPassmark);
 
     m_btnDuplicateNode = new QToolButton();
     m_btnDuplicateNode->setToolTip(tr("Duplicate"));
-    m_btnDuplicateNode->setIcon(FromTheme(VThemeIcon::DuplicateNode));
+    m_btnDuplicateNode->setIcon(MainPathIcon(QStringLiteral("copy")));
     m_btnDuplicateNode->setEnabled(false);
     toolbarLayout->addWidget(m_btnDuplicateNode);
 
     m_btnDelete = new QToolButton();
     m_btnDelete->setToolTip(tr("Delete node"));
-    m_btnDelete->setIcon(FromTheme(VThemeIcon::EditDelete));
+    m_btnDelete->setIcon(MainPathIcon(QStringLiteral("trash")));
     m_btnDelete->setEnabled(false);
     toolbarLayout->addWidget(m_btnDelete);
 
@@ -153,25 +234,25 @@ void DialogMainPath::BuildUi()
 
     m_btnTop = new QToolButton();
     m_btnTop->setToolTip(tr("Move on top"));
-    m_btnTop->setIcon(QIcon::fromTheme(QStringLiteral("go-top")));
+    m_btnTop->setIcon(MainPathIcon(QStringLiteral("caret-line-up")));
     m_btnTop->setEnabled(false);
     navLayout->addWidget(m_btnTop);
 
     m_btnUp = new QToolButton();
     m_btnUp->setToolTip(tr("Move up"));
-    m_btnUp->setIcon(FromTheme(VThemeIcon::GoUp));
+    m_btnUp->setIcon(MainPathIcon(QStringLiteral("caret-up")));
     m_btnUp->setEnabled(false);
     navLayout->addWidget(m_btnUp);
 
     m_btnDown = new QToolButton();
     m_btnDown->setToolTip(tr("Move down"));
-    m_btnDown->setIcon(FromTheme(VThemeIcon::GoDown));
+    m_btnDown->setIcon(MainPathIcon(QStringLiteral("caret-down")));
     m_btnDown->setEnabled(false);
     navLayout->addWidget(m_btnDown);
 
     m_btnBottom = new QToolButton();
     m_btnBottom->setToolTip(tr("Move on bottom"));
-    m_btnBottom->setIcon(QIcon::fromTheme(QStringLiteral("go-bottom")));
+    m_btnBottom->setIcon(MainPathIcon(QStringLiteral("caret-line-down")));
     m_btnBottom->setEnabled(false);
     navLayout->addWidget(m_btnBottom);
 
@@ -462,29 +543,29 @@ void DialogMainPath::ShowContextMenu(const QPoint &pos)
 
     if (rowNode.GetTypeTool() != Tool::NodePoint)
     {
-        QAction *actionReverse = menu.addAction(FromTheme(VThemeIcon::ListRemove), tr("Reverse"));
+        QAction *actionReverse = menu.addAction(tr("Reverse"));
+        SetMenuGlyph(actionReverse, QStringLiteral("arrow-u-up-left"));
         actionReverse->setCheckable(true);
         actionReverse->setChecked(rowNode.GetReverse());
         contextMenu.insert(static_cast<int>(MainPathContextMenuOption::Reverse), actionReverse);
 
-        QAction *actionDuplicate = menu.addAction(FromTheme(VThemeIcon::DuplicateNode), tr("Duplicate"));
+        QAction *actionDuplicate = menu.addAction(tr("Duplicate"));
+        SetMenuGlyph(actionDuplicate, QStringLiteral("copy"));
         contextMenu.insert(static_cast<int>(MainPathContextMenuOption::DuplicateNode), actionDuplicate);
     }
     else
     {
-        QMenu *passmarkSubmenu = menu.addMenu(FromTheme(VThemeIcon::AddPlacemark), tr("Passmark"));
+        QMenu *passmarkSubmenu = menu.addMenu(tr("Passmark"));
+        SetMenuGlyph(passmarkSubmenu->menuAction(), QStringLiteral("line-vertical"));
+        MainPathInstallGlyphHover(passmarkSubmenu, this);
 
-        QAction *actionNonePassmark = passmarkSubmenu->addAction(tr("None"));
-        actionNonePassmark->setCheckable(true);
-        actionNonePassmark->setChecked(!rowNode.IsPassmark());
+        QAction *actionNonePassmark = AddMenuCheck(passmarkSubmenu, tr("None"), !rowNode.IsPassmark());
         contextMenu.insert(static_cast<int>(MainPathContextMenuOption::NonePassmark), actionNonePassmark);
 
         auto AddPassmarkTypeAction = [passmarkSubmenu, &rowNode](const QString &name, PassmarkLineType lineType)
         {
-            QAction *action = passmarkSubmenu->addAction(name);
-            action->setCheckable(true);
-            action->setChecked(rowNode.IsPassmark() && lineType == rowNode.GetPassmarkLineType());
-            return action;
+            return AddMenuCheck(passmarkSubmenu, name,
+                                rowNode.IsPassmark() && lineType == rowNode.GetPassmarkLineType());
         };
 
         contextMenu.insert(static_cast<int>(MainPathContextMenuOption::OneLine),
@@ -506,25 +587,33 @@ void DialogMainPath::ShowContextMenu(const QPoint &pos)
         contextMenu.insert(static_cast<int>(MainPathContextMenuOption::CheckMark),
                            AddPassmarkTypeAction(tr("Check mark"), PassmarkLineType::CheckMark));
 
-        QAction *actionUniqueness = menu.addAction(FromTheme(VThemeIcon::DrawStar), tr("Check uniqueness"));
+        QAction *actionUniqueness = menu.addAction(tr("Check uniqueness"));
+        SetMenuGlyph(actionUniqueness, QStringLiteral("brackets-square"));
         actionUniqueness->setCheckable(true);
         actionUniqueness->setChecked(rowNode.IsCheckUniqueness());
         contextMenu.insert(static_cast<int>(MainPathContextMenuOption::Uniqueness), actionUniqueness);
 
-        QAction *actionTurnPoint = menu.addAction(FromTheme(VThemeIcon::SnapNodesRotationCenter), tr("Turn point"));
+        QAction *actionTurnPoint = menu.addAction(tr("Turn point"));
+        SetMenuGlyph(actionTurnPoint, QStringLiteral("arrows-clockwise"));
         actionTurnPoint->setCheckable(true);
         actionTurnPoint->setChecked(rowNode.IsTurnPoint());
         contextMenu.insert(static_cast<int>(MainPathContextMenuOption::TurnPoint), actionTurnPoint);
     }
 
-    QAction *actionExcluded = menu.addAction(FromTheme(VThemeIcon::FormatTextStrikethrough), tr("Excluded"));
+    QAction *actionExcluded = menu.addAction(tr("Excluded"));
+    SetMenuGlyph(actionExcluded, QStringLiteral("text-strikethrough"));
     actionExcluded->setCheckable(true);
     actionExcluded->setChecked(rowNode.IsExcluded());
     contextMenu.insert(static_cast<int>(MainPathContextMenuOption::Excluded), actionExcluded);
 
-    QAction *actionDelete = menu.addAction(FromTheme(VThemeIcon::EditDelete), tr("Delete"));
+    QAction *actionDelete = menu.addAction(tr("Delete"));
+    SetMenuGlyph(actionDelete, QStringLiteral("trash"));
     actionDelete->setShortcut(QKeySequence::Delete);
     contextMenu.insert(static_cast<int>(MainPathContextMenuOption::Delete), actionDelete);
+
+    // Swap the glyph to its dark variant while its row is highlighted (a highlighted row has a
+    // dark accent background in both themes); restore it when the highlight moves away.
+    MainPathInstallGlyphHover(&menu, this);
 
     QAction *selectedAction = menu.exec(m_listWidget->viewport()->mapToGlobal(pos));
     auto selectedOption = static_cast<MainPathContextMenuOption>(

@@ -45,6 +45,7 @@
 
 #include <QIcon>
 #include <QMenu>
+#include <QVariant>
 #include <QMessageBox>
 #include <QTimer>
 #include <QTreeWidget>
@@ -388,6 +389,7 @@ void VWidgetDetails::ToggleSectionDetails(bool select)
     {
         return;
     }
+    const auto *groups = m_data->DataPieceGroups();
 
     QTreeWidgetItemIterator it(ui->treeWidget);
     while (*it)
@@ -395,8 +397,19 @@ void VWidgetDetails::ToggleSectionDetails(bool select)
         QTreeWidgetItem *item = *it;
         const quint32 id = item->data(0, kIdRole).toUInt();
         const QString type = item->data(0, kTypeRole).toString();
-        if (type == QLatin1String(kPieceType) && allDetails->contains(id) &&
-            not(select == allDetails->value(id).IsInLayout()))
+        if (type == QLatin1String(kGroupType) && groups != nullptr && groups->contains(id))
+        {
+            // A group behaves like one piece: its own in-layout flag drives the whole group.
+            if (not(select == groups->value(id).IsInLayout()))
+            {
+                auto *toggleGroup = new ::ToggleGroupInLayout(id, select, m_data, m_doc);
+                connect(toggleGroup, &::ToggleGroupInLayout::Toggled, this, &VWidgetDetails::ToggledGroup);
+                VAbstractApplication::VApp()->getUndoStack()->push(toggleGroup);
+            }
+        }
+        else if (type == QLatin1String(kPieceType) && allDetails->contains(id) &&
+                 m_data->GetPieceGroupId(id) == NULL_ID &&  // a member's state follows its group
+                 not(select == allDetails->value(id).IsInLayout()))
         {
             auto *togglePrint = new TogglePieceInLayout(id, select, m_data, m_doc);
             connect(togglePrint, &TogglePieceInLayout::Toggled, this, &VWidgetDetails::ToggledPiece);
@@ -508,6 +521,17 @@ void VWidgetDetails::ToggledGroupItem(QTreeWidgetItem *item)
     item->setIcon(PieceColumn::InLayout, LayoutIcon(inLayout));
     item->setData(0, kTreeInLayoutRole, inLayout);
 
+    // Refresh the member rows too: their displayed in-layout state follows the group, so
+    // toggling the group (Select all/none, Invert, or the group's own check icon) must update
+    // their check/x immediately, not only on the next full tree refresh.
+    for (int i = 0; i < item->childCount(); ++i)
+    {
+        if (QTreeWidgetItem *child = item->child(i))
+        {
+            ToggledPieceItem(child);
+        }
+    }
+
     // The group behaves like one piece: its state + the "Hide not in layout" checkbox drive
     // the visibility of the whole group on the canvas (holder + members).
     const bool visible = ui->checkBoxHideNotInLayout->isChecked() ? inLayout : true;
@@ -528,15 +552,31 @@ void VWidgetDetails::SelectGroup(quint32 groupId)
 void VWidgetDetails::ShowContextMenu(const QPoint &pos)
 {
     QScopedPointer<QMenu> const menu(new QMenu());
+
+    // Tree context-menu glyphs (see Icons.md): `link-break` for a group's "Unlink all",
+    // `trash` for a piece's delete. A highlighted row has a dark accent background in both
+    // themes, so under the cursor the glyph is swapped to its dark (light-colored) variant.
+    const bool dark = VAbstractApplication::VApp()->Settings()->GetThemeMode() == VThemeMode::Dark;
+    const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
+    const auto themeIcon = [&theme](const QString &name) {
+        return QIcon(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, name));
+    };
+    const auto hoverIcon = [](const QString &name) {
+        return QIcon(QStringLiteral(":/icons/dark/%1_dark.svg").arg(name));
+    };
+    const auto addGlyphIcon = [&themeIcon, &hoverIcon](QAction *action, const QString &name) {
+        const QIcon rest = themeIcon(name);
+        action->setIcon(rest);
+        action->setProperty("restIcon", QVariant::fromValue(rest));
+        action->setProperty("hoverIcon", QVariant::fromValue(hoverIcon(name)));
+    };
+
     QAction *actionSelectAll = menu->addAction(tr("Select all"));
     QAction *actionSelectNone = menu->addAction(tr("Select none"));
 
     menu->addSeparator();
 
-    QAction *actionInvertSelection = menu->addAction(tr("Invert selection"));
-
     bool pieceMode = false;
-    QAction *actionPieceOptions = nullptr;
     QAction *actionDeletePiece = nullptr;
     QAction *actionUnlinkGroup = nullptr;
     VToolSeamAllowance *toolPiece = nullptr;
@@ -551,7 +591,8 @@ void VWidgetDetails::ShowContextMenu(const QPoint &pos)
         {
             groupId = id;
             menu->addSeparator();
-            actionUnlinkGroup = menu->addAction(FromTheme(VThemeIcon::EditDelete), tr("Unlink all"));
+            actionUnlinkGroup = menu->addAction(tr("Unlink all"));
+            addGlyphIcon(actionUnlinkGroup, QStringLiteral("link-break"));
         }
         else if (id != NULL_ID)
         {
@@ -563,9 +604,8 @@ void VWidgetDetails::ShowContextMenu(const QPoint &pos)
                     pieceMode = true;
                     menu->addSeparator();
 
-                    actionPieceOptions = menu->addAction(FromTheme(VThemeIcon::PreferencesOther), tr("Piece options"));
-
-                    actionDeletePiece = menu->addAction(FromTheme(VThemeIcon::EditDelete), tr("Delete piece"));
+                    actionDeletePiece = menu->addAction(tr("Delete piece"));
+                    addGlyphIcon(actionDeletePiece, QStringLiteral("trash"));
                     actionDeletePiece->setEnabled(toolPiece->IsRemovable() == RemoveStatus::Removable);
                 }
             }
@@ -583,24 +623,71 @@ void VWidgetDetails::ShowContextMenu(const QPoint &pos)
         return;
     }
 
-    int selectedDetails = 0;
-
+    // Count the effective togglable units: standalone pieces + groups (a group = one piece,
+    // its members' individual flags are masked by the group).
+    int selectedUnits = 0;
+    int totalUnits = 0;
+    const auto *groups = m_data->DataPieceGroups();
     for (auto it = allDetails->cbegin(); it != allDetails->cend(); ++it)
     {
-        if (it.value().IsInLayout())
+        if (m_data->GetPieceGroupId(it.key()) == NULL_ID)
         {
-            selectedDetails++;
+            ++totalUnits;
+            if (it.value().IsInLayout())
+            {
+                ++selectedUnits;
+            }
+        }
+    }
+    if (groups != nullptr)
+    {
+        for (auto git = groups->cbegin(); git != groups->cend(); ++git)
+        {
+            ++totalUnits;
+            if (git.value().IsInLayout())
+            {
+                ++selectedUnits;
+            }
         }
     }
 
-    if (selectedDetails == 0)
+    if (selectedUnits == 0)
     {
         actionSelectNone->setDisabled(true);
     }
-    else if (selectedDetails == allDetails->size())
+    else if (selectedUnits == totalUnits)
     {
         actionSelectAll->setDisabled(true);
     }
+
+    // Swap the glyph to its dark variant while its row is highlighted (a highlighted row has a
+    // dark accent background in both themes); restore it when the highlight moves away.
+    QAction *hoveredAction = nullptr;
+    const auto applyHover = [&hoveredAction](QAction *action) {
+        if (action == hoveredAction)
+        {
+            return;
+        }
+        if (hoveredAction != nullptr)
+        {
+            const QVariant rest = hoveredAction->property("restIcon");
+            if (rest.isValid())
+            {
+                hoveredAction->setIcon(rest.value<QIcon>());
+            }
+        }
+        hoveredAction = action;
+        if (action != nullptr)
+        {
+            const QVariant hover = action->property("hoverIcon");
+            if (hover.isValid())
+            {
+                action->setIcon(hover.value<QIcon>());
+            }
+        }
+    };
+    connect(menu.data(), &QMenu::hovered, this, [&applyHover](QAction *action) { applyHover(action); });
+    connect(menu.data(), &QMenu::aboutToHide, this, [&applyHover]() { applyHover(nullptr); });
 
     QAction *selectedAction = menu->exec(ui->treeWidget->viewport()->mapToGlobal(pos));
 
@@ -617,33 +704,6 @@ void VWidgetDetails::ShowContextMenu(const QPoint &pos)
         VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("select none details"));
         ToggleSectionDetails(select);
         VAbstractApplication::VApp()->getUndoStack()->endMacro();
-    }
-    else if (selectedAction == actionInvertSelection)
-    {
-        VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("invert selection"));
-
-        QTreeWidgetItemIterator it(ui->treeWidget);
-        while (*it)
-        {
-            QTreeWidgetItem *item = *it;
-            const quint32 id = item->data(0, kIdRole).toUInt();
-            const QString type = item->data(0, kTypeRole).toString();
-            if (type == QLatin1String(kPieceType) && allDetails->contains(id))
-            {
-                select = not allDetails->value(id).IsInLayout();
-
-                auto *togglePrint = new TogglePieceInLayout(id, select, m_data, m_doc);
-                connect(togglePrint, &TogglePieceInLayout::Toggled, this, &VWidgetDetails::ToggledPiece);
-                VAbstractApplication::VApp()->getUndoStack()->push(togglePrint);
-            }
-            ++it;
-        }
-
-        VAbstractApplication::VApp()->getUndoStack()->endMacro();
-    }
-    else if (pieceMode && selectedAction == actionPieceOptions)
-    {
-        toolPiece->ShowOptions();
     }
     else if (pieceMode && selectedAction == actionDeletePiece)
     {

@@ -42,6 +42,7 @@
 #include "../undocommands/deletepiece.h"
 #include "../undocommands/movepiece.h"
 #include "../undocommands/savepieceoptions.h"
+#include "../undocommands/saveplacelabeloptions.h"
 #include "../undocommands/savepiecepathoptions.h"
 #include "../undocommands/togglepiecestate.h"
 #include "../vgeometry/varc.h"
@@ -1893,6 +1894,23 @@ void VToolSeamAllowance::ClearPlaceLabelSelection()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::ChangePlaceLabelType(quint32 labelId, int type)
+{
+    const auto newType = static_cast<PlaceLabelType>(type);
+
+    const QSharedPointer<VPlaceLabelItem> current = VAbstractTool::data.GeometricObject<VPlaceLabelItem>(labelId);
+    if (current.isNull() || current->GetLabelType() == newType)
+    {
+        return;
+    }
+
+    VPlaceLabelItem updated = *current;
+    updated.SetLabelType(newType);
+
+    VAbstractApplication::VApp()->getUndoStack()->push(new SavePlaceLabelOptions(m_id, *current, updated, doc, labelId));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VToolSeamAllowance::ResolveAnnotationStyle(const QString &name) const -> OAnnotationRenderStyle
 {
     if (s_annotationStyleResolver)
@@ -2314,65 +2332,122 @@ void VToolSeamAllowance::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     }
 
     QMenu menu;
-    QAction  const*actionOption = menu.addAction(FromTheme(VThemeIcon::PreferencesOther), tr("Options"));
-
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
 
-    QAction *inLayoutOption = menu.addAction(tr("In layout"));
-    inLayoutOption->setCheckable(true);
-    inLayoutOption->setChecked(detail.IsInLayout());
+    // Menu icons come from the app theme (see Icons.md): `check` marks the active toggles,
+    // `trash` deletes. At rest an icon uses the current theme variant; a highlighted row has a
+    // dark accent background in both themes, so under the cursor the glyph is swapped to the
+    // dark (light-colored) variant. The swap is explicit (QMenu::hovered) — some styles paint
+    // menu icons without honoring the QIcon::Selected mode.
+    const bool dark = VTheme::ColorSheme() == VColorSheme::Dark;
+    const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
+    const auto themeIcon = [&theme](const QString &name) {
+        return QIcon(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, name));
+    };
+    const auto darkIcon = [](const QString &name) {
+        return QIcon(QStringLiteral(":/icons/dark/%1_dark.svg").arg(name));
+    };
+    // Toggle rows show a themed `check` when active (no glyph when inactive). Rows that carry a
+    // glyph store their idle icon plus the dark hover variant used under the cursor.
+    const auto addToggle = [&menu, &themeIcon, &darkIcon](const QString &text, bool active) {
+        QAction *action = menu.addAction(text);
+        if (active)
+        {
+            const QIcon check = themeIcon(QStringLiteral("check"));
+            action->setIcon(check);
+            action->setProperty("restIcon", QVariant::fromValue(check));
+            action->setProperty("hoverIcon",
+                                QVariant::fromValue(darkIcon(QStringLiteral("check"))));
+        }
+        return action;
+    };
 
-    QAction *hideMainPathOption = menu.addAction(tr("Hide main path"));
-    hideMainPathOption->setCheckable(true);
-    hideMainPathOption->setChecked(detail.IsHideMainPath());
+    const bool inLayout = detail.IsInLayout();
+    const bool hideMainPath = detail.IsHideMainPath();
+    const bool forbidFlipping = detail.IsForbidFlipping();
+    const bool forceFlipping = detail.IsForceFlipping();
 
-    QAction *forbidFlippingOption = menu.addAction(tr("Forbid flipping"));
-    forbidFlippingOption->setCheckable(true);
-    forbidFlippingOption->setChecked(detail.IsForbidFlipping());
-
-    QAction *forceFlippingOption = menu.addAction(tr("Force flipping"));
-    forceFlippingOption->setCheckable(true);
-    forceFlippingOption->setChecked(detail.IsForceFlipping());
+    QAction *inLayoutOption = addToggle(tr("In layout"), inLayout);
+    QAction *hideMainPathOption = addToggle(tr("Hide main path"), hideMainPath);
+    QAction *forbidFlippingOption = addToggle(tr("Forbid flipping"), forbidFlipping);
+    QAction *forceFlippingOption = addToggle(tr("Force flipping"), forceFlipping);
 
     QAction *showFullPiece = menu.addAction(tr("Show full piece"));
-    showFullPiece->setCheckable(true);
+    bool showFullChecked = false;
     {
         const QLineF mirrorLine = detail.SeamAllowanceMirrorLine(&(VAbstractTool::data));
-        showFullPiece->setEnabled(not mirrorLine.isNull());
-        showFullPiece->setChecked(true);
-        if (not mirrorLine.isNull())
+        const bool enabled = not mirrorLine.isNull();
+        showFullPiece->setEnabled(enabled);
+        showFullChecked = enabled && detail.IsShowFullPiece();
+        if (showFullChecked)
         {
-            showFullPiece->setChecked(detail.IsShowFullPiece());
+            const QIcon check = themeIcon(QStringLiteral("check"));
+            showFullPiece->setIcon(check);
+            showFullPiece->setProperty("restIcon", QVariant::fromValue(check));
+            showFullPiece->setProperty("hoverIcon",
+                                       QVariant::fromValue(darkIcon(QStringLiteral("check"))));
         }
     }
 
-    QAction *actionRemove = menu.addAction(FromTheme(VThemeIcon::EditDelete), tr("Delete"));
+    QAction *actionRemove = menu.addAction(tr("Delete"));
     actionRemove->setEnabled(IsRemovable() == RemoveStatus::Removable);
+    {
+        const QIcon trash = themeIcon(QStringLiteral("trash"));
+        actionRemove->setIcon(trash);
+        actionRemove->setProperty("restIcon", QVariant::fromValue(trash));
+        actionRemove->setProperty("hoverIcon",
+                                  QVariant::fromValue(darkIcon(QStringLiteral("trash"))));
+    }
+
+    // Swap the glyph to its dark variant while its row is highlighted; restore it when the
+    // highlight moves to another row or the menu hides.
+    QAction *hoveredAction = nullptr;
+    const auto applyHover = [&hoveredAction](QAction *action) {
+        if (action == hoveredAction)
+        {
+            return;
+        }
+        if (hoveredAction != nullptr)
+        {
+            const QVariant rest = hoveredAction->property("restIcon");
+            if (rest.isValid())
+            {
+                hoveredAction->setIcon(rest.value<QIcon>());
+            }
+        }
+        hoveredAction = action;
+        if (action != nullptr)
+        {
+            const QVariant hover = action->property("hoverIcon");
+            if (hover.isValid())
+            {
+                action->setIcon(hover.value<QIcon>());
+            }
+        }
+    };
+    connect(&menu, &QMenu::hovered, this, [&applyHover](QAction *action) { applyHover(action); });
+    connect(&menu, &QMenu::aboutToHide, this, [&applyHover]() { applyHover(nullptr); });
 
     QAction  const*selectedAction = menu.exec(event->screenPos());
-    if (selectedAction == actionOption)
+    if (selectedAction == inLayoutOption)
     {
-        ShowOptions();
-    }
-    else if (selectedAction == inLayoutOption)
-    {
-        ToggleInLayout(selectedAction->isChecked());
+        ToggleInLayout(not inLayout);
     }
     else if (selectedAction == hideMainPathOption)
     {
-        ToggleHideMainPath(selectedAction->isChecked());
+        ToggleHideMainPath(not hideMainPath);
     }
     else if (selectedAction == forbidFlippingOption)
     {
-        ToggleForbidFlipping(selectedAction->isChecked());
+        ToggleForbidFlipping(not forbidFlipping);
     }
     else if (selectedAction == forceFlippingOption)
     {
-        ToggleForceFlipping(selectedAction->isChecked());
+        ToggleForceFlipping(not forceFlipping);
     }
     else if (selectedAction == showFullPiece)
     {
-        ToggleShowFullPiece(selectedAction->isChecked());
+        ToggleShowFullPiece(not showFullChecked);
     }
     else if (selectedAction == actionRemove)
     {

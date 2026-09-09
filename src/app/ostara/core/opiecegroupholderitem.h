@@ -38,6 +38,7 @@
 
 class OAnnotationItem;
 class OInfoBlockItem;
+class QGraphicsSceneContextMenuEvent;
 class VAbstractPattern;
 class VContainer;
 class VGrainlineItem;
@@ -67,6 +68,9 @@ public:
 
 signals:
     void Clicked(quint32 groupId);
+    /** @brief Right-click "Unlink all": dissolve the group. MainWindow runs the undo command
+     *  (the push removes this very holder, so it must not run inside this event handler). */
+    void UnlinkAllRequested(quint32 groupId);
 
 public slots:
     /** @brief Activate the clicked child (outline + resize handles), deactivate the rest
@@ -80,6 +84,7 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 private:
     void RefreshGrainline(const OPieceGroup &group, VContainer *data);

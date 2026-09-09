@@ -26,12 +26,17 @@
 
 #include "opiecegroupholderitem.h"
 
+#include <QAction>
+#include <QGraphicsSceneContextMenuEvent>
 #include <QGraphicsSceneMouseEvent>
+#include <QIcon>
+#include <QMenu>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUndoStack>
 
 #include "../vmisc/vabstractapplication.h"
+#include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vtools/tools/oannotationitem.h"
 #include "../vtools/tools/oinfoblockitem.h"
@@ -371,6 +376,62 @@ void OPieceGroupHolderItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         m_movedSincePress = false;
     }
     m_dragging = false;
+    event->accept();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceGroupHolderItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    // During the Link tool the holders are click-transparent: keep the pre-group behaviour
+    // (the right-click falls through to the member piece beneath) instead of showing a menu.
+    if (not (acceptedMouseButtons() & Qt::LeftButton))
+    {
+        event->ignore();
+        return;
+    }
+
+    // A group has a single canvas action for now: dissolving the link (mirror of the Pieces
+    // tree "Unlink all"). The right-click on a group must not fall through to a member's
+    // piece menu anymore — this holder owns the whole group frame.
+    QMenu menu;
+
+    // Icon: at rest the current theme variant; a highlighted row has a dark accent background
+    // in both themes, so under the cursor the glyph is always the dark (light-colored) variant.
+    const bool dark = VAbstractApplication::VApp()->Settings()->GetThemeMode() == VThemeMode::Dark;
+    const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
+    const QIcon restIcon(QStringLiteral(":/icons/%1/link-break_%1.svg").arg(theme));
+    const QIcon hoverIcon(QStringLiteral(":/icons/dark/link-break_dark.svg"));
+    QAction *unlinkAction = menu.addAction(restIcon, tr("Unlink all"));
+    unlinkAction->setProperty("restIcon", QVariant::fromValue(restIcon));
+    unlinkAction->setProperty("hoverIcon", QVariant::fromValue(hoverIcon));
+
+    // Explicit swap on hover: some styles paint QMenu icons without honoring the QIcon mode.
+    QAction *lastHovered = nullptr;
+    const auto applyHover = [&lastHovered](QAction *action) {
+        if (action == lastHovered)
+        {
+            return;
+        }
+        if (lastHovered != nullptr)
+        {
+            lastHovered->setIcon(lastHovered->property("restIcon").value<QIcon>());
+        }
+        lastHovered = action;
+        if (action != nullptr)
+        {
+            action->setIcon(action->property("hoverIcon").value<QIcon>());
+        }
+    };
+    connect(&menu, &QMenu::hovered, this, [&applyHover](QAction *action) { applyHover(action); });
+    connect(&menu, &QMenu::aboutToHide, this, [&applyHover]() { applyHover(nullptr); });
+
+    const QAction *selectedAction = menu.exec(event->screenPos());
+    if (selectedAction == unlinkAction)
+    {
+        // Deferred to MainWindow: the undo push removes this very holder from the scene, which
+        // cannot happen while its own event handler is still running.
+        emit UnlinkAllRequested(m_groupId);
+    }
     event->accept();
 }
 

@@ -26,7 +26,16 @@
 
 #include "onodeplacelabel.h"
 
+#include <QCoreApplication>
+#include <QGraphicsSceneContextMenuEvent>
+#include <QIcon>
+#include <QMenu>
+#include <QVariant>
+
 #include "../vgeometry/vplacelabelitem.h"
+#include "../vpatterndb/vcontainer.h"
+#include "../vtheme/vtheme.h"
+#include "../vtoolseamallowance.h"
 #include "../vwidgets/vgraphicssimpletextitem.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -70,4 +79,112 @@ void ONodePlaceLabel::UpdateFromLabel(quint32 labelId, const VPlaceLabelItem &la
     // VScenePoint::RefreshPointGeometry sets the scene position from the label coordinates, the
     // point-name text at mx/my and re-evaluates label visibility (zoom/settings) + leader line.
     RefreshPointGeometry(label);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ONodePlaceLabel::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    auto *piece = qgraphicsitem_cast<VToolSeamAllowance *>(parentItem());
+    const QSharedPointer<VPlaceLabelItem> label = piece != nullptr
+                                                      ? piece->getData()->GeometricObject<VPlaceLabelItem>(m_id)
+                                                      : QSharedPointer<VPlaceLabelItem>();
+    if (label.isNull())
+    {
+        event->accept();
+        return;
+    }
+
+    // The context menu of an internal-mark handle offers a single choice: the mark Type.
+    QMenu menu;
+
+    // Glyph: at rest the current theme variant; a highlighted row has a dark accent background in
+    // both themes, so under the cursor the check is swapped to the dark (light-colored) variant.
+    const bool dark = VTheme::ColorSheme() == VColorSheme::Dark;
+    const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
+    const auto themeIcon = [&theme](const QString &name) {
+        return QIcon(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, name));
+    };
+    const auto darkIcon = [](const QString &name) {
+        return QIcon(QStringLiteral(":/icons/dark/%1_dark.svg").arg(name));
+    };
+    const auto addType = [&menu, &themeIcon, &darkIcon](const QString &text, bool active) -> QAction *
+    {
+        QAction *action = menu.addAction(text);
+        if (active)
+        {
+            const QIcon check = themeIcon(QStringLiteral("check"));
+            action->setIcon(check);
+            action->setProperty("restIcon", QVariant::fromValue(check));
+            action->setProperty("hoverIcon", QVariant::fromValue(darkIcon(QStringLiteral("check"))));
+        }
+        return action;
+    };
+
+    // Same order and names as the dock page and the creation dialog (see ODetailsPlaceLabelWidget).
+    struct TypeEntry
+    {
+        PlaceLabelType type;
+        const char *name;
+    };
+    constexpr TypeEntry kTypes[] = {
+        {PlaceLabelType::Cross, "Cross"},
+        {PlaceLabelType::Segment, "Segment"},
+        {PlaceLabelType::Rectangle, "Rectangle"},
+        {PlaceLabelType::Tshaped, "T-shaped"},
+        {PlaceLabelType::Doubletree, "Doubletree"},
+        {PlaceLabelType::Corner, "Corner"},
+        {PlaceLabelType::Triangle, "Triangle"},
+        {PlaceLabelType::Hshaped, "H-shaped"},
+        {PlaceLabelType::Button, "Button"},
+        {PlaceLabelType::Circle, "Circle"},
+    };
+
+    const PlaceLabelType current = label->GetLabelType();
+    QAction *selectedAction = nullptr;
+    for (const TypeEntry &entry : kTypes)
+    {
+        QAction *action =
+            addType(QCoreApplication::translate("ODetailsPlaceLabelWidget", entry.name), current == entry.type);
+        action->setData(static_cast<int>(entry.type));
+    }
+
+    // Swap the glyph to its dark variant while its row is highlighted; restore on move/hide.
+    QAction *hoveredAction = nullptr;
+    const auto applyHover = [&hoveredAction](QAction *action)
+    {
+        if (action == hoveredAction)
+        {
+            return;
+        }
+        if (hoveredAction != nullptr)
+        {
+            const QVariant rest = hoveredAction->property("restIcon");
+            if (rest.isValid())
+            {
+                hoveredAction->setIcon(rest.value<QIcon>());
+            }
+        }
+        hoveredAction = action;
+        if (action != nullptr)
+        {
+            const QVariant hover = action->property("hoverIcon");
+            if (hover.isValid())
+            {
+                action->setIcon(hover.value<QIcon>());
+            }
+        }
+    };
+    QObject::connect(&menu, &QMenu::hovered, [&applyHover](QAction *action) { applyHover(action); });
+    QObject::connect(&menu, &QMenu::aboutToHide, [&applyHover]() { applyHover(nullptr); });
+
+    selectedAction = menu.exec(event->screenPos());
+    if (selectedAction != nullptr)
+    {
+        const auto type = static_cast<PlaceLabelType>(selectedAction->data().toInt());
+        if (type != current)
+        {
+            piece->ChangePlaceLabelType(m_id, static_cast<int>(type));
+        }
+    }
+    event->accept();
 }

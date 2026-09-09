@@ -34,6 +34,7 @@
 #include "../vmisc/typedef.h"
 #include "../vwidgets/vscenepoint.h"
 
+class QGraphicsSceneContextMenuEvent;
 class VPlaceLabelItem;
 
 /**
@@ -67,6 +68,7 @@ public:
 
 protected:
     auto itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant override;
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 private:
     Q_DISABLE_COPY_MOVE(ONodePlaceLabel) // NOLINT

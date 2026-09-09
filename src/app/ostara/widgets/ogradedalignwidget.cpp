@@ -207,6 +207,11 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
         m_alignHBtns[i]->setMinimumWidth(maxAlignWidth);
         m_alignVBtns[i]->setMinimumWidth(maxAlignWidth);
     }
+
+    // The model default is center/center (VPiece::m_gradedAlignH/V = 2): show it
+    // selected instead of leaving the six buttons unchecked until a caller sets a value.
+    SetAlignH(2);
+    SetAlignV(2);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

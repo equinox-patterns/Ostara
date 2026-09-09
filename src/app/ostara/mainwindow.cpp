@@ -81,6 +81,7 @@
 #include "../vtools/tools/oinfoblockitem.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/undocommands/undoattachment.h"
+#include "../vtools/undocommands/unlinkpiecegroup.h"
 #include "../vwidgets/vgrainlineitem.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vtools/tools/vabstracttool.h"
@@ -1345,6 +1346,34 @@ void MainWindow::RefreshGroupHolders()
                 // group was never visually active (unlike a selected piece).
                 m_dockManager->detailsWidget()->SelectDetail(groupId);
             });
+            // Canvas right-click on a group → single action "Unlink all" (mirror of the Pieces
+            // tree menu). Queued: the undo push deletes this very holder while it is handling
+            // its own context-menu event, so the request must run after that handler returns.
+            connect(holder, &OPieceGroupHolderItem::UnlinkAllRequested, this,
+                    [this](quint32 groupId)
+            {
+                // Mirror VWidgetDetails::UnlinkGroup: remember the members, push the undo
+                // command, then restore each member's own children and refresh the tree.
+                const auto *groups = pattern->DataPieceGroups();
+                QVector<quint32> memberIds;
+                if (groups != nullptr && groups->contains(groupId))
+                {
+                    memberIds = groups->value(groupId).pieceIds;
+                }
+
+                auto *unlinkCommand = new UnlinkPieceGroup(groupId, doc, pattern);
+                VAbstractApplication::VApp()->getUndoStack()->push(unlinkCommand);
+
+                for (quint32 pieceId : memberIds)
+                {
+                    auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
+                    if (tool != nullptr)
+                    {
+                        tool->RefreshGroupedChildren();
+                    }
+                }
+                m_dockManager->detailsWidget()->UpdateList();
+            }, Qt::QueuedConnection);
             m_groupHolders.insert(git.key(), holder);
         }
         holder->Refresh(git.value(), doc, pattern);
