@@ -2530,26 +2530,47 @@ auto VAbstractPiece::SeamAllowanceMirrorLine(const QLineF &seamMirrorLine,
     auto rec = QRectF(0, 0, INT_MAX, INT_MAX);
     rec.translate(-INT_MAX / 2.0, -INT_MAX / 2.0);
 
-    auto axis =
-        QLineF(seamMirrorLine.center(), VGObject::BuildRay(seamMirrorLine.center(), seamMirrorLine.angle() + 180, rec));
+    const QPointF center = seamMirrorLine.center();
+
+    // When a fold edge has a true-zero seam allowance, the seam allowance polygon coincides with the fold
+    // axis over that whole edge. The axis ray then "crosses" the polygon at many points lying on the fold
+    // itself, and CurveIntersectLine may return an interior point of the fold instead of the outer corner
+    // of the seam allowance (bug: unfolded piece collapsed to the zero-margin trace). Pick the farthest
+    // crossing on each side — it is the true extent of the seam allowance along the fold axis.
+    auto FarthestIntersection = [center](const QVector<QPointF> &intersections) -> QPointF
+    {
+        qreal maxLength = -1;
+        QPointF farthest;
+        for (const QPointF &p : intersections)
+        {
+            const qreal length = QLineF(center, p).length();
+            if (length > maxLength)
+            {
+                maxLength = length;
+                farthest = p;
+            }
+        }
+        return farthest;
+    };
 
     QVector<QPointF> points = seamAllowancePoints;
 
+    QLineF axis(center, VGObject::BuildRay(center, seamMirrorLine.angle() + 180, rec));
     QVector<QPointF> intersections = VAbstractCurve::CurveIntersectLine(points, axis);
     if (intersections.isEmpty())
     {
         return {};
     }
 
-    const QPointF startPoint = intersections.constFirst();
+    const QPointF startPoint = FarthestIntersection(intersections);
 
     std::reverse(points.begin(), points.end());
-    axis = QLineF(seamMirrorLine.center(), VGObject::BuildRay(seamMirrorLine.center(), seamMirrorLine.angle(), rec));
+    axis = QLineF(center, VGObject::BuildRay(center, seamMirrorLine.angle(), rec));
     intersections = VAbstractCurve::CurveIntersectLine(points, axis);
     if (intersections.isEmpty())
     {
         return {};
     }
 
-    return {startPoint, intersections.constFirst()};
+    return {startPoint, FarthestIntersection(intersections)};
 }

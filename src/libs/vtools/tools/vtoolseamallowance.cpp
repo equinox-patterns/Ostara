@@ -3343,7 +3343,12 @@ auto VToolSeamAllowance::IsFoldLinePositionValid(const QVector<QPainterPath> &sh
         : CastTo(detail.FullMainPathPoints(getData()), contourPoints);
 
     const QPainterPath contourPath = VGObject::PainterPath(contourPoints);
-    return contourPath.contains(foldLinePath);
+    // A fold mark legitimately touches the piece contour: on a piece to cut on the fold its two ends sit
+    // exactly on the seam allowance outline (the fold axis extremes). QPainterPath::contains() is strict —
+    // a path touching the boundary counts as outside — so it would flag every such piece as invalid. Accept
+    // any mark that is inside or at least overlaps the contour; only a fold line clearly detached from the
+    // piece is reported as not valid.
+    return contourPath.contains(foldLinePath) || contourPath.intersects(foldLinePath);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
