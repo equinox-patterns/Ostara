@@ -242,7 +242,7 @@ private:
     template <typename T> static auto MakeTurnPoint(const QPointF &p) -> T;
 
     template <class T>
-    static auto CorrectSAMirrolLine(const QVector<T> &points, const QLineF &mirrorLine, bool &reverse) -> QLineF;
+    static auto CorrectSAMirrorLine(const QVector<T> &points, const QLineF &mirrorLine, bool &reverse) -> QLineF;
 };
 
 Q_DECLARE_TYPEINFO(VAbstractPiece, Q_MOVABLE_TYPE); // NOLINT
@@ -867,7 +867,7 @@ inline auto VAbstractPiece::FullSeamAllowancePath(const QVector<T> &points,
     }
 
     bool reverse = false;
-    mirrorLine = CorrectSAMirrolLine(points, mirrorLine, reverse);
+    mirrorLine = CorrectSAMirrorLine(points, mirrorLine, reverse);
 
     QVector<T> sub1;
     QVector<T> sub2;
@@ -883,9 +883,6 @@ inline auto VAbstractPiece::FullSeamAllowancePath(const QVector<T> &points,
             : qWarning() << VAbstractApplication::warningMessageSignature + errorMsg;
         return points;
     }
-
-    QVector<QPointF> subPath;
-    CastTo(sub2, subPath);
 
     std::reverse(sub2.begin(), sub2.end());
 
@@ -960,7 +957,7 @@ template <typename T> auto VAbstractPiece::MapPoint(T obj, const QTransform &mat
 
 //---------------------------------------------------------------------------------------------------------------------
 template <class T>
-inline auto VAbstractPiece::CorrectSAMirrolLine(const QVector<T> &points, const QLineF &mirrorLine, bool &reverse)
+inline auto VAbstractPiece::CorrectSAMirrorLine(const QVector<T> &points, const QLineF &mirrorLine, bool &reverse)
     -> QLineF
 {
     if (points.isEmpty() || points.size() < 2)

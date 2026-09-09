@@ -2533,24 +2533,45 @@ auto VAbstractPiece::SeamAllowanceMirrorLine(const QLineF &seamMirrorLine,
     const QPointF center = seamMirrorLine.center();
 
     // When a fold edge has a true-zero seam allowance, the seam allowance polygon coincides with the fold
-    // axis over that whole edge. The axis ray then "crosses" the polygon at many points lying on the fold
-    // itself, and CurveIntersectLine may return an interior point of the fold instead of the outer corner
-    // of the seam allowance (bug: unfolded piece collapsed to the zero-margin trace). Pick the farthest
-    // crossing on each side — it is the true extent of the seam allowance along the fold axis.
-    auto FarthestIntersection = [center](const QVector<QPointF> &intersections) -> QPointF
+    // axis over that whole edge: the fold midpoint lies ON a polygon edge. The axis ray then "crosses" the
+    // polygon at many points on the fold itself, and CurveIntersectLine may return an interior point of the
+    // fold instead of the outer corner of the seam allowance (bug: unfolded piece collapsed to the
+    // zero-margin trace). Detect that degenerate case and pick the farthest crossing on each side — the
+    // true extent of the seam allowance along the fold. For an ordinary mirror (axis through the interior
+    // of a full piece) keep the historical nearest crossing so the two halves join on the correct side.
+    auto axisLiesOnSeamAllowance = [center, &seamAllowancePoints]() -> bool
     {
-        qreal maxLength = -1;
-        QPointF farthest;
-        for (const QPointF &p : intersections)
+        for (auto i = 0; i < seamAllowancePoints.size() - 1; ++i)
         {
-            const qreal length = QLineF(center, p).length();
-            if (length > maxLength)
+            if (IsPointOnLineviaPDP(center, seamAllowancePoints.at(i), seamAllowancePoints.at(i + 1),
+                                    accuracyPointOnLine * 2))
             {
-                maxLength = length;
-                farthest = p;
+                return true;
             }
         }
-        return farthest;
+        return false;
+    };
+
+    const bool degenerateFold = axisLiesOnSeamAllowance();
+
+    auto SelectIntersection = [degenerateFold, center](const QVector<QPointF> &intersections) -> QPointF
+    {
+        if (degenerateFold)
+        {
+            qreal maxLength = -1;
+            QPointF farthest;
+            for (const QPointF &p : intersections)
+            {
+                const qreal length = QLineF(center, p).length();
+                if (length > maxLength)
+                {
+                    maxLength = length;
+                    farthest = p;
+                }
+            }
+            return farthest;
+        }
+        return intersections.constFirst();
     };
 
     QVector<QPointF> points = seamAllowancePoints;
@@ -2562,7 +2583,7 @@ auto VAbstractPiece::SeamAllowanceMirrorLine(const QLineF &seamMirrorLine,
         return {};
     }
 
-    const QPointF startPoint = FarthestIntersection(intersections);
+    const QPointF startPoint = SelectIntersection(intersections);
 
     std::reverse(points.begin(), points.end());
     axis = QLineF(center, VGObject::BuildRay(center, seamMirrorLine.angle(), rec));
@@ -2572,5 +2593,5 @@ auto VAbstractPiece::SeamAllowanceMirrorLine(const QLineF &seamMirrorLine,
         return {};
     }
 
-    return {startPoint, FarthestIntersection(intersections)};
+    return {startPoint, SelectIntersection(intersections)};
 }

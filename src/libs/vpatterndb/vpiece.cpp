@@ -105,6 +105,25 @@ void AddRegularPoint(const VContainer *data,
         {
             ekvPoint.SetSABefore(0);
         }
+        else
+        {
+            // A fold modelled with intermediate collinear nodes must stay at width 0 over its whole run,
+            // not only at p1/p2: zero both sides for any point lying on the fold segment.
+            const QPointF direction = mirrorLine.p2() - mirrorLine.p1();
+            const qreal lengthSquared = QPointF::dotProduct(direction, direction);
+            if (lengthSquared > 0)
+            {
+                const QPointF fromStart = ekvPoint.ToQPointF() - mirrorLine.p1();
+                const qreal t = QPointF::dotProduct(fromStart, direction) / lengthSquared;
+                const QPointF projection = mirrorLine.p1() + direction * t;
+                if (t > -0.01 && t < 1.01
+                    && QLineF(ekvPoint.ToQPointF(), projection).length() <= accuracyPointOnLine * 2)
+                {
+                    ekvPoint.SetSAAfter(0);
+                    ekvPoint.SetSABefore(0);
+                }
+            }
+        }
     }
 
     pointsEkv.append(ekvPoint);
@@ -518,15 +537,40 @@ auto VPiece::PlaceLabelPath(const VContainer *data) const -> QPainterPath
 //---------------------------------------------------------------------------------------------------------------------
 auto VPiece::IsSeamAllowanceValid(const VContainer *data) const -> bool
 {
-    if (IsSeamAllowance() && not IsSeamAllowanceBuiltIn() && !IsTrueZeroWidth())
+    if (IsSeamAllowance() && not IsSeamAllowanceBuiltIn())
     {
-        QVector<QPointF> mainPathPoints;
-        CastTo<QPointF>(UniteMainPathPoints(data), mainPathPoints);
+        if (!IsTrueZeroWidth())
+        {
+            QVector<QPointF> mainPathPoints;
+            CastTo<QPointF>(UniteMainPathPoints(data), mainPathPoints);
 
+            QVector<QPointF> seamAllowancePoints;
+            CastTo<QPointF>(SeamAllowancePoints(data), seamAllowancePoints);
+
+            return VAbstractPiece::IsAllowanceValid(mainPathPoints, seamAllowancePoints);
+        }
+
+        // True zero: the strict IsAllowanceValid() test cannot run because a zero seam allowance puts the
+        // seam path ON the seam allowance outline, which IsInsidePolygon() rejects. Keep the guards that
+        // still matter: the seam allowance must remain a usable polygon, and an explicitly unfolded piece
+        // must resolve to a real full outline — not silently collapse to the ~4-point zero-margin trace
+        // (the seam-allowance mirror line truncation bug).
         QVector<QPointF> seamAllowancePoints;
         CastTo<QPointF>(SeamAllowancePoints(data), seamAllowancePoints);
+        if (seamAllowancePoints.size() < 3)
+        {
+            return false;
+        }
 
-        return VAbstractPiece::IsAllowanceValid(mainPathPoints, seamAllowancePoints);
+        if (IsShowFullPiece())
+        {
+            QVector<QPointF> fullSeamAllowance;
+            CastTo<QPointF>(FullSeamAllowancePoints(data), fullSeamAllowance);
+            if (fullSeamAllowance.size() < 4)
+            {
+                return false;
+            }
+        }
     }
 
     return true;
@@ -1222,17 +1266,36 @@ auto VPiece::GetNodeSAPoints(const QVector<VPieceNode> &path, vsizetype index, c
     const VPieceNode &node = path.at(index);
     QVector<VSAPoint> points;
 
+    // The seam allowance contour zeroes the fold edge at the mirror endpoints (BuildSeamAllowancePoints /
+    // AddRegularPoint). The passmark SA points must use the same zeroed widths, otherwise a notch sitting on
+    // the fold sees a global width on the fold side and its base points away from the real (zero) outline.
+    const QLineF mirrorLine = SeamMirrorLine(data);
+
     if (node.GetTypeTool() == Tool::NodePoint)
     {
-        points.append(VPiecePath::PreparePointEkv(node, data));
+        VSAPoint ekvPoint = VPiecePath::PreparePointEkv(node, data);
+
+        if (!mirrorLine.isNull())
+        {
+            if (VFuzzyComparePoints(ekvPoint, mirrorLine.p1()))
+            {
+                ekvPoint.SetSAAfter(0);
+            }
+            else if (VFuzzyComparePoints(ekvPoint, mirrorLine.p2()))
+            {
+                ekvPoint.SetSABefore(0);
+            }
+        }
+
+        points.append(ekvPoint);
     }
     else
     {
         const QSharedPointer<VAbstractCurve> curve = data->GeometricObject<VAbstractCurve>(node.GetId());
         const qreal width = ToPixel(GetSAWidth(), *data->GetPatternUnit());
 
-        points += VPiecePath::CurveSeamAllowanceSegment(data, path, curve, index, node.GetReverse(), width, QLineF(),
-                                                        GetName());
+        points += VPiecePath::CurveSeamAllowanceSegment(data, path, curve, index, node.GetReverse(), width,
+                                                        mirrorLine, GetName());
     }
     return points;
 }

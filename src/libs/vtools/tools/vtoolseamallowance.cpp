@@ -3328,27 +3328,58 @@ auto VToolSeamAllowance::IsFoldLinePositionValid(const QVector<QPainterPath> &sh
         return true;
     }
 
-    QPainterPath foldLinePath;
-    foldLinePath.addPath(shape.constFirst());
+    const VPiece detail = VAbstractTool::data.GetPiece(m_id);
 
-    if (shape.size() > 1)
+    // Judge the fold by its axis, not by the filled area of the drawn glyph. On a piece to cut on the fold
+    // the two extremes of the axis sit exactly on the seam allowance outline; testing the area would flag
+    // them as "outside" (strict QPainterPath::contains) or, for pure-stroke marks (ThreeX), treat them as
+    // having no area at all (QPainterPath::intersects). The axis must simply lie on/inside the cut contour.
+    QLineF const axis = detail.IsHideMainPath() ? detail.SeamAllowanceMirrorLine(getData())
+                                                : detail.SeamMirrorLine(getData());
+    if (axis.isNull())
     {
-        foldLinePath.addPath(shape.constLast());
+        return true;
     }
 
-    const VPiece detail = VAbstractTool::data.GetPiece(m_id);
     QVector<QPointF> contourPoints;
     detail.IsSeamAllowance() && not detail.IsSeamAllowanceBuiltIn()
         ? CastTo(detail.FullSeamAllowancePoints(getData()), contourPoints)
         : CastTo(detail.FullMainPathPoints(getData()), contourPoints);
 
-    const QPainterPath contourPath = VGObject::PainterPath(contourPoints);
-    // A fold mark legitimately touches the piece contour: on a piece to cut on the fold its two ends sit
-    // exactly on the seam allowance outline (the fold axis extremes). QPainterPath::contains() is strict —
-    // a path touching the boundary counts as outside — so it would flag every such piece as invalid. Accept
-    // any mark that is inside or at least overlaps the contour; only a fold line clearly detached from the
-    // piece is reported as not valid.
-    return contourPath.contains(foldLinePath) || contourPath.intersects(foldLinePath);
+    const QPolygonF contour(contourPoints);
+    if (contour.size() < 3)
+    {
+        return true; // no usable contour to judge against
+    }
+
+    constexpr qreal boundaryTolerance = accuracyPointOnLine * 2;
+
+    auto NearContour = [&contour](const QPointF &point, qreal tolerance) -> bool
+    {
+        if (contour.containsPoint(point, Qt::WindingFill))
+        {
+            return true;
+        }
+
+        for (int i = 0; i < contour.size(); ++i)
+        {
+            const QLineF segment(contour.at(i), contour.at((i + 1) % contour.size()));
+            if (segment.isNull())
+            {
+                continue;
+            }
+            if (QLineF(point, VGObject::ClosestPoint(segment, point)).length() <= tolerance)
+            {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    // The axis endpoints are the fold line extremes: they must sit on the cut contour (or inside it), and
+    // the axis must cross the piece, not just touch two separate boundary points of a concave outline.
+    return NearContour(axis.p1(), boundaryTolerance) && NearContour(axis.p2(), boundaryTolerance)
+        && NearContour(axis.center(), boundaryTolerance);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

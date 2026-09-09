@@ -48,9 +48,9 @@ class VSAPoint final : public VLayoutPoint
 public:
     constexpr VSAPoint() noexcept;
 
-    constexpr VSAPoint(qreal xpos, qreal ypos);
-    constexpr explicit VSAPoint(QPointF p);
-    constexpr explicit VSAPoint(const VLayoutPoint &p);
+    constexpr VSAPoint(qreal xpos, qreal ypos) noexcept;
+    constexpr explicit VSAPoint(QPointF p) noexcept;
+    constexpr explicit VSAPoint(const VLayoutPoint &p) noexcept;
 
     constexpr auto GetSABefore() const -> qreal;
     constexpr auto GetSAAfter() const -> qreal;
@@ -124,19 +124,19 @@ constexpr VSAPoint::VSAPoint() noexcept // NOLINT(hicpp-use-equals-default, mode
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-constexpr VSAPoint::VSAPoint(qreal xpos, qreal ypos)
+constexpr VSAPoint::VSAPoint(qreal xpos, qreal ypos) noexcept
   : VLayoutPoint(xpos, ypos)
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-constexpr VSAPoint::VSAPoint(QPointF p)
+constexpr VSAPoint::VSAPoint(QPointF p) noexcept
   : VLayoutPoint(p)
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-constexpr VSAPoint::VSAPoint(const VLayoutPoint &p)
+constexpr VSAPoint::VSAPoint(const VLayoutPoint &p) noexcept
   : VLayoutPoint(p)
 {
 }
