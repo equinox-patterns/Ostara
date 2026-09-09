@@ -40,6 +40,7 @@
 #include "vabstractapplication.h"
 #include "vvalentinasettings.h"
 #include "oclickselectallfilter.h"
+#include "odecimalseparatorfilter.h"
 
 #include <QMessageBox> // For QT_REQUIRE_VERSION
 #include <QTimer>
@@ -165,6 +166,9 @@ auto main(int argc, char *argv[]) -> int
 
     // Select all text on a single click in every QLineEdit / QTextEdit / QPlainTextEdit.
     OClickSelectAllFilter::InstallOnApplication();
+
+    // A typed decimal comma (',') becomes '.' in every editable text field: "0,3" is valid everywhere.
+    ODecimalSeparatorFilter::InstallOnApplication();
 
     VAbstractApplication::LogScreenInfo();
 

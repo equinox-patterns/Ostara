@@ -11735,6 +11735,149 @@ Voulez-vous le remplacer ?</translation>
     </message>
 </context>
 <context>
+    <name>ODetailsNodeWidget</name>
+    <message>
+        <source>Passmark</source>
+        <translation>Cran d'assemblage</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>Type</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation>Angle</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>Aucun</translation>
+    </message>
+    <message>
+        <source>One line</source>
+        <translation>Un trait</translation>
+    </message>
+    <message>
+        <source>Two lines</source>
+        <translation>Deux traits</translation>
+    </message>
+    <message>
+        <source>Three lines</source>
+        <translation>Trois traits</translation>
+    </message>
+    <message>
+        <source>T mark</source>
+        <translation>En forme de T</translation>
+    </message>
+    <message>
+        <source>External V mark</source>
+        <translation>Marque en V externe</translation>
+    </message>
+    <message>
+        <source>Internal V mark</source>
+        <translation>Marque en V interne</translation>
+    </message>
+    <message>
+        <source>U mark</source>
+        <translation>En forme de U</translation>
+    </message>
+    <message>
+        <source>Box mark</source>
+        <translation>Rectangle</translation>
+    </message>
+    <message>
+        <source>Check mark</source>
+        <translation>En forme de coche</translation>
+    </message>
+    <message>
+        <source>Straightforward</source>
+        <translation>Tout droit</translation>
+    </message>
+    <message>
+        <source>Bisector</source>
+        <translation>Bissectrice</translation>
+    </message>
+    <message>
+        <source>Intersection</source>
+        <translation>Intersection</translation>
+    </message>
+    <message>
+        <source>Intersection (only left)</source>
+        <translation>Intersection (seulement à gauche)</translation>
+    </message>
+    <message>
+        <source>Intersection (only right)</source>
+        <translation>Intersection (seulement à droite)</translation>
+    </message>
+    <message>
+        <source>Intersection 2</source>
+        <translation>Intersection 2</translation>
+    </message>
+    <message>
+        <source>Intersection 2 (only left)</source>
+        <translation>Intersection 2 (seulement à gauche)</translation>
+    </message>
+    <message>
+        <source>Intersection 2 (only right)</source>
+        <translation>Intersection 2 (seulement à droite)</translation>
+    </message>
+    <message>
+        <source>Show the second passmark on seam line</source>
+        <translation>Afficher le second cran d'assemblage sur la ligne de couture</translation>
+    </message>
+    <message>
+        <source>Manual passmark length</source>
+        <translation>Longueur manuelle du cran d'assemblage</translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation>Longueur</translation>
+    </message>
+    <message>
+        <source>Visibility</source>
+        <translation>Visibilité</translation>
+    </message>
+    <message>
+        <source>1 = visible, 0 = invisible, formulas allowed</source>
+        <translation>1 = visible, 0 = invisible, formules autorisées</translation>
+    </message>
+    <message>
+        <source>Seam allowance angle</source>
+        <translation>Equerrage de la marge de couture</translation>
+    </message>
+    <message>
+        <source>By length</source>
+        <translation>Suivant longueur</translation>
+    </message>
+    <message>
+        <source>By points intersection</source>
+        <translation>Suivant points d'intersections</translation>
+    </message>
+    <message>
+        <source>By first edge symmetry</source>
+        <translation>Par symétrie au premier côté</translation>
+    </message>
+    <message>
+        <source>By second edge symmetry</source>
+        <translation>Par symétrie au second côté</translation>
+    </message>
+    <message>
+        <source>By first edge right angle</source>
+        <translation>Par angle droit au premier côté</translation>
+    </message>
+    <message>
+        <source>By second edge right angle</source>
+        <translation>Par angle droit au second côté</translation>
+    </message>
+    <message>
+        <source>Edit expression</source>
+        <translation>Modifier l'expression</translation>
+    </message>
+    <message>
+        <source>Not Mirrored</source>
+        <translation>Ne pas reproduire en miroir</translation>
+    </message>
+</context>
+<context>
     <name>ODetailsPieceWidget</name>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="377"/>

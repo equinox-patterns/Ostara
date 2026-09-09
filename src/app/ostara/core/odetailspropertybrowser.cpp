@@ -27,6 +27,7 @@
 #include "odetailspropertybrowser.h"
 
 #include "odetailsgroupwidget.h"
+#include "odetailsnodewidget.h"
 #include "odetailsplacelabelwidget.h"
 #include "odetailspiecewidget.h"
 #include "opatterninfowidget.h"
@@ -86,6 +87,10 @@ ODetailsPropertyBrowser::ODetailsPropertyBrowser(QWidget *parent)
     m_placeLabelWidget = new ODetailsPlaceLabelWidget(m_stack);
     m_stack->addWidget(m_placeLabelWidget);
 
+    // Contour node page — the contextual property browser of a clicked piece contour (main path) node.
+    m_nodeWidget = new ODetailsNodeWidget(m_stack);
+    m_stack->addWidget(m_nodeWidget);
+
     // Re-emit piece widget signals through the browser.
     connect(m_pieceWidget, &ODetailsPieceWidget::ShowStatusTip, this, &ODetailsPropertyBrowser::ShowStatusTip);
     connect(m_pieceWidget, &ODetailsPieceWidget::HighlightNode, this, &ODetailsPropertyBrowser::HighlightNode);
@@ -125,12 +130,14 @@ void ODetailsPropertyBrowser::RetranslateUI()
     m_patternInfoWidget->RetranslateUI();
     m_pieceWidget->RetranslateUI();
     m_placeLabelWidget->RetranslateUI();
+    m_nodeWidget->RetranslateUI();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPropertyBrowser::ShowEmpty()
 {
     // Leaving the piece page: the internal path highlight only lives while its tab is shown.
+    ClearNodeHighlight();
     m_pieceWidget->ClearInternalPathActivation();
     m_stack->setCurrentIndex(0);
 }
@@ -138,6 +145,7 @@ void ODetailsPropertyBrowser::ShowEmpty()
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPropertyBrowser::Clear()
 {
+    ClearNodeHighlight();
     m_pieceWidget->Clear();
     m_groupWidget->Clear();
     m_stack->setCurrentIndex(0);
@@ -146,6 +154,7 @@ void ODetailsPropertyBrowser::Clear()
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPropertyBrowser::ShowPieceOptions(VToolSeamAllowance *tool)
 {
+    ClearNodeHighlight();
     m_pieceWidget->Show(tool);
     m_stack->setCurrentWidget(m_pieceWidget);
 }
@@ -159,6 +168,7 @@ void ODetailsPropertyBrowser::ShowGroupOptions(quint32 groupId, VContainer *data
     {
         return;
     }
+    ClearNodeHighlight();
     m_groupWidget->Show(groupId, data, doc);
     // Leaving the piece page: drop any active internal path highlight.
     m_pieceWidget->ClearInternalPathActivation();
@@ -186,10 +196,38 @@ void ODetailsPropertyBrowser::ShowAnnotationsTab()
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPropertyBrowser::ShowPlaceLabelOptions(VToolSeamAllowance *piece, quint32 labelId)
 {
+    ClearNodeHighlight();
     m_placeLabelWidget->Show(piece, labelId);
     // Leaving the piece page: drop any active internal path highlight.
     m_pieceWidget->ClearInternalPathActivation();
     m_stack->setCurrentWidget(m_placeLabelWidget);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::ShowNodeOptions(VToolSeamAllowance *piece, quint32 nodeId)
+{
+    if (!m_nodeWidget->Show(piece, nodeId))
+    {
+        // Not a contour (main path) node of this piece — show the piece page instead.
+        ShowPieceOptions(piece);
+        return;
+    }
+    // Leaving the piece page: drop any active internal path highlight.
+    m_pieceWidget->ClearInternalPathActivation();
+    // Keep the edited contour point highlighted (orange) while its page is open.
+    m_highlightedNodeId = nodeId;
+    emit HighlightNode(nodeId, true);
+    m_stack->setCurrentWidget(m_nodeWidget);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::ClearNodeHighlight()
+{
+    if (m_highlightedNodeId != 0)
+    {
+        emit HighlightNode(m_highlightedNodeId, false);
+        m_highlightedNodeId = 0;
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

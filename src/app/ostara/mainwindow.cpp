@@ -993,6 +993,42 @@ void MainWindow::InitDocksContain()
             return;
         }
 
+        // A piece contour node opens its own property browser, like a place label handle.
+        QGraphicsItem *nodeProbe = pItem;
+        VNodePoint *nodeItem = nullptr;
+        while (nodeProbe != nullptr && (nodeItem = qgraphicsitem_cast<VNodePoint *>(nodeProbe)) == nullptr)
+        {
+            nodeProbe = nodeProbe->parentItem();
+        }
+        if (nodeItem != nullptr)
+        {
+            QGraphicsItem *owner = nodeItem->parentItem();
+            while (owner != nullptr && qgraphicsitem_cast<VToolSeamAllowance *>(owner) == nullptr)
+            {
+                owner = owner->parentItem();
+            }
+            if (auto *pieceOwner = qgraphicsitem_cast<VToolSeamAllowance *>(owner); pieceOwner != nullptr)
+            {
+                // Keep node clicks for the node-picking workflows (link, foldline, passmark, custom SA).
+                const auto *options = m_dockManager->detailsOptions();
+                const bool picking =
+                    (options != nullptr &&
+                     (options->IsSelectingPassmarkPoints() || options->IsSelectingFoldLinePoints() ||
+                      options->IsSelectingGroupFoldLinePoints() || options->IsSelectingSAPoints())) ||
+                    (m_dockManager->detailsWidget() != nullptr &&
+                     (m_dockManager->detailsWidget()->IsSelectingLinkPieces() ||
+                      m_dockManager->detailsWidget()->IsSelectingLinkNode()));
+                if (!picking)
+                {
+                    // Select the piece (dock context), then open the clicked node's own PB page.
+                    // Non-contour nodes fall back to the piece page inside ShowNodeOptions.
+                    doc->SelectedDetail(pieceOwner->getId());
+                    m_dockManager->detailsOptions()->ShowNodeOptions(pieceOwner, nodeItem->getId());
+                }
+            }
+            return;
+        }
+
         VToolSeamAllowance *piece = qgraphicsitem_cast<VToolSeamAllowance *>(pItem);
         if (piece == nullptr && pItem != nullptr)
         {

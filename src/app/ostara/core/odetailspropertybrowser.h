@@ -34,6 +34,7 @@
 class QDockWidget;
 class QStackedWidget;
 class ODetailsGroupWidget;
+class ODetailsNodeWidget;
 class ODetailsPlaceLabelWidget;
 class ODetailsPieceWidget;
 class OPatternInfoWidget;
@@ -62,6 +63,8 @@ public:
     void ShowAnnotationsTab();
     /** @brief Shows the property page of a clicked place label (an "internal mark"). */
     void ShowPlaceLabelOptions(VToolSeamAllowance *piece, quint32 labelId);
+    /** @brief Shows the property page of a clicked piece contour (main path) node. */
+    void ShowNodeOptions(VToolSeamAllowance *piece, quint32 nodeId);
     void Clear();
 
     /** @brief If the piece page is the current page, repopulate it after a full parse recreated
@@ -98,13 +101,18 @@ signals:
     void InternalPathHighlight(quint32 pieceId, quint32 pathId, bool highlight);
 
 private:
+    /** @brief Turns off the highlighted contour node when leaving its page. */
+    void ClearNodeHighlight();
+
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(ODetailsPropertyBrowser) // NOLINT
 
     QStackedWidget *m_stack{nullptr};
+    quint32 m_highlightedNodeId{0};
     ODetailsPieceWidget *m_pieceWidget{nullptr};
     ODetailsGroupWidget *m_groupWidget{nullptr};
     ODetailsPlaceLabelWidget *m_placeLabelWidget{nullptr};
+    ODetailsNodeWidget *m_nodeWidget{nullptr};
     OPatternInfoWidget *m_patternInfoWidget{nullptr};
     QScrollArea *m_scroll{nullptr};
 };
