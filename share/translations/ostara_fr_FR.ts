@@ -12048,7 +12048,23 @@ Voulez-vous le remplacer ?</translation>
         <source>Choose Passmark Type</source>
         <translation>Choisir le type de cran d&apos;assemblage</translation>
     </message>
-</context>
+    <message>
+            <source>Forbid flipping</source>
+            <translation>Interdire le placement en miroir</translation>
+        </message>
+        <message>
+            <source>Force flipping</source>
+            <translation>Forcer le placement en miroir</translation>
+        </message>
+        <message>
+            <source>Symmetrical copy</source>
+            <translation>Copie symétrique</translation>
+        </message>
+        <message>
+            <source>Follow grainline</source>
+            <translation>Respecter le droit-fil</translation>
+        </message>
+    </context>
 <context>
     <name>ODetailsPlaceLabelWidget</name>
     <message>
@@ -13571,7 +13587,11 @@ Cette action ne peut pas être annulée.</translation>
         <source>Move piece group</source>
         <translation>Déplacer le groupe de pièces</translation>
     </message>
-</context>
+    <message>
+            <source>Unlink all</source>
+            <translation>Tout délier</translation>
+        </message>
+    </context>
 <context>
     <name>OPieceInfoWidget</name>
     <message>
@@ -13719,7 +13739,23 @@ Cette action ne peut pas être annulée.</translation>
         <source>On fold</source>
         <translation>Au pli</translation>
     </message>
-</context>
+    <message>
+            <source>Forbid flipping</source>
+            <translation>Interdire le placement en miroir</translation>
+        </message>
+        <message>
+            <source>Force flipping</source>
+            <translation>Forcer le placement en miroir</translation>
+        </message>
+        <message>
+            <source>Symmetrical copy</source>
+            <translation>Copie symétrique</translation>
+        </message>
+        <message>
+            <source>Follow grainline</source>
+            <translation>Respecter le droit-fil</translation>
+        </message>
+    </context>
 <context>
     <name>OToolCurve</name>
     <message>
@@ -19942,7 +19978,11 @@ Voulez-vous continuer ?</translation>
         <source>Turn point</source>
         <translation>Point de changement de direction</translation>
     </message>
-</context>
+    <message>
+            <source>Turn point (for DXF)</source>
+            <translation>Point de changement de direction (pour DXF)</translation>
+        </message>
+    </context>
 <context>
     <name>VPApplication</name>
     <message>
@@ -23742,7 +23782,31 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <source>Tool was used after deleting.</source>
         <translation>L&apos;outil a été utilisé après suppression.</translation>
     </message>
-</context>
+    <message>
+            <source>Cannot calculate fold line height for piece '%1'. Reason: %2.</source>
+            <translation>Impossible de calculer la hauteur de la ligne de pli pour la pièce « %1 ». Raison : %2.</translation>
+        </message>
+        <message>
+            <source>Cannot calculate fold line width for piece '%1'. Reason: %2.</source>
+            <translation>Impossible de calculer la largeur de la ligne de pli pour la pièce « %1 ». Raison : %2.</translation>
+        </message>
+        <message>
+            <source>Cannot calculate fold line center position for piece '%1'. Reason: %2.</source>
+            <translation>Impossible de calculer la position du centre de la ligne de pli pour la pièce « %1 ». Raison : %2.</translation>
+        </message>
+        <message>
+            <source>Piece '%1'. Grainline is not valid.</source>
+            <translation>Pièce « %1 ». Le droit-fil n’est pas valide.</translation>
+        </message>
+        <message>
+            <source>Piece '%1'. Seam allowance is not valid.</source>
+            <translation>Pièce « %1 ». La marge de couture n’est pas valide.</translation>
+        </message>
+        <message>
+            <source>Piece '%1'. Fold line is not valid.</source>
+            <translation>Pièce « %1 ». La ligne de pli n’est pas valide.</translation>
+        </message>
+    </context>
 <context>
     <name>VToolShoulderPoint</name>
     <message>
@@ -24784,7 +24848,11 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <source>Cannot find piece by id &apos;%1&apos;</source>
         <translation>Impossible de trouver la pièce avec l&apos;identifiant &apos;%1&apos;</translation>
     </message>
-</context>
+    <message>
+            <source>Cannot find piece by id '%1'</source>
+            <translation>Impossible de trouver la pièce par l’identifiant « %1 »</translation>
+        </message>
+    </context>
 <context>
     <name>VWidgetGroups</name>
     <message>
