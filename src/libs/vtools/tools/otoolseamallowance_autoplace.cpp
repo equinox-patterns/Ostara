@@ -440,6 +440,23 @@ auto FindCutPointPlacement(const QVector<VPieceNode> &path, quint32 pointObjectI
 
         if (VAbstractCurve::IsPointOnCurve(segment, p))
         {
+            // A point at one of the two drawn ends of the edge is a contour VERTEX
+            // (junction), not a cut.
+            if (VFuzzyComparePoints(end, p))
+            {
+                // Exit junction: the vertex right after this curve. Insert the point
+                // alone — the cut-point branch below would re-add the whole curve and
+                // duplicate an edge that is already in the path.
+                placement.index = i + 1;
+                return true;
+            }
+            if (VFuzzyComparePoints(begin, p))
+            {
+                // Entry junction: it already carries the node preceding this curve, so
+                // the point is already a path vertex — nothing to insert here.
+                continue;
+            }
+            // True interior cut point: split the curve — point + a curve portion.
             placement.index = i + 1;
             placement.hasCurvePortion = true;
             // The added portion: same curve object (original id), same type, same reverse
