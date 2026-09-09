@@ -6,15 +6,17 @@
  **
  **  @brief  Graded SVG writer: one Illustrator/Inkscape layer per size (grand →
  **          petit in document order, so the smallest ends up on top of the
- **          layers panel) + a final "Layout" layer holding the shared decor
+ **          layers panel) + a final decor layer holding the shared decor
  **          (grainline, fold, info blocks, annotations) of the reference size.
- **          Size layers carry geometry only; the layout layer carries no
+ **          Size layers carry geometry only; the decor layer carries no
  **          contour. Text is ALWAYS emitted as editable <text> (never paths).
- **          The layout layer gets a FIXED, non-localized id ("Layout" — machine
- **          contract with Rabnest), while its inkscape:label / <title> carry the
- **          localized or user-editable display name. Each decor object wrapper of
- **          the layout layer is marked i:layer="yes" so Rabnest moves it together
- **          with its piece (see WriteGradedSvg).
+ **          The decor layer's <g> is marked ostara:layout="yes" — a backend
+ **          marker (namespace "ostara", see ogradedsvgwriter.cpp) that Rabnest
+ **          uses to identify the layer. No editor displays it, so the visible
+ **          name is free: id = sanitized display name, inkscape:label / <title>
+ **          = display name (localized or user-edited). Each decor object wrapper
+ **          of the decor layer is marked i:layer="yes" so Rabnest moves it
+ **          together with its piece (see WriteGradedSvg).
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -87,7 +89,8 @@ struct LayoutObject
  * @brief Write the graded multi-layer SVG.
  *
  * @param sizeLayers  layers grand → petit (smallest last, = reference).
- * @param layoutLayerName  display name of the final Layout layer (topmost).
+ * @param layoutLayerName  display name of the final decor layer (topmost) — used
+ *                         for its id, inkscape:label and <title>.
  * @param layoutObjects    decor per top-level object, taken from the reference size.
  * @param imageRect   scene content rect (all sizes, after alignment/offsets).
  */

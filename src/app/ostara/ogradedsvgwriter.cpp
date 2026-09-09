@@ -60,13 +60,14 @@ namespace
 {
 constexpr qreal kDefaultStrokeWidth = 0.1;
 
-/** @brief Fixed, non-localized id of the Layout (decor) layer in the graded SVG.
- *
- *  Machine contract shared with Rabnest: the reader identifies the decor layer
- *  by comparing this exact id. It must NOT be derived from layoutLayerName
- *  (localized / user-editable) — that name is only kept in inkscape:label and
- *  <title>. Keep both sides in sync if this value ever changes. */
-constexpr auto kGradedLayoutLayerId = "Layout";
+/** @brief Backend namespace "ostara", declared on the <svg> root. Its attributes
+ *  are markers for the Ostara → Rabnest pipeline only — vector editors never
+ *  display them, so they can carry machine meaning without constraining the
+ *  visible layer names. */
+constexpr auto kOstaraNamespace = "urn:ostara";
+
+/** @brief Value of the ostara:layout marker set on the decor layer's <g>. */
+constexpr auto kOstaraLayoutMarker = "yes";
 
 /** @brief Serialize one visible trace (path item) — mirrors the flat writer. */
 void WriteTrace(QXmlStreamWriter &writer, const QTransform &toSVG, const QPen &defaultPen,
@@ -416,6 +417,7 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
     writer.writeNamespace(QStringLiteral("http://ns.adobe.com/AdobeIllustrator/10.0/"), QStringLiteral("i"));
     writer.writeNamespace(QStringLiteral("http://www.inkscape.org/namespaces/inkscape"),
                           QStringLiteral("inkscape"));
+    writer.writeNamespace(QLatin1String(kOstaraNamespace), QStringLiteral("ostara"));
     writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.1"));
     {
         constexpr qreal dpm = 96.0 / 25.4;
@@ -522,13 +524,15 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
         };
 
         writer.writeStartElement(QStringLiteral("g"));
-        // Fixed, non-localized id — the exact value Rabnest matches to identify
-        // the decor layer, independent of the localized/user-editable display
-        // name kept in inkscape:label and <title> below.
-        writer.writeAttribute(QStringLiteral("id"), QLatin1String(kGradedLayoutLayerId));
+        // The layer keeps its user-chosen name in the id, inkscape:label and
+        // <title>, so every editor shows it. Rabnest identifies this layer as
+        // the decor layer via the ostara:layout backend marker below, which no
+        // editor displays.
+        writer.writeAttribute(QStringLiteral("id"), OSvg::SanitizeSvgId(layoutLayerName));
         writer.writeAttribute(QStringLiteral("i:layer"), QStringLiteral("yes"));
         writer.writeAttribute(QStringLiteral("inkscape:label"), layoutLayerName);
         writer.writeAttribute(QStringLiteral("inkscape:groupmode"), QStringLiteral("layer"));
+        writer.writeAttribute(QStringLiteral("ostara:layout"), QLatin1String(kOstaraLayoutMarker));
         writer.writeTextElement(QStringLiteral("title"), layoutLayerName);
 
         for (const LayoutObject &object : layoutObjects)
