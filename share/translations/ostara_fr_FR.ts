@@ -9081,8 +9081,8 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="892"/>
-        <source>This pattern contains Valentina labels. Ostara does not use them — this feature will be replaced by Information block. Conversion is not automatic, your labels have not been preserved. The original .val file remains intact.</source>
-        <translation>Ce patron contient des étiquettes Valentina. Ostara ne les utilise pas — cette fonction sera remplacée par le bloc d&apos;information. La conversion n&apos;est pas automatique, vos étiquettes n&apos;ont pas été conservées. Le fichier .val d&apos;origine reste intact.</translation>
+        <source>This pattern contains Valentina labels. Ostara does not use them — they have been replaced by the Information block. Conversion is not automatic, your labels have not been preserved. The original .val file remains intact.</source>
+        <translation>Ce patron contient des étiquettes Valentina. Ostara ne les utilise pas — elles ont été remplacées par le bloc d&apos;information. La conversion n&apos;est pas automatique, vos étiquettes n&apos;ont pas été conservées. Le fichier .val d&apos;origine reste intact.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="901"/>
@@ -10292,10 +10292,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="891"/>
         <source>Labels not supported</source>
         <translation>Étiquettes non prises en charge</translation>
-    </message>
-    <message>
-        <source>This pattern contains Valentina labels. Ostara does not use them — this feature will be replaced by XX. Conversion is not automatic, your labels have not been preserved. The original .val file remains intact.</source>
-        <translation type="vanished">Ce patron contient des étiquettes Valentina. Ostara ne les utilise pas — cette fonctionnalité sera remplacée par XX. La conversion n&apos;est pas automatique, vos étiquettes n&apos;ont pas été conservées. Le fichier .val d&apos;origine reste intact.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="955"/>

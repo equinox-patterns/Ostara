@@ -291,34 +291,40 @@ auto StripLabelElements(QDomDocument *doc) -> bool
         return false;
     }
 
-    // 1. Remove <patternLabel> element (and its <line> children, dateFormat, timeFormat)
+    // 1. Remove <patternLabel> element (and its <line> children, dateFormat, timeFormat).
+    //    Valentina serializes an empty <patternLabel/> on every pattern, so presence alone must NOT flag the
+    //    warning — only a block carrying real label text (template <line>s) does.
     const QDomNodeList patternLabels = root.elementsByTagName(QStringLiteral("patternLabel"));
-    if (not patternLabels.isEmpty())
+    for (int i = patternLabels.size() - 1; i >= 0; --i)
     {
-        foundLabels = true;
-        // Remove all matching elements (iterate backwards to avoid index issues)
-        for (int i = patternLabels.size() - 1; i >= 0; --i)
+        const QDomElement labelElement = patternLabels.at(i).toElement();
+        if (not labelElement.isNull() && not labelElement.elementsByTagName(QStringLiteral("line")).isEmpty())
         {
-            QDomNode node = patternLabels.at(i);
-            if (node.parentNode() == root)
-            {
-                root.removeChild(node);
-            }
+            foundLabels = true;
+        }
+
+        // Remove all matching elements (iterate backwards to avoid index issues)
+        QDomNode node = patternLabels.at(i);
+        if (node.parentNode() == root)
+        {
+            root.removeChild(node);
         }
     }
 
-    // 2. Remove <pieceLabel> element
+    // 2. Remove <pieceLabel> element — same rule: only a block carrying real label text flags the warning.
     const QDomNodeList pieceLabels = root.elementsByTagName(QStringLiteral("pieceLabel"));
-    if (not pieceLabels.isEmpty())
+    for (int i = pieceLabels.size() - 1; i >= 0; --i)
     {
-        foundLabels = true;
-        for (int i = pieceLabels.size() - 1; i >= 0; --i)
+        const QDomElement labelElement = pieceLabels.at(i).toElement();
+        if (not labelElement.isNull() && not labelElement.elementsByTagName(QStringLiteral("line")).isEmpty())
         {
-            QDomNode node = pieceLabels.at(i);
-            if (node.parentNode() == root)
-            {
-                root.removeChild(node);
-            }
+            foundLabels = true;
+        }
+
+        QDomNode node = pieceLabels.at(i);
+        if (node.parentNode() == root)
+        {
+            root.removeChild(node);
         }
     }
 
@@ -337,16 +343,16 @@ auto StripLabelElements(QDomDocument *doc) -> bool
             detail.removeAttribute(QStringLiteral("gradationLabel"));
         }
 
-        // 6. Remove <data> elements (piece label data). Valentina serializes an empty, invisible <data> on
-        //    every piece, so presence alone must NOT flag the warning — only a block carrying real label text
-        //    (template <line>s, visible, or a non-empty letter/annotation) does.
+        // 6. Remove <data> elements (piece label data). Valentina serializes a <data> on every piece, always
+        //    carrying a default <line text="%pName%"/> template, so the <line> children carry no information.
+        //    Only a label the user actually used flags the warning: displayed (visible="true"), or carrying a
+        //    non-empty letter/annotation. Same rule as <patternInfo> below.
         const QDomNodeList dataElements = detail.elementsByTagName(QStringLiteral("data"));
         for (int j = dataElements.size() - 1; j >= 0; --j)
         {
             const QDomElement dataElement = dataElements.at(j).toElement();
             const bool hasLabelText = not dataElement.isNull() &&
-                                      (not dataElement.elementsByTagName(QStringLiteral("line")).isEmpty() ||
-                                       dataElement.attribute(QStringLiteral("visible")) == QStringLiteral("true") ||
+                                      (dataElement.attribute(QStringLiteral("visible")) == QStringLiteral("true") ||
                                        not dataElement.attribute(QStringLiteral("letter")).isEmpty() ||
                                        not dataElement.attribute(QStringLiteral("annotation")).isEmpty());
             if (hasLabelText)
