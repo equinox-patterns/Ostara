@@ -34,8 +34,6 @@
 #include <cmath>
 #include <new>
 
-#include "../../../dialogs/tools/dialogarmholecurve.h"
-#include "../../../dialogs/tools/dialogtool.h"
 #include "../../../visualization/path/ovistoolarmholecurve.h"
 #include "../../../visualization/visualization.h"
 #include "../../vabstracttool.h"
@@ -61,47 +59,6 @@ OToolArmholeCurve::OToolArmholeCurve(const OToolArmholeCurveInitData &initData, 
     this->setFlag(QGraphicsItem::ItemIsFocusable, true); // For keyboard input focus
 
     ToolCreation(initData.typeCreation);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void OToolArmholeCurve::SetDialog()
-{
-    SCASSERT(not m_dialog.isNull())
-    auto *dialogTool = qobject_cast<DialogArmholeCurve *>(m_dialog);
-    SCASSERT(dialogTool != nullptr)
-    const auto path = VAbstractTool::data.GeometricObject<VCubicBezierPath>(m_id);
-    dialogTool->CheckDependencyTreeComplete();
-    dialogTool->SetPath(*path);
-    dialogTool->SetNotes(m_notes);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OToolArmholeCurve::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *scene, VAbstractPattern *doc,
-                               VContainer *data) -> OToolArmholeCurve *
-{
-    SCASSERT(not dialog.isNull())
-    const QPointer<DialogArmholeCurve> dialogTool = qobject_cast<DialogArmholeCurve *>(dialog);
-    SCASSERT(not dialogTool.isNull())
-
-    // The dialog's path already holds the 7 points (4 user points + 3 local handles).
-    // The 3 handles are derived points (computed by SolveHandles) — they are not
-    // container GObjects and carry no graph vertices, mirroring VToolCubicBezierPath.
-    OToolArmholeCurveInitData initData;
-    initData.scene = scene;
-    initData.doc = doc;
-    initData.data = data;
-    initData.parse = Document::FullParse;
-    initData.typeCreation = Source::FromGui;
-    initData.path = new VCubicBezierPath(dialogTool->GetPath());
-    initData.notes = dialogTool->GetNotes();
-
-    auto *spl = Create(initData);
-
-    if (spl != nullptr)
-    {
-        spl->m_dialog = dialog;
-    }
-    return spl;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -141,7 +98,10 @@ auto OToolArmholeCurve::Create(OToolArmholeCurveInitData initData) -> OToolArmho
     const auto &path = *initData.data->GeometricObject<VCubicBezierPath>(initData.id);
     patternGraph->AddEdge(path.at(0).id(), initData.id); // armhole
     patternGraph->AddEdge(path.at(3).id(), initData.id); // chest/back width
-    patternGraph->AddEdge(path.at(5).id(), initData.id); // perpendicular
+    if (path.at(5).id() != path.at(6).id()) // skipped perpendicular — already the shoulder's edge
+    {
+        patternGraph->AddEdge(path.at(5).id(), initData.id);
+    }
     patternGraph->AddEdge(path.at(6).id(), initData.id); // shoulder
 
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
@@ -204,6 +164,41 @@ auto OToolArmholeCurve::SolveHandles(const VPointF &em, const VPointF &carrure, 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OToolArmholeCurve::IsPerpendicularSkipped(quint32 perpendicularId, quint32 shoulderId) -> bool
+{
+    return perpendicularId == NULL_ID || perpendicularId == shoulderId;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolArmholeCurve::SolveSkippedPerpendicular(const VPointF &carrure, const VPointF &shoulder) -> VPointF
+{
+    // shoulder + β·(carrure − shoulder): a point on the Carrure→Shoulder chord, so the curve arrives
+    // at the shoulder along the shoulder line — the behaviour of the original 3-point solver. The
+    // shoulder's identity is kept on purpose: the file marker point6 == point7 depends on it.
+    const QPointF point = static_cast<QPointF>(shoulder)
+                          + kPerpendicularRatio * (static_cast<QPointF>(carrure) - static_cast<QPointF>(shoulder));
+
+    VPointF perpendicular = shoulder;
+    perpendicular.setX(point.x());
+    perpendicular.setY(point.y());
+    return perpendicular;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolArmholeCurve::BuildPath(const VPointF &armhole, const VPointF &carrure, const VPointF &perpendicular,
+                                  const VPointF &shoulder) -> VCubicBezierPath
+{
+    const ArmholeHandles handles = SolveHandles(armhole, carrure, kDefaultHandleRatio);
+
+    const VPointF segment2C2 = IsPerpendicularSkipped(perpendicular.id(), shoulder.id())
+                                   ? SolveSkippedPerpendicular(carrure, shoulder)
+                                   : perpendicular;
+
+    // armhole, V, V1, chest/back width, h2a, perpendicular, shoulder
+    return VCubicBezierPath({armhole, handles.h1a, handles.h1b, carrure, handles.h2a, segment2C2, shoulder});
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OToolArmholeCurve::FirstPointName() const -> QString
 {
     auto path = VAbstractTool::data.GeometricObject<VCubicBezierPath>(m_id);
@@ -259,7 +254,8 @@ void OToolArmholeCurve::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, q
     Q_UNUSED(id)
     try
     {
-        ContextMenu<DialogArmholeCurve>(event);
+        // No "Options" entry here: the curve is edited through the property browser only.
+        ContextMenuWithoutOptions(event);
     }
     catch (const VExceptionToolWasDeleted &e)
     {
@@ -271,14 +267,10 @@ void OToolArmholeCurve::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, q
 //---------------------------------------------------------------------------------------------------------------------
 void OToolArmholeCurve::SaveDialog(QDomElement &domElement)
 {
-    SCASSERT(not m_dialog.isNull())
-    auto *dialogTool = qobject_cast<DialogArmholeCurve *>(m_dialog);
-    SCASSERT(dialogTool != nullptr)
-
-    doc->SetAttributeOrRemoveIf<QString>(domElement, AttrNotes, dialogTool->GetNotes(),
+    doc->SetAttributeOrRemoveIf<QString>(domElement, AttrNotes, GetNotes(),
                                          [](const QString &notes) noexcept { return notes.isEmpty(); });
 
-    SetPathAttributes(domElement, dialogTool->GetPath());
+    SetPathAttributes(domElement, GetPath());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -300,10 +292,9 @@ void OToolArmholeCurve::SetVisualization()
         SCASSERT(visual != nullptr)
 
         const QSharedPointer<VCubicBezierPath> path = VAbstractTool::data.GeometricObject<VCubicBezierPath>(m_id);
-        visual->SetPoint1Id(path->at(0).id());  // armhole
-        visual->SetPoint2Id(path->at(3).id());  // chest/back width
-        visual->SetPoint3Id(path->at(5).id());  // perpendicular
-        visual->SetPoint4Id(path->at(6).id());  // shoulder
+        // Hand the stored path over: recomputing it from the 4 points would be wrong when the
+        // perpendicular was skipped.
+        visual->SetPath(*path);
         visual->SetLineStyle(LineStyleToPenStyle(path->GetPenStyle()));
         visual->SetApproximationScale(path->GetApproximationScale());
         visual->SetMode(Mode::Show);
@@ -318,12 +309,6 @@ void OToolArmholeCurve::RefreshGeometry()
     this->setPath(path->GetPath());
 
     SetVisualization();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void OToolArmholeCurve::ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement)
-{
-    ProcessSplineToolOptions(oldDomElement, newDomElement, GatherToolChanges());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -345,23 +330,4 @@ void OToolArmholeCurve::SetPathAttributes(QDomElement &domElement, const VCubicB
                                          [](quint32 duplicate) noexcept { return duplicate == 0; });
     doc->SetAttributeOrRemoveIf<QString>(domElement, AttrAlias, path.GetAliasSuffix(),
                                          [](const QString &suffix) noexcept { return suffix.isEmpty(); });
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OToolArmholeCurve::GatherToolChanges() const -> VToolAbstractBezier::ToolChanges
-{
-    SCASSERT(not m_dialog.isNull())
-    const QPointer<DialogArmholeCurve> dialogTool = qobject_cast<DialogArmholeCurve *>(m_dialog);
-    SCASSERT(not dialogTool.isNull())
-
-    const VCubicBezierPath newPath = dialogTool->GetPath();
-    const auto oldPath = VAbstractTool::data.GeometricObject<VAbstractCubicBezierPath>(m_id);
-
-    return {.oldP1Label = oldPath->FirstPoint().name(),
-            .newP1Label = newPath.FirstPoint().name(),
-            .oldP4Label = oldPath->LastPoint().name(),
-            .newP4Label = newPath.LastPoint().name(),
-            .oldAliasSuffix = oldPath->GetAliasSuffix(),
-            .newAliasSuffix = newPath.GetAliasSuffix(),
-            .newDuplicate = newPath.GetDuplicate()};
 }

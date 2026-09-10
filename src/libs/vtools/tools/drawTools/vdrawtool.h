@@ -43,6 +43,8 @@
 #include <QString>
 #include <QtGlobal>
 
+#include <functional>
+
 #include "../ifc/exception/vexceptionbadid.h"
 #include "../toolsdef.h"
 #include "../vdatatool.h"
@@ -114,6 +116,10 @@ protected:
     template<class Dialog>
     void ContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 itemId = NULL_ID);
 
+    /// Context menu without the "Options" entry — for tools whose options are edited elsewhere
+    /// (e.g. through the property browser).
+    void ContextMenuWithoutOptions(QGraphicsSceneContextMenuEvent *event, quint32 itemId = NULL_ID);
+
     template <class T> auto ObjectName(quint32 id) const -> QString;
 
     template <class T> auto ObjectAliasSuffix(quint32 id) const -> QString;
@@ -145,8 +151,13 @@ private:
         QAction *detachAll{nullptr};
     };
 
-    template<class Dialog>
-    void HandleMenuSelection(QAction const *selectedAction, const MenuActions &actions, quint32 itemId);
+    /// Builds the tool context menu, runs it and dispatches the selection. The "Options" entry is
+    /// added only when withOptions is true; in that case onOptionsSelected is invoked instead of
+    /// instantiating the dialog here, whose type is known only to the templated entry points.
+    void RunContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 itemId, bool withOptions,
+                        const std::function<void()> &onOptionsSelected);
+
+    void DispatchMenuSelection(QAction const *selectedAction, const MenuActions &actions, quint32 itemId);
 
     template<class Dialog>
     void ShowOptionsDialog();
@@ -175,98 +186,7 @@ template<class Dialog>
  */
 void VDrawTool::ContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 itemId)
 {
-    SCASSERT(event != nullptr)
-
-    if (m_suppressContextMenu)
-    {
-        return;
-    }
-
-    GOType const itemType = GetItemType(itemId);
-
-    qCDebug(vTool, "Creating tool context menu.");
-    QMenu menu;
-
-    // Build menu structure
-    QAction const *actionOption = menu.addAction(FromTheme(VThemeIcon::PreferencesOther), VDrawTool::tr("Options"));
-
-    // add the menu "add to group" to the context menu
-    auto *actionsAddToGroup = CreateAddToGroupMenu(menu, itemId);
-
-    // add the menu "remove from group" to the context menu
-    auto *actionsRemoveFromGroup = CreateRemoveFromGroupMenu(menu, itemId);
-
-    // attachment (type Illustrator) menus
-    auto *actionsAddToAttachment = CreateAddToAttachmentMenu(menu, itemId);
-    auto *actionsRemoveFromAttachment = CreateRemoveFromAttachmentMenu(menu, itemId);
-    QAction *actionDetachAll = CreateDetachAllAction(menu, itemId);
-
-    QAction *actionShowLabel = CreateShowLabelAction(menu, itemType, itemId);
-    QAction *actionRemove = CreateRemoveAction(menu);
-
-    // Execute menu and handle selection
-    QAction const *selectedAction = menu.exec(event->screenPos());
-
-    if (selectedAction == nullptr)
-    {
-        return;
-    }
-
-    HandleMenuSelection<Dialog>(selectedAction,
-                                {.option = actionOption,
-                                 .remove = actionRemove,
-                                 .showLabel = actionShowLabel,
-                                 .addToGroup = actionsAddToGroup,
-                                 .removeFromGroup = actionsRemoveFromGroup,
-                                 .addToAttachment = actionsAddToAttachment,
-                                 .removeFromAttachment = actionsRemoveFromAttachment,
-                                 .detachAll = actionDetachAll},
-                                itemId);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-template<class Dialog>
-/**
- * @brief Handles the user's menu selection and executes the corresponding action.
- * 
- * @param selectedAction The action selected by the user
- * @param actions Struct containing all menu actions and action groups
- * @param itemId The ID of the item being operated on
- */
-void VDrawTool::HandleMenuSelection(const QAction *selectedAction, const MenuActions &actions, quint32 itemId)
-{
-    if (selectedAction == actions.option)
-    {
-        ShowOptionsDialog<Dialog>();
-    }
-    else if (selectedAction == actions.remove)
-    {
-        HandleRemoveAction();
-    }
-    else if (selectedAction == actions.showLabel)
-    {
-        ChangeLabelVisibility(itemId, selectedAction->isChecked());
-    }
-    else if (selectedAction->actionGroup() == actions.addToGroup)
-    {
-        HandleAddToGroup(selectedAction, itemId);
-    }
-    else if (selectedAction->actionGroup() == actions.removeFromGroup)
-    {
-        HandleRemoveFromGroup(selectedAction, itemId);
-    }
-    else if (selectedAction == actions.detachAll)
-    {
-        HandleDetachAll(itemId);
-    }
-    else if (selectedAction->actionGroup() == actions.addToAttachment)
-    {
-        HandleAddToAttachment(selectedAction, itemId);
-    }
-    else if (selectedAction->actionGroup() == actions.removeFromAttachment)
-    {
-        HandleRemoveFromAttachment(selectedAction, itemId);
-    }
+    RunContextMenu(event, itemId, /*withOptions*/ true, [this]() { ShowOptionsDialog<Dialog>(); });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

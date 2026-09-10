@@ -225,6 +225,130 @@ auto VDrawTool::GetItemType(quint32 itemId) const -> GOType
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
+ * @brief Builds the tool context menu, runs it and dispatches the selection.
+ *
+ * The "Options" entry is added only when @a withOptions is true; selecting it calls
+ * @a onOptionsSelected, so the dialog type — known only to the templated entry points — does not
+ * have to appear here.
+ *
+ * @param event The context menu event containing position and triggering information
+ * @param itemId The ID of the specific item being clicked, or 0 for the tool itself
+ * @param withOptions Whether to offer the "Options" entry
+ * @param onOptionsSelected Handler invoked when the "Options" entry is selected
+ */
+void VDrawTool::RunContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 itemId, bool withOptions,
+                               const std::function<void()> &onOptionsSelected)
+{
+    SCASSERT(event != nullptr)
+
+    if (m_suppressContextMenu)
+    {
+        return;
+    }
+
+    GOType const itemType = GetItemType(itemId);
+
+    qCDebug(vTool, "Creating tool context menu.");
+    QMenu menu;
+
+    // Build menu structure
+    QAction const *actionOption = nullptr;
+    if (withOptions)
+    {
+        actionOption = menu.addAction(FromTheme(VThemeIcon::PreferencesOther), VDrawTool::tr("Options"));
+    }
+
+    // add the menu "add to group" to the context menu
+    auto *actionsAddToGroup = CreateAddToGroupMenu(menu, itemId);
+
+    // add the menu "remove from group" to the context menu
+    auto *actionsRemoveFromGroup = CreateRemoveFromGroupMenu(menu, itemId);
+
+    // attachment (type Illustrator) menus
+    auto *actionsAddToAttachment = CreateAddToAttachmentMenu(menu, itemId);
+    auto *actionsRemoveFromAttachment = CreateRemoveFromAttachmentMenu(menu, itemId);
+    QAction *actionDetachAll = CreateDetachAllAction(menu, itemId);
+
+    QAction *actionShowLabel = CreateShowLabelAction(menu, itemType, itemId);
+    QAction *actionRemove = CreateRemoveAction(menu);
+
+    // Execute menu and handle selection
+    QAction const *selectedAction = menu.exec(event->screenPos());
+
+    if (selectedAction == nullptr)
+    {
+        return;
+    }
+
+    if (selectedAction == actionOption && onOptionsSelected)
+    {
+        onOptionsSelected();
+        return;
+    }
+
+    DispatchMenuSelection(selectedAction,
+                          {.option = actionOption,
+                           .remove = actionRemove,
+                           .showLabel = actionShowLabel,
+                           .addToGroup = actionsAddToGroup,
+                           .removeFromGroup = actionsRemoveFromGroup,
+                           .addToAttachment = actionsAddToAttachment,
+                           .removeFromAttachment = actionsRemoveFromAttachment,
+                           .detachAll = actionDetachAll},
+                          itemId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VDrawTool::ContextMenuWithoutOptions(QGraphicsSceneContextMenuEvent *event, quint32 itemId)
+{
+    RunContextMenu(event, itemId, /*withOptions*/ false, {});
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Handles the user's menu selection and executes the corresponding action.
+ *
+ * The "Options" entry is not handled here: it is dispatched by RunContextMenu, which owns the
+ * dialog type.
+ *
+ * @param selectedAction The action selected by the user
+ * @param actions Struct containing all menu actions and action groups
+ * @param itemId The ID of the item being operated on
+ */
+void VDrawTool::DispatchMenuSelection(const QAction *selectedAction, const MenuActions &actions, quint32 itemId)
+{
+    if (selectedAction == actions.remove)
+    {
+        HandleRemoveAction();
+    }
+    else if (selectedAction == actions.showLabel)
+    {
+        ChangeLabelVisibility(itemId, selectedAction->isChecked());
+    }
+    else if (selectedAction->actionGroup() == actions.addToGroup)
+    {
+        HandleAddToGroup(selectedAction, itemId);
+    }
+    else if (selectedAction->actionGroup() == actions.removeFromGroup)
+    {
+        HandleRemoveFromGroup(selectedAction, itemId);
+    }
+    else if (selectedAction == actions.detachAll)
+    {
+        HandleDetachAll(itemId);
+    }
+    else if (selectedAction->actionGroup() == actions.addToAttachment)
+    {
+        HandleAddToAttachment(selectedAction, itemId);
+    }
+    else if (selectedAction->actionGroup() == actions.removeFromAttachment)
+    {
+        HandleRemoveFromAttachment(selectedAction, itemId);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
  * @brief Creates the "Add to group" submenu with available groups.
  * 
  * @param menu The parent menu to add the submenu to

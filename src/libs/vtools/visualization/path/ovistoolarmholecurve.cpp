@@ -71,26 +71,12 @@ void OVisToolArmholeCurve::RefreshGeometry()
         m_point3->setVisible(false);
         m_point4->setVisible(false);
 
-        if (m_point1Id <= NULL_ID || m_point2Id <= NULL_ID || m_point3Id <= NULL_ID || m_point4Id <= NULL_ID)
+        if (!m_hasPath)
         {
             return;
         }
 
-        const auto em = GetData()->GeometricObject<VPointF>(m_point1Id);
-        const auto carrure = GetData()->GeometricObject<VPointF>(m_point2Id);
-        const auto perp = GetData()->GeometricObject<VPointF>(m_point3Id);
-        const auto epaule = GetData()->GeometricObject<VPointF>(m_point4Id);
-        const ArmholeHandles handles = OToolArmholeCurve::SolveHandles(*em, *carrure, 0.30);
-
-        QVector<VPointF> pts;
-        pts.append(*em);
-        pts.append(handles.h1a);
-        pts.append(handles.h1b);
-        pts.append(*carrure);
-        pts.append(handles.h2a);
-        pts.append(*perp);
-        pts.append(*epaule);
-        VCubicBezierPath path(pts);
+        VCubicBezierPath path = m_path;
         path.SetApproximationScale(ApproximationScale());
         DrawPath(this, path.GetPath(), path.DirectionArrows(), LineStyle(), Qt::RoundCap);
         return;
@@ -117,7 +103,8 @@ void OVisToolArmholeCurve::RefreshGeometry()
     DrawPoint(m_point2, static_cast<QPointF>(*carrure));
     DrawLine(m_helpLine1, QLineF(static_cast<QPointF>(*em), static_cast<QPointF>(*carrure)), Qt::DashLine);
 
-    const ArmholeHandles handles = OToolArmholeCurve::SolveHandles(*em, *carrure, 0.30);
+    const ArmholeHandles handles
+        = OToolArmholeCurve::SolveHandles(*em, *carrure, OToolArmholeCurve::kDefaultHandleRatio);
 
     if (m_point3Id <= NULL_ID)
     {
@@ -179,4 +166,11 @@ void OVisToolArmholeCurve::VisualMode(quint32 id)
 {
     m_point1Id = id;
     StartVisualMode();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OVisToolArmholeCurve::SetPath(const VCubicBezierPath &path)
+{
+    m_path = path;
+    m_hasPath = true;
 }

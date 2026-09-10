@@ -67,9 +67,6 @@ class OToolArmholeCurve : public VToolAbstractBezier
 
 public:
     ~OToolArmholeCurve() override = default;
-    void SetDialog() override;
-    static auto Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *scene, VAbstractPattern *doc,
-                       VContainer *data) -> OToolArmholeCurve *;
     static auto Create(OToolArmholeCurveInitData initData) -> OToolArmholeCurve *;
     static const QString ToolType;
     auto type() const -> int override { return Type; }
@@ -88,6 +85,11 @@ public:
 
     void ShowVisualization(bool show) override;
 
+    /// Default handle spread around the chest/back width point (t), as a ratio of |Carrure − V|.
+    static constexpr double kDefaultHandleRatio = 0.50;
+    /// Incoming handle ratio (β) used when the perpendicular is skipped — the original solver value.
+    static constexpr double kPerpendicularRatio = 0.15;
+
     /// Compute the 3 auto-computed control handles for the 2-segment armhole curve.
     ///
     /// Segment 1 (armhole → chest/back width):
@@ -99,8 +101,27 @@ public:
     /// The perpendicular point (segment 2 C2) and shoulder (segment 2 P4) are
     /// user-selected, not computed.
     ///
-    /// @param t  handle spread around the chest/back width point (0.1→0.5, default 0.30).
+    /// @param t  handle spread around the chest/back width point (0.1→0.5, default 0.50).
     static auto SolveHandles(const VPointF &em, const VPointF &carrure, double t) -> ArmholeHandles;
+
+    /// True when the perpendicular has been skipped: the user picked the shoulder point twice, so
+    /// the third and fourth slots hold the same id. This is also the file marker — the XML then
+    /// carries point6 == point7. An absent point6 (NULL_ID) counts as skipped too, so that a file
+    /// missing the attribute still loads instead of failing hard.
+    static auto IsPerpendicularSkipped(quint32 perpendicularId, quint32 shoulderId) -> bool;
+
+    /// Segment 2 C2 when the perpendicular is skipped: shoulder + β·(carrure − shoulder), i.e. a
+    /// point on the Carrure→Shoulder chord, which makes the curve arrive along the shoulder line.
+    /// The returned point keeps the shoulder's identity (name, id, mode) — that is what makes
+    /// SetPathAttributes() write point6 == point7 without any change there.
+    static auto SolveSkippedPerpendicular(const VPointF &carrure, const VPointF &shoulder) -> VPointF;
+
+    /// Build the 7-point path — the only factory, shared by the creation collector and the parser.
+    /// It resolves the skipped-perpendicular case, so callers never have to know about it.
+    ///
+    /// @param perpendicular  the user-selected perpendicular, or the shoulder point when skipped
+    static auto BuildPath(const VPointF &armhole, const VPointF &carrure, const VPointF &perpendicular,
+                          const VPointF &shoulder) -> VCubicBezierPath;
 
 protected slots:
     void ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id = NULL_ID) override;
@@ -110,7 +131,6 @@ protected:
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
     void SetVisualization() override;
     void RefreshGeometry() override;
-    void ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement) override;
 
 private:
     Q_DISABLE_COPY_MOVE(OToolArmholeCurve) // NOLINT
@@ -118,8 +138,6 @@ private:
     explicit OToolArmholeCurve(const OToolArmholeCurveInitData &initData, QGraphicsItem *parent = nullptr);
 
     void SetPathAttributes(QDomElement &domElement, const VCubicBezierPath &path);
-
-    auto GatherToolChanges() const -> ToolChanges;
 };
 
 #endif // OTOOLARMHOLECURVE_H

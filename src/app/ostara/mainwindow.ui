@@ -1951,7 +1951,7 @@
      <normaloff>:/toolicon/light/cubic_bezier.png</normaloff>:/toolicon/light/cubic_bezier.png</iconset>
    </property>
    <property name="text">
-    <string>Armhole curve passing through 3 points</string>
+    <string>Armhole tool</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

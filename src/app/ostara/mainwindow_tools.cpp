@@ -52,7 +52,6 @@
 #include "../vtools/dialogs/tools/dialogarc.h"
 #include "../vtools/dialogs/tools/dialogarcwithlength.h"
 #include "../vtools/dialogs/tools/dialogbisector.h"
-#include "../vtools/dialogs/tools/dialogarmholecurve.h"
 #include "../vtools/dialogs/tools/dialogcubicbezier.h"
 #include "../vtools/dialogs/tools/dialogcubicbezierpath.h"
 #include "../vtools/dialogs/tools/dialogcurveintersectaxis.h"
@@ -85,6 +84,7 @@
 #include "../vtools/dialogs/tools/dialogspline.h"
 #include "../vtools/dialogs/tools/dialogsplinepath.h"
 #include "../vtools/dialogs/tools/otoolcurve.h"
+#include "../vtools/dialogs/tools/otoolarmholecurvecollector.h"
 #include "../vtools/dialogs/tools/dialogtriangle.h"
 #include "../vtools/dialogs/tools/dialogtruedarts.h"
 #include "../vtools/dialogs/tools/dialoguniondetails.h"
@@ -1029,11 +1029,11 @@ void MainWindow::ToolGraduatedCurve(bool checked)
 void MainWindow::ToolArmholeCurve(bool checked)
 {
     ToolSelectPointByRelease();
-    SetToolButtonWithApply<DialogArmholeCurve>(
+    SetToolButton<OToolArmholeCurveCollector>(
         checked, Tool::ArmholeCurve, QStringLiteral("cubic_bezier_cursor.png"),
-        tr("⚠ Perpendicular to the shoulder line required — Select the armhole point"),
-        &MainWindow::ClosedDrawDialogWithApply<OToolArmholeCurve>,
-        &MainWindow::ApplyDrawDialog<OToolArmholeCurve>);
+        tr("Select the armhole point. Optional: create a perpendicular point beforehand to end the curve "
+           "perpendicular to the shoulder line."),
+        &MainWindow::ClosedArmholeCurveDialog);
     LogPatternToolUsed(checked, QStringLiteral("Armhole curve tool"));
 }
 
@@ -1125,7 +1125,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         dialogTool->SetColor(settings->GetGlobalToolColor());
     }
 
-    if constexpr (std::is_same_v<Dialog,DialogArmholeCurve> || std::is_same_v<Dialog,DialogCubicBezier> || std::is_same_v<Dialog,DialogCubicBezierPath> ||
+    if constexpr (std::is_same_v<Dialog,OToolArmholeCurveCollector> || std::is_same_v<Dialog,DialogCubicBezier> || std::is_same_v<Dialog,DialogCubicBezierPath> ||
                   std::is_same_v<Dialog,DialogSpline> || std::is_same_v<Dialog,DialogSplinePath>)
     {
         dialogTool->SetDefPenStyle(settings->GetGlobalPenStyle());
@@ -1330,6 +1330,41 @@ void MainWindow::ClosedCurveDialog(int result)
 
             tool = VToolSplinePath::Create(initData, path);
         }
+    }
+    ArrowTool(true);
+    if (tool != nullptr)
+    {
+        emit ui->view->itemClicked(tool);
+        tool->setFocus();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ClosedArmholeCurveDialog creates the armhole curve collected by OToolArmholeCurveCollector.
+ * @param result result working dialog.
+ */
+void MainWindow::ClosedArmholeCurveDialog(int result)
+{
+    SCASSERT(not m_dialogTool.isNull())
+    QGraphicsItem *tool = nullptr;
+    if (result == QDialog::Accepted)
+    {
+        auto *collector = qobject_cast<OToolArmholeCurveCollector *>(m_dialogTool.data());
+        SCASSERT(collector != nullptr)
+
+        auto *scene = qobject_cast<VMainGraphicsScene *>(currentScene);
+        SCASSERT(scene != nullptr)
+
+        OToolArmholeCurveInitData initData;
+        initData.scene = scene;
+        initData.doc = doc;
+        initData.data = pattern;
+        initData.parse = Document::FullParse;
+        initData.typeCreation = Source::FromGui;
+        initData.path = new VCubicBezierPath(collector->GetPath());
+
+        tool = OToolArmholeCurve::Create(initData);
     }
     ArrowTool(true);
     if (tool != nullptr)

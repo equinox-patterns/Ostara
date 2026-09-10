@@ -34,6 +34,7 @@
 #include <QString>
 #include <QtGlobal>
 
+#include "../vgeometry/vcubicbezierpath.h"
 #include "../vmisc/def.h"
 #include "vispath.h"
 
@@ -52,6 +53,10 @@ public:
     void SetPoint3Id(quint32 value); // perpendicular
     void SetPoint4Id(quint32 value); // shoulder
 
+    /// The final curve drawn in Show mode. It must be the STORED path: recomputing it from the
+    /// 4 points would be wrong when the perpendicular was skipped.
+    void SetPath(const VCubicBezierPath &path);
+
     auto type() const -> int override { return Type; }
     enum
     {
@@ -60,6 +65,8 @@ public:
 
 private:
     Q_DISABLE_COPY_MOVE(OVisToolArmholeCurve) // NOLINT
+    VCubicBezierPath m_path{};
+    bool m_hasPath{false};
     quint32 m_point1Id{NULL_ID}; // armhole
     quint32 m_point2Id{NULL_ID}; // chest/back width
     quint32 m_point3Id{NULL_ID}; // perpendicular

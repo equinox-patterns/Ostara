@@ -263,26 +263,16 @@ void VPattern::ParseToolArmholeCurve(VMainGraphicsScene *scene, const QDomElemen
 
         auto p1 = data->GeometricObject<VPointF>(point1); // armhole
         auto pCarrure = data->GeometricObject<VPointF>(point4); // chest/back width
-        auto pPerp = data->GeometricObject<VPointF>(point6); // perpendicular
         auto pEpaule = data->GeometricObject<VPointF>(point7); // shoulder
+        // point6 == point7 means the perpendicular was skipped: it is then computed, not read.
+        auto pPerp = OToolArmholeCurve::IsPerpendicularSkipped(point6, point7)
+                         ? pEpaule
+                         : data->GeometricObject<VPointF>(point6);
 
-        // Recompute the 3 control handles. They are derived from the 4 user points and
-        // are NOT container GObjects (no graph vertices), so their IDs stay stable across
-        // delete/undo cycles — mirroring VToolCubicBezierPath.
-        const double t = 0.30; // default; could be stored as attribute in future
-        const ArmholeHandles handles = OToolArmholeCurve::SolveHandles(*p1, *pCarrure, t);
-
-        // Build the 7-point path: armhole, V, V1, chest/back width, h2a, perpendicular, shoulder
-        QVector<VPointF> pathPoints;
-        pathPoints.append(*p1);
-        pathPoints.append(handles.h1a);
-        pathPoints.append(handles.h1b);
-        pathPoints.append(*pCarrure);
-        pathPoints.append(handles.h2a);
-        pathPoints.append(*pPerp);
-        pathPoints.append(*pEpaule);
-
-        initData.path = new VCubicBezierPath(pathPoints);
+        // Single factory shared with the creation collector: it recomputes the control handles
+        // (derived from the 4 user points, not container GObjects — no graph vertices, so their ids
+        // stay stable across delete/undo cycles) and resolves the skipped perpendicular.
+        initData.path = new VCubicBezierPath(OToolArmholeCurve::BuildPath(*p1, *pCarrure, *pPerp, *pEpaule));
         if (duplicate > 0)
         {
             initData.path->SetDuplicate(duplicate);
