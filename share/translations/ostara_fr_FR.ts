@@ -9118,6 +9118,16 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Ce patron contient des étiquettes Valentina. Ostara ne les utilise pas — cette fonction sera remplacée par le bloc d&apos;information. La conversion n&apos;est pas automatique, vos étiquettes n&apos;ont pas été conservées. Le fichier .val d&apos;origine reste intact.</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="901"/>
+        <source>Grainlines anchored to pins</source>
+        <translation>Droits-fil à replacer</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="902"/>
+        <source>This pattern contains grainlines anchored to pins. Ostara no longer uses them — these grainlines have been disabled. Please place them again in the Details mode. Conversion is not automatic. The original .val file remains intact.</source>
+        <translation>Ce patron contient des droits-fil dont la position dépendait d&apos;épingles — une ancienne fonction de Valentina. Ostara ne l&apos;utilise plus : ces droits-fil ont été désactivés. Veuillez les replacer en mode Détail. La conversion n&apos;est pas automatique. Le fichier .val d&apos;origine reste intact.</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1218"/>
         <source>Could not save file</source>
         <translation>Impossible d&apos;enregistrer le patron</translation>
