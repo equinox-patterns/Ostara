@@ -1139,6 +1139,7 @@
       <xs:attribute name="passmarkWidth" type="xs:string"/>
       <xs:attribute name="defaultActivateSA" type="xs:boolean"/>
       <xs:attribute name="defaultHideMainPath" type="xs:boolean"/>
+      <xs:attribute name="defaultSewLineOnDrawing" type="xs:boolean"/>
     </xs:complexType>
     <xs:unique name="incrementName">
       <xs:selector xpath=".//increment"/>

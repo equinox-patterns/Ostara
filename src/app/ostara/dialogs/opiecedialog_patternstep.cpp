@@ -149,6 +149,9 @@ OPiecePatternStep::OPiecePatternStep(VAbstractPattern *doc, QWidget *parent)
     m_hideMainPathCheck = new QCheckBox(tr("Hide main path for all pieces"));
     m_hideMainPathCheck->setChecked(m_doc->GetDefaultHideMainPath());
     saLayout->addWidget(m_hideMainPathCheck);
+    m_sewLineOnDrawingCheck = new QCheckBox(tr("Export the sew line with the drawings for all pieces (DXF-AAMA)"));
+    m_sewLineOnDrawingCheck->setChecked(m_doc->GetDefaultSewLineOnDrawing());
+    saLayout->addWidget(m_sewLineOnDrawingCheck);
     mainLayout->addWidget(seamAllowanceGroup);
 
     // Information block — display is opted-in per pattern: the checkbox activates
@@ -234,4 +237,10 @@ auto OPiecePatternStep::IsActivateSA() const -> bool
 auto OPiecePatternStep::IsHideMainPath() const -> bool
 {
     return m_hideMainPathCheck->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPiecePatternStep::IsSewLineOnDrawing() const -> bool
+{
+    return m_sewLineOnDrawingCheck->isChecked();
 }

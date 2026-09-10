@@ -345,7 +345,7 @@ auto ODetailsNodeWidget::AutoLengthInPatternUnit(const VPieceNode &node) const -
     const qreal widthPx = ToPixel(det.GetSAWidth(), unit);
 
     qreal lengthPx;
-    if (det.IsSeamAllowance() && !det.IsSeamAllowanceBuiltIn())
+    if (det.IsSeamAllowance())
     {
         // Same rule as the automatic notch length: half the effective seam allowance at the point,
         // capped at 1 cm (VSAPoint::passmarkFactor / maxPassmarkLength). Local node widths override

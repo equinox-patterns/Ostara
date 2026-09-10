@@ -99,9 +99,6 @@ public:
     auto IsSeamAllowance() const -> bool;
     void SetSeamAllowance(bool value);
 
-    auto IsSeamAllowanceBuiltIn() const -> bool;
-    void SetSeamAllowanceBuiltIn(bool value);
-
     auto IsHideMainPath() const -> bool;
     void SetHideMainPath(bool value);
 

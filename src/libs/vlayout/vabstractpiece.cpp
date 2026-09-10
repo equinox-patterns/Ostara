@@ -1447,18 +1447,6 @@ void VAbstractPiece::SetSeamAllowance(bool value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPiece::IsSeamAllowanceBuiltIn() const -> bool
-{
-    return d->m_seamAllowanceBuiltIn;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPiece::SetSeamAllowanceBuiltIn(bool value)
-{
-    d->m_seamAllowanceBuiltIn = value;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPiece::IsHideMainPath() const -> bool
 {
     return d->m_hideMainPath;
@@ -2426,7 +2414,7 @@ auto VAbstractPiece::LabelShapePath(const PlaceLabelImg &shape) -> QPainterPath
 auto VAbstractPiece::SeamAllowanceMirrorLine(const QLineF &seamMirrorLine,
                                              const QVector<QPointF> &seamAllowancePoints) const -> QLineF
 {
-    if (!IsSeamAllowance() || (IsSeamAllowance() && IsSeamAllowanceBuiltIn()) || seamMirrorLine.isNull())
+    if (!IsSeamAllowance() || seamMirrorLine.isNull())
     {
         return seamMirrorLine;
     }

@@ -166,11 +166,11 @@ auto OPieceDialog::GetPiece() const -> VPiece
 
     piece.GetPath().SetNodes(m_automation.Nodes());
 
-    // Drawing default from the settings, mirroring DialogSeamAllowance::InitPieceTab.
+    // Drawing default from the pattern seed, which itself falls back to the application setting.
     VCommonSettings *settings = VAbstractValApplication::VApp()->Settings();
-    piece.SetSewLineOnDrawing(settings->GetSewLineOnDrawing());
+    piece.SetSewLineOnDrawing(m_doc->GetDefaultSewLineOnDrawing());
 
-    // Pattern seeds (Activate SA + Hide main path) apply to every piece created afterwards.
+    // Pattern seeds (Activate SA + Hide main path + sew line on drawing) apply to every piece created afterwards.
     piece.SetSeamAllowance(m_doc->GetDefaultActivateSA());
     piece.SetHideMainPath(m_doc->GetDefaultHideMainPath());
     if (piece.IsSeamAllowance())
@@ -271,6 +271,7 @@ void OPieceDialog::DialogAccepted()
         m_doc->SetFabricInfo(m_patternStep->GetFabricInfo());
         m_doc->SetDefaultActivateSA(m_patternStep->IsActivateSA());
         m_doc->SetDefaultHideMainPath(m_patternStep->IsHideMainPath());
+        m_doc->SetDefaultSewLineOnDrawing(m_patternStep->IsSewLineOnDrawing());
         // Information block: the chosen template (empty when the user did not opt in).
         m_doc->SetCartoucheTemplate(m_patternStep->GetCartouche());
     }

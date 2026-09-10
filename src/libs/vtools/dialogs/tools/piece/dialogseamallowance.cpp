@@ -300,7 +300,6 @@ void DialogSeamAllowance::SetPiece(const VPiece &piece)
     uiTabPaths->checkBoxFollowGrainline->setChecked(piece.IsFollowGrainline());
     uiTabPaths->checkBoxOnDrawing->setChecked(piece.IsSewLineOnDrawing());
     uiTabPaths->checkBoxSeams->setChecked(piece.IsSeamAllowance());
-    uiTabPaths->checkBoxBuiltIn->setChecked(piece.IsSeamAllowanceBuiltIn());
     uiTabPaths->lineEditName->setText(piece.GetName());
     uiTabPaths->lineEditUUID->setText(piece.GetUUID().toString());
     uiTabPaths->spinBoxPriority->setValue(static_cast<int>(piece.GetPriority()));
@@ -1286,7 +1285,6 @@ auto DialogSeamAllowance::CreatePiece() const -> VPiece
     piece.SetFollowGrainline(uiTabPaths->checkBoxFollowGrainline->isChecked());
     piece.SetSewLineOnDrawing(uiTabPaths->checkBoxOnDrawing->isChecked());
     piece.SetSeamAllowance(uiTabPaths->checkBoxSeams->isChecked());
-    piece.SetSeamAllowanceBuiltIn(uiTabPaths->checkBoxBuiltIn->isChecked());
     piece.SetHideMainPath(uiTabPaths->checkBoxHideMainPath->isChecked());
     piece.SetName(uiTabPaths->lineEditName->text());
     piece.SetUUID(uiTabPaths->lineEditUUID->text());

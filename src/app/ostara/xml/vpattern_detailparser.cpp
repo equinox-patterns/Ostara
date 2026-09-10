@@ -210,8 +210,6 @@ void VPattern::ParseDetailElement(QDomElement &domElement, const Document &parse
             GetParametrBool(domElement, VToolSeamAllowance::AttrHideMainPath,
                             QString().setNum(VAbstractValApplication::VApp()->ValentinaSettings()->IsHideMainPath())));
         initData.detail.SetShowFullPiece(GetParametrBool(domElement, VToolSeamAllowance::AttrShowFullPiece, trueStr));
-        initData.detail.SetSeamAllowanceBuiltIn(
-            GetParametrBool(domElement, VToolSeamAllowance::AttrSeamAllowanceBuiltIn, falseStr));
         initData.detail.SetForbidFlipping(GetParametrBool(
             domElement, AttrForbidFlipping,
             QString().setNum(VAbstractValApplication::VApp()->ValentinaSettings()->GetForbidWorkpieceFlipping())));

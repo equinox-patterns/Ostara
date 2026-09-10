@@ -60,7 +60,6 @@ public:
     bool m_symmetricalCopy{false};                           // NOLINT (misc-non-private-member-variables-in-classes)
     bool m_followGrainline{false};                           // NOLINT (misc-non-private-member-variables-in-classes)
     bool m_seamAllowance{false};                             // NOLINT (misc-non-private-member-variables-in-classes)
-    bool m_seamAllowanceBuiltIn{false};                      // NOLINT (misc-non-private-member-variables-in-classes)
     bool m_hideMainPath{false};                              // NOLINT (misc-non-private-member-variables-in-classes)
     qreal m_width{0};                                        // NOLINT (misc-non-private-member-variables-in-classes)
     qreal m_mx{0};                                           // NOLINT (misc-non-private-member-variables-in-classes)
@@ -83,7 +82,7 @@ private:
     Q_DISABLE_ASSIGN_MOVE(VAbstractPieceData) // NOLINT
 
     static constexpr quint32 streamHeader = 0x05CDD73A; // CRC-32Q string "VAbstractPieceData"
-    static constexpr quint16 classVersion = 10;
+    static constexpr quint16 classVersion = 11;
 };
 
 QT_WARNING_POP
@@ -99,7 +98,6 @@ inline auto operator<<(QDataStream &dataStream, const VAbstractPieceData &piece)
     dataStream << piece.m_forbidFlipping;
     dataStream << piece.m_forceFlipping;
     dataStream << piece.m_seamAllowance;
-    dataStream << piece.m_seamAllowanceBuiltIn;
     dataStream << piece.m_hideMainPath;
     dataStream << piece.m_width;
     dataStream << piece.m_mx;
@@ -168,7 +166,11 @@ inline auto operator>>(QDataStream &dataStream, VAbstractPieceData &piece) -> QD
     dataStream >> piece.m_forbidFlipping;
     dataStream >> piece.m_forceFlipping;
     dataStream >> piece.m_seamAllowance;
-    dataStream >> piece.m_seamAllowanceBuiltIn;
+    if (actualClassVersion < 11)
+    { // seamAllowanceBuiltIn was dropped in classVersion 11; skip the field of legacy blobs
+        bool seamAllowanceBuiltInDummy = false;
+        dataStream >> seamAllowanceBuiltInDummy;
+    }
     dataStream >> piece.m_hideMainPath;
     dataStream >> piece.m_width;
     dataStream >> piece.m_mx;

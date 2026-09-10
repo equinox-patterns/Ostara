@@ -117,7 +117,6 @@ public:
     static const QString AttrSeamAllowance;
     static const QString AttrHideMainPath;
     static const QString AttrShowFullPiece;
-    static const QString AttrSeamAllowanceBuiltIn;
     static const QString AttrUnited;
     static const QString AttrFont;
     static const QString AttrPiecePriority;

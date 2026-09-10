@@ -676,30 +676,25 @@ auto VPassmark::FullPassmark(const VPiece &piece, const VContainer *data) const 
         return {};
     }
 
-    if (not piece.IsSeamAllowanceBuiltIn())
+    if (not piece.IsSeamAllowance())
     {
-        if (not piece.IsSeamAllowance())
-        {
-            return BuiltInSAPassmark(piece, data);
-        }
-
-        QVector<QLineF> lines;
-        lines += SAPassmark(piece, data, PassmarkSide::All);
-        if (VAbstractApplication::VApp()->Settings()->IsDoublePassmark() &&
-            (VAbstractApplication::VApp()->Settings()->IsPieceShowMainPath() || not piece.IsHideMainPath()) &&
-            m_data.isMainPathNode && m_data.passmarkAngleType != PassmarkAngleType::Intersection &&
-            m_data.passmarkAngleType != PassmarkAngleType::IntersectionOnlyLeft &&
-            m_data.passmarkAngleType != PassmarkAngleType::IntersectionOnlyRight &&
-            m_data.passmarkAngleType != PassmarkAngleType::Intersection2 &&
-            m_data.passmarkAngleType != PassmarkAngleType::Intersection2OnlyLeft &&
-            m_data.passmarkAngleType != PassmarkAngleType::Intersection2OnlyRight && m_data.isShowSecondPassmark)
-        {
-            lines += BuiltInSAPassmark(piece, data);
-        }
-        return lines;
+        return BuiltInSAPassmark(piece, data);
     }
 
-    return BuiltInSAPassmark(piece, data);
+    QVector<QLineF> lines;
+    lines += SAPassmark(piece, data, PassmarkSide::All);
+    if (VAbstractApplication::VApp()->Settings()->IsDoublePassmark() &&
+        (VAbstractApplication::VApp()->Settings()->IsPieceShowMainPath() || not piece.IsHideMainPath()) &&
+        m_data.isMainPathNode && m_data.passmarkAngleType != PassmarkAngleType::Intersection &&
+        m_data.passmarkAngleType != PassmarkAngleType::IntersectionOnlyLeft &&
+        m_data.passmarkAngleType != PassmarkAngleType::IntersectionOnlyRight &&
+        m_data.passmarkAngleType != PassmarkAngleType::Intersection2 &&
+        m_data.passmarkAngleType != PassmarkAngleType::Intersection2OnlyLeft &&
+        m_data.passmarkAngleType != PassmarkAngleType::Intersection2OnlyRight && m_data.isShowSecondPassmark)
+    {
+        lines += BuiltInSAPassmark(piece, data);
+    }
+    return lines;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -710,27 +705,22 @@ auto VPassmark::SAPassmark(const VPiece &piece, const VContainer *data, Passmark
         return {};
     }
 
-    if (not piece.IsSeamAllowanceBuiltIn())
+    if (not piece.IsSeamAllowance())
     {
-        if (not piece.IsSeamAllowance())
-        {
-            // No seam allowance — draw passmarks on the main path instead.
-            QVector<QPointF> mainPath;
-            CastTo(piece.FullMainPathPoints(data), mainPath);
-            return SAPassmark(mainPath, mainPath, side);
-        }
-
-        // Because rollback cannot be calulated if passmark is not first point in main path we rotate it.
-        QVector<QPointF> rotatedSeamAllowance;
-        CastTo(piece.FullSeamAllowancePointsWithRotation(data, m_data.passmarkIndex), rotatedSeamAllowance);
-
-        QVector<QPointF> seamAllowance;
-        CastTo(piece.FullSeamAllowancePoints(data), seamAllowance);
-
-        return SAPassmark(seamAllowance, rotatedSeamAllowance, side);
+        // No seam allowance — draw passmarks on the main path instead.
+        QVector<QPointF> mainPath;
+        CastTo(piece.FullMainPathPoints(data), mainPath);
+        return SAPassmark(mainPath, mainPath, side);
     }
 
-    return {};
+    // Because rollback cannot be calulated if passmark is not first point in main path we rotate it.
+    QVector<QPointF> rotatedSeamAllowance;
+    CastTo(piece.FullSeamAllowancePointsWithRotation(data, m_data.passmarkIndex), rotatedSeamAllowance);
+
+    QVector<QPointF> seamAllowance;
+    CastTo(piece.FullSeamAllowancePoints(data), seamAllowance);
+
+    return SAPassmark(seamAllowance, rotatedSeamAllowance, side);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1042,33 +1032,10 @@ auto VPassmark::CalculatePassmarkLength(const VPiece &piece) const -> qreal
         return MmToPixel(5.0);
     }
 
-    if (!piece.IsSeamAllowanceBuiltIn())
+    bool ok = false;
+    length = PassmarkLength(m_data, m_data.passmarkSAPoint.MaxLocalSA(m_data.saWidth), ok);
+    if (!ok)
     {
-        bool ok = false;
-        length = PassmarkLength(m_data, m_data.passmarkSAPoint.MaxLocalSA(m_data.saWidth), ok);
-        if (!ok)
-        {
-            return 0;
-        }
-    }
-    else if (m_data.passmarkSAPoint.IsManualPasskmarkLength())
-    {
-        length = m_data.passmarkSAPoint.GetPasskmarkLength();
-    }
-    else if (m_data.globalPassmarkLength > accuracyPointOnLine)
-    {
-        length = m_data.globalPassmarkLength;
-    }
-    else
-    {
-        const QString errorMsg =
-            QCoreApplication::translate("VPassmark", "Cannot calculate a notch for point '%1' in piece '%2' with "
-                                                     "built-in seam allowance. User must manually provide length.")
-                .arg(m_data.nodeName, m_data.pieceName);
-
-        VAbstractApplication::VApp()->IsPedantic()
-            ? throw VExceptionInvalidNotch(errorMsg)
-            : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
         return 0;
     }
 
@@ -1162,19 +1129,14 @@ auto VPassmark::SAPassmarkBaseLine(const VPiece &piece, const VContainer *data, 
         return {};
     }
 
-    if (not piece.IsSeamAllowanceBuiltIn())
-    {
-        // Because rollback cannot be calulated if passmark is not first point in main path we rotate it.
-        QVector<QPointF> rotatedSeamAllowance;
-        CastTo(piece.FullSeamAllowancePointsWithRotation(data, m_data.passmarkIndex), rotatedSeamAllowance);
+    // Because rollback cannot be calulated if passmark is not first point in main path we rotate it.
+    QVector<QPointF> rotatedSeamAllowance;
+    CastTo(piece.FullSeamAllowancePointsWithRotation(data, m_data.passmarkIndex), rotatedSeamAllowance);
 
-        QVector<QPointF> seamAllowance;
-        CastTo(piece.FullSeamAllowancePoints(data), seamAllowance);
+    QVector<QPointF> seamAllowance;
+    CastTo(piece.FullSeamAllowancePoints(data), seamAllowance);
 
-        return SAPassmarkBaseLine(seamAllowance, rotatedSeamAllowance, side);
-    }
-
-    return {};
+    return SAPassmarkBaseLine(seamAllowance, rotatedSeamAllowance, side);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

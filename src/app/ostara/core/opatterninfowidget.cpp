@@ -111,6 +111,9 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
     saLayout->addWidget(m_activateSACheck);
     m_hideMainPathCheck = new QCheckBox(tr("Hide main path for all pieces"), seamAllowanceGroup);
     saLayout->addWidget(m_hideMainPathCheck);
+    m_sewLineOnDrawingCheck = new QCheckBox(tr("Export the sew line with the drawings for all pieces (DXF-AAMA)"),
+                                            seamAllowanceGroup);
+    saLayout->addWidget(m_sewLineOnDrawingCheck);
     layout->addWidget(seamAllowanceGroup);
 
     // Information block — opted in per pattern; the combo is revealed once the
@@ -140,6 +143,7 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
             &OPatternInfoWidget::CommitCollection);
     connect(m_activateSACheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitActivateSA);
     connect(m_hideMainPathCheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitHideMainPath);
+    connect(m_sewLineOnDrawingCheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitSewLineOnDrawing);
     connect(m_activateInfoBlockCheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitCartoucheActivation);
     connect(m_cartoucheCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             &OPatternInfoWidget::CommitCartoucheTemplate);
@@ -267,6 +271,7 @@ void OPatternInfoWidget::Populate()
     // only. Existing pieces are never rewritten.
     m_activateSACheck->setChecked(doc != nullptr && doc->GetDefaultActivateSA());
     m_hideMainPathCheck->setChecked(doc != nullptr && doc->GetDefaultHideMainPath());
+    m_sewLineOnDrawingCheck->setChecked(doc != nullptr && doc->GetDefaultSewLineOnDrawing());
 
     const QString currentTemplate = doc != nullptr ? doc->GetCartoucheTemplate() : QString();
     m_activateInfoBlockCheck->setChecked(!currentTemplate.isEmpty());
@@ -334,6 +339,10 @@ void OPatternInfoWidget::RetranslateUI()
     if (m_hideMainPathCheck)
     {
         m_hideMainPathCheck->setText(tr("Hide main path for all pieces"));
+    }
+    if (m_sewLineOnDrawingCheck)
+    {
+        m_sewLineOnDrawingCheck->setText(tr("Export the sew line with the drawings for all pieces (DXF-AAMA)"));
     }
     if (m_activateInfoBlockCheck)
     {
@@ -434,6 +443,24 @@ void OPatternInfoWidget::CommitHideMainPath(bool on)
     if (on != doc->GetDefaultHideMainPath())
     {
         doc->SetDefaultHideMainPath(on);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPatternInfoWidget::CommitSewLineOnDrawing(bool on)
+{
+    if (m_loading)
+    {
+        return;
+    }
+    VAbstractPattern *doc = CurrentDocument();
+    if (doc == nullptr || doc != m_doc)
+    {
+        return;
+    }
+    if (on != doc->GetDefaultSewLineOnDrawing())
+    {
+        doc->SetDefaultSewLineOnDrawing(on);
     }
 }
 

@@ -57,6 +57,7 @@ public:
     auto GetFabricInfo() const -> QString;
     auto IsActivateSA() const -> bool;
     auto IsHideMainPath() const -> bool;
+    auto IsSewLineOnDrawing() const -> bool;
 
 private:
     VAbstractPattern *m_doc{nullptr};
@@ -68,6 +69,7 @@ private:
     QPlainTextEdit *m_fabricInfoEdit{nullptr};
     QCheckBox *m_activateSACheck{nullptr};
     QCheckBox *m_hideMainPathCheck{nullptr};
+    QCheckBox *m_sewLineOnDrawingCheck{nullptr};
 };
 
 #endif // OPIECEDIALOG_PATTERNSTEP_H

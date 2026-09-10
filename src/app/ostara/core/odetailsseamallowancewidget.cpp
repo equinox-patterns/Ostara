@@ -219,6 +219,11 @@ ODetailsSeamAllowanceWidget::ODetailsSeamAllowanceWidget(QWidget *parent)
     m_hideMainPathCheck = new QCheckBox(tr("Hide main path"));
     mainLayout->addWidget(m_hideMainPathCheck);
 
+    m_onDrawingCheck = new QCheckBox(tr("Export the sew line with the drawings (DXF-AAMA)"));
+    m_onDrawingCheck->setToolTip(tr("Places the sew line on the Draw line (8) instead of the dedicated sew-line "
+                                    "layer (14). DXF-AAMA export only."));
+    mainLayout->addWidget(m_onDrawingCheck);
+
     auto *valueRow = new QHBoxLayout();
     m_valueEdit = new QLineEdit();
     m_valueEdit->setValidator(new QRegularExpressionValidator(kDecimalRegex, this));
@@ -248,6 +253,9 @@ void ODetailsSeamAllowanceWidget::RetranslateUI()
 {
     m_activeCheck->setText(tr("Activate seam allowance"));
     m_hideMainPathCheck->setText(tr("Hide main path"));
+    m_onDrawingCheck->setText(tr("Export the sew line with the drawings (DXF-AAMA)"));
+    m_onDrawingCheck->setToolTip(tr("Places the sew line on the Draw line (8) instead of the dedicated sew-line "
+                                    "layer (14). DXF-AAMA export only."));
     m_applyValueBtn->setText(tr("Apply"));
     m_addCustomBtn->setText(m_state == State::SelectingPoints ? tr("Cancel") : tr("+ Add custom seam allowance"));
     m_manageSavedBtn->setText(tr("Manage saved custom seam allowances"));
@@ -275,6 +283,9 @@ void ODetailsSeamAllowanceWidget::ConnectControls()
     // --- Active checkbox ---
     connect(m_activeCheck, &QCheckBox::toggled, this, [this](bool checked)
     {
+        // Whether there is a seam allowance at all decides if the DXF-AAMA export option applies.
+        UpdateOnDrawingEnabled();
+
         if (m_updating)
         {
             return;
@@ -305,12 +316,27 @@ void ODetailsSeamAllowanceWidget::ConnectControls()
     // --- Hide main path checkbox ---
     connect(m_hideMainPathCheck, &QCheckBox::toggled, this, [this](bool checked)
     {
+        // A hidden main path is exactly what the DXF-AAMA export option would move.
+        UpdateOnDrawingEnabled();
+
         if (m_updating || !m_modifyPending)
         {
             return;
         }
         m_modifyPending([checked](VPiece &det) { det.SetHideMainPath(checked); });
     });
+
+    // --- Export the sew line with the drawings checkbox (DXF-AAMA) ---
+    connect(m_onDrawingCheck, &QCheckBox::toggled, this, [this](bool checked)
+    {
+        if (m_updating || !m_modifyPending)
+        {
+            return;
+        }
+        m_modifyPending([checked](VPiece &det) { det.SetSewLineOnDrawing(checked); });
+    });
+
+    UpdateOnDrawingEnabled();
 
     // --- SA width Apply button ---
     connect(m_applyValueBtn, &QPushButton::clicked, this, [this]()
@@ -356,6 +382,16 @@ void ODetailsSeamAllowanceWidget::ConnectControls()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODetailsSeamAllowanceWidget::UpdateOnDrawingEnabled()
+{
+    // The DXF-AAMA export option only relocates a sew line that is actually written: with no seam allowance, or
+    // with the main path hidden, that export emits nothing it could move. The box is greyed rather than removed so
+    // the setting stays readable, and the stored value is left untouched — it becomes live again as soon as the
+    // option can have an effect.
+    m_onDrawingCheck->setEnabled(m_activeCheck->isChecked() && not m_hideMainPathCheck->isChecked());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODetailsSeamAllowanceWidget::Show(const VPiece &det)
 {
     m_path = det.GetPath();
@@ -365,11 +401,13 @@ void ODetailsSeamAllowanceWidget::Show(const VPiece &det)
 
     m_activeCheck->setChecked(det.IsSeamAllowance());
     m_hideMainPathCheck->setChecked(det.IsHideMainPath());
+    m_onDrawingCheck->setChecked(det.IsSewLineOnDrawing());
     m_valueEdit->setText(VAbstractApplication::VApp()->LocaleToString(det.GetSAWidth()));
 
     PopulateList(det);
 
     m_updating = false;
+    UpdateOnDrawingEnabled();
     FlushDefaultPersist();
 }
 

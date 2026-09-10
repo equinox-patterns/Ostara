@@ -345,7 +345,7 @@ auto VPiece::FullSeamAllowancePoints(const VContainer *data) const -> QVector<VL
 auto VPiece::CuttingPathPoints(const VContainer *data) const -> QVector<QPointF>
 {
     QVector<QPointF> points;
-    if (IsSeamAllowance() && not IsSeamAllowanceBuiltIn())
+    if (IsSeamAllowance())
     {
         CastTo(FullSeamAllowancePoints(data), points);
         return points;
@@ -562,7 +562,7 @@ static auto HasSeamOnAllowanceBoundary(const QVector<QPointF> &mainPath, const Q
 //---------------------------------------------------------------------------------------------------------------------
 auto VPiece::IsSeamAllowanceValid(const VContainer *data) const -> bool
 {
-    if (IsSeamAllowance() && not IsSeamAllowanceBuiltIn())
+    if (IsSeamAllowance())
     {
         QVector<QPointF> mainPathPoints;
         CastTo<QPointF>(UniteMainPathPoints(data), mainPathPoints);
@@ -998,7 +998,7 @@ auto VPiece::SeamAllowancePointsWithRotation(const VContainer *data, vsizetype m
 {
     SCASSERT(data != nullptr);
 
-    if (not IsSeamAllowance() || IsSeamAllowanceBuiltIn())
+    if (not IsSeamAllowance())
     {
         return {};
     }
@@ -1116,11 +1116,6 @@ auto VPiece::GetUnitedPath(const VContainer *data) const -> QVector<VPieceNode>
 
     QVector<VPieceNode> united = d->m_path.GetNodes();
 
-    if (IsSeamAllowance() && IsSeamAllowanceBuiltIn())
-    {
-        return united;
-    }
-
     const QVector<CustomSARecord> records = FilterRecords(GetValidRecords());
 
     for (const auto &record : records)
@@ -1165,15 +1160,7 @@ auto VPiece::GetUnitedPath(const VContainer *data) const -> QVector<VPieceNode>
                 customNode.SetReverse(not customNode.GetReverse());
             }
 
-            // If seam allowance is built in main path user will not see a passmark provided by piece path
-            if (IsSeamAllowanceBuiltIn())
-            {
-                customNode.SetPassmark(false);
-            }
-            else
-            {
-                customNode.SetMainPathNode(false);
-            }
+            customNode.SetMainPathNode(false);
         }
 
         united = midBefore + customNodes + midAfter;
@@ -1399,11 +1386,6 @@ auto VPiece::IsPassmarkVisible(const QVector<VPieceNode> &path, vsizetype passma
     if (node.GetTypeTool() != Tool::NodePoint || not node.IsPassmark() || node.IsExcluded())
     {
         return false;
-    }
-
-    if (IsSeamAllowance() && IsSeamAllowanceBuiltIn())
-    {
-        return true;
     }
 
     const QVector<CustomSARecord> records = FilterRecords(GetValidRecords());

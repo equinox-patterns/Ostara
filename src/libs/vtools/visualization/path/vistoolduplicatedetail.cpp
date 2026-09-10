@@ -65,7 +65,7 @@ void VisToolDuplicateDetail::VisualMode(quint32 id)
 //---------------------------------------------------------------------------------------------------------------------
 auto VisToolDuplicateDetail::PiecePath(const VPiece &piece) const -> QPainterPath
 {
-    if (not piece.IsHideMainPath() || not piece.IsSeamAllowance() || piece.IsSeamAllowanceBuiltIn())
+    if (not piece.IsHideMainPath() || not piece.IsSeamAllowance())
     {
         return piece.MainPathPath(GetData());
     }

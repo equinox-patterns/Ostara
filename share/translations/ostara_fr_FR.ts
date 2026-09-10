@@ -12249,6 +12249,18 @@ Voulez-vous le remplacer ?</translation>
         <translation>Cacher le contour principal</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="222"/>
+        <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="257"/>
+        <source>Export the sew line with the drawings (DXF-AAMA)</source>
+        <translation>Exporter la ligne de couture avec les tracés (DXF-AAMA)</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="223"/>
+        <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="258"/>
+        <source>Places the sew line on the Draw line (8) instead of the dedicated sew-line layer (14). DXF-AAMA export only.</source>
+        <translation>Place la ligne de couture sur le calque des tracés (8) au lieu du calque dédié à la ligne de couture (14). Export DXF-AAMA uniquement.</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="227"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="251"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="898"/>
@@ -13367,6 +13379,12 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Cacher le contour principal pour toutes les pièces</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="114"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="340"/>
+        <source>Export the sew line with the drawings for all pieces (DXF-AAMA)</source>
+        <translation>Exporter la ligne de couture avec les tracés pour toutes les pièces (DXF-AAMA)</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="120"/>
         <source>Information block</source>
         <translation>Bloc d&apos;information</translation>
@@ -13729,6 +13747,11 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="149"/>
         <source>Hide main path for all pieces</source>
         <translation>Cacher le contour principal pour toutes les pièces</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="152"/>
+        <source>Export the sew line with the drawings for all pieces (DXF-AAMA)</source>
+        <translation>Exporter la ligne de couture avec les tracés pour toutes les pièces (DXF-AAMA)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="160"/>
@@ -14631,8 +14654,8 @@ This option will take an affect after restart.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="219"/>
-        <source>Sew line on drawing</source>
-        <translation>Ligne de couture dans l&apos;export</translation>
+        <source>Export the sew line with the drawings (DXF-AAMA)</source>
+        <translation>Exporter la ligne de couture avec les tracés (DXF-AAMA)</translation>
     </message>
 </context>
 <context>

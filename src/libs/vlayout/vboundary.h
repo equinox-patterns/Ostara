@@ -58,7 +58,7 @@ class VBoundary
     Q_DECLARE_TR_FUNCTIONS(VBoundary) // NOLINT
 
 public:
-    VBoundary(const QVector<VLayoutPoint> &boundary, bool seamAllowance, bool builtInSeamAllowance = false);
+    VBoundary(const QVector<VLayoutPoint> &boundary, bool seamAllowance);
 
     auto Combine(const QVector<VLayoutPassmark> &passmarks, bool drawMode, bool layoutAllowance = false) const
         -> QList<VBoundarySequenceItemData>;
@@ -69,7 +69,6 @@ public:
 private:
     QVector<VLayoutPoint> m_boundary;
     bool m_seamAllowance;
-    bool m_builtInSeamAllowance;
     QString m_pieceName{};
     QLineF m_mirrorLine{};
 

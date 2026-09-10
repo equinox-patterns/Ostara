@@ -99,8 +99,7 @@ public:
                                     bool drawMode = false,
                                     bool layoutAllowance = false) const -> QVector<VLayoutPoint>;
     auto GetSeamAllowancePoints() const -> QVector<VLayoutPoint>;
-    void SetSeamAllowancePoints(const QVector<VLayoutPoint> &points, bool seamAllowance = true,
-                                bool seamAllowanceBuiltIn = false);
+    void SetSeamAllowancePoints(const QVector<VLayoutPoint> &points, bool seamAllowance = true);
 
     auto GetMappedLayoutAllowancePoints() const -> QVector<QPointF>;
     auto GetLayoutAllowancePoints() const -> QVector<QPointF>;

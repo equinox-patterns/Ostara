@@ -115,7 +115,7 @@ void VPPiece::Update(const VPPiecePtr &piece)
 
     SetName(piece->GetName());
     SetContourPoints(piece->GetContourPoints(), piece->IsHideMainPath());
-    SetSeamAllowancePoints(piece->GetSeamAllowancePoints(), piece->IsSeamAllowance(), piece->IsSeamAllowanceBuiltIn());
+    SetSeamAllowancePoints(piece->GetSeamAllowancePoints(), piece->IsSeamAllowance());
     SetInternalPaths(piece->GetInternalPaths());
     SetPassmarks(piece->GetPassmarks());
     SetPlaceLabels(piece->GetPlaceLabels());
@@ -487,13 +487,7 @@ auto VPPiece::IsValid(QString &error) const -> bool
         return false;
     }
 
-    if (IsSeamAllowance() && IsSeamAllowanceBuiltIn() && GetContourPoints().isEmpty())
-    {
-        error = tr("Seam line is empty");
-        return false;
-    }
-
-    if (IsSeamAllowance() && not IsSeamAllowanceBuiltIn() && GetSeamAllowancePoints().isEmpty())
+    if (IsSeamAllowance() && GetSeamAllowancePoints().isEmpty())
     {
         error = tr("Seam allowance line is empty");
         return false;
@@ -711,8 +705,7 @@ void VPPiece::CleanPosition(const VPPiecePtr &piece)
     matrix.translate(-offset.x(), -offset.y());
 
     piece->SetContourPoints(MapVector(piece->GetContourPoints(), matrix), piece->IsHideMainPath());
-    piece->SetSeamAllowancePoints(MapVector(piece->GetSeamAllowancePoints(), matrix), piece->IsSeamAllowance(),
-                                  piece->IsSeamAllowanceBuiltIn());
+    piece->SetSeamAllowancePoints(MapVector(piece->GetSeamAllowancePoints(), matrix), piece->IsSeamAllowance());
 
     {
         QVector<VLayoutPiecePath> internalPaths = piece->GetInternalPaths();

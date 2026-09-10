@@ -220,6 +220,12 @@ public:
     auto GetDefaultHideMainPath() const -> bool;
     void SetDefaultHideMainPath(bool on);
 
+    /** @brief Pattern-level seed "export the sew line with the drawings (DXF-AAMA)" applied
+     *         to pieces created afterwards. Defaults to the application setting
+     *         (GetSewLineOnDrawing) when the pattern attribute is absent. */
+    auto GetDefaultSewLineOnDrawing() const -> bool;
+    void SetDefaultSewLineOnDrawing(bool on);
+
     /** @brief Pattern-level reference to the information block (cartouche) template
      *         shown on every piece created afterwards. Absent or empty = no information
      *         block. The template is referenced by name and resolved at render. */
@@ -402,6 +408,7 @@ public:
     static const QString AttrPassmarkLength;
     static const QString AttrDefaultActivateSA;
     static const QString AttrDefaultHideMainPath;
+    static const QString AttrDefaultSewLineOnDrawing;
     static const QString AttrTemplate;
     static const QString AttrManualPassmarkWidth;
     static const QString AttrPassmarkWidth;

@@ -302,7 +302,7 @@ void VHPGLEngine::GenerateHPGLFooter(QTextStream &out)
 //---------------------------------------------------------------------------------------------------------------------
 void VHPGLEngine::PlotSewLine(QTextStream &out, const VLayoutPiece &detail)
 {
-    if (!detail.IsSeamAllowance() || detail.IsHideMainPath() || detail.IsSeamAllowanceBuiltIn())
+    if (!detail.IsSeamAllowance() || detail.IsHideMainPath())
     {
         return;
     }
@@ -320,7 +320,7 @@ void VHPGLEngine::PlotSewLine(QTextStream &out, const VLayoutPiece &detail)
 //---------------------------------------------------------------------------------------------------------------------
 void VHPGLEngine::PlotSeamAllowance(QTextStream &out, const VLayoutPiece &detail)
 {
-    QVector<VLayoutPoint> const pieceBoundary = detail.IsSeamAllowance() && not detail.IsSeamAllowanceBuiltIn()
+    QVector<VLayoutPoint> const pieceBoundary = detail.IsSeamAllowance()
                                                     ? detail.GetMappedFullSeamAllowancePoints(m_togetherWithNotches)
                                                     : detail.GetMappedFullContourPoints(m_togetherWithNotches);
 

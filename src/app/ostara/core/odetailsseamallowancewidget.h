@@ -84,10 +84,12 @@ private:
     void CollectGroupsFromList(VPiece &det) const;
     void FinishSelection();
     void FlushDefaultPersist();
+    void UpdateOnDrawingEnabled();
 
     // UI
     QCheckBox *m_activeCheck{nullptr};
     QCheckBox *m_hideMainPathCheck{nullptr};
+    QCheckBox *m_onDrawingCheck{nullptr};
     QLineEdit *m_valueEdit{nullptr};
     QPushButton *m_applyValueBtn{nullptr};
     QPushButton *m_addCustomBtn{nullptr};

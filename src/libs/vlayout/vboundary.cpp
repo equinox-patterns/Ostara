@@ -212,10 +212,9 @@ void OptimizeBoundarySequence(QList<VBoundarySequenceItemData> &sequence)
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-VBoundary::VBoundary(const QVector<VLayoutPoint> &boundary, bool seamAllowance, bool builtInSeamAllowance)
+VBoundary::VBoundary(const QVector<VLayoutPoint> &boundary, bool seamAllowance)
   : m_boundary(boundary),
-    m_seamAllowance(seamAllowance),
-    m_builtInSeamAllowance(builtInSeamAllowance)
+    m_seamAllowance(seamAllowance)
 {
 }
 
@@ -277,7 +276,7 @@ auto VBoundary::SkipPassmark(const VLayoutPassmark &passmark, bool layoutAllowan
 {
     if (m_seamAllowance)
     {
-        if ((m_builtInSeamAllowance && !passmark.isBuiltIn) || (!m_builtInSeamAllowance && passmark.isBuiltIn))
+        if (passmark.isBuiltIn)
         {
             return true;
         }

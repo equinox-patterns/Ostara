@@ -125,7 +125,6 @@ const QString VToolSeamAllowance::AttrSeamAllowance = QStringLiteral("seamAllowa
 const QString VToolSeamAllowance::AttrHideMainPath = QStringLiteral("hideMainPath");   // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrShowFullPiece = QStringLiteral("showFullPiece"); // NOLINT(cert-err58-cpp)
 // NOLINTNEXTLINE(cert-err58-cpp)
-const QString VToolSeamAllowance::AttrSeamAllowanceBuiltIn = QStringLiteral("seamAllowanceBuiltIn");
 const QString VToolSeamAllowance::AttrUnited = QStringLiteral("united");                 // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrFont = QStringLiteral("fontSize");                 // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrActive = QStringLiteral("active");                 // NOLINT(cert-err58-cpp)
@@ -144,13 +143,10 @@ auto SeamPoints(const VPiece &detail, bool combineTogether, const VContainer *da
         const QVector<VLayoutPassmark> passmarks = VLayoutPiece::ConvertPassmarks(detail, data);
         const QVector<VLayoutPoint> points = detail.FullMainPathPoints(data);
 
-        bool const seamAllowance = detail.IsSeamAllowance() && detail.IsSeamAllowanceBuiltIn();
-        bool const builtInSeamAllowance = detail.IsSeamAllowance() && detail.IsSeamAllowanceBuiltIn();
-
         // DumpVector(points, QStringLiteral("points.json.XXXXXX")); // Uncomment for dumping test data
         // DumpVector(passmarks, QStringLiteral("passmarks.json.XXXXXX")); // Uncomment for dumping test data
 
-        VBoundary boundary(points, seamAllowance, builtInSeamAllowance);
+        VBoundary boundary(points, false);
         boundary.SetPieceName(detail.GetName());
 
         if (QLineF const mirrorLine = detail.SeamMirrorLine(data); !mirrorLine.isNull() && detail.IsShowFullPiece())
@@ -380,7 +376,7 @@ auto RenderMirrorLine(const VPiece &detail, const VContainer *data, bool combine
     QLineF mirrorLine;
     QVector<VLayoutPoint> points;
 
-    if (!detail.IsSeamAllowance() || detail.IsSeamAllowanceBuiltIn())
+    if (!detail.IsSeamAllowance())
     {
         mirrorLine = detail.SeamMirrorLine(data);
         // Return empty path if no valid mirror line is found
@@ -810,8 +806,6 @@ void VToolSeamAllowance::AddAttributes(VAbstractPattern *doc, QDomElement &domEl
     doc->SetAttributeOrRemoveIf<bool>(domElement, AttrSeamAllowance, piece.IsSeamAllowance(),
                                       [](bool seamAllowance) noexcept { return not seamAllowance; });
     doc->SetAttribute(domElement, AttrHideMainPath, piece.IsHideMainPath());
-    doc->SetAttributeOrRemoveIf<bool>(domElement, AttrSeamAllowanceBuiltIn, piece.IsSeamAllowanceBuiltIn(),
-                                      [](bool builtin) noexcept { return not builtin; });
     doc->SetAttributeOrRemoveIf<bool>(domElement, AttrShowFullPiece, piece.IsShowFullPiece(),
                                       [](bool show) noexcept { return show; });
     doc->SetAttribute(domElement, AttrWidth, piece.GetFormulaSAWidth());
@@ -2670,15 +2664,14 @@ auto VToolSeamAllowance::ComputePieceGeometry(bool combineTogether, bool pieceSh
     geom.foldLine = RenderFoldLine(detail, containerData);
     geom.mirrorLine = RenderMirrorLine(detail, containerData, combineTogether);
 
-    geom.hasSeamAllowance = detail.IsSeamAllowance() && not detail.IsSeamAllowanceBuiltIn();
+    geom.hasSeamAllowance = detail.IsSeamAllowance();
     if (geom.hasSeamAllowance)
     {
         geom.seamAllowance = RenderSeamAllowancePath(detail, combineTogether, containerData);
         geom.seamAllowanceValid = detail.IsSeamAllowanceValid(containerData);
     }
 
-    geom.showMainPath = pieceShowMainPath || not detail.IsHideMainPath() || not detail.IsSeamAllowance() ||
-                        detail.IsSeamAllowanceBuiltIn();
+    geom.showMainPath = pieceShowMainPath || not detail.IsHideMainPath() || not detail.IsSeamAllowance();
 
     geom.placeLabels = detail.PlaceLabelPath(containerData);
 
@@ -3249,9 +3242,8 @@ auto VToolSeamAllowance::IsGrainlinePositionValid() const -> bool
     VPieceGrainline const grainLine = m_grainLine->Grainline();
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
     QVector<QPointF> contourPoints;
-    detail.IsSeamAllowance() && not detail.IsSeamAllowanceBuiltIn()
-        ? CastTo(detail.FullSeamAllowancePoints(getData()), contourPoints)
-        : CastTo(detail.FullMainPathPoints(getData()), contourPoints);
+    detail.IsSeamAllowance() ? CastTo(detail.FullSeamAllowancePoints(getData()), contourPoints)
+                             : CastTo(detail.FullMainPathPoints(getData()), contourPoints);
 
     return grainLine.IsPositionValid(contourPoints);
 }
@@ -3278,9 +3270,8 @@ auto VToolSeamAllowance::IsFoldLinePositionValid(const QVector<QPainterPath> &sh
     }
 
     QVector<QPointF> contourPoints;
-    detail.IsSeamAllowance() && not detail.IsSeamAllowanceBuiltIn()
-        ? CastTo(detail.FullSeamAllowancePoints(getData()), contourPoints)
-        : CastTo(detail.FullMainPathPoints(getData()), contourPoints);
+    detail.IsSeamAllowance() ? CastTo(detail.FullSeamAllowancePoints(getData()), contourPoints)
+                             : CastTo(detail.FullMainPathPoints(getData()), contourPoints);
 
     const QPolygonF contour(contourPoints);
     if (contour.size() < 3)

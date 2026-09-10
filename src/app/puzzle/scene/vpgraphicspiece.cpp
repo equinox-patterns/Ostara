@@ -658,7 +658,7 @@ void VPGraphicsPiece::PaintPiece(QPainter *painter)
 //---------------------------------------------------------------------------------------------------------------------
 void VPGraphicsPiece::PaintSeamLine(QPainter *painter, const VPPiecePtr &piece)
 {
-    if (piece->IsHideMainPath() && piece->IsSeamAllowance() && not piece->IsSeamAllowanceBuiltIn())
+    if (piece->IsHideMainPath() && piece->IsSeamAllowance())
     {
         return;
     }
@@ -693,7 +693,7 @@ void VPGraphicsPiece::PaintSeamLine(QPainter *painter, const VPPiecePtr &piece)
 //---------------------------------------------------------------------------------------------------------------------
 void VPGraphicsPiece::PaintCuttingLine(QPainter *painter, const VPPiecePtr &piece)
 {
-    if (!piece->IsSeamAllowance() || piece->IsSeamAllowanceBuiltIn())
+    if (!piece->IsSeamAllowance())
     {
         return;
     }

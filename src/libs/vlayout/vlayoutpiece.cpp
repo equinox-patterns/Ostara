@@ -455,7 +455,7 @@ auto VLayoutPiece::Create(const VPiece &piece, vidtype id, const VContainer *pat
 
     VCommonSettings const *settings = VAbstractApplication::VApp()->Settings();
     det.SetContourPoints(futureMainPath.result(), settings->IsPieceShowMainPath() ? false : piece.IsHideMainPath());
-    det.SetSeamAllowancePoints(futureSeamAllowance.result(), piece.IsSeamAllowance(), piece.IsSeamAllowanceBuiltIn());
+    det.SetSeamAllowancePoints(futureSeamAllowance.result(), piece.IsSeamAllowance());
     det.SetInternalPaths(futureInternalPaths.result());
     det.SetPassmarks(futurePassmarks.result());
     det.SetPlaceLabels(futurePlaceLabels.result());
@@ -561,10 +561,7 @@ auto VLayoutPiece::GetFullContourPoints(bool togetherWithNotches, bool drawMode,
     {
         QVector<VLayoutPassmark> const passmarks = GetPassmarks();
 
-        bool const seamAllowance = IsSeamAllowance() && IsSeamAllowanceBuiltIn();
-        bool const builtInSeamAllowance = IsSeamAllowance() && IsSeamAllowanceBuiltIn();
-
-        VBoundary boundary(points, seamAllowance, builtInSeamAllowance);
+        VBoundary boundary(points, false);
         boundary.SetPieceName(GetName());
         if (IsShowFullPiece())
         {
@@ -650,10 +647,7 @@ auto VLayoutPiece::GetFullSeamAllowancePoints(bool togetherWithNotches, bool dra
     {
         const QVector<VLayoutPassmark> passmarks = GetPassmarks();
 
-        bool const seamAllowance = IsSeamAllowance() && !IsSeamAllowanceBuiltIn();
-        bool const builtInSeamAllowance = IsSeamAllowance() && IsSeamAllowanceBuiltIn();
-
-        VBoundary boundary(points, seamAllowance, builtInSeamAllowance);
+        VBoundary boundary(points, IsSeamAllowance());
         boundary.SetPieceName(GetName());
         if (IsShowFullPiece())
         {
@@ -680,19 +674,17 @@ auto VLayoutPiece::GetSeamAllowancePoints() const -> QVector<VLayoutPoint>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VLayoutPiece::SetSeamAllowancePoints(const QVector<VLayoutPoint> &points, bool seamAllowance,
-                                          bool seamAllowanceBuiltIn)
+void VLayoutPiece::SetSeamAllowancePoints(const QVector<VLayoutPoint> &points, bool seamAllowance)
 {
     if (seamAllowance)
     {
         SetSeamAllowance(seamAllowance);
-        SetSeamAllowanceBuiltIn(seamAllowanceBuiltIn);
         d->m_seamAllowance = points;
         if (not d->m_seamAllowance.isEmpty())
         {
             d->m_seamAllowance = RemoveDublicates(d->m_seamAllowance, false);
         }
-        else if (not IsSeamAllowanceBuiltIn())
+        else
         {
             qWarning() << "Seam allowance is empty.";
             SetSeamAllowance(false);
@@ -729,12 +721,12 @@ auto VLayoutPiece::GetCorrectedMirrorLine(bool togetherWithNotches) const -> QLi
     QLineF mirrorLine;
     QVector<VLayoutPoint> points;
 
-    if (!IsSeamAllowance() || IsSeamAllowanceBuiltIn())
+    if (!IsSeamAllowance())
     {
         mirrorLine = GetSeamMirrorLine();
         points = GetFullContourPoints(togetherWithNotches);
     }
-    else if (not IsSeamAllowanceBuiltIn())
+    else
     {
         mirrorLine = GetSeamAllowanceMirrorLine();
         points = GetFullSeamAllowancePoints(togetherWithNotches);
@@ -1137,7 +1129,7 @@ auto VLayoutPiece::isNull() const -> bool
 {
     if (not d->m_contour.isEmpty() && d->m_layoutWidth > 0)
     {
-        return !IsSeamAllowance() || IsSeamAllowanceBuiltIn() || d->m_seamAllowance.isEmpty();
+        return !IsSeamAllowance() || d->m_seamAllowance.isEmpty();
     }
     return true;
 }
@@ -1155,11 +1147,9 @@ void VLayoutPiece::SetLayoutAllowancePoints(bool togetherWithNotches)
 
     if (d->m_layoutWidth > 0)
     {
-        QVector<VLayoutPoint> const pieceBoundary = IsSeamAllowance() && not IsSeamAllowanceBuiltIn()
-                                                        ? GetMappedFullSeamAllowancePoints(togetherWithNotches,
-                                                                                           false,
-                                                                                           true)
-                                                        : GetMappedFullContourPoints(togetherWithNotches, false, true);
+        QVector<VLayoutPoint> const pieceBoundary =
+            IsSeamAllowance() ? GetMappedFullSeamAllowancePoints(togetherWithNotches, false, true)
+                              : GetMappedFullContourPoints(togetherWithNotches, false, true);
 
         QVector<VSAPoint> pieceBoundaryPoints;
         CastTo(pieceBoundary, pieceBoundaryPoints);
@@ -1170,8 +1160,7 @@ void VLayoutPiece::SetLayoutAllowancePoints(bool togetherWithNotches)
         }
 
         QVector<QPointF> points;
-        CastTo(IsSeamAllowance() && not IsSeamAllowanceBuiltIn() ? GetSeamAllowancePoints() : GetContourPoints(),
-               points);
+        CastTo(IsSeamAllowance() ? GetSeamAllowancePoints() : GetContourPoints(), points);
         d->m_square = qFloor(qAbs(SumTrapezoids(points) / 2.0));
     }
     else
@@ -1183,14 +1172,13 @@ void VLayoutPiece::SetLayoutAllowancePoints(bool togetherWithNotches)
 //---------------------------------------------------------------------------------------------------------------------
 auto VLayoutPiece::GetMappedExternalContourPoints() const -> QVector<VLayoutPoint>
 {
-    return IsSeamAllowance() && not IsSeamAllowanceBuiltIn() ? GetMappedFullSeamAllowancePoints()
-                                                             : GetMappedFullContourPoints();
+    return IsSeamAllowance() ? GetMappedFullSeamAllowancePoints() : GetMappedFullContourPoints();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VLayoutPiece::GetExternalContourPoints() const -> QVector<VLayoutPoint>
 {
-    return IsSeamAllowance() && not IsSeamAllowanceBuiltIn() ? GetFullSeamAllowancePoints() : GetFullContourPoints();
+    return IsSeamAllowance() ? GetFullSeamAllowancePoints() : GetFullContourPoints();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1269,7 +1257,7 @@ auto VLayoutPiece::ContourPath(bool togetherWithNotches, bool showLayoutAllowanc
     QPainterPath path;
 
     // sew line
-    if (not IsHideMainPath() || not IsSeamAllowance() || IsSeamAllowanceBuiltIn())
+    if (not IsHideMainPath() || not IsSeamAllowance())
     {
         QVector<VLayoutPoint> const points = GetFullContourPoints(togetherWithNotches, true, false);
         path = VGObject::PainterPath(points);
@@ -1278,16 +1266,13 @@ auto VLayoutPiece::ContourPath(bool togetherWithNotches, bool showLayoutAllowanc
     // seam allowance
     if (IsSeamAllowance())
     {
-        if (not IsSeamAllowanceBuiltIn())
+        QVector<VLayoutPoint> points = GetFullSeamAllowancePoints(togetherWithNotches, true, false);
+        if (points.constLast().toPoint() != points.constFirst().toPoint())
         {
-            QVector<VLayoutPoint> points = GetFullSeamAllowancePoints(togetherWithNotches, true, false);
-            if (points.constLast().toPoint() != points.constFirst().toPoint())
-            {
-                points.append(points.at(0)); // Should be always closed
-            }
-
-            path.addPath(VGObject::PainterPath(points));
+            points.append(points.at(0)); // Should be always closed
         }
+
+        path.addPath(VGObject::PainterPath(points));
 
         if (!togetherWithNotches)
         {
@@ -1456,9 +1441,8 @@ auto VLayoutPiece::GetItem(bool textAsPaths, bool togetherWithNotches, bool show
 //---------------------------------------------------------------------------------------------------------------------
 auto VLayoutPiece::IsLayoutAllowanceValid(bool togetherWithNotches) const -> bool
 {
-    QVector<VLayoutPoint> base = (IsSeamAllowance() && not IsSeamAllowanceBuiltIn())
-                                     ? GetFullSeamAllowancePoints(togetherWithNotches, false, true)
-                                     : GetFullContourPoints(togetherWithNotches, false, true);
+    QVector<VLayoutPoint> base = IsSeamAllowance() ? GetFullSeamAllowancePoints(togetherWithNotches, false, true)
+                                                   : GetFullContourPoints(togetherWithNotches, false, true);
 
     if (togetherWithNotches)
     {
@@ -1669,7 +1653,7 @@ void VLayoutPiece::CreateFoldLineItem(QGraphicsItem *parent, bool textAsPaths) c
 //---------------------------------------------------------------------------------------------------------------------
 auto VLayoutPiece::DetailPath() const -> QVector<VLayoutPoint>
 {
-    if (IsSeamAllowance() && not IsSeamAllowanceBuiltIn())
+    if (IsSeamAllowance())
     {
         return d->m_seamAllowance;
     }
@@ -1857,12 +1841,6 @@ auto VLayoutPiece::ConvertPassmarks(const VPiece &piece, const VContainer *patte
                 layoutPassmarks.append(layoutPassmark);
             }
         };
-
-        if (piece.IsSeamAllowanceBuiltIn())
-        {
-            AddBuiltInPassmark();
-            continue;
-        }
 
         VPiecePassmarkData const pData = passmark.Data();
 

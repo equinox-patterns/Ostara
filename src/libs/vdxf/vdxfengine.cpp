@@ -820,7 +820,7 @@ void VDxfEngine::ExportAAMADraw(const QSharedPointer<dx_ifaceBlock> &detailBlock
 //---------------------------------------------------------------------------------------------------------------------
 void VDxfEngine::ExportAAMADrawSewLine(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
 {
-    if (!detail.IsSeamAllowance() || detail.IsHideMainPath() || detail.IsSeamAllowanceBuiltIn())
+    if (!detail.IsSeamAllowance() || detail.IsHideMainPath())
     {
         return;
     }
@@ -1208,7 +1208,7 @@ void VDxfEngine::ExportASTMPieceBoundary(const QSharedPointer<dx_ifaceBlock> &de
 //---------------------------------------------------------------------------------------------------------------------
 void VDxfEngine::ExportASTMSewLine(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
 {
-    if (!detail.IsSeamAllowance() || detail.IsHideMainPath() || detail.IsSeamAllowanceBuiltIn())
+    if (!detail.IsSeamAllowance() || detail.IsHideMainPath())
     {
         return;
     }
@@ -1621,9 +1621,8 @@ auto VDxfEngine::ExportASTMNotch(const VLayoutPassmark &passmark) -> DRW_ASTMNot
 auto VDxfEngine::ExportASTMNotchDataDependecy(const VLayoutPassmark &passmark, const UTF8STRING &notchLayer,
                                               const VLayoutPiece &detail) -> DRW_ATTDEF *
 {
-    QVector<VLayoutPoint> const boundary = not detail.IsSeamAllowanceBuiltIn() && !passmark.isBuiltIn
-                                               ? detail.GetMappedSeamAllowancePoints()
-                                               : detail.GetMappedContourPoints();
+    QVector<VLayoutPoint> const boundary = !passmark.isBuiltIn ? detail.GetMappedSeamAllowancePoints()
+                                                               : detail.GetMappedContourPoints();
 
     const QPointF center = passmark.baseLine.p1();
     QPointF referencePoint;
@@ -1633,7 +1632,7 @@ auto VDxfEngine::ExportASTMNotchDataDependecy(const VLayoutPassmark &passmark, c
     }
 
     auto *attdef = new DRW_ATTDEF();
-    attdef->layer = not detail.IsSeamAllowanceBuiltIn() && !passmark.isBuiltIn ? *layer1 : *layer14;
+    attdef->layer = !passmark.isBuiltIn ? *layer1 : *layer14;
     attdef->basePoint = DRW_Coord(FromPixel(referencePoint.x(), m_varInsunits),
                                   FromPixel(GetSize().height() - referencePoint.y(), m_varInsunits), 0);
     attdef->adjustmentPoint =
@@ -1925,7 +1924,7 @@ auto VDxfEngine::CreateAAMAPolygon(const QVector<C> &polygon, const UTF8STRING &
 //---------------------------------------------------------------------------------------------------------------------
 auto VDxfEngine::PieceOutline(const VLayoutPiece &detail) const -> QVector<VLayoutPoint>
 {
-    if (detail.IsSeamAllowance() && not detail.IsSeamAllowanceBuiltIn())
+    if (detail.IsSeamAllowance())
     {
         return detail.GetMappedFullSeamAllowancePoints(m_togetherWithNotches);
     }

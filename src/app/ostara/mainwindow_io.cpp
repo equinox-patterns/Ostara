@@ -907,6 +907,11 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
             // Drop the legacy piece short name (Ostara names its area variables from the piece name). Silent by
             // design: the attribute has no effect the user could observe, so there is nothing to warn about.
             StripShortNameAttributes(doc);
+
+            // Convert legacy built-in seam allowance pieces to pieces without a seam allowance. Silent by design:
+            // the geometry is unchanged, manual notch lengths are kept, and a notch that had no length simply
+            // reappears at the Ostara default — nothing the user has to act on.
+            StripBuiltInSeamAllowanceAttributes(doc);
         }
 
         if (!customMeasureFile.isEmpty())

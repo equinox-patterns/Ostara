@@ -614,14 +614,16 @@ void VPLayoutFileReader::ReadSeamAllowance(const VPPiecePtr &piece)
 
     QXmlStreamAttributes const attribs = attributes();
     bool const enabled = ReadAttributeBool(attribs, ML::AttrEnabled, falseStr);
-    piece->SetSeamAllowance(enabled);
-
-    bool const builtIn = ReadAttributeBool(attribs, ML::AttrBuiltIn, falseStr);
-    piece->SetSeamAllowanceBuiltIn(builtIn);
+    // A legacy layout file could mark the piece as "built-in seam allowance": a piece whose main path already was
+    // the cutting contour, i.e. a piece without a seam allowance. It reads back as a disabled one — which is also
+    // what keeps such a file from tripping the empty-allowance check below, since no allowance points were ever
+    // written for it.
+    const bool builtIn = ReadAttributeBool(attribs, ML::AttrBuiltIn, falseStr);
+    piece->SetSeamAllowance(enabled && not builtIn);
 
     QVector<VLayoutPoint> const path = ReadLayoutPoints();
 
-    if (enabled && not builtIn)
+    if (piece->IsSeamAllowance())
     {
         if (path.isEmpty())
         {

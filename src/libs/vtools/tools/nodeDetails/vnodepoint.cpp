@@ -590,7 +590,7 @@ void VNodePoint::InitAngleTypeMenu(QMenu *menu, vidtype pieceId, QHash<int, QAct
 
     const PieceNodeAngle curType = path.at(nodeIndex).GetAngleType();
     QMenu *angleTypeMenu = menu->addMenu(tr("Seam allowance angle"));
-    angleTypeMenu->setEnabled(detail.IsSeamAllowance() && not detail.IsSeamAllowanceBuiltIn());
+    angleTypeMenu->setEnabled(detail.IsSeamAllowance());
 
     auto InitAngleAction = [angleTypeMenu, curType](const QString &name, PieceNodeAngle checkType) -> QAction *
     {

@@ -518,6 +518,47 @@ auto StripShortNameAttributes(QDomDocument *doc) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto StripBuiltInSeamAllowanceAttributes(QDomDocument *doc) -> bool
+{
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    // A "built-in seam allowance" piece declared that its main path already WAS the cutting contour, so the engine
+    // computed no separate allowance at all. Ostara has no such mode — and it does not need one: it is exactly a
+    // piece with the seam allowance disabled. Same contour, same rendering, same exports, same placement. The only
+    // thing the built-in branch did differently was drop every notch whose length was not defined, instead of
+    // falling back to the Ostara default (0.5 cm). So the piece keeps its geometry, the manual notch lengths are
+    // preserved as they are, and the rest picks up the default length.
+    bool foundBuiltIn = false;
+    const QDomNodeList details = root.elementsByTagName(QStringLiteral("detail"));
+    for (int i = 0; i < details.size(); ++i)
+    {
+        QDomElement detail = details.at(i).toElement();
+        if (detail.isNull() || not detail.hasAttribute(QStringLiteral("seamAllowanceBuiltIn")))
+        {
+            continue;
+        }
+
+        foundBuiltIn = true;
+        if (detail.attribute(QStringLiteral("seamAllowanceBuiltIn")) == QLatin1String("true"))
+        {
+            detail.setAttribute(QStringLiteral("seamAllowance"), QStringLiteral("false"));
+        }
+        detail.removeAttribute(QStringLiteral("seamAllowanceBuiltIn"));
+    }
+
+    return foundBuiltIn;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void RefreshSceneItemPens(const VMainGraphicsScene *scene)
 {
     // Scale- and theme-dependent item state must be refreshed here, not inside paint(). Since Qt 6

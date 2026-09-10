@@ -267,7 +267,7 @@ template <class T> inline auto VPiece::SeamAllowancePath(const QVector<T> &point
     QPainterPath ekv;
 
     // seam allowence
-    if (IsSeamAllowance() && not IsSeamAllowanceBuiltIn() && not points.isEmpty())
+    if (IsSeamAllowance() && not points.isEmpty())
     {
         ekv.moveTo(points.at(0));
         for (qint32 i = 1; i < points.count(); ++i)

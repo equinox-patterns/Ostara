@@ -321,10 +321,7 @@ void VPLayoutFileWriter::WritePiece(const VPPiecePtr &piece)
     SetAttributeOrRemoveIf<bool>(ML::AttrEnabled,
                                  piece->IsSeamAllowance(),
                                  [](bool enabled) noexcept -> bool { return not enabled; });
-    SetAttributeOrRemoveIf<bool>(ML::AttrBuiltIn,
-                                 piece->IsSeamAllowanceBuiltIn(),
-                                 [](bool builtin) noexcept -> bool { return not builtin; });
-    if (piece->IsSeamAllowance() && not piece->IsSeamAllowanceBuiltIn())
+    if (piece->IsSeamAllowance())
     {
         QVector<VLayoutPoint> const seamAllowancePoints = piece->GetSeamAllowancePoints();
         for (const auto &point : seamAllowancePoints)

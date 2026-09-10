@@ -81,6 +81,11 @@ auto StripPinElements(QDomDocument *doc) -> bool;
 // Returns true if the attribute was found.
 auto StripShortNameAttributes(QDomDocument *doc) -> bool;
 
+// Convert legacy "built-in seam allowance" pieces to plain pieces with the seam allowance disabled, and drop the
+// attribute. Ostara has no built-in mode: it was exactly a piece without a seam allowance.
+// Returns true if at least one piece carried the attribute.
+auto StripBuiltInSeamAllowanceAttributes(QDomDocument *doc) -> bool;
+
 // Refresh scale- and theme-dependent item state (labels, pens) for a whole scene.
 void RefreshSceneItemPens(const VMainGraphicsScene *scene);
 
