@@ -139,10 +139,6 @@ public:
     auto GetCustomSARecords() -> QVector<CustomSARecord> &;
     void SetCustomSARecords(const QVector<CustomSARecord> &records);
 
-    auto GetPins() const -> QVector<quint32>;
-    auto GetPins() -> QVector<quint32> &;
-    void SetPins(const QVector<quint32> &pins);
-
     auto GetPlaceLabels() const -> QVector<quint32>;
     auto GetPlaceLabels() -> QVector<quint32> &;
     void SetPlaceLabels(const QVector<quint32> &labels);

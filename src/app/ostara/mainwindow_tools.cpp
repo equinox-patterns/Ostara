@@ -93,7 +93,6 @@
 #include "../vtools/dialogs/tools/piece/dialogduplicatedetail.h"
 #include "../vtools/dialogs/tools/piece/dialoginsertnode.h"
 #include "../vtools/dialogs/tools/piece/dialogpiecepath.h"
-#include "../vtools/dialogs/tools/piece/dialogpin.h"
 #include "../vtools/dialogs/tools/piece/dialogseamallowance.h"
 #include "opiecedialog.h"
 
@@ -138,7 +137,6 @@
 #include "../vtools/tools/drawTools/vtoolline.h"
 #include "../vtools/tools/vabstracttool.h"
 #include "../vtools/tools/nodeDetails/vtoolpiecepath.h"
-#include "../vtools/tools/nodeDetails/vtoolpin.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/tools/vtooluniondetails.h"
 
@@ -515,16 +513,6 @@ void MainWindow::ToolPiecePath(bool checked)
 
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolPin(bool checked)
-{
-    ToolSelectPointByRelease();
-    SetToolButton<DialogPin>(checked, Tool::Pin, QStringLiteral("pin_cursor.png"), tr("Select pin point"),
-                             &MainWindow::ClosedDialogPin);
-    LogPatternToolUsed(checked, QStringLiteral("Pin tool"));
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolPlaceLabel(bool checked)
 {
     ToolSelectPointByRelease();
@@ -783,17 +771,6 @@ void MainWindow::ClosedDialogPlaceLabel(int result)
 }
 
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ClosedDialogPin(int result)
-{
-    SCASSERT(m_dialogTool != nullptr);
-    if (result == QDialog::Accepted)
-    {
-        VToolPin::Create(m_dialogTool, doc, pattern);
-    }
-    ArrowTool(true);
-    doc->LiteParseTree(Document::LiteParse);
-}
 
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1075,7 +1052,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Check if need to extend.");
 
     switch (t)
     {
@@ -1085,7 +1062,6 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
             dialogTool->Build(t);
             break;
         case Tool::PiecePath:
-        case Tool::Pin:
         case Tool::InsertNode:
         case Tool::PlaceLabel:
             dialogTool->SetPiecesList(doc->GetActivePPPieces());
@@ -1454,7 +1430,7 @@ void MainWindow::ApplyPieceDialog(VMainGraphicsScene *scene)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1640,9 +1616,6 @@ void MainWindow::CancelTool()
         case Tool::EllipticalArc:
             ui->actionEllipticalArcTool->setChecked(false);
             break;
-        case Tool::Pin:
-            ui->actionPinTool->setChecked(false);
-            break;
         case Tool::InsertNode:
             ui->actionInsertNodeTool->setChecked(false);
             break;
@@ -1734,7 +1707,7 @@ void MainWindow::ArrowTool(bool checked)
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -1947,10 +1920,6 @@ void MainWindow::LastUsedTool()
         case Tool::EllipticalArc:
             ui->actionEllipticalArcTool->setChecked(true);
             ToolEllipticalArc(true);
-            break;
-        case Tool::Pin:
-            ui->actionPinTool->setChecked(true);
-            ToolPin(true);
             break;
         case Tool::InsertNode:
             ui->actionInsertNodeTool->setChecked(true);

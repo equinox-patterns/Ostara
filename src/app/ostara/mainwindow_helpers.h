@@ -72,6 +72,10 @@ auto AutosavePrefix() -> const QString &;
 // Strip Valentina label elements from a pattern DOM. Returns true if any labels were found.
 auto StripLabelElements(QDomDocument *doc) -> bool;
 
+// Strip pin nodes and neutralize pin-anchored grainlines in a pattern DOM.
+// Returns true if at least one grainline had to be disabled.
+auto StripPinElements(QDomDocument *doc) -> bool;
+
 // Refresh scale- and theme-dependent item state (labels, pens) for a whole scene.
 void RefreshSceneItemPens(const VMainGraphicsScene *scene);
 

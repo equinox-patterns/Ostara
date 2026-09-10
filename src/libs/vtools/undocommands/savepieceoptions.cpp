@@ -67,7 +67,6 @@ void SavePieceOptions::undo()
     VToolSeamAllowance::AddNodes(Doc(), domElement, m_oldDet);
     VToolSeamAllowance::AddCSARecords(Doc(), domElement, m_oldDet.GetCustomSARecords());
     VToolSeamAllowance::AddInternalPaths(Doc(), domElement, m_oldDet.GetInternalPaths());
-    VToolSeamAllowance::AddPins(Doc(), domElement, m_oldDet.GetPins());
     VToolSeamAllowance::AddPlaceLabels(Doc(), domElement, m_oldDet.GetPlaceLabels());
     VToolSeamAllowance::AddSAMarginProperties(Doc(), domElement, m_oldDet);
     VToolSeamAllowance::AddMirrorLine(Doc(), domElement, m_oldDet);
@@ -118,7 +117,6 @@ void SavePieceOptions::redo()
     VToolSeamAllowance::AddNodes(Doc(), domElement, m_newDet);
     VToolSeamAllowance::AddCSARecords(Doc(), domElement, m_newDet.GetCustomSARecords());
     VToolSeamAllowance::AddInternalPaths(Doc(), domElement, m_newDet.GetInternalPaths());
-    VToolSeamAllowance::AddPins(Doc(), domElement, m_newDet.GetPins());
     VToolSeamAllowance::AddPlaceLabels(Doc(), domElement, m_newDet.GetPlaceLabels());
     VToolSeamAllowance::AddSAMarginProperties(Doc(), domElement, m_newDet);
     VToolSeamAllowance::AddMirrorLine(Doc(), domElement, m_newDet);

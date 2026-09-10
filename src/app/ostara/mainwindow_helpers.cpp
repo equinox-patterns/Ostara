@@ -397,6 +397,86 @@ auto StripLabelElements(QDomDocument *doc) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto StripPinElements(QDomDocument *doc) -> bool
+{
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    bool foundPinGrainline = false;
+
+    // 1. Neutralize pin-anchored <grainline> elements — both the piece grainline (<detail>) and the group grainline
+    //    (<pieceGroup>). Such a grainline carries no geometry of its own: position, length and angle are resolved from
+    //    the referenced pin nodes, while the length/rotation stored alongside are the placeholders "1"/"90" (that is
+    //    how the "two pins" mode is marked). Once pins are gone those placeholders would be taken at face value and
+    //    draw a wrong grainline, silently. So disable it, drop the anchors, and restore sane defaults — re-enabling it
+    //    in Details mode then yields a normal free grainline the user can place.
+    const QDomNodeList grainlines = root.elementsByTagName(QStringLiteral("grainline"));
+    for (int i = 0; i < grainlines.size(); ++i)
+    {
+        QDomElement grainline = grainlines.at(i).toElement();
+        if (grainline.isNull())
+        {
+            continue;
+        }
+
+        const bool anchored = grainline.hasAttribute(QStringLiteral("centerPin")) ||
+                              grainline.hasAttribute(QStringLiteral("topPin")) ||
+                              grainline.hasAttribute(QStringLiteral("bottomPin"));
+        if (not anchored)
+        {
+            continue;
+        }
+
+        foundPinGrainline = true;
+        grainline.removeAttribute(QStringLiteral("centerPin"));
+        grainline.removeAttribute(QStringLiteral("topPin"));
+        grainline.removeAttribute(QStringLiteral("bottomPin"));
+        grainline.setAttribute(QStringLiteral("enabled"), QStringLiteral("false"));
+        grainline.setAttribute(QStringLiteral("length"), QStringLiteral("10"));
+        grainline.setAttribute(QStringLiteral("rotation"), QStringLiteral("90"));
+    }
+
+    // 2. Remove <pins> lists (piece pins, and the union children pins). They only ever referenced pin nodes, so they
+    //    are dead weight once pins are gone.
+    const QDomNodeList pinLists = root.elementsByTagName(QStringLiteral("pins"));
+    for (int i = pinLists.size() - 1; i >= 0; --i)
+    {
+        const QDomNode node = pinLists.at(i);
+        if (QDomNode parent = node.parentNode(); not parent.isNull())
+        {
+            parent.removeChild(node);
+        }
+    }
+
+    // 3. Remove <point type="pin"> nodes from <modeling>. A pin exists only to be referenced by a grainline anchor, so
+    //    it must never reach the parser — the pin node type no longer exists. Note this does NOT flag the dialog: an
+    //    orphan pin (referenced by nothing) is cleaned up silently, with nothing to warn the user about.
+    const QDomNodeList points = root.elementsByTagName(QStringLiteral("point"));
+    for (int i = points.size() - 1; i >= 0; --i)
+    {
+        const QDomElement point = points.at(i).toElement();
+        if (point.isNull() || point.attribute(QStringLiteral("type")) != QStringLiteral("pin"))
+        {
+            continue;
+        }
+        if (QDomNode parent = point.parentNode(); not parent.isNull())
+        {
+            parent.removeChild(point);
+        }
+    }
+
+    return foundPinGrainline;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void RefreshSceneItemPens(const VMainGraphicsScene *scene)
 {
     // Scale- and theme-dependent item state must be refreshed here, not inside paint(). Since Qt 6

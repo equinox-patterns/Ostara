@@ -109,42 +109,6 @@ void VGrainlineData::SetArrowType(GrainlineArrowDirection eAT)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VGrainlineData::CenterPin() const -> quint32
-{
-    return d->m_centerPin;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VGrainlineData::SetCenterPin(quint32 centerPin)
-{
-    d->m_centerPin = centerPin;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VGrainlineData::TopPin() const -> quint32
-{
-    return d->m_topPin;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VGrainlineData::SetTopPin(quint32 topPin)
-{
-    d->m_topPin = topPin;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VGrainlineData::BottomPin() const -> quint32
-{
-    return d->m_bottomPin;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VGrainlineData::SetBottomPin(quint32 bottomPin)
-{
-    d->m_bottomPin = bottomPin;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VGrainlineData::IsVisible() const -> bool
 {
     return d->m_visible;

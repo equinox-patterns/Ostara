@@ -171,11 +171,6 @@ void ODetailsGrainlineWidget::ConnectControls()
                 return;
             }
 
-            // Detach from any existing pins — free-floating grainline.
-            geom.SetCenterPin(NULL_ID);
-            geom.SetTopPin(NULL_ID);
-            geom.SetBottomPin(NULL_ID);
-
             // The pre-selected preset applies only when the grainline has no real
             // length yet (fresh piece, or file fallback "1"). Otherwise the current
             // length is kept, so re-activating does not reset a canvas-resized

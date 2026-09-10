@@ -116,7 +116,6 @@ auto CollectUnionChildIds(const QDomElement &toolElement) -> QVector<vidtype>
     CollectFromUnionSection(tagChildren, VAbstractPattern::TagNodes, ids);
     CollectFromUnionSection(tagChildren, VToolSeamAllowance::TagCSA, ids);
     CollectFromUnionSection(tagChildren, VToolSeamAllowance::TagIPaths, ids);
-    CollectFromUnionSection(tagChildren, VToolSeamAllowance::TagPins, ids);
     CollectFromUnionSection(tagChildren, VToolSeamAllowance::TagPlaceLabels, ids);
     return ids;
 }

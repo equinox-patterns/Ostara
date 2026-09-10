@@ -278,7 +278,10 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
                            TagGrainline,
                            VToolSeamAllowance::TagCSA,
                            VToolSeamAllowance::TagIPaths,
-                           VToolSeamAllowance::TagPins,
+                           // Slot 4 ("pins"): kept so the case numbers below stay aligned with this list. The pin
+                           // node type was removed in Ostara, and <pins> lists are stripped from the DOM while
+                           // loading a .val — this slot is only ever a safety net.
+                           QStringLiteral("pins"),
                            VToolSeamAllowance::TagPlaceLabels,
                            VAbstractPattern::TagMirrorLine,
                            VToolSeamAllowance::TagSaMarginProperties,
@@ -290,7 +293,6 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
     QFuture<VGrainlineData> futureGGeometry;
     QFuture<QVector<CustomSARecord>> futureRecords;
     QFuture<QVector<quint32>> futureIPaths;
-    QFuture<QVector<quint32>> futurePins;
     QFuture<QVector<quint32>> futurePlaceLabels;
     QFuture<VPieceFoldLineData> futureMirrorLine;
 
@@ -331,8 +333,7 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
                 case 3: // VToolSeamAllowance::TagIPaths
                     futureIPaths = QtConcurrent::run(&VPattern::ParsePieceInternalPaths, element);
                     break;
-                case 4: // VToolSeamAllowance::TagPins
-                    futurePins = QtConcurrent::run(&VPattern::ParsePiecePointRecords, element);
+                case 4: // "pins" — legacy element, stripped from the DOM at load. Nothing left to parse.
                     break;
                 case 5: // VToolSeamAllowance::TagPlaceLabels
                     futurePlaceLabels = QtConcurrent::run(&VPattern::ParsePiecePointRecords, element);
@@ -415,11 +416,6 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
         detail.SetInternalPaths(futureIPaths.result());
     }
 
-    if (not futurePins.isCanceled())
-    {
-        detail.SetPins(futurePins.result());
-    }
-
     if (not futurePlaceLabels.isCanceled())
     {
         detail.SetPlaceLabels(futurePlaceLabels.result());
@@ -469,27 +465,11 @@ auto VPattern::ParsePieceGrainline(const QDomElement &domElement, VGrainlineData
         QPointF(GetParametrDouble(domElement, AttrMx, QChar('0')), GetParametrDouble(domElement, AttrMy, QChar('0'))));
     gGeometry.SetArrowType(static_cast<GrainlineArrowDirection>(GetParametrUInt(domElement, AttrArrows, QChar('0'))));
 
-    const quint32 topPin = GetParametrUInt(domElement, VToolSeamAllowance::AttrTopPin, NULL_ID_STR);
-
-    if (const quint32 bottomPin = GetParametrUInt(domElement, VToolSeamAllowance::AttrBottomPin, NULL_ID_STR);
-        topPin != NULL_ID && bottomPin != NULL_ID && topPin != bottomPin)
-    {
-        gGeometry.SetTopPin(topPin);
-        gGeometry.SetBottomPin(bottomPin);
-
-        gGeometry.SetLength(QChar('1'));
-        gGeometry.SetRotation(QString::number(90));
-        gGeometry.SetCenterPin(NULL_ID);
-    }
-    else
-    {
-        gGeometry.SetTopPin(NULL_ID);
-        gGeometry.SetBottomPin(NULL_ID);
-
-        gGeometry.SetLength(GetParametrString(domElement, AttrLength, QChar('1')));
-        gGeometry.SetRotation(GetParametrString(domElement, AttrRotation, QString::number(90)));
-        gGeometry.SetCenterPin(GetParametrUInt(domElement, VToolSeamAllowance::AttrCenterPin, NULL_ID_STR));
-    }
+    // Pin anchors (topPin/bottomPin/centerPin) are gone along with the pin node type. A pin-anchored grainline is
+    // disabled and stripped from the DOM by StripPinElements while loading a .val, so what reaches this point is
+    // always a free grainline driven by its own formulas.
+    gGeometry.SetLength(GetParametrString(domElement, AttrLength, QChar('1')));
+    gGeometry.SetRotation(GetParametrString(domElement, AttrRotation, QString::number(90)));
 
     return gGeometry;
 }

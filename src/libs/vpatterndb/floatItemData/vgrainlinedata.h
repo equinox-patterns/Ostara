@@ -64,15 +64,6 @@ public:
     auto GetArrowType() const -> GrainlineArrowDirection;
     void SetArrowType(GrainlineArrowDirection eAT);
 
-    auto CenterPin() const -> quint32;
-    void SetCenterPin(quint32 centerPin);
-
-    auto TopPin() const -> quint32;
-    void SetTopPin(quint32 topPin);
-
-    auto BottomPin() const -> quint32;
-    void SetBottomPin(quint32 bottomPin);
-
     auto IsVisible() const -> bool;
     void SetVisible(bool visible);
 

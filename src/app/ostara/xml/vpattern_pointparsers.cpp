@@ -71,7 +71,6 @@
 #include "../vtools/tools/drawTools/vtoolline.h"
 #include "../vtools/tools/nodeDetails/vabstractnode.h"
 #include "../vtools/tools/nodeDetails/vnodepoint.h"
-#include "../vtools/tools/nodeDetails/vtoolpin.h"
 #include "../vtools/tools/nodeDetails/vtoolplacelabel.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/tools/vtooluniondetails.h"
@@ -117,7 +116,10 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
                                      VToolPointFromArcAndTangent::ToolType,     /*20*/
                                      VToolTrueDarts::ToolType,                  /*21*/
                                      VToolPointOfIntersectionCurves::ToolType,  /*22*/
-                                     VToolPin::ToolType,                         /*23*/
+                                     // Slot 23 ("pin"): the pin node type was removed in Ostara. The entry is kept so
+                                     // the hard-coded case numbers below stay aligned with this list — shifting them
+                                     // would silently break placeLabel / arcPoint / curvePoint parsing.
+                                     QStringLiteral("pin"),                      /*23*/
                                      VToolPlaceLabel::ToolType,                  /*24*/
                                      OToolArcPoint::ToolTypeStart,               /*25*/
                                      OToolArcPoint::ToolTypeEnd,                 /*26*/
@@ -194,8 +196,8 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
         case 22: // VToolPointOfIntersectionCurves::ToolType
             ParseToolPointOfIntersectionCurves(scene, domElement, parse);
             break;
-        case 23: // VToolPin::ToolType
-            ParsePinPoint(domElement, parse);
+        case 23: // "pin" — legacy node type, removed in Ostara. Skipped silently: raising here would make any
+                 // legacy .val containing pins impossible to open.
             break;
         case 24: // VToolPlaceLabel::ToolType
             ParsePlaceLabel(domElement, parse);
@@ -744,32 +746,6 @@ void VPattern::ParseNodePoint(const QDomElement &domElement, const Document &par
     }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void VPattern::ParsePinPoint(const QDomElement &domElement, const Document &parse)
-{
-    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
-
-    try
-    {
-        VToolPinInitData initData;
-        initData.doc = this;
-        initData.data = data;
-        initData.parse = parse;
-        initData.typeCreation = Source::FromFile;
-
-        ToolsCommonAttributes(domElement, initData.id);
-        initData.pointId = GetParametrUInt(domElement, AttrIdObject, NULL_ID_STR);
-        initData.idTool = GetParametrUInt(domElement, VAbstractNode::AttrIdTool, NULL_ID_STR);
-
-        VToolPin::Create(initData);
-    }
-    catch (const VExceptionBadId &e)
-    {
-        VExceptionObjectError excep(tr("Error creating or updating pin point"), domElement);
-        excep.AddMoreInformation(e.ErrorMessage());
-        throw excep;
-    }
-}
 
 
 //---------------------------------------------------------------------------------------------------------------------

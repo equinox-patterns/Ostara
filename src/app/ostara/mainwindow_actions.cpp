@@ -188,7 +188,7 @@ void MainWindow::SetEnableTool(bool enable)
     QT_WARNING_POP
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were handled.");
 
     // Drawing Tools
     ui->actionEndLineTool->setEnabled(drawTools);
@@ -233,7 +233,6 @@ void MainWindow::SetEnableTool(bool enable)
     ui->actionMoveTool->setEnabled(drawTools);
     ui->actionMidpointTool->setEnabled(drawTools);
     ui->actionEllipticalArcTool->setEnabled(drawTools);
-    ui->actionPinTool->setEnabled(drawTools);
     ui->actionInsertNodeTool->setEnabled(drawTools);
     ui->actionPlaceLabelTool->setEnabled(drawTools);
     ui->actionExportDraw->setEnabled(drawTools);
@@ -514,7 +513,7 @@ void MainWindow::SetEnabledGUI(bool enabled)
 void MainWindow::InitToolButtons()
 {
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Check if all tools were connected.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Check if all tools were connected.");
 
     auto InitToolButton = [this](VShortcutAction type, QAction *action, void (MainWindow::*slotFunction)(bool))
     {
@@ -584,7 +583,6 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ExportLayoutAs, ui->actionLayoutExportAs, &MainWindow::ExportLayoutAs);
     InitToolButton(VShortcutAction::ExportDetailsAs, ui->actionDetailExportAs, &MainWindow::ExportDetailsAs);
     InitToolButton(VShortcutAction::ToolEllipticalArc, ui->actionEllipticalArcTool, &MainWindow::ToolEllipticalArc);
-    InitToolButton(VShortcutAction::ToolPin, ui->actionPinTool, &MainWindow::ToolPin);
     InitToolButton(VShortcutAction::ToolInsertNode, ui->actionInsertNodeTool, &MainWindow::ToolInsertNode);
     InitToolButton(VShortcutAction::ToolPlaceLabel, ui->actionPlaceLabelTool, &MainWindow::ToolPlaceLabel);
     InitToolButton(VShortcutAction::ToolArcStart, ui->actionArcStartPointTool, &MainWindow::ToolArcStart);

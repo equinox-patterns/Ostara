@@ -2138,35 +2138,6 @@ auto VAbstractPiece::FindGrainlineGeometry(const VGrainlineData &geom, const VCo
 {
     SCASSERT(pattern != nullptr)
 
-    const quint32 topPin = geom.TopPin();
-
-    if (const quint32 bottomPin = geom.BottomPin(); topPin != NULL_ID && bottomPin != NULL_ID)
-    {
-        try
-        {
-            const auto topPinPoint = pattern->GeometricObject<VPointF>(topPin);
-            const auto bottomPinPoint = pattern->GeometricObject<VPointF>(bottomPin);
-
-            QLineF grainline(static_cast<QPointF>(*bottomPinPoint), static_cast<QPointF>(*topPinPoint));
-            length = grainline.length();
-            rotationAngle = grainline.angle();
-
-            if (not VFuzzyComparePossibleNulls(rotationAngle, 0))
-            {
-                grainline.setAngle(0);
-            }
-
-            pos = grainline.p1();
-            rotationAngle = qDegreesToRadians(rotationAngle);
-
-            return true;
-        }
-        catch (const VExceptionBadId &)
-        {
-            // do nothing.
-        }
-    }
-
     try
     {
         Calculator cal1;
@@ -2183,30 +2154,7 @@ auto VAbstractPiece::FindGrainlineGeometry(const VGrainlineData &geom, const VCo
         return false;
     }
 
-    if (const quint32 centerPin = geom.CenterPin(); centerPin != NULL_ID)
-    {
-        try
-        {
-            const auto centerPinPoint = pattern->GeometricObject<VPointF>(centerPin);
-
-            QLineF grainline(centerPinPoint->x(), centerPinPoint->y(), centerPinPoint->x() + length / 2.0,
-                             centerPinPoint->y());
-
-            grainline.setAngle(qRadiansToDegrees(rotationAngle));
-            grainline = QLineF(grainline.p2(), grainline.p1());
-            grainline.setLength(length);
-
-            pos = grainline.p2();
-        }
-        catch (const VExceptionBadId &)
-        {
-            pos = geom.GetPos();
-        }
-    }
-    else
-    {
-        pos = geom.GetPos();
-    }
+    pos = geom.GetPos();
     return true;
 }
 

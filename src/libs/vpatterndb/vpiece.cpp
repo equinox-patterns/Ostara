@@ -814,24 +814,6 @@ void VPiece::SetCustomSARecords(const QVector<CustomSARecord> &records)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VPiece::GetPins() const -> QVector<quint32>
-{
-    return d->m_pins;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VPiece::GetPins() -> QVector<quint32> &
-{
-    return d->m_pins;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VPiece::SetPins(const QVector<quint32> &pins)
-{
-    d->m_pins = pins;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VPiece::GetPlaceLabels() const -> QVector<quint32>
 {
     return d->m_placeLabels;
@@ -901,8 +883,7 @@ void VPiece::SetSAMarginGroupShowStates(const QVector<bool> &states)
 auto VPiece::Dependencies() const -> QList<quint32>
 {
     QList<quint32> list = d->m_path.Dependencies();
-    list.reserve(list.size() + d->m_customSARecords.size() + d->m_internalPaths.size() + d->m_pins.size() +
-                 d->m_placeLabels.size());
+    list.reserve(list.size() + d->m_customSARecords.size() + d->m_internalPaths.size() + d->m_placeLabels.size());
 
     for (const auto &record : d->m_customSARecords)
     {
@@ -910,11 +891,6 @@ auto VPiece::Dependencies() const -> QList<quint32>
     }
 
     for (const auto &value : d->m_internalPaths)
-    {
-        list.append(value);
-    }
-
-    for (const auto &value : d->m_pins)
     {
         list.append(value);
     }

@@ -267,11 +267,6 @@ void DialogSeamAllowance::SetPiece(const VPiece &piece)
     };
 
     uiTabPins->listWidgetPins->clear();
-    const QVector<quint32> pins = piece.GetPins();
-    for (auto pin : pins)
-    {
-        NewSpecialPoint(uiTabPins->listWidgetPins, pin);
-    }
 
     InitAllPinComboboxes();
 
@@ -326,9 +321,6 @@ void DialogSeamAllowance::SetPiece(const VPiece &piece)
 
     const VGrainlineData &grainlineGeometry = piece.GetGrainlineGeometry();
     uiTabGrainline->groupBoxGrainline->setChecked(grainlineGeometry.IsEnabled());
-    ChangeCurrentData(uiTabGrainline->comboBoxGrainlineCenterPin, grainlineGeometry.CenterPin());
-    ChangeCurrentData(uiTabGrainline->comboBoxGrainlineTopPin, grainlineGeometry.TopPin());
-    ChangeCurrentData(uiTabGrainline->comboBoxGrainlineBottomPin, grainlineGeometry.BottomPin());
     SetGrainlineAngle(grainlineGeometry.GetRotation());
     SetGrainlineLength(grainlineGeometry.GetLength());
     uiTabGrainline->checkBoxGrainlineVisible->setChecked(grainlineGeometry.IsVisible());
@@ -1288,7 +1280,6 @@ auto DialogSeamAllowance::CreatePiece() const -> VPiece
     piece.GetPath().SetNodes(GetListInternals<VPieceNode>(uiTabPaths->listWidgetMainPath));
     piece.SetCustomSARecords(GetListInternals<CustomSARecord>(uiTabPaths->listWidgetCustomSA));
     piece.SetInternalPaths(GetListInternals<quint32>(uiTabPaths->listWidgetInternalPaths));
-    piece.SetPins(GetListInternals<quint32>(uiTabPins->listWidgetPins));
     piece.SetPlaceLabels(GetListInternals<quint32>(uiTabPlaceLabels->listWidgetPlaceLabels));
     piece.SetForbidFlipping(uiTabPaths->checkBoxForbidFlipping->isChecked());
     piece.SetForceFlipping(uiTabPaths->checkBoxForceFlipping->isChecked());
@@ -1328,22 +1319,8 @@ auto DialogSeamAllowance::CreatePiece() const -> VPiece
         static_cast<GrainlineArrowDirection>(uiTabGrainline->comboBoxArrow->currentData().toInt()));
     piece.GetGrainlineGeometry().SetVisible(uiTabGrainline->checkBoxGrainlineVisible->isChecked());
 
-    if (not flagGPin)
-    {
-        piece.GetGrainlineGeometry().SetRotation(GetFormulaFromUser(uiTabGrainline->lineEditRotFormula));
-        piece.GetGrainlineGeometry().SetLength(GetFormulaFromUser(uiTabGrainline->lineEditLenFormula));
-        piece.GetGrainlineGeometry().SetCenterPin(getCurrentObjectId(uiTabGrainline->comboBoxGrainlineCenterPin));
-        piece.GetGrainlineGeometry().SetTopPin(NULL_ID);
-        piece.GetGrainlineGeometry().SetBottomPin(NULL_ID);
-    }
-    else
-    {
-        piece.GetGrainlineGeometry().SetRotation(QString::number(90));
-        piece.GetGrainlineGeometry().SetLength(QString().setNum(UnitConvertor(10, Unit::Cm, *data.GetPatternUnit())));
-        piece.GetGrainlineGeometry().SetCenterPin(NULL_ID);
-        piece.GetGrainlineGeometry().SetTopPin(getCurrentObjectId(uiTabGrainline->comboBoxGrainlineTopPin));
-        piece.GetGrainlineGeometry().SetBottomPin(getCurrentObjectId(uiTabGrainline->comboBoxGrainlineBottomPin));
-    }
+    piece.GetGrainlineGeometry().SetRotation(GetFormulaFromUser(uiTabGrainline->lineEditRotFormula));
+    piece.GetGrainlineGeometry().SetLength(GetFormulaFromUser(uiTabGrainline->lineEditLenFormula));
 
     return piece;
 }

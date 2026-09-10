@@ -2299,24 +2299,6 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionPinTool">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="share/resources/toolicon.qrc">
-     <normaloff>:/toolicon/light/pin.png</normaloff>:/toolicon/light/pin.png</iconset>
-   </property>
-   <property name="text">
-    <string>Pin tool</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
   <action name="actionInsertNodeTool">
    <property name="checkable">
     <bool>true</bool>

@@ -243,7 +243,6 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("true_darts"),                   ui->actionTrueDartsTool},
         {QStringLiteral("new_detail"),                   ui->actionNewDetailTool},
         {QStringLiteral("path"),                         ui->actionInternalPathTool},
-        {QStringLiteral("pin"),                          ui->actionPinTool},
         {QStringLiteral("insert_node"),                  ui->actionInsertNodeTool},
         {QStringLiteral("place_label"),                  ui->actionPlaceLabelTool},
         {QStringLiteral("union"),                        ui->actionUnionDetailsTool},

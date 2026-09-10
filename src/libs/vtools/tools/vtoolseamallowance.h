@@ -104,7 +104,6 @@ public:
     static const QString TagCSA;
     static const QString TagRecord;
     static const QString TagIPaths;
-    static const QString TagPins;
     static const QString TagPlaceLabels;
     static const QString TagSaMarginProperties;
     static const QString TagCartoucheBlocks;
@@ -121,11 +120,6 @@ public:
     static const QString AttrSeamAllowanceBuiltIn;
     static const QString AttrUnited;
     static const QString AttrFont;
-    static const QString AttrTopLeftPin;
-    static const QString AttrBottomRightPin;
-    static const QString AttrCenterPin;
-    static const QString AttrTopPin;
-    static const QString AttrBottomPin;
     static const QString AttrPiecePriority;
     static const QString AttrActive;
     static const QString AttrBlock;
@@ -141,7 +135,6 @@ public:
     static void AddCSARecord(VAbstractPattern *doc, QDomElement &domElement, CustomSARecord record);
     static void AddCSARecords(VAbstractPattern *doc, QDomElement &domElement, const QVector<CustomSARecord> &records);
     static void AddInternalPaths(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &paths);
-    static void AddPins(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &pins);
     static void AddPlaceLabels(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &placeLabels);
     static void AddGrainline(VAbstractPattern *doc, QDomElement &domElement, const VGrainlineData &glGeom);
     static void AddSAMarginProperties(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
@@ -320,8 +313,8 @@ private:
     void HideOrphanInternalPaths(const QVector<quint32> &currentPaths);
     void UpdatePlaceLabels();
 
-    auto FindGrainlineGeometry(const VGrainlineData &geom, const QVector<quint32> &pins, qreal &length,
-                               qreal &rotationAngle, QPointF &pos) -> VPieceItem::MoveTypes;
+    auto FindGrainlineGeometry(const VGrainlineData &geom, qreal &length, qreal &rotationAngle, QPointF &pos)
+        -> VPieceItem::MoveTypes;
 
     void InitNodes(const VPiece &detail, VMainGraphicsScene *scene);
     static void InitNode(const VPieceNode &node, VMainGraphicsScene *scene, VToolSeamAllowance *parent);

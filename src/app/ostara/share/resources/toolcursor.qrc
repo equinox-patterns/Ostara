@@ -78,8 +78,6 @@
         <file>toolcursor/light/el_arc_cursor@2x.png</file>
         <file>toolcursor/light/path_cursor.png</file>
         <file>toolcursor/light/path_cursor@2x.png</file>
-        <file>toolcursor/light/pin_cursor.png</file>
-        <file>toolcursor/light/pin_cursor@2x.png</file>
         <file>toolcursor/light/insert_node_cursor.png</file>
         <file>toolcursor/light/insert_node_cursor@2x.png</file>
         <file>toolcursor/light/place_label_cursor@2x.png</file>
@@ -124,8 +122,6 @@
         <file>toolcursor/dark/point_from_arc_and_tangent_cursor@2x.png</file>
         <file>toolcursor/dark/place_label_cursor.png</file>
         <file>toolcursor/dark/place_label_cursor@2x.png</file>
-        <file>toolcursor/dark/pin_cursor.png</file>
-        <file>toolcursor/dark/pin_cursor@2x.png</file>
         <file>toolcursor/dark/path_cursor.png</file>
         <file>toolcursor/dark/path_cursor@2x.png</file>
         <file>toolcursor/dark/normal_cursor.png</file>

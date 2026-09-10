@@ -57,15 +57,6 @@ public:
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     GrainlineArrowDirection m_eArrowType{GrainlineArrowDirection::twoWaysUpDown};
 
-    /** @brief m_centerPin center pin id */
-    quint32 m_centerPin{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
-
-    /** @brief m_topPin top pin id */
-    quint32 m_topPin{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
-
-    /** @brief m_bottomPin bottom pin id */
-    quint32 m_bottomPin{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
-
     /** @brief m_visible visibility flag */
     bool m_visible{true}; // NOLINT(misc-non-private-member-variables-in-classes)
 

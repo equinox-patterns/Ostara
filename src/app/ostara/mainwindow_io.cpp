@@ -893,6 +893,16 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
                        "will be replaced by Information block. Conversion is not automatic, your labels have not been "
                        "preserved. The original .val file remains intact."));
             }
+
+            // Strip pin nodes and neutralize pin-anchored grainlines (Ostara no longer supports pins)
+            const bool hadPinGrainlines = StripPinElements(doc);
+            if (hadPinGrainlines)
+            {
+                QMessageBox::information(this, tr("Grainlines anchored to pins"),
+                    tr("This pattern contains grainlines anchored to pins. Ostara no longer uses them — these "
+                       "grainlines have been disabled. Please place them again in the Details mode. Conversion is not "
+                       "automatic. The original .val file remains intact."));
+            }
         }
 
         if (!customMeasureFile.isEmpty())

@@ -108,7 +108,7 @@ auto VAbstractShortcutManager::GetShortcutsList() const -> QList<VAbstractShortc
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 95, "Convert all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 94, "Convert all actions.");
 
     switch (type)
     {
@@ -278,8 +278,6 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "exportdetailsas"_L1;
         case VShortcutAction::ToolEllipticalArc:
             return "toolellipticalarc"_L1;
-        case VShortcutAction::ToolPin:
-            return "toolpin"_L1;
         case VShortcutAction::ToolInsertNode:
             return "toolinsertnode"_L1;
         case VShortcutAction::ToolPlaceLabel:
@@ -314,7 +312,7 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 95, "Translate all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 94, "Translate all actions.");
 
     switch (type)
     {
@@ -484,8 +482,6 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Export details as", "shortcut for action");
         case VShortcutAction::ToolEllipticalArc:
             return tr("Tool 'Elliptical Arc'", "shortcut for action");
-        case VShortcutAction::ToolPin:
-            return tr("Tool 'Pin'", "shortcut for action");
         case VShortcutAction::ToolInsertNode:
             return tr("Tool 'Insert node'", "shortcut for action");
         case VShortcutAction::ToolPlaceLabel:

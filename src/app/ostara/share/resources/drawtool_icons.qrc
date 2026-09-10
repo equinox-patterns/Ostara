@@ -33,7 +33,6 @@
         <file alias="normal.svg">../../../../../share/icons/tools/light/normal.svg</file>
         <file alias="parallel_curve.svg">../../../../../share/icons/tools/light/parallel_curve.svg</file>
         <file alias="path.svg">../../../../../share/icons/tools/light/path.svg</file>
-        <file alias="pin.svg">../../../../../share/icons/tools/light/pin.svg</file>
         <file alias="place_label.svg">../../../../../share/icons/tools/light/place_label.svg</file>
         <file alias="point_from_arc_and_tangent.svg">../../../../../share/icons/tools/light/point_from_arc_and_tangent.svg</file>
         <file alias="point_from_circle_and_tangent.svg">../../../../../share/icons/tools/light/point_from_circle_and_tangent.svg</file>
@@ -88,7 +87,6 @@
         <file alias="normal.svg">../../../../../share/icons/tools/dark/normal.svg</file>
         <file alias="parallel_curve.svg">../../../../../share/icons/tools/dark/parallel_curve.svg</file>
         <file alias="path.svg">../../../../../share/icons/tools/dark/path.svg</file>
-        <file alias="pin.svg">../../../../../share/icons/tools/dark/pin.svg</file>
         <file alias="place_label.svg">../../../../../share/icons/tools/dark/place_label.svg</file>
         <file alias="point_from_arc_and_tangent.svg">../../../../../share/icons/tools/dark/point_from_arc_and_tangent.svg</file>
         <file alias="point_from_circle_and_tangent.svg">../../../../../share/icons/tools/dark/point_from_circle_and_tangent.svg</file>

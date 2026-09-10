@@ -78,8 +78,6 @@
         <file>toolicon/light/el_arc@2x.png</file>
         <file>toolicon/light/path.png</file>
         <file>toolicon/light/path@2x.png</file>
-        <file>toolicon/light/pin.png</file>
-        <file>toolicon/light/pin@2x.png</file>
         <file>toolicon/light/insert_node.png</file>
         <file>toolicon/light/insert_node@2x.png</file>
         <file>toolicon/light/place_label@2x.png</file>
@@ -164,14 +162,12 @@
         <file>toolicon/dark/arc@2x.png</file>
         <file>toolicon/dark/along_line.png</file>
         <file>toolicon/dark/along_line@2x.png</file>
-        <file>toolicon/dark/pin.png</file>
         <file>toolicon/dark/new_detail@2x.png</file>
         <file>toolicon/dark/duplicate_detail@2x.png</file>
         <file>toolicon/dark/new_detail.png</file>
         <file>toolicon/dark/duplicate_detail.png</file>
         <file>toolicon/dark/point_of_intersection_circles.png</file>
         <file>toolicon/dark/point_of_intersection_circles@2x.png</file>
-        <file>toolicon/dark/pin@2x.png</file>
         <file>toolicon/light/arc_end@2x.png</file>
         <file>toolicon/light/arc_end.png</file>
         <file>toolicon/light/arc_start@2x.png</file>

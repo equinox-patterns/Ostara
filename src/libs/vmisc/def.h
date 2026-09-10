@@ -267,7 +267,6 @@ enum class Tool : ToolVisHolderType
     Move,
     Midpoint,
     EllipticalArc,
-    Pin,
     InsertNode,
     PlaceLabel,
     DuplicateDetail,

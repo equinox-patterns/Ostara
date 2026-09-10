@@ -78,7 +78,6 @@
 #include "nodeDetails/vnodespline.h"
 #include "nodeDetails/vnodesplinepath.h"
 #include "nodeDetails/vtoolpiecepath.h"
-#include "nodeDetails/vtoolpin.h"
 #include "nodeDetails/vtoolplacelabel.h"
 #include "qpainterpath.h"
 #include "toolsdef.h"
@@ -112,7 +111,6 @@ bool VToolSeamAllowance::s_isInGroupMoveMacro = false;
 const QString VToolSeamAllowance::TagCSA = QStringLiteral("csa");                 // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagRecord = QStringLiteral("record");           // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagIPaths = QStringLiteral("iPaths");           // NOLINT(cert-err58-cpp)
-const QString VToolSeamAllowance::TagPins = QStringLiteral("pins");               // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagPlaceLabels = QStringLiteral("placeLabels"); // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagSaMarginProperties = QStringLiteral("saMarginProperties"); // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagCartoucheBlocks = QStringLiteral("cartoucheBlocks");       // NOLINT(cert-err58-cpp)
@@ -134,52 +132,10 @@ const QString VToolSeamAllowance::AttrActive = QStringLiteral("active");        
 const QString VToolSeamAllowance::AttrBlock = QStringLiteral("block");                   // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrIndex = QStringLiteral("index");                   // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrFontScale = QStringLiteral("fontScale");           // NOLINT(cert-err58-cpp)
-const QString VToolSeamAllowance::AttrTopLeftPin = QStringLiteral("topLeftPin");         // NOLINT(cert-err58-cpp)
-const QString VToolSeamAllowance::AttrBottomRightPin = QStringLiteral("bottomRightPin"); // NOLINT(cert-err58-cpp)
-const QString VToolSeamAllowance::AttrCenterPin = QStringLiteral("centerPin");           // NOLINT(cert-err58-cpp)
-const QString VToolSeamAllowance::AttrTopPin = QStringLiteral("topPin");                 // NOLINT(cert-err58-cpp)
-const QString VToolSeamAllowance::AttrBottomPin = QStringLiteral("bottomPin");           // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrPiecePriority = QStringLiteral("priority");        // NOLINT(cert-err58-cpp)
 
 namespace
 {
-//---------------------------------------------------------------------------------------------------------------------
-template <typename T> auto FixGrainlinePins(T itemData, const QMap<quint32, quint32> &mappedPins) -> T
-{
-    itemData.SetCenterPin(mappedPins.value(itemData.CenterPin(), NULL_ID));
-    itemData.SetTopPin(mappedPins.value(itemData.TopPin(), NULL_ID));
-    itemData.SetBottomPin(mappedPins.value(itemData.BottomPin(), NULL_ID));
-    return itemData;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto DuplicatePins(const QVector<quint32> &pins, const VToolSeamAllowanceInitData &initData) -> QMap<quint32, quint32>
-{
-    QMap<quint32, quint32> newPins;
-    for (auto p : pins)
-    {
-        QSharedPointer<VPointF> const pin = initData.data->GeometricObject<VPointF>(p);
-
-        auto *tool = qobject_cast<VAbstractNode *>(VAbstractPattern::getTool(p));
-        SCASSERT(tool != nullptr)
-
-        VToolPinInitData initNodeData;
-        initNodeData.id = initData.data->AddGObject(new VPointF(*pin));
-        initNodeData.pointId = pin->getIdObject();
-        initNodeData.idObject = NULL_ID; // piece id
-        initNodeData.doc = initData.doc;
-        initNodeData.data = initData.data;
-        initNodeData.parse = Document::FullParse;
-        initNodeData.typeCreation = Source::FromTool;
-        initNodeData.drawName = initData.drawName;
-        initNodeData.idTool = tool->GetIdTool();
-
-        VToolPin::Create(initNodeData);
-        newPins.insert(p, initNodeData.id);
-    }
-    return newPins;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 auto SeamPoints(const VPiece &detail, bool combineTogether, const VContainer *data) -> QVector<VLayoutPoint>
 {
@@ -633,10 +589,6 @@ auto VToolSeamAllowance::Duplicate(VToolSeamAllowanceInitData &initData) -> VToo
     dupDetail.SetPlaceLabels(DuplicatePlaceLabels(initData.detail.GetPlaceLabels(), initData));
     dupDetail.SetUUID(QUuid::createUuid());
 
-    const QMap<quint32, quint32> mappedPins = DuplicatePins(initData.detail.GetPins(), initData);
-    dupDetail.SetPins(ConvertToVector(mappedPins.values()));
-    dupDetail.SetGrainlineGeometry(FixGrainlinePins(initData.detail.GetGrainlineGeometry(), mappedPins));
-
     if (replacements.contains(dupDetail.GetMirrorLineStartPoint()))
     {
         dupDetail.SetMirrorLineStartPoint(replacements.value(dupDetail.GetMirrorLineStartPoint()));
@@ -726,11 +678,6 @@ void VToolSeamAllowance::AddPieceDependencies(quint32 id,
         {
             patternGraph->AddEdge(iPath, id);
         }
-    }
-
-    for (auto point : piece.GetPins())
-    {
-        patternGraph->AddEdge(point, id);
     }
 
     for (auto point : piece.GetPlaceLabels())
@@ -942,12 +889,6 @@ void VToolSeamAllowance::AddInternalPaths(VAbstractPattern *doc, QDomElement &do
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::AddPins(VAbstractPattern *doc, QDomElement &domElement, const QVector<quint32> &pins)
-{
-    AddPointRecords(doc, domElement, pins, VToolSeamAllowance::TagPins);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::AddPlaceLabels(VAbstractPattern *doc, QDomElement &domElement,
                                         const QVector<quint32> &placeLabels)
 {
@@ -966,18 +907,6 @@ void VToolSeamAllowance::AddGrainline(VAbstractPattern *doc, QDomElement &domEle
     doc->SetAttribute(domData, AttrLength, glGeom.GetLength());
     doc->SetAttribute(domData, VAbstractPattern::AttrRotation, glGeom.GetRotation());
     doc->SetAttribute(domData, VAbstractPattern::AttrArrows, static_cast<int>(glGeom.GetArrowType()));
-    doc->SetAttributeOrRemoveIf<quint32>(domData,
-                                         AttrCenterPin,
-                                         glGeom.CenterPin(),
-                                         [](quint32 pin) noexcept { return pin == NULL_ID; });
-    doc->SetAttributeOrRemoveIf<quint32>(domData,
-                                         AttrTopPin,
-                                         glGeom.TopPin(),
-                                         [](quint32 pin) noexcept { return pin == NULL_ID; });
-    doc->SetAttributeOrRemoveIf<quint32>(domData,
-                                         AttrBottomPin,
-                                         glGeom.BottomPin(),
-                                         [](quint32 pin) noexcept { return pin == NULL_ID; });
 
     domElement.appendChild(domData);
 }
@@ -1597,7 +1526,6 @@ void VToolSeamAllowance::UpdateGrainline()
 
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
     const VGrainlineData &geom = detail.GetGrainlineGeometry();
-    const QVector<quint32> &pins = detail.GetPins();
 
     if (geom.IsEnabled() && geom.IsVisible())
     {
@@ -1605,7 +1533,7 @@ void VToolSeamAllowance::UpdateGrainline()
         qreal dRotation = 0;
         qreal dLength = 0;
 
-        const VGrainlineItem::MoveTypes type = FindGrainlineGeometry(geom, pins, dLength, dRotation, pos);
+        const VGrainlineItem::MoveTypes type = FindGrainlineGeometry(geom, dLength, dRotation, pos);
         if ((type & VGrainlineItem::Error) != 0U)
         {
             m_grainLine->hide();
@@ -2105,7 +2033,6 @@ void VToolSeamAllowance::AddToFile()
     // custom seam allowance
     AddCSARecords(doc, domElement, piece.GetCustomSARecords());
     AddInternalPaths(doc, domElement, piece.GetInternalPaths());
-    AddPins(doc, domElement, piece.GetPins());
     AddPlaceLabels(doc, domElement, piece.GetPlaceLabels());
     AddSAMarginProperties(doc, domElement, piece);
     AddMirrorLine(doc, domElement, piece);
@@ -2142,7 +2069,6 @@ void VToolSeamAllowance::RefreshDataInFile()
         AddNodes(doc, domElement, piece);
         AddCSARecords(doc, domElement, piece.GetCustomSARecords());
         AddInternalPaths(doc, domElement, piece.GetInternalPaths());
-        AddPins(doc, domElement, piece.GetPins());
         AddPlaceLabels(doc, domElement, piece.GetPlaceLabels());
         AddSAMarginProperties(doc, domElement, piece);
         AddMirrorLine(doc, domElement, piece);
@@ -3081,38 +3007,9 @@ void VToolSeamAllowance::TogglePassmarkLineType(quint32 id, PassmarkLineType typ
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolSeamAllowance::FindGrainlineGeometry(const VGrainlineData &geom, const QVector<quint32> &pins, qreal &length,
-                                               qreal &rotationAngle, QPointF &pos) -> VPieceItem::MoveTypes
+auto VToolSeamAllowance::FindGrainlineGeometry(const VGrainlineData &geom, qreal &length, qreal &rotationAngle,
+                                               QPointF &pos) -> VPieceItem::MoveTypes
 {
-    const quint32 topPin = geom.TopPin();
-
-    if (const quint32 bottomPin = geom.BottomPin();
-        topPin != NULL_ID && pins.contains(topPin) && bottomPin != NULL_ID && pins.contains(bottomPin))
-    {
-        try
-        {
-            const auto topPinPoint = VAbstractTool::data.GeometricObject<VPointF>(topPin);
-            const auto bottomPinPoint = VAbstractTool::data.GeometricObject<VPointF>(bottomPin);
-
-            QLineF grainline(static_cast<QPointF>(*bottomPinPoint), static_cast<QPointF>(*topPinPoint));
-            length = FromPixel(grainline.length(), *VDataTool::data.GetPatternUnit());
-            rotationAngle = grainline.angle();
-
-            if (not VFuzzyComparePossibleNulls(rotationAngle, 0))
-            {
-                grainline.setAngle(0);
-            }
-
-            pos = grainline.p1();
-
-            return VPieceItem::NotMovable;
-        }
-        catch (const VExceptionBadId &)
-        {
-            // do nothing.
-        }
-    }
-
     VPieceItem::MoveTypes restrictions = VPieceItem::AllModifications;
     try
     {
@@ -3138,32 +3035,7 @@ auto VToolSeamAllowance::FindGrainlineGeometry(const VGrainlineData &geom, const
         return VPieceItem::Error;
     }
 
-    if (const quint32 centerPin = geom.CenterPin(); centerPin != NULL_ID && pins.contains(centerPin))
-    {
-        try
-        {
-            const auto centerPinPoint = VAbstractTool::data.GeometricObject<VPointF>(centerPin);
-
-            const qreal cLength = ToPixel(length, *VDataTool::data.GetPatternUnit());
-            QLineF grainline(centerPinPoint->x(), centerPinPoint->y(), centerPinPoint->x() - cLength / 2.0,
-                             centerPinPoint->y());
-
-            grainline.setAngle(rotationAngle);
-            Swap(grainline);
-            grainline.setLength(cLength);
-
-            pos = grainline.p2();
-            restrictions &= ~VPieceItem::IsMovable;
-        }
-        catch (const VExceptionBadId &)
-        {
-            pos = geom.GetPos();
-        }
-    }
-    else
-    {
-        pos = geom.GetPos();
-    }
+    pos = geom.GetPos();
 
     return restrictions;
 }
