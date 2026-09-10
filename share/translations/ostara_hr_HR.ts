@@ -5437,34 +5437,6 @@ This action cannot be undone.</source>
     </message>
 </context>
 <context>
-    <name>DialogPin</name>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.ui" line="21"/>
-        <source>Pin tool</source>
-        <translation>Alat za igle</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.ui" line="29"/>
-        <source>Point:</source>
-        <translation>Točka:</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.ui" line="39"/>
-        <source>Piece:</source>
-        <translation>Dio:</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.ui" line="14"/>
-        <source>Pin</source>
-        <translation>Igla</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.cpp" line="117"/>
-        <source>The list of pieces is empty. Please, first create at least one piece for current pattern piece.</source>
-        <translation>Popis dijelova je prazan. Molimo, najprije stvorite barem jedan dio za trenutni kroj.</translation>
-    </message>
-</context>
-<context>
     <name>DialogPlaceLabel</name>
     <message>
         <source>Width:</source>
@@ -8444,11 +8416,6 @@ This action cannot be undone.</source>
         <translation type="unfinished">Alat za unutarnju putanju</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="417"/>
-        <source>Pin tool</source>
-        <translation type="unfinished">Alat za igle</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="418"/>
         <source>Insert node tool</source>
         <translation type="unfinished">Alat za umetanje čvora</translation>
@@ -9664,16 +9631,6 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="454"/>
         <source>Pattern files</source>
         <translation>Datoteke krojeva</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2314"/>
-        <source>Pin tool</source>
-        <translation>Alat za igle</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="521"/>
-        <source>Select pin point</source>
-        <translation>Odaberite točku za iglu</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2332"/>

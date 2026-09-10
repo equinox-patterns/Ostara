@@ -5250,34 +5250,6 @@ This action cannot be undone.</source>
     </message>
 </context>
 <context>
-    <name>DialogPin</name>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.ui" line="21"/>
-        <source>Pin tool</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.ui" line="29"/>
-        <source>Point:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.ui" line="39"/>
-        <source>Piece:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.ui" line="14"/>
-        <source>Pin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.cpp" line="117"/>
-        <source>The list of pieces is empty. Please, first create at least one piece for current pattern piece.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>DialogPlaceLabel</name>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -8118,11 +8090,6 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="417"/>
-        <source>Pin tool</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="418"/>
         <source>Insert node tool</source>
         <translation type="unfinished"></translation>
@@ -9539,16 +9506,6 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="345"/>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="454"/>
         <source>Pattern files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2314"/>
-        <source>Pin tool</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="521"/>
-        <source>Select pin point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

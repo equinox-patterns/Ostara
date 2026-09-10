@@ -5504,34 +5504,6 @@ This action cannot be undone.</source>
     </message>
 </context>
 <context>
-    <name>DialogPin</name>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.ui" line="21"/>
-        <source>Pin tool</source>
-        <translation>Strumento spillo</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.ui" line="29"/>
-        <source>Point:</source>
-        <translation type="unfinished">Punto:</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.ui" line="39"/>
-        <source>Piece:</source>
-        <translation>Pezzo:</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.ui" line="14"/>
-        <source>Pin</source>
-        <translation>Spillo</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpin.cpp" line="117"/>
-        <source>The list of pieces is empty. Please, first create at least one piece for current pattern piece.</source>
-        <translation>La lista di pezzi è vuota. Per favore, creare almeno un pezzo per questo pezzo di modello.</translation>
-    </message>
-</context>
-<context>
     <name>DialogPlaceLabel</name>
     <message>
         <source>Width:</source>
@@ -8494,11 +8466,6 @@ This action cannot be undone.</source>
         <translation type="unfinished">Strumento Tracciato Interno</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="417"/>
-        <source>Pin tool</source>
-        <translation type="unfinished">Strumento spillo</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="418"/>
         <source>Insert node tool</source>
         <translation type="unfinished">Inserisci nodo</translation>
@@ -9718,16 +9685,6 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="454"/>
         <source>Pattern files</source>
         <translation>File del modello</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2314"/>
-        <source>Pin tool</source>
-        <translation>Strumento spillo</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="521"/>
-        <source>Select pin point</source>
-        <translation>Selezionare punto per spillo</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2332"/>
