@@ -903,6 +903,10 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
                        "grainlines have been disabled. Please place them again in the Details mode. Conversion is not "
                        "automatic. The original .val file remains intact."));
             }
+
+            // Drop the legacy piece short name (Ostara names its area variables from the piece name). Silent by
+            // design: the attribute has no effect the user could observe, so there is nothing to warn about.
+            StripShortNameAttributes(doc);
         }
 
         if (!customMeasureFile.isEmpty())

@@ -97,9 +97,6 @@ public:
     auto IsUnited() const -> bool;
     void SetUnited(bool united);
 
-    auto GetShortName() const -> QString;
-    void SetShortName(const QString &value);
-
     auto GetFormulaSAWidth() const -> QString;
     void SetFormulaSAWidth(const QString &formula, qreal value);
 

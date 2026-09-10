@@ -81,8 +81,6 @@ public:
 
     QString m_formulaWidth{'0'}; // NOLINT(misc-non-private-member-variables-in-classes)
 
-    QString m_shortName{}; // NOLINT(misc-non-private-member-variables-in-classes)
-
     /** @brief Graded alignment: horizontal (1=left, 2=center, 3=right). */
     int m_gradedAlignH{2}; // NOLINT(misc-non-private-member-variables-in-classes)
     /** @brief Graded alignment: vertical (1=top, 2=center, 3=bottom). */

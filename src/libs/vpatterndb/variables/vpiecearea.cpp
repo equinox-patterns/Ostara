@@ -125,14 +125,11 @@ auto VPieceArea::GetPieceId() const -> quint32
 //---------------------------------------------------------------------------------------------------------------------
 auto VPieceArea::PieceShortName(const VPiece &piece) -> QString
 {
-    QString shortName = piece.GetShortName();
-    if (shortName.isEmpty())
+    // Ostara has no per-piece short name: the variable name is always derived from the piece name.
+    QString shortName = piece.GetName().replace(QChar(QChar::Space), '_'_L1).left(25);
+    if (shortName.isEmpty() || not QRegularExpression(VPiece::ShortNameRegExp()).match(shortName).hasMatch())
     {
-        shortName = piece.GetName().replace(QChar(QChar::Space), '_'_L1).left(25);
-        if (shortName.isEmpty() || not QRegularExpression(VPiece::ShortNameRegExp()).match(shortName).hasMatch())
-        {
-            shortName = QObject::tr("Unknown", "piece area");
-        }
+        shortName = QObject::tr("Unknown", "piece area");
     }
 
     return shortName;

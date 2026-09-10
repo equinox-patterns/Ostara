@@ -625,18 +625,6 @@ void VPiece::SetUnited(bool united)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VPiece::GetShortName() const -> QString
-{
-    return d->m_shortName;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VPiece::SetShortName(const QString &value)
-{
-    d->m_shortName = value;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VPiece::GetFormulaSAWidth() const -> QString
 {
     return d->m_formulaWidth;

@@ -51,7 +51,6 @@ extern const QString AttrType;
 extern const QString AttrMx;
 extern const QString AttrMy;
 extern const QString AttrName;
-extern const QString AttrShortName;
 extern const QString AttrUUID;
 extern const QString AttrGradedAlignH;
 extern const QString AttrGradedAlignV;

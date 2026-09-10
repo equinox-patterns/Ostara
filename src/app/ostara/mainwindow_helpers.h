@@ -76,6 +76,11 @@ auto StripLabelElements(QDomDocument *doc) -> bool;
 // Returns true if at least one grainline had to be disabled.
 auto StripPinElements(QDomDocument *doc) -> bool;
 
+// Strip the legacy piece "short name" attribute from a pattern DOM. Ostara has no short name: the piece area
+// variables are named from the piece name. Only <detail> elements are touched.
+// Returns true if the attribute was found.
+auto StripShortNameAttributes(QDomDocument *doc) -> bool;
+
 // Refresh scale- and theme-dependent item state (labels, pens) for a whole scene.
 void RefreshSceneItemPens(const VMainGraphicsScene *scene);
 

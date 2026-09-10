@@ -483,6 +483,41 @@ auto StripPinElements(QDomDocument *doc) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto StripShortNameAttributes(QDomDocument *doc) -> bool
+{
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    // The legacy piece short name only ever named the generated area variables (PieceArea_<shortName>). Ostara derives
+    // that name from the piece name instead, so the attribute is dead weight and must not survive into a .ostara. Only
+    // <detail> elements are visited: "shortName" is an attribute name used nowhere else in the format — measurement
+    // short names are a separate XSD type carried by name/name1/name2 attributes, not by a shortName attribute.
+    bool foundShortName = false;
+    const QDomNodeList details = root.elementsByTagName(QStringLiteral("detail"));
+    for (int i = 0; i < details.size(); ++i)
+    {
+        QDomElement detail = details.at(i).toElement();
+        if (detail.isNull() || not detail.hasAttribute(QStringLiteral("shortName")))
+        {
+            continue;
+        }
+
+        foundShortName = true;
+        detail.removeAttribute(QStringLiteral("shortName"));
+    }
+
+    return foundShortName;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void RefreshSceneItemPens(const VMainGraphicsScene *scene)
 {
     // Scale- and theme-dependent item state must be refreshed here, not inside paint(). Since Qt 6
