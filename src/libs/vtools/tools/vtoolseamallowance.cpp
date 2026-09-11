@@ -123,6 +123,8 @@ const QString VToolSeamAllowance::TagGeom = QStringLiteral("geom");             
 
 const QString VToolSeamAllowance::AttrSeamAllowance = QStringLiteral("seamAllowance"); // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrHideMainPath = QStringLiteral("hideMainPath");   // NOLINT(cert-err58-cpp)
+// NOLINTNEXTLINE(cert-err58-cpp)
+const QString VToolSeamAllowance::AttrSecondPassmarkOnSeamLine = QStringLiteral("secondPassmarkOnSeamLine");
 const QString VToolSeamAllowance::AttrShowFullPiece = QStringLiteral("showFullPiece"); // NOLINT(cert-err58-cpp)
 // NOLINTNEXTLINE(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrUnited = QStringLiteral("united");                 // NOLINT(cert-err58-cpp)
@@ -721,6 +723,7 @@ void VToolSeamAllowance::AddAttributes(VAbstractPattern *doc, QDomElement &domEl
     doc->SetAttributeOrRemoveIf<bool>(domElement, AttrSeamAllowance, piece.IsSeamAllowance(),
                                       [](bool seamAllowance) noexcept { return not seamAllowance; });
     doc->SetAttribute(domElement, AttrHideMainPath, piece.IsHideMainPath());
+    doc->SetAttribute(domElement, AttrSecondPassmarkOnSeamLine, piece.IsSecondPassmarkOnSeamLine());
     doc->SetAttributeOrRemoveIf<bool>(domElement, AttrShowFullPiece, piece.IsShowFullPiece(),
                                       [](bool show) noexcept { return show; });
     doc->SetAttribute(domElement, AttrWidth, piece.GetFormulaSAWidth());
@@ -2879,7 +2882,7 @@ void VToolSeamAllowance::TogglePassmarkAngleType(quint32 id, PassmarkAngleType t
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::TogglePassmarkLineType(quint32 id, PassmarkLineType type)
+void VToolSeamAllowance::TogglePassmarkLineType(quint32 id, PassmarkLineType type, bool clockwise)
 {
     const VPiece oldDet = VAbstractTool::data.GetPiece(m_id);
     VPiece newDet = oldDet;
@@ -2890,6 +2893,22 @@ void VToolSeamAllowance::TogglePassmarkLineType(quint32 id, PassmarkLineType typ
         if (node.GetId() == id && node.GetTypeTool() == Tool::NodePoint)
         {
             node.SetPassmarkLineType(type);
+            node.SetPassmarkClockwiseOpening(clockwise);
+
+            // Width and angle are the two dimensions whose meaning depends on the mark — the width is a
+            // fixed gap for the line marks, a bar length for the T, a V opening, an arc radius. An
+            // override typed for the previous mark would silently keep applying to the new one, so a
+            // real change of entry drops both. Length means the same thing whatever the mark.
+            const bool lineTypeChanged = oldDet.GetPath().at(i).GetPassmarkLineType() != type;
+            const bool openingChanged = oldDet.GetPath().at(i).IsPassmarkClockwiseOpening() != clockwise;
+            if (lineTypeChanged || openingChanged)
+            {
+                node.SetManualPassmarkWidth(false);
+                node.SetFormulaPassmarkWidth(QString());
+                node.SetManualPassmarkAngle(false);
+                node.SetFormulaPassmarkAngle(QString());
+            }
+
             newDet.GetPath()[i] = node;
 
             VAbstractApplication::VApp()->getUndoStack()->push(new SavePieceOptions(oldDet, newDet, doc, m_id));

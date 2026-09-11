@@ -28,6 +28,7 @@
 #ifndef ODETAILSNODEWIDGET_H
 #define ODETAILSNODEWIDGET_H
 
+#include <QVector>
 #include <QWidget>
 
 #include <functional>
@@ -37,7 +38,9 @@ class QComboBox;
 class QGroupBox;
 class QLabel;
 class QLineEdit;
+class QToolButton;
 class VPieceNode;
+class VPassmark;
 class VToolSeamAllowance;
 
 /**
@@ -45,9 +48,12 @@ class VToolSeamAllowance;
  *
  * Two sections, mirroring the layout of the place-label page
  * (ODetailsPlaceLabelWidget):
- *  - "Passmark" — line type, angle type, "show second passmark on seam line",
- *    manual length (reveals a Length row), visibility formula;
+ *  - "Passmark" — line type, angle rule, "show second passmark on seam line", and the three notch
+ *    dimensions (Length, Width, Angle) as editable formulas, then the visibility formula;
  *  - "Seam allowance angle" — the seam allowance angle (squaring) at the point.
+ *
+ * Each of the three dimension rows shows the value the engine would draw when its field is left
+ * empty — emptying a field therefore restores the automatic value, with nothing to untick first.
  *
  * Every change is pushed to the undo stack through SavePieceOptions (whole piece
  * snapshot) so the piece geometry refreshes live, exactly like the other
@@ -69,21 +75,39 @@ public:
 private:
     enum class FormulaField
     {
-        PassmarkLength,
+        Length,
+        Width,
+        Angle,
         Visibility
     };
 
     void PopulateCombos();
-    void SetManualLengthRowVisible(bool visible);
     auto LoadFromNode() -> bool;
     auto FetchCurrentNode(VPieceNode &out) const -> bool;
-    /** @brief Current automatic notch length (pattern units) as it would render for this node. */
-    auto AutoLengthInPatternUnit(const VPieceNode &node) const -> qreal;
+    /** @brief The engine's own description of this node's notch, built the way the canvas builds it. */
+    auto FetchPassmark(VPassmark &out) const -> bool;
+    auto EditFor(FormulaField field) const -> QLineEdit *;
+    /** @brief Re-reads the page from the model after a commit — nothing else refreshes this page. */
+    void ReloadAfterCommit();
+    /** @brief Re-reads the fx icons for the current theme; the dock survives a light↔dark toggle. */
+    void RefreshFxIcons();
+    /** @brief The value the engine would draw for one dimension, or 0 when it has none. */
+    auto AutomaticValue(FormulaField field, const VPassmark &passmark, bool hasPassmark) const -> qreal;
+    /** @brief Shows the manual formula, or the engine's automatic value when there is none. */
+    void FillValueField(FormulaField field, const QString &formula, qreal automatic, bool isLength, bool force);
+    /** @brief Greys what has no object: everything but the type on "None", the width on "One line",
+     *         the angle elsewhere than on the "Straightforward" rule. */
+    void UpdatePassmarkEnabled(const VPieceNode &node);
+    /** @brief Puts the field back to what the piece currently holds, after a refused entry. */
+    void RestoreField(FormulaField field);
+    /** @brief The formula the model holds for one dimension, empty when it carries none of its own. */
+    static auto StoredFormula(const VPieceNode &node, FormulaField field) -> QString;
+    /** @brief Writes a dimension's formula and its manual flag — the flag follows the formula. */
+    static void SetOverride(VPieceNode &node, FormulaField field, const QString &formula);
     void CommitPassmarkType(int index);
     void CommitPassmarkAngle(int index);
     void CommitShowSecondPassmark(bool checked);
     void CommitNotMirrored(bool checked);
-    void CommitManualPassmarkLength(bool checked);
     void CommitFormula(FormulaField field);
     void CommitSeamAllowanceAngle(int index);
     void OpenFormulaEditor(FormulaField field, QLineEdit *edit);
@@ -96,12 +120,20 @@ private:
     QLabel *m_angleLabel{nullptr};
     QCheckBox *m_secondPassmarkCheck{nullptr};
     QCheckBox *m_notMirroredCheck{nullptr};
-    QCheckBox *m_manualLengthCheck{nullptr};
+
     QLabel *m_lengthLabel{nullptr};
     QLineEdit *m_lengthEdit{nullptr};
+    QLabel *m_widthLabel{nullptr};
+    QLineEdit *m_widthEdit{nullptr};
+    QLabel *m_valueAngleLabel{nullptr};
+    QLineEdit *m_valueAngleEdit{nullptr};
+    QLabel *m_valueHint{nullptr};
+
     QLabel *m_visibleLabel{nullptr};
     QLineEdit *m_visibleEdit{nullptr};
     QLabel *m_visibleHint{nullptr};
+
+    QVector<QToolButton *> m_fxButtons; // Theme-dependent icons, re-read by RefreshFxIcons().
 
     QLabel *m_seamTypeLabel{nullptr};
 

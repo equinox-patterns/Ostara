@@ -78,7 +78,7 @@ signals:
     void ToggleSeamAllowanceAngleType(quint32 id, PieceNodeAngle type);
     void TogglePassmark(quint32 id, bool toggle);
     void TogglePassmarkAngleType(quint32 id, PassmarkAngleType type);
-    void TogglePassmarkLineType(quint32 id, PassmarkLineType type);
+    void TogglePassmarkLineType(quint32 id, PassmarkLineType type, bool clockwise);
 
 public slots:
     void FullUpdateFromFile() override;

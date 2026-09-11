@@ -173,6 +173,7 @@ auto OPieceDialog::GetPiece() const -> VPiece
     // Pattern seeds (Activate SA + Hide main path + sew line on drawing) apply to every piece created afterwards.
     piece.SetSeamAllowance(m_doc->GetDefaultActivateSA());
     piece.SetHideMainPath(m_doc->GetDefaultHideMainPath());
+    piece.SetSecondPassmarkOnSeamLine(m_doc->GetDefaultSecondPassmarkOnSeamLine());
     if (piece.IsSeamAllowance())
     {
         // Convert the default seam allowance from the app unit to the pattern unit,
@@ -272,6 +273,7 @@ void OPieceDialog::DialogAccepted()
         m_doc->SetDefaultActivateSA(m_patternStep->IsActivateSA());
         m_doc->SetDefaultHideMainPath(m_patternStep->IsHideMainPath());
         m_doc->SetDefaultSewLineOnDrawing(m_patternStep->IsSewLineOnDrawing());
+        m_doc->SetDefaultSecondPassmarkOnSeamLine(m_patternStep->IsSecondPassmarkOnSeamLine());
         // Information block: the chosen template (empty when the user did not opt in).
         m_doc->SetCartoucheTemplate(m_patternStep->GetCartouche());
     }

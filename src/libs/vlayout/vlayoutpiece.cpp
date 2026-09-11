@@ -1828,7 +1828,7 @@ auto VLayoutPiece::ConvertPassmarks(const VPiece &piece, const VContainer *patte
                 break;
         }
 
-        if (VAbstractApplication::VApp()->Settings()->IsDoublePassmark() &&
+        if (piece.IsSecondPassmarkOnSeamLine() &&
             (VAbstractApplication::VApp()->Settings()->IsPieceShowMainPath() || not piece.IsHideMainPath()) &&
             pData.isMainPathNode && pData.passmarkAngleType != PassmarkAngleType::Intersection &&
             pData.passmarkAngleType != PassmarkAngleType::IntersectionOnlyLeft &&

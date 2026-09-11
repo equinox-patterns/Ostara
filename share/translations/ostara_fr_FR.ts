@@ -11776,6 +11776,11 @@ Voulez-vous le remplacer ?</translation>
         <translation>En forme de coche</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="85"/>
+        <source>Check mark clockwise</source>
+        <translation>En forme de coche, sens horaire</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="87"/>
         <source>Straightforward</source>
         <translation>Tout droit</translation>
@@ -11822,16 +11827,16 @@ Voulez-vous le remplacer ?</translation>
         <translation>Afficher le second cran d&apos;assemblage sur la ligne de couture</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="174"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="375"/>
-        <source>Manual passmark length</source>
-        <translation>Longueur manuelle du cran d&apos;assemblage</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="179"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="376"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="196"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="551"/>
         <source>Length</source>
         <translation>Longueur</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="197"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="552"/>
+        <source>Width</source>
+        <translation>Largeur</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="188"/>
@@ -11844,6 +11849,11 @@ Voulez-vous le remplacer ?</translation>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="378"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
         <translation>1 = visible, 0 = invisible, formules autorisées</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="554"/>
+        <source>Leave a field empty for the automatic value, formulas allowed</source>
+        <translation>Laisser un champ vide pour la valeur automatique, formules autorisées</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="206"/>
@@ -12247,6 +12257,18 @@ Voulez-vous le remplacer ?</translation>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="250"/>
         <source>Hide main path</source>
         <translation>Cacher le contour principal</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="222"/>
+        <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="261"/>
+        <source>Show the second passmark on seam line</source>
+        <translation>Afficher le second cran d&apos;assemblage sur la ligne de couture</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="223"/>
+        <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="262"/>
+        <source>Draws a second notch on the seam line, in addition to the one on the cutting line. Seeded from the pattern when the piece is created.</source>
+        <translation>Trace un second cran sur la ligne de couture, en plus de celui de la ligne de coupe. Hérité du patron à la création de la pièce.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="222"/>
@@ -13380,6 +13402,12 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="114"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="351"/>
+        <source>Show the second passmark on seam line for all pieces</source>
+        <translation>Afficher le second cran d&apos;assemblage sur la ligne de couture pour toutes les pièces</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="114"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="340"/>
         <source>Export the sew line with the drawings for all pieces (DXF-AAMA)</source>
         <translation>Exporter la ligne de couture avec les tracés pour toutes les pièces (DXF-AAMA)</translation>
@@ -13747,6 +13775,11 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="149"/>
         <source>Hide main path for all pieces</source>
         <translation>Cacher le contour principal pour toutes les pièces</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="152"/>
+        <source>Show the second passmark on seam line for all pieces</source>
+        <translation>Afficher le second cran d&apos;assemblage sur la ligne de couture pour toutes les pièces</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="152"/>

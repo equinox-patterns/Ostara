@@ -45,6 +45,7 @@
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/vcontainer.h"
+#include "../vpatterndb/vpassmark.h"
 #include "../vpatterndb/vpiece.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vpatterndb/vpiecepath.h"
@@ -59,22 +60,29 @@ namespace
 // (there is no PassmarkLineType::None).
 constexpr int kNoPassmark = -1;
 
+// The clockwise opening of a "Check mark" is a property of the mark itself, not a setting of its own:
+// it is chosen by picking the entry, so the two entries below share PassmarkLineType::CheckMark and are
+// told apart by this flag. That is why the combo is read by index — findData() returns the first match.
 struct PassmarkLineEntry
 {
     PassmarkLineType type;
     const char *name;
+    bool clockwise;
 };
 
+constexpr int kFirstLineTypeIndex = 1; // "None" sits at index 0.
+
 constexpr PassmarkLineEntry kPassmarkLineTypes[] = {
-    {PassmarkLineType::OneLine, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "One line")},
-    {PassmarkLineType::TwoLines, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Two lines")},
-    {PassmarkLineType::ThreeLines, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Three lines")},
-    {PassmarkLineType::TMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "T mark")},
-    {PassmarkLineType::ExternalVMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "External V mark")},
-    {PassmarkLineType::InternalVMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Internal V mark")},
-    {PassmarkLineType::UMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "U mark")},
-    {PassmarkLineType::BoxMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Box mark")},
-    {PassmarkLineType::CheckMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Check mark")},
+    {PassmarkLineType::OneLine, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "One line"), false},
+    {PassmarkLineType::TwoLines, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Two lines"), false},
+    {PassmarkLineType::ThreeLines, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Three lines"), false},
+    {PassmarkLineType::TMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "T mark"), false},
+    {PassmarkLineType::ExternalVMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "External V mark"), false},
+    {PassmarkLineType::InternalVMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Internal V mark"), false},
+    {PassmarkLineType::UMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "U mark"), false},
+    {PassmarkLineType::BoxMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Box mark"), false},
+    {PassmarkLineType::CheckMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Check mark"), false},
+    {PassmarkLineType::CheckMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Check mark clockwise"), true},
 };
 
 struct PassmarkAngleEntry
@@ -125,10 +133,8 @@ ODetailsNodeWidget::ODetailsNodeWidget(QWidget *parent)
         button->setFocusPolicy(Qt::NoFocus);
         button->setFixedSize(24, 24);
         button->setIconSize(QSize(16, 16));
-        const bool isDark = VTheme::ColorSheme() == VColorSheme::Dark;
-        button->setIcon(QIcon(QStringLiteral(":/icons/%1/function_%1.svg")
-                                  .arg(isDark ? QStringLiteral("dark") : QStringLiteral("light"))));
         button->setToolTip(tr("Edit expression"));
+        m_fxButtons.append(button); // The icon itself is set by RefreshFxIcons(), which follows the theme.
         return button;
     };
 
@@ -170,18 +176,29 @@ ODetailsNodeWidget::ODetailsNodeWidget(QWidget *parent)
     connect(m_notMirroredCheck, &QCheckBox::toggled, this, &ODetailsNodeWidget::CommitNotMirrored);
     ++row;
 
-    // Manual passmark length — reveals the Length row when checked.
-    m_manualLengthCheck = new QCheckBox(tr("Manual passmark length"), m_passmarkGroup);
-    passmarkGrid->addWidget(m_manualLengthCheck, row, 0, 1, 3);
-    connect(m_manualLengthCheck, &QCheckBox::toggled, this, &ODetailsNodeWidget::CommitManualPassmarkLength);
-    ++row;
+    // The three dimensions of the notch. Each row is always visible and pre-filled with the value the
+    // engine would draw, so there is nothing to untick to get back to the automatic value — emptying
+    // the field is enough.
+    const auto addValueRow = [&](const QString &title, FormulaField field, QLabel *&label, QLineEdit *&edit) {
+        label = new QLabel(title, m_passmarkGroup);
+        edit = new QLineEdit(m_passmarkGroup);
+        passmarkGrid->addWidget(label, row, 0);
+        passmarkGrid->addWidget(edit, row, 1);
+        auto *fx = makeFxButton();
+        passmarkGrid->addWidget(fx, row, 2);
+        connect(edit, &QLineEdit::editingFinished, this, [this, field]() { CommitFormula(field); });
+        connect(fx, &QToolButton::clicked, this, [this, field, edit]() { OpenFormulaEditor(field, edit); });
+        ++row;
+    };
 
-    m_lengthLabel = new QLabel(tr("Length"), m_passmarkGroup);
-    m_lengthEdit = new QLineEdit(m_passmarkGroup);
-    passmarkGrid->addWidget(m_lengthLabel, row, 0);
-    passmarkGrid->addWidget(m_lengthEdit, row, 1, 1, 2);
-    connect(m_lengthEdit, &QLineEdit::editingFinished, this,
-            [this]() { CommitFormula(FormulaField::PassmarkLength); });
+    addValueRow(tr("Length"), FormulaField::Length, m_lengthLabel, m_lengthEdit);
+    addValueRow(tr("Width"), FormulaField::Width, m_widthLabel, m_widthEdit);
+    addValueRow(tr("Angle"), FormulaField::Angle, m_valueAngleLabel, m_valueAngleEdit);
+
+    m_valueHint = new QLabel(tr("Leave a field empty for the automatic value, formulas allowed"),
+                             m_passmarkGroup);
+    m_valueHint->setWordWrap(true);
+    passmarkGrid->addWidget(m_valueHint, row, 1, 1, 2);
     ++row;
 
     // Visibility — two-line block, same style as the place-label page.
@@ -227,7 +244,10 @@ ODetailsNodeWidget::ODetailsNodeWidget(QWidget *parent)
     layout->addStretch();
 
     PopulateCombos();
-    SetManualLengthRowVisible(false);
+
+    RefreshFxIcons();
+    // The dock stays open across a theme toggle: nothing else re-reads these icons.
+    connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, &ODetailsNodeWidget::RefreshFxIcons);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -258,10 +278,20 @@ void ODetailsNodeWidget::PopulateCombos()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsNodeWidget::SetManualLengthRowVisible(bool visible)
+auto ODetailsNodeWidget::EditFor(FormulaField field) const -> QLineEdit *
 {
-    m_lengthLabel->setVisible(visible);
-    m_lengthEdit->setVisible(visible);
+    switch (field)
+    {
+        case FormulaField::Length:
+            return m_lengthEdit;
+        case FormulaField::Width:
+            return m_widthEdit;
+        case FormulaField::Angle:
+            return m_valueAngleEdit;
+        case FormulaField::Visibility:
+        default:
+            return m_visibleEdit;
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -297,6 +327,38 @@ auto ODetailsNodeWidget::FetchCurrentNode(VPieceNode &out) const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto ODetailsNodeWidget::FetchPassmark(VPassmark &out) const -> bool
+{
+    if (m_piece == nullptr)
+    {
+        return false;
+    }
+
+    try
+    {
+        const VContainer *data = m_piece->getData();
+        const VPiece det = data->GetPiece(m_piece->getId());
+
+        // Matched on the node id, never on the index: Passmarks() walks the *united* path, which is not
+        // the piece path the dock works from.
+        for (const VPassmark &passmark : det.Passmarks(data))
+        {
+            if (passmark.Data().id == m_nodeId)
+            {
+                out = passmark;
+                return true;
+            }
+        }
+    }
+    catch (...)
+    {
+        return false;
+    }
+
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto ODetailsNodeWidget::LoadFromNode() -> bool
 {
     VPieceNode node;
@@ -305,10 +367,27 @@ auto ODetailsNodeWidget::LoadFromNode() -> bool
         return false;
     }
 
+    VPassmark passmark;
+    const bool hasPassmark = node.IsPassmark() && FetchPassmark(passmark);
+    const bool oneLine = hasPassmark && node.GetPassmarkLineType() == PassmarkLineType::OneLine;
+    const bool straightforward = node.GetPassmarkAngleType() == PassmarkAngleType::Straightforward;
+
     m_loading = true;
-    const bool isPassmark = node.IsPassmark();
-    int typeIndex = m_typeCombo->findData(isPassmark ? static_cast<int>(node.GetPassmarkLineType()) : kNoPassmark);
-    m_typeCombo->setCurrentIndex(typeIndex >= 0 ? typeIndex : 0);
+
+    // The two "Check mark" entries share their line type, so the combo is matched by index.
+    int entry = -1;
+    int index = 0;
+    for (const PassmarkLineEntry &candidate : kPassmarkLineTypes)
+    {
+        if (candidate.type == node.GetPassmarkLineType() &&
+            candidate.clockwise == node.IsPassmarkClockwiseOpening())
+        {
+            entry = index;
+            break;
+        }
+        ++index;
+    }
+    m_typeCombo->setCurrentIndex(entry >= 0 ? entry + kFirstLineTypeIndex : 0);
 
     const int angleIndex = m_angleCombo->findData(static_cast<int>(node.GetPassmarkAngleType()));
     m_angleCombo->setCurrentIndex(angleIndex >= 0 ? angleIndex : 0);
@@ -316,51 +395,178 @@ auto ODetailsNodeWidget::LoadFromNode() -> bool
     m_secondPassmarkCheck->setChecked(node.IsShowSecondPassmark());
     m_notMirroredCheck->setChecked(node.IsPassmarkNotMirrored());
 
-    const bool manual = node.IsManualPassmarkLength();
-    m_manualLengthCheck->setChecked(manual);
-    SetManualLengthRowVisible(manual);
-    m_lengthEdit->setText(node.GetFormulaPassmarkLength());
+    FillValueField(FormulaField::Length, node.GetFormulaPassmarkLength(),
+                   AutomaticValue(FormulaField::Length, passmark, hasPassmark), true, false);
+    if (oneLine)
+    {
+        // A single line carries no width at all — the row is disabled, so it holds nothing.
+        if (!m_widthEdit->hasFocus())
+        {
+            m_widthEdit->setText(QString());
+        }
+    }
+    else
+    {
+        FillValueField(FormulaField::Width, node.GetFormulaPassmarkWidth(),
+                       AutomaticValue(FormulaField::Width, passmark, hasPassmark), true, false);
+    }
+    // The automatic angle is only meaningful on the "Straightforward" rule, and asking for it means
+    // running the whole seam-allowance geometry — so it is only asked for where the row can be edited.
+    // Elsewhere the field keeps whatever the piece holds, which the XML writer empties anyway.
+    if (straightforward)
+    {
+        FillValueField(FormulaField::Angle, node.GetFormulaPassmarkAngle(),
+                       AutomaticValue(FormulaField::Angle, passmark, hasPassmark), false, false);
+    }
+    else if (!m_valueAngleEdit->hasFocus())
+    {
+        m_valueAngleEdit->setText(node.GetFormulaPassmarkAngle());
+    }
 
     m_visibleEdit->setText(node.GetFormulaPassmarkVisibility());
 
     const int seamIndex = m_seamTypeCombo->findData(static_cast<int>(node.GetAngleType()));
     m_seamTypeCombo->setCurrentIndex(seamIndex >= 0 ? seamIndex : 0);
+
+    UpdatePassmarkEnabled(node);
     m_loading = false;
 
     return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto ODetailsNodeWidget::AutoLengthInPatternUnit(const VPieceNode &node) const -> qreal
+void ODetailsNodeWidget::RefreshFxIcons()
 {
-    if (m_piece == nullptr)
+    const QString theme = VTheme::ColorSheme() == VColorSheme::Dark ? QStringLiteral("dark")
+                                                                    : QStringLiteral("light");
+    const QIcon icon(QStringLiteral(":/icons/%1/function_%1.svg").arg(theme));
+
+    for (QToolButton *button : m_fxButtons)
     {
-        return 0.0;
+        button->setIcon(icon);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsNodeWidget::ReloadAfterCommit()
+{
+    // Unlike the piece page — repopulated 100 ms after every command by ODetailsPieceWidget's timer —
+    // this page has no such refresh: nothing else knows it is open. Without this, the page would keep
+    // the state it had when the point was clicked. A type change says which rows apply and what the
+    // automatic values are; a length change moves the automatic width. Reading back from the model
+    // keeps the two in step, and the field being typed in is left alone.
+    if (m_piece != nullptr)
+    {
+        LoadFromNode();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsNodeWidget::AutomaticValue(FormulaField field, const VPassmark &passmark, bool hasPassmark) const -> qreal
+{
+    if (!hasPassmark)
+    {
+        return 0;
     }
 
-    VContainer *const data = m_piece->getData();
-    const Unit unit = *data->GetPatternUnit();
-    const VPiece det = data->GetPiece(m_piece->getId());
-
-    const qreal widthPx = ToPixel(det.GetSAWidth(), unit);
-
-    qreal lengthPx;
-    if (det.IsSeamAllowance())
+    switch (field)
     {
-        // Same rule as the automatic notch length: half the effective seam allowance at the point,
-        // capped at 1 cm (VSAPoint::passmarkFactor / maxPassmarkLength). Local node widths override
-        // the piece width (-1 means "follow the piece width").
-        const qreal before = node.GetSABefore(data, unit);
-        const qreal after = node.GetSAAfter(data, unit);
-        const qreal localMax = qMax(before >= 0 ? before : widthPx, after >= 0 ? after : widthPx);
-        lengthPx = qMin(localMax * 0.5, MmToPixel(10.));
+        case FormulaField::Length:
+            return passmark.AutomaticLength();
+        case FormulaField::Width:
+            return passmark.AutomaticWidth();
+        case FormulaField::Angle:
+        {
+            if (m_piece == nullptr)
+            {
+                return 0;
+            }
+            // Reaches the seam-allowance geometry, which can refuse under pedantic mode — a property
+            // browser must never let that escape, the field simply falls back to zero.
+            try
+            {
+                const VContainer *data = m_piece->getData();
+                return passmark.AutomaticAngle(data->GetPiece(m_piece->getId()), data);
+            }
+            catch (...)
+            {
+                return 0;
+            }
+        }
+        case FormulaField::Visibility:
+        default:
+            return 0;
     }
-    else
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsNodeWidget::FillValueField(FormulaField field, const QString &formula, qreal automatic, bool isLength,
+                                        bool force)
+{
+    QLineEdit *edit = EditFor(field);
+
+    // The dock repopulates 100 ms after every commit, so never overwrite the field being typed in —
+    // unless this is the restore that follows a refused entry.
+    if (!force && edit->hasFocus())
     {
-        lengthPx = MmToPixel(5.); // default when no seam allowance outline is drawn (0.5 cm)
+        return;
     }
 
-    return VAbstractValApplication::VApp()->fromPixel(lengthPx);
+    if (!formula.isEmpty())
+    {
+        edit->setText(formula);
+        return;
+    }
+
+    // No formula of its own: the field shows the value the engine would draw. Length and width are
+    // lengths, shown in the pattern unit; the angle is a plain number of degrees and must not go
+    // through the unit conversion.
+    edit->setText(QString::number(isLength ? VAbstractValApplication::VApp()->fromPixel(automatic) : automatic));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsNodeWidget::UpdatePassmarkEnabled(const VPieceNode &node)
+{
+    const bool isPassmark = node.IsPassmark();
+    const bool oneLine = isPassmark && node.GetPassmarkLineType() == PassmarkLineType::OneLine;
+    const bool straightforward = node.GetPassmarkAngleType() == PassmarkAngleType::Straightforward;
+
+    // "None" means the node carries no notch at all: nothing below the type selector has an object.
+    m_angleLabel->setEnabled(isPassmark);
+    m_angleCombo->setEnabled(isPassmark);
+    m_secondPassmarkCheck->setEnabled(isPassmark);
+    m_notMirroredCheck->setEnabled(isPassmark);
+    m_lengthLabel->setEnabled(isPassmark);
+    m_lengthEdit->setEnabled(isPassmark);
+    m_visibleLabel->setEnabled(isPassmark);
+    m_visibleEdit->setEnabled(isPassmark);
+    m_valueHint->setEnabled(isPassmark);
+
+    // A single line has no width, and the XML writer drops the attribute for it as well.
+    m_widthLabel->setEnabled(isPassmark && !oneLine);
+    m_widthEdit->setEnabled(isPassmark && !oneLine);
+
+    // A hand-typed angle only has something to override on the "Straightforward" rule — the seven other
+    // rules derive the notch direction from the corner geometry on their own.
+    m_valueAngleLabel->setEnabled(isPassmark && straightforward);
+    m_valueAngleEdit->setEnabled(isPassmark && straightforward);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsNodeWidget::RestoreField(FormulaField field)
+{
+    VPieceNode node;
+    if (!FetchCurrentNode(node))
+    {
+        EditFor(field)->clear();
+        return;
+    }
+
+    VPassmark passmark;
+    const bool hasPassmark = node.IsPassmark() && FetchPassmark(passmark);
+
+    FillValueField(field, StoredFormula(node, field), AutomaticValue(field, passmark, hasPassmark),
+                   field != FormulaField::Angle, true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -372,8 +578,10 @@ void ODetailsNodeWidget::RetranslateUI()
     m_angleLabel->setText(tr("Angle"));
     m_secondPassmarkCheck->setText(tr("Show the second passmark on seam line"));
     m_notMirroredCheck->setText(tr("Not Mirrored"));
-    m_manualLengthCheck->setText(tr("Manual passmark length"));
     m_lengthLabel->setText(tr("Length"));
+    m_widthLabel->setText(tr("Width"));
+    m_valueAngleLabel->setText(tr("Angle"));
+    m_valueHint->setText(tr("Leave a field empty for the automatic value, formulas allowed"));
     m_visibleLabel->setText(tr("Visibility"));
     m_visibleHint->setText(tr("1 = visible, 0 = invisible, formulas allowed"));
     m_seamTypeLabel->setText(tr("Type"));
@@ -431,32 +639,52 @@ void ODetailsNodeWidget::CommitPassmarkType(int index)
         return;
     }
 
-    const int data = m_typeCombo->itemData(index).toInt();
     VPieceNode node;
     if (!FetchCurrentNode(node))
     {
         return;
     }
 
-    if (data == kNoPassmark)
+    if (m_typeCombo->itemData(index).toInt() == kNoPassmark)
     {
         if (!node.IsPassmark())
         {
             return;
         }
         PushNodeChange([](VPieceNode &n) { n.SetPassmark(false); });
+        ReloadAfterCommit();
         return;
     }
 
-    const auto type = static_cast<PassmarkLineType>(data);
-    if (node.IsPassmark() && node.GetPassmarkLineType() == type)
+    const PassmarkLineEntry &entry = kPassmarkLineTypes[index - kFirstLineTypeIndex];
+    const bool sameEntry = node.GetPassmarkLineType() == entry.type &&
+                           node.IsPassmarkClockwiseOpening() == entry.clockwise;
+    if (node.IsPassmark() && sameEntry)
     {
         return;
     }
-    PushNodeChange([type](VPieceNode &n) {
+
+    // The clockwise opening is not a setting of its own — picking an entry is what sets it. It only
+    // means anything for a "Check mark", so every other type stores a plain false.
+    //
+    // Width and angle go back to the mark's own values: the width is not the same quantity from one
+    // mark to the next (a fixed gap for the line marks, a bar length for the T, a V opening, an arc
+    // radius), so an override typed for the previous mark would silently keep applying to the new
+    // one. Length means the same thing whatever the mark, and is left alone. Coming back from
+    // "None" with the same entry is not a change and drops nothing.
+    const PassmarkLineType type = entry.type;
+    const bool clockwise = entry.clockwise;
+    PushNodeChange([type, clockwise, sameEntry](VPieceNode &n) {
         n.SetPassmark(true);
         n.SetPassmarkLineType(type);
+        n.SetPassmarkClockwiseOpening(clockwise);
+        if (!sameEntry)
+        {
+            SetOverride(n, FormulaField::Width, QString());
+            SetOverride(n, FormulaField::Angle, QString());
+        }
     });
+    ReloadAfterCommit();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -478,6 +706,7 @@ void ODetailsNodeWidget::CommitPassmarkAngle(int index)
         return;
     }
     PushNodeChange([type](VPieceNode &n) { n.SetPassmarkAngleType(type); });
+    ReloadAfterCommit();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -519,63 +748,39 @@ void ODetailsNodeWidget::CommitNotMirrored(bool checked)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsNodeWidget::CommitManualPassmarkLength(bool checked)
-{
-    SetManualLengthRowVisible(checked);
-
-    if (m_loading)
-    {
-        return;
-    }
-    VPieceNode node;
-    if (!FetchCurrentNode(node))
-    {
-        return;
-    }
-    if (node.IsManualPassmarkLength() == checked)
-    {
-        return;
-    }
-
-    if (checked)
-    {
-        // Pre-fill with the currently rendered automatic notch length (e.g. 0.5) so the manual
-        // length is valid straight away — no "Formula is empty" passmark warnings.
-        const QString formula = QString::number(AutoLengthInPatternUnit(node));
-        m_lengthEdit->setText(formula);
-        PushNodeChange([formula](VPieceNode &n) {
-            n.SetManualPassmarkLength(true);
-            n.SetFormulaPassmarkLength(formula);
-        });
-        return;
-    }
-
-    PushNodeChange([checked](VPieceNode &n) { n.SetManualPassmarkLength(checked); });
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void ODetailsNodeWidget::CommitFormula(FormulaField field)
 {
-    if (m_piece == nullptr)
+    if (m_loading || m_piece == nullptr)
     {
         return;
     }
 
-    QLineEdit *edit = field == FormulaField::PassmarkLength ? m_lengthEdit : m_visibleEdit;
+    QLineEdit *edit = EditFor(field);
 
     VPieceNode node;
     if (!FetchCurrentNode(node))
     {
         return;
     }
-    const QString stored = field == FormulaField::PassmarkLength ? node.GetFormulaPassmarkLength()
-                                                                 : node.GetFormulaPassmarkVisibility();
 
     // Accept both decimal separators (Ostara rule §3.1) — normalise ',' to '.' before evaluating,
     // and keep the canonical form in the model/field.
     QString text = edit->text().trimmed();
     text.replace(QLatin1Char(','), QLatin1Char('.'));
-    if (text == stored)
+
+    if (text.isEmpty())
+    {
+        // An empty field is not a formula that evaluates to zero: it drops the override and hands the
+        // dimension back to the engine. This is the only way back to the automatic value.
+        PushNodeChange([field](VPieceNode &n) { SetOverride(n, field, QString()); });
+        // Reload the two other rows first — clearing a length moves the automatic width — and only
+        // then force this one, which the reload deliberately steps over while it holds the focus.
+        ReloadAfterCommit();
+        RestoreField(field);
+        return;
+    }
+
+    if (text == StoredFormula(node, field))
     {
         return; // nothing changed
     }
@@ -590,23 +795,82 @@ void ODetailsNodeWidget::CommitFormula(FormulaField field)
     }
     catch (...)
     {
-        edit->setText(stored);
+        RestoreField(field);
         return;
     }
     if (qIsNaN(raw) || qIsInf(raw))
     {
-        edit->setText(stored);
+        RestoreField(field);
+        return;
+    }
+
+    // Refuse here what the engine would refuse later, in silence: a length of zero or below is an
+    // error state ("Cannot calculate passmark length"), and so is a width of zero. A negative width
+    // is refused too, except on a "Check mark" where the sign is what tells the two sides apart.
+    // The angle carries no guard at all — zero and negatives are legitimate there.
+    if (field == FormulaField::Width)
+    {
+        const bool checkMark = node.IsPassmark() && node.GetPassmarkLineType() == PassmarkLineType::CheckMark;
+        if (qFuzzyIsNull(raw) || (raw < 0 && !checkMark))
+        {
+            RestoreField(field);
+            return;
+        }
+    }
+    else if (field == FormulaField::Length && raw <= 0)
+    {
+        RestoreField(field);
         return;
     }
 
     edit->setText(text);
-    if (field == FormulaField::PassmarkLength)
+    PushNodeChange([field, text](VPieceNode &n) { SetOverride(n, field, text); });
+    ReloadAfterCommit();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsNodeWidget::StoredFormula(const VPieceNode &node, FormulaField field) -> QString
+{
+    switch (field)
     {
-        PushNodeChange([text](VPieceNode &n) { n.SetFormulaPassmarkLength(text); });
+        case FormulaField::Length:
+            return node.GetFormulaPassmarkLength();
+        case FormulaField::Width:
+            return node.GetFormulaPassmarkWidth();
+        case FormulaField::Angle:
+            return node.GetFormulaPassmarkAngle();
+        case FormulaField::Visibility:
+        default:
+            return node.GetFormulaPassmarkVisibility();
     }
-    else
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsNodeWidget::SetOverride(VPieceNode &node, FormulaField field, const QString &formula)
+{
+    // The manual flag is derived from the formula — there is a value or there is not, nothing else.
+    // A dimension with a formula but no flag would be an error state for the engine, and a flag with
+    // no formula is one already.
+    const bool manual = !formula.isEmpty();
+
+    switch (field)
     {
-        PushNodeChange([text](VPieceNode &n) { n.SetFormulaPassmarkVisibility(text); });
+        case FormulaField::Length:
+            node.SetManualPassmarkLength(manual);
+            node.SetFormulaPassmarkLength(formula);
+            break;
+        case FormulaField::Width:
+            node.SetManualPassmarkWidth(manual);
+            node.SetFormulaPassmarkWidth(formula);
+            break;
+        case FormulaField::Angle:
+            node.SetManualPassmarkAngle(manual);
+            node.SetFormulaPassmarkAngle(formula);
+            break;
+        case FormulaField::Visibility:
+        default:
+            node.SetFormulaPassmarkVisibility(formula);
+            break;
     }
 }
 

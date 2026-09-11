@@ -30,6 +30,7 @@
 #include "../vmisc/def.h"
 #include "../vpatterndb/vpiece.h"
 
+#include <QVector>
 #include <QWidget>
 
 #include <functional>
@@ -37,6 +38,7 @@
 class QGridLayout;
 class QLabel;
 class QLineEdit;
+class QToolButton;
 class VContainer;
 class VFoldLine;
 
@@ -79,11 +81,14 @@ private:
     void CommitFormula(int field);
     void OpenFormulaEditor(int field, QLineEdit *edit);
     void RestoreField(int field);
+    /** @brief Re-reads the fx icons for the current theme; the dock survives a light↔dark toggle. */
+    void RefreshFxIcons();
 
     QGridLayout *m_grid{nullptr};
     QLabel *m_labels[kFieldCount]{};
     QLineEdit *m_edits[kFieldCount]{};
     QLabel *m_hintLabel{nullptr};
+    QVector<QToolButton *> m_fxButtons; // Theme-dependent icons, re-read by RefreshFxIcons().
 
     const VContainer *m_data{nullptr};
     quint32 m_pieceId{0};

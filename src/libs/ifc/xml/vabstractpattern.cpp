@@ -152,6 +152,8 @@ const QString VAbstractPattern::AttrPassmarkWidth = QStringLiteral("passmarkWidt
 const QString VAbstractPattern::AttrDefaultActivateSA = QStringLiteral("defaultActivateSA");
 const QString VAbstractPattern::AttrDefaultHideMainPath = QStringLiteral("defaultHideMainPath");
 const QString VAbstractPattern::AttrDefaultSewLineOnDrawing = QStringLiteral("defaultSewLineOnDrawing");
+const QString VAbstractPattern::AttrDefaultSecondPassmarkOnSeamLine =
+    QStringLiteral("defaultSecondPassmarkOnSeamLine");
 const QString VAbstractPattern::AttrTemplate = QStringLiteral("template");
 const QString VAbstractPattern::AttrManualPassmarkAngle = QStringLiteral("manualPassmarkAngle");
 const QString VAbstractPattern::AttrPassmarkAngle = QStringLiteral("passmarkAngleFormula");
@@ -989,6 +991,24 @@ auto VAbstractPattern::GetDefaultSewLineOnDrawing() const -> bool
 void VAbstractPattern::SetDefaultSewLineOnDrawing(bool on)
 {
     SePatternVariable(AttrDefaultSewLineOnDrawing, on ? QStringLiteral("true") : QStringLiteral("false"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetDefaultSecondPassmarkOnSeamLine() const -> bool
+{
+    const QString value = GetPatternVariable(AttrDefaultSecondPassmarkOnSeamLine);
+    if (not value.isEmpty())
+    {
+        return value == QLatin1String("true");
+    }
+    return VAbstractValApplication::VApp()->Settings()->IsDoublePassmark();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetDefaultSecondPassmarkOnSeamLine(bool on)
+{
+    SePatternVariable(AttrDefaultSecondPassmarkOnSeamLine,
+                      on ? QStringLiteral("true") : QStringLiteral("false"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -75,6 +75,7 @@ private slots:
     void CommitActivateSA(bool on);
     void CommitHideMainPath(bool on);
     void CommitSewLineOnDrawing(bool on);
+    void CommitSecondPassmarkOnSeamLine(bool on);
     void CommitCartoucheActivation(bool on);
     void CommitCartoucheTemplate(int index);
     void ScheduleCommit();
@@ -94,6 +95,7 @@ private:
     QComboBox *m_collectionCombo{nullptr};
     QCheckBox *m_activateSACheck{nullptr};
     QCheckBox *m_hideMainPathCheck{nullptr};
+    QCheckBox *m_secondPassmarkCheck{nullptr};
     QCheckBox *m_sewLineOnDrawingCheck{nullptr};
     QCheckBox *m_activateInfoBlockCheck{nullptr};
     QComboBox *m_cartoucheCombo{nullptr};

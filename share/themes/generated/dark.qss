@@ -308,9 +308,12 @@ QPlainTextEdit:read-only {
     background-color: #191919;
 }
 
+/* Disabled: what says "you cannot type here" is the fill, not the text — an enabled field and a
+   disabled one otherwise share the same background, and the text alone is far too quiet to carry it. */
 QLineEdit:disabled,
 QPlainTextEdit:disabled {
-    color: #4c4c4c;
+    background-color: #333333;
+    color: #7f7f7f;
     border-color: #4c4c4c;
 }
 
@@ -342,7 +345,8 @@ QDoubleSpinBox:focus {
 
 QSpinBox:disabled,
 QDoubleSpinBox:disabled {
-    color: #4c4c4c;
+    background-color: #333333;
+    color: #7f7f7f;
     border-color: #4c4c4c;
 }
 
@@ -483,7 +487,8 @@ QComboBox:focus {
 }
 
 QComboBox:disabled {
-    color: #4c4c4c;
+    background-color: #333333;
+    color: #7f7f7f;
     border-color: #4c4c4c;
 }
 
@@ -1111,6 +1116,12 @@ QDateEdit:focus {
     border-color: #983e60;
 }
 
+QDateEdit:disabled {
+    background-color: #333333;
+    color: #7f7f7f;
+    border-color: #4c4c4c;
+}
+
 QDateEdit::drop-down {
     subcontrol-origin: padding;
     subcontrol-position: top right;
@@ -1191,6 +1202,12 @@ QKeySequenceEdit {
 
 QKeySequenceEdit:focus {
     border-color: #983e60;
+}
+
+QKeySequenceEdit:disabled {
+    background-color: #333333;
+    color: #7f7f7f;
+    border-color: #4c4c4c;
 }
 
 /* =========================================================================

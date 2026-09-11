@@ -183,6 +183,42 @@ auto PassmarkAngle(const VPiecePassmarkData &passmarkData, qreal angle) -> qreal
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+// The width a notch would get if it had none of its own, expressed from the length of its baseline.
+// Every mark builder comes through here, so the rule exists in one place and a UI asking for the
+// automatic value cannot drift from what is drawn.
+auto AutomaticNotchWidth(const VPiecePassmarkData &passmarkData, qreal length) -> qreal
+{
+    switch (passmarkData.passmarkLineType)
+    {
+        case PassmarkLineType::TwoLines:
+        case PassmarkLineType::ThreeLines:
+            return passmarkGap; // A fixed gap, independent of the notch length.
+        case PassmarkLineType::TMark:
+            return length * 0.75;
+        case PassmarkLineType::ExternalVMark:
+        case PassmarkLineType::InternalVMark:
+        {
+            constexpr qreal defAngle = 35;
+            return 2. * length * qTan(qDegreesToRadians(defAngle));
+        }
+        case PassmarkLineType::UMark:
+        case PassmarkLineType::BoxMark:
+            return length * VPassmark::passmarkRadiusFactor * 2.;
+        case PassmarkLineType::CheckMark:
+        {
+            constexpr qreal defAngle = 45;
+            const qreal width = qAbs(length * qTan(qDegreesToRadians(defAngle)));
+            // The sign is the drawing side, not a magnitude: opening counter-clockwise stores a
+            // negative width, and that sign is what the mark builder branches on.
+            return passmarkData.passmarkSAPoint.IsPassmarkClockwiseOpening() ? width : -width;
+        }
+        case PassmarkLineType::OneLine:
+        default:
+            return 0; // A single line carries no width.
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto PassmarkWidth(const VPiecePassmarkData &passmarkData, qreal width) -> qreal
 {
     auto ValidateWidth = [&passmarkData](qreal width)
@@ -303,7 +339,7 @@ auto CreateOnePassmarkLines(const VPiecePassmarkData &passmarkData, const QLineF
 auto CreateTwoPassmarkLines(const VPiecePassmarkData &passmarkData, const QLineF &line,
                             const QVector<QPointF> &seamAllowance) -> QVector<QLineF>
 {
-    const qreal width = PassmarkWidth(passmarkData, passmarkGap);
+    const qreal width = PassmarkWidth(passmarkData, AutomaticNotchWidth(passmarkData, line.length()));
 
     QPointF l1p1;
     {
@@ -350,7 +386,7 @@ auto CreateTwoPassmarkLines(const VPiecePassmarkData &passmarkData, const QLineF
 auto CreateThreePassmarkLines(const VPiecePassmarkData &passmarkData, const QLineF &line,
                               const QVector<QPointF> &seamAllowance) -> QVector<QLineF>
 {
-    const qreal width = PassmarkWidth(passmarkData, passmarkGap);
+    const qreal width = PassmarkWidth(passmarkData, AutomaticNotchWidth(passmarkData, line.length()));
 
     QPointF l1p1;
     {
@@ -398,7 +434,7 @@ auto CreateThreePassmarkLines(const VPiecePassmarkData &passmarkData, const QLin
 //---------------------------------------------------------------------------------------------------------------------
 auto CreateTMarkPassmark(const VPiecePassmarkData &passmarkData, const QLineF &line) -> QVector<QLineF>
 {
-    const qreal width = PassmarkWidth(passmarkData, line.length() * 0.75);
+    const qreal width = PassmarkWidth(passmarkData, AutomaticNotchWidth(passmarkData, line.length()));
 
     QPointF p1;
     {
@@ -422,9 +458,7 @@ auto CreateTMarkPassmark(const VPiecePassmarkData &passmarkData, const QLineF &l
 //---------------------------------------------------------------------------------------------------------------------
 auto CreateExternalVMarkPassmark(const VPiecePassmarkData &passmarkData, const QLineF &line) -> QVector<QLineF>
 {
-    constexpr qreal defAngle = 35;
-    const qreal defWidth = line.length() * qTan(qDegreesToRadians(defAngle));
-    const qreal width = PassmarkWidth(passmarkData, defWidth * 2.);
+    const qreal width = PassmarkWidth(passmarkData, AutomaticNotchWidth(passmarkData, line.length()));
     const qreal angle = qRadiansToDegrees(qAtan(qAbs(width) / 2. / line.length()));
 
     QLineF l1 = line;
@@ -440,9 +474,7 @@ auto CreateExternalVMarkPassmark(const VPiecePassmarkData &passmarkData, const Q
 auto CreateInternalVMarkPassmark(const VPiecePassmarkData &passmarkData, const QLineF &line,
                                  const QVector<QPointF> &seamAllowance) -> QVector<QLineF>
 {
-    constexpr qreal defAngle = 35;
-    const qreal defWidth = line.length() * qTan(qDegreesToRadians(defAngle));
-    const qreal width = PassmarkWidth(passmarkData, defWidth * 2.);
+    const qreal width = PassmarkWidth(passmarkData, AutomaticNotchWidth(passmarkData, line.length()));
     const qreal angle = qRadiansToDegrees(qAtan(qAbs(width) / 2. / line.length()));
 
     auto l1 = QLineF(line.p2(), line.p1());
@@ -459,8 +491,7 @@ auto CreateInternalVMarkPassmark(const VPiecePassmarkData &passmarkData, const Q
 auto CreateUMarkPassmark(const VPiecePassmarkData &passmarkData, const QLineF &line,
                          const QVector<QPointF> &seamAllowance) -> QVector<QLineF>
 {
-    const qreal defWidth = line.length() * VPassmark::passmarkRadiusFactor * 2;
-    const qreal width = PassmarkWidth(passmarkData, defWidth);
+    const qreal width = PassmarkWidth(passmarkData, AutomaticNotchWidth(passmarkData, line.length()));
     const qreal radius = width / 2.;
 
     QVector<QPointF> points;
@@ -533,8 +564,7 @@ auto CreateUMarkPassmark(const VPiecePassmarkData &passmarkData, const QLineF &l
 auto CreateBoxMarkPassmark(const VPiecePassmarkData &passmarkData, const QLineF &line,
                            const QVector<QPointF> &seamAllowance) -> QVector<QLineF>
 {
-    const qreal defWidth = line.length() * VPassmark::passmarkRadiusFactor * 2;
-    const qreal width = PassmarkWidth(passmarkData, defWidth);
+    const qreal width = PassmarkWidth(passmarkData, AutomaticNotchWidth(passmarkData, line.length()));
 
     QPointF l1p1;
     {
@@ -585,15 +615,7 @@ auto CreateBoxMarkPassmark(const VPiecePassmarkData &passmarkData, const QLineF 
 auto CreateCheckMarkPassmark(const VPiecePassmarkData &passmarkData, const QLineF &line,
                              const QVector<QPointF> &seamAllowance) -> QVector<QLineF>
 {
-    constexpr qreal defAngle = 45;
-    qreal defWidth = qAbs(line.length() * qTan(qDegreesToRadians(defAngle)));
-
-    if (not passmarkData.passmarkSAPoint.IsPassmarkClockwiseOpening())
-    {
-        defWidth *= -1;
-    }
-
-    const qreal width = PassmarkWidth(passmarkData, defWidth);
+    const qreal width = PassmarkWidth(passmarkData, AutomaticNotchWidth(passmarkData, line.length()));
     const qreal angle = qRadiansToDegrees(qAtan(qAbs(width) / line.length()));
 
     if (width > 0)
@@ -683,7 +705,7 @@ auto VPassmark::FullPassmark(const VPiece &piece, const VContainer *data) const 
 
     QVector<QLineF> lines;
     lines += SAPassmark(piece, data, PassmarkSide::All);
-    if (VAbstractApplication::VApp()->Settings()->IsDoublePassmark() &&
+    if (piece.IsSecondPassmarkOnSeamLine() &&
         (VAbstractApplication::VApp()->Settings()->IsPieceShowMainPath() || not piece.IsHideMainPath()) &&
         m_data.isMainPathNode && m_data.passmarkAngleType != PassmarkAngleType::Intersection &&
         m_data.passmarkAngleType != PassmarkAngleType::IntersectionOnlyLeft &&
@@ -758,6 +780,76 @@ auto VPassmark::IsNull() const -> bool
 auto VPassmark::Data() const -> VPiecePassmarkData
 {
     return m_data;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPassmark::AutomaticLength() const -> qreal
+{
+    if (m_null)
+    {
+        return 0;
+    }
+
+    VPiecePassmarkData data = m_data;
+    data.passmarkSAPoint.SetManualPasskmarkLength(false);
+
+    bool ok = false;
+    const qreal length = PassmarkLength(data, data.passmarkSAPoint.MaxLocalSA(data.saWidth), ok);
+    return ok ? length : 0;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPassmark::AutomaticWidth() const -> qreal
+{
+    if (m_null)
+    {
+        return 0;
+    }
+
+    VPiecePassmarkData data = m_data;
+    data.passmarkSAPoint.SetManualPasskmarkWidth(false);
+
+    // The width follows the length in effect — the baseline the mark builders work on is the resolved one,
+    // so this one has to be too. A manual length therefore moves the automatic width, as it does on screen.
+    bool ok = false;
+    const qreal length = PassmarkLength(data, data.passmarkSAPoint.MaxLocalSA(data.saWidth), ok);
+
+    return AutomaticNotchWidth(data, ok ? length : 0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPassmark::AutomaticAngle(const VPiece &piece, const VContainer *data) const -> qreal
+{
+    if (m_null)
+    {
+        return 0;
+    }
+
+    VPiecePassmarkData masked = m_data;
+    masked.passmarkSAPoint.SetManualPasskmarkAngle(false);
+
+    // Same dispatch as FullPassmark: with the seam allowance disabled the notch is drawn on the main path.
+    const VPassmark passmark(masked);
+    const QVector<QLineF> baseLine = piece.IsSeamAllowance()
+                                         ? passmark.SAPassmarkBaseLine(piece, data, PassmarkSide::All)
+                                         : passmark.BuiltInSAPassmarkBaseLine(piece, piece.SeamMirrorLine(data));
+    if (baseLine.isEmpty())
+    {
+        return 0;
+    }
+
+    // The baseline runs from the seam-line notch back to the point, while the manual angle is stored as the
+    // outward direction — hence the 180° flip, the same convention as BuiltInSAPassmarkBaseLine.
+    qreal angle = baseLine.constFirst().angle() + 180.;
+    while (angle >= 360.)
+    {
+        angle -= 360.;
+    }
+    while (angle < 0.)
+    {
+        angle += 360.;
+    }
+    return angle;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

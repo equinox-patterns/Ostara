@@ -116,6 +116,7 @@ public:
 
     static const QString AttrSeamAllowance;
     static const QString AttrHideMainPath;
+    static const QString AttrSecondPassmarkOnSeamLine;
     static const QString AttrShowFullPiece;
     static const QString AttrUnited;
     static const QString AttrFont;
@@ -230,7 +231,7 @@ private slots:
     void ToggleNodePointAngleType(quint32 id, PieceNodeAngle type);
     void ToggleNodePointPassmark(quint32 id, bool toggle);
     void TogglePassmarkAngleType(quint32 id, PassmarkAngleType type);
-    void TogglePassmarkLineType(quint32 id, PassmarkLineType type);
+    void TogglePassmarkLineType(quint32 id, PassmarkLineType type, bool clockwise);
 
 private:
     Q_DISABLE_COPY_MOVE(VToolSeamAllowance) // NOLINT

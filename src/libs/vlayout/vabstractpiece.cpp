@@ -1471,6 +1471,18 @@ void VAbstractPiece::SetSewLineOnDrawing(bool value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPiece::IsSecondPassmarkOnSeamLine() const -> bool
+{
+    return d->m_secondPassmarkOnSeamLine;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPiece::SetSecondPassmarkOnSeamLine(bool value)
+{
+    d->m_secondPassmarkOnSeamLine = value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPiece::IsShowFullPiece() const -> bool
 {
     return d->m_showFullPiece;

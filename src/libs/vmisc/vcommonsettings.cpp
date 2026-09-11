@@ -1349,7 +1349,9 @@ void VCommonSettings::SetHideMainPath(bool value)
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::IsDoublePassmark() const -> bool
 {
-    return value(*settingDoublePassmark, false).toBool();
+    // Defaults to true: this is the factory default of the "second passmark" funnel, and a stored
+    // false would come from a legacy profile that never made the choice.
+    return value(*settingDoublePassmark, true).toBool();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -58,6 +58,7 @@ public:
     auto IsActivateSA() const -> bool;
     auto IsHideMainPath() const -> bool;
     auto IsSewLineOnDrawing() const -> bool;
+    auto IsSecondPassmarkOnSeamLine() const -> bool;
 
 private:
     VAbstractPattern *m_doc{nullptr};
@@ -69,6 +70,7 @@ private:
     QPlainTextEdit *m_fabricInfoEdit{nullptr};
     QCheckBox *m_activateSACheck{nullptr};
     QCheckBox *m_hideMainPathCheck{nullptr};
+    QCheckBox *m_secondPassmarkCheck{nullptr};
     QCheckBox *m_sewLineOnDrawingCheck{nullptr};
 };
 

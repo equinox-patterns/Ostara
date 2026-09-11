@@ -103,6 +103,7 @@ enum class ContextMenuOption : std::uint8_t
     UMark,
     BoxMark,
     CheckMark,
+    CheckMarkClockwise,
     Option,
     InLayout,
     ForbidFlipping,
@@ -546,10 +547,16 @@ void VNodePoint::InitPassmarkMenu(QMenu *menu, vidtype pieceId, QHash<int, QActi
 
     Q_STATIC_ASSERT_X(static_cast<int>(PassmarkLineType::LAST_ONE_DO_NOT_USE) == 9, "Not all types were handled.");
 
-    auto InitPassmarkLineTypeAction = [passmarkSubmenu, node](const QString &name,
-                                                              PassmarkLineType lineType) -> QAction *
+    auto InitPassmarkLineTypeAction = [passmarkSubmenu, node](const QString &name, PassmarkLineType lineType,
+                                                              bool clockwise = false) -> QAction *
     {
-        return AddNodeToggle(passmarkSubmenu, name, node.IsPassmark() && lineType == node.GetPassmarkLineType());
+        // The two "Check mark" entries share their line type and are told apart by the opening, so the
+        // mark is active only when both match. The flag means nothing for the other types, which are
+        // therefore marked on the type alone.
+        const bool active = node.IsPassmark() && lineType == node.GetPassmarkLineType() &&
+                            (lineType != PassmarkLineType::CheckMark ||
+                             clockwise == node.IsPassmarkClockwiseOpening());
+        return AddNodeToggle(passmarkSubmenu, name, active);
     };
 
     contextMenu.insert(static_cast<int>(ContextMenuOption::OneLine),
@@ -570,6 +577,8 @@ void VNodePoint::InitPassmarkMenu(QMenu *menu, vidtype pieceId, QHash<int, QActi
                        InitPassmarkLineTypeAction(tr("Box mark"), PassmarkLineType::BoxMark));
     contextMenu.insert(static_cast<int>(ContextMenuOption::CheckMark),
                        InitPassmarkLineTypeAction(tr("Check mark"), PassmarkLineType::CheckMark));
+    contextMenu.insert(static_cast<int>(ContextMenuOption::CheckMarkClockwise),
+                       InitPassmarkLineTypeAction(tr("Check mark clockwise"), PassmarkLineType::CheckMark, true));
 
     QAction *actionTurnPoint = AddNodeToggle(menu, tr("Turn point (for DXF)"), node.IsTurnPoint());
     contextMenu.insert(static_cast<int>(ContextMenuOption::TurnPoint), actionTurnPoint);
@@ -682,6 +691,7 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     PieceNodeAngle angleCurType = PieceNodeAngle::ByLength;
     PassmarkAngleType passmarkAngleCurType = PassmarkAngleType::Straightforward;
     PassmarkLineType passmarkLineCurType = PassmarkLineType::OneLine;
+    bool passmarkLineCurClockwise = false;
 
     const VPiece detail = VAbstractTool::data.GetPiece(piece->getId());
     const VPiecePath &path = detail.GetPath();
@@ -692,6 +702,7 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         angleCurType = node.GetAngleType();
         passmarkAngleCurType = node.GetPassmarkAngleType();
         passmarkLineCurType = node.GetPassmarkLineType();
+        passmarkLineCurClockwise = node.IsPassmarkClockwiseOpening();
     }
 
     auto SelectSeamAllowanceAngle = [angleCurType, this](PieceNodeAngle type) -> void
@@ -710,13 +721,16 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         }
     };
 
-    auto SelectPassmarkLine = [passmarkLineCurType, this](PassmarkLineType type) -> void
+    auto SelectPassmarkLine = [passmarkLineCurType, passmarkLineCurClockwise, this](PassmarkLineType type,
+                                                                                    bool clockwise) -> void
     {
         emit TogglePassmark(m_id, true);
 
-        if (passmarkLineCurType != type)
+        // The opening is part of the choice: the two "Check mark" entries share their line type, so
+        // picking the other one is a real change even though the type does not move.
+        if (passmarkLineCurType != type || passmarkLineCurClockwise != clockwise)
         {
-            emit TogglePassmarkLineType(m_id, type);
+            emit TogglePassmarkLineType(m_id, type, clockwise);
         }
     };
 
@@ -728,7 +742,7 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     auto const selectedOption = static_cast<ContextMenuOption>(
         contextMenu.key(selectedAction, static_cast<int>(ContextMenuOption::NoSelection)));
 
-    Q_STATIC_ASSERT_X(static_cast<int>(ContextMenuOption::LAST_ONE_DO_NOT_USE) == 34, "Not all options were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(ContextMenuOption::LAST_ONE_DO_NOT_USE) == 35, "Not all options were handled.");
 
     QT_WARNING_PUSH
     QT_WARNING_DISABLE_GCC("-Wswitch-default")
@@ -821,31 +835,34 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
             SelectPassmarkAngle(PassmarkAngleType::Intersection2OnlyRight);
             break;
         case ContextMenuOption::OneLine:
-            SelectPassmarkLine(PassmarkLineType::OneLine);
+            SelectPassmarkLine(PassmarkLineType::OneLine, false);
             break;
         case ContextMenuOption::TwoLines:
-            SelectPassmarkLine(PassmarkLineType::TwoLines);
+            SelectPassmarkLine(PassmarkLineType::TwoLines, false);
             break;
         case ContextMenuOption::ThreeLines:
-            SelectPassmarkLine(PassmarkLineType::ThreeLines);
+            SelectPassmarkLine(PassmarkLineType::ThreeLines, false);
             break;
         case ContextMenuOption::TMark:
-            SelectPassmarkLine(PassmarkLineType::TMark);
+            SelectPassmarkLine(PassmarkLineType::TMark, false);
             break;
         case ContextMenuOption::ExternalVMark:
-            SelectPassmarkLine(PassmarkLineType::ExternalVMark);
+            SelectPassmarkLine(PassmarkLineType::ExternalVMark, false);
             break;
         case ContextMenuOption::InternalVMark:
-            SelectPassmarkLine(PassmarkLineType::InternalVMark);
+            SelectPassmarkLine(PassmarkLineType::InternalVMark, false);
             break;
         case ContextMenuOption::UMark:
-            SelectPassmarkLine(PassmarkLineType::UMark);
+            SelectPassmarkLine(PassmarkLineType::UMark, false);
             break;
         case ContextMenuOption::BoxMark:
-            SelectPassmarkLine(PassmarkLineType::BoxMark);
+            SelectPassmarkLine(PassmarkLineType::BoxMark, false);
             break;
         case ContextMenuOption::CheckMark:
-            SelectPassmarkLine(PassmarkLineType::CheckMark);
+            SelectPassmarkLine(PassmarkLineType::CheckMark, false);
+            break;
+        case ContextMenuOption::CheckMarkClockwise:
+            SelectPassmarkLine(PassmarkLineType::CheckMark, true);
             break;
     };
 

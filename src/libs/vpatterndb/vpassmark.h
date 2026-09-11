@@ -105,6 +105,18 @@ public:
 
     auto Data() const -> VPiecePassmarkData;
 
+    /** @brief Automatic values of the notch — what it takes when it carries none of its own.
+     *
+     *  Computed by the same code that draws the notch, so a property browser showing them cannot drift
+     *  from the canvas. Length and width are in pixels, the angle is in degrees, normalised to [0, 360[.
+     *  The automatic angle only means anything for PassmarkAngleType::Straightforward — the other angle
+     *  rules derive the notch direction from the geometry on their own.
+     *
+     *  Masking is per setting: the two others keep their say, exactly as in the renderer. */
+    auto AutomaticLength() const -> qreal;
+    auto AutomaticWidth() const -> qreal;
+    auto AutomaticAngle(const VPiece &piece, const VContainer *data) const -> qreal;
+
     static auto FindIntersection(const QLineF &line, const QVector<QPointF> &seamAllowance) -> QLineF;
 
     static const qreal passmarkRadiusFactor;

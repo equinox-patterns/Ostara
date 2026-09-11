@@ -149,6 +149,9 @@ OPiecePatternStep::OPiecePatternStep(VAbstractPattern *doc, QWidget *parent)
     m_hideMainPathCheck = new QCheckBox(tr("Hide main path for all pieces"));
     m_hideMainPathCheck->setChecked(m_doc->GetDefaultHideMainPath());
     saLayout->addWidget(m_hideMainPathCheck);
+    m_secondPassmarkCheck = new QCheckBox(tr("Show the second passmark on seam line for all pieces"));
+    m_secondPassmarkCheck->setChecked(m_doc->GetDefaultSecondPassmarkOnSeamLine());
+    saLayout->addWidget(m_secondPassmarkCheck);
     m_sewLineOnDrawingCheck = new QCheckBox(tr("Export the sew line with the drawings for all pieces (DXF-AAMA)"));
     m_sewLineOnDrawingCheck->setChecked(m_doc->GetDefaultSewLineOnDrawing());
     saLayout->addWidget(m_sewLineOnDrawingCheck);
@@ -243,4 +246,10 @@ auto OPiecePatternStep::IsHideMainPath() const -> bool
 auto OPiecePatternStep::IsSewLineOnDrawing() const -> bool
 {
     return m_sewLineOnDrawingCheck->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPiecePatternStep::IsSecondPassmarkOnSeamLine() const -> bool
+{
+    return m_secondPassmarkCheck->isChecked();
 }

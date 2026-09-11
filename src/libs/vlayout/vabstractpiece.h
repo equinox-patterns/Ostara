@@ -105,6 +105,11 @@ public:
     auto IsSewLineOnDrawing() const -> bool;
     void SetSewLineOnDrawing(bool value);
 
+    /** @brief Whether this piece draws a second passmark on the seam line. Seeded at creation from
+     *         the pattern default, and only effective when the main path is not hidden. */
+    auto IsSecondPassmarkOnSeamLine() const -> bool;
+    void SetSecondPassmarkOnSeamLine(bool value);
+
     auto IsShowFullPiece() const -> bool;
     void SetShowFullPiece(bool value);
 

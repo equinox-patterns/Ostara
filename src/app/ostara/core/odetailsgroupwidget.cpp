@@ -74,6 +74,12 @@ public:
       : QPushButton(text, parent), m_theme(theme)
     {
         connect(this, &QPushButton::toggled, this, [this]() { UpdateIcon(); });
+        // The dock survives a theme toggle: re-read the caret set instead of keeping the one captured
+        // at construction. Enter/leave already refresh on their own, so only the idle state is at stake.
+        connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, [this]() {
+            SetTheme(VTheme::ColorSheme() == VColorSheme::Dark ? QStringLiteral("dark")
+                                                               : QStringLiteral("light"));
+        });
         UpdateIcon(); // initial state: collapsed, not hovered → theme caret-right
     }
 

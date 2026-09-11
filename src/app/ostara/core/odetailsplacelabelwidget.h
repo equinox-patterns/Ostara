@@ -27,6 +27,7 @@
 #ifndef ODETAILSPLACELABELWIDGET_H
 #define ODETAILSPLACELABELWIDGET_H
 
+#include <QVector>
 #include <QWidget>
 
 class QCheckBox;
@@ -85,6 +86,8 @@ private:
     void CommitNotMirrored(bool checked);
     void OpenFormulaEditor(Field field, QLineEdit *edit);
     void PushLabelChange(const VPlaceLabelItem &current, const VPlaceLabelItem &updated);
+    /** @brief Re-reads the fx icons for the current theme; the dock survives a light↔dark toggle. */
+    void RefreshFxIcons();
 
     QGroupBox *m_groupBox{nullptr};
     QGridLayout *m_grid{nullptr};
@@ -100,6 +103,8 @@ private:
     QLineEdit *m_visibleEdit{nullptr};
     QComboBox *m_typeCombo{nullptr};
     QCheckBox *m_notMirroredCheck{nullptr};
+
+    QVector<QToolButton *> m_fxButtons; // Theme-dependent icons, re-read by RefreshFxIcons().
 
     VToolSeamAllowance *m_piece{nullptr};
     quint32 m_labelId{0};

@@ -94,10 +94,8 @@ ODetailsPlaceLabelWidget::ODetailsPlaceLabelWidget(QWidget *parent)
         button->setFocusPolicy(Qt::NoFocus);
         button->setFixedSize(24, 24);
         button->setIconSize(QSize(16, 16));
-        const bool isDark = VTheme::ColorSheme() == VColorSheme::Dark;
-        button->setIcon(QIcon(QStringLiteral(":/icons/%1/function_%1.svg")
-                                  .arg(isDark ? QStringLiteral("dark") : QStringLiteral("light"))));
         button->setToolTip(tr("Edit expression"));
+        m_fxButtons.append(button); // The icon itself is set by RefreshFxIcons(), which follows the theme.
         return button;
     };
 
@@ -183,6 +181,23 @@ ODetailsPlaceLabelWidget::ODetailsPlaceLabelWidget(QWidget *parent)
     layout->setSpacing(0);
     layout->addWidget(m_groupBox);
     layout->addStretch();
+
+    RefreshFxIcons();
+    // The dock stays open across a theme toggle: nothing else re-reads these icons.
+    connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, &ODetailsPlaceLabelWidget::RefreshFxIcons);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPlaceLabelWidget::RefreshFxIcons()
+{
+    const QString theme = VTheme::ColorSheme() == VColorSheme::Dark ? QStringLiteral("dark")
+                                                                    : QStringLiteral("light");
+    const QIcon icon(QStringLiteral(":/icons/%1/function_%1.svg").arg(theme));
+
+    for (QToolButton *button : m_fxButtons)
+    {
+        button->setIcon(icon);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

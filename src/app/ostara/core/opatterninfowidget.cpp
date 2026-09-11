@@ -111,6 +111,9 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
     saLayout->addWidget(m_activateSACheck);
     m_hideMainPathCheck = new QCheckBox(tr("Hide main path for all pieces"), seamAllowanceGroup);
     saLayout->addWidget(m_hideMainPathCheck);
+    m_secondPassmarkCheck = new QCheckBox(tr("Show the second passmark on seam line for all pieces"),
+                                          seamAllowanceGroup);
+    saLayout->addWidget(m_secondPassmarkCheck);
     m_sewLineOnDrawingCheck = new QCheckBox(tr("Export the sew line with the drawings for all pieces (DXF-AAMA)"),
                                             seamAllowanceGroup);
     saLayout->addWidget(m_sewLineOnDrawingCheck);
@@ -143,6 +146,8 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
             &OPatternInfoWidget::CommitCollection);
     connect(m_activateSACheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitActivateSA);
     connect(m_hideMainPathCheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitHideMainPath);
+    connect(m_secondPassmarkCheck, &QCheckBox::toggled, this,
+            &OPatternInfoWidget::CommitSecondPassmarkOnSeamLine);
     connect(m_sewLineOnDrawingCheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitSewLineOnDrawing);
     connect(m_activateInfoBlockCheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitCartoucheActivation);
     connect(m_cartoucheCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
@@ -271,6 +276,7 @@ void OPatternInfoWidget::Populate()
     // only. Existing pieces are never rewritten.
     m_activateSACheck->setChecked(doc != nullptr && doc->GetDefaultActivateSA());
     m_hideMainPathCheck->setChecked(doc != nullptr && doc->GetDefaultHideMainPath());
+    m_secondPassmarkCheck->setChecked(doc != nullptr && doc->GetDefaultSecondPassmarkOnSeamLine());
     m_sewLineOnDrawingCheck->setChecked(doc != nullptr && doc->GetDefaultSewLineOnDrawing());
 
     const QString currentTemplate = doc != nullptr ? doc->GetCartoucheTemplate() : QString();
@@ -339,6 +345,10 @@ void OPatternInfoWidget::RetranslateUI()
     if (m_hideMainPathCheck)
     {
         m_hideMainPathCheck->setText(tr("Hide main path for all pieces"));
+    }
+    if (m_secondPassmarkCheck)
+    {
+        m_secondPassmarkCheck->setText(tr("Show the second passmark on seam line for all pieces"));
     }
     if (m_sewLineOnDrawingCheck)
     {
@@ -461,6 +471,24 @@ void OPatternInfoWidget::CommitSewLineOnDrawing(bool on)
     if (on != doc->GetDefaultSewLineOnDrawing())
     {
         doc->SetDefaultSewLineOnDrawing(on);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPatternInfoWidget::CommitSecondPassmarkOnSeamLine(bool on)
+{
+    if (m_loading)
+    {
+        return;
+    }
+    VAbstractPattern *doc = CurrentDocument();
+    if (doc == nullptr || doc != m_doc)
+    {
+        return;
+    }
+    if (on != doc->GetDefaultSecondPassmarkOnSeamLine())
+    {
+        doc->SetDefaultSecondPassmarkOnSeamLine(on);
     }
 }
 

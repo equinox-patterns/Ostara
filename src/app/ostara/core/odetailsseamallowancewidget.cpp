@@ -219,6 +219,11 @@ ODetailsSeamAllowanceWidget::ODetailsSeamAllowanceWidget(QWidget *parent)
     m_hideMainPathCheck = new QCheckBox(tr("Hide main path"));
     mainLayout->addWidget(m_hideMainPathCheck);
 
+    m_secondPassmarkCheck = new QCheckBox(tr("Show the second passmark on seam line"));
+    m_secondPassmarkCheck->setToolTip(tr("Draws a second notch on the seam line, in addition to the one on the "
+                                         "cutting line. Seeded from the pattern when the piece is created."));
+    mainLayout->addWidget(m_secondPassmarkCheck);
+
     m_onDrawingCheck = new QCheckBox(tr("Export the sew line with the drawings (DXF-AAMA)"));
     m_onDrawingCheck->setToolTip(tr("Places the sew line on the Draw line (8) instead of the dedicated sew-line "
                                     "layer (14). DXF-AAMA export only."));
@@ -253,6 +258,9 @@ void ODetailsSeamAllowanceWidget::RetranslateUI()
 {
     m_activeCheck->setText(tr("Activate seam allowance"));
     m_hideMainPathCheck->setText(tr("Hide main path"));
+    m_secondPassmarkCheck->setText(tr("Show the second passmark on seam line"));
+    m_secondPassmarkCheck->setToolTip(tr("Draws a second notch on the seam line, in addition to the one on the "
+                                         "cutting line. Seeded from the pattern when the piece is created."));
     m_onDrawingCheck->setText(tr("Export the sew line with the drawings (DXF-AAMA)"));
     m_onDrawingCheck->setToolTip(tr("Places the sew line on the Draw line (8) instead of the dedicated sew-line "
                                     "layer (14). DXF-AAMA export only."));
@@ -326,6 +334,16 @@ void ODetailsSeamAllowanceWidget::ConnectControls()
         m_modifyPending([checked](VPiece &det) { det.SetHideMainPath(checked); });
     });
 
+    // --- Show the second passmark on seam line checkbox ---
+    connect(m_secondPassmarkCheck, &QCheckBox::toggled, this, [this](bool checked)
+    {
+        if (m_updating || !m_modifyPending)
+        {
+            return;
+        }
+        m_modifyPending([checked](VPiece &det) { det.SetSecondPassmarkOnSeamLine(checked); });
+    });
+
     // --- Export the sew line with the drawings checkbox (DXF-AAMA) ---
     connect(m_onDrawingCheck, &QCheckBox::toggled, this, [this](bool checked)
     {
@@ -389,6 +407,11 @@ void ODetailsSeamAllowanceWidget::UpdateOnDrawingEnabled()
     // the setting stays readable, and the stored value is left untouched — it becomes live again as soon as the
     // option can have an effect.
     m_onDrawingCheck->setEnabled(m_activeCheck->isChecked() && not m_hideMainPathCheck->isChecked());
+
+    // Same two dead ends for the second passmark: with no seam allowance the engine draws the notch on the
+    // main path alone (VPassmark::FullPassmark returns early), and with the main path hidden it is skipped
+    // outright. The box is greyed rather than removed, and the stored value is left untouched.
+    m_secondPassmarkCheck->setEnabled(m_activeCheck->isChecked() && not m_hideMainPathCheck->isChecked());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -401,6 +424,7 @@ void ODetailsSeamAllowanceWidget::Show(const VPiece &det)
 
     m_activeCheck->setChecked(det.IsSeamAllowance());
     m_hideMainPathCheck->setChecked(det.IsHideMainPath());
+    m_secondPassmarkCheck->setChecked(det.IsSecondPassmarkOnSeamLine());
     m_onDrawingCheck->setChecked(det.IsSewLineOnDrawing());
     m_valueEdit->setText(VAbstractApplication::VApp()->LocaleToString(det.GetSAWidth()));
 

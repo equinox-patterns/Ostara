@@ -209,6 +209,9 @@ void VPattern::ParseDetailElement(QDomElement &domElement, const Document &parse
         initData.detail.SetHideMainPath(
             GetParametrBool(domElement, VToolSeamAllowance::AttrHideMainPath,
                             QString().setNum(VAbstractValApplication::VApp()->ValentinaSettings()->IsHideMainPath())));
+        initData.detail.SetSecondPassmarkOnSeamLine(
+            GetParametrBool(domElement, VToolSeamAllowance::AttrSecondPassmarkOnSeamLine,
+                            QString().setNum(VAbstractValApplication::VApp()->Settings()->IsDoublePassmark())));
         initData.detail.SetShowFullPiece(GetParametrBool(domElement, VToolSeamAllowance::AttrShowFullPiece, trueStr));
         initData.detail.SetForbidFlipping(GetParametrBool(
             domElement, AttrForbidFlipping,

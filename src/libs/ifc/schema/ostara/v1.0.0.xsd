@@ -864,6 +864,7 @@
                         <xs:attribute name="united" type="xs:boolean"/>
                         <xs:attribute name="closed" type="xs:unsignedInt"/>
                         <xs:attribute name="hideMainPath" type="xs:boolean"/>
+                        <xs:attribute name="secondPassmarkOnSeamLine" type="xs:boolean"/>
                         <xs:attribute name="showFullPiece" type="xs:boolean"/>
                         <xs:attribute name="priority" type="piecePriorityType"/>
                         <xs:attribute name="gradedAlignH" type="xs:int"/>
@@ -1140,6 +1141,7 @@
       <xs:attribute name="defaultActivateSA" type="xs:boolean"/>
       <xs:attribute name="defaultHideMainPath" type="xs:boolean"/>
       <xs:attribute name="defaultSewLineOnDrawing" type="xs:boolean"/>
+      <xs:attribute name="defaultSecondPassmarkOnSeamLine" type="xs:boolean"/>
     </xs:complexType>
     <xs:unique name="incrementName">
       <xs:selector xpath=".//increment"/>
