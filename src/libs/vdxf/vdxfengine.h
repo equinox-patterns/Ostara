@@ -186,10 +186,6 @@ private:
 
     void AAMADrawFoldLineTwoArrows(const QVector<QVector<QPointF>> &points,
                                    const QSharedPointer<dx_ifaceBlock> &detailBlock);
-    void AAMADrawFoldLineThreeDots(const QVector<QVector<QPointF>> &points,
-                                   const QSharedPointer<dx_ifaceBlock> &detailBlock, qreal radius);
-    void AAMADrawFoldLineThreeX(const QVector<QVector<QPointF>> &points,
-                                const QSharedPointer<dx_ifaceBlock> &detailBlock);
 
     void ASTMDrawFoldLineTwoArrows(const QVector<QVector<QPointF>> &points,
                                    const QSharedPointer<dx_ifaceBlock> &detailBlock);

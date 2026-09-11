@@ -280,91 +280,6 @@ auto RenderPassmarks(const VPiece &detail, const VContainer *data) -> QPainterPa
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto RenderFoldLine(const VPiece &detail, const VContainer *data) -> VFoldLine
-{
-    QLineF const foldLine = detail.IsHideMainPath() ? detail.SeamAllowanceMirrorLine(data)
-                                                    : detail.SeamMirrorLine(data);
-    VFoldLine fLine(foldLine, detail.GetFoldLineType());
-    const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-    fLine.SetLabelSvgFontSize(static_cast<unsigned int>(settings->GetFoldLineLabelFontPixelSize()));
-    fLine.SetLabel(detail.GetFoldLineLabel());
-
-    {
-        QFont font(settings->GetFoldLineLabelFontFamily());
-        font.setWeight(settings->GetFoldLineLabelFontWeight());
-        font.setPixelSize(settings->GetFoldLineLabelFontPixelSize());
-        fLine.SetOutlineFont(font);
-        fLine.SetSvgFont(settings->GetLabelSVGFont());
-    }
-
-    if (detail.IsManualFoldHeight())
-    {
-        VFormula formula(detail.GetFormulaFoldHeight(), data);
-        formula.setCheckZero(false);
-        formula.setCheckLessThanZero(true);
-        formula.Eval();
-
-        if (formula.error())
-        {
-            const QString errorMsg = QObject::tr("Cannot calculate fold line height for piece '%1'. Reason: %2.")
-                                         .arg(detail.GetName(), formula.Reason());
-            VAbstractApplication::VApp()->IsPedantic()
-                ? throw VException(errorMsg)
-                : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
-        }
-        else
-        {
-            fLine.SetHeight(ToPixel(formula.getDoubleValue(), *data->GetPatternUnit()));
-        }
-    }
-
-    if (detail.IsManualFoldWidth())
-    {
-        VFormula formula(detail.GetFormulaFoldWidth(), data);
-        formula.setCheckZero(false);
-        formula.setCheckLessThanZero(true);
-        formula.Eval();
-
-        if (formula.error())
-        {
-            const QString errorMsg = QObject::tr("Cannot calculate fold line width for piece '%1'. Reason: %2.")
-                                         .arg(detail.GetName(), formula.Reason());
-            VAbstractApplication::VApp()->IsPedantic()
-                ? throw VException(errorMsg)
-                : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
-        }
-        else
-        {
-            fLine.SetWidth(ToPixel(formula.getDoubleValue(), *data->GetPatternUnit()));
-        }
-    }
-
-    if (detail.IsManualFoldCenter())
-    {
-        VFormula formula(detail.GetFormulaFoldCenter(), data);
-        formula.setCheckZero(false);
-        formula.setCheckLessThanZero(true);
-        formula.Eval();
-
-        if (formula.error())
-        {
-            const QString errorMsg =
-                QObject::tr("Cannot calculate fold line center position for piece '%1'. Reason: %2.")
-                    .arg(detail.GetName(), formula.Reason());
-            VAbstractApplication::VApp()->IsPedantic()
-                ? throw VException(errorMsg)
-                : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
-        }
-        else
-        {
-            fLine.SetCenterPosition(formula.getDoubleValue());
-        }
-    }
-
-    return fLine;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto RenderMirrorLine(const VPiece &detail, const VContainer *data, bool combineTogether) -> QPainterPath
 {
     if (!detail.IsShowFullPiece() || !detail.IsShowMirrorLine())
@@ -1088,23 +1003,9 @@ void VToolSeamAllowance::AddPieceGroups(VAbstractPattern *doc, QDomElement &domE
         AddCartoucheBlocks(doc, groupElement, group.m_infoBlocks);
         AddAnnotations(doc, groupElement, group.m_annotations);
 
-        // Fold formulas only — the mirror-line geometry lives on the member piece that carries it.
+        // The group's mirrorLine carries the carrier pointer only: the whole fold geometry, the
+        // dimensions included, lives on the member piece designated here — the one that draws it.
         QDomElement mirrorEl = doc->createElement(VAbstractPattern::TagMirrorLine);
-        doc->SetAttributeOrRemoveIf<bool>(mirrorEl, VAbstractPattern::AttrFoldLineManualHeight,
-                                          group.m_manualFoldHeight, [](bool manual) noexcept { return not manual; });
-        doc->SetAttributeOrRemoveIf<bool>(mirrorEl, VAbstractPattern::AttrFoldLineManualWidth,
-                                          group.m_manualFoldWidth, [](bool manual) noexcept { return not manual; });
-        doc->SetAttributeOrRemoveIf<bool>(mirrorEl, VAbstractPattern::AttrFoldLineManualCenter,
-                                          group.m_manualFoldCenter, [](bool manual) noexcept { return not manual; });
-        doc->SetAttributeOrRemoveIf<QString>(
-            mirrorEl, VAbstractPattern::AttrFoldLineHeightFormula, group.m_formulaFoldHeight,
-            [group](const QString &height) noexcept { return not group.m_manualFoldHeight || height.isEmpty(); });
-        doc->SetAttributeOrRemoveIf<QString>(
-            mirrorEl, VAbstractPattern::AttrFoldLineWidthFormula, group.m_formulaFoldWidth,
-            [group](const QString &width) noexcept { return not group.m_manualFoldWidth || width.isEmpty(); });
-        doc->SetAttributeOrRemoveIf<QString>(
-            mirrorEl, VAbstractPattern::AttrFoldLineCenterFormula, group.m_formulaFoldCenter,
-            [group](const QString &center) noexcept { return not group.m_manualFoldCenter || center.isEmpty(); });
         doc->SetAttributeOrRemoveIf<quint32>(mirrorEl, QStringLiteral("foldLineMember"), group.m_foldLineMemberId,
                                              [](quint32 id) noexcept { return id == NULL_ID; });
         groupElement.appendChild(mirrorEl);
@@ -2661,7 +2562,7 @@ auto VToolSeamAllowance::ComputePieceGeometry(bool combineTogether, bool pieceSh
         geom.passmarks = RenderPassmarks(detail, containerData);
     }
 
-    geom.foldLine = RenderFoldLine(detail, containerData);
+    geom.foldLine = VFoldLine::Create(detail, containerData);
     geom.mirrorLine = RenderMirrorLine(detail, containerData, combineTogether);
 
     geom.hasSeamAllowance = detail.IsSeamAllowance();
@@ -3476,7 +3377,7 @@ auto VToolSeamAllowance::DuplicatePlaceLabels(const QVector<quint32> &placeLabel
 void VToolSeamAllowance::RefreshFoldLine()
 {
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
-    UpdateFoldLine(RenderFoldLine(detail, getData()));
+    UpdateFoldLine(VFoldLine::Create(detail, getData()));
 
     // m_foldLineLabel's brush (filled glyph vs. stroke-only path) depends on the same
     // single-stroke/single-line font settings and is otherwise only refreshed by the full
@@ -3529,23 +3430,10 @@ void VToolSeamAllowance::UpdateFoldLine(const VFoldLine &foldLine)
 
     QVector<QPainterPath> const shape = foldLine.FoldLinePath();
 
-    if (detail.GetFoldLineType() == FoldLineType::ThreeDots || detail.GetFoldLineType() == FoldLineType::ThreeX ||
-        detail.GetFoldLineType() == FoldLineType::TwoArrows)
+    if (detail.GetFoldLineType() == FoldLineType::TwoArrows)
     {
         m_foldLineMark->setPath(!shape.isEmpty() ? shape.constFirst() : QPainterPath());
         m_foldLineLabel->setPath(QPainterPath());
-    }
-    else if (detail.GetFoldLineType() == FoldLineType::Text)
-    {
-        m_foldLineMark->setPath(QPainterPath());
-        if (!shape.isEmpty() && (settings->GetSingleStrokeOutlineFont() || settings->GetSingleLineFonts()))
-        {
-            m_foldLineLabel->setPath(shape.constFirst());
-        }
-        else
-        {
-            m_foldLineLabel->setPath(QPainterPath());
-        }
     }
     else
     {

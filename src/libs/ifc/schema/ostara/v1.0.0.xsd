@@ -1558,13 +1558,13 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="foldLineType">
+    <!-- Ostara offers three markers: the two it draws, and "none", which keeps the fold known and exploited —
+         mirror, unfolding, placement — without drawing anything. The four other Valentina types are converted on
+         load, so no Ostara document can carry one. The pattern/*.xsd schemas deliberately keep all seven: they
+         describe the Valentina format as it was, and narrowing them would make old .val files unopenable. -->
     <xs:restriction base="xs:string">
       <xs:enumeration value="2ArrowsTextAbove"/><!--Same as default-->
-      <xs:enumeration value="2ArrowsTextUnder"/>
       <xs:enumeration value="2Arrows"/>
-      <xs:enumeration value="text"/>
-      <xs:enumeration value="3dots"/>
-      <xs:enumeration value="3X"/>
       <xs:enumeration value="none"/>
     </xs:restriction>
   </xs:simpleType>

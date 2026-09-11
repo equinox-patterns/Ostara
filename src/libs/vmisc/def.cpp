@@ -555,16 +555,8 @@ auto FoldLineTypeToString(FoldLineType type) -> QString
 {
     switch (type)
     {
-        case FoldLineType::TwoArrowsTextUnder:
-            return strFoldTypeTwoArrowsTextUnder;
         case FoldLineType::TwoArrows:
             return strFoldTypeTwoArrows;
-        case FoldLineType::Text:
-            return strFoldTypeText;
-        case FoldLineType::ThreeDots:
-            return strFoldTypeThreeDots;
-        case FoldLineType::ThreeX:
-            return strFoldTypeThreeX;
         case FoldLineType::None:
             return strFoldTypeNone;
         case FoldLineType::TwoArrowsTextAbove:
@@ -576,29 +568,28 @@ auto FoldLineTypeToString(FoldLineType type) -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto StringToFoldLineType(const QString &value) -> FoldLineType
 {
+    // The list is FROZEN: the switch below is written against these indexes, so "none" must stay
+    // at 6. The strings whose enumerator was removed stay here too — that is what makes an old
+    // file land on the default and convert silently instead of failing.
     const QStringList values{strFoldTypeTwoArrowsTextAbove, // 0
-                             strFoldTypeTwoArrowsTextUnder, // 1
+                             strFoldTypeTwoArrowsTextUnder, // 1 — value removed, index kept
                              strFoldTypeTwoArrows,          // 2
-                             strFoldTypeText,               // 3
-                             strFoldTypeThreeDots,          // 4
-                             strFoldTypeThreeX,             // 5
+                             strFoldTypeText,               // 3 — value removed, index kept
+                             strFoldTypeThreeDots,          // 4 — value removed, index kept
+                             strFoldTypeThreeX,             // 5 — value removed, index kept
                              strFoldTypeNone};              // 6
 
     switch (values.indexOf(value))
     {
-        case 1:
-            return FoldLineType::TwoArrowsTextUnder;
         case 2:
             return FoldLineType::TwoArrows;
-        case 3:
-            return FoldLineType::Text;
-        case 4:
-            return FoldLineType::ThreeDots;
-        case 5:
-            return FoldLineType::ThreeX;
         case 6:
             return FoldLineType::None;
         case 0:
+        case 1:
+        case 3:
+        case 4:
+        case 5:
         default:
             return FoldLineType::TwoArrowsTextAbove;
     };

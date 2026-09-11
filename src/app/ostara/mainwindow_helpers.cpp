@@ -40,6 +40,7 @@
 #include <QUuid>
 
 #include "vtheme.h"
+#include "../vmisc/literals.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vexception/vexception.h"
 #include "../vpatterndb/vcontainer.h"
@@ -556,6 +557,48 @@ auto StripBuiltInSeamAllowanceAttributes(QDomDocument *doc) -> bool
     }
 
     return foundBuiltIn;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ConvertRemovedFoldLineTypes(QDomDocument *doc) -> bool
+{
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    // Ostara keeps two markers — "No text" and "With text" — plus "Invisible fold line", which keeps the fold known
+    // and exploited but draws no marker. The four other types Valentina offered are gone from the enumeration and
+    // the schema no longer accepts them, so a file that still carries one must be rewritten before it can be saved
+    // again. Silent: the conversion is invisible to the user, and a dialog would only announce something they cannot
+    // act on. The fallback is the same one StringToFoldLineType applies, so the DOM and the model cannot disagree.
+    bool converted = false;
+    const QDomNodeList mirrorLines = root.elementsByTagName(QStringLiteral("mirrorLine"));
+    for (int i = 0; i < mirrorLines.size(); ++i)
+    {
+        QDomElement mirrorLine = mirrorLines.at(i).toElement();
+        if (mirrorLine.isNull() || not mirrorLine.hasAttribute(QStringLiteral("type")))
+        {
+            continue;
+        }
+
+        const QString type = mirrorLine.attribute(QStringLiteral("type"));
+        if (type == strFoldTypeTwoArrowsTextAbove || type == strFoldTypeTwoArrows || type == strFoldTypeNone)
+        {
+            continue;
+        }
+
+        mirrorLine.setAttribute(QStringLiteral("type"), strFoldTypeTwoArrowsTextAbove);
+        converted = true;
+    }
+
+    return converted;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

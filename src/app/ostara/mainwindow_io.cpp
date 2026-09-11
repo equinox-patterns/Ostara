@@ -914,6 +914,12 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
             StripBuiltInSeamAllowanceAttributes(doc);
         }
 
+        // Convert the fold-line types Ostara dropped. Deliberately OUTSIDE the block above: the Strip* passes only
+        // run for a legacy .val, but this one must run for a .ostara too — an older Ostara build could have written
+        // one of the removed values, and the save schema no longer accepts them, so an unconverted DOM would make
+        // the pattern impossible to save. Silent by design, see the function.
+        ConvertRemovedFoldLineTypes(doc);
+
         if (!customMeasureFile.isEmpty())
         {
             doc->SetMPath(RelativeMPath(fileName, customMeasureFile));

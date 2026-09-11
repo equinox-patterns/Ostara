@@ -932,17 +932,9 @@ void VPGraphicsPiece::PrepareFoldLineLabel(const VFoldLine &fLine, const VCommon
 //---------------------------------------------------------------------------------------------------------------------
 void VPGraphicsPiece::AddFoldLinePaths(const VPPiecePtr &piece, const QVector<QPainterPath> &shape, bool singleLineFont)
 {
-    if (piece->GetFoldLineType() == FoldLineType::ThreeDots || piece->GetFoldLineType() == FoldLineType::ThreeX ||
-        piece->GetFoldLineType() == FoldLineType::TwoArrows)
+    if (piece->GetFoldLineType() == FoldLineType::TwoArrows)
     {
         m_foldLineMarkPath.addPath(shape.constFirst());
-    }
-    else if (piece->GetFoldLineType() == FoldLineType::Text)
-    {
-        if (singleLineFont || m_textAsPaths)
-        {
-            m_foldLineLabelPath.addPath(shape.constFirst());
-        }
     }
     else
     {

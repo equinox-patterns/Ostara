@@ -49,6 +49,7 @@ class QTabWidget;
 class OAnnotationsConfigWidget;
 class ODetailsGrainlineWidget;
 class OGradedAlignWidget;
+class ODetailsFoldLineValuesWidget;
 class OPieceInfoWidget;
 class OBlockConfigWidget;
 class VAbstractPattern;
@@ -94,8 +95,11 @@ private:
         QLabel *statusLabel{nullptr};
         QCheckBox *showFullPieceCheck{nullptr};
         QCheckBox *showMirrorLineCheck{nullptr};
-        QButtonGroup *typeGroup{nullptr}; // "No text" / "With text" — same buttons as the piece foldline
+        QButtonGroup *typeGroup{nullptr}; // same type buttons as the piece foldline
         QLineEdit *labelEdit{nullptr};
+        // Width / Height / Center, built on the carrier's row only: the group's fold line is drawn
+        // by that single member, the others are masked.
+        ODetailsFoldLineValuesWidget *valuesWidget{nullptr};
     };
 
     void Commit(std::function<void(OPieceGroup &)> func);
@@ -106,6 +110,8 @@ private:
     void OnMemberDefineClicked(quint32 pieceId);
     void OnMemberDeactivate(quint32 pieceId);
     void UpdateMemberFoldLineStatus(quint32 pieceId);
+    void RefreshMemberFoldLineStatuses();
+    auto IsFoldLineCarrier(quint32 pieceId) const -> bool;
     void SetMemberFoldLineSelecting(quint32 pieceId, bool selecting);
     void ResetFoldLineHighlight();
 

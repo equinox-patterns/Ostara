@@ -191,7 +191,7 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
             // dangle and crash on the next grainline activation.
             return GrainlineCenter(detail, currentTool->getData());
         });
-        m_foldlineWidget->Show(detail);
+        m_foldlineWidget->Show(detail, currentTool->getData(), currentTool->getId());
         m_saWidget->RefreshList(detail);
         if (m_internalPathWidget->RefreshList(detail, currentTool->getData()))
         {
@@ -809,7 +809,7 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
         // reference would dangle and crash on the next grainline activation.
         return GrainlineCenter(detail, tool->getData());
     });
-    m_foldlineWidget->Show(detail);
+    m_foldlineWidget->Show(detail, tool->getData(), tool->getId());
     m_saWidget->Show(detail);
     const bool hadInternalPathHighlight = m_internalPathWidget->HasActivePath();
     m_internalPathWidget->Show(detail, tool->getData());

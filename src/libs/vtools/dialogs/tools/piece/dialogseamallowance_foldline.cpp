@@ -242,12 +242,7 @@ void DialogSeamAllowance::InitFoldLineType()
 
     uiTabFoldLine->comboBoxType->addItem(tr("Two arrows (text above)"),
                                          static_cast<unsigned int>(FoldLineType::TwoArrowsTextAbove));
-    uiTabFoldLine->comboBoxType->addItem(tr("Two arrows (text under)"),
-                                         static_cast<unsigned int>(FoldLineType::TwoArrowsTextUnder));
     uiTabFoldLine->comboBoxType->addItem(tr("Two arrows"), static_cast<unsigned int>(FoldLineType::TwoArrows));
-    uiTabFoldLine->comboBoxType->addItem(tr("Text"), static_cast<unsigned int>(FoldLineType::Text));
-    uiTabFoldLine->comboBoxType->addItem(tr("Three dots"), static_cast<unsigned int>(FoldLineType::ThreeDots));
-    uiTabFoldLine->comboBoxType->addItem(tr("Three X"), static_cast<unsigned int>(FoldLineType::ThreeX));
     uiTabFoldLine->comboBoxType->addItem(tr("None"), static_cast<unsigned int>(FoldLineType::None));
 }
 

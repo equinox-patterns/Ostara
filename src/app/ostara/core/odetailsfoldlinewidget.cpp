@@ -26,9 +26,12 @@
 
 #include "odetailsfoldlinewidget.h"
 
+#include "../vlayout/vfoldline.h"
 #include "../vmisc/def.h"
 #include "../vmisc/typedef.h"
 #include "../vpatterndb/vpiecenode.h"
+#include "odetailsfoldlinevalueswidget.h"
+#include "ofoldlinetypes.h"
 
 #include <QButtonGroup>
 #include <QCheckBox>
@@ -38,18 +41,6 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
-
-namespace
-{
-const struct
-{
-    FoldLineType type;
-    const char *text;
-} kFoldLineTypeItems[] = {
-    {FoldLineType::TwoArrows,          QT_TRANSLATE_NOOP("ODetailsFoldLineWidget", "No text")},
-    {FoldLineType::TwoArrowsTextAbove, QT_TRANSLATE_NOOP("ODetailsFoldLineWidget", "With text")},
-};
-} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 ODetailsFoldLineWidget::ODetailsFoldLineWidget(QWidget *parent)
@@ -82,15 +73,18 @@ ODetailsFoldLineWidget::ODetailsFoldLineWidget(QWidget *parent)
     m_typeGroup = new QButtonGroup(this);
     m_typeGroup->setExclusive(true);
 
-    for (const auto &item : kFoldLineTypeItems)
+    for (const auto &item : OFoldLineTypeItems())
     {
-        auto *btn = new QPushButton(tr(item.text));
+        auto *btn = new QPushButton(OFoldLineTypeText(item));
         btn->setCheckable(true);
         btn->setProperty("foldLineType", static_cast<int>(item.type));
         m_typeGroup->addButton(btn, static_cast<int>(item.type));
         typeLayout->addWidget(btn);
     }
     foldLayout->addLayout(typeLayout);
+
+    m_valuesWidget = new ODetailsFoldLineValuesWidget();
+    foldLayout->addWidget(m_valuesWidget);
 
     // Text
     m_textEdit = new QLineEdit();
@@ -114,15 +108,16 @@ void ODetailsFoldLineWidget::RetranslateUI()
     for (auto *btn : m_typeGroup->buttons())
     {
         const auto type = static_cast<FoldLineType>(btn->property("foldLineType").toInt());
-        for (const auto &item : kFoldLineTypeItems)
+        for (const auto &item : OFoldLineTypeItems())
         {
             if (item.type == type)
             {
-                btn->setText(tr(item.text));
+                btn->setText(OFoldLineTypeText(item));
                 break;
             }
         }
     }
+    m_valuesWidget->RetranslateUI();
     UpdateFoldLineStatus(m_foldValid);
 }
 
@@ -245,7 +240,7 @@ void ODetailsFoldLineWidget::ConnectControls()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsFoldLineWidget::Show(const VPiece &det)
+void ODetailsFoldLineWidget::Show(const VPiece &det, const VContainer *data, quint32 pieceId)
 {
     m_path = det.GetPath();
 
@@ -264,14 +259,42 @@ void ODetailsFoldLineWidget::Show(const VPiece &det)
     m_showMirrorLineCheck->setChecked(det.IsShowMirrorLine());
     m_showMirrorLineCheck->setEnabled(det.IsShowFullPiece());
 
-    if (auto *btn = m_typeGroup->button(static_cast<int>(det.GetFoldLineType())))
+    UpdateTypeButtons(det.GetFoldLineType());
+
+    // The label only exists for the type that draws one; leaving the field active would let the user
+    // type a text that does nothing.
+    m_textEdit->setText(det.GetFoldLineLabel());
+    m_textEdit->setEnabled(VFoldLine::TypeHasLabel(det.GetFoldLineType()));
+
+    // The dimensions only make sense once the fold line is defined AND its type draws a marker:
+    // "Invisible fold line" keeps the fold but draws nothing, so the three fields would have no
+    // visible effect at all.
+    const bool showValues = foldValid && det.GetFoldLineType() != FoldLineType::None;
+    m_valuesWidget->setVisible(showValues);
+
+    if (showValues)
     {
-        btn->setChecked(true);
+        m_valuesWidget->Show(det, data, pieceId);
+    }
+    else
+    {
+        m_valuesWidget->Clear();
     }
 
-    m_textEdit->setText(det.GetFoldLineLabel());
-
     m_updating = false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsFoldLineWidget::UpdateTypeButtons(FoldLineType type)
+{
+    // Qt refuses to uncheck the checked button of an exclusive group, so the exclusivity is lifted
+    // for the pass. The caller holds m_updating, so these toggles push no command of their own.
+    m_typeGroup->setExclusive(false);
+    for (auto *btn : m_typeGroup->buttons())
+    {
+        btn->setChecked(static_cast<FoldLineType>(btn->property("foldLineType").toInt()) == type);
+    }
+    m_typeGroup->setExclusive(true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -283,12 +306,14 @@ void ODetailsFoldLineWidget::Clear()
     m_firstPoint = 0;
     m_defineBtn->setText(tr("Define foldline"));
     m_updating = false;
+    m_valuesWidget->Clear();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsFoldLineWidget::SetModifyPending(std::function<void(std::function<void(VPiece &)>)> modify)
 {
     m_modifyPending = std::move(modify);
+    m_valuesWidget->SetModifyPending(m_modifyPending);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

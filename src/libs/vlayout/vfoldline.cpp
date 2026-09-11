@@ -35,8 +35,12 @@
 #include "../vmisc/svgfont/vsvgfont.h"
 #include "../vmisc/svgfont/vsvgfontdatabase.h"
 #include "../vmisc/vabstractapplication.h"
+#include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vtranslator.h"
+#include "../vmisc/vvalentinasettings.h"
+#include "../vpatterndb/vcontainer.h"
+#include "../vpatterndb/vformula.h"
 #include "../vwidgets/vpiecegrainline.h"
 
 #include <QGraphicsSimpleTextItem>
@@ -58,6 +62,188 @@ VFoldLine::VFoldLine(const QLineF &line, FoldLineType type)
   : m_foldLine(line),
     m_type(type)
 {
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::Create(const VPiece &piece, const VContainer *data) -> VFoldLine
+{
+    QLineF const foldLine = piece.IsHideMainPath() ? piece.SeamAllowanceMirrorLine(data)
+                                                   : piece.SeamMirrorLine(data);
+    VFoldLine fLine(foldLine, piece.GetFoldLineType());
+
+    const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+    fLine.SetLabelSvgFontSize(static_cast<unsigned int>(settings->GetFoldLineLabelFontPixelSize()));
+    fLine.SetLabel(piece.GetFoldLineLabel());
+
+    {
+        QFont font(settings->GetFoldLineLabelFontFamily());
+        font.setWeight(settings->GetFoldLineLabelFontWeight());
+        font.setPixelSize(settings->GetFoldLineLabelFontPixelSize());
+        fLine.SetOutlineFont(font);
+        fLine.SetSvgFont(settings->GetLabelSVGFont());
+    }
+
+    fLine.ApplyManualFoldValues(piece, data);
+
+    return fLine;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VFoldLine::ApplyManualFoldValues(const VPiece &piece, const VContainer *data)
+{
+    if (piece.IsManualFoldHeight())
+    {
+        VFormula formula(piece.GetFormulaFoldHeight(), data);
+        formula.setCheckZero(false);
+        formula.setCheckLessThanZero(true);
+        formula.Eval();
+
+        if (formula.error())
+        {
+            const QString errorMsg = QObject::tr("Cannot calculate fold line height for piece '%1'. Reason: %2.")
+                                         .arg(piece.GetName(), formula.Reason());
+            VAbstractApplication::VApp()->IsPedantic()
+                ? throw VException(errorMsg)
+                : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
+        }
+        else
+        {
+            SetHeight(ToPixel(formula.getDoubleValue(), *data->GetPatternUnit()));
+        }
+    }
+
+    if (piece.IsManualFoldWidth())
+    {
+        VFormula formula(piece.GetFormulaFoldWidth(), data);
+        formula.setCheckZero(false);
+        formula.setCheckLessThanZero(true);
+        formula.Eval();
+
+        if (formula.error())
+        {
+            const QString errorMsg = QObject::tr("Cannot calculate fold line width for piece '%1'. Reason: %2.")
+                                         .arg(piece.GetName(), formula.Reason());
+            VAbstractApplication::VApp()->IsPedantic()
+                ? throw VException(errorMsg)
+                : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
+        }
+        else
+        {
+            SetWidth(ToPixel(formula.getDoubleValue(), *data->GetPatternUnit()));
+        }
+    }
+
+    if (piece.IsManualFoldCenter())
+    {
+        VFormula formula(piece.GetFormulaFoldCenter(), data);
+        formula.setCheckZero(false);
+        formula.setCheckLessThanZero(true);
+        formula.Eval();
+
+        if (formula.error())
+        {
+            const QString errorMsg =
+                QObject::tr("Cannot calculate fold line center position for piece '%1'. Reason: %2.")
+                    .arg(piece.GetName(), formula.Reason());
+            VAbstractApplication::VApp()->IsPedantic()
+                ? throw VException(errorMsg)
+                : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
+        }
+        else
+        {
+            SetCenterPosition(formula.getDoubleValue());
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::Type() const -> FoldLineType
+{
+    return m_type;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::Label() const -> QString
+{
+    return m_label;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::OutlineFont() const -> QFont
+{
+    return m_outlineFont;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::SvgFont() const -> QString
+{
+    return m_svgFont;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::LabelSvgFontSize() const -> unsigned int
+{
+    return m_svgFontSize;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::TypeHasLabel(FoldLineType type) -> bool
+{
+    return type == FoldLineType::TwoArrowsTextAbove;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::HasLabel() const -> bool
+{
+    return TypeHasLabel(m_type);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::Height() const -> qreal
+{
+    return m_height;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::Width() const -> qreal
+{
+    return m_width;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::CenterPosition() const -> qreal
+{
+    return m_center;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::ResolvedHeight() const -> qreal
+{
+    return qFuzzyIsNull(m_height) ? defArrowsHeight : m_height;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::ResolvedWidth() const -> qreal
+{
+    return qFuzzyIsNull(m_width) ? AutoWidth() : m_width;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::ResolvedCenter() const -> qreal
+{
+    return m_center;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::AutoWidth() const -> qreal
+{
+    return m_foldLine.length() * 0.9;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::EffectiveWidth() const -> qreal
+{
+    return qFuzzyIsNull(m_width) ? AutoWidth() : qMin(m_width, m_foldLine.length());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -127,18 +313,6 @@ void VFoldLine::SetHorizontallyFlipped(bool value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VFoldLine::SetXScale(qreal xs)
-{
-    m_xScale = xs;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VFoldLine::SetYScale(qreal ys)
-{
-    m_yScale = ys;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VFoldLine::SetOutlineFont(const QFont &font)
 {
     m_outlineFont = font;
@@ -164,14 +338,6 @@ auto VFoldLine::FoldLinePath() const -> QVector<QPainterPath>
             return FoldLineTwoArrowsPath();
         case FoldLineType::TwoArrowsTextAbove:
             return FoldLineTwoArrowsTextAbovePath();
-        case FoldLineType::TwoArrowsTextUnder:
-            return FoldLineTwoArrowsTextUnderPath();
-        case FoldLineType::Text:
-            return FoldLineTextPath();
-        case FoldLineType::ThreeDots:
-            return FoldLineThreeDotsPath();
-        case FoldLineType::ThreeX:
-            return FoldLineThreeXPath();
         case FoldLineType::LAST_ONE_DO_NOT_USE:
             Q_UNREACHABLE();
             break;
@@ -201,19 +367,9 @@ auto VFoldLine::FoldLineMarkPoints() const -> QVector<QVector<QPointF>>
             ArrowsTextPosData const data = TwoArrowsTextAboveData();
             return TwoArrowsPoints(data.arrowsWidth, data.arrowsHeight);
         }
-        case FoldLineType::TwoArrowsTextUnder:
-        {
-            ArrowsTextPosData const data = TwoArrowsTextUnderData();
-            return TwoArrowsPoints(data.arrowsWidth, data.arrowsHeight);
-        }
-        case FoldLineType::ThreeDots:
-            return ThreeDotsPoints();
-        case FoldLineType::ThreeX:
-            return ThreeXPoints();
         case FoldLineType::LAST_ONE_DO_NOT_USE:
             Q_UNREACHABLE();
             return {};
-        case FoldLineType::Text:
         case FoldLineType::None:
         default:
             return {};
@@ -230,17 +386,21 @@ auto VFoldLine::LabelPosition(bool &ok) const -> FoldLabelPosData
     std::unique_ptr<TextPosData> data;
 
     QT_WARNING_POP
-    if (m_type == FoldLineType::Text)
+
+    // Only TwoArrowsTextAbove draws a text: TwoArrows draws the arrows alone and None draws
+    // nothing at all. Both must report "no label" — the DXF exporters' only guard is this flag,
+    // so letting them fall through here is what used to leak a default "Cut On Fold" text into
+    // files for pieces that carry no label.
+    switch (m_type)
     {
-        data = std::make_unique<TextPosData>(TextData());
-    }
-    else if (m_type == FoldLineType::TwoArrowsTextAbove)
-    {
-        data = std::make_unique<ArrowsTextPosData>(TwoArrowsTextAboveData());
-    }
-    else
-    {
-        data = std::make_unique<ArrowsTextPosData>(TwoArrowsTextUnderData());
+        case FoldLineType::TwoArrowsTextAbove:
+            data = std::make_unique<ArrowsTextPosData>(TwoArrowsTextAboveData());
+            break;
+        case FoldLineType::TwoArrows:
+        case FoldLineType::None:
+        default:
+            ok = false;
+            return {};
     }
 
     if (data->base.isNull())
@@ -249,8 +409,9 @@ auto VFoldLine::LabelPosition(bool &ok) const -> FoldLabelPosData
         return {};
     }
 
-    qreal const height = data->labelHeight + (qFuzzyIsNull(m_height) ? defLabelMargin : m_height);
-    qreal const margin = qMax(0., height - data->labelHeight);
+    // The label always sits the same margin beyond the arrow tips: the height field sizes the arrows
+    // and must not move the text.
+    qreal const margin = defLabelMargin;
 
     QPointF const center = TrueCenter(data->base, data->labelWidth);
 
@@ -296,8 +457,7 @@ void VFoldLine::UpdateFoldLineLabel(QGraphicsSimpleTextItem *item) const
         return;
     }
 
-    if (m_type == FoldLineType::TwoArrows || m_type == FoldLineType::ThreeDots || m_type == FoldLineType::ThreeX ||
-        m_type == FoldLineType::None)
+    if (!HasLabel())
     {
         item->setVisible(false);
         return;
@@ -372,12 +532,6 @@ void VFoldLine::UpdateFoldLineLabel(QGraphicsSimpleTextItem *item) const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::ThreeDotsRadius() const -> qreal
-{
-    return ThreeDotsData().radius * qMin(m_xScale, m_yScale);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VFoldLine::DefaultFoldLineLabel() -> QString
 {
     QSharedPointer<VTranslator> const phTr = VAbstractApplication::VApp()->GetPlaceholderTranslator();
@@ -419,102 +573,6 @@ auto VFoldLine::FoldLineTwoArrowsTextAbovePath() const -> QVector<QPainterPath>
     }
 
     return shape;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::FoldLineTwoArrowsTextUnderPath() const -> QVector<QPainterPath>
-{
-    if (m_foldLine.isNull())
-    {
-        return {};
-    }
-
-    ArrowsTextPosData const data = TwoArrowsTextUnderData();
-
-    QVector<QPainterPath> shape;
-    shape.append(TwoArrowsPath(data.arrowsWidth, data.arrowsHeight));
-
-    if (const VCommonSettings *settings = VAbstractApplication::VApp()->Settings(); settings->GetSingleLineFonts())
-    {
-        shape.append(SVGFontLabel(data.base, data.labelWidth, data.labelHeight));
-    }
-    else
-    {
-        shape.append(OutlineFontLabel(data.base, data.labelWidth, data.labelHeight));
-    }
-
-    return shape;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::FoldLineTextPath() const -> QVector<QPainterPath>
-{
-    if (m_foldLine.isNull())
-    {
-        return {};
-    }
-
-    TextPosData const data = TextData();
-
-    if (const VCommonSettings *settings = VAbstractApplication::VApp()->Settings(); settings->GetSingleLineFonts())
-    {
-        return {SVGFontLabel(data.base, data.labelWidth, data.labelHeight)};
-    }
-
-    return {OutlineFontLabel(data.base, data.labelWidth, data.labelHeight)};
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::FoldLineThreeDotsPath() const -> QVector<QPainterPath>
-{
-    QVector<QVector<QPointF>> const shape = ThreeDotsPoints();
-
-    if (shape.isEmpty() || shape.constFirst().size() != 3)
-    {
-        return {};
-    }
-
-    ThreeDotsPosData const data = ThreeDotsData();
-    QPainterPath dots;
-
-    auto DrawCircle = [&dots, &data](const QPointF &center)
-    {
-        qreal const diameter = 2 * data.radius;
-        qreal const x = center.x() - data.radius;
-        qreal const y = center.y() - data.radius;
-
-        dots.addEllipse(x, y, diameter, diameter);
-    };
-
-    const QVector<QPointF> &centers = shape.constFirst();
-
-    DrawCircle(centers.at(0));
-    DrawCircle(centers.at(1));
-    DrawCircle(centers.at(2));
-
-    return {dots};
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::FoldLineThreeXPath() const -> QVector<QPainterPath>
-{
-    QVector<QVector<QPointF>> const fullShape = ThreeXPoints();
-    if (fullShape.isEmpty())
-    {
-        return {};
-    }
-
-    const QVector<QPointF> &shape = fullShape.constFirst();
-
-    QPainterPath x3;
-
-    for (int i = 0; i < shape.size() - 1; i += 2)
-    {
-        x3.moveTo(shape.at(i));
-        x3.lineTo(shape.at(i + 1));
-    }
-
-    return {x3};
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -574,8 +632,8 @@ auto VFoldLine::OutlineFontLabel(const QLineF &base, qreal width, qreal textHeig
         return {};
     }
 
-    qreal const height = textHeight + (qFuzzyIsNull(m_height) ? defLabelMargin : m_height);
-    qreal const margin = qMax(0., height - textHeight);
+    // Same rule as LabelPosition: the arrow height does not move the text.
+    qreal const margin = defLabelMargin;
 
     QPointF const center = TrueCenter(base, width);
 
@@ -716,8 +774,8 @@ auto VFoldLine::SVGFontLabel(const QLineF &base, qreal width, qreal textHeight) 
         return OutlineFontLabel(base, width, textHeight);
     }
 
-    qreal const height = textHeight + (qFuzzyIsNull(m_height) ? defLabelMargin : m_height);
-    qreal const margin = qMax(0., height - textHeight);
+    // Same rule as LabelPosition: the arrow height does not move the text.
+    qreal const margin = defLabelMargin;
 
     QPointF const center = TrueCenter(base, width);
 
@@ -910,136 +968,11 @@ auto VFoldLine::TwoArrowsPoints(qreal width, qreal height) const -> QVector<QVec
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::ThreeDotsPoints() const -> QVector<QVector<QPointF>>
-{
-    if (m_foldLine.isNull())
-    {
-        return {};
-    }
-
-    ThreeDotsPosData const data = ThreeDotsData();
-
-    QPointF const center = TrueCenter(m_foldLine, data.width);
-
-    QLineF r1Line(center, m_foldLine.p1());
-    r1Line.setLength(data.radius * 2);
-    Swap(r1Line);
-    r1Line.setAngle(r1Line.angle() - 90);
-    r1Line.setLength(data.radius + data.margin);
-
-    QLineF r2Line(center, m_foldLine.p2());
-    r2Line.setLength(data.radius * 2);
-    Swap(r2Line);
-    r2Line.setAngle(r2Line.angle() + 90);
-    r2Line.setLength(data.radius + data.margin);
-
-    QLineF r3Line(center, m_foldLine.p1());
-    r3Line.setAngle(r3Line.angle() + 90);
-    r3Line.setLength(data.radius * 4 + data.margin);
-
-    QPointF const c1 = m_matrix.map(r1Line.p2());
-    QPointF const c2 = m_matrix.map(r2Line.p2());
-    QPointF const c3 = m_matrix.map(r3Line.p2());
-
-    return {{c1, c2, c3}};
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::ThreeXPoints() const -> QVector<QVector<QPointF>>
-{
-    qreal const width = qFuzzyIsNull(m_width) ? m_foldLine.length() * 0.9 : qMin(m_width, m_foldLine.length());
-    constexpr qreal defXHeight = CmToPixel(1.5);
-    constexpr qreal defXWidth = CmToPixel(1.1);
-    qreal xHeight = defXHeight;
-    qreal xWidth = defXWidth;
-
-    if (defXHeight * 3 >= width * 0.8)
-    {
-        xHeight = width * 0.8 / 3.;
-        xWidth = defXWidth * (xHeight / defXHeight);
-    }
-
-    qreal const height = defXWidth + (qFuzzyIsNull(m_height) ? CmToPixel(0.5) : m_height);
-    qreal const margin = qMax(0., height - defXWidth);
-
-    QPointF const center = TrueCenter(m_foldLine, width);
-
-    QLineF x1Line(center, m_foldLine.p1());
-    x1Line.setLength(width / 2);
-    Swap(x1Line);
-    x1Line.setLength(xHeight / 2);
-    Swap(x1Line);
-    x1Line.setAngle(x1Line.angle() + 90);
-    x1Line.setLength(xWidth / 2 + margin);
-    Swap(x1Line);
-    x1Line.setAngle(x1Line.angle() + 90);
-
-    QLineF x2Line(center, m_foldLine.p1());
-    x2Line.setAngle(x2Line.angle() + 90);
-    x2Line.setLength(xWidth / 2 + margin);
-    Swap(x2Line);
-    x2Line.setAngle(x2Line.angle() + 90);
-
-    QLineF x3Line(center, m_foldLine.p2());
-    x3Line.setLength(width / 2);
-    Swap(x3Line);
-    x3Line.setLength(xHeight / 2);
-    Swap(x3Line);
-    x3Line.setAngle(x3Line.angle() - 90);
-    x3Line.setLength(xWidth / 2 + margin);
-    Swap(x3Line);
-    x3Line.setAngle(x3Line.angle() - 90);
-
-    QVector<QPointF> shape;
-    shape.reserve(12);
-
-    auto XShape = [&shape, xHeight, xWidth](const QLineF &baseLine)
-    {
-        qreal const height = xHeight / 2;
-        qreal const width = xWidth / 2;
-        qreal const c = qSqrt(height * height + width * width);
-        qreal const angle = qRadiansToDegrees(qAcos(height / c));
-
-        QLineF line = baseLine;
-        line.setLength(c);
-        line.setAngle(line.angle() + angle);
-        shape.append(line.p2());
-
-        line.setAngle(line.angle() + 180);
-        shape.append(line.p2());
-
-        line = baseLine;
-        line.setLength(c);
-        line.setAngle(line.angle() + 180 - angle);
-        shape.append(line.p2());
-
-        line.setAngle(line.angle() + 180);
-        shape.append(line.p2());
-    };
-
-    XShape(x1Line);
-    XShape(x2Line);
-    XShape(x3Line);
-
-    std::transform(shape.begin(),
-                   shape.end(),
-                   shape.begin(),
-                   [this](const QPointF &point) -> QPointF { return m_matrix.map(point); });
-
-    if (m_verticallyFlipped || m_horizontallyFlipped)
-    {
-        std::reverse(shape.begin(), shape.end());
-    }
-
-    return {shape};
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VFoldLine::TwoArrowsData() const -> ArrowsTextPosData
 {
     ArrowsTextPosData data{};
-    data.arrowsWidth = qFuzzyIsNull(m_width) ? m_foldLine.length() * 0.9 : qMin(m_width, m_foldLine.length());
-    data.arrowsHeight = qFuzzyIsNull(m_height) ? defArrowsHeight : m_height;
+    data.arrowsWidth = EffectiveWidth();
+    data.arrowsHeight = ResolvedHeight();
     return data;
 }
 
@@ -1055,54 +988,15 @@ auto VFoldLine::TwoArrowsTextAboveData() const -> ArrowsTextPosData
 
     QT_WARNING_POP
 
-    data.arrowsWidth = qFuzzyIsNull(m_width) ? m_foldLine.length() * 0.9 : qMin(m_width, m_foldLine.length());
+    data.arrowsWidth = EffectiveWidth();
     data.labelWidth = data.arrowsWidth;
-    data.arrowsHeight = qFuzzyIsNull(m_height) ? defArrowsHeight
-                                               : qMax(m_height - (defLabelHeight + CmToPixel(0.2)), minArrowsHeight);
-    data.labelHeight = qFuzzyIsNull(m_height) ? defLabelHeight : (defLabelHeight + CmToPixel(0.2)) - m_height;
+    // The height is the height of the ARROWS, and nothing else — the same meaning whether it was set
+    // or left automatic. It used to be read as a total (arrows + label) on the manual path only, so
+    // typing the value the field already displayed produced a SMALLER marker than leaving it alone.
+    // The floor only exists to keep the glyph from collapsing on its fixed arrowhead.
+    data.arrowsHeight = qFuzzyIsNull(m_height) ? defArrowsHeight : qMax(m_height, minArrowsHeight);
+    data.labelHeight = defLabelHeight;
     data.base = SimpleParallelLine(m_foldLine.p1(), m_foldLine.p2(), -data.arrowsHeight);
     return data;
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::TwoArrowsTextUnderData() const -> ArrowsTextPosData
-{
-    const qreal defLabelHeight = LabelTextHeight();
-
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_GCC("-Wnoexcept")
-
-    ArrowsTextPosData data;
-
-    QT_WARNING_POP
-
-    data.arrowsWidth = qFuzzyIsNull(m_width) ? m_foldLine.length() * 0.9 : qMin(m_width, m_foldLine.length());
-    data.labelWidth = data.arrowsWidth * 0.9;
-    data.labelHeight = qFuzzyIsNull(m_height) ? defLabelHeight : (defLabelHeight + CmToPixel(0.2)) - m_height;
-    data.arrowsHeight = defLabelHeight + (qFuzzyIsNull(m_height) ? defLabelMargin : m_height) + CmToPixel(0.2);
-    data.arrowsHeight = qFuzzyIsNull(m_height) ? qMax(defLabelHeight, defArrowsHeight) : data.arrowsHeight;
-    data.base = m_foldLine;
-    return data;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::TextData() const -> TextPosData
-{
-    const qreal defLabelHeight = LabelTextHeight();
-
-    return {.labelWidth = qFuzzyIsNull(m_width) ? m_foldLine.length() * 0.9 : qMin(m_width, m_foldLine.length()),
-            .labelHeight = qFuzzyIsNull(m_height) ? defLabelHeight : (defLabelHeight + CmToPixel(0.2)) - m_height,
-            .base = m_foldLine};
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::ThreeDotsData() const -> ThreeDotsPosData
-{
-    ThreeDotsPosData data;
-    data.width = qFuzzyIsNull(m_width) ? CmToPixel(2.) : qMin(m_width, m_foldLine.length());
-    data.defHeight = data.width * qSin(qDegreesToRadians(60.0));
-    data.height = data.defHeight + (qFuzzyIsNull(m_height) ? CmToPixel(0.5) : m_height);
-    data.radius = data.width / 3 / 2;
-    data.margin = qMax(0., data.height - data.defHeight);
-    return data;
-}

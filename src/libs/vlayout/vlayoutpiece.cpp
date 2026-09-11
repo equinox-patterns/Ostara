@@ -64,7 +64,6 @@
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
 #include "../vpatterndb/variables/vmeasurement.h"
 #include "../vpatterndb/vcontainer.h"
-#include "../vpatterndb/vformula.h"
 #include "../vpatterndb/vpassmark.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vwidgets/vpiecegrainline.h"
@@ -272,44 +271,16 @@ void InitFoldLine(VLayoutPiece &det, const VPiece &piece, const VContainer *patt
         det.SetFoldLineSVGFontFamily(settings->GetLabelSVGFont());
     }
 
-    if (piece.IsManualFoldHeight())
-    {
-        VFormula formula(piece.GetFormulaFoldHeight(), pattern);
-        formula.setCheckZero(false);
-        formula.setCheckLessThanZero(true);
-        formula.Eval();
+    // The three manual formulas come from the shared evaluator — the same code the canvas runs, so
+    // the two paths can no longer drift. Only the values are needed here: building the mirror axis
+    // would be wasted work, and computing it is expensive. A value that is not manual keeps its
+    // automatic sentinel (0 / 0 / 0.5), which is exactly the layout piece's own default.
+    VFoldLine fLine;
+    fLine.ApplyManualFoldValues(piece, pattern);
 
-        if (!formula.error())
-        {
-            det.SetFoldLineHeight(ToPixel(formula.getDoubleValue(), *pattern->GetPatternUnit()));
-        }
-    }
-
-    if (piece.IsManualFoldWidth())
-    {
-        VFormula formula(piece.GetFormulaFoldWidth(), pattern);
-        formula.setCheckZero(false);
-        formula.setCheckLessThanZero(true);
-        formula.Eval();
-
-        if (!formula.error())
-        {
-            det.SetFoldLineWidth(ToPixel(formula.getDoubleValue(), *pattern->GetPatternUnit()));
-        }
-    }
-
-    if (piece.IsManualFoldCenter())
-    {
-        VFormula formula(piece.GetFormulaFoldCenter(), pattern);
-        formula.setCheckZero(false);
-        formula.setCheckLessThanZero(true);
-        formula.Eval();
-
-        if (!formula.error())
-        {
-            det.SetFoldLineCenterPosition(formula.getDoubleValue());
-        }
-    }
+    det.SetFoldLineHeight(fLine.Height());
+    det.SetFoldLineWidth(fLine.Width());
+    det.SetFoldLineCenterPosition(fLine.CenterPosition());
 }
 } // namespace
 
@@ -1116,8 +1087,6 @@ auto VLayoutPiece::FoldLine() const -> VFoldLine
     fLine.SetMatrix(GetMatrix());
     fLine.SetHorizontallyFlipped(IsHorizontallyFlipped());
     fLine.SetVerticallyFlipped(IsVerticallyFlipped());
-    fLine.SetXScale(GetXScale());
-    fLine.SetYScale(GetYScale());
     fLine.SetOutlineFont(GetFoldLineOutlineFont());
     fLine.SetSvgFont(GetFoldLineSVGFontFamily());
 
@@ -1626,17 +1595,9 @@ void VLayoutPiece::CreateFoldLineItem(QGraphicsItem *parent, bool textAsPaths) c
                                                                                                 : QBrush(Qt::black));
     };
 
-    if (GetFoldLineType() == FoldLineType::ThreeDots || GetFoldLineType() == FoldLineType::ThreeX ||
-        GetFoldLineType() == FoldLineType::TwoArrows)
+    if (GetFoldLineType() == FoldLineType::TwoArrows)
     {
         FoldLineMark(shape.constFirst());
-    }
-    else if (GetFoldLineType() == FoldLineType::Text)
-    {
-        if (textAsPaths || settings->GetSingleStrokeOutlineFont() || settings->GetSingleLineFonts())
-        {
-            FoldLineLabel(shape.constFirst());
-        }
     }
     else
     {

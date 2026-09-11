@@ -771,21 +771,8 @@ void VPattern::ParsePieceGroups(const QDomElement &domElement)
                         }
                         else if (tagName == VAbstractPattern::TagMirrorLine)
                         {
-                            group.m_manualFoldHeight =
-                                GetParametrBool(childElement, VAbstractPattern::AttrFoldLineManualHeight,
-                                                QStringLiteral("false"));
-                            group.m_manualFoldWidth =
-                                GetParametrBool(childElement, VAbstractPattern::AttrFoldLineManualWidth,
-                                                QStringLiteral("false"));
-                            group.m_manualFoldCenter =
-                                GetParametrBool(childElement, VAbstractPattern::AttrFoldLineManualCenter,
-                                                QStringLiteral("false"));
-                            group.m_formulaFoldHeight =
-                                GetParametrEmptyString(childElement, VAbstractPattern::AttrFoldLineHeightFormula);
-                            group.m_formulaFoldWidth =
-                                GetParametrEmptyString(childElement, VAbstractPattern::AttrFoldLineWidthFormula);
-                            group.m_formulaFoldCenter =
-                                GetParametrEmptyString(childElement, VAbstractPattern::AttrFoldLineCenterFormula);
+                            // Carrier pointer only: the whole fold geometry, the dimensions included,
+                            // lives on the member piece designated here — the one that draws it.
                             group.m_foldLineMemberId =
                                 GetParametrUInt(childElement, QStringLiteral("foldLineMember"), NULL_ID_STR);
                         }

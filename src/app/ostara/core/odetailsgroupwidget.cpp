@@ -44,6 +44,7 @@
 #include <QVBoxLayout>
 #include <QUndoStack>
 
+#include "../vlayout/vfoldline.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/floatItemData/floatitemdef.h"
 #include "../vpatterndb/vcontainer.h"
@@ -56,6 +57,8 @@
 #include "../vtheme/vtheme.h"
 #include "oannotationsconfigwidget.h"
 #include "oblockconfigwidget.h"
+#include "odetailsfoldlinevalueswidget.h"
+#include "ofoldlinetypes.h"
 #include "opieceinfowidget.h"
 
 namespace
@@ -469,21 +472,32 @@ void ODetailsGroupWidget::BuildMemberFoldLines()
         contentLayout->addWidget(row.showFullPieceCheck);
         contentLayout->addWidget(row.showMirrorLineCheck);
 
-        // Foldline type — the same "No text" / "With text" buttons as the piece foldline widget
-        // ("With text" is the default foldline type). Both rows (buttons + label edit) span the
-        // member content width (~85% of the Member fold lines group box), like the piece.
+        // Foldline type — the very same buttons as the piece foldline widget ("With text" is the
+        // default foldline type), built from the shared list so the two pages can never offer
+        // different sets. Both rows (buttons + label edit) span the member content width (~85% of
+        // the Member fold lines group box), like the piece.
         auto *typeLayout = new QHBoxLayout();
         row.typeGroup = new QButtonGroup(row.content);
         row.typeGroup->setExclusive(true);
-        auto *noTextBtn = new QPushButton(tr("No text"), row.content);
-        noTextBtn->setCheckable(true);
-        row.typeGroup->addButton(noTextBtn, static_cast<int>(FoldLineType::TwoArrows));
-        typeLayout->addWidget(noTextBtn);
-        auto *withTextBtn = new QPushButton(tr("With text"), row.content);
-        withTextBtn->setCheckable(true);
-        row.typeGroup->addButton(withTextBtn, static_cast<int>(FoldLineType::TwoArrowsTextAbove));
-        typeLayout->addWidget(withTextBtn);
+        for (const auto &item : OFoldLineTypeItems())
+        {
+            auto *btn = new QPushButton(OFoldLineTypeText(item), row.content);
+            btn->setCheckable(true);
+            row.typeGroup->addButton(btn, static_cast<int>(item.type));
+            typeLayout->addWidget(btn);
+        }
         contentLayout->addLayout(typeLayout);
+
+        // Built on every member row, but shown on the carrier's one only — see
+        // UpdateMemberFoldLineStatus. Building it everywhere is deliberate: a carrier change then
+        // only has to flip visibility, instead of rebuilding rows from inside the click handler of
+        // one of their own buttons, which would destroy the emitting widget mid-signal.
+        row.valuesWidget = new ODetailsFoldLineValuesWidget(row.content);
+        row.valuesWidget->SetModifyPending([this, pid](std::function<void(VPiece &)> func)
+        {
+            ModifyMemberPiece(pid, func);
+        });
+        contentLayout->addWidget(row.valuesWidget);
 
         row.labelEdit = new QLineEdit(row.content);
         row.labelEdit->setPlaceholderText(tr("Cut on fold"));
@@ -628,7 +642,8 @@ void ODetailsGroupWidget::OnMemberDeactivate(quint32 pieceId)
         }
     });
     RefreshGroupMemberFoldLines();
-    UpdateMemberFoldLineStatus(pieceId);
+    // No carrier any more: every row has to drop the dimensions.
+    RefreshMemberFoldLineStatuses();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -689,7 +704,8 @@ void ODetailsGroupWidget::OnNodeSelectedForFoldLine(quint32 nodeId)
     Commit([pieceId](OPieceGroup &group) { group.m_foldLineMemberId = pieceId; });
     // The mask decision depends on the carrier: re-render every member's foldline now.
     RefreshGroupMemberFoldLines();
-    UpdateMemberFoldLineStatus(pieceId);
+    // The carrier moved: the previous one has to stop showing the dimensions.
+    RefreshMemberFoldLineStatuses();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -737,12 +753,60 @@ void ODetailsGroupWidget::UpdateMemberFoldLineStatus(quint32 pieceId)
     row.showFullPieceCheck->setChecked(det.IsShowFullPiece());
     row.showMirrorLineCheck->setChecked(det.IsShowMirrorLine());
     row.showMirrorLineCheck->setEnabled(det.IsShowFullPiece());
-    if (auto *typeBtn = row.typeGroup->button(static_cast<int>(det.GetFoldLineType())); typeBtn != nullptr)
+    // No button matches a type Ostara no longer offers, and Qt refuses to uncheck the checked
+    // button of an exclusive group — so the exclusivity is lifted for the pass.
+    row.typeGroup->setExclusive(false);
+    for (auto *btn : row.typeGroup->buttons())
     {
-        typeBtn->setChecked(true);
+        btn->setChecked(static_cast<FoldLineType>(row.typeGroup->id(btn)) == det.GetFoldLineType());
     }
+    row.typeGroup->setExclusive(true);
+
+    // The label only exists for the type that draws one.
     row.labelEdit->setText(det.GetFoldLineLabel());
+    row.labelEdit->setEnabled(VFoldLine::TypeHasLabel(det.GetFoldLineType()));
+
+    // The three dimensions appear on the CARRIER's row only: the group's fold line is drawn by that
+    // single member and the others are masked, so on any other row the fields would change nothing
+    // the user could see. Hidden too on "Invisible fold line", which keeps the fold but draws no
+    // marker at all.
+    const bool showValues = defined && det.GetFoldLineType() != FoldLineType::None && IsFoldLineCarrier(pieceId);
+    row.valuesWidget->setVisible(showValues);
+
+    if (showValues)
+    {
+        row.valuesWidget->Show(det, m_data, pieceId);
+    }
+    else
+    {
+        // Also skips building the mirror axis, which is expensive when the main path is hidden.
+        row.valuesWidget->Clear();
+    }
+
     m_updating = false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::RefreshMemberFoldLineStatuses()
+{
+    // Called whenever the carrier may have moved: every row decides again whether it shows the
+    // dimensions. Deliberately not a row rebuild — one of these calls comes from a row's own button.
+    const QList<quint32> pieceIds = m_memberFLRows.keys();
+    for (quint32 pieceId : pieceIds)
+    {
+        UpdateMemberFoldLineStatus(pieceId);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsGroupWidget::IsFoldLineCarrier(quint32 pieceId) const -> bool
+{
+    const auto *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;
+    if (groups == nullptr || not groups->contains(m_groupId))
+    {
+        return false;
+    }
+    return groups->value(m_groupId).m_foldLineMemberId == pieceId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

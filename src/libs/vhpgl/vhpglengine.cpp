@@ -463,53 +463,15 @@ void VHPGLEngine::PlotFoldLine(QTextStream &out, const VLayoutPiece &detail)
     {
         case FoldLineType::TwoArrows:
         case FoldLineType::TwoArrowsTextAbove:
-        case FoldLineType::TwoArrowsTextUnder:
             PlotFoldTwoArrowsText(out, fLine);
-            break;
-        case FoldLineType::ThreeDots:
-            PlotFoldThreeDots(out, fLine);
-            break;
-        case FoldLineType::ThreeX:
-            PlotFoldThreeX(out, fLine);
             break;
         case FoldLineType::LAST_ONE_DO_NOT_USE:
             Q_UNREACHABLE();
-            break;
-        case FoldLineType::Text:
-            PlotFoldLineText(out, fLine);
             break;
         case FoldLineType::None:
         default:
             break;
     };
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VHPGLEngine::PlotFoldLineText(QTextStream &out, const VFoldLine &fLine)
-{
-    QVector<QPainterPath> const path = fLine.FoldLinePath();
-    if (!path.isEmpty())
-    {
-        PlotPainterPath(out, path.constFirst(), Qt::SolidLine);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VHPGLEngine::PlotFoldThreeX(QTextStream &out, const VFoldLine &fLine)
-{
-    QVector<QVector<QPointF>> const points = fLine.FoldLineMarkPoints();
-
-    if (points.isEmpty())
-    {
-        return;
-    }
-
-    QVector<QPointF> const &shape = points.constFirst();
-    for (int i = 0; i < shape.size() - 1; i += 2)
-    {
-        HPPenUp(out, ConvertPoint(shape.at(i)).toPoint());
-        HPPenDown(out, ConvertPoint(shape.at(i + 1)).toPoint());
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -538,23 +500,6 @@ void VHPGLEngine::PlotFoldTwoArrowsText(QTextStream &out, const VFoldLine &fLine
     }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void VHPGLEngine::PlotFoldThreeDots(QTextStream &out, const VFoldLine &fLine)
-{
-    QVector<QVector<QPointF>> const points = fLine.FoldLineMarkPoints();
-
-    if (points.isEmpty() || points.constFirst().size() != 3)
-    {
-        return;
-    }
-
-    QVector<QPointF> const &shape = points.constFirst();
-    qreal const radius = fLine.ThreeDotsRadius();
-    for (const auto &center : shape)
-    {
-        PlotCircle(out, center, radius);
-    }
-}
 template <class T> auto VHPGLEngine::ConvertPath(const QVector<T> &path) const -> QVector<T>
 {
     QVector<T> convertedPath;

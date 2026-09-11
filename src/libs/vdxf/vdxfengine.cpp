@@ -998,6 +998,16 @@ void VDxfEngine::ExportAnnotationText(const QSharedPointer<dx_ifaceBlock> &detai
                                       const UTF8STRING &layer)
 {
     VFoldLine const fLine = detail.FoldLine();
+
+    // A fold type that draws no text has nothing to export here. Stated explicitly because this
+    // function is called for every piece and its only other guard is LabelPosition's flag — that
+    // is what used to let a default "Cut On Fold" text slip into files for pieces marked "No text"
+    // or "Invisible fold line".
+    if (not fLine.HasLabel())
+    {
+        return;
+    }
+
     bool ok = false;
     FoldLabelPosData const labelData = fLine.LabelPosition(ok);
 
@@ -1090,20 +1100,12 @@ void VDxfEngine::ExportAAMADrawFoldLine(const QSharedPointer<dx_ifaceBlock> &det
     {
         case FoldLineType::TwoArrows:
         case FoldLineType::TwoArrowsTextAbove:
-        case FoldLineType::TwoArrowsTextUnder:
             points.removeAt(1);
             AAMADrawFoldLineTwoArrows(points, detailBlock);
-            break;
-        case FoldLineType::ThreeDots:
-            AAMADrawFoldLineThreeDots(points, detailBlock, fLine.ThreeDotsRadius());
-            break;
-        case FoldLineType::ThreeX:
-            AAMADrawFoldLineThreeX(points, detailBlock);
             break;
         case FoldLineType::LAST_ONE_DO_NOT_USE:
             Q_UNREACHABLE();
             break;
-        case FoldLineType::Text:
         case FoldLineType::None:
         default:
             break;
@@ -1467,27 +1469,28 @@ void VDxfEngine::ExportASTMNotches(const QSharedPointer<dx_ifaceBlock> &detailBl
 //---------------------------------------------------------------------------------------------------------------------
 void VDxfEngine::ExportASTMMirrorLine(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
 {
-    if (detail.IsShowFullPiece())
+    // The axis belongs to the unfolded view: once the piece is folded, its fold edge is already part
+    // of the boundary. Every other mirror-axis site in the application draws it on exactly this
+    // condition, and the AAMA export below does the same. The guard used to be inverted here, which
+    // made the whole function dead code and left the ASTM export with no mirror line at all.
+    if (not detail.IsShowFullPiece())
     {
         return;
     }
 
-    QLineF const mirrorLine = detail.GetMappedCorrectedMirrorLine(m_togetherWithNotches);
-    if (mirrorLine.isNull())
+    if (QLineF const mirrorLine = detail.GetMappedCorrectedMirrorLine(m_togetherWithNotches);
+        not mirrorLine.isNull() && detail.IsShowMirrorLine())
     {
-        return;
-    }
-
-    const bool isShowFullPiece = detail.IsShowFullPiece();
-    const auto layer = isShowFullPiece ? *layer8 : *layer6;
-
-    if (DRW_Entity *e = AAMALine(mirrorLine, layer))
-    {
-        if (isShowFullPiece && detail.IsShowMirrorLine())
+        // Layer 6 is the ASTM layer for the mirror line ("Mirror line — symmetry of fold"); layer 8
+        // is "internal line(s) — graphic annotation of placement, not cut". AAMA puts its own axis on
+        // 8 because its table does not declare layer 6. The two formats have different layer tables,
+        // and following each one's own is the point — on 8 an ASTM reader would take the axis for an
+        // internal line.
+        if (DRW_Entity *e = AAMALine(mirrorLine, *layer6))
         {
             e->lineType = dx_iface::QtPenStyleToString(Qt::DashDotLine);
+            detailBlock->ent.push_back(e);
         }
-        detailBlock->ent.push_back(e);
     }
 }
 
@@ -1510,20 +1513,12 @@ void VDxfEngine::ExportASTMDrawFoldLine(const QSharedPointer<dx_ifaceBlock> &det
     {
         case FoldLineType::TwoArrows:
         case FoldLineType::TwoArrowsTextAbove:
-        case FoldLineType::TwoArrowsTextUnder:
             points.removeAt(1);
             ASTMDrawFoldLineTwoArrows(points, detailBlock);
-            break;
-        case FoldLineType::ThreeDots:
-            AAMADrawFoldLineThreeDots(points, detailBlock, fLine.ThreeDotsRadius());
-            break;
-        case FoldLineType::ThreeX:
-            AAMADrawFoldLineThreeX(points, detailBlock);
             break;
         case FoldLineType::LAST_ONE_DO_NOT_USE:
             Q_UNREACHABLE();
             break;
-        case FoldLineType::Text:
         case FoldLineType::None:
         default:
             break;
@@ -1809,44 +1804,6 @@ void VDxfEngine::AAMADrawFoldLineTwoArrows(const QVector<QVector<QPointF>> &poin
     }
 
     ExportTurnPoints(detailBlock, shape);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VDxfEngine::AAMADrawFoldLineThreeDots(const QVector<QVector<QPointF>> &points,
-                                           const QSharedPointer<dx_ifaceBlock> &detailBlock, qreal radius)
-{
-    if (points.isEmpty() || points.constFirst().size() != 3)
-    {
-        return;
-    }
-
-    QVector<QPointF> const &shape = points.constFirst();
-    for (const auto &center : shape)
-    {
-        if (DRW_Entity *e = AAMACircle(center, *layer8, radius))
-        {
-            detailBlock->ent.push_back(e);
-        }
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VDxfEngine::AAMADrawFoldLineThreeX(const QVector<QVector<QPointF>> &points,
-                                        const QSharedPointer<dx_ifaceBlock> &detailBlock)
-{
-    if (points.isEmpty())
-    {
-        return;
-    }
-
-    QVector<QPointF> const &shape = points.constFirst();
-    for (int i = 0; i < shape.size() - 1; i += 2)
-    {
-        if (DRW_Entity *e = AAMALine(QLineF(shape.at(i), shape.at(i + 1)), *layer8))
-        {
-            detailBlock->ent.push_back(e);
-        }
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

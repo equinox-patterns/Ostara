@@ -189,16 +189,16 @@ enum class PiecePathIncludeType : quint8
 
 constexpr unsigned int defFoldLineFontSize{12};
 
+// The ordinals are frozen: the type is streamed raw into the RLD layout blob, so a removed value
+// leaves its slot free instead of shifting the values that remain.
 enum class FoldLineType : quint8
 {
     TwoArrowsTextAbove = 0, // Default
-    TwoArrowsTextUnder,
-    TwoArrows,
-    Text,
-    ThreeDots,
-    ThreeX,
-    None,
-    LAST_ONE_DO_NOT_USE
+    // 1 was TwoArrowsTextUnder — removed
+    TwoArrows = 2,
+    // 3 was Text, 4 was ThreeDots, 5 was ThreeX — removed
+    None = 6,
+    LAST_ONE_DO_NOT_USE = 7
 };
 
 auto FoldLineTypeToString(FoldLineType type) -> QString;

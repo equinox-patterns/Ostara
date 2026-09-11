@@ -86,6 +86,11 @@ auto StripShortNameAttributes(QDomDocument *doc) -> bool;
 // Returns true if at least one piece carried the attribute.
 auto StripBuiltInSeamAllowanceAttributes(QDomDocument *doc) -> bool;
 
+// Convert the fold-line types Ostara dropped to the default one, so a file that still carries one stays saveable
+// against the narrowed schema. Silent by design — the change is invisible to the user.
+// Returns true if at least one value was converted.
+auto ConvertRemovedFoldLineTypes(QDomDocument *doc) -> bool;
+
 // Refresh scale- and theme-dependent item state (labels, pens) for a whole scene.
 void RefreshSceneItemPens(const VMainGraphicsScene *scene);
 

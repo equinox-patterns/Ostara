@@ -72,13 +72,10 @@ struct OPieceGroup : public IPieceInfo
     int m_cutLiningQty{0};
     bool m_cutLiningOnFold{false};
     QString m_freeText{};
-    // Fold formules only — the mirror-line geometry lives on the member piece that carries it.
-    QString m_formulaFoldHeight{};
-    QString m_formulaFoldWidth{};
-    QString m_formulaFoldCenter{};
-    bool m_manualFoldHeight{false};
-    bool m_manualFoldWidth{false};
-    bool m_manualFoldCenter{false};
+
+    // The group holds no fold dimensions of its own: the whole fold geometry — axis, dimensions and
+    // label — lives on the member piece designated by m_foldLineMemberId, which is the only one that
+    // draws it. See ODetailsGroupWidget, which edits that member directly.
 
     auto GetName() const -> QString override { return name; }
 

@@ -114,10 +114,7 @@ private:
     void PlotMirrorLine(QTextStream &out, const VLayoutPiece &detail);
     void PlotFoldLine(QTextStream &out, const VLayoutPiece &detail);
 
-    void PlotFoldLineText(QTextStream &out, const VFoldLine &fLine);
-    void PlotFoldThreeX(QTextStream &out, const VFoldLine &fLine);
     void PlotFoldTwoArrowsText(QTextStream &out, const VFoldLine &fLine);
-    void PlotFoldThreeDots(QTextStream &out, const VFoldLine &fLine);
 
     template <class T> auto ConvertPath(const QVector<T> &path) const -> QVector<T>;
     template <class T> auto ConvertPoint(T point) const -> T;

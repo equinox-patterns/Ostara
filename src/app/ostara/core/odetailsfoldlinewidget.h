@@ -40,6 +40,8 @@ class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
+class VContainer;
+class ODetailsFoldLineValuesWidget;
 
 class ODetailsFoldLineWidget : public QWidget
 {
@@ -49,7 +51,7 @@ public:
     explicit ODetailsFoldLineWidget(QWidget *parent = nullptr);
     ~ODetailsFoldLineWidget() override = default;
 
-    void Show(const VPiece &det);
+    void Show(const VPiece &det, const VContainer *data, quint32 pieceId);
     void Clear();
 
     void SetModifyPending(std::function<void(std::function<void(VPiece &)>)> modify);
@@ -66,6 +68,7 @@ signals:
 
 private:
     void ConnectControls();
+    void UpdateTypeButtons(FoldLineType type);
     void UpdateFoldLineStatus(bool defined);
     void ResetSelectionHighlight();
     auto ValidateMirrorLinePoints(quint32 startPoint, quint32 endPoint) const -> bool;
@@ -85,6 +88,7 @@ private:
     QCheckBox *m_showMirrorLineCheck{nullptr};
     QButtonGroup *m_typeGroup{nullptr};
     QLineEdit *m_textEdit{nullptr};
+    ODetailsFoldLineValuesWidget *m_valuesWidget{nullptr};
     bool m_foldValid{false};
 
     std::function<void(std::function<void(VPiece &)>)> m_modifyPending;

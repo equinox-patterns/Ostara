@@ -38,6 +38,8 @@
 class QPainterPath;
 class VSvgFontEngine;
 class QGraphicsSimpleTextItem;
+class VPiece;
+class VContainer;
 
 struct TextPosData
 {
@@ -50,15 +52,6 @@ struct ArrowsTextPosData : public TextPosData
 {
     qreal arrowsWidth{0};
     qreal arrowsHeight{0};
-};
-
-struct ThreeDotsPosData
-{
-    qreal width{0};
-    qreal defHeight{0};
-    qreal height{0};
-    qreal radius{0};
-    qreal margin{0};
 };
 
 struct FoldLabelPosData
@@ -82,6 +75,28 @@ public:
     auto operator=(const VFoldLine &) -> VFoldLine & = default;
     ~VFoldLine() = default;
 
+    /**
+     * @brief Create builds the fold line of @a piece exactly as the canvas renders it.
+     *
+     * Single source of truth for the canvas and the layout path: picks the mirror axis (seam
+     * allowance or seam line, depending on "Hide main path"), reads the label font from the
+     * application settings, and evaluates the three manual fold formulas.
+     *
+     * @param piece the piece whose fold line is wanted
+     * @param data the pattern container the formulas are evaluated against
+     * @return the fold line, ready to be asked for its paths or its values
+     */
+    static auto Create(const VPiece &piece, const VContainer *data) -> VFoldLine;
+
+    /**
+     * @brief ApplyManualFoldValues evaluates the three manual fold formulas of @a piece.
+     *
+     * Kept apart from Create so a caller that needs only the values — the layout path — does not
+     * pay for the mirror axis, which is expensive to compute. A value that is not manual is left
+     * at its automatic sentinel: 0 for height and width, 0.5 for the center.
+     */
+    void ApplyManualFoldValues(const VPiece &piece, const VContainer *data);
+
     void SetHeight(qreal newHeight);
     void SetWidth(qreal newWidth);
     void SetCenterPosition(qreal newCenter);
@@ -93,10 +108,47 @@ public:
     void SetMatrix(const QTransform &matrix);
     void SetVerticallyFlipped(bool value);
     void SetHorizontallyFlipped(bool value);
-    void SetXScale(qreal xs);
-    void SetYScale(qreal ys);
     void SetOutlineFont(const QFont &font);
     void SetSvgFont(const QString &font);
+
+    auto Type() const -> FoldLineType;
+    auto Label() const -> QString;
+    auto OutlineFont() const -> QFont;
+    auto SvgFont() const -> QString;
+    auto LabelSvgFontSize() const -> unsigned int;
+
+    /// Whether @a type draws a text at all. Only TwoArrowsTextAbove does: TwoArrows draws the
+    /// arrows alone and None draws nothing. Single source of the predicate, shared by the
+    /// exporters and by the dock — the dock needs it for a type it has not built an object from.
+    static auto TypeHasLabel(FoldLineType type) -> bool;
+
+    /**
+     * @brief HasLabel tells whether this fold line type draws a text at all.
+     *
+     * See TypeHasLabel.
+     */
+    auto HasLabel() const -> bool;
+
+    /// Height as stored: the manual value in pixels, or 0 when the value is automatic.
+    auto Height() const -> qreal;
+    /// Width as stored: the manual value in pixels, or 0 when the value is automatic.
+    auto Width() const -> qreal;
+    /// Center as stored: a unitless ratio in [0, 1], 0.5 by default.
+    auto CenterPosition() const -> qreal;
+
+    /**
+     * @brief ResolvedHeight is the number currently in effect for the height field.
+     *
+     * The manual value when one is set, the automatic one otherwise (1 cm). This is NOT the
+     * rendered arrow height: for TwoArrowsTextAbove the drawn arrows are shorter than the value
+     * the field drives.
+     */
+    auto ResolvedHeight() const -> qreal;
+    /// @brief ResolvedWidth is the number in effect for the width field: the manual value, or
+    /// 0.9 × the axis length. Not clamped — the renderer clamps to the axis length itself.
+    auto ResolvedWidth() const -> qreal;
+    /// @brief ResolvedCenter is the number in effect for the center field (0.5 by default).
+    auto ResolvedCenter() const -> qreal;
 
     auto FoldLinePath() const -> QVector<QPainterPath>;
     auto FoldLineMarkPoints() const -> QVector<QVector<QPointF>>;
@@ -104,8 +156,6 @@ public:
     auto LabelPosition(bool &ok) const -> FoldLabelPosData;
 
     void UpdateFoldLineLabel(QGraphicsSimpleTextItem *item) const;
-
-    auto ThreeDotsRadius() const -> qreal;
 
     static auto DefaultFoldLineLabel() -> QString;
 
@@ -123,17 +173,11 @@ private:
     QTransform m_matrix{};
     bool m_verticallyFlipped{false};
     bool m_horizontallyFlipped{false};
-    qreal m_xScale{1.0};
-    qreal m_yScale{1.0};
     QFont m_outlineFont{};
     QString m_svgFont{};
 
     auto FoldLineTwoArrowsPath() const -> QVector<QPainterPath>;
     auto FoldLineTwoArrowsTextAbovePath() const -> QVector<QPainterPath>;
-    auto FoldLineTwoArrowsTextUnderPath() const -> QVector<QPainterPath>;
-    auto FoldLineTextPath() const -> QVector<QPainterPath>;
-    auto FoldLineThreeDotsPath() const -> QVector<QPainterPath>;
-    auto FoldLineThreeXPath() const -> QVector<QPainterPath>;
 
     auto TrueCenter(const QLineF &base, qreal width) const -> QPointF;
 
@@ -149,14 +193,14 @@ private:
     auto TwoArrowsPath(qreal width, qreal height) const -> QPainterPath;
 
     auto TwoArrowsPoints(qreal width, qreal height) const -> QVector<QVector<QPointF>>;
-    auto ThreeDotsPoints() const -> QVector<QVector<QPointF>>;
-    auto ThreeXPoints() const -> QVector<QVector<QPointF>>;
+
+    /// Automatic width: 0.9 × the axis length. Single definition of the 0.9 factor.
+    auto AutoWidth() const -> qreal;
+    /// Width the drawing uses: the manual value clamped to the axis length, or the automatic one.
+    auto EffectiveWidth() const -> qreal;
 
     auto TwoArrowsData() const -> ArrowsTextPosData;
     auto TwoArrowsTextAboveData() const -> ArrowsTextPosData;
-    auto TwoArrowsTextUnderData() const -> ArrowsTextPosData;
-    auto TextData() const -> TextPosData;
-    auto ThreeDotsData() const -> ThreeDotsPosData;
 };
 
 #endif // VFOLDLINE_H
