@@ -1492,7 +1492,6 @@ void VToolSeamAllowance::SaveMoveGrainline(const QPointF &ptPos)
     VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
     VPiece newDet = oldDet;
     newDet.GetGrainlineGeometry().SetPos(ptPos);
-    qDebug() << "******* new grainline pos" << ptPos;
 
     PushChildChange(oldDet, newDet, tr("move grainline"));
 }
