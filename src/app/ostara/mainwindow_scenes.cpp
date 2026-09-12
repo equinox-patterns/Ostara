@@ -68,6 +68,10 @@ void MainWindow::ScaleChanged(qreal scale)
     {
         scene = m_sceneGraded;
     }
+    else if (ui->view->scene() == m_sceneExport)
+    {
+        scene = m_sceneExport;
+    }
     else
     {
         return;
@@ -224,6 +228,22 @@ auto MainWindow::switchScene(Draw mode, const QVector<DetailForLayout> &details)
                 m_mouseCoordinate->setText(QString());
             }
             break;
+        case Draw::Export:
+            // Shell only for now: an empty scene, no dock, the selection tool.
+            // Nothing is drawn yet, so the pattern-piece combo is left alone —
+            // coming back to Draw lands on the piece the user was on.
+            if (m_drawMode)
+            {
+                m_currentDrawIndex = m_comboBoxDraws->currentIndex(); // save current pattern piece
+                m_drawMode = false;
+            }
+            SaveCurrentScene();
+            currentScene = m_sceneExport;
+            ui->view->setScene(currentScene);
+            VAbstractValApplication::VApp()->SetDrawMode(Draw::Export);
+            SetEnableTool(true);
+            m_drawToolBar->SetMode(Draw::Export);
+            break;
     }
 
     return true;
@@ -269,11 +289,15 @@ void MainWindow::InitScenes()
     m_sceneGraded = new VMainGraphicsScene(this);
     connect(m_sceneGraded, &VMainGraphicsScene::mouseMove, this, &MainWindow::MouseMove);
 
+    m_sceneExport = new VMainGraphicsScene(this);
+    connect(m_sceneExport, &VMainGraphicsScene::mouseMove, this, &MainWindow::MouseMove);
+
     ui->view->setScene(currentScene);
 
     m_sceneDraw->setTransform(ui->view->transform());
     m_sceneDetails->setTransform(ui->view->transform());
     m_sceneGraded->setTransform(ui->view->transform());
+    m_sceneExport->setTransform(ui->view->transform());
 
     connect(ui->view, &VMainGraphicsView::MouseRelease, this, [this]() -> void { EndVisualization(true); });
     connect(ui->view, &VMainGraphicsView::ScaleChanged, this, &MainWindow::ScaleChanged);

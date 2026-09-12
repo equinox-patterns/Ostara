@@ -94,6 +94,7 @@ void MainWindow::ReadSettings()
         m_dockManager->setDetailsModeDockState(settings->GetModeToolbarsState(Draw::Modeling));
         m_dockManager->setLayoutModeDockState(settings->GetModeToolbarsState(Draw::Layout));
         m_dockManager->setGradedModeDockState(settings->GetModeToolbarsState(Draw::Graded));
+        m_dockManager->setExportModeDockState(settings->GetModeToolbarsState(Draw::Export));
 
         // Dock visibility is handled by saveState()/restoreState() — sync the
         // boolean members from actual dock state so ShowEditor() can restore
@@ -153,6 +154,7 @@ void MainWindow::WriteSettings()
     const QByteArray detailsState = m_dockManager->detailsModeDockState();
     const QByteArray layoutState = m_dockManager->layoutModeDockState();
     const QByteArray gradedState = m_dockManager->gradedModeDockState();
+    const QByteArray exportState = m_dockManager->exportModeDockState();
 
     // When on the WelcomeScreen all docks are hidden — save the last known editor
     // state instead of the (empty) current layout.
@@ -168,6 +170,7 @@ void MainWindow::WriteSettings()
     settings->SetModeToolbarsState(Draw::Modeling, detailsState);
     settings->SetModeToolbarsState(Draw::Layout, layoutState);
     settings->SetModeToolbarsState(Draw::Graded, gradedState);
+    settings->SetModeToolbarsState(Draw::Export, exportState);
 
     settings->sync();
 
@@ -180,6 +183,7 @@ void MainWindow::WriteSettings()
     m_dockManager->setDetailsModeDockState(detailsState);
     m_dockManager->setLayoutModeDockState(layoutState);
     m_dockManager->setGradedModeDockState(gradedState);
+    m_dockManager->setExportModeDockState(exportState);
 
     // Startup layout = the Draw mode every run opens on. Capture the global toolbar
     // state AFTER ActionDraw (which normalized the window back to Draw's own dock
@@ -520,6 +524,10 @@ void MainWindow::Clear()
     {
         m_sceneGraded->clear();
     }
+    if (m_sceneExport != nullptr)
+    {
+        m_sceneExport->clear();
+    }
     m_activeGradedRangeName.clear();
     m_gradedBasePositions.clear();
     m_gradedSceneSignature.clear();
@@ -535,6 +543,7 @@ void MainWindow::Clear()
     ui->actionDetails->setEnabled(false);
     ui->actionGraded->setEnabled(false);
     ui->actionLayout->setEnabled(false);
+    ui->actionExport->setEnabled(false);
     ui->actionNewDraw->setEnabled(false);
     ui->actionOptionDraw->setEnabled(false);
     ui->actionSave->setEnabled(false);

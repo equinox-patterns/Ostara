@@ -14,6 +14,53 @@ set(OSTARA_QRC
     share/resources/drawtool_icons.qrc
 )
 
+# ══════════════════════════════════════════════════════════════════════════
+# Trame — le socle de nesting (bibliothèque STATIQUE), construit dans ce build
+# ══════════════════════════════════════════════════════════════════════════
+# add_subdirectory HORS ARBRE : source dir en ABSOLU, binary dir EXPLICITE —
+# même montage que Rabnest/CMakeLists.txt:18-21. EXCLUDE_FROM_ALL : les trois
+# outils de Trame (svg2ocgpdf, svg2pdf, nestbench) n'ont pas à être construits
+# ici ; seule la bibliothèque l'est, parce qu'Ostara la lie.
+# Trame a sa propre politique de compilation. Ce qui est posé à la racine
+# d'Ostara se propage à tout sous-dossier ajouté ensuite — donc à Trame et à
+# Clipper2, qui ne sont pas écrits pour ça. Deux fuites constatées :
+#   • options (CMakeLists.txt:102-140, -Werror en tête) — Trame n'est pas
+#     écrit pour -Werror -Wconversion ;
+#   • définitions (CMakeLists.txt:58-67) — QT_DISABLE_DEPRECATED_BEFORE y
+#     supprime la surcharge de QDomDocument::setContent utilisée par
+#     SvgToOcgPdf.cpp.
+# Trame étant un socle partagé, il ne doit pas hériter de la politique d'un
+# consommateur. On vide donc les deux propriétés de répertoire le temps de
+# l'ajouter — le sous-dossier en hérite une copie à sa création — puis on les
+# restaure pour les cibles d'Ostara, créées juste après.
+get_property(_ostaraDirOptions DIRECTORY PROPERTY COMPILE_OPTIONS)
+get_property(_ostaraDirDefinitions DIRECTORY PROPERTY COMPILE_DEFINITIONS)
+
+set_property(DIRECTORY PROPERTY COMPILE_OPTIONS "")
+set_property(DIRECTORY PROPERTY COMPILE_DEFINITIONS "")
+
+add_subdirectory(
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../../../Trame"
+    "${CMAKE_BINARY_DIR}/Trame"
+    EXCLUDE_FROM_ALL
+)
+
+set_property(DIRECTORY PROPERTY COMPILE_OPTIONS "${_ostaraDirOptions}")
+set_property(DIRECTORY PROPERTY COMPILE_DEFINITIONS "${_ostaraDirDefinitions}")
+
+# Clipper2 est un tiers, atteint depuis Ostara par les en-têtes publics de Trame
+# (model/Piece.h inclut <clipper2/clipper.h>). Ses en-têtes ne survivent pas à la
+# politique de warning d'Ostara (-Wfloat-equal en tête). Déclarés SYSTEM, ils sont
+# compilés sans ces avertissements, quoi que demande le consommateur.
+# Le répertoire doit rester déclaré dans INTERFACE_INCLUDE_DIRECTORIES pour être
+# cherché ; INTERFACE_SYSTEM_INCLUDE_DIRECTORIES ne fait que le marquer système.
+if(TARGET Clipper2)
+    get_target_property(_clipperIncludes Clipper2 INTERFACE_INCLUDE_DIRECTORIES)
+    set_target_properties(Clipper2 PROPERTIES
+        INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${_clipperIncludes}"
+    )
+endif()
+
 qt_add_executable(Ostara
     ${OSTARA_SOURCES}
     ${OSTARA_CORE}
@@ -44,6 +91,7 @@ target_link_libraries(Ostara PRIVATE
     XercesC::XercesC
     OpenSSL::SSL
     OpenSSL::Crypto
+    Trame
 )
 
 # macOS bundle

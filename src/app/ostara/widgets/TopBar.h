@@ -44,7 +44,8 @@ class TopBar : public QWidget
 public:
     explicit TopBar(QWidget *parent = nullptr);
 
-    void SetModeActions(QAction *draw, QAction *details, QAction *graded, QAction *layout);
+    void SetModeActions(QAction *draw, QAction *details, QAction *graded, QAction *layout,
+                        QAction *exportMode);
     void SetPatternPieceWidgets(QLabel *pieceLabel, QComboBox *combo, QAction *newPieceAction);
     void SetMeasurementWidgets(QAction *loadAction, QLabel *fileNameLabel,
                                QLabel *separator, QAction *tableAction);
@@ -71,6 +72,10 @@ public:
     /// file-name label stays visible; the dimension and piece widgets are hidden.
     void SetGradedChrome(bool graded);
 
+    /// Apply/restore the Export-mode center chrome. Same chrome as Graded: only the
+    /// measurement file-name label stays visible.
+    void SetExportChrome(bool exportMode);
+
     /// Show/hide the pattern piece section (label + combo + new piece button + separator).
     void SetPatternPieceVisible(bool visible);
 
@@ -89,9 +94,11 @@ private:
     QToolButton *m_btnDetails = nullptr;
     QToolButton *m_btnGraded  = nullptr;
     QToolButton *m_btnLayout  = nullptr;
+    QToolButton *m_btnExport  = nullptr;
     QLabel *m_sepDrawDetails    = nullptr;
     QLabel *m_sepDetailsGraded  = nullptr; // between Details and Graded
     QLabel *m_sepGradedLayout   = nullptr; // between Graded and Layout
+    QLabel *m_sepLayoutExport   = nullptr; // between Layout and Export
 
     // --- Center: pattern piece --------------------------------------------
     QComboBox   *m_comboDraws         = nullptr;
@@ -110,9 +117,19 @@ private:
     QToolButton            *m_btnTable     = nullptr; // measurement table button
     QVector<QPointer<QWidget>> m_dimWidgets{};        // dimension label/combo pairs inserted
 
-    /// Visibility snapshot of the center widgets taken when entering Graded,
-    /// restored when leaving the mode.
-    QHash<QWidget *, bool> m_gradedSavedVisibility{};
+    /// Visibility snapshot of the center widgets taken when entering a mode that
+    /// hides them, restored when leaving. One snapshot per mode: a single shared
+    /// map would let one mode consume the other's state, leaving the center hidden
+    /// for good.
+    struct CenterChromeSnapshot
+    {
+        QHash<QWidget *, bool> visibility{};
+    };
+
+    CenterChromeSnapshot m_gradedChrome{};
+    CenterChromeSnapshot m_exportChrome{};
+
+    void ApplyCenterChrome(CenterChromeSnapshot &snapshot, bool hidden);
 };
 
 #endif // TOPBAR_H

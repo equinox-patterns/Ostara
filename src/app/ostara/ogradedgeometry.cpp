@@ -44,15 +44,13 @@
 
 namespace OGraded
 {
-namespace
-{
+//---------------------------------------------------------------------------------------------------------------------
 auto AnchorPoint(const QRectF &rect, int h, int v) -> QPointF
 {
     const qreal hFrac = h == 1 ? 0.0 : (h == 3 ? 1.0 : 0.5);
     const qreal vFrac = v == 1 ? 0.0 : (v == 3 ? 1.0 : 0.5);
     return QPointF(rect.left() + rect.width() * hFrac, rect.top() + rect.height() * vFrac);
 }
-}  // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 void ApplyOffsets(const QList<QGraphicsItem *> &items, const OSizerange &range, const VContainer *pattern)

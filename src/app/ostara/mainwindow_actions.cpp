@@ -32,6 +32,8 @@
 #include "mainwindow_helpers.h"
 #include "themeDef.h"
 #include "widgets/ODockManager.h"
+#include "widgets/TopBar.h"
+#include "widgets/DrawToolBar.h"
 #include "core/vapplication.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "dialogs/dialogaboutapp.h"
@@ -106,6 +108,7 @@ void MainWindow::SetEnableWidgets(bool enable)
     ui->actionDetails->setEnabled(enable);
     ui->actionGraded->setEnabled(enable);
     ui->actionLayout->setEnabled(enable);
+    ui->actionExport->setEnabled(enable);
     ui->actionTable->setEnabled(enableOnDesignStage);
     ui->actionExportFinalMeasurementsToCSV->setEnabled(enable);
     ui->actionFinalMeasurements->setEnabled(enable);
@@ -164,6 +167,7 @@ void MainWindow::SetEnableTool(bool enable)
     bool drawTools = false;
     bool modelingTools = false;
     bool layoutTools = false;
+    bool exportTools = false;
 
     QT_WARNING_PUSH
     QT_WARNING_DISABLE_GCC("-Wswitch-default")
@@ -182,6 +186,10 @@ void MainWindow::SetEnableTool(bool enable)
             break;
         case Draw::Graded:
             // Non-creative mode: no tool is enabled in Graded.
+            break;
+        case Draw::Export:
+            // Export mode exposes the selection tool only — no creation tool.
+            exportTools = enable;
             break;
     }
 
@@ -244,8 +252,8 @@ void MainWindow::SetEnableTool(bool enable)
 
     ui->actionLast_tool->setEnabled(drawTools);
 
-    ui->actionToolSelect->setEnabled(drawTools || modelingTools);
-    ui->actionToolSelect->setChecked(drawTools || modelingTools);
+    ui->actionToolSelect->setEnabled(drawTools || modelingTools || exportTools);
+    ui->actionToolSelect->setChecked(drawTools || modelingTools || exportTools);
 
     // Modeling Tools
     ui->actionUnionDetailsTool->setEnabled(modelingTools);
@@ -328,8 +336,30 @@ void MainWindow::CreateActions()
     connect(ui->actionArrowTool, &QAction::triggered, this, &MainWindow::ArrowTool);
     connect(ui->actionDraw, &QAction::triggered, this, &MainWindow::ActionDraw);
     connect(ui->actionDetails, &QAction::triggered, this, &MainWindow::ActionDetails);
+
+    // Leaving Export mode must give the TopBar chrome and the work toolbar back. The
+    // Graded handler lives in the Graded files and knows nothing about Export, so the
+    // exit is wired on the actions themselves: every handler that leaves the mode
+    // unchecks actionExport, and that lands in the lambda below. Registered before the
+    // Graded handler so it runs first, while the mode is still Export.
+    connect(ui->actionGraded, &QAction::triggered, this, [this](bool checked) {
+        if (checked)
+        {
+            ui->actionExport->setChecked(false);
+        }
+    });
+    connect(ui->actionExport, &QAction::toggled, this, [this](bool checked) {
+        if (checked || m_topBar == nullptr)
+        {
+            return;
+        }
+        m_topBar->SetExportChrome(false);
+        m_drawToolBar->show();
+    });
+
     connect(ui->actionGraded, &QAction::triggered, this, &MainWindow::ActionGraded);
     connect(ui->actionLayout, &QAction::triggered, this, &MainWindow::ActionLayout);
+    connect(ui->actionExport, &QAction::triggered, this, &MainWindow::ActionExport);
     connect(ui->actionExportRecipe, &QAction::triggered, this, &MainWindow::ActionExportRecipe_triggered);
     connect(ui->actionNewDraw, &QAction::triggered, this, &MainWindow::ActionNewDraw_triggered);
     connect(ui->actionExportFinalMeasurementsToCSV, &QAction::triggered, this, &MainWindow::ExportFMeasurementsToCSV);

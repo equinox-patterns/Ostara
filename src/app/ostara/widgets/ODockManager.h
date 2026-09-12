@@ -133,11 +133,13 @@ public:
     QByteArray detailsModeDockState() const;
     QByteArray layoutModeDockState() const;
     QByteArray gradedModeDockState() const;
+    QByteArray exportModeDockState() const;
 
     void setDrawModeDockState(const QByteArray &state);
     void setDetailsModeDockState(const QByteArray &state);
     void setLayoutModeDockState(const QByteArray &state);
     void setGradedModeDockState(const QByteArray &state);
+    void setExportModeDockState(const QByteArray &state);
 
 private:
     void installTitleBar(QDockWidget *dock);
@@ -182,6 +184,7 @@ private:
     QByteArray m_detailsModeDockState{};
     QByteArray m_layoutModeDockState{};
     QByteArray m_gradedModeDockState{};
+    QByteArray m_exportModeDockState{};
 
     QStackedWidget *m_optionsStack{nullptr};
     QStackedWidget *m_groupsStack{nullptr};

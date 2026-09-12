@@ -215,6 +215,11 @@ private slots:
     void ActionDetails(bool checked);
     void ActionLayout(bool checked);
     void ActionGraded(bool checked);
+    void ActionExport(bool checked);
+
+    /** @brief Resolve a size range, nest it on the imposed width, and draw the result. */
+    auto RunExportNesting(qreal documentWidth, const QString &rangeName, bool singleSize, qreal baseA, qreal baseB,
+                          qreal baseC) -> bool;
 
     void on_actionNew_triggered();
     bool hasOpenPattern() const;
@@ -310,6 +315,9 @@ private:
     /** @brief sceneDetails details scene. */
     VMainGraphicsScene *m_sceneDetails{nullptr};
     VMainGraphicsScene *m_sceneGraded{nullptr};
+
+    /** @brief sceneExport export mode scene. Empty for now — the mode is a shell. */
+    VMainGraphicsScene *m_sceneExport{nullptr};
 
     /// Name of the active size range in Graded mode (empty when none yet).
     QString m_activeGradedRangeName{};

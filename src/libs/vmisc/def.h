@@ -130,7 +130,8 @@ enum class Draw : qint8
     Calculation,
     Modeling,
     Layout,
-    Graded
+    Graded,
+    Export
 };
 
 enum class PieceNodeAngle : quint8

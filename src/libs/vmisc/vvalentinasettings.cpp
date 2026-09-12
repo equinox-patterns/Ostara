@@ -97,6 +97,8 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingModeToolbarsStateDetails, ("mode
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingModeToolbarsStateLayout, ("mode/toolbarsStateLayout"_L1))
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingModeToolbarsStateGraded, ("mode/toolbarsStateGraded"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingModeToolbarsStateExport, ("mode/toolbarsStateExport"_L1))
 
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutWidth, ("layout/width"_L1))             // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutSorting, ("layout/sorting"_L1))         // NOLINT
@@ -1202,6 +1204,8 @@ auto VValentinaSettings::GetModeToolbarsState(Draw mode) const -> QByteArray
             return value(*settingModeToolbarsStateLayout).toByteArray();
         case Draw::Graded:
             return value(*settingModeToolbarsStateGraded).toByteArray();
+        case Draw::Export:
+            return value(*settingModeToolbarsStateExport).toByteArray();
     }
     return {};
 }
@@ -1222,6 +1226,9 @@ void VValentinaSettings::SetModeToolbarsState(Draw mode, const QByteArray &value
             break;
         case Draw::Graded:
             setValue(*settingModeToolbarsStateGraded, value);
+            break;
+        case Draw::Export:
+            setValue(*settingModeToolbarsStateExport, value);
             break;
     }
 }

@@ -647,6 +647,7 @@ void MainWindow::ActionDraw(bool checked)
         ui->actionDetails->setChecked(false);
         ui->actionGraded->setChecked(false);
         ui->actionLayout->setChecked(false);
+        ui->actionExport->setChecked(false);
 
         if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
         {
@@ -686,6 +687,7 @@ void MainWindow::ActionDetails(bool checked)
         ui->actionDetails->setChecked(true);
         ui->actionGraded->setChecked(false);
         ui->actionLayout->setChecked(false);
+        ui->actionExport->setChecked(false);
 
         if (not VAbstractValApplication::VApp()->getOpeningPattern() && pattern->DataPieces()->isEmpty())
         {
@@ -747,6 +749,7 @@ void MainWindow::ActionLayout(bool checked)
     ui->actionDetails->setChecked(false);
     ui->actionGraded->setChecked(false);
     ui->actionLayout->setChecked(true);
+    ui->actionExport->setChecked(false);
 
     QVector<DetailForLayout> details;
     if (not VAbstractValApplication::VApp()->getOpeningPattern())
@@ -1452,6 +1455,7 @@ MainWindow::~MainWindow()
     delete m_sceneDraw;
     delete m_sceneDetails;
     delete m_sceneGraded;
+    delete m_sceneExport;
     delete ui;
 }
 

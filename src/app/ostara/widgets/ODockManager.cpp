@@ -308,6 +308,9 @@ void ODockManager::saveDockStateForMode(Draw mode)
         case Draw::Graded:
             m_gradedModeDockState = m_host->saveState(kToolbarStateVersion);
             break;
+        case Draw::Export:
+            m_exportModeDockState = m_host->saveState(kToolbarStateVersion);
+            break;
     }
 }
 
@@ -347,6 +350,13 @@ void ODockManager::restoreDockStateForMode(Draw mode)
                 !m_host->restoreState(m_gradedModeDockState, kToolbarStateVersion))
             {
                 qWarning() << "ODockManager: failed to restore Graded dock state";
+            }
+            break;
+        case Draw::Export:
+            if (!m_exportModeDockState.isEmpty() &&
+                !m_host->restoreState(m_exportModeDockState, kToolbarStateVersion))
+            {
+                qWarning() << "ODockManager: failed to restore Export dock state";
             }
             break;
     }
@@ -441,6 +451,25 @@ void ODockManager::applyModeDocks(Draw mode)
             m_actionSizeRanges->setEnabled(true);
             m_actionSizeStyles->setEnabled(true);
             break;
+        case Draw::Export:
+            // Export mode carries no dock yet — the shell only. Every dock is
+            // hidden and every Window-menu toggle is disabled until it has one.
+            m_ui->dockWidgetLayoutPages->setVisible(false);
+            m_ui->dockWidgetOptions->setVisible(false);
+            m_ui->dockWidgetGroups->setVisible(false);
+            m_ui->dockWidgetMessages->setVisible(false);
+            m_ui->dockWidgetBackgroundImages->setVisible(false);
+            m_ui->dockWidgetDependencies->setVisible(false);
+            m_ui->dockWidgetSizeRanges->setVisible(false);
+            m_ui->dockWidgetSizeStyles->setVisible(false);
+            m_actionOptions->setDisabled(true);
+            m_actionGroups->setDisabled(true);
+            m_actionMessages->setDisabled(true);
+            m_actionBackgroundImages->setDisabled(true);
+            m_actionDependencies->setDisabled(true);
+            m_actionSizeRanges->setDisabled(true);
+            m_actionSizeStyles->setDisabled(true);
+            break;
     }
 
     restoreDockStateForMode(mode);
@@ -479,6 +508,12 @@ void ODockManager::enforceModeDockExclusions(Draw mode)
                         m_ui->dockWidgetMessages, m_ui->dockWidgetBackgroundImages,
                         m_ui->dockWidgetDependencies};
             break;
+        case Draw::Export:
+            excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetOptions, m_ui->dockWidgetGroups,
+                        m_ui->dockWidgetMessages, m_ui->dockWidgetBackgroundImages,
+                        m_ui->dockWidgetDependencies, m_ui->dockWidgetSizeRanges,
+                        m_ui->dockWidgetSizeStyles};
+            break;
     }
 
     for (QDockWidget *dock : excluded)
@@ -503,6 +538,8 @@ void ODockManager::retranslate()
             m_ui->dockWidgetOptions->setWindowTitle(tr("Options"));
             break;
         case Draw::Layout:
+            break;
+        case Draw::Export:
             break;
         case Draw::Graded:
             m_ui->dockWidgetSizeRanges->setWindowTitle(tr("Size Ranges"));
@@ -568,6 +605,12 @@ QByteArray ODockManager::gradedModeDockState() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+QByteArray ODockManager::exportModeDockState() const
+{
+    return m_exportModeDockState;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODockManager::setDrawModeDockState(const QByteArray &state)
 {
     m_drawModeDockState = state;
@@ -589,6 +632,12 @@ void ODockManager::setLayoutModeDockState(const QByteArray &state)
 void ODockManager::setGradedModeDockState(const QByteArray &state)
 {
     m_gradedModeDockState = state;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODockManager::setExportModeDockState(const QByteArray &state)
+{
+    m_exportModeDockState = state;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

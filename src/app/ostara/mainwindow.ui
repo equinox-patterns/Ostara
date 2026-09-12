@@ -161,6 +161,7 @@
     <addaction name="actionDetails"/>
     <addaction name="actionGraded"/>
     <addaction name="actionLayout"/>
+    <addaction name="actionExport"/>
    </widget>
    <widget class="QMenu" name="menuWatermark">
     <property name="title">
@@ -714,6 +715,27 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+G</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../libs/vmisc/share/resources/icon.qrc">
+     <normaloff>:/icon/32x32/layout.png</normaloff>:/icon/32x32/layout.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for nesting the details and producing the printable PDF, without leaving Ostara.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

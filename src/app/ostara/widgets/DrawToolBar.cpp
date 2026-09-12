@@ -57,6 +57,7 @@ constexpr int kModeDraw   = 1 << 0; // Draw::Calculation
 constexpr int kModeDetail = 1 << 1; // Draw::Modeling
 constexpr int kModeLayout = 1 << 2; // Draw::Layout
 constexpr int kModeGraded = 1 << 3; // Draw::Graded
+constexpr int kModeExport = 1 << 4; // Draw::Export
 
 int ModeToMask(Draw mode)
 {
@@ -66,6 +67,7 @@ int ModeToMask(Draw mode)
         case Draw::Modeling:    return kModeDetail;
         case Draw::Layout:      return kModeLayout;
         case Draw::Graded:      return kModeGraded;
+        case Draw::Export:      return kModeExport;
     }
     return 0;
 }
@@ -362,7 +364,7 @@ void DrawToolBar::InitializeGroups()
     m_groups = {
         {tr("Selection"), {
             {QStringLiteral("arrow_cursor"),            tr("Select"), nullptr, makeBtn("arrow_cursor")},
-        }, kModeDraw | kModeDetail | kModeLayout},
+        }, kModeDraw | kModeDetail | kModeLayout | kModeExport},
         {tr("Points"), {
             {QStringLiteral("segment"),                 tr("Point at distance and angle"),                nullptr, makeBtn("segment")},
             {QStringLiteral("along_line"),              tr("Point at distance along line"),               nullptr, makeBtn("along_line")},

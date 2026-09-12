@@ -80,12 +80,14 @@ auto TopBar::MakeModeButton(QAction *action) -> QToolButton *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void TopBar::SetModeActions(QAction *draw, QAction *details, QAction *graded, QAction *layout)
+void TopBar::SetModeActions(QAction *draw, QAction *details, QAction *graded, QAction *layout,
+                            QAction *exportMode)
 {
     m_btnDraw    = MakeModeButton(draw);
     m_btnDetails = MakeModeButton(details);
     m_btnGraded  = MakeModeButton(graded);
     m_btnLayout  = MakeModeButton(layout);
+    m_btnExport  = MakeModeButton(exportMode);
 
     auto MakeSeparator = [&]() {
         auto *lbl = new QLabel(this);
@@ -107,6 +109,7 @@ void TopBar::SetModeActions(QAction *draw, QAction *details, QAction *graded, QA
     m_sepDrawDetails   = MakeSeparator();
     m_sepDetailsGraded = MakeSeparator();
     m_sepGradedLayout  = MakeSeparator();
+    m_sepLayoutExport  = MakeSeparator();
 
     m_leftLayout->addWidget(m_btnDraw);
     m_leftLayout->addWidget(m_sepDrawDetails);
@@ -115,6 +118,8 @@ void TopBar::SetModeActions(QAction *draw, QAction *details, QAction *graded, QA
     m_leftLayout->addWidget(m_btnGraded);
     m_leftLayout->addWidget(m_sepGradedLayout);
     m_leftLayout->addWidget(m_btnLayout);
+    m_leftLayout->addWidget(m_sepLayoutExport);
+    m_leftLayout->addWidget(m_btnExport);
 
     UpdateModeButtonIcons();
 }
@@ -199,7 +204,8 @@ void TopBar::ClearDimensionWidgets()
     // Dimension widgets are children of this TopBar; the caller (InitDimensionControls)
     // deletes the old widgets first, so the tracked pointers are reset by their QPointer.
     m_dimWidgets.clear();
-    m_gradedSavedVisibility.clear();
+    m_gradedChrome.visibility.clear();
+    m_exportChrome.visibility.clear();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -281,7 +287,7 @@ void TopBar::SetDimensionWidgetsVisible(bool visible)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void TopBar::SetGradedChrome(bool graded)
+void TopBar::ApplyCenterChrome(CenterChromeSnapshot &snapshot, bool hidden)
 {
     auto CenterWidgets = [this]() {
         QList<QWidget *> widgets;
@@ -311,13 +317,13 @@ void TopBar::SetGradedChrome(bool graded)
         return widgets;
     };
 
-    if (graded)
+    if (hidden)
     {
-        m_gradedSavedVisibility.clear();
+        snapshot.visibility.clear();
         const auto widgets = CenterWidgets();
         for (QWidget *w : widgets)
         {
-            m_gradedSavedVisibility.insert(w, w->isVisible());
+            snapshot.visibility.insert(w, w->isVisible());
             w->hide();
         }
         SetPatternPieceVisible(false);
@@ -327,22 +333,34 @@ void TopBar::SetGradedChrome(bool graded)
         SetDimensionWidgetsVisible(true);
         if (m_btnLoadTable)
         {
-            m_btnLoadTable->setVisible(m_gradedSavedVisibility.value(m_btnLoadTable, true));
+            m_btnLoadTable->setVisible(snapshot.visibility.value(m_btnLoadTable, true));
         }
         if (m_sepAfterDims)
         {
-            m_sepAfterDims->setVisible(m_gradedSavedVisibility.value(m_sepAfterDims, true));
+            m_sepAfterDims->setVisible(snapshot.visibility.value(m_sepAfterDims, true));
         }
         if (m_btnTable)
         {
-            m_btnTable->setVisible(m_gradedSavedVisibility.value(m_btnTable, true));
+            m_btnTable->setVisible(snapshot.visibility.value(m_btnTable, true));
         }
         if (m_dimSeparator)
         {
-            m_dimSeparator->setVisible(m_gradedSavedVisibility.value(m_dimSeparator, false));
+            m_dimSeparator->setVisible(snapshot.visibility.value(m_dimSeparator, false));
         }
-        m_gradedSavedVisibility.clear();
+        snapshot.visibility.clear();
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TopBar::SetGradedChrome(bool graded)
+{
+    ApplyCenterChrome(m_gradedChrome, graded);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TopBar::SetExportChrome(bool exportMode)
+{
+    ApplyCenterChrome(m_exportChrome, exportMode);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -369,6 +387,7 @@ void TopBar::ReloadIcons()
     ReloadSep(m_sepDrawDetails);
     ReloadSep(m_sepDetailsGraded);
     ReloadSep(m_sepGradedLayout);
+    ReloadSep(m_sepLayoutExport);
     ReloadSep(m_sepPatternMeasure);
 
     // Refresh dim separator if visible
@@ -399,4 +418,5 @@ void TopBar::UpdateModeButtonIcons()
     SetIcon(m_btnDetails, QStringLiteral("sliders"));
     SetIcon(m_btnGraded,  QStringLiteral("stack"));
     SetIcon(m_btnLayout,  QStringLiteral("printer"));
+    SetIcon(m_btnExport,  QStringLiteral("printer"));
 }

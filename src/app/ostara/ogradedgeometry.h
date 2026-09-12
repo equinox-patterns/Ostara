@@ -32,6 +32,8 @@
 #ifndef OGRADEDGEOMETRY_H
 #define OGRADEDGEOMETRY_H
 
+#include <QPointF>
+#include <QRectF>
 #include <QtGlobal>
 
 class QGraphicsItem;
@@ -40,6 +42,21 @@ class OSizerange;
 
 namespace OGraded
 {
+/// @brief A group is a rigid block from two members up. Below that, its pieces are
+///        handled one by one — the rule the canvas, the export and the container all
+///        apply.
+constexpr int kMinGroupMembers = 2;
+
+/**
+ * @brief The point of @p rect a piece aligns on.
+ *
+ * @param h 1 = left, 2 = centre, 3 = right — any other value means centre.
+ * @param v 1 = top, 2 = centre, 3 = bottom — any other value means centre.
+ *
+ * Shared so the canvas and the export cannot drift apart on what "aligned" means.
+ */
+auto AnchorPoint(const QRectF &rect, int h, int v) -> QPointF;
+
 /**
  * @brief Align and offset a set of graded items exactly like the live canvas
  *        does (positions pass of ApplyGradedLayoutOffsets).

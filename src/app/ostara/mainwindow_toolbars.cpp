@@ -98,12 +98,14 @@ void MainWindow::ToolBarStages()
     m_rightGoToStage = new QLabel(this);
     m_rightGoToStage->setVisible(false);
 
-    m_topBar->SetModeActions(ui->actionDraw, ui->actionDetails, ui->actionGraded, ui->actionLayout);
+    m_topBar->SetModeActions(ui->actionDraw, ui->actionDetails, ui->actionGraded, ui->actionLayout,
+                             ui->actionExport);
 
     ui->actionDraw->setToolTip(FormatActionToolTip(ui->actionDraw));
     ui->actionDetails->setToolTip(FormatActionToolTip(ui->actionDetails));
     ui->actionGraded->setToolTip(FormatActionToolTip(ui->actionGraded));
     ui->actionLayout->setToolTip(FormatActionToolTip(ui->actionLayout));
+    ui->actionExport->setToolTip(FormatActionToolTip(ui->actionExport));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -278,6 +280,9 @@ void MainWindow::UpdateTopBarIcons()
     ui->actionGraded->setIcon(
         QIcon(QStringLiteral(":/icons/%1/stack-fill_%1.svg").arg(themeDir)));
     ui->actionLayout->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/printer-fill_%1.svg").arg(themeDir)));
+    // Export mode reuses the Layout icon.
+    ui->actionExport->setIcon(
         QIcon(QStringLiteral(":/icons/%1/printer-fill_%1.svg").arg(themeDir)));
     ui->actionNewDraw->setIcon(
         QIcon(QStringLiteral(":/icons/%1/plus-circle-fill_%1.svg").arg(themeDir)));
