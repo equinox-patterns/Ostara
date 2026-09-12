@@ -50,6 +50,11 @@ extern const QString CustomIncrSign;
 extern const QString AttrType;
 extern const QString AttrMx;
 extern const QString AttrMy;
+/// Normalized placement of a piece/group child, in reference-rect units. Always
+/// written and read as a pair, and only when an anchor is recorded. Not a length:
+/// never passed through ToPixel/FromPixel, unlike the piece's own mx/my.
+extern const QString AttrNx;
+extern const QString AttrNy;
 extern const QString AttrName;
 extern const QString AttrUUID;
 extern const QString AttrGradedAlignH;

@@ -37,6 +37,7 @@
 
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
+#include "../vpatterndb/ochildanchor.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vtools/tools/oannotationitem.h"
 #include "../vtools/tools/oinfoblockitem.h"
@@ -167,9 +168,20 @@ void OPieceGroupHolderItem::Refresh(const OPieceGroup &group, VAbstractPattern *
     m_groupBounds = bounds;
     setPos(bounds.topLeft());
 
-    RefreshGrainline(group, data);
-    RefreshBlocks(group, doc, data);
-    RefreshAnnotations(group);
+    // The children anchor against the members' node boxes, expressed in the holder's local
+    // frame. That is a second box, distinct from m_groupBounds: this one carries the origin
+    // and follows the rendered seam allowance, the other must not. Re-deriving here is what
+    // makes a group's grainline, blocks and annotations follow a member being resized.
+    m_childRefRect = OChildAnchor::RefRect(group, data, bounds.topLeft());
+    OPieceGroup followed = group;
+    if (OChildAnchor::Materialize(followed, m_childRefRect))
+    {
+        data->UpdatePieceGroup(m_groupId, followed);
+    }
+
+    RefreshGrainline(followed, data);
+    RefreshBlocks(followed, doc, data);
+    RefreshAnnotations(followed);
     update();
 }
 
@@ -450,6 +462,10 @@ void OPieceGroupHolderItem::CommitGroup(std::function<void(OPieceGroup &)> func)
     OPieceGroup oldGroup = groups->value(m_groupId);
     OPieceGroup newGroup = oldGroup;
     func(newGroup);
+    // A child the user moved on the canvas is in newGroup: record its anchor here, so that a
+    // later change of size keeps it where it was put. This is the group's single funnel — the
+    // seven handlers above all commit through it, and those that move nothing change nothing.
+    OChildAnchor::SyncFollowedChildren(oldGroup, newGroup, m_childRefRect);
     VAbstractApplication::VApp()->getUndoStack()->push(
         new SavePieceGroupOptions(oldGroup, newGroup, m_doc, m_data, m_groupId));
     Refresh(newGroup, m_doc, m_data);

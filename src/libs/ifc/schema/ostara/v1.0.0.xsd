@@ -659,6 +659,8 @@
                               <xs:attribute name="visible" type="xs:boolean"/>
                               <xs:attribute name="mx" type="xs:double"/>
                               <xs:attribute name="my" type="xs:double"/>
+                              <xs:attribute name="nx" type="xs:double"/>
+                              <xs:attribute name="ny" type="xs:double"/>
                               <xs:attribute name="length" type="xs:string"/>
                               <xs:attribute name="rotation" type="xs:string"/>
                               <xs:attribute name="arrows" type="arrowType"/>
@@ -804,6 +806,8 @@
                                     <xs:attribute name="index" type="xs:int" use="required"/>
                                     <xs:attribute name="mx" type="xs:double"/>
                                     <xs:attribute name="my" type="xs:double"/>
+                                    <xs:attribute name="nx" type="xs:double"/>
+                                    <xs:attribute name="ny" type="xs:double"/>
                                     <xs:attribute name="width" type="xs:double"/>
                                     <xs:attribute name="height" type="xs:double"/>
                                     <xs:attribute name="rotation" type="xs:double"/>
@@ -826,6 +830,8 @@
                                         <xs:complexType>
                                           <xs:attribute name="mx" type="xs:double"/>
                                           <xs:attribute name="my" type="xs:double"/>
+                                          <xs:attribute name="nx" type="xs:double"/>
+                                          <xs:attribute name="ny" type="xs:double"/>
                                           <xs:attribute name="width" type="xs:double"/>
                                           <xs:attribute name="height" type="xs:double"/>
                                           <xs:attribute name="fontScale" type="xs:double"/>
@@ -950,6 +956,8 @@
                         <xs:attribute name="visible" type="xs:boolean"/>
                         <xs:attribute name="mx" type="xs:double"/>
                         <xs:attribute name="my" type="xs:double"/>
+                        <xs:attribute name="nx" type="xs:double"/>
+                        <xs:attribute name="ny" type="xs:double"/>
                         <xs:attribute name="length" type="xs:string"/>
                         <xs:attribute name="rotation" type="xs:string"/>
                         <xs:attribute name="arrows" type="arrowType"/>
@@ -972,6 +980,8 @@
                               <xs:attribute name="index" type="xs:int" use="required"/>
                               <xs:attribute name="mx" type="xs:double"/>
                               <xs:attribute name="my" type="xs:double"/>
+                              <xs:attribute name="nx" type="xs:double"/>
+                              <xs:attribute name="ny" type="xs:double"/>
                               <xs:attribute name="width" type="xs:double"/>
                               <xs:attribute name="height" type="xs:double"/>
                               <xs:attribute name="rotation" type="xs:double"/>
@@ -994,6 +1004,8 @@
                                   <xs:complexType>
                                     <xs:attribute name="mx" type="xs:double"/>
                                     <xs:attribute name="my" type="xs:double"/>
+                                    <xs:attribute name="nx" type="xs:double"/>
+                                    <xs:attribute name="ny" type="xs:double"/>
                                     <xs:attribute name="width" type="xs:double"/>
                                     <xs:attribute name="height" type="xs:double"/>
                                     <xs:attribute name="fontScale" type="xs:double"/>

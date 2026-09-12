@@ -73,7 +73,7 @@ private:
     void ClearRows();
     void RebuildInfoList(const QString &templateName, const QHash<QString, int> &dispatch);
     auto ReadDispatch() const -> QHash<QString, int>;
-    auto BuildData() const -> OInfoBlockData;
+    auto BuildData(const IPieceInfo &det) const -> OInfoBlockData;
     void Commit();
 
     // cppcheck-suppress unknownMacro

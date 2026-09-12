@@ -75,7 +75,8 @@ public:
                        || (l.geom.pos == r.geom.pos && qFuzzyCompare(l.geom.width, r.geom.width)
                            && qFuzzyCompare(l.geom.height, r.geom.height)
                            && qFuzzyCompare(l.geom.rotation, r.geom.rotation)
-                           && qFuzzyCompare(l.geom.fontScale, r.geom.fontScale)));
+                           && qFuzzyCompare(l.geom.fontScale, r.geom.fontScale)
+                           && l.geom.anchor == r.geom.anchor));
         }
     };
 
@@ -93,7 +94,8 @@ public:
                        || (l.geom.pos == r.geom.pos
                            && qFuzzyCompare(l.geom.boxWidth, r.geom.boxWidth)
                            && qFuzzyCompare(l.geom.boxHeight, r.geom.boxHeight)
-                           && qFuzzyCompare(l.geom.fontScale, r.geom.fontScale)));
+                           && qFuzzyCompare(l.geom.fontScale, r.geom.fontScale)
+                           && l.geom.anchor == r.geom.anchor));
         }
     };
 

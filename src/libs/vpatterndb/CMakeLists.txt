@@ -2,6 +2,7 @@
 
 set(VPATTERN_SOURCES
     oannotationdata.cpp
+    ochildanchor.cpp
     oinfoblockdata.cpp
     osizerange.cpp
     testpassmark.cpp
@@ -15,7 +16,9 @@ set(VPATTERN_SOURCES
     vpiecepath.cpp
     vpassmark.cpp
     oannotationdata.h
+    ochildanchor.h
     oinfoblockdata.h
+    onormalizedanchor.h
     osizerange.h
     ipieceinfo.h
     opiecegroup.h

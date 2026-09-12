@@ -52,6 +52,7 @@
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
+#include "../vpatterndb/ochildanchor.h"
 #include "../vpatterndb/variables/vincrement.h"
 #include "../vpatterndb/vnodedetail.h"
 #include "../vpatterndb/vpiecenode.h"
@@ -216,6 +217,13 @@ void VPattern::Parse(const Document &parse)
     }
 
     m_fileParsingCompleted = true;
+
+    // Adopt an anchor for every piece child that carries a deliberate placement but no anchor
+    // yet — a file written before the anchor existed. Done here rather than left to the next
+    // geometry refresh because a LiteParseTree rebuilds the container from the DOM with no
+    // geometry pass in between, and the Graded layers read that container right after.
+    MaterializeChildAnchors();
+
     if (IsPatternGraphComplete())
     {
         emit PatternDependencyGraphCompleted();
@@ -231,6 +239,158 @@ void VPattern::Parse(const Document &parse)
     else if (VApplication::CommandLine()->IsTestModeEnabled())
     {
         RefreshPieceGeometry();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::MaterializeChildAnchors()
+{
+    if (data == nullptr)
+    {
+        return;
+    }
+
+    // Pieces only. A group's children are stored in the holder's local frame, whose origin is
+    // the union of its members' *rendered* bounds — a scene notion that does not exist yet at
+    // this point, and one that would not match an origin guessed from the node points alone.
+    // OPieceGroupHolderItem::Refresh does the group's own pass, which a change of size reaches
+    // through CheckLayout.
+    const QList<quint32> ids = data->DataPieces()->keys();
+    for (quint32 id : ids)
+    {
+        const VPiece piece = data->GetPiece(id);
+        const QRectF ref = OChildAnchor::RefRect(piece, data);
+        if (ref.isNull())
+        {
+            continue; // no usable node — nothing to anchor against
+        }
+
+        VPiece followed = piece;
+        if (OChildAnchor::Materialize(followed, ref))
+        {
+            data->UpdatePiece(id, followed);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+/// Writes a child's absolute position and its anchor onto an element the document already holds.
+///
+/// Never recreates the element: the schema checks the order of xs:sequence, so moving a child
+/// element would make the file fail validation. The anchor pair is written exactly when an anchor
+/// is recorded — the same predicate the reader uses, or the attributes would come and go on every
+/// save/reload round.
+void WriteChildGeometry(VDomDocument *doc, QDomElement &element, const QPointF &pos,
+                        const ONormalizedAnchor &anchor)
+{
+    doc->SetAttribute(element, AttrMx, pos.x());
+    doc->SetAttribute(element, AttrMy, pos.y());
+
+    if (anchor.valid)
+    {
+        doc->SetAttribute(element, AttrNx, anchor.uv.x());
+        doc->SetAttribute(element, AttrNy, anchor.uv.y());
+    }
+    else
+    {
+        element.removeAttribute(AttrNx);
+        element.removeAttribute(AttrNy);
+    }
+}
+
+/// The children of one piece or one group, mirrored into its element.
+void SyncOwnerChildren(VDomDocument *doc, QDomElement &ownerElement, const IPieceInfo &owner,
+                       const VGrainlineData &grainline)
+{
+    if (QDomElement grainlineEl = ownerElement.firstChildElement(VAbstractPattern::TagGrainline);
+        !grainlineEl.isNull())
+    {
+        WriteChildGeometry(doc, grainlineEl, grainline.GetPos(), grainline.GetAnchor());
+    }
+
+    if (QDomElement blocksEl = ownerElement.firstChildElement(VToolSeamAllowance::TagCartoucheBlocks);
+        !blocksEl.isNull())
+    {
+        const OInfoBlockData &blockData = owner.GetInfoBlockData();
+        QDomElement blockEl = blocksEl.firstChildElement(VToolSeamAllowance::TagBlock);
+        while (!blockEl.isNull())
+        {
+            const int index = blockEl.attribute(VToolSeamAllowance::AttrIndex).toInt();
+            // A block the model no longer stores is left alone rather than erased: the writers own
+            // the shape of the element, this pass only refreshes what is already in it.
+            if (index >= 1 && index <= 11 && blockData.HasStoredGeometry(index))
+            {
+                const OInfoBlockGeom geom = blockData.BlockGeom(index);
+                WriteChildGeometry(doc, blockEl, geom.pos, geom.anchor);
+            }
+            blockEl = blockEl.nextSiblingElement(VToolSeamAllowance::TagBlock);
+        }
+    }
+
+    if (QDomElement annotationsEl = ownerElement.firstChildElement(VToolSeamAllowance::TagAnnotations);
+        !annotationsEl.isNull())
+    {
+        // The nth <annotation> is the nth of the model list: the writer emits them in list order,
+        // and the element is an Ostara creation, so no other producer can have ordered it.
+        const QList<OAnnotation> annotations = owner.GetAnnotationData().Annotations();
+        QDomElement annotationEl = annotationsEl.firstChildElement(VToolSeamAllowance::TagAnnotation);
+        int index = 0;
+        while (!annotationEl.isNull() && index < annotations.size())
+        {
+            if (QDomElement geomEl = annotationEl.firstChildElement(VToolSeamAllowance::TagGeom);
+                !geomEl.isNull())
+            {
+                const OAnnotationGeom &geom = annotations.at(index).geom;
+                WriteChildGeometry(doc, geomEl, geom.pos, geom.anchor);
+            }
+            annotationEl = annotationEl.nextSiblingElement(VToolSeamAllowance::TagAnnotation);
+            ++index;
+        }
+    }
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::SyncChildGeometryToDom()
+{
+    QDomElement root = documentElement();
+    if (root.isNull() || data == nullptr)
+    {
+        return;
+    }
+
+    if (QDomElement details = root.firstChildElement(TagDetails); !details.isNull())
+    {
+        const auto *pieces = data->DataPieces();
+        QDomElement detail = details.firstChildElement(TagDetail);
+        while (!detail.isNull() && pieces != nullptr)
+        {
+            const quint32 id = detail.attribute(VDomDocument::AttrId).toUInt();
+            if (pieces->contains(id))
+            {
+                const VPiece piece = pieces->value(id);
+                SyncOwnerChildren(this, detail, piece, piece.GetGrainlineGeometry());
+            }
+            detail = detail.nextSiblingElement(TagDetail);
+        }
+    }
+
+    if (QDomElement groups = root.firstChildElement(TagPieceGroups); !groups.isNull())
+    {
+        const auto *all = data->DataPieceGroups();
+        QDomElement group = groups.firstChildElement(TagPieceGroup);
+        while (!group.isNull() && all != nullptr)
+        {
+            const quint32 id = group.attribute(VDomDocument::AttrId).toUInt();
+            if (all->contains(id))
+            {
+                const OPieceGroup pieceGroup = all->value(id);
+                SyncOwnerChildren(this, group, pieceGroup, pieceGroup.m_glGrainline);
+            }
+            group = group.nextSiblingElement(TagPieceGroup);
+        }
     }
 }
 
@@ -462,6 +622,9 @@ auto VPattern::SaveDocument(const QString &fileName, QString &error) -> bool
     }
 
     SyncLineNamesToDom();
+    // A position that moved with the active size exists in the container only: the refresh that
+    // moved it pushes no undo command, so no writer has seen it. This is where it reaches the file.
+    SyncChildGeometryToDom();
     const bool saved = VAbstractPattern::SaveDocument(fileName, error);
     if (saved && QFileInfo(fileName).suffix() != "autosave"_L1)
     {

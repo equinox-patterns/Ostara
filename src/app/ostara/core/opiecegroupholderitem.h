@@ -111,6 +111,7 @@ private:
     /** @brief Union of the members' scene bounding rects — the holder's clickable frame
      *  (Val Fork VPieceGroupHolderItem). In scene coordinates. */
     QRectF m_groupBounds;
+    QRectF m_childRefRect; // Rect the group's children anchor against, in the holder's local frame
     VGrainlineItem *m_grainlineItem{nullptr};
     QVector<OInfoBlockItem *> m_blockItems;
     QVector<OAnnotationItem *> m_annotationItems;

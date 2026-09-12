@@ -32,6 +32,7 @@
 #include <QPointF>
 #include <QSharedData>
 
+#include "../onormalizedanchor.h"
 #include "../vmisc/defglobal.h"
 #include "../vmisc/typedef.h"
 #include "floatitemdef.h"
@@ -59,6 +60,9 @@ public:
 
     /** @brief m_visible visibility flag */
     bool m_visible{true}; // NOLINT(misc-non-private-member-variables-in-classes)
+
+    /** @brief m_anchor normalized placement, keeps the grainline following the active size */
+    ONormalizedAnchor m_anchor{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
 private:
     Q_DISABLE_ASSIGN_MOVE(VGrainlineDataPrivate) // NOLINT

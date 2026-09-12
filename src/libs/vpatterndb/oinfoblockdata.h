@@ -38,6 +38,8 @@
 #include <QVector>
 #include <QtGlobal>
 
+#include "onormalizedanchor.h"
+
 /**
  * @brief Geometry of one information block, in piece-local scene pixels.
  *
@@ -52,6 +54,7 @@ struct OInfoBlockGeom
     qreal height{0.0};    // Height in px; 0 = auto-size.
     qreal rotation{0.0};  // Rotation in degrees.
     qreal fontScale{1.0}; // Content scale factor applied on resize.
+    ONormalizedAnchor anchor{}; // Normalized placement, keeps the block following the active size.
 };
 
 /**

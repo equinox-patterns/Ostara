@@ -192,6 +192,13 @@ public:
      *  (VToolPiecePath) and its point nodes (VNodePoint). */
     void SetInternalPathHighlight(quint32 pathId, bool highlight);
 
+    /** @brief The rect this piece's children anchor against, in the piece's local frame.
+     *
+     * Built from the node points, so it is independent of the seam allowance and of the
+     * "boundary together with notches" preference. Empty when the piece has no usable
+     * node, in which case nothing is anchored. */
+    auto ChildAnchorRefRect() const -> QRectF;
+
 public slots:
     void FullUpdateFromGuiApply() override;
     void FullUpdateFromFile() override;
@@ -238,6 +245,7 @@ private:
 
     QPainterPath m_mainPath{}; // Must be first to prevent crash
     QRectF m_pieceBoundingRect{};
+    QRectF m_childRefRect{}; // Reference for the children's normalized anchors; see ChildAnchorRefRect()
 
     /** @brief sceneDetails pointer to the scene. */
     VMainGraphicsScene *m_sceneDetails;
@@ -345,6 +353,12 @@ private:
         -> QVector<quint32>;
 
     void UpdateFoldLine(const VFoldLine &foldLine);
+    /** @brief Re-derives the children's positions from their anchors, and publishes them. */
+    void MaterializeChildAnchors();
+    /** @brief Records a child position change: derives its anchor, then pushes the undo command.
+     *
+     *  The single funnel for every child position written on a piece. */
+    void PushChildChange(const VPiece &oldDet, VPiece &newDet, const QString &text);
 
     auto ComputePieceGeometry(bool combineTogether, bool pieceShowMainPath) const -> VToolSeamAllowanceGeometry;
     void ApplyPieceGeometry(const VToolSeamAllowanceGeometry &geom, bool updateChildren);

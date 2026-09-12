@@ -275,9 +275,12 @@ auto OBlockConfigWidget::ReadDispatch() const -> QHash<QString, int>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OBlockConfigWidget::BuildData() const -> OInfoBlockData
+auto OBlockConfigWidget::BuildData(const IPieceInfo &det) const -> OInfoBlockData
 {
-    OInfoBlockData data;
+    // Start from what the owner already carries. A fresh object would drop the stored block
+    // geometry and the anchors with it: changing the cartouche template, or ticking "active",
+    // would silently send every block back to its default placement.
+    OInfoBlockData data = det.GetInfoBlockData();
     data.SetSet(true);
     data.SetActive(m_activeCheck->isChecked());
     data.SetTemplate(m_templateCombo->currentData().toString());
@@ -292,5 +295,5 @@ void OBlockConfigWidget::Commit()
     {
         return;
     }
-    m_modifyPending([this](IPieceInfo &det) { det.SetInfoBlockData(BuildData()); });
+    m_modifyPending([this](IPieceInfo &det) { det.SetInfoBlockData(BuildData(det)); });
 }

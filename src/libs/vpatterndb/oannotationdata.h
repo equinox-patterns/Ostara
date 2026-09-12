@@ -37,6 +37,8 @@
 
 #include <functional>
 
+#include "onormalizedanchor.h"
+
 /**
  * @brief Geometry of one annotation, in piece-local scene pixels.
  *
@@ -50,6 +52,7 @@ struct OAnnotationGeom
     qreal boxWidth{0.0};  // Box width in px; 0 = auto (fits the content).
     qreal boxHeight{0.0}; // Box height in px; 0 = auto.
     qreal fontScale{1.0}; // Content scale factor applied by the corner handles.
+    ONormalizedAnchor anchor{}; // Normalized placement, keeps the annotation following the active size.
 };
 
 /**

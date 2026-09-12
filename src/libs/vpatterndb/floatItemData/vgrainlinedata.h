@@ -32,6 +32,7 @@
 #include <QPointF>
 #include <QString>
 
+#include "../onormalizedanchor.h"
 #include "floatitemdef.h"
 #include "vabstractfloatitemdata.h"
 
@@ -66,6 +67,14 @@ public:
 
     auto IsVisible() const -> bool;
     void SetVisible(bool visible);
+
+    /** @brief Normalized placement against the piece or group reference rect.
+     *
+     * An invalid anchor means no deliberate placement is recorded: the position is
+     * either still to be adopted from GetPos(), or the grainline was never placed.
+     * See OChildAnchor, which is the only writer. */
+    auto GetAnchor() const -> ONormalizedAnchor;
+    void SetAnchor(const ONormalizedAnchor &anchor);
 
 private:
     QSharedDataPointer<VGrainlineDataPrivate> d;

@@ -32,6 +32,7 @@
 #include "../core/vapplication.h"
 #include "../ifc/exception/vexceptionbadid.h"
 #include "../ifc/exception/vexceptionobjecterror.h"
+#include "../ifc/xml/vdomdocument.h"
 #include "../ifc/xml/vpatternconverter.h"
 #include "../vmisc/def.h"
 #include "../vmisc/vvalentinasettings.h"
@@ -46,6 +47,30 @@
 #include <QtConcurrentRun>
 
 using namespace VPatternHelpers;
+
+namespace
+{
+/**
+ * @brief Reads the normalized anchor of a child of a piece or of a group.
+ *
+ * The attribute pair is the discriminator: absent means no deliberate placement is
+ * recorded, and the child's absolute position is left untouched until an anchor is
+ * adopted from it. Deliberately never defaulted — the omission predicate on the
+ * writing side is the same pair, so a default would make the attributes appear and
+ * vanish on every save/reload round.
+ */
+auto ParseChildAnchor(const QDomElement &element) -> ONormalizedAnchor
+{
+    ONormalizedAnchor anchor;
+    if (element.hasAttribute(AttrNx) && element.hasAttribute(AttrNy))
+    {
+        anchor.valid = true;
+        anchor.uv = QPointF(VDomDocument::GetParametrDouble(element, AttrNx, QStringLiteral("0.0")),
+                            VDomDocument::GetParametrDouble(element, AttrNy, QStringLiteral("0.0")));
+    }
+    return anchor;
+}
+} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VPattern::ParseDetailNode(const QDomElement &domElement) -> VNodeDetail
@@ -126,6 +151,7 @@ auto VPattern::ParsePieceCartoucheBlocks(const QDomElement &domElement) const ->
             geom.height = GetParametrDouble(element, AttrHeight, QStringLiteral("0.0"));
             geom.rotation = GetParametrDouble(element, VAbstractPattern::AttrRotation, QStringLiteral("0.0"));
             geom.fontScale = GetParametrDouble(element, VToolSeamAllowance::AttrFontScale, QStringLiteral("1.0"));
+            geom.anchor = ParseChildAnchor(element);
             geoms.insert(index, geom);
         }
     }
@@ -178,6 +204,7 @@ auto VPattern::ParsePieceAnnotations(const QDomElement &domElement) const -> OAn
                 annotation.geom.boxHeight = GetParametrDouble(child, AttrHeight, QStringLiteral("0.0"));
                 annotation.geom.fontScale =
                     GetParametrDouble(child, VToolSeamAllowance::AttrFontScale, QStringLiteral("1.0"));
+                annotation.geom.anchor = ParseChildAnchor(child);
             }
         }
         list.append(annotation);
@@ -463,6 +490,7 @@ auto VPattern::ParsePieceGrainline(const QDomElement &domElement, VGrainlineData
     gGeometry.SetVisible(GetParametrBool(domElement, AttrVisible, trueStr));
     gGeometry.SetPos(
         QPointF(GetParametrDouble(domElement, AttrMx, QChar('0')), GetParametrDouble(domElement, AttrMy, QChar('0'))));
+    gGeometry.SetAnchor(ParseChildAnchor(domElement));
     gGeometry.SetArrowType(static_cast<GrainlineArrowDirection>(GetParametrUInt(domElement, AttrArrows, QChar('0'))));
 
     // Pin anchors (topPin/bottomPin/centerPin) are gone along with the pin node type. A pin-anchored grainline is

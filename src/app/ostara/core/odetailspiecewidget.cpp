@@ -37,6 +37,7 @@
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
+#include "../vpatterndb/ochildanchor.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vpatterndb/vpiecepath.h"
@@ -1003,6 +1004,11 @@ void ODetailsPieceWidget::CommitPending()
 
     const auto *data = m_currentTool->getData();
     const VPiece oldDet = data->GetPiece(m_currentTool->getId());
+
+    // A child moved from the dock (the grainline preset, a block or an annotation edited in the
+    // property browser) is in m_pendingDet: record its anchor here, so that a later change of
+    // size keeps it where it was put. The piece's own fields are unaffected.
+    OChildAnchor::SyncFollowedChildren(oldDet, m_pendingDet, m_currentTool->ChildAnchorRefRect());
 
     VAbstractApplication::VApp()->getUndoStack()->push(
         new SavePieceOptions(oldDet, m_pendingDet,

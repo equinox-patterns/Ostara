@@ -60,6 +60,7 @@
 #include "../vtheme/vtheme.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
+#include "../vpatterndb/ochildanchor.h"
 #include "../vpatterndb/oinfoblockdata.h"
 #include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/variables/vincrement.h"
@@ -814,6 +815,12 @@ void VToolSeamAllowance::AddGrainline(VAbstractPattern *doc, QDomElement &domEle
     doc->SetAttribute(domData, VAbstractPattern::AttrVisible, glGeom.IsVisible());
     doc->SetAttribute(domData, AttrMx, glGeom.GetPos().x());
     doc->SetAttribute(domData, AttrMy, glGeom.GetPos().y());
+    const ONormalizedAnchor anchor = glGeom.GetAnchor();
+    if (anchor.valid)
+    {
+        doc->SetAttribute(domData, AttrNx, anchor.uv.x());
+        doc->SetAttribute(domData, AttrNy, anchor.uv.y());
+    }
     doc->SetAttribute(domData, AttrLength, glGeom.GetLength());
     doc->SetAttribute(domData, VAbstractPattern::AttrRotation, glGeom.GetRotation());
     doc->SetAttribute(domData, VAbstractPattern::AttrArrows, static_cast<int>(glGeom.GetArrowType()));
@@ -884,6 +891,11 @@ void VToolSeamAllowance::AddCartoucheBlocks(VAbstractPattern *doc, QDomElement &
         doc->SetAttribute(blockEl, VToolSeamAllowance::AttrIndex, index);
         doc->SetAttribute(blockEl, AttrMx, geom.pos.x());
         doc->SetAttribute(blockEl, AttrMy, geom.pos.y());
+        if (geom.anchor.valid)
+        {
+            doc->SetAttribute(blockEl, AttrNx, geom.anchor.uv.x());
+            doc->SetAttribute(blockEl, AttrNy, geom.anchor.uv.y());
+        }
         doc->SetAttributeOrRemoveIf<qreal>(blockEl, AttrWidth, geom.width,
                                            [](qreal width) noexcept { return qFuzzyIsNull(width); });
         doc->SetAttributeOrRemoveIf<qreal>(blockEl, AttrHeight, geom.height,
@@ -922,6 +934,11 @@ void VToolSeamAllowance::AddAnnotations(VAbstractPattern *doc, QDomElement &domE
         QDomElement geomEl = doc->createElement(VToolSeamAllowance::TagGeom);
         doc->SetAttribute(geomEl, AttrMx, annotation.geom.pos.x());
         doc->SetAttribute(geomEl, AttrMy, annotation.geom.pos.y());
+        if (annotation.geom.anchor.valid)
+        {
+            doc->SetAttribute(geomEl, AttrNx, annotation.geom.anchor.uv.x());
+            doc->SetAttribute(geomEl, AttrNy, annotation.geom.anchor.uv.y());
+        }
         doc->SetAttributeOrRemoveIf<qreal>(geomEl, AttrWidth, annotation.geom.boxWidth,
                                            [](qreal width) noexcept { return qFuzzyIsNull(width); });
         doc->SetAttributeOrRemoveIf<qreal>(geomEl, AttrHeight, annotation.geom.boxHeight,
@@ -1456,6 +1473,20 @@ void VToolSeamAllowance::UpdateGrainline()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::PushChildChange(const VPiece &oldDet, VPiece &newDet, const QString &text)
+{
+    // The single place where a child position reaches the model on a piece: the anchor is derived
+    // from the position the gesture produced, against the piece rect in hand. Every Save* handler
+    // below goes through here, so none of them can forget it — and a child the gesture did not
+    // move keeps whatever anchor it had.
+    OChildAnchor::SyncFollowedChildren(oldDet, newDet, m_childRefRect);
+
+    auto *command = new SavePieceOptions(oldDet, newDet, doc, m_id);
+    command->setText(text);
+    VAbstractApplication::VApp()->getUndoStack()->push(command);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::SaveMoveGrainline(const QPointF &ptPos)
 {
     VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
@@ -1463,9 +1494,7 @@ void VToolSeamAllowance::SaveMoveGrainline(const QPointF &ptPos)
     newDet.GetGrainlineGeometry().SetPos(ptPos);
     qDebug() << "******* new grainline pos" << ptPos;
 
-    auto *moveCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    moveCommand->setText(tr("move grainline"));
-    VAbstractApplication::VApp()->getUndoStack()->push(moveCommand);
+    PushChildChange(oldDet, newDet, tr("move grainline"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1478,9 +1507,7 @@ void VToolSeamAllowance::SaveResizeGrainline(qreal dLength)
     newDet.GetGrainlineGeometry().SetPos(m_grainLine->pos());
     newDet.GetGrainlineGeometry().SetLength(QString().setNum(dLength));
 
-    auto *resizeCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    resizeCommand->setText(tr("resize grainline"));
-    VAbstractApplication::VApp()->getUndoStack()->push(resizeCommand);
+    PushChildChange(oldDet, newDet, tr("resize grainline"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1492,9 +1519,7 @@ void VToolSeamAllowance::SaveRotateGrainline(qreal dRot, const QPointF &ptPos)
     newDet.GetGrainlineGeometry().SetRotation(QString().setNum(qRadiansToDegrees(dRot)));
     newDet.GetGrainlineGeometry().SetPos(ptPos);
 
-    auto *rotateCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    rotateCommand->setText(tr("rotate grainline"));
-    VAbstractApplication::VApp()->getUndoStack()->push(rotateCommand);
+    PushChildChange(oldDet, newDet, tr("rotate grainline"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1573,9 +1598,7 @@ void VToolSeamAllowance::SaveMoveInfoBlock(int blockIndex, const QPointF &pos)
     data.SetBlockGeom(blockIndex, geom);
     newDet.SetInfoBlockData(data);
 
-    auto *moveCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    moveCommand->setText(tr("move information block"));
-    VAbstractApplication::VApp()->getUndoStack()->push(moveCommand);
+    PushChildChange(oldDet, newDet, tr("move information block"));
     UpdateInfoBlocks();
 }
 
@@ -1605,9 +1628,7 @@ void VToolSeamAllowance::SaveResizeInfoBlock(int blockIndex, qreal newW, qreal n
     data.SetBlockGeom(blockIndex, geom);
     newDet.SetInfoBlockData(data);
 
-    auto *resizeCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    resizeCommand->setText(tr("resize information block"));
-    VAbstractApplication::VApp()->getUndoStack()->push(resizeCommand);
+    PushChildChange(oldDet, newDet, tr("resize information block"));
     UpdateInfoBlocks();
 }
 
@@ -1776,9 +1797,7 @@ void VToolSeamAllowance::SaveMoveAnnotation(int index, const QPointF &pos)
     data.SetSet(true);
     newDet.SetAnnotationData(data);
 
-    auto *moveCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    moveCommand->setText(tr("move annotation"));
-    VAbstractApplication::VApp()->getUndoStack()->push(moveCommand);
+    PushChildChange(oldDet, newDet, tr("move annotation"));
     UpdateAnnotations();
 }
 
@@ -1812,9 +1831,7 @@ void VToolSeamAllowance::SaveResizeAnnotation(int index, qreal newW, qreal newH,
     data.SetSet(true);
     newDet.SetAnnotationData(data);
 
-    auto *resizeCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    resizeCommand->setText(tr("resize annotation"));
-    VAbstractApplication::VApp()->getUndoStack()->push(resizeCommand);
+    PushChildChange(oldDet, newDet, tr("resize annotation"));
     UpdateAnnotations();
 }
 
@@ -1878,6 +1895,12 @@ void VToolSeamAllowance::RefreshScale()
     {
         m_foldLineLabel->setBrush(foldLineBrush);
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::ChildAnchorRefRect() const -> QRectF
+{
+    return m_childRefRect;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2584,6 +2607,21 @@ auto VToolSeamAllowance::ComputePieceGeometry(bool combineTogether, bool pieceSh
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::MaterializeChildAnchors()
+{
+    // GetPiece hands out a copy sharing its data, so nothing here reaches the container
+    // until UpdatePiece — and that happens only on a real change. Publishing an unchanged
+    // value would look like a model edit to everything watching the pattern, and a pattern
+    // refresh walks every piece: at 250 ms per keystroke, the ones that did not move must
+    // cost nothing.
+    VPiece piece = VAbstractTool::data.GetPiece(m_id);
+    if (OChildAnchor::Materialize(piece, m_childRefRect))
+    {
+        VAbstractTool::data.UpdatePiece(m_id, piece);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &geom, bool updateChildren)
 {
     // Applies a previously computed geometry snapshot to the scene items. Must run on the GUI thread.
@@ -2636,6 +2674,14 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
     }
 
     m_mirrorLine->setPath(geom.mirrorLine);
+
+    // The rect the children anchor against, and the re-derivation itself. Kept apart from
+    // m_pieceBoundingRect, which follows the seam allowance and the "boundary together with
+    // notches" preference: a recorded placement must not move because a display preference
+    // changed. Runs before the Update* calls below, which read the piece back from the
+    // container — this is where a grainline, a block or an annotation follows a new size.
+    m_childRefRect = OChildAnchor::RefRect(VAbstractTool::data.GetPiece(m_id), getData());
+    MaterializeChildAnchors();
 
     UpdateFoldLine(geom.foldLine);
 

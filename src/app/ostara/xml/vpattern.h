@@ -263,6 +263,18 @@ private:
 
     auto EvalFormula(VContainer *data, const QString &formula, bool *ok) const -> qreal;
 
+    /** @brief Adopts an anchor for every piece child placed before the anchor existed.
+     *
+     * Pieces only — see the definition for why a group cannot be done here. */
+    void MaterializeChildAnchors();
+
+    /** @brief Mirrors the children's resolved positions and anchors into the DOM before saving.
+     *
+     * The save path does not go through RefreshDataInFile, so a position that moved only in the
+     * container — which is every position that followed a change of size — would otherwise be
+     * written to the file as it stood at the previous save. */
+    void SyncChildGeometryToDom();
+
     auto MakeEmptyIncrement(const QString &name, IncrementType type) -> QDomElement;
     auto FindIncrement(const QString &name) const -> QDomElement;
 

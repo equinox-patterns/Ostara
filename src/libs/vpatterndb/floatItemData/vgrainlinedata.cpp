@@ -119,3 +119,15 @@ void VGrainlineData::SetVisible(bool visible)
 {
     d->m_visible = visible;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VGrainlineData::GetAnchor() const -> ONormalizedAnchor
+{
+    return d->m_anchor;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VGrainlineData::SetAnchor(const ONormalizedAnchor &anchor)
+{
+    d->m_anchor = anchor;
+}
