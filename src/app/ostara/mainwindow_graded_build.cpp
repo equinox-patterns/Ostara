@@ -30,6 +30,7 @@
 #include "mainwindowsnogui.h"
 #include "dialogs/owaitdialog.h"
 #include "mainwindow_graded_helpers.h"
+#include "ogradedgeometry.h"
 #include "widgets/InfoBlock/OPieceCartoucheTable.h"
 #include "xml/vpattern.h"
 #include "../ifc/xml/vabstractpattern.h"
@@ -65,6 +66,7 @@
 #include <QStringList>
 #include <QTimer>
 #include <QtGlobal>
+#include <QtNumeric>
 #include <QUndoStack>
 #include <QVector>
 
@@ -181,6 +183,9 @@ void MainWindow::BuildGradedScene()
                 // Piece-content digest: seam allowance/margins + hide/show main path, mounting
                 // notches, internal paths, place labels (mx/my deliberately excluded).
                 parts.append(GradedPieceContentDigest(piece));
+                // Forced alignment point: changing it (or undoing that change) while Graded is
+                // active must re-capture — the item roles carry the point's X per size.
+                parts.append(QStringLiteral("ap%1=%2").arg(id).arg(piece.GetGradedAlignPointId()));
             }
         }
         if (const auto *groups = pattern->DataPieceGroups(); groups != nullptr)
@@ -198,6 +203,9 @@ void MainWindow::BuildGradedScene()
                 {
                     parts.append(QString::number(member));
                 }
+                // The group's common point and whether it drives the alignment.
+                parts.append(QStringLiteral("gap%1=%2:%3:%4").arg(groupId).arg(group.alignPointSourceId)
+                                 .arg(group.alignPointMemberId).arg(group.alignOnPoint ? 1 : 0));
             }
         }
         return parts.join(QLatin1Char('|'));
@@ -372,6 +380,15 @@ void MainWindow::BuildGradedScene()
             item->setFlag(QGraphicsItem::ItemIsMovable, isReference);
             item->setData(kGradedPieceIdRole, pieceId);
             item->setData(kGradedIsRefRole, isReference);
+
+            // Forced alignment point: captured here, while this size's measurements are still in the
+            // container. The alignment pass runs later, on the restored live combination, and has
+            // nothing left but the item roles — hence the per-item role rather than a table.
+            const qreal alignPointX = OGraded::UnitAlignPointX(pieceId, details.at(k).piece, pattern);
+            if (!qIsNaN(alignPointX))
+            {
+                item->setData(kGradedAlignPointXRole, alignPointX);
+            }
             m_sceneGraded->addItem(item);
         }
 

@@ -60,6 +60,13 @@ struct OPieceGroup : public IPieceInfo
     int alignH{2}; // Graded alignment horizontal: 1=left, 2=center, 3=right
     int alignV{2}; // Graded alignment vertical: 1=top, 2=center, 3=bottom
 
+    // The group's forced alignment point IS the common point chosen when the pieces were linked.
+    // Stored as the construction source id (idObject), because each member carries its own copy of
+    // that node under a different node id — the source is the only identity they share.
+    quint32 alignPointSourceId{NULL_ID}; // Common point source id (NULL_ID = none stored)
+    quint32 alignPointMemberId{NULL_ID}; // Member whose copy is the X reference (NULL_ID = lowest piece id)
+    bool alignOnPoint{false};            // "Align on the common point": overrides the horizontal alignment
+
     // Children — same types as VPiece. No VCustomLabelData: the group holds its fields directly.
     VGrainlineData m_glGrainline{};
     OInfoBlockData m_infoBlocks{};

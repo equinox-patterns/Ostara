@@ -40,6 +40,7 @@
 #include "../vtools/undocommands/togglepiecestate.h"
 #include "../vtools/undocommands/togglegroupinlayout.h"
 #include "../vtools/undocommands/unlinkpiecegroup.h"
+#include "../core/opiececommonpoint.h"
 #include "opiecegroupdialog.h"
 #include "ui_vwidgetdetails.h"
 
@@ -87,52 +88,6 @@ auto LayoutIcon(bool inLayout) -> QIcon
     return QIcon(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, name));
 }
 
-// Resolve a node id to its construction source. Two pieces sharing a construction point each
-// carry their own modeling copy of it (a different node id per piece), so the common point
-// must be matched on the source id (idObject), never on the node id itself.
-auto NodeSourceId(quint32 nodeId, const VContainer *data) -> quint32
-{
-    if (nodeId == NULL_ID || data == nullptr)
-    {
-        return nodeId;
-    }
-    try
-    {
-        const QSharedPointer<VGObject> gobj = data->GetGObject(nodeId);
-        const quint32 source = gobj->getIdObject();
-        return source == NULL_ID ? nodeId : source;
-    }
-    catch (const VExceptionBadId &)
-    {
-        return nodeId;
-    }
-}
-
-auto PieceHasNodeWithSource(const VPiece &piece, quint32 sourceId, const VContainer *data) -> bool
-{
-    const QVector<VPieceNode> nodes = piece.GetPath().GetNodes();
-    for (const VPieceNode &node : nodes)
-    {
-        if (NodeSourceId(node.GetId(), data) == sourceId)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-auto PieceNodeWithSource(const VPiece &piece, quint32 sourceId, const VContainer *data) -> quint32
-{
-    const QVector<VPieceNode> nodes = piece.GetPath().GetNodes();
-    for (const VPieceNode &node : nodes)
-    {
-        if (NodeSourceId(node.GetId(), data) == sourceId)
-        {
-            return node.GetId();
-        }
-    }
-    return NULL_ID;
-}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -834,7 +789,7 @@ void VWidgetDetails::OnNodeSelected(quint32 nodeId)
     // The match is made on the construction source of the node (idObject), not on the node id
     // itself: two pieces sharing a construction point each own a different modeling copy of it.
     // A piece may have been deleted between the selection and this click — abort cleanly.
-    const quint32 sourceId = NodeSourceId(nodeId, m_data);
+    const quint32 sourceId = OPieceCommonPoint::SourceNodeId(nodeId, m_data);
     for (quint32 pid : m_selectedPiecesForGroup)
     {
         if (m_data->DataPieces() == nullptr || not m_data->DataPieces()->contains(pid))
@@ -843,7 +798,7 @@ void VWidgetDetails::OnNodeSelected(quint32 nodeId)
             return;
         }
         const VPiece piece = m_data->GetPiece(pid);
-        if (not PieceHasNodeWithSource(piece, sourceId, m_data))
+        if (not OPieceCommonPoint::PieceHasNodeWithSource(piece, sourceId, m_data))
         {
             QMessageBox::information(
                 this, tr("Link pieces"),
@@ -857,6 +812,8 @@ void VWidgetDetails::OnNodeSelected(quint32 nodeId)
     // Each member owns its own modeling copy of the source — resolve its own node id.
     const QPointF refScenePos = FindNodeScenePos(nodeId);
     m_tempOffsets.clear();
+    m_pendingAlignSourceId = sourceId;
+    m_pendingAlignMemberId = NULL_ID;
     for (quint32 pid : m_selectedPiecesForGroup)
     {
         auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pid));
@@ -864,10 +821,15 @@ void VWidgetDetails::OnNodeSelected(quint32 nodeId)
         {
             continue;
         }
-        const quint32 memberNodeId = PieceNodeWithSource(m_data->GetPiece(pid), sourceId, m_data);
+        const quint32 memberNodeId =
+            OPieceCommonPoint::PieceNodeWithSource(m_data->GetPiece(pid), sourceId, m_data);
         if (memberNodeId == NULL_ID)
         {
             continue;  // already validated above — defensive only
+        }
+        if (memberNodeId == nodeId)
+        {
+            m_pendingAlignMemberId = pid;  // the member the user actually clicked
         }
         const QPointF memberScenePos = FindNodeScenePos(memberNodeId);
         const QPointF offset = refScenePos - memberScenePos;
@@ -893,6 +855,10 @@ void VWidgetDetails::CompleteGroupCreation()
     OPieceGroup group = dialog.GetGroup();
     group.pieceIds = QVector<quint32>(m_selectedPiecesForGroup.cbegin(), m_selectedPiecesForGroup.cend());
     group.memberOffsets = m_tempOffsets;
+    // The common point itself is kept, so the graded alignment can anchor on it later. Using it
+    // stays an explicit choice: alignOnPoint is left at its default (off).
+    group.alignPointSourceId = m_pendingAlignSourceId;
+    group.alignPointMemberId = m_pendingAlignMemberId;
 
     auto *linkCommand = new LinkPieceGroup(group, m_doc, m_data);
     connect(linkCommand, &LinkPieceGroup::UpdateGroups, this, &VWidgetDetails::UpdateList);
@@ -903,6 +869,8 @@ void VWidgetDetails::CompleteGroupCreation()
 
     DeselectSelectedPieces();
     m_tempOffsets.clear();
+    m_pendingAlignSourceId = NULL_ID;
+    m_pendingAlignMemberId = NULL_ID;
     SetGroupToolState(GroupToolState::Idle);
     emit ShowStatusTip(QString());
 }
@@ -940,6 +908,8 @@ void VWidgetDetails::CancelGroupSelection()
 {
     DeselectSelectedPieces();
     m_tempOffsets.clear();
+    m_pendingAlignSourceId = NULL_ID;
+    m_pendingAlignMemberId = NULL_ID;
     SetGroupToolState(GroupToolState::Idle);
     emit ShowStatusTip(QString());
 }

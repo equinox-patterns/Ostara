@@ -36,6 +36,7 @@
 #include <QScrollArea>
 #include <QStackedWidget>
 #include <QStyle>
+#include <QTimer>
 #include <QVBoxLayout>
 
 namespace
@@ -100,8 +101,25 @@ ODetailsPropertyBrowser::ODetailsPropertyBrowser(QWidget *parent)
             &ODetailsPropertyBrowser::InternalPathHighlight);
 
     // Re-emit group widget signals through the browser.
+    // Picking the piece's alignment point on the canvas must not leave the dock on the clicked
+    // node's page. Deferred by one turn: that click still has to reach the scene, which is what
+    // would switch the page — restoring after it is what keeps the piece and its General tab in front.
+    connect(m_pieceWidget, &ODetailsPieceWidget::PiecePageRequested, this, [this]()
+    {
+        QTimer::singleShot(0, this, [this]()
+        {
+            if (m_pieceWidget->IsShowingPiece())
+            {
+                m_stack->setCurrentWidget(m_pieceWidget);
+                m_pieceWidget->RestoreGeneralTab();
+            }
+        });
+    });
+
     connect(m_groupWidget, &ODetailsGroupWidget::ShowStatusTip, this, &ODetailsPropertyBrowser::ShowStatusTip);
     connect(m_groupWidget, &ODetailsGroupWidget::StartFoldLineMember, this, &ODetailsPropertyBrowser::StartFoldLineMember);
+    connect(m_groupWidget, &ODetailsGroupWidget::HighlightNode, this,
+            [this](quint32 nodeId, bool highlight) { emit HighlightNode(nodeId, highlight); });
 
     // ── Same structure as the draw-mode Options dock (VToolOptionsPropertyBrowser):
     //    QDockWidget → QScrollArea → scrollContents → content ──
@@ -228,6 +246,11 @@ void ODetailsPropertyBrowser::ClearNodeHighlight()
         emit HighlightNode(m_highlightedNodeId, false);
         m_highlightedNodeId = 0;
     }
+    // The forced alignment point carries a highlight of its own: the page that owns it drops it
+    // here too, so the two can never fight over the same node. Returning to the piece page
+    // re-lights it (ShowPieceOptions → Show → RefreshAlignPointHighlight).
+    m_pieceWidget->ClearAlignPointHighlight();
+    m_groupWidget->ClearAlignPointHighlight();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -297,6 +320,24 @@ void ODetailsPropertyBrowser::OnNodeSelectedForGroupFoldLine(quint32 nodeId)
 void ODetailsPropertyBrowser::CancelGroupFoldLineSelection()
 {
     m_groupWidget->CancelFoldLineSelection();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsPropertyBrowser::IsSelectingAlignPoint() const -> bool
+{
+    return m_pieceWidget->IsSelectingAlignPoint();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::OnNodeSelectedForAlignPoint(quint32 nodeId)
+{
+    m_pieceWidget->OnNodeSelectedForAlignPoint(nodeId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::CancelAlignPointSelection()
+{
+    m_pieceWidget->CancelAlignPointSelection();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

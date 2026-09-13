@@ -37,6 +37,7 @@
 #include <QHash>
 #include <QMap>
 #include <QRectF>
+#include <QtNumeric>
 
 namespace
 {
@@ -145,13 +146,12 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
             continue;
         }
 
-        int alignH = 2;
-        int alignV = 2;
+        OGraded::AlignRule rule;
         if (pieces != nullptr && pieces->contains(it.key()))
         {
             const VPiece &piece = pieces->value(it.key());
-            alignH = piece.GetGradedAlignH();
-            alignV = piece.GetGradedAlignV();
+            rule.alignH = piece.GetGradedAlignH();
+            rule.alignV = piece.GetGradedAlignV();
         }
 
         QVector<QRectF> rects;
@@ -164,12 +164,16 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
             unionRect = unionRect.isNull() ? rect : unionRect.united(rect);
         }
 
-        const QPointF target = OGraded::AnchorPoint(unionRect, alignH, alignV);
+        // Slots are indexed in increasing layer order, so the first one is the smallest size —
+        // the same reference the canvas uses. It carries the X every other size is brought onto.
+        rule.refPointX = layers.at(it.value().first().layer).pieces.at(it.value().first().piece).alignPointX;
+
         for (int i = 0; i < it.value().size(); ++i)
         {
             const SizeSlot &slot = it.value().at(i);
-            const QPointF delta = target - OGraded::AnchorPoint(rects.at(i), alignH, alignV);
-            layers[slot.layer].pieces[slot.piece].alignDelta += delta;
+            const qreal layerPointX = layers.at(slot.layer).pieces.at(slot.piece).alignPointX;
+            layers[slot.layer].pieces[slot.piece].alignDelta +=
+                OGraded::UnitLayerDelta(rule, unionRect, rects.at(i), layerPointX);
         }
     }
 
@@ -192,6 +196,7 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
         // that size.
         QMap<int, QVector<SizeSlot>> membersByLayer;
         QMap<int, QRectF> rectByLayer;
+        QMap<int, qreal> pointXByLayer;  // layer -> forced point X (first one wins)
         int memberCount = 0;
 
         for (int l = 0; l < layers.size(); ++l)
@@ -208,6 +213,12 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
                 rectByLayer[l] = rectByLayer[l].isNull() ? rect : rectByLayer[l].united(rect);
                 membersByLayer[l].append({l, p});
                 ++memberCount;
+
+                const qreal px = layer.pieces.at(p).alignPointX;
+                if (!qIsNaN(px) && !pointXByLayer.contains(l))
+                {
+                    pointXByLayer.insert(l, px);
+                }
             }
         }
 
@@ -222,10 +233,19 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
             overallRect = overallRect.isNull() ? it.value() : overallRect.united(it.value());
         }
 
+        OGraded::AlignRule rule;
+        rule.alignH = group.alignH;
+        rule.alignV = group.alignV;
+        // rectByLayer is keyed by layer index: its first entry is the smallest size present.
+        if (!rectByLayer.isEmpty())
+        {
+            rule.refPointX = pointXByLayer.value(rectByLayer.firstKey(), qQNaN());
+        }
+
         for (auto it = rectByLayer.cbegin(); it != rectByLayer.cend(); ++it)
         {
-            const QPointF delta = OGraded::AnchorPoint(overallRect, group.alignH, group.alignV)
-                                  - OGraded::AnchorPoint(it.value(), group.alignH, group.alignV);
+            const QPointF delta = OGraded::UnitLayerDelta(rule, overallRect, it.value(),
+                                                          pointXByLayer.value(it.key(), qQNaN()));
             for (const SizeSlot &slot : membersByLayer.value(it.key()))
             {
                 layers[slot.layer].pieces[slot.piece].alignDelta += delta;

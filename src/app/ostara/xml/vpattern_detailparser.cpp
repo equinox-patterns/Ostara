@@ -256,6 +256,9 @@ void VPattern::ParseDetailElement(QDomElement &domElement, const Document &parse
         initData.detail.SetPriority(GetParametrUInt(domElement, VToolSeamAllowance::AttrPiecePriority, QChar('0')));
         initData.detail.SetGradedAlignH(GetParametrInt(domElement, AttrGradedAlignH, QStringLiteral("2")));
         initData.detail.SetGradedAlignV(GetParametrInt(domElement, AttrGradedAlignV, QStringLiteral("2")));
+        // Node id of this piece's own copy of the main path point. Read before <nodes> is parsed,
+        // so membership of the main path cannot be checked here — it is validated lazily on use.
+        initData.detail.SetGradedAlignPointId(GetParametrUInt(domElement, AttrGradedAlignPoint, QChar('0')));
         initData.detail.SetPieceNumber(GetParametrUInt(domElement, AttrPieceNumber, QChar('0')));
         initData.detail.SetCutFabricQty(GetParametrInt(domElement, AttrCutFabricQty, QStringLiteral("0")));
         initData.detail.SetCutFabricOnFold(GetParametrBool(domElement, AttrCutFabricOnFold, falseStr));

@@ -59,6 +59,14 @@ extern const QString AttrName;
 extern const QString AttrUUID;
 extern const QString AttrGradedAlignH;
 extern const QString AttrGradedAlignV;
+/// Forced alignment point. On a piece: the node id of its own main path copy.
+/// On a group: the construction source id (idObject) of the common point, which is the only
+/// identity the members' copies share.
+extern const QString AttrGradedAlignPoint;
+/// Group only: the member whose copy of the common point is the X reference.
+extern const QString AttrGradedAlignPointMember;
+/// Group only: whether the horizontal alignment is overridden by the common point.
+extern const QString AttrGradedAlignOnPoint;
 extern const QString AttrPieceNumber;
 extern const QString AttrCutFabricQty;
 extern const QString AttrCutFabricOnFold;

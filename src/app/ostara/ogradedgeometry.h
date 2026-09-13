@@ -36,12 +36,14 @@
 #include <QRectF>
 #include <QString>
 #include <QtGlobal>
+#include <QtNumeric>
 
 #include "../vpatterndb/osizerange.h"
 
 class QGraphicsItem;
 class VContainer;
 class VGrainlineData;
+class VPiece;
 enum class Unit : qint8;
 
 namespace OGraded
@@ -60,6 +62,43 @@ constexpr int kMinGroupMembers = 2;
  * Shared so the canvas and the export cannot drift apart on what "aligned" means.
  */
 auto AnchorPoint(const QRectF &rect, int h, int v) -> QPointF;
+
+/**
+ * @brief X of a unit's forced alignment point for the pattern's current size, or NaN.
+ *
+ * @param pieceId the piece's container id — a piece does not carry its own id
+ * @param piece   the piece itself
+ * @param pattern the container, holding the measurements of the size being resolved
+ *
+ * A piece inside a group of kMinGroupMembers or more follows the GROUP: the common point wins and
+ * the piece's own point stays inert. Within a group only the reference member carries a value —
+ * its copy of the common point is the one every size is brought onto. A point that is no longer
+ * part of the main path resolves to NaN, and the caller silently falls back on the horizontal
+ * anchor: the point may be deleted from the pattern long after it was chosen.
+ */
+auto UnitAlignPointX(quint32 pieceId, const VPiece &piece, const VContainer *pattern) -> qreal;
+
+/// @brief The alignment rule of a unit, resolved once for all its sizes.
+struct AlignRule
+{
+    qreal refPointX{qQNaN()}; ///< NaN = no forced point: the horizontal anchor applies
+    int alignH{2};
+    int alignV{2};
+};
+
+/**
+ * @brief Delta bringing one layer of a unit onto the unit's anchor.
+ *
+ * The vertical anchor always applies. The horizontal one does too, unless a forced point is known
+ * for both the reference layer and this one — then it takes over and the horizontal alignment is
+ * overridden (its stored value is left untouched, and applies again once the point is removed).
+ *
+ * @param unitRect    the unit's extent across every layer
+ * @param layerRect   the unit's extent for the layer being moved
+ * @param layerPointX local X of the forced point for that layer (NaN when unknown)
+ */
+auto UnitLayerDelta(const AlignRule &rule, const QRectF &unitRect, const QRectF &layerRect,
+                    qreal layerPointX) -> QPointF;
 
 /**
  * @brief Align and offset a set of graded items exactly like the live canvas

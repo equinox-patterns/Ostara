@@ -874,7 +874,8 @@ bool MainWindow::IsNodePickingActive() const
 {
     const auto *options = m_dockManager->detailsOptions();
     if (options != nullptr && (options->IsSelectingPassmarkPoints() || options->IsSelectingFoldLinePoints() ||
-                               options->IsSelectingGroupFoldLinePoints() || options->IsSelectingSAPoints()))
+                               options->IsSelectingGroupFoldLinePoints() || options->IsSelectingSAPoints() ||
+                               options->IsSelectingAlignPoint()))
     {
         return true;
     }

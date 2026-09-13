@@ -129,6 +129,10 @@ private:
 
     QSet<quint32> m_selectedPiecesForGroup;
     QHash<quint32, QPointF> m_tempOffsets;
+    // Common point of the group being linked: its construction source id, and the member whose own
+    // copy of that point was clicked. The latter is the X reference of the graded alignment.
+    quint32 m_pendingAlignSourceId{NULL_ID};
+    quint32 m_pendingAlignMemberId{NULL_ID};
     GroupToolState m_groupToolState{GroupToolState::Idle};
     bool m_filling{false};
 };

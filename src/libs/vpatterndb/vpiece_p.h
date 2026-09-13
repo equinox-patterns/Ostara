@@ -86,6 +86,14 @@ public:
     /** @brief Graded alignment: vertical (1=top, 2=center, 3=bottom). */
     int m_gradedAlignV{2}; // NOLINT(misc-non-private-member-variables-in-classes)
 
+    /**
+     * @brief Forced graded alignment: main path node whose X every size must share (NULL_ID = none).
+     *
+     * When set, the node's X is the same for all sizes and the horizontal alignment is overridden;
+     * the vertical alignment keeps working. Stored as the node id of this piece's own copy.
+     */
+    quint32 m_gradedAlignPointId{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
+
     /** @brief Piece number displayed on the cartouche (0 = none). */
     uint m_pieceNumber{0}; // NOLINT(misc-non-private-member-variables-in-classes)
 

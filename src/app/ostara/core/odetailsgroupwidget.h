@@ -81,9 +81,13 @@ public:
     void CancelFoldLineSelection();
     auto IsSelectingFoldLinePoint() const -> bool { return m_pendingFoldLineMemberId != NULL_ID; }
 
+    /** @brief Drop the orange highlight on the group's common point, if any. */
+    void ClearAlignPointHighlight();
+
 signals:
     void ShowStatusTip(const QString &text);
     void StartFoldLineMember(quint32 pieceId);
+    void HighlightNode(quint32 nodeId, bool highlight);
 
 private:
     struct MemberFLRow
@@ -118,6 +122,18 @@ private:
     QTabWidget *m_tabWidget{nullptr};
     QTabWidget *m_infoSubTabs{nullptr};
     OGradedAlignWidget *m_alignWidget{nullptr};
+
+    // Forced alignment point: the group's common point, the one chosen when the pieces were linked.
+    QCheckBox *m_alignOnPointCheck{nullptr};
+    QCheckBox *m_showAlignPointCheck{nullptr};
+    bool m_showAlignPointState{true};          // UI state, per group: on by default
+    quint32 m_alignPointHighlightId{NULL_ID};  // node currently painted orange, 0 when none
+
+    void ApplyAlignPointControls(const OPieceGroup &group);
+    void RefreshAlignPointHighlight();
+    void OnAlignOnPointToggled(bool checked);
+    void OnShowAlignPointToggled(bool checked);
+    auto ReferenceMemberNode(const OPieceGroup &group) const -> quint32;
 
     // Information — Group sub-tab (same structure as the PB Piece's Piece sub-tab)
     QLineEdit *m_nameEdit{nullptr};

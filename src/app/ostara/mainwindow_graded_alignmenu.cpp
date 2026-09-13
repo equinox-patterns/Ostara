@@ -28,6 +28,7 @@
 
 #include "mainwindowsnogui.h"
 #include "mainwindow_graded_helpers.h"
+#include "ogradedgeometry.h"
 #include "xml/vpattern.h"
 
 #include "../vmisc/def.h"
@@ -47,6 +48,7 @@
 #include <QMenu>
 #include <QPoint>
 #include <QRectF>
+#include <QtNumeric>
 #include <QMap>
 #include <QSet>
 #include <QUndoStack>
@@ -56,15 +58,6 @@
 //---------------------------------------------------------------------------------------------------------------------
 namespace
 {
-
-/// The alignment anchor fractions used by the graded geometry passes (mirror of the AnchorPoint
-/// lambda in ApplyGradedLayoutOffsets): 1 = left/top, 2 = center, 3 = right/bottom.
-auto GradedAnchorPoint(const QRectF &rect, int h, int v) -> QPointF
-{
-    const qreal hFrac = h == 1 ? 0.0 : (h == 3 ? 1.0 : 0.5);
-    const qreal vFrac = v == 1 ? 0.0 : (v == 3 ? 1.0 : 0.5);
-    return QPointF(rect.left() + rect.width() * hFrac, rect.top() + rect.height() * vFrac);
-}
 
 /// The QRC "check" icon, theme-aware (Light/Dark), marking the current alignment in the menu.
 auto GradedCheckIcon() -> QIcon
@@ -181,6 +174,27 @@ void MainWindow::GradedAlignContextMenu(const QPoint &globalPos)
         }
     }
 
+    // A forced alignment point takes the horizontal row over: those entries must not pretend
+    // otherwise. Read off the graded items, which is exactly what the alignment pass consumes —
+    // the point counts only while it still resolves to a node.
+    bool alignOnPoint = false;
+    const auto *unitGroups = pattern->DataPieceGroups();
+    for (auto *item : m_sceneGraded->items())
+    {
+        const quint32 pid = GradedPieceId(item);
+        if (pid == NULL_ID || qIsNaN(GradedAlignPointX(item)))
+        {
+            continue;
+        }
+        const bool belongs = isGroup ? (unitGroups != nullptr && unitGroups->value(unitId).pieceIds.contains(pid))
+                                     : (pid == unitId);
+        if (belongs)
+        {
+            alignOnPoint = true;
+            break;
+        }
+    }
+
     // The user's choice (axis + value), filled by the submenu action that is triggered.
     struct AlignChoice
     {
@@ -208,6 +222,7 @@ void MainWindow::GradedAlignContextMenu(const QPoint &globalPos)
     for (const AlignMenuOption &option : kAlignMenuH)
     {
         QAction *action = AddOption(hSub, option, alignH);
+        action->setEnabled(!alignOnPoint);
         connect(action, &QAction::triggered, topMenu, [&choice, option]() {
             choice.vertical = false;
             choice.value = option.value;
@@ -353,13 +368,12 @@ void MainWindow::RealignGradedUnit(quint32 unitId, bool isGroup)
     {
         if (unitItems.size() >= 2)
         {
-            int alignH = 2;
-            int alignV = 2;
+            OGraded::AlignRule rule;
             if (const auto *pieces = pattern->DataPieces(); pieces != nullptr && pieces->contains(unitId))
             {
                 const VPiece &piece = pieces->value(unitId);
-                alignH = piece.GetGradedAlignH();
-                alignV = piece.GetGradedAlignV();
+                rule.alignH = piece.GetGradedAlignH();
+                rule.alignV = piece.GetGradedAlignV();
             }
 
             QRectF unionRect;
@@ -370,11 +384,15 @@ void MainWindow::RealignGradedUnit(quint32 unitId, bool isGroup)
                 const QRectF r = item->sceneBoundingRect();
                 rects.append(r);
                 unionRect = unionRect.isNull() ? r : unionRect.united(r);
+                if (GradedIsReference(item))
+                {
+                    rule.refPointX = GradedAlignPointX(item);
+                }
             }
-            const QPointF target = GradedAnchorPoint(unionRect, alignH, alignV);
             for (int i = 0; i < unitItems.size(); ++i)
             {
-                const QPointF delta = target - GradedAnchorPoint(rects.at(i), alignH, alignV);
+                const QPointF delta = OGraded::UnitLayerDelta(rule, unionRect, rects.at(i),
+                                                              GradedAlignPointX(unitItems.at(i)));
                 if (!qFuzzyIsNull(delta.x()) || !qFuzzyIsNull(delta.y()))
                 {
                     unitItems.at(i)->setPos(unitItems.at(i)->pos() + delta);
@@ -392,6 +410,8 @@ void MainWindow::RealignGradedUnit(quint32 unitId, bool isGroup)
         {
             QMap<qreal, QList<QGraphicsItem *>> itemsByLayer;
             QMap<qreal, QRectF> rectByLayer;
+            QMap<qreal, qreal> pointXByLayer;  // z -> forced point X (first one wins)
+            qreal refLayerZ = qQNaN();
             for (quint32 memberId : group.pieceIds)
             {
                 for (auto *item : allItems)
@@ -405,6 +425,16 @@ void MainWindow::RealignGradedUnit(quint32 unitId, bool isGroup)
                     const QRectF r = item->sceneBoundingRect();
                     QRectF &lr = rectByLayer[z];
                     lr = lr.isNull() ? r : lr.united(r);
+
+                    const qreal px = GradedAlignPointX(item);
+                    if (!qIsNaN(px) && !pointXByLayer.contains(z))
+                    {
+                        pointXByLayer.insert(z, px);
+                    }
+                    if (GradedIsReference(item))
+                    {
+                        refLayerZ = z;
+                    }
                 }
             }
             QRectF overallRect;
@@ -414,10 +444,18 @@ void MainWindow::RealignGradedUnit(quint32 unitId, bool isGroup)
             }
             if (!overallRect.isNull())
             {
+                OGraded::AlignRule rule;
+                rule.alignH = group.alignH;
+                rule.alignV = group.alignV;
+                if (!qIsNaN(refLayerZ))
+                {
+                    rule.refPointX = pointXByLayer.value(refLayerZ, qQNaN());
+                }
+
                 for (auto it = rectByLayer.cbegin(); it != rectByLayer.cend(); ++it)
                 {
-                    const QPointF delta = GradedAnchorPoint(overallRect, group.alignH, group.alignV)
-                                          - GradedAnchorPoint(it.value(), group.alignH, group.alignV);
+                    const QPointF delta = OGraded::UnitLayerDelta(rule, overallRect, it.value(),
+                                                                  pointXByLayer.value(it.key(), qQNaN()));
                     if (qFuzzyIsNull(delta.x()) && qFuzzyIsNull(delta.y()))
                     {
                         continue;

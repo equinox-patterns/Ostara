@@ -29,6 +29,7 @@
 
 #include "mainwindow_helpers.h"
 #include "mainwindowsnogui.h"
+#include "ogradedgeometry.h"
 #include "xml/vpattern.h"
 
 #include "../ifc/xml/vabstractpattern.h"
@@ -362,6 +363,9 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         // to be unioned into a single footprint. Details and Graded key on the id too.
         geometry.key = geometry.groupId == 0 ? geometry.name : QStringLiteral("g%1").arg(geometry.groupId);
         geometry.piece = resolved;
+
+        // Forced alignment point, resolved against `target` while it still holds THIS size.
+        geometry.alignPointX = OGraded::UnitAlignPointX(id, piece, target);
 
         layer.pieces.append(geometry);
     }

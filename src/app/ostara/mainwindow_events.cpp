@@ -391,6 +391,25 @@ void MainWindow::HandleItemClicked(QGraphicsItem *item)
         }
     }
 
+    // Forced alignment point — route node clicks to the details property browser.
+    if (item != nullptr && m_dockManager->detailsOptions() != nullptr
+        && m_dockManager->detailsOptions()->IsSelectingAlignPoint())
+    {
+        auto *node = dynamic_cast<VNodePoint *>(item);
+        if (node == nullptr)
+        {
+            if (auto *parentItem = item->parentItem())
+            {
+                node = dynamic_cast<VNodePoint *>(parentItem);
+            }
+        }
+        if (node != nullptr)
+        {
+            m_dockManager->detailsOptions()->OnNodeSelectedForAlignPoint(node->getId());
+            return;
+        }
+    }
+
     // Passmark multi-selection — route node clicks to the details property browser.
     if (item != nullptr && m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingPassmarkPoints())
     {
@@ -593,6 +612,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingSAPoints())
             {
                 m_dockManager->detailsOptions()->CancelSASelection();
+                break;
+            }
+            if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingAlignPoint())
+            {
+                m_dockManager->detailsOptions()->CancelAlignPointSelection();
                 break;
             }
             ArrowTool(true);

@@ -34,6 +34,7 @@
 class QButtonGroup;
 class QLabel;
 class QPushButton;
+class QVBoxLayout;
 
 /**
  * @brief Horizontal/vertical graded alignment selector.
@@ -53,6 +54,20 @@ public:
     void SetAlignV(int value);
     auto GetAlignV() const -> int;
 
+    /// @brief Enable/disable the horizontal row.
+    ///
+    /// Disabling also unchecks it: the value it holds no longer drives anything (a forced alignment
+    /// point, or a group member following its group), and a checked-but-dead row would read as if it
+    /// still did. Re-enabling restores the enabled look only — the caller sets the value back from
+    /// the model, so it must call SetAlignH() AFTER this.
+    void SetAlignHEnabled(bool enabled);
+
+    /// @brief Append a control at the bottom of the "Graded alignment" group box.
+    ///
+    /// Lets a dock put its own alignment options (the group's common point) inside the same frame
+    /// as the rows they qualify. The piece dialog appends nothing and is left unchanged.
+    void AddExtraContent(QWidget *widget);
+
 signals:
     void AlignHChanged(int value);
     void AlignVChanged(int value);
@@ -63,6 +78,7 @@ protected:
 private:
     void RefreshAlignIcons();
 
+    QVBoxLayout *m_alignLayout{nullptr};
     QButtonGroup *m_alignHGroup{nullptr};
     QButtonGroup *m_alignVGroup{nullptr};
     QLabel *m_alignHLabel{nullptr};

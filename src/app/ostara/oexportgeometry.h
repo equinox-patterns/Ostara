@@ -33,6 +33,7 @@
 #include <QString>
 #include <QStringList>
 #include <QVector>
+#include <QtNumeric>
 
 #include "../vlayout/vlayoutpiece.h"
 
@@ -57,6 +58,12 @@ struct OExportPieceGeometry
     /// them into one footprint means something. Set by OExportAlignment; applied by
     /// the engine and by the canvas alike.
     QPointF alignDelta{};
+
+    /// Pattern-frame X of the unit's forced alignment point for this size, or NaN when
+    /// the unit has none. Resolved at collection time, because the container only ever
+    /// holds the size being collected — OExportAlignment runs later, on the document
+    /// put back on its own size.
+    qreal alignPointX{qQNaN()};
 };
 
 /// @brief Every piece of the pattern, resolved for one size of the range.

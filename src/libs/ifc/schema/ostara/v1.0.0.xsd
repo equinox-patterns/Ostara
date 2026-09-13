@@ -875,6 +875,7 @@
                         <xs:attribute name="priority" type="piecePriorityType"/>
                         <xs:attribute name="gradedAlignH" type="xs:int"/>
                         <xs:attribute name="gradedAlignV" type="xs:int"/>
+                        <xs:attribute name="gradedAlignPoint" type="xs:unsignedInt"/>
                         <xs:attribute name="pieceNumber" type="xs:unsignedInt"/>
                         <xs:attribute name="cutFabricQty" type="xs:int"/>
                         <xs:attribute name="cutFabricOnFold" type="xs:boolean"/>
@@ -1036,6 +1037,9 @@
                   <xs:attribute name="inLayout" type="xs:boolean"/>
                   <xs:attribute name="gradedAlignH" type="xs:int"/>
                   <xs:attribute name="gradedAlignV" type="xs:int"/>
+                  <xs:attribute name="gradedAlignPoint" type="xs:unsignedInt"/>
+                  <xs:attribute name="gradedAlignPointMember" type="xs:unsignedInt"/>
+                  <xs:attribute name="gradedAlignOnPoint" type="xs:boolean"/>
                   <xs:attribute name="pieceNumber" type="xs:unsignedInt"/>
                   <xs:attribute name="cutFabricQty" type="xs:int"/>
                   <xs:attribute name="cutFabricOnFold" type="xs:boolean"/>

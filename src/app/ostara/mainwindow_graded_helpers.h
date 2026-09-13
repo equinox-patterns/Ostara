@@ -30,6 +30,7 @@
 #include <QGraphicsItem>
 #include <QVariant>
 #include <QtGlobal>
+#include <QtNumeric>
 
 class QColor;
 class QGraphicsScene;
@@ -50,6 +51,11 @@ constexpr int kGradedSizeRole        = Qt::UserRole + 907;
 /// Native (pre-style) QPen of a trace item the first time a size style overrides its dash — lets a
 /// later "no style / gate off" pass restore the original pen (mirror line dash, internal paths...).
 constexpr int kGradedBasePenRole     = Qt::UserRole + 908;
+/// Local X (pattern frame) of the unit's forced alignment point for the size this item renders.
+/// Captured while the container still holds that size's measurements, because the alignment pass
+/// runs after the live combination has been restored. 0 is a legal X, so "carries a point" must be
+/// tested with QVariant::isValid(), never isNull().
+constexpr int kGradedAlignPointXRole = Qt::UserRole + 909;
 
 /// Piece id carried by an item (or 0 if the item isn't a graded piece item).
 inline auto GradedPieceId(const QGraphicsItem *item) -> quint32
@@ -66,6 +72,17 @@ inline auto GradedPieceId(const QGraphicsItem *item) -> quint32
 inline auto GradedIsReference(const QGraphicsItem *item) -> bool
 {
     return item != nullptr && item->data(kGradedIsRefRole).toBool();
+}
+
+/// Local X of the forced alignment point carried by an item, or NaN when it carries none.
+inline auto GradedAlignPointX(const QGraphicsItem *item) -> qreal
+{
+    if (item == nullptr)
+    {
+        return qQNaN();
+    }
+    const QVariant x = item->data(kGradedAlignPointXRole);
+    return x.isValid() ? x.toDouble() : qQNaN();
 }
 
 /// Rebuild the per-group reference decoration (defined in mainwindow_graded_group.cpp): mask the

@@ -68,6 +68,7 @@
 #include <QSignalBlocker>
 #include <QVector>
 #include <QtGlobal>
+#include <QtNumeric>
 
 #include <algorithm>
 
@@ -377,6 +378,14 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
             item->setZValue(z);
             item->setData(kGradedPieceIdRole, pieceId);
             item->setData(kGradedIsRefRole, isReference);
+
+            // Forced alignment point: captured while this size's measurements are still loaded,
+            // exactly like the live canvas build — otherwise the exported SVG would drift from it.
+            const qreal alignPointX = OGraded::UnitAlignPointX(pieceId, details.at(k).piece, pattern);
+            if (!qIsNaN(alignPointX))
+            {
+                item->setData(kGradedAlignPointXRole, alignPointX);
+            }
             scene.addItem(item);
             itemsByPiece[pieceId].append(item);
         }

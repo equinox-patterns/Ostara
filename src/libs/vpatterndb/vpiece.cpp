@@ -663,6 +663,18 @@ void VPiece::SetGradedAlignV(int val)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetGradedAlignPointId() const -> quint32
+{
+    return d->m_gradedAlignPointId;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetGradedAlignPointId(quint32 id)
+{
+    d->m_gradedAlignPointId = id;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 // Disambiguates GetName between VAbstractPiece (virtual now) and IPieceInfo.
 auto VPiece::GetName() const -> QString
 {

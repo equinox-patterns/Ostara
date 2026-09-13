@@ -105,6 +105,9 @@ public:
     auto GetGradedAlignV() const -> int;
     void SetGradedAlignV(int val);
 
+    auto GetGradedAlignPointId() const -> quint32;
+    void SetGradedAlignPointId(quint32 id);
+
     auto GetName() const -> QString override;
 
     auto GetPieceNumber() const -> uint override;

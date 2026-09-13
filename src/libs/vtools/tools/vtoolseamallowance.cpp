@@ -736,6 +736,8 @@ void VToolSeamAllowance::AddAttributes(VAbstractPattern *doc, QDomElement &domEl
                                      [](int val) noexcept { return val == 2; });
     doc->SetAttributeOrRemoveIf<int>(domElement, AttrGradedAlignV, piece.GetGradedAlignV(),
                                      [](int val) noexcept { return val == 2; });
+    doc->SetAttributeOrRemoveIf<quint32>(domElement, AttrGradedAlignPoint, piece.GetGradedAlignPointId(),
+                                         [](quint32 id) noexcept { return id <= NULL_ID; });
     doc->SetAttributeOrRemoveIf<uint>(domElement, AttrPieceNumber, piece.GetPieceNumber(),
                                       [](uint number) noexcept { return number == 0; });
     doc->SetAttributeOrRemoveIf<int>(domElement, AttrCutFabricQty, piece.GetCutFabricQty(),
@@ -981,6 +983,12 @@ void VToolSeamAllowance::AddPieceGroups(VAbstractPattern *doc, QDomElement &domE
                                          [](int align) noexcept { return align == 2; });
         doc->SetAttributeOrRemoveIf<int>(groupElement, AttrGradedAlignV, group.alignV,
                                          [](int align) noexcept { return align == 2; });
+        doc->SetAttributeOrRemoveIf<quint32>(groupElement, AttrGradedAlignPoint, group.alignPointSourceId,
+                                             [](quint32 id) noexcept { return id <= NULL_ID; });
+        doc->SetAttributeOrRemoveIf<quint32>(groupElement, AttrGradedAlignPointMember, group.alignPointMemberId,
+                                             [](quint32 id) noexcept { return id <= NULL_ID; });
+        doc->SetAttributeOrRemoveIf<bool>(groupElement, AttrGradedAlignOnPoint, group.alignOnPoint,
+                                          [](bool on) noexcept { return not on; });
         doc->SetAttributeOrRemoveIf<bool>(groupElement, AttrInLayout, group.IsInLayout(),
                                           [](bool inLayout) noexcept { return inLayout; });
         doc->SetAttributeOrRemoveIf<uint>(groupElement, AttrPieceNumber, group.m_pieceNumber,

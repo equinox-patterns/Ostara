@@ -71,6 +71,10 @@ auto MakeAlignIcon(const QString &baseName, bool dark) -> QIcon
     icon.addFile(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, baseName));                    // Off = regular
     icon.addFile(QStringLiteral(":/icons/%1/%2-fill_%1.svg").arg(theme, baseName), QSize(),
                  QIcon::Normal, QIcon::On);                                                       // On = fill
+    // Disabled = the greyed-out regular set. The row is always unchecked before it is disabled
+    // (forced alignment point, group member following its group), so Off is the only state needed.
+    icon.addFile(QStringLiteral(":/icons/%1/%2_disabled.svg").arg(theme, baseName), QSize(),
+                 QIcon::Disabled, QIcon::Off);
     return icon;
 }
 
@@ -111,7 +115,8 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
     auto *groupBox = new QGroupBox(tr("Graded alignment"));
-    auto *alignLayout = new QVBoxLayout(groupBox);
+    m_alignLayout = new QVBoxLayout(groupBox);
+    auto *alignLayout = m_alignLayout;
 
     // Horizontal
     m_alignHLabel = new QLabel(tr("Horizontal"));
@@ -282,6 +287,37 @@ void OGradedAlignWidget::SetAlignV(int value)
     {
         btn->setChecked(true);
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedAlignWidget::AddExtraContent(QWidget *widget)
+{
+    if (widget != nullptr && m_alignLayout != nullptr)
+    {
+        m_alignLayout->addWidget(widget);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedAlignWidget::SetAlignHEnabled(bool enabled)
+{
+    if (!enabled)
+    {
+        // Qt refuses to uncheck the checked button of an exclusive group: release the exclusivity
+        // around the reset, then restore it. Unchecking emits nothing — the widget only reports a
+        // new value on check, so the model is left untouched here.
+        m_alignHGroup->setExclusive(false);
+        for (int i = 0; i < 3; ++i)
+        {
+            m_alignHBtns[i]->setChecked(false);
+        }
+        m_alignHGroup->setExclusive(true);
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        m_alignHBtns[i]->setEnabled(enabled);
+    }
+    m_alignHLabel->setEnabled(enabled);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

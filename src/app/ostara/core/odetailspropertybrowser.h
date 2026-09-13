@@ -91,6 +91,10 @@ public:
     void OnNodeHoveredForSA(quint32 nodeId);
     void CancelSASelection();
 
+    auto IsSelectingAlignPoint() const -> bool;
+    void OnNodeSelectedForAlignPoint(quint32 nodeId);
+    void CancelAlignPointSelection();
+
 signals:
     void ShowStatusTip(const QString &text);
     void HighlightNode(quint32 nodeId, bool highlight, QColor color = Qt::red);

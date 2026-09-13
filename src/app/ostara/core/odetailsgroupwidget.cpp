@@ -53,6 +53,7 @@
 #include "../vtools/undocommands/savepiecegroupoptions.h"
 #include "../widgets/ogradedalignwidget.h"
 #include "odetailsgrainlinewidget.h"
+#include "opiececommonpoint.h"
 #include "../vtools/undocommands/savepieceoptions.h"
 #include "../vtheme/vtheme.h"
 #include "oannotationsconfigwidget.h"
@@ -187,6 +188,17 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     auto *generalLayout = new QVBoxLayout(generalPage);
     m_alignWidget = new OGradedAlignWidget(generalPage);
     generalLayout->addWidget(m_alignWidget);
+
+    // Forced alignment point: the group's common point — the one chosen when the pieces were
+    // linked. Opt-in, and it overrides the horizontal row above; the vertical one keeps working.
+    m_alignOnPointCheck = new QCheckBox(tr("Align on the common point"));
+    m_alignWidget->AddExtraContent(m_alignOnPointCheck);
+    m_showAlignPointCheck = new QCheckBox(tr("Show alignment point"));
+    m_showAlignPointCheck->setChecked(true);
+    m_alignWidget->AddExtraContent(m_showAlignPointCheck);
+    connect(m_alignOnPointCheck, &QCheckBox::toggled, this, &ODetailsGroupWidget::OnAlignOnPointToggled);
+    connect(m_showAlignPointCheck, &QCheckBox::toggled, this, &ODetailsGroupWidget::OnShowAlignPointToggled);
+
     generalLayout->addStretch();
 
     connect(m_alignWidget, &OGradedAlignWidget::AlignHChanged, this,
@@ -209,6 +221,9 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     });
 
     m_tabWidget->addTab(generalPage, tr("General"));
+
+    // The common point is owned by the General tab: its orange highlight follows that tab.
+    connect(m_tabWidget, &QTabWidget::currentChanged, this, [this](int) { RefreshAlignPointHighlight(); });
 
     // ── Grainline tab: common grainline + member foldlines ──────────
     // Same widget as the PB Piece (ODetailsGrainlineWidget) in a QFrame#detailsOptionsTabPage
@@ -313,6 +328,7 @@ void ODetailsGroupWidget::Show(quint32 groupId, VContainer *data, VAbstractPatte
         m_tabWidget->setCurrentIndex(kGeneralTabIndex);
         m_infoSubTabs->setCurrentIndex(kGroupInfoSubTabIndex);
         m_groupInfoWidget->ResetTabs(); // the cut tabs (Fabric / Interfacing / Lining) too
+        m_showAlignPointState = true;   // the "show" checkbox opens checked
     }
 
     const auto *groups = data != nullptr ? data->DataPieceGroups() : nullptr;
@@ -324,12 +340,20 @@ void ODetailsGroupWidget::Show(quint32 groupId, VContainer *data, VAbstractPatte
         m_nameEdit->setText(group.name);
     }
 
-    // Alignment (OGradedAlignWidget — same widget as the piece dialog / piece browser)
+    // Alignment (OGradedAlignWidget — same widget as the piece dialog / piece browser).
+    // The common point takes the horizontal row over: disable it first, then set the value back —
+    // SetAlignHEnabled() unchecks, so a re-check after it would light up a dead row.
     if (m_alignWidget != nullptr)
     {
-        m_alignWidget->SetAlignH(group.alignH);
+        const bool horizontalEnabled = !group.alignOnPoint;
+        m_alignWidget->SetAlignHEnabled(horizontalEnabled);
+        if (horizontalEnabled)
+        {
+            m_alignWidget->SetAlignH(group.alignH);
+        }
         m_alignWidget->SetAlignV(group.alignV);
     }
+    ApplyAlignPointControls(group);
 
     // Common grainline editor (same widget as the PB Piece); the canvas holder
     // centers a freshly-activated grainline itself (no centerProvider here).
@@ -342,6 +366,101 @@ void ODetailsGroupWidget::Show(quint32 groupId, VContainer *data, VAbstractPatte
     BuildMemberFoldLines();
 
     m_updating = false;
+
+    RefreshAlignPointHighlight();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::OnAlignOnPointToggled(bool checked)
+{
+    if (m_updating)
+    {
+        return;
+    }
+    // Commit() re-Shows the group at the end, so the rows and the highlight resynchronise there.
+    Commit([checked](OPieceGroup &group) { group.alignOnPoint = checked; });
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::OnShowAlignPointToggled(bool checked)
+{
+    if (m_updating)
+    {
+        return;
+    }
+    m_showAlignPointState = checked;
+    RefreshAlignPointHighlight();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::ClearAlignPointHighlight()
+{
+    if (m_alignPointHighlightId == NULL_ID)
+    {
+        return;
+    }
+    emit HighlightNode(m_alignPointHighlightId, false);
+    m_alignPointHighlightId = NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::RefreshAlignPointHighlight()
+{
+    // The common point is lit through the reference member's own copy of it, and only while the
+    // General tab — the one that owns it — is on screen with its checkbox on.
+    const auto *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;
+    const OPieceGroup group = groups != nullptr ? groups->value(m_groupId) : OPieceGroup();
+
+    quint32 nodeId = NULL_ID;
+    if (group.alignPointSourceId != NULL_ID && group.alignOnPoint && m_showAlignPointCheck->isChecked()
+        && m_tabWidget->currentIndex() == kGeneralTabIndex)
+    {
+        nodeId = ReferenceMemberNode(group);
+    }
+
+    if (m_alignPointHighlightId != NULL_ID && m_alignPointHighlightId != nodeId)
+    {
+        emit HighlightNode(m_alignPointHighlightId, false);
+        m_alignPointHighlightId = NULL_ID;
+    }
+    if (nodeId != NULL_ID)
+    {
+        emit HighlightNode(nodeId, true);
+        m_alignPointHighlightId = nodeId;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsGroupWidget::ReferenceMemberNode(const OPieceGroup &group) const -> quint32
+{
+    if (m_data == nullptr || group.alignPointSourceId == NULL_ID || group.alignPointMemberId == NULL_ID)
+    {
+        return NULL_ID;
+    }
+    const auto *pieces = m_data->DataPieces();
+    if (pieces == nullptr || !pieces->contains(group.alignPointMemberId))
+    {
+        return NULL_ID;
+    }
+    return OPieceCommonPoint::PieceNodeWithSource(pieces->value(group.alignPointMemberId),
+                                                  group.alignPointSourceId, m_data);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::ApplyAlignPointControls(const OPieceGroup &group)
+{
+    const bool hasPoint = group.alignPointSourceId != NULL_ID;
+
+    // Texts are set here rather than once at construction: the member rows are rebuilt on every
+    // Show() too, so a language change is picked up the same way.
+    m_alignOnPointCheck->setText(tr("Align on the common point"));
+    m_showAlignPointCheck->setText(tr("Show alignment point"));
+
+    // A group written before the common point was stored carries none: the choice cannot be offered.
+    m_alignOnPointCheck->setEnabled(hasPoint);
+    m_alignOnPointCheck->setChecked(hasPoint && group.alignOnPoint);
+    m_showAlignPointCheck->setEnabled(hasPoint && group.alignOnPoint);
+    m_showAlignPointCheck->setChecked(hasPoint && group.alignOnPoint && m_showAlignPointState);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -350,6 +469,8 @@ void ODetailsGroupWidget::Clear()
     m_groupId = NULL_ID;
     m_data = nullptr;
     m_doc = nullptr;
+    m_showAlignPointState = true;
+    ClearAlignPointHighlight();
     m_updating = true;
     if (m_nameEdit != nullptr)
     {

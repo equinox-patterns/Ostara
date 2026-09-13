@@ -96,8 +96,22 @@ public:
     void OnNodeHoveredForSA(quint32 nodeId);
     void CancelSASelection();
 
+    auto IsSelectingAlignPoint() const -> bool;
+    void OnNodeSelectedForAlignPoint(quint32 nodeId);
+    void CancelAlignPointSelection();
+    void ClearAlignPointHighlight();
+
+    /** @brief Bring the General tab back to the front of this piece's page. */
+    void RestoreGeneralTab();
+
+    /** @brief True while this page displays a piece. */
+    auto IsShowingPiece() const -> bool { return m_pieceId != NULL_ID && m_currentTool != nullptr; }
+
 signals:
     void ShowStatusTip(const QString &text);
+    /** @brief Ask the browser to show this piece's page again: picking the alignment point on the
+     *  canvas must not leave the dock on the clicked node's page. */
+    void PiecePageRequested();
     void HighlightNode(quint32 nodeId, bool highlight, QColor color = Qt::red);
     void HighlightTemporaryNode(quint32 nodeId, bool selected);
     void ClearHighlight();
@@ -149,6 +163,29 @@ private:
     QPushButton *m_alignHBtns[3]{};
     QPushButton *m_alignVBtns[3]{};
     void RefreshAlignIcons();
+
+    // Forced alignment point: a main path node whose X every size shares. It overrides the
+    // horizontal row and leaves the vertical one alone.
+    QPushButton *m_alignPointBtn{nullptr};
+    QPushButton *m_removeAlignPointBtn{nullptr};
+    QCheckBox *m_showAlignPointCheck{nullptr};
+
+    enum class AlignPointSelectState
+    {
+        Idle,
+        Selecting
+    };
+    AlignPointSelectState m_alignPointSelectState{AlignPointSelectState::Idle};
+    bool m_showAlignPointState{true};        // UI state, per piece: on by default
+    quint32 m_alignPointHighlightId{NULL_ID}; // node currently painted orange, 0 when none
+
+    void ApplyAlignPointControls(const VPiece &det, const VContainer *data);
+    void SetAlignRowsEnabled(bool horizontal, bool vertical);
+    void OnAlignPointClicked();
+    void OnRemoveAlignPoint();
+    void OnShowAlignPointToggled(bool checked);
+    void RefreshAlignPointHighlight();
+    auto IsMemberOfGroup(const VContainer *data) const -> bool;
 
     // Layout flags — flipping & grainline constraints (mirror of the piece creation dialog step 2).
     QCheckBox *m_forbidFlippingCheck{nullptr};

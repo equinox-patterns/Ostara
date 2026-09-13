@@ -84,6 +84,12 @@
         <file alias="align-center-vertical-simple-fill_light.svg">../../../../../share/themes/icons/light/align-center-vertical-simple-fill_light.svg</file>
         <file alias="align-bottom-simple_light.svg">../../../../../share/themes/icons/light/align-bottom-simple_light.svg</file>
         <file alias="align-bottom-simple-fill_light.svg">../../../../../share/themes/icons/light/align-bottom-simple-fill_light.svg</file>
+        <file alias="align-left-simple_disabled.svg">../../../../../share/themes/icons/light/align-left-simple_disabled.svg</file>
+        <file alias="align-center-horizontal-simple_disabled.svg">../../../../../share/themes/icons/light/align-center-horizontal-simple_disabled.svg</file>
+        <file alias="align-right-simple_disabled.svg">../../../../../share/themes/icons/light/align-right-simple_disabled.svg</file>
+        <file alias="align-top-simple_disabled.svg">../../../../../share/themes/icons/light/align-top-simple_disabled.svg</file>
+        <file alias="align-center-vertical-simple_disabled.svg">../../../../../share/themes/icons/light/align-center-vertical-simple_disabled.svg</file>
+        <file alias="align-bottom-simple_disabled.svg">../../../../../share/themes/icons/light/align-bottom-simple_disabled.svg</file>
         <file alias="stack-plus-fill_light.svg">../../../../../share/themes/icons/light/stack-plus-fill_light.svg</file>
         <file alias="file-svg_light.svg">../../../../../share/themes/icons/light/file-svg_light.svg</file>
         <file alias="copy-fill_light.svg">../../../../../share/themes/icons/light/copy-fill_light.svg</file>
@@ -170,6 +176,12 @@
         <file alias="align-center-vertical-simple-fill_dark.svg">../../../../../share/themes/icons/dark/align-center-vertical-simple-fill_dark.svg</file>
         <file alias="align-bottom-simple_dark.svg">../../../../../share/themes/icons/dark/align-bottom-simple_dark.svg</file>
         <file alias="align-bottom-simple-fill_dark.svg">../../../../../share/themes/icons/dark/align-bottom-simple-fill_dark.svg</file>
+        <file alias="align-left-simple_disabled.svg">../../../../../share/themes/icons/dark/align-left-simple_disabled.svg</file>
+        <file alias="align-center-horizontal-simple_disabled.svg">../../../../../share/themes/icons/dark/align-center-horizontal-simple_disabled.svg</file>
+        <file alias="align-right-simple_disabled.svg">../../../../../share/themes/icons/dark/align-right-simple_disabled.svg</file>
+        <file alias="align-top-simple_disabled.svg">../../../../../share/themes/icons/dark/align-top-simple_disabled.svg</file>
+        <file alias="align-center-vertical-simple_disabled.svg">../../../../../share/themes/icons/dark/align-center-vertical-simple_disabled.svg</file>
+        <file alias="align-bottom-simple_disabled.svg">../../../../../share/themes/icons/dark/align-bottom-simple_disabled.svg</file>
         <file alias="stack-plus-fill_dark.svg">../../../../../share/themes/icons/dark/stack-plus-fill_dark.svg</file>
         <file alias="file-svg_dark.svg">../../../../../share/themes/icons/dark/file-svg_dark.svg</file>
         <file alias="copy-fill_dark.svg">../../../../../share/themes/icons/dark/copy-fill_dark.svg</file>
