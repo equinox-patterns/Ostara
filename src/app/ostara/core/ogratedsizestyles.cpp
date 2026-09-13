@@ -31,13 +31,13 @@
 
 #include <cmath>
 
+#include "ogradedsizeranges.h"
+
 #include "../ifc/xml/vabstractpattern.h"
-#include "../vmisc/def.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/vcontainer.h"
-#include "../widgets/MeasurementWorkspace/MeasurementLibraryScanner.h"
 
 namespace
 {
@@ -165,24 +165,16 @@ auto ResolveStyleAxis(VAbstractPattern *doc, const VContainer *pattern, const QS
     -> StyleAxis
 {
     StyleAxis result;
-    if (doc == nullptr || doc->MPath().isEmpty())
-    {
-        return result;
-    }
-    const QString canonical =
-        AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
-    if (canonical.isEmpty())
+
+    const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
+    if (context.canonical.isEmpty())
     {
         return result;
     }
 
-    auto *settings = VAbstractApplication::VApp()->Settings();
-    const bool inLibrary = MeasurementLibraryScanner::IsInLibrary(
-        settings->GetPathMeasurementLibrary(), canonical);
-
-    // The styles axis: the table's declared size axis, falling back to the active
-    // range's axis when none is declared (external table, or pre-declaration data).
-    QString axis = inLibrary ? settings->GetSizeAxisForMeasurement(canonical) : QString();
+    // The styles axis: the axis the table declares, falling back to the active range's
+    // axis when none is declared (external table, or pre-declaration data).
+    QString axis = context.axis;
     if (axis.isEmpty())
     {
         const auto *ranges = pattern != nullptr ? pattern->SizeRanges() : nullptr;
@@ -197,9 +189,9 @@ auto ResolveStyleAxis(VAbstractPattern *doc, const VContainer *pattern, const QS
         return result;
     }
 
-    result.canonical = canonical;
+    result.canonical = context.canonical;
     result.axisName = axis;
-    result.inLibrary = inLibrary;
+    result.inLibrary = context.inLibrary;
     result.ready = true;
     return result;
 }

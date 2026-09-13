@@ -27,6 +27,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
+#include "core/ogradedsizeranges.h"
 #include "dialogs/oexportmodedialog.h"
 #include "dialogs/owaitdialog.h"
 #include "oexportalignment.h"
@@ -79,7 +80,7 @@ void MainWindow::ActionExport(bool checked)
         // of the mode and back in.
         if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Export)
         {
-            OExportModeDialog dialog(pattern, m_m, this);
+            OExportModeDialog dialog(pattern, m_m, OGradedSizeRanges::CurrentContext(doc), this);
             if (dialog.exec() == QDialog::Accepted)
             {
                 RunExportNesting(dialog.DocumentWidth(), dialog.SizeRangeName(), dialog.IsSingleSize(),
@@ -151,7 +152,7 @@ void MainWindow::ActionExport(bool checked)
 
     // What to nest and on which bin is decided here, on the empty export canvas.
     // Cancelling gives the previous mode back — the mode was already switched.
-    OExportModeDialog dialog(pattern, m_m, this);
+    OExportModeDialog dialog(pattern, m_m, OGradedSizeRanges::CurrentContext(doc), this);
     if (dialog.exec() != QDialog::Accepted)
     {
         ui->actionExport->setChecked(false);

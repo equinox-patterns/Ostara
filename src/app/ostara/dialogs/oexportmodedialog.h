@@ -29,6 +29,8 @@
 
 #include <QDialog>
 #include <QSharedPointer>
+#include "core/ogradedsizeranges.h"
+
 #include <QVector>
 
 class QComboBox;
@@ -58,8 +60,11 @@ class OExportModeDialog : public QDialog
     Q_OBJECT
 
 public:
+    /// @param context the (measurements table, declared grading axis) the pattern is on.
+    ///                The dialog cannot resolve it: it holds no document. The range list
+    ///                is restricted to it, exactly as the Graded dock restricts its own.
     explicit OExportModeDialog(const VContainer *data, const QSharedPointer<VMeasurements> &measurements,
-                               QWidget *parent = nullptr);
+                               const OGradedSizeRanges::Context &context, QWidget *parent = nullptr);
 
     /// @brief The entered document width, in the pattern's unit.
     auto DocumentWidth() const -> qreal;
@@ -94,6 +99,7 @@ private:
 
     const VContainer *m_data{nullptr};
     QSharedPointer<VMeasurements> m_measurements{};
+    OGradedSizeRanges::Context m_rangeContext{};
 
     QLabel *m_widthLabel{nullptr};
     QLineEdit *m_widthEdit{nullptr};

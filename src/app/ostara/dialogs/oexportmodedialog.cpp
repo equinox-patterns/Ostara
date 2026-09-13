@@ -55,10 +55,11 @@ constexpr qreal kBaseTolerance = 1e-9;
 
 //---------------------------------------------------------------------------------------------------------------------
 OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointer<VMeasurements> &measurements,
-                                     QWidget *parent)
+                                     const OGradedSizeRanges::Context &context, QWidget *parent)
   : QDialog(parent),
     m_data(data),
-    m_measurements(measurements)
+    m_measurements(measurements),
+    m_rangeContext(context)
 {
     setWindowTitle(tr("Export"));
     setModal(true);
@@ -181,10 +182,21 @@ void OExportModeDialog::PopulateSizeRanges()
 {
     m_rangeCombo->clear();
 
+    // The Graded dock's own filter: only the ranges of the pattern's context are offered.
+    // A range built against another table — or against another axis of the same table —
+    // is not what the user is working on, and nesting it would take its geometry from one
+    // axis while its styles come from another.
     const QHash<QString, OSizerange> *ranges = m_data != nullptr ? m_data->SizeRanges() : nullptr;
     if (ranges != nullptr)
     {
-        QStringList names = ranges->keys();
+        QStringList names;
+        for (auto it = ranges->cbegin(); it != ranges->cend(); ++it)
+        {
+            if (OGradedSizeRanges::Matches(it.value(), m_rangeContext))
+            {
+                names.append(it.key());
+            }
+        }
         names.sort();
         for (const QString &name : names)
         {

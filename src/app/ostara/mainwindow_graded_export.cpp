@@ -29,6 +29,7 @@
 
 #include "mainwindow.h"
 
+#include "core/ogradedsizeranges.h"
 #include "core/ogratedsizestyles.h"
 #include "mainwindow_helpers.h"
 #include "mainwindowsnogui.h"
@@ -142,14 +143,17 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
     // --- Destination (range settings, else software defaults). -----------------
     auto *settings = VAbstractApplication::VApp()->Settings();
 
-    // Per-size styles of the Size Styles dock (table canonical path + size axis).
-    // Applied regardless of the "Show in canvas" gate (the gate is canvas-only).
-    const QString canonical =
-        AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
+    // Per-size styles of the Size Styles dock, read on the very key the canvas reads them
+    // on — same resolution, same library guard. What is exported is what is shown: a table
+    // outside the library is styled nothing on screen, and nothing here either. The
+    // "Show in canvas" gate stays unread: it is a canvas preference, not a decision about
+    // the file.
     QHash<QString, OGradedSizeStyle> styles;
-    if (!canonical.isEmpty())
+    const OGradedSizeStyles::StyleAxis axis =
+        OGradedSizeStyles::ResolveStyleAxis(doc, pattern, range.name);
+    if (axis.ready && axis.inLibrary)
     {
-        styles = OGradedSizeStyles::StylesForAxis(settings, canonical, range.sizeAxis);
+        styles = OGradedSizeStyles::StylesForAxis(settings, axis.canonical, axis.axisName);
     }
 
     QString outDir = !forcedDir.isEmpty() ? forcedDir : range.exportPath;
@@ -588,17 +592,29 @@ void MainWindow::ExportAllGradedRanges(const QString &dirPath)
         return;
     }
 
-    const auto *ranges = pattern->SizeRanges();
-    if (ranges == nullptr || ranges->isEmpty())
+    // The dock's own filter: what it does not list, this does not export. A range built
+    // against another table — or against another axis of the same table — is not what the
+    // user is working on, and its styles live under a key no screen reads.
+    const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
+    QStringList names;
+    if (const auto *ranges = pattern->SizeRanges(); ranges != nullptr)
+    {
+        for (auto it = ranges->cbegin(); it != ranges->cend(); ++it)
+        {
+            if (OGradedSizeRanges::Matches(it.value(), context))
+            {
+                names.append(it.key());
+            }
+        }
+    }
+    names.sort(); // same alphabetical order as the dock rows — one layered SVG per range
+
+    if (names.isEmpty())
     {
         QMessageBox::information(this, tr("Graded mode"), tr("No size range to export."),
                                  QMessageBox::Ok);
         return;
     }
-
-    // Same alphabetical order as the dock rows — one layered SVG per range.
-    QStringList names = ranges->keys();
-    names.sort();
 
     QStringList writtenFiles; // file names actually exported
     QStringList failedRanges; // ranges that errored

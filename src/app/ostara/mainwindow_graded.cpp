@@ -28,10 +28,10 @@
 
 #include "dialogs/ogradedrangedialog.h"
 #include "core/ogradedfavorites.h"
+#include "core/ogradedsizeranges.h"
 #include "mainwindow_helpers.h"
 #include "mainwindowsnogui.h"
 #include "widgets/InfoBlock/OPieceCartoucheTable.h"
-#include "widgets/MeasurementWorkspace/MeasurementLibraryScanner.h"
 #include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
 #include "widgets/owidgetsizeranges.h"
@@ -58,44 +58,6 @@
 #include <QObject>
 #include <QStringList>
 #include <QtGlobal>
-
-namespace
-{
-
-/// The (measurements table, declared grading axis) pair that gates which stored
-/// size ranges are usable in Graded mode. A range is only usable when BOTH match:
-/// the loaded table (measurement) AND its declared grading axis. The axis is a
-/// software-level, per-table declaration; when the table is not in the library
-/// (or no axis has been declared yet) the axis is empty — no axis constraint then
-/// (an out-of-library table never persists its axis, the user re-picks each time).
-struct GradedRangeContext
-{
-    QString canonical;
-    QString axis; // declared size axis of the table; empty → keep every axis of the table
-};
-
-//---------------------------------------------------------------------------------------------------------------------
-auto CurrentGradedRangeContext(VPattern *document) -> GradedRangeContext
-{
-    if (document == nullptr || document->MPath().isEmpty())
-    {
-        return {};
-    }
-    const QString canonical = AbsoluteMPath(
-        VAbstractValApplication::VApp()->GetPatternPath(), document->MPath());
-    if (canonical.isEmpty())
-    {
-        return {};
-    }
-
-    auto *settings = VAbstractApplication::VApp()->Settings();
-    const bool inLibrary = MeasurementLibraryScanner::IsInLibrary(
-        settings->GetPathMeasurementLibrary(), canonical);
-    return {canonical, inLibrary ? settings->GetSizeAxisForMeasurement(canonical) : QString()};
-}
-
-} // namespace
-
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ActionGraded(bool checked)
@@ -188,7 +150,7 @@ bool MainWindow::EnterGradedMode()
         return false;
     }
 
-    const GradedRangeContext context = CurrentGradedRangeContext(doc);
+    const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
     const QString canonical = context.canonical;
 
     QStringList axes;
@@ -303,9 +265,8 @@ QString MainWindow::CreateGradedRange(const QString &canonical, const QStringLis
 
     const auto *existing = pattern->SizeRanges();
     auto *settings = VAbstractApplication::VApp()->Settings();
-    const QString libPath = settings->GetPathMeasurementLibrary();
-    const bool inLibrary = MeasurementLibraryScanner::IsInLibrary(libPath, canonical);
-    const QString declared = inLibrary ? settings->GetSizeAxisForMeasurement(canonical) : QString();
+    const OGradedSizeRanges::Context context = OGradedSizeRanges::ContextFor(canonical);
+    const QString &declared = context.axis;
 
     OGradedRangeDialog::Config config;
     config.canonicalPath = canonical;
@@ -331,7 +292,7 @@ QString MainWindow::CreateGradedRange(const QString &canonical, const QStringLis
     }
 
     // Persist the axis declaration (software store) when the table is in the library.
-    if (config.axisStepNeeded && inLibrary)
+    if (config.axisStepNeeded && context.inLibrary)
     {
         settings->SetSizeAxisForMeasurement(canonical, dialog.sizeAxis());
     }
@@ -404,7 +365,7 @@ void MainWindow::RefreshSizeRangesDock()
     {
         return;
     }
-    const GradedRangeContext context = CurrentGradedRangeContext(doc);
+    const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
     widget->SetTableFilter(context.canonical, context.axis);
     widget->UpdateList(m_activeGradedRangeName);
 }
@@ -412,7 +373,7 @@ void MainWindow::RefreshSizeRangesDock()
 //---------------------------------------------------------------------------------------------------------------------
 QString MainWindow::CurrentLoadedTableAxis() const
 {
-    return CurrentGradedRangeContext(doc).axis;
+    return OGradedSizeRanges::CurrentContext(doc).axis;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -671,21 +632,24 @@ bool MainWindow::DeleteGradedRange(const QString &rangeName)
     AddSizeRanges(doc, rootElement, pattern);
     doc->SetModified(true);
 
-    // Deleting the active range: activate the remaining one with the lowest name,
-    // or clear the canvas when none is left (the list is then empty).
+    // Deleting the active range: the next one is the lowest name still in the dock's
+    // list — the same (table, axis) context the dock lists by. Taking it from the whole
+    // hash would activate a range the user cannot see, leaving the list with no row
+    // marked active. When nothing matches, the canvas and the list are simply empty:
+    // the user leaves Graded, or adds a range.
     if (m_activeGradedRangeName == rangeName)
     {
+        const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
         QString next;
-        if (not ranges.isEmpty())
+        for (auto it = ranges.cbegin(); it != ranges.cend(); ++it)
         {
-            auto it = ranges.cbegin();
-            next = it.key();
-            for (++it; it != ranges.cend(); ++it)
+            if (!OGradedSizeRanges::Matches(it.value(), context))
             {
-                if (it.key() < next)
-                {
-                    next = it.key();
-                }
+                continue;
+            }
+            if (next.isEmpty() || it.key() < next)
+            {
+                next = it.key();
             }
         }
         m_activeGradedRangeName = next;
