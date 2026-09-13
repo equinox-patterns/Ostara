@@ -29,15 +29,23 @@
 #include "ogradedgeometry.h"
 #include "oexportgeometry.h"
 #include "oexportnesting.h"
+#include "widgets/InfoBlock/OInfoBlockResolver.h"
 
+#include "../ifc/xml/vabstractpattern.h"
 #include "../vlayout/vgraphicsfillitem.h"
 #include "../vlayout/vlayoutpiece.h"
 #include "../vmisc/def.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
+#include "../vpatterndb/ipieceinfo.h"
 #include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/osizerange.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiece.h"
+#include "../vtools/tools/oannotationitem.h"
+#include "../vtools/tools/oinfoblockcontent.h"
+#include "../vtools/tools/oinfoblockitem.h"
+#include "../vtools/tools/vtoolseamallowance.h"
+#include "../vwidgets/ocartouchepainter.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vpiecegrainline.h"
 
@@ -47,8 +55,10 @@
 #include <QGraphicsSimpleTextItem>
 #include <QHash>
 #include <QPen>
+#include <QScopedPointer>
 #include <QTransform>
 #include <QtMath>
+#include <QtNumeric>
 
 namespace
 {
@@ -93,6 +103,68 @@ auto GrainlineOverrideOf(const OSizerange *range, quint32 ownerId, bool isGroup)
 
     const auto it = range->pieceContent.constFind(ownerId);
     return it == range->pieceContent.cend() ? OSizerange::GrainlineOverride{} : it.value().grainline;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// The range's override for one information block of one owner, or an invalid one. Same
+/// rule as the grainline: an override exists only for a block the user actually moved in
+/// Graded, and this mode reads it without ever writing one.
+auto BlockOverrideOf(const OSizerange *range, quint32 ownerId, bool isGroup, int block)
+    -> OSizerange::BlockOverride
+{
+    if (range == nullptr)
+    {
+        return {};
+    }
+
+    if (isGroup)
+    {
+        const auto it = range->groupContent.constFind(ownerId);
+        if (it == range->groupContent.cend())
+        {
+            return {};
+        }
+        const auto ov = it.value().blocks.constFind(block);
+        return ov == it.value().blocks.cend() ? OSizerange::BlockOverride{} : ov.value();
+    }
+
+    const auto it = range->pieceContent.constFind(ownerId);
+    if (it == range->pieceContent.cend())
+    {
+        return {};
+    }
+    const auto ov = it.value().blocks.constFind(block);
+    return ov == it.value().blocks.cend() ? OSizerange::BlockOverride{} : ov.value();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// The range's override for one annotation of one owner, or an invalid one.
+auto AnnotationOverrideOf(const OSizerange *range, quint32 ownerId, bool isGroup, int index)
+    -> OSizerange::AnnotationOverride
+{
+    if (range == nullptr)
+    {
+        return {};
+    }
+
+    if (isGroup)
+    {
+        const auto it = range->groupContent.constFind(ownerId);
+        if (it == range->groupContent.cend())
+        {
+            return {};
+        }
+        const auto ov = it.value().annotations.constFind(index);
+        return ov == it.value().annotations.cend() ? OSizerange::AnnotationOverride{} : ov.value();
+    }
+
+    const auto it = range->pieceContent.constFind(ownerId);
+    if (it == range->pieceContent.cend())
+    {
+        return {};
+    }
+    const auto ov = it.value().annotations.constFind(index);
+    return ov == it.value().annotations.cend() ? OSizerange::AnnotationOverride{} : ov.value();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -176,18 +248,205 @@ void ApplyReferenceGrainline(VLayoutPiece &placed, const OExportPieceGeometry &g
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/// The host of one group and the group's shared grainline, on the reference layer.
+/// The extent a piece is drawn with, measured before the placement is applied.
 ///
-/// A group has no item of its own in this scene: the nesting places its members, and the
-/// grainline is the group's, not theirs. The host is the invisible carrier Graded also
-/// builds — its origin is the top-left corner of the placed members, which is the frame
-/// the group's own grainline is stored in.
-void BuildGroupGrainline(VMainGraphicsScene *scene, quint32 groupId,
-                         const QList<QGraphicsItem *> &members, const OSizerange *range, const Unit &unit,
-                         const VContainer *pattern)
+/// Read from an item built exactly like the one the canvas draws — same pen, same
+/// notches — because that is the rectangle these frames have always been measured on.
+/// Taking the contour points instead would drop the pen, and move every child of a group
+/// by half its width.
+auto UnplacedBounds(const VLayoutPiece &piece) -> QRectF
+{
+    QScopedPointer<QGraphicsItem> probe(piece.GetItem(false, true, false));
+    return probe.isNull() ? QRectF() : probe->boundingRect();
+}
+
+/// @brief The frame an owner's children are stored in, and the placement that brings it to
+///        the scene.
+struct DecorFrame
+{
+    QTransform placement; ///< the owner's frame -> the scene
+    qreal rotation{0.0};  ///< the angle inside @c placement, in degrees
+    QPointF origin{};     ///< the point of the owner's frame that is its local (0, 0)
+    QRectF bounds{};      ///< the owner's extent, in its own frame
+};
+
+//---------------------------------------------------------------------------------------------------------------------
+/// The invisible carrier an owner's children hang under.
+///
+/// It carries the placement the owner itself received, so a child hung at the coordinates
+/// the owner stores lands where the owner is: @c host.map(p) equals
+/// @c frame.placement.map(frame.origin + p). Without it the carrier would stay
+/// axis-aligned on the bounding box of the placed members, which stops being the owner's
+/// frame the moment the nesting turns it — and a group is a footprint like any other, so
+/// the engine may turn it by any multiple of two degrees.
+auto MakeDecorHost(VMainGraphicsScene *scene, const DecorFrame &frame) -> QGraphicsItem *
+{
+    auto *host = new QGraphicsRectItem(0.0, 0.0, frame.bounds.width(), frame.bounds.height());
+    host->setPos(frame.placement.map(frame.origin));
+    host->setRotation(frame.rotation);
+    host->setPen(Qt::NoPen);
+    host->setBrush(Qt::NoBrush);
+    host->setFlag(QGraphicsItem::ItemIsSelectable, false);
+    host->setFlag(QGraphicsItem::ItemIsMovable, false);
+    host->setAcceptedMouseButtons(Qt::NoButton);
+    host->setZValue(1.0);
+    scene->addItem(host);
+    return host;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// The mode shows the decor, it never edits it. Both item classes draw their eight resize
+/// handles under `m_active` alone — SetReadOnly only drops the movable flag — so an item
+/// left active would still paint them and answer the mouse. Manual correction is a subject
+/// of its own, with its own spec.
+template <typename DecorItem> void MakeDecorReadOnly(DecorItem *item)
+{
+    item->SetActive(false);
+    item->SetReadOnly(true);
+    item->setAcceptedMouseButtons(Qt::NoButton);
+    item->show();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Add an owner's information blocks and annotations under @p host, in @p host's frame.
+///
+/// The owner is the group when the piece belongs to one — a grouped member carries none of
+/// these, exactly as it carries no grainline of its own. Details, the Graded canvas and its
+/// SVG export all draw that same line.
+///
+/// @param centerLocal the point a child that was never placed falls back on, in that frame
+auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup, quint32 ownerId,
+                     const QPointF &centerLocal, const OSizerange *range, const VContainer *pattern,
+                     VAbstractPattern *doc)
+{
+    if (pattern == nullptr)
+    {
+        return;
+    }
+
+    // A block exists when the template dispatches a section to it and that section has
+    // content: the resolver leaves nothing else in blockContent. Without a document there
+    // is no template to resolve, so the blocks are skipped and the annotations are not.
+    if (doc != nullptr)
+    {
+        const OInfoBlockEffectiveState state = OInfoBlockResolver::ResolveEffectiveState(owner, doc, pattern);
+        const OInfoBlockData &info = owner.GetInfoBlockData();
+
+        for (int block : state.blockContent.keys())
+        {
+            const QVector<OCartoucheRenderLine> lines = state.blockContent.value(block).toVector();
+            if (lines.isEmpty())
+            {
+                continue;
+            }
+
+            const OSizerange::BlockOverride ov = BlockOverrideOf(range, ownerId, isGroup, block);
+            const OGraded::InfoBlockPlacement placement =
+                OGraded::ResolveInfoBlock(info, ov, lines, block, centerLocal);
+
+            OInfoBlockGeom geom;
+            geom.pos = placement.topLeft;
+            geom.width = placement.size.width();
+            geom.height = placement.size.height();
+            geom.rotation = placement.rotation;
+            geom.fontScale = placement.fontScale;
+
+            auto *item = new OInfoBlockItem(block, host);
+            item->SetBlockGeom(geom);
+            item->SetContent(lines, placement.fontScale);
+            MakeDecorReadOnly(item);
+        }
+    }
+
+    const QList<OAnnotation> &annotations = owner.GetAnnotationData().Annotations();
+    const OAnnotationStyleResolver &styleOf = VToolSeamAllowance::AnnotationStyleResolver();
+
+    for (int i = 0; i < annotations.size(); ++i)
+    {
+        const OAnnotation &annotation = annotations.at(i);
+        if (annotation.text.trimmed().isEmpty())
+        {
+            continue;
+        }
+
+        OAnnotationGeom geom = annotation.geom;
+        const OSizerange::AnnotationOverride ov = AnnotationOverrideOf(range, ownerId, isGroup, i);
+        if (ov.valid)
+        {
+            geom = ov.geom;
+        }
+        // (0, 0) is the sentinel for an annotation that was never moved: it sits on its
+        // owner. The rotation never comes from the range — a range does not store one.
+        if (qFuzzyIsNull(geom.pos.x()) && qFuzzyIsNull(geom.pos.y()))
+        {
+            geom.pos = centerLocal;
+        }
+
+        const OAnnotationRenderStyle style = styleOf ? styleOf(annotation.templateName)
+                                                     : OAnnotationRenderStyle();
+        const qreal rotation = OGraded::AnnotationRotation(annotation.rotationFormula, isGroup, pattern);
+
+        auto *item = new OAnnotationItem(i, host);
+        item->SetIndex(i);
+        // SetContent before SetAnnotationGeom: an auto-sized box takes its size from the
+        // natural size SetContent measured. Details and Graded both call them in this order.
+        item->SetContent(annotation.text, style);
+        item->SetAnnotationGeom(geom, rotation);
+        MakeDecorReadOnly(item);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// The decor of one isolated piece, on the reference layer.
+///
+/// A piece's children are stored in the document's own coordinates, so its carrier takes
+/// the placement as-is and its local origin is the document origin. A piece of a group of
+/// one keeps its own decor: below kMinGroupMembers a group is not a block.
+void BuildPieceDecor(VMainGraphicsScene *scene, const OExportPieceGeometry &geometry,
+                     const QTransform &placement, qreal rotation, const OSizerange *range,
+                     const VContainer *pattern, VAbstractPattern *doc)
+{
+    const auto *pieces = pattern != nullptr ? pattern->DataPieces() : nullptr;
+    if (pieces == nullptr)
+    {
+        return;
+    }
+
+    const auto piece = pieces->constFind(geometry.id);
+    if (piece == pieces->cend())
+    {
+        return;
+    }
+
+    DecorFrame frame;
+    frame.placement = placement;
+    frame.rotation = rotation;
+    frame.origin = QPointF(0.0, 0.0);
+    frame.bounds = UnplacedBounds(geometry.piece);
+
+    auto *host = MakeDecorHost(scene, frame);
+    BuildOwnerDecor(host, piece.value(), false, geometry.id, frame.bounds.center() - frame.origin, range,
+                    pattern, doc);
+
+    if (host->childItems().isEmpty())
+    {
+        delete host;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// The decor of one group, on the reference layer: its grainline, its cartouche and its
+/// annotations.
+///
+/// A group has no item of its own in this scene: the nesting places its members. Graded
+/// builds the same invisible carrier — its origin is the top-left corner of the members,
+/// which is the frame the group stores all of its children in.
+void BuildGroupDecor(VMainGraphicsScene *scene, quint32 groupId, const DecorFrame &frame,
+                     const OSizerange *range, const Unit &unit, const VContainer *pattern,
+                     VAbstractPattern *doc)
 {
     const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
-    if (members.isEmpty() || groups == nullptr)
+    if (groups == nullptr || frame.bounds.isNull())
     {
         return;
     }
@@ -198,38 +457,26 @@ void BuildGroupGrainline(VMainGraphicsScene *scene, quint32 groupId,
         return;
     }
 
-    QRectF box;
-    for (QGraphicsItem *member : members)
-    {
-        box = box.united(member->sceneBoundingRect());
-    }
-    if (box.isEmpty())
-    {
-        return;
-    }
-
-    auto *host = new QGraphicsRectItem(0.0, 0.0, box.width(), box.height());
-    host->setPos(box.topLeft());
-    host->setPen(Qt::NoPen);
-    host->setBrush(Qt::NoBrush);
-    host->setFlag(QGraphicsItem::ItemIsSelectable, false);
-    host->setFlag(QGraphicsItem::ItemIsMovable, false);
-    host->setAcceptedMouseButtons(Qt::NoButton);
-    host->setZValue(1.0);
-    scene->addItem(host);
+    auto *host = MakeDecorHost(scene, frame);
+    const QPointF centerLocal = frame.bounds.center() - frame.origin;
 
     const VGrainlineData &geom = group.value().m_glGrainline;
-    if (!geom.IsEnabled() || !geom.IsVisible())
+    if (geom.IsEnabled() && geom.IsVisible())
     {
-        return;
+        const OSizerange::GrainlineOverride ov = GrainlineOverrideOf(range, groupId, true);
+        const OGraded::GrainlinePlacement placement =
+            OGraded::ResolveGrainline(geom, ov, true, pattern, unit, centerLocal);
+        const qreal rotation = OGraded::GrainlineRotation(geom.GetRotation(), true, pattern);
+
+        OGraded::MakeGrainlineItem(host, geom, placement, rotation);
     }
 
-    const QPointF center(box.width() / 2.0, box.height() / 2.0);
-    const OSizerange::GrainlineOverride ov = GrainlineOverrideOf(range, groupId, true);
-    const OGraded::GrainlinePlacement placement = OGraded::ResolveGrainline(geom, ov, true, pattern, unit, center);
-    const qreal rotation = OGraded::GrainlineRotation(geom.GetRotation(), true, pattern);
+    BuildOwnerDecor(host, group.value(), true, groupId, centerLocal, range, pattern, doc);
 
-    OGraded::MakeGrainlineItem(host, geom, placement, rotation);
+    if (host->childItems().isEmpty())
+    {
+        delete host;
+    }
 }
 } // namespace
 
@@ -238,7 +485,8 @@ void OExportCanvas::Build(VMainGraphicsScene *scene,
                           const QVector<OExportSizeLayer> &layers,
                           const OExportNestingResult &result,
                           const OSizerange *range,
-                          const VContainer *pattern)
+                          const VContainer *pattern,
+                          VAbstractPattern *doc)
 {
     if (scene == nullptr || !result.ok)
     {
@@ -250,9 +498,9 @@ void OExportCanvas::Build(VMainGraphicsScene *scene,
     const Unit *patternUnit = pattern != nullptr ? pattern->GetPatternUnit() : nullptr;
     const Unit unit = patternUnit != nullptr ? *patternUnit : Unit::Mm;
 
-    // Members of each group, on the reference layer only: the group's grainline is drawn
-    // once, above all of them, once the loop has placed them.
-    QHash<quint32, QList<QGraphicsItem *>> groupMembers;
+    // The frame of each group, on the reference layer only: the group's decor is drawn
+    // once, above all of its members, once the loop has placed them.
+    QHash<quint32, DecorFrame> groupFrames;
 
     // The bin: fixed width, height given by the nesting.
     auto *bin = new QGraphicsRectItem(0, 0, result.binWidthPx, result.usedHeightPx);
@@ -315,18 +563,34 @@ void OExportCanvas::Build(VMainGraphicsScene *scene,
                 {
                     HidePerSizeDecor(item);
                 }
-                else if (geometry.groupId != 0)
+                else if (IsGroupedMember(pattern, geometry.groupId))
                 {
-                    groupMembers[geometry.groupId].append(item);
+                    // A grouped member carries nothing of its own: the group hosts the
+                    // single set, grainline included. Its frame is measured here, at the
+                    // one moment its unplaced extent is still at hand.
+                    DecorFrame &frame = groupFrames[geometry.groupId];
+                    frame.placement = placementMatrix;
+                    frame.rotation = placement.rotation;
+                    frame.bounds = frame.bounds.united(UnplacedBounds(geometry.piece));
                 }
 
                 scene->addItem(item);
+
+                if (isReference && !IsGroupedMember(pattern, geometry.groupId))
+                {
+                    BuildPieceDecor(scene, geometry, placementMatrix, placement.rotation, range, pattern, doc);
+                }
             }
         }
     }
 
-    for (auto it = groupMembers.cbegin(); it != groupMembers.cend(); ++it)
+    for (auto it = groupFrames.begin(); it != groupFrames.end(); ++it)
     {
-        BuildGroupGrainline(scene, it.key(), it.value(), range, unit, pattern);
+        // The children of a group are stored relative to the top-left corner of its
+        // members, and that corner is only known once every member has contributed its
+        // extent — hence the second pass rather than a frame built on the fly.
+        DecorFrame &frame = it.value();
+        frame.origin = frame.bounds.topLeft();
+        BuildGroupDecor(scene, it.key(), frame, range, unit, pattern, doc);
     }
 }

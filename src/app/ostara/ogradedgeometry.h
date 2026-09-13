@@ -38,7 +38,11 @@
 #include <QtGlobal>
 #include <QtNumeric>
 
+#include "../vpatterndb/oinfoblockdata.h"
 #include "../vpatterndb/osizerange.h"
+#include "../vwidgets/ocartouchepainter.h"
+
+#include <QSizeF>
 
 class QGraphicsItem;
 class VContainer;
@@ -153,6 +157,45 @@ auto GrainlineRotation(const QString &formula, bool isGroup, const VContainer *p
  */
 auto MakeGrainlineItem(QGraphicsItem *parent, const VGrainlineData &geom,
                        const GrainlinePlacement &placement, qreal rotationDeg) -> QGraphicsItem *;
+
+/// @brief Where an owner's information block sits, how big it is, and at what angle.
+struct InfoBlockPlacement
+{
+    QPointF topLeft{};   ///< parent-local, pixels
+    QSizeF size{};       ///< pixels
+    qreal fontScale{1.0};
+    qreal rotation{0.0}; ///< degrees — always 0 for a block that was never placed
+};
+
+/**
+ * @brief Resolve one information block of an owner, for one range.
+ *
+ * The size is never read back from the owner: it is measured on the lines the block
+ * holds and scaled. A range stores no width and no height — the user resizes a block by
+ * changing its scale, and the size follows. Only the position and that scale come from
+ * the range's override.
+ *
+ * A block that was never given a place is stacked under @p fallbackCenter and stands
+ * upright: the rotation belongs to a placed block alone.
+ *
+ * @param info           the owner's block data — a piece's, or a group's
+ * @param ov             the range's override for that block, invalid when it holds none
+ * @param lines          the block's rendered lines
+ * @param blockIndex     1..11
+ * @param fallbackCenter parent-local point an unplaced block is stacked around
+ */
+auto ResolveInfoBlock(const OInfoBlockData &info, const OSizerange::BlockOverride &ov,
+                      const QVector<OCartoucheRenderLine> &lines, int blockIndex,
+                      const QPointF &fallbackCenter) -> InfoBlockPlacement;
+
+/**
+ * @brief Rotation of an annotation, in degrees.
+ *
+ * Deliberately the same evaluation a grainline gets: a piece's rotation is a formula
+ * resolved against the pattern's variables, a group's is a literal. Kept as its own name
+ * so the call site says what it is resolving.
+ */
+auto AnnotationRotation(const QString &formula, bool isGroup, const VContainer *pattern) -> qreal;
 }  // namespace OGraded
 
 #endif  // OGRADEDGEOMETRY_H

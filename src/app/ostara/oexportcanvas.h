@@ -30,6 +30,7 @@
 #include <QVector>
 
 class VMainGraphicsScene;
+class VAbstractPattern;
 class VContainer;
 class OSizerange;
 struct OExportNestingResult;
@@ -49,11 +50,14 @@ public:
     ///                takes its position from — never the Details-mode placement.
     /// @param pattern the pattern, source of the grainlines and of the groups. Decor is
     ///                skipped when it is nullptr.
+    /// @param doc     the document, which the cartouche resolver reads the template from.
+    ///                Blocks are skipped when it is nullptr.
     static void Build(VMainGraphicsScene *scene,
                       const QVector<OExportSizeLayer> &layers,
                       const OExportNestingResult &result,
                       const OSizerange *range,
-                      const VContainer *pattern);
+                      const VContainer *pattern,
+                      VAbstractPattern *doc);
 };
 
 #endif // OEXPORTCANVAS_H

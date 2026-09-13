@@ -486,4 +486,61 @@ auto MakeGrainlineItem(QGraphicsItem *parent, const VGrainlineData &geom, const 
     item->setPen(pen);
     return item;
 }
+
+namespace
+{
+/// The gap two stacked blocks leave between them when their owner holds no geometry for
+/// them. Details, the group holder and the Graded export each spell it "12.0" today; this
+/// is the one copy the Export reads. Rebranching those three onto it is a change of its
+/// own — it touches what the Graded canvas and its SVG export draw.
+constexpr qreal kBlockStackingGap = 12.0;
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ResolveInfoBlock(const OInfoBlockData &info, const OSizerange::BlockOverride &ov,
+                      const QVector<OCartoucheRenderLine> &lines, int blockIndex,
+                      const QPointF &fallbackCenter) -> InfoBlockPlacement
+{
+    InfoBlockPlacement placement;
+
+    const OInfoBlockGeom geom = info.BlockGeom(blockIndex);
+    const bool placed = ov.valid || info.HasStoredGeometry(blockIndex);
+
+    placement.fontScale = geom.fontScale > 0.0 ? geom.fontScale : 1.0;
+    placement.topLeft = geom.pos;
+    if (ov.valid)
+    {
+        placement.topLeft = ov.geom.pos;
+        if (ov.geom.fontScale > 0.0)
+        {
+            placement.fontScale = ov.geom.fontScale;
+        }
+    }
+
+    // Measured on the content, never read back from the owner: the owner's stored width
+    // and height are what the last resize left there, and the scale is what carries it.
+    const QSizeF natural = OCartouchePainter::NaturalSize(lines);
+    placement.size = QSizeF(natural.width() * placement.fontScale, natural.height() * placement.fontScale);
+
+    if (placed)
+    {
+        placement.rotation = geom.rotation;
+    }
+    else
+    {
+        // Never placed: stacked under the owner's centre, the first block on that centre
+        // and each following one a block lower. Upright — a range stores the rotation of
+        // a block it holds, and there is none here.
+        placement.topLeft = fallbackCenter
+                            + QPointF(0.0, (blockIndex - 1) * (placement.size.height() + kBlockStackingGap));
+    }
+
+    return placement;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto AnnotationRotation(const QString &formula, bool isGroup, const VContainer *pattern) -> qreal
+{
+    return GrainlineRotation(formula, isGroup, pattern);
+}
 }  // namespace OGraded

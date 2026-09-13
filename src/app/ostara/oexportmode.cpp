@@ -327,7 +327,7 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
         }
     }
 
-    OExportCanvas::Build(m_sceneExport, layers, result, range, pattern);
+    OExportCanvas::Build(m_sceneExport, layers, result, range, pattern, doc);
 
     // Frame the whole nesting — the very same thing the "Zoom fit best" action (Cmd+=)
     // does, which is what this is meant to reproduce. The former call framed
