@@ -36,6 +36,7 @@
 #include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
 #include "widgets/TopBar.h"
+#include "../vformat/vmeasurements.h"
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vpatterndb/osizerange.h"
@@ -224,25 +225,41 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
 
     QVector<OExportSizeLayer> layers;
 
+    // A table without axes — an .otu, or a .vit — describes a single size. There is no
+    // size to put the document on, and no reason to try: the Layout mode, which has
+    // nested a single size since long before this one existed, never touches the document
+    // either. Its measurements resolve to what they already hold whatever the bases say —
+    // an .otu's shifts are zero and its base is zero — so the size path would re-read the
+    // whole table and re-parse the pattern only to arrive where it started.
+    const bool hasAxes = !m_m.isNull() && !m_m->Dimensions().isEmpty();
+
     if (singleSize)
     {
-        // The user asked for this size: the document stays on it.
-        //
-        // An axis the measurement table does not carry has no size to offer, and the
-        // dialog says so with -1 — a value shaped like a size without being one, handed
-        // to the pieces as if it were. The document's own value stands instead, and the
-        // axis's first size when the document has none either: 1 is the only base the
-        // schema accepts as a floor. The range path below guards its bases the same way.
-        const auto baseOr = [](qreal fromDialog, qreal fromDocument)
-        { return fromDialog > 0.0 ? fromDialog : (fromDocument > 0.0 ? fromDocument : 1.0); };
+        if (!hasAxes)
+        {
+            // Already on its only size: the geometry is read as it stands.
+            layers = geometry.CollectCurrentSize(tr("Single size"));
+        }
+        else
+        {
+            // The user asked for this size: the document stays on it.
+            //
+            // An axis the measurement table does not carry has no size to offer, and the
+            // dialog says so with -1 — a value shaped like a size without being one, handed
+            // to the pieces as if it were. The document's own value stands instead, and the
+            // axis's first size when the document has none either: 1 is the only base the
+            // schema accepts as a floor. The range path below guards its bases the same way.
+            const auto baseOr = [](qreal fromDialog, qreal fromDocument)
+            { return fromDialog > 0.0 ? fromDialog : (fromDocument > 0.0 ? fromDocument : 1.0); };
 
-        const qreal baseOfA = baseOr(baseA, savedA);
-        const qreal baseOfB = baseOr(baseB, savedB);
-        const qreal baseOfC = baseOr(baseC, savedC);
+            const qreal baseOfA = baseOr(baseA, savedA);
+            const qreal baseOfB = baseOr(baseB, savedB);
+            const qreal baseOfC = baseOr(baseC, savedC);
 
-        applySize(baseOfA, baseOfB, baseOfC);
-        layers = geometry.CollectCurrentSize(
-            QStringLiteral("A=%1 B=%2 C=%3").arg(baseOfA).arg(baseOfB).arg(baseOfC));
+            applySize(baseOfA, baseOfB, baseOfC);
+            layers = geometry.CollectCurrentSize(
+                QStringLiteral("A=%1 B=%2 C=%3").arg(baseOfA).arg(baseOfB).arg(baseOfC));
+        }
     }
     else
     {

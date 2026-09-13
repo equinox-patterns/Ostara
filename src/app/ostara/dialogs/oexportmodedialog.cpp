@@ -181,23 +181,34 @@ void OExportModeDialog::PopulateSizeRanges()
 {
     m_rangeCombo->clear();
 
-    if (m_data == nullptr)
+    const QHash<QString, OSizerange> *ranges = m_data != nullptr ? m_data->SizeRanges() : nullptr;
+    if (ranges != nullptr)
     {
-        return;
+        QStringList names = ranges->keys();
+        names.sort();
+        for (const QString &name : names)
+        {
+            m_rangeCombo->addItem(name, name);
+        }
     }
 
-    const QHash<QString, OSizerange> *ranges = m_data->SizeRanges();
-    if (ranges == nullptr)
+    // "Size range" needs a range to walk and axes to walk it along. Offering it otherwise
+    // promises a nesting that can only end on a warning about an empty range — and on a
+    // table without axes there is nothing but a single size to nest.
+    if (m_rangeCombo->count() == 0 || !HasAxes())
     {
-        return;
+        const int rangeItem = m_sourceCombo->findData(QStringLiteral("range"));
+        if (rangeItem >= 0)
+        {
+            m_sourceCombo->removeItem(rangeItem); // "Single size" becomes the only entry
+        }
     }
+}
 
-    QStringList names = ranges->keys();
-    names.sort();
-    for (const QString &name : names)
-    {
-        m_rangeCombo->addItem(name, name);
-    }
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportModeDialog::HasAxes() const -> bool
+{
+    return !m_measurements.isNull() && !m_measurements->Dimensions().isEmpty();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -284,7 +295,9 @@ void OExportModeDialog::CheckState()
 
     if (IsSingleSize())
     {
-        valid = valid && !m_dimensionCombos.isEmpty();
+        // A table without axes has no size to pick along them: the pattern is on its one
+        // size, and the geometry is read as it stands. Requiring a dimension to exist here
+        // locked the only path that could work on an .otu — there was never one to add.
         for (const QComboBox *combo : std::as_const(m_dimensionCombos))
         {
             valid = valid && combo->count() > 0;

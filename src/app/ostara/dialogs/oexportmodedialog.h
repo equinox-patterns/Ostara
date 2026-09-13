@@ -78,6 +78,14 @@ protected:
     void changeEvent(QEvent *event) override;
 
 private:
+    /// @brief True when the measurement table carries axes, so a size can be picked along
+    ///        them.
+    ///
+    /// Asked of the table's dimensions rather than of its type: a legacy .vst that was
+    /// never converted is multisize and still carries none, and it is the dimensions that
+    /// decide whether there is a size to choose at all.
+    auto HasAxes() const -> bool;
+
     void PopulateSizeRanges();
     void PopulateDimensions();
     void UpdateSourceVisibility();
