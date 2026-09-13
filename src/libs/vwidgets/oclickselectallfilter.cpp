@@ -27,6 +27,7 @@
  *************************************************************************/
 #include "oclickselectallfilter.h"
 
+#include <QAbstractScrollArea>
 #include <QApplication>
 #include <QLineEdit>
 #include <QMouseEvent>
@@ -51,39 +52,111 @@ void OClickSelectAllFilter::InstallOnApplication()
 //---------------------------------------------------------------------------------------------------------------------
 auto OClickSelectAllFilter::eventFilter(QObject *o, QEvent *e) -> bool
 {
-    if (e->type() != QEvent::MouseButtonPress && e->type() != QEvent::MouseButtonDblClick)
+    switch (e->type())
     {
-        return QObject::eventFilter(o, e);
+        case QEvent::MouseButtonPress:
+        case QEvent::MouseButtonDblClick:
+            if (HandlePress(o, static_cast<const QMouseEvent *>(e)))
+            {
+                return true;
+            }
+            break;
+
+        case QEvent::MouseMove:
+            TrackDrag(static_cast<const QMouseEvent *>(e));
+            break;
+
+        case QEvent::MouseButtonRelease:
+            if (HandleRelease(o, static_cast<const QMouseEvent *>(e)))
+            {
+                return true;
+            }
+            break;
+
+        default:
+            break;
     }
 
-    const auto *mouseEvent = static_cast<const QMouseEvent *>(e);
-    if (mouseEvent->button() != Qt::LeftButton)
+    return QObject::eventFilter(o, e);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// The press is never consumed: the widget must receive it, otherwise it cannot
+// start a mouse drag selection. The select all is decided on release instead.
+auto OClickSelectAllFilter::HandlePress(QObject *o, const QMouseEvent *e) -> bool
+{
+    if (e->button() != Qt::LeftButton)
     {
-        return QObject::eventFilter(o, e);
+        return false;
     }
 
     QWidget *widget = TargetWidget(o);
     if (widget == nullptr)
     {
-        return QObject::eventFilter(o, e);
+        return false;
     }
 
     if (HasFullSelection(widget))
     {
-        // Everything is already selected: this click places the cursor.
-        if (e->type() == QEvent::MouseButtonDblClick)
-        {
-            PlaceCursor(widget, mouseEvent->position().toPoint());
-            return true; // consume: avoid the default word selection
-        }
-        // Single click: let the default behaviour place the cursor.
-        return QObject::eventFilter(o, e);
+        // Everything is already selected: this click places the cursor. Collapse the
+        // selection here rather than letting the widget do it, so that a drag started
+        // on this click extends a new selection instead of moving the selected text.
+        ForgetPending();
+        PlaceCursor(widget, CursorPosition(o, widget, e));
+        return e->type() == QEvent::MouseButtonDblClick; // consume: avoid the word selection
     }
 
-    // Not fully selected: select all right away (no timer, no latency).
-    widget->setFocus();
+    // Not fully selected: remember the press and let the widget place the cursor
+    // and build the selection. A single click becomes a select all on release.
+    m_pendingWidget = widget;
+    m_pressGlobalPos = e->globalPosition().toPoint();
+    m_dragged = false;
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OClickSelectAllFilter::HandleRelease(QObject *o, const QMouseEvent *e) -> bool
+{
+    if (m_pendingWidget.isNull() || e->button() != Qt::LeftButton)
+    {
+        return false;
+    }
+
+    QWidget *const widget = m_pendingWidget;
+    const bool wasDragged = m_dragged;
+    ForgetPending();
+
+    // The user dragged: what the widget selected is what was asked for.
+    if (wasDragged || TargetWidget(o) != widget)
+    {
+        return false;
+    }
+
     SelectAll(widget);
     return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OClickSelectAllFilter::TrackDrag(const QMouseEvent *e)
+{
+    if (m_pendingWidget.isNull() || m_dragged)
+    {
+        return;
+    }
+
+    const QPoint delta = e->globalPosition().toPoint() - m_pressGlobalPos;
+    if (delta.manhattanLength() >= QApplication::startDragDistance())
+    {
+        m_dragged = true;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OClickSelectAllFilter::ForgetPending()
+{
+    m_pendingWidget = nullptr;
+    m_pressGlobalPos = QPoint();
+    m_dragged = false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -117,6 +190,24 @@ auto OClickSelectAllFilter::TargetWidget(QObject *o) -> QWidget *
     }
 
     return nullptr;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// QTextEdit / QPlainTextEdit want viewport coordinates. The event reaches the
+// scroll area itself (a click on its frame) only when it misses the viewport.
+auto OClickSelectAllFilter::CursorPosition(QObject *o, QWidget *w, const QMouseEvent *e) -> QPoint
+{
+    const QPoint pos = e->position().toPoint();
+
+    if (o == w)
+    {
+        if (auto *scrollArea = qobject_cast<QAbstractScrollArea *>(w))
+        {
+            return scrollArea->viewport()->mapFrom(scrollArea, pos);
+        }
+    }
+
+    return pos;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

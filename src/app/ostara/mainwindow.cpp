@@ -868,6 +868,22 @@ bool MainWindow::hasOpenPattern() const
 
 
 //---------------------------------------------------------------------------------------------------------------------
+// Any node-picking workflow waiting for canvas clicks. Kept in one place: both the click routing and
+// the node selection guard must agree on the list.
+bool MainWindow::IsNodePickingActive() const
+{
+    const auto *options = m_dockManager->detailsOptions();
+    if (options != nullptr && (options->IsSelectingPassmarkPoints() || options->IsSelectingFoldLinePoints() ||
+                               options->IsSelectingGroupFoldLinePoints() || options->IsSelectingSAPoints()))
+    {
+        return true;
+    }
+
+    const auto *details = m_dockManager->detailsWidget();
+    return details != nullptr && (details->IsSelectingLinkPieces() || details->IsSelectingLinkNode());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::InitDocksContain()
 {
     // Owns dock content widgets, per-dock structure, title bars and toggle actions.
@@ -1013,14 +1029,10 @@ void MainWindow::InitDocksContain()
             if (auto *pieceOwner = qgraphicsitem_cast<VToolSeamAllowance *>(owner); pieceOwner != nullptr)
             {
                 // Keep node clicks for the node-picking workflows (link, foldline, passmark, custom SA).
-                const auto *options = m_dockManager->detailsOptions();
-                const bool picking =
-                    (options != nullptr &&
-                     (options->IsSelectingPassmarkPoints() || options->IsSelectingFoldLinePoints() ||
-                      options->IsSelectingGroupFoldLinePoints() || options->IsSelectingSAPoints())) ||
-                    (m_dockManager->detailsWidget() != nullptr &&
-                     (m_dockManager->detailsWidget()->IsSelectingLinkPieces() ||
-                      m_dockManager->detailsWidget()->IsSelectingLinkNode()));
+                // The answer is the one frozen when the click was routed, not the live one: a workflow
+                // that ends on this very click has already reset its state by the time the scene reads it.
+                const bool picking = m_pickingClick || IsNodePickingActive();
+                m_pickingClick = false;
                 if (!picking)
                 {
                     // Select the piece (dock context), then open the clicked node's own PB page.
@@ -1376,6 +1388,14 @@ void MainWindow::RefreshGroupHolders()
                 }
                 m_dockManager->detailsWidget()->UpdateList();
             }, Qt::QueuedConnection);
+            // Canvas right-click on a group → "In layout", the same toggle a piece has. Direct
+            // connection (nothing is destroyed here): the Pieces dock owns the undo command and
+            // immediately gets the whole chain running — tree icon, member rows, then
+            // GroupVisibilityChanged, which masks the holder and the member pieces on the canvas.
+            connect(holder, &OPieceGroupHolderItem::InLayoutToggleRequested, this, [this](quint32 groupId)
+            {
+                m_dockManager->detailsWidget()->ToggleGroupInLayout(groupId);
+            });
             m_groupHolders.insert(git.key(), holder);
         }
         holder->Refresh(git.value(), doc, pattern);

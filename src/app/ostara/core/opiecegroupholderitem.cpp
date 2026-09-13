@@ -402,9 +402,9 @@ void OPieceGroupHolderItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *eve
         return;
     }
 
-    // A group has a single canvas action for now: dissolving the link (mirror of the Pieces
-    // tree "Unlink all"). The right-click on a group must not fall through to a member's
-    // piece menu anymore — this holder owns the whole group frame.
+    // Canvas actions of a group: its in-layout state (mirror of the piece entry) and dissolving
+    // the link (mirror of the Pieces tree "Unlink all"). The right-click on a group must not fall
+    // through to a member's piece menu anymore — this holder owns the whole group frame.
     QMenu menu;
 
     // Icon: at rest the current theme variant; a highlighted row has a dark accent background
@@ -413,6 +413,23 @@ void OPieceGroupHolderItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *eve
     const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
     const QIcon restIcon(QStringLiteral(":/icons/%1/link-break_%1.svg").arg(theme));
     const QIcon hoverIcon(QStringLiteral(":/icons/dark/link-break_dark.svg"));
+
+    // "In layout" — same entry, same glyph convention and same semantics as a piece
+    // (VToolSeamAllowance::contextMenuEvent): a themed `check` marks the active state (no glyph
+    // once the group is out of the layout), and the glyph under the cursor is the dark variant.
+    const auto *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;
+    const bool inLayout = groups != nullptr && groups->contains(m_groupId) &&
+                          groups->value(m_groupId).IsInLayout();
+    const QIcon checkRestIcon(QStringLiteral(":/icons/%1/check_%1.svg").arg(theme));
+    const QIcon checkHoverIcon(QStringLiteral(":/icons/dark/check_dark.svg"));
+    QAction *inLayoutAction = menu.addAction(tr("In layout"));
+    if (inLayout)
+    {
+        inLayoutAction->setIcon(checkRestIcon);
+        inLayoutAction->setProperty("restIcon", QVariant::fromValue(checkRestIcon));
+        inLayoutAction->setProperty("hoverIcon", QVariant::fromValue(checkHoverIcon));
+    }
+
     QAction *unlinkAction = menu.addAction(restIcon, tr("Unlink all"));
     unlinkAction->setProperty("restIcon", QVariant::fromValue(restIcon));
     unlinkAction->setProperty("hoverIcon", QVariant::fromValue(hoverIcon));
@@ -443,6 +460,12 @@ void OPieceGroupHolderItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *eve
         // Deferred to MainWindow: the undo push removes this very holder from the scene, which
         // cannot happen while its own event handler is still running.
         emit UnlinkAllRequested(m_groupId);
+    }
+    else if (selectedAction == inLayoutAction)
+    {
+        // MainWindow routes it to the Pieces dock: one code path for the undo command and for the
+        // visibility of the whole group (holder + member pieces).
+        emit InLayoutToggleRequested(m_groupId);
     }
     event->accept();
 }

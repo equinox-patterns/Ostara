@@ -82,6 +82,11 @@ public slots:
     void ToggledPiece(quint32 id);
     void ToggledGroup(quint32 groupId);
 
+    /** @brief Toggle a group's in-layout state. Owns the undo command and its connections, so the
+     *  canvas context menu goes through it too: the tree icon, the member rows and the
+     *  GroupVisibilityChanged signal (which masks the holder and the members) all follow. */
+    void ToggleGroupInLayout(quint32 groupId);
+
     // Link workflow — driven by MainWindow canvas routing.
     void OnPieceClickedForGroup(quint32 pieceId);
     void OnNodeSelected(quint32 nodeId);
@@ -114,7 +119,6 @@ private:
     void ToggledPieceItem(QTreeWidgetItem *item);
     void ToggledGroupItem(QTreeWidgetItem *item);
     void ToggleInLayout(quint32 id);
-    void ToggleGroupInLayout(quint32 groupId);
     void SelectGroup(quint32 groupId);
     void ValidateGroupSelection();
     void EnterNodeSelectMode();

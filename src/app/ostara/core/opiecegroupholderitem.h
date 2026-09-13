@@ -71,6 +71,10 @@ signals:
     /** @brief Right-click "Unlink all": dissolve the group. MainWindow runs the undo command
      *  (the push removes this very holder, so it must not run inside this event handler). */
     void UnlinkAllRequested(quint32 groupId);
+    /** @brief Right-click "In layout": toggle the group's in-layout state — same entry, same
+     *  glyph and same semantics as a piece. MainWindow routes it to the Pieces dock, which owns
+     *  the undo command and the canvas visibility chain (holder + member pieces). */
+    void InLayoutToggleRequested(quint32 groupId);
 
 public slots:
     /** @brief Activate the clicked child (outline + resize handles), deactivate the rest

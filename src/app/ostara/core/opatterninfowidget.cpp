@@ -107,14 +107,23 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
     auto *seamAllowanceGroup = new QGroupBox(tr("Seam Allowances"), this);
     auto *saLayout = new QVBoxLayout(seamAllowanceGroup);
     saLayout->setSpacing(6);
-    m_activateSACheck = new QCheckBox(tr("Activate seam allowances for all pieces"), seamAllowanceGroup);
+
+    // The scope of these seeds is stated once, under the group title, instead of repeating
+    // "for all pieces" on every box.
+    m_saHint = new QLabel(tr("Applies to all pieces, including those created afterwards. "
+                             "Not retroactive: existing pieces are left unchanged."),
+                          seamAllowanceGroup);
+    m_saHint->setObjectName(QStringLiteral("patternGroupHint"));
+    m_saHint->setWordWrap(true);
+    saLayout->addWidget(m_saHint);
+
+    m_activateSACheck = new QCheckBox(tr("Activate seam allowances"), seamAllowanceGroup);
     saLayout->addWidget(m_activateSACheck);
-    m_hideMainPathCheck = new QCheckBox(tr("Hide main path for all pieces"), seamAllowanceGroup);
+    m_hideMainPathCheck = new QCheckBox(tr("Hide main path"), seamAllowanceGroup);
     saLayout->addWidget(m_hideMainPathCheck);
-    m_secondPassmarkCheck = new QCheckBox(tr("Show the second passmark on seam line for all pieces"),
-                                          seamAllowanceGroup);
+    m_secondPassmarkCheck = new QCheckBox(tr("Show the second passmark on seam line"), seamAllowanceGroup);
     saLayout->addWidget(m_secondPassmarkCheck);
-    m_sewLineOnDrawingCheck = new QCheckBox(tr("Export the sew line with the drawings for all pieces (DXF-AAMA)"),
+    m_sewLineOnDrawingCheck = new QCheckBox(tr("Export the sew line with the drawings (DXF-AAMA)"),
                                             seamAllowanceGroup);
     saLayout->addWidget(m_sewLineOnDrawingCheck);
     layout->addWidget(seamAllowanceGroup);
@@ -126,7 +135,16 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
     auto *infoBlockGroup = new QGroupBox(tr("Information block"), this);
     auto *ibLayout = new QVBoxLayout(infoBlockGroup);
     ibLayout->setSpacing(6);
-    m_activateInfoBlockCheck = new QCheckBox(tr("Activate information block for all pieces"), infoBlockGroup);
+
+    // Same scope statement as the seam allowances group above (identical seeding semantics).
+    m_infoBlockHint = new QLabel(tr("Applies to all pieces, including those created afterwards. "
+                                    "Not retroactive: existing pieces are left unchanged."),
+                                 infoBlockGroup);
+    m_infoBlockHint->setObjectName(QStringLiteral("patternGroupHint"));
+    m_infoBlockHint->setWordWrap(true);
+    ibLayout->addWidget(m_infoBlockHint);
+
+    m_activateInfoBlockCheck = new QCheckBox(tr("Activate information block"), infoBlockGroup);
     ibLayout->addWidget(m_activateInfoBlockCheck);
     m_cartoucheCombo = MakeComboBox(infoBlockGroup);
     m_cartoucheCombo->setVisible(false);
@@ -338,25 +356,35 @@ void OPatternInfoWidget::RetranslateUI()
         m_collectionCombo->setItemText(0, tr("No collection"));
         m_collectionCombo->setItemData(0, QString());
     }
+    if (m_saHint)
+    {
+        m_saHint->setText(tr("Applies to all pieces, including those created afterwards. "
+                             "Not retroactive: existing pieces are left unchanged."));
+    }
     if (m_activateSACheck)
     {
-        m_activateSACheck->setText(tr("Activate seam allowances for all pieces"));
+        m_activateSACheck->setText(tr("Activate seam allowances"));
     }
     if (m_hideMainPathCheck)
     {
-        m_hideMainPathCheck->setText(tr("Hide main path for all pieces"));
+        m_hideMainPathCheck->setText(tr("Hide main path"));
     }
     if (m_secondPassmarkCheck)
     {
-        m_secondPassmarkCheck->setText(tr("Show the second passmark on seam line for all pieces"));
+        m_secondPassmarkCheck->setText(tr("Show the second passmark on seam line"));
     }
     if (m_sewLineOnDrawingCheck)
     {
-        m_sewLineOnDrawingCheck->setText(tr("Export the sew line with the drawings for all pieces (DXF-AAMA)"));
+        m_sewLineOnDrawingCheck->setText(tr("Export the sew line with the drawings (DXF-AAMA)"));
+    }
+    if (m_infoBlockHint)
+    {
+        m_infoBlockHint->setText(tr("Applies to all pieces, including those created afterwards. "
+                                    "Not retroactive: existing pieces are left unchanged."));
     }
     if (m_activateInfoBlockCheck)
     {
-        m_activateInfoBlockCheck->setText(tr("Activate information block for all pieces"));
+        m_activateInfoBlockCheck->setText(tr("Activate information block"));
     }
 }
 

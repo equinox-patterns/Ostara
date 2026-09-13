@@ -209,6 +209,15 @@ void OPieceInfoWidget::Show(const IPieceInfo &detail, const VContainer *data)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OPieceInfoWidget::ResetTabs()
+{
+    if (m_cutTabs != nullptr)
+    {
+        m_cutTabs->setCurrentIndex(0); // Fabric
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OPieceInfoWidget::Clear()
 {
     m_loading = true;

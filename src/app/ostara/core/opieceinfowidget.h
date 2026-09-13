@@ -62,6 +62,11 @@ public:
 
     void Show(const IPieceInfo &detail, const VContainer *data);
     void Clear();
+
+    // The cut tabs (Fabric / Interfacing / Lining) belong to the displayed object: the owner calls this
+    // when that object changes, so a new piece (or group) opens on the first cut tab again. Kept out of
+    // Show() on purpose — Show() also runs on every repopulation, which must not move the tab.
+    void ResetTabs();
     void RetranslateUI();
 
 private:

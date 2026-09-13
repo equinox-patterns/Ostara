@@ -116,6 +116,7 @@ private:
     void ResetFoldLineHighlight();
 
     QTabWidget *m_tabWidget{nullptr};
+    QTabWidget *m_infoSubTabs{nullptr};
     OGradedAlignWidget *m_alignWidget{nullptr};
 
     // Information — Group sub-tab (same structure as the PB Piece's Piece sub-tab)

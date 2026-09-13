@@ -143,6 +143,9 @@ const AlignItem kAlignVItems[] = {
 constexpr int kGeneralTabIndex = 0;
 constexpr int kGrainlineTabIndex = 1;
 constexpr int kSeamAllowanceTabIndex = 2;
+
+// First sub-tab of the Information tab (Piece / Blocks / Annotations). A piece opens there.
+constexpr int kPieceInfoSubTabIndex = 0;
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -767,6 +770,17 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
     m_currentTool = tool;
     m_pieceId = tool->getId();
     m_pendingDet = detail;
+
+    // A piece opens on its default tabs, whatever tab was left open on the previous piece: this widget
+    // instance is reused for every piece and QTabWidget keeps its index. Repopulating the same piece
+    // — undo, commit, parse refresh — leaves the tab the user is working in untouched. The targeted
+    // openings (grainline, block, annotation) set their tab after Show(), so they still win.
+    if (previousPieceId != m_pieceId)
+    {
+        m_tabWidget->setCurrentIndex(kGeneralTabIndex);
+        m_infoSubTabs->setCurrentIndex(kPieceInfoSubTabIndex);
+        m_pieceInfoWidget->ResetTabs(); // the cut tabs (Fabric / Interfacing / Lining) too
+    }
 
     m_updating = true;
 

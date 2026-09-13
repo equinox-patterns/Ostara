@@ -164,6 +164,11 @@ auto ValidateMirrorLinePoints(const VPiecePath &path, quint32 startPoint, quint3
     }
     return false;
 }
+
+// Outer-tab indices of the group options (order of addTab), then the first sub-tab of the
+// Information tab (Group / Blocks / Annotations). A group opens on the first of each.
+constexpr int kGeneralTabIndex = 0;
+constexpr int kGroupInfoSubTabIndex = 0;
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -235,6 +240,7 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     infoLayout->setContentsMargins(0, 0, 0, 0);
     auto *infoTabs = new QTabWidget(infoPage);
     infoTabs->setObjectName(QStringLiteral("informationTabWidget"));
+    m_infoSubTabs = infoTabs; // kept to reset the sub-tab when the displayed group changes
 
     auto *groupTab = new QFrame(infoTabs);
     groupTab->setFrameStyle(QFrame::NoFrame);
@@ -293,10 +299,21 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsGroupWidget::Show(quint32 groupId, VContainer *data, VAbstractPattern *doc)
 {
+    const quint32 previousGroupId = m_groupId;
     m_groupId = groupId;
     m_data = data;
     m_doc = doc;
     m_updating = true;
+
+    // A group opens on its default tabs, whatever tab was left open on the previous group: this widget
+    // instance is reused for every group and QTabWidget keeps its index. Refreshing the same group
+    // leaves the tab the user is working in untouched.
+    if (previousGroupId != m_groupId)
+    {
+        m_tabWidget->setCurrentIndex(kGeneralTabIndex);
+        m_infoSubTabs->setCurrentIndex(kGroupInfoSubTabIndex);
+        m_groupInfoWidget->ResetTabs(); // the cut tabs (Fabric / Interfacing / Lining) too
+    }
 
     const auto *groups = data != nullptr ? data->DataPieceGroups() : nullptr;
     const OPieceGroup group = groups != nullptr ? groups->value(groupId) : OPieceGroup();

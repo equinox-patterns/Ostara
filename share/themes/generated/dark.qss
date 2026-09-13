@@ -924,6 +924,13 @@ QFrame#infoBlockLanguageSeparator {
     background-color: #333333;
 }
 
+/* Pattern page (dock Options) — scope note under a group title, meant to read as
+   secondary: without this rule the global QLabel { color: #e5e5e5 } makes it look
+   like the group title itself. */
+QLabel#patternGroupHint {
+    color: #7f7f7f;
+}
+
 /* Presets d'angle (0/90/180/270°) sous les champs de formule angle */
 QPushButton#anglePresetBtn0,
 QPushButton#anglePresetBtn90,

@@ -426,7 +426,17 @@ private:
     // still references, leading to a use-after-free when the dialog is accepted.
     bool m_toolOptionsDialogVisible{false};
 
+    // True when the click being routed belongs to a node-picking workflow (passmarks, foldline, group
+    // foldline, custom seam allowance, group link). Those workflows are read twice per click: once while
+    // routing it (HandleItemClicked) and once by the scene (ItemByMousePress). A workflow that ends on
+    // the click itself — the second point of a custom seam allowance, for instance — has already reset
+    // its state when the scene reads it, which used to open the clicked node's PB and drop the dock tab.
+    // Freezing the answer at routing time keeps the dock where the user is working.
+    bool m_pickingClick{false};
+
     QMultiHash<VShortcutAction, QAction *> m_shortcutActions{};
+
+    bool IsNodePickingActive() const;
 
     void InitDimensionControls();
     void InitDimensionGradation(int index, const MeasurementDimension_p &dimension, const QPointer<QComboBox> &control);

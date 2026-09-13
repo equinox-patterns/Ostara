@@ -330,6 +330,12 @@ void MainWindow::dropEvent(QDropEvent* event)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::HandleItemClicked(QGraphicsItem *item)
 {
+    // This click is routed to a node-picking workflow (if any is waiting for clicks) before the scene
+    // sees it. Freeze that answer here: the workflow may end on this very click — the second point of a
+    // custom seam allowance, a foldline, a group link — and reset its state before the scene re-reads it,
+    // which would select the clicked node and drop the Details dock tab the user is working in.
+    m_pickingClick = IsNodePickingActive();
+
     // Group Link — step 1: route piece clicks to the pieces dock.
     if (item != nullptr && m_dockManager->detailsWidget() != nullptr && m_dockManager->detailsWidget()->IsSelectingLinkPieces())
     {

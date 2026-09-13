@@ -97,7 +97,9 @@ private:
     QCheckBox *m_hideMainPathCheck{nullptr};
     QCheckBox *m_secondPassmarkCheck{nullptr};
     QCheckBox *m_sewLineOnDrawingCheck{nullptr};
+    QLabel *m_saHint{nullptr}; // explains the scope of the Seam Allowances group
     QCheckBox *m_activateInfoBlockCheck{nullptr};
+    QLabel *m_infoBlockHint{nullptr}; // explains the scope of the Information block group
     QComboBox *m_cartoucheCombo{nullptr};
     QPlainTextEdit *m_fabricInfoEdit{nullptr};
     QLabel *m_patternNameLabel{nullptr};
