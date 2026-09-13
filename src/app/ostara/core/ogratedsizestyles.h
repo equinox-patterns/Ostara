@@ -35,7 +35,9 @@
 #include <QString>
 #include <QVector>
 
+class VAbstractPattern;
 class VCommonSettings;
+class VContainer;
 
 /**
  * @brief The OGradedSizeStyle class is the trace style of one graded size value:
@@ -76,6 +78,34 @@ struct OGradedSizeStyle
  */
 namespace OGradedSizeStyles
 {
+
+/**
+ * @brief The (table, axis) context a style pass needs — resolved WITHOUT parsing the
+ *        .omt: canonical path + declared (or active-range) size axis + in-library flag.
+ *        The axis VALUES are only needed by the dock/dialog (GradedSizeStyleContext).
+ */
+struct StyleAxis
+{
+    QString canonical;
+    QString axisName;
+    bool inLibrary = false;
+    bool ready = false;
+};
+
+/**
+ * @brief Resolve which (table, axis) a pattern's size styles are stored under.
+ *
+ * Styles live at the software level, keyed by the measurements table they were authored
+ * against — a pattern has to be brought back to that key before anything can be read.
+ * A table outside the library has no stable key, so @c inLibrary tells the caller not to
+ * style at all rather than to style against a name nobody authored anything under.
+ *
+ * @param activeRangeName the range the caller works on — the axis fallback when the table
+ *                        declares none (external table, or data written before the
+ *                        declaration existed)
+ */
+auto ResolveStyleAxis(VAbstractPattern *doc, const VContainer *pattern,
+                      const QString &activeRangeName) -> StyleAxis;
 
 /** @brief Styles stored for (canonical, axis), keyed by size-value label. */
 auto StylesForAxis(const VCommonSettings *settings, const QString &canonicalPath,

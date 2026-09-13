@@ -35,16 +35,15 @@
 #include "mainwindow_graded_helpers.h"
 #include "ogradedsvgdecor.h"
 #include "ogradedgeometry.h"
+#include "ogradedsizetrace.h"
 #include "ogradedsvgwriter.h"
 #include "osvgutils.h"
 #include "xml/vpattern.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vformat/vmeasurements.h"
-#include "../vlayout/vgraphicsfillitem.h"
 #include "../vlayout/vlayoutpiece.h"
 #include "../vexception/vexception.h"
 #include "../vmisc/def.h"
-#include "../vmisc/defglobal.h"
 #include "../vmisc/typedef.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
@@ -57,7 +56,6 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QGraphicsItem>
-#include <QGraphicsPathItem>
 #include <QGraphicsScene>
 #include <QHash>
 #include <QMap>
@@ -81,51 +79,6 @@ auto GradedBaseForLabel(const QStringList &axisValues, const QString &label) -> 
     return idx >= 0 ? static_cast<qreal>(idx + 1) : 1.0;
 }
 
-/// Re-style one trace subtree with a size style (mirror of the canvas
-/// StyleGradedSubtree): color + pt→px dashes on the non-decor traces only.
-void StyleTraceSubtree(QGraphicsItem *root, const OGradedSizeStyle *style)
-{
-    if (root == nullptr)
-    {
-        return;
-    }
-    if (auto *path = dynamic_cast<QGraphicsPathItem *>(root))
-    {
-        QPen pen = path->pen();
-        const int type = root->type();
-        const bool decorTrace = type == VGraphicsFillItem::Type
-                                || type == VGraphicsFoldLineItem::Type;
-        if (pen.style() != Qt::NoPen && style != nullptr && style->HasColor() && !decorTrace)
-        {
-            pen.setColor(style->color);
-            if (style->dashes.isEmpty())
-            {
-                pen.setStyle(Qt::SolidLine);
-                pen.setCapStyle(Qt::SquareCap);
-            }
-            else
-            {
-                const qreal width = pen.widthF() > 0.0 ? pen.widthF() : 1.0;
-                const qreal ptToPx = PrintDPI / 72.0;
-                QVector<qreal> pattern;
-                pattern.reserve(static_cast<int>(style->dashes.size()));
-                for (qreal value : style->dashes)
-                {
-                    pattern.append(value * ptToPx / width);
-                }
-                pen.setStyle(Qt::CustomDashLine);
-                pen.setDashPattern(pattern);
-                pen.setCapStyle(Qt::FlatCap);
-            }
-            path->setPen(pen);
-        }
-    }
-    const auto children = root->childItems();
-    for (auto *child : children)
-    {
-        StyleTraceSubtree(child, style);
-    }
-}
 }  // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -419,25 +372,17 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
     const QList<QGraphicsItem *> allItems = scene.items();
     OGraded::ApplyOffsets(allItems, range, pattern);
 
-    // Per-size trace styles (color + pt→px dashes), mirroring the canvas pass
-    // (StyleGradedSubtree): decor traces (grain/fold) are never recolored.
+    // Per-size trace styles (color + pt→px dashes) — the very pass the live canvas runs,
+    // so a size is painted the same way on screen and here. These items are thrown away
+    // with the private scene they were captured in: the pass owns no default rendering,
+    // it only overrides what a style covers, and it recolors no text.
     for (auto *item : allItems)
     {
         if (GradedPieceId(item) == 0)
         {
             continue;
         }
-        const OGradedSizeStyle *style = nullptr;
-        if (!styles.isEmpty())
-        {
-            const QString sizeValue = item->data(kGradedSizeRole).toString();
-            const auto it = styles.constFind(sizeValue);
-            if (it != styles.cend() && it->HasColor())
-            {
-                style = &it.value();
-            }
-        }
-        StyleTraceSubtree(item, style);
+        OGradedSizeTrace::ApplyToSubtree(item, styles, OGradedSizeTrace::Scope::FreshItems);
     }
 
     // Normalize the scene to the origin like the classic Details exporter (its caller

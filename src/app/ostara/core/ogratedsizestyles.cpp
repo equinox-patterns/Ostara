@@ -31,7 +31,13 @@
 
 #include <cmath>
 
+#include "../ifc/xml/vabstractpattern.h"
+#include "../vmisc/def.h"
+#include "../vmisc/vabstractapplication.h"
+#include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
+#include "../vpatterndb/vcontainer.h"
+#include "../widgets/MeasurementWorkspace/MeasurementLibraryScanner.h"
 
 namespace
 {
@@ -152,6 +158,50 @@ void SaveAxisStyles(VCommonSettings *settings, const QString &canonicalPath, con
         }
     }
     settings->SetGradedSizeStyles(canonicalPath, axisName, stored);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ResolveStyleAxis(VAbstractPattern *doc, const VContainer *pattern, const QString &activeRangeName)
+    -> StyleAxis
+{
+    StyleAxis result;
+    if (doc == nullptr || doc->MPath().isEmpty())
+    {
+        return result;
+    }
+    const QString canonical =
+        AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
+    if (canonical.isEmpty())
+    {
+        return result;
+    }
+
+    auto *settings = VAbstractApplication::VApp()->Settings();
+    const bool inLibrary = MeasurementLibraryScanner::IsInLibrary(
+        settings->GetPathMeasurementLibrary(), canonical);
+
+    // The styles axis: the table's declared size axis, falling back to the active
+    // range's axis when none is declared (external table, or pre-declaration data).
+    QString axis = inLibrary ? settings->GetSizeAxisForMeasurement(canonical) : QString();
+    if (axis.isEmpty())
+    {
+        const auto *ranges = pattern != nullptr ? pattern->SizeRanges() : nullptr;
+        if (ranges == nullptr || activeRangeName.isEmpty() || !ranges->contains(activeRangeName))
+        {
+            return result;
+        }
+        axis = ranges->value(activeRangeName).sizeAxis;
+    }
+    if (axis.isEmpty())
+    {
+        return result;
+    }
+
+    result.canonical = canonical;
+    result.axisName = axis;
+    result.inLibrary = inLibrary;
+    result.ready = true;
+    return result;
 }
 
 } // namespace OGradedSizeStyles

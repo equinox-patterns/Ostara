@@ -26,7 +26,10 @@
 
 #include "oexportcanvas.h"
 
+#include "core/ogratedsizestyles.h"
+#include "mainwindow_graded_helpers.h"
 #include "ogradedgeometry.h"
+#include "ogradedsizetrace.h"
 #include "oexportgeometry.h"
 #include "oexportnesting.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
@@ -35,6 +38,7 @@
 #include "../vlayout/vgraphicsfillitem.h"
 #include "../vlayout/vlayoutpiece.h"
 #include "../vmisc/def.h"
+#include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
 #include "../vpatterndb/ipieceinfo.h"
 #include "../vpatterndb/opiecegroup.h"
@@ -502,6 +506,23 @@ void OExportCanvas::Build(VMainGraphicsScene *scene,
     // once, above all of its members, once the loop has placed them.
     QHash<quint32, DecorFrame> groupFrames;
 
+    // The per-size trace styles, read on the very key the Graded canvas reads them on.
+    // They are authored against a measurements table, and a table outside the library has
+    // no key to read: the canvas styles nothing there, and an export that disagreed with
+    // the screen would be a trap — the mode delivers a document built from what is shown.
+    // The "Show in canvas" toggle is deliberately not read here: it is a canvas
+    // preference, and the Graded SVG export ignores it for the same reason.
+    QHash<QString, OGradedSizeStyle> styles;
+    if (auto *settings = VAbstractApplication::VApp()->Settings(); settings != nullptr)
+    {
+        const OGradedSizeStyles::StyleAxis axis = OGradedSizeStyles::ResolveStyleAxis(
+            doc, pattern, range != nullptr ? range->name : QString());
+        if (axis.ready && axis.inLibrary)
+        {
+            styles = OGradedSizeStyles::StylesForAxis(settings, axis.canonical, axis.axisName);
+        }
+    }
+
     // The bin: fixed width, height given by the nesting.
     auto *bin = new QGraphicsRectItem(0, 0, result.binWidthPx, result.usedHeightPx);
     bin->setPen(QPen(Qt::black, 1));
@@ -558,6 +579,13 @@ void OExportCanvas::Build(VMainGraphicsScene *scene,
                 {
                     continue;
                 }
+
+                // Each layer carries the label of the size it is, and takes that size's
+                // style — the same pass the Graded canvas runs, so a size reads the same
+                // way on screen and in the document. The items are fresh out of GetItem
+                // and thrown away with the scene, so the pass owns nothing to restore.
+                item->setData(kGradedSizeRole, layer.label);
+                OGradedSizeTrace::ApplyToSubtree(item, styles, OGradedSizeTrace::Scope::FreshItems);
 
                 if (!isReference)
                 {
