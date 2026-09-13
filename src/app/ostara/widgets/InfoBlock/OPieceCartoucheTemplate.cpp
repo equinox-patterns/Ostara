@@ -238,6 +238,7 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
                 case OPieceCartoucheOptionKind::Axis:
                 case OPieceCartoucheOptionKind::MeasureName:
                 case OPieceCartoucheOptionKind::Separator:
+                case OPieceCartoucheOptionKind::NumberStyle:
                 case OPieceCartoucheOptionKind::Logo:
                     sectionEl.setAttribute(field.key, value.toString());
                     break;
@@ -408,6 +409,14 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                         const QString fallback =
                             field.defaultValue.isValid() ? field.defaultValue.toString() : QString();
                         section.options.insert(field.key, allowed.contains(attr) ? attr : fallback);
+                        break;
+                    }
+                    case OPieceCartoucheOptionKind::NumberStyle:
+                    {
+                        const QString fallback = field.defaultValue.isValid()
+                                                     ? field.defaultValue.toString()
+                                                     : OPieceCartoucheNumber::kPlain;
+                        section.options.insert(field.key, field.values.contains(attr) ? attr : fallback);
                         break;
                     }
                     case OPieceCartoucheOptionKind::FontFamily:

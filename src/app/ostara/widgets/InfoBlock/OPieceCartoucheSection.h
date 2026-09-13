@@ -51,6 +51,7 @@ enum class OPieceCartoucheOptionKind
     Axis,         ///< QString — size-axis name from the loaded table
     MeasureName,  ///< QString — measurement full name from the loaded table
     Separator,    ///< QString — separator between name and value ("", ":", "-", "/", "·")
+    NumberStyle,  ///< QString — piece-number padding: "1" or "01" (see OPieceCartoucheNumber)
     Logo,         ///< QString — logo file name from the logo library
     LogoSize,     ///< double — logo size in cm
     Cut,          ///< composite — 3 tabs (fabric/interfacing/lining), qty + on fold
@@ -103,6 +104,24 @@ Q_REQUIRED_RESULT auto ParseAxisRenames(const QVariant &var) -> QMap<QString, OA
 
 /// Serialize a locale-keyed map into the QVariant the option stores.
 Q_REQUIRED_RESULT auto MakeAxisRenames(const QMap<QString, OAxisRename> &renames) -> QVariant;
+
+/**
+ * @brief Option of the piece-number section: how the number and its total are
+ * shown ("1 of 10" or "01 of 10"). Single digits only — 10 is never "010".
+ */
+namespace OPieceCartoucheNumber
+{
+/// QString — kPlain or kPadded.
+inline const QString kStyle = QStringLiteral("numberStyle");
+/// Show a single digit as is: 1, 2, … 9.
+inline const QString kPlain = QStringLiteral("1");
+/// Pad a single digit with a leading zero: 01, 02, … 09.
+inline const QString kPadded = QStringLiteral("01");
+}  // namespace OPieceCartoucheNumber
+
+/// Format a piece number for display: kPadded pads single digits, anything else
+/// (and any number of two digits or more) is left as is.
+Q_REQUIRED_RESULT auto FormatPieceNumber(quint32 number, const QString &style) -> QString;
 
 /**
  * @brief Declarative description of one option of a section type.

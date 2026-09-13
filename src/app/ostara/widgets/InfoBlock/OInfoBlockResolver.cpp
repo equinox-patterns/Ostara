@@ -347,9 +347,11 @@ auto OInfoBlockResolver::ResolveSectionLines(const OPieceCartoucheSection &type,
         }
         // « Un groupe = 1 pièce » : the total must be the effective count, not the raw
         // piece hash (which still includes the members of a group).
-        const qint64 total = static_cast<qint64>(data->GetEffectivePieceCount());
+        const auto total = static_cast<quint32>(data->GetEffectivePieceCount());
+        const QString style = options.value(OPieceCartoucheNumber::kStyle).toString();
         lines.append(OCartouchePainter::TextLine(
-            ComposeLine(QString::number(number), QString::number(total), separator), font, lineSpacing));
+            ComposeLine(FormatPieceNumber(number, style), FormatPieceNumber(total, style), separator), font,
+            lineSpacing));
         return lines;
     }
 

@@ -109,6 +109,8 @@ auto OPieceCartoucheSection::DefaultValue(const QString &key) const -> QVariant
                 return QString();
             case OPieceCartoucheOptionKind::Separator:
                 return QString();
+            case OPieceCartoucheOptionKind::NumberStyle:
+                return QString();
             case OPieceCartoucheOptionKind::Logo:
                 return QString();
             case OPieceCartoucheOptionKind::LogoSize:
@@ -162,6 +164,16 @@ auto MakeAxisRenames(const QMap<QString, OAxisRename> &renames) -> QVariant
         map.insert(it.key(), entry);
     }
     return map;
+}
+
+auto FormatPieceNumber(quint32 number, const QString &style) -> QString
+{
+    // Padding is for single digits only: 1 becomes "01", but 10 stays "10" and 100 stays "100".
+    if (style != OPieceCartoucheNumber::kPadded)
+    {
+        return QString::number(number);
+    }
+    return QString::number(number).rightJustified(2, QLatin1Char('0'));
 }
 
 auto OPieceCartoucheSection::DefaultOptions() const -> QHash<QString, QVariant>

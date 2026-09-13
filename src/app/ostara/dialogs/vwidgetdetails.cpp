@@ -293,11 +293,12 @@ void VWidgetDetails::FillTree()
                     auto *pieceItem = new QTreeWidgetItem();
                     pieceItem->setText(PieceColumn::PieceName,
                                        det.GetName().isEmpty() ? tr("Unnamed") : det.GetName());
-                    pieceItem->setIcon(PieceColumn::InLayout,
-                                       LayoutIcon(det.IsInLayout()));
+                    // A member's displayed state follows its group, never its own flag.
+                    const bool inLayout = m_data->IsPieceInLayout(pieceId);
+                    pieceItem->setIcon(PieceColumn::InLayout, LayoutIcon(inLayout));
                     pieceItem->setData(0, kIdRole, pieceId);
                     pieceItem->setData(0, kTypeRole, QLatin1String(kPieceType));
-                    pieceItem->setData(0, kTreeInLayoutRole, det.IsInLayout());
+                    pieceItem->setData(0, kTreeInLayoutRole, inLayout);
 
                     // Member pieces hide their own children (preserved for unlink).
                     groupItem->addChild(pieceItem);
@@ -320,10 +321,10 @@ void VWidgetDetails::FillTree()
             const VPiece det = it.value();
             auto *pieceItem = new QTreeWidgetItem();
             pieceItem->setText(PieceColumn::PieceName, det.GetName().isEmpty() ? tr("Unnamed") : det.GetName());
-            pieceItem->setIcon(PieceColumn::InLayout, LayoutIcon(det.IsInLayout()));
+            pieceItem->setIcon(PieceColumn::InLayout, LayoutIcon(m_data->IsPieceInLayout(it.key())));
             pieceItem->setData(0, kIdRole, it.key());
             pieceItem->setData(0, kTypeRole, QLatin1String(kPieceType));
-            pieceItem->setData(0, kTreeInLayoutRole, det.IsInLayout());
+            pieceItem->setData(0, kTreeInLayoutRole, m_data->IsPieceInLayout(it.key()));
             pieceItem->setFlags(pieceItem->flags() | Qt::ItemIsEditable);
 
             ui->treeWidget->addTopLevelItem(pieceItem);
@@ -387,15 +388,7 @@ void VWidgetDetails::ToggledPieceItem(QTreeWidgetItem *item)
     }
 
     // A member piece's visibility follows its GROUP (a group behaves like one piece).
-    bool inLayout = details->value(id).IsInLayout();
-    if (const quint32 groupId = m_data->GetPieceGroupId(id); groupId != NULL_ID)
-    {
-        const auto *groups = m_data->DataPieceGroups();
-        if (groups != nullptr && groups->contains(groupId))
-        {
-            inLayout = groups->value(groupId).IsInLayout();
-        }
-    }
+    const bool inLayout = m_data->IsPieceInLayout(id);
     item->setIcon(PieceColumn::InLayout, LayoutIcon(inLayout));
     item->setData(0, kTreeInLayoutRole, inLayout);
 
@@ -419,6 +412,14 @@ void VWidgetDetails::ToggleInLayout(quint32 id)
 {
     const QHash<quint32, VPiece> *allDetails = m_data->DataPieces();
     if (allDetails == nullptr || not allDetails->contains(id))
+    {
+        return;
+    }
+
+    // A member piece follows its GROUP (a group behaves like one piece): it has no in-layout state
+    // of its own, so nothing is pushed and nothing is written to the pattern file. The group's own
+    // row carries the toggle.
+    if (m_data->GetPieceGroupId(id) != NULL_ID)
     {
         return;
     }
@@ -525,6 +526,20 @@ void VWidgetDetails::ShowContextMenu(const QPoint &pos)
         action->setProperty("restIcon", QVariant::fromValue(rest));
         action->setProperty("hoverIcon", QVariant::fromValue(hoverIcon(name)));
     };
+    // "In layout" mirrors the canvas context menu (VToolSeamAllowance::contextMenuEvent): a themed
+    // `check` when the unit goes in the layout, no glyph when it does not, and the dark variant
+    // under the cursor.
+    const auto addInLayoutToggle = [&menu, &themeIcon, &hoverIcon](bool inLayout) {
+        QAction *action = menu->addAction(VWidgetDetails::tr("In layout"));
+        if (inLayout)
+        {
+            const QIcon check = themeIcon(QStringLiteral("check"));
+            action->setIcon(check);
+            action->setProperty("restIcon", QVariant::fromValue(check));
+            action->setProperty("hoverIcon", QVariant::fromValue(hoverIcon(QStringLiteral("check"))));
+        }
+        return action;
+    };
 
     QAction *actionSelectAll = menu->addAction(tr("Select all"));
     QAction *actionSelectNone = menu->addAction(tr("Select none"));
@@ -534,8 +549,10 @@ void VWidgetDetails::ShowContextMenu(const QPoint &pos)
     bool pieceMode = false;
     QAction *actionDeletePiece = nullptr;
     QAction *actionUnlinkGroup = nullptr;
+    QAction *actionInLayout = nullptr;
     VToolSeamAllowance *toolPiece = nullptr;
     quint32 groupId = NULL_ID;
+    quint32 pieceId = NULL_ID;
 
     if (QTreeWidgetItem *selectedItem = ui->treeWidget->itemAt(pos); selectedItem)
     {
@@ -546,6 +563,16 @@ void VWidgetDetails::ShowContextMenu(const QPoint &pos)
         {
             groupId = id;
             menu->addSeparator();
+
+            // The group's own state, never a member's: a group behaves like one piece.
+            bool groupInLayout = false;
+            if (const auto *groups = m_data->DataPieceGroups();
+                groups != nullptr && groups->contains(id))
+            {
+                groupInLayout = groups->value(id).IsInLayout();
+            }
+            actionInLayout = addInLayoutToggle(groupInLayout);
+
             actionUnlinkGroup = menu->addAction(tr("Unlink all"));
             addGlyphIcon(actionUnlinkGroup, QStringLiteral("link-break"));
         }
@@ -557,7 +584,13 @@ void VWidgetDetails::ShowContextMenu(const QPoint &pos)
                 if (toolPiece != nullptr)
                 {
                     pieceMode = true;
+                    pieceId = id;
                     menu->addSeparator();
+
+                    // A member piece follows its group: it has no in-layout state of its own, so the
+                    // entry shows the group's state and stays disabled (nothing is written).
+                    actionInLayout = addInLayoutToggle(m_data->IsPieceInLayout(id));
+                    actionInLayout->setEnabled(m_data->GetPieceGroupId(id) == NULL_ID);
 
                     actionDeletePiece = menu->addAction(tr("Delete piece"));
                     addGlyphIcon(actionDeletePiece, QStringLiteral("trash"));
@@ -659,6 +692,17 @@ void VWidgetDetails::ShowContextMenu(const QPoint &pos)
         VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("select none details"));
         ToggleSectionDetails(select);
         VAbstractApplication::VApp()->getUndoStack()->endMacro();
+    }
+    else if (actionInLayout != nullptr && selectedAction == actionInLayout && actionInLayout->isEnabled())
+    {
+        if (groupId != NULL_ID)
+        {
+            ToggleGroupInLayout(groupId);
+        }
+        else if (pieceMode)
+        {
+            ToggleInLayout(pieceId);
+        }
     }
     else if (pieceMode && selectedAction == actionDeletePiece)
     {

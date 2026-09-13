@@ -13752,14 +13752,19 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Le nom de la pièce (issu des options de la pièce).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="107"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="83"/>
+        <source>Number format</source>
+        <translation>Format du numéro</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="112"/>
         <source>Piece number</source>
         <translation>Numéro de pièce</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="108"/>
-        <source>The piece number and its total, e.g. 01 of 10. The total shown here is an example — it is computed automatically from the number of active pieces.</source>
-        <translation>Le numéro de la pièce et son total, ex. 01 sur 10. Le total affiché ici est un exemple — il est calculé automatiquement à partir du nombre de pièces actives.</translation>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="113"/>
+        <source>The piece number and its total, e.g. 1 of 10. The total shown here is an example — it is computed automatically from the number of pieces in the layout.</source>
+        <translation>Le numéro de la pièce et son total, ex. 1 sur 10. Le total affiché ici est un exemple — il est calculé automatiquement à partir du nombre de pièces du plan de coupe.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="112"/>
@@ -25109,6 +25114,11 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="322"/>
         <source>Unnamed</source>
         <translation>Sans nom</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="533"/>
+        <source>In layout</source>
+        <translation>Dans le plan de coupe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="529"/>

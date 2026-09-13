@@ -248,9 +248,11 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
         }
         else if (type.Id() == QStringLiteral("pieceNumber"))
         {
-            // Sample "01 of 10" — the total is an example, computed automatically
-            // from the number of active pieces at render time (spec §22).
-            line = ComposeLine(QStringLiteral("01"), QStringLiteral("10"), separator);
+            // Sample "1 of 1" / "01 of 01": the preview goes through the very same formatter as
+            // the canvas, so the style shown here is the one the cartouche will render. The total
+            // is an example — it is computed automatically from the pieces in the layout.
+            const QString style = options.value(OPieceCartoucheNumber::kStyle).toString();
+            line = ComposeLine(FormatPieceNumber(1, style), FormatPieceNumber(1, style), separator);
         }
         else if (type.Id() == QStringLiteral("cut"))
         {

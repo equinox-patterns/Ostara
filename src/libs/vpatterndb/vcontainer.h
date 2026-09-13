@@ -216,6 +216,7 @@ public:
     auto SizeRanges() const -> const QHash<QString, OSizerange> *;
     void SetSizeRanges(const QHash<QString, OSizerange> &ranges);
     auto GetPieceGroupId(quint32 pieceId) const -> quint32;
+    auto IsPieceInLayout(quint32 pieceId) const -> bool;
     auto GetEffectivePieceCount() const -> int;
     auto DataVariables() const -> const QHash<QString, QSharedPointer<VInternalVariable>> *;
 

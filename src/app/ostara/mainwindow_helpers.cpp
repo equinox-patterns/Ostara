@@ -94,12 +94,11 @@ auto SortDetailsForLayout(const QHash<quint32, VPiece> *allDetails, const VConta
     const auto isInLayout = [data](const VPiece &piece, quint32 id) -> bool
     {
         // A member piece's in-layout state follows its GROUP (a group behaves like one piece):
-        // toggling the group to "x" excludes the whole group from export.
-        const quint32 groupId = data != nullptr ? data->GetPieceGroupId(id) : NULL_ID;
-        if (groupId != NULL_ID)
+        // toggling the group to "x" excludes the whole group from export. The rule itself lives in
+        // VContainer, so the total shown in a cartouche uses the very same one.
+        if (data != nullptr)
         {
-            const auto *groups = data->DataPieceGroups();
-            return groups != nullptr && groups->contains(groupId) && groups->value(groupId).IsInLayout();
+            return data->IsPieceInLayout(id);
         }
         return piece.IsInLayout();
     };

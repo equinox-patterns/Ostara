@@ -310,6 +310,34 @@ void OInfoBlockSectionEditor::Rebuild()
                 form->addRow(field.label, row);
                 break;
             }
+            case OPieceCartoucheOptionKind::NumberStyle:
+            {
+                auto *row = new QWidget(content);
+                auto *rowLayout = new QHBoxLayout(row);
+                rowLayout->setContentsMargins(0, 0, 0, 0);
+                rowLayout->setSpacing(8);
+                auto *group = new QButtonGroup(row);
+                const QString stored = section.options.value(field.key).toString();
+                const QString current = field.values.contains(stored) ? stored : field.values.value(0);
+                for (const QString &value : field.values)
+                {
+                    // Digits, not words: the label is the choice itself ("1" or "01").
+                    auto *radio = new QRadioButton(value, row);
+                    radio->setChecked(value == current);
+                    group->addButton(radio);
+                    rowLayout->addWidget(radio);
+                    connect(radio, &QRadioButton::toggled, this, [this, field, value](bool on) {
+                        if (on)
+                        {
+                            m_template->SetSectionOption(m_index, field.key, value);
+                            emit OptionsChanged();
+                        }
+                    });
+                }
+                rowLayout->addStretch();
+                form->addRow(field.label, row);
+                break;
+            }
             case OPieceCartoucheOptionKind::Logo:
             {
                 auto *combo = MakeComboBox(content);

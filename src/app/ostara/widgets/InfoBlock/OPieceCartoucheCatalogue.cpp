@@ -72,11 +72,16 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
                                                       T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Separator")),
                                                       {QString(), QStringLiteral(":"), QStringLiteral("/"), QStringLiteral("·")},
                                                       QString()};
-    // Piece number: "01 of 10", "01 - 10" or "01 / 10" — no "no separator" choice.
+    // Piece number: "1 of 10", "1 - 10" or "1 / 10" — no "no separator" choice.
     const OPieceCartoucheOptionField kPieceSeparator{
         QStringLiteral("separator"), OPieceCartoucheOptionKind::Separator, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Separator")),
         {QT_TRANSLATE_NOOP("OInfoBlockPreview", "of"), QStringLiteral("-"), QStringLiteral("/")},
         QT_TRANSLATE_NOOP("OInfoBlockPreview", "of")};
+    // Piece number style: a single digit as is ("1 of 10") or padded ("01 of 10").
+    const OPieceCartoucheOptionField kPieceNumberStyle{
+        OPieceCartoucheNumber::kStyle, OPieceCartoucheOptionKind::NumberStyle,
+        T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Number format")),
+        {OPieceCartoucheNumber::kPlain, OPieceCartoucheNumber::kPadded}, OPieceCartoucheNumber::kPlain};
     const OPieceCartoucheOptionField kLogo{QStringLiteral("logo"), OPieceCartoucheOptionKind::Logo, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Logo"))};
     const OPieceCartoucheOptionField kLogoSize{QStringLiteral("logoSize"),
                                                OPieceCartoucheOptionKind::LogoSize, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Logo size (cm)"))};
@@ -105,9 +110,9 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The name of the piece (from the piece options)."), textFields),
         MakeSection("pieceNumber",
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Piece number"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The piece number and its total, e.g. 01 of 10. The total shown here is an "
-                                      "example — it is computed automatically from the number of active pieces."),
-                    {kPieceSeparator, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
+                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The piece number and its total, e.g. 1 of 10. The total shown here is an "
+                                      "example — it is computed automatically from the number of pieces in the layout."),
+                    {kPieceNumberStyle, kPieceSeparator, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("cut",
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Cut (Fabric / Interfacing / Lining)"),
                     QT_TRANSLATE_NOOP("OPieceCartoucheSection", "One section covers all three fabrics — no need to add Cut several times. "

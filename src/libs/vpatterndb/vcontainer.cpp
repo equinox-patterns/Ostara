@@ -1058,45 +1058,65 @@ auto VContainer::GetPieceGroupId(quint32 pieceId) const -> quint32
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VContainer::GetEffectivePieceCount() const -> int
+auto VContainer::IsPieceInLayout(quint32 pieceId) const -> bool
 {
-    const auto *groups = DataPieceGroups();
-    if (!groups || groups->isEmpty())
+    // A member piece's in-layout state follows its GROUP (a group behaves like one piece). This is
+    // the single definition of "exportable": the export filter and the piece total both use it, so
+    // the total shown in a cartouche always matches what an export contains.
+    const quint32 groupId = GetPieceGroupId(pieceId);
+    if (groupId != NULL_ID)
     {
-        // All pieces count (in-layout or not): the total is the piece count.
-        return DataPieces() != nullptr ? static_cast<int>(DataPieces()->size()) : 0;
-    }
-
-    // « Un groupe = 1 pièce » : member pieces do not count, each group counts for 1.
-    QSet<quint32> excludedPieceIds;
-    int groupCount = 0;
-
-    for (auto it = groups->cbegin(); it != groups->cend(); ++it)
-    {
-        if (it.value().pieceIds.size() >= 2)
+        if (const auto *groups = DataPieceGroups(); groups != nullptr && groups->contains(groupId))
         {
-            for (quint32 pid : it.value().pieceIds)
-            {
-                excludedPieceIds.insert(pid);
-            }
-            groupCount++;
+            return groups->value(groupId).IsInLayout();
         }
     }
 
-    int standaloneCount = 0;
     const auto *pieces = DataPieces();
-    if (pieces != nullptr)
+    return pieces != nullptr && pieces->contains(pieceId) && pieces->value(pieceId).IsInLayout();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::GetEffectivePieceCount() const -> int
+{
+    // Only the units that go to the layout count: an excluded piece or group is not part of the
+    // total. « Un groupe = 1 pièce » : a group of two or more members counts for 1, its members do
+    // not count on their own.
+    const auto *groups = DataPieceGroups();
+    QSet<quint32> memberIds;
+    int count = 0;
+
+    if (groups != nullptr)
+    {
+        for (auto it = groups->cbegin(); it != groups->cend(); ++it)
+        {
+            if (it.value().pieceIds.size() < 2)
+            {
+                continue;
+            }
+            for (quint32 pid : it.value().pieceIds)
+            {
+                memberIds.insert(pid);
+            }
+            if (it.value().IsInLayout())
+            {
+                count++;
+            }
+        }
+    }
+
+    if (const auto *pieces = DataPieces(); pieces != nullptr)
     {
         for (auto it = pieces->cbegin(); it != pieces->cend(); ++it)
         {
-            if (!excludedPieceIds.contains(it.key()))
+            if (!memberIds.contains(it.key()) && IsPieceInLayout(it.key()))
             {
-                standaloneCount++;
+                count++;
             }
         }
     }
 
-    return standaloneCount + groupCount;
+    return count;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
