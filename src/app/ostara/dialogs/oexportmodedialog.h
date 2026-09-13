@@ -70,7 +70,8 @@ public:
     /// @brief True when the user asked for one size instead of a whole range.
     auto IsSingleSize() const -> bool;
 
-    /// @brief Base value of dimension @p index (0 = A, 1 = B, 2 = C). -1 when absent.
+    /// @brief Base value of the axis in slot @p index (0 = X, 1 = Y, 2 = W).
+    ///        -1 when the table carries no such axis, or the user picked nothing for it.
     auto DimensionBase(int index) const -> qreal;
 
 protected:
@@ -101,6 +102,14 @@ private:
     /// Dimension label/combo pairs, in the order of the measurement table.
     QVector<QLabel *> m_dimensionLabels{};
     QVector<QComboBox *> m_dimensionCombos{};
+
+    /// The axis slot each pair feeds, alongside it (0 = X, 1 = Y, 2 = W; -1 when the
+    /// export has no slot for the dimension). The rows follow the table's own order,
+    /// which is NOT the order of the slots — and the reader reads by slot, because the
+    /// document is put on a size by naming its axes. A table with a gap ({X, W}, no Y)
+    /// would otherwise hand W's value to slot B while the reader looks for W in slot C,
+    /// find nothing there, and resolve every measurement to zero.
+    QVector<int> m_dimensionSlots{};
 
     QDialogButtonBox *m_buttonBox{nullptr};
 };

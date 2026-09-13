@@ -227,8 +227,22 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
     if (singleSize)
     {
         // The user asked for this size: the document stays on it.
-        applySize(baseA, baseB, baseC);
-        layers = geometry.CollectCurrentSize(QStringLiteral("A=%1 B=%2 C=%3").arg(baseA).arg(baseB).arg(baseC));
+        //
+        // An axis the measurement table does not carry has no size to offer, and the
+        // dialog says so with -1 — a value shaped like a size without being one, handed
+        // to the pieces as if it were. The document's own value stands instead, and the
+        // axis's first size when the document has none either: 1 is the only base the
+        // schema accepts as a floor. The range path below guards its bases the same way.
+        const auto baseOr = [](qreal fromDialog, qreal fromDocument)
+        { return fromDialog > 0.0 ? fromDialog : (fromDocument > 0.0 ? fromDocument : 1.0); };
+
+        const qreal baseOfA = baseOr(baseA, savedA);
+        const qreal baseOfB = baseOr(baseB, savedB);
+        const qreal baseOfC = baseOr(baseC, savedC);
+
+        applySize(baseOfA, baseOfB, baseOfC);
+        layers = geometry.CollectCurrentSize(
+            QStringLiteral("A=%1 B=%2 C=%3").arg(baseOfA).arg(baseOfB).arg(baseOfC));
     }
     else
     {

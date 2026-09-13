@@ -152,18 +152,28 @@ auto OExportModeDialog::IsSingleSize() const -> bool
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportModeDialog::DimensionBase(int index) const -> qreal
 {
-    if (index < 0 || index >= m_dimensionCombos.size())
+    if (index < 0)
     {
         return -1.0;
     }
 
-    const QComboBox *combo = m_dimensionCombos.at(index);
-    if (combo->currentIndex() == -1)
+    for (int i = 0; i < m_dimensionCombos.size() && i < m_dimensionSlots.size(); ++i)
     {
-        return -1.0;
+        if (m_dimensionSlots.at(i) != index)
+        {
+            continue;
+        }
+
+        const QComboBox *combo = m_dimensionCombos.at(i);
+        if (combo->currentIndex() == -1)
+        {
+            return -1.0;
+        }
+
+        return combo->currentData().toReal();
     }
 
-    return combo->currentData().toReal();
+    return -1.0; // the table carries no axis for this slot
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -201,9 +211,11 @@ void OExportModeDialog::PopulateDimensions()
     // One row per dimension of the measurement table, in the table's own order:
     // this is what Details offers in its top bar, and the size the user picks here
     // is applied through the very same path.
-    const QList<MeasurementDimension_p> dimensions = m_measurements->Dimensions().values();
-    for (const MeasurementDimension_p &dimension : dimensions)
+    const VDimensions dimensions = m_measurements->Dimensions();
+    for (auto it = dimensions.constBegin(); it != dimensions.constEnd(); ++it)
     {
+        const MeasurementDimension_p &dimension = it.value();
+
         auto *combo = MakeComboBox(this);
         combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
@@ -211,11 +223,11 @@ void OExportModeDialog::PopulateDimensions()
         for (const qreal base : dimension->ValidBases())
         {
             QString text;
-            for (auto it = labels.constBegin(); it != labels.constEnd(); ++it)
+            for (auto label = labels.constBegin(); label != labels.constEnd(); ++label)
             {
-                if (qAbs(it.key() - base) < kBaseTolerance)
+                if (qAbs(label.key() - base) < kBaseTolerance)
                 {
-                    text = it.value();
+                    text = label.value();
                     break;
                 }
             }
@@ -227,10 +239,17 @@ void OExportModeDialog::PopulateDimensions()
             combo->addItem(text, base);
         }
 
-        auto *label = new QLabel(dimension->Name() + QStringLiteral(":"), this);
-        m_form->addRow(label, combo);
-        m_dimensionLabels.append(label);
+        auto *rowLabel = new QLabel(dimension->Name() + QStringLiteral(":"), this);
+        m_form->addRow(rowLabel, combo);
+        m_dimensionLabels.append(rowLabel);
+
+        // Which axis the row feeds. The document is put on a size by naming its axes —
+        // X, Y, W — so the row's rank in the table cannot say it: a table missing Y
+        // shifts every row below it by one slot. The dimension that has no slot of its
+        // own (Z) is still shown, and feeds nothing.
+        const int dimensionIndex = static_cast<int>(it.key());
         m_dimensionCombos.append(combo);
+        m_dimensionSlots.append(dimensionIndex < 3 ? dimensionIndex : -1);
     }
 }
 
