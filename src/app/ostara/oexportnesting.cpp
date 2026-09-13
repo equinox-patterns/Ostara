@@ -108,6 +108,26 @@ void DumpPolygon(const QString &what, const Clipper2Lib::Path64 &path)
              .arg(wPx * kMmPerPx, 0, 'f', 2)
              .arg(hPx * kMmPerPx, 0, 'f', 2));
 }
+
+/// Only this piece has its vertices written out: one piece is enough to compare
+/// the contour handed to the engine with the one the SVG writer produces, and it
+/// keeps the log readable. Matched on the name, so a group keeps its own name.
+const QString kDumpPointsFilter = QStringLiteral("Devant");
+
+/// Every vertex of a polygon, in pixels — the contour as the engine receives it,
+/// vertex by vertex, so it can be laid next to the SVG's own contour.
+void DumpPoints(const QString &what, const Clipper2Lib::Path64 &path)
+{
+    QString points;
+    points.reserve(static_cast<qsizetype>(path.size()) * 18);
+    for (const Clipper2Lib::Point64 &p : path)
+    {
+        points += QStringLiteral("%1,%2 ")
+                      .arg(static_cast<double>(p.x) / kTrameScale, 0, 'f', 2)
+                      .arg(static_cast<double>(p.y) / kTrameScale, 0, 'f', 2);
+    }
+    Dump(QStringLiteral("%1 : %2").arg(what, points));
+}
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// @param offset the piece's alignment shift, in pixels — the same one the canvas
@@ -185,6 +205,13 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, double binWidt
 
             DumpPolygon(QStringLiteral("    clé='%1'").arg(piece.key), node.polyline);
 
+            if (piece.name.contains(kDumpPointsFilter))
+            {
+                DumpPoints(QStringLiteral("    SOMMETS taille '%1' clé='%2'")
+                               .arg(layer.label, piece.key),
+                           node.polyline);
+            }
+
             engineLayer.pieces.append(enginePiece);
         }
 
@@ -217,8 +244,18 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, double binWidt
     }
 
     // Fixed width, unbounded height: the height is what the nesting produces.
-    const Bin bin(binWidthPx);
-    const Engine engine{Engine::Config{}};
+    //
+    // The margin and the gap are lengths in millimetres, and the engine consumes every
+    // length in the same pixels as the polygons. They are converted once, here: handed
+    // over raw, 5.0 means 5 px — 1.3 mm — which is not the policy Rabnest applies, and
+    // comparing the two engines would compare two different problems.
+    constexpr double kMmToPx = 96.0 / 25.4;
+    constexpr double kMarginAndGapPx = 5.0 * kMmToPx;
+
+    const Bin bin(binWidthPx, kMarginAndGapPx);
+    Engine::Config config;
+    config.gap = kMarginAndGapPx;
+    const Engine engine{config};
     const std::vector<Placement> placements = engine.place(bin, footprint.polygons);
 
     if (placements.size() != footprint.polygons.size())

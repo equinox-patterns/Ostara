@@ -180,14 +180,17 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
     // own drop-downs. Reading the measurements here instead — which is what this code
     // used to do — leaves the pieces on the previous size, and every layer of the range
     // then comes back with the same geometry.
+    //
+    // The document itself is deliberately left alone: the live combination is what puts
+    // it on a size, and GradationChanged() reads that — the Graded path resolves a whole
+    // range the same way, without writing anything. Writing it here added a `dimensionX`
+    // attribute to documents that do not carry one, and the schema refuses any value
+    // below 1 (dimesionValue): such a document could no longer be saved at all.
     const auto applySize = [this](qreal a, qreal b, qreal c)
     {
         m_currentDimensionA = a;
         m_currentDimensionB = b;
         m_currentDimensionC = c;
-        doc->SetDimensionAValue(a);
-        doc->SetDimensionBValue(b);
-        doc->SetDimensionCValue(c);
         GradationChanged();
     };
 
@@ -202,18 +205,30 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
     else
     {
         const QVector<OExportGeometry::OExportSizeRef> sizes = geometry.RangeSizes(rangeName);
+
+        // The range pins the axes it does not grade, and the pieces must be resolved with
+        // those values. The document's own ones send an axis it does not carry back to the
+        // measurement file's base, and every piece built from a formula — which is all of
+        // them — then comes out at a geometry the range does not name. The graded capture
+        // feeds its pieces this exact way. An axis the range pins nothing at keeps the
+        // document's value.
+        const OExportGeometry::OExportFixedBases fixed = geometry.RangeFixedBases(rangeName);
+        const qreal fixedA = fixed.a > 0.0 ? fixed.a : savedA;
+        const qreal fixedB = fixed.b > 0.0 ? fixed.b : savedB;
+        const qreal fixedC = fixed.c > 0.0 ? fixed.c : savedC;
+
         for (const OExportGeometry::OExportSizeRef &size : sizes)
         {
             switch (size.axisIndex)
             {
                 case 0:
-                    applySize(size.base, savedB, savedC);
+                    applySize(size.base, fixedB, fixedC);
                     break;
                 case 1:
-                    applySize(savedA, size.base, savedC);
+                    applySize(fixedA, size.base, fixedC);
                     break;
                 default:
-                    applySize(savedA, savedB, size.base);
+                    applySize(fixedA, fixedB, size.base);
                     break;
             }
 

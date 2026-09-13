@@ -95,6 +95,63 @@ auto OExportGeometry::RangeSizes(const QString &rangeName) -> QVector<OExportSiz
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportGeometry::RangeFixedBases(const QString &rangeName) -> OExportFixedBases
+{
+    OExportFixedBases fixed;
+
+    if (m_container == nullptr || m_measurements.isNull())
+    {
+        return fixed;
+    }
+
+    const QHash<QString, OSizerange> *ranges = m_container->SizeRanges();
+    if (ranges == nullptr || !ranges->contains(rangeName))
+    {
+        return fixed;
+    }
+
+    const OSizerange range = ranges->value(rangeName);
+    const QList<MeasurementDimension_p> dimensions = m_measurements->Dimensions().values();
+
+    // The range pins each axis as the label the user sees; the axis carries the
+    // label → base correspondence, the same one the graded axis goes through.
+    for (int i = 0; i < dimensions.size() && i < 3; ++i)
+    {
+        const QString label = range.axisValues.value(dimensions.at(i)->CustomName());
+        if (label.isEmpty())
+        {
+            continue;
+        }
+
+        qreal base = 0.0;
+        const DimesionLabels labels = dimensions.at(i)->Labels();
+        for (auto it = labels.constBegin(); it != labels.constEnd(); ++it)
+        {
+            if (it.value() == label)
+            {
+                base = it.key();
+                break;
+            }
+        }
+
+        if (i == 0)
+        {
+            fixed.a = base;
+        }
+        else if (i == 1)
+        {
+            fixed.b = base;
+        }
+        else
+        {
+            fixed.c = base;
+        }
+    }
+
+    return fixed;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportGeometry::CollectCurrentSize(const QString &label) -> QVector<OExportSizeLayer>
 {
     QVector<OExportSizeLayer> layers;

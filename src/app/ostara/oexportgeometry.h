@@ -85,6 +85,15 @@ public:
         QString label;
     };
 
+    /// @brief The base a range pins each axis at — one per slot. Zero means the range
+    ///        pins nothing there and the document's own value stands.
+    struct OExportFixedBases
+    {
+        qreal a{0.0};
+        qreal b{0.0};
+        qreal c{0.0};
+    };
+
     OExportGeometry(VContainer *container, VPattern *doc,
                     const QSharedPointer<VMeasurements> &measurements);
 
@@ -94,6 +103,16 @@ public:
     /// It stops at naming the sizes on purpose: applying one is the application's
     /// own business, and it has exactly one way of doing it.
     auto RangeSizes(const QString &rangeName) -> QVector<OExportSizeRef>;
+
+    /// @brief The value each axis is pinned at by a range — the geometry a range
+    ///        describes, and the values the pieces must be resolved with.
+    ///
+    /// Walking a range means putting the document on each of its sizes; the axes it does
+    /// not grade keep the value the range pins them at. Taking the document's own value
+    /// instead sends an axis it does not carry back to the measurement file's base, and
+    /// the exported geometry is then not the one the range names. The graded capture
+    /// feeds its pieces exactly these values.
+    auto RangeFixedBases(const QString &rangeName) -> OExportFixedBases;
 
     /// @brief Resolve every piece of the pattern at the size the document is on.
     ///
