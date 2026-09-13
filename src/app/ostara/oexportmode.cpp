@@ -44,11 +44,9 @@
 #include <QCoreApplication>
 #include <QElapsedTimer>
 #include <QEventLoop>
-#include <QFile>
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QMessageBox>
-#include <QTextStream>
 #include <QThreadPool>
 #include <QtConcurrent>
 
@@ -244,21 +242,6 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
     // means something once they line up — which is what Graded does before it draws,
     // and what the nesting needs for the same reason.
     OExportAlignment::Apply(layers, pattern);
-
-    // TEMPORARY DIAGNOSTIC — to be removed once the render is validated.
-    {
-        QFile file(QStringLiteral("/tmp/ostara-export-nesting.log"));
-        if (file.open(QIODevice::WriteOnly | QIODevice::Text))
-        {
-            QTextStream out(&file);
-            out << "=== Export nesting — diagnostic ===\n";
-            out << "unité du patron = " << UnitsToStr(unit, true) << '\n';
-            out << "largeur saisie = " << documentWidth << " → " << binWidthPx << " px\n";
-            out << "plage demandée = " << rangeName << '\n';
-            out << "tailles résolues = " << layers.size() << '\n';
-            out << "diagnostic géométrie = " << geometry.LastDiagnostic() << '\n';
-        }
-    }
 
     int pieceCount = 0;
     for (const OExportSizeLayer &layer : layers)

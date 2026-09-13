@@ -36,9 +36,7 @@
 #include "nesting/Engine.h"
 #include "nesting/Footprint.h"
 
-#include <QFile>
 #include <QObject>
-#include <QTextStream>
 
 #include <cmath>
 
@@ -47,88 +45,6 @@ namespace
 /// The engine works in fixed-point: one pixel is kTrameScale units. Every
 /// coordinate handed to it, and every coordinate it returns, uses that scale.
 constexpr double kTrameScale = 1e6;
-
-// ─────────────────────────────────────────────────────────────────────────────
-// TEMPORARY DIAGNOSTIC — to be removed once the render is validated.
-// Writes the real numbers of one nesting run to a fixed file so the shape of the
-// input and of the result can be inspected instead of guessed.
-const QString kDumpPath = QStringLiteral("/tmp/ostara-export-nesting.log");
-
-void Dump(const QString &line)
-{
-    QFile file(kDumpPath);
-    if (file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
-    {
-        QTextStream out(&file);
-        out << line << '\n';
-    }
-}
-
-/// Appends a separator. It must NOT truncate: oexportmode writes what it knows
-/// before the nesting runs off the GUI thread, and truncating here threw it away.
-void DumpReset()
-{
-    Dump(QStringLiteral("=== nesting ==="));
-}
-
-/// Bounding box and size of a polygon, in pixels and in millimetres.
-void DumpPolygon(const QString &what, const Clipper2Lib::Path64 &path)
-{
-    if (path.empty())
-    {
-        Dump(QStringLiteral("%1 : EMPTY").arg(what));
-        return;
-    }
-
-    int64_t xMin = path.front().x;
-    int64_t xMax = xMin;
-    int64_t yMin = path.front().y;
-    int64_t yMax = yMin;
-    for (const Clipper2Lib::Point64 &p : path)
-    {
-        xMin = std::min(xMin, p.x);
-        xMax = std::max(xMax, p.x);
-        yMin = std::min(yMin, p.y);
-        yMax = std::max(yMax, p.y);
-    }
-
-    const double wPx = static_cast<double>(xMax - xMin) / kTrameScale;
-    const double hPx = static_cast<double>(yMax - yMin) / kTrameScale;
-    const double kMmPerPx = 25.4 / 96.0;
-
-    Dump(QStringLiteral("%1 : pts=%2 min=[%3,%4] max=[%5,%6] taille=%7x%8 px = %9x%10 mm")
-             .arg(what)
-             .arg(path.size())
-             .arg(static_cast<double>(xMin) / kTrameScale, 0, 'f', 2)
-             .arg(static_cast<double>(yMin) / kTrameScale, 0, 'f', 2)
-             .arg(static_cast<double>(xMax) / kTrameScale, 0, 'f', 2)
-             .arg(static_cast<double>(yMax) / kTrameScale, 0, 'f', 2)
-             .arg(wPx, 0, 'f', 2)
-             .arg(hPx, 0, 'f', 2)
-             .arg(wPx * kMmPerPx, 0, 'f', 2)
-             .arg(hPx * kMmPerPx, 0, 'f', 2));
-}
-
-/// Only this piece has its vertices written out: one piece is enough to compare
-/// the contour handed to the engine with the one the SVG writer produces, and it
-/// keeps the log readable. Matched on the name, so a group keeps its own name.
-const QString kDumpPointsFilter = QStringLiteral("Devant");
-
-/// Every vertex of a polygon, in pixels — the contour as the engine receives it,
-/// vertex by vertex, so it can be laid next to the SVG's own contour.
-void DumpPoints(const QString &what, const Clipper2Lib::Path64 &path)
-{
-    QString points;
-    points.reserve(static_cast<qsizetype>(path.size()) * 18);
-    for (const Clipper2Lib::Point64 &p : path)
-    {
-        points += QStringLiteral("%1,%2 ")
-                      .arg(static_cast<double>(p.x) / kTrameScale, 0, 'f', 2)
-                      .arg(static_cast<double>(p.y) / kTrameScale, 0, 'f', 2);
-    }
-    Dump(QStringLiteral("%1 : %2").arg(what, points));
-}
-// ─────────────────────────────────────────────────────────────────────────────
 
 /// @param offset the piece's alignment shift, in pixels — the same one the canvas
 ///               applies, so the bin and the screen show the same geometry.
@@ -153,12 +69,6 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, double binWidt
     OExportNestingResult result;
     result.binWidthPx = binWidthPx;
 
-    DumpReset();
-    Dump(QStringLiteral("binWidthPx=%1 (%2 mm)")
-             .arg(binWidthPx, 0, 'f', 2)
-             .arg(binWidthPx * 25.4 / 96.0, 0, 'f', 2));
-    Dump(QStringLiteral("layers=%1").arg(layers.size()));
-
     if (layers.isEmpty())
     {
         result.error = QObject::tr("The size range carries no piece to nest.");
@@ -180,8 +90,6 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, double binWidt
         SizeLayer engineLayer;
         engineLayer.label = layer.label;
 
-        Dump(QStringLiteral("--- taille '%1' : %2 pièces").arg(layer.label).arg(layer.pieces.size()));
-
         for (const OExportPieceGeometry &piece : layer.pieces)
         {
             Piece enginePiece;
@@ -196,21 +104,9 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, double binWidt
             node.polyline = ToPath64(piece.piece.GetExternalContourPoints(), piece.alignDelta);
             if (node.polyline.size() < 3)
             {
-                Dump(QStringLiteral("    IGNORÉE clé='%1' : contour externe = %2 point(s)")
-                         .arg(piece.key)
-                         .arg(node.polyline.size()));
                 continue;
             }
             enginePiece.contourNodes.append(node);
-
-            DumpPolygon(QStringLiteral("    clé='%1'").arg(piece.key), node.polyline);
-
-            if (piece.name.contains(kDumpPointsFilter))
-            {
-                DumpPoints(QStringLiteral("    SOMMETS taille '%1' clé='%2'")
-                               .arg(layer.label, piece.key),
-                           node.polyline);
-            }
 
             engineLayer.pieces.append(enginePiece);
         }
@@ -232,15 +128,6 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, double binWidt
     {
         result.error = QObject::tr("The size range carries no usable contour.");
         return result;
-    }
-
-    Dump(QStringLiteral("=== empreintes : %1").arg(static_cast<int>(footprint.polygons.size())));
-    for (size_t i = 0; i < footprint.polygons.size(); ++i)
-    {
-        DumpPolygon(QStringLiteral("  EMPREINTE '%1' (tailles=%2)")
-                        .arg(footprint.keys.at(i))
-                        .arg(footprint.sizeCounts.at(i)),
-                    footprint.polygons[i]);
     }
 
     // Fixed width, unbounded height: the height is what the nesting produces.
@@ -298,20 +185,6 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, double binWidt
     }
 
     result.usedHeightPx = Engine::UsedHeight(placements, footprint.polygons, bin);
-
-    Dump(QStringLiteral("=== placements : %1").arg(result.placements.size()));
-    for (const OExportPlacement &placement : result.placements)
-    {
-        Dump(QStringLiteral("  x=%1 y=%2 rot=%3 origine=[%4,%5]")
-                 .arg(placement.x, 0, 'f', 2)
-                 .arg(placement.y, 0, 'f', 2)
-                 .arg(placement.rotation, 0, 'f', 2)
-                 .arg(placement.originX, 0, 'f', 2)
-                 .arg(placement.originY, 0, 'f', 2));
-    }
-    Dump(QStringLiteral("=== usedHeightPx=%1 (%2 mm)")
-             .arg(result.usedHeightPx, 0, 'f', 2)
-             .arg(result.usedHeightPx * 25.4 / 96.0, 0, 'f', 2));
 
     result.ok = true;
     return result;
