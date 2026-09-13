@@ -95,21 +95,7 @@ void MainWindow::ActionExport(bool checked)
         return;
     }
 
-    // The dialog comes first: what to nest and on which bin is decided before the
-    // mode is entered. Cancelling means staying where we were.
-    OExportModeDialog dialog(pattern, m_m, this);
-    if (dialog.exec() != QDialog::Accepted)
-    {
-        ui->actionExport->setChecked(false);
-        return;
-    }
-
-    const qreal documentWidth = dialog.DocumentWidth();
-    const QString rangeName = dialog.SizeRangeName();
-    const bool singleSize = dialog.IsSingleSize();
-    const qreal baseA = dialog.DimensionBase(0);
-    const qreal baseB = dialog.DimensionBase(1);
-    const qreal baseC = dialog.DimensionBase(2);
+    const Draw prevMode = VAbstractValApplication::VApp()->GetDrawMode();
 
     ArrowTool(true);
 
@@ -119,13 +105,16 @@ void MainWindow::ActionExport(bool checked)
     ui->actionLayout->setChecked(false);
     ui->actionExport->setChecked(true);
 
+    // Switch to Export first (empty canvas, export chrome), so the entry dialog opens
+    // ABOVE the export canvas — not over the mode the user clicked in. Same order as
+    // Graded (mainwindow_graded.cpp, ActionGraded).
     qCDebug(vMainWindow, "Show export scene");
-    m_dockManager->saveDockStateForMode(VAbstractValApplication::VApp()->GetDrawMode());
+    m_dockManager->saveDockStateForMode(prevMode);
 
     // The export chrome is the Graded one: the centre of the TopBar is hidden.
     // Leaving Graded must be done explicitly — ActionGraded lives in the Graded
     // files and knows nothing about this mode.
-    if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
+    if (prevMode == Draw::Graded)
     {
         m_topBar->SetGradedChrome(false);
     }
@@ -144,7 +133,46 @@ void MainWindow::ActionExport(bool checked)
 
     m_statusLabel->setText(QString());
 
-    RunExportNesting(documentWidth, rangeName, singleSize, baseA, baseB, baseC);
+    // Leaving Draw tears widgets down with deleteLater(): the tab strip of the
+    // {Groups, Messages} pair that the dock restore replaces, and the Draw tool groups
+    // that DrawToolBar::BuildLayout() rebuilds. A deferred deletion is not performed
+    // once a new event loop is entered — Qt, QObject::deleteLater(): "entering and
+    // leaving a new event loop (e.g., by opening a modal dialog) will not perform the
+    // deferred deletion; for the object to be deleted, the control must return to the
+    // event loop from which deleteLater() was called" — and processEvents() does not
+    // process DeferredDelete either. Left pending, both stay on screen as ghosts (two
+    // tab titles over hidden docks, the Draw group names over an Export toolbar) for
+    // the whole entry dialog and the whole nesting. Flush them here, while control is
+    // still on the loop that posted them.
+    QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+
+    // What to nest and on which bin is decided here, on the empty export canvas.
+    // Cancelling gives the previous mode back — the mode was already switched.
+    OExportModeDialog dialog(pattern, m_m, this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        ui->actionExport->setChecked(false);
+
+        switch (prevMode)
+        {
+            case Draw::Calculation:
+                ActionDraw(true);
+                break;
+            case Draw::Graded:
+                ActionGraded(true);
+                break;
+            case Draw::Layout:
+                ActionLayout(true);
+                break;
+            default:
+                ActionDetails(true);
+                break;
+        }
+        return;
+    }
+
+    RunExportNesting(dialog.DocumentWidth(), dialog.SizeRangeName(), dialog.IsSingleSize(),
+                     dialog.DimensionBase(0), dialog.DimensionBase(1), dialog.DimensionBase(2));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -282,8 +310,16 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
     }
 
     OExportCanvas::Build(m_sceneExport, layers, result);
-    VMainGraphicsView::NewSceneRect(m_sceneExport, ui->view);
-    ui->view->fitInView(m_sceneExport->sceneRect(), Qt::KeepAspectRatio);
+
+    // Frame the whole nesting — the very same thing the "Zoom fit best" action (Cmd+=)
+    // does, which is what this is meant to reproduce. The former call framed
+    // m_sceneExport->sceneRect(), a rect NewSceneRect() had just widened to the union of
+    // the items AND the view's visible area: the bin came out framed inside its own
+    // scrollable scene instead of filling the viewport. ZoomFitBest() frames
+    // VisibleItemsBoundingRect() alone, clamps the factor to MinScale/MaxScale and
+    // reports the resulting scale. It calls NewSceneRect() itself, so the explicit call
+    // that preceded it is dropped.
+    ui->view->ZoomFitBest();
 
     const double width = FromPixel(result.binWidthPx, unit);
     const double height = FromPixel(result.usedHeightPx, unit);
