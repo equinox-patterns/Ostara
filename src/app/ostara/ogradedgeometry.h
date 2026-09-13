@@ -34,11 +34,15 @@
 
 #include <QPointF>
 #include <QRectF>
+#include <QString>
 #include <QtGlobal>
+
+#include "../vpatterndb/osizerange.h"
 
 class QGraphicsItem;
 class VContainer;
-class OSizerange;
+class VGrainlineData;
+enum class Unit : qint8;
 
 namespace OGraded
 {
@@ -68,6 +72,48 @@ auto AnchorPoint(const QRectF &rect, int h, int v) -> QPointF;
  */
 void ApplyOffsets(const QList<QGraphicsItem *> &items, const OSizerange &range,
                   const VContainer *pattern);
+
+/// @brief Where an owner's grainline sits and how long it is, for one range.
+struct GrainlinePlacement
+{
+    QPointF pos{};       ///< parent-local, pixels
+    qreal lengthPx{0.0}; ///< pixels
+};
+
+/**
+ * @brief Resolve an owner's grainline for one range.
+ *
+ * The range's override wins when it exists — storing one is exactly what says "this
+ * range puts the grainline here". Without it the owner's own geometry stands, which is
+ * what the owner carries outside any range.
+ *
+ * @param geom           the owner's grainline: a piece's, or a group's shared one
+ * @param ov             the range's override for that owner
+ * @param isGroup        a group's length and rotation are literals, a piece's are formulas
+ * @param pattern        the pattern, variables of those formulas — unused for a group
+ * @param unit           pattern unit, for the design length
+ * @param fallbackCenter parent-local point used when the resolved position is (0, 0)
+ */
+auto ResolveGrainline(const VGrainlineData &geom, const OSizerange::GrainlineOverride &ov, bool isGroup,
+                      const VContainer *pattern, const Unit &unit, const QPointF &fallbackCenter)
+    -> GrainlinePlacement;
+
+/**
+ * @brief Rotation of an owner's grainline, in degrees.
+ *
+ * A piece's rotation is a formula, a group's is a literal — the rule the group holder
+ * (OPieceGroupHolderItem::RefreshGrainline) and the Graded decor both apply.
+ */
+auto GrainlineRotation(const QString &formula, bool isGroup, const VContainer *pattern) -> qreal;
+
+/**
+ * @brief The grainline item to hang under @p parent, or nullptr when the shape is empty.
+ *
+ * Built at @p placement, which is already parent-local: the caller only has to hand it a
+ * parent whose frame the placement was resolved in.
+ */
+auto MakeGrainlineItem(QGraphicsItem *parent, const VGrainlineData &geom,
+                       const GrainlinePlacement &placement, qreal rotationDeg) -> QGraphicsItem *;
 }  // namespace OGraded
 
 #endif  // OGRADEDGEOMETRY_H

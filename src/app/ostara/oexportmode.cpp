@@ -38,7 +38,8 @@
 #include "widgets/TopBar.h"
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractvalapplication.h"
-#include "../vwidgets/vmaingraphicsscene.h"
+#include "../vpatterndb/osizerange.h"
+#include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/vmaingraphicsview.h"
 
 #include <QCoreApplication>
@@ -46,6 +47,7 @@
 #include <QEventLoop>
 #include <QFuture>
 #include <QFutureWatcher>
+#include <QHash>
 #include <QMessageBox>
 #include <QThreadPool>
 #include <QtConcurrent>
@@ -309,7 +311,23 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
         return false;
     }
 
-    OExportCanvas::Build(m_sceneExport, layers, result);
+    // The range is the authority on where the decor of the reference layer goes: it holds
+    // an override for every owner the user positioned in Graded, and the mode reads it
+    // without ever writing to it. A single-size run names no range — there is nothing to
+    // read, and every piece keeps the geometry it carries.
+    OSizerange exportRange;
+    const OSizerange *range = nullptr;
+    if (const QHash<QString, OSizerange> *ranges = pattern->SizeRanges(); ranges != nullptr)
+    {
+        const auto it = ranges->constFind(rangeName);
+        if (it != ranges->cend())
+        {
+            exportRange = it.value();
+            range = &exportRange;
+        }
+    }
+
+    OExportCanvas::Build(m_sceneExport, layers, result, range, pattern);
 
     // Frame the whole nesting — the very same thing the "Zoom fit best" action (Cmd+=)
     // does, which is what this is meant to reproduce. The former call framed

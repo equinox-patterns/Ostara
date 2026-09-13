@@ -30,6 +30,8 @@
 #include <QVector>
 
 class VMainGraphicsScene;
+class VContainer;
+class OSizerange;
 struct OExportNestingResult;
 struct OExportSizeLayer;
 
@@ -42,9 +44,16 @@ struct OExportSizeLayer;
 class OExportCanvas
 {
 public:
+    /// @param range   the range being nested, or nullptr when the run is a single size.
+    ///                Its per-owner overrides are where the decor of the reference layer
+    ///                takes its position from — never the Details-mode placement.
+    /// @param pattern the pattern, source of the grainlines and of the groups. Decor is
+    ///                skipped when it is nullptr.
     static void Build(VMainGraphicsScene *scene,
                       const QVector<OExportSizeLayer> &layers,
-                      const OExportNestingResult &result);
+                      const OExportNestingResult &result,
+                      const OSizerange *range,
+                      const VContainer *pattern);
 };
 
 #endif // OEXPORTCANVAS_H

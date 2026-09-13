@@ -30,17 +30,27 @@
 #include "ogradedgeometry.h"
 
 #include "mainwindow_graded_helpers.h"
+#include "../vpatterndb/calculator.h"
+#include "../vpatterndb/floatItemData/vgrainlinedata.h"
 #include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/osizerange.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiece.h"
+#include "../vlayout/vgraphicsfillitem.h"
+#include "../vlayout/vlayoutpiece.h"
+#include "../vmisc/def.h"
+#include "../vmisc/vabstractapplication.h"
+#include "../vmisc/vcommonsettings.h"
+#include "../vwidgets/vpiecegrainline.h"
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QHash>
 #include <QList>
 #include <QMap>
+#include <QPen>
 #include <QRectF>
+#include <QtMath>
 
 namespace OGraded
 {
@@ -245,5 +255,109 @@ void ApplyOffsets(const QList<QGraphicsItem *> &items, const OSizerange &range, 
             }
         }
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+/// The design length of a grainline, in pixels. A piece's length is a formula — the one
+/// VAbstractPiece::FindGrainlineGeometry evaluates — a group's is a literal. An empty or
+/// unusable value falls back on the 10 cm the Details holder also uses.
+auto GrainlineLengthPx(const QString &formula, bool isGroup, const VContainer *pattern, const Unit &unit)
+    -> qreal
+{
+    qreal value = 0.0;
+    if (isGroup || pattern == nullptr)
+    {
+        bool ok = false;
+        value = formula.toDouble(&ok);
+        if (!ok)
+        {
+            value = 0.0;
+        }
+    }
+    else
+    {
+        try
+        {
+            Calculator cal;
+            value = cal.EvalFormula(pattern->DataVariables(), formula);
+        }
+        catch (qmu::QmuParserError &e)
+        {
+            Q_UNUSED(e)
+            value = 0.0;
+        }
+    }
+
+    if (value <= 0.0)
+    {
+        value = 10.0;
+    }
+    return ToPixel(value, unit);
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ResolveGrainline(const VGrainlineData &geom, const OSizerange::GrainlineOverride &ov, bool isGroup,
+                      const VContainer *pattern, const Unit &unit, const QPointF &fallbackCenter)
+    -> GrainlinePlacement
+{
+    GrainlinePlacement placement;
+
+    placement.pos = ov.valid ? ov.pos : geom.GetPos();
+    if (qFuzzyIsNull(placement.pos.x()) && qFuzzyIsNull(placement.pos.y()))
+    {
+        placement.pos = fallbackCenter; // the grainline was never placed: sit it on the owner
+    }
+
+    placement.lengthPx = (ov.valid && ov.lengthPx > 0.0) ? ov.lengthPx
+                                                         : GrainlineLengthPx(geom.GetLength(), isGroup,
+                                                                             pattern, unit);
+    return placement;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto GrainlineRotation(const QString &formula, bool isGroup, const VContainer *pattern) -> qreal
+{
+    if (formula.isEmpty())
+    {
+        return 0.0;
+    }
+
+    // A group's grainline carries a literal, a piece's carries a formula: the group has no
+    // variables of its own to evaluate one against.
+    if (isGroup || pattern == nullptr)
+    {
+        bool ok = false;
+        const qreal value = formula.toDouble(&ok);
+        return ok ? value : 0.0;
+    }
+
+    Calculator cal;
+    const qreal value = cal.EvalFormula(pattern->DataVariables(), formula);
+    return (qIsNaN(value) || qIsInf(value)) ? 0.0 : value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto MakeGrainlineItem(QGraphicsItem *parent, const VGrainlineData &geom, const GrainlinePlacement &placement,
+                       qreal rotationDeg) -> QGraphicsItem *
+{
+    const VPieceGrainline grainline(placement.pos, placement.lengthPx, qDegreesToRadians(rotationDeg),
+                                    geom.GetArrowType());
+    const GrainlineShape shape = grainline.Shape();
+    if (shape.isEmpty())
+    {
+        return nullptr;
+    }
+
+    auto *item = new VGraphicsFillItem(VLayoutPiece::GrainlinePath(shape), parent);
+    item->SetCustomPen(true);
+    QPen pen = item->pen();
+    pen.setWidthF(VAbstractApplication::VApp()->Settings()->WidthHairLine());
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setJoinStyle(Qt::RoundJoin);
+    item->setPen(pen);
+    return item;
 }
 }  // namespace OGraded
