@@ -36,6 +36,7 @@
 #include <QStyledItemDelegate>
 #include <QTableWidget>
 #include <QTableWidgetItem>
+#include <QTimer>
 #include <QVBoxLayout>
 
 #include "../vtheme/vtheme.h"
@@ -55,6 +56,11 @@ constexpr int kEdit = 3;
 constexpr int kRefresh = 4;
 constexpr int kExport = 5;
 constexpr int kDelete = 6;
+
+// Custom roles on the Name cell. Qt::UserRole carries the stable row identity; the
+// previous-name role sits one slot above — see OnNameEdited() for why "previous" must be
+// tracked in a role rather than read off item->text() at itemChanged time.
+constexpr int kPreviousNameRole = Qt::UserRole + 1;
 
 // The three groups the dock opens with come from the catalogue below (Populate) — the
 // destinations of the Export mode, which the user is free to rename or delete.
@@ -159,6 +165,7 @@ void OWidgetOutputs::BuildUi()
     m_addOutputButton = MakeIconButton(QStringLiteral("addOutputButton"),
                                        QStringLiteral("stack-plus-fill"));
     m_addOutputButton->setText(tr("Add an output"));
+    connect(m_addOutputButton, &QPushButton::clicked, this, &OWidgetOutputs::OnAddClicked);
     rootLayout->addWidget(m_addOutputButton, 0, Qt::AlignHCenter);
 
     // ── Outputs list ──
@@ -167,6 +174,17 @@ void OWidgetOutputs::BuildUi()
     m_table->setShowGrid(false);
     m_table->setSelectionMode(QAbstractItemView::NoSelection);
     m_table->setAlternatingRowColors(true);
+
+    // The Name column is editable: double-click or F2 opens the inline editor. Other
+    // columns stay read-only — Qt::ItemIsSelectable is dropped on the Name item too,
+    // so the only entry point is setEditTriggers (same pattern as Size Ranges).
+    m_table->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
+    connect(m_table, &QTableWidget::itemChanged, this, &OWidgetOutputs::OnNameEdited);
+
+    // A click on the status column switches the canvas to that generation. The view is in
+    // NoSelection, so nothing is selected — but cellClicked is emitted all the same, which
+    // is exactly what the status column needs: a target, not a selection.
+    connect(m_table, &QTableWidget::cellClicked, this, &OWidgetOutputs::OnCellClicked);
 
     m_table->horizontalHeader()->setVisible(false);
     m_table->horizontalHeader()->setSectionResizeMode(kName, QHeaderView::Stretch);
@@ -255,6 +273,11 @@ void OWidgetOutputs::Populate()
         return;
     }
 
+    // Populate rebuilds every row and rewrites every text — that fires itemChanged per
+    // cell, which would route through OnNameEdited. Guard the whole rebuild so the
+    // signal handler skips the validation/rename chain during a programmatic refresh.
+    m_filling = true;
+
     m_table->setRowCount(0);
 
     const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
@@ -280,10 +303,16 @@ void OWidgetOutputs::Populate()
         }
         m_table->setItem(row, kStatus, statusItem);
 
-        // No Name field exists yet, so the name is not editable.
+        // The name is editable inline — but ItemIsSelectable is dropped so a single
+        // click does not select the cell (the editor would then open on any click,
+        // overriding setEditTriggers). Editable + not-selectable is the canonical Qt
+        // combo for "the cell can be edited, but only via the triggers I picked".
         auto *nameItem = new QTableWidgetItem(output.name);
-        nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsEditable);
+        nameItem->setFlags(nameItem->flags() | Qt::ItemIsEditable);
+        nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsSelectable);
         nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        nameItem->setData(Qt::UserRole, output.id);              // the row's identity
+        nameItem->setData(kPreviousNameRole, output.name);       // name BEFORE the next edit
         m_table->setItem(row, kName, nameItem);
 
         // The action icons belong to the shell: drawn, and inert.
@@ -300,6 +329,7 @@ void OWidgetOutputs::Populate()
         auto *refreshItem =
             new QTableWidgetItem(MakeCellIcon(QStringLiteral("arrows-clockwise"), dark), QString());
         refreshItem->setFlags(refreshItem->flags() & ~Qt::ItemIsEditable);
+        refreshItem->setData(Qt::UserRole, output.id); // the cell knows the row it acts on
         refreshItem->setToolTip(tr("Refresh"));
         m_table->setItem(row, kRefresh, refreshItem);
 
@@ -310,11 +340,171 @@ void OWidgetOutputs::Populate()
 
         auto *deleteItem = new QTableWidgetItem(MakeCellIcon(QStringLiteral("trash"), dark), QString());
         deleteItem->setFlags(deleteItem->flags() & ~Qt::ItemIsEditable);
+        deleteItem->setData(Qt::UserRole, output.id); // the cell knows the row it acts on
         deleteItem->setToolTip(tr("Delete"));
         m_table->setItem(row, kDelete, deleteItem);
 
         ++row;
     }
+
+    m_filling = false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OWidgetOutputs::OnAddClicked()
+{
+    emit addRequested();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief OnCellClicked route a click on the columns that carry a command.
+ *
+ * Three columns are wired — status, refresh, delete — and the identity is read off the
+ * cell that was clicked, not off a neighbour. The name column is edited inline, and a
+ * single click there must not take the canvas away from the generation being renamed,
+ * which is why it does not share the status branch the way the Size Ranges dock shares
+ * its own two. The rest — favorite, edit, export — are still the shell (§7.2).
+ */
+void OWidgetOutputs::OnCellClicked(int row, int column)
+{
+    if (column != kStatus && column != kRefresh && column != kDelete)
+    {
+        return;
+    }
+
+    if (row < 0 || row >= m_table->rowCount())
+    {
+        return;
+    }
+
+    const QTableWidgetItem *cell = m_table->item(row, column);
+    if (cell == nullptr)
+    {
+        return;
+    }
+
+    const quint32 id = cell->data(Qt::UserRole).toUInt();
+    if (id == 0)
+    {
+        return; // a row without a generation behind it — defensive
+    }
+
+    switch (column)
+    {
+        case kStatus:
+            emit activeRequested(id);
+            break;
+        case kRefresh:
+            emit refreshRequested(id);
+            break;
+        case kDelete:
+            emit deleteRequested(id);
+            break;
+        default:
+            break;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OWidgetOutputs::OnNameEdited(QTableWidgetItem *item)
+{
+    if (m_filling || item == nullptr || item->column() != kName)
+    {
+        return;
+    }
+
+    const quint32 id = item->data(Qt::UserRole).toUInt();
+    if (id == 0)
+    {
+        return; // row not associated to a real generation — defensive
+    }
+
+    // The itemChanged signal is fired AFTER the editor commits — by the time we land
+    // here, item->text() already holds the NEW name. The "previous name" role was set
+    // during the last programmatic write (Populate, or the commit at the bottom of this
+    // slot) and is untouched by the editor — so it carries what was on screen BEFORE
+    // the user typed. Reading oldName off item->text() would silently break conflict
+    // detection: any name typed that already belongs to another row would compare equal
+    // to itself and slip through.
+    const QString oldName = item->data(kPreviousNameRole).toString();
+    const QString newName = item->text().trimmed();
+
+    if (newName.isEmpty())
+    {
+        // Empty — rollback to the stored previous name (which is what the user saw before
+        // she started editing) and flash the cell. The role is rewritten too, so the next
+        // edit opens on the right baseline.
+        m_filling = true;
+        item->setText(oldName);
+        item->setData(kPreviousNameRole, oldName);
+        m_filling = false;
+        FlashNameError(item);
+        return;
+    }
+
+    if (newName == oldName)
+    {
+        // Unchanged (post-trim). Nothing to do, nothing to flash: rolling back to the same
+        // value would just re-emit itemChanged for no reason. Re-sync the role and leave.
+        m_filling = true;
+        item->setData(kPreviousNameRole, oldName);
+        m_filling = false;
+        return;
+    }
+
+    for (int row = 0; row < m_table->rowCount(); ++row)
+    {
+        if (row == item->row())
+        {
+            continue;
+        }
+        const QTableWidgetItem *other = m_table->item(row, kName);
+        if (other != nullptr && other->text() == newName)
+        {
+            // Conflict with another generation — rollback to the previous name and flash.
+            m_filling = true;
+            item->setText(oldName);
+            item->setData(kPreviousNameRole, oldName);
+            m_filling = false;
+            FlashNameError(item);
+            return;
+        }
+    }
+
+    // Accepted — commit the new text under the filling guard so itemChanged does not
+    // re-enter, then notify MainWindow. SetData(Qt::UserRole) is defensive: nothing else
+    // should have rewritten it, but if a future delegate does, the identity survives.
+    // kPreviousNameRole is rewritten to newName so the next edit opens on the right
+    // baseline (otherwise the user would "go back" to a name two edits old).
+    m_filling = true;
+    item->setText(newName);
+    item->setData(Qt::UserRole, id);
+    item->setData(kPreviousNameRole, newName);
+    m_filling = false;
+
+    emit renameRequested(id, newName);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OWidgetOutputs::FlashNameError(QTableWidgetItem *item)
+{
+    if (item == nullptr)
+    {
+        return;
+    }
+
+    // The red flash is the only visual cue here — the rollback is silent and the cell
+    // briefly tints to tell the user "the name was rejected". The exact colour comes
+    // from palette tokens; this literal is a placeholder until the token exists.
+    const QBrush original = item->background();
+    item->setBackground(QBrush(QColor(0xE5, 0x3E, 0x3E)));
+    QTimer::singleShot(600, this, [item, original]() {
+        if (item != nullptr)
+        {
+            item->setBackground(original);
+        }
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

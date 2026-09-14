@@ -29,6 +29,7 @@
 
 #include <QDialog>
 #include <QSharedPointer>
+#include <QStringList>
 #include "core/ogradedsizeranges.h"
 
 #include <QVector>
@@ -44,9 +45,11 @@ class VMeasurements;
 
 /// @brief Entry dialog of the Export mode.
 ///
-/// Asks for the width of the document and for what to nest, then gets out of the
-/// way. The width is typed in the pattern's own unit — the label next to the field
-/// follows the pattern, it is never typed by the user.
+/// Asks for the name of the generation, the width of the document and what to nest,
+/// then gets out of the way. The width is typed in the pattern's own unit — the label
+/// next to the field follows the pattern, it is never typed by the user. The name is
+/// required, and unique among the generations already listed: it is what identifies
+/// one row of the Outputs dock.
 ///
 /// What to nest is either a whole size range (multisize) or a single size, chosen
 /// here with the same dimension drop-downs Details mode offers in its top bar. The
@@ -60,11 +63,17 @@ class OExportModeDialog : public QDialog
     Q_OBJECT
 
 public:
+    /// @param takenNames the names the Outputs dock already lists in the current context.
+    ///                   A name identifies a generation among its siblings, so one that is
+    ///                   taken cannot be used again. The dialog cannot find that list: it
+    ///                   holds neither the store nor the context filter, and the caller
+    ///                   owns both.
     /// @param context the (measurements table, declared grading axis) the pattern is on.
     ///                The dialog cannot resolve it: it holds no document. The range list
     ///                is restricted to it, exactly as the Graded dock restricts its own.
     explicit OExportModeDialog(const VContainer *data, const QSharedPointer<VMeasurements> &measurements,
-                               const OGradedSizeRanges::Context &context, QWidget *parent = nullptr);
+                               const QStringList &takenNames, const OGradedSizeRanges::Context &context,
+                               QWidget *parent = nullptr);
 
     /// @brief The entered document width, in the pattern's unit.
     auto DocumentWidth() const -> qreal;
@@ -79,6 +88,9 @@ public:
     ///        -1 when the table carries no such axis, or the user picked nothing for it.
     auto DimensionBase(int index) const -> qreal;
 
+    /// @brief The entered name for the generation. Trimmed; empty when the field is blank.
+    auto Name() const -> QString;
+
 protected:
     void changeEvent(QEvent *event) override;
 
@@ -91,6 +103,17 @@ private:
     /// decide whether there is a size to choose at all.
     auto HasAxes() const -> bool;
 
+    /// @brief True when @p name is one of the generations already listed. An empty name is
+    ///        never taken — it is missing, which is a different refusal.
+    auto IsNameTaken(const QString &name) const -> bool;
+
+    /// @brief Keep the name field on a value the run can be filed under, and refresh the
+    ///        cue and OK.
+    void OnNameChanged(const QString &text);
+
+    /// @brief The red border: what the field holds right now cannot name a generation.
+    void UpdateNameCue();
+
     void PopulateSizeRanges();
     void PopulateDimensions();
     void UpdateSourceVisibility();
@@ -100,10 +123,14 @@ private:
     const VContainer *m_data{nullptr};
     QSharedPointer<VMeasurements> m_measurements{};
     OGradedSizeRanges::Context m_rangeContext{};
+    QStringList m_takenNames{};
 
     QLabel *m_widthLabel{nullptr};
     QLineEdit *m_widthEdit{nullptr};
     QLabel *m_unitLabel{nullptr};
+
+    QLabel *m_nameLabel{nullptr};
+    QLineEdit *m_nameEdit{nullptr};
 
     QFormLayout *m_form{nullptr};
 

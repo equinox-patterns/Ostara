@@ -51,7 +51,7 @@ class QTableWidget;
 struct OExportOutputRow
 {
     quint32 id{0};   ///< stable identity — the row index is not one
-    QString name{};  ///< "Unnamed" for now: no Name field exists yet
+    QString name{};  ///< what the user named it; unique among the rows of the same context
 };
 
 /**
@@ -84,14 +84,43 @@ public:
     /** @brief Re-label the chrome (LanguageChange); re-pops the list (icons too). */
     void RetranslateUI();
 
+signals:
+    /** @brief The "Add an output" button was clicked. MainWindow opens the dialog and runs. */
+    void addRequested();
+
+    /**
+     * @brief The user renamed a row inline. @p id is the stable generation identity
+     *        (a row index is not). The dock has already rejected empty/conflicting names.
+     */
+    void renameRequested(quint32 id, const QString &newName);
+
+    /**
+     * @brief The status icon of @p id was clicked: that generation is the one to show.
+     *        Showing it recomputes nothing — the row already carries its result.
+     */
+    void activeRequested(quint32 id);
+
+    /** @brief The Refresh icon of @p id was clicked: re-run its nesting. */
+    void refreshRequested(quint32 id);
+
+    /** @brief The Delete icon of @p id was clicked. The confirmation belongs to MainWindow:
+     *         what deleting means is not a property of the button. */
+    void deleteRequested(quint32 id);
+
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
+
+private slots:
+    void OnAddClicked();
+    void OnNameEdited(QTableWidgetItem *item);
+    void OnCellClicked(int row, int column);
 
 private:
     void BuildUi();
     void Populate();
     void UpdateButtonIcons();
     QPushButton *MakeIconButton(const QString &objectName, const QString &iconBase);
+    void FlashNameError(QTableWidgetItem *item);
 
     QTableWidget *m_table{nullptr};
     QPushButton *m_addOutputButton{nullptr};
@@ -110,6 +139,11 @@ private:
 
     QVector<OExportOutputRow> m_outputs{};
     quint32 m_activeOutputId{0};
+
+    /// @brief Set during programmatic cell rewrites (Populate, name commit) so the
+    ///        itemChanged handler skips the validation/rename chain and just accepts
+    ///        what was just written.
+    bool m_filling{false};
 };
 
 #endif // OWIDGETOUTPUTS_H

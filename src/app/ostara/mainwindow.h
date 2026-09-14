@@ -252,6 +252,38 @@ private slots:
      *         caller then replays the previous mode. */
     auto EnterExportFlow() -> bool;
 
+    /** @brief Open the "Add an output" flow from the dock button. A cancellation is a
+     *         no-op (the mode stays, the dock can be clicked again).
+     * @return always true — a failed nesting keeps the state as it was and the reason has
+     *         been shown to the user. */
+    auto AddExportOutput() -> bool;
+
+    /** @brief Open the "Add an output" flow on a fresh Export-mode entry: a cancellation
+     *        signals the caller to replay the previous mode (returns false).
+     * @return false only when the dialog was cancelled; a failed nesting keeps the state
+     *         as it was and returns true. */
+    auto AddExportOutputFromEntry() -> bool;
+
+    /** @brief Shared body — see AddExportOutput() / AddExportOutputFromEntry() above for
+     *        the @p allowCancel contract. */
+    auto AddExportOutputImpl(bool allowCancel) -> bool;
+
+    /** @brief Apply an inline rename from the dock. The dock has already rejected empty
+     *         and conflicting names; this is the write-through to the store + a refresh. */
+    void RenameExportOutput(quint32 id, const QString &newName);
+
+    /** @brief Show the generation @p id in the canvas — a click on the dock's status icon.
+     *         Nothing is recomputed: the generation carries its own result. */
+    void SetActiveExportOutput(quint32 id);
+
+    /** @brief Re-run the nesting of the generation @p id with what it recorded when it was
+     *         made, and keep its row. Never runs on its own — the user asks for it. */
+    void RefreshExportOutput(quint32 id);
+
+    /** @brief Drop the generation @p id, after confirming with the user. Undo will not
+     *         bring it back: a generation is session-scoped, never part of the document. */
+    void DeleteExportOutput(quint32 id);
+
     void on_actionNew_triggered();
     bool hasOpenPattern() const;
     bool on_actionSaveAs_triggered(); // NOLINT(modernize-use-trailing-return-type)

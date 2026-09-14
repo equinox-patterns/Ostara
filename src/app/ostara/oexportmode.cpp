@@ -43,6 +43,7 @@
 
 #include <QCoreApplication>
 #include <QMessageBox>
+#include <QStringList>
 
 #include <optional>
 #include <utility>
@@ -179,39 +180,11 @@ auto MainWindow::EnterExportFlow() -> bool
 
     if (VisibleExportOutputIds().isEmpty())
     {
-        const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
-
-        OExportModeDialog dialog(pattern, m_m, context, this);
-        if (dialog.exec() != QDialog::Accepted)
-        {
-            return false;
-        }
-
-        std::optional<OExportOutput> output =
-            RunExportNesting(dialog.DocumentWidth(), dialog.SizeRangeName(), dialog.IsSingleSize(),
-                             dialog.DimensionBase(0), dialog.DimensionBase(1), dialog.DimensionBase(2), context);
-        if (not output.has_value())
-        {
-            // The failure has already been reported. The mode stays, and the dialog can be
-            // reopened by clicking the mode button again — the list is still empty.
-            return true;
-        }
-
-        const quint32 id = m_exportOutputs.Append(std::move(*output));
-
-        // Raised AFTER the run, never inside it: even if resolving the geometry emitted
-        // patternChanged, the state that comes out of a successful generation is "up to
-        // date" — otherwise the warning would greet the user on every re-entry, and
-        // "nothing changed, show the last generation" would never be true twice.
-        m_exportOutputs.SetStale(false);
-
-        RefreshOutputsDock();
-
-        if (const OExportOutput *stored = m_exportOutputs.Find(id))
-        {
-            ShowExportOutput(*stored, /*zoomFit*/ true);
-        }
-        return true;
+        // The auto-open on an empty filtered list and the dock's "Add an output" button
+        // share the same nesting path — but the cancel semantics differ (a fresh entry
+        // returns false so the caller can replay the previous mode; a dock click is a
+        // no-op inside the mode). See AddExportOutput() / AddExportOutputFromEntry().
+        return AddExportOutputFromEntry();
     }
 
     if (m_exportOutputs.IsStale() && OOutputsStale::ShouldWarn())
@@ -222,6 +195,101 @@ auto MainWindow::EnterExportFlow() -> bool
     if (const OExportOutput *output = ActiveVisibleOutput())
     {
         ShowExportOutput(*output, /*zoomFit*/ true);
+    }
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief AddExportOutput open the generation dialog from the dock's "Add an output" button:
+ *        a cancellation is a no-op (the mode stays, the dock can be clicked again).
+ *
+ * @return always true — a failed nesting keeps the state as it was and the reason has
+ *         been shown to the user.
+ */
+auto MainWindow::AddExportOutput() -> bool
+{
+    return AddExportOutputImpl(/*allowCancel*/ true);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief AddExportOutputFromEntry open the generation dialog on a fresh Export-mode entry:
+ *        a cancellation signals the caller to replay the previous mode.
+ *
+ * @return false only when the dialog was cancelled; a failed nesting keeps the state as
+ *         it was and returns true.
+ */
+auto MainWindow::AddExportOutputFromEntry() -> bool
+{
+    return AddExportOutputImpl(/*allowCancel*/ false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief AddExportOutputImpl shared body of AddExportOutput() / AddExportOutputFromEntry().
+ *
+ * The only difference between the two entry points is the cancellation contract — the
+ * nesting path is the same. @p allowCancel true means "cancellation is a no-op" (dock
+ * button); false means "cancellation means the user gave up on the entry, replay the
+ * previous mode".
+ */
+auto MainWindow::AddExportOutputImpl(bool allowCancel) -> bool
+{
+    const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
+
+    // A name identifies a generation among the ones the dock lists, so what the dock lists
+    // is what the new run cannot take. The filtered list, not every generation of the
+    // session: a row the filter hides is not on screen, and a name the user cannot see is
+    // not one she can be duplicating. Same source as RefreshOutputsDock, same rule.
+    QStringList takenNames;
+    const QVector<quint32> listed = VisibleExportOutputIds();
+    takenNames.reserve(listed.size());
+    for (quint32 id : listed)
+    {
+        if (const OExportOutput *existing = m_exportOutputs.Find(id))
+        {
+            takenNames.append(existing->name);
+        }
+    }
+
+    OExportModeDialog dialog(pattern, m_m, takenNames, context, this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        return not allowCancel;
+    }
+
+    std::optional<OExportOutput> output =
+        RunExportNesting(dialog.DocumentWidth(), dialog.SizeRangeName(), dialog.IsSingleSize(),
+                         dialog.DimensionBase(0), dialog.DimensionBase(1), dialog.DimensionBase(2), context);
+    if (not output.has_value())
+    {
+        // The failure has already been reported. The mode stays, and the dialog can be
+        // reopened by clicking the mode button or the dock button again — the list is
+        // still in whatever state it was before this run.
+        return true;
+    }
+
+    // The name belongs to the dialog, not to the nesting: it never reaches
+    // RunExportNesting, which knows nothing of what the generation will be called. The
+    // dialog let OK through only on a name that is neither empty nor already listed, so
+    // this is the exact text the user typed. Set before Append, so the store never holds
+    // a nameless generation.
+    output->name = dialog.Name();
+
+    const quint32 id = m_exportOutputs.Append(std::move(*output));
+
+    // Raised AFTER the run, never inside it: even if resolving the geometry emitted
+    // patternChanged, the state that comes out of a successful generation is "up to
+    // date" — otherwise the warning would greet the user on every re-entry, and
+    // "nothing changed, show the last generation" would never be true twice.
+    m_exportOutputs.SetStale(false);
+
+    RefreshOutputsDock();
+
+    if (const OExportOutput *stored = m_exportOutputs.Find(id))
+    {
+        ShowExportOutput(*stored, /*zoomFit*/ true);
     }
     return true;
 }

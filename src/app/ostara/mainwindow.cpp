@@ -30,6 +30,7 @@
 #include "../vexception/vexception.h"
 #include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
+#include "widgets/owidgetoutputs.h"
 #include "widgets/owidgetsizeranges.h"
 #include "widgets/owidgetsizestyles.h"
 #include "widgets/TopBar.h"
@@ -1314,6 +1315,25 @@ void MainWindow::InitDocksContain()
             &MainWindow::EditSizeStyles);
     connect(m_dockManager->sizeStylesWidget(), &OWidgetSizeStyles::showInCanvasChanged, this,
             &MainWindow::ShowGradedSizeStylesInCanvas);
+
+    // Outputs dock → MainWindow (Add + inline rename). AddExportOutput is shared with
+    // EnterExportFlow's empty-list auto-open — same code path for both entries.
+    connect(m_dockManager->outputsWidget(), &OWidgetOutputs::addRequested, this,
+            &MainWindow::AddExportOutput);
+    // Queued: the rename is emitted from inside the item editor's commitData — the
+    // store write + dock refresh must run only once the editor has closed.
+    connect(m_dockManager->outputsWidget(), &OWidgetOutputs::renameRequested, this,
+            &MainWindow::RenameExportOutput, Qt::QueuedConnection);
+    // Direct: the status icon is a plain click, and it redraws the scene under it.
+    connect(m_dockManager->outputsWidget(), &OWidgetOutputs::activeRequested, this,
+            &MainWindow::SetActiveExportOutput);
+    // Queued: a refresh runs a nesting behind a modal wait dialog with a nested event
+    // loop. Returning into the view's own mouse handling once the run is over — minutes
+    // later — is what queuing avoids.
+    connect(m_dockManager->outputsWidget(), &OWidgetOutputs::refreshRequested, this,
+            &MainWindow::RefreshExportOutput, Qt::QueuedConnection);
+    connect(m_dockManager->outputsWidget(), &OWidgetOutputs::deleteRequested, this,
+            &MainWindow::DeleteExportOutput);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

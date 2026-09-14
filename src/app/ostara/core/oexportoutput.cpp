@@ -85,6 +85,58 @@ void OExportOutputStore::SetActiveId(quint32 id)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportOutputStore::SetName(quint32 id, const QString &name)
+{
+    for (OExportOutput &output : m_outputs)
+    {
+        if (output.id == id)
+        {
+            output.name = name;
+            return;
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportOutputStore::Replace(quint32 id, OExportOutput output)
+{
+    for (OExportOutput &existing : m_outputs)
+    {
+        if (existing.id != id)
+        {
+            continue;
+        }
+
+        // The identity and the name belong to the row, not to the run: the refresh must
+        // not rename the generation, and the dock addresses it by the id it was given.
+        output.id = existing.id;
+        output.name = existing.name;
+        existing = std::move(output);
+        return;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportOutputStore::Remove(quint32 id)
+{
+    for (auto it = m_outputs.begin(); it != m_outputs.end(); ++it)
+    {
+        if (it->id != id)
+        {
+            continue;
+        }
+
+        m_outputs.erase(it);
+
+        if (m_activeId == id)
+        {
+            m_activeId = 0;
+        }
+        return;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportOutputStore::IsStale() const -> bool
 {
     return m_stale;

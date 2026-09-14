@@ -41,6 +41,7 @@
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vpatterndb/osizerange.h"
 #include "../vpatterndb/vcontainer.h"
+#include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vmaingraphicsview.h"
 
 #include <QCoreApplication>
@@ -253,19 +254,196 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
     }
 
     OExportOutput output;
-    output.name = tr("Unnamed"); // no Name field exists yet
+    // Left nameless on purpose: the name comes from the entry dialog, which this function
+    // never sees, and the caller sets it before filing the generation. Nothing downstream
+    // reads it here.
+    output.name.clear();
     output.measurementCanonical = context.canonical;
     output.sizeAxis = context.axis;
     output.range = exportRange;
     output.hasRange = (range != nullptr);
     output.rangeName = rangeName;
     output.documentWidth = documentWidth;
+
+    // What this run was asked for. Kept so the run can be asked again — the Refresh entry
+    // replays this exact call, and these four values are the part of it nothing else
+    // records.
+    output.singleSize = singleSize;
+    output.baseA = baseA;
+    output.baseB = baseB;
+    output.baseC = baseC;
     output.layers = std::move(layers);
     output.result = result;
     return output;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief RenameExportOutput write the new name from the dock into the store and refresh.
+ *
+ * The dock already rejected empty and conflicting names before emitting renameRequested —
+ * this is the write-through, no validation. The id may be unknown (the store lost the row
+ * to a deletion between emit and slot) — in that case the dock is refreshed so its row
+ * disappears, and the canvas stays on whatever was shown.
+ */
+void MainWindow::RenameExportOutput(quint32 id, const QString &newName)
+{
+    const OExportOutput *existing = m_exportOutputs.Find(id);
+    if (existing == nullptr)
+    {
+        // The row is gone: a deletion landed between the dock's emit and our slot. Re-pull
+        // so the dock stops showing a ghost, and the canvas is left alone — the active one
+        // may already point at a real row.
+        RefreshOutputsDock();
+        return;
+    }
+
+    if (newName == existing->name)
+    {
+        // Defensive: the dock's OnNameEdited trims and compares before emitting, but a
+        // trimmed name that happens to equal the stored one is a no-op — still refresh so
+        // any concurrent state (active id, visibility filter) reads through.
+        RefreshOutputsDock();
+        return;
+    }
+
+    m_exportOutputs.SetName(id, newName);
+    RefreshOutputsDock();
+}
+
+/**
+ * @brief SetActiveExportOutput show the generation @p id in the canvas.
+ *
+ * This is the whole point of keeping a generation: the click recomputes nothing. No
+ * nesting, no geometry resolution — the canvas is handed what the generation already
+ * carries, exactly as on the first display.
+ *
+ * The result is framed like the first display, because each generation is a different
+ * bin: keeping the previous zoom would leave a larger result half off-screen. The
+ * already-active row is left alone, so re-clicking it cannot throw away a zoom the user
+ * set herself.
+ */
+void MainWindow::SetActiveExportOutput(quint32 id)
+{
+    const OExportOutput *output = m_exportOutputs.Find(id);
+    if (output == nullptr || m_exportOutputs.ActiveId() == id)
+    {
+        return;
+    }
+
+    m_exportOutputs.SetActiveId(id);
+    ShowExportOutput(*output, /*zoomFit*/ true);
+    RefreshOutputsDock();
+}
+
+/**
+ * @brief RefreshExportOutput re-run the nesting of the generation @p id, and keep the row.
+ *
+ * This is the entry the staleness warning points at (§3.1 of the spec): the user decides
+ * *whether* to regenerate and *which* one, and nothing here happens on its own. The run is
+ * replayed with what the generation recorded when it was made — a generation carries what
+ * it takes to reproduce itself. The context, though, is re-resolved rather than replayed:
+ * the row is listed because it matches the current one, so the current one is the right
+ * one.
+ *
+ * The identity and the name survive — the result is new, the row is not. The refreshed
+ * generation is also the one that gets shown, in every case: the run takes minutes, and
+ * leaving the canvas on another result would make the click look like it did nothing.
+ *
+ * Nothing here is undoable, like the rest of the dock: a generation is session-scoped and
+ * never part of the document, so it has no place on the pattern's undo stack.
+ */
+void MainWindow::RefreshExportOutput(quint32 id)
+{
+    // The fields are read into the call before the run starts, so the pointer going stale
+    // during it — the run shows a dialog and pumps events — is not a hazard.
+    const OExportOutput *existing = m_exportOutputs.Find(id);
+    if (existing == nullptr)
+    {
+        return; // the row is gone; there is nothing to regenerate
+    }
+
+    const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
+
+    std::optional<OExportOutput> output =
+        RunExportNesting(existing->documentWidth, existing->rangeName, existing->singleSize,
+                         existing->baseA, existing->baseB, existing->baseC, context);
+    if (not output.has_value())
+    {
+        return; // the failure has already been reported, and the old result is still there
+    }
+
+    m_exportOutputs.Replace(id, std::move(*output));
+
+    // Same rule as a fresh generation: what comes out of a successful run is up to date.
+    m_exportOutputs.SetStale(false);
+
+    m_exportOutputs.SetActiveId(id);
+    RefreshOutputsDock();
+
+    if (const OExportOutput *refreshed = m_exportOutputs.Find(id))
+    {
+        ShowExportOutput(*refreshed, /*zoomFit*/ true);
+    }
+}
+
+/**
+ * @brief DeleteExportOutput drop the generation @p id, once the user has confirmed.
+ *
+ * A generation is session-scoped — it is never written to the .ostara (§6.1 of the spec) —
+ * so this removes nothing from the document and **Undo cannot bring it back**. That is not
+ * a shortcoming to hide: the confirmation says it in as many words, because the user of
+ * this mode will reach for Ctrl+Z and must not be surprised.
+ *
+ * The guard lives here rather than in the dock so that every caller is covered — the
+ * confirmation is part of what deleting means, not a property of the button that happens
+ * to call it today.
+ */
+void MainWindow::DeleteExportOutput(quint32 id)
+{
+    const OExportOutput *existing = m_exportOutputs.Find(id);
+    if (existing == nullptr)
+    {
+        return;
+    }
+
+    const QString name = existing->name;
+
+    if (QMessageBox::question(this, tr("Export mode"),
+                              tr("Are you sure you want to delete \"%1\"?\n\n"
+                                 "This action cannot be undone.")
+                                  .arg(name),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
+        != QMessageBox::Yes)
+    {
+        return; // the row stays, and the canvas is untouched
+    }
+
+    m_exportOutputs.Remove(id);
+
+    // The canvas follows the list. ActiveVisibleOutput() answers exactly this question —
+    // the active generation when the filter still lists it, otherwise the last one it
+    // keeps — so the deletion lands on the rule the mode already uses instead of a second
+    // one written here.
+    if (const OExportOutput *next = ActiveVisibleOutput())
+    {
+        m_exportOutputs.SetActiveId(next->id);
+        ShowExportOutput(*next, /*zoomFit*/ true);
+    }
+    else
+    {
+        // Nothing left to show. The scene is emptied the way a pattern load empties it, and
+        // the scene rect is recomputed — otherwise the view keeps framing a result that is
+        // no longer there. The status label said the size of what was displayed, so it goes
+        // with it.
+        m_sceneExport->clear();
+        VMainGraphicsView::NewSceneRect(m_sceneExport, ui->view);
+        m_statusLabel->clear();
+    }
+
+    RefreshOutputsDock();
+}
+
 /**
  * @brief ShowExportOutput draw a kept generation in the Export scene.
  *

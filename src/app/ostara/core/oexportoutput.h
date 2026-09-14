@@ -53,8 +53,8 @@
  */
 struct OExportOutput
 {
-    quint32 id{0}; ///< stable identity — a row index is not one
-    QString name{}; ///< "Unnamed": no Name field exists yet
+    quint32 id{0};  ///< stable identity — a row index is not one
+    QString name{}; ///< what the user named it in the entry dialog; unique in its context
 
     QString measurementCanonical{}; ///< absolute path of the table it was generated under
     QString sizeAxis{};             ///< declared grading axis at that moment; empty lifts the filter
@@ -66,6 +66,20 @@ struct OExportOutput
     qreal documentWidth{0.0};            ///< the width the user asked for, in pattern units
     QVector<OExportSizeLayer> layers{};  ///< the pattern resolved for every size
     OExportNestingResult result{};       ///< the placements, and the bin they were placed in
+
+    /// What the run was asked for, kept so that it can be asked again — this is what makes
+    /// Refresh possible.
+    ///
+    /// This is not "the configuration that produced the result", which §3 of the spec
+    /// deliberately keeps out: it is the strict minimum to reproduce the run, and the run
+    /// cannot be replayed without it. The width and the range name are already above; the
+    /// three bases are not recoverable from anywhere else — in the single-size path they
+    /// are what puts the document on a size, and the generations carry no other trace of
+    /// them.
+    bool singleSize{false}; ///< true when the dialog asked for one size, not a whole range
+    qreal baseA{0.0};       ///< the dimension bases the dialog pinned (single-size path only)
+    qreal baseB{0.0};
+    qreal baseC{0.0};
 };
 
 /**
@@ -96,6 +110,23 @@ public:
 
     auto ActiveId() const -> quint32;
     void SetActiveId(quint32 id);
+
+    /// @brief Rename the generation @p id. The caller owns the contract — a trimmed,
+    ///        non-empty name that no other listed generation carries; the dock's inline
+    ///        rename and the entry dialog both enforce it before this is called.
+    ///        No-op when the id is unknown.
+    void SetName(quint32 id, const QString &name);
+
+    /// @brief Replace the payload of @p id, keeping its identity and its name. This is the
+    ///        Refresh entry: the result is new, the row is not — the user named it, and the
+    ///        nesting knows nothing of that name. No-op when the id is unknown.
+    void Replace(quint32 id, OExportOutput output);
+
+    /// @brief Drop the generation @p id. When it was the active one, the active id falls
+    ///        back to 0 — "nothing shown" — and the caller decides what to display next,
+    ///        because it is the only one holding the visibility filter. No-op when the id
+    ///        is unknown.
+    void Remove(quint32 id);
 
     /// @brief Whether the pattern has changed since the last successful generation.
     auto IsStale() const -> bool;

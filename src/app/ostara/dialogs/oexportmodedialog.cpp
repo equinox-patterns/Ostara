@@ -42,6 +42,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSignalBlocker>
 #include <QVBoxLayout>
 
 #include <utility>
@@ -55,11 +56,13 @@ constexpr qreal kBaseTolerance = 1e-9;
 
 //---------------------------------------------------------------------------------------------------------------------
 OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointer<VMeasurements> &measurements,
-                                     const OGradedSizeRanges::Context &context, QWidget *parent)
+                                     const QStringList &takenNames, const OGradedSizeRanges::Context &context,
+                                     QWidget *parent)
   : QDialog(parent),
     m_data(data),
     m_measurements(measurements),
-    m_rangeContext(context)
+    m_rangeContext(context),
+    m_takenNames(takenNames)
 {
     setWindowTitle(tr("Export"));
     setModal(true);
@@ -82,6 +85,14 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
 
     m_widthLabel = new QLabel(tr("Document width:"), this);
     m_form->addRow(m_widthLabel, widthRow);
+
+    // ── Generation name — the dock lists it; the user names it ────────────
+    m_nameEdit = new QLineEdit(this);
+    m_nameEdit->setPlaceholderText(tr("Output name"));
+    connect(m_nameEdit, &QLineEdit::textChanged, this, &OExportModeDialog::OnNameChanged);
+
+    m_nameLabel = new QLabel(tr("Output name:"), this);
+    m_form->addRow(m_nameLabel, m_nameEdit);
 
     // ── What to nest: a whole range, or one size ─────────────────────────
     m_sourceCombo = MakeComboBox(this);
@@ -175,6 +186,58 @@ auto OExportModeDialog::DimensionBase(int index) const -> qreal
     }
 
     return -1.0; // the table carries no axis for this slot
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportModeDialog::Name() const -> QString
+{
+    return m_nameEdit->text().trimmed();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportModeDialog::IsNameTaken(const QString &name) const -> bool
+{
+    return !name.isEmpty() && m_takenNames.contains(name);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief OnNameChanged keep the field on a value the run can be filed under.
+ *
+ * A name already listed is not a name: the field is emptied rather than left holding one
+ * the dialog would refuse on OK. Emptying re-enters this slot with an empty text — blocked
+ * here, since the cue below reads an empty field as the same refusal.
+ */
+void OExportModeDialog::OnNameChanged(const QString &text)
+{
+    if (IsNameTaken(text.trimmed()))
+    {
+        const QSignalBlocker blocker(m_nameEdit);
+        m_nameEdit->clear();
+    }
+
+    UpdateNameCue();
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief UpdateNameCue redden the field while it holds nothing that can name a generation.
+ *
+ * The string is the one the other required name field of the project already uses,
+ * OPiecePieceStep::SetPieceNameInvalid. Written twice rather than shared: a stylesheet
+ * rule of its own would need a token, and the palette has no error colour — inventing one
+ * is a theme decision, not this field's.
+ */
+void OExportModeDialog::UpdateNameCue()
+{
+    // The wipe above leaves the field empty on a taken name, so in practice what reddens is
+    // an empty one. The taken test is spelled out all the same: it is the refusal the cue
+    // answers to, and it must hold whichever path reaches here.
+    const QString name = Name();
+    m_nameEdit->setStyleSheet((name.isEmpty() || IsNameTaken(name))
+                                  ? QStringLiteral("QLineEdit { border: 1px solid red; }")
+                                  : QString());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -303,7 +366,11 @@ void OExportModeDialog::UpdateUnitLabel()
 //---------------------------------------------------------------------------------------------------------------------
 void OExportModeDialog::CheckState()
 {
-    bool valid = DocumentWidth() > 0.0;
+    // The name is required, and it is what identifies the row: two generations cannot
+    // answer to the same one. The wipe of OnNameChanged already leaves the field empty on
+    // a duplicate, but the rule is stated here too — otherwise OK would depend on the cue
+    // having run.
+    bool valid = DocumentWidth() > 0.0 && !Name().isEmpty() && !IsNameTaken(Name());
 
     if (IsSingleSize())
     {
@@ -330,6 +397,8 @@ void OExportModeDialog::changeEvent(QEvent *event)
     {
         setWindowTitle(tr("Export"));
         m_widthLabel->setText(tr("Document width:"));
+        m_nameLabel->setText(tr("Output name:"));
+        m_nameEdit->setPlaceholderText(tr("Output name"));
         m_sourceLabel->setText(tr("Nest:"));
         m_sourceCombo->setItemText(0, tr("Size range"));
         m_sourceCombo->setItemText(1, tr("Single size"));
