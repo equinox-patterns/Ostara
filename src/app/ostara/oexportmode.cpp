@@ -4,7 +4,8 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   12/09/2026
  **
- **  @brief  Export mode — entry point and flow.
+ **  @brief  Export mode — entry point and entry flow. Producing a generation,
+ **          keeping it, and showing it live in oexportoutputs.cpp.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -28,41 +29,23 @@
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
 #include "core/ogradedsizeranges.h"
+#include "core/oexportoutput.h"
 #include "dialogs/oexportmodedialog.h"
-#include "dialogs/owaitdialog.h"
-#include "oexportalignment.h"
-#include "oexportcanvas.h"
-#include "oexportgeometry.h"
-#include "oexportnesting.h"
+#include "dialogs/ooutputsstale.h"
 #include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
 #include "widgets/TopBar.h"
 #include "../vformat/vmeasurements.h"
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractvalapplication.h"
-#include "../vpatterndb/osizerange.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/vmaingraphicsview.h"
 
 #include <QCoreApplication>
-#include <QElapsedTimer>
-#include <QEventLoop>
-#include <QFuture>
-#include <QFutureWatcher>
-#include <QHash>
 #include <QMessageBox>
-#include <QThreadPool>
-#include <QtConcurrent>
 
-#include <memory>
-
-namespace
-{
-/// One nesting at a time, and never on the global pool: it is shared with the rest
-/// of the application, and the documented trap of this codebase is a nested
-/// submission that deadlocks the pool.
-constexpr int kExportNestingThreads = 1;
-} // namespace
+#include <optional>
+#include <utility>
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -75,17 +58,13 @@ void MainWindow::ActionExport(bool checked)
     {
         ui->actionExport->setChecked(true);
 
-        // Clicking the mode button while already in the mode asks for another run —
-        // a nesting that failed (a bin too narrow, say) must not force the user out
-        // of the mode and back in.
+        // Clicking the mode button while already in the mode follows the SAME rule as a
+        // fresh entry: an empty list asks what to nest, a filled one warns or shows. A
+        // nesting that failed — a bin too narrow, say — must not force the user out of
+        // the mode and back in, and nothing is ever regenerated on its own.
         if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Export)
         {
-            OExportModeDialog dialog(pattern, m_m, OGradedSizeRanges::CurrentContext(doc), this);
-            if (dialog.exec() == QDialog::Accepted)
-            {
-                RunExportNesting(dialog.DocumentWidth(), dialog.SizeRangeName(), dialog.IsSingleSize(),
-                                 dialog.DimensionBase(0), dialog.DimensionBase(1), dialog.DimensionBase(2));
-            }
+            EnterExportFlow();
         }
         return;
     }
@@ -147,14 +126,15 @@ void MainWindow::ActionExport(bool checked)
     // process DeferredDelete either. Left pending, both stay on screen as ghosts (two
     // tab titles over hidden docks, the Draw group names over an Export toolbar) for
     // the whole entry dialog and the whole nesting. Flush them here, while control is
-    // still on the loop that posted them.
+    // still on the loop that posted them — and before EnterExportFlow(), which opens
+    // every modal this mode has.
     QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
 
-    // What to nest and on which bin is decided here, on the empty export canvas.
-    // Cancelling gives the previous mode back — the mode was already switched.
-    OExportModeDialog dialog(pattern, m_m, OGradedSizeRanges::CurrentContext(doc), this);
-    if (dialog.exec() != QDialog::Accepted)
+    // What to nest, on which bin, and whether the listed generations still match the
+    // pattern: all of it is decided here, on the empty export canvas.
+    if (not EnterExportFlow())
     {
+        // Cancelling gives the previous mode back — the mode was already switched.
         ui->actionExport->setChecked(false);
 
         switch (prevMode)
@@ -174,207 +154,74 @@ void MainWindow::ActionExport(bool checked)
         }
         return;
     }
-
-    RunExportNesting(dialog.DocumentWidth(), dialog.SizeRangeName(), dialog.IsSingleSize(),
-                     dialog.DimensionBase(0), dialog.DimensionBase(1), dialog.DimensionBase(2));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief RunExportNesting resolve the range, nest it on the imposed width, and draw it.
+ * @brief EnterExportFlow decide what entering the Export mode does, and do it.
+ *
+ * An empty list asks what to nest — there is nothing to show yet. A filled one shows the
+ * generation that was open, after warning the user when the pattern has moved on since it
+ * was made: a modification does not propagate to a generation, and she is the one who
+ * decides whether to regenerate.
+ *
+ * Nothing is ever relaunched here.
+ *
+ * @return false only when the generation dialog was cancelled on a fresh entry — the
+ *         caller then gives the previous mode back.
  */
-auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName, bool singleSize, qreal baseA,
-                                  qreal baseB, qreal baseC) -> bool
+auto MainWindow::EnterExportFlow() -> bool
 {
-    const Unit unit = VAbstractValApplication::VApp()->patternUnits();
-    const double binWidthPx = ToPixel(documentWidth, unit);
+    // The dock and the rule below read the SAME list: the generations of the current
+    // (table, axis) context. One made under another measurements table is in the session
+    // but not in the list — the same rule the Size Ranges dock lists a range by.
+    RefreshOutputsDock();
 
-    // The engine has no abort hook: this dialog is shown while it works and taken down
-    // after. No Cancel button, so nothing on screen promises an interruption that
-    // cannot happen.
-    std::unique_ptr<OWaitDialog> waitDialog(new OWaitDialog(tr("Nesting. Please, wait."), this));
-    waitDialog->show();
-    QCoreApplication::processEvents();
-
-    // Resolving the geometry re-parses the document once per size of the range, so it
-    // stays on the GUI thread: VLayoutPiece::Create reads the application settings, and
-    // the container it reads is the one the scenes are built from.
-    OExportGeometry geometry(pattern, doc, m_m);
-
-    // The size the document was found on — the range traversal puts it back there.
-    const qreal savedA = m_currentDimensionA;
-    const qreal savedB = m_currentDimensionB;
-    const qreal savedC = m_currentDimensionC;
-
-    // The only way the export puts the document on a size: the one Details uses for its
-    // own drop-downs. Reading the measurements here instead — which is what this code
-    // used to do — leaves the pieces on the previous size, and every layer of the range
-    // then comes back with the same geometry.
-    //
-    // The document itself is deliberately left alone: the live combination is what puts
-    // it on a size, and GradationChanged() reads that — the Graded path resolves a whole
-    // range the same way, without writing anything. Writing it here added a `dimensionX`
-    // attribute to documents that do not carry one, and the schema refuses any value
-    // below 1 (dimesionValue): such a document could no longer be saved at all.
-    const auto applySize = [this](qreal a, qreal b, qreal c)
+    if (VisibleExportOutputIds().isEmpty())
     {
-        m_currentDimensionA = a;
-        m_currentDimensionB = b;
-        m_currentDimensionC = c;
-        GradationChanged();
-    };
+        const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
 
-    QVector<OExportSizeLayer> layers;
-
-    // A table without axes — an .otu, or a .vit — describes a single size. There is no
-    // size to put the document on, and no reason to try: the Layout mode, which has
-    // nested a single size since long before this one existed, never touches the document
-    // either. Its measurements resolve to what they already hold whatever the bases say —
-    // an .otu's shifts are zero and its base is zero — so the size path would re-read the
-    // whole table and re-parse the pattern only to arrive where it started.
-    const bool hasAxes = !m_m.isNull() && !m_m->Dimensions().isEmpty();
-
-    if (singleSize)
-    {
-        if (!hasAxes)
+        OExportModeDialog dialog(pattern, m_m, context, this);
+        if (dialog.exec() != QDialog::Accepted)
         {
-            // Already on its only size: the geometry is read as it stands.
-            layers = geometry.CollectCurrentSize(tr("Single size"));
-        }
-        else
-        {
-            // The user asked for this size: the document stays on it.
-            //
-            // An axis the measurement table does not carry has no size to offer, and the
-            // dialog says so with -1 — a value shaped like a size without being one, handed
-            // to the pieces as if it were. The document's own value stands instead, and the
-            // axis's first size when the document has none either: 1 is the only base the
-            // schema accepts as a floor. The range path below guards its bases the same way.
-            const auto baseOr = [](qreal fromDialog, qreal fromDocument)
-            { return fromDialog > 0.0 ? fromDialog : (fromDocument > 0.0 ? fromDocument : 1.0); };
-
-            const qreal baseOfA = baseOr(baseA, savedA);
-            const qreal baseOfB = baseOr(baseB, savedB);
-            const qreal baseOfC = baseOr(baseC, savedC);
-
-            applySize(baseOfA, baseOfB, baseOfC);
-            layers = geometry.CollectCurrentSize(
-                QStringLiteral("A=%1 B=%2 C=%3").arg(baseOfA).arg(baseOfB).arg(baseOfC));
-        }
-    }
-    else
-    {
-        const QVector<OExportGeometry::OExportSizeRef> sizes = geometry.RangeSizes(rangeName);
-
-        // The range pins the axes it does not grade, and the pieces must be resolved with
-        // those values. The document's own ones send an axis it does not carry back to the
-        // measurement file's base, and every piece built from a formula — which is all of
-        // them — then comes out at a geometry the range does not name. The graded capture
-        // feeds its pieces this exact way. An axis the range pins nothing at keeps the
-        // document's value.
-        const OExportGeometry::OExportFixedBases fixed = geometry.RangeFixedBases(rangeName);
-        const qreal fixedA = fixed.a > 0.0 ? fixed.a : savedA;
-        const qreal fixedB = fixed.b > 0.0 ? fixed.b : savedB;
-        const qreal fixedC = fixed.c > 0.0 ? fixed.c : savedC;
-
-        for (const OExportGeometry::OExportSizeRef &size : sizes)
-        {
-            switch (size.axisIndex)
-            {
-                case 0:
-                    applySize(size.base, fixedB, fixedC);
-                    break;
-                case 1:
-                    applySize(fixedA, size.base, fixedC);
-                    break;
-                default:
-                    applySize(fixedA, fixedB, size.base);
-                    break;
-            }
-
-            layers += geometry.CollectCurrentSize(size.label);
+            return false;
         }
 
-        // The document was only borrowed to walk the range: put it back where it was.
-        applySize(savedA, savedB, savedC);
-    }
-
-    // Each size sits where the model puts it, and a piece pinned at its fold does not
-    // drift like a piece growing from its centre. Unioning them into one footprint only
-    // means something once they line up — which is what Graded does before it draws,
-    // and what the nesting needs for the same reason.
-    OExportAlignment::Apply(layers, pattern);
-
-    int pieceCount = 0;
-    for (const OExportSizeLayer &layer : layers)
-    {
-        pieceCount += layer.pieces.size();
-    }
-
-    if (pieceCount == 0)
-    {
-        waitDialog.reset();
-        QMessageBox::warning(this, tr("Export mode"),
-                             tr("This size range carries no piece to nest.") + QStringLiteral("\n\n")
-                                 + geometry.LastDiagnostic(),
-                             QMessageBox::Ok, QMessageBox::Ok);
-        return false;
-    }
-
-    // The annealing is pure computation over its inputs — it runs off the GUI thread.
-    QThreadPool pool;
-    pool.setMaxThreadCount(kExportNestingThreads);
-
-    QFuture<OExportNestingResult> future =
-        QtConcurrent::run(&pool, &OExportNesting::Run, layers, binWidthPx);
-
-    QFutureWatcher<OExportNestingResult> watcher;
-    QEventLoop loop;
-    connect(&watcher, &QFutureWatcher<OExportNestingResult>::finished, &loop, &QEventLoop::quit);
-    watcher.setFuture(future);
-    loop.exec();
-
-    const OExportNestingResult result = future.result();
-    waitDialog.reset();
-
-    if (!result.ok)
-    {
-        QMessageBox::warning(this, tr("Export mode"), result.error, QMessageBox::Ok, QMessageBox::Ok);
-        return false;
-    }
-
-    // The range is the authority on where the decor of the reference layer goes: it holds
-    // an override for every owner the user positioned in Graded, and the mode reads it
-    // without ever writing to it. A single-size run names no range — there is nothing to
-    // read, and every piece keeps the geometry it carries.
-    OSizerange exportRange;
-    const OSizerange *range = nullptr;
-    if (const QHash<QString, OSizerange> *ranges = pattern->SizeRanges(); ranges != nullptr)
-    {
-        const auto it = ranges->constFind(rangeName);
-        if (it != ranges->cend())
+        std::optional<OExportOutput> output =
+            RunExportNesting(dialog.DocumentWidth(), dialog.SizeRangeName(), dialog.IsSingleSize(),
+                             dialog.DimensionBase(0), dialog.DimensionBase(1), dialog.DimensionBase(2), context);
+        if (not output.has_value())
         {
-            exportRange = it.value();
-            range = &exportRange;
+            // The failure has already been reported. The mode stays, and the dialog can be
+            // reopened by clicking the mode button again — the list is still empty.
+            return true;
         }
+
+        const quint32 id = m_exportOutputs.Append(std::move(*output));
+
+        // Raised AFTER the run, never inside it: even if resolving the geometry emitted
+        // patternChanged, the state that comes out of a successful generation is "up to
+        // date" — otherwise the warning would greet the user on every re-entry, and
+        // "nothing changed, show the last generation" would never be true twice.
+        m_exportOutputs.SetStale(false);
+
+        RefreshOutputsDock();
+
+        if (const OExportOutput *stored = m_exportOutputs.Find(id))
+        {
+            ShowExportOutput(*stored, /*zoomFit*/ true);
+        }
+        return true;
     }
 
-    OExportCanvas::Build(m_sceneExport, layers, result, range, pattern, doc);
+    if (m_exportOutputs.IsStale() && OOutputsStale::ShouldWarn())
+    {
+        OOutputsStale::Show(this);
+    }
 
-    // Frame the whole nesting — the very same thing the "Zoom fit best" action (Cmd+=)
-    // does, which is what this is meant to reproduce. The former call framed
-    // m_sceneExport->sceneRect(), a rect NewSceneRect() had just widened to the union of
-    // the items AND the view's visible area: the bin came out framed inside its own
-    // scrollable scene instead of filling the viewport. ZoomFitBest() frames
-    // VisibleItemsBoundingRect() alone, clamps the factor to MinScale/MaxScale and
-    // reports the resulting scale. It calls NewSceneRect() itself, so the explicit call
-    // that preceded it is dropped.
-    ui->view->ZoomFitBest();
-
-    const double width = FromPixel(result.binWidthPx, unit);
-    const double height = FromPixel(result.usedHeightPx, unit);
-    m_statusLabel->setText(tr("%1 × %2 %3").arg(QString::number(width, 'f', 1),
-                                                 QString::number(height, 'f', 1),
-                                                 UnitsToStr(unit, true)));
+    if (const OExportOutput *output = ActiveVisibleOutput())
+    {
+        ShowExportOutput(*output, /*zoomFit*/ true);
+    }
     return true;
 }

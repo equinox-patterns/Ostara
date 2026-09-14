@@ -190,6 +190,12 @@ public:
     auto GetAskContinueIfLayoutStale() const -> bool;
     void SetAskContinueIfLayoutStale(const bool &value);
 
+    /// @brief Warn, on entering the Export mode, that the listed generations were made
+    ///        before the last pattern modification. Cleared for good by the message's own
+    ///        "do not show again" box; put back by the preferences' warning reset.
+    auto GetAskRegenerateOutputs() const -> bool;
+    void SetAskRegenerateOutputs(const bool &value);
+
     auto GetToolBarStyle() const -> bool;
     void SetToolBarStyle(const bool &value);
 

@@ -135,6 +135,9 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationConfirmFormatRewrit
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationAskContinueIfLayoutStale,
                           ("configuration/askContinueIfLayoutStale"_L1))
 // NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationAskRegenerateOutputs,
+                          ("configuration/askRegenerateOutputs"_L1))
+// NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationToolBarStyle, ("configuration/tool_bar_style"_L1))
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationToolboxIconSizeSmall,
@@ -949,6 +952,18 @@ auto VCommonSettings::GetAskContinueIfLayoutStale() const -> bool
 void VCommonSettings::SetAskContinueIfLayoutStale(const bool &value)
 {
     setValue(*settingConfigurationAskContinueIfLayoutStale, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetAskRegenerateOutputs() const -> bool
+{
+    return value(*settingConfigurationAskRegenerateOutputs, 1).toBool();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetAskRegenerateOutputs(const bool &value)
+{
+    setValue(*settingConfigurationAskRegenerateOutputs, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

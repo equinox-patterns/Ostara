@@ -58,6 +58,16 @@ auto ContextFor(const QString &canonicalPath) -> Context;
 auto CurrentContext(VAbstractPattern *doc) -> Context;
 
 /**
+ * @brief Whether a stored (measurements table, axis) pair belongs to a context.
+ *
+ * The rule itself, on the bare pair — so that what is not a size range can ask it too.
+ * An output of the Export mode remembers the table and the axis it was generated under,
+ * exactly like a range remembers its own; the dock lists it by the same rule, and the
+ * rule is written once.
+ */
+auto MatchesContext(const QString &canonical, const QString &axis, const Context &context) -> bool;
+
+/**
  * @brief Whether a range belongs to a context.
  *
  * The rule the dock has always listed by. Everything that enumerates the stored ranges —

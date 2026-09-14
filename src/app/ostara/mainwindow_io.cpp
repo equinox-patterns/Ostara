@@ -528,6 +528,9 @@ void MainWindow::Clear()
     {
         m_sceneExport->clear();
     }
+    // Generations belong to the session: closing the pattern takes them with the rest,
+    // and none of them was ever written to the .ostara.
+    m_exportOutputs.Clear();
     m_activeGradedRangeName.clear();
     m_gradedBasePositions.clear();
     m_gradedSceneSignature.clear();

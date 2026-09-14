@@ -306,6 +306,15 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetSizeStylesContent"/>
   </widget>
+  <widget class="QDockWidget" name="dockWidgetOutputs">
+   <property name="windowTitle">
+    <string>Outputs</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetOutputsContent"/>
+  </widget>
   <widget class="QDockWidget" name="dockWidgetMessages">
    <property name="floating">
     <bool>false</bool>

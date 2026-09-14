@@ -33,6 +33,8 @@
 #include "../vmisc/vabstractshortcutmanager.h"
 #include "../vmisc/vlockguard.h"
 #include "../vpatterndb/osizerange.h"
+#include "core/oexportoutput.h"
+#include "core/ogradedsizeranges.h"
 #include "core/vcmdexport.h"
 #include "mainwindowsnogui.h"
 
@@ -43,6 +45,8 @@
 #include <QPoint>
 #include <QPointF>
 #include <QStringList>
+
+#include <optional>
 
 namespace Ui
 {
@@ -217,9 +221,36 @@ private slots:
     void ActionGraded(bool checked);
     void ActionExport(bool checked);
 
-    /** @brief Resolve a size range, nest it on the imposed width, and draw the result. */
+    /** @brief Resolve a size range and nest it on the imposed width. Draws NOTHING: the
+     *         result goes back to the caller, which files it and shows it. Empty when
+     *         the run failed — the reason has already been shown to the user.
+     *         The context is passed in rather than re-read, so the generation records
+     *         the table it was really made under, not the one in force seconds later. */
     auto RunExportNesting(qreal documentWidth, const QString &rangeName, bool singleSize, qreal baseA, qreal baseB,
-                          qreal baseC) -> bool;
+                          qreal baseC, const OGradedSizeRanges::Context &context) -> std::optional<OExportOutput>;
+
+    /** @brief Draw @p output in the Export scene. Recomputes nothing — no nesting, no
+     *         geometry: that is the whole point of keeping a generation. */
+    void ShowExportOutput(const OExportOutput &output, bool zoomFit);
+
+    /** @brief The ids of the generations of the current (table, axis) context, in store order. */
+    auto VisibleExportOutputIds() const -> QVector<quint32>;
+
+    /** @brief The active generation when the filter lists it, else the last one it keeps.
+     *         The filter can hide the active one — the measurements table changed under
+     *         the session — and showing a row the list does not carry would be an
+     *         invisible selection. */
+    auto ActiveVisibleOutput() const -> const OExportOutput *;
+
+    /** @brief Push the filtered rows to the Outputs dock (no-op when it is not built). */
+    void RefreshOutputsDock();
+
+    /** @brief The entry flow of the Export mode: an empty filtered list asks what to nest,
+     *         a non-empty one warns when the pattern moved on, then shows the last
+     *         generation open. Never relaunches anything by itself.
+     * @return false only when the generation dialog was cancelled on a fresh entry — the
+     *         caller then replays the previous mode. */
+    auto EnterExportFlow() -> bool;
 
     void on_actionNew_triggered();
     bool hasOpenPattern() const;
@@ -316,8 +347,12 @@ private:
     VMainGraphicsScene *m_sceneDetails{nullptr};
     VMainGraphicsScene *m_sceneGraded{nullptr};
 
-    /** @brief sceneExport export mode scene. Empty for now — the mode is a shell. */
+    /** @brief sceneExport export mode scene. */
     VMainGraphicsScene *m_sceneExport{nullptr};
+
+    /// The generations of this session. Never written to the .ostara: a result filed in
+    /// the document would read as pattern data, and therefore as up to date.
+    OExportOutputStore m_exportOutputs{};
 
     /// Name of the active size range in Graded mode (empty when none yet).
     QString m_activeGradedRangeName{};

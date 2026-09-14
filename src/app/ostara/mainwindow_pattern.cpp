@@ -239,6 +239,19 @@ void MainWindow::PatternChangesWereSaved(bool saved)
         setWindowModified(state);
         not m_patternReadOnly ? ui->actionSave->setEnabled(state) : ui->actionSave->setEnabled(false);
         m_layoutSettings->SetLayoutStale(true);
+
+        // The generations of the Export mode are frozen, so any modification may have
+        // moved what one of them is made of. The signal is deliberately coarse — it
+        // targets no row, and it relaunches nothing: it only asks the user's opinion
+        // when she comes back to the mode.
+        //
+        // Saving is not modifying. This slot also receives QUndoStack::cleanChanged, and
+        // counting a Cmd+S as a change would greet the user with the warning every time
+        // she saves before entering Export, which is the natural gesture.
+        if (not saved)
+        {
+            m_exportOutputs.SetStale(true);
+        }
         isNeedAutosave = not saved;
     }
 }

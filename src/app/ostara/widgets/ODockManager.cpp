@@ -42,6 +42,7 @@
 #include "dialogs/vwidgetdependencies.h"
 #include "dialogs/vwidgetdetails.h"
 #include "dialogs/vwidgetgroups.h"
+#include "owidgetoutputs.h"
 #include "owidgetsizeranges.h"
 #include "owidgetsizestyles.h"
 #include "DockWrapper.h"
@@ -106,6 +107,11 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
     WrapDockContent(m_ui->dockWidgetSizeStyles, m_sizeStylesContent);
     m_ui->dockWidgetSizeStyles->setWindowTitle(tr("Size Styles"));
 
+    // Outputs dock — shown in Export mode only.
+    m_outputsContent = new OWidgetOutputs(m_host);
+    WrapDockContent(m_ui->dockWidgetOutputs, m_outputsContent);
+    m_ui->dockWidgetOutputs->setWindowTitle(tr("Outputs"));
+
     // ── Messages dock — wrap existing .ui content ──
     {
         QWidget *messagesContent = m_ui->dockWidgetMessages->widget(); // dockWidgetContents_4
@@ -125,6 +131,7 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
     installTitleBar(m_ui->dockWidgetGroups);
     installTitleBar(m_ui->dockWidgetSizeRanges);
     installTitleBar(m_ui->dockWidgetSizeStyles);
+    installTitleBar(m_ui->dockWidgetOutputs);
     installTitleBar(m_ui->dockWidgetMessages);
     installTitleBar(m_ui->dockWidgetBackgroundImages);
     installTitleBar(m_ui->dockWidgetDependencies);
@@ -165,6 +172,11 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
     connect(m_actionSizeStyles, &QAction::triggered, this,
             [this](bool checked) { m_sizeStylesActive = checked; });
     m_ui->menuWindow->addAction(m_actionSizeStyles);
+
+    m_actionOutputs = m_ui->dockWidgetOutputs->toggleViewAction();
+    connect(m_actionOutputs, &QAction::triggered, this,
+            [this](bool checked) { m_outputsActive = checked; });
+    m_ui->menuWindow->addAction(m_actionOutputs);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -241,6 +253,7 @@ void ODockManager::applyDockPreferences()
     m_ui->dockWidgetDependencies->setVisible(m_dependenciesActive);
     m_ui->dockWidgetSizeRanges->setVisible(m_sizeRangesActive);
     m_ui->dockWidgetSizeStyles->setVisible(m_sizeStylesActive);
+    m_ui->dockWidgetOutputs->setVisible(m_outputsActive);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -253,6 +266,7 @@ void ODockManager::syncVisibilityFromDocks()
     m_dependenciesActive = m_ui->dockWidgetDependencies->isVisible();
     m_sizeRangesActive = m_ui->dockWidgetSizeRanges->isVisible();
     m_sizeStylesActive = m_ui->dockWidgetSizeStyles->isVisible();
+    m_outputsActive = m_ui->dockWidgetOutputs->isVisible();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -266,6 +280,7 @@ void ODockManager::hideAllDocks()
     m_ui->dockWidgetDependencies->setVisible(false);
     m_ui->dockWidgetSizeRanges->setVisible(false);
     m_ui->dockWidgetSizeStyles->setVisible(false);
+    m_ui->dockWidgetOutputs->setVisible(false);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -377,8 +392,10 @@ void ODockManager::applyModeDocks(Draw mode)
             m_ui->dockWidgetLayoutPages->setVisible(false);
             m_ui->dockWidgetSizeRanges->setVisible(false);
             m_ui->dockWidgetSizeStyles->setVisible(false);
+            m_ui->dockWidgetOutputs->setVisible(false);
             m_actionSizeRanges->setDisabled(true);
             m_actionSizeStyles->setDisabled(true);
+            m_actionOutputs->setDisabled(true);
             m_optionsStack->setCurrentIndex(0); // tool options
             m_ui->dockWidgetOptions->setWindowTitle(tr("Options"));
             m_ui->dockWidgetOptions->setVisible(m_optionsActive);
@@ -398,8 +415,10 @@ void ODockManager::applyModeDocks(Draw mode)
             m_ui->dockWidgetLayoutPages->setVisible(false);
             m_ui->dockWidgetSizeRanges->setVisible(false);
             m_ui->dockWidgetSizeStyles->setVisible(false);
+            m_ui->dockWidgetOutputs->setVisible(false);
             m_actionSizeRanges->setDisabled(true);
             m_actionSizeStyles->setDisabled(true);
+            m_actionOutputs->setDisabled(true);
             m_groupsStack->setCurrentIndex(1); // Details
             m_ui->dockWidgetGroups->setWindowTitle(tr("Pieces"));
             m_ui->dockWidgetGroups->setVisible(m_groupsActive);
@@ -423,6 +442,8 @@ void ODockManager::applyModeDocks(Draw mode)
             m_ui->dockWidgetDependencies->setVisible(false);
             m_ui->dockWidgetSizeRanges->setVisible(false);
             m_ui->dockWidgetSizeStyles->setVisible(false);
+            m_ui->dockWidgetOutputs->setVisible(false);
+            m_actionOutputs->setDisabled(true);
             m_actionOptions->setDisabled(true);
             m_actionGroups->setDisabled(true);
             m_actionSizeRanges->setDisabled(true);
@@ -452,8 +473,7 @@ void ODockManager::applyModeDocks(Draw mode)
             m_actionSizeStyles->setEnabled(true);
             break;
         case Draw::Export:
-            // Export mode carries no dock yet — the shell only. Every dock is
-            // hidden and every Window-menu toggle is disabled until it has one.
+            // Only the Outputs dock is shown in Export mode.
             m_ui->dockWidgetLayoutPages->setVisible(false);
             m_ui->dockWidgetOptions->setVisible(false);
             m_ui->dockWidgetGroups->setVisible(false);
@@ -462,6 +482,8 @@ void ODockManager::applyModeDocks(Draw mode)
             m_ui->dockWidgetDependencies->setVisible(false);
             m_ui->dockWidgetSizeRanges->setVisible(false);
             m_ui->dockWidgetSizeStyles->setVisible(false);
+            m_ui->dockWidgetOutputs->setVisible(true);
+            m_ui->dockWidgetOutputs->setWindowTitle(tr("Outputs"));
             m_actionOptions->setDisabled(true);
             m_actionGroups->setDisabled(true);
             m_actionMessages->setDisabled(true);
@@ -469,6 +491,7 @@ void ODockManager::applyModeDocks(Draw mode)
             m_actionDependencies->setDisabled(true);
             m_actionSizeRanges->setDisabled(true);
             m_actionSizeStyles->setDisabled(true);
+            m_actionOutputs->setEnabled(true);
             break;
     }
 
@@ -492,21 +515,24 @@ void ODockManager::enforceModeDockExclusions(Draw mode)
     switch (mode)
     {
         case Draw::Calculation:
-            excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles};
+            excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles,
+                        m_ui->dockWidgetOutputs};
             break;
         case Draw::Modeling:
             excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles,
-                        m_ui->dockWidgetBackgroundImages, m_ui->dockWidgetDependencies};
+                        m_ui->dockWidgetBackgroundImages, m_ui->dockWidgetDependencies,
+                        m_ui->dockWidgetOutputs};
             break;
         case Draw::Layout:
             excluded = {m_ui->dockWidgetOptions, m_ui->dockWidgetGroups, m_ui->dockWidgetMessages,
                         m_ui->dockWidgetBackgroundImages, m_ui->dockWidgetDependencies,
-                        m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles};
+                        m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles,
+                        m_ui->dockWidgetOutputs};
             break;
         case Draw::Graded:
             excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetOptions, m_ui->dockWidgetGroups,
                         m_ui->dockWidgetMessages, m_ui->dockWidgetBackgroundImages,
-                        m_ui->dockWidgetDependencies};
+                        m_ui->dockWidgetDependencies, m_ui->dockWidgetOutputs};
             break;
         case Draw::Export:
             excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetOptions, m_ui->dockWidgetGroups,
@@ -540,6 +566,11 @@ void ODockManager::retranslate()
         case Draw::Layout:
             break;
         case Draw::Export:
+            m_ui->dockWidgetOutputs->setWindowTitle(tr("Outputs"));
+            if (m_outputsContent != nullptr)
+            {
+                m_outputsContent->RetranslateUI();
+            }
             break;
         case Draw::Graded:
             m_ui->dockWidgetSizeRanges->setWindowTitle(tr("Size Ranges"));
@@ -674,6 +705,12 @@ OWidgetSizeRanges *ODockManager::sizeRangesWidget() const
 OWidgetSizeStyles *ODockManager::sizeStylesWidget() const
 {
     return m_sizeStylesContent;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+OWidgetOutputs *ODockManager::outputsWidget() const
+{
+    return m_outputsContent;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

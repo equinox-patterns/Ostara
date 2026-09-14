@@ -72,17 +72,23 @@ auto CurrentContext(VAbstractPattern *doc) -> Context
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto Matches(const OSizerange &range, const Context &context) -> bool
+auto MatchesContext(const QString &canonical, const QString &axis, const Context &context) -> bool
 {
-    if (!context.canonical.isEmpty() && range.measurement != context.canonical)
+    if (!context.canonical.isEmpty() && canonical != context.canonical)
     {
         return false;
     }
-    if (!context.axis.isEmpty() && range.sizeAxis != context.axis)
+    if (!context.axis.isEmpty() && axis != context.axis)
     {
         return false;
     }
     return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto Matches(const OSizerange &range, const Context &context) -> bool
+{
+    return MatchesContext(range.measurement, range.sizeAxis, context);
 }
 
 }  // namespace OGradedSizeRanges
