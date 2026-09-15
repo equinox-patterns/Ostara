@@ -106,6 +106,18 @@ struct OExportOutput
     /// Sheets side by side. Irrelevant to a roll — which has none — and kept all the same,
     /// so that the replay does not have to guess whether zero meant "one" or "unknown".
     int columns{1};
+
+    /// The long side of one sheet, in millimetres — the height of the frame the plan is cut
+    /// into. Zero when the run is not tiled, and that single fact is what the canvas reads
+    /// to decide whether there is a grid to draw: a roll has no sheet, and the A0 model is
+    /// never assembled side by side.
+    ///
+    /// Stored rather than looked up by the token, because the framed model is the one whose
+    /// sides the user may TYPE — FindPrintModel would hand back the table's 259 mm whatever
+    /// she entered. The width is deliberately not stored beside it: documentWidthMm divided
+    /// by the columns gives it back, and a second field is a second field for the replay to
+    /// drop in silence.
+    qreal frameHeightMm{0.0};
 };
 
 /**
@@ -129,6 +141,7 @@ struct OExportRunRequest
     qreal gapMm{5.0};
     QString printModelToken{};
     int columns{1};
+    qreal frameHeightMm{0.0};
 };
 
 /// @brief The request that reproduces @p output — what the Refresh entry hands back.

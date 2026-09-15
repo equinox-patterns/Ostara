@@ -32,6 +32,7 @@
 #include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSignalBlocker>
 #include <QSpinBox>
 #include <cmath>
 
@@ -69,7 +70,10 @@ OExportTiledFormatWidget::OExportTiledFormatWidget(QWidget *parent)
     // to "21") is not a length yet.
     connect(m_widthEdit, &QLineEdit::editingFinished, this, &OExportTiledFormatWidget::CommitEditedSides);
     connect(m_heightEdit, &QLineEdit::editingFinished, this, &OExportTiledFormatWidget::CommitEditedSides);
-    connect(m_columns, &QSpinBox::valueChanged, this, [this](int) { emit Changed(); });
+    connect(m_columns, &QSpinBox::valueChanged, this, [this](int) {
+        m_columnsChosen = true; // the count is the user's from here on
+        emit Changed();
+    });
 
     Retranslate();
     Refresh();
@@ -88,12 +92,17 @@ void OExportTiledFormatWidget::SetSheet(qreal widthMm, qreal heightMm, bool edit
     m_columnsLabel->setVisible(hasColumns);
     m_columns->setVisible(hasColumns);
 
-    if (hasColumns)
+    if (hasColumns && !m_columnsChosen)
     {
         // Enough columns that the plan is at least as wide as a roll, and never fewer
         // than one. A4 lands on five, which is the count the mode was specified around.
         const int defaultColumns =
             widthMm > 0.0 ? static_cast<int>(std::ceil(kRollWidthMm / widthMm)) : 1;
+
+        // Blocked, and that is the whole point of the block: the handler on the spin box
+        // marks the count as the user's, and a default written behind her back is not hers.
+        // A count she typed outlives the model she typed it on.
+        const QSignalBlocker blocker(m_columns);
         m_columns->setValue(std::max(1, defaultColumns));
     }
 

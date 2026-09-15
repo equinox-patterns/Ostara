@@ -521,6 +521,23 @@ auto OExportPrintWidget::Columns() const -> int
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportPrintWidget::FrameHeightMm() const -> qreal
+{
+    const OExportPrintModel *model = FindPrintModel(PrintModelToken());
+    if (model == nullptr || model->shape == OExportPrintShape::Roll || !model->hasColumns)
+    {
+        return 0.0;
+    }
+
+    // The two guards ask two different questions. A roll is one continuous sheet AND the
+    // tiled widget is never refreshed for it — reading it there would hand back the sheet of
+    // the last tiled model the user looked at, a length she never asked for. The A0 sheet is
+    // the other way round: it has its two sides, but it is never placed side by side, so
+    // there is no frame to cut a plan into, and it has to answer like the roll.
+    return m_tiledWidget->SheetHeightMm();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportPrintWidget::DisplayUnit() const -> Unit
 {
     return m_unit;

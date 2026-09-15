@@ -60,6 +60,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsSimpleTextItem>
 #include <QHash>
+#include <QPainter>
 #include <QPen>
 #include <QScopedPointer>
 #include <QTransform>
@@ -68,6 +69,96 @@
 
 namespace
 {
+// The four bands of the scene, named once. A piece carries no Z of its own and sits at 0;
+// the paper goes under everything, and the cut lines over everything — because a cut line
+// hidden under a cartouche is a cut line the user cannot cut along.
+constexpr qreal kPaperZ = -2.0;
+constexpr qreal kBinZ = -1.0;
+constexpr qreal kDecorZ = 1.0;
+constexpr qreal kGridZ = 2.0;
+
+/// The sheets a tiled plan is cut into, drawn as the lines it is cut along.
+///
+/// One item for the whole grid rather than one rectangle per sheet: the sheets butt edge to
+/// edge, so consecutive rectangles would draw every internal line twice — and a single item
+/// is also the one object a writer can be handed the day the PDF cuts its pages.
+///
+/// It is INERT, and that is not decoration. A QGraphicsRectItem answers the mouse and takes
+/// the hover by default; in this scene the hover is what raises an item above its neighbours
+/// (VMainGraphicsScene::ItemToRaise) and what the click dispatch reads. A grid left answering
+/// would be taken for a piece of the pattern, and the clicks meant for one would land on the
+/// paper.
+class ArtboardGridItem : public QGraphicsItem
+{
+public:
+    ArtboardGridItem(const QRectF &planRect, qreal cellWidthPx, qreal cellHeightPx, int columns, int rows)
+      : m_planRect(planRect), m_cellWidthPx(cellWidthPx), m_cellHeightPx(cellHeightPx),
+        m_columns(columns), m_rows(rows)
+    {
+        setFlag(QGraphicsItem::ItemIsSelectable, false);
+        setFlag(QGraphicsItem::ItemIsMovable, false);
+        setAcceptedMouseButtons(Qt::NoButton);
+        setZValue(kGridZ);
+    }
+
+    auto boundingRect() const -> QRectF override
+    {
+        // The plan's outer edge is drawn ON the rect, so half the pen falls outside it —
+        // rounded up to the whole of it rather than left to a repaint that never comes.
+        return m_planRect.adjusted(-kPenWidth, -kPenWidth, kPenWidth, kPenWidth);
+    }
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
+    {
+        painter->setPen(QPen(Qt::black, kPenWidth));
+        painter->drawRect(m_planRect);
+
+        for (int i = 1; i < m_columns; ++i)
+        {
+            const qreal x = m_planRect.left() + i * m_cellWidthPx;
+            painter->drawLine(QPointF(x, m_planRect.top()), QPointF(x, m_planRect.bottom()));
+        }
+
+        for (int j = 1; j < m_rows; ++j)
+        {
+            const qreal y = m_planRect.top() + j * m_cellHeightPx;
+            painter->drawLine(QPointF(m_planRect.left(), y), QPointF(m_planRect.right(), y));
+        }
+    }
+
+private:
+    /// The bin's own pen, so a cut line and the plan's border read as one drawing.
+    static constexpr qreal kPenWidth = 1.0;
+
+    QRectF m_planRect;
+    qreal m_cellWidthPx{0.0};
+    qreal m_cellHeightPx{0.0};
+    int m_columns{0};
+    int m_rows{0};
+};
+
+/// The paper of a tiled run: the whole sheet area, white, and nothing drawn on it.
+///
+/// The pen is dropped on purpose. A QGraphicsRectItem carries a black one-pixel pen by
+/// default, and ArtboardGridItem already draws the plan's outer edge — the two would land on
+/// the same line, one drawn twice.
+///
+/// The rect is the plan's and nothing else: a carrier the scene can see but the eye cannot is
+/// what feeds VisibleItemsBoundingRect, and a rect wider than the paper would leave the plan
+/// pinned to one edge of the viewport when the result is framed. MakeDecorHost tells the same
+/// story from the other end.
+void MakeArtboardPaper(QGraphicsScene *scene, const QRectF &planRect)
+{
+    auto *paper = new QGraphicsRectItem(planRect);
+    paper->setPen(Qt::NoPen);
+    paper->setBrush(QBrush(Qt::white));
+    paper->setFlag(QGraphicsItem::ItemIsSelectable, false);
+    paper->setFlag(QGraphicsItem::ItemIsMovable, false);
+    paper->setAcceptedMouseButtons(Qt::NoButton);
+    paper->setZValue(kPaperZ);
+    scene->addItem(paper);
+}
+
 /// Grainline, fold mark and its label are drawn by GetItem on every size, and only the
 /// smallest one may show them — that is the rule the Graded canvas applies to its ghost
 /// layers, and the layers of a range are no different. Same three types, same hiding.
@@ -306,7 +397,7 @@ auto MakeDecorHost(QGraphicsScene *scene, const DecorFrame &frame) -> QGraphicsI
     host->setFlag(QGraphicsItem::ItemIsSelectable, false);
     host->setFlag(QGraphicsItem::ItemIsMovable, false);
     host->setAcceptedMouseButtons(Qt::NoButton);
-    host->setZValue(1.0);
+    host->setZValue(kDecorZ);
     scene->addItem(host);
     return host;
 }
@@ -606,7 +697,8 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                           const OSizerange *range,
                           const VContainer *pattern,
                           VAbstractPattern *doc,
-                          OExportCanvasContent *content)
+                          OExportCanvasContent *content,
+                          const OExportArtboards::Grid &artboards)
 {
     if (scene == nullptr || !result.ok)
     {
@@ -651,12 +743,22 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         }
     }
 
-    // The bin: fixed width, height given by the nesting.
-    auto *bin = new QGraphicsRectItem(0, 0, result.binWidthPx, result.usedHeightPx);
-    bin->setPen(QPen(Qt::black, 1));
-    bin->setBrush(QBrush(Qt::white));
-    bin->setZValue(-1);
-    scene->addItem(bin);
+    // The paper: the run's own extent on a run that is one continuous sheet, the sheets it
+    // is cut into on a run that is tiled. One decision made once, and never both — the bin's
+    // bottom edge would fall in the middle of the last row of sheets, exactly where a whole
+    // page has to read as one.
+    if (artboards.valid)
+    {
+        MakeArtboardPaper(scene, artboards.planRect);
+    }
+    else
+    {
+        auto *bin = new QGraphicsRectItem(0, 0, result.binWidthPx, result.usedHeightPx);
+        bin->setPen(QPen(Qt::black, 1));
+        bin->setBrush(QBrush(Qt::white));
+        bin->setZValue(kBinZ);
+        scene->addItem(bin);
+    }
 
     for (int i = 0; i < result.placements.size() && i < result.keys.size(); ++i)
     {
@@ -787,6 +889,17 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         {
             content->decor.append(entry);
         }
+    }
+
+    // The last thing drawn, and the only one above the decor: the cut lines are all that
+    // tells one sheet from the next, and a cartouche lying across one must not hide the line
+    // the sheet is cut along. Two items rather than one, and that is forced — no single item
+    // can sit under the pieces and over the cartouches at the same time.
+    if (artboards.valid)
+    {
+        scene->addItem(new ArtboardGridItem(artboards.planRect, artboards.cellWidthPx,
+                                            artboards.cellHeightPx, artboards.columns,
+                                            artboards.rows));
     }
 
     if (content == nullptr)

@@ -43,6 +43,7 @@ auto RequestOf(const OExportOutput &output) -> OExportRunRequest
     request.gapMm = output.gapMm;
     request.printModelToken = output.printModelToken;
     request.columns = output.columns;
+    request.frameHeightMm = output.frameHeightMm;
     return request;
 }
 

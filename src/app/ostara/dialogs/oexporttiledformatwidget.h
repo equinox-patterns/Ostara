@@ -58,7 +58,14 @@ class OExportTiledFormatWidget : public QWidget
 public:
     explicit OExportTiledFormatWidget(QWidget *parent = nullptr);
 
-    /// @brief Adopt the sheet of a model, and reset the column count to its default.
+    /// @brief Adopt the sheet of a model.
+    ///
+    /// The column count takes its default the FIRST time a sheet is adopted, and is left
+    /// alone afterwards: a count the user set is a decision, not a figure to be recomputed
+    /// the moment she looks at another sheet. The default is there so a tab nobody has
+    /// touched does not ask for a plan narrower than a roll — it is not there to undo what
+    /// she typed.
+    ///
     /// @param widthMm    the sheet's small side, in millimetres
     /// @param heightMm   the sheet's long side, in millimetres
     /// @param editable   whether the user may type the two sides — the framed model alone
@@ -104,6 +111,10 @@ private:
     /// shown, so a width computed during construction would silently come out as one
     /// column's worth — the sheet alone, and a plan too narrow to nest anything on.
     bool m_hasColumns{true};
+
+    /// Whether the column count is the user's own. Once it is, SetSheet leaves it alone —
+    /// the default it would otherwise write belongs to a tab nobody has touched yet.
+    bool m_columnsChosen{false};
 };
 
 #endif // OEXPORTTILEDFORMATWIDGET_H

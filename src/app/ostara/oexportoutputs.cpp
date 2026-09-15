@@ -31,6 +31,7 @@
 #include "core/oexportoutput.h"
 #include "dialogs/owaitdialog.h"
 #include "oexportalignment.h"
+#include "oexportartboards.h"
 #include "oexportcanvas.h"
 #include "oexportpdf.h"
 
@@ -287,6 +288,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.unit = request.unit;
     output.printModelToken = request.printModelToken;
     output.columns = request.columns;
+    output.frameHeightMm = request.frameHeightMm;
     output.layers = std::move(layers);
     output.result = result;
     return output;
@@ -552,8 +554,14 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
         return;
     }
 
+    // How the plan is cut, when the run is tiled — computed from the generation alone, since
+    // that is all a kept run has. An invalid grid means one continuous sheet, and the canvas
+    // then draws its bin exactly as it always did.
+    const OExportArtboards::Grid artboards = OExportArtboards::Compute(
+        output.result.binWidthPx, output.result.usedHeightPx, output.frameHeightMm, output.columns);
+
     OExportCanvas::Build(m_sceneExport, output.layers, output.result,
-                         output.hasRange ? &output.range : nullptr, pattern, doc);
+                         output.hasRange ? &output.range : nullptr, pattern, doc, nullptr, artboards);
 
     if (zoomFit)
     {
@@ -567,12 +575,29 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
     // The status label belongs to what IS shown, not to the run that produced it — and it
     // is written in the unit the generation was asked in, not the pattern's: the figures
     // the user just read in the dialog are the ones that have to come back here.
+    //
+    // On a tiled run what is shown is the PAPER, not the nesting: the plan reaches the bottom
+    // of its last row whether or not the pieces do, so the label gives the sheets' own extent
+    // and how many of them there are. The run's height is nowhere on screen, and a figure
+    // nobody can see is a figure nobody can check.
     const Unit unit = output.unit;
-    const double width = FromPixel(output.result.binWidthPx, unit);
-    const double height = FromPixel(output.result.usedHeightPx, unit);
-    m_statusLabel->setText(tr("%1 × %2 %3").arg(QString::number(width, 'f', 1),
-                                                 QString::number(height, 'f', 1),
-                                                 UnitsToStr(unit, true)));
+    const double width = FromPixel(artboards.valid ? artboards.planRect.width()
+                                                   : output.result.binWidthPx,
+                                   unit);
+    const double height = FromPixel(artboards.valid ? artboards.planRect.height()
+                                                    : output.result.usedHeightPx,
+                                    unit);
+
+    QString label = tr("%1 × %2 %3").arg(QString::number(width, 'f', 1),
+                                         QString::number(height, 'f', 1),
+                                         UnitsToStr(unit, true));
+
+    if (artboards.valid)
+    {
+        label += tr(" · %n page(s)", nullptr, artboards.columns * artboards.rows);
+    }
+
+    m_statusLabel->setText(label);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

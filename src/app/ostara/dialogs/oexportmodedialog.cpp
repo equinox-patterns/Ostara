@@ -181,6 +181,7 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
     request.gapMm = m_printWidget->GapMm();
     request.printModelToken = m_printWidget->PrintModelToken();
     request.columns = m_printWidget->Columns();
+    request.frameHeightMm = m_printWidget->FrameHeightMm();
     return request;
 }
 

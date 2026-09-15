@@ -27,6 +27,7 @@
 #ifndef OEXPORTCANVAS_H
 #define OEXPORTCANVAS_H
 
+#include "oexportartboards.h"  // OExportArtboards::Grid
 #include "ogradedsvgwriter.h"  // OGradedSvg::LayoutObject
 
 #include <QList>
@@ -96,13 +97,20 @@ public:
     ///                Blocks are skipped when it is nullptr.
     /// @param content when not nullptr, filled with what was drawn — see the note on
     ///                OExportCanvasContent. Drawing is unaffected either way.
+    /// @param artboards the sheets a tiled plan is cut into. An invalid grid — the default,
+    ///                and what every caller with no use for it leaves here — changes nothing
+    ///                at all; a valid one makes the sheets the paper, and the bin the run's
+    ///                own extent instead of what is drawn around it. The PDF writer leaves it
+    ///                at its default deliberately: a page IS a sheet there, so its edge is not
+    ///                drawn on it.
     static void Build(QGraphicsScene *scene,
                       const QVector<OExportSizeLayer> &layers,
                       const OExportNestingResult &result,
                       const OSizerange *range,
                       const VContainer *pattern,
                       VAbstractPattern *doc,
-                      OExportCanvasContent *content = nullptr);
+                      OExportCanvasContent *content = nullptr,
+                      const OExportArtboards::Grid &artboards = {});
 };
 
 #endif // OEXPORTCANVAS_H

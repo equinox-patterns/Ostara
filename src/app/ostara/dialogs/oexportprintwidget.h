@@ -110,6 +110,15 @@ public:
     /// @brief How many sheets side by side. Always 1 on a roll, which has no columns.
     auto Columns() const -> int;
 
+    /// @brief The long side of one sheet, in millimetres — the height of the frame the plan
+    ///        is cut into. **0 when there is no frame at all**, and that single figure is
+    ///        what says so: it is the token the canvas reads to decide whether there are
+    ///        sheets to draw.
+    ///
+    /// A roll has no sheet, and the A0 model is never placed side by side — neither is cut,
+    /// so neither has a frame, so both answer zero here.
+    auto FrameHeightMm() const -> qreal;
+
     /// @brief The unit the tab is read in. Stored with the generation so that the figures
     ///        come back in it, rather than in whatever the pattern happens to use.
     auto DisplayUnit() const -> Unit;

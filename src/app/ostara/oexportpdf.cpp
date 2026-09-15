@@ -76,8 +76,14 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     OExportCanvas::Build(&scene, output.layers, output.result,
                          output.hasRange ? &output.range : nullptr, pattern, doc, &content);
 
-    // The page is the bin — the very rectangle the canvas draws. The width the print model
-    // imposed, the height the nesting used.
+    // The page is the bin — the width the print model imposed, the height the nesting used.
+    //
+    // And on a tiled run this is deliberately NOT what the canvas shows: the screen lays the
+    // result on the sheets it will be cut into, while one page here still holds the whole
+    // plan. The two do not contradict each other — cutting the plan into sheets is precisely
+    // what a tiled export has yet to learn, and until it does, a page that IS a sheet would
+    // be a page with five sixth of the plan missing. The canvas is handed no grid here (the
+    // parameter keeps its default), so nothing of it reaches this file or the SVG.
     const QRectF imageRect(0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx);
 
     // The writer takes the layers largest first and paints them in that order, so the
