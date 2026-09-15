@@ -91,6 +91,11 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     params.binWidthPx = ToPixel(request.documentWidthMm, Unit::Mm);
     params.marginPx = ToPixel(request.marginMm, Unit::Mm);
     params.gapPx = ToPixel(request.gapMm, Unit::Mm);
+    // The grid follows the same rule as every other length: converted once, here.
+    // A run that is not tiled carries a zero height — the roll and A0 — and the
+    // engine then has no grid, so no adjustment pass.
+    params.artboardCount    = request.columns;
+    params.artboardHeightPx = ToPixel(request.frameHeightMm, Unit::Mm);
 
     // The engine has no abort hook: this dialog is shown while it works and taken down
     // after. No Cancel button, so nothing on screen promises an interruption that

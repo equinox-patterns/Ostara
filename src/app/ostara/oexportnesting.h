@@ -69,6 +69,14 @@ struct OExportNestingParams
     double binWidthPx{0.0}; ///< imposed bin width — the height is what the nesting produces
     double marginPx{0.0};   ///< document margin, kept clear on every side of the bin
     double gapPx{0.0};      ///< space kept between two pieces
+
+    // The artboard grid — two values that are NOT lengths, unlike the three
+    // above, even though the third is a length like them. Zero on both means a
+    // run that is not tiled (the roll, A0), and the engine then places exactly
+    // as it did before tiling existed: the grid is what turns the adjustment
+    // pass on, and nothing else does.
+    int    artboardCount{0};   ///< frames side by side across the bin width
+    double artboardHeightPx{0.0}; ///< frame height, converted to pixels like the rest
 };
 
 /// @brief Runs the Trame engine on geometry that never left the application.

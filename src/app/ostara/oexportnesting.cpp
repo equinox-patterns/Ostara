@@ -140,6 +140,14 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     const Bin bin(params.binWidthPx, params.marginPx);
     Engine::Config config;
     config.gap = params.gapPx;
+
+    // The grid, and only on a tiled run. It is what lets the engine adjust the
+    // plan once it is placed — keeping the footprint borders off the cut lines,
+    // and spending the dead band the last artboard row keeps for free. Left at
+    // zero, the engine places exactly as it did before tiling existed.
+    config.artboardCount  = params.artboardCount;
+    config.artboardHeight = params.artboardHeightPx;
+
     const Engine engine{config};
     const std::vector<Placement> placements = engine.place(bin, footprint.polygons);
 
