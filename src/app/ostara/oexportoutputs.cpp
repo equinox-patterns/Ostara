@@ -32,6 +32,12 @@
 #include "dialogs/owaitdialog.h"
 #include "oexportalignment.h"
 #include "oexportcanvas.h"
+#include "oexportpdf.h"
+
+#include "dialogs/oexportpdfdialog.h"
+
+#include <QDir>
+#include <QStandardPaths>
 #include "oexportgeometry.h"
 #include "oexportnesting.h"
 #include "widgets/ODockManager.h"
@@ -491,6 +497,40 @@ void MainWindow::DeleteExportOutput(quint32 id)
     }
 
     RefreshOutputsDock();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ExportOutputToPdf(quint32 id)
+{
+    const OExportOutput *existing = m_exportOutputs.Find(id);
+    if (existing == nullptr)
+    {
+        return;
+    }
+
+    // Where it opens: the range's own export folder when it has one — this plan's other
+    // files are already there — and Documents when it has not, or when it has gone.
+    QString directory = existing->hasRange ? existing->range.exportPath : QString();
+    if (directory.isEmpty() || !QDir(directory).exists())
+    {
+        directory = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    }
+
+    OExportPdfDialog dialog(existing->name, directory, this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    if (!OExportPdf::Write(*existing, dialog.FullPath(), pattern, doc))
+    {
+        QMessageBox::warning(this, tr("Export mode"),
+                             tr("\"%1\" could not be exported.").arg(existing->name));
+        return;
+    }
+
+    QMessageBox::information(this, tr("Export mode"),
+                             tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()));
 }
 
 /**

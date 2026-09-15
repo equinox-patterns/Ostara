@@ -51,7 +51,7 @@ DialogAboutApp::DialogAboutApp(QWidget *parent)
     VAbstractValApplication::VApp()->ValentinaSettings()->GetOsSeparator() ? setLocale(QLocale())
                                                                            : setLocale(QLocale::c());
 
-    ui->label_Valentina_Version->setText(QStringLiteral("Ostara %1").arg(AppVersionStr()));
+    ui->label_Valentina_Version->setText(QStringLiteral("Ostara %1").arg(AppDisplayVersion()));
     ui->labelBuildRevision->setText(QStringLiteral("Build revision: %1").arg(QStringLiteral(VCS_REPO_STATE_REVISION)));
     ui->label_QT_Version->setText(buildCompatibilityString());
 

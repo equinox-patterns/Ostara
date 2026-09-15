@@ -46,6 +46,7 @@
 #include <QPointF>
 #include <QRectF>
 #include <QString>
+#include <QTransform>
 #include <QVector>
 
 class QGraphicsItem;
@@ -66,6 +67,11 @@ struct GradedObject
     bool isGroup = false;
     QGraphicsItem *loneItem = nullptr;         // when !isGroup: the piece silhouette root
     QVector<GradedMember> members;             // when isGroup: the member silhouettes
+
+    /// Placement of the object, when its geometry is written at its own coordinates rather
+    /// than moved into place. Identity in the graded export, which positions its items in
+    /// the scene and lets the writer read them there.
+    QTransform transform;
 };
 
 /** @brief One size layer: label + its objects, already in grand → petit order. */
@@ -83,6 +89,13 @@ struct LayoutObject
     QList<QGraphicsItem *> decorChildren;      // grainline / fold / text items (already in scene coords)
     QVector<OInfoBlockSvg::Block> blocks;
     QVector<OInfoBlockSvg::Annotation> annotations;
+
+    /// Placement of the owner, applied to this object's wrapper — never to its children.
+    ///
+    /// That is the whole point: a block keeps the rotation it was given, and the wrapper
+    /// carries it along with the piece it belongs to. Composing the two rotations into the
+    /// block itself would be a different, and wrong, figure. Identity in the graded export.
+    QTransform transform;
 };
 
 /**
@@ -93,11 +106,15 @@ struct LayoutObject
  *                         for its id, inkscape:label and <title>.
  * @param layoutObjects    decor per top-level object, taken from the reference size.
  * @param imageRect   scene content rect (all sizes, after alignment/offsets).
+ * @param layered     false writes the objects straight under the root, with no layer of
+ *                    their own. A single-size run has nothing to switch between, so a
+ *                    layer panel would offer one entry and no choice; the decor is still
+ *                    written, it simply has no layer to sit in.
  */
 bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
                     const QString &layoutLayerName, const QList<LayoutObject> &layoutObjects,
                     const QRectF &imageRect, const QMarginsF &margins, qreal xScale, qreal yScale,
-                    const QString &title, const QString &description);
+                    const QString &title, const QString &description, bool layered = true);
 }  // namespace OGradedSvg
 
 #endif  // OGRADEDSVGWRITER_H

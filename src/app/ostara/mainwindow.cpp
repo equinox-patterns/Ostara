@@ -1334,6 +1334,8 @@ void MainWindow::InitDocksContain()
             &MainWindow::RefreshExportOutput, Qt::QueuedConnection);
     connect(m_dockManager->outputsWidget(), &OWidgetOutputs::deleteRequested, this,
             &MainWindow::DeleteExportOutput);
+    connect(m_dockManager->outputsWidget(), &OWidgetOutputs::exportRequested, this,
+            &MainWindow::ExportOutputToPdf);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

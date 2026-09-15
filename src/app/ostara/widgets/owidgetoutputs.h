@@ -107,6 +107,9 @@ signals:
      *         what deleting means is not a property of the button. */
     void deleteRequested(quint32 id);
 
+    /** @brief The Export icon of @p id was clicked: write its plan as a PDF. */
+    void exportRequested(quint32 id);
+
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 

@@ -37,6 +37,15 @@ constexpr unsigned DEBUG_VERSION = 0;
 
 auto AppVersionStr() -> const QString &;
 
+/// @brief The version as it is meant to be read: "1.1.0", and nothing after it.
+///
+/// AppVersionStr() carries a fourth field — the number of commits since the last release
+/// tag — which identifies a build. That is worth having where a build has to be told apart
+/// from another: in the files we write, in the logs, in a crash report. It is worth nothing
+/// on a welcome screen, where it reads as noise, and where no tag means "none" rather than
+/// a number. So the two are separated rather than one being trimmed for everyone.
+auto AppDisplayVersion() -> QString;
+
 constexpr auto FormatVersion(unsigned major, unsigned minor, unsigned patch) -> unsigned
 {
     return ((major << 16u) | (minor << 8u) | patch);

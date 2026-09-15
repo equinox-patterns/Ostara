@@ -391,7 +391,7 @@ void WriteAnnotation(QXmlStreamWriter &writer, const QTransform &toSVG, const QP
 bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
                     const QString &layoutLayerName, const QList<LayoutObject> &layoutObjects,
                     const QRectF &imageRect, const QMarginsF &margins, qreal xScale, qreal yScale,
-                    const QString &title, const QString &description)
+                    const QString &title, const QString &description, bool layered)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -470,17 +470,27 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
             return id;
         };
 
-        writer.writeStartElement(QStringLiteral("g"));
-        writer.writeAttribute(QStringLiteral("id"), OSvg::SanitizeSvgId(layer.label));
-        writer.writeAttribute(QStringLiteral("i:layer"), QStringLiteral("yes"));
-        writer.writeAttribute(QStringLiteral("inkscape:label"), layer.label);
-        writer.writeAttribute(QStringLiteral("inkscape:groupmode"), QStringLiteral("layer"));
-        writer.writeTextElement(QStringLiteral("title"), layer.label);
+        // A layered document announces each size as a layer of its own. A flat one, which
+        // exists for the single-size run, writes its objects straight under the root:
+        // there is nothing to switch between, so a layer would be an entry with no choice.
+        if (layered)
+        {
+            writer.writeStartElement(QStringLiteral("g"));
+            writer.writeAttribute(QStringLiteral("id"), OSvg::SanitizeSvgId(layer.label));
+            writer.writeAttribute(QStringLiteral("i:layer"), QStringLiteral("yes"));
+            writer.writeAttribute(QStringLiteral("inkscape:label"), layer.label);
+            writer.writeAttribute(QStringLiteral("inkscape:groupmode"), QStringLiteral("layer"));
+            writer.writeTextElement(QStringLiteral("title"), layer.label);
+        }
 
         for (const GradedObject &object : layer.objects)
         {
             writer.writeStartElement(QStringLiteral("g"));
             writer.writeAttribute(QStringLiteral("id"), uniqueId(object.name));
+            if (!object.transform.isIdentity())
+            {
+                writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(object.transform));
+            }
             if (object.isGroup)
             {
                 for (const GradedMember &member : object.members)
@@ -501,11 +511,15 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
             }
             writer.writeEndElement();  // g (object)
         }
-        writer.writeEndElement();  // g (size layer)
+        if (layered)
+        {
+            writer.writeEndElement();  // g (size layer)
+        }
     }
 
-    // Layout layer — shared decor of the reference size, written last (topmost).
-    if (!layoutLayerName.isEmpty())
+    // Layout layer — shared decor of the reference size, written last (topmost). A flat
+    // document has no layer to put it in, but it still carries its cartouche.
+    if (!layoutLayerName.isEmpty() || !layered)
     {
         QHash<QString, int> usedIds;
         const auto uniqueId = [&usedIds](const QString &base) {
@@ -523,17 +537,20 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
             return id;
         };
 
-        writer.writeStartElement(QStringLiteral("g"));
-        // The layer keeps its user-chosen name in the id, inkscape:label and
-        // <title>, so every editor shows it. Rabnest identifies this layer as
-        // the decor layer via the ostara:layout backend marker below, which no
-        // editor displays.
-        writer.writeAttribute(QStringLiteral("id"), OSvg::SanitizeSvgId(layoutLayerName));
-        writer.writeAttribute(QStringLiteral("i:layer"), QStringLiteral("yes"));
-        writer.writeAttribute(QStringLiteral("inkscape:label"), layoutLayerName);
-        writer.writeAttribute(QStringLiteral("inkscape:groupmode"), QStringLiteral("layer"));
-        writer.writeAttribute(QStringLiteral("ostara:layout"), QLatin1String(kOstaraLayoutMarker));
-        writer.writeTextElement(QStringLiteral("title"), layoutLayerName);
+        if (layered)
+        {
+            writer.writeStartElement(QStringLiteral("g"));
+            // The layer keeps its user-chosen name in the id, inkscape:label and
+            // <title>, so every editor shows it. Rabnest identifies this layer as
+            // the decor layer via the ostara:layout backend marker below, which no
+            // editor displays.
+            writer.writeAttribute(QStringLiteral("id"), OSvg::SanitizeSvgId(layoutLayerName));
+            writer.writeAttribute(QStringLiteral("i:layer"), QStringLiteral("yes"));
+            writer.writeAttribute(QStringLiteral("inkscape:label"), layoutLayerName);
+            writer.writeAttribute(QStringLiteral("inkscape:groupmode"), QStringLiteral("layer"));
+            writer.writeAttribute(QStringLiteral("ostara:layout"), QLatin1String(kOstaraLayoutMarker));
+            writer.writeTextElement(QStringLiteral("title"), layoutLayerName);
+        }
 
         for (const LayoutObject &object : layoutObjects)
         {
@@ -544,6 +561,11 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
             // filter only transforms <g i:layer="yes"> children of this layer.
             writer.writeAttribute(QStringLiteral("i:layer"), QStringLiteral("yes"));
 
+            // Two wrappers, because the two halves of the decor do not live in the same
+            // frame. The items were placed in the scene and already carry their owner's
+            // placement; the records were not, they are written in their owner's own
+            // frame. The transform below therefore goes on an inner wrapper — put on the
+            // outer one it would move the items a second time.
             for (QGraphicsItem *child : object.decorChildren)
             {
                 if (child->type() == QGraphicsSimpleTextItem::Type)
@@ -555,6 +577,13 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
                     WriteTrace(writer, toSVG, defaultPen, child);
                 }
             }
+
+            const bool placed = !object.transform.isIdentity();
+            if (placed)
+            {
+                writer.writeStartElement(QStringLiteral("g"));
+                writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(object.transform));
+            }
             for (const OInfoBlockSvg::Block &block : object.blocks)
             {
                 WriteBlock(writer, toSVG, object.origin, block);
@@ -563,9 +592,16 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
             {
                 WriteAnnotation(writer, toSVG, object.origin, annotation);
             }
+            if (placed)
+            {
+                writer.writeEndElement();  // g (records, in their owner's frame)
+            }
             writer.writeEndElement();  // g (layout object)
         }
-        writer.writeEndElement();  // g (layout layer)
+        if (layered)
+        {
+            writer.writeEndElement();  // g (layout layer)
+        }
     }
 
     writer.writeEndElement();  // svg

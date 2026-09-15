@@ -412,7 +412,10 @@ VApplication::VApplication(int &argc, char **argv)
     setOrganizationName(QStringLiteral(VER_COMPANYNAME_STR));
     setOrganizationDomain(QStringLiteral(VER_COMPANYDOMAIN_STR));
     // Setting the Application version
-    setApplicationVersion(AppVersionStr());
+    // The version Qt reports, and therefore the one the welcome screen shows. The build
+    // string keeps its fourth field — see AppDisplayVersion — and the log below still
+    // writes it in full, so a build stays identifiable where that matters.
+    setApplicationVersion(AppDisplayVersion());
     // making sure will create new instance...just in case we will ever do 2 objects of VApplication
     VCommandLine::Reset();
 }

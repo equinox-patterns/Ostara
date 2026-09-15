@@ -56,6 +56,12 @@ auto AppVersionStr() -> const QString &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto AppDisplayVersion() -> QString
+{
+    return QStringLiteral("%1.%2.%3").arg(MAJOR_VERSION).arg(MINOR_VERSION).arg(DEBUG_VERSION);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto compilerString() -> QString
 {
 #if defined(Q_CC_INTEL) // must be before GNU, Clang and MSVC because ICC/ICL claim to be them

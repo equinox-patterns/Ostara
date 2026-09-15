@@ -315,7 +315,7 @@ void OWidgetOutputs::Populate()
         nameItem->setData(kPreviousNameRole, output.name);       // name BEFORE the next edit
         m_table->setItem(row, kName, nameItem);
 
-        // The action icons belong to the shell: drawn, and inert.
+        // Favorite and edit still belong to the shell: drawn, and inert.
         auto *favoriteItem = new QTableWidgetItem(MakeCellIcon(QStringLiteral("star"), dark), QString());
         favoriteItem->setFlags(favoriteItem->flags() & ~Qt::ItemIsEditable);
         favoriteItem->setToolTip(tr("Add to favorites"));
@@ -335,6 +335,7 @@ void OWidgetOutputs::Populate()
 
         auto *exportItem = new QTableWidgetItem(MakeCellIcon(QStringLiteral("download"), dark), QString());
         exportItem->setFlags(exportItem->flags() & ~Qt::ItemIsEditable);
+        exportItem->setData(Qt::UserRole, output.id); // the cell knows the row it acts on
         exportItem->setToolTip(tr("Export"));
         m_table->setItem(row, kExport, exportItem);
 
@@ -364,11 +365,11 @@ void OWidgetOutputs::OnAddClicked()
  * cell that was clicked, not off a neighbour. The name column is edited inline, and a
  * single click there must not take the canvas away from the generation being renamed,
  * which is why it does not share the status branch the way the Size Ranges dock shares
- * its own two. The rest — favorite, edit, export — are still the shell (§7.2).
+ * its own two. The rest — favorite and edit — are still the shell (§7.2).
  */
 void OWidgetOutputs::OnCellClicked(int row, int column)
 {
-    if (column != kStatus && column != kRefresh && column != kDelete)
+    if (column != kStatus && column != kRefresh && column != kDelete && column != kExport)
     {
         return;
     }
@@ -400,6 +401,9 @@ void OWidgetOutputs::OnCellClicked(int row, int column)
             break;
         case kDelete:
             emit deleteRequested(id);
+            break;
+        case kExport:
+            emit exportRequested(id);
             break;
         default:
             break;

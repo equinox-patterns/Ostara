@@ -296,6 +296,9 @@ private slots:
      *         bring it back: a generation is session-scoped, never part of the document. */
     void DeleteExportOutput(quint32 id);
 
+    /// @brief Write the plan of @p id as a PDF. Asks where, once, and does the rest.
+    void ExportOutputToPdf(quint32 id);
+
     void on_actionNew_triggered();
     bool hasOpenPattern() const;
     bool on_actionSaveAs_triggered(); // NOLINT(modernize-use-trailing-return-type)

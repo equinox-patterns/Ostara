@@ -26,6 +26,8 @@
 
 #include "oexportcanvas.h"
 
+#include <QFontMetricsF>
+
 #include "core/ogratedsizestyles.h"
 #include "mainwindow_graded_helpers.h"
 #include "ogradedgeometry.h"
@@ -283,7 +285,7 @@ struct DecorFrame
 /// axis-aligned on the bounding box of the placed members, which stops being the owner's
 /// frame the moment the nesting turns it — and a group is a footprint like any other, so
 /// the engine may turn it by any multiple of two degrees.
-auto MakeDecorHost(VMainGraphicsScene *scene, const DecorFrame &frame) -> QGraphicsItem *
+auto MakeDecorHost(QGraphicsScene *scene, const DecorFrame &frame) -> QGraphicsItem *
 {
     // The carrier's rect expressed in its OWN frame — which is frame.bounds brought back by
     // frame.origin, since origin is the point of the owner's frame that is its local (0, 0).
@@ -332,7 +334,7 @@ template <typename DecorItem> void MakeDecorReadOnly(DecorItem *item)
 /// @param centerLocal the point a child that was never placed falls back on, in that frame
 auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup, quint32 ownerId,
                      const QPointF &centerLocal, const OSizerange *range, const VContainer *pattern,
-                     VAbstractPattern *doc)
+                     VAbstractPattern *doc, OGradedSvg::LayoutObject *decor = nullptr)
 {
     if (pattern == nullptr)
     {
@@ -370,6 +372,20 @@ auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup,
             item->SetBlockGeom(geom);
             item->SetContent(lines, placement.fontScale);
             MakeDecorReadOnly(item);
+
+            if (decor != nullptr)
+            {
+                // The same four values the item was just given, in the record form the SVG
+                // writer takes. Read off `placement` rather than off the item: the item
+                // resolves its own layout, and asking it back would be asking a drawing
+                // for the numbers it was drawn from.
+                OInfoBlockSvg::Block record;
+                record.lines = lines;
+                record.fontScale = placement.fontScale;
+                record.rect = QRectF(placement.topLeft, placement.size);
+                record.rotation = placement.rotation;
+                decor->blocks.append(record);
+            }
         }
     }
 
@@ -408,7 +424,68 @@ auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup,
         item->SetContent(annotation.text, style);
         item->SetAnnotationGeom(geom, rotation);
         MakeDecorReadOnly(item);
+
+        if (decor != nullptr)
+        {
+            // An auto-sized box takes its size from the natural size of its text — the
+            // same arithmetic OGradedDecor does for the graded SVG. It is written twice
+            // because the two live in different translation units; if they ever disagree,
+            // a cartouche would sit differently on screen and on paper, which is the one
+            // thing this whole path exists to prevent.
+            QFont font;
+            if (!style.fontFamily.isEmpty())
+            {
+                font.setFamily(style.fontFamily);
+            }
+            if (style.fontWeight != 0)
+            {
+                font.setWeight(static_cast<QFont::Weight>(style.fontWeight));
+            }
+            if (style.fontSize > 0)
+            {
+                font.setPixelSize(style.fontSize);
+            }
+            const QRectF natural = QFontMetricsF(font).boundingRect(
+                QRectF(0.0, 0.0, 0.0, 0.0), Qt::AlignLeft, annotation.text);
+
+            const qreal fontScale = geom.fontScale > 0.0 ? geom.fontScale : 1.0;
+            const qreal contentW = natural.width() * fontScale;
+            const qreal contentH = natural.height() * fontScale;
+            const qreal w = qFuzzyIsNull(geom.boxWidth) ? contentW : qMax(geom.boxWidth, contentW);
+            const qreal h = qFuzzyIsNull(geom.boxHeight) ? contentH : qMax(geom.boxHeight, contentH);
+
+            OInfoBlockSvg::Annotation record;
+            record.text = annotation.text;
+            record.fontFamily = style.fontFamily;
+            record.fontWeight = style.fontWeight;
+            record.fontSizePx = style.fontSize;
+            record.textColor = style.textColor.isEmpty() ? QStringLiteral("#000000") : style.textColor;
+            record.backgroundColor = style.backgroundColor;
+            record.fontScale = fontScale;
+            record.rotation = rotation;
+            record.rect = QRectF(geom.pos, QSizeF(w, h));
+            decor->annotations.append(record);
+        }
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Whether an item is decor rather than geometry of the piece it hangs from.
+///
+/// The very filter the SVG writer routes on: what it can write as a trace or as text.
+/// A cartouche and an annotation are neither, and travel as records instead.
+auto IsDecorChild(QGraphicsItem *child) -> bool
+{
+    if (child == nullptr || !child->isVisible())
+    {
+        return false;
+    }
+
+    const int type = child->type();
+    return type == QGraphicsPathItem::Type
+           || type == VGraphicsFillItem::Type
+           || type == VGraphicsFoldLineItem::Type
+           || type == QGraphicsSimpleTextItem::Type;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -417,9 +494,10 @@ auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup,
 /// A piece's children are stored in the document's own coordinates, so its carrier takes
 /// the placement as-is and its local origin is the document origin. A piece of a group of
 /// one keeps its own decor: below kMinGroupMembers a group is not a block.
-void BuildPieceDecor(VMainGraphicsScene *scene, const OExportPieceGeometry &geometry,
+void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry,
                      const QTransform &placement, qreal rotation, const OSizerange *range,
-                     const VContainer *pattern, VAbstractPattern *doc)
+                     const VContainer *pattern, VAbstractPattern *doc,
+                     OGradedSvg::LayoutObject *decor = nullptr)
 {
     const auto *pieces = pattern != nullptr ? pattern->DataPieces() : nullptr;
     if (pieces == nullptr)
@@ -440,8 +518,15 @@ void BuildPieceDecor(VMainGraphicsScene *scene, const OExportPieceGeometry &geom
     frame.bounds = UnplacedBounds(geometry.piece);
 
     auto *host = MakeDecorHost(scene, frame);
+    if (decor != nullptr)
+    {
+        // The carrier's own transform, which is what maps this owner's frame into the bin.
+        // The records below are written in that frame; the items the carrier holds are not,
+        // they are already placed — hence two wrappers in the SVG.
+        decor->transform = host->sceneTransform();
+    }
     BuildOwnerDecor(host, piece.value(), false, geometry.id, frame.bounds.center() - frame.origin, range,
-                    pattern, doc);
+                    pattern, doc, decor);
 
     if (host->childItems().isEmpty())
     {
@@ -456,9 +541,9 @@ void BuildPieceDecor(VMainGraphicsScene *scene, const OExportPieceGeometry &geom
 /// A group has no item of its own in this scene: the nesting places its members. Graded
 /// builds the same invisible carrier — its origin is the top-left corner of the members,
 /// which is the frame the group stores all of its children in.
-void BuildGroupDecor(VMainGraphicsScene *scene, quint32 groupId, const DecorFrame &frame,
+void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &frame,
                      const OSizerange *range, const Unit &unit, const VContainer *pattern,
-                     VAbstractPattern *doc)
+                     VAbstractPattern *doc, OGradedSvg::LayoutObject *decor = nullptr)
 {
     const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
     if (groups == nullptr || frame.bounds.isNull())
@@ -475,6 +560,12 @@ void BuildGroupDecor(VMainGraphicsScene *scene, quint32 groupId, const DecorFram
     auto *host = MakeDecorHost(scene, frame);
     const QPointF centerLocal = frame.bounds.center() - frame.origin;
 
+    if (decor != nullptr)
+    {
+        decor->name = group.value().GetName();
+        decor->transform = host->sceneTransform();
+    }
+
     const VGrainlineData &geom = group.value().m_glGrainline;
     if (geom.IsEnabled() && geom.IsVisible())
     {
@@ -486,7 +577,20 @@ void BuildGroupDecor(VMainGraphicsScene *scene, quint32 groupId, const DecorFram
         OGraded::MakeGrainlineItem(host, geom, placement, rotation);
     }
 
-    BuildOwnerDecor(host, group.value(), true, groupId, centerLocal, range, pattern, doc);
+    BuildOwnerDecor(host, group.value(), true, groupId, centerLocal, range, pattern, doc, decor);
+
+    if (decor != nullptr)
+    {
+        // The grainline only — the carrier's other children are the cartouche and the
+        // annotations, which travel as records, in their owner's frame.
+        for (QGraphicsItem *child : host->childItems())
+        {
+            if (IsDecorChild(child))
+            {
+                decor->decorChildren.append(child);
+            }
+        }
+    }
 
     if (host->childItems().isEmpty())
     {
@@ -496,12 +600,13 @@ void BuildGroupDecor(VMainGraphicsScene *scene, quint32 groupId, const DecorFram
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-void OExportCanvas::Build(VMainGraphicsScene *scene,
+void OExportCanvas::Build(QGraphicsScene *scene,
                           const QVector<OExportSizeLayer> &layers,
                           const OExportNestingResult &result,
                           const OSizerange *range,
                           const VContainer *pattern,
-                          VAbstractPattern *doc)
+                          VAbstractPattern *doc,
+                          OExportCanvasContent *content)
 {
     if (scene == nullptr || !result.ok)
     {
@@ -509,6 +614,18 @@ void OExportCanvas::Build(VMainGraphicsScene *scene,
     }
 
     scene->clear();
+
+    // What was drawn, kept as it is drawn: every item stays a pointer into the scene, and
+    // the caller must read it before the scene dies.
+    QVector<QVector<QGraphicsItem *>> itemsByLayer;
+    QVector<QVector<const OExportPieceGeometry *>> geometriesByLayer;
+    if (content != nullptr)
+    {
+        itemsByLayer.resize(layers.size());
+        geometriesByLayer.resize(layers.size());
+        content->layers.clear();
+        content->decor.clear();
+    }
 
     const Unit *patternUnit = pattern != nullptr ? pattern->GetPatternUnit() : nullptr;
     const Unit unit = patternUnit != nullptr ? *patternUnit : Unit::Mm;
@@ -615,9 +732,38 @@ void OExportCanvas::Build(VMainGraphicsScene *scene,
 
                 scene->addItem(item);
 
+                if (content != nullptr)
+                {
+                    itemsByLayer[l].append(item);
+                    geometriesByLayer[l].append(&geometry);
+                }
+
                 if (isReference && !IsGroupedMember(pattern, geometry.groupId))
                 {
-                    BuildPieceDecor(scene, geometry, placementMatrix, placement.rotation, range, pattern, doc);
+                    // The decor layer holds the reference size's decor. Its records are
+                    // collected here, where the decision to draw it was taken — a second
+                    // pass over the scene would have to guess at both.
+                    OGradedSvg::LayoutObject entry;
+                    entry.name = geometry.name;
+                    // The records are written in the owner's own frame and the wrapper
+                    // carries them; the items below are already placed and must not be.
+                    entry.origin = QPointF(0.0, 0.0);
+                    for (QGraphicsItem *child : item->childItems())
+                    {
+                        if (IsDecorChild(child))
+                        {
+                            entry.decorChildren.append(child);
+                        }
+                    }
+
+                    BuildPieceDecor(scene, geometry, placementMatrix, placement.rotation, range, pattern,
+                                    doc, content != nullptr ? &entry : nullptr);
+
+                    if (content != nullptr && (!entry.blocks.isEmpty() || !entry.annotations.isEmpty()
+                                               || !entry.decorChildren.isEmpty()))
+                    {
+                        content->decor.append(entry);
+                    }
                 }
             }
         }
@@ -630,6 +776,70 @@ void OExportCanvas::Build(VMainGraphicsScene *scene,
         // extent — hence the second pass rather than a frame built on the fly.
         DecorFrame &frame = it.value();
         frame.origin = frame.bounds.topLeft();
-        BuildGroupDecor(scene, it.key(), frame, range, unit, pattern, doc);
+
+        OGradedSvg::LayoutObject entry;
+        entry.origin = QPointF(0.0, 0.0);
+        BuildGroupDecor(scene, it.key(), frame, range, unit, pattern, doc,
+                        content != nullptr ? &entry : nullptr);
+
+        if (content != nullptr && (!entry.blocks.isEmpty() || !entry.annotations.isEmpty()
+                                   || !entry.decorChildren.isEmpty()))
+        {
+            content->decor.append(entry);
+        }
+    }
+
+    if (content == nullptr)
+    {
+        return;
+    }
+
+    // Hand back what was drawn, in the shape a writer needs. Assembled from the pairs kept
+    // during the walk rather than re-derived: a group is one object holding the members it
+    // was nested as, and only that walk knows which items those are.
+    for (int l = 0; l < layers.size() && l < itemsByLayer.size(); ++l)
+    {
+        OExportCanvasContent::Layer entry;
+        entry.label = layers.at(l).label;
+
+        // The name the layer is to be written under, read on the key the trace styles were
+        // read on — the same table, resolved once above for drawing and reused here for
+        // naming. The label stays what identifies the size; only the name changes.
+        const auto style = styles.constFind(entry.label);
+        if (style != styles.cend())
+        {
+            entry.displayName = style->layerName;
+        }
+
+        QHash<QString, int> objectOfName;
+        const QVector<QGraphicsItem *> &items = itemsByLayer.at(l);
+        for (int k = 0; k < items.size() && k < geometriesByLayer.at(l).size(); ++k)
+        {
+            const OExportPieceGeometry *geometry = geometriesByLayer.at(l).at(k);
+            const bool grouped = IsGroupedMember(pattern, geometry->groupId);
+            const QString name = grouped ? geometry->groupName : geometry->name;
+
+            int index = objectOfName.value(name, -1);
+            if (index < 0)
+            {
+                OExportCanvasContent::Object object;
+                object.name = name;
+                object.isGroup = grouped;
+                entry.objects.append(object);
+                index = static_cast<int>(entry.objects.size()) - 1;
+                objectOfName.insert(name, index);
+            }
+
+            if (grouped)
+            {
+                entry.objects[index].members.append({geometry->name, items.at(k)});
+            }
+            else
+            {
+                entry.objects[index].loneItem = items.at(k);
+            }
+        }
+
+        content->layers.append(entry);
     }
 }
