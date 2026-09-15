@@ -229,6 +229,18 @@ private slots:
     auto RunExportNesting(const OExportRunRequest &request, const OGradedSizeRanges::Context &context)
         -> std::optional<OExportOutput>;
 
+    /** @brief Nest @p request, file the result under @p name, and show it. This is the one
+     *         way a generation enters the dock — the entry dialog's own Generate button and
+     *         every line of its list to generate come through here.
+     *
+     *         The name is settled by the caller, never derived here: the dialog is the only
+     *         side that knows the labels a single size is named by, and the only one that can
+     *         see the list a name must not collide with. It is used as given, which is what
+     *         makes the name on the line and the name in the dock the same name.
+     *  @return false when the run failed — the reason has already been shown. */
+    auto GenerateNamedExport(const OExportRunRequest &request, const QString &name,
+                             const OGradedSizeRanges::Context &context) -> bool;
+
     /** @brief Draw @p output in the Export scene. Recomputes nothing — no nesting, no
      *         geometry: that is the whole point of keeping a generation. */
     void ShowExportOutput(const OExportOutput &output, bool zoomFit);

@@ -288,6 +288,48 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
+ * @brief GenerateNamedExport nest a run, file it under its name, and show it.
+ *
+ * The one way a generation enters the dock: the entry dialog's own Generate button and
+ * every line of its list to generate come through here, so that a run asked for one by one
+ * and a run asked for as part of a batch are the same run.
+ */
+auto MainWindow::GenerateNamedExport(const OExportRunRequest &request, const QString &name,
+                                     const OGradedSizeRanges::Context &context) -> bool
+{
+    std::optional<OExportOutput> output = RunExportNesting(request, context);
+    if (not output.has_value())
+    {
+        // The failure has already been reported. Nothing is filed and nothing is taken
+        // away: the mode stays, and a line that failed keeps its line in the list.
+        return false;
+    }
+
+    // As given, never uniquified here: the name was reserved where it was derived — against
+    // the generations the dock lists and against the lines of the list to generate — and it
+    // is the name the user read on the line she asked for. A second uniqueness pass could
+    // only rename the generation away from what she agreed to.
+    output->name = name;
+
+    const quint32 id = m_exportOutputs.Append(std::move(*output));
+
+    // Raised AFTER the run, never inside it: even if resolving the geometry emitted
+    // patternChanged, the state that comes out of a successful generation is "up to
+    // date" — otherwise the warning would greet the user on every re-entry, and
+    // "nothing changed, show the last generation" would never be true twice.
+    m_exportOutputs.SetStale(false);
+
+    RefreshOutputsDock();
+
+    if (const OExportOutput *stored = m_exportOutputs.Find(id))
+    {
+        ShowExportOutput(*stored, /*zoomFit*/ true);
+    }
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
  * @brief RenameExportOutput write the new name from the dock into the store and refresh.
  *
  * The dock already rejected empty and conflicting names before emitting renameRequested —
