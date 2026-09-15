@@ -64,17 +64,18 @@ auto ToPath64(const QVector<VLayoutPoint> &points, const QPointF &offset) -> Cli
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, double binWidthPx) -> OExportNestingResult
+auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportNestingParams &params)
+    -> OExportNestingResult
 {
     OExportNestingResult result;
-    result.binWidthPx = binWidthPx;
+    result.binWidthPx = params.binWidthPx;
 
     if (layers.isEmpty())
     {
         result.error = QObject::tr("The size range carries no piece to nest.");
         return result;
     }
-    if (binWidthPx <= 0.0)
+    if (params.binWidthPx <= 0.0)
     {
         result.error = QObject::tr("The document width must be greater than zero.");
         return result;
@@ -132,16 +133,13 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, double binWidt
 
     // Fixed width, unbounded height: the height is what the nesting produces.
     //
-    // The margin and the gap are lengths in millimetres, and the engine consumes every
-    // length in the same pixels as the polygons. They are converted once, here: handed
-    // over raw, 5.0 means 5 px — 1.3 mm — which is not the policy Rabnest applies, and
-    // comparing the two engines would compare two different problems.
-    constexpr double kMmToPx = 96.0 / 25.4;
-    constexpr double kMarginAndGapPx = 5.0 * kMmToPx;
-
-    const Bin bin(binWidthPx, kMarginAndGapPx);
+    // The margin and the gap arrive already in pixels, like the width and the polygons:
+    // the engine consumes every length on the same scale, and the conversion from the
+    // millimetres the user set is made once, at the caller — handed over raw, 5.0 would
+    // mean 5 px, which is 1.3 mm, and not the policy Rabnest applies.
+    const Bin bin(params.binWidthPx, params.marginPx);
     Engine::Config config;
-    config.gap = kMarginAndGapPx;
+    config.gap = params.gapPx;
     const Engine engine{config};
     const std::vector<Placement> placements = engine.place(bin, footprint.polygons);
 

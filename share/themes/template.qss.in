@@ -741,8 +741,16 @@ QDialog QTabWidget::pane {
     background: $DialogTabBg;
 }
 
+/* L'onglet SÉLECTIONNÉ garde le fond du panneau : il fait corps avec la page en dessous,
+   et c'est ce que la règle voulait. L'onglet INACTIF ne peut pas prendre le même token —
+   les deux états portaient $DialogTabBg, donc les onglets étaient indiscernables et rien
+   ne disait où l'utilisatrice se trouvait. Il prend $TableHeaderBg, la valeur que la
+   règle générale donne déjà à un onglet inactif, plus sombre que le panneau dans les deux
+   thèmes (light : Gray200 sur Gray100 ; dark : Gray900 sur Gray800). La couleur du texte
+   suit toute seule : $TextSecondary / $Text viennent de la règle générale, que cette
+   surcharge ne touche pas. */
 QDialog QTabBar::tab {
-    background: $DialogTabBg;
+    background: $TableHeaderBg;
 }
 
 QDialog QTabBar::tab:selected {

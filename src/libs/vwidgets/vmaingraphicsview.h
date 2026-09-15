@@ -116,6 +116,13 @@ private:
     void PinchTriggered(QPinchGesture *gesture);
 };
 
+/// The framing margin that leaves the content clear of the viewport edges: one ZoomOut step,
+/// the view scaling by 1.1, expressed as the share of the content added per side.
+///
+/// Declared here rather than inside the class: a member variable cannot live in a `slots:`
+/// section, where moc reads every declaration as a slot.
+constexpr qreal kFitMarginOneZoomStep = 0.05;
+
 /**
  * @brief The VMainGraphicsView class main scene view.
  */
@@ -171,6 +178,15 @@ public slots:
     void ZoomOut();
     void ZoomOriginal();
     void ZoomFitBest();
+
+    /// @brief ZoomFitBest, framed with @p marginRatio of the content left clear on each side.
+    ///
+    /// A true fit runs the content against all four edges of the viewport, because the scale
+    /// is chosen to make it fit. With a margin the whole of it is shown with air around it —
+    /// what the Export mode asks for, a plan being something to read as a whole rather than
+    /// to inspect along its border. The default is one ZoomOut step past the fit, so "fit
+    /// best, then zoom out once" is literally what this does.
+    void ZoomFitBestFramed(qreal marginRatio = kFitMarginOneZoomStep);
     void ResetScrollingAnimation();
     void EnsureToolVisible(const QRectF &rect);
 

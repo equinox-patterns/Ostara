@@ -528,6 +528,12 @@ void VMainGraphicsView::ZoomOriginal()
 //---------------------------------------------------------------------------------------------------------------------
 void VMainGraphicsView::ZoomFitBest()
 {
+    ZoomFitBestFramed(0.0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsView::ZoomFitBestFramed(qreal marginRatio)
+{
     auto *currentScene = qobject_cast<VMainGraphicsScene *>(scene());
     SCASSERT(currentScene)
     const QRectF rect = currentScene->VisibleItemsBoundingRect();
@@ -536,15 +542,45 @@ void VMainGraphicsView::ZoomFitBest()
         return;
     }
 
+    // What gets framed: the content, plus the margin on every side. Fitting this instead of
+    // the content itself is what leaves the air — the scale comes out one step smaller, and
+    // the centre is the same, so the content simply sits smaller in the middle.
+    const QRectF framed =
+        marginRatio > 0.0 ? rect.adjusted(-rect.width() * marginRatio, -rect.height() * marginRatio,
+                                          rect.width() * marginRatio, rect.height() * marginRatio)
+                          : rect;
+
     VMainGraphicsView::NewSceneRect(scene(), this);
 
-    this->fitInView(rect, Qt::KeepAspectRatio);
+    this->fitInView(framed, Qt::KeepAspectRatio);
     QTransform transform = this->transform();
 
     const qreal factor = qBound(MinScale(), transform.m11(), MaxScale());
     transform.setMatrix(factor, transform.m12(), transform.m13(), transform.m21(), factor, transform.m23(),
                         transform.m31(), transform.m32(), transform.m33());
     this->setTransform(transform);
+
+    // The room to centre has to be given, because the rect NewSceneRect just built does not
+    // have it. That rect is the items united with the visible area AT THE SCALE IN FORCE —
+    // and immediately after a fit, the visible area IS the viewport. The scene rect comes out
+    // a few pixels larger than the viewport, the scroll range is those few pixels, and the
+    // centerOn below clamps: the content stays pinned against an edge instead of centred.
+    //
+    // Centring needs HALF the leftover on each side. Measured, not supposed — on a 1211x970
+    // viewport the rect left 10 px of travel where 56 were needed, and the plan sat against
+    // the right edge; a taller plan needed 58 px of vertical travel and got 10, and sat
+    // against the top. Worse, every further press fitted from an ever-wider visible area, so
+    // the rect grew and the framing crept towards centre — which is exactly what "I have to
+    // press it several times" looks like from the outside.
+    const qreal scale = this->transform().m11();
+    if (scale > 0.0)
+    {
+        const qreal padX = qMax(0.0, (viewport()->width() / scale - framed.width()) / 2.0);
+        const qreal padY = qMax(0.0, (viewport()->height() / scale - framed.height()) / 2.0);
+        scene()->setSceneRect(framed.adjusted(-padX, -padY, padX, padY));
+    }
+    this->centerOn(framed.center());
+
     emit ScaleChanged(this->transform().m11());
 }
 

@@ -226,8 +226,8 @@ private slots:
      *         the run failed — the reason has already been shown to the user.
      *         The context is passed in rather than re-read, so the generation records
      *         the table it was really made under, not the one in force seconds later. */
-    auto RunExportNesting(qreal documentWidth, const QString &rangeName, bool singleSize, qreal baseA, qreal baseB,
-                          qreal baseC, const OGradedSizeRanges::Context &context) -> std::optional<OExportOutput>;
+    auto RunExportNesting(const OExportRunRequest &request, const OGradedSizeRanges::Context &context)
+        -> std::optional<OExportOutput>;
 
     /** @brief Draw @p output in the Export scene. Recomputes nothing — no nesting, no
      *         geometry: that is the whole point of keeping a generation. */

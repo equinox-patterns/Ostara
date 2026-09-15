@@ -29,6 +29,24 @@
 #include <utility>
 
 //---------------------------------------------------------------------------------------------------------------------
+auto RequestOf(const OExportOutput &output) -> OExportRunRequest
+{
+    OExportRunRequest request;
+    request.documentWidthMm = output.documentWidthMm;
+    request.unit = output.unit;
+    request.rangeName = output.rangeName;
+    request.singleSize = output.singleSize;
+    request.baseA = output.baseA;
+    request.baseB = output.baseB;
+    request.baseC = output.baseC;
+    request.marginMm = output.marginMm;
+    request.gapMm = output.gapMm;
+    request.printModelToken = output.printModelToken;
+    request.columns = output.columns;
+    return request;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportOutputStore::Clear()
 {
     m_outputs.clear();

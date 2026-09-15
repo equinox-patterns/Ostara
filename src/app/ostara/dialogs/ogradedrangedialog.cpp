@@ -27,6 +27,7 @@
 #include "ogradedrangedialog.h"
 
 #include "../vmisc/FactoryWidgets.h"
+#include "core/ogradedsizerangename.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -273,6 +274,9 @@ void OGradedRangeDialog::BuildStep2Page()
     // Ligne 1 — the range name.
     m_nameEdit = new QLineEdit(m_step2);
     m_nameEdit->setPlaceholderText(tr("Size range name"));
+    // A range name ends up inside an exported file name: `/` and `:` are refused at
+    // the keystroke, not reported after the fact.
+    m_nameEdit->setValidator(MakeSizeRangeNameValidator(m_nameEdit));
     auto *nameRow = new QHBoxLayout();
     nameRow->addWidget(new QLabel(tr("Name:"), m_step2));
     nameRow->addWidget(m_nameEdit, 1);

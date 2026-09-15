@@ -38,6 +38,7 @@
 #include "oexportgeometry.h"
 #include "oexportnesting.h"
 #include "../vpatterndb/osizerange.h"
+#include "../vmisc/def.h"
 
 /**
  * @brief One generation: the outcome of a nesting run, kept as it was produced.
@@ -63,9 +64,14 @@ struct OExportOutput
     bool hasRange{false}; ///< false for a single-size run
     QString rangeName{};  ///< the range name — the label, and the key the size styles resolve by
 
-    qreal documentWidth{0.0};            ///< the width the user asked for, in pattern units
-    QVector<OExportSizeLayer> layers{};  ///< the pattern resolved for every size
-    OExportNestingResult result{};       ///< the placements, and the bin they were placed in
+    /// The width the nesting ran on, in MILLIMETRES. Not in the pattern's unit: the width
+    /// is now derived from the print model, which is a standard in millimetres before it is
+    /// anything on screen — storing what the user happened to be reading would change what
+    /// the stored value means the day she switched units, and every replay with it.
+    qreal documentWidthMm{0.0};
+
+    QVector<OExportSizeLayer> layers{}; ///< the pattern resolved for every size
+    OExportNestingResult result{};      ///< the placements, and the bin they were placed in
 
     /// What the run was asked for, kept so that it can be asked again — this is what makes
     /// Refresh possible.
@@ -80,7 +86,57 @@ struct OExportOutput
     qreal baseA{0.0};       ///< the dimension bases the dialog pinned (single-size path only)
     qreal baseB{0.0};
     qreal baseC{0.0};
+
+    /// The margin and the gap belong to that same list, and for the same reason: both move
+    /// the pieces. A replay that guessed them would draw a plan nobody asked for while
+    /// claiming to be refreshing the one on screen.
+    qreal marginMm{5.0}; ///< the document margin the run was asked for, in millimetres
+    qreal gapMm{5.0};    ///< the space between two pieces, in millimetres
+
+    /// The unit the run was entered in. It changes nothing about the result — every length
+    /// is stored in millimetres — but it is what the figures are written in, here and in
+    /// the status bar: without it the same run would read "84,1 cm" in the dialog and
+    /// "841 mm" once generated.
+    Unit unit{Unit::Cm};
+
+    /// The print model, by token rather than by pointer: the table is a static, but the
+    /// token is what the generated name carries and what the model is looked back up by.
+    QString printModelToken{};
+
+    /// Sheets side by side. Irrelevant to a roll — which has none — and kept all the same,
+    /// so that the replay does not have to guess whether zero meant "one" or "unknown".
+    int columns{1};
 };
+
+/**
+ * @brief Everything one run is asked for, in one piece.
+ *
+ * Grouped rather than passed as a row of arguments, and not only for the count: the list
+ * holds three lengths (the width, the margin, the gap) and three bases, all of them
+ * numbers of the same order, and a positional call would let any of them swap with its
+ * neighbour without the compiler noticing. It is also exactly what the replay hands back.
+ */
+struct OExportRunRequest
+{
+    qreal documentWidthMm{0.0};
+    Unit unit{Unit::Cm};
+    QString rangeName{};
+    bool singleSize{false};
+    qreal baseA{0.0};
+    qreal baseB{0.0};
+    qreal baseC{0.0};
+    qreal marginMm{5.0};
+    qreal gapMm{5.0};
+    QString printModelToken{};
+    int columns{1};
+};
+
+/// @brief The request that reproduces @p output — what the Refresh entry hands back.
+///
+/// Written next to the data it reads, so that a field added to OExportOutput and forgotten
+/// here is a field the replay silently drops: the two lists sit in the same file, and the
+/// one that has to follow the other is right below it.
+auto RequestOf(const OExportOutput &output) -> OExportRunRequest;
 
 /**
  * @brief The generations of the session, owned by MainWindow.

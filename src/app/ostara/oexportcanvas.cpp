@@ -285,7 +285,18 @@ struct DecorFrame
 /// the engine may turn it by any multiple of two degrees.
 auto MakeDecorHost(VMainGraphicsScene *scene, const DecorFrame &frame) -> QGraphicsItem *
 {
-    auto *host = new QGraphicsRectItem(0.0, 0.0, frame.bounds.width(), frame.bounds.height());
+    // The carrier's rect expressed in its OWN frame — which is frame.bounds brought back by
+    // frame.origin, since origin is the point of the owner's frame that is its local (0, 0).
+    //
+    // Writing (0, 0, w, h) instead assumes that point IS bounds.topLeft(), which holds for a
+    // group and not for a piece: a piece's children are stored in the document's coordinates,
+    // so its origin is the document origin and its bounds sit elsewhere. The rect then
+    // sprawled from the document origin instead of covering the piece — and a carrier is
+    // invisible (no pen, no brush) but still VISIBLE to the scene, so it fed
+    // VisibleItemsBoundingRect() a rectangle somewhere off the plan. ZoomFitBest frames that
+    // union: the zoom came out right for the plan and the framing did not, leaving the plan
+    // pinned to one edge of the viewport.
+    auto *host = new QGraphicsRectItem(frame.bounds.translated(-frame.origin));
     host->setPos(frame.placement.map(frame.origin));
     host->setRotation(frame.rotation);
     host->setPen(Qt::NoPen);

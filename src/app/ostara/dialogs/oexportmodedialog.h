@@ -4,7 +4,8 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   12/09/2026
  **
- **  @brief  Export mode entry dialog — what to nest, on which bin.
+ **  @brief  Export mode entry dialog — one tab per thing the mode can be
+ **          asked for, and the sheet the run comes out on.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -29,54 +30,50 @@
 
 #include <QDialog>
 #include <QSharedPointer>
-#include <QStringList>
-#include "core/ogradedsizeranges.h"
 
-#include <QVector>
+#include "../core/ogradedsizeranges.h"
+#include "../vmisc/def.h"
 
-class QComboBox;
+class OExportPrintWidget;
 class QDialogButtonBox;
 class QEvent;
-class QFormLayout;
-class QLabel;
-class QLineEdit;
+class QTabWidget;
 class VContainer;
 class VMeasurements;
 
-/// @brief Entry dialog of the Export mode.
-///
-/// Asks for the name of the generation, the width of the document and what to nest,
-/// then gets out of the way. The width is typed in the pattern's own unit — the label
-/// next to the field follows the pattern, it is never typed by the user. The name is
-/// required, and unique among the generations already listed: it is what identifies
-/// one row of the Outputs dock.
-///
-/// What to nest is either a whole size range (multisize) or a single size, chosen
-/// here with the same dimension drop-downs Details mode offers in its top bar. The
-/// single-size path exists because it is the one Details and Layout already use:
-/// the geometry is read as it stands, no measurement is re-read.
-///
-/// The ranges come from the pattern itself, and the geometry never leaves the
-/// application: nothing is exported, nothing is read back.
+/**
+ * @brief Entry dialog of the Export mode.
+ *
+ * The mode is asked for three different things — a list of runs to fire one after the
+ * other, a cutting plan, and a projection — and they have almost nothing in common but
+ * the nesting underneath. Hence one tab each rather than one form that grew a second
+ * meaning: the tab that describes what the user came for is the only one that shows.
+ *
+ * <b>Print</b> is the only tab that is built. The other three announce themselves and
+ * nothing more — a mode that silently lacked two thirds of what it will do would read as
+ * a mode that was finished. The dialog opens on Print, the one tab that can be acted on.
+ *
+ * The dialog owns no field of its own: every value the run needs comes from the Print
+ * tab, and the accessors below are the pass-through. That is deliberate — the same values
+ * will have to be read from the other tabs the day they exist, and a dialog that held a
+ * second copy of them would be a second place to keep them right.
+ */
 class OExportModeDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    /// @param takenNames the names the Outputs dock already lists in the current context.
-    ///                   A name identifies a generation among its siblings, so one that is
-    ///                   taken cannot be used again. The dialog cannot find that list: it
-    ///                   holds neither the store nor the context filter, and the caller
-    ///                   owns both.
     /// @param context the (measurements table, declared grading axis) the pattern is on.
     ///                The dialog cannot resolve it: it holds no document. The range list
     ///                is restricted to it, exactly as the Graded dock restricts its own.
     explicit OExportModeDialog(const VContainer *data, const QSharedPointer<VMeasurements> &measurements,
-                               const QStringList &takenNames, const OGradedSizeRanges::Context &context,
-                               QWidget *parent = nullptr);
+                               const OGradedSizeRanges::Context &context, QWidget *parent = nullptr);
 
-    /// @brief The entered document width, in the pattern's unit.
-    auto DocumentWidth() const -> qreal;
+    /// @brief The width the nesting runs on, in millimetres.
+    auto DocumentWidthMm() const -> qreal;
+
+    auto MarginMm() const -> qreal;
+    auto GapMm() const -> qreal;
 
     /// @brief Key of the selected size range. Empty in single-size mode.
     auto SizeRangeName() const -> QString;
@@ -88,71 +85,44 @@ public:
     ///        -1 when the table carries no such axis, or the user picked nothing for it.
     auto DimensionBase(int index) const -> qreal;
 
-    /// @brief The entered name for the generation. Trimmed; empty when the field is blank.
-    auto Name() const -> QString;
+    /// @brief What the axis in slot @p index reads as, empty when the table carries none.
+    auto DimensionLabel(int index) const -> QString;
+
+    /// @brief The token of the print model the run was asked for.
+    auto PrintModelToken() const -> QString;
+
+    /// @brief How many sheets side by side; 1 on a roll.
+    auto Columns() const -> int;
+
+    /// @brief The unit the run was read in.
+    auto DisplayUnit() const -> Unit;
 
 protected:
     void changeEvent(QEvent *event) override;
 
 private:
-    /// @brief True when the measurement table carries axes, so a size can be picked along
-    ///        them.
+    /// @brief A tab that exists and does nothing yet, saying so rather than showing
+    ///        an empty page.
+    static auto MakeComingSoonTab(QWidget *parent) -> QWidget *;
+
+    void Retranslate();
+
+    /// @brief Keep the dialog at least as wide as its tab bar.
     ///
-    /// Asked of the table's dimensions rather than of its type: a legacy .vst that was
-    /// never converted is multisize and still carries none, and it is the dimensions that
-    /// decide whether there is a size to choose at all.
-    auto HasAxes() const -> bool;
+    /// A QTabWidget whose tabs do not fit does not grow: it elides the labels, or grows
+    /// scroll arrows beside them. Four tabs the user cannot read are four tabs she cannot
+    /// choose between, so the width is imposed from the labels instead — and re-imposed
+    /// whenever they change language.
+    void AdjustMinimumWidth();
 
-    /// @brief True when @p name is one of the generations already listed. An empty name is
-    ///        never taken — it is missing, which is a different refusal.
-    auto IsNameTaken(const QString &name) const -> bool;
-
-    /// @brief Keep the name field on a value the run can be filed under, and refresh the
-    ///        cue and OK.
-    void OnNameChanged(const QString &text);
-
-    /// @brief The red border: what the field holds right now cannot name a generation.
-    void UpdateNameCue();
-
-    void PopulateSizeRanges();
-    void PopulateDimensions();
-    void UpdateSourceVisibility();
-    void UpdateUnitLabel();
-    void CheckState();
-
-    const VContainer *m_data{nullptr};
-    QSharedPointer<VMeasurements> m_measurements{};
-    OGradedSizeRanges::Context m_rangeContext{};
-    QStringList m_takenNames{};
-
-    QLabel *m_widthLabel{nullptr};
-    QLineEdit *m_widthEdit{nullptr};
-    QLabel *m_unitLabel{nullptr};
-
-    QLabel *m_nameLabel{nullptr};
-    QLineEdit *m_nameEdit{nullptr};
-
-    QFormLayout *m_form{nullptr};
-
-    QLabel *m_sourceLabel{nullptr};
-    QComboBox *m_sourceCombo{nullptr};
-
-    QLabel *m_rangeLabel{nullptr};
-    QComboBox *m_rangeCombo{nullptr};
-
-    /// Dimension label/combo pairs, in the order of the measurement table.
-    QVector<QLabel *> m_dimensionLabels{};
-    QVector<QComboBox *> m_dimensionCombos{};
-
-    /// The axis slot each pair feeds, alongside it (0 = X, 1 = Y, 2 = W; -1 when the
-    /// export has no slot for the dimension). The rows follow the table's own order,
-    /// which is NOT the order of the slots — and the reader reads by slot, because the
-    /// document is put on a size by naming its axes. A table with a gap ({X, W}, no Y)
-    /// would otherwise hand W's value to slot B while the reader looks for W in slot C,
-    /// find nothing there, and resolve every measurement to zero.
-    QVector<int> m_dimensionSlots{};
-
+    OExportPrintWidget *m_printWidget{nullptr};
+    QTabWidget *m_tabs{nullptr};
     QDialogButtonBox *m_buttonBox{nullptr};
+
+    QWidget *m_listTab{nullptr};
+    QWidget *m_cuttingTab{nullptr};
+    QWidget *m_printTab{nullptr};
+    QWidget *m_projectorTab{nullptr};
 };
 
 #endif // OEXPORTMODEDIALOG_H

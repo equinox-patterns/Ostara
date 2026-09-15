@@ -46,6 +46,7 @@
 #include <QVBoxLayout>
 
 #include "MeasurementWorkspace/MeasurementLibraryScanner.h"
+#include "core/ogradedsizerangename.h"
 #include "core/ogradedfavorites.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vmisc/vabstractapplication.h"
@@ -120,6 +121,29 @@ public:
         const QRect iconRect(center.x() - iconSize.width() / 2,
                              center.y() - iconSize.height() / 2, iconSize.width(), iconSize.height());
         icon.paint(painter, iconRect, Qt::AlignCenter, mode);
+    }
+};
+
+//---------------------------------------------------------------------------------------------------------------------
+// The name cell is the only editable one, and its editor is built by the delegate
+// rather than by this widget — so the filter keeping `/` and `:` out has to be
+// installed here. There is nowhere else to reach the QLineEdit before it is typed in.
+// This only filters the keystrokes: a programmatic setText walks past it, which is
+// why OnNameEdited keeps its own guard.
+class NameDelegate final : public QStyledItemDelegate
+{
+public:
+    using QStyledItemDelegate::QStyledItemDelegate;
+
+    auto createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                      const QModelIndex &index) const -> QWidget * override
+    {
+        QWidget *editor = QStyledItemDelegate::createEditor(parent, option, index);
+        if (auto *lineEdit = qobject_cast<QLineEdit *>(editor))
+        {
+            lineEdit->setValidator(MakeSizeRangeNameValidator(lineEdit));
+        }
+        return editor;
     }
 };
 
@@ -204,6 +228,8 @@ void OWidgetSizeRanges::BuildUi()
     {
         m_table->setItemDelegateForColumn(col, new IconDelegate(m_table));
     }
+    // The name column is the only editable one — its editor refuses `/` and `:`.
+    m_table->setItemDelegateForColumn(kName, new NameDelegate(m_table));
 
     // Route clicks: activate (dot/name), favorite toggle, edit, duplicate, delete.
     // Only the export column (kExport) is still visual-only.

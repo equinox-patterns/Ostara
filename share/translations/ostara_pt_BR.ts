@@ -8654,47 +8654,47 @@ This action cannot be undone.</source>
         <translation>Valentina</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1706"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1715"/>
         <source>Point along perpendicular</source>
         <translation>Ponto ao longo da perpendicular</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1796"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1805"/>
         <source>Perpendicular point along line</source>
         <translation>Ponto perpendicular ao longo da linha</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1724"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1733"/>
         <source>Point along bisector</source>
         <translation>Ponto ao longo da bissetriz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1526"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1535"/>
         <source>Point at distance and angle</source>
         <translation>Ponto à distância e ângulo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1688"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1697"/>
         <source>Point at distance along line</source>
         <translation>Ponto a uma distância sobre a linha</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1868"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1877"/>
         <source>Line between points</source>
         <translation>Linha entre dois pontos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1850"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1859"/>
         <source>Point at line intersection</source>
         <translation>Ponto na interseção entre duas linhas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1904"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1913"/>
         <source>Curve</source>
         <translation>Curva</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1598"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1607"/>
         <source>Arc</source>
         <translation>Arco</translation>
     </message>
@@ -8713,184 +8713,184 @@ This action cannot be undone.</source>
         <translation type="vanished">Opções de ferramentas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="448"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="457"/>
         <source>Dependency tree</source>
         <translation>Árvore de dependência</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="460"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="469"/>
         <source>New</source>
         <translation>Novo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="463"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="472"/>
         <source>&amp;New</source>
         <translation>&amp;Novo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="466"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="475"/>
         <source>Create a new pattern</source>
         <translation>Criar um novo molde</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="480"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="489"/>
         <source>Open</source>
         <translation>Abrir</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="483"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="492"/>
         <source>&amp;Open</source>
         <translation>&amp;Abrir</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="486"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="495"/>
         <source>Open file with pattern</source>
         <translation>Abrir arquivo com molde</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="503"/>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="675"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="512"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="678"/>
         <source>Save</source>
         <translation>Salvar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="506"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="515"/>
         <source>&amp;Save</source>
         <translation>&amp;Salvar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="509"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="518"/>
         <source>Save pattern</source>
         <translation>Salvar molde</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1169"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1178"/>
         <source>Load Measurements</source>
         <translation>Carregar medidas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2393"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2402"/>
         <source>Arc start point</source>
         <translation>Ponto de início do arco</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2411"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2420"/>
         <source>Arc end point</source>
         <translation>Ponto final do arco</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2425"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2434"/>
         <source>Boundary together with notches</source>
         <translation>Contorno com piques</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2433"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2442"/>
         <source>Settings Directory</source>
         <translation>Diretório de Configurações</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2482"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2491"/>
         <source>Elliptical arc with given length</source>
         <translation>Arco elíptico com comprimento determinado</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2500"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2509"/>
         <source>Parallel curve tool</source>
         <translation>Ferramenta de curva paralela</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2518"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2521"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2527"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2530"/>
         <source>Graduated curve tool</source>
         <translation>Ferramenta de curva graduada</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="529"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="538"/>
         <source>Save not yet saved pattern</source>
         <translation>Salvar molde ainda não salvo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="553"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="562"/>
         <source>Draw</source>
         <translation>Traçado</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="577"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="586"/>
         <source>Details</source>
         <translation>Moldes</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="604"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="613"/>
         <source>Pointer tools</source>
         <translation>Ferramentas de cursor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="622"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="631"/>
         <source>New pattern piece</source>
         <translation>Nova peça</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="625"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="634"/>
         <source>Add new pattern piece</source>
         <translation>Adicionar nova peça</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="746"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="755"/>
         <source>About &amp;Qt</source>
         <translation>Sobre &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="774"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="783"/>
         <source>E&amp;xit</source>
         <translation>&amp;Sair</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="777"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="786"/>
         <source>Exit the application</source>
         <translation>Sair do aplicativo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="788"/>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="335"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="797"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="336"/>
         <source>Preferences</source>
         <translation>Preferências</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="802"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="811"/>
         <source>Pattern properties</source>
         <translation>Propriedades do molde</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="377"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="819"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="386"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="828"/>
         <source>Zoom in</source>
         <translation>Aproximar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="822"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="831"/>
         <source>zoom in</source>
         <translation>aproximar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="390"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="839"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="842"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="399"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="848"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="851"/>
         <source>Zoom out</source>
         <translation>Afastar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="879"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="888"/>
         <source>Zoom fit best</source>
         <translation>Ajustar à janela</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="893"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="902"/>
         <source>Report bug</source>
         <translation>Reportar erro</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="612"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="442"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="615"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="455"/>
         <source>Pattern piece %1</source>
         <translation>Peça %1</translation>
     </message>
@@ -9035,7 +9035,7 @@ This action cannot be undone.</source>
         <translation>Salvar como</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1252"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1255"/>
         <source>Could not save file</source>
         <translation>Não foi possível salvar o arquivo</translation>
     </message>
@@ -9047,29 +9047,29 @@ This action cannot be undone.</source>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="344"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="372"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="357"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="385"/>
         <source>Error parsing file.</source>
         <translation>Erro ao analisar o arquivo.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="351"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="364"/>
         <source>Error can&apos;t convert value.</source>
         <translation>Erro: Não foi possível converter o valor.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="202"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="358"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="371"/>
         <source>Error empty parameter.</source>
         <translation>Erro de parâmetro vazio.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="365"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="378"/>
         <source>Error wrong id.</source>
         <translation>Id. incorreta.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="379"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="392"/>
         <source>Error parsing file (std::bad_alloc).</source>
         <translation>Erro ao analisar o arquivo (std::bad_alloc).</translation>
     </message>
@@ -9096,7 +9096,7 @@ This action cannot be undone.</source>
         <translation>&amp;Refazer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="533"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="552"/>
         <source>Object</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9111,85 +9111,85 @@ This action cannot be undone.</source>
         <translation>Insira um novo rótulo para a peça de modelagem.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="787"/>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1084"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="790"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1087"/>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="92"/>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="605"/>
         <source>File error.</source>
         <translation>Erro de arquivo.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1209"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1212"/>
         <source>Valentina didn&apos;t shut down correctly. Do you want reopen files (%1) you had open?</source>
         <translation>Valentina não fechou corretamente. Deseja abrir novamente os arquivos (%1) que estavam abertos?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1211"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1214"/>
         <source>Reopen files.</source>
         <translation>Reabrir arquivos.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1742"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1751"/>
         <source>Special point on shoulder</source>
         <translation>Ponto especial no ombro</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1760"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1769"/>
         <source>Triangle tool</source>
         <translation>Ferramenta de triângulo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1778"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1787"/>
         <source>Point from X and Y of two other points</source>
         <translation>Ponto a partir de X e Y de outros dois pontos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1814"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1823"/>
         <source>Point intersect line and axis</source>
         <translation>Ponto na interseção entre linha e eixo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1886"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1895"/>
         <source>Simple curve</source>
         <translation>Curva simples</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1994"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2003"/>
         <source>Curved path</source>
         <translation>Curva complexa</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1922"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1931"/>
         <source>Segmenting a simple curve</source>
         <translation>Segmentação de curva simples</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1670"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1679"/>
         <source>Segment a curved path</source>
         <translation>Segmentar uma curva complexa</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1616"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1625"/>
         <source>Point intersect curve and axis</source>
         <translation>Ponto na intersecção entre curva e eixo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1580"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1589"/>
         <source>Segment an arc</source>
         <translation>Segmentar um arco</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2282"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2291"/>
         <source>Union tool</source>
         <translation>Ferramenta de união</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="924"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="933"/>
         <source>Last Tool</source>
         <translation>Última ferramenta</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="927"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="936"/>
         <source>Activate last used tool again</source>
         <translation>Reative a última ferramenta usada</translation>
     </message>
@@ -9199,28 +9199,28 @@ This action cannot be undone.</source>
         <translation>Selecione o ponto para o valor X (vertical)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="601"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="610"/>
         <source>Pointer</source>
         <translation>Cursor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="643"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="652"/>
         <source>Config pattern piece</source>
         <translation>Configurar peça de modelagem</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="64"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="691"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="700"/>
         <source>Layout</source>
         <translation>Encaixe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="944"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="953"/>
         <source>Show Curve Details</source>
         <translation>Mostrar detalhes da curva</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="947"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="956"/>
         <source>Show/hide control points and curve direction</source>
         <translation>Mostrar/ocultar pontos de controle e direção da curva</translation>
     </message>
@@ -9229,27 +9229,27 @@ This action cannot be undone.</source>
         <translation type="vanished">Ferramentas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1544"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1553"/>
         <source>Point of intersection arcs</source>
         <translation>Ponto na interseção entre arcos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2048"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2057"/>
         <source>Point of intersection circles</source>
         <translation>Ponto na interseção entre círculos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2084"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2093"/>
         <source>Point from circle and tangent</source>
         <translation>Ponto na interseção entre um círculo e uma tangente</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2066"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2075"/>
         <source>Point from arc and tangent</source>
         <translation>Ponto na interseção entre um arco e uma tangente</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2030"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2039"/>
         <source>Arc with given length</source>
         <translation>Arco com comprimento determinado</translation>
     </message>
@@ -9259,33 +9259,33 @@ This action cannot be undone.</source>
         <translation>Páginas de plano de corte</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="984"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="993"/>
         <source>Print</source>
         <translation>Imprimir</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1004"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1013"/>
         <source>Print tiled PDF</source>
         <translation>Imprimir mosaico PDF</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1007"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1016"/>
         <source>Split and print a layout into smaller pages (for regular printers)</source>
         <translation>Dividir e imprimir um plano de corte em páginas menores (para impressoras comuns)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1024"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1033"/>
         <source>Print preview</source>
         <translation>Prévia de impressão</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1027"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1036"/>
         <source>Print preview original layout</source>
         <translation>Prévia da impressão do plano de corte original</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1068"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1505"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1077"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1514"/>
         <source>Export original layout</source>
         <translation>Exportar o plano de corte original</translation>
     </message>
@@ -9305,13 +9305,13 @@ This action cannot be undone.</source>
         <translation>Selecione o primeiro ponto da linha de base</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="694"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="695"/>
         <source>Detail mode</source>
         <translation>Modo Molde</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="760"/>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="773"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="761"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="774"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="193"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="291"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="369"/>
@@ -9320,7 +9320,7 @@ This action cannot be undone.</source>
         <translation>Modo Encaixe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="664"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="667"/>
         <source>Unsaved changes</source>
         <translation>Alterações não salvas</translation>
     </message>
@@ -9357,7 +9357,7 @@ This action cannot be undone.</source>
         <translation>Não foi possível exportar, a área de trabalho está vazia.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1484"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1493"/>
         <source>Create new Layout</source>
         <translation>Criar novo Plano de corte</translation>
     </message>
@@ -9367,7 +9367,7 @@ This action cannot be undone.</source>
         <translation>Falha ao bloquear. Este arquivo já foi aberto em outra janela.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1294"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1297"/>
         <source>Failed to lock. This file already opened in another window. Expect collissions when run 2 copies of the program.</source>
         <translation>Falha ao bloquear. Este arquivo já foi aberto em outra janela. Expectativa de colisão ao executar 2 cópias do programa.</translation>
     </message>
@@ -9387,8 +9387,8 @@ This action cannot be undone.</source>
         <translation>Não foi possível atualizar as medidas.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="952"/>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="969"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="955"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="972"/>
         <source>The measurements file &apos;%1&apos; could not be found.</source>
         <translation>O arquivo de medidas &apos;%1&apos; não foi encontrado.</translation>
     </message>
@@ -9418,62 +9418,62 @@ This action cannot be undone.</source>
         <translation>Por favor, forneça um arquivo de entrada.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="987"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="996"/>
         <source>Print an original layout</source>
         <translation>Imprimir um plano de corte original</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1044"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1053"/>
         <source>Preview tiled PDF</source>
         <translation>Visualizar PDF em mosaico</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1047"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1056"/>
         <source>Print preview tiled layout</source>
         <translation>Prévia da impressão do plano de corte em mosaico</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="556"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="565"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with pattern pieces. These pattern pieces are base for going to the next stage &amp;quot;Details mode&amp;quot;. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modo para trabalhar com peças de modelagem. Essas peças são base para a próxima etapa &amp;quot;Modo de Moldes&amp;quot;. Antes de habilitar o &amp;quot;modo Moldes&amp;quot; é necessário criar pelo menos uma peça.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="580"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="589"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with details. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail on the stage &amp;quot;Draw mode&amp;quot;. Details created on this stage will be used for creating a layout. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modo para trabalhar com moldes. Antes de habilitar o &amp;quot;modo Moldes&amp;quot; é necessário criar pelo menos um molde no estágio &amp;quot;Modo de Traçado&amp;quot;. Os moldes criados nesta etapa serão usados para criar um plano de corte. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="694"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="703"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for creating a layout of details. This mode avaliable if was created at least one detail on the stage &amp;quot;Details mode&amp;quot;. The layout can be exported to your prefered file format and saved to your harddirve.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modo para criar encaixe de moldes. Este modo fica disponível se foi criado ao menos um molde no estágio &quot;Moldes&quot;. O plano de corte pode ser exportado para o seu formato de arquivo preferido e salvo em seu disco rígido.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2228"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2237"/>
         <source>True darts</source>
         <translation>Ajuste de Pence</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="323"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="324"/>
         <source>New pattern</source>
         <translation>Novo molde</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="327"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="328"/>
         <source>Open pattern</source>
         <translation>Abrir molde</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="331"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="332"/>
         <source>Create/Edit measurements</source>
         <translation>Criar/editar medidas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="680"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="683"/>
         <source>Don&apos;t Save</source>
         <translation>Não salvar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1634"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1643"/>
         <source>Point intersection curves</source>
         <translation>Ponto de interseção entre curvas</translation>
     </message>
@@ -9483,7 +9483,7 @@ This action cannot be undone.</source>
         <translation>Selecionar primeira curva</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1958"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1967"/>
         <source>Curve tool which uses point as control handle</source>
         <translation>Curva simples usando pontos como alças de controle</translation>
     </message>
@@ -9498,25 +9498,25 @@ This action cannot be undone.</source>
         <translation>Selecione o pornto do caminho de bézier cúbico</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2156"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2165"/>
         <source>Rotate objects</source>
         <translation>Rotacionar objetos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="904"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="907"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="910"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="913"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="916"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="919"/>
         <source>Close pattern</source>
         <translation>Fechar molde</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1832"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1841"/>
         <source>Midpoint between two points</source>
         <translation>Ponto intermediário entre dois pontos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2210"/>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="526"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2219"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="545"/>
         <source>Group</source>
         <translation>Grupo</translation>
     </message>
@@ -9541,22 +9541,22 @@ This action cannot be undone.</source>
         <translation>O arquivo de medidas &lt;br/&gt;&lt;br/&gt; &lt;b&gt;%1&lt;/b&gt; &lt;br/&gt;&lt;br/&gt; não foi encontrado. Deseja atualizar o local do arquivo?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2138"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2147"/>
         <source>Flipping objects by line</source>
         <translation>Espelhar objetos em relação a uma linha</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2120"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2129"/>
         <source>Flipping objects by axis</source>
         <translation>Espelhar objetos em relação a um eixo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2174"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2183"/>
         <source>Move objects</source>
         <translation>Mover objetos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2012"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2021"/>
         <source>Elliptical Arc</source>
         <translation>Arco Elíptico</translation>
     </message>
@@ -9581,27 +9581,27 @@ This action cannot be undone.</source>
         <translation>Não foi possível salvar o arquivo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1323"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1326"/>
         <source>untitled.ostara</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1365"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1368"/>
         <source>read only</source>
         <translation>somente leitura</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="667"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="676"/>
         <source>Variables Table</source>
         <translation>Tabela de Variáveis</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="670"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="679"/>
         <source>Contains information about increments and internal variables</source>
         <translation>Contém informações sobre incrementos e variáveis internas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1186"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1195"/>
         <source>Edit Current</source>
         <translation>Editar atual</translation>
     </message>
@@ -9624,22 +9624,22 @@ This action cannot be undone.</source>
         <translation>Arquivos de molde</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2336"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2345"/>
         <source>Insert node tool</source>
         <translation>Ferramenta para inserir nó</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="695"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="696"/>
         <source>You can&apos;t use Detail mode yet. Please, create at least one workpiece.</source>
         <translation>O modo Moldes não pode ser utilizado agora. Crie pelo menos uma peça de trabalho.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="761"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="762"/>
         <source>You can&apos;t use Layout mode yet. Please, create at least one workpiece.</source>
         <translation>O mode Encaixe não pode ser utilizado agora. Crie pelo menos uma peça de trabalho.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="774"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="775"/>
         <source>You can&apos;t use Layout mode yet. Please, include at least one detail in layout.</source>
         <translation>O mode Encaixe não pode ser utilizado agora. Inclua pelo menos um molde no plano de corte.</translation>
     </message>
@@ -9649,17 +9649,17 @@ This action cannot be undone.</source>
         <translation>Não foi possível usar o modo Encaixe nessa etapa.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1082"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1091"/>
         <source>Zoom fit best current</source>
         <translation>Zoom para o melhor ajuste</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1085"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1094"/>
         <source>zoom fit best current pattern piece</source>
         <translation>zoom para a melhor visualização da peça</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2375"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2384"/>
         <source>Export details skiping the Layout stage</source>
         <translation>Exportar moldes ignorando a fase do Encaixe</translation>
     </message>
@@ -9685,32 +9685,32 @@ This action cannot be undone.</source>
         <translation>Não foi possível exportar modelagem.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2264"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2273"/>
         <source>Workpiece tool</source>
         <translation>Ferramenta de peça de trabalho</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2318"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2327"/>
         <source>Internal path tool</source>
         <translation>Ferramenta de caminho interno</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="526"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="535"/>
         <source>Save &amp;As…</source>
         <translation>Salvar &amp;Como…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="890"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="899"/>
         <source>Report Bug…</source>
         <translation>Reportar erro…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1065"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1074"/>
         <source>Export As…</source>
         <translation>Exportar Como…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="674"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="677"/>
         <source>Save…</source>
         <translation>Salvar…</translation>
     </message>
@@ -9730,52 +9730,52 @@ This action cannot be undone.</source>
         <translation>O caminho de destino está vazio.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1217"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1226"/>
         <source>Next pattern piece</source>
         <translation>Próxima peça</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1220"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1229"/>
         <source>Ctrl+PgDown</source>
         <translation>Ctrl+PgDown</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1231"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1240"/>
         <source>Previous pattern piece</source>
         <translation>Peça anterior</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1234"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1243"/>
         <source>Ctrl+PgUp</source>
         <translation>Ctrl+PgUp</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1464"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1473"/>
         <source>Tool &quot;Select&quot;</source>
         <translation>Ferramenta &quot;Selecionar&quot;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1481"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1490"/>
         <source>Layout settings</source>
         <translation>Configurações de encaixe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1502"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1511"/>
         <source>Layout export as</source>
         <translation>Exportar Encaixe como</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1940"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1949"/>
         <source>Segment a curve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2354"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2363"/>
         <source>Place label tool</source>
         <translation>Ferramenta de marcador de posição</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2300"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2309"/>
         <source>Duplicate detail tool</source>
         <translation>Ferramenta de cópia de molde</translation>
     </message>
@@ -9784,12 +9784,12 @@ This action cannot be undone.</source>
         <translation type="vanished">Selecione o ponto central da etiqueta de posição</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1060"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1063"/>
         <source>The measurements file &apos;%1&apos; could not be found or provides not enough information.</source>
         <translation>O arquivo de medidas &apos;%1&apos; não foi localizado ou não fornece informações suficientes.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="261"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="262"/>
         <source>Create new pattern piece to start working.</source>
         <translation>Crie uma nova peça de modelagem para começar a trabalhar.</translation>
     </message>
@@ -9809,7 +9809,7 @@ This action cannot be undone.</source>
         <translation>Acesso negado. Configuração não pode ser salva.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="489"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="498"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
@@ -9829,12 +9829,12 @@ This action cannot be undone.</source>
         <translation>Selecione um ou mais objetos mantendo pressionada a tecla &lt;b&gt;%1&lt;/b&gt; para seleção múltipla e, em seguida, a tecla &lt;b&gt;%2&lt;/b&gt; para encerrar a seleção</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2102"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2111"/>
         <source>Point of intersection circle and segment</source>
         <translation>Ponto na interseção entre circulo e segmento</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1304"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1313"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="245"/>
         <source>Export recipe</source>
         <translation>Exportar histórico</translation>
@@ -9855,68 +9855,68 @@ This action cannot be undone.</source>
         <translation>Não foi possível salvar o histórico. %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1652"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1661"/>
         <source>Curved path tool which uses point as control handle</source>
         <translation>Curva complexa usando pontos como alças de controle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1562"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1571"/>
         <source>Point of intersection arc and axis</source>
         <translation>Ponto na interseção entre arco e eixo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1318"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1327"/>
         <source>Show main path</source>
         <translation>Mostrar contorno principal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1321"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1330"/>
         <source>Globally show pieces main path</source>
         <translation>Mostrar globalmente o caminho principal das peças</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="314"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="307"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="323"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="320"/>
         <source>Pattern messages</source>
         <translation>Mensagens de alerta</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="326"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="335"/>
         <source>Clear all messages</source>
         <translation>Limpar todas as mensagens</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="370"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="379"/>
         <source>Filter</source>
         <translation>Filtrar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="282"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="295"/>
         <source>DEBUG</source>
         <translation>DEBUG</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="285"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="298"/>
         <source>WARNING</source>
         <translation>ATENÇÃO</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="288"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="301"/>
         <source>CRITICAL</source>
         <translation>CRÍTICO</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="291"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="304"/>
         <source>FATAL</source>
         <translation>FATAL</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="294"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="307"/>
         <source>INFO</source>
         <translation>INFO</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="339"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="348"/>
         <source>Auto refresh the list with each parse</source>
         <translation>Atualizar automaticamente a lista a cada análise</translation>
     </message>
@@ -9957,38 +9957,38 @@ This action cannot be undone.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="284"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2192"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2201"/>
         <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="646"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="655"/>
         <source>Change the name of pattern piece</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="760"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="769"/>
         <source>&amp;About Ostara</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="859"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="862"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="868"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="871"/>
         <source>Zoom 100%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="967"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="976"/>
         <source>Show segment point names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="970"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="979"/>
         <source>Allow segment point names to appear. Uncheck to hide them in all cases.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1099"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1108"/>
         <source>Final Measurements (Tape)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10008,163 +10008,168 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="711"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="311"/>
+        <source>Outputs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="720"/>
         <source>Graded</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="714"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="723"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with graded sizes of the details. To enable &amp;quot;Graded mode&amp;quot; you need at least one detail on the stage &amp;quot;Details mode&amp;quot; and a multi-size measurements table loaded.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="735"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="744"/>
         <source>Export</source>
         <translation type="unfinished">Exportar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="738"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="747"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for nesting the details and producing the printable PDF, without leaving Ostara.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1110"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1119"/>
         <source>Existing templates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1118"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1127"/>
         <source>Create new</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1126"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1135"/>
         <source>Logo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1134"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1143"/>
         <source>Clients</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1142"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1151"/>
         <source>Collections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1150"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1159"/>
         <source>Annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1161"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1170"/>
         <source>Export Final Measurements to CSV (Tape)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1172"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1181"/>
         <source>Load a measurement table (.omt/.otu) and connect it to the pattern</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1189"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1198"/>
         <source>Edit the measurement table currently loaded in the pattern</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1200"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1209"/>
         <source>Create New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1203"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1212"/>
         <source>Create a new measurement table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1248"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1257"/>
         <source>Increase point name font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1262"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1271"/>
         <source>Decrease point name font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1276"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1285"/>
         <source>Original point name font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1290"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1299"/>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="209"/>
         <source>Hide point names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1335"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1344"/>
         <source>Load</source>
         <translation>Carregar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1349"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1358"/>
         <source>Remove</source>
         <translation>Remover</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1360"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1369"/>
         <source>Edit current</source>
         <translation>Editar atual</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1371"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1380"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1374"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1383"/>
         <source>Create or edit a watermark</source>
         <translation>Criar ou editar marca d&apos;água</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1976"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1985"/>
         <source>Armhole tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2357"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2366"/>
         <source>Internal mark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2444"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2453"/>
         <source>Reload point names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2447"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2456"/>
         <source>Reload piece point names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2461"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2470"/>
         <source>Auto-arrange point names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2464"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2473"/>
         <source>Auto-arrange point names to reduce overlaps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2529"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2538"/>
         <source>Measurement Tables</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2532"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2541"/>
         <source>Browse, open, and manage measurement tables in the library</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10174,32 +10179,32 @@ This action cannot be undone.</source>
         <translation>Arquivos de marca d&apos;água</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1382"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1391"/>
         <source>Open Puzzle</source>
         <translation>Abrir Puzzle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1385"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1394"/>
         <source>Open the Puzzle app</source>
         <translation>Abra o aplicativo Puzzle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1396"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1405"/>
         <source>Create</source>
         <translation>Criar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1399"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1408"/>
         <source>Create manual layout</source>
         <translation>Criar encaixe manual</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1410"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1419"/>
         <source>Update</source>
         <translation>Atualizar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1413"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1422"/>
         <source>Update manual layout</source>
         <translation>Atualizar encaixe manual</translation>
     </message>
@@ -10220,37 +10225,37 @@ This action cannot be undone.</source>
         <translation>Selecionar encaixe manual</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="665"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="668"/>
         <source>The pattern has been modified. Do you want to save your changes?</source>
         <translation>O molde foi modificado. Salvar as mudanças?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="900"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="903"/>
         <source>Labels not supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="901"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="904"/>
         <source>This pattern contains Valentina labels. Ostara does not use them — they have been replaced by the Information block. Conversion is not automatic, your labels have not been preserved. The original .val file remains intact.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="910"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="913"/>
         <source>Grainlines anchored to pins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="911"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="914"/>
         <source>This pattern contains grainlines anchored to pins. Ostara no longer uses them — these grainlines have been disabled. Please place them again in the Details mode. Conversion is not automatic. The original .val file remains intact.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="989"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="992"/>
         <source>Legacy measurement file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="990"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="993"/>
         <source>The pattern is linked to a legacy Tape file:
 
 %1
@@ -10259,12 +10264,12 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="993"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="996"/>
         <source>Convert this file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="994"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="997"/>
         <source>Replace with existing .%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10319,7 +10324,7 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation>Não foi possível criar o arquivo de histórico. %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1421"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1430"/>
         <source>Shop</source>
         <translation>Loja</translation>
     </message>
@@ -10334,17 +10339,17 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation>Salvar traçado</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2246"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2255"/>
         <source>Draw export</source>
         <translation>Exportar traçado</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="439"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="448"/>
         <source>Background images</source>
         <translation>Imagem de fundo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1432"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1441"/>
         <source>Add background image</source>
         <translation>Adicionar imagem de fundo</translation>
     </message>
@@ -10405,7 +10410,7 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation>Salvar imagem</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1446"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1455"/>
         <source>Show accuracy radius</source>
         <translation>Mostrar raio de precisão</translation>
     </message>
@@ -10426,160 +10431,173 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="124"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="198"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="277"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="360"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="469"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="566"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="617"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="627"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="86"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="160"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="239"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="321"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="430"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="527"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="578"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="588"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="128"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="173"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="215"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="250"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="402"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="594"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="606"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="632"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="640"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="700"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="704"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="208"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="368"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="552"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="564"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="590"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="614"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="670"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="674"/>
         <source>Graded mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="125"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="87"/>
         <source>You can&apos;t use Graded mode yet. Please, create at least one workpiece and load a measurements table.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="199"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="470"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="161"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="431"/>
         <source>Graded mode needs a multi-size measurements table (.omt).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="278"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="240"/>
         <source>The stored size range no longer matches the loaded measurements table. It was removed — please, create a new one.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="361"/>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="628"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="322"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="589"/>
         <source>A size range with this name already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="567"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="528"/>
         <source>This size range belongs to another measurements table. Load its table to edit it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="618"/>
+        <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="579"/>
         <source>A favorite already has this name. Choose another name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="194"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="208"/>
         <source>Horizontal alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="195"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="209"/>
         <source>Vertical alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_build.cpp" line="224"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_build.cpp" line="232"/>
         <source>Preparing the graded scene…</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="174"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="129"/>
         <source>This size range needs its measurements table loaded.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="211"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="215"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="632"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="169"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="173"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="590"/>
         <source>Cannot create the export folder.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="251"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="209"/>
         <source>The file &quot;%1&quot; already exists in the export folder.
 Do you want to replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="264"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="222"/>
         <source>Layout</source>
         <comment>Decor layout layer default name in a graded SVG export</comment>
         <translation type="unfinished">Encaixe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="398"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="403"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="364"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="369"/>
         <source>The graded export failed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="590"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="594"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="548"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="552"/>
         <source>The SVG file could not be written.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="607"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="565"/>
         <source>The file &quot;%1&quot; was successfully exported to:
 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="640"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="614"/>
         <source>No size range to export.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="677"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="647"/>
         <source>The following files were exported to:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="685"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="655"/>
         <source>%1 file(s) were not exported (replace declined).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="689"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="659"/>
         <source>The following size ranges could not be exported: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportmode.cpp" line="92"/>
-        <location filename="../../src/app/ostara/oexportmode.cpp" line="255"/>
-        <location filename="../../src/app/ostara/oexportmode.cpp" line="280"/>
+        <location filename="../../src/app/ostara/oexportmode.cpp" line="77"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="213"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="238"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="419"/>
         <source>Export mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportmode.cpp" line="93"/>
+        <location filename="../../src/app/ostara/oexportmode.cpp" line="78"/>
         <source>You can&apos;t use Export mode yet. Please, open a pattern.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportmode.cpp" line="163"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="91"/>
         <source>Nesting. Please, wait.</source>
         <translation type="unfinished">Agrupando. Por favor, aguarde.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportmode.cpp" line="256"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="138"/>
+        <source>Single size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="214"/>
         <source>This size range carries no piece to nest.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportmode.cpp" line="290"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="420"/>
+        <source>Are you sure you want to delete &quot;%1&quot;?
+
+This action cannot be undone.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="491"/>
         <source>%1 × %2 %3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11570,108 +11588,120 @@ Do you want to overwrite it?</source>
 <context>
     <name>ODetailsGroupWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="211"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="194"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="456"/>
+        <source>Align on the common point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="196"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="457"/>
+        <source>Show alignment point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="223"/>
         <source>General</source>
         <translation type="unfinished">Geral</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="224"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="239"/>
         <source>Member fold lines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="230"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="245"/>
         <source>Grainline</source>
         <translation type="unfinished">Fio</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="254"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="269"/>
         <source>Name</source>
         <translation type="unfinished">Nome</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="263"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="278"/>
         <source>Group</source>
         <translation type="unfinished">Grupo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="264"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="279"/>
         <source>Blocks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="265"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="280"/>
         <source>Annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="267"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="282"/>
         <source>Information</source>
         <translation type="unfinished">Informação</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="460"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="581"/>
         <source>Unnamed</source>
         <translation type="unfinished">Sem nome</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="487"/>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="841"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="608"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="962"/>
         <source>Define foldline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="488"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="609"/>
         <source>Deactivate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="493"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="614"/>
         <source>Show unfolded piece</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="494"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="615"/>
         <source>Show symmetry line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="526"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="647"/>
         <source>Cut on fold</source>
         <translation type="unfinished">Cortar na dobra</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="635"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="756"/>
         <source>Select the first point of the foldline — respect clockwise direction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="684"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="805"/>
         <source>This point does not belong to the selected piece</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="691"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="812"/>
         <source>Select the second point of the foldline — respect clockwise direction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="703"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="824"/>
         <source>Invalid points — start over</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="767"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="888"/>
         <source>Foldline defined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="772"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="893"/>
         <source>Foldline not defined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="841"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="962"/>
         <source>Cancel</source>
         <translation type="unfinished">Cancelar</translation>
     </message>
@@ -11895,202 +11925,235 @@ Do you want to overwrite it?</source>
 <context>
     <name>ODetailsPieceWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="413"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="445"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="434"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="466"/>
         <source>Name</source>
         <translation type="unfinished">Nome</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="220"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="450"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="224"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="471"/>
         <source>Graded alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="224"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="454"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="228"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="475"/>
         <source>Horizontal</source>
         <translation type="unfinished">Horizontal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="129"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="133"/>
         <source>Left</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="130"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="136"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="134"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="140"/>
         <source>Center</source>
         <translation type="unfinished">Centro</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="131"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="135"/>
         <source>Right</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="255"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="458"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="259"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="479"/>
         <source>Vertical</source>
         <translation type="unfinished">Vertical</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="135"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="139"/>
         <source>Top</source>
         <translation type="unfinished">Topo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="137"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="141"/>
         <source>Bottom</source>
         <translation type="unfinished">Inferior</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="421"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="490"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="442"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="519"/>
         <source>Piece</source>
         <translation type="unfinished">Peça</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="317"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="467"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1115"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="338"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="496"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1147"/>
         <source>+ Add passmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="294"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="472"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="296"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="490"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1209"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1379"/>
+        <source>Align on a point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="299"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="491"/>
+        <source>Remove point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="303"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="492"/>
+        <source>Show alignment point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="315"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="501"/>
         <source>Forbid flipping</source>
         <translation type="unfinished">Proibido girar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="295"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="316"/>
         <source>Forbid piece be mirrored in a layout.</source>
         <translation type="unfinished">Proibir espelhamento da peça no encaixe.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="298"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="476"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="319"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="505"/>
         <source>Force flipping</source>
         <translation type="unfinished">Forçar giro</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="299"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="320"/>
         <source>Force piece to be always flipped in a layout.</source>
         <translation type="unfinished">Forçar espelhamento da peça no encaixe.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="302"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="480"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="323"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="509"/>
         <source>Symmetrical copy</source>
         <translation type="unfinished">Cópia Simétrica</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="303"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="324"/>
         <source>When the number of copies is greater than 1 and either &apos;Force Flipping&apos; or &apos;Forbid Flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically. The &apos;Force Flipping&apos; or &apos;Forbid Flipping&apos; setting will also toggle for each copy, applying the opposite of the initially selected option for each subsequent copy.</source>
         <translation type="unfinished">Quando o número de cópias for maior que 1 e a opção &apos;Forçar Espelhamento&apos; ou &apos;Proibir Espelhamento&apos; estiver selecionada, as seguintes regras serão aplicadas: Cada cópia de número par da peça será espelhada verticalmente. A configuração de espelhamento &apos;Forçar&apos; ou &apos;Proibir&apos; será alternada para cada cópia subsequente, aplicando o oposto da opção selecionada inicialmente.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="306"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="484"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="327"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="513"/>
         <source>Follow grainline</source>
         <translation type="unfinished">Seguir sentido do fio</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="307"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="328"/>
         <source>Force piece to always follow grainline direction regardless of layout settings.</source>
         <translation type="unfinished">Forçar a peça a sempre seguir o sentido do fio, independentemente das configurações de encaixe.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="320"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="469"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1116"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="341"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="498"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1148"/>
         <source>- Remove passmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="325"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="465"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="346"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="494"/>
         <source>Manage main path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="330"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="486"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="351"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="515"/>
         <source>General</source>
         <translation type="unfinished">Geral</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="354"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="487"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="375"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="516"/>
         <source>Grainline</source>
         <translation type="unfinished">Fio</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="374"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="395"/>
         <source>Internal outline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="383"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="488"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="404"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="517"/>
         <source>Seam Allowance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="424"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="491"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="445"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="520"/>
         <source>Blocks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="427"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="492"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="448"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="521"/>
         <source>Annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="429"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="489"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="450"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="518"/>
         <source>Information</source>
         <translation type="unfinished">Informação</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="466"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="468"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1060"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1093"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="489"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="495"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="497"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1092"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1125"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1230"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1378"/>
         <source>Cancel</source>
         <translation type="unfinished">Cancelar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="974"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="990"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1006"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1022"/>
         <source>Delete internal path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="975"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1007"/>
         <source>Delete internal path &quot;%1&quot;?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1074"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1106"/>
         <source>Click points to add passmarks — Enter to confirm, Esc to cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1107"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1139"/>
         <source>Click passmark points to remove — Enter to confirm, Esc to cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1202"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1231"/>
+        <source>Click the point to align on, on the piece outline (Esc to cancel)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1246"/>
+        <source>This point is not on the piece outline — click a point of the piece</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1455"/>
         <source>%1 point(s) selected — Enter to confirm, Esc to cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1223"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1476"/>
         <source>Choose Passmark Type</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12330,42 +12393,49 @@ Do you want to overwrite it?</source>
 <context>
     <name>ODockManager</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="102"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="443"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="545"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="103"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="464"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="576"/>
         <source>Size Ranges</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="107"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="445"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="546"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="108"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="466"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="577"/>
         <source>Size Styles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="383"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="408"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="533"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="538"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="113"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="486"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="569"/>
+        <source>Outputs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="400"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="427"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="559"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="564"/>
         <source>Options</source>
         <translation type="unfinished">Opções</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="386"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="531"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="403"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="557"/>
         <source>Layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="388"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="532"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="405"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="558"/>
         <source>Contains all layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="404"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="536"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="423"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="562"/>
         <source>Pieces</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12374,8 +12444,8 @@ Do you want to overwrite it?</source>
         <translation type="obsolete">Moldes</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="406"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="537"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="425"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="563"/>
         <source>Show which details will go in layout</source>
         <translation type="unfinished">Moldes que farão parte do encaixe</translation>
     </message>
@@ -12383,93 +12453,191 @@ Do you want to overwrite it?</source>
 <context>
     <name>OExportModeDialog</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="63"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="287"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="51"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="168"/>
         <source>Export</source>
         <translation type="unfinished">Exportar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="71"/>
-        <source>Document width</source>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="99"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="183"/>
+        <source>Coming soon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="82"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="288"/>
-        <source>Document width:</source>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="170"/>
+        <source>List to generate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="87"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="290"/>
-        <source>Size range</source>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="171"/>
+        <source>Cutting plan</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="88"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="291"/>
-        <source>Single size</source>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="172"/>
+        <source>Print</source>
+        <translation type="unfinished">Imprimir</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="173"/>
+        <source>Projector</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OExportPrintModel</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="39"/>
+        <source>A0 Roll</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="96"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="289"/>
+        <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="40"/>
+        <source>A0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="41"/>
+        <source>A3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="42"/>
+        <source>A4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="43"/>
+        <source>Letter</source>
+        <translation type="unfinished">Carta</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="47"/>
+        <source>Tiled Framed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OExportPrintWidget</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="550"/>
+        <source>Unit:</source>
+        <translation type="unfinished">Unidade:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="551"/>
         <source>Nest:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="103"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="292"/>
+        <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="552"/>
+        <source>Size range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="553"/>
+        <source>Single size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="554"/>
         <source>Size range:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="555"/>
+        <source>Print model:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="556"/>
+        <source>Document margin:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="557"/>
+        <source>Space between pieces:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="558"/>
+        <source>Document width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OExportRollFormatWidget</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportrollformatwidget.cpp" line="84"/>
+        <source>Width:</source>
+        <translation type="unfinished">Largura:</translation>
+    </message>
+</context>
+<context>
+    <name>OExportTiledFormatWidget</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexporttiledformatwidget.cpp" line="166"/>
+        <source>Width:</source>
+        <translation type="unfinished">Largura:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexporttiledformatwidget.cpp" line="167"/>
+        <source>Height:</source>
+        <translation type="unfinished">Altura:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexporttiledformatwidget.cpp" line="168"/>
+        <source>Columns:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OGradedAlignWidget</name>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="85"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="78"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="54"/>
         <source>Left</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="86"/>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="92"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="79"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="85"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="55"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="61"/>
         <source>Center</source>
         <translation type="unfinished">Centro</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="87"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="80"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="56"/>
         <source>Right</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="91"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="84"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="60"/>
         <source>Top</source>
         <translation type="unfinished">Topo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="93"/>
+        <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="86"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="62"/>
         <source>Bottom</source>
         <translation type="unfinished">Inferior</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="113"/>
+        <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="117"/>
         <source>Graded alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="117"/>
+        <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="122"/>
         <source>Horizontal</source>
         <translation type="unfinished">Horizontal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="154"/>
+        <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="159"/>
         <source>Vertical</source>
         <translation type="unfinished">Vertical</translation>
     </message>
@@ -12477,128 +12645,128 @@ Do you want to overwrite it?</source>
 <context>
     <name>OGradedRangeDialog</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="55"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="56"/>
         <source>Graded mode — size range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="81"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="82"/>
         <source>Cancel</source>
         <translation type="unfinished">Cancelar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="82"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="83"/>
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="83"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="84"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="122"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="123"/>
         <source>Which axis of the table is the grading axis?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="141"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="142"/>
         <source>Create a new size range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="142"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="143"/>
         <source>Load existing from favorite</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="145"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="146"/>
         <source>Favorite:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="275"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="276"/>
         <source>Size range name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="277"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="281"/>
         <source>Name:</source>
         <translation type="unfinished">Nome:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="282"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="286"/>
         <source>Size range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="292"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="296"/>
         <source>Minimum:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="297"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="301"/>
         <source>Maximum:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="316"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="320"/>
         <source>Export</source>
         <translation type="unfinished">Exportar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="325"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="329"/>
         <source>Browse…</source>
         <translation type="unfinished">Navegar…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="327"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="331"/>
         <source>Path:</source>
         <translation type="unfinished">Caminho:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="331"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="335"/>
         <source>File name:</source>
         <translation type="unfinished">Nome do arquivo:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="335"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="339"/>
         <source>Scale</source>
         <translation type="unfinished">Escala</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="341"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="345"/>
         <source>100%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="350"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="354"/>
         <source>Or</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="358"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="362"/>
         <source>Horizontal:</source>
         <translation type="unfinished">Horizontal:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="359"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="363"/>
         <source>Vertical:</source>
         <translation type="unfinished">Vertical:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="363"/>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="599"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="367"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="603"/>
         <source>Layout</source>
         <translation type="unfinished">Encaixe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="364"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="368"/>
         <source>Layout layer:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="545"/>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="549"/>
         <source>Select folder</source>
         <translation type="unfinished">Selecionar diretório</translation>
     </message>
@@ -13090,38 +13258,38 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="266"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="366"/>
-        <source>fabric</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="268"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="368"/>
-        <source>interfacing</source>
+        <source>fabric</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="270"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="370"/>
+        <source>interfacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="272"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="372"/>
         <source>lining</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="289"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="384"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="291"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="386"/>
         <source>Cut %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="294"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="389"/>
-        <source> on fold</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="296"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="391"/>
+        <source> on fold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="298"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="393"/>
         <source> (%1)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13161,37 +13329,37 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="321"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="349"/>
         <source>No logos yet — add them in the Logo page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="363"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="391"/>
         <source>When checked, you will write this information once for each language of the block, in the pattern (or piece) options. It is not translated automatically.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="400"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="428"/>
         <source>Fabric</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="402"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="430"/>
         <source>Interfacing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="404"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="432"/>
         <source>Lining</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="415"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="443"/>
         <source>Cut</source>
         <translation type="unfinished">Cortar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="427"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="455"/>
         <source>On fold</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13365,6 +13533,24 @@ This action cannot be undone.</source>
     </message>
 </context>
 <context>
+    <name>OOutputsStale</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ooutputsstale.cpp" line="53"/>
+        <source>Export mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ooutputsstale.cpp" line="54"/>
+        <source>You have made changes. Your outputs must be regenerated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ooutputsstale.cpp" line="59"/>
+        <source>Do not show this message again</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>OPatternInfoWidget</name>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="64"/>
@@ -13516,7 +13702,7 @@ This action cannot be undone.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="65"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="129"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="134"/>
         <source>Measurement</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13528,128 +13714,133 @@ This action cannot be undone.</source>
         <translation type="unfinished">Separador</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="80"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="134"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="83"/>
+        <source>Number format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="85"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="139"/>
         <source>Logo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="82"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="87"/>
         <source>Logo size (cm)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="83"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="88"/>
         <source>Cut</source>
         <translation type="unfinished">Cortar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="91"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="96"/>
         <source>Rename the axis and its values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="94"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="99"/>
         <source>Rename the measurement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="98"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="103"/>
         <source>Pattern name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="99"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="104"/>
         <source>The name of the pattern (set in the pattern toolbar).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="101"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="106"/>
         <source>Client</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="102"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="107"/>
         <source>The client&apos;s name, birth date and email from the document.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="104"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="109"/>
         <source>Piece name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="105"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="110"/>
         <source>The name of the piece (from the piece options).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="107"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="112"/>
         <source>Piece number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="108"/>
-        <source>The piece number and its total, e.g. 01 of 10. The total shown here is an example — it is computed automatically from the number of active pieces.</source>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="113"/>
+        <source>The piece number and its total, e.g. 1 of 10. The total shown here is an example — it is computed automatically from the number of pieces in the layout.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="112"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="117"/>
         <source>Cut (Fabric / Interfacing / Lining)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="113"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="118"/>
         <source>One section covers all three fabrics — no need to add Cut several times. The values here are only an example so you can see how the section renders: in the pieces, the cut quantities are entered per piece and are empty by default.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="119"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="124"/>
         <source>Free text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="120"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="125"/>
         <source>Free text entered per piece in the information block. It can span several lines.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="124"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="129"/>
         <source>Sizes (Height, Commercial size, Group...)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="125"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="130"/>
         <source>Requires a multi-size table (.omt). Shows a size-axis value under its user-given name. With a single-size table, this information is simply ignored.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="130"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="135"/>
         <source>Read from the pattern&apos;s size table. Shows the measurement&apos;s full name, its calculated value at the reference size and its unit.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="135"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="140"/>
         <source>A logo from your library (add your SVG logos in the Logo page).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="138"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="143"/>
         <source>Collection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="139"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="144"/>
         <source>The collection name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="141"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="146"/>
         <source>Fabric info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="142"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="147"/>
         <source>Fabric information (nature, material, weight…).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13933,68 +14124,107 @@ This action cannot be undone.</source>
     </message>
 </context>
 <context>
-    <name>OWidgetSizeRanges</name>
+    <name>OWidgetOutputs</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="170"/>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="545"/>
-        <source>Add a size range</source>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="167"/>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="513"/>
+        <source>Add an output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="251"/>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="546"/>
-        <source>Export all size ranges</source>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="302"/>
+        <source>Shown in the canvas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="259"/>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="547"/>
-        <source>Browse…</source>
-        <translation type="unfinished">Navegar…</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="266"/>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="548"/>
-        <source>Export all size ranges (SVG)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="414"/>
-        <source>Remove from favorites</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="414"/>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="321"/>
         <source>Add to favorites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="419"/>
-        <source>Favorites need a measurements table from the library</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="427"/>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="326"/>
         <source>Edit</source>
         <translation type="unfinished">Editar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="432"/>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="333"/>
+        <source>Refresh</source>
+        <translation type="unfinished">Atualizar</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="338"/>
+        <source>Export</source>
+        <translation type="unfinished">Exportar</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="344"/>
+        <source>Delete</source>
+        <translation type="unfinished">Excluir</translation>
+    </message>
+</context>
+<context>
+    <name>OWidgetSizeRanges</name>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="194"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="571"/>
+        <source>Add a size range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="277"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="572"/>
+        <source>Export all size ranges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="285"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="573"/>
+        <source>Browse…</source>
+        <translation type="unfinished">Navegar…</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="292"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="574"/>
+        <source>Export all size ranges (SVG)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="440"/>
+        <source>Remove from favorites</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="440"/>
+        <source>Add to favorites</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="445"/>
+        <source>Favorites need a measurements table from the library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="453"/>
+        <source>Edit</source>
+        <translation type="unfinished">Editar</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="458"/>
         <source>Duplicate</source>
         <translation type="unfinished">Duplicar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="437"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="463"/>
         <source>Export SVG</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="442"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="468"/>
         <source>Delete</source>
         <translation type="unfinished">Excluir</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="532"/>
+        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="558"/>
         <source>Select the export folder</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14156,54 +14386,54 @@ This action cannot be undone.</source>
         <translation>A legenda aparece embaixo do ícone. (recomendado para iniciantes).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="411"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="412"/>
         <source>With OS options</source>
         <translation>Com opções de OS</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="334"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="335"/>
         <source>send crash report</source>
         <translation>enviar relatório de falha</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="341"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="342"/>
         <source>user email in case of crash</source>
         <translation>E-mail do usuário em caso de falha</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="389"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="390"/>
         <source>Dark</source>
         <comment>theme</comment>
         <translation>Escuro</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="388"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="389"/>
         <source>Light</source>
         <comment>theme</comment>
         <translation>Claro</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="396"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="397"/>
         <source>Tool icon cursor</source>
         <translation>Cursor da ferramenta em uso</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="397"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="398"/>
         <source>Arrow cursor</source>
         <translation>Cursor de seta</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="403"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="404"/>
         <source>Centimeters</source>
         <translation>Centímetros</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="404"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="405"/>
         <source>Millimiters</source>
         <translation>Milímetros</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="405"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="406"/>
         <source>Inches</source>
         <translation>Polegadas</translation>
     </message>
@@ -14218,7 +14448,7 @@ This action cannot be undone.</source>
         <translation>Modo de curva livre</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="275"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="276"/>
         <source>default unit</source>
         <translation>unidade de medida padrão</translation>
     </message>
@@ -15499,7 +15729,7 @@ Esta opção terá efeito após reinicialização.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="421"/>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2657"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2665"/>
         <source>Piece &apos;%1&apos;. Seam allowance is not valid.</source>
         <translation>Peça &apos;%1&apos;. Margem de costura inválida.</translation>
     </message>
@@ -15571,7 +15801,7 @@ Esta opção terá efeito após reinicialização.</translation>
         <translation>Não foi possível converter o parâmetro em um número inteiro</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_helpers.cpp" line="150"/>
+        <location filename="../../src/app/ostara/mainwindow_helpers.cpp" line="149"/>
         <source>Piece name &apos;%1&apos; is not unique.</source>
         <translation>Nome da peça &apos;%1&apos; não é único.</translation>
     </message>
@@ -15641,17 +15871,17 @@ Esta opção terá efeito após reinicialização.</translation>
         <translation>Não foi possível calcular a posição central da linha de dobra para a peça &apos;%1&apos;. Motivo: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1463"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1471"/>
         <source>Piece &apos;%1&apos;. Grainline is not valid.</source>
         <translation>Peça &apos;%1&apos;. Sentido do fio é inválido.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3518"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3526"/>
         <source>Piece &apos;%1&apos;. Fold line is not valid.</source>
         <translation>Peça &apos;%1&apos;. Linha de dobra é inválida.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1631"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1643"/>
         <source>Invalid global value for a passmark length. Piece &apos;%1&apos;. Length is less than minimal allowed.</source>
         <translation>Valor global inválido para a largura de um pique. Peça &apos;%1&apos;. A largura é menor que o mínimo permitido.</translation>
     </message>
@@ -15755,22 +15985,22 @@ Esta opção terá efeito após reinicialização.</translation>
         <translation>Curva &apos;%1&apos;. O comprimento de um segmento de corte (%2) é muito grande. Otimize-o para o valor máximo.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1878"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1890"/>
         <source>Piece &apos;%1&apos;. Internal path &apos;%2&apos; intersects with internal path &apos;%3&apos;.</source>
         <translation>Peça &apos;%1&apos;. Caminho interno &apos;%2&apos; intersecta com caminho interno &apos;%3&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1793"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1805"/>
         <source>Piece &apos;%1&apos;. Internal path &apos;%2&apos; intersects with cutting contour.</source>
         <translation>Peça &apos;%1&apos;. O caminho interno &apos;%2&apos; intersecta com o contorno de corte.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1666"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1678"/>
         <source>Invalid global value for a passmark width. Piece &apos;%1&apos;. Width is less than minimal allowed.</source>
         <translation>Valor global inválido para a largura de um pique. Peça &apos;%1&apos;. A largura é menor que o mínimo permitido.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1804"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1816"/>
         <source>Piece &apos;%1&apos;. Internal path &apos;%2&apos; not inside of cutting contour.</source>
         <translation>Peça &apos;%1&apos;. Caminho interno &apos;%2&apos; não está dentro do contorno de corte.</translation>
     </message>
@@ -15841,32 +16071,32 @@ Esta opção terá efeito após reinicialização.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportnesting.cpp" line="74"/>
+        <location filename="../../src/app/ostara/oexportnesting.cpp" line="75"/>
         <source>The size range carries no piece to nest.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportnesting.cpp" line="79"/>
+        <location filename="../../src/app/ostara/oexportnesting.cpp" line="80"/>
         <source>The document width must be greater than zero.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportnesting.cpp" line="122"/>
+        <location filename="../../src/app/ostara/oexportnesting.cpp" line="123"/>
         <source>No piece of this range could be prepared for nesting.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportnesting.cpp" line="129"/>
+        <location filename="../../src/app/ostara/oexportnesting.cpp" line="130"/>
         <source>The size range carries no usable contour.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportnesting.cpp" line="150"/>
+        <location filename="../../src/app/ostara/oexportnesting.cpp" line="148"/>
         <source>The nesting engine returned an incomplete result.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportnesting.cpp" line="166"/>
+        <location filename="../../src/app/ostara/oexportnesting.cpp" line="164"/>
         <source>The document is too narrow: some pieces could not be placed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19195,36 +19425,36 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="187"/>
         <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="207"/>
         <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="219"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="283"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="297"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="346"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="284"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="298"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="347"/>
         <source>Can&apos;t find object</source>
         <translation>Não foi possível encontrar o objeto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="303"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="304"/>
         <source>Can&apos;t cast object to the requested type. Object id = %1, actual type = %2.</source>
         <translation>Não é possível converter o objeto para o tipo solicitado. ID do objeto = %1, tipo real = %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="331"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="332"/>
         <source>Can&apos;t cast object to the requested type. Name = &apos;%1&apos;, type = %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="341"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="485"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="494"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="342"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="486"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="495"/>
         <source>Can&apos;t cast object</source>
         <translation>Não foi possível converter o objeto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="414"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="415"/>
         <source>Can&apos;t cast object. Name = &apos;%1&apos;, type = %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="424"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="425"/>
         <source>Can&apos;t find object. Type mismatch. Name = &apos;%1&apos;, existing type = %2, incoming type = %3.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21629,7 +21859,7 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation>Erro ao atualizar a cena após a análise.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="293"/>
+        <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="296"/>
         <source>Error creating or updating detail</source>
         <translation>Erro ao criar ou atualizar molde</translation>
     </message>
@@ -21833,8 +22063,8 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation>Erro ao criar ou atualizar pences durante ajuste</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1001"/>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1070"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1004"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1073"/>
         <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="108"/>
         <source>Wrong tag name &apos;%1&apos;.</source>
         <translation>Nome da etiqueta errada &apos;%1&apos;.</translation>
@@ -22059,14 +22289,14 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation>Caminho principal da peça %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1306"/>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1346"/>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1425"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1318"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1358"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1437"/>
         <source>Cannot calculate a notch for point &apos;%1&apos; in piece &apos;%2&apos;.</source>
         <translation>Não foi possível calcular pique para ponto &apos;%1&apos; na peça &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1478"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1490"/>
         <source>Notch for point &apos;%1&apos; in piece &apos;%2&apos; will be disabled. Manual length is less than allowed value.</source>
         <translation>Pique para ponto &apos;%1&apos; em peça &apos;%2&apos; será desabilitado. Comprimento manual é menor que o valor permitido.</translation>
     </message>
@@ -23883,42 +24113,42 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
         <translation>Margem de costura atual</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1496"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1504"/>
         <source>move grainline</source>
         <translation>mover fio</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1509"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1517"/>
         <source>resize grainline</source>
         <translation>redimensionar fio</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1521"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1529"/>
         <source>rotate grainline</source>
         <translation>rotacionar fio</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1600"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1608"/>
         <source>move information block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1630"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1638"/>
         <source>resize information block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1799"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1807"/>
         <source>move annotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1833"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1841"/>
         <source>resize annotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2017"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2025"/>
         <source>Move piece group</source>
         <translation type="unfinished"></translation>
     </message>
@@ -23927,52 +24157,52 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
         <translation type="vanished">Opções</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2214"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2222"/>
         <source>In layout</source>
         <translation>No plano de corte</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2215"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2223"/>
         <source>Hide main path</source>
         <translation>Ocultar caminho principal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2219"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2227"/>
         <source>Show full piece</source>
         <translation>Mostrar peça inteira</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2236"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2244"/>
         <source>Delete</source>
         <translation>Excluir</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1930"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1938"/>
         <source>apply save detail options</source>
         <translation>aplicar modificações</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2325"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2333"/>
         <source>multi deletion</source>
         <translation>exclusão múltipla</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2216"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2224"/>
         <source>Forbid flipping</source>
         <translation>Proibido girar</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2217"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2225"/>
         <source>Force flipping</source>
         <translation>Forçar giro</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1939"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1947"/>
         <source>This id (%1) is not unique.</source>
         <translation>Esta id (%1) não é única.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3165"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3173"/>
         <source>Tool was used after deleting.</source>
         <translation>Ferramenta foi utilizada após apagar.</translation>
     </message>
@@ -24912,79 +25142,84 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.ui" line="33"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="973"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="987"/>
         <source>Merge pieces into one</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="340"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="367"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="295"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="323"/>
         <source>Unnamed</source>
         <translation>Sem nome</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="574"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="533"/>
+        <source>In layout</source>
+        <translation type="unfinished">No plano de corte</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="544"/>
         <source>Select all</source>
         <translation>Selecionar todos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="575"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="545"/>
         <source>Select none</source>
         <translation>Desmarcar todos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="594"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="576"/>
         <source>Unlink all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="698"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="686"/>
         <source>select all details</source>
         <translation>selecionar todos os moldes</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="704"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="692"/>
         <source>select none details</source>
         <translation>Não selecionar um molde</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="760"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="788"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="759"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="787"/>
         <source>Select pieces to link (min 2, Enter to confirm, Esc to cancel)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="774"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="773"/>
         <source>This piece is already part of a group</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="794"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="793"/>
         <source>%1 piece(s) selected — Enter to confirm, Esc to cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="809"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="808"/>
         <source>Less than 2 pieces selected — cancelled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="822"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="821"/>
         <source>Click the common point (Esc to cancel)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="849"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="848"/>
         <source>Link pieces</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="850"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="849"/>
         <source>The selected point is not common to the %1 pieces of the group</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="973"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="987"/>
         <source>Cancel</source>
         <translation type="unfinished">Cancelar</translation>
     </message>
@@ -25006,12 +25241,12 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
         <translation type="vanished">Opções peça</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="607"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="595"/>
         <source>Delete piece</source>
         <translation>Deletar peça</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="614"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="602"/>
         <source>Cannot find piece by id &apos;%1&apos;</source>
         <translation>Não foi possível encontrar peça id &apos;%1&apos;</translation>
     </message>

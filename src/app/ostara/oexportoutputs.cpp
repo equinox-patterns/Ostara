@@ -73,12 +73,17 @@ constexpr int kExportNestingThreads = 1;
  * @return the generation, or nothing when the run failed — the reason has already been
  *         shown to the user.
  */
-auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName, bool singleSize, qreal baseA,
-                                  qreal baseB, qreal baseC, const OGradedSizeRanges::Context &context)
+auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGradedSizeRanges::Context &context)
     -> std::optional<OExportOutput>
 {
-    const Unit unit = VAbstractValApplication::VApp()->patternUnits();
-    const double binWidthPx = ToPixel(documentWidth, unit);
+    // Every length of the request is stored in millimetres and the engine consumes pixels:
+    // the one conversion of the run happens here, once. The unit the user typed in plays no
+    // part in it — it says how the figures are READ, not what they mean, which is why the
+    // same run gives the same plan whatever unit it was entered in.
+    OExportNestingParams params;
+    params.binWidthPx = ToPixel(request.documentWidthMm, Unit::Mm);
+    params.marginPx = ToPixel(request.marginMm, Unit::Mm);
+    params.gapPx = ToPixel(request.gapMm, Unit::Mm);
 
     // The engine has no abort hook: this dialog is shown while it works and taken down
     // after. No Cancel button, so nothing on screen promises an interruption that
@@ -125,7 +130,7 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
     // whole table and re-parse the pattern only to arrive where it started.
     const bool hasAxes = !m_m.isNull() && !m_m->Dimensions().isEmpty();
 
-    if (singleSize)
+    if (request.singleSize)
     {
         if (!hasAxes)
         {
@@ -144,9 +149,9 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
             const auto baseOr = [](qreal fromDialog, qreal fromDocument)
             { return fromDialog > 0.0 ? fromDialog : (fromDocument > 0.0 ? fromDocument : 1.0); };
 
-            const qreal baseOfA = baseOr(baseA, savedA);
-            const qreal baseOfB = baseOr(baseB, savedB);
-            const qreal baseOfC = baseOr(baseC, savedC);
+            const qreal baseOfA = baseOr(request.baseA, savedA);
+            const qreal baseOfB = baseOr(request.baseB, savedB);
+            const qreal baseOfC = baseOr(request.baseC, savedC);
 
             applySize(baseOfA, baseOfB, baseOfC);
             layers = geometry.CollectCurrentSize(
@@ -155,7 +160,7 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
     }
     else
     {
-        const QVector<OExportGeometry::OExportSizeRef> sizes = geometry.RangeSizes(rangeName);
+        const QVector<OExportGeometry::OExportSizeRef> sizes = geometry.RangeSizes(request.rangeName);
 
         // The range pins the axes it does not grade, and the pieces must be resolved with
         // those values. The document's own ones send an axis it does not carry back to the
@@ -163,7 +168,7 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
         // them — then comes out at a geometry the range does not name. The graded capture
         // feeds its pieces this exact way. An axis the range pins nothing at keeps the
         // document's value.
-        const OExportGeometry::OExportFixedBases fixed = geometry.RangeFixedBases(rangeName);
+        const OExportGeometry::OExportFixedBases fixed = geometry.RangeFixedBases(request.rangeName);
         const qreal fixedA = fixed.a > 0.0 ? fixed.a : savedA;
         const qreal fixedB = fixed.b > 0.0 ? fixed.b : savedB;
         const qreal fixedC = fixed.c > 0.0 ? fixed.c : savedC;
@@ -217,7 +222,7 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
     pool.setMaxThreadCount(kExportNestingThreads);
 
     QFuture<OExportNestingResult> future =
-        QtConcurrent::run(&pool, &OExportNesting::Run, layers, binWidthPx);
+        QtConcurrent::run(&pool, &OExportNesting::Run, layers, params);
 
     QFutureWatcher<OExportNestingResult> watcher;
     QEventLoop loop;
@@ -245,7 +250,7 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
     const OSizerange *range = nullptr;
     if (const QHash<QString, OSizerange> *ranges = pattern->SizeRanges(); ranges != nullptr)
     {
-        const auto it = ranges->constFind(rangeName);
+        const auto it = ranges->constFind(request.rangeName);
         if (it != ranges->cend())
         {
             exportRange = it.value();
@@ -262,16 +267,20 @@ auto MainWindow::RunExportNesting(qreal documentWidth, const QString &rangeName,
     output.sizeAxis = context.axis;
     output.range = exportRange;
     output.hasRange = (range != nullptr);
-    output.rangeName = rangeName;
-    output.documentWidth = documentWidth;
+    output.rangeName = request.rangeName;
+    output.documentWidthMm = request.documentWidthMm;
 
     // What this run was asked for. Kept so the run can be asked again — the Refresh entry
-    // replays this exact call, and these four values are the part of it nothing else
-    // records.
-    output.singleSize = singleSize;
-    output.baseA = baseA;
-    output.baseB = baseB;
-    output.baseC = baseC;
+    // replays this exact request, and these values are the part of it nothing else records.
+    output.singleSize = request.singleSize;
+    output.baseA = request.baseA;
+    output.baseB = request.baseB;
+    output.baseC = request.baseC;
+    output.marginMm = request.marginMm;
+    output.gapMm = request.gapMm;
+    output.unit = request.unit;
+    output.printModelToken = request.printModelToken;
+    output.columns = request.columns;
     output.layers = std::move(layers);
     output.result = result;
     return output;
@@ -365,9 +374,7 @@ void MainWindow::RefreshExportOutput(quint32 id)
 
     const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
 
-    std::optional<OExportOutput> output =
-        RunExportNesting(existing->documentWidth, existing->rangeName, existing->singleSize,
-                         existing->baseA, existing->baseB, existing->baseC, context);
+    std::optional<OExportOutput> output = RunExportNesting(RequestOf(*existing), context);
     if (not output.has_value())
     {
         return; // the failure has already been reported, and the old result is still there
@@ -468,15 +475,17 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
 
     if (zoomFit)
     {
-        // Frame the whole nesting — the same thing the "Zoom fit best" action (Cmd+=)
-        // does. The former call framed m_sceneExport->sceneRect(), a rect NewSceneRect()
-        // had just widened to the union of the items AND the view's visible area: the bin
-        // came out framed inside its own scrollable scene instead of filling the viewport.
-        ui->view->ZoomFitBest();
+        // Frame the whole nesting, with air around it: a plain "Zoom fit best" would run the
+        // plan against all four edges of the viewport, and a plan is read as a whole — its
+        // border is not what the user came to look at. The margin is one ZoomOut step past
+        // the fit, which is what the mode wants to open on every time.
+        ui->view->ZoomFitBestFramed();
     }
 
-    // The status label belongs to what IS shown, not to the run that produced it.
-    const Unit unit = VAbstractValApplication::VApp()->patternUnits();
+    // The status label belongs to what IS shown, not to the run that produced it — and it
+    // is written in the unit the generation was asked in, not the pattern's: the figures
+    // the user just read in the dialog are the ones that have to come back here.
+    const Unit unit = output.unit;
     const double width = FromPixel(output.result.binWidthPx, unit);
     const double height = FromPixel(output.result.usedHeightPx, unit);
     m_statusLabel->setText(tr("%1 × %2 %3").arg(QString::number(width, 'f', 1),

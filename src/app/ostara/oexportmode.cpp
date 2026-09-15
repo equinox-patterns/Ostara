@@ -29,6 +29,7 @@
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
 #include "core/ogradedsizeranges.h"
+#include "core/oexportnamebuilder.h"
 #include "core/oexportoutput.h"
 #include "dialogs/oexportmodedialog.h"
 #include "dialogs/ooutputsstale.h"
@@ -238,10 +239,58 @@ auto MainWindow::AddExportOutputImpl(bool allowCancel) -> bool
 {
     const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
 
-    // A name identifies a generation among the ones the dock lists, so what the dock lists
-    // is what the new run cannot take. The filtered list, not every generation of the
-    // session: a row the filter hides is not on screen, and a name the user cannot see is
-    // not one she can be duplicating. Same source as RefreshOutputsDock, same rule.
+    OExportModeDialog dialog(pattern, m_m, context, this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        return not allowCancel;
+    }
+
+    OExportRunRequest request;
+    request.documentWidthMm = dialog.DocumentWidthMm();
+    request.unit = dialog.DisplayUnit();
+    request.rangeName = dialog.SizeRangeName();
+    request.singleSize = dialog.IsSingleSize();
+    request.baseA = dialog.DimensionBase(0);
+    request.baseB = dialog.DimensionBase(1);
+    request.baseC = dialog.DimensionBase(2);
+    request.marginMm = dialog.MarginMm();
+    request.gapMm = dialog.GapMm();
+    request.printModelToken = dialog.PrintModelToken();
+    request.columns = dialog.Columns();
+
+    std::optional<OExportOutput> output = RunExportNesting(request, context);
+    if (not output.has_value())
+    {
+        // The failure has already been reported. The mode stays, and the dialog can be
+        // reopened by clicking the mode button or the dock button again — the list is
+        // still in whatever state it was before this run.
+        return true;
+    }
+
+    // The name is derived, never typed: it says what was nested and how it comes out, both
+    // of which the run already knows. It never reaches RunExportNesting, which knows
+    // nothing of what the generation will be called.
+    //
+    // A single size is named by the axes it sits on, read as the user reads them — the
+    // label the combo shows ("160", "32"), never the base underneath. A range is named by
+    // the range. An axis the table does not carry contributes nothing and is skipped.
+    QStringList bases;
+    if (request.singleSize)
+    {
+        for (int slot = 0; slot < 3; ++slot)
+        {
+            bases.append(dialog.DimensionLabel(slot));
+        }
+    }
+
+    const QString base = OExportNameBuilder::Base(request.singleSize ? QString() : request.rangeName,
+                                                  bases, request.printModelToken);
+
+    // The names the dock lists, filtered exactly as the dock filters: a row the filter
+    // hides is not on screen, and a name the user cannot see is not one she can collide
+    // with. Two runs of the same settings over the same range are legitimate — the same
+    // range asked for twice is not a mistake — so a name already taken is suffixed rather
+    // than refused, which is what the entry dialog used to do.
     QStringList takenNames;
     const QVector<quint32> listed = VisibleExportOutputIds();
     takenNames.reserve(listed.size());
@@ -253,29 +302,7 @@ auto MainWindow::AddExportOutputImpl(bool allowCancel) -> bool
         }
     }
 
-    OExportModeDialog dialog(pattern, m_m, takenNames, context, this);
-    if (dialog.exec() != QDialog::Accepted)
-    {
-        return not allowCancel;
-    }
-
-    std::optional<OExportOutput> output =
-        RunExportNesting(dialog.DocumentWidth(), dialog.SizeRangeName(), dialog.IsSingleSize(),
-                         dialog.DimensionBase(0), dialog.DimensionBase(1), dialog.DimensionBase(2), context);
-    if (not output.has_value())
-    {
-        // The failure has already been reported. The mode stays, and the dialog can be
-        // reopened by clicking the mode button or the dock button again — the list is
-        // still in whatever state it was before this run.
-        return true;
-    }
-
-    // The name belongs to the dialog, not to the nesting: it never reaches
-    // RunExportNesting, which knows nothing of what the generation will be called. The
-    // dialog let OK through only on a name that is neither empty nor already listed, so
-    // this is the exact text the user typed. Set before Append, so the store never holds
-    // a nameless generation.
-    output->name = dialog.Name();
+    output->name = OExportNameBuilder::Unique(base, takenNames);
 
     const quint32 id = m_exportOutputs.Append(std::move(*output));
 

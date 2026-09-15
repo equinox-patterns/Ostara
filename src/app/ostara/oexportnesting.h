@@ -58,6 +58,19 @@ struct OExportNestingResult
     double usedHeightPx{0.0};
 };
 
+/// @brief What the engine needs besides the geometry itself.
+///
+/// Three lengths, in the same pixels as the polygons — and grouped rather than passed in
+/// a row, because two of them are the same order of magnitude and both are lengths. Handed
+/// over positionally, a margin and a gap would swap without the compiler saying a word,
+/// and the run would come out with the right shape and the wrong spacing.
+struct OExportNestingParams
+{
+    double binWidthPx{0.0}; ///< imposed bin width — the height is what the nesting produces
+    double marginPx{0.0};   ///< document margin, kept clear on every side of the bin
+    double gapPx{0.0};      ///< space kept between two pieces
+};
+
 /// @brief Runs the Trame engine on geometry that never left the application.
 ///
 /// Builds the engine's input from the resolved pieces — one footprint per piece,
@@ -71,9 +84,10 @@ class OExportNesting
 {
 public:
     /// @brief Nest the given layers in a bin of the imposed width.
-    /// @param layers      the pattern resolved for every size of the range
-    /// @param binWidthPx  imposed bin width, in pixels
-    static auto Run(const QVector<OExportSizeLayer> &layers, double binWidthPx) -> OExportNestingResult;
+    /// @param layers the pattern resolved for every size of the range
+    /// @param params the imposed width, and the two lengths that space the pieces out
+    static auto Run(const QVector<OExportSizeLayer> &layers, const OExportNestingParams &params)
+        -> OExportNestingResult;
 };
 
 #endif // OEXPORTNESTING_H
