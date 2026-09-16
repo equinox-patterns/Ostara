@@ -153,6 +153,13 @@
     <addaction name="actionInfoBlockCollections"/>
     <addaction name="actionInfoBlockAnnotations"/>
    </widget>
+   <widget class="QMenu" name="menuPdfEditor">
+    <property name="title">
+     <string>PDF editor</string>
+    </property>
+    <addaction name="actionPdfEditorCoverPage"/>
+    <addaction name="actionPdfEditorAssemblyMarks"/>
+   </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
      <string>Window</string>
@@ -162,6 +169,7 @@
     <addaction name="actionGraded"/>
     <addaction name="actionLayout"/>
     <addaction name="actionExport"/>
+    <addaction name="actionExportTemplates"/>
    </widget>
    <widget class="QMenu" name="menuWatermark">
     <property name="title">
@@ -179,6 +187,7 @@
    <addaction name="menuMeasurements"/>
    <addaction name="menuLibraries"/>
    <addaction name="menuInfoBlock"/>
+   <addaction name="menuPdfEditor"/>
    <addaction name="menuWatermark"/>
    <addaction name="menuWindow"/>
   </widget>
@@ -1109,6 +1118,30 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+I</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionPdfEditorCoverPage">
+   <property name="text">
+    <string>Cover page</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionPdfEditorAssemblyMarks">
+   <property name="text">
+    <string>Assembly marks</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionExportTemplates">
+   <property name="text">
+    <string>Export templates</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

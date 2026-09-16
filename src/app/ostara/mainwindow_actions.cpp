@@ -404,6 +404,14 @@ void MainWindow::CreateActions()
     connect(ui->actionInfoBlockCollections, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(4); });
     connect(ui->actionInfoBlockAnnotations, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(5); });
 
+    // 0 = Cover page, 1 = Assembly marks — the two tabs of the PDF editor.
+    connect(ui->actionPdfEditorCoverPage, &QAction::triggered, this,
+            [this]() { ActionExportTemplates_triggered(0); });
+    connect(ui->actionPdfEditorAssemblyMarks, &QAction::triggered, this,
+            [this]() { ActionExportTemplates_triggered(1); });
+    connect(ui->actionExportTemplates, &QAction::triggered, this,
+            [this]() { ActionExportTemplates_triggered(1); });
+
     connect(ui->actionAbout_Qt, &QAction::triggered, this, [this]() { QMessageBox::aboutQt(this, tr("About Qt")); });
 
     connect(ui->actionAbout_Valentina, &QAction::triggered, this,

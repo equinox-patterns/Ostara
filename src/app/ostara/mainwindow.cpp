@@ -249,6 +249,7 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("union"),                        ui->actionUnionDetailsTool},
         {QStringLiteral("duplicate_detail"),             ui->actionDuplicateDetailTool},
         {QStringLiteral("detail_export"),                ui->actionDetailExportAs},
+        {QStringLiteral("export_templates"),             ui->actionExportTemplates},
     });
     InitToolButtons();
     InitActionShortcuts();

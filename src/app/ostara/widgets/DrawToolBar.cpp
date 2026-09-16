@@ -209,6 +209,13 @@ void DrawToolBar::ReloadIcons()
         {
             continue;
         }
+        // Export templates uses an application-set icon, not a tool icon
+        if (it.key() == QStringLiteral("export_templates"))
+        {
+            it.value()->setIcon(
+                QIcon(QStringLiteral(":/icons/%1/grid-four-fill_%1.svg").arg(theme)));
+            continue;
+        }
         const auto path = QStringLiteral(":/tools/%1/%2.svg").arg(theme, it.key());
         it.value()->setIcon(QIcon(path));
     }
@@ -365,6 +372,9 @@ void DrawToolBar::InitializeGroups()
         {tr("Selection"), {
             {QStringLiteral("arrow_cursor"),            tr("Select"), nullptr, makeBtn("arrow_cursor")},
         }, kModeDraw | kModeDetail | kModeLayout | kModeExport},
+        {tr("Export templates"), {
+            {QStringLiteral("export_templates"),        tr("Export templates"), nullptr, nullptr},
+        }, kModeExport},
         {tr("Points"), {
             {QStringLiteral("segment"),                 tr("Point at distance and angle"),                nullptr, makeBtn("segment")},
             {QStringLiteral("along_line"),              tr("Point at distance along line"),               nullptr, makeBtn("along_line")},
@@ -448,14 +458,31 @@ void DrawToolBar::InitializeGroups()
         btn->setIcon(QIcon(QStringLiteral(":/icon/32x32/export_to_picture_document.png")));
         m_buttonMap.insert(QStringLiteral("detail_export"), btn);
     }
+    // The Export templates button carries an application-set themed icon (:/icons/…), not a
+    // tool icon from :/tools/ — created manually for the same reason as the export tool.
+    if (!m_buttonMap.contains(QStringLiteral("export_templates")))
+    {
+        auto *btn = new QToolButton(m_root);
+        btn->setObjectName(QStringLiteral("drawToolBtn"));
+        btn->setAutoRaise(true);
+        // Not checkable: it opens a window, it does not arm a tool.
+        btn->setCheckable(false);
+        btn->setFixedSize(kButtonSize, kButtonSize);
+        btn->setIconSize(QSize(24, 24));
+        btn->setIcon(QIcon(QStringLiteral(":/icons/%1/grid-four-fill_%1.svg")
+                               .arg(IsDarkTheme() ? QStringLiteral("dark") : QStringLiteral("light"))));
+        m_buttonMap.insert(QStringLiteral("export_templates"), btn);
+    }
+
     // Update the button pointer in the ToolItem
     for (auto &group : m_groups)
     {
         for (auto &tool : group.tools)
         {
-            if (tool.id == QStringLiteral("detail_export"))
+            if (tool.id == QStringLiteral("detail_export")
+                || tool.id == QStringLiteral("export_templates"))
             {
-                tool.button = m_buttonMap.value(QStringLiteral("detail_export"));
+                tool.button = m_buttonMap.value(tool.id);
             }
         }
     }

@@ -63,6 +63,7 @@ class DialogTool;
 class DialogHistory;
 class DialogFinalMeasurements;
 class OInfoBlockWindow;
+class OExportTemplateWindow;
 class ODockManager;
 class QToolButton;
 class QProgressBar;
@@ -371,6 +372,7 @@ private slots:
     void ActionTable_triggered();
     void ActionFinalMeasurements_triggered();
     void ActionInfoBlock_triggered(int page);
+    void ActionExportTemplates_triggered(int tab);
     void ActionManageMeasurements();
     void ActionShowMainPath_triggered(bool checked);
     void ActionBoundaryTogetherWithNotches_triggered(bool checked);
@@ -459,6 +461,7 @@ private:
     QPointer<DialogTool> m_dialogTool{};
     QPointer<DialogFinalMeasurements> m_dialogFMeasurements;
     QPointer<OInfoBlockWindow> m_infoBlockWindow;
+    QPointer<OExportTemplateWindow> m_exportTemplateWindow;
 
     /** @brief comboBoxDraws comboc who show name of pattern peaces. */
     QComboBox *m_comboBoxDraws{nullptr};

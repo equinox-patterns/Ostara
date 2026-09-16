@@ -37,6 +37,7 @@
 #include "dialogs/dialogpreferences.h"
 #include "vabstractapplication.h"
 #include "widgets/InfoBlock/OInfoBlockWindow.h"
+#include "oexporttemplatewindow.h"
 #include "../vmisc/dialogs/dialogselectlanguage.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vmisc/vabstractvalapplication.h"
@@ -142,6 +143,24 @@ void MainWindow::ActionInfoBlock_triggered(int page)
     {
         m_infoBlockWindow->OpenOnPage(page);
         m_infoBlockWindow->activateWindow();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ActionExportTemplates_triggered(int tab)
+{
+    if (m_exportTemplateWindow.isNull())
+    {
+        auto *window = new OExportTemplateWindow(this);
+        m_exportTemplateWindow = window;
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->OpenOnTab(tab);
+        window->show();
+    }
+    else
+    {
+        m_exportTemplateWindow->OpenOnTab(tab);
+        m_exportTemplateWindow->activateWindow();
     }
 }
 
