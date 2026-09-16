@@ -92,9 +92,29 @@ public:
     /// @brief Called by ShowExportOutput AFTER Build: dresses the holder again.
     void OnSceneRebuilt(const OExportOutput &output);
 
-    /// @brief Forget everything: the pattern is closing, or the GUI is going away.
+    /// @brief Forget everything: the selection and the whole history of gestures.
+    ///
+    /// Called whenever the results the history was written against stop being the ones on
+    /// screen — the pattern is closing, the GUI is going away, or the generation was refreshed
+    /// and carries a new set of placements under the same indexes. A command outliving that
+    /// would not fail loudly; it would move a piece to where a result that no longer exists had
+    /// put it, which is why this drops the stack rather than letting SetPlacement's no-op
+    /// contract absorb the damage.
     void Reset();
 
+    /// @brief Let go of the footprint. What Escape does on the plan, and all it does.
+    ///
+    /// Deliberately not Reset(): the holder goes, the history stays. A user who has just undone
+    /// their way back to a plan they are happy with must not lose that by pressing Escape.
+    void Deselect();
+
+    /// @brief This mode's own history, for the window's QUndoGroup to point at while Export is
+    ///        the mode on screen.
+    ///
+    /// Separate from the pattern's stack because the two hold different things: one holds edits
+    /// to a document that is written to the .ostara, this one holds hand corrections to a
+    /// generation that is never written anywhere. Mixing them would let a Ctrl+Z in Draw undo a
+    /// gesture made in Export, which is what the group exists to prevent.
     auto UndoStack() -> QUndoStack *;
 
 private:
@@ -124,7 +144,16 @@ private:
     void ClearSelection();
     void DressHolder(const OExportPlacement &placement);
     void Preview(const OExportPlacement &placement);
-    void Commit(const OExportPlacement &placement);
+    void Commit(const OExportPlacement &placement, bool turned);
+
+    /// Redraw the plan after the stack moved — a gesture pushed a command, or the user undid or
+    /// redid one. Deferred through the event loop, and it has to be: the rebuild empties the
+    /// scene, which destroys the very holder whose event handler is still on the stack when a
+    /// gesture ends. Asking for the repaint this way lets that handler unwind first.
+    ///
+    /// One handler for all three paths on purpose. Whether the store was written by a push, an
+    /// undo or a redo is a distinction the screen has no reason to know.
+    void OnStackIndexChanged();
 
     VMainGraphicsScene *m_scene{nullptr};
     OExportOutputStore *m_store{nullptr};

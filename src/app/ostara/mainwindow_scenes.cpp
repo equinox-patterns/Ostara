@@ -255,6 +255,16 @@ auto MainWindow::switchScene(Draw mode, const QVector<DetailForLayout> &details)
             break;
     }
 
+    // The history follows the mode, decided once here rather than inside each case: a mode added
+    // later cannot forget it, and the boundary cannot leak through a branch that did.
+    //
+    // setActiveStack makes the group re-evaluate the two actions it built, so this line is also
+    // what re-enables or disables Undo and Redo as the user moves between modes.
+    const bool correctionMode = (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Export);
+    m_undoGroup->setActiveStack(correctionMode ? m_exportCorrection->UndoStack()
+                                               : VAbstractApplication::VApp()->getUndoStack());
+    UpdateUndoRedoActions(m_guiEnabled);
+
     return true;
 }
 
@@ -325,6 +335,21 @@ void MainWindow::InitScenes()
             }
         },
         this);
+
+    // The two histories of the session, and the switch that decides which one Ctrl+Z reaches.
+    //
+    // The pattern's stack is the application's own, built with the QApplication and shared by
+    // every mode; the other belongs to the correction above. They must not mix: one holds edits
+    // to the document that gets written to the .ostara, the other holds hand corrections to a
+    // generation that is never written anywhere. Until this group existed, a Ctrl+Z pressed in
+    // Export undid a Draw-mode edit, because every command consulted the single application
+    // stack and nothing in the code compared a stack to a mode.
+    //
+    // The pattern's goes in first because QUndoGroup makes the first stack added its active one.
+    // That is the right default: the application opens in Draw. switchScene moves the switch.
+    m_undoGroup = new QUndoGroup(this);
+    m_undoGroup->addStack(VAbstractApplication::VApp()->getUndoStack());
+    m_undoGroup->addStack(m_exportCorrection->UndoStack());
 
     ui->view->setScene(currentScene);
 

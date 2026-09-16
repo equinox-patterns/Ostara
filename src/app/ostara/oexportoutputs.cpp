@@ -437,6 +437,14 @@ void MainWindow::RefreshExportOutput(quint32 id)
 
     m_exportOutputs.Replace(id, std::move(*output));
 
+    // The history is dropped, and it has to be: every command in it names a placement by its
+    // index, and the run above has just written a whole new set of them. The indexes still
+    // exist, they just no longer mean the same thing — an undo would move a piece to where a
+    // DIFFERENT result had put it, silently, which is the one failure mode worse than losing
+    // the history. A stack cannot be pruned command by command without breaking the order the
+    // redo side depends on, so it goes entirely.
+    m_exportCorrection->Reset();
+
     // Same rule as a fresh generation: what comes out of a successful run is up to date.
     m_exportOutputs.SetStale(false);
 
@@ -498,6 +506,17 @@ void MainWindow::DeleteExportOutput(quint32 id)
         // the scene rect is recomputed — otherwise the view keeps framing a result that is
         // no longer there. The status label said the size of what was displayed, so it goes
         // with it.
+        //
+        // The correction is told before the clear, because this branch reaches neither of the
+        // two places that would normally tell it: no ShowExportOutput runs, so no
+        // OnSceneAboutToBeRebuilt, and clear() destroys the holder straight out from under it.
+        // The id 0 is not the generation being deleted — it is "nothing is shown", which is
+        // exactly the situation, and the correction drops the selection on that answer.
+        if (m_exportCorrection != nullptr)
+        {
+            m_exportCorrection->OnSceneAboutToBeRebuilt(0);
+        }
+
         m_sceneExport->clear();
         VMainGraphicsView::NewSceneRect(m_sceneExport, ui->view);
         m_statusLabel->clear();

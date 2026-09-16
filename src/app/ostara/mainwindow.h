@@ -46,6 +46,7 @@
 #include <QPoint>
 #include <QPointF>
 #include <QStringList>
+#include <QUndoGroup>
 
 #include <optional>
 
@@ -407,6 +408,15 @@ private:
     /// user leaves the canvas and comes back to the plan exactly as they left it.
     OExportCorrection *m_exportCorrection{nullptr};
 
+    /// The histories of the application and the switch between them. Created once, in
+    /// InitScenes, right after the correction whose stack it takes — both stacks exist by then,
+    /// and CreateMenus, which builds the Undo and Redo actions from this group, runs later.
+    ///
+    /// Before this, nothing stopped a Ctrl+Z pressed in Export from undoing a Draw-mode edit:
+    /// the commands only ever consulted the application's single stack, which knows nothing of
+    /// modes. The group is what makes the boundary real, and switchScene is what moves it.
+    QUndoGroup *m_undoGroup{nullptr};
+
     /// Name of the active size range in Graded mode (empty when none yet).
     QString m_activeGradedRangeName{};
 
@@ -548,6 +558,18 @@ private:
     void InitActionShortcuts();
     void CancelTool();
 
+
+    /// @brief The one place that decides whether Undo and Redo are available.
+    ///
+    /// Every path that could change the answer calls this, and nothing else calls setEnabled on
+    /// those two actions. It has to be a single function rather than a setEnabled here and there:
+    /// QUndoGroup re-evaluates the actions it created on every activeStackChanged, so an isolated
+    /// setEnabled(false) anywhere would be overwritten the next time the user changed mode.
+    ///
+    /// @param enabled the GUI's own enabled state. Passed in rather than read from m_guiEnabled
+    ///        because SetEnableWidgets runs before that member is updated — reading it there
+    ///        would answer with the state the window is leaving, not the one it is entering.
+    void UpdateUndoRedoActions(bool enabled);
 
     void SetEnableWidgets(bool enable);
     void SetEnableTool(bool enable);

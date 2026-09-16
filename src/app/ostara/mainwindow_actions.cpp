@@ -77,6 +77,27 @@ void MainWindow::InitActionShortcuts()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::UpdateUndoRedoActions(bool enabled)
+{
+    // The mode decides which histories are available at all. Calculation and Modeling are what
+    // the condition here used to call the design stage; Export joins them because it now HAS a
+    // history of its own — the hand corrections made on the plan. Layout and Graded stay out,
+    // exactly as they were: this was not the place to widen a policy nobody asked to change.
+    const Draw mode = VAbstractValApplication::VApp()->GetDrawMode();
+    const bool historyStage = (mode == Draw::Calculation || mode == Draw::Modeling
+                               || mode == Draw::Export);
+
+    const bool allowed = enabled && historyStage && not m_toolOptionsDialogVisible;
+
+    // canUndo() and canRedo() are asked of the GROUP, and that is the whole reason it exists: it
+    // answers for whichever stack the mode on screen is using. Asking the application's stack
+    // directly — as all four sites this replaces did — is precisely what let a Ctrl+Z pressed in
+    // Export reach the pattern's history.
+    undoAction->setEnabled(allowed && m_undoGroup->canUndo());
+    redoAction->setEnabled(allowed && m_undoGroup->canRedo());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief SetEnableWidgets enable action button.
  * @param enable enable value.
@@ -137,10 +158,10 @@ void MainWindow::SetEnableWidgets(bool enable)
     m_dockManager->actionGroups()->setEnabled(enableOnDesignStage);
     m_dockManager->actionBackgroundImages()->setEnabled(enableOnDrawStage);
 
-    undoAction->setEnabled(enableOnDesignStage && not m_toolOptionsDialogVisible &&
-                           VAbstractApplication::VApp()->getUndoStack()->canUndo());
-    redoAction->setEnabled(enableOnDesignStage && not m_toolOptionsDialogVisible &&
-                           VAbstractApplication::VApp()->getUndoStack()->canRedo());
+    // Not decided here any more. Undo and Redo follow the mode's own history, and
+    // UpdateUndoRedoActions is the single place that answers — this function merely runs on
+    // every mode change, so it is one of the paths that has to ask again.
+    UpdateUndoRedoActions(enable);
 
     // Now we don't want allow user call context menu
     m_sceneDraw->EnableTools();
@@ -291,34 +312,36 @@ void MainWindow::CreateMenus()
     UpdateRecentFileActions();
 
     // Add Undo/Redo actions.
-    QUndoStack  const*undoStack = VAbstractApplication::VApp()->getUndoStack();
-    undoAction = undoStack->createUndoAction(this, tr("&Undo"));
+    //
+    // Built from the GROUP, not from a stack. QUndoStack::createUndoAction wires the action to
+    // itself — triggering it calls that stack's undo() — so keeping the pattern's stack here
+    // would have left that wiring in place, and re-connecting `triggered` would not have removed
+    // it: the action would go on reaching the pattern's history no matter what Ctrl+Z was meant
+    // to reach. The group's version does the same thing against whichever stack is active, and
+    // switchScene is what decides which one that is.
+    undoAction = m_undoGroup->createUndoAction(this, tr("&Undo"));
     connect(undoAction, &QAction::triggered, m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::RefreshOptions);
     m_shortcutActions.insert(VShortcutAction::Undo, undoAction);
     undoAction->setIcon(FromTheme(VThemeIcon::EditUndo));
     ui->menuPatternPiece->insertAction(ui->actionLast_tool, undoAction);
 
-    connect(undoStack, &QUndoStack::canUndoChanged, this, [this]()
-    {
-        if (!m_guiEnabled)
-        {
-            undoAction->setDisabled(true);
-        }
-    });
-
-    redoAction = undoStack->createRedoAction(this, tr("&Redo"));
+    redoAction = m_undoGroup->createRedoAction(this, tr("&Redo"));
     connect(redoAction, &QAction::triggered, m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::RefreshOptions);
     m_shortcutActions.insert(VShortcutAction::Redo, redoAction);
     redoAction->setIcon(FromTheme(VThemeIcon::EditRedo));
     ui->menuPatternPiece->insertAction(ui->actionLast_tool, redoAction);
 
-    connect(undoStack, &QUndoStack::canRedoChanged, this, [this]()
-    {
-        if (!m_guiEnabled)
-        {
-            redoAction->setDisabled(true);
-        }
-    });
+    // The actions' enabled state belongs to UpdateUndoRedoActions from here on, and these two
+    // connections are how it hears that the answer may have changed. They replace the pair of
+    // lambdas that used to watch the stack for `!m_guiEnabled`: those only ever disabled, and
+    // the group re-derives the state on every activeStackChanged, so an isolated setDisabled was
+    // overwritten the next time the user changed mode.
+    //
+    // Order matters and works out: the group's own connection, installed inside createUndoAction,
+    // runs first and sets enabled from canUndo(); these run after and apply the mode's policy on
+    // top of it. Qt invokes slots in connection order, and these are connected later.
+    connect(m_undoGroup, &QUndoGroup::canUndoChanged, this, [this]() { UpdateUndoRedoActions(m_guiEnabled); });
+    connect(m_undoGroup, &QUndoGroup::canRedoChanged, this, [this]() { UpdateUndoRedoActions(m_guiEnabled); });
 
 
     m_separatorAct = new QAction(this);
@@ -500,16 +523,11 @@ void MainWindow::SetToolOptionsDialogVisible(bool visible)
     // VPattern::UndoCommand which triggers MainWindow::FullParseFile(), tearing down all tools and the
     // VContainer the open dialog still references. Accepting the now-stale dialog afterwards dereferences
     // freed geometry (use-after-free, e.g. crash in DialogSplinePath::SaveData).
-    if (visible)
-    {
-        undoAction->setEnabled(false);
-        redoAction->setEnabled(false);
-    }
-    else
-    {
-        undoAction->setEnabled(VAbstractApplication::VApp()->getUndoStack()->canUndo());
-        redoAction->setEnabled(VAbstractApplication::VApp()->getUndoStack()->canRedo());
-    }
+    // m_toolOptionsDialogVisible has just been set above, so this one call carries the whole
+    // decision — including the mode. The old pair of branches reached straight for the pattern's
+    // stack and ignored the mode entirely: opening and closing a tool options dialog in Export
+    // re-enabled Undo on that stack's contents, which is how the leak showed in practice.
+    UpdateUndoRedoActions(m_guiEnabled);
 }
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::SetEnabledGUI(bool enabled)
@@ -520,6 +538,16 @@ void MainWindow::SetEnabledGUI(bool enabled)
         {
             ArrowTool(true);
             VAbstractApplication::VApp()->getUndoStack()->clear();
+
+            // The pattern is going away, and it takes the generations with it. A selection
+            // naming a footprint of one, and a history of gestures made on it, would both be
+            // left pointing at a result that no longer exists — and the undo stack would go on
+            // offering them in the menu.
+            //
+            // Reset() is documented for exactly this ("the pattern is closing, or the GUI is
+            // going away") and had no caller until now: the intent was written, the wiring
+            // never was.
+            m_exportCorrection->Reset();
         }
         SetEnableWidgets(enabled);
 

@@ -30,6 +30,7 @@
 #include <QGraphicsScene>
 
 #include "core/oexportoutput.h"
+#include "core/oexportsetplacement.h"
 #include "oexportcanvas.h"
 #include "oexportfootprint.h"
 #include "oexportholder.h"
@@ -63,6 +64,12 @@ OExportCorrection::OExportCorrection(VMainGraphicsScene *scene, OExportOutputSto
     // place the scene offers a position at press time.
     connect(m_scene, &VMainGraphicsScene::mouseMove, this, &OExportCorrection::OnSceneMouseMove);
     connect(m_scene, &VMainGraphicsScene::ItemByMousePress, this, &OExportCorrection::OnItemPressed);
+
+    // The history drives the repaint, never the gesture. A hand correction, an undo and a redo
+    // are three different reasons for the store to have changed, and the plan has to be redrawn
+    // for all three — so the stack is asked once, here, rather than each path remembering to
+    // ask. This is also how every other stack in the application is watched.
+    connect(&m_undoStack, &QUndoStack::indexChanged, this, &OExportCorrection::OnStackIndexChanged);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -279,6 +286,29 @@ void OExportCorrection::Reset()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportCorrection::Deselect()
+{
+    // A gesture may still be running. Escape does not release the mouse button, so it can arrive
+    // in the middle of a drag — and the preview was never written to the store, so the pieces on
+    // screen are still standing where the preview put them. Dropping the holder alone would leave
+    // them there, showing a plan the model does not agree with, and nothing would repair it
+    // until the next gesture.
+    //
+    // Redrawing from the model is what puts them back. Queued rather than called, for the same
+    // reason the gesture path queues it: the rebuild empties the scene, and this may be running
+    // from an event whose item is about to stop existing.
+    const bool abandoned = m_gesturing;
+    const quint32 id = m_store->ActiveId();
+
+    ClearSelection();
+
+    if (abandoned && id != 0)
+    {
+        QMetaObject::invokeMethod(this, [this, id]() { m_repaint(id); }, Qt::QueuedConnection);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportCorrection::OnMoveStarted(const QPointF &scenePos)
 {
     const OExportOutput *output = m_store->Find(m_outputId);
@@ -367,6 +397,10 @@ void OExportCorrection::OnGestureFinished()
         return;
     }
 
+    // Read before it is cleared: it decides the wording of the history entry, which the menu
+    // shows as "Undo Move a piece on the plan" or "Undo Turn a piece on the plan".
+    const bool turned = m_rotating;
+
     m_gesturing = false;
     m_rotating = false;
     m_follow.clear();
@@ -376,18 +410,37 @@ void OExportCorrection::OnGestureFinished()
         return;
     }
 
-    Commit(m_preview);
+    // A gesture that ended where it began leaves no history and no rebuild, the way the
+    // annotation items of the other modes decide it.
+    Commit(m_preview, turned);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OExportCorrection::Commit(const OExportPlacement &placement)
+void OExportCorrection::Commit(const OExportPlacement &placement, bool turned)
 {
-    m_store->SetPlacement(m_outputId, m_index, placement);
+    // The store is NOT written here. QUndoStack::push() runs the command's redo() straight away,
+    // so handing the command over IS the write — doing both would be the same write twice, and
+    // the day one of them was changed the other would quietly disagree with it.
+    //
+    // `m_start` is the placement before the gesture, read again from the model at press time,
+    // and not `m_preview` moved back: it is the model's own value, so an undo returns to what
+    // the plan actually held rather than to what this code believes it held.
+    m_undoStack.push(
+        new OExportSetPlacement(m_store, m_outputId, m_index, m_start, placement, turned));
+}
 
-    // Deferred, and not for tidiness: the rebuild empties the scene, which destroys the very
-    // holder whose mouseReleaseEvent is still on the stack. Asking for the repaint through the
-    // event loop lets that handler unwind before its item stops existing.
-    const quint32 id = m_outputId;
-    QMetaObject::invokeMethod(
-        this, [this, id]() { m_repaint(id); }, Qt::QueuedConnection);
+//---------------------------------------------------------------------------------------------------------------------
+void OExportCorrection::OnStackIndexChanged()
+{
+    // The ACTIVE generation rather than the selected one. After an undo the user may have
+    // selected nothing at all, and it is still the plan on screen that has to be redrawn. The
+    // callback the window supplied already no-ops when the mode has changed or when the id is
+    // not the one displayed, so neither guard is repeated here.
+    const quint32 id = m_store->ActiveId();
+    if (id == 0)
+    {
+        return;
+    }
+
+    QMetaObject::invokeMethod(this, [this, id]() { m_repaint(id); }, Qt::QueuedConnection);
 }

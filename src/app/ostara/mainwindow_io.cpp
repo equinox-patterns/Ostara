@@ -531,6 +531,14 @@ void MainWindow::Clear()
     // Generations belong to the session: closing the pattern takes them with the rest,
     // and none of them was ever written to the .ostara.
     m_exportOutputs.Clear();
+
+    // The generations are gone, so the selection naming a footprint of one and the history of
+    // gestures made on it are gone too. Reset() is documented for this exact moment; until now
+    // it had no caller anywhere in the program. Without it the plan's undo stack outlived the
+    // result it described and the menu went on offering to undo gestures on a plan that no
+    // longer existed.
+    m_exportCorrection->Reset();
+
     m_activeGradedRangeName.clear();
     m_gradedBasePositions.clear();
     m_gradedSceneSignature.clear();

@@ -1459,6 +1459,12 @@ void MainWindow::CancelTool()
             // Crash: using CRTL+Z while using line tool.
             // related bug report:
             // https://bitbucket.org/dismine/valentina/issues/454/crash-using-crtl-z-while-using-line-tool
+            //
+            // Deliberately NOT routed through UpdateUndoRedoActions, unlike the tail of this
+            // function. That helper would compute `allowed && canUndo()` and could therefore
+            // ENABLE Undo here, which is the opposite of what this workaround wants. It is the
+            // one place that disables these two actions by hand, and it stays that way until
+            // someone establishes whether the upstream bug still exists.
             undoAction->setEnabled(false);
             redoAction->setEnabled(false);
             VAbstractTool::m_suppressContextMenu = true;
@@ -1644,10 +1650,12 @@ void MainWindow::CancelTool()
     // Crash: using CRTL+Z while using line tool.
     // related bug report:
     // https://bitbucket.org/dismine/valentina/issues/454/crash-using-crtl-z-while-using-line-tool
-    undoAction->setEnabled(not m_toolOptionsDialogVisible &&
-                           VAbstractApplication::VApp()->getUndoStack()->canUndo());
-    redoAction->setEnabled(not m_toolOptionsDialogVisible &&
-                           VAbstractApplication::VApp()->getUndoStack()->canRedo());
+    // Was draw-mode-blind: it asked the application's stack directly, so leaving a drawing tool
+    // anywhere re-enabled Undo on that stack's contents regardless of where the user was. The
+    // one call below now carries the mode as well, and still answers the same thing everywhere
+    // this tail is actually reachable — leaving a drawing tool only happens in Calculation and
+    // Modeling, where the mode's own gate is open anyway.
+    UpdateUndoRedoActions(m_guiEnabled);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

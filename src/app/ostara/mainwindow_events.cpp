@@ -125,8 +125,15 @@ void MainWindow::changeEvent(QEvent *event)
         // retranslate designer form (single inheritance approach)
         ui->retranslateUi(this);
         m_welcomeScreen->RetranslateUI();
-        undoAction->setText(tr("&Undo"));
-        redoAction->setText(tr("&Redo"));
+        // Undo and Redo are NOT retranslated here any more. Since they are built by QUndoGroup,
+        // their text belongs to it: the group keeps it equal to "Undo <the command that would be
+        // undone>" and rewrites it on every index change. Setting it here overwrote the command
+        // name with a bare "Undo" — the menu would have shown "Undo" again after every language
+        // change, and stayed that way until the next gesture.
+        //
+        // The prefix itself is fixed at creation and does not follow a language change. That is
+        // acceptable because Ostara's source strings are English (rules §3.2): tr("&Undo") hands
+        // back "&Undo" whatever the translation, so nothing visible is lost.
         statusBar()->showMessage(tr("Changes applied."), 5000);
         m_patternPieceLabel->setText(tr("Piece:"));
 
@@ -243,7 +250,14 @@ void MainWindow::customEvent(QEvent *event)
 {
     if (event->type() == UNDO_EVENT)
     {
-        VAbstractApplication::VApp()->getUndoStack()->undo();
+        // Through the group, never the application's stack directly. This is a second undo path
+        // that bypasses the Undo action entirely, so pointing it at the pattern's stack would
+        // have left it able to undo a Draw-mode edit from inside Export long after the action
+        // itself had learned better.
+        //
+        // The group answers for whatever stack the mode on screen is using, which is also why
+        // this needs no Draw::Export branch of its own.
+        m_undoGroup->undo();
     }
     else if (event->type() == FIT_BEST_CURRENT_EVENT)
     {
@@ -600,6 +614,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
         case Qt::Key_Escape:
+            // Export first, and before the picking cancellations below. Those all belong to the
+            // Details canvases, and not one of them can be armed on a plan — letting Escape fall
+            // through to a workflow the user cannot even see would be answering a question
+            // nobody asked. On the plan, Escape means one thing: let go of the piece.
+            if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Export)
+            {
+                m_exportCorrection->Deselect();
+                break;
+            }
             if (m_dockManager->detailsWidget() != nullptr &&
                 (m_dockManager->detailsWidget()->IsSelectingLinkPieces() ||
                  m_dockManager->detailsWidget()->IsSelectingLinkNode()))

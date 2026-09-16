@@ -1489,6 +1489,20 @@ void MainWindow::UpdateGroupHolderSelection(quint32 groupId)
 //---------------------------------------------------------------------------------------------------------------------
 MainWindow::~MainWindow()
 {
+    // Silenced before anything else is torn down, for the reason VPMainWindow spells out in its
+    // own destructor: destroying an undo stack can emit cleanChanged, and every slot that signal
+    // can reach lives on this window — whose derived part is already dismantled by the time its
+    // QObject children are destroyed. The group is a second emitter in that same window, and it
+    // forwards whatever its active stack says.
+    if (m_undoGroup != nullptr)
+    {
+        m_undoGroup->blockSignals(true);
+    }
+    if (m_exportCorrection != nullptr)
+    {
+        m_exportCorrection->UndoStack()->blockSignals(true);
+    }
+
     CancelTool();
 
     delete doc;
