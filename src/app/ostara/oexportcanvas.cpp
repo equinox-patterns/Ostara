@@ -33,6 +33,7 @@
 #include "ogradedgeometry.h"
 #include "ogradedsizetrace.h"
 #include "oexportgeometry.h"
+#include "oexportfootprint.h"
 #include "oexportnesting.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
 
@@ -365,6 +366,11 @@ struct DecorFrame
     qreal rotation{0.0};  ///< the angle inside @c placement, in degrees
     QPointF origin{};     ///< the point of the owner's frame that is its local (0, 0)
     QRectF bounds{};      ///< the owner's extent, in its own frame
+
+    /// Which placement of the result this owner is — what its carrier advertises, so that a
+    /// click on the decor reaches the footprint it decorates. -1 for a frame with no
+    /// placement behind it, and the carrier then carries no role at all.
+    int footprintIndex{-1};
 };
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -398,6 +404,14 @@ auto MakeDecorHost(QGraphicsScene *scene, const DecorFrame &frame) -> QGraphicsI
     host->setFlag(QGraphicsItem::ItemIsMovable, false);
     host->setAcceptedMouseButtons(Qt::NoButton);
     host->setZValue(kDecorZ);
+
+    // The carrier speaks for its owner: a click lands on a block or an annotation, never on
+    // the invisible rectangle, so the footprint has to be reachable from up here.
+    if (frame.footprintIndex >= 0)
+    {
+        host->setData(kExportFootprintRole, frame.footprintIndex);
+    }
+
     scene->addItem(host);
     return host;
 }
@@ -407,11 +421,17 @@ auto MakeDecorHost(QGraphicsScene *scene, const DecorFrame &frame) -> QGraphicsI
 /// handles under `m_active` alone — SetReadOnly only drops the movable flag — so an item
 /// left active would still paint them and answer the mouse. Manual correction is a subject
 /// of its own, with its own spec.
+///
+/// The cursor is the third promise, and neither of the two lines above takes it back: both
+/// constructors set Qt::SizeAllCursor, and Qt applies an item's cursor whenever the mouse is
+/// over it, whether or not the item accepts hover events. Left alone, a cartouche advertised
+/// a drag it could not do.
 template <typename DecorItem> void MakeDecorReadOnly(DecorItem *item)
 {
     item->SetActive(false);
     item->SetReadOnly(true);
     item->setAcceptedMouseButtons(Qt::NoButton);
+    item->unsetCursor();
     item->show();
 }
 
@@ -586,8 +606,8 @@ auto IsDecorChild(QGraphicsItem *child) -> bool
 /// the placement as-is and its local origin is the document origin. A piece of a group of
 /// one keeps its own decor: below kMinGroupMembers a group is not a block.
 void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry,
-                     const QTransform &placement, qreal rotation, const OSizerange *range,
-                     const VContainer *pattern, VAbstractPattern *doc,
+                     const QTransform &placement, qreal rotation, int footprintIndex,
+                     const OSizerange *range, const VContainer *pattern, VAbstractPattern *doc,
                      OGradedSvg::LayoutObject *decor = nullptr)
 {
     const auto *pieces = pattern != nullptr ? pattern->DataPieces() : nullptr;
@@ -607,6 +627,7 @@ void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry
     frame.rotation = rotation;
     frame.origin = QPointF(0.0, 0.0);
     frame.bounds = UnplacedBounds(geometry.piece);
+    frame.footprintIndex = footprintIndex;
 
     auto *host = MakeDecorHost(scene, frame);
     if (decor != nullptr)
@@ -779,17 +800,14 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     continue;
                 }
 
-                // The engine places a footprint by the min corner of its unrotated polygon,
-                // so the piece has to be brought back to that origin before being moved —
-                // exactly what the nested SVG writes as translate(x, y) rotate(r)
-                // translate(-ox, -oy). The piece's alignment shift belongs to that origin,
-                // not after the rotation: it is part of where the piece sits in the
-                // document, and the engine measured the footprint with it already applied.
-                QTransform placementMatrix;
-                placementMatrix.translate(placement.x, placement.y);
-                placementMatrix.rotate(placement.rotation);
-                placementMatrix.translate(-placement.originX + geometry.alignDelta.x(),
-                                          -placement.originY + geometry.alignDelta.y());
+                // The placement formula lives in OExportFootprint and only there. The
+                // correction that moves a piece by hand rebuilds the same matrix, and the one
+                // thing these two must never do is drift: a piece the canvas draws where the
+                // engine did not put it would be exported somewhere else than it is shown.
+                // The note on the alignment shift — it belongs to the origin, not after the
+                // rotation — travelled with the code, to PieceMatrix.
+                const QTransform placementMatrix =
+                    OExportFootprint::PieceMatrix(placement, geometry.alignDelta);
 
                 // The placement is baked into the piece's own matrix rather than into a
                 // transform on the item: an item transform would drag the bounding rect,
@@ -815,6 +833,9 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 // way on screen and in the document. The items are fresh out of GetItem
                 // and thrown away with the scene, so the pass owns nothing to restore.
                 item->setData(kGradedSizeRole, layer.label);
+                // Every size of a footprint carries the same index, which is what makes the
+                // follow set whole: moving a piece moves its other sizes with it.
+                item->setData(kExportFootprintRole, i);
                 OGradedSizeTrace::ApplyToSubtree(item, styles, OGradedSizeTrace::Scope::FreshItems);
 
                 if (!isReference)
@@ -830,6 +851,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     frame.placement = placementMatrix;
                     frame.rotation = placement.rotation;
                     frame.bounds = frame.bounds.united(UnplacedBounds(geometry.piece));
+                    frame.footprintIndex = i;
                 }
 
                 scene->addItem(item);
@@ -858,8 +880,8 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                         }
                     }
 
-                    BuildPieceDecor(scene, geometry, placementMatrix, placement.rotation, range, pattern,
-                                    doc, content != nullptr ? &entry : nullptr);
+                    BuildPieceDecor(scene, geometry, placementMatrix, placement.rotation, i, range,
+                                    pattern, doc, content != nullptr ? &entry : nullptr);
 
                     if (content != nullptr && (!entry.blocks.isEmpty() || !entry.annotations.isEmpty()
                                                || !entry.decorChildren.isEmpty()))

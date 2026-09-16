@@ -565,8 +565,33 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
     const OExportArtboards::Grid artboards = OExportArtboards::Compute(
         output.result.binWidthPx, output.result.usedHeightPx, output.frameHeightMm, output.columns);
 
+    if (m_exportCorrection != nullptr)
+    {
+        // The rectangle a hand may not leave is the one the canvas is about to draw: the
+        // sheets when the run is tiled — the dead band of the last row included, since it is
+        // paper the nesting already paid for — and the bin otherwise. Read from the same grid
+        // Build gets, never from a second computation of the same thing.
+        m_exportCorrection->SetPlan(
+            artboards.valid ? artboards.planRect
+                            : QRectF(0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx));
+
+        // Before the rebuild, which empties the scene: a gesture in flight has to be abandoned
+        // while the item holding the mouse grab still exists, and a selection made on another
+        // generation has to fall, because a placement index means nothing in a new result.
+        m_exportCorrection->OnSceneAboutToBeRebuilt(output.id);
+    }
+
     OExportCanvas::Build(m_sceneExport, output.layers, output.result,
                          output.hasRange ? &output.range : nullptr, pattern, doc, nullptr, artboards);
+
+    if (m_exportCorrection != nullptr)
+    {
+        // After the rebuild: the holder is not something Build draws — it must never reach the
+        // PDF, which calls the same Build for its own scene — so it is mounted here, on the
+        // screen's scene alone, and dressed on the footprint that was selected.
+        m_exportCorrection->OnSceneRebuilt(output);
+        m_exportCorrection->SetViewScale(ui->view->transform().m11());
+    }
 
     if (zoomFit)
     {

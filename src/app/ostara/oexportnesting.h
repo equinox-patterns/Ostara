@@ -28,6 +28,7 @@
 #ifndef OEXPORTNESTING_H
 #define OEXPORTNESTING_H
 
+#include <QPolygonF>
 #include <QString>
 #include <QVector>
 
@@ -38,6 +39,8 @@ struct OExportSizeLayer;
 /// The engine places a footprint by the min corner of its unrotated polygon, so
 /// `originX/originY` are needed to rebuild the transform that puts the piece back
 /// where the nesting decided: translate(x, y) · rotate(rotation) · translate(-originX, -originY).
+/// That frame is the footprint's own — local (0, 0) is `origin` — so the origin and the
+/// extent together are its four corners, and therefore its centre.
 struct OExportPlacement
 {
     double x{0.0};        ///< pixels
@@ -45,6 +48,26 @@ struct OExportPlacement
     double rotation{0.0}; ///< degrees
     double originX{0.0};  ///< pixels — min-bbox corner of the footprint
     double originY{0.0};  ///< pixels
+
+    /// Pixels — the footprint's unrotated extent, measured FROM the origin. Not the piece's
+    /// size: the union of every size of the piece, or of every member and every size of a
+    /// group, which is the rectangle the engine reserved.
+    ///
+    /// Carried rather than measured again from the layers, because the engine keeps
+    /// `unified[0]` of a real Clipper union (Footprint.cpp). Where two sizes of one piece are
+    /// disjoint, the outline placed is not the naive union of their contours, and a second
+    /// union computed elsewhere would answer a different rectangle.
+    double extentX{0.0}; ///< pixels
+    double extentY{0.0}; ///< pixels
+
+    /// The footprint's own outline, in the frame the extent describes: origin at local (0, 0),
+    /// pixels. What the shape IS, where extentX/extentY are only the box around it.
+    ///
+    /// A box is a safe place to draw the holder and an unfair one to measure against: its
+    /// corners are empty, so a piece clamped by its box stops short of an edge the engine's
+    /// own shape would have reached. The engine never reasoned on the box — it placed the
+    /// polygon — and a hand correcting the plan is entitled to the same room.
+    QPolygonF outline{};
 };
 
 /// @brief The result of one nesting run.

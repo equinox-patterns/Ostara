@@ -173,12 +173,19 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
             return result;
         }
 
+        // The footprint's own frame: the min corner gives the origin, and the max corner
+        // gives the extent. Both come from the polygon the engine actually placed — never
+        // from the layers, which would be a second union and not necessarily the same one.
         int64_t xMin = footprint.polygons[i].front().x;
         int64_t yMin = footprint.polygons[i].front().y;
+        int64_t xMax = xMin;
+        int64_t yMax = yMin;
         for (const auto &point : footprint.polygons[i])
         {
             xMin = std::min(xMin, point.x);
             yMin = std::min(yMin, point.y);
+            xMax = std::max(xMax, point.x);
+            yMax = std::max(yMax, point.y);
         }
 
         OExportPlacement placement;
@@ -187,6 +194,18 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
         placement.rotation = placements[i].rotation;
         placement.originX = static_cast<double>(xMin) / kTrameScale;
         placement.originY = static_cast<double>(yMin) / kTrameScale;
+        placement.extentX = static_cast<double>(xMax - xMin) / kTrameScale;
+        placement.extentY = static_cast<double>(yMax - yMin) / kTrameScale;
+
+        // The outline, brought into the frame the extent describes: origin at local (0, 0) and
+        // pixels. It is what a hand's limits are measured against — see the note on the field.
+        placement.outline.reserve(static_cast<int>(footprint.polygons[i].size()));
+        for (const auto &point : footprint.polygons[i])
+        {
+            placement.outline.append(QPointF(static_cast<double>(point.x - xMin) / kTrameScale,
+                                             static_cast<double>(point.y - yMin) / kTrameScale));
+        }
+
         result.placements.append(placement);
     }
 

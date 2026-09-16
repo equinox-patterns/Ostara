@@ -87,6 +87,15 @@ void MainWindow::ScaleChanged(qreal scale)
     }
 
     RefreshSceneItemPens(scene);
+
+    // The holder draws its handles in scene units, so it has to be told the scale or they
+    // shrink with the plan — and the Export mode frames a plan thousands of units wide, which
+    // leaves a five-unit square a single pixel across. Guarded on the scene, because the
+    // holder lives in the Export scene whether or not that scene is the one on screen.
+    if (scene == m_sceneExport && m_exportCorrection != nullptr)
+    {
+        m_exportCorrection->SetViewScale(scale);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -291,6 +300,31 @@ void MainWindow::InitScenes()
 
     m_sceneExport = new VMainGraphicsScene(this);
     connect(m_sceneExport, &VMainGraphicsScene::mouseMove, this, &MainWindow::MouseMove);
+
+    // The hand on the plan. It is given a repaint callback rather than a MainWindow pointer:
+    // the store it writes into cannot announce anything, and only this window knows whether
+    // the generation written is the one on screen and whether the mode is still Export.
+    m_exportCorrection = new OExportCorrection(
+        m_sceneExport, &m_exportOutputs,
+        [this](quint32 id)
+        {
+            if (VAbstractValApplication::VApp()->GetDrawMode() != Draw::Export)
+            {
+                return;
+            }
+            // An undo can reach a correction made on another generation — the stack outlives
+            // the selection — and repainting a plan that is not the one shown would put a
+            // different result on screen than the one the user is looking at.
+            if (m_exportOutputs.ActiveId() != id)
+            {
+                return;
+            }
+            if (const OExportOutput *output = m_exportOutputs.Find(id); output != nullptr)
+            {
+                ShowExportOutput(*output, false);
+            }
+        },
+        this);
 
     ui->view->setScene(currentScene);
 

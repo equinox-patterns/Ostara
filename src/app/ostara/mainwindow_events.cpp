@@ -330,6 +330,19 @@ void MainWindow::dropEvent(QDropEvent* event)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::HandleItemClicked(QGraphicsItem *item)
 {
+    // Export mode has no piece to select. Its canvas is a drawing of a nesting result, not a working
+    // scene: the items are neither tools nor nodes, and nothing downstream of this handler has anything
+    // to say about them. Letting the generic path run cleared the isolation, deselected the detail and
+    // hid the breadcrumb of a pattern the user was not even looking at. The mode's own clicks — a
+    // footprint to correct by hand — are routed by OExportCorrection, never from here.
+    //
+    // Deliberately before the line below: no node-picking workflow is ever open in Export, so arming
+    // m_pickingClick there would leave a flag set that nothing ever reads or clears.
+    if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Export)
+    {
+        return;
+    }
+
     // This click is routed to a node-picking workflow (if any is waiting for clicks) before the scene
     // sees it. Freeze that answer here: the workflow may end on this very click — the second point of a
     // custom seam allowance, a foldline, a group link — and reset its state before the scene re-reads it,

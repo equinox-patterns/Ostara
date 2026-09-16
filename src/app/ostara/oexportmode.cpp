@@ -80,6 +80,11 @@ void MainWindow::ActionExport(bool checked)
 
     ArrowTool(true);
 
+    // ArrowTool arms the rubber band, which is what the drawing modes want and this one does
+    // not: a drag on this canvas means "move what is under the cursor", and a rubber band
+    // would draw a selection rectangle over the plan on the first movement that misses.
+    ui->view->AllowRubberBand(false);
+
     ui->actionDraw->setChecked(false);
     ui->actionDetails->setChecked(false);
     ui->actionGraded->setChecked(false);

@@ -117,6 +117,29 @@ void OExportOutputStore::SetName(quint32 id, const QString &name)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportOutputStore::SetPlacement(quint32 id, int index, const OExportPlacement &placement)
+{
+    for (OExportOutput &output : m_outputs)
+    {
+        if (output.id != id)
+        {
+            continue;
+        }
+
+        // A gesture is aimed at a footprint of the generation on screen. An undo command can
+        // outlive both — the user refreshed the generation, or closed the pattern — and must
+        // then do nothing at all rather than write where the index no longer points.
+        if (index < 0 || index >= output.result.placements.size())
+        {
+            return;
+        }
+
+        output.result.placements[index] = placement;
+        return;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportOutputStore::Replace(quint32 id, OExportOutput output)
 {
     for (OExportOutput &existing : m_outputs)

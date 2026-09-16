@@ -34,6 +34,7 @@
 #include "../vmisc/vlockguard.h"
 #include "../vpatterndb/osizerange.h"
 #include "core/oexportoutput.h"
+#include "oexportcorrection.h"
 #include "core/ogradedsizeranges.h"
 #include "core/vcmdexport.h"
 #include "mainwindowsnogui.h"
@@ -400,6 +401,11 @@ private:
     /// The generations of this session. Never written to the .ostara: a result filed in
     /// the document would read as pattern data, and therefore as up to date.
     OExportOutputStore m_exportOutputs{};
+
+    /// The hand on the plan, session-scoped like the generations it corrects. Owned here
+    /// rather than by the Export mode because a correction has to survive a mode switch — the
+    /// user leaves the canvas and comes back to the plan exactly as they left it.
+    OExportCorrection *m_exportCorrection{nullptr};
 
     /// Name of the active size range in Graded mode (empty when none yet).
     QString m_activeGradedRangeName{};

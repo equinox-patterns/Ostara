@@ -79,6 +79,19 @@ struct OExportCanvasContent
     QList<OGradedSvg::LayoutObject> decor;
 };
 
+/// The index, in `OExportNestingResult::placements`, of the placement an item belongs to.
+///
+/// Set on every top-level item a placement produced — each size layer's silhouette, and the
+/// decor carrier of the owner it decorates — so a footprint's whole follow set is found by
+/// walking the scene and filtering on this. That is what lets a selection survive a rebuild:
+/// Build() clears the scene, so a correction can hold the index and never an item pointer.
+///
+/// Two things depend on it, and both are easy to break silently. It must be carried by the
+/// decor CARRIER and not by the child items, because a click on a cartouche lands on a child
+/// and has to walk up to find the footprint. And an int on an item is invisible to the PDF
+/// writer, which walks OExportCanvasContent and never reads roles.
+constexpr int kExportFootprintRole = Qt::UserRole + 908;
+
 /// @brief Draws the result of a nesting run into the Export scene.
 ///
 /// The nesting places footprints, not sizes: one footprint covers every size of

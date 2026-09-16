@@ -186,6 +186,21 @@ public:
     ///        No-op when the id is unknown.
     void SetName(quint32 id, const QString &name);
 
+    /// @brief Write ONE placement of the generation @p id, and leave everything else alone.
+    ///
+    /// The plan is frozen once the nesting has run: this cannot reach `usedHeightPx`, so it
+    /// cannot move a row, and it cannot change `binWidthPx`, so it cannot change what a sheet
+    /// is. Manual correction moves pieces on the paper the generation was cut for; it never
+    /// re-cuts the paper. That is held by this signature rather than by every caller
+    /// remembering not to.
+    ///
+    /// Deliberately not a Replace(): that one copies the whole payload — every layer, every
+    /// resolved piece — and a gesture touches none of it.
+    ///
+    /// No-op when the id is unknown or @p index is out of range: an undo command that
+    /// outlived its generation — the pattern was closed — must be silent, not fatal.
+    void SetPlacement(quint32 id, int index, const OExportPlacement &placement);
+
     /// @brief Replace the payload of @p id, keeping its identity and its name. This is the
     ///        Refresh entry: the result is new, the row is not — the user named it, and the
     ///        nesting knows nothing of that name. No-op when the id is unknown.
