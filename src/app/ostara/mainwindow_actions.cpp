@@ -313,35 +313,44 @@ void MainWindow::CreateMenus()
 
     // Add Undo/Redo actions.
     //
-    // Built from the GROUP, not from a stack. QUndoStack::createUndoAction wires the action to
-    // itself — triggering it calls that stack's undo() — so keeping the pattern's stack here
-    // would have left that wiring in place, and re-connecting `triggered` would not have removed
-    // it: the action would go on reaching the pattern's history no matter what Ctrl+Z was meant
-    // to reach. The group's version does the same thing against whichever stack is active, and
-    // switchScene is what decides which one that is.
-    undoAction = m_undoGroup->createUndoAction(this, tr("&Undo"));
+    // Plain QActions, wired to the group's undo() and redo() slots — deliberately NOT built by
+    // QUndoStack::createUndoAction or QUndoGroup::createUndoAction.
+    //
+    // Both of those keep the action's text equal to "Undo <the command that would be undone>" and
+    // rewrite it on every index change. That is the right wording for a menu that lists an
+    // application's edits; it is not right here. These two sit in the Piece menu, next to the
+    // pattern's own commands, where a label reading "Undo Move a piece on the plan" is longer
+    // than every entry around it and tells the user what they just did themselves. Plain "Undo"
+    // and "Redo", no detail — Sophie's call, after seeing it in the menu.
+    //
+    // Nothing that carries information is given up: the enabled state, which is the part the user
+    // actually reads, still comes from the group through UpdateUndoRedoActions below.
+    undoAction = new QAction(tr("&Undo"), this);
+    connect(undoAction, &QAction::triggered, m_undoGroup, &QUndoGroup::undo);
     connect(undoAction, &QAction::triggered, m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::RefreshOptions);
     m_shortcutActions.insert(VShortcutAction::Undo, undoAction);
     undoAction->setIcon(FromTheme(VThemeIcon::EditUndo));
     ui->menuPatternPiece->insertAction(ui->actionLast_tool, undoAction);
 
-    redoAction = m_undoGroup->createRedoAction(this, tr("&Redo"));
+    redoAction = new QAction(tr("&Redo"), this);
+    connect(redoAction, &QAction::triggered, m_undoGroup, &QUndoGroup::redo);
     connect(redoAction, &QAction::triggered, m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::RefreshOptions);
     m_shortcutActions.insert(VShortcutAction::Redo, redoAction);
     redoAction->setIcon(FromTheme(VThemeIcon::EditRedo));
     ui->menuPatternPiece->insertAction(ui->actionLast_tool, redoAction);
 
-    // The actions' enabled state belongs to UpdateUndoRedoActions from here on, and these two
-    // connections are how it hears that the answer may have changed. They replace the pair of
-    // lambdas that used to watch the stack for `!m_guiEnabled`: those only ever disabled, and
-    // the group re-derives the state on every activeStackChanged, so an isolated setDisabled was
-    // overwritten the next time the user changed mode.
-    //
-    // Order matters and works out: the group's own connection, installed inside createUndoAction,
-    // runs first and sets enabled from canUndo(); these run after and apply the mode's policy on
-    // top of it. Qt invokes slots in connection order, and these are connected later.
+    // With the group no longer building these actions, nothing writes their enabled state behind
+    // our back — which makes these two connections the ONLY thing that moves it as history is
+    // added, undone or redone. Everything else goes through UpdateUndoRedoActions, which they
+    // call and which is the single place that decides.
     connect(m_undoGroup, &QUndoGroup::canUndoChanged, this, [this]() { UpdateUndoRedoActions(m_guiEnabled); });
     connect(m_undoGroup, &QUndoGroup::canRedoChanged, this, [this]() { UpdateUndoRedoActions(m_guiEnabled); });
+
+    // A QAction is enabled the moment it is constructed, and — unlike the ones createUndoAction
+    // used to hand back — nothing disables these on its own. Without this call they would greet
+    // the application's first screen as live menu entries over an empty history. The group is the
+    // authority on that, so it is asked straight away.
+    UpdateUndoRedoActions(m_guiEnabled);
 
 
     m_separatorAct = new QAction(this);

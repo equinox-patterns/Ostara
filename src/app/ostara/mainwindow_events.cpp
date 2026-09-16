@@ -125,15 +125,12 @@ void MainWindow::changeEvent(QEvent *event)
         // retranslate designer form (single inheritance approach)
         ui->retranslateUi(this);
         m_welcomeScreen->RetranslateUI();
-        // Undo and Redo are NOT retranslated here any more. Since they are built by QUndoGroup,
-        // their text belongs to it: the group keeps it equal to "Undo <the command that would be
-        // undone>" and rewrites it on every index change. Setting it here overwrote the command
-        // name with a bare "Undo" — the menu would have shown "Undo" again after every language
-        // change, and stayed that way until the next gesture.
-        //
-        // The prefix itself is fixed at creation and does not follow a language change. That is
-        // acceptable because Ostara's source strings are English (rules §3.2): tr("&Undo") hands
-        // back "&Undo" whatever the translation, so nothing visible is lost.
+        // Undo and Redo are plain actions whose text nothing else ever writes, so this is the one
+        // place that retranslates them — and it works here, which it did not while they were
+        // built by a QUndoGroup: the group rewrote the text on every index change and would have
+        // undone this at the next gesture.
+        undoAction->setText(tr("&Undo"));
+        redoAction->setText(tr("&Redo"));
         statusBar()->showMessage(tr("Changes applied."), 5000);
         m_patternPieceLabel->setText(tr("Piece:"));
 
