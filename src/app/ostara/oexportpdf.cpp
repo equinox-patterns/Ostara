@@ -26,6 +26,7 @@
 
 #include "oexportpdf.h"
 
+#include "oexportartboards.h"
 #include "oexportcanvas.h"
 #include "ogradedsvgwriter.h"
 
@@ -39,7 +40,9 @@
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QGraphicsScene>
+#include <QStringList>
 #include <QTemporaryDir>
+#include <QVector>
 
 namespace
 {
@@ -70,21 +73,47 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
 
     // Draw the generation the way the canvas draws it, and take back what was drawn. The
     // scene is a local: everything the writer needs points into it, and it dies with this
-    // function, once the SVG has been written.
+    // function, once every SVG has been written.
     QGraphicsScene scene;
     OExportCanvasContent content;
     OExportCanvas::Build(&scene, output.layers, output.result,
                          output.hasRange ? &output.range : nullptr, pattern, doc, &content);
 
-    // The page is the bin — the width the print model imposed, the height the nesting used.
+    // The page is the bin when the generation has no sheets to cut — a roll, the A0 sheet,
+    // anything the print model left untuiled — and that is the whole of this export, left
+    // exactly as it was.
     //
-    // And on a tiled run this is deliberately NOT what the canvas shows: the screen lays the
-    // result on the sheets it will be cut into, while one page here still holds the whole
-    // plan. The two do not contradict each other — cutting the plan into sheets is precisely
-    // what a tiled export has yet to learn, and until it does, a page that IS a sheet would
-    // be a page with five sixth of the plan missing. The canvas is handed no grid here (the
-    // parameter keeps its default), so nothing of it reaches this file or the SVG.
-    const QRectF imageRect(0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx);
+    // When the run IS tiled the plan is cut into its artboards, and each artboard becomes
+    // a page. The grid is the SCREEN's: the same Compute() the canvas calls, so that the
+    // paper cannot disagree with what is drawn, and frameHeightMm > 0 — the print model's
+    // own token — is the only thing that decides it. Nothing is asked of the user, because
+    // there is nothing left to ask: she already said what she prints on.
+    const OExportArtboards::Grid artboards = OExportArtboards::Compute(
+        output.result.binWidthPx, output.result.usedHeightPx, output.frameHeightMm,
+        output.columns);
+
+    QVector<QRectF> pages;
+    if (artboards.valid)
+    {
+        pages.reserve(artboards.columns * artboards.rows);
+        // Row by row, left to right — the order the sheets come off the printer in and are
+        // taped back together in. A sheet is never cut short, so the last row is whole and
+        // whatever the nesting left unused in it is printed as blank paper; that band is
+        // where a hand correction may have put a piece, and it is a real sheet now.
+        for (int row = 0; row < artboards.rows; ++row)
+        {
+            for (int col = 0; col < artboards.columns; ++col)
+            {
+                pages.append(QRectF(artboards.planRect.left() + col * artboards.cellWidthPx,
+                                    artboards.planRect.top() + row * artboards.cellHeightPx,
+                                    artboards.cellWidthPx, artboards.cellHeightPx));
+            }
+        }
+    }
+    else
+    {
+        pages.append(QRectF(0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx));
+    }
 
     // The writer takes the layers largest first and paints them in that order, so the
     // smallest — the reference, the one the decor sits on — ends up on top, both in the
@@ -157,16 +186,30 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         return false;
     }
 
-    const QString svgPath = dir.filePath(QStringLiteral("generation.svg"));
-    if (!OGradedSvg::WriteGradedSvg(svgPath, layers, layoutLayerName, content.decor, imageRect,
-                                    QMarginsF(), 1.0, 1.0, QString(), QString(), layered))
+    // One SVG per page. The drawing is the same in all of them — Build filled the content
+    // once, and nothing in it depends on the sheet — so a page is that one drawing read
+    // through a different rectangle: WriteGradedSvg crops to the rect it is handed, and the
+    // width and height it writes are what Trame turns into that page's /MediaBox.
+    QStringList svgPaths;
+    svgPaths.reserve(pages.size());
+    for (int i = 0; i < pages.size(); ++i)
     {
-        qWarning() << "OExportPdf: the SVG could not be written";
-        return false;
+        const QString svgPath =
+            dir.filePath(QStringLiteral("generation_%1.svg").arg(i, 4, 10, QLatin1Char('0')));
+        if (!OGradedSvg::WriteGradedSvg(svgPath, layers, layoutLayerName, content.decor,
+                                        pages.at(i), QMarginsF(), 1.0, 1.0, QString(), QString(),
+                                        layered))
+        {
+            qWarning() << "OExportPdf: the SVG could not be written for page" << i + 1;
+            return false;
+        }
+        svgPaths.append(svgPath);
     }
-    // Trame reads the layers back out of the SVG and rebuilds them as optional content.
-    // Handing it the file rather than a buffer is its own interface, and the file is what
-    // holds the page geometry — the converter takes the page from the SVG, not from us.
+    // Trame reads the layers back out of the SVGs and rebuilds them as optional content —
+    // ONE set of layers for the whole document, not one per sheet, so switching a size off
+    // hides it on every page at once. Handing it files rather than buffers is its own
+    // interface, and the files are what hold the page geometry: the converter takes each
+    // page's size from its own SVG, not from us.
     SvgToOcgPdf converter;
     // What the reader shows in its information panel. The title is the file's own name —
     // what this delivery is called. Author and creator both name the application, as
@@ -177,7 +220,7 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     info.author = QStringLiteral("Ostara %1").arg(AppDisplayVersion());
     info.creator = info.author;
 
-    if (!converter.convert(svgPath, pdfPath, info))
+    if (!converter.convert(svgPaths, pdfPath, info))
     {
         qWarning() << "OExportPdf: the PDF could not be written";
         return false;

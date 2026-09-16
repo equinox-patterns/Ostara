@@ -256,7 +256,7 @@ void WriteLogo(QXmlStreamWriter &writer, const OCartoucheRenderItem &el)
 }
 
 /** @brief Emit one information block (editable text only). */
-void WriteBlock(QXmlStreamWriter &writer, const QTransform &toSVG, const QPointF &origin,
+void WriteBlock(QXmlStreamWriter &writer, const QPointF &origin,
                 const OInfoBlockSvg::Block &block)
 {
     if (block.lines.isEmpty() || block.rect.width() <= 0.0 || block.rect.height() <= 0.0)
@@ -274,7 +274,13 @@ void WriteBlock(QXmlStreamWriter &writer, const QTransform &toSVG, const QPointF
     rot.rotate(-block.rotation);
     QTransform tr;
     tr.translate(origin.x() + block.rect.x(), origin.y() + block.rect.y());
-    const QTransform toFile = toSVG * (rot * tr);
+    // No toSVG here. The page's own offset is applied by the wrapper this record is written
+    // into, AFTER the owner's placement — where in the chain it belongs. Folded in here it
+    // would be applied BEFORE the rotation, so on any page but the first the sheet offset
+    // would be turned by the owner's angle and carry the cartouche off the sheet. Invisible
+    // while the page was the whole plan and toSVG was the identity; it took a tiled export
+    // to show it.
+    const QTransform toFile = rot * tr;
 
     writer.writeStartElement(QStringLiteral("g"));
     writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(toFile));
@@ -310,7 +316,7 @@ void WriteBlock(QXmlStreamWriter &writer, const QTransform &toSVG, const QPointF
 }
 
 /** @brief Emit one floating annotation (editable text only). */
-void WriteAnnotation(QXmlStreamWriter &writer, const QTransform &toSVG, const QPointF &origin,
+void WriteAnnotation(QXmlStreamWriter &writer, const QPointF &origin,
                      const OInfoBlockSvg::Annotation &annotation)
 {
     if (annotation.text.isEmpty() || annotation.rect.width() <= 0.0 || annotation.rect.height() <= 0.0)
@@ -322,7 +328,7 @@ void WriteAnnotation(QXmlStreamWriter &writer, const QTransform &toSVG, const QP
     rot.rotate(-annotation.rotation);
     QTransform tr;
     tr.translate(origin.x() + annotation.rect.x(), origin.y() + annotation.rect.y());
-    const QTransform toFile = toSVG * (rot * tr);
+    const QTransform toFile = rot * tr;
 
     QFont font;
     if (!annotation.fontFamily.isEmpty())
@@ -578,19 +584,24 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
                 }
             }
 
-            const bool placed = !object.transform.isIdentity();
+            // The records take the page offset and the owner's placement together, in that
+            // order: the owner's frame first, the page's own translation last. The decor
+            // children above need no wrapper — their scene coordinates are already mapped
+            // through toSVG one by one, so this is the only place the two meet.
+            const QTransform recordTx = object.transform * toSVG;
+            const bool placed = !recordTx.isIdentity();
             if (placed)
             {
                 writer.writeStartElement(QStringLiteral("g"));
-                writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(object.transform));
+                writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(recordTx));
             }
             for (const OInfoBlockSvg::Block &block : object.blocks)
             {
-                WriteBlock(writer, toSVG, object.origin, block);
+                WriteBlock(writer, object.origin, block);
             }
             for (const OInfoBlockSvg::Annotation &annotation : object.annotations)
             {
-                WriteAnnotation(writer, toSVG, object.origin, annotation);
+                WriteAnnotation(writer, object.origin, annotation);
             }
             if (placed)
             {

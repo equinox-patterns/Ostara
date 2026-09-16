@@ -41,9 +41,14 @@ struct OExportOutput;
  * size, plus the reference size's decor — and Trame turns them into optional content
  * groups, which is what lets a printer switch a size off in Acrobat.
  *
- * The page is the bin: the width the print model imposed, the height the nesting used.
- * Nothing is cropped and nothing is left blank, because it is the very rectangle the
- * canvas draws.
+ * The page is the bin when the generation has no sheets to cut — a roll, the A0 sheet:
+ * the width the print model imposed, the height the nesting used, the very rectangle the
+ * canvas draws. Nothing is cropped and nothing is left blank.
+ *
+ * When the run is tiled, the plan is cut into its artboards and each artboard becomes a
+ * page — the same grid the canvas draws, so the paper cannot disagree with the screen.
+ * Nothing is asked of the user: the print model already said what she prints on, and its
+ * frame height is the whole of what tells the two cases apart.
  *
  * A single-size run has nothing to switch between, so it goes out flat — no layers, one
  * stream. There is no layer panel to offer, and an entry with no choice is not one.
