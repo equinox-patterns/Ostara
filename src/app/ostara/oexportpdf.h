@@ -50,6 +50,14 @@ struct OExportOutput;
  * Nothing is asked of the user: the print model already said what she prints on, and its
  * frame height is the whole of what tells the two cases apart.
  *
+ * The drawing is written ONCE whatever the page count: it goes into the file as one Form
+ * XObject per layer, and every page references it, offset so that its own artboard lands
+ * on the paper. The plan is in the PDF a single time rather than once per sheet, and it is
+ * rendered a single time as well. What a page holds of its own is that offset — and, in
+ * time, the decor that belongs to a sheet rather than to the plan: the numbering, the
+ * frame, the registration marks. Leaving that room is half the reason the drawing is
+ * shared.
+ *
  * A single-size run has nothing to switch between, so it goes out flat — no layers, one
  * stream. There is no layer panel to offer, and an entry with no choice is not one.
  */

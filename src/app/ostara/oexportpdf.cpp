@@ -40,7 +40,6 @@
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QGraphicsScene>
-#include <QStringList>
 #include <QTemporaryDir>
 #include <QVector>
 
@@ -186,30 +185,33 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         return false;
     }
 
-    // One SVG per page. The drawing is the same in all of them — Build filled the content
-    // once, and nothing in it depends on the sheet — so a page is that one drawing read
-    // through a different rectangle: WriteGradedSvg crops to the rect it is handed, and the
-    // width and height it writes are what Trame turns into that page's /MediaBox.
-    QStringList svgPaths;
-    svgPaths.reserve(pages.size());
-    for (int i = 0; i < pages.size(); ++i)
+    // ONE SVG, over the whole plan — not one per sheet. The drawing below is the same
+    // everywhere, and a sheet has become a matter for the PDF: the plan is written once
+    // into a Form XObject and every page references it, offset so that its own artboard
+    // lands on the paper. Writing it per sheet was writing the same drawing N times, and
+    // rendering it per sheet was rendering it N times.
+    //
+    // The rectangle is the plan's own, and the plan starts at the origin: that is what
+    // keeps the writer's transform the identity and leaves the sheet offset entirely to
+    // the PDF. A page is the plan read through a rectangle — and the writer does not crop
+    // to what it is handed, it only sizes the root and shifts the content, so the plan
+    // being whole here is exactly what each page needs.
+    const QRectF imageRect = artboards.valid ? artboards.planRect : pages.first();
+
+    const QString svgPath = dir.filePath(QStringLiteral("generation.svg"));
+    if (!OGradedSvg::WriteGradedSvg(svgPath, layers, layoutLayerName, content.decor, imageRect,
+                                    QMarginsF(), 1.0, 1.0, QString(), QString(), layered))
     {
-        const QString svgPath =
-            dir.filePath(QStringLiteral("generation_%1.svg").arg(i, 4, 10, QLatin1Char('0')));
-        if (!OGradedSvg::WriteGradedSvg(svgPath, layers, layoutLayerName, content.decor,
-                                        pages.at(i), QMarginsF(), 1.0, 1.0, QString(), QString(),
-                                        layered))
-        {
-            qWarning() << "OExportPdf: the SVG could not be written for page" << i + 1;
-            return false;
-        }
-        svgPaths.append(svgPath);
+        qWarning() << "OExportPdf: the SVG could not be written";
+        return false;
     }
-    // Trame reads the layers back out of the SVGs and rebuilds them as optional content —
+
+    // Trame reads the layers back out of the SVG and rebuilds them as optional content —
     // ONE set of layers for the whole document, not one per sheet, so switching a size off
-    // hides it on every page at once. Handing it files rather than buffers is its own
-    // interface, and the files are what hold the page geometry: the converter takes each
-    // page's size from its own SVG, not from us.
+    // hides it on every page at once. What it takes from us besides the file is the page
+    // list: the artboards, in the order the sheets come off the printer. A page's size is
+    // ours to state now rather than the SVG's to imply, and that is what lets one drawing
+    // serve all of them.
     SvgToOcgPdf converter;
     // What the reader shows in its information panel. The title is the file's own name —
     // what this delivery is called. Author and creator both name the application, as
@@ -220,7 +222,7 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     info.author = QStringLiteral("Ostara %1").arg(AppDisplayVersion());
     info.creator = info.author;
 
-    if (!converter.convert(svgPaths, pdfPath, info))
+    if (!converter.convert(svgPath, pages, pdfPath, info))
     {
         qWarning() << "OExportPdf: the PDF could not be written";
         return false;
