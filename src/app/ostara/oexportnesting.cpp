@@ -27,7 +27,9 @@
 
 #include "oexportnesting.h"
 
+#include "oexportartboards.h"
 #include "oexportgeometry.h"
+#include "oexportsheets.h"
 
 #include "../vlayout/vlayoutpoint.h"
 
@@ -35,10 +37,14 @@
 #include "nesting/Bin.h"
 #include "nesting/Engine.h"
 #include "nesting/Footprint.h"
+#include "nesting/TiledEngine.h"
+
+#include "../vmisc/def.h"
 
 #include <QObject>
 
 #include <cmath>
+#include <limits>
 
 namespace
 {
@@ -60,6 +66,95 @@ auto ToPath64(const QVector<VLayoutPoint> &points, const QPointF &offset) -> Cli
     }
 
     return path;
+}
+
+/// Every piece placed. The engine marks an unplaced one with a negative
+/// rotation and reports nothing else — no status, no exception.
+auto AllPlaced(const std::vector<Placement> &placements) -> bool
+{
+    for (const Placement &p : placements)
+    {
+        if (p.rotation < 0.0)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+/// The engine's raw placements, turned into what the mode consumes.
+///
+/// The footprint's own frame: the min corner gives the origin, and the max
+/// corner gives the extent. Both come from the polygon the engine actually
+/// placed — never from the layers, which would be a second union and not
+/// necessarily the same one.
+auto ToExportPlacements(const std::vector<Placement> &placements,
+                        const std::vector<Clipper2Lib::Path64> &polygons)
+    -> QVector<OExportPlacement>
+{
+    QVector<OExportPlacement> out;
+    out.reserve(static_cast<int>(placements.size()));
+
+    for (size_t i = 0; i < placements.size(); ++i)
+    {
+        int64_t xMin = polygons[i].front().x;
+        int64_t yMin = polygons[i].front().y;
+        int64_t xMax = xMin;
+        int64_t yMax = yMin;
+        for (const auto &point : polygons[i])
+        {
+            xMin = std::min(xMin, point.x);
+            yMin = std::min(yMin, point.y);
+            xMax = std::max(xMax, point.x);
+            yMax = std::max(yMax, point.y);
+        }
+
+        OExportPlacement placement;
+        placement.x = placements[i].x;
+        placement.y = placements[i].y;
+        placement.rotation = placements[i].rotation;
+        placement.originX = static_cast<double>(xMin) / kTrameScale;
+        placement.originY = static_cast<double>(yMin) / kTrameScale;
+        placement.extentX = static_cast<double>(xMax - xMin) / kTrameScale;
+        placement.extentY = static_cast<double>(yMax - yMin) / kTrameScale;
+
+        // The outline, brought into the frame the extent describes: origin at local (0, 0) and
+        // pixels. It is what a hand's limits are measured against — see the note on the field.
+        placement.outline.reserve(static_cast<int>(polygons[i].size()));
+        for (const auto &point : polygons[i])
+        {
+            placement.outline.append(QPointF(static_cast<double>(point.x - xMin) / kTrameScale,
+                                             static_cast<double>(point.y - yMin) / kTrameScale));
+        }
+
+        out.append(placement);
+    }
+
+    return out;
+}
+
+/// How many sheets a plan prints.
+///
+/// The rule belongs to OSTARA, not to Trame: `Bin.h` says the grid is not part
+/// of the bin model, and the count is read off the placements by the one
+/// function that counts them. Trame is asked for two plans and told nothing
+/// about pages — it is here, and only here, that they are compared.
+auto PrintedSheets(const QVector<OExportPlacement> &placements,
+                   double usedHeightPx, const OExportNestingParams &params) -> int
+{
+    const double mmPerPx = 1.0 / ToPixel(1.0, Unit::Mm);
+
+    const OExportArtboards::Grid grid =
+        OExportArtboards::Compute(params.binWidthPx, usedHeightPx,
+                                  params.artboardHeightPx * mmPerPx,
+                                  params.artboardCount);
+
+    if (!grid.valid)
+    {
+        return (std::numeric_limits<int>::max)();
+    }
+
+    return OExportSheets::Compute(grid, placements).count;
 }
 } // namespace
 
@@ -149,7 +244,7 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     config.artboardHeight = params.artboardHeightPx;
 
     const Engine engine{config};
-    const std::vector<Placement> placements = engine.place(bin, footprint.polygons);
+    std::vector<Placement> placements = engine.place(bin, footprint.polygons);
 
     if (placements.size() != footprint.polygons.size())
     {
@@ -163,52 +258,61 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
         result.keys.append(key);
     }
 
-    for (size_t i = 0; i < placements.size(); ++i)
+    // The engine marks an unplaced piece with a negative rotation and reports
+    // nothing else — no status, no exception.
+    if (!AllPlaced(placements))
     {
-        // The engine marks an unplaced piece with a negative rotation and reports
-        // nothing else — no status, no exception.
-        if (placements[i].rotation < 0.0)
-        {
-            result.error = QObject::tr("The document is too narrow: some pieces could not be placed.");
-            return result;
-        }
-
-        // The footprint's own frame: the min corner gives the origin, and the max corner
-        // gives the extent. Both come from the polygon the engine actually placed — never
-        // from the layers, which would be a second union and not necessarily the same one.
-        int64_t xMin = footprint.polygons[i].front().x;
-        int64_t yMin = footprint.polygons[i].front().y;
-        int64_t xMax = xMin;
-        int64_t yMax = yMin;
-        for (const auto &point : footprint.polygons[i])
-        {
-            xMin = std::min(xMin, point.x);
-            yMin = std::min(yMin, point.y);
-            xMax = std::max(xMax, point.x);
-            yMax = std::max(yMax, point.y);
-        }
-
-        OExportPlacement placement;
-        placement.x = placements[i].x;
-        placement.y = placements[i].y;
-        placement.rotation = placements[i].rotation;
-        placement.originX = static_cast<double>(xMin) / kTrameScale;
-        placement.originY = static_cast<double>(yMin) / kTrameScale;
-        placement.extentX = static_cast<double>(xMax - xMin) / kTrameScale;
-        placement.extentY = static_cast<double>(yMax - yMin) / kTrameScale;
-
-        // The outline, brought into the frame the extent describes: origin at local (0, 0) and
-        // pixels. It is what a hand's limits are measured against — see the note on the field.
-        placement.outline.reserve(static_cast<int>(footprint.polygons[i].size()));
-        for (const auto &point : footprint.polygons[i])
-        {
-            placement.outline.append(QPointF(static_cast<double>(point.x - xMin) / kTrameScale,
-                                             static_cast<double>(point.y - yMin) / kTrameScale));
-        }
-
-        result.placements.append(placement);
+        result.error = QObject::tr("The document is too narrow: some pieces could not be placed.");
+        return result;
     }
 
+    // ── L'arbitrage : deux moteurs, le moins de feuilles gagne ────────────
+    //
+    // Sur un run TUILÉ, un second moteur entre en jeu. Le moteur de bande
+    // minimise une HAUTEUR : la page n'existe pas pour lui, et la grille est une
+    // grille posée après coup sur le résultat — mesuré sur un patron réel,
+    // 1088,050 mm pour une frontière de rangée à 1036, payés d'une rangée
+    // entière. Le moteur Tiled paie en PAGES : les grosses pièces d'abord, puis
+    // les petites glissées dans les trous au VRAI contour.
+    //
+    // Les deux plans sont calculés et c'est celui qui imprime le MOINS de
+    // feuilles qui est gardé. Le moteur de bande garde donc son mot à dire, et
+    // le résultat ne peut pas être pire qu'avant.
+    //
+    // ⚠️ Le prédicat est `artboardHeightPx > 0.0` — celui d'Engine.cpp — et
+    // surtout PAS `artboardCount == 0`, qui n'arrive jamais : `Columns()` rend
+    // 1 sur un roulé, jamais 0. Un moteur qui testerait ça se tromperait sur
+    // TOUS les runs actuels.
+    if (params.artboardHeightPx > 0.0 && params.artboardCount > 0)
+    {
+        TiledEngine::Spec spec;
+        spec.sheetWidth    = params.binWidthPx / params.artboardCount;
+        spec.sheetHeight   = params.artboardHeightPx;
+        spec.gap           = params.gapPx;
+        spec.allowRotation = true;
+
+        const std::vector<Placement> tiled = TiledEngine(spec).place(bin, footprint.polygons);
+
+        if (tiled.size() == footprint.polygons.size() && AllPlaced(tiled))
+        {
+            const QVector<OExportPlacement> stripPlan =
+                ToExportPlacements(placements, footprint.polygons);
+            const QVector<OExportPlacement> tiledPlan =
+                ToExportPlacements(tiled, footprint.polygons);
+
+            const int stripSheets = PrintedSheets(
+                stripPlan, Engine::UsedHeight(placements, footprint.polygons, bin), params);
+            const int tiledSheets = PrintedSheets(
+                tiledPlan, Engine::UsedHeight(tiled, footprint.polygons, bin), params);
+
+            if (tiledSheets < stripSheets)
+            {
+                placements = tiled;
+            }
+        }
+    }
+
+    result.placements = ToExportPlacements(placements, footprint.polygons);
     result.usedHeightPx = Engine::UsedHeight(placements, footprint.polygons, bin);
 
     result.ok = true;
