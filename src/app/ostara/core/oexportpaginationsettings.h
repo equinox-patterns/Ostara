@@ -52,6 +52,18 @@ enum class OExportPaginationForm : qint8
     NumberAndLetter
 };
 
+/**
+ * @brief The most columns a run may be given — and, for the same reason, the most a page number
+ *        can name.
+ *
+ * Twenty-six, because the two-axis form writes a column as a letter and there is none past 'Z'.
+ * The tiling itself would take more: this is a limit of what a sheet can be **called**, not of
+ * how many can be laid side by side. Capping it where the count is entered is what keeps a plan
+ * from being built whose sheets carry numbers no one can read — a number that names nothing is
+ * worse than a count that cannot be asked for.
+ */
+constexpr int kPaginationMaxColumns = 26;
+
 /** @brief One row of the form table: what the combo shows, and a saved template carries. */
 struct OExportPaginationFormModel
 {

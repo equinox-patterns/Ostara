@@ -90,7 +90,9 @@ QString SheetNumberText(int columns, OExportPaginationForm form, int row, int co
     {
         // The letter is written from the column index, as the mark table's columns are read:
         // 'A' is the first column, 'B' the second. Past twenty-six columns there is no letter
-        // left, which is why letters alone are not offered as a form — see §3.4.3.
+        // left — which is why letters alone are not offered as a form, and why a run is capped
+        // at that count where its columns are entered (kPaginationMaxColumns). Reaching here
+        // with more of them is not something the interface can ask for — see §3.4.3.
         const char letter = static_cast<char>('A' + col);
         return QLatin1Char(letter) + QString::number(row + 1);
     }

@@ -26,6 +26,8 @@
 
 #include "oexporttiledformatwidget.h"
 
+#include "../core/oexportpaginationsettings.h"
+
 #include "../core/oexportunitformat.h"
 
 #include <QEvent>
@@ -61,7 +63,11 @@ OExportTiledFormatWidget::OExportTiledFormatWidget(QWidget *parent)
 
     m_columns = new QSpinBox(this);
     m_columns->setMinimum(1);
-    m_columns->setMaximum(99);
+    // Twenty-six, and the reason is not the layout: the two-axis form of the page number names a
+    // column by a letter, and there is none past 'Z'. A run of more sheets would nest perfectly
+    // well and print numbers that cannot be read, so it cannot be asked for. The limit is
+    // declared next to the rule it comes from, in the pagination settings.
+    m_columns->setMaximum(kPaginationMaxColumns);
     m_columnsLabel = new QLabel(this);
     layout->addRow(m_columnsLabel, m_columns);
 
