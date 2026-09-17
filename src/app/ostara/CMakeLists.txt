@@ -12,6 +12,7 @@ set(OSTARA_QRC
     share/resources/toolicon.qrc
     share/resources/fonts.qrc
     share/resources/drawtool_icons.qrc
+    share/resources/export_icons.qrc
 )
 
 # ══════════════════════════════════════════════════════════════════════════

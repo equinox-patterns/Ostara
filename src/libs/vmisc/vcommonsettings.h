@@ -111,6 +111,9 @@ public:
     auto GetPathCartoucheTemplates() const -> QString;
     void SetPathCartoucheTemplates(const QString &value) const;
 
+    auto GetPathPdfTemplates() const -> QString;
+    void SetPathPdfTemplates(const QString &value) const;
+
     auto GetPathLogos() const -> QString;
     void SetPathLogos(const QString &value) const;
 
@@ -305,6 +308,9 @@ public:
 
     auto GetDefaultCartoucheTemplate() const -> QString;
     void SetDefaultCartoucheTemplate(const QString &name);
+
+    auto GetDefaultPdfTemplate() const -> QString;
+    void SetDefaultPdfTemplate(const QString &name);
 
     auto GetSingleStrokeOutlineFont() const -> bool;
     void SetSingleStrokeOutlineFont(bool value);

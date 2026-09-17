@@ -36,6 +36,7 @@
 #include "mainwindow.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
 #include "widgets/InfoBlock/OPieceCartoucheStorage.h"
+#include "core/oexporttemplatestorage.h"
 
 #include "vabstractapplication.h"
 #include "vvalentinasettings.h"
@@ -195,6 +196,9 @@ auto main(int argc, char *argv[]) -> int
         // First launch of the installed software: seed the default cartouche template
         // (idempotent — skipped when the templates folder already holds a template).
         OPieceCartoucheStorage::EnsureDefaultTemplate();
+
+        // The same, for the templates of the PDF editor: one library each, seeded the same way.
+        OExportTemplateStorage::EnsureDefaultTemplate();
 
         mw->show();
 

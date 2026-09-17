@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/export">
+        <file alias="icon_scissors_vertical.svg">../../../../../share/icons/export/icon_scissors_vertical.svg</file>
+        <file alias="icon_scissors_horizontal.svg">../../../../../share/icons/export/icon_scissors_horizontal.svg</file>
+        <file alias="circle.svg">../../../../../share/icons/export/circle.svg</file>
+        <file alias="square.svg">../../../../../share/icons/export/square.svg</file>
+        <file alias="octogon.svg">../../../../../share/icons/export/octogon.svg</file>
+    </qresource>
+</RCC>

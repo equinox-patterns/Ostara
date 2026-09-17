@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!--
+    Ostara Assembly Mark Template Format v1.0.0
+    What a template draws on the sheets of a tiled plan: the frame, the scissors, the
+    assembly marks and the pagination. Stored globally in ~/Ostara/PDFTemplate as a
+    .oamt file.
+    Forward-compatible: unknown elements and attributes are preserved.
+  -->
+
+  <!-- ===== ROOT ===== -->
+  <xs:element name="assemblyMarkTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="frame" type="FrameType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="marks" type="MarksType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="pagination" type="PaginationType" minOccurs="0" maxOccurs="1"/>
+        <!-- Forward-compat: unknown top-level elements preserved -->
+        <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="version" type="FormatVersion" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ===== FRAME ===== -->
+  <xs:complexType name="FrameType">
+    <xs:attribute name="widthPt" type="xs:double" default="1"/>
+    <xs:attribute name="dashed" type="xs:boolean" default="false"/>
+    <!-- One dash then one space, in points, space-separated: "10 5" -->
+    <xs:attribute name="dashes" type="xs:string" default="10 5"/>
+    <xs:attribute name="opacity" type="Percent" default="100"/>
+    <xs:attribute name="scissorsHorizontal" type="xs:boolean" default="true"/>
+    <xs:attribute name="scissorsVertical" type="xs:boolean" default="true"/>
+    <xs:attribute name="scissorsOpacity" type="Percent" default="100"/>
+    <xs:anyAttribute processContents="lax"/>
+  </xs:complexType>
+
+  <!-- ===== ASSEMBLY MARKS ===== -->
+  <xs:complexType name="MarksType">
+    <!-- circle | square | octagon — a token, never translated -->
+    <xs:attribute name="shape" type="xs:string" default="circle"/>
+    <!-- The mark's side, always in millimetres whatever sizeUnit displays -->
+    <xs:attribute name="sizeMm" type="xs:double" default="40"/>
+    <!-- The unit the size is DISPLAYED in; the stored length never changes -->
+    <xs:attribute name="sizeUnit" type="xs:string" default="cm"/>
+    <xs:attribute name="opacity" type="Percent" default="100"/>
+    <xs:attribute name="corner" type="xs:boolean" default="true"/>
+    <xs:attribute name="verticalCentre" type="xs:boolean" default="false"/>
+    <xs:attribute name="horizontalCentre" type="xs:boolean" default="false"/>
+    <xs:anyAttribute processContents="lax"/>
+  </xs:complexType>
+
+  <!-- ===== PAGINATION ===== -->
+  <xs:complexType name="PaginationType">
+    <xs:sequence>
+      <!-- One element per placement, each optional: a new placement is a new
+           optional element, which extends this schema rather than changing it. -->
+      <xs:element name="centre" type="NumberPlacementType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="corner" type="NumberPlacementType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="verticalCentre" type="NumberPlacementType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="horizontalCentre" type="NumberPlacementType" minOccurs="0" maxOccurs="1"/>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <!-- number | number+letter — a token, never translated -->
+    <xs:attribute name="form" type="xs:string" default="number"/>
+    <xs:anyAttribute processContents="lax"/>
+  </xs:complexType>
+
+  <!-- One page number, in one place. Carries its own text style: a number written
+       large in a corner need not be written large in the middle. -->
+  <xs:complexType name="NumberPlacementType">
+    <xs:attribute name="enabled" type="xs:boolean" default="false"/>
+    <xs:attributeGroup ref="TextStyleAttributes"/>
+  </xs:complexType>
+
+  <xs:attributeGroup name="TextStyleAttributes">
+    <xs:attribute name="fontFamily" type="xs:string"/>
+    <xs:attribute name="fontWeight" type="xs:int" default="400"/>
+    <xs:attribute name="fontSize" type="xs:double" default="16"/>
+    <xs:attribute name="opacity" type="Percent" default="100"/>
+    <xs:anyAttribute processContents="lax"/>
+  </xs:attributeGroup>
+
+  <!-- ===== SIMPLE TYPES ===== -->
+
+  <xs:simpleType name="Percent">
+    <xs:restriction base="xs:int">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="100"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="FormatVersion">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{1,}(\.[0-9]{1,}){1,2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

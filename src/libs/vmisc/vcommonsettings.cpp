@@ -104,6 +104,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsFontCorrections, ("paths/fo
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsKnownMeasurements, ("paths/knownMeasurements"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsMeasurementLibrary, ("paths/measurementLibrary"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCartoucheTemplates, ("paths/cartoucheTemplates"_L1))   // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsPdfTemplates, ("paths/pdfTemplates"_L1))               // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsLogos, ("paths/logos"_L1))                              // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsClients, ("paths/clients"_L1))                          // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsAnnotationStyles, ("paths/annotationstyles"_L1))        // NOLINT
@@ -171,6 +172,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternDefaultSeamAllowance, ("p
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelFont, ("pattern/labelFont"_L1))       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelSVGFont, ("pattern/labelSVGFont"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCartoucheDefaultTemplate, ("cartouche/defaultTemplate"_L1)) // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPdfDefaultTemplate, ("pdfTemplate/defaultTemplate"_L1))     // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSingleStrokeOutlineFont, ("pattern/singleStrokeOutlineFont"_L1))
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSingleLineFonts, ("pattern/singleLineFonts"_L1)) // NOLINT
@@ -582,6 +584,22 @@ void VCommonSettings::SetPathCartoucheTemplates(const QString &value) const
 {
     QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
     settings.setValue(*settingPathsCartoucheTemplates, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetPathPdfTemplates() const -> QString
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingPathsPdfTemplates,
+                          QDir::homePath() + QStringLiteral("/Ostara/PDFTemplate")).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetPathPdfTemplates(const QString &value) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingPathsPdfTemplates, value);
     settings.sync();
 }
 
@@ -1547,6 +1565,18 @@ auto VCommonSettings::GetDefaultCartoucheTemplate() const -> QString
 void VCommonSettings::SetDefaultCartoucheTemplate(const QString &name)
 {
     setValue(*settingCartoucheDefaultTemplate, name);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetDefaultPdfTemplate() const -> QString
+{
+    return value(*settingPdfDefaultTemplate, QStringLiteral("Default")).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetDefaultPdfTemplate(const QString &name)
+{
+    setValue(*settingPdfDefaultTemplate, name);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

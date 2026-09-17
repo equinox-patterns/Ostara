@@ -28,8 +28,10 @@
 
 #include "oexporttemplateeditor.h"
 
+#include <QCloseEvent>
 #include <QEvent>
 #include <QGuiApplication>
+#include <QMessageBox>
 #include <QPoint>
 #include <QRect>
 #include <QScreen>
@@ -83,4 +85,47 @@ void OExportTemplateWindow::changeEvent(QEvent *event)
     }
 
     QMainWindow::changeEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OExportTemplateWindow::closeEvent(QCloseEvent *event)
+{
+    if (m_editor == nullptr || !m_editor->IsModified())
+    {
+        QMainWindow::closeEvent(event);
+        return;
+    }
+
+    // Three answers, and the one the keyboard reaches first is the one that keeps the work.
+    // Closing is the only move here that cannot be taken back, so it is never what a stray
+    // Return does.
+    const auto answer =
+        QMessageBox::warning(this, tr("Unsaved template"),
+                             tr("This template has been changed and not saved.\n\n"
+                                "Save it before closing?"),
+                             QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                             QMessageBox::Save);
+
+    if (answer == QMessageBox::Cancel)
+    {
+        event->ignore();
+        return;
+    }
+
+    if (answer == QMessageBox::Save)
+    {
+        m_editor->SaveTemplate();
+
+        // A save that did not happen — no name, a name already taken, a folder that cannot be
+        // written — has left the change unsaved, and the window must not close on it. The editor
+        // says why in its own message.
+        if (m_editor->IsModified())
+        {
+            event->ignore();
+            return;
+        }
+    }
+
+    QMainWindow::closeEvent(event);
 }

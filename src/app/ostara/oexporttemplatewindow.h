@@ -29,6 +29,7 @@
 
 #include <QMainWindow>
 
+class QCloseEvent;
 class QEvent;
 class OExportTemplateEditor;
 
@@ -42,8 +43,9 @@ class OExportTemplateEditor;
  * it computes for itself — nine tenths of the screen it opens on. The user may resize it,
  * but a restart starts from that size again, not from theirs.
  *
- * There is no unsaved-changes prompt yet either: nothing in the editor can be modified so
- * far. It comes with the first field that can be edited.
+ * Closing asks before losing work. The editor never saves on its own, so a template that has
+ * been changed and not saved would go with the window; the prompt offers to save it, to leave
+ * it, or to stay.
  */
 class OExportTemplateWindow : public QMainWindow
 {
@@ -57,6 +59,9 @@ public:
 
 protected:
     void changeEvent(QEvent *event) override;
+
+    /** @brief Asks before closing on changes that were never saved. */
+    void closeEvent(QCloseEvent *event) override;
 
 private:
     OExportTemplateEditor *m_editor{nullptr};

@@ -109,6 +109,7 @@
         <file>schema/individual_measurements/v0.6.2.xsd</file>
         <file>schema/label_template/v1.0.0.xsd</file>
         <file>schema/cartouche_template/v1.0.0.xsd</file>
+        <file>schema/assemblymark_template/v1.0.0.xsd</file>
         <file>schema/watermark/v1.0.0.xsd</file>
         <file>schema/watermark/v1.1.0.xsd</file>
         <file>schema/layout/v0.1.0.xsd</file>
