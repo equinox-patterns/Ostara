@@ -29,6 +29,8 @@
 #include "mainwindow_helpers.h"
 #include "core/ogradedsizeranges.h"
 #include "core/oexportoutput.h"
+#include "core/oexporttemplatestorage.h"
+#include "dialogs/oexportprintmodel.h"
 #include "dialogs/owaitdialog.h"
 #include "oexportalignment.h"
 #include "oexportartboards.h"
@@ -294,6 +296,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.printModelToken = request.printModelToken;
     output.columns = request.columns;
     output.frameHeightMm = request.frameHeightMm;
+    output.marksTemplateName = request.marksTemplateName;
     output.layers = std::move(layers);
     output.result = result;
     return output;
@@ -398,6 +401,30 @@ void MainWindow::SetActiveExportOutput(quint32 id)
     m_exportOutputs.SetActiveId(id);
     ShowExportOutput(*output, /*zoomFit*/ true);
     RefreshOutputsDock();
+}
+
+/**
+ * @brief Redraws the shown generation with the template that has just been saved.
+ *
+ * The nesting is NOT re-run. Nothing about the plan changed — the template is drawn under it —
+ * so the generation is handed back to the canvas exactly as it was, the same redraw the manual
+ * correction asks for. That keeps the zoom the user set and spares a run of several minutes for
+ * a frame that moved by a point.
+ *
+ * Nothing happens when no generation is shown, which is the common case: the editor is a window
+ * of its own, and a user may edit templates before nesting anything. And nothing happens in
+ * another draw mode — ShowExportOutput guards that itself, because its scene is not the one on
+ * screen then.
+ */
+void MainWindow::RefreshExportMarks()
+{
+    const OExportOutput *output = m_exportOutputs.Find(m_exportOutputs.ActiveId());
+    if (output == nullptr)
+    {
+        return;
+    }
+
+    ShowExportOutput(*output, /*zoomFit*/ false);
 }
 
 /**
@@ -600,8 +627,22 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
         m_exportCorrection->OnSceneAboutToBeRebuilt(output.id);
     }
 
+    // The template of assembly marks, resolved here and now rather than stored in the run: the
+    // file behind the name can be edited, renamed or deleted between two rebuilds, and what is
+    // on screen has to be what the file says today. A name that resolves to nothing falls back
+    // to the shipped template, and a library with neither draws no marks at all.
+    OExportTemplate marks;
+    const bool hasMarks = OExportTemplateStorage::Resolve(output.marksTemplateName, &marks);
+
+    // Whether the format carries a frame — « Tiled Framed » alone, which is the model whose two
+    // sides the user types. Read off the table rather than guessed from the geometry: the frame
+    // is a property of the model, and its sheet happens to be the size the frame is.
+    const OExportPrintModel *model = FindPrintModel(output.printModelToken);
+    const bool framed = model != nullptr && model->dimsEditable;
+
     OExportCanvas::Build(m_sceneExport, output.layers, output.result,
-                         output.hasRange ? &output.range : nullptr, pattern, doc, nullptr, artboards);
+                         output.hasRange ? &output.range : nullptr, pattern, doc, nullptr, artboards,
+                         hasMarks ? &marks : nullptr, framed);
 
     if (m_exportCorrection != nullptr)
     {

@@ -29,7 +29,9 @@
 #include <QFontMetricsF>
 
 #include "core/ogratedsizestyles.h"
+#include "core/oexporttemplate.h"
 #include "mainwindow_graded_helpers.h"
+#include "oexportmarkpainter.h"
 #include "ogradedgeometry.h"
 #include "ogradedsizetrace.h"
 #include "oexportgeometry.h"
@@ -75,6 +77,13 @@ namespace
 // hidden under a cartouche is a cut line the user cannot cut along.
 constexpr qreal kPaperZ = -2.0;
 constexpr qreal kBinZ = -1.0;
+
+/// The assembly marks — the template's frame, scissors, marks and pagination — sit between the
+/// paper and the pieces, and that band is not a matter of taste: they are the plan's own ground,
+/// and the export writes them at that level too (§11.9). A mark drawn over a piece would be a
+/// mark printed on the fabric.
+constexpr qreal kAssemblyMarksZ = -0.5;
+
 constexpr qreal kDecorZ = 1.0;
 constexpr qreal kGridZ = 2.0;
 
@@ -136,6 +145,63 @@ private:
     qreal m_cellHeightPx{0.0};
     int m_columns{0};
     int m_rows{0};
+};
+
+/// The assembly marks of a template, drawn on the plan's own ground.
+///
+/// One item for the whole plan, and drawn from the tiling as a whole: the frame is the grid's
+/// own lines, each drawn once, and a mark sits where sheets meet rather than on each of them.
+/// Drawn sheet by sheet, the dash pattern would restart at every edge and every mark would be
+/// doubled — the two defects the preview was cured of (§11.2), and the export would print them.
+///
+/// It OWNS the painter rather than borrowing one. A rebuild tears the scene down and builds it
+/// again, so a borrowed painter would have to outlive the item that draws with it and something
+/// outside the scene would have to hold it; five SVG files parsed per rebuild cost nothing,
+/// while a painter rebuilt per repaint would cost plenty.
+///
+/// INERT, for the reason ArtboardGridItem is: the hover raises whatever it lands on, and a layer
+/// of marks answering the mouse would be taken for a piece of the pattern.
+class AssemblyMarksItem : public QGraphicsItem
+{
+public:
+    AssemblyMarksItem(const OExportTemplate &marks, const QPointF &origin,
+                      const OExportMarkGrid &grid, bool framed)
+      : m_grid(grid), m_origin(origin), m_framed(framed)
+    {
+        m_decor.SetFrameSettings(marks.frame);
+        m_decor.SetMarkSettings(marks.marks);
+        m_decor.SetPaginationSettings(marks.pagination);
+
+        setFlag(QGraphicsItem::ItemIsSelectable, false);
+        setFlag(QGraphicsItem::ItemIsMovable, false);
+        setAcceptedMouseButtons(Qt::NoButton);
+        setZValue(kAssemblyMarksZ);
+    }
+
+    auto boundingRect() const -> QRectF override
+    {
+        // The plan's outer edge is drawn ON the grid, so half the frame's pen falls outside it.
+        const QRectF plan(m_origin, QSizeF(m_grid.columns * m_grid.sheetWidthPx,
+                                           m_grid.rows * m_grid.sheetHeightPx));
+        return plan.adjusted(-kPenWidth, -kPenWidth, kPenWidth, kPenWidth);
+    }
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
+    {
+        // No stand-in outline is asked for: this scene draws its own cut lines, and it stands
+        // them down itself wherever the frame is drawn. Two lines in the same place — one of
+        // them the user's, at the opacity she set — is the defect the preview was cured of.
+        m_decor.Paint(*painter, m_origin, m_grid, m_framed, false);
+    }
+
+private:
+    /// The frame's own pen, so the plan's outer edge is never clipped by a tight bounding rect.
+    static constexpr qreal kPenWidth = 1.0;
+
+    OExportMarkPainter m_decor;
+    OExportMarkGrid m_grid;
+    QPointF m_origin;
+    bool m_framed{false};
 };
 
 /// The paper of a tiled run: the whole sheet area, white, and nothing drawn on it.
@@ -719,7 +785,9 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                           const VContainer *pattern,
                           VAbstractPattern *doc,
                           OExportCanvasContent *content,
-                          const OExportArtboards::Grid &artboards)
+                          const OExportArtboards::Grid &artboards,
+                          const OExportTemplate *marks,
+                          bool framed)
 {
     if (scene == nullptr || !result.ok)
     {
@@ -779,6 +847,21 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         bin->setBrush(QBrush(Qt::white));
         bin->setZValue(kBinZ);
         scene->addItem(bin);
+    }
+
+    // The assembly marks go on that paper, under everything the run places on it: the plan's own
+    // ground. They are the template's, resolved by the caller — this class knows nothing of
+    // templates, and a canvas that looked one up would be a second place deciding what is drawn.
+    if (artboards.valid && marks != nullptr)
+    {
+        OExportMarkGrid grid;
+        grid.columns = artboards.columns;
+        grid.rows = artboards.rows;
+        grid.sheetWidthPx = artboards.cellWidthPx;
+        grid.sheetHeightPx = artboards.cellHeightPx;
+        grid.pxPerMm = ToPixel(1.0, Unit::Mm);
+
+        scene->addItem(new AssemblyMarksItem(*marks, artboards.planRect.topLeft(), grid, framed));
     }
 
     for (int i = 0; i < result.placements.size() && i < result.keys.size(); ++i)
@@ -917,7 +1000,15 @@ void OExportCanvas::Build(QGraphicsScene *scene,
     // tells one sheet from the next, and a cartouche lying across one must not hide the line
     // the sheet is cut along. Two items rather than one, and that is forced — no single item
     // can sit under the pieces and over the cartouches at the same time.
-    if (artboards.valid)
+    //
+    // They stand down wherever the template draws a frame, because the frame IS those lines —
+    // drawn once per boundary, in the user's own pen and at the opacity she set (§11.2). Left in
+    // place, a black line would cover it and the setting would look dead, which is exactly the
+    // defect the answer of 17-09-2026 cured in the preview (§11.5). They stay everywhere else:
+    // on every other format, and whenever there is no template at all — where they are then the
+    // only thing that tells one sheet from the next.
+    const bool frameDrawn = marks != nullptr && framed;
+    if (artboards.valid && !frameDrawn)
     {
         scene->addItem(new ArtboardGridItem(artboards.planRect, artboards.cellWidthPx,
                                             artboards.cellHeightPx, artboards.columns,

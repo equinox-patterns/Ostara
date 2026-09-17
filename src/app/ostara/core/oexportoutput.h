@@ -118,6 +118,20 @@ struct OExportOutput
     /// by the columns gives it back, and a second field is a second field for the replay to
     /// drop in silence.
     qreal frameHeightMm{0.0};
+
+    /// The template of assembly marks the plan is drawn with, **by its file name** — the
+    /// identity a template has: one file, one name, and nothing else identifies it (§12.2).
+    ///
+    /// The name, and not a copy of its settings. A template is a file the user edits, and a
+    /// run that had copied its frame and its marks would go on drawing what the file said the
+    /// day it was nested, while the editor shows something else — the canvas would then be
+    /// lying about the very thing it is there to show. The name is resolved at every rebuild
+    /// instead, so an edited template is the one on screen from the next rebuild on.
+    ///
+    /// Empty when there is nothing to draw, which is a state and not an error: a folder the
+    /// user has emptied leaves every output without marks, and the canvas then draws the plan
+    /// alone — as it did before there was a template at all.
+    QString marksTemplateName{};
 };
 
 /**
@@ -142,6 +156,7 @@ struct OExportRunRequest
     QString printModelToken{};
     int columns{1};
     qreal frameHeightMm{0.0};
+    QString marksTemplateName{};
 };
 
 /// @brief The request that reproduces @p output — what the Refresh entry hands back.

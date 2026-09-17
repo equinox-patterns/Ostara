@@ -59,6 +59,10 @@ public:
     /** @brief Open the editor on the given tab (0 = cover page, 1 = assembly marks). */
     void OpenOnTab(int tab);
 
+signals:
+    /** @brief The editor saved a template — forwarded, so that the canvas can be redrawn. */
+    void TemplateSaved();
+
 protected:
     void changeEvent(QEvent *event) override;
 

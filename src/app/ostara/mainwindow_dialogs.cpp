@@ -154,6 +154,11 @@ void MainWindow::ActionExportTemplates_triggered(int tab)
         auto *window = new OExportTemplateWindow(this);
         m_exportTemplateWindow = window;
         window->setAttribute(Qt::WA_DeleteOnClose);
+
+        // A template that was just saved is the one the plan on screen is drawn with. The canvas
+        // is redrawn on it — and only redrawn: the connection is to a template being written,
+        // never to the run that produced the plan.
+        connect(window, &OExportTemplateWindow::TemplateSaved, this, &MainWindow::RefreshExportMarks);
         window->OpenOnTab(tab);
         window->show();
     }

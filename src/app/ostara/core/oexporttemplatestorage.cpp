@@ -230,6 +230,32 @@ auto OExportTemplateStorage::Load(const QString &filePath, OExportTemplate *tpl,
 
 //---------------------------------------------------------------------------------------------------------------------
 
+auto OExportTemplateStorage::Resolve(const QString &name, OExportTemplate *tpl) -> bool
+{
+    if (tpl == nullptr)
+    {
+        return false;
+    }
+
+    // A template the user deleted is not an error to report: the name is a reference, and a
+    // dangling one is answered rather than carried. Nothing is written back to the caller, and
+    // the run keeps the name it was nested with — putting it back later draws it again.
+    const QString wanted = name.isEmpty() ? DefaultTemplateName() : name;
+    if (Load(PathForName(wanted), tpl))
+    {
+        return true;
+    }
+
+    if (wanted == DefaultTemplateName())
+    {
+        return false; // already the fallback, and the folder does not hold it
+    }
+
+    return Load(PathForName(DefaultTemplateName()), tpl);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
 auto OExportTemplateStorage::DefaultTemplateName() -> QString
 {
     // Never translated: it is a file's base name, and the key the favourite points at. A name

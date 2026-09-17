@@ -107,6 +107,14 @@ public:
     ///        what the replay looks the model back up by.
     auto PrintModelToken() const -> QString;
 
+    /**
+     * @brief The template of assembly marks the run is drawn with, by its file name.
+     *
+     * Empty when the library holds none: the plan is then drawn alone, without marks, which is
+     * what it was before there were templates at all.
+     */
+    auto MarksTemplateName() const -> QString;
+
     /// @brief How many sheets side by side. Always 1 on a roll, which has no columns.
     auto Columns() const -> int;
 
@@ -138,6 +146,7 @@ private:
     void PopulateSizeRanges();
     void PopulateDimensions();
     void PopulateModels();
+    void PopulateMarks();
     void UpdateSourceVisibility();
     void UpdateModel();
     void UpdateUnit();
@@ -166,6 +175,9 @@ private:
 
     QLabel *m_modelLabel{nullptr};
     QComboBox *m_modelCombo{nullptr};
+
+    QLabel *m_marksLabel{nullptr};
+    QComboBox *m_marksCombo{nullptr};
 
     QStackedWidget *m_shapeStack{nullptr};
     OExportRollFormatWidget *m_rollWidget{nullptr};

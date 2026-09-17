@@ -30,16 +30,20 @@
 #include "oexportrollformatwidget.h"
 #include "oexporttiledformatwidget.h"
 
+#include "../core/oexporttemplatestorage.h"
 #include "../core/oexportunitformat.h"
 #include "../vpatterndb/osizerange.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vformat/vdimensions.h"
 #include "../vformat/vmeasurements.h"
 #include "../vmisc/FactoryWidgets.h"
+#include "vabstractapplication.h"
+#include "vcommonsettings.h"
 
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QEvent>
+#include <QFileInfo>
 #include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -76,6 +80,7 @@ OExportPrintWidget::OExportPrintWidget(const VContainer *data, const QSharedPoin
 
     PopulateSizeRanges();
     PopulateModels();
+    PopulateMarks();
 
     // The default model comes from the table itself — the first entry — so that changing
     // what the combo lists is enough to change what the tab opens on.
@@ -136,6 +141,15 @@ void OExportPrintWidget::BuildUi()
     m_shapeStack->addWidget(m_tiledWidget);
     connect(m_tiledWidget, &OExportTiledFormatWidget::Changed, this, &OExportPrintWidget::UpdateDocumentWidth);
     layout->addRow(m_shapeStack);
+
+    // ── What the sheets are marked with ─────────────────────────────────
+    // The template of assembly marks is a file of the user's, and the plan is drawn with the one
+    // she picks here. Offered where there are sheets to mark, and nowhere else: a roll is one
+    // continuous sheet, and the A0 model is never assembled side by side — neither has a seam to
+    // mark nor a frame to cut. It is the same predicate that decides whether there is a grid.
+    m_marksCombo = MakeComboBox(this);
+    m_marksLabel = new QLabel(this);
+    layout->addRow(m_marksLabel, m_marksCombo);
 
     // ── The two lengths the nesting takes, whatever the model ────────────
     m_marginEdit = new QLineEdit(this);
@@ -303,6 +317,42 @@ void OExportPrintWidget::PopulateModels()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportPrintWidget::PopulateMarks()
+{
+    const QSignalBlocker blocker(m_marksCombo);
+    m_marksCombo->clear();
+
+    const QStringList paths =
+        OExportTemplateStorage::ScanDirectory(OExportTemplateStorage::DefaultDirectory());
+    for (const QString &path : paths)
+    {
+        // The base name alone identifies a template, and it is read off the file's name rather
+        // than out of the file: listing a library must not open every template in it.
+        const QString name = QFileInfo(path).completeBaseName();
+        m_marksCombo->addItem(name, name);
+    }
+
+    // The chain, in order: the user's favourite, then the template the installation ships, then
+    // nothing at all. Nothing is a state and not a failure — a library the user has emptied is
+    // one she emptied — and it reads as an empty field rather than as a message about something
+    // she has no way to act on.
+    const QString favourite = VAbstractApplication::VApp()->Settings()->GetDefaultPdfTemplate();
+    const QStringList candidates{favourite, OExportTemplateStorage::DefaultTemplateName()};
+    for (const QString &candidate : candidates)
+    {
+        const int index = candidate.isEmpty() ? -1 : m_marksCombo->findData(candidate);
+        if (index >= 0)
+        {
+            m_marksCombo->setCurrentIndex(index);
+            return;
+        }
+    }
+
+    m_marksCombo->setCurrentIndex(-1);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
 void OExportPrintWidget::UpdateModel()
 {
     const OExportPrintModel *model = FindPrintModel(PrintModelToken());
@@ -323,6 +373,12 @@ void OExportPrintWidget::UpdateModel()
         m_tiledWidget->SetUnit(m_unit);
         m_shapeStack->setCurrentWidget(m_tiledWidget);
     }
+
+    // The template row follows the model, exactly as the shape does, and label and field go
+    // together: the form then collapses the row instead of leaving a gap where a choice was.
+    const bool marks = FrameHeightMm() > 0.0;
+    m_marksLabel->setVisible(marks);
+    m_marksCombo->setVisible(marks);
 
     UpdateDocumentWidth();
 }
@@ -509,6 +565,14 @@ auto OExportPrintWidget::PrintModelToken() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportPrintWidget::MarksTemplateName() const -> QString
+{
+    // An emptied combo answers nothing, which is exactly what the run then carries: no template,
+    // and a plan drawn without marks.
+    return m_marksCombo->currentData().toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportPrintWidget::Columns() const -> int
 {
     const OExportPrintModel *model = FindPrintModel(PrintModelToken());
@@ -590,6 +654,7 @@ void OExportPrintWidget::Retranslate()
     renameByData(QStringLiteral("single"), tr("Single size"));
     m_rangeLabel->setText(tr("Size range:"));
     m_modelLabel->setText(tr("Print model:"));
+    m_marksLabel->setText(tr("Assembly marks:"));
     m_marginLabel->setText(tr("Document margin:"));
     m_gapLabel->setText(tr("Space between pieces:"));
     m_documentWidthLabel->setText(tr("Document width:"));

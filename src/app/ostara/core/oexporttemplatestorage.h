@@ -78,6 +78,19 @@ auto Save(const OExportTemplate &tpl, const QString &filePath, QString *error = 
 /** @brief Reads @p filePath into @p tpl. @p tpl is untouched unless the file is a template. */
 auto Load(const QString &filePath, OExportTemplate *tpl, QString *error = nullptr) -> bool;
 
+/**
+ * @brief Reads the template @p name designates, or « Default » when that name resolves to nothing.
+ *
+ * The library's one fallback, and it is a chain of exactly two. A plan keeps the NAME of the
+ * template it was nested with, and the file behind a name can be deleted or renamed long after
+ * the run — the plan then draws the installation's own template rather than nothing, which is a
+ * visible answer to a question the user did not ask.
+ *
+ * False only when neither is there: a folder the user has emptied leaves the plan drawn alone, as
+ * it was before there were templates at all.
+ */
+auto Resolve(const QString &name, OExportTemplate *tpl) -> bool;
+
 /** @brief The name the shipped template carries, and the key of the favourite that points at it. */
 auto DefaultTemplateName() -> QString;
 

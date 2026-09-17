@@ -103,6 +103,20 @@ public:
     /** @brief Saves the template, under the name in the field. Reports its own failures. */
     void SaveTemplate();
 
+signals:
+    /**
+     * @brief A template was written — the moment what a plan is drawn with has changed.
+     *
+     * Emitted by SaveTemplate and by nothing else: this editor writes when it is told to, and
+     * the signal says that it did. Whoever draws with these files rebuilds on it, which today is
+     * the Export canvas: a plan on screen is drawn with the template that has just changed, and
+     * leaving it as it was would make the canvas lie about what the file says.
+     *
+     * A save under a new name moves the file, and emits too: the name a run carries may now be
+     * dangling, which the canvas answers the same way it answers a deletion.
+     */
+    void TemplateSaved();
+
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 

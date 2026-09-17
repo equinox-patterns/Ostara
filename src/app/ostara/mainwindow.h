@@ -295,6 +295,12 @@ private slots:
      *         made, and keep its row. Never runs on its own — the user asks for it. */
     void RefreshExportOutput(quint32 id);
 
+    /** @brief Redraw the shown generation after a template was saved in the editor.
+     *
+     *         The nesting is NOT re-run: the plan has not moved, only the ground it is drawn
+     *         on. The generation goes back to the canvas exactly as it was, zoom included. */
+    void RefreshExportMarks();
+
     /** @brief Drop the generation @p id, after confirming with the user. Undo will not
      *         bring it back: a generation is session-scoped, never part of the document. */
     void DeleteExportOutput(quint32 id);

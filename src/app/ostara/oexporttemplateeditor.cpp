@@ -1588,6 +1588,10 @@ void OExportTemplateEditor::SaveTemplate()
     {
         m_templatesPage->Refresh();
     }
+
+    // Last, and only on a save that happened: every path above that bailed out has returned
+    // already, so this says the file on disk is now what the editor shows.
+    emit TemplateSaved();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

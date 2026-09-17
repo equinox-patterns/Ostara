@@ -47,6 +47,11 @@ OExportTemplateWindow::OExportTemplateWindow(QWidget *parent) : QMainWindow(pare
 
     m_editor = new OExportTemplateEditor(this);
     setCentralWidget(m_editor);
+
+    // Forwarded rather than reached for: this window owns the editor, and the main window owns
+    // this one — neither reaches through the other.
+    connect(m_editor, &OExportTemplateEditor::TemplateSaved, this,
+            &OExportTemplateWindow::TemplateSaved);
     setWindowTitle(tr("Export templates"));
 
     // No geometry is stored, unlike OInfoBlockWindow: this window always opens at the size it

@@ -42,6 +42,7 @@ class VContainer;
 class OSizerange;
 struct OExportNestingResult;
 struct OExportSizeLayer;
+struct OExportTemplate;
 
 /// @brief What the canvas drew, in the shape a writer needs.
 ///
@@ -116,6 +117,15 @@ public:
     ///                own extent instead of what is drawn around it. The PDF writer leaves it
     ///                at its default deliberately: a page IS a sheet there, so its edge is not
     ///                drawn on it.
+    /// @param marks   the template of assembly marks the plan is drawn with, or nullptr when
+    ///                there is none — a library the user has emptied, or a name whose file has
+    ///                gone. Nothing is drawn then, and the plan keeps the cut lines it always
+    ///                had. The caller resolves the name: a canvas that looked one up would be a
+    ///                second place deciding what gets drawn.
+    /// @param framed  whether the format is the one a frame belongs to — « Tiled Framed » alone.
+    ///                The frame and its scissors are drawn only there, and the cut lines below
+    ///                stand down in their favour: a second line under the user's own would fight
+    ///                the opacity she set (§11.5).
     static void Build(QGraphicsScene *scene,
                       const QVector<OExportSizeLayer> &layers,
                       const OExportNestingResult &result,
@@ -123,7 +133,9 @@ public:
                       const VContainer *pattern,
                       VAbstractPattern *doc,
                       OExportCanvasContent *content = nullptr,
-                      const OExportArtboards::Grid &artboards = {});
+                      const OExportArtboards::Grid &artboards = {},
+                      const OExportTemplate *marks = nullptr,
+                      bool framed = false);
 };
 
 #endif // OEXPORTCANVAS_H

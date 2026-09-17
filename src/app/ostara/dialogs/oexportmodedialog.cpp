@@ -182,6 +182,7 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
     request.printModelToken = m_printWidget->PrintModelToken();
     request.columns = m_printWidget->Columns();
     request.frameHeightMm = m_printWidget->FrameHeightMm();
+    request.marksTemplateName = m_printWidget->MarksTemplateName();
     return request;
 }
 

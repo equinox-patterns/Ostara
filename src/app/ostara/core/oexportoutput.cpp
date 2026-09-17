@@ -44,6 +44,7 @@ auto RequestOf(const OExportOutput &output) -> OExportRunRequest
     request.printModelToken = output.printModelToken;
     request.columns = output.columns;
     request.frameHeightMm = output.frameHeightMm;
+    request.marksTemplateName = output.marksTemplateName;
     return request;
 }
 
