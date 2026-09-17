@@ -100,6 +100,25 @@ private:
     void SetupClientsPage();
     void SetupAnnotationsPage();
     void NewTemplate();
+
+    /** @brief Asks before throwing away changes that were never saved. True = carry on. */
+    auto ConfirmDiscardChanges() -> bool;
+
+    /**
+     * @brief Puts the menu's highlight where the editor actually is.
+     *
+     * Derived from the page and the file, never stored: a row kept beside them would be a second
+     * representation of the same thing, free to drift, with nothing on screen to say which won.
+     *
+     * The row and the page are not the same thing — the list is row 0 and page 1, the editor is
+     * row 1 and page 0. And **nothing is highlighted while a saved template is being edited**:
+     * there is no row for that, and leaving « Create new » lit would say the opposite of what is
+     * happening and make clicking it feel like it did nothing.
+     *
+     * A click moves the highlight **before** anything is decided, so this also settles the case of
+     * a prompt that was cancelled: the action left the page alone, and the menu follows it.
+     */
+    void ApplyMenuRow();
     void ShowTemplatesList();
     void ShowLogosPage();
     void ShowClientsPage();

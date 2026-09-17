@@ -111,6 +111,11 @@ void OInfoBlockEditor::SetupUI()
         {
             ShowAnnotationsPage();
         }
+
+        // Last, and whatever happened. An action that ran has just moved the page this reads; one
+        // that was cancelled by the unsaved-changes prompt has left it alone — and in that case the
+        // click has already moved the highlight, so the menu would name a page never opened.
+        ApplyMenuRow();
     });
     outer->addWidget(m_menuList);
 
@@ -258,6 +263,14 @@ void OInfoBlockEditor::RetranslateUI()
 
     // The preview is a child widget too — re-render it in the new language.
     m_preview->RetranslateUI();
+
+    // And so is the Annotations page. It was the one child left out of this function, and being a
+    // child it never receives QEvent::LanguageChange on its own either — so its labels stayed in
+    // the previous language until the window was closed and reopened.
+    if (m_annotationStylesPage != nullptr)
+    {
+        m_annotationStylesPage->RetranslateUI();
+    }
 }
 
 void OInfoBlockEditor::SetupEditorPage()
@@ -1447,6 +1460,15 @@ void OInfoBlockEditor::OnRemoveCollection()
 
 void OInfoBlockEditor::NewTemplate()
 {
+    // Asking for a new template is asking to leave the one being edited, and this editor never
+    // saves on its own. Without this, clicking « Create new » threw the changes away in silence —
+    // the same gap the close prompt already covers, on the gesture that is far easier to make by
+    // accident.
+    if (!ConfirmDiscardChanges())
+    {
+        return;
+    }
+
     m_template = OPieceCartoucheTemplate(tr("Template 1"));
     m_filePath.clear();
     m_stack->setCurrentIndex(0);
@@ -1454,6 +1476,7 @@ void OInfoBlockEditor::NewTemplate()
     RebuildLanguageRow();
     RefreshSectionList();
     SelectSection(-1);
+    ApplyMenuRow();
     SetModified(false);
 }
 
@@ -1499,6 +1522,14 @@ void OInfoBlockEditor::OpenOnPage(int page)
 
 void OInfoBlockEditor::LoadFile(const QString &filePath)
 {
+    // Opening a template replaces the one in memory just as surely as « Create new » does, so it
+    // asks the same question — and it asks it BEFORE reading the file, so a cancelled open leaves
+    // nothing half-done.
+    if (!ConfirmDiscardChanges())
+    {
+        return;
+    }
+
     OPieceCartoucheTemplate tpl;
     QString err;
     if (!OPieceCartoucheStorage::Load(filePath, &tpl, &err))
@@ -1510,11 +1541,11 @@ void OInfoBlockEditor::LoadFile(const QString &filePath)
     m_template = tpl;
     m_filePath = filePath;
     m_stack->setCurrentIndex(0);
-    m_menuList->clearSelection();
     m_nameEdit->setText(m_template.Name());
     RebuildLanguageRow();
     RefreshSectionList();
     SelectSection(-1);
+    ApplyMenuRow();
     SetModified(false);
 }
 
@@ -1576,7 +1607,51 @@ void OInfoBlockEditor::OnSave()
         OnSaveAs();
         return;
     }
-    DoSave(m_filePath);
+
+    // The name is the identity of a template: the list shows it and the favourite names it. A name
+    // typed in the field therefore MOVES the file rather than sitting beside it.
+    //
+    // Left alone, saving after a rename wrote a template called « B » into « A.oct » — the list
+    // went on showing « A » while the template said « B », two names for one thing and nothing on
+    // screen to say which one won.
+    //
+    // QFileInfo::fileName() rather than the raw text: it drops anything that looks like a path, so
+    // a name typed with a slash in it cannot send the file somewhere else.
+    const QString typed = QFileInfo(m_template.Name()).fileName();
+    const QFileInfo current(m_filePath);
+
+    if (typed.isEmpty() || typed == current.completeBaseName())
+    {
+        DoSave(m_filePath);
+        return;
+    }
+
+    const QString target = current.absolutePath() + QLatin1Char('/') + typed
+                           + QStringLiteral(".oct");
+
+    // Another template already answers to that name. Writing over it would destroy something the
+    // user never asked to touch.
+    if (target != m_filePath && QFileInfo::exists(target))
+    {
+        QMessageBox::warning(this, tr("Information block"),
+                             tr("A template called \"%1\" already exists.\n\nChoose another name.")
+                                 .arg(typed));
+        return;
+    }
+
+    // The field and the file agree on what was kept, not on what was typed.
+    m_template.SetName(typed);
+    m_nameEdit->setText(typed);
+
+    const QString previous = m_filePath;
+    DoSave(target);
+    if (IsModified())
+    {
+        return; // the save did not happen: the old file is intact and still the one in force
+    }
+
+    // Written first, removed after: a save that fails must never lose the file it was moving.
+    QFile::remove(previous);
 }
 
 void OInfoBlockEditor::OnSaveAs()
@@ -1615,6 +1690,70 @@ void OInfoBlockEditor::OnSaveAs()
         finalPath += QStringLiteral(".oct");
     }
     DoSave(finalPath);
+}
+
+void OInfoBlockEditor::ApplyMenuRow()
+{
+    // Derived, never stored — see the declaration. The page says which row; the file says whether
+    // « Create new » is where the user is, or whether a template that exists is being edited.
+    int row = -1;
+    switch (m_stack->currentIndex())
+    {
+        case 0: // the editor page
+            row = m_filePath.isEmpty() ? 1 : -1;
+            break;
+
+        case 1: // the library list — row 0, and the page numbers are offset by one from there on
+            row = 0;
+            break;
+
+        default:
+            row = m_stack->currentIndex();
+            break;
+    }
+
+    if (row < 0)
+    {
+        m_menuList->clearSelection();
+        m_menuList->setCurrentRow(-1);
+        return;
+    }
+
+    if (m_menuList->currentRow() != row)
+    {
+        m_menuList->setCurrentRow(row);
+    }
+}
+
+auto OInfoBlockEditor::ConfirmDiscardChanges() -> bool
+{
+    if (!m_modified)
+    {
+        return true;
+    }
+
+    // Three answers, and the one the keyboard reaches first is the one that keeps the work.
+    const auto answer =
+        QMessageBox::warning(this, tr("Unsaved information block"),
+                             tr("This template has been changed and not saved.\n\n"
+                                "Save it before leaving it?"),
+                             QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                             QMessageBox::Save);
+
+    if (answer == QMessageBox::Cancel)
+    {
+        return false;
+    }
+
+    if (answer == QMessageBox::Save)
+    {
+        OnSave();
+        // A save that did not happen — Save As cancelled, a folder that cannot be written — has
+        // left the change unsaved, and leaving now would lose it.
+        return !IsModified();
+    }
+
+    return true;
 }
 
 void OInfoBlockEditor::SetModified(bool modified)

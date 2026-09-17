@@ -181,8 +181,8 @@ OExportTemplateEditor::OExportTemplateEditor(QWidget *parent) : QWidget(parent)
     CommitPaginationSettings();
 
     m_tabs->setCurrentIndex(TabAssemblyMarks);
-    m_menuList->setCurrentRow(MenuCreateTemplate);
     ShowMenuPage(MenuCreateTemplate);
+    ApplyMenuRow();
 
     // The editor has just filled itself in from its own defaults, and that is not an edit.
     // Opening the window on a template nobody has touched must not offer to save it.
@@ -322,6 +322,28 @@ void OExportTemplateEditor::PopulateFrameStyles()
 
 void OExportTemplateEditor::RefreshFrameFields()
 {
+    // Blocked throughout: this writes the model INTO the controls, and a control announcing a
+    // change would have the model read back off itself half-written.
+    const QSignalBlocker widthBlocker(m_frameWidthSpin);
+    const QSignalBlocker styleBlocker(m_frameStyleCombo);
+    const QSignalBlocker dashBlocker(m_dashEdit);
+    const QSignalBlocker spaceBlocker(m_spaceEdit);
+    const QSignalBlocker opacityBlocker(m_frameOpacitySpin);
+    const QSignalBlocker horizontalBlocker(m_scissorsHorizontalCheck);
+    const QSignalBlocker verticalBlocker(m_scissorsVerticalCheck);
+    const QSignalBlocker scissorsOpacityBlocker(m_scissorsOpacitySpin);
+
+    // EVERY control of the group, and not only the ones whose visibility depends on the model.
+    // An opening that fills half of them leaves the rest showing the last template's values, and
+    // the first click on any of those writes them into the one that was just opened.
+    m_frameWidthSpin->setValue(m_frame.widthPt);
+    // The style combo holds Solid then Dashed, in the order PopulateFrameStyles() adds them.
+    m_frameStyleCombo->setCurrentIndex(m_frame.dashed ? 1 : 0);
+    m_frameOpacitySpin->setValue(m_frame.frameOpacity);
+    m_scissorsHorizontalCheck->setChecked(m_frame.scissorsHorizontal);
+    m_scissorsVerticalCheck->setChecked(m_frame.scissorsVertical);
+    m_scissorsOpacitySpin->setValue(m_frame.scissorsOpacity);
+
     m_dashLabel->setVisible(m_frame.dashed);
     m_dashEdit->setVisible(m_frame.dashed);
     m_spaceLabel->setVisible(m_frame.dashed);
@@ -396,10 +418,14 @@ void OExportTemplateEditor::RefreshPaginationFields()
 {
     // Blocked: this writes the model's values into the controls, and a control announcing a
     // change would have the model read back off itself half-written.
+    const QSignalBlocker formBlocker(m_paginationFormCombo);
     const QSignalBlocker centreBlocker(m_centreNumberCheck);
     const QSignalBlocker cornerBlocker(m_cornerNumberCheck);
     const QSignalBlocker verticalBlocker(m_verticalNumberCheck);
     const QSignalBlocker horizontalBlocker(m_horizontalNumberCheck);
+
+    // The form table's order is the enum's, which is what the form value indexes.
+    m_paginationFormCombo->setCurrentIndex(static_cast<int>(m_pagination.form));
 
     m_centreNumberCheck->setChecked(m_pagination.centre.enabled);
     m_cornerNumberCheck->setChecked(m_pagination.corner.enabled);
@@ -486,12 +512,17 @@ void OExportTemplateEditor::RefreshTextStyle(const TextStyleRow &widgets,
     const QSignalBlocker sizeBlocker(widgets.sizeSpin);
     const QSignalBlocker opacityBlocker(widgets.opacitySpin);
 
-    // Empty means the default face, and says so by leaving the combo where it is rather than by
-    // naming a font the template never chose.
-    if (!style.fontFamily.isEmpty())
-    {
-        widgets.fontCombo->setCurrentFont(QFont(style.fontFamily));
-    }
+    // Empty means the default face, and the default face is the application's own — Ostara sets
+    // it in VTheme::InitFonts(). The combo cannot hold an empty family, so an empty one is shown
+    // by putting the combo back on its own widget font, which IS that face: the preview draws
+    // with the same one, so the two agree.
+    //
+    // Measured, not assumed: with the application font set as Ostara sets it, a QFontComboBox
+    // reports currentFont() == font() == "Inter" until it is moved, and setCurrentFont(font())
+    // brings it back. Without that setFont, the combo stays on the system font instead — which is
+    // why this restores rather than names.
+    widgets.fontCombo->setCurrentFont(style.fontFamily.isEmpty() ? widgets.fontCombo->font()
+                                                                 : QFont(style.fontFamily));
 
     const int weightIndex = widgets.weightCombo->findData(style.weight);
     if (weightIndex >= 0)
@@ -508,7 +539,15 @@ void OExportTemplateEditor::RefreshTextStyle(const TextStyleRow &widgets,
 void OExportTemplateEditor::CommitTextStyle(const TextStyleRow &widgets,
                                             OExportPaginationTextStyle &style)
 {
-    style.fontFamily = widgets.fontCombo->currentFont().family();
+    const QString family = widgets.fontCombo->currentFont().family();
+
+    // Choosing the application's own font IS choosing the default, and is stored as such. Writing
+    // its name instead would pin the template to a face it was following: the day the application
+    // font changes, a pinned template keeps the old one and an empty one follows — and the two
+    // would look identical today, so the difference would be invisible until it bit.
+    style.fontFamily =
+        (family == widgets.fontCombo->font().family()) ? QString() : family;
+
     style.weight = widgets.weightCombo->currentData().toInt();
     style.sizePx = widgets.sizeSpin->value();
     style.opacity = widgets.opacitySpin->value();
@@ -518,7 +557,23 @@ void OExportTemplateEditor::CommitTextStyle(const TextStyleRow &widgets,
 
 void OExportTemplateEditor::RefreshMarkFields()
 {
+    // Blocked throughout, for the reason given in RefreshFrameFields.
+    const QSignalBlocker shapeBlocker(m_shapeCombo);
+    const QSignalBlocker sizeBlocker(m_sizeEdit);
+    const QSignalBlocker unitBlocker(m_sizeUnitCombo);
+    const QSignalBlocker opacityBlocker(m_markOpacitySpin);
+    const QSignalBlocker cornerBlocker(m_cornerCheck);
+    const QSignalBlocker verticalBlocker(m_verticalCheck);
+    const QSignalBlocker horizontalBlocker(m_horizontalCheck);
+
+    // The shape table's order is the enum's, which is what the shape value indexes.
+    m_shapeCombo->setCurrentIndex(static_cast<int>(m_marks.shape));
     m_sizeEdit->setText(OExportUnitFormat::Format(m_marks.sizeMm, m_marks.sizeUnit));
+    m_sizeUnitCombo->setCurrentIndex(m_sizeUnitCombo->findData(static_cast<int>(m_marks.sizeUnit)));
+    m_markOpacitySpin->setValue(m_marks.opacity);
+    m_cornerCheck->setChecked(m_marks.onCorner);
+    m_verticalCheck->setChecked(m_marks.onVerticalCentre);
+    m_horizontalCheck->setChecked(m_marks.onHorizontalCentre);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -760,6 +815,11 @@ QWidget *OExportTemplateEditor::MakeAssemblyMarksTab()
             default:
                 break;
         }
+
+        // Last, and whatever happened. An action that ran has just set the row; one that was
+        // cancelled by the unsaved-changes prompt has left it alone — and in that case the click
+        // has already moved the highlight, so the menu would name a page the editor never opened.
+        ApplyMenuRow();
     });
     layout->addWidget(m_menuList);
 
@@ -1304,11 +1364,83 @@ void OExportTemplateEditor::ShowTemplatesList()
 
     ShowMenuPage(MenuExistingTemplates);
 }
+//---------------------------------------------------------------------------------------------------------------------
+
+void OExportTemplateEditor::ApplyMenuRow()
+{
+    // Derived, never stored — see the declaration. The page says which row, and the file says
+    // whether « Create a template » is where the user is or not.
+    int row = -1;
+    const int page = m_stack->currentIndex();
+
+    if (page == MenuCreateTemplate)
+    {
+        // « Create a template » while a NEW template is being made, and nothing at all while one
+        // that exists is being edited.
+        row = m_filePath.isEmpty() ? MenuCreateTemplate : -1;
+    }
+    else if (page == MenuExistingTemplates || page == MenuCustomMarks)
+    {
+        row = page;
+    }
+
+    if (row < 0)
+    {
+        m_menuList->clearSelection();
+        m_menuList->setCurrentRow(-1);
+        return;
+    }
+
+    if (m_menuList->currentRow() != row)
+    {
+        m_menuList->setCurrentRow(row);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+auto OExportTemplateEditor::ConfirmDiscardChanges() -> bool
+{
+    if (!m_modified)
+    {
+        return true;
+    }
+
+    // Three answers, and the one the keyboard reaches first is the one that keeps the work.
+    const auto answer =
+        QMessageBox::warning(this, tr("Unsaved template"),
+                             tr("This template has been changed and not saved.\n\n"
+                                "Save it before leaving it?"),
+                             QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                             QMessageBox::Save);
+
+    if (answer == QMessageBox::Cancel)
+    {
+        return false;
+    }
+
+    if (answer == QMessageBox::Save)
+    {
+        SaveTemplate();
+        // A save that did not happen — no name, a name already taken, a folder that cannot be
+        // written — has left the change unsaved, and leaving now would lose it.
+        return !m_modified;
+    }
+
+    return true;
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 
 void OExportTemplateEditor::NewTemplate()
 {
+    // Asking for a new template is asking to leave whatever is being edited, and this editor never
+    // saves on its own. Without this, the click threw the changes away in silence.
+    if (!ConfirmDiscardChanges())
+    {
+        return;
+    }
+
     // A default-constructed template is exactly what a new one is: the three blocks at the values
     // their headers declare, and no name at all. The field is left empty so that its placeholder
     // reads « Template name », and Save refuses until a real one is given.
@@ -1321,6 +1453,7 @@ void OExportTemplateEditor::NewTemplate()
     m_nameEdit->clear();
 
     ShowMenuPage(MenuCreateTemplate);
+    ApplyMenuRow();
     SetModified(false);
 }
 
@@ -1461,6 +1594,14 @@ void OExportTemplateEditor::SaveTemplate()
 
 void OExportTemplateEditor::LoadTemplate(const QString &filePath)
 {
+    // Opening a template replaces the one in memory just as surely as « Create a template » does,
+    // so it asks the same question — and it asks it BEFORE reading the file, so a cancelled open
+    // leaves nothing half-done.
+    if (!ConfirmDiscardChanges())
+    {
+        return;
+    }
+
     OExportTemplate tpl;
     QString error;
     if (!OExportTemplateStorage::Load(filePath, &tpl, &error))
@@ -1478,8 +1619,8 @@ void OExportTemplateEditor::LoadTemplate(const QString &filePath)
     m_filePath = filePath;
     m_nameEdit->setText(QFileInfo(filePath).completeBaseName());
 
-    m_menuList->setCurrentRow(MenuCreateTemplate);
     ShowMenuPage(MenuCreateTemplate);
+    ApplyMenuRow();
 
     SetModified(false);
 }

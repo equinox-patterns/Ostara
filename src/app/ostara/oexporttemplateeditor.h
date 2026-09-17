@@ -170,6 +170,23 @@ private:
     void LoadTemplate(const QString &filePath);
     void SetModified(bool modified);
 
+    /** @brief Asks before throwing away changes that were never saved. True = carry on. */
+    auto ConfirmDiscardChanges() -> bool;
+
+    /**
+     * @brief Puts the menu's highlight where the editor actually is.
+     *
+     * Derived from the page and the file, never stored: a row kept beside them would be a second
+     * representation of the same thing, free to drift, with nothing on screen to say which won.
+     *
+     * The row and the page are not the same thing. A click moves the highlight **before** anything
+     * is decided, so a cancelled prompt would leave the menu claiming a page the editor never went
+     * to. And nothing is highlighted while a saved template is being edited — there is no row for
+     * « editing an existing one », and leaving « Create a template » lit would say the opposite of
+     * what is happening and make clicking it feel like it did nothing.
+     */
+    void ApplyMenuRow();
+
     /** @brief The three blocks as one template — what gets written. */
     auto Template() const -> OExportTemplate;
 

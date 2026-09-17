@@ -35,6 +35,7 @@
 #include <QPoint>
 #include <QRect>
 #include <QScreen>
+#include <QShowEvent>
 #include <QSize>
 
 OExportTemplateWindow::OExportTemplateWindow(QWidget *parent) : QMainWindow(parent)
@@ -51,19 +52,70 @@ OExportTemplateWindow::OExportTemplateWindow(QWidget *parent) : QMainWindow(pare
     // No geometry is stored, unlike OInfoBlockWindow: this window always opens at the size it
     // computes here — nine tenths of the screen. The user may resize it; the next launch
     // starts from this size again, not from theirs.
-    const QScreen *targetScreen = parent != nullptr ? parent->screen() : nullptr;
-    if (targetScreen == nullptr)
-    {
-        targetScreen = QGuiApplication::primaryScreen();
-    }
-
-    if (targetScreen != nullptr)
+    //
+    // The size only. Where it goes is settled in showEvent(), because a constructor is too early
+    // to know it — see the comment there.
+    if (const QScreen *targetScreen = TargetScreen())
     {
         const QRect available = targetScreen->availableGeometry();
-        const QSize wanted(available.width() * 9 / 10, available.height() * 9 / 10);
-        resize(wanted);
-        move(available.center() - QPoint(wanted.width() / 2, wanted.height() / 2));
+        resize(available.width() * 9 / 10, available.height() * 9 / 10);
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+auto OExportTemplateWindow::TargetScreen() const -> const QScreen *
+{
+    const QWidget *origin = parentWidget();
+    const QScreen *screen = origin != nullptr ? origin->screen() : nullptr;
+    return screen != nullptr ? screen : QGuiApplication::primaryScreen();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OExportTemplateWindow::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+
+    if (m_centred)
+    {
+        return;
+    }
+    m_centred = true;
+
+    const QScreen *screen = TargetScreen();
+    if (screen == nullptr)
+    {
+        return;
+    }
+
+    // Centred here rather than in the constructor, and on the frame rather than on the size that
+    // was asked for. Two separate reasons, and each of them alone is enough to look off-centre:
+    //
+    //  - `resize()` in a constructor is a REQUEST. The editor's own minimum size can overrule it,
+    //    and the window then grows from a position computed for a size it never got — downwards
+    //    and to the right, since the top-left is what was placed.
+    //  - `move()` places the FRAME, title bar included, while `resize()` sizes the client area.
+    //    Centring the client size therefore leaves the whole window half a title bar too low.
+    //
+    // frameGeometry() has both settled, and this is the idiom the rest of the application uses
+    // (dialognewpattern.cpp:53).
+    const QRect available = screen->availableGeometry();
+    QRect frame = frameGeometry();
+    frame.moveCenter(available.center());
+
+    // A window larger than the screen cannot be centred on it. Pinned to the top and the left
+    // rather than centred, so that what it loses is the far edge instead of both.
+    if (frame.height() > available.height())
+    {
+        frame.moveTop(available.top());
+    }
+    if (frame.width() > available.width())
+    {
+        frame.moveLeft(available.left());
+    }
+
+    move(frame.topLeft());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

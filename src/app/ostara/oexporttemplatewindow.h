@@ -31,6 +31,8 @@
 
 class QCloseEvent;
 class QEvent;
+class QScreen;
+class QShowEvent;
 class OExportTemplateEditor;
 
 /**
@@ -63,8 +65,17 @@ protected:
     /** @brief Asks before closing on changes that were never saved. */
     void closeEvent(QCloseEvent *event) override;
 
+    /** @brief Centres the window, once, on the size it really ends up with. */
+    void showEvent(QShowEvent *event) override;
+
 private:
+    /** @brief The screen the parent window is on, or the primary one. */
+    auto TargetScreen() const -> const QScreen *;
+
     OExportTemplateEditor *m_editor{nullptr};
+
+    /** The centring is a first-show job: a window the user has moved stays where they put it. */
+    bool m_centred{false};
 };
 
 #endif // OEXPORTTEMPLATEWINDOW_H
