@@ -26,6 +26,8 @@
 
 #include "oexporttemplatepreview.h"
 
+#include "oexportsheets.h"
+
 #include <QColor>
 #include <QFont>
 #include <QFontMetricsF>
@@ -264,6 +266,11 @@ void OExportTemplatePreview::paintEvent(QPaintEvent *event)
     grid.sheetWidthPx = sheetWidth;
     grid.sheetHeightPx = sheetHeight;
     grid.pxPerMm = pxPerMm;
+
+    // Every cell printed. This pane shows a demonstration tiling of six sheets and has no run
+    // behind it, so there is nothing missing and nothing for the decor to stand down from — but
+    // the painter now asks, and a grid that answered nothing at all would draw nothing at all.
+    grid.sheets = OExportSheets::All(kColumns, kRows);
 
     // The faint stand-in outline is asked for here, and nowhere else. This pane has no cut lines
     // of its own: without it, six white rectangles would read as one white block. The canvas has

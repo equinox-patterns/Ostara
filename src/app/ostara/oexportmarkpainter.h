@@ -31,7 +31,11 @@
 #include "core/oexportmarksettings.h"
 #include "core/oexportpaginationsettings.h"
 
+#include "oexportsheets.h"
+
 #include <QPointF>
+#include <QString>
+#include <QVector>
 
 #include <memory>
 #include <vector>
@@ -42,9 +46,13 @@ class QSvgRenderer;
 /**
  * @brief The tiling the assembly marks are drawn on, as the drawn plan sees it.
  *
- * One sheet's size in pixels, how many of them side by side and how many stacked, and the scale
- * that puts millimetres into pixels — everything a decor length needs to become a drawn length.
- * The sheets tile edge to edge, so the plan is exactly this many cells and nothing else.
+ * One sheet's size in pixels, how many of them side by side and how many stacked, the scale that
+ * puts millimetres into pixels — everything a decor length needs to become a drawn length — and
+ * which of those cells have paper.
+ *
+ * The sheets tile edge to edge, so the plan is at most this many cells: a cell with nothing on it
+ * is not printed, and the decor follows the paper. No frame along its borders, no scissors on it,
+ * no number on it, and no mark at a junction where it stood alone.
  *
  * This is the geometry the rendering side works in, and it is not `OExportArtboards::Grid`: that
  * one carries the plan's rectangle and its own validity rules, and belongs to the export. They
@@ -63,9 +71,40 @@ struct OExportMarkGrid
     /** The scale in force. A decor length is absolute: it is never a fraction of the sheet. */
     qreal pxPerMm{0.0};
 
+    /**
+     * Which cells are printed — see OExportSheets.
+     *
+     * Required to cover this grid, and IsValid says so: a caller that leaves it half-filled would
+     * otherwise get a decor drawn along the borders of sheets that are not there, silently.
+     */
+    OExportSheets::Set sheets{};
+
     auto IsValid() const -> bool
     {
-        return columns > 0 && rows > 0 && sheetWidthPx > 0.0 && sheetHeightPx > 0.0 && pxPerMm > 0.0;
+        return columns > 0 && rows > 0 && sheetWidthPx > 0.0 && sheetHeightPx > 0.0 && pxPerMm > 0.0
+               && sheets.columns == columns && sheets.rows == rows
+               && sheets.ranks.size() == static_cast<qsizetype>(columns) * rows;
+    }
+
+    /** @brief True when the cell is one of the plan's printed sheets. */
+    auto IsPresent(int row, int col) const -> bool { return sheets.IsPresent(row, col); }
+
+    /** @brief The sheet's printed number, or 0 when it is not printed. */
+    auto RankOf(int row, int col) const -> int { return sheets.RankOf(row, col); }
+
+    /** @brief True when nothing is missing — every cell of the grid is printed. */
+    auto IsWhole() const -> bool { return sheets.count == columns * rows; }
+
+    /** @brief The stretches of the vertical boundary at @p boundary that have paper beside them. */
+    auto VerticalEdges(int boundary) const -> QVector<OExportSheets::Run>
+    {
+        return sheets.VerticalEdges(boundary);
+    }
+
+    /** @brief The same for the horizontal boundary at @p boundary. */
+    auto HorizontalEdges(int boundary) const -> QVector<OExportSheets::Run>
+    {
+        return sheets.HorizontalEdges(boundary);
     }
 };
 
@@ -78,12 +117,16 @@ struct OExportMarkGrid
  * the sheet in another is a mark that glues wrong, and no test would catch it. This is the
  * cartouche's pattern (`OCartouchePainter`), applied to the tiling.
  *
- * Three rules are the whole of what the decor is, and they are not preferences:
+ * Four rules are the whole of what the decor is, and they are not preferences:
  *
  * - **Placed from the plan, not from the sheet.** Every line of the frame, every mark and every
  *   scissors is positioned against the tiling's own origin. A boundary between two sheets is one
  *   line, drawn once; a mark at a junction is one mark, drawn once. Drawing per sheet would put
  *   two lines where one belongs, restart the dash pattern at every edge, and double every mark.
+ * - **The decor follows the paper.** A cell with nothing on it is not printed, and nothing of the
+ *   decor is drawn on it or for it: a border of the frame that only such a cell would have carried
+ *   goes with it, and a junction where it stood alone is no junction. What decides is which sheets
+ *   are printed, which is read from the plan and not kept here — see OExportSheets.
  * - **Absolute sizes.** A length is in millimetres, points or pixels and stays that size on a
  *   small artboard as on a large one; `pxPerMm` is the only conversion.
  * - **The frame and its scissors belong to « Tiled Framed » alone.** Every other tiled model has
@@ -201,6 +244,32 @@ private:
      */
     void DrawEdgeNumbers(QPainter &painter, const QPointF &origin, const OExportMarkGrid &grid,
                          bool vertical) const;
+
+    /**
+     * @brief The text of one sheet's page number.
+     *
+     * **The two forms are not the same kind of thing.** The two-axis form NAMES a place: the
+     * letter is the column and the number is the row, so nothing is ever renumbered there — a
+     * letter that stopped naming its column, or a number that stopped naming its row, would not
+     * be a grid any more.
+     *
+     * The number alone COUNTS. It is the sheet's rank among the sheets that are printed, in
+     * reading order, so a sheet dropped from the plan takes its number with it and every sheet
+     * after it moves up one — 1, 2, 3 with no gap. On a plan with nothing missing the rank is
+     * `row * columns + col + 1`, which is what this has always written.
+     */
+    auto SheetText(const OExportMarkGrid &grid, int row, int col) const -> QString;
+
+    /**
+     * @brief The number a junction carries, or an empty string when it carries none.
+     *
+     * A junction is where sheets MEET, and a number is what registers them against one another.
+     * So a junction at which fewer than two printed sheets stand carries none: the four corners
+     * of the plan, and now the corner of a hole where a single sheet stands alone. Where two or
+     * more do meet, the junction takes the number of the first of them in reading order — which
+     * is the sheet above and to the left wherever there is one.
+     */
+    auto JunctionNumber(const OExportMarkGrid &grid, int anchorCol, int anchorRow) const -> QString;
 
     /**
      * @brief Sets the painter's font and colour from one placement's text style.

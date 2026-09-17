@@ -42,7 +42,12 @@
  */
 enum class OExportPaginationForm : qint8
 {
-    /** The sheet's rank in reading order — left to right, then top to bottom. */
+    /**
+     * The sheet's rank among the PRINTED sheets, in reading order — left to right, then top to
+     * bottom. A rank and not a place: a sheet dropped from the plan takes its number with it, and
+     * every sheet after it moves up one, so the plan reads 1, 2, 3 with no gap. On a plan with
+     * nothing missing the rank is the sheet's position, which is what it has always been.
+     */
     Number,
 
     /**
@@ -154,6 +159,11 @@ struct OExportPaginationCentreNumber
  * is the same rule the corner marks follow (§3.4.2), and it is why the four corners of the plan
  * are passed over here as they are there.
  *
+ * **A sheet that is not printed is not there at all**, and counts for nothing in the two rules
+ * above. A junction where its absence leaves a single sheet standing carries no number either, and
+ * where two or more still meet, the number is that of the first of THEM in reading order — the
+ * sheet above and to the left, whenever that one is printed.
+ *
  * **All the sheets meeting at a junction print the same number**, and each prints it in its own
  * corner, inside itself. The number is that of the sheet **above and to the left** of the
  * junction — among the sheets present, the first in reading order. So on a three-column plan the
@@ -179,6 +189,10 @@ struct OExportPaginationCornerNumber
  * junction, printed by both sheets that meet there, each inside itself. The number is again that
  * of the sheet **above and to the left** of the junction, so the seam between the first two
  * sheets of a row reads A1, and gluing is a matching game there too.
+ *
+ * **A seam needs two sheets.** Where one of the two is not printed there is no joint there and no
+ * number either — a number on the edge of a sheet whose neighbour was dropped would name a joint
+ * with nobody on the other side of it.
  *
  * **Two of these, activated independently** — one for the seams running down the plan, one for
  * those running across it — as the marks offer their « Vertical centre » and « Horizontal centre »

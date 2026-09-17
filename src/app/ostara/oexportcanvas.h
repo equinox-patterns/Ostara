@@ -117,6 +117,10 @@ public:
     ///                own extent instead of what is drawn around it. The PDF writer leaves it
     ///                at its default deliberately: a page IS a sheet there, so its edge is not
     ///                drawn on it.
+    ///                WHICH of those sheets gets paper is read here, from @p result's own
+    ///                placements — see OExportSheets. Deliberately not a parameter: a paper the
+    ///                caller could hand in is a paper the caller could hand in wrong, and the
+    ///                PDF writer asks the same question of the same two things.
     /// @param marks   the template of assembly marks the plan is drawn with, or nullptr when
     ///                there is none — a library the user has emptied, or a name whose file has
     ///                gone. Nothing is drawn then, and the plan keeps the cut lines it always

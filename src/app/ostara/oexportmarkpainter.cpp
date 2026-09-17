@@ -30,6 +30,7 @@
 #include <QFont>
 #include <QFontMetricsF>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPen>
 #include <QPointF>
 #include <QRectF>
@@ -72,32 +73,34 @@ constexpr qreal kScissorsOffsetRatio = 0.25;
 constexpr float kSheetGuideOpacity = 0.10F;
 
 /**
- * The number of one sheet, from its place in the tiling — and the only thing of the decor that
- * is read off the sheet rather than off the plan.
+ * The paper of the plan, as one path: the rectangle of every printed sheet, and nothing where one
+ * was dropped.
  *
- * Reading order for the number alone: left to right, then top to bottom, so a three-column plan
- * reads 1 2 3 across its first row and 4 5 6 across its second. In the two-axis form the letter
- * is the column and the number is the row, so that same plan reads A1 B1 C1 and A2 B2 C2 — the
- * two axes, as the mark table is read.
- *
- * The count of columns comes in as an argument and is not a constant of this file: the preview
- * draws three of them, the canvas as many as the run was nested on, and the number alone is the
- * one thing that reads the difference.
+ * It is what a mark at a junction is clipped to, and it exists for the same reason the plan's own
+ * rectangle does. A mark's centre lies ON a junction, so at a corner of a hole a quarter of it
+ * would fall where no sheet is — and there is no sheet there to carry it, exactly as there is
+ * none outside the plan. Clipping to the rectangle would print it on nothing.
  */
-QString SheetNumberText(int columns, OExportPaginationForm form, int row, int col)
+QPainterPath PaperPath(const OExportMarkGrid &grid, const QPointF &origin)
 {
-    if (form == OExportPaginationForm::NumberAndLetter)
+    QPainterPath paper;
+
+    for (int row = 0; row < grid.rows; ++row)
     {
-        // The letter is written from the column index, as the mark table's columns are read:
-        // 'A' is the first column, 'B' the second. Past twenty-six columns there is no letter
-        // left — which is why letters alone are not offered as a form, and why a run is capped
-        // at that count where its columns are entered (kPaginationMaxColumns). Reaching here
-        // with more of them is not something the interface can ask for — see §3.4.3.
-        const char letter = static_cast<char>('A' + col);
-        return QLatin1Char(letter) + QString::number(row + 1);
+        for (int col = 0; col < grid.columns; ++col)
+        {
+            if (!grid.IsPresent(row, col))
+            {
+                continue;
+            }
+
+            paper.addRect(QRectF(origin.x() + col * grid.sheetWidthPx,
+                                 origin.y() + row * grid.sheetHeightPx, grid.sheetWidthPx,
+                                 grid.sheetHeightPx));
+        }
     }
 
-    return QString::number(row * columns + col + 1);
+    return paper;
 }
 } // namespace
 
@@ -142,6 +145,69 @@ void OExportMarkPainter::SetPaginationSettings(const OExportPaginationSettings &
 
 //---------------------------------------------------------------------------------------------------------------------
 
+auto OExportMarkPainter::SheetText(const OExportMarkGrid &grid, int row, int col) const -> QString
+{
+    if (m_pagination.form == OExportPaginationForm::NumberAndLetter)
+    {
+        // The letter is written from the column index, as the mark table's columns are read:
+        // 'A' is the first column, 'B' the second. Past twenty-six columns there is no letter
+        // left — which is why letters alone are not offered as a form, and why a run is capped
+        // at that count where its columns are entered (kPaginationMaxColumns). Reaching here
+        // with more of them is not something the interface can ask for — see §3.4.3.
+        const char letter = static_cast<char>('A' + col);
+        return QLatin1Char(letter) + QString::number(row + 1);
+    }
+
+    // The number alone is the rank the set has already worked out: how many sheets are printed
+    // before this one, plus one. It reads as a position in the grid only while nothing is
+    // missing — which is what makes it equal to `row * columns + col + 1` on a whole plan, and
+    // what makes it move up one when a sheet before it is dropped.
+    return QString::number(grid.RankOf(row, col));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+auto OExportMarkPainter::JunctionNumber(const OExportMarkGrid &grid, int anchorCol,
+                                        int anchorRow) const -> QString
+{
+    int count = 0;
+    int firstCol = 0;
+    int firstRow = 0;
+
+    // The four cells a junction can have, the ones above and to the left read first — which is
+    // reading order, and therefore the order the numbering itself is read in. A cell off the grid
+    // answers absent, so the plan's own edges and corners need no special case here.
+    for (int row = anchorRow - 1; row <= anchorRow; ++row)
+    {
+        for (int col = anchorCol - 1; col <= anchorCol; ++col)
+        {
+            if (!grid.IsPresent(row, col))
+            {
+                continue;
+            }
+
+            if (count == 0)
+            {
+                firstRow = row;
+                firstCol = col;
+            }
+            ++count;
+        }
+    }
+
+    // A junction is where sheets MEET. One sheet standing alone there has no neighbour to be
+    // registered against, and registers nothing — the plan's four corners, and the corner of a
+    // hole where a single sheet stands.
+    if (count < 2)
+    {
+        return QString();
+    }
+
+    return SheetText(grid, firstRow, firstCol);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
 void OExportMarkPainter::Paint(QPainter &painter, const QPointF &origin,
                                const OExportMarkGrid &grid, bool framed, bool sheetGuide) const
 {
@@ -151,7 +217,7 @@ void OExportMarkPainter::Paint(QPainter &painter, const QPointF &origin,
     }
 
     // The frame is drawn as the boundaries themselves, once each — see DrawFrame. The scissors
-    // follow it, sheet by sheet: they are cut marks, and there is one pair per sheet.
+    // follow it, sheet by sheet: they are cut marks, and a sheet that is not printed carries none.
     if (framed)
     {
         DrawFrame(painter, origin, grid);
@@ -160,6 +226,11 @@ void OExportMarkPainter::Paint(QPainter &painter, const QPointF &origin,
         {
             for (int col = 0; col < grid.columns; ++col)
             {
+                if (!grid.IsPresent(row, col))
+                {
+                    continue;
+                }
+
                 DrawScissors(painter,
                              QRectF(origin.x() + col * grid.sheetWidthPx,
                                     origin.y() + row * grid.sheetHeightPx, grid.sheetWidthPx,
@@ -251,6 +322,11 @@ void OExportMarkPainter::DrawFrame(QPainter &painter, const QPointF &origin, con
     // The export must keep that rule: on paper each sheet draws its four borders in its own
     // page, so each border is drawn from the plan's anchor — and in the same direction — rather
     // than from the sheet's own corner.
+    //
+    // A sheet that is not printed carries no border of its own, and losing it takes nothing from
+    // its neighbours: a border between a printed sheet and a dropped one belongs to the printed
+    // sheet, and is drawn. It is the plan's own outline once the sheets are taped together, with
+    // the step a missing sheet leaves in it.
     DrawGridLines(painter, origin, grid);
 }
 
@@ -285,13 +361,15 @@ void OExportMarkPainter::DrawMarks(QPainter &painter, const QPointF &origin, con
         // Every corner of the tiling where sheets meet — four of them round an inside corner,
         // two along the plan's own edge, where the mark is cut down to a half.
         //
-        // The four corners of the plan itself are passed over: a sheet alone in a corner has no
-        // neighbour to register with, and nothing of the mark would land on paper.
+        // A junction that carries no number carries no mark either — it is the same rule asked
+        // once. Fewer than two printed sheets meet there, so there is nobody to register with:
+        // the four corners of the plan answer so, and so does the corner of a hole where a single
+        // sheet stands.
         for (int col = 0; col <= grid.columns; ++col)
         {
             for (int row = 0; row <= grid.rows; ++row)
             {
-                if ((col == 0 || col == grid.columns) && (row == 0 || row == grid.rows))
+                if (JunctionNumber(grid, col, row).isEmpty())
                 {
                     continue;
                 }
@@ -308,6 +386,13 @@ void OExportMarkPainter::DrawMarks(QPainter &painter, const QPointF &origin, con
         {
             for (int row = 0; row < grid.rows; ++row)
             {
+                // A seam runs between two sheets, and is a seam only where both of them are there:
+                // half a mark on a sheet whose neighbour was dropped registers nothing.
+                if (!grid.IsPresent(row, col - 1) || !grid.IsPresent(row, col))
+                {
+                    continue;
+                }
+
                 anchors.append(QPointF(origin.x() + col * grid.sheetWidthPx,
                                        origin.y() + (row + 0.5) * grid.sheetHeightPx));
             }
@@ -320,20 +405,35 @@ void OExportMarkPainter::DrawMarks(QPainter &painter, const QPointF &origin, con
         {
             for (int col = 0; col < grid.columns; ++col)
             {
+                if (!grid.IsPresent(row - 1, col) || !grid.IsPresent(row, col))
+                {
+                    continue;
+                }
+
                 anchors.append(QPointF(origin.x() + (col + 0.5) * grid.sheetWidthPx,
                                        origin.y() + row * grid.sheetHeightPx));
             }
         }
     }
 
-    // What falls outside the plan falls into nothing. There is no sheet out there to carry it,
-    // so it is not drawn here — and the export writes nothing of it either, since a page ends at
-    // its own edge. Only the marks set on the plan's outer edge are cut down by this; everywhere
-    // else the whole mark lands on a sheet or on two.
-    const QRectF planRect(origin.x(), origin.y(), grid.sheetWidthPx * grid.columns, grid.sheetHeightPx * grid.rows);
+    // What falls where there is no sheet falls into nothing and is not drawn — a mark's centre
+    // lies ON a junction, so a quarter of it at a corner of the plan, and a quarter of it at a
+    // corner of a hole, belong to no sheet at all. Outside the plan there is no sheet to carry
+    // it, and the export writes nothing of it either, since a page ends at its own edge.
+    const QRectF planRect(origin.x(), origin.y(), grid.sheetWidthPx * grid.columns,
+                          grid.sheetHeightPx * grid.rows);
 
     painter.save();
-    painter.setClipRect(planRect);
+    if (grid.IsWhole())
+    {
+        // Nothing is missing: the paper IS this rectangle, and the clip is set exactly as it has
+        // always been. A whole plan must not move by a pixel.
+        painter.setClipRect(planRect);
+    }
+    else
+    {
+        painter.setClipPath(PaperPath(grid, origin), Qt::ReplaceClip);
+    }
     painter.setOpacity(m_marks.opacity / 100.0);
     for (const QPointF &anchor : anchors)
     {
@@ -348,19 +448,34 @@ void OExportMarkPainter::DrawMarks(QPainter &painter, const QPointF &origin, con
 void OExportMarkPainter::DrawGridLines(QPainter &painter, const QPointF &origin,
                                        const OExportMarkGrid &grid) const
 {
-    const qreal gridWidth = grid.sheetWidthPx * grid.columns;
-    const qreal gridHeight = grid.sheetHeightPx * grid.rows;
-
+    // Every line is drawn in the stretches that have a printed sheet beside them, and a stretch
+    // that runs the whole way IS the whole line: a plan with nothing missing comes out as the
+    // chords it has always been drawn as, to the pixel.
+    //
+    // One segment per stretch, never a rectangle per cell. The frame carries an opacity the user
+    // set, so a boundary reached from both sides would come out darker than the rest of it; and
+    // the dash pattern is anchored once for the whole line, where a cell-by-cell walk would
+    // restart it at every sheet.
     for (int col = 0; col <= grid.columns; ++col)
     {
         const qreal x = origin.x() + col * grid.sheetWidthPx;
-        painter.drawLine(QPointF(x, origin.y()), QPointF(x, origin.y() + gridHeight));
+
+        for (const OExportSheets::Run &run : grid.VerticalEdges(col))
+        {
+            painter.drawLine(QPointF(x, origin.y() + run.first * grid.sheetHeightPx),
+                             QPointF(x, origin.y() + (run.last + 1) * grid.sheetHeightPx));
+        }
     }
 
     for (int row = 0; row <= grid.rows; ++row)
     {
         const qreal y = origin.y() + row * grid.sheetHeightPx;
-        painter.drawLine(QPointF(origin.x(), y), QPointF(origin.x() + gridWidth, y));
+
+        for (const OExportSheets::Run &run : grid.HorizontalEdges(row))
+        {
+            painter.drawLine(QPointF(origin.x() + run.first * grid.sheetWidthPx, y),
+                             QPointF(origin.x() + (run.last + 1) * grid.sheetWidthPx, y));
+        }
     }
 }
 
@@ -447,14 +562,20 @@ void OExportMarkPainter::DrawCentreNumber(QPainter &painter, const QPointF &orig
     // A whole number per sheet, and each sheet its own: the number is what tells one printed
     // sheet from another once they are on the table, so it cannot be drawn once for the plan the
     // way the frame and the marks are. Nothing is clipped here — the centre of a sheet is the one
-    // place of the decor that can never fall outside it.
+    // place of the decor that can never fall outside it, and a sheet that is not printed has no
+    // centre to write on.
     for (int row = 0; row < grid.rows; ++row)
     {
         for (int col = 0; col < grid.columns; ++col)
         {
+            if (!grid.IsPresent(row, col))
+            {
+                continue;
+            }
+
             const QRectF sheet(origin.x() + col * grid.sheetWidthPx, origin.y() + row * grid.sheetHeightPx,
                                grid.sheetWidthPx, grid.sheetHeightPx);
-            painter.drawText(sheet, Qt::AlignCenter, SheetNumberText(grid.columns, m_pagination.form, row, col));
+            painter.drawText(sheet, Qt::AlignCenter, SheetText(grid, row, col));
         }
     }
 
@@ -481,6 +602,11 @@ void OExportMarkPainter::DrawCornerNumbers(QPainter &painter, const QPointF &ori
     {
         for (int col = 0; col < grid.columns; ++col)
         {
+            if (!grid.IsPresent(row, col))
+            {
+                continue;
+            }
+
             const QRectF sheet(origin.x() + col * grid.sheetWidthPx, origin.y() + row * grid.sheetHeightPx,
                                grid.sheetWidthPx, grid.sheetHeightPx);
 
@@ -495,21 +621,13 @@ void OExportMarkPainter::DrawCornerNumbers(QPainter &painter, const QPointF &ori
                     const int anchorCol = col + (right ? 1 : 0);
                     const int anchorRow = row + (bottom ? 1 : 0);
 
-                    // A corner of the plan is no junction: the sheet there meets nobody, and the
-                    // two other sheets of its four are not sheets at all.
-                    if ((anchorCol == 0 || anchorCol == grid.columns)
-                        && (anchorRow == 0 || anchorRow == grid.rows))
+                    // The number the junction carries, or nothing where it carries none — a corner
+                    // of the plan, or the corner of a hole this sheet stands alone at.
+                    const QString label = JunctionNumber(grid, anchorCol, anchorRow);
+                    if (label.isEmpty())
                     {
                         continue;
                     }
-
-                    // The junction takes the number of the sheet above and to its left — among
-                    // the sheets present, the first in reading order. On the plan's top edge there
-                    // is no sheet above, and on its left edge none to the left, so there the sheet
-                    // itself is that one.
-                    const int numberRow = anchorRow == 0 ? 0 : anchorRow - 1;
-                    const int numberCol = anchorCol == 0 ? 0 : anchorCol - 1;
-                    const QString label = SheetNumberText(grid.columns, m_pagination.form, numberRow, numberCol);
 
                     // Placed by its painted box and not by its baseline: what has to sit five
                     // millimetres from the edge is the ink, not the line the ink hangs from.
@@ -560,8 +678,20 @@ void OExportMarkPainter::DrawEdgeNumbers(QPainter &painter, const QPointF &origi
             // The number of the sheet above and to the left of the junction — the corners' rule,
             // read on a seam. On a seam that is always the sheet on the first side, which keeps
             // the two readings of the plan in agreement where a corner and a seam meet.
-            const QString label = vertical ? SheetNumberText(grid.columns, m_pagination.form, lane, seam - 1)
-                                           : SheetNumberText(grid.columns, m_pagination.form, seam - 1, lane);
+            const int firstCol = vertical ? seam - 1 : lane;
+            const int firstRow = vertical ? lane : seam - 1;
+            const int secondCol = vertical ? seam : lane;
+            const int secondRow = vertical ? lane : seam;
+
+            // A seam runs between two sheets, and both have to be there for it to be one: a number
+            // on the edge of a sheet whose neighbour was dropped names a joint that has nobody on
+            // the other side of it.
+            if (!grid.IsPresent(firstRow, firstCol) || !grid.IsPresent(secondRow, secondCol))
+            {
+                continue;
+            }
+
+            const QString label = SheetText(grid, firstRow, firstCol);
             const QRectF box = metrics.boundingRect(label);
 
             // How far from the seam the number sits, measured across it. A quarter of the mark's
@@ -583,8 +713,8 @@ void OExportMarkPainter::DrawEdgeNumbers(QPainter &painter, const QPointF &origi
             {
                 const bool second = side == 1;
 
-                const int sheetCol = vertical ? (second ? seam : seam - 1) : lane;
-                const int sheetRow = vertical ? lane : (second ? seam : seam - 1);
+                const int sheetCol = second ? secondCol : firstCol;
+                const int sheetRow = second ? secondRow : firstRow;
                 const QRectF sheet(origin.x() + sheetCol * grid.sheetWidthPx,
                                    origin.y() + sheetRow * grid.sheetHeightPx, grid.sheetWidthPx, grid.sheetHeightPx);
 

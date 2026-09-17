@@ -125,6 +125,14 @@ auto OExportFootprint::Corners(const OExportPlacement &placement) -> QPolygonF
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportFootprint::Outline(const OExportPlacement &placement) -> QPolygonF
+{
+    // Frame() and never Matrix() — see the note on that function. The outline is expressed from
+    // the footprint's origin already, and Matrix() would take that origin off a second time.
+    return Frame(placement).map(placement.outline);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportFootprint::Rect(const OExportPlacement &placement) -> QRectF
 {
     if (placement.outline.isEmpty())
@@ -136,7 +144,7 @@ auto OExportFootprint::Rect(const OExportPlacement &placement) -> QRectF
         return Corners(placement).boundingRect();
     }
 
-    return Frame(placement).map(placement.outline).boundingRect();
+    return Outline(placement).boundingRect();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

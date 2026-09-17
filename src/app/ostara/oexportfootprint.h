@@ -74,6 +74,18 @@ auto Centre(const OExportPlacement &placement) -> QPointF;
 /// @brief The placed footprint's four corners, in scene coordinates — a rotated rectangle.
 auto Corners(const OExportPlacement &placement) -> QPolygonF;
 
+/// @brief The footprint's own outline, placed — the shape itself, where it is.
+///
+/// **The outline is already expressed from the footprint's origin**, so the frame that places it
+/// is `T(x, y) · R(θ)` and NOT Matrix(): Matrix() carries `T(-origin)` as well, for points of the
+/// DOCUMENT, and applying it here shifts the shape a second time — a footprint sitting neatly at
+/// (18, 18) comes out at x = -2871. That is the bug the frame in the .cpp is commented for, and
+/// this function exists so that the answer is given once rather than reasoned out per caller.
+///
+/// This is the shape the engine placed and the shape the plan draws: a reader of the plan — the
+/// paper a sheet is worth, the room a hand has — measures this and not the box around it.
+auto Outline(const OExportPlacement &placement) -> QPolygonF;
+
 /// @brief The axis-aligned box of the footprint's OWN outline, placed — what a clamp is
 ///        measured against.
 ///

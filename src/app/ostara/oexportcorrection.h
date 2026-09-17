@@ -59,8 +59,14 @@ class VMainGraphicsScene;
 /// scene by the role the canvas stamps on what it draws.
 ///
 /// Nothing here re-runs the nesting. A gesture writes one placement into a result that already
-/// exists, which is why Trame is untouched by this feature — and why the page count cannot
-/// move: a row follows `usedHeightPx`, and `SetPlacement` cannot reach it.
+/// exists, which is why Trame is untouched by this feature.
+///
+/// **The page count moves, and that is the point.** A row still follows `usedHeightPx`, and
+/// `SetPlacement` still cannot reach it — but which sheets are PRINTED follows the placements
+/// (OExportSheets), so emptying a sheet by hand drops its page and putting a piece back on a
+/// dropped one brings it back. The paper a generation was cut for never changes; the sheets of it
+/// worth printing change with every gesture, and the canvas redraws them from the model rather
+/// than being told about them.
 class OExportCorrection final : public QObject
 {
     Q_OBJECT

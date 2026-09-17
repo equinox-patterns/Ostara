@@ -28,6 +28,7 @@
 
 #include "oexportartboards.h"
 #include "oexportcanvas.h"
+#include "oexportsheets.h"
 #include "ogradedsvgwriter.h"
 
 #include "core/oexportoutput.h"
@@ -91,18 +92,31 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         output.result.binWidthPx, output.result.usedHeightPx, output.frameHeightMm,
         output.columns);
 
+    // Which of those sheets is worth a page, read from the placements the run produced and any
+    // hand has moved since — the generation's own, never a copy of them. The canvas asks the same
+    // question of the same two things, so the paper on screen and the paper in the file are one
+    // decision: a sheet a hand has emptied is not written, and a piece put back on a dropped one
+    // brings its page back with it.
+    const OExportSheets::Set sheets = OExportSheets::Compute(artboards, output.result.placements);
+
     QVector<QRectF> pages;
     if (artboards.valid)
     {
-        pages.reserve(artboards.columns * artboards.rows);
-        // Row by row, left to right — the order the sheets come off the printer in and are
-        // taped back together in. A sheet is never cut short, so the last row is whole and
-        // whatever the nesting left unused in it is printed as blank paper; that band is
-        // where a hand correction may have put a piece, and it is a real sheet now.
+        pages.reserve(sheets.count);
+        // Row by row, left to right — the order the sheets come off the printer in and are taped
+        // back together in. A sheet with nothing on it is passed over: paper, ink and a hand to
+        // tape it are what a page costs, and the nesting's short last row would otherwise be paid
+        // for in full. What decides is the content and never the grid — a blank sheet that a hand
+        // has since put a piece on is a real sheet again, and is written as one.
         for (int row = 0; row < artboards.rows; ++row)
         {
             for (int col = 0; col < artboards.columns; ++col)
             {
+                if (!sheets.IsPresent(row, col))
+                {
+                    continue;
+                }
+
                 pages.append(QRectF(artboards.planRect.left() + col * artboards.cellWidthPx,
                                     artboards.planRect.top() + row * artboards.cellHeightPx,
                                     artboards.cellWidthPx, artboards.cellHeightPx));

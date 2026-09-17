@@ -203,11 +203,16 @@ public:
 
     /// @brief Write ONE placement of the generation @p id, and leave everything else alone.
     ///
-    /// The plan is frozen once the nesting has run: this cannot reach `usedHeightPx`, so it
-    /// cannot move a row, and it cannot change `binWidthPx`, so it cannot change what a sheet
-    /// is. Manual correction moves pieces on the paper the generation was cut for; it never
-    /// re-cuts the paper. That is held by this signature rather than by every caller
-    /// remembering not to.
+    /// The plan's GEOMETRY is frozen once the nesting has run: this cannot reach `usedHeightPx`,
+    /// so it cannot move a row, and it cannot change `binWidthPx`, so it cannot change what a
+    /// sheet is. Manual correction moves pieces on the paper the generation was cut for; it never
+    /// re-cuts it. That is held by this signature rather than by every caller remembering not to.
+    ///
+    /// **What a gesture does move is the page count.** Which sheets are printed follows the
+    /// placements and not the grid (OExportSheets), so a sheet a hand has emptied is no longer
+    /// written, and a piece put back on a dropped one makes its page real again. Reading the paper
+    /// off the content rather than off the grid is what keeps the canvas and the PDF in step
+    /// through it.
     ///
     /// Deliberately not a Replace(): that one copies the whole payload — every layer, every
     /// resolved piece — and a gesture touches none of it.

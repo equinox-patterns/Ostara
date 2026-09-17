@@ -37,6 +37,7 @@
 #include "oexportgeometry.h"
 #include "oexportfootprint.h"
 #include "oexportnesting.h"
+#include "oexportsheets.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
 
 #include "../ifc/xml/vabstractpattern.h"
@@ -101,9 +102,10 @@ constexpr qreal kGridZ = 2.0;
 class ArtboardGridItem : public QGraphicsItem
 {
 public:
-    ArtboardGridItem(const QRectF &planRect, qreal cellWidthPx, qreal cellHeightPx, int columns, int rows)
+    ArtboardGridItem(const QRectF &planRect, qreal cellWidthPx, qreal cellHeightPx, int columns, int rows,
+                     const OExportSheets::Set &sheets)
       : m_planRect(planRect), m_cellWidthPx(cellWidthPx), m_cellHeightPx(cellHeightPx),
-        m_columns(columns), m_rows(rows)
+        m_columns(columns), m_rows(rows), m_sheets(sheets)
     {
         setFlag(QGraphicsItem::ItemIsSelectable, false);
         setFlag(QGraphicsItem::ItemIsMovable, false);
@@ -121,18 +123,53 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
     {
         painter->setPen(QPen(Qt::black, kPenWidth));
-        painter->drawRect(m_planRect);
 
-        for (int i = 1; i < m_columns; ++i)
+        // Nothing missing: the rectangle and its seams, drawn exactly as they always have been.
+        // The outline goes through drawRect, which mitres its four corners, where four separate
+        // lines would each poke half a pen past them. A whole plan must not move by a pixel.
+        if (m_sheets.count == m_columns * m_rows)
         {
-            const qreal x = m_planRect.left() + i * m_cellWidthPx;
-            painter->drawLine(QPointF(x, m_planRect.top()), QPointF(x, m_planRect.bottom()));
+            painter->drawRect(m_planRect);
+
+            for (int i = 1; i < m_columns; ++i)
+            {
+                const qreal x = m_planRect.left() + i * m_cellWidthPx;
+                painter->drawLine(QPointF(x, m_planRect.top()), QPointF(x, m_planRect.bottom()));
+            }
+
+            for (int j = 1; j < m_rows; ++j)
+            {
+                const qreal y = m_planRect.top() + j * m_cellHeightPx;
+                painter->drawLine(QPointF(m_planRect.left(), y), QPointF(m_planRect.right(), y));
+            }
+
+            return;
         }
 
-        for (int j = 1; j < m_rows; ++j)
+        // A sheet was dropped, so the lines stop where the paper does. Each boundary is drawn in
+        // the stretches that have a printed sheet beside them, and drawn ONCE — a walk over the
+        // sheets would draw every seam from both sides, and a seam drawn twice comes out heavier
+        // wherever the view antialiases.
+        for (int i = 0; i <= m_columns; ++i)
+        {
+            const qreal x = m_planRect.left() + i * m_cellWidthPx;
+
+            for (const OExportSheets::Run &run : m_sheets.VerticalEdges(i))
+            {
+                painter->drawLine(QPointF(x, m_planRect.top() + run.first * m_cellHeightPx),
+                                  QPointF(x, m_planRect.top() + (run.last + 1) * m_cellHeightPx));
+            }
+        }
+
+        for (int j = 0; j <= m_rows; ++j)
         {
             const qreal y = m_planRect.top() + j * m_cellHeightPx;
-            painter->drawLine(QPointF(m_planRect.left(), y), QPointF(m_planRect.right(), y));
+
+            for (const OExportSheets::Run &run : m_sheets.HorizontalEdges(j))
+            {
+                painter->drawLine(QPointF(m_planRect.left() + run.first * m_cellWidthPx, y),
+                                  QPointF(m_planRect.left() + (run.last + 1) * m_cellWidthPx, y));
+            }
         }
     }
 
@@ -145,6 +182,7 @@ private:
     qreal m_cellHeightPx{0.0};
     int m_columns{0};
     int m_rows{0};
+    OExportSheets::Set m_sheets;
 };
 
 /// The assembly marks of a template, drawn on the plan's own ground.
@@ -204,26 +242,46 @@ private:
     bool m_framed{false};
 };
 
-/// The paper of a tiled run: the whole sheet area, white, and nothing drawn on it.
+/// The paper of a tiled run: the printed sheets, white, and nothing drawn on them.
+///
+/// ONE RECTANGLE PER PRINTED SHEET, and not one over the plan. A cell with nothing on it is not
+/// printed, and white paper drawn there would be the canvas promising a page the PDF will never
+/// write — which is the one thing the canvas must not do. The sheets butt edge to edge, so they
+/// meet without overlapping and no seam between two of them is drawn twice.
 ///
 /// The pen is dropped on purpose. A QGraphicsRectItem carries a black one-pixel pen by
 /// default, and ArtboardGridItem already draws the plan's outer edge — the two would land on
 /// the same line, one drawn twice.
 ///
-/// The rect is the plan's and nothing else: a carrier the scene can see but the eye cannot is
+/// A rect is a sheet's own and nothing wider: a carrier the scene can see but the eye cannot is
 /// what feeds VisibleItemsBoundingRect, and a rect wider than the paper would leave the plan
 /// pinned to one edge of the viewport when the result is framed. MakeDecorHost tells the same
 /// story from the other end.
-void MakeArtboardPaper(QGraphicsScene *scene, const QRectF &planRect)
+void MakeArtboardPaper(QGraphicsScene *scene, const OExportArtboards::Grid &artboards,
+                       const OExportSheets::Set &sheets)
 {
-    auto *paper = new QGraphicsRectItem(planRect);
-    paper->setPen(Qt::NoPen);
-    paper->setBrush(QBrush(Qt::white));
-    paper->setFlag(QGraphicsItem::ItemIsSelectable, false);
-    paper->setFlag(QGraphicsItem::ItemIsMovable, false);
-    paper->setAcceptedMouseButtons(Qt::NoButton);
-    paper->setZValue(kPaperZ);
-    scene->addItem(paper);
+    for (int row = 0; row < artboards.rows; ++row)
+    {
+        for (int col = 0; col < artboards.columns; ++col)
+        {
+            if (!sheets.IsPresent(row, col))
+            {
+                continue;
+            }
+
+            auto *paper = new QGraphicsRectItem(
+                QRectF(artboards.planRect.left() + col * artboards.cellWidthPx,
+                       artboards.planRect.top() + row * artboards.cellHeightPx, artboards.cellWidthPx,
+                       artboards.cellHeightPx));
+            paper->setPen(Qt::NoPen);
+            paper->setBrush(QBrush(Qt::white));
+            paper->setFlag(QGraphicsItem::ItemIsSelectable, false);
+            paper->setFlag(QGraphicsItem::ItemIsMovable, false);
+            paper->setAcceptedMouseButtons(Qt::NoButton);
+            paper->setZValue(kPaperZ);
+            scene->addItem(paper);
+        }
+    }
 }
 
 /// Grainline, fold mark and its label are drawn by GetItem on every size, and only the
@@ -836,9 +894,15 @@ void OExportCanvas::Build(QGraphicsScene *scene,
     // is cut into on a run that is tiled. One decision made once, and never both — the bin's
     // bottom edge would fall in the middle of the last row of sheets, exactly where a whole
     // page has to read as one.
+    //
+    // Which of those sheets is worth paper is read from the run's own placements: a pure function
+    // of two things the caller already handed over, called here and — on the same two — by the PDF
+    // writer. So the canvas cannot show a sheet the file will not write, nor hide one it will.
+    const OExportSheets::Set sheets = OExportSheets::Compute(artboards, result.placements);
+
     if (artboards.valid)
     {
-        MakeArtboardPaper(scene, artboards.planRect);
+        MakeArtboardPaper(scene, artboards, sheets);
     }
     else
     {
@@ -860,6 +924,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         grid.sheetWidthPx = artboards.cellWidthPx;
         grid.sheetHeightPx = artboards.cellHeightPx;
         grid.pxPerMm = ToPixel(1.0, Unit::Mm);
+        grid.sheets = sheets;
 
         scene->addItem(new AssemblyMarksItem(*marks, artboards.planRect.topLeft(), grid, framed));
     }
@@ -1012,7 +1077,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
     {
         scene->addItem(new ArtboardGridItem(artboards.planRect, artboards.cellWidthPx,
                                             artboards.cellHeightPx, artboards.columns,
-                                            artboards.rows));
+                                            artboards.rows, sheets));
     }
 
     if (content == nullptr)

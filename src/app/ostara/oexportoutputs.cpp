@@ -36,6 +36,7 @@
 #include "oexportartboards.h"
 #include "oexportcanvas.h"
 #include "oexportpdf.h"
+#include "oexportsheets.h"
 
 #include "dialogs/oexportpdfdialog.h"
 
@@ -611,6 +612,11 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
     const OExportArtboards::Grid artboards = OExportArtboards::Compute(
         output.result.binWidthPx, output.result.usedHeightPx, output.frameHeightMm, output.columns);
 
+    // Which of those sheets carry something, for the page count below. The canvas reads the same
+    // two things with the same function when it builds the scene — it is not handed this, because
+    // a paper the caller could disagree with is a paper that can lie on screen.
+    const OExportSheets::Set sheets = OExportSheets::Compute(artboards, output.result.placements);
+
     if (m_exportCorrection != nullptr)
     {
         // The rectangle a hand may not leave is the one the canvas is about to draw: the
@@ -666,10 +672,12 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
     // is written in the unit the generation was asked in, not the pattern's: the figures
     // the user just read in the dialog are the ones that have to come back here.
     //
-    // On a tiled run what is shown is the PAPER, not the nesting: the plan reaches the bottom
-    // of its last row whether or not the pieces do, so the label gives the sheets' own extent
-    // and how many of them there are. The run's height is nowhere on screen, and a figure
-    // nobody can see is a figure nobody can check.
+    // On a tiled run what is shown is the PAPER, not the nesting: the plan's extent reaches the
+    // bottom of its last row whether or not the pieces do, so the label gives the sheets' own
+    // extent — and, for the count, the sheets that will actually be printed. A blank sheet is not
+    // written, and a count that promised it would be one the user could not reconcile with the
+    // file. The run's height is nowhere on screen, and a figure nobody can see is a figure nobody
+    // can check.
     const Unit unit = output.unit;
     const double width = FromPixel(artboards.valid ? artboards.planRect.width()
                                                    : output.result.binWidthPx,
@@ -684,7 +692,7 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
 
     if (artboards.valid)
     {
-        label += tr(" · %n page(s)", nullptr, artboards.columns * artboards.rows);
+        label += tr(" · %n page(s)", nullptr, sheets.count);
     }
 
     m_statusLabel->setText(label);
