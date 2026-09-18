@@ -29,9 +29,11 @@
 #include "oexportartboards.h"
 #include "oexportcanvas.h"
 #include "oexportsheets.h"
+#include "oexportunderlay.h"
 #include "ogradedsvgwriter.h"
 
 #include "core/oexportoutput.h"
+#include "core/oexporttemplate.h"
 
 #include "../vmisc/projectversion.h"
 #include "../vpatterndb/vcontainer.h"
@@ -63,7 +65,8 @@ auto DefaultDecorLayerName() -> QString
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
-                       const VContainer *pattern, VAbstractPattern *doc) -> bool
+                       const VContainer *pattern, VAbstractPattern *doc,
+                       const OExportTemplate *marks, bool framed, bool addLayoutLayer) -> bool
 {
     if (pattern == nullptr || doc == nullptr || output.layers.isEmpty() || !output.result.ok)
     {
@@ -220,6 +223,33 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         return false;
     }
 
+    // The sheet's own frame, its numbering and its registration marks go in as a SECOND
+    // document, not into the one above. Trame draws that one on every page, under the layers
+    // and — the whole point — OUTSIDE every optional content group, so that nothing in the
+    // reader's layer panel can switch the paper's own frame off. A sheet whose marks can be
+    // turned off is a sheet that can be assembled wrongly, and it is the silent kind of wrong:
+    // the print looks right.
+    //
+    // It is written over the whole plan, in the plan's own frame, and each page shows of it
+    // exactly what it shows of the plan — the same crop, by the same translation, so no page
+    // identity has to cross into Trame. Drawn sheet by sheet it would be wrong: a seam belongs
+    // to the two sheets that share it and must carry ONE line from the plan's anchor, or its
+    // dashes restart at every edge and the join shows in print.
+    //
+    // Only where there is something to draw: a tiled run whose template resolved. A roll and
+    // the A0 sheet have no sheets to cut and no frame to carry, and their export is left
+    // exactly as it was — no second document, nothing added to the file.
+    QString underlayPath;
+    if (artboards.valid && marks != nullptr)
+    {
+        underlayPath = dir.filePath(QStringLiteral("underlay.svg"));
+        if (!OExportUnderlay::Write(underlayPath, svgPath, *marks, artboards, sheets, framed))
+        {
+            qWarning() << "OExportPdf: the assembly marks could not be written";
+            return false;
+        }
+    }
+
     // Trame reads the layers back out of the SVG and rebuilds them as optional content —
     // ONE set of layers for the whole document, not one per sheet, so switching a size off
     // hides it on every page at once. What it takes from us besides the file is the page
@@ -236,7 +266,11 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     info.author = QStringLiteral("Ostara %1").arg(AppDisplayVersion());
     info.creator = info.author;
 
-    if (!converter.convert(svgPath, pages, pdfPath, info))
+    // The underlay is the fifth argument, and an empty one says there is none: Trame then
+    // writes the page stream it has always written, byte for byte the same. The sixth says
+    // whether the layout is offered as a layer — the one thing the dialog asks about, and it
+    // opens on no.
+    if (!converter.convert(svgPath, pages, pdfPath, info, underlayPath, addLayoutLayer))
     {
         qWarning() << "OExportPdf: the PDF could not be written";
         return false;

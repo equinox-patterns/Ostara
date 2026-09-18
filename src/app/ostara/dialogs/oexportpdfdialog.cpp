@@ -26,6 +26,7 @@
 
 #include "oexportpdfdialog.h"
 
+#include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QDir>
 #include <QEvent>
@@ -60,11 +61,18 @@ OExportPdfDialog::OExportPdfDialog(const QString &outputName, const QString &dir
     m_browseButton = new QPushButton(this);
     connect(m_browseButton, &QPushButton::clicked, this, &OExportPdfDialog::OnBrowse);
 
+    // Unchecked, and deliberately so: an unticked box is what a decor layer needs to be safe,
+    // because a plan printed without its cartouche and its annotations looks perfectly normal.
+    // The box is there for the user who wants the layer, not for the one who does not know.
+    m_layoutLayerCheck = new QCheckBox(this);
+    m_layoutLayerCheck->setChecked(false);
+
     layout->addWidget(m_nameLabel, 0, 0);
     layout->addWidget(m_nameEdit, 0, 1, 1, 2);
     layout->addWidget(m_pathLabel, 1, 0);
     layout->addWidget(m_pathEdit, 1, 1);
     layout->addWidget(m_browseButton, 1, 2);
+    layout->addWidget(m_layoutLayerCheck, 2, 0, 1, 3);
 
     m_buttonBox = new QDialogButtonBox(this);
     auto *exportButton = m_buttonBox->addButton(tr("Export"), QDialogButtonBox::AcceptRole);
@@ -78,7 +86,7 @@ OExportPdfDialog::OExportPdfDialog(const QString &outputName, const QString &dir
     connect(m_buttonBox, &QDialogButtonBox::accepted, this, &OExportPdfDialog::OnAccept);
     connect(m_buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
-    layout->addWidget(m_buttonBox, 2, 0, 1, 3);
+    layout->addWidget(m_buttonBox, 3, 0, 1, 3);
 
     Retranslate();
     m_nameEdit->setFocus();
@@ -112,6 +120,12 @@ auto OExportPdfDialog::Directory() const -> QString
 auto OExportPdfDialog::FullPath() const -> QString
 {
     return QDir(Directory()).filePath(FileName());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportPdfDialog::AddLayoutLayer() const -> bool
+{
+    return m_layoutLayerCheck->isChecked();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -164,6 +178,12 @@ void OExportPdfDialog::Retranslate()
     m_nameLabel->setText(tr("File name:"));
     m_pathLabel->setText(tr("Folder:"));
     m_browseButton->setText(tr("Browse..."));
+    m_layoutLayerCheck->setText(tr("Add Layout layer"));
+    m_layoutLayerCheck->setToolTip(
+        tr("Write the layout as one of the PDF's layers, so a printer can switch it off.\n"
+           "Left unchecked, the layout is printed with the plan and cannot be switched off —\n"
+           "which is the safer setting: a plan printed without its information block, its\n"
+           "folds and its annotations looks perfectly normal."));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

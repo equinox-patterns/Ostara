@@ -33,19 +33,27 @@
 class QDialogButtonBox;
 class QEvent;
 class QLabel;
+class QCheckBox;
 class QLineEdit;
 class QPushButton;
 
 /**
- * @brief Where the PDF of a generation is written: a name, and a folder.
+ * @brief Where the PDF of a generation is written: a name, a folder, and one choice.
  *
- * Two fields and nothing else. Everything the run needs is already settled — the
- * generation is filed, its geometry frozen, its page given by the bin — so there is
- * nothing left to ask but where to put the result.
+ * Two fields for the delivery — a name and a folder — and one switch for the paper. Everything
+ * else the run needs is already settled: the generation is filed, its geometry frozen, its page
+ * given by the bin.
  *
  * The name is offered rather than typed: it opens on the generation's own name, which is
  * what the list calls it and what a folder of six of them wants to read. It stays editable
  * because the file is a delivery, and a delivery is named for whoever receives it.
+ *
+ * ⚠️ The switch is the one thing here that is not about the file, and the header used to say
+ * « Two fields and nothing else » — which was true until the decor layer could be offered or
+ * withheld. It is OFF by default, and that default is the point rather than a taste: a plan
+ * whose decor is a layer can be printed without its cartouche, its folds and its annotations
+ * and look perfectly normal. Printers untick boxes. So the safe answer is the one the dialog
+ * opens on, and the layer is something the user has to ask for.
  */
 class OExportPdfDialog : public QDialog
 {
@@ -66,6 +74,14 @@ public:
     /// @brief Folder and file name together.
     auto FullPath() const -> QString;
 
+    /// @brief Whether the decor is written as one of the reader's layers.
+    ///
+    /// False — the default — draws the decor exactly as it always was and leaves it out of the
+    /// optional content altogether: no entry in the reader's panel, nothing to switch off, and
+    /// the underlay with it. True offers it beside the sizes, where it can be turned off like
+    /// any other layer.
+    auto AddLayoutLayer() const -> bool;
+
 protected:
     void changeEvent(QEvent *event) override;
 
@@ -81,6 +97,7 @@ private:
     QLineEdit *m_nameEdit{nullptr};
     QLineEdit *m_pathEdit{nullptr};
     QPushButton *m_browseButton{nullptr};
+    QCheckBox *m_layoutLayerCheck{nullptr};
     QDialogButtonBox *m_buttonBox{nullptr};
 };
 

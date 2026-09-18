@@ -55,11 +55,13 @@
 #include "../vwidgets/vmaingraphicsview.h"
 
 #include <QCoreApplication>
+#include <QElapsedTimer>
 #include <QEventLoop>
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QHash>
 #include <QMessageBox>
+#include <QStringList>
 #include <QThreadPool>
 #include <QtConcurrent>
 
@@ -73,6 +75,56 @@ namespace
 /// of the application, and the documented trap of this codebase is a nested
 /// submission that deadlocks the pool.
 constexpr int kExportNestingThreads = 1;
+
+/// @brief A duration said out loud: "2 minutes and 35 seconds".
+///
+/// Voiced rather than summed — "155 seconds" is the same figure and not the same sentence — and
+/// each unit takes its plural from the count in front of it. Qt's %n would ask a translation for
+/// that plural, and these strings carry none: the source has to read right on its own, so the two
+/// forms are chosen here and only the bare words are handed to tr(). They are handed to
+/// MainWindow's context rather than a local one, so that lupdate files them beside the label they
+/// end up in.
+///
+/// A part that is zero is left out, because nobody says "2 minutes and 0 second", and a run under
+/// a minute is seconds on their own: "0 minutes and 45 seconds" is a figure the reader has to take
+/// apart before it means anything.
+auto GenerationTimeText(qint64 milliseconds) -> QString
+{
+    const qint64 totalSeconds = milliseconds / 1000;
+    const qint64 hours = totalSeconds / 3600;
+    const qint64 minutes = (totalSeconds % 3600) / 60;
+    const qint64 seconds = totalSeconds % 60;
+
+    const auto counted = [](qint64 count, const QString &unit) {
+        return QStringLiteral("%1 %2").arg(count).arg(count == 1 ? unit : unit + QLatin1Char('s'));
+    };
+
+    QStringList parts;
+    if (hours > 0)
+    {
+        parts << counted(hours, MainWindow::tr("hour"));
+    }
+    if (minutes > 0)
+    {
+        parts << counted(minutes, MainWindow::tr("minute"));
+    }
+    if (seconds > 0)
+    {
+        parts << counted(seconds, MainWindow::tr("second"));
+    }
+
+    // Only a clock that has not ticked yet reaches this, but the label must not be left ending on
+    // a separator because of it.
+    if (parts.isEmpty())
+    {
+        parts << counted(0, MainWindow::tr("second"));
+    }
+
+    // The last part is the one spoken with "and": "1 hour, 5 minutes and 12 seconds".
+    const QString last = parts.takeLast();
+    return parts.isEmpty() ? last
+                           : MainWindow::tr("%1 and %2").arg(parts.join(QStringLiteral(", ")), last);
+}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -86,6 +138,11 @@ constexpr int kExportNestingThreads = 1;
 auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGradedSizeRanges::Context &context)
     -> std::optional<OExportOutput>
 {
+    // Started before the run does anything, so that the figure reported covers the whole wait and
+    // not only the engine: what the user spent is the time in front of the dialog.
+    QElapsedTimer generationTimer;
+    generationTimer.start();
+
     // Every length of the request is stored in millimetres and the engine consumes pixels:
     // the one conversion of the run happens here, once. The unit the user typed in plays no
     // part in it — it says how the figures are READ, not what they mean, which is why the
@@ -300,6 +357,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.marksTemplateName = request.marksTemplateName;
     output.layers = std::move(layers);
     output.result = result;
+    output.generationMs = generationTimer.elapsed();
     return output;
 }
 
@@ -576,7 +634,16 @@ void MainWindow::ExportOutputToPdf(quint32 id)
         return;
     }
 
-    if (!OExportPdf::Write(*existing, dialog.FullPath(), pattern, doc))
+    // The very template the canvas draws with, resolved by the very same call — so the paper
+    // cannot carry marks the screen did not show, nor miss ones it did.
+    OExportTemplate marks;
+    bool framed = false;
+    const bool hasMarks = ExportMarksOf(*existing, marks, framed);
+
+    // The dialog's one choice, straight through: whether the layout is written as a layer the
+    // reader can switch off. It opens on no, and no is the answer that cannot lose anything.
+    if (!OExportPdf::Write(*existing, dialog.FullPath(), pattern, doc,
+                           hasMarks ? &marks : nullptr, framed, dialog.AddLayoutLayer()))
     {
         QMessageBox::warning(this, tr("Export mode"),
                              tr("\"%1\" could not be exported.").arg(existing->name));
@@ -585,6 +652,25 @@ void MainWindow::ExportOutputToPdf(quint32 id)
 
     QMessageBox::information(this, tr("Export mode"),
                              tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto MainWindow::ExportMarksOf(const OExportOutput &output, OExportTemplate &marks, bool &framed) const
+    -> bool
+{
+    // By NAME, and resolved afresh every time — never a copy taken at nesting time. A template
+    // is a file the user edits, and a run that had copied its frame and its marks would go on
+    // drawing what the file said the day it was nested, while the editor shows something else:
+    // the drawing would then be lying about the very thing it is there to show.
+    const bool hasMarks = OExportTemplateStorage::Resolve(output.marksTemplateName, &marks);
+
+    // Whether the format carries a frame — « Tiled Framed » alone, which is the model whose two
+    // sides the user types. Read off the table rather than guessed from the geometry: the frame
+    // is a property of the model, and its sheet happens to be the size the frame is.
+    const OExportPrintModel *model = FindPrintModel(output.printModelToken);
+    framed = model != nullptr && model->dimsEditable;
+
+    return hasMarks;
 }
 
 /**
@@ -638,13 +724,8 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
     // on screen has to be what the file says today. A name that resolves to nothing falls back
     // to the shipped template, and a library with neither draws no marks at all.
     OExportTemplate marks;
-    const bool hasMarks = OExportTemplateStorage::Resolve(output.marksTemplateName, &marks);
-
-    // Whether the format carries a frame — « Tiled Framed » alone, which is the model whose two
-    // sides the user types. Read off the table rather than guessed from the geometry: the frame
-    // is a property of the model, and its sheet happens to be the size the frame is.
-    const OExportPrintModel *model = FindPrintModel(output.printModelToken);
-    const bool framed = model != nullptr && model->dimsEditable;
+    bool framed = false;
+    const bool hasMarks = ExportMarksOf(output, marks, framed);
 
     OExportCanvas::Build(m_sceneExport, output.layers, output.result,
                          output.hasRange ? &output.range : nullptr, pattern, doc, nullptr, artboards,
@@ -692,8 +773,14 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
 
     if (artboards.valid)
     {
-        label += tr(" · %n page(s)", nullptr, sheets.count);
+        label += tr(" · %n pages", nullptr, sheets.count);
     }
+
+    // On every run, not only the tiled ones: a roll and a sheet of A0 are generated too, and a
+    // figure that appeared only under a grid would be missing exactly where the cost is least
+    // obvious. The count that goes with it is the run's own — see generationMs — so selecting
+    // another row in the dock, or undoing a correction, brings back the time it was made in.
+    label += tr(" · %1").arg(GenerationTimeText(output.generationMs));
 
     m_statusLabel->setText(label);
 }

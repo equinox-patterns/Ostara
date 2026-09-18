@@ -73,6 +73,19 @@ struct OExportOutput
     QVector<OExportSizeLayer> layers{}; ///< the pattern resolved for every size
     OExportNestingResult result{};      ///< the placements, and the bin they were placed in
 
+    /// How long the run took, in milliseconds — the figure the status bar reports. Measured from
+    /// the first line of the run to its last, so that it covers everything the user waited
+    /// through: the geometry resolved size after size, the nesting itself, and the event loop
+    /// both are waited on. A figure that left the geometry out would be one she could not
+    /// reconcile with her own stopwatch.
+    ///
+    /// An OUTCOME and not something asked for, which is why it is absent from OExportRunRequest
+    /// below: nothing replays it. A Refresh measures its own; a generation merely shown again —
+    /// another row selected in the dock, an undo of a manual correction, the mode re-entered —
+    /// keeps the one it was made with, and that is the whole reason it is kept here rather than
+    /// in the window that draws the label.
+    qint64 generationMs{0};
+
     /// What the run was asked for, kept so that it can be asked again — this is what makes
     /// Refresh possible.
     ///

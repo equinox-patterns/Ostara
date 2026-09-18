@@ -32,6 +32,7 @@
 class VAbstractPattern;
 class VContainer;
 struct OExportOutput;
+struct OExportTemplate;
 
 /**
  * @brief The PDF of a generation.
@@ -67,9 +68,29 @@ namespace OExportPdf
 /// @param pattern the pattern it was nested from — the decor is read from it live, exactly
 ///                as the canvas reads it, so what is exported is what is on screen now.
 /// @param doc     the document, which the cartouche resolver reads the template from.
+/// @param marks   the assembly marks template the generation is drawn with, or nullptr when
+///                none resolved — the canvas's own convention, and the same value it is
+///                given. Null means no underlay at all, which is a state and not an error:
+///                a folder the user has emptied leaves every plan without marks.
+/// @param framed  whether the format is the one the frame belongs to — « Tiled Framed »
+///                alone. The underlay carries it and the layers do not, because the frame
+///                belongs to the sheet rather than to what is drawn on it.
+/// @param addLayoutLayer  whether the layout is written as one of the reader's layers, and so
+///                can be switched off there. The dialog asks, and it opens on NO.
+///
+///                False leaves the layout out of the optional content entirely — it is drawn
+///                exactly as always, and nothing in the reader's panel reaches it. That is the
+///                safer answer and the reason it is the default: a plan whose layout can be
+///                switched off is a plan that can be printed without its information block, its
+///                folds and its annotations, and it looks perfectly normal that way.
+///
+///                It governs the assembly marks too, since they are drawn on the paper the
+///                layout describes. With no layout layer they have no marker and stand alone,
+///                which is what they have always done.
 /// @return false when the run cannot be reproduced; the reason has been logged.
 bool Write(const OExportOutput &output, const QString &pdfPath,
-           const VContainer *pattern, VAbstractPattern *doc);
+           const VContainer *pattern, VAbstractPattern *doc,
+           const OExportTemplate *marks, bool framed, bool addLayoutLayer);
 }  // namespace OExportPdf
 
 #endif  // OEXPORTPDF_H

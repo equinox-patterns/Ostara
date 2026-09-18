@@ -64,6 +64,7 @@ class DialogHistory;
 class DialogFinalMeasurements;
 class OInfoBlockWindow;
 class OExportTemplateWindow;
+struct OExportTemplate;
 class ODockManager;
 class QToolButton;
 class QProgressBar;
@@ -243,6 +244,26 @@ private slots:
      *  @return false when the run failed — the reason has already been shown. */
     auto GenerateNamedExport(const OExportRunRequest &request, const QString &name,
                              const OGradedSizeRanges::Context &context) -> bool;
+
+    /**
+     * @brief What a generation is drawn with — on the canvas as in the PDF.
+     *
+     * The assembly marks template it was made with, resolved from the live file, and whether
+     * its format is the one that carries a frame. Both are read here and nowhere else: a class
+     * of drawing that looked up its own template would be a SECOND place deciding what gets
+     * drawn, and the two would drift — the canvas showing a template the file no longer holds,
+     * or the PDF drawing one the screen never showed.
+     *
+     * @param marks  the resolved template; untouched when none resolved.
+     * @param framed whether the format is « Tiled Framed » — the model whose two sides the
+     *               user types. Read off the print model rather than guessed from the geometry:
+     *               the frame is a property of the model.
+     * @return whether a template resolved at all. False is a state, not an error: a folder the
+     *         user has emptied leaves every generation without marks, and the plan is drawn
+     *         alone — as it was before there were templates.
+     */
+    auto ExportMarksOf(const OExportOutput &output, OExportTemplate &marks, bool &framed) const
+        -> bool;
 
     /** @brief Draw @p output in the Export scene. Recomputes nothing — no nesting, no
      *         geometry: that is the whole point of keeping a generation. */
