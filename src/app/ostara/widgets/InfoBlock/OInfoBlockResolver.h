@@ -35,8 +35,8 @@
 class IPieceInfo;
 class VAbstractPattern;
 class VContainer;
-class OPieceCartoucheSection;
-class OPieceCartoucheTable;
+class OTemplateSection;
+class OSizeTable;
 
 /**
  * @brief Real-data resolution for the information blocks.
@@ -58,10 +58,10 @@ public:
         -> OInfoBlockEffectiveState;
 
 private:
-    static auto ResolveSectionLines(const OPieceCartoucheSection &type,
+    static auto ResolveSectionLines(const OTemplateSection &type,
                                     const QHash<QString, QVariant> &options, const VAbstractPattern *doc,
                                     const IPieceInfo &piece, const VContainer *data,
-                                    const OPieceCartoucheTable *table, const QStringList &renderLanguages,
+                                    const OSizeTable *table, const QStringList &renderLanguages,
                                     const QString &mainLocale) -> QList<OCartoucheRenderLine>;
 };
 

@@ -27,9 +27,13 @@
 #include "OInfoBlockResolver.h"
 
 #include "OPieceCartoucheCatalogue.h"
-#include "OPieceCartoucheSection.h"
+#include "OPieceCartoucheOptions.h"
+#include "core/otemplatesection.h"
 #include "OPieceCartoucheStorage.h"
-#include "OPieceCartoucheTable.h"
+#include "core/osizetable.h"
+
+#include "core/ologolibrary.h"
+#include "core/ologorender.h"
 
 #include "ifc/xml/vabstractpattern.h"
 #include "vmisc/def.h"
@@ -44,7 +48,6 @@
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QPainter>
-#include <QSvgRenderer>
 
 #include <algorithm>
 
@@ -183,7 +186,7 @@ auto OInfoBlockResolver::ResolveEffectiveState(const IPieceInfo &piece, VAbstrac
         const QString typeId = config.tpl.SectionTypeId(i);
         needsTable = typeId == QLatin1String("axis") || typeId == QLatin1String("measure");
     }
-    OPieceCartoucheTable table;
+    OSizeTable table;
     if (needsTable)
     {
         table.Load();
@@ -194,7 +197,7 @@ auto OInfoBlockResolver::ResolveEffectiveState(const IPieceInfo &piece, VAbstrac
 
     for (int i = 0; i < config.tpl.SectionCount(); ++i)
     {
-        const OPieceCartoucheSection type = OPieceCartoucheCatalogue::Section(config.tpl.SectionTypeId(i));
+        const OTemplateSection type = OPieceCartoucheCatalogue::Section(config.tpl.SectionTypeId(i));
         if (not type.IsValid())
         {
             continue;
@@ -227,10 +230,10 @@ auto OInfoBlockResolver::ResolveEffectiveState(const IPieceInfo &piece, VAbstrac
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OInfoBlockResolver::ResolveSectionLines(const OPieceCartoucheSection &type,
+auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
                                              const QHash<QString, QVariant> &options, const VAbstractPattern *doc,
                                              const IPieceInfo &piece, const VContainer *data,
-                                             const OPieceCartoucheTable *table, const QStringList &renderLanguages,
+                                             const OSizeTable *table, const QStringList &renderLanguages,
                                              const QString &mainLocale) -> QList<OCartoucheRenderLine>
 {
     QList<OCartoucheRenderLine> lines;
@@ -277,7 +280,7 @@ auto OInfoBlockResolver::ResolveSectionLines(const OPieceCartoucheSection &type,
         {
             for (const QString &text : languageLines)
             {
-                lines.append(OCartouchePainter::TextLine(text, font, lineSpacing));
+                lines.append(OCartouchePainter::TextLines(text, font, lineSpacing));
             }
         }
         else
@@ -304,7 +307,7 @@ auto OInfoBlockResolver::ResolveSectionLines(const OPieceCartoucheSection &type,
             return {};  // dead data: measurement not in the current table
         }
         const QString value =
-            OPieceCartoucheTable::FormatValue(table->MeasurementValue(name)) + QLatin1Char(' ') + table->UnitsStr();
+            OSizeTable::FormatValue(table->MeasurementValue(name)) + QLatin1Char(' ') + table->UnitsStr();
         const QMap<QString, OAxisRename> renames =
             ParseAxisRenames(options.value(OPieceCartoucheAxisRename::kRenames));
         const bool oneLine = options.value(OPieceCartoucheAxisRename::kOneLine, false).toBool();
@@ -409,26 +412,18 @@ auto OInfoBlockResolver::ResolveSectionLines(const OPieceCartoucheSection &type,
         {
             return {};  // dead data: no logo chosen
         }
-        const QString fullPath = OPieceCartoucheStorage::LogosDirectory() + QLatin1Char('/') + stored;
-        QSvgRenderer renderer(fullPath);
-        if (not renderer.isValid())
+        // Drawing the logo is the same six steps wherever it is done, so it is done in one place
+        // — see OLogoRender. What is left here is this family's part: which option holds the file,
+        // and what to do when there is nothing to draw.
+        const double sizeCm = options.value(QStringLiteral("logoSize"), 2.0).toDouble();
+        const OLogoRender::Drawing drawing = OLogoRender::Draw(stored, sizeCm);
+        if (drawing.pixmap.isNull())
         {
             return {};  // dead data: missing or invalid SVG
         }
-        const double sizeCm = options.value(QStringLiteral("logoSize"), 2.0).toDouble();
-        const double targetH = (std::max)(8.0, ToPixel(sizeCm, Unit::Cm));
-        const QSize base = renderer.defaultSize();
-        double drawW = targetH;
-        if (base.isValid() && base.width() > 0 && base.height() > 0)
-        {
-            drawW = targetH * (static_cast<double>(base.width()) / base.height());
-        }
-        QPixmap pixmap(qCeil(drawW), qCeil(targetH));
-        pixmap.fill(Qt::transparent);
-        QPainter painter(&pixmap);
-        renderer.render(&painter);
-        painter.end();
-        lines.append(OCartouchePainter::LogoLine(pixmap, targetH, lineSpacing, fullPath));
+        lines.append(OCartouchePainter::LogoLine(
+            drawing.pixmap, drawing.heightPx, lineSpacing,
+            OLogoLibrary::Directory() + QLatin1Char('/') + stored));
         return lines;
     }
 
@@ -462,6 +457,9 @@ auto OInfoBlockResolver::ResolveSectionLines(const OPieceCartoucheSection &type,
     {
         return {};  // dead data
     }
-    lines.append(OCartouchePainter::TextLine(text, font, lineSpacing));
+    // What was typed may run over several lines — the free text of a piece is described as being
+    // able to — and one render line is one line on the page. Text without a break comes back as
+    // the one line it always was.
+    lines.append(OCartouchePainter::TextLines(text, font, lineSpacing));
     return lines;
 }

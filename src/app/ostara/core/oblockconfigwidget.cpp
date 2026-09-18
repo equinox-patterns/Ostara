@@ -240,7 +240,7 @@ void OBlockConfigWidget::RebuildInfoList(const QString &templateName, const QHas
     for (int i = 0; i < tpl.SectionCount(); ++i)
     {
         const QString typeId = tpl.SectionTypeId(i);
-        const OPieceCartoucheSection section = OPieceCartoucheCatalogue::Section(typeId);
+        const OTemplateSection section = OPieceCartoucheCatalogue::Section(typeId);
         const QString displayName = section.IsValid() ? section.DisplayName() : typeId;
 
         auto *label = new QLabel(displayName, this);

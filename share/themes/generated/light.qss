@@ -924,12 +924,30 @@ QPushButton#infoBlockTrashBtn:disabled {
     image: url(:/icons/light/trash_disabled.svg);
 }
 
-/* Information block — block display language row */
-QLabel#infoBlockLanguageHint {
+/* Template — the display language row. Shared by both families: a cover page written in two
+   languages and a cartouche written in two languages are the same two languages. */
+QLabel#templateLanguageHint {
     color: #4c4c4c;
 }
-QFrame#infoBlockLanguageSeparator {
+QFrame#templateLanguageSeparator {
     background-color: #d6d6d6;
+}
+QPushButton#templateLanguageTrashBtn {
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    padding: 2px;
+    image: url(:/icons/light/trash_light.svg);
+}
+QPushButton#templateLanguageTrashBtn:hover {
+    background: rgba(0,0,0,0.05);
+}
+QPushButton#templateLanguageTrashBtn:disabled {
+    image: url(:/icons/light/trash_disabled.svg);
 }
 
 /* Pattern page (dock Options) — scope note under a group title, meant to read as
@@ -1358,4 +1376,71 @@ QPushButton#dockTitleBtn {
 QPushButton#dockTitleBtn:hover {
     color: #2b2b2b;
     background: rgba(0,0,0,0.05);
+}
+
+/* Cover page — the bands of a page. Each band is named on a row above its frame, and the caret
+   that folds the frame away sits before the name: what it opens is what lies underneath. The
+   caret is the whole of the control — the name is not clickable, as on a dock title bar. */
+QPushButton#coverPageBandToggle {
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    padding: 2px;
+    image: url(:/icons/light/caret-right_light.svg);
+}
+QPushButton#coverPageBandToggle:hover {
+    background: rgba(0,0,0,0.05);
+}
+QPushButton#coverPageBandToggle:checked {
+    image: url(:/icons/light/caret-down_light.svg);
+}
+QLabel#coverPageBandName {
+    color: #2b2b2b;
+    font-weight: bold;
+}
+
+/* The line that acts on one band: its arrows and its bin, one set per band. Same shapes as the
+   information block's, under the cover page's own names — a band of a cover page is not a block
+   of a cartouche, and a name that says otherwise sends the next reader to the wrong file. */
+QPushButton#coverPageBandUpBtn,
+QPushButton#coverPageBandDownBtn {
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    padding: 2px;
+}
+QPushButton#coverPageBandUpBtn:hover,
+QPushButton#coverPageBandDownBtn:hover {
+    background: rgba(0,0,0,0.05);
+}
+QPushButton#coverPageBandUpBtn {
+    image: url(:/icons/light/arrow-up_light.svg);
+}
+QPushButton#coverPageBandDownBtn {
+    image: url(:/icons/light/arrow-down_light.svg);
+}
+QPushButton#coverPageBandTrashBtn {
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    padding: 2px;
+    image: url(:/icons/light/trash_light.svg);
+}
+QPushButton#coverPageBandTrashBtn:hover {
+    background: rgba(0,0,0,0.05);
+}
+QPushButton#coverPageBandTrashBtn:disabled {
+    image: url(:/icons/light/trash_disabled.svg);
 }

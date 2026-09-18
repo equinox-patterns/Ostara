@@ -32,7 +32,7 @@
 #include <QWidget>
 
 class OPieceCartoucheTemplate;
-class OPieceCartoucheTable;
+class OSizeTable;
 
 /**
  * @brief Live preview — renders the template as a single stacked block
@@ -57,7 +57,7 @@ public:
     void SetTemplate(const OPieceCartoucheTemplate *tpl);
 
     /// Give read access to the loaded .omt table for the table-driven sections.
-    void SetTable(const OPieceCartoucheTable *table);
+    void SetTable(const OSizeTable *table);
 
     /// Re-render (call after any template change).
     void Refresh();
@@ -70,7 +70,7 @@ protected:
 
 private:
     const OPieceCartoucheTemplate *m_template{nullptr};
-    const OPieceCartoucheTable *m_table{nullptr};
+    const OSizeTable *m_table{nullptr};
 };
 
 #endif // OINFOBLOCKPREVIEW_H

@@ -1,10 +1,10 @@
 /************************************************************************
  **
- **  @file   OPieceCartoucheTable.cpp
+ **  @file   osizetable.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   25/08/2026
  **
- **  @brief  Read-only facade over the pattern's loaded .omt size table.
+ **  @brief  The pattern's size table — axes, measurements and units, read once.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -24,7 +24,7 @@
  **
  *************************************************************************/
 
-#include "OPieceCartoucheTable.h"
+#include "osizetable.h"
 
 #include "def.h"
 #include "vabstractvalapplication.h"
@@ -66,18 +66,18 @@ template <typename DocT> QString ResolveMNameFromFullName(const DocT *doc, const
 }
 }  // namespace
 
-OPieceCartoucheTable::OPieceCartoucheTable() = default;
+OSizeTable::OSizeTable() = default;
 
-OPieceCartoucheTable::~OPieceCartoucheTable() = default;
+OSizeTable::~OSizeTable() = default;
 
-void OPieceCartoucheTable::Clear()
+void OSizeTable::Clear()
 {
     m_omtDoc.reset();
     m_otuDoc.reset();
     m_sourcePath.clear();
 }
 
-void OPieceCartoucheTable::Load()
+void OSizeTable::Load()
 {
     auto *app = VAbstractValApplication::VApp();
     VAbstractPattern *doc = app != nullptr ? app->getCurrentDocument() : nullptr;
@@ -127,32 +127,32 @@ void OPieceCartoucheTable::Load()
     }
 }
 
-bool OPieceCartoucheTable::HasMultiSizeTable() const
+bool OSizeTable::HasMultiSizeTable() const
 {
     return m_omtDoc != nullptr;
 }
 
-bool OPieceCartoucheTable::HasTable() const
+bool OSizeTable::HasTable() const
 {
     return m_omtDoc != nullptr || m_otuDoc != nullptr;
 }
 
-QStringList OPieceCartoucheTable::AxisNames() const
+QStringList OSizeTable::AxisNames() const
 {
     return m_omtDoc != nullptr ? m_omtDoc->GetSizeGroupNames() : QStringList();
 }
 
-QString OPieceCartoucheTable::AnchorValue(const QString &axisName) const
+QString OSizeTable::AnchorValue(const QString &axisName) const
 {
     return m_omtDoc != nullptr ? m_omtDoc->GetAnchorValue(axisName) : QString();
 }
 
-QStringList OPieceCartoucheTable::AxisValues(const QString &axisName) const
+QStringList OSizeTable::AxisValues(const QString &axisName) const
 {
     return m_omtDoc != nullptr ? m_omtDoc->GetSizeGroupValues(axisName) : QStringList();
 }
 
-QStringList OPieceCartoucheTable::MeasurementNames() const
+QStringList OSizeTable::MeasurementNames() const
 {
     if (m_omtDoc != nullptr)
     {
@@ -161,7 +161,7 @@ QStringList OPieceCartoucheTable::MeasurementNames() const
     return m_otuDoc != nullptr ? m_otuDoc->GetAllMNames() : QStringList();
 }
 
-QString OPieceCartoucheTable::MeasurementFullName(const QString &name) const
+QString OSizeTable::MeasurementFullName(const QString &name) const
 {
     if (m_omtDoc != nullptr)
     {
@@ -170,7 +170,7 @@ QString OPieceCartoucheTable::MeasurementFullName(const QString &name) const
     return m_otuDoc != nullptr ? m_otuDoc->GetMFullName(name) : QString();
 }
 
-QString OPieceCartoucheTable::MeasurementNameFromFullName(const QString &fullName) const
+QString OSizeTable::MeasurementNameFromFullName(const QString &fullName) const
 {
     if (fullName.isEmpty())
     {
@@ -184,7 +184,7 @@ QString OPieceCartoucheTable::MeasurementNameFromFullName(const QString &fullNam
     return ResolveMNameFromFullName(m_otuDoc.get(), fullName);
 }
 
-double OPieceCartoucheTable::MeasurementValue(const QString &name) const
+double OSizeTable::MeasurementValue(const QString &name) const
 {
     if (m_omtDoc != nullptr)
     {
@@ -193,7 +193,7 @@ double OPieceCartoucheTable::MeasurementValue(const QString &name) const
     return m_otuDoc != nullptr ? m_otuDoc->GetMValue(name) : 0.0;
 }
 
-QString OPieceCartoucheTable::UnitsStr() const
+QString OSizeTable::UnitsStr() const
 {
     if (m_omtDoc != nullptr)
     {
@@ -202,7 +202,7 @@ QString OPieceCartoucheTable::UnitsStr() const
     return m_otuDoc != nullptr ? UnitsToStr(m_otuDoc->GetUnits(), true) : QString();
 }
 
-QString OPieceCartoucheTable::FormatValue(double value)
+QString OSizeTable::FormatValue(double value)
 {
     QString text = QString::number(value, 'f', 2);
     while (text.endsWith(QLatin1Char('0')))

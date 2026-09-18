@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   OLogoPreview.cpp
+ **  @file   ologopreview.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   25/08/2026
  **
@@ -24,7 +24,7 @@
  **
  *************************************************************************/
 
-#include "OLogoPreview.h"
+#include "ologopreview.h"
 
 #include <QPainter>
 #include <QSvgRenderer>

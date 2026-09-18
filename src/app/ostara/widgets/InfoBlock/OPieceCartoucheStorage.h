@@ -35,16 +35,6 @@
 
 namespace OPieceCartoucheStorage
 {
-/// One logo of the library: the SVG file (stable id) plus its display name
-/// and free-form notes. The name/notes live in a `logos.xml` metadata file
-/// next to the SVGs — the SVG files themselves are never modified.
-struct LogoEntry
-{
-    QString fileName;  ///< the .svg file name in the logos folder
-    QString name;      ///< display name shown in the template dropdown
-    QString notes;     ///< free-form notes
-};
-
 /// One client of the library: a stable id plus contact fields. All the data
 /// lives in a `clients.xml` metadata file (no per-client file).
 struct ClientEntry
@@ -83,31 +73,6 @@ struct AnnotationStyleEntry
 
 /// Default folder from settings (GetPathCartoucheTemplates).
 auto DefaultDirectory() -> QString;
-
-/// Default logo library folder from settings (GetPathLogos).
-auto LogosDirectory() -> QString;
-
-/// List the logo library: every `.svg` file merged with its metadata.
-/// A file without metadata gets a default name (file base name).
-auto LoadLogos() -> QList<LogoEntry>;
-
-/// Persist the logo library metadata (`logos.xml`, atomic write).
-/// Returns false and fills `error` on failure.
-auto SaveLogos(const QList<LogoEntry> &logos, QString *error = nullptr) -> bool;
-
-/// Copy an SVG file into the logo library (overwrites a same-named entry;
-/// a file already in the library is a no-op) and ensure it has a metadata
-/// entry. Returns false and fills `error` on failure.
-auto AddLogo(const QString &srcPath, QString *error = nullptr) -> bool;
-
-/// Remove a logo from the library by file name. Returns false and fills
-/// `error` on failure.
-auto RemoveLogo(const QString &fileName, QString *error = nullptr) -> bool;
-
-/// Set the display name and notes of one logo (creates the entry if needed).
-/// Returns false and fills `error` on failure.
-auto UpdateLogoMeta(const QString &fileName, const QString &name, const QString &notes,
-                    QString *error = nullptr) -> bool;
 
 /// Default client library folder from settings (GetPathClients).
 auto ClientsDirectory() -> QString;

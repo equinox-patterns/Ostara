@@ -31,7 +31,7 @@
 #include "core/ogradedsizeranges.h"
 #include "mainwindow_helpers.h"
 #include "mainwindowsnogui.h"
-#include "widgets/InfoBlock/OPieceCartoucheTable.h"
+#include "core/osizetable.h"
 #include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
 #include "widgets/owidgetsizeranges.h"
@@ -335,7 +335,7 @@ QString MainWindow::CreateGradedRange(const QString &canonical, const QStringLis
 //---------------------------------------------------------------------------------------------------------------------
 auto MainWindow::LoadGradedTableAxes(QStringList *axes, QMap<QString, QStringList> *axisValues) -> bool
 {
-    OPieceCartoucheTable reader;
+    OSizeTable reader;
     reader.Load();
     if (not reader.HasMultiSizeTable() || reader.AxisNames().isEmpty())
     {

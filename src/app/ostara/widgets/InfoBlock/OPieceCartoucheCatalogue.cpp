@@ -26,6 +26,10 @@
 
 #include "OPieceCartoucheCatalogue.h"
 
+#include "OPieceCartoucheAxisRenameEditor.h"
+#include "OPieceCartoucheCutEditor.h"
+#include "OPieceCartoucheOptions.h"
+
 #include <QCoreApplication>
 
 namespace
@@ -35,116 +39,145 @@ namespace
 // loaded translator at first use.
 auto T(const char *source) -> QString
 {
-    return QCoreApplication::translate("OPieceCartoucheSection", source);
+    return QCoreApplication::translate("OTemplateSection", source);
 }
 
 // Build a catalogue entry from its source (English) strings — the display name
 // and description are translated for the current UI language; the source name
 // stays available for rendering the block in another display language.
 auto MakeSection(const char *id, const char *sourceName, const char *descriptionSource,
-                 const QList<OPieceCartoucheOptionField> &fields) -> OPieceCartoucheSection
+                 const QList<OTemplateOptionField> &fields) -> OTemplateSection
 {
-    return OPieceCartoucheSection(QString::fromUtf8(id), QString::fromUtf8(sourceName), T(sourceName),
+    return OTemplateSection(QString::fromUtf8(id), QString::fromUtf8(sourceName), T(sourceName),
                                   T(descriptionSource), fields);
 }
 }  // namespace
 
-auto OPieceCartoucheCatalogue::Build() -> QList<OPieceCartoucheSection>
+auto OPieceCartoucheCatalogue::Build() -> QList<OTemplateSection>
 {
-    const OPieceCartoucheOptionField kFontFamily{QStringLiteral("fontFamily"),
-                                                 OPieceCartoucheOptionKind::FontFamily, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Font family"))};
-    const OPieceCartoucheOptionField kFontWeight{QStringLiteral("fontWeight"),
-                                                 OPieceCartoucheOptionKind::FontWeight, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Font weight"))};
-    const OPieceCartoucheOptionField kFontSize{QStringLiteral("fontSize"),
-                                               OPieceCartoucheOptionKind::FontSize, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Font size (px)"))};
-    const OPieceCartoucheOptionField kLineSpacing{QStringLiteral("lineSpacing"),
-                                                  OPieceCartoucheOptionKind::LineSpacing,
-                                                  T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Line spacing (px)"))};
-    const OPieceCartoucheOptionField kAxis{QStringLiteral("axis"), OPieceCartoucheOptionKind::Axis, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Axis"))};
-    const OPieceCartoucheOptionField kMeasureName{QStringLiteral("measureName"),
-                                                  OPieceCartoucheOptionKind::MeasureName, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Measurement"))};
-    const OPieceCartoucheOptionField kSeparator{QStringLiteral("separator"),
-                                                OPieceCartoucheOptionKind::Separator, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Separator"))};
+    const OTemplateOptionField kFontFamily{QStringLiteral("fontFamily"),
+                                                 OTemplateOptionKind::FontFamily, T(QT_TRANSLATE_NOOP("OTemplateSection", "Font family"))};
+    const OTemplateOptionField kFontWeight{QStringLiteral("fontWeight"),
+                                                 OTemplateOptionKind::FontWeight, T(QT_TRANSLATE_NOOP("OTemplateSection", "Font weight"))};
+    const OTemplateOptionField kFontSize{QStringLiteral("fontSize"),
+                                               OTemplateOptionKind::FontSize, T(QT_TRANSLATE_NOOP("OTemplateSection", "Font size (px)"))};
+    const OTemplateOptionField kLineSpacing{QStringLiteral("lineSpacing"),
+                                                  OTemplateOptionKind::LineSpacing,
+                                                  T(QT_TRANSLATE_NOOP("OTemplateSection", "Line spacing (px)"))};
+    const OTemplateOptionField kAxis{QStringLiteral("axis"), OTemplateOptionKind::Axis, T(QT_TRANSLATE_NOOP("OTemplateSection", "Axis"))};
+    const OTemplateOptionField kMeasureName{QStringLiteral("measureName"),
+                                                  OTemplateOptionKind::MeasureName, T(QT_TRANSLATE_NOOP("OTemplateSection", "Measurement"))};
+    const OTemplateOptionField kSeparator{QStringLiteral("separator"),
+                                                OTemplateOptionKind::Separator, T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator"))};
     // Axis/measure separator without "-": "-" is reserved for joining the block
     // languages on a single line ("Stature : 168 - Height : 168").
-    const OPieceCartoucheOptionField kSeparatorNoDash{QStringLiteral("separator"),
-                                                      OPieceCartoucheOptionKind::Separator,
-                                                      T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Separator")),
+    const OTemplateOptionField kSeparatorNoDash{QStringLiteral("separator"),
+                                                      OTemplateOptionKind::Separator,
+                                                      T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator")),
                                                       {QString(), QStringLiteral(":"), QStringLiteral("/"), QStringLiteral("·")},
                                                       QString()};
     // Piece number: "1 of 10", "1 - 10" or "1 / 10" — no "no separator" choice.
-    const OPieceCartoucheOptionField kPieceSeparator{
-        QStringLiteral("separator"), OPieceCartoucheOptionKind::Separator, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Separator")),
+    const OTemplateOptionField kPieceSeparator{
+        QStringLiteral("separator"), OTemplateOptionKind::Separator, T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator")),
         {QT_TRANSLATE_NOOP("OInfoBlockPreview", "of"), QStringLiteral("-"), QStringLiteral("/")},
         QT_TRANSLATE_NOOP("OInfoBlockPreview", "of")};
     // Piece number style: a single digit as is ("1 of 10") or padded ("01 of 10").
-    const OPieceCartoucheOptionField kPieceNumberStyle{
-        OPieceCartoucheNumber::kStyle, OPieceCartoucheOptionKind::NumberStyle,
-        T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Number format")),
+    const OTemplateOptionField kPieceNumberStyle{
+        OPieceCartoucheNumber::kStyle, OTemplateOptionKind::NumberStyle,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Number format")),
         {OPieceCartoucheNumber::kPlain, OPieceCartoucheNumber::kPadded}, OPieceCartoucheNumber::kPlain};
-    const OPieceCartoucheOptionField kLogo{QStringLiteral("logo"), OPieceCartoucheOptionKind::Logo, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Logo"))};
-    const OPieceCartoucheOptionField kLogoSize{QStringLiteral("logoSize"),
-                                               OPieceCartoucheOptionKind::LogoSize, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Logo size (cm)"))};
-    const OPieceCartoucheOptionField kCut{QStringLiteral("cut"), OPieceCartoucheOptionKind::Cut, T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Cut"))};
+    const OTemplateOptionField kLogo{QStringLiteral("logo"), OTemplateOptionKind::Logo, T(QT_TRANSLATE_NOOP("OTemplateSection", "Logo"))};
+    const OTemplateOptionField kLogoSize{QStringLiteral("logoSize"),
+                                               OTemplateOptionKind::LogoSize, T(QT_TRANSLATE_NOOP("OTemplateSection", "Logo size (cm)"))};
+    // The Cut section stores no value of its own: it expands into six per-fabric
+    // sub-options, and it is the catalogue that says so — the shared section expands a
+    // composite because it was told what is in it, not because it recognises the kind.
+    // Fabric is pre-filled (1 + on fold) so a newly added Cut section shows an immediate
+    // preview — template-level example only; pieces start empty (spec §24).
+    OTemplateOptionField kCut{QStringLiteral("cut"), OTemplateOptionKind::Cut,
+                              T(QT_TRANSLATE_NOOP("OTemplateSection", "Cut"))};
+    kCut.compositeDefaults = {
+        {OPieceCartoucheCut::kFabricQty, 1},
+        {OPieceCartoucheCut::kFabricOnFold, true},
+        {OPieceCartoucheCut::kInterfacingQty, 0},
+        {OPieceCartoucheCut::kInterfacingOnFold, false},
+        {OPieceCartoucheCut::kLiningQty, 0},
+        {OPieceCartoucheCut::kLiningOnFold, false},
+    };
+    // What draws it: this family's own control, asked for by the field rather than recognised by
+    // the shared section editor. Three fabrics, one information — see OPieceCartoucheCutEditor.
+    kCut.compositeEditor = [](QWidget *parent, const OTemplateOptionContext &context) {
+        return new OPieceCartoucheCutEditor(context, parent);
+    };
 
-    const QList<OPieceCartoucheOptionField> textFields = {kFontFamily, kFontWeight, kFontSize, kLineSpacing};
+    const QList<OTemplateOptionField> textFields = {kFontFamily, kFontWeight, kFontSize, kLineSpacing};
     // Axis rename: per-language display aliases of the axis and its values
     // (the title shown above the per-language tabs). Reused by the Measurement
     // section with a per-language name only (no values).
-    const OPieceCartoucheOptionField kAxisRename{QStringLiteral("axisRenames"),
-                                                 OPieceCartoucheOptionKind::AxisRename,
-                                                 T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Rename the axis and its values"))};
-    const OPieceCartoucheOptionField kMeasureRename{QStringLiteral("axisRenames"),
-                                                    OPieceCartoucheOptionKind::AxisRename,
-                                                    T(QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Rename the measurement"))};
+    OTemplateOptionField kAxisRename{QStringLiteral("axisRenames"), OTemplateOptionKind::AxisRename,
+                                     T(QT_TRANSLATE_NOOP("OTemplateSection", "Rename the axis and its values"))};
+    // Composite: no aliases yet, and one line per language off.
+    kAxisRename.compositeDefaults = {{OPieceCartoucheAxisRename::kRenames, QVariantMap{}},
+                                     {OPieceCartoucheAxisRename::kOneLine, false}};
+    kAxisRename.compositeEditor = [](QWidget *parent, const OTemplateOptionContext &context) {
+        return new OPieceCartoucheAxisRenameEditor(context, parent);
+    };
+    // A table of aliases rather than a value: it takes a row of its own, under its own title.
+    kAxisRename.onOwnRow = true;
+
+    OTemplateOptionField kMeasureRename{QStringLiteral("axisRenames"), OTemplateOptionKind::AxisRename,
+                                        T(QT_TRANSLATE_NOOP("OTemplateSection", "Rename the measurement"))};
+    kMeasureRename.compositeDefaults = kAxisRename.compositeDefaults;
+    kMeasureRename.compositeEditor = kAxisRename.compositeEditor;
+    kMeasureRename.onOwnRow = kAxisRename.onOwnRow;
 
     return {
         MakeSection("patternName",
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Pattern name"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The name of the pattern (set in the pattern toolbar)."), textFields),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Pattern name"),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "The name of the pattern (set in the pattern toolbar)."), textFields),
         MakeSection("client",
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Client"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The client's name, birth date and email from the document."), textFields),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Client"),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "The client's name, birth date and email from the document."), textFields),
         MakeSection("pieceName",
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Piece name"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The name of the piece (from the piece options)."), textFields),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Piece name"),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "The name of the piece (from the piece options)."), textFields),
         MakeSection("pieceNumber",
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Piece number"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The piece number and its total, e.g. 1 of 10. The total shown here is an "
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Piece number"),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "The piece number and its total, e.g. 1 of 10. The total shown here is an "
                                       "example — it is computed automatically from the number of pieces in the layout."),
                     {kPieceNumberStyle, kPieceSeparator, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("cut",
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Cut (Fabric / Interfacing / Lining)"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "One section covers all three fabrics — no need to add Cut several times. "
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Cut (Fabric / Interfacing / Lining)"),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "One section covers all three fabrics — no need to add Cut several times. "
                                       "The values here are only an example so you can see how the section "
                                       "renders: in the pieces, the cut quantities are entered per piece and are "
                                       "empty by default."),
                     {kCut, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("freeText",
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Free text"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Free text entered per piece in the information block. It can span "
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Free text"),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Free text entered per piece in the information block. It can span "
                                       "several lines."),
                     textFields),
         MakeSection("axis",
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Sizes (Height, Commercial size, Group...)"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Requires a multi-size table (.omt). Shows a size-axis value under its user-given "
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Sizes (Height, Commercial size, Group...)"),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Requires a multi-size table (.omt). Shows a size-axis value under its user-given "
                                       "name. With a single-size table, this information is simply ignored."),
                     {kAxis, kSeparatorNoDash, kAxisRename, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("measure",
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Measurement"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Read from the pattern's size table. Shows the measurement's full name, its "
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Measurement"),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Read from the pattern's size table. Shows the measurement's full name, its "
                                       "calculated value at the reference size and its unit."),
                     {kMeasureName, kSeparator, kMeasureRename, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("logo",
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Logo"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "A logo from your library (add your SVG logos in the Logo page)."),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Logo"),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "A logo from your library (add your SVG logos in the Logo page)."),
                     {kLogo, kLogoSize, kLineSpacing}),
         MakeSection("collection",
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Collection"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "The collection name."), textFields),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Collection"),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "The collection name."), textFields),
         MakeSection("fabricInfo",
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Fabric info"),
-                    QT_TRANSLATE_NOOP("OPieceCartoucheSection", "Fabric information (nature, material, weight…)."), textFields),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Fabric info"),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Fabric information (nature, material, weight…)."), textFields),
     };
 }
 
@@ -153,9 +186,9 @@ namespace
 bool g_catalogueBuilt = false;
 }
 
-auto OPieceCartoucheCatalogue::Sections() -> const QList<OPieceCartoucheSection> &
+auto OPieceCartoucheCatalogue::Sections() -> const QList<OTemplateSection> &
 {
-    static QList<OPieceCartoucheSection> sections;
+    static QList<OTemplateSection> sections;
     if (!g_catalogueBuilt)
     {
         sections = Build();
@@ -169,15 +202,15 @@ void OPieceCartoucheCatalogue::InvalidateCache()
     g_catalogueBuilt = false;
 }
 
-auto OPieceCartoucheCatalogue::Section(const QString &id) -> const OPieceCartoucheSection &
+auto OPieceCartoucheCatalogue::Section(const QString &id) -> const OTemplateSection &
 {
-    for (const OPieceCartoucheSection &section : Sections())
+    for (const OTemplateSection &section : Sections())
     {
         if (section.Id() == id)
         {
             return section;
         }
     }
-    static const OPieceCartoucheSection kEmpty;
+    static const OTemplateSection kEmpty;
     return kEmpty;
 }

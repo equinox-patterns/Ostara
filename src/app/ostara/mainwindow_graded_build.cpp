@@ -31,7 +31,7 @@
 #include "dialogs/owaitdialog.h"
 #include "mainwindow_graded_helpers.h"
 #include "ogradedgeometry.h"
-#include "widgets/InfoBlock/OPieceCartoucheTable.h"
+#include "core/osizetable.h"
 #include "xml/vpattern.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vformat/vmeasurements.h"
@@ -254,7 +254,7 @@ void MainWindow::BuildGradedScene()
     // Suppress heavy doc emissions during the capture loop (RAII).
     const QSignalBlocker signalBlocker(doc);
 
-    OPieceCartoucheTable reader;
+    OSizeTable reader;
     reader.Load();
     if (not reader.HasMultiSizeTable())
     {

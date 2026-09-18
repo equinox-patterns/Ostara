@@ -27,7 +27,7 @@
 #ifndef OPIECECARTOUCHECATALOGUE_H
 #define OPIECECARTOUCHECATALOGUE_H
 
-#include "OPieceCartoucheSection.h"
+#include "core/otemplatesection.h"
 
 /**
  * @brief Static registry of the cartouche section types.
@@ -41,16 +41,16 @@ class OPieceCartoucheCatalogue
 {
 public:
     /// All registered section types, in catalogue order.
-    static auto Sections() -> const QList<OPieceCartoucheSection> &;
+    static auto Sections() -> const QList<OTemplateSection> &;
 
     /// Lookup by id — returns an invalid (empty) section when unknown.
-    static auto Section(const QString &id) -> const OPieceCartoucheSection &;
+    static auto Section(const QString &id) -> const OTemplateSection &;
 
     /// Drop the cached catalogue so the next access rebuilds it (language change).
     static void InvalidateCache();
 
 private:
-    static auto Build() -> QList<OPieceCartoucheSection>;
+    static auto Build() -> QList<OTemplateSection>;
 };
 
 #endif // OPIECECARTOUCHECATALOGUE_H

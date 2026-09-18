@@ -28,8 +28,11 @@
 #define OINFOBLOCKEDITOR_H
 
 #include "OPieceCartoucheStorage.h"
-#include "OPieceCartoucheTable.h"
+#include "core/osizetable.h"
 #include "OPieceCartoucheTemplate.h"
+
+#include "widgets/Template/ologolibrarypage.h"
+#include "widgets/Template/otemplateguard.h"
 
 #include <QWidget>
 
@@ -47,9 +50,10 @@ class QStackedWidget;
 class QTreeWidget;
 class QTreeWidgetItem;
 class OInfoBlockPreview;
-class OInfoBlockSectionEditor;
+class OTemplateEditorMenu;
+class OTemplateLanguageRow;
+class OTemplateSectionEditor;
 class OInfoBlockTemplatesPage;
-class OLogoPreview;
 class OAnnotationStylesPage;
 
 /**
@@ -60,7 +64,7 @@ class OAnnotationStylesPage;
  * dropdown + order arrows + save), ordered section list + data-driven edit zone
  * (left), live preview (right). Pattern: MeasurementWorkspace::SetupUI.
  */
-class OInfoBlockEditor : public QWidget
+class OInfoBlockEditor : public QWidget, public OTemplateDocumentEdits
 {
     Q_OBJECT
 
@@ -68,6 +72,10 @@ public:
     explicit OInfoBlockEditor(QWidget *parent = nullptr);
 
     auto IsModified() const -> bool;
+
+    // What the shared prompt asks of the document it guards.
+    auto HasUnsavedChanges() const -> bool override;
+    void SaveDocument() override;
 
     /// Re-translate all fixed literals (called on QEvent::LanguageChange).
     void RetranslateUI();
@@ -91,10 +99,9 @@ private:
     void SetupUI();
     void SetupEditorPage();
     void SetupLanguageRow();
-    void RebuildLanguageRow();
-    void OnLanguageChanged();
-    void OnAddLanguage();
-    void OnRemoveLanguage(const QString &code);
+
+    /// Names the six rows of the left menu.
+    void NameMenuRows();
     void SetupTemplatesPage();
     void SetupLogosPage();
     void SetupClientsPage();
@@ -125,15 +132,8 @@ private:
     void ShowAnnotationsPage();
     void LoadFile(const QString &filePath);
     void OnAddSection(const QString &typeId);
-    void OnAddLogo();
-    void OnRemoveLogo();
     void OnAddClient();
     void OnRemoveClient();
-    void OnLogoSelected(QTreeWidgetItem *current);
-    void OnLogoNameEdited(const QString &text);
-    void OnLogoNotesChanged();
-    void PersistLogos();
-    void RefreshLogosList();
     void OnClientSelected(QTreeWidgetItem *current);
     void OnClientNameEdited(const QString &text);
     void OnClientMailEdited(const QString &text);
@@ -160,12 +160,12 @@ private:
     void SetModified(bool modified);
 
     OPieceCartoucheTemplate m_template;
-    OPieceCartoucheTable m_table;  // read access to the loaded .omt (Sizes / Measurement)
+    OSizeTable m_table;  // read access to the loaded .omt (Sizes / Measurement)
     QString m_filePath;
     bool m_modified{false};
 
-    QListWidget *m_menuList{nullptr};
-    QStackedWidget *m_stack{nullptr};
+    /// The menu and the pages it opens — the shared pair, held by both families.
+    OTemplateEditorMenu *m_menu{nullptr};
 
     // Editor page
     QLineEdit *m_nameEdit{nullptr};
@@ -177,33 +177,22 @@ private:
     QPushButton *m_saveBtn{nullptr};
     QPushButton *m_saveAsBtn{nullptr};
 
-    // Block display language row
-    QLabel *m_languageLabel{nullptr};
-    QLabel *m_languageHint{nullptr};
-    QWidget *m_languagesContainer{nullptr};
-    QHBoxLayout *m_languagesLayout{nullptr};
-    QPushButton *m_addLanguageBtn{nullptr};
-    QList<QComboBox *> m_languageCombos;
-    bool m_updatingLanguages{false};
+    /// The block display language row — the shared one, held by both families.
+    OTemplateLanguageRow *m_languageRow{nullptr};
     QListWidget *m_sectionList{nullptr};
-    OInfoBlockSectionEditor *m_sectionEditor{nullptr};
+    OTemplateSectionEditor *m_sectionEditor{nullptr};
     OInfoBlockPreview *m_preview{nullptr};
 
     // Templates page
     OInfoBlockTemplatesPage *m_templatesPage{nullptr};
 
-    // Logos page
-    QGroupBox *m_logoEditGroup{nullptr};
-    QLabel *m_logoNameLabel{nullptr};
-    QLabel *m_logoNotesLabel{nullptr};
-    QPushButton *m_addLogoBtn{nullptr};
-    QPushButton *m_removeLogoBtn{nullptr};
-    QTreeWidget *m_logosTree{nullptr};
-    QLineEdit *m_logoNameEdit{nullptr};
-    QPlainTextEdit *m_logoNotesEdit{nullptr};
-    OLogoPreview *m_logoPreview{nullptr};
-    QList<OPieceCartoucheStorage::LogoEntry> m_logoEntries;
-    bool m_updatingLogos{false};
+    /**
+     * The logos of the installation — a page of its own, shared with the cover page editor.
+     *
+     * Not a member of this editor's own making: the library is one folder that both families
+     * draw from, so the page that manages it belongs to neither. This window only opens it.
+     */
+    OLogoLibraryPage *m_logosPage{nullptr};
 
     // Annotation styles page
     OAnnotationStylesPage *m_annotationStylesPage{nullptr};

@@ -1,0 +1,73 @@
+/************************************************************************
+ **
+ **  @file   ocoverpagetemplatepreview.h
+ **  @author Sophie Denys <contact@sophiedenys.com>
+ **  @date   18/09/2026
+ **
+ **  @brief  Preview of a cover page — one white page, and the skeleton it is filled on.
+ **
+ **  @copyright
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+ **
+ **  This program is free software: you can redistribute it and/or modify
+ **  it under the terms of the GNU General Public License as published by
+ **  the Free Software Foundation, either version 3 of the License, or
+ **  (at your option) any later version.
+ **
+ **  This program is distributed in the hope that it will be useful,
+ **  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ **  GNU General Public License for more details.
+ **
+ **  You should have received a copy of the GNU General Public License
+ **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **
+ *************************************************************************/
+
+#ifndef OCOVERPAGETEMPLATEPREVIEW_H
+#define OCOVERPAGETEMPLATEPREVIEW_H
+
+#include "core/ocoverpagetemplate.h"
+
+#include <QWidget>
+
+/**
+ * @brief Shows the page a cover page is written on, and what the template puts on it.
+ *
+ * **One page, not a plan.** The assembly marks are previewed as six sheets side by side, because
+ * what they decorate is a plan; a cover page is a single leaf, and the preview shows one.
+ *
+ * **The page is 19 × 25.9 cm and keeps its proportions** whatever the pane is given: it is the
+ * shape of a page that is being shown, and a page stretched to fill its pane would not be one.
+ * The page is the preview's own business and not a property of the template — one template is
+ * written for the PDF export of any pattern, and nothing chosen here is saved.
+ *
+ * **What it draws today is the skeleton, not the drawing.** Each information stands for itself as
+ * a line, as the Information block preview shows its sections, so that the arrangement can be
+ * judged before anything is painted: which band an information sits in, how the middle splits,
+ * and how the whole stands on the page. What each information will actually draw comes after.
+ */
+class OCoverPageTemplatePreview : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit OCoverPageTemplatePreview(QWidget *parent = nullptr);
+
+    /** @brief The template to show. Nothing is drawn but the page while it is null. */
+    void SetTemplate(const OCoverPageTemplate *tpl);
+
+    /** @brief Redraws. Called when the template changed under it. */
+    void Refresh();
+
+    /** @brief What the pane asks for when it is left to size itself. */
+    auto minimumSizeHint() const -> QSize override;
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
+private:
+    const OCoverPageTemplate *m_template{nullptr};
+};
+
+#endif // OCOVERPAGETEMPLATEPREVIEW_H

@@ -27,7 +27,9 @@
 #ifndef OAXISRENAMEEDITOR_H
 #define OAXISRENAMEEDITOR_H
 
-#include "OPieceCartoucheSection.h"
+#include "OPieceCartoucheOptions.h"
+
+#include "core/otemplatesection.h"
 
 #include <QMap>
 #include <QStringList>

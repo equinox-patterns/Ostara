@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!--
+    Ostara Cover Page Template Format v1.0.0
+    What a pattern's cover page carries, and how it is written: the pattern's own
+    informations, laid out and styled once so that every pattern of the library
+    shows them the same way. Stored globally in ~/Ostara/CoverPageTemplate as a
+    .ocpt file.
+
+    The cover page is not tied to any printing format — it is written for the PDF
+    export of any pattern, tiled or not — so nothing here names a sheet.
+
+    Nothing is declared beyond the template's name yet: the informations are added
+    one at a time, each as a new optional element or attribute. The schema grows by
+    extension, never by change, which is what keeps an older file readable.
+
+    Forward-compatible: unknown elements and attributes are preserved.
+  -->
+
+  <!-- ===== ROOT ===== -->
+  <xs:element name="coverPageTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <!-- The display languages, in order. Optional, and omitted rather than emptied: a
+             template that declares none falls back to the application's own language. -->
+        <xs:element name="languages" type="LanguagesType" minOccurs="0" maxOccurs="1"/>
+        <!-- The four bands of the page's skeleton, in the order the page stacks them, each
+             carrying its informations in the order they are laid out. A band with nothing in it
+             is left out rather than written empty: the four elements are where an information
+             can go, and a file that carries three of them says the page uses three. -->
+        <xs:element name="top" type="BandType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="middleLeft" type="BandType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="middleRight" type="BandType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="bottom" type="BandType" minOccurs="0" maxOccurs="1"/>
+        <!-- Forward-compat: unknown top-level elements preserved -->
+        <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="version" type="FormatVersion" use="required"/>
+      <xs:anyAttribute processContents="lax"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ===== LANGUAGES ===== -->
+
+  <!-- The languages the cover page is written in, in display order. One entry per language,
+       each an ISO locale code — "fr_FR", "en_US" — and never a translated name: what a code
+       means is the application's business, and a file that stored a label would go stale the
+       day that label is translated. -->
+  <xs:complexType name="LanguagesType">
+    <xs:sequence>
+      <xs:element name="language" type="LanguageType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:anyAttribute processContents="lax"/>
+  </xs:complexType>
+
+  <xs:complexType name="LanguageType">
+    <xs:attribute name="code" type="xs:string" use="required"/>
+    <xs:anyAttribute processContents="lax"/>
+  </xs:complexType>
+
+  <!-- ===== INFORMATIONS ===== -->
+
+  <!-- One band of the skeleton. Its width is the skeleton's and never the user's, so it has
+       nothing to declare beyond the informations it holds. -->
+  <xs:complexType name="BandType">
+    <xs:sequence>
+      <xs:element name="section" type="SectionType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:anyAttribute processContents="lax"/>
+  </xs:complexType>
+
+  <!-- One information: its type, and the options that type declares.
+
+       The options cannot be named here. Which ones an information carries is decided by the
+       catalogue that declares it — a logo has a file and a size, the next information will have
+       others — and a schema that listed them would have to be rewritten every time the catalogue
+       gained a field. They are therefore carried as attributes, kept by anyAttribute, and
+       understood by the one who wrote them: the section itself. Adding an information is adding
+       an entry to the catalogue, not editing this file. -->
+  <xs:complexType name="SectionType">
+    <xs:attribute name="type" type="xs:string" use="required"/>
+    <xs:anyAttribute processContents="lax"/>
+  </xs:complexType>
+
+  <!-- ===== SIMPLE TYPES ===== -->
+
+  <xs:simpleType name="FormatVersion">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{1,}(\.[0-9]{1,}){1,2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

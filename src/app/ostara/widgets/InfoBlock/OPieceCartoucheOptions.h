@@ -1,10 +1,10 @@
 /************************************************************************
  **
- **  @file   OPieceCartoucheSection.h
+ **  @file   OPieceCartoucheOptions.h
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   24/08/2026
  **
- **  @brief  One section type of the cartouche catalogue (catalogue entry).
+ **  @brief  The option vocabulary of the piece-cartouche catalogue.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -24,8 +24,8 @@
  **
  *************************************************************************/
 
-#ifndef OPIECECARTOUCHESECTION_H
-#define OPIECECARTOUCHESECTION_H
+#ifndef OPIECECARTOUCHEOPTIONS_H
+#define OPIECECARTOUCHEOPTIONS_H
 
 #include <QHash>
 #include <QList>
@@ -35,29 +35,13 @@
 #include <QVariant>
 
 /**
- * @brief Kind of an option field — drives both serialization and the generated
- * editing control in the Information block editor.
+ * @brief The option keys, and the value shapes, that only the piece cartouche uses.
  *
- * The editor is data-driven: it reads the fields of the selected section type
- * and builds one control per field. Adding a new kind means adding an entry
- * here plus one control builder in the editor — nothing else changes.
+ * The mechanism — what a section is, what a field is, how a default is answered — is shared and
+ * lives in `core/otemplatesection.h`. What is left in this header belongs to this family alone:
+ * a cartouche cuts fabric, thermofusible and lining, numbers its pieces, and renames a size axis
+ * in each of the languages it is written in. A cover page will do none of that.
  */
-enum class OPieceCartoucheOptionKind
-{
-    FontFamily,   ///< QString — font family
-    FontWeight,   ///< int — QFont::Weight (0 = default)
-    FontSize,     ///< int — font size in px (0 = default)
-    LineSpacing,  ///< int — extra vertical space in px with the next line (0 = default, negative = tighter)
-    Axis,         ///< QString — size-axis name from the loaded table
-    MeasureName,  ///< QString — measurement full name from the loaded table
-    Separator,    ///< QString — separator between name and value ("", ":", "-", "/", "·")
-    NumberStyle,  ///< QString — piece-number padding: "1" or "01" (see OPieceCartoucheNumber)
-    Logo,         ///< QString — logo file name from the logo library
-    LogoSize,     ///< double — logo size in cm
-    Cut,          ///< composite — 3 tabs (fabric/interfacing/lining), qty + on fold
-    Multilingual, ///< bool — write this information once per block language
-    AxisRename    ///< composite — per-language display aliases of an axis + its values
-};
 
 /**
  * @brief Option keys of the Cut section — one section covers the three fabrics
@@ -123,60 +107,4 @@ inline const QString kPadded = QStringLiteral("01");
 /// (and any number of two digits or more) is left as is.
 Q_REQUIRED_RESULT auto FormatPieceNumber(quint32 number, const QString &style) -> QString;
 
-/**
- * @brief Declarative description of one option of a section type.
- */
-struct OPieceCartoucheOptionField
-{
-    QString key;
-    OPieceCartoucheOptionKind kind{OPieceCartoucheOptionKind::FontFamily};
-    QString label;
-    QStringList values{};     ///< candidate values for the editor (e.g. separators); empty = kind default
-    QVariant defaultValue{};  ///< per-field default value; invalid = kind default
-};
-
-/**
- * @brief One section type of the cartouche catalogue.
- *
- * A catalogue entry carries its identity (id, display name, description) and its
- * declarative option schema. The template model stores section *instances* which
- * reference a type by id and hold concrete option values.
- */
-class OPieceCartoucheSection
-{
-public:
-    OPieceCartoucheSection() = default;
-    OPieceCartoucheSection(const QString &id, const QString &sourceName, const QString &displayName,
-                           const QString &description, const QList<OPieceCartoucheOptionField> &fields);
-
-    /// True when the section carries a non-empty id (i.e. it exists in the catalogue).
-    auto IsValid() const -> bool;
-
-    auto Id() const -> QString;
-    auto DisplayName() const -> QString;
-
-    /// The untranslated (English) name — lets the preview render the block in
-    /// another display language through the app's own translation catalogues.
-    auto SourceName() const -> QString;
-
-    auto Description() const -> QString;
-    auto Fields() const -> const QList<OPieceCartoucheOptionField> &;
-
-    /// True when the option schema contains the given key.
-    auto HasField(const QString &key) const -> bool;
-
-    /// Default value for one option key (per its kind).
-    auto DefaultValue(const QString &key) const -> QVariant;
-
-    /// Map of every option key → its default value.
-    auto DefaultOptions() const -> QHash<QString, QVariant>;
-
-private:
-    QString m_id;
-    QString m_sourceName;
-    QString m_displayName;
-    QString m_description;
-    QList<OPieceCartoucheOptionField> m_fields;
-};
-
-#endif // OPIECECARTOUCHESECTION_H
+#endif // OPIECECARTOUCHEOPTIONS_H

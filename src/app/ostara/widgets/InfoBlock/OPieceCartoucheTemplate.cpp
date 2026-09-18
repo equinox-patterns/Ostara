@@ -27,6 +27,7 @@
 #include "OPieceCartoucheTemplate.h"
 
 #include "OPieceCartoucheCatalogue.h"
+#include "OPieceCartoucheOptions.h"
 
 #include "def.h"
 
@@ -106,6 +107,17 @@ auto OPieceCartoucheTemplate::SectionTypeId(int index) const -> QString
         return QString();
     }
     return m_sections.at(index).typeId;
+}
+
+auto OPieceCartoucheTemplate::SectionType(const QString &typeId) const -> const OTemplateSection &
+{
+    // The cartouche's own catalogue — the entry that says what this information is *on a piece*.
+    return OPieceCartoucheCatalogue::Section(typeId);
+}
+
+auto OPieceCartoucheTemplate::SectionOptions(int index) const -> QHash<QString, QVariant>
+{
+    return SectionAt(index).options;
 }
 
 auto OPieceCartoucheTemplate::SectionAt(int index) const -> const Section &
@@ -204,9 +216,9 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
         sectionEl.setAttribute(kAttrType, section.typeId);
 
         const auto &type = OPieceCartoucheCatalogue::Section(section.typeId);
-        for (const OPieceCartoucheOptionField &field : type.Fields())
+        for (const OTemplateOptionField &field : type.Fields())
         {
-            if (field.kind == OPieceCartoucheOptionKind::Cut)
+            if (field.kind == OTemplateOptionKind::Cut)
             {
                 // The Cut section expands into its six per-fabric sub-options.
                 for (const QString &key : OPieceCartoucheCut::kAllKeys)
@@ -226,27 +238,29 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
             }
             switch (field.kind)
             {
-                case OPieceCartoucheOptionKind::FontWeight:
-                case OPieceCartoucheOptionKind::LineSpacing:
+                case OTemplateOptionKind::FontWeight:
+                case OTemplateOptionKind::LineSpacing:
                     sectionEl.setAttribute(field.key, QString::number(value.toInt()));
                     break;
-                case OPieceCartoucheOptionKind::FontSize:
-                case OPieceCartoucheOptionKind::LogoSize:
+                case OTemplateOptionKind::FontSize:
+                case OTemplateOptionKind::LogoSize:
                     sectionEl.setAttribute(field.key, QString::number(value.toDouble()));
                     break;
-                case OPieceCartoucheOptionKind::FontFamily:
-                case OPieceCartoucheOptionKind::Axis:
-                case OPieceCartoucheOptionKind::MeasureName:
-                case OPieceCartoucheOptionKind::Separator:
-                case OPieceCartoucheOptionKind::NumberStyle:
-                case OPieceCartoucheOptionKind::Logo:
+                case OTemplateOptionKind::FontFamily:
+                case OTemplateOptionKind::Axis:
+                case OTemplateOptionKind::MeasureName:
+                case OTemplateOptionKind::Separator:
+                case OTemplateOptionKind::NumberStyle:
+                case OTemplateOptionKind::Logo:
+                case OTemplateOptionKind::TextSource:
+                case OTemplateOptionKind::Text:
                     sectionEl.setAttribute(field.key, value.toString());
                     break;
-                case OPieceCartoucheOptionKind::Multilingual:
+                case OTemplateOptionKind::Multilingual:
                     sectionEl.setAttribute(field.key,
                                            value.toBool() ? QStringLiteral("true") : QStringLiteral("false"));
                     break;
-                case OPieceCartoucheOptionKind::AxisRename:
+                case OTemplateOptionKind::AxisRename:
                 {
                     // The one-line-per-language flag is an attribute; the
                     // per-language aliases become child <rename> elements. Only
@@ -281,7 +295,7 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
                     }
                     break;
                 }
-                case OPieceCartoucheOptionKind::Cut:
+                case OTemplateOptionKind::Cut:
                     break;  // handled above (expands into the six fabric sub-keys)
             }
         }
@@ -328,9 +342,9 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
             // Start from defaults, then overlay the stored attributes — a
             // missing attribute keeps the default (forward compatibility).
             section.options = type.DefaultOptions();
-            for (const OPieceCartoucheOptionField &field : type.Fields())
+            for (const OTemplateOptionField &field : type.Fields())
             {
-                if (field.kind == OPieceCartoucheOptionKind::Cut)
+                if (field.kind == OTemplateOptionKind::Cut)
                 {
                     for (const QString &key : OPieceCartoucheCut::kAllKeys)
                     {
@@ -352,7 +366,7 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                     }
                     continue;
                 }
-                if (field.kind == OPieceCartoucheOptionKind::AxisRename)
+                if (field.kind == OTemplateOptionKind::AxisRename)
                 {
                     // One-line-per-language flag (attribute, default false).
                     if (sectionEl.hasAttribute(OPieceCartoucheAxisRename::kOneLine))
@@ -389,19 +403,19 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                 const QString attr = sectionEl.attribute(field.key);
                 switch (field.kind)
                 {
-                    case OPieceCartoucheOptionKind::FontWeight:
-                    case OPieceCartoucheOptionKind::LineSpacing:
+                    case OTemplateOptionKind::FontWeight:
+                    case OTemplateOptionKind::LineSpacing:
                         section.options.insert(field.key, attr.toInt());
                         break;
-                    case OPieceCartoucheOptionKind::FontSize:
-                    case OPieceCartoucheOptionKind::LogoSize:
+                    case OTemplateOptionKind::FontSize:
+                    case OTemplateOptionKind::LogoSize:
                         section.options.insert(field.key, attr.toDouble());
                         break;
-                    case OPieceCartoucheOptionKind::Axis:
+                    case OTemplateOptionKind::Axis:
                         // Axis names are user-defined in the table — stored verbatim.
                         section.options.insert(field.key, attr);
                         break;
-                    case OPieceCartoucheOptionKind::Separator:
+                    case OTemplateOptionKind::Separator:
                     {
                         static const QStringList kSeparators = {QString(), QStringLiteral(":"), QStringLiteral("-"),
                                                                 QStringLiteral("/"), QStringLiteral("·")};
@@ -411,7 +425,7 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                         section.options.insert(field.key, allowed.contains(attr) ? attr : fallback);
                         break;
                     }
-                    case OPieceCartoucheOptionKind::NumberStyle:
+                    case OTemplateOptionKind::NumberStyle:
                     {
                         const QString fallback = field.defaultValue.isValid()
                                                      ? field.defaultValue.toString()
@@ -419,19 +433,21 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                         section.options.insert(field.key, field.values.contains(attr) ? attr : fallback);
                         break;
                     }
-                    case OPieceCartoucheOptionKind::FontFamily:
-                    case OPieceCartoucheOptionKind::MeasureName:
-                    case OPieceCartoucheOptionKind::Logo:
+                    case OTemplateOptionKind::FontFamily:
+                    case OTemplateOptionKind::MeasureName:
+                    case OTemplateOptionKind::Logo:
+                    case OTemplateOptionKind::TextSource:
+                    case OTemplateOptionKind::Text:
                         section.options.insert(field.key, attr);
                         break;
-                    case OPieceCartoucheOptionKind::Multilingual:
+                    case OTemplateOptionKind::Multilingual:
                         section.options.insert(field.key, attr.toInt() != 0
                                                              || attr.compare(QStringLiteral("true"),
                                                                              Qt::CaseInsensitive) == 0);
                         break;
-                    case OPieceCartoucheOptionKind::Cut:
+                    case OTemplateOptionKind::Cut:
                         break;  // handled above (expands into the six fabric sub-keys)
-                    case OPieceCartoucheOptionKind::AxisRename:
+                    case OTemplateOptionKind::AxisRename:
                         break;  // handled above (per-language <rename> children)
                 }
             }

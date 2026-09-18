@@ -27,7 +27,7 @@
 #ifndef OPIECECARTOUCHETEMPLATE_H
 #define OPIECECARTOUCHETEMPLATE_H
 
-#include "OPieceCartoucheSection.h"
+#include "core/otemplatesectionhost.h"
 
 #include <QDomElement>
 #include <QList>
@@ -43,7 +43,7 @@ class QDomDocument;
  * file. It carries no geometry: the pattern only stores the template reference,
  * the per-piece dispatch and the free text (spec §4.1 / §4.5).
  */
-class OPieceCartoucheTemplate
+class OPieceCartoucheTemplate : public OTemplateSectionHost
 {
 public:
     /// One section *instance* of a template — a type id plus concrete options.
@@ -60,16 +60,21 @@ public:
     void SetName(const QString &name);
 
     /// The block display languages (ISO locale codes, display order).
-    auto Languages() const -> QStringList;
+    auto Languages() const -> QStringList override;
     void SetLanguages(const QStringList &languages);
     void AddLanguage(const QString &code);
     void RemoveLanguage(const QString &code);
     auto ContainsLanguage(const QString &code) const -> bool;
 
-    auto SectionCount() const -> int;
-    auto SectionTypeId(int index) const -> QString;
+    // The three that answer OTemplateSectionHost — the section editor knows the template through
+    // those and through nothing else. SectionAt and the rest are this family's own business.
+    auto SectionCount() const -> int override;
+    auto SectionTypeId(int index) const -> QString override;
+    auto SectionType(const QString &typeId) const -> const OTemplateSection & override;
+    auto SectionOptions(int index) const -> QHash<QString, QVariant> override;
+    void SetSectionOption(int index, const QString &key, const QVariant &value) override;
+
     auto SectionAt(int index) const -> const Section &;
-    void SetSectionOption(int index, const QString &key, const QVariant &value);
 
     /// Append a new section of the given catalogue type, initialized with its defaults.
     void AddSection(const QString &typeId);

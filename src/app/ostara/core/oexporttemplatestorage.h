@@ -64,8 +64,6 @@ auto ScanDirectory(const QString &dirPath) -> QStringList;
  */
 auto PathForName(const QString &name) -> QString;
 
-/** @brief A name no template in the default folder uses yet, built from @p base. */
-auto UniqueName(const QString &base) -> QString;
 
 /**
  * @brief Writes @p tpl to @p filePath, folder and all.

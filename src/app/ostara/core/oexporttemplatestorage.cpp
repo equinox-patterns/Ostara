@@ -136,32 +136,6 @@ auto OExportTemplateStorage::PathForName(const QString &name) -> QString
 
 //---------------------------------------------------------------------------------------------------------------------
 
-auto OExportTemplateStorage::UniqueName(const QString &base) -> QString
-{
-    QSet<QString> taken;
-    for (const QString &path : ScanDirectory(DefaultDirectory()))
-    {
-        taken.insert(QFileInfo(path).completeBaseName());
-    }
-
-    if (!taken.contains(base))
-    {
-        return base;
-    }
-
-    // Suffixed from two, as the annotation styles are: the first is the bare name.
-    int suffix = 2;
-    QString candidate = base;
-    do
-    {
-        candidate = base + QLatin1Char(' ') + QString::number(suffix++);
-    } while (taken.contains(candidate));
-
-    return candidate;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
 auto OExportTemplateStorage::Save(const OExportTemplate &tpl, const QString &filePath,
                                   QString *error) -> bool
 {

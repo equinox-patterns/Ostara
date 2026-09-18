@@ -27,8 +27,10 @@
 #include "OInfoBlockPreview.h"
 
 #include "OPieceCartoucheCatalogue.h"
-#include "OPieceCartoucheStorage.h"
-#include "OPieceCartoucheTable.h"
+#include "OPieceCartoucheOptions.h"
+#include "core/osizetable.h"
+
+#include "core/ologorender.h"
 
 #include "vwidgets/ocartouchepainter.h"
 
@@ -38,7 +40,6 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QPixmap>
-#include <QSvgRenderer>
 
 #include <algorithm>
 
@@ -70,7 +71,7 @@ void OInfoBlockPreview::SetTemplate(const OPieceCartoucheTemplate *tpl)
     update();
 }
 
-void OInfoBlockPreview::SetTable(const OPieceCartoucheTable *table)
+void OInfoBlockPreview::SetTable(const OSizeTable *table)
 {
     m_table = table;
     update();
@@ -133,7 +134,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
 
         // Text sections — the sample line is the section's source name in the
         // main language (the catalogue translates it for the UI elsewhere).
-        QString line = Tl(mainLocale, "OPieceCartoucheSection", qPrintable(type.SourceName()));
+        QString line = Tl(mainLocale, "OTemplateSection", qPrintable(type.SourceName()));
         // The separator values are language-neutral keys ("of", "-", "/"); translate
         // the word ones at render ("of" → "sur"). Main-language separator for the
         // table-driven sections (axis / measurement).
@@ -206,7 +207,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
             {
                 continue;  // dead data: measurement not in the current table
             }
-            const QString value = OPieceCartoucheTable::FormatValue(m_table->MeasurementValue(name))
+            const QString value = OSizeTable::FormatValue(m_table->MeasurementValue(name))
                                   + QLatin1Char(' ') + m_table->UnitsStr();
 
             // Per-language display aliases of the measurement name (the value is
@@ -313,27 +314,16 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
             {
                 continue;  // dead data: no logo chosen
             }
-            const QString fullPath =
-                OPieceCartoucheStorage::LogosDirectory() + QLatin1Char('/') + stored;
-            QSvgRenderer renderer(fullPath);
-            if (!renderer.isValid())
+            // Drawing the logo is the same six steps wherever it is done, so it is done in one
+            // place — see OLogoRender. A preview that rasterised it its own way could come out
+            // disagreeing with the export about how big a logo is, which is a preview that lies.
+            const double sizeCm = options.value(QStringLiteral("logoSize"), 2.0).toDouble();
+            const OLogoRender::Drawing drawing = OLogoRender::Draw(stored, sizeCm);
+            if (drawing.pixmap.isNull())
             {
                 continue;  // dead data: missing or invalid SVG
             }
-            const double sizeCm = options.value(QStringLiteral("logoSize"), 2.0).toDouble();
-            const double targetH = (std::max)(8.0, ToPixel(sizeCm, Unit::Cm));
-            const QSize base = renderer.defaultSize();
-            double drawW = targetH;
-            if (base.isValid() && base.width() > 0 && base.height() > 0)
-            {
-                drawW = targetH * (static_cast<double>(base.width()) / base.height());
-            }
-            QPixmap pixmap(qCeil(drawW), qCeil(targetH));
-            pixmap.fill(Qt::transparent);
-            QPainter pixmapPainter(&pixmap);
-            renderer.render(&pixmapPainter);
-            pixmapPainter.end();
-            lines.append(OCartouchePainter::LogoLine(pixmap, targetH, lineSpacing));
+            lines.append(OCartouchePainter::LogoLine(drawing.pixmap, drawing.heightPx, lineSpacing));
             continue;
         }
 

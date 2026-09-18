@@ -12919,7 +12919,7 @@ Do you want to overwrite it?</source>
     </message>
 </context>
 <context>
-    <name>OInfoBlockSectionEditor</name>
+    <name>OTemplateSectionEditor</name>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockSectionEditor.cpp" line="84"/>
         <source>Select a section to edit its settings.</source>
@@ -13292,7 +13292,7 @@ This action cannot be undone.</source>
     </message>
 </context>
 <context>
-    <name>OPieceCartoucheSection</name>
+    <name>OTemplateSection</name>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="55"/>
         <source>Font family</source>

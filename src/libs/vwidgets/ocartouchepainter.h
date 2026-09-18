@@ -108,6 +108,16 @@ QFont SectionFont(const QHash<QString, QVariant> &options, const QFont &baseFont
 /** @brief Build a text render line. */
 OCartoucheRenderLine TextLine(const QString &text, const QFont &font, int lineSpacing);
 
+/**
+ * @brief Build one render line per line of @p text, in order.
+ *
+ * A text written by the user may run over several lines, and **one render line is one line on the
+ * page**: the painter measures a line by its font, so a text of three lines handed over as one
+ * entry would be drawn three lines tall and measured one — the block above it would sit on it.
+ * Splitting is therefore where the text becomes lines, not in the painter's own layout.
+ */
+QVector<OCartoucheRenderLine> TextLines(const QString &text, const QFont &font, int lineSpacing);
+
 /** @brief Build a logo render line (pre-rendered pixmap + original SVG source). */
 OCartoucheRenderLine LogoLine(const QPixmap &logo, qreal logoHeight, int lineSpacing,
                               const QString &sourcePath = {});

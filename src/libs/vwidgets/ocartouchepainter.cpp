@@ -42,6 +42,20 @@ OCartoucheRenderLine TextLine(const QString &text, const QFont &font, int lineSp
     return line;
 }
 
+QVector<OCartoucheRenderLine> TextLines(const QString &text, const QFont &font, int lineSpacing)
+{
+    QVector<OCartoucheRenderLine> lines;
+    // A blank line is a line: it takes its height and moves what follows, which is what the user
+    // asked for when they pressed Enter twice.
+    const QStringList written = text.split(QLatin1Char('\n'));
+    lines.reserve(written.size());
+    for (const QString &one : written)
+    {
+        lines.append(TextLine(one, font, lineSpacing));
+    }
+    return lines;
+}
+
 OCartoucheRenderLine LogoLine(const QPixmap &logo, qreal logoHeight, int lineSpacing,
                               const QString &sourcePath)
 {

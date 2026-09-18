@@ -28,6 +28,7 @@
 
 #include "core/oexportunitformat.h"
 #include "dialogs/oexportprintmodel.h"
+#include "ocoverpageeditor.h"
 #include "oexporttemplatepreview.h"
 #include "oexporttemplatespage.h"
 #include "core/oexporttemplatestorage.h"
@@ -168,7 +169,15 @@ OExportTemplateEditor::OExportTemplateEditor(QWidget *parent) : QWidget(parent)
     outer->setContentsMargins(0, 0, 0, 0);
 
     m_tabs = new QTabWidget();
-    m_tabs->addTab(MakePlaceholderPage(), QString());  // index 0 — cover page
+
+    // Tab 0 is the cover page, and it is a window of its own: its family keeps its own file, its
+    // own schema and its own folder, and shares nothing with the plan's decor but the shape of the
+    // editor. Built here rather than in a Make… helper because the window holds it — the close
+    // prompt has to reach it.
+    m_coverPage = new OCoverPageEditor();
+    connect(m_coverPage, &OCoverPageEditor::TemplateSaved, this,
+            &OExportTemplateEditor::TemplateSaved);
+    m_tabs->addTab(m_coverPage, QString());            // index 0 — cover page
     m_tabs->addTab(MakeAssemblyMarksTab(), QString()); // index 1 — assembly marks
     outer->addWidget(m_tabs);
 
@@ -265,6 +274,11 @@ void OExportTemplateEditor::RetranslateUI()
     if (m_templatesPage != nullptr)
     {
         m_templatesPage->RetranslateUI();
+    }
+
+    if (m_coverPage != nullptr)
+    {
+        m_coverPage->RetranslateUI();
     }
 
     for (QLabel *label : m_placeholders)
@@ -1490,7 +1504,10 @@ QWidget *OExportTemplateEditor::MakeTopBar()
 
 auto OExportTemplateEditor::IsModified() const -> bool
 {
-    return m_modified;
+    // Either family counts, and the whole of it: the two keep their work in two files in two
+    // folders, and the window holds both. Asking only about the one on screen would let the
+    // other's work go without a word.
+    return m_modified || (m_coverPage != nullptr && m_coverPage->IsModified());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1535,6 +1552,24 @@ void OExportTemplateEditor::SetTemplate(const OExportTemplate &tpl)
 //---------------------------------------------------------------------------------------------------------------------
 
 void OExportTemplateEditor::SaveTemplate()
+{
+    // The window asks for « save », not for « save the cover page »: both families are open in it,
+    // and each one that has something to write writes it. A save that fails leaves its own editor
+    // modified, which is what the close prompt reads to refuse to close on unsaved work.
+    if (m_coverPage != nullptr && m_coverPage->IsModified())
+    {
+        m_coverPage->SaveTemplate();
+    }
+
+    if (m_modified)
+    {
+        SaveAssemblyMarksTemplate();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OExportTemplateEditor::SaveAssemblyMarksTemplate()
 {
     const QString name = m_nameEdit->text().trimmed();
     if (name.isEmpty())

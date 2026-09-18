@@ -51,6 +51,7 @@ class QSpinBox;
 class QSplitter;
 class QStackedWidget;
 class QTabWidget;
+class OCoverPageEditor;
 class OExportTemplatePreview;
 class OExportTemplatesPage;
 
@@ -145,6 +146,14 @@ private:
         QSpinBox *opacitySpin{nullptr};
     };
 
+    /**
+     * @brief Writes the assembly marks' template — the body SaveTemplate() used to be.
+     *
+     * SaveTemplate() now answers for the whole window, and the two families are written by two
+     * different hands: this is the one that knows about frames, marks and pagination.
+     */
+    void SaveAssemblyMarksTemplate();
+
     QWidget *MakeAssemblyMarksTab();
     QWidget *MakeCreateTemplatePage();
     QWidget *MakeEditionPane();
@@ -208,6 +217,14 @@ private:
     void SetTemplate(const OExportTemplate &tpl);
 
     QTabWidget *m_tabs{nullptr};
+
+    /**
+     * Tab 0, and the only part of this window that is not about a plan's decor. It keeps its own
+     * file, its own schema and its own folder — see OCoverPageEditor — and the window owns it
+     * only to show it and to ask it the two questions the close prompt needs answered.
+     */
+    OCoverPageEditor *m_coverPage{nullptr};
+
     QListWidget *m_menuList{nullptr};
     QStackedWidget *m_stack{nullptr};
     OExportTemplatePreview *m_preview{nullptr};

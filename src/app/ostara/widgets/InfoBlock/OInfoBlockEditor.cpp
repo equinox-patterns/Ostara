@@ -27,12 +27,15 @@
 #include "OInfoBlockEditor.h"
 
 #include "OInfoBlockPreview.h"
-#include "OInfoBlockSectionEditor.h"
+#include "widgets/Template/otemplateeditormenu.h"
+#include "widgets/Template/otemplatelanguagerow.h"
+#include "widgets/Template/otemplatesectioneditor.h"
 #include "OInfoBlockTemplatesPage.h"
-#include "OLogoPreview.h"
 #include "OPieceCartoucheCatalogue.h"
 #include "OPieceCartoucheStorage.h"
 #include "oannotationstylespage.h"
+
+#include "core/ologolibrary.h"
 
 #include "def.h"
 #include "FactoryWidgets.h"
@@ -77,16 +80,9 @@ void OInfoBlockEditor::SetupUI()
     outer->setContentsMargins(0, 0, 0, 0);
     outer->setSpacing(0);
 
-    m_menuList = new QListWidget();
-    m_menuList->setFixedWidth(170);
-    m_menuList->addItem(tr("Existing templates"));
-    m_menuList->addItem(tr("Create new"));
-    m_menuList->addItem(tr("Logo"));
-    m_menuList->addItem(tr("Clients"));
-    m_menuList->addItem(tr("Collections"));
-    m_menuList->addItem(tr("Annotations"));
-    connect(m_menuList, &QListWidget::itemClicked, this, [this](QListWidgetItem *item) {
-        const int row = m_menuList->row(item);
+    // The menu and the pages it opens — the shared pair. What each row opens is decided here.
+    m_menu = new OTemplateEditorMenu();
+    connect(m_menu, &OTemplateEditorMenu::RowClicked, this, [this](int row) {
         if (row == 0)
         {
             ShowTemplatesList();
@@ -117,19 +113,34 @@ void OInfoBlockEditor::SetupUI()
         // click has already moved the highlight, so the menu would name a page never opened.
         ApplyMenuRow();
     });
-    outer->addWidget(m_menuList);
+    outer->addWidget(m_menu);
 
-    m_stack = new QStackedWidget();
     SetupEditorPage();        // index 0
     SetupTemplatesPage();     // index 1
     SetupLogosPage();         // index 2
     SetupClientsPage();       // index 3
     SetupCollectionsPage();   // index 4
     SetupAnnotationsPage();   // index 5
-    outer->addWidget(m_stack, 1);
 
-    m_menuList->setCurrentRow(1);
+    // Named here as well as on a language change: this editor is retranslated when the language
+    // changes and not when it is shown, and rows without names are a column of nothing.
+    NameMenuRows();
+
+    m_menu->HighlightRow(1);
     NewTemplate();
+}
+
+void OInfoBlockEditor::NameMenuRows()
+{
+    // Six fixed entries — and **the rows are not the pages**. The library is the first row and the
+    // editor's own page the second, where the pages themselves are stacked the other way round:
+    // which row opens which page is decided in SetupUI, and everything else here counts rows.
+    m_menu->SetRowLabel(0, tr("Existing templates"));
+    m_menu->SetRowLabel(1, tr("Create new"));
+    m_menu->SetRowLabel(2, tr("Logo"));
+    m_menu->SetRowLabel(3, tr("Clients"));
+    m_menu->SetRowLabel(4, tr("Collections"));
+    m_menu->SetRowLabel(5, tr("Annotations"));
 }
 
 void OInfoBlockEditor::RetranslateUI()
@@ -138,31 +149,8 @@ void OInfoBlockEditor::RetranslateUI()
     // rebuild below (menu, section list) resolves in the new language.
     OPieceCartoucheCatalogue::InvalidateCache();
 
-    // Left menu — 5 fixed entries.
-    if (m_menuList->count() > 0)
-    {
-        m_menuList->item(0)->setText(tr("Existing templates"));
-    }
-    if (m_menuList->count() > 1)
-    {
-        m_menuList->item(1)->setText(tr("Create new"));
-    }
-    if (m_menuList->count() > 2)
-    {
-        m_menuList->item(2)->setText(tr("Logo"));
-    }
-    if (m_menuList->count() > 3)
-    {
-        m_menuList->item(3)->setText(tr("Clients"));
-    }
-    if (m_menuList->count() > 4)
-    {
-        m_menuList->item(4)->setText(tr("Collections"));
-    }
-    if (m_menuList->count() > 5)
-    {
-        m_menuList->item(5)->setText(tr("Annotations"));
-    }
+    // Left menu — six fixed entries.
+    NameMenuRows();
 
     // Editor page — top bar.
     m_nameEdit->setPlaceholderText(tr("Template name"));
@@ -173,16 +161,15 @@ void OInfoBlockEditor::RetranslateUI()
     m_downBtn->setToolTip(tr("Move down"));
     m_deleteBtn->setToolTip(tr("Remove information"));
 
-    // Editor page — block display language row (rebuilt: trash tooltips and
-    // the "Add language" label resolve in the new language).
-    m_languageLabel->setText(tr("Block display language"));
-    m_languageHint->setText(tr("You can choose several for a multilingual block"));
-    RebuildLanguageRow();
+    // Editor page — the display language row, worded for a block.
+    m_languageRow->SetLabels(tr("Block display language"),
+                             tr("You can choose several for a multilingual block"));
+    m_languageRow->RetranslateUI();
 
     // "+ Add information" dropdown — the actions were built once from the
     // catalogue; rebuild them so the labels resolve in the new language.
     m_addMenu->clear();
-    for (const OPieceCartoucheSection &section : OPieceCartoucheCatalogue::Sections())
+    for (const OTemplateSection &section : OPieceCartoucheCatalogue::Sections())
     {
         QAction *action = m_addMenu->addAction(section.DisplayName());
         action->setToolTip(section.Description());
@@ -192,19 +179,8 @@ void OInfoBlockEditor::RetranslateUI()
     // Templates page.
     m_templatesPage->RetranslateUI();
 
-    // Logos page.
-    m_logoEditGroup->setTitle(tr("Logo"));
-    m_logoNameLabel->setText(tr("Name:"));
-    m_logoNotesLabel->setText(tr("Notes:"));
-    m_logoNameEdit->setPlaceholderText(tr("Logo name"));
-    m_logoNotesEdit->setPlaceholderText(tr("Notes"));
-    m_logosTree->setHeaderLabels({tr("Name"), tr("Notes"), tr("Path")});
-    m_addLogoBtn->setText(tr("Add Logo"));
-    m_removeLogoBtn->setText(tr("Remove Logo"));
-    if (m_logoEntries.isEmpty() && m_logosTree->topLevelItemCount() > 0)
-    {
-        m_logosTree->topLevelItem(0)->setText(0, tr("No logos yet. Add one."));
-    }
+    // Logos page — its own widget, which words itself.
+    m_logosPage->RetranslateUI();
 
     // Clients page.
     m_clientEditGroup->setTitle(tr("Client"));
@@ -292,7 +268,7 @@ void OInfoBlockEditor::SetupEditorPage()
 
     m_addBtn = new QPushButton(tr("+ Add information"));
     m_addMenu = new QMenu(m_addBtn);
-    for (const OPieceCartoucheSection &section : OPieceCartoucheCatalogue::Sections())
+    for (const OTemplateSection &section : OPieceCartoucheCatalogue::Sections())
     {
         QAction *action = m_addMenu->addAction(section.DisplayName());
         action->setToolTip(section.Description());
@@ -343,14 +319,14 @@ void OInfoBlockEditor::SetupEditorPage()
     vbox->addLayout(topBar);
 
     SetupLanguageRow();
-    vbox->addWidget(m_languagesContainer);
+    vbox->addWidget(m_languageRow);
 
     // Ordered list (top-left) + data-driven edit zone (bottom-left) + preview (right)
     m_sectionList = new QListWidget();
     connect(m_sectionList, &QListWidget::currentRowChanged, this, [this](int row) { SelectSection(row); });
 
-    m_sectionEditor = new OInfoBlockSectionEditor();
-    connect(m_sectionEditor, &OInfoBlockSectionEditor::OptionsChanged, this, [this]() {
+    m_sectionEditor = new OTemplateSectionEditor();
+    connect(m_sectionEditor, &OTemplateSectionEditor::OptionsChanged, this, [this]() {
         SetModified(true);
         RefreshPreview();
     });
@@ -411,441 +387,67 @@ void OInfoBlockEditor::SetupEditorPage()
 
     vbox->addWidget(splitter, 1);
 
-    m_stack->addWidget(editorPage);
+    m_menu->AddPage(editorPage);
 }
 
 void OInfoBlockEditor::SetupLanguageRow()
 {
-    m_languageLabel = new QLabel(tr("Block display language"));
-    m_languageHint = new QLabel(tr("You can choose several for a multilingual block"));
-    m_languageHint->setObjectName(QStringLiteral("infoBlockLanguageHint"));
+    // The shared row, held by both families. It keeps the languages it is given and reports every
+    // change as one signal; what the template does with that is decided here.
+    m_languageRow = new OTemplateLanguageRow();
+    connect(m_languageRow, &OTemplateLanguageRow::LanguagesChanged, this,
+            [this](const QStringList &codes) {
+                m_template.SetLanguages(codes);
+                SetModified(true);
+                RefreshPreview();
+                // A section that renames something per language shows one tab per language, so the
+                // form follows the row.
+                m_sectionEditor->SetSection(&m_template, m_sectionList->currentRow(), &m_table);
+            });
 
-    auto *languageTop = new QHBoxLayout();
-    languageTop->setContentsMargins(0, 0, 0, 0);
-    languageTop->setSpacing(6);
-    languageTop->addWidget(m_languageLabel);
-    languageTop->addWidget(m_languageHint);
-    languageTop->addStretch(1);
-
-    m_languagesContainer = new QWidget();
-    auto *containerLayout = new QVBoxLayout(m_languagesContainer);
-    containerLayout->setContentsMargins(0, 0, 0, 0);
-    containerLayout->setSpacing(4);
-    containerLayout->addLayout(languageTop);
-
-    m_languagesLayout = new QHBoxLayout();
-    m_languagesLayout->setContentsMargins(0, 0, 0, 0);
-    m_languagesLayout->setSpacing(4);
-    containerLayout->addLayout(m_languagesLayout);
-
-    // Hairline separator after the language row (1 px, 80% — WelcomeScreen pattern).
-    auto *separatorBar = new QHBoxLayout();
-    separatorBar->setContentsMargins(0, 0, 0, 0);
-    separatorBar->addStretch(1);
-    auto *separator = new QFrame();
-    separator->setObjectName(QStringLiteral("infoBlockLanguageSeparator"));
-    separator->setFixedHeight(1);
-    separatorBar->addWidget(separator, 8);  // 80% = 8/(1+8+1)
-    separatorBar->addStretch(1);
-    containerLayout->addLayout(separatorBar);
-
-    RebuildLanguageRow();
+    m_languageRow->SetLanguages(m_template.Languages());
 }
 
-void OInfoBlockEditor::RebuildLanguageRow()
-{
-    const QStringList available = AvailableUiLanguages();
-    const QStringList selected = m_template.Languages();
 
-    m_updatingLanguages = true;
 
-    // Drop the previous row widgets.
-    m_languageCombos.clear();
-    while (QLayoutItem *item = m_languagesLayout->takeAt(0))
-    {
-        if (QWidget *w = item->widget())
-        {
-            w->deleteLater();
-        }
-        delete item;
-    }
 
-    for (const QString &code : selected)
-    {
-        auto *combo = MakeComboBox(m_languagesContainer);
-        AddLanguageItems(combo, available);
-
-        // Connect before selecting so the guard silences the setup signal.
-        connect(combo, &QComboBox::currentIndexChanged, this, &OInfoBlockEditor::OnLanguageChanged);
-
-        const int idx = combo->findData(code);
-        if (idx >= 0)
-        {
-            combo->setCurrentIndex(idx);
-        }
-
-        // A language already chosen in another combo is disabled here.
-        auto *model = qobject_cast<QStandardItemModel *>(combo->model());
-        if (model != nullptr)
-        {
-            for (int i = 0; i < combo->count(); ++i)
-            {
-                if (i == idx)
-                {
-                    continue;
-                }
-                if (selected.contains(combo->itemData(i).toString()))
-                {
-                    QStandardItem *item = model->item(i);
-                    item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-                }
-            }
-        }
-
-        m_languageCombos.append(combo);
-        m_languagesLayout->addWidget(combo);
-
-        auto *trash = new QPushButton();
-        trash->setObjectName(QStringLiteral("infoBlockTrashBtn"));
-        trash->setToolTip(tr("Remove language"));
-        trash->setEnabled(selected.size() > 1);
-        connect(trash, &QPushButton::clicked, this, [this, code]() { OnRemoveLanguage(code); });
-        m_languagesLayout->addWidget(trash);
-    }
-
-    m_addLanguageBtn = new QPushButton(tr("Add language"));
-    m_addLanguageBtn->setEnabled(selected.size() < available.size());
-    connect(m_addLanguageBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnAddLanguage);
-    m_languagesLayout->addWidget(m_addLanguageBtn);
-
-    m_updatingLanguages = false;
-}
-
-void OInfoBlockEditor::OnLanguageChanged()
-{
-    if (m_updatingLanguages)
-    {
-        return;
-    }
-    auto *combo = qobject_cast<QComboBox *>(sender());
-    if (combo == nullptr)
-    {
-        return;
-    }
-    const int row = static_cast<int>(m_languageCombos.indexOf(combo));
-    if (row < 0)
-    {
-        return;
-    }
-    QStringList langs = m_template.Languages();
-    if (row >= langs.size())
-    {
-        return;
-    }
-    const QString code = combo->currentData().toString();
-    if (langs.at(row) == code)
-    {
-        return;
-    }
-    langs[row] = code;
-    m_template.SetLanguages(langs);
-    SetModified(true);
-    RebuildLanguageRow();
-    RefreshPreview();
-    // The section edit zone shows one tab per block language — refresh it.
-    m_sectionEditor->SetSection(&m_template, m_sectionList->currentRow(), &m_table);
-}
-
-void OInfoBlockEditor::OnAddLanguage()
-{
-    const QStringList available = AvailableUiLanguages();
-    QStringList langs = m_template.Languages();
-    for (const QString &avail : available)
-    {
-        if (!langs.contains(avail))
-        {
-            langs.append(avail);
-            m_template.SetLanguages(langs);
-            SetModified(true);
-            RebuildLanguageRow();
-            RefreshPreview();
-            m_sectionEditor->SetSection(&m_template, m_sectionList->currentRow(), &m_table);
-            return;
-        }
-    }
-}
-
-void OInfoBlockEditor::OnRemoveLanguage(const QString &code)
-{
-    QStringList langs = m_template.Languages();
-    if (langs.size() <= 1)
-    {
-        return;  // keep at least one display language
-    }
-    langs.removeAll(code);
-    m_template.SetLanguages(langs);
-    SetModified(true);
-    RebuildLanguageRow();
-    RefreshPreview();
-    // The section edit zone shows one tab per block language — refresh it.
-    m_sectionEditor->SetSection(&m_template, m_sectionList->currentRow(), &m_table);
-}
 
 void OInfoBlockEditor::SetupTemplatesPage()
 {
     m_templatesPage = new OInfoBlockTemplatesPage();
     connect(m_templatesPage, &OInfoBlockTemplatesPage::OpenTemplate, this, &OInfoBlockEditor::LoadFile);
-    m_stack->addWidget(m_templatesPage);
+    m_menu->AddPage(m_templatesPage);
 }
 
 void OInfoBlockEditor::SetupLogosPage()
 {
-    auto *logosPage = new QWidget();
-    auto *vbox = new QVBoxLayout(logosPage);
-    vbox->setContentsMargins(8, 8, 8, 8);
-
-    auto *left = new QWidget();
-    auto *leftLayout = new QVBoxLayout(left);
-    leftLayout->setContentsMargins(0, 0, 0, 0);
-    leftLayout->setSpacing(4);
-
-    auto *listBar = new QHBoxLayout();
-    m_addLogoBtn = new QPushButton(tr("Add Logo"));
-    connect(m_addLogoBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnAddLogo);
-    listBar->addWidget(m_addLogoBtn);
-    m_removeLogoBtn = new QPushButton(tr("Remove Logo"));
-    connect(m_removeLogoBtn, &QPushButton::clicked, this, &OInfoBlockEditor::OnRemoveLogo);
-    listBar->addWidget(m_removeLogoBtn);
-    listBar->addStretch();
-    leftLayout->addLayout(listBar);
-
-    m_logosTree = new QTreeWidget();
-    m_logosTree->setColumnCount(3);
-    m_logosTree->setHeaderLabels({tr("Name"), tr("Notes"), tr("Path")});
-    m_logosTree->setRootIsDecorated(false);
-    m_logosTree->setUniformRowHeights(true);
-    connect(m_logosTree, &QTreeWidget::currentItemChanged, this,
-            [this](QTreeWidgetItem *current, QTreeWidgetItem *previous) {
-                Q_UNUSED(previous)
-                OnLogoSelected(current);
-            });
-    leftLayout->addWidget(m_logosTree, 1);
-
-    m_logoEditGroup = new QGroupBox(tr("Logo"));
-    auto *form = new QFormLayout(m_logoEditGroup);
-    m_logoNameEdit = new QLineEdit();
-    m_logoNameEdit->setPlaceholderText(tr("Logo name"));
-    connect(m_logoNameEdit, &QLineEdit::textChanged, this, &OInfoBlockEditor::OnLogoNameEdited);
-    m_logoNameLabel = new QLabel(tr("Name:"));
-    form->addRow(m_logoNameLabel, m_logoNameEdit);
-    m_logoNotesEdit = new QPlainTextEdit();
-    m_logoNotesEdit->setPlaceholderText(tr("Notes"));
-    m_logoNotesEdit->setFixedHeight(70);
-    connect(m_logoNotesEdit, &QPlainTextEdit::textChanged, this, &OInfoBlockEditor::OnLogoNotesChanged);
-    m_logoNotesLabel = new QLabel(tr("Notes:"));
-    form->addRow(m_logoNotesLabel, m_logoNotesEdit);
-    leftLayout->addWidget(m_logoEditGroup);
-
-    m_logoPreview = new OLogoPreview();
-    auto *splitter = new QSplitter(Qt::Horizontal);
-    splitter->addWidget(left);
-    splitter->addWidget(m_logoPreview);
-    splitter->setStretchFactor(0, 1);
-    splitter->setStretchFactor(1, 1);
-    splitter->setSizes({400, 400});  // 50/50 at open — ratio kept on window resize
-    vbox->addWidget(splitter, 1);
-
-    m_stack->addWidget(logosPage);
+    // The library is one folder for the whole installation and both template families draw from
+    // it, so the page that manages it is not this editor's. This window only opens it — see
+    // OLogoLibraryPage, which is also what the cover page editor opens.
+    m_logosPage = new OLogoLibraryPage();
+    connect(m_logosPage, &OLogoLibraryPage::StatusMessage, this, &OInfoBlockEditor::StatusMessage);
+    m_menu->AddPage(m_logosPage);  // index 2
 }
 
 void OInfoBlockEditor::ShowLogosPage()
 {
-    m_logoEntries = OPieceCartoucheStorage::LoadLogos();
-    RefreshLogosList();
-    m_logosTree->setCurrentItem(nullptr);
-    OnLogoSelected(nullptr);
-    m_stack->setCurrentIndex(2);
+    m_logosPage->Show();
+    m_menu->ShowPage(2);
 }
 
 void OInfoBlockEditor::SetupAnnotationsPage()
 {
     m_annotationStylesPage = new OAnnotationStylesPage();
     connect(m_annotationStylesPage, &OAnnotationStylesPage::StatusMessage, this, &OInfoBlockEditor::StatusMessage);
-    m_stack->addWidget(m_annotationStylesPage);  // index 5
+    m_menu->AddPage(m_annotationStylesPage);  // index 5
 }
 
 void OInfoBlockEditor::ShowAnnotationsPage()
 {
     m_annotationStylesPage->Show();
-    m_stack->setCurrentIndex(5);
+    m_menu->ShowPage(5);
 }
 
-void OInfoBlockEditor::RefreshLogosList()
-{
-    m_logosTree->clear();
-    if (m_logoEntries.isEmpty())
-    {
-        auto *item = new QTreeWidgetItem();
-        item->setText(0, tr("No logos yet. Add one."));
-        item->setFlags(Qt::NoItemFlags);
-        m_logosTree->addTopLevelItem(item);
-        return;
-    }
-    for (const OPieceCartoucheStorage::LogoEntry &entry : m_logoEntries)
-    {
-        auto *item = new QTreeWidgetItem();
-        item->setText(0, entry.name.isEmpty() ? QFileInfo(entry.fileName).completeBaseName() : entry.name);
-        item->setText(1, entry.notes);
-        item->setText(2, OPieceCartoucheStorage::LogosDirectory() + QLatin1Char('/') + entry.fileName);
-        item->setData(0, Qt::UserRole, entry.fileName);
-        m_logosTree->addTopLevelItem(item);
-    }
-}
-
-void OInfoBlockEditor::OnLogoSelected(QTreeWidgetItem *current)
-{
-    m_updatingLogos = true;
-    if (current == nullptr)
-    {
-        m_logoNameEdit->clear();
-        m_logoNotesEdit->clear();
-        m_logoPreview->SetSvgFile(QString());
-    }
-    else
-    {
-        const QString fileName = current->data(0, Qt::UserRole).toString();
-        for (const OPieceCartoucheStorage::LogoEntry &entry : m_logoEntries)
-        {
-            if (entry.fileName == fileName)
-            {
-                m_logoNameEdit->setText(entry.name);
-                m_logoNotesEdit->setPlainText(entry.notes);
-                break;
-            }
-        }
-        m_logoPreview->SetSvgFile(OPieceCartoucheStorage::LogosDirectory() + QLatin1Char('/') + fileName);
-    }
-    m_updatingLogos = false;
-}
-
-void OInfoBlockEditor::OnLogoNameEdited(const QString &text)
-{
-    if (m_updatingLogos)
-    {
-        return;
-    }
-    QTreeWidgetItem *item = m_logosTree->currentItem();
-    if (item == nullptr)
-    {
-        return;
-    }
-    const QString fileName = item->data(0, Qt::UserRole).toString();
-    for (OPieceCartoucheStorage::LogoEntry &entry : m_logoEntries)
-    {
-        if (entry.fileName == fileName)
-        {
-            entry.name = text;
-            item->setText(0, text.isEmpty() ? QFileInfo(fileName).completeBaseName() : text);
-            break;
-        }
-    }
-    PersistLogos();
-}
-
-void OInfoBlockEditor::OnLogoNotesChanged()
-{
-    if (m_updatingLogos)
-    {
-        return;
-    }
-    QTreeWidgetItem *item = m_logosTree->currentItem();
-    if (item == nullptr)
-    {
-        return;
-    }
-    const QString fileName = item->data(0, Qt::UserRole).toString();
-    const QString notes = m_logoNotesEdit->toPlainText();
-    for (OPieceCartoucheStorage::LogoEntry &entry : m_logoEntries)
-    {
-        if (entry.fileName == fileName)
-        {
-            entry.notes = notes;
-            item->setText(1, notes);
-            break;
-        }
-    }
-    PersistLogos();
-}
-
-void OInfoBlockEditor::PersistLogos()
-{
-    QString err;
-    if (!OPieceCartoucheStorage::SaveLogos(m_logoEntries, &err))
-    {
-        QMessageBox::critical(this, tr("Logo"), err);
-    }
-}
-
-void OInfoBlockEditor::OnAddLogo()
-{
-    const QString src = QFileDialog::getOpenFileName(this, tr("Add Logo"), QDir::homePath(),
-                                                     tr("SVG files (*.svg)"));
-    if (src.isEmpty())
-    {
-        return;
-    }
-
-    QString err;
-    if (!OPieceCartoucheStorage::AddLogo(src, &err))
-    {
-        QMessageBox::critical(this, tr("Logo"), err);
-        return;
-    }
-
-    const QString newFile = QFileInfo(src).fileName();
-    ShowLogosPage();
-    // Select the freshly added logo.
-    for (int i = 0; i < m_logosTree->topLevelItemCount(); ++i)
-    {
-        QTreeWidgetItem *item = m_logosTree->topLevelItem(i);
-        if (item->data(0, Qt::UserRole).toString() == newFile)
-        {
-            m_logosTree->setCurrentItem(item);
-            break;
-        }
-    }
-    emit StatusMessage(tr("Logo added"));
-}
-
-void OInfoBlockEditor::OnRemoveLogo()
-{
-    QTreeWidgetItem *item = m_logosTree->currentItem();
-    if (item == nullptr)
-    {
-        return;
-    }
-    const QString fileName = item->data(0, Qt::UserRole).toString();
-    if (fileName.isEmpty())
-    {
-        return;  // the empty-state hint item
-    }
-
-    const auto answer = QMessageBox::question(
-        this, tr("Remove Logo"), tr("Remove the logo \"%1\" from the library?").arg(item->text(0)));
-    if (answer != QMessageBox::Yes)
-    {
-        return;
-    }
-
-    QString err;
-    if (!OPieceCartoucheStorage::RemoveLogo(fileName, &err))
-    {
-        QMessageBox::critical(this, tr("Logo"), err);
-        return;
-    }
-    ShowLogosPage();
-    emit StatusMessage(tr("Logo removed"));
-}
 
 void OInfoBlockEditor::SetupClientsPage()
 {
@@ -922,7 +524,7 @@ void OInfoBlockEditor::SetupClientsPage()
     splitter->setSizes({400, 400});  // 50/50 at open — ratio kept on window resize
     vbox->addWidget(splitter, 1);
 
-    m_stack->addWidget(clientsPage);
+    m_menu->AddPage(clientsPage);
 }
 
 void OInfoBlockEditor::ShowClientsPage()
@@ -931,7 +533,7 @@ void OInfoBlockEditor::ShowClientsPage()
     RefreshClientsList();
     m_clientsTree->setCurrentItem(nullptr);
     OnClientSelected(nullptr);
-    m_stack->setCurrentIndex(3);
+    m_menu->ShowPage(3);
 }
 
 void OInfoBlockEditor::RefreshClientsList()
@@ -1223,7 +825,7 @@ void OInfoBlockEditor::SetupCollectionsPage()
     splitter->setSizes({400, 400});  // 50/50 at open — ratio kept on window resize
     vbox->addWidget(splitter, 1);
 
-    m_stack->addWidget(collectionsPage);
+    m_menu->AddPage(collectionsPage);
 }
 
 void OInfoBlockEditor::ShowCollectionsPage()
@@ -1234,7 +836,7 @@ void OInfoBlockEditor::ShowCollectionsPage()
     RefreshCollectionsList();
     m_collectionsTree->setCurrentItem(nullptr);
     OnCollectionSelected(nullptr);
-    m_stack->setCurrentIndex(4);
+    m_menu->ShowPage(4);
 }
 
 void OInfoBlockEditor::RefreshCollectionsList()
@@ -1471,9 +1073,9 @@ void OInfoBlockEditor::NewTemplate()
 
     m_template = OPieceCartoucheTemplate(tr("Template 1"));
     m_filePath.clear();
-    m_stack->setCurrentIndex(0);
+    m_menu->ShowPage(0);
     m_nameEdit->setText(m_template.Name());
-    RebuildLanguageRow();
+    m_languageRow->SetLanguages(m_template.Languages());
     RefreshSectionList();
     SelectSection(-1);
     ApplyMenuRow();
@@ -1483,7 +1085,7 @@ void OInfoBlockEditor::NewTemplate()
 void OInfoBlockEditor::ShowTemplatesList()
 {
     m_templatesPage->Refresh();
-    m_stack->setCurrentIndex(1);
+    m_menu->ShowPage(1);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1492,27 +1094,27 @@ void OInfoBlockEditor::OpenOnPage(int page)
     switch (page)
     {
         case 0:
-            m_menuList->setCurrentRow(0);
+            m_menu->HighlightRow(0);
             ShowTemplatesList();
             break;
         case 1:
-            m_menuList->setCurrentRow(1);
+            m_menu->HighlightRow(1);
             NewTemplate();
             break;
         case 2:
-            m_menuList->setCurrentRow(2);
+            m_menu->HighlightRow(2);
             ShowLogosPage();
             break;
         case 3:
-            m_menuList->setCurrentRow(3);
+            m_menu->HighlightRow(3);
             ShowClientsPage();
             break;
         case 4:
-            m_menuList->setCurrentRow(4);
+            m_menu->HighlightRow(4);
             ShowCollectionsPage();
             break;
         case 5:
-            m_menuList->setCurrentRow(5);
+            m_menu->HighlightRow(5);
             ShowAnnotationsPage();
             break;
         default:
@@ -1540,9 +1142,9 @@ void OInfoBlockEditor::LoadFile(const QString &filePath)
 
     m_template = tpl;
     m_filePath = filePath;
-    m_stack->setCurrentIndex(0);
+    m_menu->ShowPage(0);
     m_nameEdit->setText(m_template.Name());
-    RebuildLanguageRow();
+    m_languageRow->SetLanguages(m_template.Languages());
     RefreshSectionList();
     SelectSection(-1);
     ApplyMenuRow();
@@ -1697,7 +1299,7 @@ void OInfoBlockEditor::ApplyMenuRow()
     // Derived, never stored — see the declaration. The page says which row; the file says whether
     // « Create new » is where the user is, or whether a template that exists is being edited.
     int row = -1;
-    switch (m_stack->currentIndex())
+    switch (m_menu->CurrentPage())
     {
         case 0: // the editor page
             row = m_filePath.isEmpty() ? 1 : -1;
@@ -1708,52 +1310,26 @@ void OInfoBlockEditor::ApplyMenuRow()
             break;
 
         default:
-            row = m_stack->currentIndex();
+            row = m_menu->CurrentPage();
             break;
     }
 
-    if (row < 0)
-    {
-        m_menuList->clearSelection();
-        m_menuList->setCurrentRow(-1);
-        return;
-    }
-
-    if (m_menuList->currentRow() != row)
-    {
-        m_menuList->setCurrentRow(row);
-    }
+    m_menu->HighlightRow(row);
 }
 
 auto OInfoBlockEditor::ConfirmDiscardChanges() -> bool
 {
-    if (!m_modified)
-    {
-        return true;
-    }
+    return OTemplateGuard::ConfirmDiscardChanges(this, tr("Unsaved information block"), this);
+}
 
-    // Three answers, and the one the keyboard reaches first is the one that keeps the work.
-    const auto answer =
-        QMessageBox::warning(this, tr("Unsaved information block"),
-                             tr("This template has been changed and not saved.\n\n"
-                                "Save it before leaving it?"),
-                             QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
-                             QMessageBox::Save);
+auto OInfoBlockEditor::HasUnsavedChanges() const -> bool
+{
+    return IsModified();
+}
 
-    if (answer == QMessageBox::Cancel)
-    {
-        return false;
-    }
-
-    if (answer == QMessageBox::Save)
-    {
-        OnSave();
-        // A save that did not happen — Save As cancelled, a folder that cannot be written — has
-        // left the change unsaved, and leaving now would lose it.
-        return !IsModified();
-    }
-
-    return true;
+void OInfoBlockEditor::SaveDocument()
+{
+    OnSave();
 }
 
 void OInfoBlockEditor::SetModified(bool modified)

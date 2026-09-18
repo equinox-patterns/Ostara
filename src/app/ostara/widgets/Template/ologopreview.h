@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   OLogoPreview.h
+ **  @file   ologopreview.h
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   25/08/2026
  **

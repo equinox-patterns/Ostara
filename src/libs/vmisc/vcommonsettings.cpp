@@ -105,6 +105,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsKnownMeasurements, ("paths/
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsMeasurementLibrary, ("paths/measurementLibrary"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCartoucheTemplates, ("paths/cartoucheTemplates"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsPdfTemplates, ("paths/pdfTemplates"_L1))               // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCoverPageTemplates, ("paths/coverPageTemplates"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsLogos, ("paths/logos"_L1))                              // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsClients, ("paths/clients"_L1))                          // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsAnnotationStyles, ("paths/annotationstyles"_L1))        // NOLINT
@@ -173,6 +174,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelFont, ("pattern/labe
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelSVGFont, ("pattern/labelSVGFont"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCartoucheDefaultTemplate, ("cartouche/defaultTemplate"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPdfDefaultTemplate, ("pdfTemplate/defaultTemplate"_L1))     // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCoverPageDefaultTemplate, ("coverPage/defaultTemplate"_L1)) // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSingleStrokeOutlineFont, ("pattern/singleStrokeOutlineFont"_L1))
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSingleLineFonts, ("pattern/singleLineFonts"_L1)) // NOLINT
@@ -600,6 +602,24 @@ void VCommonSettings::SetPathPdfTemplates(const QString &value) const
 {
     QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
     settings.setValue(*settingPathsPdfTemplates, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+auto VCommonSettings::GetPathCoverPageTemplates() const -> QString
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingPathsCoverPageTemplates,
+                          QDir::homePath() + QStringLiteral("/Ostara/CoverPageTemplate")).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void VCommonSettings::SetPathCoverPageTemplates(const QString &value) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingPathsCoverPageTemplates, value);
     settings.sync();
 }
 
@@ -1577,6 +1597,23 @@ auto VCommonSettings::GetDefaultPdfTemplate() const -> QString
 void VCommonSettings::SetDefaultPdfTemplate(const QString &name)
 {
     setValue(*settingPdfDefaultTemplate, name);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+auto VCommonSettings::GetDefaultCoverPageTemplate() const -> QString
+{
+    // Empty by default, where the assembly marks fall back to « Default »: nothing seeds a cover
+    // page, so the folder starts empty and there is no name for the favourite to point at until
+    // the user stars one.
+    return value(*settingCoverPageDefaultTemplate, QString()).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void VCommonSettings::SetDefaultCoverPageTemplate(const QString &name)
+{
+    setValue(*settingCoverPageDefaultTemplate, name);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

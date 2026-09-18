@@ -1,10 +1,10 @@
 /************************************************************************
  **
- **  @file   OPieceCartoucheTable.h
+ **  @file   osizetable.h
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   25/08/2026
  **
- **  @brief  Read-only facade over the pattern's loaded .omt size table.
+ **  @brief  The pattern's size table — axes, measurements and units, read once.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -24,8 +24,8 @@
  **
  *************************************************************************/
 
-#ifndef OPIECECARTOUCHETABLE_H
-#define OPIECECARTOUCHETABLE_H
+#ifndef OSIZETABLE_H
+#define OSIZETABLE_H
 
 #include <QString>
 #include <QStringList>
@@ -45,11 +45,11 @@ class OOtuDocument;
  * measurement values. A missing path or an unreadable file are treated as
  * "no table" (the table-driven sections then render nothing, spec §4.3).
  */
-class OPieceCartoucheTable
+class OSizeTable
 {
 public:
-    OPieceCartoucheTable();
-    ~OPieceCartoucheTable();
+    OSizeTable();
+    ~OSizeTable();
 
     /// Re-resolve the current pattern's measurement table path (.omt or .otu)
     /// and re-parse only when it changed.
@@ -100,4 +100,4 @@ private:
     QString m_sourcePath;
 };
 
-#endif // OPIECECARTOUCHETABLE_H
+#endif // OSIZETABLE_H
