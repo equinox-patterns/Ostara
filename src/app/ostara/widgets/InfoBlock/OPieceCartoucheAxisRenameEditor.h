@@ -32,15 +32,15 @@
 class OAxisRenameEditor;
 
 /**
- * @brief The cartouche's control for renaming an axis or a measurement, per language.
+ * @brief The cartouche's control for renaming size axes, or a measurement, per language.
  *
  * A wrapper, and only a wrapper: `OAxisRenameEditor` is the control and does the work, and this
- * puts it where the shared section editor can build it — what the aliases read from — the axis of
- * a size table, its values, the measurement's name — is knowledge of this family's, and the shared
- * editor is not given it.
+ * puts it where the shared section editor can build it — what there is to rename is knowledge of
+ * this family's, and the shared editor is not given it. The control itself is shared with the cover
+ * page, which shows the same axes of the same table and renames them the same way.
  *
- * It is the composite that has to be *refreshed*: choosing another axis changes what is being
- * renamed, and the control has to be told. That is what the composite interface is for.
+ * It is the composite that has to be *refreshed*: the table can change under it, and a renamed
+ * measurement is dropped when another takes its place. That is what the composite interface is for.
  */
 class OPieceCartoucheAxisRenameEditor : public OTemplateOptionEditor
 {

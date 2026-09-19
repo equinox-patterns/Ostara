@@ -235,6 +235,7 @@ QWidget *OCoverPageEditor::MakeCreatePage()
     // Handed the template once, and pointed at the one the editor keeps: what changes from then
     // on is its contents, not which template is being shown.
     m_preview->SetTemplate(&m_template);
+    m_preview->SetTable(&m_table);
     m_splitter->addWidget(m_preview);
 
     m_splitter->setStretchFactor(0, 1);
@@ -658,12 +659,14 @@ void OCoverPageEditor::SelectSection(OCoverPageTemplate::Placement placement, in
     }
 
     // The band is handed over as a template of its own, so the shared editor edits one list and
-    // never learns that bands exist. No size table: a cover page states what is written on it, and
-    // the informations that read a pattern's sizes have not arrived yet.
+    // never learns that bands exist. The sizes of the pattern go with it: an information that names
+    // a size reads its axes and their values from the table, and a pattern with no .omt simply
+    // declares none.
     m_activeBand.SetPlacement(placement);
+    m_table.Load();
     if (m_sectionEditor != nullptr)
     {
-        m_sectionEditor->SetSection(&m_activeBand, index, nullptr);
+        m_sectionEditor->SetSection(&m_activeBand, index, &m_table);
     }
 
     const auto it = m_bands.constFind(placement);

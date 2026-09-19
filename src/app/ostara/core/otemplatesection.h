@@ -66,9 +66,11 @@ enum class OTemplateOptionKind
     LogoSize,     ///< double — logo size in cm
     Cut,          ///< composite — declared by the cartouche: its sub-options are in the field
     Multilingual, ///< bool — write this information once per block language
+    Boolean,      ///< bool — a plain yes-or-no the information decides for itself
     AxisRename,   ///< composite — declared by the cartouche: its sub-options are in the field
     TextSource,   ///< QString — where a text comes from: written here, or filled in per pattern
-    Text          ///< QString — a text written here, possibly on several lines
+    Text,         ///< QString — a text written here, possibly on several lines
+    SizeCase      ///< QString — which case a size information is written for: one size, or a range
 };
 
 /**
@@ -86,6 +88,25 @@ inline const QString kHere = QStringLiteral("here");
 /// The text is not written here: it is filled in once per pattern, later.
 inline const QString kPerPattern = QStringLiteral("perPattern");
 } // namespace OTemplateTextSource
+
+/**
+ * @brief The two cases a size information can be written for, for a field of kind SizeCase.
+ *
+ * Same reasoning as @ref OTemplateTextSource: what the two are is a property of the question being
+ * asked — *did this output come out as one size, or as a range?* — and not of the family that asks
+ * it. A catalogue that wants the choice reads them here, and so does anything that has to read the
+ * answer back: a resolver deciding whether the page states one size or lists the sizes it holds.
+ *
+ * The answer is not the user's to invent — it follows from how the output was generated — but it is
+ * the user's to look at, which is why the field exists at all.
+ */
+namespace OTemplateSizeCase
+{
+/// The output carries one size, so the information states it and lists nothing.
+inline const QString kSingle = QStringLiteral("single");
+/// The output carries a range, so the information lists the sizes the page holds.
+inline const QString kMulti = QStringLiteral("multi");
+} // namespace OTemplateSizeCase
 
 /**
  * @brief Declarative description of one option of a section type.
@@ -121,6 +142,32 @@ struct OTemplateOptionField
      */
     QString visibleWhenKey{};
     QStringList visibleWhenValues{};
+
+    /**
+     * The line this field shares with its neighbours, and the words at its head.
+     *
+     * An information whose typeface is three settings does not want three rows of one control
+     * each: the fields that name the same line are laid out on it, in the order they are declared,
+     * and the first of them may give the line its words. **An empty key means a row of its own,
+     * under its own label** — what every field did before this existed, and what a field that is
+     * not part of a group keeps doing.
+     *
+     * Nothing is said about how many fields a line holds or which kinds they are: a line of one is
+     * the field's own row, and what stands on a line is what the catalogue put there. Like
+     * @ref visibleWhenKey, the shared editor obeys a declaration rather than recognising a kind —
+     * it puts a font and a size together because it was told to, not because it knows a typeface.
+     */
+    QString rowKey{};
+
+    /**
+     * The words at the head of that line, read from the first field that opens it.
+     *
+     * Empty leaves the line unlabelled, which is what a group of controls that name themselves
+     * wants: a caption beside a font, a weight and a size would be spelling out what the reader
+     * already sees. A field that joined a line without words carries its own label as its tooltip,
+     * so what a caption gave permanently is still one hover away.
+     */
+    QString rowLabel{};
 
     /**
      * For a composite field: builds the control that edits it.

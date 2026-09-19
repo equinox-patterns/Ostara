@@ -135,9 +135,15 @@ auto OTemplateSection::DefaultValue(const QString &key) const -> QVariant
                 return OTemplateTextSource::kHere;
             case OTemplateOptionKind::Text:
                 return QString();
+            case OTemplateOptionKind::SizeCase:
+                return OTemplateSizeCase::kSingle;
             case OTemplateOptionKind::LogoSize:
                 return kDefaultLogoSize;
             case OTemplateOptionKind::Multilingual:
+                return false;
+            // A yes-or-no declared without a default is off: the catalogue that wants it on says
+            // so in the field, which is where a question's own answer belongs.
+            case OTemplateOptionKind::Boolean:
                 return false;
 
             // Composites carry no value of their own: they expand into their sub-options, which

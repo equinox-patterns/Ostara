@@ -66,6 +66,14 @@ void OCoverPageTemplatePreview::SetTemplate(const OCoverPageTemplate *tpl)
 
 //---------------------------------------------------------------------------------------------------------------------
 
+void OCoverPageTemplatePreview::SetTable(const OSizeTable *table)
+{
+    m_table = table;
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
 void OCoverPageTemplatePreview::Refresh()
 {
     update();
@@ -126,8 +134,8 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
         QVector<OCartoucheRenderLine> lines;
         for (const OCoverPageTemplate::Section &section : m_template->Sections(placement))
         {
-            QVector<OCartoucheRenderLine> drawn =
-                OCoverPageResolver::Resolve(section, data, this->font());
+            QVector<OCartoucheRenderLine> drawn = OCoverPageResolver::Resolve(
+                section, data, OCartouchePainter::BaseFont(), m_template->languages, m_table);
             if (drawn.isEmpty())
             {
                 // Nothing to draw — a logo nobody chose, a text left to be filled in, a name the
@@ -136,7 +144,8 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
                 // sections. What is being judged is the arrangement, and an information showing
                 // nothing would look like one that is not there at all.
                 const OTemplateSection &type = OCoverPageCatalogue::Section(section.typeId);
-                const QFont font = OCartouchePainter::SectionFont(section.options, this->font());
+                const QFont font =
+                    OCartouchePainter::SectionFont(section.options, OCartouchePainter::BaseFont());
                 const int lineSpacing =
                     section.options.value(QStringLiteral("lineSpacing"), 0).toInt();
                 drawn.append(OCartouchePainter::TextLine(
@@ -172,7 +181,15 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
         const QVector<OCartoucheRenderLine> lines = bandLines.value(cell.key());
         if (!lines.isEmpty())
         {
-            OCartouchePainter::Paint(painter, ToScreen(cell.value()), lines, contentScale);
+            // The fonts are brought to the pane's scale before the lines are laid out: the whole
+            // page is shown at a fraction of its size, so everything on it is drawn at that
+            // fraction — the words as much as a logo, and as much as the geometry of a test
+            // square. Painting the text at its print size inside a reduced page would make it as
+            // much too large as the page is reduced, and a five centimetre square would be drawn
+            // around a label that no longer fits in it.
+            const QVector<OCartoucheRenderLine> shown =
+                OCartouchePainter::ScaledLines(lines, contentScale);
+            OCartouchePainter::Paint(painter, ToScreen(cell.value()), shown, contentScale);
         }
     }
 }

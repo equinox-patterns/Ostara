@@ -26,45 +26,6 @@
 
 #include "OPieceCartoucheOptions.h"
 
-auto ParseAxisRenames(const QVariant &var) -> QMap<QString, OAxisRename>
-{
-    QMap<QString, OAxisRename> result;
-    const QVariantMap map = var.toMap();
-    for (auto it = map.constBegin(); it != map.constEnd(); ++it)
-    {
-        const QVariantMap entry = it.value().toMap();
-        OAxisRename rename;
-        rename.name = entry.value(QStringLiteral("name")).toString();
-        const QVariantList list = entry.value(QStringLiteral("values")).toList();
-        rename.values.reserve(list.size());
-        for (const QVariant &value : list)
-        {
-            rename.values.append(value.toString());
-        }
-        result.insert(it.key(), rename);
-    }
-    return result;
-}
-
-auto MakeAxisRenames(const QMap<QString, OAxisRename> &renames) -> QVariant
-{
-    QVariantMap map;
-    for (auto it = renames.constBegin(); it != renames.constEnd(); ++it)
-    {
-        QVariantMap entry;
-        entry.insert(QStringLiteral("name"), it.value().name);
-        QVariantList list;
-        list.reserve(it.value().values.size());
-        for (const QString &value : it.value().values)
-        {
-            list.append(value);
-        }
-        entry.insert(QStringLiteral("values"), list);
-        map.insert(it.key(), entry);
-    }
-    return map;
-}
-
 auto FormatPieceNumber(quint32 number, const QString &style) -> QString
 {
     // Padding is for single digits only: 1 becomes "01", but 10 stays "10" and 100 stays "100".

@@ -51,6 +51,10 @@ struct OTemplateOptionContext;
  *
  * A family answers through OTemplateSectionHost, so the same information can mean different
  * things in two families without this widget ever having to choose between them.
+ *
+ * **The settings stand in a frame titled with the information's own name**, which is what tells
+ * the user what they are editing: a form with no frame around it reads as the continuation of the
+ * list above it, whatever the colour behind it.
  */
 class OTemplateSectionEditor : public QWidget
 {
@@ -73,6 +77,14 @@ signals:
 private:
     void Rebuild();
 
+    /**
+     * @brief Puts a field's control where the field says it goes.
+     *
+     * On the line it shares with its neighbours when it names one, and on a row of its own under
+     * its own label otherwise. The first field to name a line opens it and gives it its words.
+     */
+    void PlaceControl(const OTemplateOptionField &field, QWidget *control);
+
     /// Tells every composite control that the options under it have changed.
     void RefreshCompositeEditors();
 
@@ -94,6 +106,10 @@ private:
     QWidget *m_content{nullptr};
     QFormLayout *m_form{nullptr};
     QList<ConditionalField> m_conditionals;
+
+    /// The lines the fields share, by the key those fields declare. Rebuilt with the form.
+    QHash<QString, QHBoxLayout *> m_rows;
+
     OTemplateSectionHost *m_template{nullptr};
     const OSizeTable *m_table{nullptr};
     int m_index{-1};

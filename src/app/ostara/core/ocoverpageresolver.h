@@ -33,6 +33,7 @@
 
 #include <QFont>
 #include <QString>
+#include <QStringList>
 #include <QVector>
 
 /**
@@ -53,6 +54,8 @@
  * value; the page itself draws nothing there. Which of the two is happening is the preview's
  * decision, not this one's — see the spec §6.
  */
+class OSizeTable;
+
 namespace OCoverPageResolver
 {
 /**
@@ -78,8 +81,17 @@ struct PatternData
  *
  * @param baseFont the font the page is set in, which a section's own typography starts from —
  *                 a fact about where the page is drawn, which is why the caller passes it.
+ * @param languages the display languages of the template, in the order the language row holds
+ *                 them. An information whose words are the app's own — the name a test square
+ *                 writes in its middle — is set once per language; one that carries its own
+ *                 written text is set once. The list is never empty, and the page shows what it
+ *                 holds in that order.
+ * @param table the sizes of the pattern, or null when there is none. An information that states a
+ *              size cannot state one without it: it draws nothing rather than a guess, the same
+ *              way it draws nothing for a logo nobody chose.
  */
-auto Resolve(const OCoverPageTemplate::Section &section, const PatternData &data, const QFont &baseFont)
+auto Resolve(const OCoverPageTemplate::Section &section, const PatternData &data,
+             const QFont &baseFont, const QStringList &languages, const OSizeTable *table)
     -> QVector<OCartoucheRenderLine>;
 } // namespace OCoverPageResolver
 

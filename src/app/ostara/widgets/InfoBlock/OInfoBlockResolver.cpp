@@ -29,6 +29,7 @@
 #include "OPieceCartoucheCatalogue.h"
 #include "OPieceCartoucheOptions.h"
 #include "core/otemplatesection.h"
+#include "core/otemplateseparatoroptions.h"
 #include "OPieceCartoucheStorage.h"
 #include "core/osizetable.h"
 
@@ -53,19 +54,10 @@
 
 namespace
 {
-// Compose "name [separator] value", e.g. "Stature : 168" or "Tour de poitrine 89 cm".
-QString ComposeLine(const QString &name, const QString &value, const QString &separator)
-{
-    if (value.isEmpty())
-    {
-        return name;
-    }
-    if (separator.isEmpty())
-    {
-        return name + QLatin1Char(' ') + value;
-    }
-    return name + QLatin1Char(' ') + separator + QLatin1Char(' ') + value;
-}
+// « Stature : 168 », « Tour de poitrine 89 cm » — composing such a line is one rule for both
+// families of templates, so it lives in the shared vocabulary. It used to be written here and again
+// in the preview, which is two places to change the day the rule changes.
+using OTemplateSeparatorOptions::Compose;
 
 QString Translate(const QString &locale, const char *context, const char *source)
 {
@@ -237,7 +229,7 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
                                              const QString &mainLocale) -> QList<OCartoucheRenderLine>
 {
     QList<OCartoucheRenderLine> lines;
-    const QFont baseFont = QApplication::font();
+    const QFont baseFont = OCartouchePainter::BaseFont();
     const QFont font = OCartouchePainter::SectionFont(options, baseFont);
     const int lineSpacing = options.value(QStringLiteral("lineSpacing"), 0).toInt();
     const QString typeId = type.Id();
@@ -250,42 +242,61 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
         {
             return {};  // dead data: no multi-size table
         }
-        const QString axis = options.value(QStringLiteral("axis")).toString();
-        if (axis.isEmpty() || not table->AxisNames().contains(axis))
+
+        // **The axes the user ticked, not the one a combo named.** A file written when an
+        // information could show a single axis names it under a key of its own; read as the
+        // one-element list it means, so an older cartouche keeps showing what it showed.
+        const QString legacyAxis = options.value(QStringLiteral("axis")).toString();
+        QStringList axes = options.value(OTemplateAxisOptions::kAxes).toStringList();
+        if (axes.isEmpty() && not legacyAxis.isEmpty())
         {
-            return {};  // dead data: axis not in the current table
+            axes.append(legacyAxis);
         }
-        const QString anchorValue = table->AnchorValue(axis);
-        const QStringList axisValues = table->AxisValues(axis);
-        const int anchorIndex = static_cast<int>(axisValues.indexOf(anchorValue));
-        const QMap<QString, OAxisRename> renames =
-            ParseAxisRenames(options.value(OPieceCartoucheAxisRename::kRenames));
+
+        const QMap<QString, OAxisRenames> renamesByAxis =
+            ParseAxisRenamesByAxis(options.value(OPieceCartoucheAxisRename::kRenames), legacyAxis);
         const bool oneLine = options.value(OPieceCartoucheAxisRename::kOneLine, false).toBool();
 
-        QStringList languageLines;
-        for (const QString &locale : renderLanguages)
+        // One line per axis, in the order the table declares them — which is the order the
+        // selection was stored in, whatever order the boxes were ticked in: a cartouche that
+        // listed the same three axes in a different order from one file to the next would be
+        // describing the same pattern two ways.
+        for (const QString &axis : axes)
         {
-            const OAxisRename rename = renames.value(locale);
-            const QString displayName = rename.name.isEmpty() ? axis : rename.name;
-            QString displayValue = anchorValue;
-            if (anchorIndex >= 0 && anchorIndex < rename.values.size() && not rename.values.at(anchorIndex).isEmpty())
+            if (not table->AxisNames().contains(axis))
             {
-                displayValue = rename.values.at(anchorIndex);
+                continue;  // dead data: an axis the current table does not declare
             }
-            const QString sep =
-                Translate(locale, "OInfoBlockPreview", qPrintable(options.value(QStringLiteral("separator")).toString()));
-            languageLines.append(ComposeLine(displayName, displayValue, sep));
-        }
-        if (oneLine)
-        {
-            for (const QString &text : languageLines)
+            const QString anchorValue = table->AnchorValue(axis);
+            const QStringList axisValues = table->AxisValues(axis);
+            const int anchorIndex = static_cast<int>(axisValues.indexOf(anchorValue));
+            const OAxisRenames renames = renamesByAxis.value(axis);
+
+            QStringList languageLines;
+            for (const QString &locale : renderLanguages)
             {
-                lines.append(OCartouchePainter::TextLines(text, font, lineSpacing));
+                const OAxisRename rename = renames.value(locale);
+                const QString displayName = rename.name.isEmpty() ? axis : rename.name;
+                QString displayValue = anchorValue;
+                if (anchorIndex >= 0 && anchorIndex < rename.values.size() && not rename.values.at(anchorIndex).isEmpty())
+                {
+                    displayValue = rename.values.at(anchorIndex);
+                }
+                const QString sep =
+                    Translate(locale, "OInfoBlockPreview", qPrintable(options.value(QStringLiteral("separator")).toString()));
+                languageLines.append(Compose(displayName, displayValue, sep));
             }
-        }
-        else
-        {
-            lines.append(OCartouchePainter::TextLine(languageLines.join(QStringLiteral(" - ")), font, lineSpacing));
+            if (oneLine)
+            {
+                for (const QString &text : languageLines)
+                {
+                    lines.append(OCartouchePainter::TextLines(text, font, lineSpacing));
+                }
+            }
+            else
+            {
+                lines.append(OCartouchePainter::TextLine(languageLines.join(OTemplateSeparatorOptions::kLanguageJoin), font, lineSpacing));
+            }
         }
         return lines;
     }
@@ -324,7 +335,7 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
             {
                 const QString sep = Translate(renderLanguages.at(i), "OInfoBlockPreview",
                                               qPrintable(options.value(QStringLiteral("separator")).toString()));
-                lines.append(OCartouchePainter::TextLine(ComposeLine(names.at(i), value, sep), font, lineSpacing));
+                lines.append(OCartouchePainter::TextLine(Compose(names.at(i), value, sep), font, lineSpacing));
             }
         }
         else
@@ -336,7 +347,7 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
             }
             const QString sep = Translate(mainLocale, "OInfoBlockPreview",
                                           qPrintable(options.value(QStringLiteral("separator")).toString()));
-            lines.append(OCartouchePainter::TextLine(ComposeLine(display, value, sep), font, lineSpacing));
+            lines.append(OCartouchePainter::TextLine(Compose(display, value, sep), font, lineSpacing));
         }
         return lines;
     }
@@ -353,7 +364,7 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
         const auto total = static_cast<quint32>(data->GetEffectivePieceCount());
         const QString style = options.value(OPieceCartoucheNumber::kStyle).toString();
         lines.append(OCartouchePainter::TextLine(
-            ComposeLine(FormatPieceNumber(number, style), FormatPieceNumber(total, style), separator), font,
+            Compose(FormatPieceNumber(number, style), FormatPieceNumber(total, style), separator), font,
             lineSpacing));
         return lines;
     }

@@ -287,6 +287,24 @@ void WriteBlock(QXmlStreamWriter &writer, const QPointF &origin,
 
     for (const OCartoucheRenderItem &el : laid)
     {
+        // The shape, as in the piece writer: geometry stroked where Layout placed it, unfilled.
+        // Paint draws it, so the file carries it — the two renderings of one block are the same
+        // block.
+        if (el.kind == OCartoucheRenderItem::Kind::Shape)
+        {
+            writer.writeStartElement(QStringLiteral("rect"));
+            writer.writeAttribute(QStringLiteral("x"), QString::number(el.target.x()));
+            writer.writeAttribute(QStringLiteral("y"), QString::number(el.target.y()));
+            writer.writeAttribute(QStringLiteral("width"), QString::number(el.target.width()));
+            writer.writeAttribute(QStringLiteral("height"), QString::number(el.target.height()));
+            writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("none"));
+            writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("black"));
+            writer.writeAttribute(QStringLiteral("stroke-width"),
+                                  QString::number(OCartouchePainter::kShapePenWidth
+                                                  * block.fontScale));
+            writer.writeEndElement();  // rect
+            continue;
+        }
         if (el.kind == OCartoucheRenderItem::Kind::Text)
         {
             const QFontInfo info(el.font);

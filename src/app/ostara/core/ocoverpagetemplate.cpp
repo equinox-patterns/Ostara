@@ -27,6 +27,8 @@
 #include "ocoverpagetemplate.h"
 
 #include "ocoverpagecatalogue.h"
+#include "otemplateaxisoptions.h"
+#include "otemplateseparatoroptions.h"
 
 #include "vmisc/def.h"
 
@@ -105,14 +107,19 @@ void WriteSection(QDomDocument &doc, QDomElement &parent, const OCoverPageTempla
                 element.setAttribute(field.key, QString::number(value.toDouble()));
                 break;
             case OTemplateOptionKind::Multilingual:
+            case OTemplateOptionKind::Boolean:
                 element.setAttribute(field.key, value.toBool());
                 break;
 
-            // Composites store several values under keys the field names, and writing them is
-            // more than this loop can know. A cover page declares none today; the day it does,
-            // this is where the expansion goes.
+            // A composite stores several values under keys the field names, and writing them is
+            // more than this loop can know — so the family that declares one writes it, or hands
+            // the writing to a shared piece. The axes are shared: a cartouche writes the very same
+            // three things about the very same table, and one writer is one format.
             case OTemplateOptionKind::Cut:
+                break;
+
             case OTemplateOptionKind::AxisRename:
+                WriteAxisOptions(doc, element, section.options);
                 break;
 
             case OTemplateOptionKind::FontFamily:
@@ -123,6 +130,7 @@ void WriteSection(QDomDocument &doc, QDomElement &parent, const OCoverPageTempla
             case OTemplateOptionKind::Logo:
             case OTemplateOptionKind::TextSource:
             case OTemplateOptionKind::Text:
+            case OTemplateOptionKind::SizeCase:
                 // A text written here may run over several lines. Qt writes the breaks as &#xa;
                 // inside the attribute, which the parser reads back as breaks — the text is not
                 // flattened onto one line.
@@ -164,23 +172,45 @@ auto ReadSection(const QDomElement &element) -> OCoverPageTemplate::Section
                 section.options.insert(field.key, raw.toDouble());
                 break;
             case OTemplateOptionKind::Multilingual:
+            case OTemplateOptionKind::Boolean:
                 section.options.insert(field.key,
                                        raw.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0
                                            || raw.toInt() != 0);
                 break;
 
             case OTemplateOptionKind::Cut:
-            case OTemplateOptionKind::AxisRename:
                 break;
+
+            case OTemplateOptionKind::AxisRename:
+                // The axes this page states. Read by the shared reader, which also reads the shape
+                // a cartouche wrote before it could show more than one.
+                ReadAxisOptions(element, section.options);
+                break;
+
+            case OTemplateOptionKind::Separator:
+            {
+                // The value has to be one the field offers. A separator read back from a file that
+                // this build no longer proposes would be drawn exactly as it stands, and the page
+                // would write a character nobody chose — so an unknown one takes the field's own
+                // default. **The same guard the cartouche has always had for the same value**,
+                // because it is the same value and the same question.
+                const QStringList allowed = field.values.isEmpty()
+                                                ? OTemplateSeparatorOptions::AllSeparators()
+                                                : field.values;
+                const QString fallback =
+                    field.defaultValue.isValid() ? field.defaultValue.toString() : QString();
+                section.options.insert(field.key, allowed.contains(raw) ? raw : fallback);
+                break;
+            }
 
             case OTemplateOptionKind::FontFamily:
             case OTemplateOptionKind::Axis:
             case OTemplateOptionKind::MeasureName:
-            case OTemplateOptionKind::Separator:
             case OTemplateOptionKind::NumberStyle:
             case OTemplateOptionKind::Logo:
             case OTemplateOptionKind::TextSource:
             case OTemplateOptionKind::Text:
+            case OTemplateOptionKind::SizeCase:
                 section.options.insert(field.key, raw);
                 break;
         }

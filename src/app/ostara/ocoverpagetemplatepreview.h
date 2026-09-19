@@ -31,6 +31,8 @@
 
 #include <QWidget>
 
+class OSizeTable;
+
 /**
  * @brief Shows the page a cover page is written on, and what the template puts on it.
  *
@@ -60,6 +62,15 @@ public:
     /** @brief Redraws. Called when the template changed under it. */
     void Refresh();
 
+    /**
+     * @brief The sizes of the pattern, for the informations that state one. Not owned.
+     *
+     * A cover page is written for a pattern, and an information that names a size cannot name one
+     * without the table that declares it. Null is not an error: it is a template being written
+     * before any pattern is chosen, which is exactly what the editor is.
+     */
+    void SetTable(const OSizeTable *table);
+
     /** @brief What the pane asks for when it is left to size itself. */
     auto minimumSizeHint() const -> QSize override;
 
@@ -68,6 +79,7 @@ protected:
 
 private:
     const OCoverPageTemplate *m_template{nullptr};
+    const OSizeTable *m_table{nullptr};
 };
 
 #endif // OCOVERPAGETEMPLATEPREVIEW_H

@@ -28,10 +28,12 @@
 
 #include "core/osizetable.h"
 #include "core/otemplateoptioneditor.h"
+#include "core/otemplateseparatoroptions.h"
 
 #include "core/ologolibrary.h"
 
 #include "vmisc/FactoryWidgets.h"
+#include "vwidgets/ocartouchepainter.h"
 
 #include <QButtonGroup>
 #include <QCheckBox>
@@ -39,6 +41,7 @@
 #include <QDoubleSpinBox>
 #include <QFontComboBox>
 #include <QFormLayout>
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPlainTextEdit>
@@ -83,6 +86,7 @@ void OTemplateSectionEditor::Rebuild()
     m_form = nullptr;
     m_conditionals.clear();
     m_composites.clear();
+    m_rows.clear();
 
     if (m_template == nullptr || m_index < 0 || m_index >= m_template->SectionCount())
     {
@@ -99,7 +103,16 @@ void OTemplateSectionEditor::Rebuild()
     const OTemplateSection &type = m_template->SectionType(m_template->SectionTypeId(m_index));
     const QHash<QString, QVariant> options = m_template->SectionOptions(m_index);
 
-    auto *content = new QWidget(this);
+    // **The frame carries the name of the information being edited.** Which information these
+    // settings belong to is the first thing the user has to be able to read, and a titled frame
+    // says it — a bare form read as the continuation of the list above it, and a background alone
+    // did not cut the two apart. An information the catalogue no longer declares falls back to its
+    // id, as the preview's placeholder does, so the title is never empty.
+    const QString title = type.IsValid() ? type.DisplayName() : m_template->SectionTypeId(m_index);
+    auto *content = new QGroupBox(title, this);
+    // Held from here rather than at the end: the fields are built into it as the loop runs, and a
+    // control they put on a shared line needs to know what it belongs to while it is being placed.
+    m_content = content;
     auto *layout = new QVBoxLayout(content);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(6);
@@ -125,7 +138,13 @@ void OTemplateSectionEditor::Rebuild()
             auto *control = field.compositeEditor(content, context);
             if (field.onOwnRow)
             {
-                layout->addWidget(control);
+                // A block rather than a value: it takes a whole row of the form, at the very place
+                // its field is declared. **That is what makes the form follow the catalogue's
+                // order.** A block added to the page instead would land after the settings
+                // whatever the catalogue said, because the form is only put on the page once the
+                // whole loop has run — and an information whose first field is a combo, whose
+                // second is a block and whose rest are settings would show its combo last.
+                form->addRow(control);
             }
             else
             {
@@ -153,7 +172,7 @@ void OTemplateSectionEditor::Rebuild()
                     m_template->SetSectionOption(m_index, field.key, f.family());
                     emit OptionsChanged();
                 });
-                form->addRow(field.label, combo);
+                PlaceControl(field, combo);
                 break;
             }
             case OTemplateOptionKind::FontWeight:
@@ -168,36 +187,57 @@ void OTemplateSectionEditor::Rebuild()
                     {500, "Medium"},     {600, "Demi Bold"},   {700, "Bold"},    {800, "Extra Bold"},
                     {900, "Black"},
                 };
+                // **The nine weights are all there is**, and one of them is what an unset weight
+                // means: Regular, which the application's own font carries. An entry called
+                // « Default » offered a tenth weight that is not a weight — the value it stood for
+                // was already on the list. A stored 0 still reads as Regular, and picking anything
+                // from the list — Regular included — writes a real one.
                 auto *combo = MakeComboBox(content);
-                const int current = options.value(field.key, 0).toInt();
-                combo->addItem(tr("Default"), 0);  // 0 = use default weight
+                const int stored = options.value(field.key, 0).toInt();
+                const int current = stored > 0 ? stored : QFont::Normal;
+                bool named = false;
                 for (const WeightEntry &entry : kWeights)
                 {
                     combo->addItem(tr(entry.name), entry.weight);
                     if (entry.weight == current)
                     {
                         combo->setCurrentIndex(combo->count() - 1);
+                        named = true;
                     }
+                }
+                if (!named)
+                {
+                    // A weight the list does not hold — written by hand, or by a build that knew
+                    // more of them. Showing the first entry would name a weight the file does not
+                    // ask for, so the closest honest answer is the one an unset weight gets.
+                    combo->setCurrentIndex(combo->findData(QFont::Normal));
                 }
                 connect(combo, &QComboBox::currentIndexChanged, this, [this, field, combo](int) {
                     m_template->SetSectionOption(m_index, field.key, combo->currentData().toInt());
                     emit OptionsChanged();
                 });
-                form->addRow(field.label, combo);
+                PlaceControl(field, combo);
                 break;
             }
             case OTemplateOptionKind::FontSize:
             {
+                // The size a template is set in when it does not say is a real number of pixels,
+                // and it is that number the control shows — read from the font the page is drawn
+                // in, not from the widget this editor lives in, whose stylesheet carries a screen
+                // size. An entry called « Default » named no size at all. **Nothing is written
+                // until the user turns the dial**: a field nobody touched stays unset in the file
+                // and keeps following the page's font.
                 auto *spin = new QSpinBox(content);
-                spin->setRange(0, 288);
+                spin->setRange(1, 288);
                 spin->setSuffix(QStringLiteral(" px"));
-                spin->setSpecialValueText(tr("Default"));  // 0 = use default size
-                spin->setValue(options.value(field.key, 0.0).toInt());
+                const int stored = options.value(field.key, 0.0).toInt();
+                const int baseSize = OCartouchePainter::BaseFont().pixelSize();
+                spin->setValue(stored > 0 ? stored : (baseSize > 0 ? baseSize : spin->minimum()));
                 connect(spin, &QSpinBox::valueChanged, this, [this, field](int v) {
                     m_template->SetSectionOption(m_index, field.key, v);
                     emit OptionsChanged();
                 });
-                form->addRow(field.label, spin);
+                PlaceControl(field, spin);
                 break;
             }
             case OTemplateOptionKind::LineSpacing:
@@ -212,7 +252,7 @@ void OTemplateSectionEditor::Rebuild()
                     m_template->SetSectionOption(m_index, field.key, v);
                     emit OptionsChanged();
                 });
-                form->addRow(field.label, spin);
+                PlaceControl(field, spin);
                 break;
             }
             case OTemplateOptionKind::Axis:
@@ -244,7 +284,7 @@ void OTemplateSectionEditor::Rebuild()
                     // worth.
                     RefreshCompositeEditors();
                 });
-                form->addRow(field.label, combo);
+                PlaceControl(field, combo);
                 break;
             }
             case OTemplateOptionKind::MeasureName:
@@ -287,7 +327,7 @@ void OTemplateSectionEditor::Rebuild()
                     // Same as the axis: what the composite was renaming is not what it renames now.
                     RefreshCompositeEditors();
                 });
-                form->addRow(field.label, combo);
+                PlaceControl(field, combo);
                 break;
             }
             case OTemplateOptionKind::Separator:
@@ -297,24 +337,29 @@ void OTemplateSectionEditor::Rebuild()
                     QString label;
                     QString value;
                 };
+                // The values the field offers, or — when it names none of its own — every separator
+                // there is. **One list and one loop**: the default set used to be spelled out here a
+                // second time, which is another place to forget the day a separator is added.
+                const QStringList separators =
+                    field.values.isEmpty() ? OTemplateSeparatorOptions::AllSeparators() : field.values;
+
                 QList<SeparatorEntry> entries;
-                if (field.values.isEmpty())
+                for (const QString &value : separators)
                 {
-                    // Default set: no separator, then the common punctuation.
-                    entries = {{tr("None"), QString()},
-                               {QStringLiteral(":"), QStringLiteral(":")},
-                               {QStringLiteral("-"), QStringLiteral("-")},
-                               {QStringLiteral("/"), QStringLiteral("/")},
-                               {QStringLiteral("·"), QStringLiteral("·")}};
-                }
-                else
-                {
-                    for (const QString &value : field.values)
+                    QString label = value;
+                    if (value.isEmpty())
                     {
-                        // Word separators ("of") are translated; punctuation stays as-is.
-                        const QString label = value == QLatin1String("of") ? tr("of") : value;
-                        entries.append({label, value});
+                        // **The « none » entry has to say so.** It is the first of every list and the
+                        // one checked by default, so a radio button with nothing written beside it is
+                        // a choice the user cannot read — and cannot tell from the ones next to it.
+                        label = tr("No separator");
                     }
+                    else if (value == QLatin1String("of"))
+                    {
+                        // Word separators are translated; punctuation stays as it is written.
+                        label = tr("of");
+                    }
+                    entries.append({label, value});
                 }
 
                 auto *row = new QWidget(content);
@@ -339,7 +384,7 @@ void OTemplateSectionEditor::Rebuild()
                     });
                 }
                 rowLayout->addStretch();
-                form->addRow(field.label, row);
+                PlaceControl(field, row);
                 break;
             }
             case OTemplateOptionKind::NumberStyle:
@@ -367,7 +412,7 @@ void OTemplateSectionEditor::Rebuild()
                     });
                 }
                 rowLayout->addStretch();
-                form->addRow(field.label, row);
+                PlaceControl(field, row);
                 break;
             }
             case OTemplateOptionKind::Logo:
@@ -393,7 +438,7 @@ void OTemplateSectionEditor::Rebuild()
                     m_template->SetSectionOption(m_index, field.key, combo->currentData().toString());
                     emit OptionsChanged();
                 });
-                form->addRow(field.label, combo);
+                PlaceControl(field, combo);
                 break;
             }
             case OTemplateOptionKind::LogoSize:
@@ -407,7 +452,7 @@ void OTemplateSectionEditor::Rebuild()
                     m_template->SetSectionOption(m_index, field.key, v);
                     emit OptionsChanged();
                 });
-                form->addRow(field.label, spin);
+                PlaceControl(field, spin);
                 break;
             }
             case OTemplateOptionKind::TextSource:
@@ -444,7 +489,7 @@ void OTemplateSectionEditor::Rebuild()
                     UpdateFieldVisibility();
                     emit OptionsChanged();
                 });
-                form->addRow(field.label, combo);
+                PlaceControl(field, combo);
                 break;
             }
             case OTemplateOptionKind::Text:
@@ -468,7 +513,47 @@ void OTemplateSectionEditor::Rebuild()
                     m_template->SetSectionOption(m_index, field.key, edit->toPlainText());
                     emit OptionsChanged();
                 });
-                form->addRow(field.label, edit);
+                PlaceControl(field, edit);
+                break;
+            }
+            case OTemplateOptionKind::SizeCase:
+            {
+                // Only the case that exists is offered, and that is not a shortcut: an entry for
+                // the other one would change what the user sees into nothing, because the
+                // information that lists the sizes of a range is not written yet. A combo whose
+                // second choice empties the form teaches the wrong thing about it.
+                //
+                // The words are the question's own, like the text sources above — what the two
+                // cases are does not depend on which family is asking.
+                struct CaseEntry
+                {
+                    const char *name;
+                    QString value;
+                };
+                static const CaseEntry kCases[] = {
+                    {QT_TRANSLATE_NOOP("OTemplateSectionEditor", "Single size"),
+                     OTemplateSizeCase::kSingle},
+                };
+
+                auto *combo = MakeComboBox(content);
+                const QString current =
+                    options.value(field.key, OTemplateSizeCase::kSingle).toString();
+                for (const CaseEntry &entry : kCases)
+                {
+                    combo->addItem(tr(entry.name), entry.value);
+                    if (entry.value == current)
+                    {
+                        combo->setCurrentIndex(combo->count() - 1);
+                    }
+                }
+                connect(combo, &QComboBox::currentIndexChanged, this, [this, field, combo](int) {
+                    m_template->SetSectionOption(m_index, field.key, combo->currentData().toString());
+                    // The answer decides which case is being written, so the settings that belong
+                    // to one of them come and go.
+                    UpdateFieldVisibility();
+                    emit OptionsChanged();
+                });
+                PlaceControl(field, combo);
                 break;
             }
             case OTemplateOptionKind::Multilingual:
@@ -491,6 +576,20 @@ void OTemplateSectionEditor::Rebuild()
                 layout->addWidget(check);
                 break;
             }
+            case OTemplateOptionKind::Boolean:
+            {
+                // A yes-or-no the information asks about itself. The box carries the field's own
+                // label, so it takes its row whole instead of standing under a caption in the
+                // field column — a caption beside a checkbox says the same thing twice.
+                auto *check = new QCheckBox(field.label, content);
+                check->setChecked(options.value(field.key, false).toBool());
+                connect(check, &QCheckBox::toggled, this, [this, field](bool on) {
+                    m_template->SetSectionOption(m_index, field.key, on);
+                    emit OptionsChanged();
+                });
+                form->addRow(check);
+                break;
+            }
             // A composite is built before this switch, from the factory its field carries. A field
             // of one of these kinds that declared none has nothing to draw, and draws nothing.
             case OTemplateOptionKind::Cut:
@@ -511,14 +610,67 @@ void OTemplateSectionEditor::Rebuild()
         }
     }
 
+    // Every shared line is closed with a stretch once all its fields have been added: the controls
+    // keep the width they ask for and the rest of the line stays empty.
+    for (QHBoxLayout *row : m_rows)
+    {
+        row->addStretch();
+    }
+
     layout->addLayout(form);
     layout->addStretch();
 
     m_root->addWidget(content);
-    m_content = content;
 
     UpdateFieldVisibility();
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OTemplateSectionEditor::PlaceControl(const OTemplateOptionField &field, QWidget *control)
+{
+    if (m_form == nullptr)
+    {
+        return;
+    }
+
+    // A field that names no line takes a row of its own, under its own words. Every field did,
+    // before a field could share one.
+    if (field.rowKey.isEmpty())
+    {
+        m_form->addRow(field.label, control);
+        return;
+    }
+
+    // **The line this field named.** The first field to name it opens it — under the words the
+    // catalogue gave that line, or under none at all, which is what a group of controls that name
+    // themselves wants: a caption beside a font, a weight and a size would be spelling out what the
+    // reader already sees. The fields that follow join the same line.
+    QHBoxLayout *row = m_rows.value(field.rowKey);
+    if (row == nullptr)
+    {
+        auto *line = new QWidget(m_content);
+        row = new QHBoxLayout(line);
+        row->setContentsMargins(0, 0, 0, 0);
+        row->setSpacing(8);
+        if (!field.rowLabel.isEmpty())
+        {
+            row->addWidget(new QLabel(field.rowLabel, line));
+        }
+        m_rows.insert(field.rowKey, row);
+        m_form->addRow(line);
+    }
+
+    // What a caption gave permanently is still one hover away. Without it, a size and a line
+    // spacing are two spin boxes of pixels that nothing tells apart.
+    if (control->toolTip().isEmpty())
+    {
+        control->setToolTip(field.label);
+    }
+    row->addWidget(control);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 
 void OTemplateSectionEditor::UpdateFieldVisibility()
 {

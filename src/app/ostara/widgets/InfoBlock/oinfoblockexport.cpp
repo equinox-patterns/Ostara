@@ -448,6 +448,25 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
 
             for (const OCartoucheRenderItem &el : laid)
             {
+                // A shape is the one item that is neither words nor an image: geometry, stroked
+                // where Layout placed it, unfilled, in the black the text is written in. Written
+                // here because Paint draws it — an item the painter draws and the writer drops
+                // would be the preview and the file disagreeing about the same block.
+                if (el.kind == OCartoucheRenderItem::Kind::Shape)
+                {
+                    writer.writeStartElement(QStringLiteral("rect"));
+                    writer.writeAttribute(QStringLiteral("x"), QString::number(el.target.x()));
+                    writer.writeAttribute(QStringLiteral("y"), QString::number(el.target.y()));
+                    writer.writeAttribute(QStringLiteral("width"), QString::number(el.target.width()));
+                    writer.writeAttribute(QStringLiteral("height"), QString::number(el.target.height()));
+                    writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("none"));
+                    writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("black"));
+                    writer.writeAttribute(QStringLiteral("stroke-width"),
+                                          QString::number(OCartouchePainter::kShapePenWidth
+                                                          * block.fontScale));
+                    writer.writeEndElement();  // rect
+                    continue;
+                }
                 if (el.kind == OCartoucheRenderItem::Kind::Text)
                 {
                     const QFontInfo info(el.font);

@@ -29,6 +29,8 @@
 #include "OPieceCartoucheAxisRenameEditor.h"
 #include "OPieceCartoucheCutEditor.h"
 #include "OPieceCartoucheOptions.h"
+#include "core/otemplateseparatoroptions.h"
+#include "widgets/Template/otemplateaxiseditor.h"
 
 #include <QCoreApplication>
 
@@ -55,27 +57,28 @@ auto MakeSection(const char *id, const char *sourceName, const char *description
 
 auto OPieceCartoucheCatalogue::Build() -> QList<OTemplateSection>
 {
-    const OTemplateOptionField kFontFamily{QStringLiteral("fontFamily"),
+    OTemplateOptionField kFontFamily{QStringLiteral("fontFamily"),
                                                  OTemplateOptionKind::FontFamily, T(QT_TRANSLATE_NOOP("OTemplateSection", "Font family"))};
-    const OTemplateOptionField kFontWeight{QStringLiteral("fontWeight"),
+    OTemplateOptionField kFontWeight{QStringLiteral("fontWeight"),
                                                  OTemplateOptionKind::FontWeight, T(QT_TRANSLATE_NOOP("OTemplateSection", "Font weight"))};
-    const OTemplateOptionField kFontSize{QStringLiteral("fontSize"),
+    OTemplateOptionField kFontSize{QStringLiteral("fontSize"),
                                                OTemplateOptionKind::FontSize, T(QT_TRANSLATE_NOOP("OTemplateSection", "Font size (px)"))};
     const OTemplateOptionField kLineSpacing{QStringLiteral("lineSpacing"),
                                                   OTemplateOptionKind::LineSpacing,
                                                   T(QT_TRANSLATE_NOOP("OTemplateSection", "Line spacing (px)"))};
-    const OTemplateOptionField kAxis{QStringLiteral("axis"), OTemplateOptionKind::Axis, T(QT_TRANSLATE_NOOP("OTemplateSection", "Axis"))};
     const OTemplateOptionField kMeasureName{QStringLiteral("measureName"),
                                                   OTemplateOptionKind::MeasureName, T(QT_TRANSLATE_NOOP("OTemplateSection", "Measurement"))};
     const OTemplateOptionField kSeparator{QStringLiteral("separator"),
                                                 OTemplateOptionKind::Separator, T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator"))};
     // Axis/measure separator without "-": "-" is reserved for joining the block
     // languages on a single line ("Stature : 168 - Height : 168").
-    const OTemplateOptionField kSeparatorNoDash{QStringLiteral("separator"),
-                                                      OTemplateOptionKind::Separator,
-                                                      T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator")),
-                                                      {QString(), QStringLiteral(":"), QStringLiteral("/"), QStringLiteral("·")},
-                                                      QString()};
+    // The list is not written here: the cover page offers the very same separators for the very
+    // same two things, and a list copied into the second family would agree with this one only
+    // until the day one of them changed.
+    const OTemplateOptionField kSeparatorNoDash{
+        OTemplateSeparatorOptions::kSeparator, OTemplateOptionKind::Separator,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator")),
+        OTemplateSeparatorOptions::AxisValueSeparators(), QString()};
     // Piece number: "1 of 10", "1 - 10" or "1 / 10" — no "no separator" choice.
     const OTemplateOptionField kPieceSeparator{
         QStringLiteral("separator"), OTemplateOptionKind::Separator, T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator")),
@@ -110,25 +113,46 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OTemplateSection>
         return new OPieceCartoucheCutEditor(context, parent);
     };
 
+    // The typeface is one question asked three ways, so its three answers stand on one line — and
+    // that line says nothing at its head: the three controls are the words, and « Font family »
+    // written beside them would be naming what the reader already sees. The line spacing is not one
+    // of them. It is how the lines sit, not what they are set in, so it keeps a row of its own with
+    // the words that tell it apart from a size.
+    const QString fontRow = QStringLiteral("font");
+    kFontFamily.rowKey = fontRow;
+    kFontWeight.rowKey = fontRow;
+    kFontSize.rowKey = fontRow;
+
     const QList<OTemplateOptionField> textFields = {kFontFamily, kFontWeight, kFontSize, kLineSpacing};
     // Axis rename: per-language display aliases of the axis and its values
     // (the title shown above the per-language tabs). Reused by the Measurement
     // section with a per-language name only (no values).
     OTemplateOptionField kAxisRename{QStringLiteral("axisRenames"), OTemplateOptionKind::AxisRename,
                                      T(QT_TRANSLATE_NOOP("OTemplateSection", "Rename the axis and its values"))};
-    // Composite: no aliases yet, and one line per language off.
-    kAxisRename.compositeDefaults = {{OPieceCartoucheAxisRename::kRenames, QVariantMap{}},
+    // Composite: no axes ticked yet, no aliases, and one line per language off.
+    //
+    // **The axes are chosen here and not by a combo beside it.** A combo names *the* axis, and the
+    // table declares three: a page that wanted height and commercial size would have to pick one.
+    // The selection is a list, and it belongs to this composite because it is the same question the
+    // aliases answer — which axes, and what is each called.
+    kAxisRename.compositeDefaults = {{OTemplateAxisOptions::kAxes, QStringList{}},
+                                     {OPieceCartoucheAxisRename::kRenames, QVariantMap{}},
                                      {OPieceCartoucheAxisRename::kOneLine, false}};
     kAxisRename.compositeEditor = [](QWidget *parent, const OTemplateOptionContext &context) {
-        return new OPieceCartoucheAxisRenameEditor(context, parent);
+        return new OTemplateAxisEditor(context, parent);
     };
     // A table of aliases rather than a value: it takes a row of its own, under its own title.
     kAxisRename.onOwnRow = true;
 
     OTemplateOptionField kMeasureRename{QStringLiteral("axisRenames"), OTemplateOptionKind::AxisRename,
                                         T(QT_TRANSLATE_NOOP("OTemplateSection", "Rename the measurement"))};
-    kMeasureRename.compositeDefaults = kAxisRename.compositeDefaults;
-    kMeasureRename.compositeEditor = kAxisRename.compositeEditor;
+    // A measurement is one thing, and there is nothing to tick: no axes key, and this family's own
+    // control — the axes one is shared, the measurement is not.
+    kMeasureRename.compositeDefaults = {{OPieceCartoucheAxisRename::kRenames, QVariantMap{}},
+                                        {OPieceCartoucheAxisRename::kOneLine, false}};
+    kMeasureRename.compositeEditor = [](QWidget *parent, const OTemplateOptionContext &context) {
+        return new OPieceCartoucheAxisRenameEditor(context, parent);
+    };
     kMeasureRename.onOwnRow = kAxisRename.onOwnRow;
 
     return {
@@ -160,9 +184,9 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OTemplateSection>
                     textFields),
         MakeSection("axis",
                     QT_TRANSLATE_NOOP("OTemplateSection", "Sizes (Height, Commercial size, Group...)"),
-                    QT_TRANSLATE_NOOP("OTemplateSection", "Requires a multi-size table (.omt). Shows a size-axis value under its user-given "
-                                      "name. With a single-size table, this information is simply ignored."),
-                    {kAxis, kSeparatorNoDash, kAxisRename, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Requires a multi-size table (.omt). Shows the size axes you tick, each with "
+                                      "its value under a name of your own. With a single-size table, this information is simply ignored."),
+                    {kSeparatorNoDash, kAxisRename, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("measure",
                     QT_TRANSLATE_NOOP("OTemplateSection", "Measurement"),
                     QT_TRANSLATE_NOOP("OTemplateSection", "Read from the pattern's size table. Shows the measurement's full name, its "

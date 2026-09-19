@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   18/09/2026
  **
- **  @brief  The aliases a cartouche gives to the names a size table holds.
+ **  @brief  What there is to rename in a cartouche, handed to the shared control.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -26,9 +26,7 @@
 
 #include "OPieceCartoucheAxisRenameEditor.h"
 
-#include "OAxisRenameEditor.h"
-#include "OPieceCartoucheOptions.h"
-#include "core/osizetable.h"
+#include "widgets/Template/oaxisrenameeditor.h"
 
 #include <QVBoxLayout>
 
@@ -44,12 +42,15 @@ OPieceCartoucheAxisRenameEditor::OPieceCartoucheAxisRenameEditor(const OTemplate
     m_editor = new OAxisRenameEditor(this);
     m_editor->SetTitle(context.label);
 
+    connect(m_editor, &OAxisRenameEditor::SelectionChanged, this, [context](const QStringList &axes) {
+        context.apply(OTemplateAxisOptions::kAxes, axes);
+    });
     connect(m_editor, &OAxisRenameEditor::RenamesChanged, this,
-            [context](const QMap<QString, OAxisRename> &renames) {
-                context.apply(OPieceCartoucheAxisRename::kRenames, MakeAxisRenames(renames));
+            [context](const QMap<QString, OAxisRenames> &renames) {
+                context.apply(OTemplateAxisOptions::kRenames, MakeAxisRenamesByAxis(renames));
             });
     connect(m_editor, &OAxisRenameEditor::OneLineChanged, this, [context](bool on) {
-        context.apply(OPieceCartoucheAxisRename::kOneLine, on);
+        context.apply(OTemplateAxisOptions::kOneLine, on);
     });
 
     layout->addWidget(m_editor);
@@ -61,39 +62,41 @@ OPieceCartoucheAxisRenameEditor::OPieceCartoucheAxisRenameEditor(const OTemplate
 
 void OPieceCartoucheAxisRenameEditor::Refresh(const OTemplateOptionContext &context)
 {
-    // The "original" the aliases override: the axis name and the values it holds (Sizes), or the
-    // measurement's name (Measurement — its value is computed, so there are none to list).
-    QString originalName;
-    QStringList values;
-    if (context.sectionTypeId == QStringLiteral("axis"))
+    // **A measurement, and only a measurement.** The size axes are shown by the shared composite
+    // now — the two families ask the table the same question, so they ask it with the same control.
+    // What is left here is what only a cartouche has: a measurement, which is one thing there is
+    // nothing to choose between, so it is shown without a box.
+    QString name;
+    if (context.sectionTypeId == QStringLiteral("measure"))
     {
-        originalName = context.options.value(QStringLiteral("axis")).toString();
-        values = context.table != nullptr ? context.table->AxisValues(originalName) : QStringList();
-    }
-    else if (context.sectionTypeId == QStringLiteral("measure"))
-    {
-        originalName = context.options.value(QStringLiteral("measureName")).toString();
+        name = context.options.value(QStringLiteral("measureName")).toString();
     }
 
-    QMap<QString, OAxisRename> renames =
-        ParseAxisRenames(context.options.value(OPieceCartoucheAxisRename::kRenames));
-    const bool oneLine = context.options.value(OPieceCartoucheAxisRename::kOneLine, false).toBool();
+    QList<OAxisChoice> available;
+    QStringList selected;
+    if (!name.isEmpty())
+    {
+        available.append({name, QStringList()});
+        selected.append(name);
+    }
 
-    // **The aliases are aliases of a name.** When that name changes, they describe something that
-    // is no longer on the page, and are dropped rather than left to rename the wrong thing. That is
-    // this control's business — which is why the shared editor, which used to do it, no longer
-    // knows these keys at all. The first refresh has nothing to compare with: the section has just
-    // been built and its aliases are whatever the file held.
-    if (m_refreshed && m_origin != originalName)
+    QMap<QString, OAxisRenames> renames =
+        ParseAxisRenamesByAxis(context.options.value(OTemplateAxisOptions::kRenames), QString());
+    const bool oneLine = context.options.value(OTemplateAxisOptions::kOneLine, false).toBool();
+
+    // **The aliases are aliases of a name.** A measurement that was renamed and is then swapped for
+    // another describes something that is no longer on the page, so they are dropped rather than
+    // left to rename the wrong thing. The first refresh has nothing to compare with.
+    if (m_refreshed && m_origin != name)
     {
         if (context.apply)
         {
-            context.apply(OPieceCartoucheAxisRename::kRenames, QVariantMap{});
+            context.apply(OTemplateAxisOptions::kRenames, QVariantMap{});
         }
         renames.clear();
     }
-    m_origin = originalName;
+    m_origin = name;
     m_refreshed = true;
 
-    m_editor->SetData(renames, oneLine, context.languages, originalName, values);
+    m_editor->SetData(available, selected, renames, oneLine, context.languages, false);
 }

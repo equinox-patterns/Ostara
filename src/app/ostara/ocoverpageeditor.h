@@ -28,6 +28,7 @@
 #define OCOVERPAGEEDITOR_H
 
 #include "core/ocoverpagetemplate.h"
+#include "core/osizetable.h"
 #include "widgets/Template/otemplateguard.h"
 
 #include <QList>
@@ -219,6 +220,17 @@ private:
 
     /** The form that edits the selected information — the shared, data-driven one. */
     OTemplateSectionEditor *m_sectionEditor{nullptr};
+
+    /**
+     * The sizes of the pattern the cover page is being written for — read access to the loaded
+     * .omt, given to the form and to the preview.
+     *
+     * It is what makes an information that names a size able to name one: the axes it offers are
+     * the axes this table declares, and its values are the values it holds. Empty when the pattern
+     * has no table, which is not an error — the informations that read sizes simply have none to
+     * state, and the ones that do not read any are unaffected.
+     */
+    OSizeTable m_table;
 
     /** The logo library, whose page is shared with the cartouche's editor. */
     OLogoLibraryPage *m_logosPage{nullptr};

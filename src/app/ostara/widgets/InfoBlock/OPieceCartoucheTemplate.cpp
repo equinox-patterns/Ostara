@@ -28,6 +28,7 @@
 
 #include "OPieceCartoucheCatalogue.h"
 #include "OPieceCartoucheOptions.h"
+#include "core/otemplateseparatoroptions.h"
 
 #include "def.h"
 
@@ -46,10 +47,8 @@ const QString kTagLanguages = QStringLiteral("languages");
 const QString kTagLanguage = QStringLiteral("language");
 const QString kAttrType = QStringLiteral("type");
 const QString kAttrCode = QStringLiteral("code");
-const QString kTagRename = QStringLiteral("rename");
-const QString kTagRenameValue = QStringLiteral("value");
-const QString kAttrLocale = QStringLiteral("locale");
-const QString kAttrRenameName = QStringLiteral("name");
+// The <rename> tags that used to stand here moved to the shared writer, with the rest of the axis
+// group: a cover page writes the same three things about the same table.
 const QString kFormatVersion = QStringLiteral("1.0");
 }  // namespace
 
@@ -254,47 +253,21 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
                 case OTemplateOptionKind::Logo:
                 case OTemplateOptionKind::TextSource:
                 case OTemplateOptionKind::Text:
+                case OTemplateOptionKind::SizeCase:
                     sectionEl.setAttribute(field.key, value.toString());
                     break;
                 case OTemplateOptionKind::Multilingual:
+                case OTemplateOptionKind::Boolean:
                     sectionEl.setAttribute(field.key,
                                            value.toBool() ? QStringLiteral("true") : QStringLiteral("false"));
                     break;
                 case OTemplateOptionKind::AxisRename:
-                {
-                    // The one-line-per-language flag is an attribute; the
-                    // per-language aliases become child <rename> elements. Only
-                    // non-empty aliases are persisted (empty = keep the original).
-                    const QVariant oneLine = section.options.value(OPieceCartoucheAxisRename::kOneLine);
-                    if (oneLine.isValid())
-                    {
-                        sectionEl.setAttribute(OPieceCartoucheAxisRename::kOneLine,
-                                               oneLine.toBool() ? QStringLiteral("true") : QStringLiteral("false"));
-                    }
-                    const QMap<QString, OAxisRename> renames =
-                        ParseAxisRenames(section.options.value(OPieceCartoucheAxisRename::kRenames));
-                    for (auto it = renames.constBegin(); it != renames.constEnd(); ++it)
-                    {
-                        QDomElement renameEl = doc.createElement(kTagRename);
-                        renameEl.setAttribute(kAttrLocale, it.key());
-                        if (!it.value().name.isEmpty())
-                        {
-                            renameEl.setAttribute(kAttrRenameName, it.value().name);
-                        }
-                        for (const QString &valueAlias : it.value().values)
-                        {
-                            if (valueAlias.isEmpty())
-                            {
-                                continue;
-                            }
-                            QDomElement valueEl = doc.createElement(kTagRenameValue);
-                            valueEl.appendChild(doc.createTextNode(valueAlias));
-                            renameEl.appendChild(valueEl);
-                        }
-                        sectionEl.appendChild(renameEl);
-                    }
+                    // Which axes, how each is named in each language, and whether every language
+                    // takes a line of its own. Written by the shared writer: a cover page states
+                    // the same three things about the same table, and two writers would be two
+                    // places for the format to drift.
+                    WriteAxisOptions(doc, sectionEl, section.options);
                     break;
-                }
                 case OTemplateOptionKind::Cut:
                     break;  // handled above (expands into the six fabric sub-keys)
             }
@@ -368,32 +341,9 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                 }
                 if (field.kind == OTemplateOptionKind::AxisRename)
                 {
-                    // One-line-per-language flag (attribute, default false).
-                    if (sectionEl.hasAttribute(OPieceCartoucheAxisRename::kOneLine))
-                    {
-                        const QString attr = sectionEl.attribute(OPieceCartoucheAxisRename::kOneLine);
-                        section.options.insert(OPieceCartoucheAxisRename::kOneLine,
-                                               attr.toInt() != 0
-                                                   || attr.compare(QStringLiteral("true"), Qt::CaseInsensitive) == 0);
-                    }
-                    // Per-language aliases (child <rename> elements).
-                    QMap<QString, OAxisRename> renames;
-                    for (QDomElement renameEl = sectionEl.firstChildElement(kTagRename); !renameEl.isNull();
-                         renameEl = renameEl.nextSiblingElement(kTagRename))
-                    {
-                        OAxisRename rename;
-                        rename.name = renameEl.attribute(kAttrRenameName);
-                        for (QDomElement valueEl = renameEl.firstChildElement(kTagRenameValue); !valueEl.isNull();
-                             valueEl = valueEl.nextSiblingElement(kTagRenameValue))
-                        {
-                            rename.values.append(valueEl.text());
-                        }
-                        renames.insert(renameEl.attribute(kAttrLocale), rename);
-                    }
-                    if (!renames.isEmpty())
-                    {
-                        section.options.insert(OPieceCartoucheAxisRename::kRenames, MakeAxisRenames(renames));
-                    }
+                    // Read by the shared reader, which also reads the older single-axis shape: a
+                    // cartouche saved before today opens showing what it showed.
+                    ReadAxisOptions(sectionEl, section.options);
                     continue;
                 }
                 if (!sectionEl.hasAttribute(field.key))
@@ -417,9 +367,12 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                         break;
                     case OTemplateOptionKind::Separator:
                     {
-                        static const QStringList kSeparators = {QString(), QStringLiteral(":"), QStringLiteral("-"),
-                                                                QStringLiteral("/"), QStringLiteral("·")};
-                        const QStringList allowed = field.values.isEmpty() ? kSeparators : field.values;
+                        // Every separator any information may hold — the same list the cover page
+                        // checks its own values against, so a file that one family accepts is a file
+                        // the other accepts.
+                        const QStringList allowed = field.values.isEmpty()
+                                                        ? OTemplateSeparatorOptions::AllSeparators()
+                                                        : field.values;
                         const QString fallback =
                             field.defaultValue.isValid() ? field.defaultValue.toString() : QString();
                         section.options.insert(field.key, allowed.contains(attr) ? attr : fallback);
@@ -438,9 +391,11 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                     case OTemplateOptionKind::Logo:
                     case OTemplateOptionKind::TextSource:
                     case OTemplateOptionKind::Text:
+                    case OTemplateOptionKind::SizeCase:
                         section.options.insert(field.key, attr);
                         break;
                     case OTemplateOptionKind::Multilingual:
+                    case OTemplateOptionKind::Boolean:
                         section.options.insert(field.key, attr.toInt() != 0
                                                              || attr.compare(QStringLiteral("true"),
                                                                              Qt::CaseInsensitive) == 0);

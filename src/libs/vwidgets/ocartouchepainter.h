@@ -43,27 +43,55 @@
 #include <QtGlobal>
 
 /**
- * @brief One rendered line of an information block (text or logo).
+ * @brief One text a shape places inside itself, at the spot its author chose.
+ *
+ * A shape is a piece of geometry, and what it carries is placed against the geometry rather than
+ * stacked after it: a corner label sits at a corner, a caption sits in the middle. So the box and
+ * the alignment are part of the text, not of the painter's line formula.
+ *
+ * The text may run over several lines, and — as everywhere else — one break is one line on the
+ * page. The whole block is aligned in @ref box: `Qt::AlignLeft | Qt::AlignTop` starts it at the
+ * box's top-left corner, `Qt::AlignCenter` centres it on the box's middle.
+ */
+struct OCartoucheShapeLabel
+{
+    QRectF box;                             // in the shape's own coordinates (px).
+    Qt::Alignment align = Qt::AlignCenter;  // where the text sits in its box.
+    QString text;                           // one break, one line.
+    QFont font;                             // fully styled, as a text line's is.
+    int lineSpacing = 0;                    // extra px below the line (0 = default).
+};
+
+/**
+ * @brief One rendered line of an information block (text, logo, or geometry).
  *
  * The font is fully styled (family / weight / pixel size) before being
  * stored; the painter only lays the line out.
+ *
+ * **A shape is the line that is not text and not an image.** Some information is a piece of
+ * geometry — a square a needleworker measures against a ruler, the tracé a size is graded along —
+ * with words placed against that geometry. It measures by its own box rather than by a font, and
+ * it draws outlines instead of glyphs, which the other two kinds cannot express.
  */
 struct OCartoucheRenderLine
 {
     enum class Kind
     {
         Text,
-        Logo
+        Logo,
+        Shape
     };
 
     Kind kind = Kind::Text;
     QString text;         // Kind::Text — the line text.
     QFont font;           // Kind::Text — fully styled font.
-    int lineSpacing = 0;  // Kind::Text — extra px below the line (0 = default).
+    int lineSpacing = 0;  // Kind::Text, Kind::Shape — extra px below the line (0 = default).
     QPixmap logo;         // Kind::Logo — pre-rendered logo pixmap.
     qreal logoHeight = 0; // Kind::Logo — rendered height in px.
     QString sourcePath;   // Kind::Logo — original SVG file path; Paint ignores it,
                           // the SVG writer re-inlines this file (Val Fork behaviour).
+    QVector<QRectF> shapeOutlines;               // Kind::Shape — rectangles to stroke, unfilled.
+    QVector<OCartoucheShapeLabel> shapeLabels;   // Kind::Shape — texts placed against them.
 };
 
 /**
@@ -78,7 +106,8 @@ struct OCartoucheRenderItem
     enum class Kind
     {
         Text,
-        Logo
+        Logo,
+        Shape
     };
 
     Kind kind = Kind::Text;
@@ -86,7 +115,7 @@ struct OCartoucheRenderItem
     QFont font;         // Kind::Text — fully styled font.
     QPointF pen;        // Kind::Text — drawText origin (penX, baseline).
     QPixmap pixmap;     // Kind::Logo — pre-rendered pixmap (screen painter).
-    QRectF target;      // Kind::Logo — target draw rect.
+    QRectF target;      // Kind::Logo, Kind::Shape — target draw rect.
     QString sourcePath; // Kind::Logo — original SVG file path (SVG writer only).
 };
 
@@ -102,8 +131,39 @@ namespace OCartouchePainter
 constexpr qreal kMargin = 16.0;
 constexpr qreal kLineGap = 6.0;
 
-/** @brief Section font from the template options (fontFamily / fontWeight / fontSize). */
-QFont SectionFont(const QHash<QString, QVariant> &options, const QFont &baseFont);
+/**
+ * @brief The width a shape's outline is drawn with, in pixels.
+ *
+ * **A screen pixel, not a print pixel**: the outline is a line rather than content, so it does not
+ * scale with the page — see Paint. One print pixel at `PrintDPI` is a little over a quarter of a
+ * millimetre, which is what the SVG writers put on paper; on screen the line stays one pixel wide
+ * however far the page is reduced, because a line reduced below a pixel is a line nobody can
+ * measure against.
+ */
+constexpr qreal kShapePenWidth = 1.0;
+
+/**
+ * @brief The font a template is set in when it does not say.
+ *
+ * **The application's own font, which is the one the drawing path uses.** An editor that read the
+ * size off the widget it lives in would answer with the stylesheet's — a screen size, not the size
+ * the page is printed at — and a section left at the default would preview at one size and print at
+ * another. `SectionFont` falls back to this, the previews draw with it, and the size control shows
+ * it, so the three cannot disagree about what "not set" means.
+ */
+QFont BaseFont();
+
+/**
+ * @brief Section font from the template options (fontFamily / fontWeight / fontSize).
+ *
+ * @param prefix what the three keys start with. Empty for a section's own typography; an
+ *               information that sets more than one thing in type — a value at a corner and a
+ *               caption in the middle — names each group by a prefix, and gets one font per group
+ *               out of the same three keys. The keys are built here rather than spelled out by
+ *               every resolver, so a group and its typography cannot come apart.
+ */
+QFont SectionFont(const QHash<QString, QVariant> &options, const QFont &baseFont,
+                  const QString &prefix = {});
 
 /** @brief Build a text render line. */
 OCartoucheRenderLine TextLine(const QString &text, const QFont &font, int lineSpacing);
@@ -122,6 +182,16 @@ QVector<OCartoucheRenderLine> TextLines(const QString &text, const QFont &font, 
 OCartoucheRenderLine LogoLine(const QPixmap &logo, qreal logoHeight, int lineSpacing,
                               const QString &sourcePath = {});
 
+/**
+ * @brief Build a shape render line: outlines to stroke, and the texts placed against them.
+ *
+ * The outlines and the label boxes are in the shape's own coordinates, and are drawn at their true
+ * size — a square that says five centimetres measures five centimetres on the paper. What the line
+ * measures is the whole of them, so a band gives it the room it needs and no more.
+ */
+OCartoucheRenderLine ShapeLine(const QVector<QRectF> &outlines,
+                               const QVector<OCartoucheShapeLabel> &labels, int lineSpacing);
+
 /** @brief Return the lines with every text pixel size multiplied by fontScale. */
 QVector<OCartoucheRenderLine> ScaledLines(const QVector<OCartoucheRenderLine> &lines, qreal fontScale);
 
@@ -136,6 +206,9 @@ qreal LineHeight(const QFont &font, int lineSpacing, qreal scale = 1.0);
 
 /** @brief Vertical advance of a logo line (scales the logo height and the gap). */
 qreal LogoLineHeight(qreal logoHeight, int lineSpacing, qreal scale = 1.0);
+
+/** @brief Vertical advance of a shape line (scales the shape's height and the gap). */
+qreal ShapeLineHeight(qreal shapeHeight, int lineSpacing, qreal scale = 1.0);
 
 /** @brief Natural size of a stack of lines (width = widest line + margins). */
 QSizeF NaturalSize(const QVector<OCartoucheRenderLine> &lines);

@@ -27,6 +27,8 @@
 #ifndef OPIECECARTOUCHEOPTIONS_H
 #define OPIECECARTOUCHEOPTIONS_H
 
+#include "core/otemplateaxisoptions.h"
+
 #include <QHash>
 #include <QList>
 #include <QMap>
@@ -65,29 +67,18 @@ inline const QStringList kAllKeys = {kFabricQty, kFabricOnFold, kInterfacingQty,
 /**
  * @brief Option keys of the axis-rename composite: per-language display aliases
  * of an axis and its values (never "alias" in the UI).
+ *
+ * The keys themselves moved to the shared vocabulary — a cover page renames the axes it shows the
+ * same way, and the two editors are meant to be the same editor. What is left here is the name
+ * this family knew them by.
  */
 namespace OPieceCartoucheAxisRename
 {
-/// QVariantMap: locale → { "name": QString, "values": QVariantList }. Empty
-/// entries mean "keep the original table name" (no alias).
-inline const QString kRenames = QStringLiteral("axisRenames");
-/// bool — render every block language on its own line (default false).
-inline const QString kOneLine = QStringLiteral("axisOneLine");
+/// The shared key of the alias map. See `core/otemplateaxisoptions.h`.
+inline const QString kRenames = OTemplateAxisOptions::kRenames;
+/// The shared key of the "one line per language" flag.
+inline const QString kOneLine = OTemplateAxisOptions::kOneLine;
 }  // namespace OPieceCartoucheAxisRename
-
-/// Per-language display aliases of an axis and its values (empty = keep the
-/// original table name).
-struct OAxisRename
-{
-    QString name;        ///< alias of the axis name
-    QStringList values;  ///< aliases of the axis values, in table order
-};
-
-/// Read the axis-rename option (a QVariantMap) into a locale-keyed map.
-Q_REQUIRED_RESULT auto ParseAxisRenames(const QVariant &var) -> QMap<QString, OAxisRename>;
-
-/// Serialize a locale-keyed map into the QVariant the option stores.
-Q_REQUIRED_RESULT auto MakeAxisRenames(const QMap<QString, OAxisRename> &renames) -> QVariant;
 
 /**
  * @brief Option of the piece-number section: how the number and its total are
