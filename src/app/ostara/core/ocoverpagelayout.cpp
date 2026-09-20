@@ -68,6 +68,22 @@ auto OCoverPageLayout::PageSize() -> QSizeF
 
 //---------------------------------------------------------------------------------------------------------------------
 
+auto OCoverPageLayout::ContentWidth(OCoverPageTemplate::Placement placement) -> qreal
+{
+    // The middle band is two columns of half a page each; the outer two run the whole width. The
+    // share is then the same for all four, which is what keeps one margin down the whole page —
+    // and it is read from the same two constants Place cuts its rectangles with, so a text folded
+    // here is folded to the width it will actually be given.
+    const qreal area =
+        (placement == OCoverPageTemplate::Placement::MiddleLeft
+         || placement == OCoverPageTemplate::Placement::MiddleRight)
+            ? PageSize().width() * kColumnShare
+            : PageSize().width();
+    return area * kContentShare;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
 auto OCoverPageLayout::Place(
     const QMap<OCoverPageTemplate::Placement, QVector<OCartoucheRenderLine>> &bandLines)
     -> QMap<OCoverPageTemplate::Placement, QRectF>

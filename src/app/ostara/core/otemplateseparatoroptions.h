@@ -72,11 +72,19 @@ inline auto AxisValueSeparators() -> QStringList
     return {QString(), QStringLiteral(":"), QStringLiteral("/"), QStringLiteral("·")};
 }
 
+/**
+ * @brief The token standing for « the first language bare, the others in brackets ».
+ *
+ * **A word rather than a bracket**, because it is not punctuation: it says where each language goes,
+ * and a bracket stored in the field would be read back as a bracket the user wanted printed.
+ */
+inline const QString kParenthesesSeparator = QStringLiteral("parens");
+
 /// The separators between the languages of an information's title. Fewer than the others: a title
 /// is one word per language and nothing around it, so punctuation is all it has to carry.
 inline auto LanguageSeparators() -> QStringList
 {
-    return {QString(), QStringLiteral("/")};
+    return {QString(), QStringLiteral("/"), kParenthesesSeparator};
 }
 
 /// What holds apart the languages of one axis when they share a line. **Not offered as a separator
@@ -110,6 +118,26 @@ inline auto Join(const QStringList &parts, const QString &separator) -> QString
     {
         return QString();
     }
+
+    if (separator == kParenthesesSeparator)
+    {
+        // **The languages stand one after another and only the first is bare**: « Tailles (Sizes) ».
+        // The page is read in its first language, and what follows is there for whoever reads the
+        // other one — so it is put aside rather than made equal to what it translates. Three
+        // languages are « Tailles (Sizes, Grössen) » and not « Tailles (Sizes) (Grössen) »: what is
+        // bracketed is the aside, not each language of it.
+        //
+        // This is a rule about the *order* of the parts, and it lives here for that reason: Compose
+        // only ever sees two of them and cannot tell which of the two it was handed is the first.
+        QString joined = parts.constFirst();
+        if (parts.size() > 1)
+        {
+            joined += QStringLiteral(" (") + parts.mid(1).join(QStringLiteral(", "))
+                      + QLatin1Char(')');
+        }
+        return joined;
+    }
+
     QString joined = parts.constFirst();
     for (int i = 1; i < parts.size(); ++i)
     {

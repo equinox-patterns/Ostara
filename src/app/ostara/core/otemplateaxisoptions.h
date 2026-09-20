@@ -90,11 +90,21 @@ struct OAxisRename
     QStringList values;  ///< aliases of the axis values, in table order; empty entry = keep the table's.
 };
 
-/// One axis, as the table declares it: the name to write, and the values it holds.
+/// One thing to rename, as the caller declares it: the name to write, and the values it holds.
 struct OAxisChoice
 {
     QString name;
     QStringList values;
+
+    /**
+     * @brief What the field offers to be replaced, when it is not @ref name itself.
+     *
+     * **A key and a word are not the same thing.** What is renamed is keyed by @ref name — a stable
+     * token, so a rename survives a change of language — but a field that showed that token would be
+     * showing jargon to the user. Empty means the two are one, which is what an axis is: its name is
+     * a word in the table and reads as one.
+     */
+    QString displayName{};
 };
 
 /// The aliases of one axis, by display language.

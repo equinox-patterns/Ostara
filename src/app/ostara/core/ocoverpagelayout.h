@@ -64,6 +64,17 @@ constexpr qreal kPageHeightCm = 25.9;
 auto PageSize() -> QSizeF;
 
 /**
+ * @brief How wide an information may be on this band, in printer pixels.
+ *
+ * **The page's own rule, said once.** A band's content takes a share of the band, and the middle
+ * band is two columns of half a page each — so a middle information has half the width of a top
+ * one, and a text that fits in the one runs off the other. A caller that folds a text to fit needs
+ * this number, and it must be the very one @ref Place cuts its rectangles with: two answers to one
+ * question is a text folded to a width the page does not have.
+ */
+Q_REQUIRED_RESULT auto ContentWidth(OCoverPageTemplate::Placement placement) -> qreal;
+
+/**
  * @brief Where each band's content is drawn, at print size, in printer pixels.
  *
  * The three stacked bands — the top one, the middle one's two columns, the bottom one — of which

@@ -31,6 +31,7 @@
 #include "core/ocoverpagelayout.h"
 #include "core/ocoverpageresolver.h"
 #include "core/ocoverpagesizes.h"
+#include "core/ocoversymbols.h"
 
 #include "vmisc/vabstractapplication.h"
 #include "vwidgets/ocartouchepainter.h"
@@ -72,6 +73,14 @@ void OCoverPageTemplatePreview::SetTemplate(const OCoverPageTemplate *tpl)
 void OCoverPageTemplatePreview::SetTable(const OSizeTable *table)
 {
     m_table = table;
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OCoverPageTemplatePreview::SetSymbols(const OSymbolLibrary::Library *symbols)
+{
+    m_symbols = symbols;
     update();
 }
 
@@ -137,13 +146,57 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
     // question about the loaded table and the styles authored for it — the resolver draws what it
     // is handed and knows nothing of either, and a pattern being printed will answer the same
     // question from the range its output was run with.
-    const auto LinesOf = [this](OCoverPageTemplate::Placement placement) {
+    /**
+     * **Nothing runs off the page.** A text wider than the band it stands in is folded onto as many
+     * lines as it takes — a page has edges, and content that goes past them is not content any
+     * more. A logo and a shape measure themselves rather than the page and are left alone.
+     */
+    const auto FittedToWidth = [](const QVector<OCartoucheRenderLine> &drawn, qreal width) {
+        QVector<OCartoucheRenderLine> fitted;
+        for (const OCartoucheRenderLine &line : drawn)
+        {
+            if (line.kind != OCartoucheRenderLine::Kind::Text)
+            {
+                fitted.append(line);
+                continue;
+            }
+            // **What the marks take is not room the words can have.** A legend line is its marks and
+            // its word, and folding the word to the whole band would let it run under them.
+            const qreal marksWidth = line.marks.IsEmpty()
+                                         ? 0.0
+                                         : line.marks.size.width() + OCartouchePainter::kMarksGap;
+            QVector<OCartoucheRenderLine> folded = OCartouchePainter::TextLinesFitting(
+                line.text, line.font, line.lineSpacing, width - marksWidth);
+            // **The sample belongs to the size, not to the line its word happened to land on.** A
+            // size whose name took two lines carries its trace once, after the last of them. The
+            // marks are the same kind of thing: they stand for the symbol, not for whichever line the
+            // word broke on.
+            if (line.trace.HasTrace() && !folded.isEmpty())
+            {
+                folded.last().trace = line.trace;
+            }
+            if (!line.marks.IsEmpty() && !folded.isEmpty())
+            {
+                folded.last().marks = line.marks;
+            }
+            fitted.append(folded);
+        }
+        return fitted;
+    };
+
+    const auto LinesOf = [this, &FittedToWidth](OCoverPageTemplate::Placement placement) {
         QVector<OCartoucheRenderLine> lines;
         for (const OCoverPageTemplate::Section &section : m_template->Sections(placement))
         {
             OCoverPageResolver::PatternData data;
             data.sizes = OCoverPageSizes(m_table, OCoverGradedAxisOptions::FromOptions(section.options),
                                          VAbstractApplication::VApp()->Settings());
+            // The legend's lines are worked out here for the same reason the sizes are: which symbols
+            // a page shows is a question about a library and about which of them are permanent — two
+            // things a page is not. See OCoverSymbols.
+            data.symbols = m_symbols == nullptr
+                               ? QVector<OCoverSymbols::Line>()
+                               : OCoverSymbols::Lines(*m_symbols, m_template->languages);
 
             QVector<OCartoucheRenderLine> drawn = OCoverPageResolver::Resolve(
                 section, data, OCartouchePainter::BaseFont(), m_template->languages, m_table);
@@ -162,7 +215,10 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
                 drawn.append(OCartouchePainter::TextLine(
                     type.IsValid() ? type.DisplayName() : section.typeId, font, lineSpacing));
             }
-            lines.append(drawn);
+            // **Folded before the bands are measured**, and not later: a band's height comes from
+            // the lines it holds, so folding after the page was laid out would leave it cut for a
+            // text that no longer exists — too short for what is drawn in it.
+            lines.append(FittedToWidth(drawn, OCoverPageLayout::ContentWidth(placement)));
         }
         return lines;
     };

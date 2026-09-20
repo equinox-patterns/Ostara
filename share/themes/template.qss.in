@@ -938,7 +938,8 @@ QFrame#templateLanguageSeparator {
 QFrame#templateSectionRule {
     background-color: $Border;
 }
-QPushButton#templateLanguageTrashBtn {
+QPushButton#templateLanguageTrashBtn,
+QPushButton#symbolMarkTrashBtn {
     background: transparent;
     border: none;
     border-radius: 2px;
@@ -949,11 +950,49 @@ QPushButton#templateLanguageTrashBtn {
     padding: 2px;
     image: url(:/icons/$theme/trash_$theme.svg);
 }
-QPushButton#templateLanguageTrashBtn:hover {
+QPushButton#templateLanguageTrashBtn:hover,
+QPushButton#symbolMarkTrashBtn:hover {
     background: $HoverBg;
 }
-QPushButton#templateLanguageTrashBtn:disabled {
+QPushButton#templateLanguageTrashBtn:disabled,
+QPushButton#symbolMarkTrashBtn:disabled {
     image: url(:/icons/$theme/trash_disabled.svg);
+}
+
+/* Symbols — the two arrows that move a symbol in the list. Carets, not the bands' arrows: what moves
+   here is a line of a list, and a line is what a caret points at. They carry no word — the icon says
+   "up" in every language — so the tooltip is the only place their names live. */
+QPushButton#symbolUpBtn,
+QPushButton#symbolDownBtn {
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    padding: 2px;
+}
+QPushButton#symbolUpBtn:hover,
+QPushButton#symbolDownBtn:hover {
+    background: $HoverBg;
+}
+QPushButton#symbolUpBtn {
+    image: url(:/icons/$theme/caret-up_$theme.svg);
+}
+QPushButton#symbolDownBtn {
+    image: url(:/icons/$theme/caret-down_$theme.svg);
+}
+QPushButton#symbolUpBtn:disabled {
+    image: url(:/icons/$theme/caret-up_disabled.svg);
+}
+QPushButton#symbolDownBtn:disabled {
+    image: url(:/icons/$theme/caret-down_disabled.svg);
+}
+/* Symbols — what "permanent" commits the user to, written under the box that says it. Secondary, so
+   that it reads as the box's sentence and not as another setting. */
+QLabel#symbolPermanentHint {
+    color: $TextSecondary;
 }
 
 /* Pattern page (dock Options) — scope note under a group title, meant to read as

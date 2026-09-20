@@ -70,7 +70,7 @@ void OTemplateAxisEditor::Refresh(const OTemplateOptionContext &context)
     {
         for (const QString &name : context.table->AxisNames())
         {
-            available.append({name, context.table->AxisValues(name)});
+            available.append({name, context.table->AxisValues(name), QString()});
         }
     }
 

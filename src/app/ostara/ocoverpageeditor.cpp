@@ -35,6 +35,7 @@
 #include "widgets/Template/otemplatelanguagerow.h"
 #include "ocoverpagetemplatepreview.h"
 #include "widgets/Template/ologolibrarypage.h"
+#include "widgets/Template/osymbollibrarypage.h"
 #include "widgets/Template/otemplatesectioneditor.h"
 
 #include "vmisc/def.h"
@@ -65,7 +66,8 @@ enum MenuRow : int
 {
     MenuExistingTemplates = 0,
     MenuCreateTemplate = 1,
-    MenuLogos = 2
+    MenuLogos = 2,
+    MenuSymbols = 3
 };
 
 /** What the Edition pane asks for, so that the splitter does not close over it. */
@@ -100,6 +102,30 @@ OCoverPageEditor::OCoverPageEditor(QWidget *parent) : QWidget(parent)
     // The menu and the pages it opens — the shared pair. What each row opens is decided here.
     m_menu = new OTemplateEditorMenu();
     connect(m_menu, &OTemplateEditorMenu::RowClicked, this, [this](int row) {
+        // **Leaving the template one is editing is the moment to ask about it — not arriving on
+        // it.** The other rows open libraries, which are consulted rather than edited: glancing at
+        // the logos and coming back costs nothing, and the work in progress is only at risk when
+        // the user walks away from it. Asking on the way back was asking a leaving question on
+        // arrival, and the answer was a template thrown away for having looked at something else.
+        //
+        // Asking for « Create a template » while already there is not leaving — it is starting
+        // over, and NewTemplate has its own question for that.
+        const bool leavingEditor =
+            m_menu->CurrentPage() == MenuCreateTemplate && row != MenuCreateTemplate;
+        if (leavingEditor)
+        {
+            if (!ConfirmDiscardChanges())
+            {
+                // The click has already moved the highlight: put it back on the page still open,
+                // or the menu would name one the editor never showed.
+                ApplyMenuRow();
+                return;
+            }
+            // What was thrown away is gone, and what was saved is saved: either way the page the
+            // user comes back to must not ask again about changes that are already answered for.
+            SetModified(false);
+        }
+
         switch (row)
         {
             case MenuExistingTemplates:
@@ -115,6 +141,10 @@ OCoverPageEditor::OCoverPageEditor(QWidget *parent) : QWidget(parent)
 
             case MenuLogos:
                 ShowLogosPage();
+                break;
+
+            case MenuSymbols:
+                ShowSymbolsPage();
                 break;
 
             default:
@@ -134,9 +164,17 @@ OCoverPageEditor::OCoverPageEditor(QWidget *parent) : QWidget(parent)
     // is one folder, and both families draw from it.
     m_logosPage = new OLogoLibraryPage();
 
+    // The symbols a legend is written with. **This editor's alone**: a legend belongs to a cover page
+    // and to nothing else, where the logo library above is drawn from by both families.
+    m_symbolsPage = new OSymbolLibraryPage();
+    // The legend is drawn on the editor's other page, so it has nothing to watch: it is told when
+    // the library it draws from has been written.
+    connect(m_symbolsPage, &OSymbolLibraryPage::LibraryChanged, this, &OCoverPageEditor::ReloadSymbols);
+
     m_menu->AddPage(m_templatesPage);  // index 0 — existing templates
     m_menu->AddPage(MakeCreatePage()); // index 1 — create a template
     m_menu->AddPage(m_logosPage);      // index 2 — logos
+    m_menu->AddPage(m_symbolsPage);    // index 3 — symbols
     layout->addWidget(m_menu, 1);
 
     RetranslateUI();
@@ -162,6 +200,7 @@ void OCoverPageEditor::RetranslateUI()
     m_menu->SetRowLabel(MenuExistingTemplates, tr("Existing templates"));
     m_menu->SetRowLabel(MenuCreateTemplate, tr("Create a template"));
     m_menu->SetRowLabel(MenuLogos, tr("Logo"));
+    m_menu->SetRowLabel(MenuSymbols, tr("Symbols"));
 
     // A cover page is one leaf and has no blocks, so this says « page » where Information block
     // says « block »: the same row, worded for what it is actually on.
@@ -189,6 +228,11 @@ void OCoverPageEditor::RetranslateUI()
     if (m_logosPage != nullptr)
     {
         m_logosPage->RetranslateUI();
+    }
+
+    if (m_symbolsPage != nullptr)
+    {
+        m_symbolsPage->RetranslateUI();
     }
 
     if (m_sectionEditor != nullptr)
@@ -237,6 +281,9 @@ QWidget *OCoverPageEditor::MakeCreatePage()
     // on is its contents, not which template is being shown.
     m_preview->SetTemplate(&m_template);
     m_preview->SetTable(&m_table);
+    // The legend's symbols, read from the library of the installation. Set once here like the
+    // template, and handed over again whenever the Symbols page writes the library.
+    ReloadSymbols();
     m_splitter->addWidget(m_preview);
 
     m_splitter->setStretchFactor(0, 1);
@@ -446,7 +493,7 @@ void OCoverPageEditor::ApplyMenuRow()
         // that exists is being edited.
         row = m_filePath.isEmpty() ? MenuCreateTemplate : -1;
     }
-    else if (page == MenuExistingTemplates || page == MenuLogos)
+    else if (page == MenuExistingTemplates || page == MenuLogos || page == MenuSymbols)
     {
         row = page;
     }
@@ -729,6 +776,13 @@ void OCoverPageEditor::RefreshBand(OCoverPageTemplate::Placement placement)
 
 void OCoverPageEditor::RefreshAllBands()
 {
+    // **The table first, and here rather than only when an information is selected.** A page that
+    // lists sizes reads them from the pattern's measurements table, and that table is loaded in
+    // exactly one place — SelectSection. Opening a template selects nothing, so the preview drew a
+    // page whose table was empty: every information about sizes showed nothing until the user
+    // clicked something, which is the one thing a freshly opened document must not require.
+    m_table.Load();
+
     for (OCoverPageTemplate::Placement placement : OCoverPageTemplate::Placements())
     {
         RefreshBand(placement);
@@ -777,6 +831,27 @@ void OCoverPageEditor::ShowLogosPage()
 {
     m_logosPage->Show();
     ShowMenuPage(MenuLogos);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OCoverPageEditor::ShowSymbolsPage()
+{
+    m_symbolsPage->Show();
+    ShowMenuPage(MenuSymbols);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OCoverPageEditor::ReloadSymbols()
+{
+    m_symbols = OSymbolLibrary::Load();
+
+    if (m_preview != nullptr)
+    {
+        m_preview->SetSymbols(&m_symbols);
+        m_preview->Refresh();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -27,6 +27,8 @@
 
 #include "odetailsnodewidget.h"
 
+#include "osymbolshapes.h"
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGridLayout>
@@ -60,30 +62,11 @@ namespace
 // (there is no PassmarkLineType::None).
 constexpr int kNoPassmark = -1;
 
-// The clockwise opening of a "Check mark" is a property of the mark itself, not a setting of its own:
-// it is chosen by picking the entry, so the two entries below share PassmarkLineType::CheckMark and are
-// told apart by this flag. That is why the combo is read by index — findData() returns the first match.
-struct PassmarkLineEntry
-{
-    PassmarkLineType type;
-    const char *name;
-    bool clockwise;
-};
-
+// The notch types and the words they go by are the shared catalogue's (OSymbolShapes) — a notch is
+// named in one place, and the symbol library offers the same words this page does. A "Check mark" is
+// one type and two shapes there, told apart by its opening, so the combo is read by index: findData()
+// would return the first match for both.
 constexpr int kFirstLineTypeIndex = 1; // "None" sits at index 0.
-
-constexpr PassmarkLineEntry kPassmarkLineTypes[] = {
-    {PassmarkLineType::OneLine, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "One line"), false},
-    {PassmarkLineType::TwoLines, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Two lines"), false},
-    {PassmarkLineType::ThreeLines, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Three lines"), false},
-    {PassmarkLineType::TMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "T mark"), false},
-    {PassmarkLineType::ExternalVMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "External V mark"), false},
-    {PassmarkLineType::InternalVMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Internal V mark"), false},
-    {PassmarkLineType::UMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "U mark"), false},
-    {PassmarkLineType::BoxMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Box mark"), false},
-    {PassmarkLineType::CheckMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Check mark"), false},
-    {PassmarkLineType::CheckMark, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "Check mark clockwise"), true},
-};
 
 struct PassmarkAngleEntry
 {
@@ -255,7 +238,7 @@ void ODetailsNodeWidget::PopulateCombos()
 {
     m_typeCombo->clear();
     m_typeCombo->addItem(tr("None"), kNoPassmark);
-    for (const auto &entry : kPassmarkLineTypes)
+    for (const OSymbolShapes::PassmarkEntry &entry : OSymbolShapes::Passmarks())
     {
         m_typeCombo->addItem(tr(entry.name), static_cast<int>(entry.type));
     }
@@ -377,7 +360,7 @@ auto ODetailsNodeWidget::LoadFromNode() -> bool
     // The two "Check mark" entries share their line type, so the combo is matched by index.
     int entry = -1;
     int index = 0;
-    for (const PassmarkLineEntry &candidate : kPassmarkLineTypes)
+    for (const OSymbolShapes::PassmarkEntry &candidate : OSymbolShapes::Passmarks())
     {
         if (candidate.type == node.GetPassmarkLineType() &&
             candidate.clockwise == node.IsPassmarkClockwiseOpening())
@@ -656,7 +639,7 @@ void ODetailsNodeWidget::CommitPassmarkType(int index)
         return;
     }
 
-    const PassmarkLineEntry &entry = kPassmarkLineTypes[index - kFirstLineTypeIndex];
+    const OSymbolShapes::PassmarkEntry &entry = OSymbolShapes::Passmarks().at(index - kFirstLineTypeIndex);
     const bool sameEntry = node.GetPassmarkLineType() == entry.type &&
                            node.IsPassmarkClockwiseOpening() == entry.clockwise;
     if (node.IsPassmark() && sameEntry)

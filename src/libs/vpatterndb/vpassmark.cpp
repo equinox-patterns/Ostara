@@ -1421,3 +1421,17 @@ auto VPassmark::CreatePassmarkLines(const QVector<QLineF> &lines, const QVector<
             return {lines.constFirst()};
     }
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPassmark::ShapeLines(const VPiecePassmarkData &data, const QVector<QLineF> &baseLines,
+                           PassmarkSide side) -> QVector<QLineF>
+{
+    // **The empty contour is the answer, not a stand-in for one.** What trims a notch is the seam
+    // allowance it stands in; a symbol stands in nothing, so there is nothing to trim against and
+    // the notch keeps its whole length. FindIntersection hands back the line it is given when the
+    // contour is empty, which is exactly what is wanted here.
+    //
+    // The dispatch below is the canvas's own — CreatePassmarkLines — and is reached by handing it a
+    // notch built on @p data. The two therefore draw the same shapes from the same code.
+    return VPassmark(data).CreatePassmarkLines(baseLines, {}, side);
+}

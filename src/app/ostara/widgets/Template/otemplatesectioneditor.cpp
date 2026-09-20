@@ -85,7 +85,12 @@ void OTemplateSectionEditor::Rebuild()
         m_content = nullptr;
     }
     m_form = nullptr;
+    // **Every list of controls dies with the controls.** The form is deleted just above, so these
+    // hold dangling pointers until they are cleared — and anything that walks them before the new
+    // form is built would be calling into freed widgets. A list added here without a line here is
+    // a crash the first time a section is rebuilt.
     m_conditionals.clear();
+    m_enabled.clear();
     m_composites.clear();
     m_rows.clear();
 
@@ -251,8 +256,10 @@ void OTemplateSectionEditor::Rebuild()
                 auto *spin = new QSpinBox(content);
                 spin->setRange(-100, 100);
                 spin->setSuffix(QStringLiteral(" px"));
-                spin->setToolTip(tr("Extra vertical space between this line and the next one. "
-                                    "0 = default spacing, negative = tighter, positive = more space."));
+                spin->setToolTip(tr("Extra vertical space below this line. 0 = default spacing, "
+                                    "negative = tighter, positive = more space. It counts on the "
+                                    "last line of the information as well, which is what moves what "
+                                    "stands beneath it."));
                 spin->setValue(options.value(field.key, 0).toInt());
                 connect(spin, &QSpinBox::valueChanged, this, [this, field](int v) {
                     m_template->SetSectionOption(m_index, field.key, v);
@@ -342,6 +349,7 @@ void OTemplateSectionEditor::Rebuild()
                 {
                     QString label;
                     QString value;
+                    QString hint;
                 };
                 // The values the field offers, or — when it names none of its own — every separator
                 // there is. **One list and one loop**: the default set used to be spelled out here a
@@ -353,6 +361,7 @@ void OTemplateSectionEditor::Rebuild()
                 for (const QString &value : separators)
                 {
                     QString label = value;
+                    QString hint;
                     if (value.isEmpty())
                     {
                         // **The « none » entry has to say so.** It is the first of every list and the
@@ -365,7 +374,17 @@ void OTemplateSectionEditor::Rebuild()
                         // Word separators are translated; punctuation stays as it is written.
                         label = tr("of");
                     }
-                    entries.append({label, value});
+                    else if (value == OTemplateSeparatorOptions::kParenthesesSeparator)
+                    {
+                        // **Neither punctuation nor a word**, so it is named rather than shown: the
+                        // token would read as jargon, and a bracket would read as a bracket the user
+                        // asked to print. The hint says the rest, since where each language goes is
+                        // what the choice actually decides.
+                        label = tr("In brackets");
+                        hint = tr("The first language is written plainly, the others in brackets — "
+                                  "Tailles (Sizes).");
+                    }
+                    entries.append({label, value, hint});
                 }
 
                 auto *row = new QWidget(content);
@@ -378,6 +397,7 @@ void OTemplateSectionEditor::Rebuild()
                 {
                     auto *radio = new QRadioButton(entry.label, row);
                     radio->setObjectName(QStringLiteral("separatorRadio"));
+                    radio->setToolTip(entry.hint);
                     radio->setChecked(entry.value == current);
                     group->addButton(radio);
                     rowLayout->addWidget(radio);

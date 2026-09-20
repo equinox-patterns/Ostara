@@ -27,10 +27,12 @@
 #include "ocoverpagecatalogue.h"
 
 #include "core/ocovergradedaxis.h"
+#include "core/otemplateaxisoptions.h"
 #include "core/otemplateseparatoroptions.h"
 #include "ocoveraxiseditor.h"
 #include "ocovergradedaxiseditor.h"
 #include "ocoversizerangechooser.h"
+#include "ocoversymbolstitleeditor.h"
 #include "widgets/Template/otemplateaxiseditor.h"
 
 #include <QCoreApplication>
@@ -240,6 +242,65 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
     OTemplateOptionField kAxesRule{QStringLiteral("axesRule"), OTemplateOptionKind::Rule,
                                    QString()};
 
+    // **The legend.** Its title is the one a user may rename, and for a reason none of the other
+    // informations has: what a mark means is a matter of the pattern, not of the application —
+    // "Symbols" is what Ostara calls a legend, and a pattern that reads those very marks differently
+    // says so here. It is renamed per language like the marks are, which is why the control is the
+    // shared rename editor used with a single thing to rename.
+    OTemplateOptionField kSymbolsTitleFontFamily = kFontFamily;
+    kSymbolsTitleFontFamily.rowLabel = T(QT_TRANSLATE_NOOP("OTemplateSection", "Title"));
+    OTemplateOptionField kSymbolsTitleFontWeight = kFontWeight;
+    OTemplateOptionField kSymbolsTitleFontSize = kFontSize;
+    OTemplateOptionField kSymbolsTitleLineSpacing = kLineSpacing;
+
+    OTemplateOptionField kSymbolsTitleRename{
+        QStringLiteral("titleRenames"), OTemplateOptionKind::AxisRename,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Rename the title"))};
+    // **Only the renames themselves.** The shared writer also knows a list of things and a
+    // one-line flag; neither means anything here — there is one title, and it is one line whatever
+    // happens — and a page that wrote them would be saying it had chosen something it has not.
+    kSymbolsTitleRename.compositeDefaults = {{OTemplateAxisOptions::kRenames, QVariantMap{}}};
+    kSymbolsTitleRename.compositeEditor = [](QWidget *parent, const OTemplateOptionContext &context) {
+        return new OCoverSymbolsTitleEditor(context, parent);
+    };
+    kSymbolsTitleRename.onOwnRow = true;
+
+    OTemplateOptionField kSymbolsTitleSeparator{
+        OTemplateSeparatorOptions::kLanguageSeparator, OTemplateOptionKind::Separator,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Title separator")),
+        OTemplateSeparatorOptions::LanguageSeparators(), QString()};
+
+    const OTemplateOptionField kSymbolsRule{QStringLiteral("symbolsRule"), OTemplateOptionKind::Rule,
+                                            QString()};
+
+    // How the meanings themselves are set — a second typography, and prefixed like the sizes' axes
+    // one so that `SectionFont` reads each group back by its own name.
+    OTemplateOptionField kSymbolsFontFamily{
+        QStringLiteral("symbolsFontFamily"), OTemplateOptionKind::FontFamily,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Symbol font family"))};
+    OTemplateOptionField kSymbolsFontWeight{
+        QStringLiteral("symbolsFontWeight"), OTemplateOptionKind::FontWeight,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Symbol font weight"))};
+    OTemplateOptionField kSymbolsFontSize{
+        QStringLiteral("symbolsFontSize"), OTemplateOptionKind::FontSize,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Symbol font size (px)"))};
+    OTemplateOptionField kSymbolsLineSpacing{
+        QStringLiteral("symbolsLineSpacing"), OTemplateOptionKind::LineSpacing,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Symbol line spacing (px)"))};
+
+    const QString symbolsRow = QStringLiteral("symbolsType");
+    kSymbolsFontFamily.rowKey = symbolsRow;
+    kSymbolsFontFamily.rowLabel = T(QT_TRANSLATE_NOOP("OTemplateSection", "Symbol text"));
+    kSymbolsFontWeight.rowKey = symbolsRow;
+    kSymbolsFontSize.rowKey = symbolsRow;
+
+    // **A third list, and the third of its kind.** A legend's lines each carry one meaning written in
+    // every language of the page, and this is what holds those apart — the title's own separator
+    // would not do, since a title and a line of the legend are two different sentences.
+    OTemplateOptionField kSymbolsSeparator{
+        QStringLiteral("symbolsLanguageSeparator"), OTemplateOptionKind::Separator,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Symbol separator")),
+        OTemplateSeparatorOptions::LanguageSeparators(), QString()};
     // **The question the whole range page waits on, asked first.** Which sizes the page lists is
     // what decides which axis runs and which stand still, so it stands directly under « written
     // for » and everything that depends on it is unusable until it is answered.
@@ -348,6 +409,15 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
         kAxisFontWeight,   kAxisFontSize,     kAxisLineSpacing,  kAxisSeparator,   kAxesRule,
         kGradedAxis,       kSizesFontFamily,  kSizesFontWeight,  kSizesFontSize,   kSizesLineSpacing};
 
+    // The legend's own order: how its title is set and how its languages stand together, then what
+    // the title says — a name is chosen once the thing it names has been decided — then, under a
+    // rule, how the marks' own meanings are set and how theirs stand together.
+    const QList<OTemplateOptionField> symbolsFields = {
+        kSymbolsTitleFontFamily, kSymbolsTitleFontWeight, kSymbolsTitleFontSize,
+        kSymbolsTitleLineSpacing, kSymbolsTitleSeparator, kSymbolsTitleRename, kSymbolsRule,
+        kSymbolsFontFamily, kSymbolsFontWeight, kSymbolsFontSize, kSymbolsLineSpacing,
+        kSymbolsSeparator};
+
     return {
         // The pattern's own name, read from the pattern — nothing for the user to fill in, and
         // nothing here to hold it: the template says that the name is shown and how, and the
@@ -400,6 +470,18 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
                                       "For the preview to show anything, the pattern must have a "
                                       ".omt size table loaded."),
                     sizeFields),
+        // The legend: what the marks on the sheet mean. **The library decides what is here** — its
+        // permanent symbols, in the order they were put in — so this information holds no list of its
+        // own, and the description says as much, since a user who opens it must know where a symbol
+        // is added before wondering why this is empty.
+        MakeSection("symbols",
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Symbols"),
+                    QT_TRANSLATE_NOOP("OTemplateSection",
+                                      "What the marks on the pattern mean: one line per symbol your "
+                                      "library holds as permanent, in their own order. A symbol that "
+                                      "waits to be chosen stays in the library until something asks "
+                                      "for it — add and order them in the Symbols page."),
+                    symbolsFields),
     };
 }
 

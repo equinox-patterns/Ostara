@@ -28,6 +28,7 @@
 #define OCOVERPAGETEMPLATEPREVIEW_H
 
 #include "core/ocoverpagetemplate.h"
+#include "core/osymbollibrary.h"
 
 #include <QWidget>
 
@@ -71,6 +72,16 @@ public:
      */
     void SetTable(const OSizeTable *table);
 
+    /**
+     * @brief The symbol library, for the legend. Not owned.
+     *
+     * **Handed over for the same reason the table is**: which symbols a legend holds is a question
+     * about a library and about which of them are permanent — neither of which is a property of a
+     * template. Null is not an error: it is a template written on a machine whose library has not
+     * been read yet, and the legend then draws its title alone.
+     */
+    void SetSymbols(const OSymbolLibrary::Library *symbols);
+
     /** @brief What the pane asks for when it is left to size itself. */
     auto minimumSizeHint() const -> QSize override;
 
@@ -80,6 +91,7 @@ protected:
 private:
     const OCoverPageTemplate *m_template{nullptr};
     const OSizeTable *m_table{nullptr};
+    const OSymbolLibrary::Library *m_symbols{nullptr};
 };
 
 #endif // OCOVERPAGETEMPLATEPREVIEW_H

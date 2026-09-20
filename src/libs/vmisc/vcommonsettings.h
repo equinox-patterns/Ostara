@@ -120,6 +120,9 @@ public:
     auto GetPathLogos() const -> QString;
     void SetPathLogos(const QString &value) const;
 
+    auto GetPathSymbols() const -> QString;
+    void SetPathSymbols(const QString &value) const;
+
     auto GetPathClients() const -> QString;
     void SetPathClients(const QString &value) const;
 

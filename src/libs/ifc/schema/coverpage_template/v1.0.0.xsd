@@ -75,15 +75,45 @@
     <xs:anyAttribute processContents="lax"/>
   </xs:complexType>
 
-  <!-- One information: its type, and the options that type declares.
+  <!-- One information: its type, the options that type declares, and the two maps those options
+       are made of.
 
-       The options cannot be named here. Which ones an information carries is decided by the
-       catalogue that declares it — a logo has a file and a size, the next information will have
+       The options themselves cannot be named here. Which ones an information carries is decided by
+       the catalogue that declares it — a logo has a file and a size, the next information will have
        others — and a schema that listed them would have to be rewritten every time the catalogue
-       gained a field. They are therefore carried as attributes, kept by anyAttribute, and
-       understood by the one who wrote them: the section itself. Adding an information is adding
-       an entry to the catalogue, not editing this file. -->
+       gained a field. A value is therefore carried as an attribute, kept by anyAttribute, and
+       understood by the one who wrote it: the section itself. Adding an information is adding an
+       entry to the catalogue, not editing this file.
+
+       **Two things are not a value, and they are declared below.** An alias, and the name a size is
+       shown under: both are keyed by something the user did not type — a language, an axis, a size
+       label — and a key that comes from elsewhere cannot be an attribute *name*. They are carried
+       as elements, exactly as the cartouche carries them, because it is one shared writer that
+       writes both families and a cover page that refused them could not be saved at all. -->
   <xs:complexType name="SectionType">
+    <xs:sequence>
+      <!-- Per-language display aliases of an axis and its values, named by the axis they belong
+           to. The axis name is an attribute rather than an element: it is a table's own word, and
+           one axis aliases several of its values at once. -->
+      <xs:element name="rename" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:attribute name="locale" type="xs:string" use="required"/>
+          <xs:attribute name="name" type="xs:string"/>
+          <xs:attribute name="axis" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+      <!-- What the page calls one size the range it lists holds, when it is not the table's own
+           word for it. -->
+      <xs:element name="sizeName" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="label" type="xs:string" use="required"/>
+          <xs:attribute name="shown" type="xs:string" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
     <xs:attribute name="type" type="xs:string" use="required"/>
     <xs:anyAttribute processContents="lax"/>
   </xs:complexType>

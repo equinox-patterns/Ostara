@@ -58,6 +58,8 @@ namespace
 // families of templates, so it lives in the shared vocabulary. It used to be written here and again
 // in the preview, which is two places to change the day the rule changes.
 using OTemplateSeparatorOptions::Compose;
+using OTemplateSeparatorOptions::Join;
+using OTemplateSeparatorOptions::kParenthesesSeparator;
 
 QString Translate(const QString &locale, const char *context, const char *source)
 {
@@ -340,11 +342,10 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
         }
         else
         {
-            QString display = names.isEmpty() ? storedFull : names.constFirst();
-            if (names.size() > 1)
-            {
-                display += QStringLiteral(" (") + names.mid(1).join(QStringLiteral(", ")) + QLatin1Char(')');
-            }
+            // **The languages stand as a title's do**: the first bare, the others bracketed as one
+            // aside — « 168 (Height, Grösse) ». The rule lives in one place now, so a cartouche and a
+            // cover page cannot come to hold the same two things apart in two different ways.
+            QString display = names.isEmpty() ? storedFull : Join(names, kParenthesesSeparator);
             const QString sep = Translate(mainLocale, "OInfoBlockPreview",
                                           qPrintable(options.value(QStringLiteral("separator")).toString()));
             lines.append(OCartouchePainter::TextLine(Compose(display, value, sep), font, lineSpacing));

@@ -471,6 +471,37 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
                 }
                 if (el.kind == OCartoucheRenderItem::Kind::Text)
                 {
+                    // The marks the line stands for, before its words — written here for the reason
+                    // the shape above is: Paint draws them, and an item the painter draws and the
+                    // writer drops would be the preview and the file disagreeing about the same
+                    // block. Traced first, then filled, which is the order the painter draws them in.
+                    if (!el.marks.IsEmpty())
+                    {
+                        const QTransform place =
+                            QTransform::fromTranslate(el.marksRect.left(), el.marksRect.top());
+                        for (const QPainterPath &path : el.marks.strokes)
+                        {
+                            writer.writeStartElement(QStringLiteral("path"));
+                            writer.writeAttribute(QStringLiteral("d"),
+                                                  PainterPathToSvgD(place.map(path)));
+                            writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("none"));
+                            writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("black"));
+                            writer.writeAttribute(QStringLiteral("stroke-width"),
+                                                  QString::number(OCartouchePainter::kShapePenWidth
+                                                                  * block.fontScale));
+                            writer.writeEndElement();  // path
+                        }
+                        for (const QPainterPath &path : el.marks.fills)
+                        {
+                            writer.writeStartElement(QStringLiteral("path"));
+                            writer.writeAttribute(QStringLiteral("d"),
+                                                  PainterPathToSvgD(place.map(path)));
+                            writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("black"));
+                            writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("none"));
+                            writer.writeEndElement();  // path
+                        }
+                    }
+
                     const QFontInfo info(el.font);
                     if (textAsPaths)
                     {

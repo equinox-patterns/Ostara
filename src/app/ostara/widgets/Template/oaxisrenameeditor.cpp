@@ -78,6 +78,12 @@ void OAxisRenameEditor::SetReservedAxis(const QString &axisName)
     m_reservedAxis = axisName;
 }
 
+void OAxisRenameEditor::SetOneLineOffered(bool offered)
+{
+    m_oneLineOffered = offered;
+    m_oneLineCheck->setVisible(offered);
+}
+
 void OAxisRenameEditor::SetData(const QList<OAxisChoice> &available, const QStringList &selected,
                                 const QMap<QString, OAxisRenames> &renames, bool oneLine,
                                 const QStringList &languages, bool selectable)
@@ -215,6 +221,7 @@ void OAxisRenameEditor::RebuildTabs()
 
     m_oneLineCheck->setChecked(m_oneLine);
     m_oneLineCheck->setEnabled(!m_languages.isEmpty());
+    m_oneLineCheck->setVisible(m_oneLineOffered);
     m_tabs->setVisible(!m_languages.isEmpty());
 
     // The columns: the ticked axes, in the table's order rather than in the order they were ticked.
@@ -240,11 +247,13 @@ void OAxisRenameEditor::RebuildTabs()
             const OAxisChoice &axis = shown.at(column);
             const OAxisRename rename = m_renames.value(axis.name).value(locale);
 
-            // The axis's own name heads its column. Nothing labels it: the field already holds the
-            // name, and a caption above it would be reading it aloud a second time.
+            // The column's own name heads it. Nothing labels it: the field already holds the name,
+            // and a caption above it would be reading it aloud a second time. What it *offers*, when
+            // the caller says the two differ, is the word rather than the key it is stored under.
+            const QString offered = axis.displayName.isEmpty() ? axis.name : axis.displayName;
             auto *nameEdit = new QLineEdit(page);
-            nameEdit->setText(rename.name.isEmpty() ? axis.name : rename.name);
-            nameEdit->setPlaceholderText(axis.name);
+            nameEdit->setText(rename.name.isEmpty() ? offered : rename.name);
+            nameEdit->setPlaceholderText(offered);
             connect(nameEdit, &QLineEdit::textEdited, this,
                     [this, axisName = axis.name, locale](const QString &text) {
                         StoreAlias(axisName, locale, -1, text);

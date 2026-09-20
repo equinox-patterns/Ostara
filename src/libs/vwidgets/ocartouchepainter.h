@@ -35,6 +35,7 @@
 #include <QHash>
 #include <QLineF>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPixmap>
 #include <QPointF>
 #include <QRectF>
@@ -90,6 +91,32 @@ struct OCartoucheShapeLabel
 };
 
 /**
+ * @brief The marks a legend line stands for — drawn on the line, before the words.
+ *
+ * **A legend line is a mark and a word, and this is the mark.** Some of what a cover page says is
+ * read rather than written — a grain line, a notch — and a legend is exactly that: the shape, then
+ * what it means. The marks stand before the text on the same line and the two are centred together,
+ * the same way the sample of a size's trace is drawn after it (@ref OCartoucheTraceSample).
+ *
+ * **The geometry arrives ready to draw.** What a mark is made of is the application's business, and
+ * this painter knows only how to lay out and draw what it is handed — exactly as a logo line is
+ * handed an image already rendered. Two lists, because a mark is not one kind of ink: a fold line is
+ * filled arrowheads standing on a traced line.
+ *
+ * Every length is in print pixels at scale 1, like a font's pixel size, and the caller brings the
+ * geometry to the page's scale before handing it over (@ref ScaledLines).
+ */
+struct OCartoucheSymbolMarks
+{
+    QVector<QPainterPath> strokes; ///< traced with the ink
+    QVector<QPainterPath> fills;   ///< filled with the ink
+    QSizeF size;                   ///< what the whole block takes, in print px
+
+    /// True when the line carries marks worth drawing — nothing to draw is no marks.
+    auto IsEmpty() const -> bool { return strokes.isEmpty() && fills.isEmpty(); }
+};
+
+/**
  * @brief One rendered line of an information block (text, logo, or geometry).
  *
  * The font is fully styled (family / weight / pixel size) before being
@@ -112,13 +139,20 @@ struct OCartoucheRenderLine
     Kind kind = Kind::Text;
     QString text;         // Kind::Text — the line text.
     QFont font;           // Kind::Text — fully styled font.
-    int lineSpacing = 0;  // Kind::Text, Kind::Shape — extra px below the line (0 = default).
+    // Kind::Text, Kind::Shape — extra px below the line, **the last line of a block included**: it
+    // is the one that moves the band underneath, so a single-line information is tightened by it
+    // too (0 = default, negative = tighter).
+    int lineSpacing = 0;
     QPixmap logo;         // Kind::Logo — pre-rendered logo pixmap.
     qreal logoHeight = 0; // Kind::Logo — rendered height in px.
     QString sourcePath;   // Kind::Logo — original SVG file path; Paint ignores it,
                           // the SVG writer re-inlines this file (Val Fork behaviour).
     QVector<QRectF> shapeOutlines;               // Kind::Shape — rectangles to stroke, unfilled.
     QVector<OCartoucheShapeLabel> shapeLabels;   // Kind::Shape — texts placed against them.
+
+    // Kind::Text — the marks this line stands for, drawn before its words (@ref
+    // OCartoucheSymbolMarks). A line with none is a line of text like any other.
+    OCartoucheSymbolMarks marks;
 
     /**
      * Kind::Text — a sample of a size's trace, drawn after the text and on the same line.
@@ -160,6 +194,11 @@ struct OCartoucheRenderItem
     QColor traceColor;          // its ink — the one thing on a line that is not the caller's pen.
     QVector<qreal> traceDashes; // px at the drawn scale (Paint divides by the width).
     qreal tracePenWidth = 1.0;  // px at the drawn scale.
+
+    // Kind::Text — the marks of the line, placed. Empty when the line carries none, which is why the
+    // rectangle below needs no separate "has one": placed marks say so by existing.
+    OCartoucheSymbolMarks marks;
+    QRectF marksRect;
 };
 
 /**
@@ -181,6 +220,15 @@ constexpr qreal kLineGap = 6.0;
  * two things, the same way the inter-line gap is.
  */
 constexpr qreal kTraceGap = 6.0;
+
+/**
+ * @brief The space between a line's marks and the words they stand for, in print px.
+ *
+ * Wider than the trace's gap, and for a reason that is not arithmetic: a sample stands beside the
+ * word it belongs to and reads as part of it, where a mark is a thing being pointed at — the eye has
+ * to come to rest on it before going on to the word.
+ */
+constexpr qreal kMarksGap = 12.0;
 
 /**
  * @brief The width a shape's outline is drawn with, in pixels.
@@ -229,6 +277,15 @@ OCartoucheRenderLine TextLineWithTrace(const QString &text, const QFont &font, i
                                        const OCartoucheTraceSample &trace);
 
 /**
+ * @brief Build a text render line preceded, on the same line, by the marks it stands for.
+ *
+ * The marks are placed before the words with @ref kMarksGap between them, and the two are centred
+ * together: what the reader sees is one line of a legend, and it is laid out as one.
+ */
+OCartoucheRenderLine TextLineWithSymbols(const QString &text, const QFont &font, int lineSpacing,
+                                         const OCartoucheSymbolMarks &marks);
+
+/**
  * @brief Build one render line per line of @p text, in order.
  *
  * A text written by the user may run over several lines, and **one render line is one line on the
@@ -237,6 +294,26 @@ OCartoucheRenderLine TextLineWithTrace(const QString &text, const QFont &font, i
  * Splitting is therefore where the text becomes lines, not in the painter's own layout.
  */
 QVector<OCartoucheRenderLine> TextLines(const QString &text, const QFont &font, int lineSpacing);
+
+/**
+ * @brief Build the lines of @p text so that none of them is wider than @p maxWidth.
+ *
+ * **A text that is too wide has to grow downwards, not sideways.** A page has edges and a cartouche
+ * block is measured by what it holds, but neither of them wants a sentence running off the paper:
+ * what the user typed as one line is written as however many lines it takes, broken between words.
+ *
+ * The breaks the user typed are kept — a text written in two paragraphs stays two paragraphs, and a
+ * blank line stays a blank line. What is added is only what a width makes necessary.
+ *
+ * @param maxWidth the width to fit, in print pixels. Zero or less means no limit: the text is
+ *                 returned exactly as @ref TextLines would have built it, which is what a caller
+ *                 with no page to respect wants.
+ *
+ * A word wider than @p maxWidth is put on a line of its own and overflows: a word is the smallest
+ * thing that can be moved to the next line, and cutting one in half would be inventing a word.
+ */
+QVector<OCartoucheRenderLine> TextLinesFitting(const QString &text, const QFont &font,
+                                               int lineSpacing, qreal maxWidth);
 
 /** @brief Build a logo render line (pre-rendered pixmap + original SVG source). */
 OCartoucheRenderLine LogoLine(const QPixmap &logo, qreal logoHeight, int lineSpacing,

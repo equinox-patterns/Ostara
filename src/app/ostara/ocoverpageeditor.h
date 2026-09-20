@@ -29,6 +29,7 @@
 
 #include "core/ocoverpagetemplate.h"
 #include "core/osizetable.h"
+#include "core/osymbollibrary.h"
 #include "widgets/Template/otemplateguard.h"
 
 #include <QList>
@@ -54,6 +55,7 @@ class OTemplateLanguageRow;
 class OCoverPageTemplatesPage;
 class OCoverPageTemplatePreview;
 class OLogoLibraryPage;
+class OSymbolLibraryPage;
 class OTemplateSectionEditor;
 
 /**
@@ -62,10 +64,10 @@ class OTemplateSectionEditor;
  * The assembly marks' arrangement, for the other template family: pages are built once and never
  * rebuilt, and navigating only calls setCurrentIndex().
  *
- * The menu carries three entries and the third is empty for now — the libraries of ready-made
- * pieces (a test square, the symbols, a block of text, the copyright) are added one at a time,
- * each as its own entry and its own page. What the editor edits today is a template's name; the
- * informations themselves arrive the same way, one at a time, in the Edition pane.
+ * The menu carries four entries and grows as the libraries of ready-made pieces arrive (a test
+ * square, the symbols, a block of text, the copyright) — added one at a time, each as its own entry
+ * and its own page. What the editor edits today is a template's name; the informations themselves
+ * arrive the same way, one at a time, in the Edition pane.
  *
  * **A cover page is not a plan's decor.** It is written for the PDF export of any pattern, tiled
  * or not, where the assembly marks only exist on a tiled plan — which is why this family has its
@@ -133,6 +135,17 @@ private:
     void OnAddSection(OCoverPageTemplate::Placement placement, const QString &typeId);
 
     void ShowLogosPage();
+    void ShowSymbolsPage();
+
+    /**
+     * @brief Reads the symbol library again, and shows it to the preview.
+     *
+     * **A file, read when it has changed rather than watched.** The legend is drawn on this editor's
+     * other page, so the preview has nothing to look at while the library is being edited; what has
+     * to be right is what it shows when it comes back, and one read per write is the cheapest way to
+     * be sure of it.
+     */
+    void ReloadSymbols();
 
     void ShowMenuPage(int row);
     void ShowTemplatesList();
@@ -237,8 +250,14 @@ private:
      */
     OSizeTable m_table;
 
+    /** The symbol library, read again whenever the Symbols page writes it — see ReloadSymbols. */
+    OSymbolLibrary::Library m_symbols;
+
     /** The logo library, whose page is shared with the cartouche's editor. */
     OLogoLibraryPage *m_logosPage{nullptr};
+
+    /** The symbol library, whose page is shared with the cartouche's editor. */
+    OSymbolLibraryPage *m_symbolsPage{nullptr};
 };
 
 #endif // OCOVERPAGEEDITOR_H

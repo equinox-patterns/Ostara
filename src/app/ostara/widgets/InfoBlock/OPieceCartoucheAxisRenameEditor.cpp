@@ -76,7 +76,7 @@ void OPieceCartoucheAxisRenameEditor::Refresh(const OTemplateOptionContext &cont
     QStringList selected;
     if (!name.isEmpty())
     {
-        available.append({name, QStringList()});
+        available.append({name, QStringList(), QString()});
         selected.append(name);
     }
 

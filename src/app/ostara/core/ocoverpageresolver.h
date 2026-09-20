@@ -29,6 +29,7 @@
 
 #include "ocoverpagesizes.h"
 #include "ocoverpagetemplate.h"
+#include "ocoversymbols.h"
 
 #include "vwidgets/ocartouchepainter.h"
 
@@ -86,6 +87,15 @@ struct PatternData
      * range has been chosen yet, which is a page with no sizes to list.
      */
     QVector<OCoverSizeLine> sizes;
+
+    /**
+     * @brief The legend this page shows, in the library's own order.
+     *
+     * **Handed over rather than looked up**, like the sizes above: which symbols are permanent, and
+     * what each is made of, are questions about a library a page knows nothing about — so whoever
+     * holds it answers and the page draws the answer. Empty when there is nothing to explain.
+     */
+    QVector<OCoverSymbols::Line> symbols;
 };
 
 /**

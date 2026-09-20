@@ -105,6 +105,16 @@ public:
      */
     void SetReservedAxis(const QString &axisName);
 
+    /**
+     * @brief Whether the control offers the « one line per language » choice.
+     *
+     * **A choice that could do nothing is not offered.** A title is one line whatever happens — the
+     * same word repeated down the page would read as so many titles — so an information whose
+     * languages are always joined hides the box rather than showing one that changes nothing when it
+     * is ticked.
+     */
+    void SetOneLineOffered(bool offered);
+
 signals:
     /// The axes the user wants shown, in table order.
     void SelectionChanged(const QStringList &axes);
@@ -145,6 +155,7 @@ private:
     QString m_reservedAxis;
     QMap<QString, OAxisRenames> m_renames;
     bool m_oneLine{false};
+    bool m_oneLineOffered{true};
     QStringList m_languages;
     bool m_selectable{true};
 

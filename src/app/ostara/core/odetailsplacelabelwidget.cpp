@@ -26,6 +26,8 @@
 
 #include "odetailsplacelabelwidget.h"
 
+#include "osymbolshapes.h"
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <cstddef>
@@ -52,31 +54,9 @@
 #include "../vtools/undocommands/saveplacelabeloptions.h"
 #include "vtheme.h"
 
-namespace
-{
-// Same order and names as DialogPlaceLabel::InitComboBox (creation dialog), so the
-// dock page edits the same content the tool offers.
-struct LabelTypeEntry
-{
-    PlaceLabelType type;
-    const char *name;
-};
-
-constexpr LabelTypeEntry kLabelTypes[] = {
-    {PlaceLabelType::Cross,      QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "Cross")},
-    {PlaceLabelType::Segment,    QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "Segment")},
-    {PlaceLabelType::Rectangle,  QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "Rectangle")},
-    {PlaceLabelType::Tshaped,    QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "T-shaped")},
-    {PlaceLabelType::Doubletree, QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "Doubletree")},
-    {PlaceLabelType::Corner,     QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "Corner")},
-    {PlaceLabelType::Triangle,   QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "Triangle")},
-    {PlaceLabelType::Hshaped,    QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "H-shaped")},
-    {PlaceLabelType::Button,     QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "Button")},
-    {PlaceLabelType::Circle,     QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "Circle")},
-};
-
-constexpr std::size_t kLabelTypeCount = sizeof(kLabelTypes) / sizeof(kLabelTypes[0]);
-}  // namespace
+// The types and the words they go by are the shared catalogue's (OSymbolShapes), so this page shows
+// the same names — and the same order — as the symbol library does, and a translator writes each
+// word once.
 
 //---------------------------------------------------------------------------------------------------------------------
 ODetailsPlaceLabelWidget::ODetailsPlaceLabelWidget(QWidget *parent)
@@ -137,9 +117,9 @@ ODetailsPlaceLabelWidget::ODetailsPlaceLabelWidget(QWidget *parent)
     // Type
     m_typeLabel = new QLabel(tr("Type"), m_groupBox);
     m_typeCombo = MakeComboBox(m_groupBox);
-    for (std::size_t i = 0; i < kLabelTypeCount; ++i)
+    for (const OSymbolShapes::PlaceLabelEntry &entry : OSymbolShapes::PlaceLabels())
     {
-        m_typeCombo->addItem(tr(kLabelTypes[i].name), static_cast<int>(kLabelTypes[i].type));
+        m_typeCombo->addItem(tr(entry.name), static_cast<int>(entry.type));
     }
     m_grid->addWidget(m_typeLabel, row, 0);
     m_grid->addWidget(m_typeCombo, row, 1, 1, 2);

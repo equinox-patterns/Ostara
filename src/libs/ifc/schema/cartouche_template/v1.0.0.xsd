@@ -52,6 +52,11 @@
                 </xs:sequence>
                 <xs:attribute name="locale" type="xs:string" use="required"/>
                 <xs:attribute name="name" type="xs:string"/>
+                <!-- Which axis these aliases belong to. An information states several axes, so an
+                     alias has to say which one it renames — and the attribute is declared here
+                     rather than left to the section's anyAttribute: the rename is a type of its
+                     own, and it inherits nothing from the element that holds it. -->
+                <xs:attribute name="axis" type="xs:string"/>
               </xs:complexType>
             </xs:element>
           </xs:sequence>

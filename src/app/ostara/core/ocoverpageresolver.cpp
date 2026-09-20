@@ -264,6 +264,73 @@ auto OCoverPageResolver::Resolve(const OCoverPageTemplate::Section &section, con
         return {OCartouchePainter::ShapeLine(outlines, labels, lineSpacing)};
     }
 
+    if (section.typeId == QLatin1String("symbols"))
+    {
+        // What stands between the languages of the title and of each legend line. One word, and the
+        // same one the sizes' title is joined by: a page that separated the same two things
+        // differently in two of its informations would be two formats.
+        const QString languageSeparator =
+            section.options.value(OTemplateSeparatorOptions::kLanguageSeparator).toString();
+
+        QVector<OCartoucheRenderLine> lines;
+
+        // The title, renamed or not. **A legend is the one information whose own word may have to say
+        // what this pattern means by it**: "Symbols" is what the application calls it, and a pattern
+        // that reads those very marks differently says so here.
+        const QVariantMap renames = section.options.value(OTemplateAxisOptions::kRenames).toMap();
+        const auto TitleFor = [&renames](const QString &locale) -> QString
+        {
+            // Keyed by language, and read exactly as an axis alias is: an empty one means the word was
+            // not changed, so the application's own stands.
+            const QString written = renames.value(OCoverSymbols::kTitleKey)
+                                        .toMap()
+                                        .value(locale)
+                                        .toMap()
+                                        .value(QStringLiteral("name"))
+                                        .toString();
+            return written.isEmpty() ? OCoverSymbols::TitleWord(locale) : written;
+        };
+
+        QStringList title;
+        if (languages.isEmpty())
+        {
+            title.append(TitleFor(QString()));
+        }
+        for (const QString &locale : languages)
+        {
+            title.append(TitleFor(locale));
+        }
+        if (!title.isEmpty())
+        {
+            // **One line, however many languages**: a title is a word, and the same word repeated down
+            // the page would read as so many titles. What holds them apart is the separator the user
+            // chose — and with « None » it is the space that was always there.
+            lines.append(OCartouchePainter::TextLines(
+                OTemplateSeparatorOptions::Join(title, languageSeparator), font, lineSpacing));
+        }
+
+        // Under it, one line per symbol, in the library's order. **The marks stand before the words on
+        // the same line**, which is what a legend is: the shape, then what it means.
+        //
+        // The meanings are held apart by a separator of their own: a title and a line of the legend
+        // are two different sentences, and a page that joined them the same way would be saying the
+        // two are the same kind of thing.
+        const QString symbolsSeparator =
+            section.options.value(QStringLiteral("symbolsLanguageSeparator")).toString();
+        const QFont symbolsFont =
+            OCartouchePainter::SectionFont(section.options, baseFont, QStringLiteral("symbols"));
+        const int symbolsSpacing = section.options.value(QStringLiteral("symbolsLineSpacing"), 0).toInt();
+
+        for (const OCoverSymbols::Line &symbol : data.symbols)
+        {
+            lines.append(OCartouchePainter::TextLineWithSymbols(
+                OTemplateSeparatorOptions::Join(symbol.texts, symbolsSeparator), symbolsFont,
+                symbolsSpacing, symbol.marks));
+        }
+
+        return lines;
+    }
+
     if (section.typeId == QLatin1String("sizes"))
     {
         const QString sizeCase =

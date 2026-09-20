@@ -119,6 +119,23 @@ public:
 
     static auto FindIntersection(const QLineF &line, const QVector<QPointF> &seamAllowance) -> QLineF;
 
+    /** @brief The lines of a notch drawn on its own — without a piece, and without a contour.
+     *
+     *  A symbol is a notch on its own, and **nothing is there to trim it**: the seam allowance is
+     *  what cuts a notch's free ends back, and an empty contour cuts nothing (@ref FindIntersection
+     *  returns the line it is handed). The notch therefore comes out whole — which is what a symbol
+     *  shows.
+     *
+     *  **Everything else is the notch's own.** Its length is the length of @p baseLines, its width
+     *  the one its type calls for, exactly as on the canvas: the two go through the same builders,
+     *  so a symbol and the notch it stands for cannot come apart.
+     *
+     *  @param baseLines the baseline(s) the notch is built on. One is enough for a symbol; a notch
+     *                   whose angle rule lets it sit on either side of the seam takes two.
+     */
+    static auto ShapeLines(const VPiecePassmarkData &data, const QVector<QLineF> &baseLines,
+                           PassmarkSide side = PassmarkSide::All) -> QVector<QLineF>;
+
     static const qreal passmarkRadiusFactor;
 
 private:
