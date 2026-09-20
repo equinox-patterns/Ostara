@@ -58,9 +58,10 @@ auto ShapeBounds(const OCartoucheRenderLine &line) -> QRectF
 /**
  * @brief What a stack of lines comes to, with no margin around it.
  *
- * @param gapScale multiplies the fixed gap and the line-spacing option, and nothing else: a font
- *                 is pre-scaled by ScaledLines before it arrives here, exactly as LineHeight has
- *                 it. Measured at 1, this is what NaturalSize pads with its two margins.
+ * @param gapScale multiplies the fixed gaps, the line-spacing option and a trace sample's length,
+ *                 and nothing else: a font is pre-scaled by ScaledLines before it arrives here,
+ *                 exactly as LineHeight has it, and what a shape measures is geometry. Measured at
+ *                 1, this is what NaturalSize pads with its two margins.
  */
 auto InkSize(const QVector<OCartoucheRenderLine> &lines, qreal gapScale) -> QSizeF
 {
@@ -72,11 +73,23 @@ auto InkSize(const QVector<OCartoucheRenderLine> &lines, qreal gapScale) -> QSiz
         switch (line.kind)
         {
             case OCartoucheRenderLine::Kind::Text:
+            {
                 // Ink bounds, not the pen advance: script/calligraphy fonts overhang their
                 // advance, so the block must be sized to the glyph ink.
-                width = (std::max)(width, QFontMetricsF(line.font).boundingRect(line.text).width());
-                height += QFontMetricsF(line.font).height();
+                const QFontMetricsF fm(line.font);
+                qreal lineWidth = fm.boundingRect(line.text).width();
+                if (line.trace.HasTrace())
+                {
+                    // **The sample is part of what the line measures.** What stands beside the words
+                    // takes room on the page like the words do, and a block sized to the text alone
+                    // would let its samples run out of the band it was given.
+                    lineWidth += (line.text.isEmpty() ? 0.0 : kTraceGap * gapScale)
+                                 + line.trace.lengthPx * gapScale;
+                }
+                width = (std::max)(width, lineWidth);
+                height += fm.height();
                 break;
+            }
             case OCartoucheRenderLine::Kind::Logo:
                 width = (std::max)(width, static_cast<qreal>(line.logo.width()));
                 height += line.logoHeight;
@@ -106,21 +119,35 @@ auto InkSize(const QVector<OCartoucheRenderLine> &lines, qreal gapScale) -> QSiz
  * advance-based centering shifts the line sideways. Vertical placement stays consistent (ascent +
  * descent centered in the line band). The two callers — a stacked line, and a label a shape places
  * in a box of its own — write a line the same way because it is the same line.
+ *
+ * @param extraRight room to reserve on the right of the ink, for something drawn after the text.
+ *                   **It is reserved, not ignored**: the text and what follows it are centred
+ *                   together, so a line carrying a trace sample sits where the two of them belong
+ *                   rather than where the words alone would.
  */
-auto CentredPen(const QRectF &rect, qreal top, const QFontMetricsF &fm, const QRectF &ink) -> QPointF
+auto CentredPen(const QRectF &rect, qreal top, const QFontMetricsF &fm, const QRectF &ink,
+                qreal extraRight = 0.0) -> QPointF
 {
-    return QPointF(rect.left() + rect.width() / 2.0 - ink.left() - ink.width() / 2.0,
+    const qreal total = ink.width() + extraRight;
+    return QPointF(rect.left() + rect.width() / 2.0 - total / 2.0 - ink.left(),
                    top + (fm.height() - fm.ascent() - fm.descent()) / 2.0 + fm.ascent());
 }
 } // namespace
 
 OCartoucheRenderLine TextLine(const QString &text, const QFont &font, int lineSpacing)
 {
+    return TextLineWithTrace(text, font, lineSpacing, OCartoucheTraceSample{});
+}
+
+OCartoucheRenderLine TextLineWithTrace(const QString &text, const QFont &font, int lineSpacing,
+                                       const OCartoucheTraceSample &trace)
+{
     OCartoucheRenderLine line;
     line.kind = OCartoucheRenderLine::Kind::Text;
     line.text = text;
     line.font = font;
     line.lineSpacing = lineSpacing;
+    line.trace = trace;
     return line;
 }
 
@@ -204,13 +231,40 @@ QFont BaseFont()
     return QApplication::font();
 }
 
+namespace
+{
+/**
+ * @brief The option key one part of a typeface is stored under, for a group or for the whole.
+ *
+ * **The two spellings are not the same, and that is the whole of this function.** The typography a
+ * section is set in is stored as `fontFamily`, `fontWeight`, `fontSize`; the typography of a *named
+ * group* — the corner labels of a test square, the axes of a cover page — is stored as
+ * `axisFontFamily`, `sizesFontSize` and so on. The group's name carries into the key, and the word
+ * after it is capitalised there and not here.
+ *
+ * Getting this wrong is silent: the lookup misses, no font is found, and the group is drawn in the
+ * section's own type — which looks like a control that does nothing. It is written once, here,
+ * because four callers pass a prefix and every one of them would have to remember the spelling.
+ */
+auto FontKey(const QString &prefix, const char *stem) -> QString
+{
+    if (prefix.isEmpty())
+    {
+        return QString::fromLatin1(stem);
+    }
+    QString capitalized = QString::fromLatin1(stem);
+    capitalized[0] = capitalized.at(0).toUpper();
+    return prefix + capitalized;
+}
+} // namespace
+
 QFont SectionFont(const QHash<QString, QVariant> &options, const QFont &baseFont,
                   const QString &prefix)
 {
     QFont font = baseFont;
-    const QString family = options.value(prefix + QStringLiteral("fontFamily")).toString();
-    const int weight = options.value(prefix + QStringLiteral("fontWeight"), 0).toInt();
-    const double size = options.value(prefix + QStringLiteral("fontSize"), 0.0).toDouble();
+    const QString family = options.value(FontKey(prefix, "fontFamily")).toString();
+    const int weight = options.value(FontKey(prefix, "fontWeight"), 0).toInt();
+    const double size = options.value(FontKey(prefix, "fontSize"), 0.0).toDouble();
     if (!family.isEmpty())
     {
         font.setFamily(family);
@@ -269,11 +323,37 @@ QVector<OCartoucheRenderItem> Layout(const QRectF &rect, const QVector<OCartouch
             case OCartoucheRenderLine::Kind::Text:
             {
                 const QFontMetricsF fm(line.font);
+                const QRectF ink = fm.boundingRect(line.text);
                 OCartoucheRenderItem item;
                 item.kind = OCartoucheRenderItem::Kind::Text;
                 item.text = line.text;
                 item.font = line.font;
-                item.pen = CentredPen(rect, y, fm, fm.boundingRect(line.text));
+                if (line.trace.HasTrace())
+                {
+                    // The gap separates two things, so a sample following no words asks for none —
+                    // the way the trailing inter-line gap is not part of what the content measures.
+                    const qreal gap = line.text.isEmpty() ? 0.0 : kTraceGap * scale;
+                    const qreal length = line.trace.lengthPx * scale;
+                    // **Text and sample are centred together**, which is what "one line" means to
+                    // the reader: the pair moves as a whole, so neither is pushed off centre.
+                    item.pen = CentredPen(rect, y, fm, ink, gap + length);
+                    const qreal left = item.pen.x() + ink.left() + ink.width() + gap;
+                    // Centred on the words' own ink, measured from the baseline the pen sits on: a
+                    // sample drawn on the baseline would hang below the text it belongs to.
+                    const qreal middle = item.pen.y() + ink.center().y();
+                    item.trace = QLineF(left, middle, left + length, middle);
+                    item.traceColor = line.trace.color;
+                    item.tracePenWidth = line.trace.penWidth * scale;
+                    item.traceDashes = line.trace.dashes;
+                    for (qreal &value : item.traceDashes)
+                    {
+                        value *= scale;
+                    }
+                }
+                else
+                {
+                    item.pen = CentredPen(rect, y, fm, ink);
+                }
                 items.append(item);
                 y += LineHeight(line.font, line.lineSpacing, scale);
                 break;
@@ -365,6 +445,35 @@ QVector<OCartoucheRenderItem> Layout(const QRectF &rect, const QVector<OCartouch
     return items;
 }
 
+QPen TracePen(const OCartoucheRenderItem &item)
+{
+    QPen pen(item.traceColor);
+    pen.setWidthF(item.tracePenWidth);
+    if (item.traceDashes.isEmpty())
+    {
+        pen.setStyle(Qt::SolidLine);
+    }
+    else
+    {
+        // A Qt dash pattern counts in multiples of the pen width, so a pixel length is divided by
+        // it here — the exact inverse of what the SVG writer multiplies back.
+        const qreal width = item.tracePenWidth > 0.0 ? item.tracePenWidth : 1.0;
+        QVector<qreal> pattern;
+        pattern.reserve(item.traceDashes.size());
+        for (qreal value : item.traceDashes)
+        {
+            pattern.append(value / width);
+        }
+        pen.setStyle(Qt::CustomDashLine);
+        pen.setDashPattern(pattern);
+    }
+    // Butt, so a dash ends where it says it does: Qt's default square cap stretches each dash by
+    // half a width, and the SVG export caps at butt — the same choice for the same reason as the
+    // size traces drawn on the canvas.
+    pen.setCapStyle(Qt::FlatCap);
+    return pen;
+}
+
 void Paint(QPainter &painter, const QRectF &rect, const QVector<OCartoucheRenderLine> &lines, qreal scale)
 {
     painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
@@ -376,6 +485,30 @@ void Paint(QPainter &painter, const QRectF &rect, const QVector<OCartoucheRender
             case OCartoucheRenderItem::Kind::Text:
                 painter.setFont(item.font);
                 painter.drawText(item.pen, item.text);
+                if (!item.trace.isNull())
+                {
+                    // **The one thing on a line that carries its own ink.** The words around it are
+                    // written in the caller's pen; the sample is drawn in the size's own colour and
+                    // dash, so the pen is borrowed and given back — as the shape below borrows its
+                    // own, and for the same reason: the words of the next line must be the caller's
+                    // again.
+                    //
+                    // **Not cosmetic, unlike the shape's outline.** The outline is a rule, so it
+                    // stays measurable at any scale; the sample is content, so it is drawn at the
+                    // page's scale and its dashes keep their pitch against the segment however far
+                    // the page is reduced. A cosmetic pen here would keep the device-pixel pitch and
+                    // show a four-centimetre sample at several times the real number of dashes —
+                    // the sample would be lying about the trace it stands for.
+                    //
+                    // No render hint is set either: the caller's antialiasing is what the sample
+                    // wants, and the shape arm's deliberate blur-free setting belongs to the rule.
+                    painter.save();
+                    {
+                        painter.setPen(TracePen(item));
+                        painter.drawLine(item.trace);
+                    }
+                    painter.restore();
+                }
                 break;
             case OCartoucheRenderItem::Kind::Logo:
                 painter.drawPixmap(item.target, item.pixmap, QRectF(item.pixmap.rect()));

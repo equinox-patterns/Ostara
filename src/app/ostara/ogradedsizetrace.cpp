@@ -87,29 +87,13 @@ void StyleSubtree(QGraphicsItem *item, const QColor &defaultColor, const OGraded
                 item->setData(kGradedBasePenRole, pen);
             }
 
-            pen.setColor(style->color);
-            if (style->dashes.isEmpty())
-            {
-                pen.setStyle(Qt::SolidLine); // colored solid line
-                pen.setCapStyle(Qt::SquareCap);
-            }
-            else
-            {
-                // Dashes are stored in pt (the Illustrator unit the user types);
-                // a Qt pen pattern is in units of the pen width, so a dash becomes
-                // pt × (px per pt) / width — a 1 pt dash is 1.333 px at scale 1:1.
-                const qreal width = pen.widthF() > 0.0 ? pen.widthF() : 1.0;
-                const qreal ptToPx = PrintDPI / 72.0;
-                QVector<qreal> pattern;
-                pattern.reserve(static_cast<int>(style->dashes.size()));
-                for (qreal value : style->dashes)
-                {
-                    pattern.append(value * ptToPx / width);
-                }
-                pen.setStyle(Qt::CustomDashLine);
-                pen.setDashPattern(pattern);
-                pen.setCapStyle(Qt::FlatCap); // match the SVG export cap (butt)
-            }
+            // **The size's own ink and dash pitch, through the one conversion the application
+            // shares.** How a dash in points becomes a motif on a pen is a question with four
+            // askers — this canvas, the graded export, the styles dock, and a cover page's sample
+            // of the same trace — and the answer belongs in one place. What stays here is the
+            // resolution: this pass draws at print size, on the canvas as in the export, because
+            // the canvas is a proof of the page rather than a screen drawing of it.
+            OGradedSizeStyles::ApplyToPen(pen, style->color, style->dashes, PrintDPI / 72.0);
             path->setPen(pen);
         }
         else if (liveScene)

@@ -179,6 +179,11 @@ private:
     QPushButton *m_saveButton{nullptr};
     QString m_filePath;
     bool m_modified{false};
+    /// The axis the open information's range grades along, as last seen — see the options handler.
+    QString m_gradedAxis;
+
+    /// Tells the open information's controls that the page's languages changed under them.
+    void FollowLanguages();
 
     /**
      * The template being edited, held here the way the assembly marks hold their three blocks:

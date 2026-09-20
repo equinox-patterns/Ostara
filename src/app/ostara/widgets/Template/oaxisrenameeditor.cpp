@@ -73,6 +73,11 @@ void OAxisRenameEditor::SetTitle(const QString &title)
 
 //---------------------------------------------------------------------------------------------------------------------
 
+void OAxisRenameEditor::SetReservedAxis(const QString &axisName)
+{
+    m_reservedAxis = axisName;
+}
+
 void OAxisRenameEditor::SetData(const QList<OAxisChoice> &available, const QStringList &selected,
                                 const QMap<QString, OAxisRenames> &renames, bool oneLine,
                                 const QStringList &languages, bool selectable)
@@ -171,6 +176,14 @@ void OAxisRenameEditor::RebuildAxes()
         }
         auto *box = new QCheckBox(axis.name, m_axesLayout->parentWidget());
         box->setChecked(m_selected.contains(axis.name));
+        if (!m_reservedAxis.isEmpty() && axis.name == m_reservedAxis)
+        {
+            // Unticked as well as greyed: the axis is stated by whatever speaks for it elsewhere,
+            // and a page that also showed it as a value of its own would state it twice, two ways.
+            box->setChecked(false);
+            box->setDisabled(true);
+            box->setToolTip(tr("This axis is the one the size range grades along."));
+        }
         connect(box, &QCheckBox::toggled, this, [this](bool) {
             if (m_building)
             {

@@ -324,6 +324,13 @@ void WriteBlock(QXmlStreamWriter &writer, const QPointF &origin,
             writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("black"));
             writer.writeCharacters(el.text);
             writer.writeEndElement();  // text
+
+            // The sample the line carries, right after the words it follows and inside the same
+            // group, so it inherits the block's transform and lands where the screen draws it.
+            if (!el.trace.isNull())
+            {
+                OSvg::WriteLine(writer, el.trace, OCartouchePainter::TracePen(el));
+            }
         }
         else
         {

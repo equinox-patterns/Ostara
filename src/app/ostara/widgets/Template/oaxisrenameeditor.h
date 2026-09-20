@@ -92,6 +92,19 @@ public:
                  const QMap<QString, OAxisRenames> &renames, bool oneLine,
                  const QStringList &languages, bool selectable = true);
 
+    /**
+     * @brief Name the axis this control must not let be ticked.
+     *
+     * **An axis spoken about elsewhere in the same information is not a value to state beside the
+     * others.** A cover page whose sizes come from a range already says everything about the axis
+     * that runs — one line per size — and a box beside it would offer to say the same thing a
+     * second time, as a single value. The row stays visible, greyed, so the reader can see that the
+     * axis is there and that it is accounted for rather than missing.
+     *
+     * Applied by @ref SetData, which is where the boxes are built.
+     */
+    void SetReservedAxis(const QString &axisName);
+
 signals:
     /// The axes the user wants shown, in table order.
     void SelectionChanged(const QStringList &axes);
@@ -128,6 +141,8 @@ private:
     QString m_title;
     QList<OAxisChoice> m_available;
     QStringList m_selected;
+    /// The axis that may not be ticked here; empty when every axis may. See SetReservedAxis.
+    QString m_reservedAxis;
     QMap<QString, OAxisRenames> m_renames;
     bool m_oneLine{false};
     QStringList m_languages;

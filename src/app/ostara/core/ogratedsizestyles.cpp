@@ -122,6 +122,44 @@ namespace OGradedSizeStyles
 {
 
 //---------------------------------------------------------------------------------------------------------------------
+auto DashLengthsPx(const QVector<qreal> &dashesPt, qreal pxPerPt) -> QVector<qreal>
+{
+    QVector<qreal> pattern;
+    pattern.reserve(dashesPt.size());
+    for (qreal value : dashesPt)
+    {
+        pattern.append(value * pxPerPt);
+    }
+    return pattern;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ApplyToPen(QPen &pen, const QColor &color, const QVector<qreal> &dashesPt, qreal pxPerPt)
+{
+    pen.setColor(color);
+
+    if (dashesPt.isEmpty())
+    {
+        pen.setStyle(Qt::SolidLine);
+        pen.setCapStyle(Qt::SquareCap);
+        return;
+    }
+
+    // A Qt dash pattern is in multiples of the pen width, so a pixel length becomes
+    // px / width. A pen that says nothing about its width is one pixel wide.
+    const qreal width = pen.widthF() > 0.0 ? pen.widthF() : 1.0;
+    QVector<qreal> pattern = DashLengthsPx(dashesPt, pxPerPt);
+    for (qreal &value : pattern)
+    {
+        value /= width;
+    }
+
+    pen.setStyle(Qt::CustomDashLine);
+    pen.setDashPattern(pattern);
+    pen.setCapStyle(Qt::FlatCap);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto StylesForAxis(const VCommonSettings *settings, const QString &canonicalPath,
                    const QString &axisName) -> QHash<QString, OGradedSizeStyle>
 {

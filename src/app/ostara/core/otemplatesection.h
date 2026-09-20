@@ -48,9 +48,10 @@ struct OTemplateOptionContext;
  * an editor builds a control per *field*, and a field that is not declared is not built.
  *
  * The editor is data-driven: it reads the fields of the selected section type and builds one
- * control per field. Adding a kind means adding an entry here, a control builder in the editor,
- * a branch in the serialisation, and one field that declares it — five places, not the two the
- * comment here used to claim.
+ * control per field. Adding a kind means an entry here, a control builder in the editor, a default
+ * in the shared section, and a branch in each of the four serialisers — six places, and the compiler
+ * names every one of them, because no switch over this enum has a default. A seventh place it cannot
+ * name is the catalogue field that declares the kind: without it, nothing is built.
  */
 enum class OTemplateOptionKind
 {
@@ -70,7 +71,9 @@ enum class OTemplateOptionKind
     AxisRename,   ///< composite — declared by the cartouche: its sub-options are in the field
     TextSource,   ///< QString — where a text comes from: written here, or filled in per pattern
     Text,         ///< QString — a text written here, possibly on several lines
-    SizeCase      ///< QString — which case a size information is written for: one size, or a range
+    SizeCase,     ///< QString — which case a size information is written for: one size, or a range
+    SizeRange,    ///< composite — the sizes a size information lists, and what each is called
+    Rule          ///< no value — a plain rule between groups of fields, in the editor only
 };
 
 /**
@@ -142,6 +145,21 @@ struct OTemplateOptionField
      */
     QString visibleWhenKey{};
     QStringList visibleWhenValues{};
+
+    /**
+     * @brief Whether this field can be used at all, asked of the whole section's options.
+     *
+     * **A predicate rather than a key and a list of values, because the questions are not all shaped
+     * like that.** « This part is written only for a range » is a key and a value, and the field
+     * above says it that way. « This part is usable once a range has been chosen — and always when
+     * the page states one size » is not, and a declaration that could not say it would leave the
+     * shared editor inventing the answer.
+     *
+     * The catalogue already hands over a factory when a field needs a control of its own; this is
+     * the same bargain, one line up: the family says when, and the editor obeys without knowing
+     * what a range is. Empty means always usable.
+     */
+    std::function<bool(const QHash<QString, QVariant> &)> enabledWhen = nullptr;
 
     /**
      * The line this field shares with its neighbours, and the words at its head.

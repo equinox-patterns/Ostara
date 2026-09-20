@@ -26,7 +26,11 @@
 
 #include "ocoverpagecatalogue.h"
 
+#include "core/ocovergradedaxis.h"
 #include "core/otemplateseparatoroptions.h"
+#include "ocoveraxiseditor.h"
+#include "ocovergradedaxiseditor.h"
+#include "ocoversizerangechooser.h"
 #include "widgets/Template/otemplateaxiseditor.h"
 
 #include <QCoreApplication>
@@ -170,7 +174,7 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
                                    {OTemplateAxisOptions::kRenames, QVariantMap{}},
                                    {OTemplateAxisOptions::kOneLine, false}};
     kSizeAxes.compositeEditor = [](QWidget *parent, const OTemplateOptionContext &context) {
-        return new OTemplateAxisEditor(context, parent);
+        return new OCoverAxesEditor(context, parent);
     };
     // A block rather than a value: it takes a row of its own, under its own title.
     kSizeAxes.onOwnRow = true;
@@ -186,11 +190,11 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
     kTitleFontFamily.rowLabel = T(QT_TRANSLATE_NOOP("OTemplateSection", "Title"));
     OTemplateOptionField kTitleFontWeight = kFontWeight;
     OTemplateOptionField kTitleFontSize = kFontSize;
-    const OTemplateOptionField kTitleLineSpacing = kLineSpacing;
+    OTemplateOptionField kTitleLineSpacing = kLineSpacing;
     // How the languages of that title stand together. The title is one word written once per
     // language and it stays on one line — what holds the words apart is this, and with « None » it
     // is the space that was already there.
-    const OTemplateOptionField kTitleSeparator{
+    OTemplateOptionField kTitleSeparator{
         OTemplateSeparatorOptions::kLanguageSeparator, OTemplateOptionKind::Separator,
         T(QT_TRANSLATE_NOOP("OTemplateSection", "Title separator")),
         OTemplateSeparatorOptions::LanguageSeparators(), QString()};
@@ -207,7 +211,7 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
     OTemplateOptionField kAxisFontSize{
         QStringLiteral("axisFontSize"), OTemplateOptionKind::FontSize,
         T(QT_TRANSLATE_NOOP("OTemplateSection", "Axis font size (px)"))};
-    const OTemplateOptionField kAxisLineSpacing{
+    OTemplateOptionField kAxisLineSpacing{
         QStringLiteral("axisLineSpacing"), OTemplateOptionKind::LineSpacing,
         T(QT_TRANSLATE_NOOP("OTemplateSection", "Axis line spacing (px)"))};
 
@@ -222,20 +226,127 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
     // What stands between an axis and its value. **The very same list the cartouche offers for the
     // very same two things**, and taken from the same place rather than written again here: two
     // families that separated an axis from its value differently would be two formats.
-    const OTemplateOptionField kAxisSeparator{
+    OTemplateOptionField kAxisSeparator{
         OTemplateSeparatorOptions::kSeparator, OTemplateOptionKind::Separator,
         T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator between axe and value")),
         OTemplateSeparatorOptions::AxisValueSeparators(), QString()};
 
+    // A line between two groups of settings, and nothing else: it asks nothing and keeps nothing.
+    // Two of them, because a range is written in three parts — the title, the axes that stand
+    // still, and the axis that runs — and the third part is not there at all when the page states
+    // one size, which is what its own `visibleWhenKey` says below.
+    const OTemplateOptionField kTitleRule{QStringLiteral("titleRule"), OTemplateOptionKind::Rule,
+                                          QString()};
+    OTemplateOptionField kAxesRule{QStringLiteral("axesRule"), OTemplateOptionKind::Rule,
+                                   QString()};
+
+    // **The question the whole range page waits on, asked first.** Which sizes the page lists is
+    // what decides which axis runs and which stand still, so it stands directly under « written
+    // for » and everything that depends on it is unusable until it is answered.
+    //
+    // Its key is none of the block's own, and that is deliberate: the graded axis below already
+    // carries the range's first key, and two blocks writing the same file attribute would write it
+    // twice.
+    OTemplateOptionField kSizeRangeChooser{QStringLiteral("sizeRangeChooser"),
+                                           OTemplateOptionKind::SizeRange,
+                                           T(QT_TRANSLATE_NOOP("OTemplateSection", "Size range"))};
+    kSizeRangeChooser.compositeEditor = [](QWidget *parent, const OTemplateOptionContext &context) {
+        return new OCoverSizeRangeChooser(context, parent);
+    };
+    kSizeRangeChooser.onOwnRow = true;
+    kSizeRangeChooser.visibleWhenKey = QStringLiteral("sizeCase");
+    kSizeRangeChooser.visibleWhenValues = {OTemplateSizeCase::kMulti};
+
+    /**
+     * **Whether the rest of a range page can be answered at all.**
+     *
+     * A page that lists sizes cannot say anything about its axes or its typography until it knows
+     * which axis runs — there is no list to set, and no way to tell a graded axis from a standing
+     * one. A page that states a single size has no such question and is answered from the start,
+     * which is why this is a predicate over the whole section rather than a key to compare: the
+     * condition is a disjunction, and a declaration that cannot say « or » would have the shared
+     * editor guessing.
+     */
+    const auto readyWhenSized = [](const QHash<QString, QVariant> &options) {
+        const QString sizeCase =
+            options.value(QStringLiteral("sizeCase"), OTemplateSizeCase::kSingle).toString();
+        return sizeCase != OTemplateSizeCase::kMulti
+               || !OCoverGradedAxisOptions::FromOptions(options).measurement.isEmpty();
+    };
+
+    // **The sizes the page lists, and what each of them is called.** A block rather than a value,
+    // like the axes above: it holds a range, a name per size, and the length of the sample drawn
+    // for each. Its own control, declared here, so that nothing in the shared editor has to know
+    // what a graded axis is.
+    //
+    // **Its key is the block's own first key**, exactly as the axes block's key is `axes`: the
+    // section writer reads a field's key to decide whether the field has anything to write, and a
+    // block whose key is none of its own would be a block the file never carries.
+    OTemplateOptionField kGradedAxis{OCoverGradedAxisOptions::kRange, OTemplateOptionKind::SizeRange,
+                                     T(QT_TRANSLATE_NOOP("OTemplateSection", "Graded axis"))};
+    kGradedAxis.compositeDefaults = OCoverGradedAxisOptions::DefaultOptions();
+    kGradedAxis.compositeEditor = [](QWidget *parent, const OTemplateOptionContext &context) {
+        return new OCoverGradedAxisEditor(context, parent);
+    };
+    kGradedAxis.onOwnRow = true;
+
+    // The graded axis is set in a type of its own, like the axes and the title before it: a list of
+    // sizes is not the same text as a value standing beside an axis name, and the user who wants
+    // them set differently must be able to say so. The line spacing is part of that type because
+    // **it moves the words and the sample together** — what it spaces is the line, and the line is
+    // both of them.
+    OTemplateOptionField kSizesFontFamily{
+        QStringLiteral("sizesFontFamily"), OTemplateOptionKind::FontFamily,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Sizes font family"))};
+    OTemplateOptionField kSizesFontWeight{
+        QStringLiteral("sizesFontWeight"), OTemplateOptionKind::FontWeight,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Sizes font weight"))};
+    OTemplateOptionField kSizesFontSize{
+        QStringLiteral("sizesFontSize"), OTemplateOptionKind::FontSize,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Sizes font size (px)"))};
+    OTemplateOptionField kSizesLineSpacing{
+        QStringLiteral("sizesLineSpacing"), OTemplateOptionKind::LineSpacing,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Sizes line spacing (px)"))};
+
+    const QString sizesRow = QStringLiteral("sizesType");
+    kSizesFontFamily.rowKey = sizesRow;
+    kSizesFontFamily.rowLabel = T(QT_TRANSLATE_NOOP("OTemplateSection", "Size value"));
+    kSizesFontWeight.rowKey = sizesRow;
+    kSizesFontSize.rowKey = sizesRow;
+
+    // The third part is written only for a range: a page stating one size has no axis that runs.
+    for (OTemplateOptionField *field : {&kAxesRule, &kGradedAxis, &kSizesFontFamily, &kSizesFontWeight,
+                                        &kSizesFontSize, &kSizesLineSpacing})
+    {
+        field->visibleWhenKey = QStringLiteral("sizeCase");
+        field->visibleWhenValues = {OTemplateSizeCase::kMulti};
+    }
+
+    // **Everything below the range waits for it.** The title's type, the axes and their names, and
+    // how the sizes themselves are set: all of it is about a list of sizes, and until the page
+    // knows which list, there is nothing to answer. They are made unusable rather than hidden, so
+    // the user sees what the information is made of and what is still holding it up.
+    for (OTemplateOptionField *field :
+         {&kTitleFontFamily, &kTitleFontWeight, &kTitleFontSize, &kTitleLineSpacing,
+          &kTitleSeparator, &kSizeAxes, &kAxisFontFamily, &kAxisFontWeight, &kAxisFontSize,
+          &kAxisLineSpacing, &kAxisSeparator, &kSizesFontFamily, &kSizesFontWeight, &kSizesFontSize,
+          &kSizesLineSpacing})
+    {
+        field->enabledWhen = readyWhenSized;
+    }
+
     // **The order the fields are declared is the order they are shown, blocks included**: what the
-    // information is written for, then how the title is set and how its languages are held apart,
-    // then the axes, then how they are set and how they stand to their values. Each head sits right
-    // above what it sets, which is the whole reason a block goes in the form at its place rather
-    // than under everything.
+    // information is written for, then the range everything else depends on, then how the title is
+    // set and how its languages are held apart, then the axes, then how they are set and how they
+    // stand to their values, and last the axis that runs. Each head sits right above what it sets,
+    // which is the whole reason a block goes in the form at its place rather than under everything.
+    // The two rules part the three groups, so that the graded axis below them is read as its own
+    // set of settings rather than as more of the axes' own.
     const QList<OTemplateOptionField> sizeFields = {
-        kSizeCase,      kTitleFontFamily, kTitleFontWeight, kTitleFontSize, kTitleLineSpacing,
-        kTitleSeparator, kSizeAxes,       kAxisFontFamily,  kAxisFontWeight, kAxisFontSize,
-        kAxisLineSpacing, kAxisSeparator};
+        kSizeCase,         kSizeRangeChooser, kTitleFontFamily,  kTitleFontWeight, kTitleFontSize,
+        kTitleLineSpacing, kTitleSeparator,   kTitleRule,        kSizeAxes,        kAxisFontFamily,
+        kAxisFontWeight,   kAxisFontSize,     kAxisLineSpacing,  kAxisSeparator,   kAxesRule,
+        kGradedAxis,       kSizesFontFamily,  kSizesFontWeight,  kSizesFontSize,   kSizesLineSpacing};
 
     return {
         // The pattern's own name, read from the pattern — nothing for the user to fill in, and

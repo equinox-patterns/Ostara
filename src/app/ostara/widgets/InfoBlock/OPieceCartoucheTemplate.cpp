@@ -270,6 +270,15 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
                     break;
                 case OTemplateOptionKind::Cut:
                     break;  // handled above (expands into the six fabric sub-keys)
+                case OTemplateOptionKind::Rule:
+                    // A rule holds no value, and the guard above has already skipped it: writing
+                    // one would put a key in the file that says nothing. The branch exists because
+                    // the switch is exhaustive.
+                    break;
+                case OTemplateOptionKind::SizeRange:
+                    // A cartouche states a piece's sizes, never a range of them: it draws no
+                    // sample and lists nothing, so it declares no such field and writes none.
+                    break;
             }
         }
         sectionsEl.appendChild(sectionEl);
@@ -404,6 +413,10 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                         break;  // handled above (expands into the six fabric sub-keys)
                     case OTemplateOptionKind::AxisRename:
                         break;  // handled above (per-language <rename> children)
+                    case OTemplateOptionKind::Rule:
+                        break;  // never written, so never read — see the writer
+                    case OTemplateOptionKind::SizeRange:
+                        break;  // a cartouche declares none — see the writer
                 }
             }
         }

@@ -28,6 +28,7 @@
 
 #include "../vmisc/FactoryWidgets.h"
 #include "core/ogradedsizerangename.h"
+#include "widgets/osizerangeaxis.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -290,15 +291,17 @@ void OGradedRangeDialog::BuildStep2Page()
     // short labels ("Minimum:", "Maximum:", …).
     rangeLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
+    // The two ends of the range, taken from the axis's own values and in its own order, and filled
+    // by **the shared rule** — the cover page's own range dialog asks the same question of the same
+    // kind of table, and what the default ends are, or when two of them make a range at all, is one
+    // answer wherever it is asked.
     m_minCombo = MakeComboBox(rangeGroup);
-    m_minCombo->addItems(values);
-    m_minCombo->setCurrentIndex(0);
     rangeLayout->addRow(tr("Minimum:"), m_minCombo);
 
     m_maxCombo = MakeComboBox(rangeGroup);
-    m_maxCombo->addItems(values);
-    m_maxCombo->setCurrentIndex(values.size() > 0 ? static_cast<int>(values.size() - 1) : 0);
     rangeLayout->addRow(tr("Maximum:"), m_maxCombo);
+
+    OSizeRangeAxis::FillMinMax(m_minCombo, m_maxCombo, values);
 
     // One row per other axis — dynamic label = the real axis name; default 1st value.
     for (const QString &axis : m_config.axisNames)
@@ -417,8 +420,7 @@ void OGradedRangeDialog::CheckState()
 
     const QString name = m_nameEdit->text().trimmed();
     const bool nameOk = !name.isEmpty() && !m_config.takenNames.contains(name);
-    const bool rangeOk = m_minCombo->currentIndex() >= 0 && m_maxCombo->currentIndex() >= 0
-                         && m_minCombo->currentIndex() <= m_maxCombo->currentIndex();
+    const bool rangeOk = OSizeRangeAxis::IsOrdered(m_minCombo, m_maxCombo);
     m_okButton->setEnabled(nameOk && rangeOk);
 }
 

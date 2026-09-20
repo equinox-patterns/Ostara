@@ -41,6 +41,7 @@
 #include <QDoubleSpinBox>
 #include <QFontComboBox>
 #include <QFormLayout>
+#include <QFrame>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -151,6 +152,11 @@ void OTemplateSectionEditor::Rebuild()
                 form->addRow(field.label, control);
             }
             m_composites.append(control);
+            // A block is a field like any other: it may be shown only under a condition, and the
+            // catalogue says so on the same terms. It declares its own rows, so the form holds no
+            // field to hide — a block on a row of its own is hidden whole, and its contents with it.
+            RegisterConditional(field, control, field.onOwnRow);
+            RegisterEnabler(field, control);
             continue;
         }
 
@@ -518,10 +524,10 @@ void OTemplateSectionEditor::Rebuild()
             }
             case OTemplateOptionKind::SizeCase:
             {
-                // Only the case that exists is offered, and that is not a shortcut: an entry for
-                // the other one would change what the user sees into nothing, because the
-                // information that lists the sizes of a range is not written yet. A combo whose
-                // second choice empties the form teaches the wrong thing about it.
+                // **Both cases are offered, and each of them sets the information up.** A page
+                // stating one size names its axes and stops; a page listing a range states the
+                // ranges it holds, one size to a line, and the settings that belong to that are
+                // the ones the answer brings and takes away — see UpdateFieldVisibility.
                 //
                 // The words are the question's own, like the text sources above — what the two
                 // cases are does not depend on which family is asking.
@@ -533,6 +539,8 @@ void OTemplateSectionEditor::Rebuild()
                 static const CaseEntry kCases[] = {
                     {QT_TRANSLATE_NOOP("OTemplateSectionEditor", "Single size"),
                      OTemplateSizeCase::kSingle},
+                    {QT_TRANSLATE_NOOP("OTemplateSectionEditor", "A range of sizes"),
+                     OTemplateSizeCase::kMulti},
                 };
 
                 auto *combo = MakeComboBox(content);
@@ -590,23 +598,50 @@ void OTemplateSectionEditor::Rebuild()
                 form->addRow(check);
                 break;
             }
+            // A rule says where one group of settings ends and the next begins. It asks nothing and
+            // keeps nothing — the catalogue declares it purely to place it — so it takes its row
+            // whole, with no caption, and the editor draws it here because this is the only place
+            // that knows the form's full width. Its look comes from the theme, like every other
+            // rule in the application.
+            case OTemplateOptionKind::Rule:
+            {
+                auto *rule = new QFrame(content);
+                rule->setObjectName(QStringLiteral("templateSectionRule"));
+                rule->setFixedHeight(1);
+                rule->setFrameShape(QFrame::NoFrame);
+                form->addRow(rule);
+                break;
+            }
             // A composite is built before this switch, from the factory its field carries. A field
             // of one of these kinds that declared none has nothing to draw, and draws nothing.
             case OTemplateOptionKind::Cut:
             case OTemplateOptionKind::AxisRename:
+            case OTemplateOptionKind::SizeRange:
                 break;
         }
 
-        // The field says it is shown under a condition; the editor obeys without knowing which
-        // kind asked for it. A field the form never received has no row to hide, and is left alone.
-        if (!field.visibleWhenKey.isEmpty() && form->rowCount() > row)
+        // The field says it is shown, or made usable, under a condition; the editor obeys without
+        // knowing which kind asked for it. A field the form never received has no row to reach, and
+        // is left alone.
+        if ((!field.visibleWhenKey.isEmpty() || field.enabledWhen) && form->rowCount() > row)
         {
+            QWidget *control = nullptr;
+            bool ownRow = false;
             if (QLayoutItem *item = form->itemAt(row, QFormLayout::FieldRole);
                 item != nullptr && item->widget() != nullptr)
             {
-                m_conditionals.append(ConditionalField{item->widget(), field.visibleWhenKey,
-                                                       field.visibleWhenValues});
+                control = item->widget();
             }
+            else if (QLayoutItem *spanning = form->itemAt(row, QFormLayout::SpanningRole);
+                     spanning != nullptr && spanning->widget() != nullptr)
+            {
+                // A field that took its row whole — a rule, or a checkbox carrying its own words —
+                // has no field role to hide. The control itself is what goes.
+                control = spanning->widget();
+                ownRow = true;
+            }
+            RegisterConditional(field, control, ownRow);
+            RegisterEnabler(field, control);
         }
     }
 
@@ -684,8 +719,46 @@ void OTemplateSectionEditor::UpdateFieldVisibility()
     for (const ConditionalField &field : m_conditionals)
     {
         const QString value = options.value(field.whenKey).toString();
-        m_form->setRowVisible(field.control, field.whenValues.contains(value));
+        const bool shown = field.whenValues.contains(value);
+        if (field.ownRow)
+        {
+            // Nothing to hide but the control itself: it has no caption column to take with it.
+            field.control->setVisible(shown);
+        }
+        else
+        {
+            m_form->setRowVisible(field.control, shown);
+        }
     }
+
+    // **A part is made unusable, not hidden**, when the section is not yet in a state to answer it:
+    // the labels stay readable, so the user sees what the information is made of and what is still
+    // waiting for them. This one is safe to run as often as the options change — it toggles, and
+    // rebuilding a control would take the focus out of whatever is being typed in.
+    for (const EnabledField &field : m_enabled)
+    {
+        field.control->setEnabled(field.when(options));
+    }
+}
+
+void OTemplateSectionEditor::RegisterConditional(const OTemplateOptionField &field, QWidget *control,
+                                                 bool ownRow)
+{
+    if (field.visibleWhenKey.isEmpty() || control == nullptr)
+    {
+        return;
+    }
+    m_conditionals.append(ConditionalField{control, field.visibleWhenKey, field.visibleWhenValues,
+                                           ownRow});
+}
+
+void OTemplateSectionEditor::RegisterEnabler(const OTemplateOptionField &field, QWidget *control)
+{
+    if (!field.enabledWhen || control == nullptr)
+    {
+        return;
+    }
+    m_enabled.append(EnabledField{control, field.enabledWhen});
 }
 
 void OTemplateSectionEditor::RefreshCompositeEditors()
@@ -727,7 +800,23 @@ auto OTemplateSectionEditor::OptionContext() -> OTemplateOptionContext
     // which kind of field changed one of its values.
     context.apply = [this](const QString &key, const QVariant &value) {
         m_template->SetSectionOption(m_index, key, value);
+        // **A block can decide what the rest of the form may answer** — a range, once chosen, is
+        // what makes the settings below it usable — so what the fields obey is worked out again
+        // here. It only shows, hides and greys: rebuilding a control would take the focus out of
+        // the field the user is typing in, which is the one place this must never do.
+        UpdateFieldVisibility();
         emit OptionsChanged();
     };
     return context;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+auto OTemplateSectionEditor::CurrentOptions() const -> QHash<QString, QVariant>
+{
+    if (m_template == nullptr || m_index < 0 || m_index >= m_template->SectionCount())
+    {
+        return {};
+    }
+    return m_template->SectionOptions(m_index);
 }

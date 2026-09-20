@@ -932,6 +932,12 @@ QLabel#templateLanguageHint {
 QFrame#templateLanguageSeparator {
     background-color: #333333;
 }
+/* Template — the section form. The information's frame says what is being edited; this rule says
+   where one group of its settings ends and the next begins. A line, not a heading: the groups name
+   themselves, and a title over each would be saying twice what the controls already say. */
+QFrame#templateSectionRule {
+    background-color: #333333;
+}
 QPushButton#templateLanguageTrashBtn {
     background: transparent;
     border: none;

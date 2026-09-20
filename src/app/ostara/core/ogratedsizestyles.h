@@ -32,6 +32,7 @@
 
 #include <QColor>
 #include <QHash>
+#include <QPen>
 #include <QString>
 #include <QVector>
 
@@ -78,6 +79,37 @@ struct OGradedSizeStyle
  */
 namespace OGradedSizeStyles
 {
+
+/**
+ * @brief A style's dashes in pixels, at a resolution the caller names.
+ *
+ * A style stores its dashes in points — the unit the user works in — and every drawing site needs
+ * them in pixels. **The resolution is not a property of the style, so it is not decided here**: the
+ * canvas and the export draw at print resolution, the styles dock draws at screen resolution, and
+ * the assembly-mark frame draws at whatever resolution its own grid is drawn at. What the sites
+ * share is the conversion, not its scale, and folding one scale into this function would make the
+ * others wrong.
+ *
+ * @param pxPerPt how many pixels one point is where the caller draws — `PrintDPI / 72.0` for
+ *                anything meant for paper.
+ */
+auto DashLengthsPx(const QVector<qreal> &dashesPt, qreal pxPerPt) -> QVector<qreal>;
+
+/**
+ * @brief Give @p pen the trace of a size style: its ink, and its dash pitch.
+ *
+ * The pen keeps its width, its join and whatever else the caller set; what a style owns is the
+ * colour and the dashes. **A Qt dash pattern counts in multiples of the pen width**, so the pixel
+ * lengths are divided by it here — the exact inverse of what the SVG export multiplies back.
+ *
+ * The cap goes flat, so a dash ends where it says it does: Qt's default stretches each one by half
+ * a width, and the SVG export caps at butt. A solid line keeps the square cap it has always had.
+ *
+ * **One function, because four things draw the same trace** — the graded canvas, the graded export,
+ * the styles dock, and now a cover page's sample of it. Two of them disagreeing is a page that
+ * previews one way and prints another.
+ */
+void ApplyToPen(QPen &pen, const QColor &color, const QVector<qreal> &dashesPt, qreal pxPerPt);
 
 /**
  * @brief The (table, axis) context a style pass needs — resolved WITHOUT parsing the

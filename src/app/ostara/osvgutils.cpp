@@ -29,11 +29,13 @@
 #include <QGraphicsItem>
 #include <QGraphicsPathItem>
 #include <QGraphicsSimpleTextItem>
+#include <QLineF>
 #include <QPainterPath>
 #include <QPen>
 #include <QStringList>
 #include <QTextStream>
 #include <QTransform>
+#include <QXmlStreamWriter>
 
 #include "../vlayout/vgraphicsfillitem.h"
 
@@ -151,6 +153,26 @@ QString DashArray(const QPen &pen)
         default:
             return {};
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void WriteLine(QXmlStreamWriter &writer, const QLineF &segment, const QPen &pen)
+{
+    writer.writeStartElement(QStringLiteral("line"));
+    writer.writeAttribute(QStringLiteral("x1"), QString::number(segment.x1()));
+    writer.writeAttribute(QStringLiteral("y1"), QString::number(segment.y1()));
+    writer.writeAttribute(QStringLiteral("x2"), QString::number(segment.x2()));
+    writer.writeAttribute(QStringLiteral("y2"), QString::number(segment.y2()));
+    writer.writeAttribute(QStringLiteral("stroke"), pen.color().name());
+    writer.writeAttribute(QStringLiteral("stroke-width"), QString::number(pen.widthF()));
+    // Butt, like the pen the screen draws with: the two outputs must agree dash for dash.
+    writer.writeAttribute(QStringLiteral("stroke-linecap"), QStringLiteral("butt"));
+    const QString dash = DashArray(pen);
+    if (!dash.isEmpty())
+    {
+        writer.writeAttribute(QStringLiteral("stroke-dasharray"), dash);
+    }
+    writer.writeEndElement();  // line
 }
 
 //---------------------------------------------------------------------------------------------------------------------

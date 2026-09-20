@@ -137,6 +137,14 @@ bool OSizeTable::HasTable() const
     return m_omtDoc != nullptr || m_otuDoc != nullptr;
 }
 
+QString OSizeTable::SourcePath() const
+{
+    // The path Load() resolved, which is empty when it found no table — a pattern with no
+    // measurements, or one pointing at a file that has gone. Empty is the honest answer then, and
+    // every caller keys its own data on it being a path that exists.
+    return m_sourcePath;
+}
+
 QStringList OSizeTable::AxisNames() const
 {
     return m_omtDoc != nullptr ? m_omtDoc->GetSizeGroupNames() : QStringList();

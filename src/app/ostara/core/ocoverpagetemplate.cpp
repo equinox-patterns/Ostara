@@ -27,6 +27,7 @@
 #include "ocoverpagetemplate.h"
 
 #include "ocoverpagecatalogue.h"
+#include "ocovergradedaxis.h"
 #include "otemplateaxisoptions.h"
 #include "otemplateseparatoroptions.h"
 
@@ -122,6 +123,19 @@ void WriteSection(QDomDocument &doc, QDomElement &parent, const OCoverPageTempla
                 WriteAxisOptions(doc, element, section.options);
                 break;
 
+            // The sizes the page lists, and what each of them is called. Written by the piece that
+            // owns those keys, as the axes are: the control that writes them and the resolver that
+            // reads them must not come apart.
+            case OTemplateOptionKind::SizeRange:
+                OCoverGradedAxisOptions::Write(doc, element, section.options);
+                break;
+
+            // A rule holds nothing: it is a line the editor draws between groups of fields, and the
+            // guard above has already skipped it, since a value-less field sits in the options under
+            // an invalid variant. Writing one would put a key in the file that says nothing.
+            case OTemplateOptionKind::Rule:
+                break;
+
             case OTemplateOptionKind::FontFamily:
             case OTemplateOptionKind::Axis:
             case OTemplateOptionKind::MeasureName:
@@ -185,6 +199,18 @@ auto ReadSection(const QDomElement &element) -> OCoverPageTemplate::Section
                 // The axes this page states. Read by the shared reader, which also reads the shape
                 // a cartouche wrote before it could show more than one.
                 ReadAxisOptions(element, section.options);
+                break;
+
+            case OTemplateOptionKind::SizeRange:
+                // A section that names no range leaves the empty one its defaults hold, which is
+                // what tells the page there are no sizes to list yet.
+                OCoverGradedAxisOptions::Read(element, section.options);
+                break;
+
+            // Nothing to read: a rule is never written, so the guard above never lets one through.
+            // The branch exists because the switch is exhaustive, and it says so rather than
+            // pretending there is a value to restore.
+            case OTemplateOptionKind::Rule:
                 break;
 
             case OTemplateOptionKind::Separator:

@@ -84,6 +84,16 @@ void OTemplateAxisEditor::Refresh(const OTemplateOptionContext &context)
         selected.append(legacyAxis);
     }
 
+    // **An axis spoken about elsewhere is not a value stated beside the others.** A range says
+    // everything about the axis it grades along — one line per size — so a box offering to also
+    // state it as a single value would offer the same information twice. It is dropped from the
+    // selection here as well as greyed below: the resolver reads the selection, and a page that
+    // kept it would draw the axis it lists a second time, once.
+    if (!m_reservedAxis.isEmpty())
+    {
+        selected.removeAll(m_reservedAxis);
+    }
+
     const QMap<QString, OAxisRenames> renames =
         ParseAxisRenamesByAxis(context.options.value(OTemplateAxisOptions::kRenames), legacyAxis);
     const bool oneLine = context.options.value(OTemplateAxisOptions::kOneLine, false).toBool();
@@ -91,5 +101,13 @@ void OTemplateAxisEditor::Refresh(const OTemplateOptionContext &context)
     // **Unticking a box keeps that axis's aliases.** Hiding an axis is not changing which axis it
     // is, so the work the user did on it is kept for the moment it comes back — dropping it would
     // make ticking a box again lose what had already been written.
+    m_editor->SetReservedAxis(m_reservedAxis);
     m_editor->SetData(available, selected, renames, oneLine, context.languages);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OTemplateAxisEditor::SetReservedAxis(const QString &axisName)
+{
+    m_reservedAxis = axisName;
 }

@@ -34,9 +34,11 @@
 
 class QGraphicsItem;
 class QGraphicsPathItem;
+class QLineF;
 class QPainterPath;
 class QPen;
 class QTransform;
+class QXmlStreamWriter;
 
 namespace OSvg
 {
@@ -55,6 +57,18 @@ QString MatrixAttr(const QTransform &matrix);
  *        Graded size styles use (dashes stored in pt, converted to px).
  */
 QString DashArray(const QPen &pen);
+
+/**
+ * @brief Write a straight segment as an SVG `<line>`, with the pen's ink, width and dashes.
+ *
+ * The coordinates are the caller's, already in the space of the group it writes into. The dashes go
+ * out through @ref DashArray, so a pen built anywhere in the application serializes the same way —
+ * and a solid line writes no `stroke-dasharray` at all, which is how SVG says solid.
+ *
+ * **One writer, because two exports draw the same segment**: the cartouche's blocks and the graded
+ * sheet both walk the same placed items, and a size's trace sample has to look the same on both.
+ */
+void WriteLine(QXmlStreamWriter &writer, const QLineF &segment, const QPen &pen);
 
 /** @brief Safe QGraphicsPathItem cast (handles VGraphicsFillItem/VGraphicsFoldLineItem). */
 QGraphicsPathItem *AsPathItem(QGraphicsItem *item);

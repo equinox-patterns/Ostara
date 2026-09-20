@@ -26,6 +26,8 @@
 
 #include "oexportmarkpainter.h"
 
+#include "core/ogratedsizestyles.h"
+
 #include <QColor>
 #include <QFont>
 #include <QFontMetricsF>
@@ -278,30 +280,12 @@ void OExportMarkPainter::DrawFrame(QPainter &painter, const QPointF &origin, con
 
     QPen pen(line, penWidthPx);
     pen.setJoinStyle(Qt::MiterJoin);
-    if (m_frame.dashed && !m_frame.dashes.isEmpty())
-    {
-        // The size styles' conversion, to the letter (ogradedsizetrace.cpp:98-108): a length in
-        // pt becomes px through `PrintDPI / 72`, and a Qt pattern counts in multiples of the pen
-        // width, so it is divided by that width. The cap goes flat so that the dashes end where
-        // they say they do — Qt's default stretches each of them by half a width, and the SVG
-        // export, which caps at butt, would not agree.
-        const qreal pxPerPt = kMmPerPt * grid.pxPerMm;
-        const qreal width = penWidthPx > 0.0 ? penWidthPx : 1.0;
-        QVector<qreal> pattern;
-        pattern.reserve(m_frame.dashes.size());
-        for (qreal value : m_frame.dashes)
-        {
-            pattern.append(value * pxPerPt / width);
-        }
-        pen.setStyle(Qt::CustomDashLine);
-        pen.setDashPattern(pattern);
-        pen.setCapStyle(Qt::FlatCap);
-    }
-    else
-    {
-        pen.setStyle(Qt::SolidLine);
-        pen.setCapStyle(Qt::SquareCap);
-    }
+    // **This frame is drawn at whatever resolution its grid is drawn at** — the exported page, or
+    // the template preview at its own zoom — so its points become pixels through the grid's own
+    // conversion, not through the print one. What a dash then becomes on the pen is the conversion
+    // the whole application shares, so it is not spelled out again here.
+    const QVector<qreal> dashes = m_frame.dashed ? m_frame.dashes : QVector<qreal>();
+    OGradedSizeStyles::ApplyToPen(pen, line, dashes, kMmPerPt * grid.pxPerMm);
     painter.setPen(pen);
     painter.setBrush(Qt::NoBrush);
 

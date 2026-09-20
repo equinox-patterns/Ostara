@@ -27,11 +27,13 @@
 #ifndef OCOVERPAGERESOLVER_H
 #define OCOVERPAGERESOLVER_H
 
+#include "ocoverpagesizes.h"
 #include "ocoverpagetemplate.h"
 
 #include "vwidgets/ocartouchepainter.h"
 
 #include <QFont>
+#include <QHash>
 #include <QString>
 #include <QStringList>
 #include <QVector>
@@ -74,6 +76,16 @@ struct PatternData
     /// The free text filled in for this pattern — what a template that leaves it to be filled asks
     /// the output dialog for, and what does not exist yet.
     QString freeText;
+
+    /**
+     * @brief The sizes the page lists when it states a range, in the table's own order.
+     *
+     * **Handed over rather than looked up.** Which sizes a range holds is a question about a table,
+     * a range and the styles authored for it — three things a page is not — so whoever holds them
+     * answers it and the page draws the answer. Empty when the page states one size, or when no
+     * range has been chosen yet, which is a page with no sizes to list.
+     */
+    QVector<OCoverSizeLine> sizes;
 };
 
 /**

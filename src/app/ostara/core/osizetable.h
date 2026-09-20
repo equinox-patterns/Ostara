@@ -92,6 +92,16 @@ public:
     /// Format a numeric value, trimming trailing zeros, up to 2 decimals.
     static auto FormatValue(double value) -> QString;
 
+    /**
+     * @brief The absolute path of the table this object resolved, or empty when there is none.
+     *
+     * **The path is part of what the table is, not an internal detail of loading it.** A style, a
+     * favorite, a size range — everything authored *about* a table is keyed by its path, so a caller
+     * holding a loaded table and needing that key would otherwise have to resolve the path a second
+     * time and hope the two answers agreed. This is the answer the table itself used.
+     */
+    auto SourcePath() const -> QString;
+
 private:
     void Clear();
 

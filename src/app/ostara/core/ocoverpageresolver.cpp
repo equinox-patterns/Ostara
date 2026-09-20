@@ -24,6 +24,7 @@
  **
  *************************************************************************/
 
+#include "ocovergradedaxis.h"
 #include "ocoverpageresolver.h"
 
 #include "ocoverpagecatalogue.h"
@@ -84,6 +85,10 @@ auto TestSquares(const QHash<QString, QVariant> &options) -> QVector<TestSquare>
 /// « Size(s) - .omt » and the page says « Size » — so the two are separate strings and this one,
 /// being a word, is translated.
 constexpr const char *kSizeWord = QT_TRANSLATE_NOOP("OTemplateSection", "Size");
+// The same word, said of a list rather than of one size. A page that states a range is a page
+// about sizes, and its title says so — the plural is not decoration, it is what tells the reader
+// at a glance which of the two pages they are holding.
+constexpr const char *kSizesWord = QT_TRANSLATE_NOOP("OTemplateSection", "Sizes");
 
 /// The languages a page is written in. Never empty: a template always holds one, and a section
 /// resolved outside any language still has to write its words in the source.
@@ -93,10 +98,15 @@ auto RenderLanguages(const QStringList &languages) -> QStringList
 }
 
 /// What one display language says about one axis — the shape the sizes information stores.
+///
+/// **The axis is the outer key, and the language the inner one**, which is the shape the shared
+/// control writes: an alias belongs to one axis, and the same word can be the name of no two of
+/// them. Reading the two the other way round finds nothing at all — silently, since a lookup that
+/// misses looks exactly like a user who renamed nothing.
 auto AxisRenames(const QVariantMap &renames, const QString &locale, const QString &axis)
     -> QVariantMap
 {
-    return renames.value(locale).toMap().value(axis).toMap();
+    return renames.value(axis).toMap().value(locale).toMap();
 }
 
 /// The name the axis is written under, or an empty string when it keeps its own.
@@ -258,13 +268,10 @@ auto OCoverPageResolver::Resolve(const OCoverPageTemplate::Section &section, con
     {
         const QString sizeCase =
             section.options.value(QStringLiteral("sizeCase"), OTemplateSizeCase::kSingle).toString();
-        if (sizeCase != OTemplateSizeCase::kSingle)
-        {
-            // The range case lists the sizes the output holds, and which those are is not written
-            // anywhere yet: it comes from the run that produced the page. Nothing is drawn rather
-            // than something invented — the preview stands the information's name in its place.
-            return {};
-        }
+        // Which of the two the page is: one that states a size, or one that lists the sizes it
+        // holds. The answer decides the title, whether the sizes are listed, and where the axes
+        // that do not run take their value.
+        const bool listsRange = sizeCase != OTemplateSizeCase::kSingle;
         if (table == nullptr)
         {
             return {}; // no .omt: an information about sizes has no sizes to state
@@ -297,11 +304,13 @@ auto OCoverPageResolver::Resolve(const OCoverPageTemplate::Section &section, con
         QStringList title;
         if (languages.isEmpty())
         {
-            title.append(TranslateToLocale(QString(), "OTemplateSection", kSizeWord));
+            title.append(TranslateToLocale(QString(), "OTemplateSection",
+                                          listsRange ? kSizesWord : kSizeWord));
         }
         for (const QString &locale : languages)
         {
-            title.append(TranslateToLocale(locale, "OTemplateSection", kSizeWord));
+            title.append(TranslateToLocale(locale, "OTemplateSection",
+                                          listsRange ? kSizesWord : kSizeWord));
         }
         if (!title.isEmpty())
         {
@@ -324,6 +333,10 @@ auto OCoverPageResolver::Resolve(const OCoverPageTemplate::Section &section, con
                 continue; // an axis the current table does not declare: dead data, no line
             }
 
+            // **An axis the page does not grade stands where the table says it stands.** A range
+            // says which sizes run; it says nothing about the axes that do not, and the table's own
+            // reference value is the answer a page states when nothing tells it otherwise — the
+            // same value a page stating a single size states.
             const QString original = table->AnchorValue(axis);
             if (original.isEmpty())
             {
@@ -361,6 +374,39 @@ auto OCoverPageResolver::Resolve(const OCoverPageTemplate::Section &section, con
                 // read back into the two things it was made of.
                 lines.append(OCartouchePainter::TextLine(
                     languageLines.join(OTemplateSeparatorOptions::kLanguageJoin), axisFont, axisSpacing));
+            }
+        }
+
+        // **The sizes the range holds come last, under the axes that stand still.** The page reads
+        // top to bottom as the range is described: what it is written for, then those axes of the
+        // body that do not move, then the sizes it comes in — the list the page exists for, and the
+        // one a reader looks for after knowing what is being listed.
+        //
+        // One line per size, each with a sample of its own trace. The word is the one the page
+        // shows — the table's, or the alias the user wrote for it — and the sample is the ink and
+        // the dash pitch that size is drawn with, over the length the user asked for.
+        //
+        // A page with no range chosen yet lists nothing, and says so by drawing nothing there: the
+        // editor's block is what asks the user for the range, and a page cannot ask.
+        if (listsRange)
+        {
+            const QFont sizesFont =
+                OCartouchePainter::SectionFont(section.options, baseFont, QStringLiteral("sizes"));
+            const int sizesSpacing =
+                section.options.value(QStringLiteral("sizesLineSpacing"), 0).toInt();
+            const qreal sampleLength = CmToPixel(
+                OCoverGradedAxisOptions::FromOptions(section.options).traceLengthCm);
+
+            for (const OCoverSizeLine &size : data.sizes)
+            {
+                OCartoucheTraceSample sample;
+                sample.enabled = true;
+                sample.lengthPx = sampleLength;
+                sample.color = size.color;
+                sample.dashes = size.dashes;
+                sample.penWidth = OCoverSizeLine::kTracePenWidthPx;
+                lines.append(OCartouchePainter::TextLineWithTrace(size.shown, sizesFont, sizesSpacing,
+                                                                  sample));
             }
         }
 

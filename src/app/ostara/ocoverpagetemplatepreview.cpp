@@ -26,10 +26,13 @@
 
 #include "ocoverpagetemplatepreview.h"
 
+#include "core/ocovergradedaxis.h"
 #include "core/ocoverpagecatalogue.h"
 #include "core/ocoverpagelayout.h"
 #include "core/ocoverpageresolver.h"
+#include "core/ocoverpagesizes.h"
 
+#include "vmisc/vabstractapplication.h"
 #include "vwidgets/ocartouchepainter.h"
 
 #include <QPainter>
@@ -129,11 +132,19 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
     // What one band has to draw, asked of the resolver — the one place that knows how an
     // information is drawn. It is given no pattern: the editor draws a template on its own, so
     // everything that reads the pattern resolves to nothing.
-    const OCoverPageResolver::PatternData data;
-    const auto LinesOf = [this, &data](OCoverPageTemplate::Placement placement) {
+    //
+    // **The sizes are worked out here, not by the resolver.** Which sizes a range holds is a
+    // question about the loaded table and the styles authored for it — the resolver draws what it
+    // is handed and knows nothing of either, and a pattern being printed will answer the same
+    // question from the range its output was run with.
+    const auto LinesOf = [this](OCoverPageTemplate::Placement placement) {
         QVector<OCartoucheRenderLine> lines;
         for (const OCoverPageTemplate::Section &section : m_template->Sections(placement))
         {
+            OCoverPageResolver::PatternData data;
+            data.sizes = OCoverPageSizes(m_table, OCoverGradedAxisOptions::FromOptions(section.options),
+                                         VAbstractApplication::VApp()->Settings());
+
             QVector<OCartoucheRenderLine> drawn = OCoverPageResolver::Resolve(
                 section, data, OCartouchePainter::BaseFont(), m_template->languages, m_table);
             if (drawn.isEmpty())
@@ -174,7 +185,10 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
                 cell.width() * contentScale, cell.height() * contentScale};
     };
 
-    painter.setPen(QColor()); // the painter's own ink; the lines carry no colour of their own
+    // The page's own ink for its words. **The lines carry no colour of their own — except the trace
+    // samples**, which are drawn in the colour of the size they stand for: that colour is the whole
+    // point of the sample, and it is borrowed and given back by the painter around each one.
+    painter.setPen(QColor());
     const QMap<OCoverPageTemplate::Placement, QRectF> cells = OCoverPageLayout::Place(bandLines);
     for (auto cell = cells.constBegin(); cell != cells.constEnd(); ++cell)
     {

@@ -30,8 +30,10 @@
 #ifndef OCARTOUCHEPAINTER_H
 #define OCARTOUCHEPAINTER_H
 
+#include <QColor>
 #include <QFont>
 #include <QHash>
+#include <QLineF>
 #include <QPainter>
 #include <QPixmap>
 #include <QPointF>
@@ -41,6 +43,31 @@
 #include <QVariant>
 #include <QVector>
 #include <QtGlobal>
+
+/**
+ * @brief A sample of a size's trace, drawn after a line's text, on the same line.
+ *
+ * **A sample is read, not measured.** It stands for the pen a graded size is drawn with — its
+ * colour, its dash pitch — over a length the user typed in centimetres. It is therefore content,
+ * exactly like the words beside it, and it scales with them. That is what separates it from a test
+ * square's outline, which is a rule and stays one screen pixel wide whatever the page is scaled to.
+ *
+ * Every length here is in print pixels at scale 1, like the font's pixel size. `dashes` is **not**
+ * in the points the user works in: the resolver has already converted, because points are a unit of
+ * the style layer and the painter knows only pixels. Layout scales the three, and Paint divides the
+ * dashes by the pen width, Qt counting a dash pattern in multiples of it.
+ */
+struct OCartoucheTraceSample
+{
+    bool enabled = false;          ///< false — the line is plain text, and nothing is drawn.
+    qreal lengthPx = 0.0;          ///< print px — the centimetres the user chose, converted.
+    QColor color = Qt::black;      ///< the size's own colour.
+    QVector<qreal> dashes;         ///< print px, [dash, space, ...] — empty = solid.
+    qreal penWidth = 1.0;          ///< print px. Never cosmetic: see Paint.
+
+    /// True when the line carries a sample worth drawing — one with nothing to draw is no sample.
+    auto HasTrace() const -> bool { return enabled && lengthPx > 0.0; }
+};
 
 /**
  * @brief One text a shape places inside itself, at the spot its author chose.
@@ -92,6 +119,15 @@ struct OCartoucheRenderLine
                           // the SVG writer re-inlines this file (Val Fork behaviour).
     QVector<QRectF> shapeOutlines;               // Kind::Shape — rectangles to stroke, unfilled.
     QVector<OCartoucheShapeLabel> shapeLabels;   // Kind::Shape — texts placed against them.
+
+    /**
+     * Kind::Text — a sample of a size's trace, drawn after the text and on the same line.
+     *
+     * **A decoration of the line, not a line of its own.** Text and sample share one line spacing
+     * and are centred together, which is what the user is promised when the two are called a line;
+     * a render line of its own would stack beneath the text instead of standing beside it.
+     */
+    OCartoucheTraceSample trace;
 };
 
 /**
@@ -117,6 +153,13 @@ struct OCartoucheRenderItem
     QPixmap pixmap;     // Kind::Logo — pre-rendered pixmap (screen painter).
     QRectF target;      // Kind::Logo, Kind::Shape — target draw rect.
     QString sourcePath; // Kind::Logo — original SVG file path (SVG writer only).
+
+    // Kind::Text — the trace sample, placed. Null when the line carries none, which is why the
+    // three below need no separate "has one": a placed segment says so by existing.
+    QLineF trace;
+    QColor traceColor;          // its ink — the one thing on a line that is not the caller's pen.
+    QVector<qreal> traceDashes; // px at the drawn scale (Paint divides by the width).
+    qreal tracePenWidth = 1.0;  // px at the drawn scale.
 };
 
 /**
@@ -130,6 +173,14 @@ namespace OCartouchePainter
 {
 constexpr qreal kMargin = 16.0;
 constexpr qreal kLineGap = 6.0;
+
+/**
+ * @brief The space between a line's text and the trace sample that follows it, in print px.
+ *
+ * A gap, and it scales like one — it is not content the user typed but the breathing room between
+ * two things, the same way the inter-line gap is.
+ */
+constexpr qreal kTraceGap = 6.0;
 
 /**
  * @brief The width a shape's outline is drawn with, in pixels.
@@ -167,6 +218,15 @@ QFont SectionFont(const QHash<QString, QVariant> &options, const QFont &baseFont
 
 /** @brief Build a text render line. */
 OCartoucheRenderLine TextLine(const QString &text, const QFont &font, int lineSpacing);
+
+/**
+ * @brief Build a text render line followed, on the same line, by a sample of a trace.
+ *
+ * The sample is placed after the text with @ref kTraceGap between them, and the two are centred
+ * together: what the reader sees is one line, and it is laid out as one.
+ */
+OCartoucheRenderLine TextLineWithTrace(const QString &text, const QFont &font, int lineSpacing,
+                                       const OCartoucheTraceSample &trace);
 
 /**
  * @brief Build one render line per line of @p text, in order.
@@ -230,6 +290,16 @@ QVector<OCartoucheRenderItem> Layout(const QRectF &rect, const QVector<OCartouch
  * content proportionally (see Layout).
  */
 void Paint(QPainter &painter, const QRectF &rect, const QVector<OCartoucheRenderLine> &lines, qreal scale = 1.0);
+
+/**
+ * @brief The pen a placed trace sample is drawn with.
+ *
+ * **One builder, because three things draw the same sample**: the screen painter, and the two SVG
+ * writers, which must agree with it to the pixel or a page would preview one way and print another.
+ * A dash pattern counts in multiples of the pen width, so the pixel lengths Layout placed are
+ * divided by it here — the inverse of what the SVG writer multiplies back.
+ */
+QPen TracePen(const OCartoucheRenderItem &item);
 }  // namespace OCartouchePainter
 
 #endif // OCARTOUCHEPAINTER_H

@@ -151,6 +151,12 @@ auto OTemplateSection::DefaultValue(const QString &key) const -> QVariant
             // without them, and an option with no default is the honest answer.
             case OTemplateOptionKind::Cut:
             case OTemplateOptionKind::AxisRename:
+            case OTemplateOptionKind::SizeRange:
+                return QVariant();
+
+            // A rule is not a question, so it has no answer: it is a line drawn between groups of
+            // fields, and the catalogue declares it to say where the groups part.
+            case OTemplateOptionKind::Rule:
                 return QVariant();
         }
         break;

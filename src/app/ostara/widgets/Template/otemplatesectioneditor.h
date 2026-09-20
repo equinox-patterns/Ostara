@@ -70,6 +70,24 @@ public:
     /// Re-translate the dynamic content (called on QEvent::LanguageChange).
     void RetranslateUI();
 
+    /**
+     * @brief Tells every composite control that the options under it have changed.
+     *
+     * **A host asks for this when what a control shows depends on what another one wrote** — the
+     * axes a cover page offers depend on the axis its range grades along. It rebuilds those
+     * controls, so it is not for every keystroke: the editor calls it only when the answer to one
+     * of those cross-questions has actually changed.
+     */
+    void RefreshCompositeEditors();
+
+    /**
+     * @brief The options of the information being edited, as they stand.
+     *
+     * So a host can tell whether one of them moved without keeping a copy of its own — a copy that
+     * would be stale the moment the user typed.
+     */
+    Q_REQUIRED_RESULT auto CurrentOptions() const -> QHash<QString, QVariant>;
+
 signals:
     /// Fired when any option changes (the editor marks the template modified).
     void OptionsChanged();
@@ -85,8 +103,17 @@ private:
      */
     void PlaceControl(const OTemplateOptionField &field, QWidget *control);
 
-    /// Tells every composite control that the options under it have changed.
-    void RefreshCompositeEditors();
+    /// Notes a control the section's own options make usable, or unusable, as a whole.
+    void RegisterEnabler(const OTemplateOptionField &field, QWidget *control);
+
+    /**
+     * @brief Notes a control that has to be shown or hidden with another field's value.
+     *
+     * @param ownRow true when the control fills its row whole — a block, or a field that takes the
+     *        row without a caption. The form then has no field to hide, so the control is hidden
+     *        itself.
+     */
+    void RegisterConditional(const OTemplateOptionField &field, QWidget *control, bool ownRow);
 
     /// What a composite control is given: the options, the languages, the table, and how to write.
     auto OptionContext() -> OTemplateOptionContext;
@@ -100,12 +127,22 @@ private:
         QWidget *control{nullptr};
         QString whenKey;
         QStringList whenValues;
+        /// The control fills its row whole, so there is no field role to hide — hide the control.
+        bool ownRow{false};
     };
 
     QVBoxLayout *m_root{nullptr};
     QWidget *m_content{nullptr};
     QFormLayout *m_form{nullptr};
     QList<ConditionalField> m_conditionals;
+
+    /// One field the section's own options make usable or not, and the control that follows.
+    struct EnabledField
+    {
+        QWidget *control{nullptr};
+        std::function<bool(const QHash<QString, QVariant> &)> when;
+    };
+    QList<EnabledField> m_enabled;
 
     /// The lines the fields share, by the key those fields declare. Rebuilt with the form.
     QHash<QString, QHBoxLayout *> m_rows;

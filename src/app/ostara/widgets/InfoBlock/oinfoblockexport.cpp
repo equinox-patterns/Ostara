@@ -26,6 +26,8 @@
 
 #include "oinfoblockexport.h"
 
+#include "osvgutils.h"
+
 #include <QColor>
 #include <QDebug>
 #include <QFile>
@@ -504,6 +506,13 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
                         writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("black"));
                         writer.writeCharacters(el.text);
                         writer.writeEndElement();  // text
+                    }
+
+                    // The sample the line carries, written once for both branches: it is not text,
+                    // so it goes out the same way whether the words were drawn or outlined.
+                    if (!el.trace.isNull())
+                    {
+                        OSvg::WriteLine(writer, el.trace, OCartouchePainter::TracePen(el));
                     }
                 }
                 else

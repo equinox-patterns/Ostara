@@ -26,6 +26,7 @@
 
 #include "ocoverpageeditor.h"
 
+#include "core/ocovergradedaxis.h"
 #include "core/ocoverpagecatalogue.h"
 #include "core/ocoverpagetemplatestorage.h"
 #include "ocoverpagebandeditor.h"
@@ -296,6 +297,12 @@ QWidget *OCoverPageEditor::MakeLanguageRow()
     connect(m_languageRow, &OTemplateLanguageRow::LanguagesChanged, this,
             [this](const QStringList &codes) {
                 m_template.languages = codes;
+                // **The form follows the row.** A control that renames something per language shows
+                // one tab per language, and it reads the list when its context is built — so a
+                // page written in two languages would offer one to name an axis in, while the
+                // preview beside it showed both. The preview follows by itself: it holds the
+                // template, and the list it reads is the one just written.
+                FollowLanguages();
                 SetModified(true);
             });
 
@@ -347,6 +354,17 @@ QWidget *OCoverPageEditor::MakeEditionPane()
     m_sectionEditor = new OTemplateSectionEditor();
     connect(m_sectionEditor, &OTemplateSectionEditor::OptionsChanged, this, [this]() {
         SetModified(true);
+        // **The axes control stops offering the axis the range grades along**, and only a rebuild
+        // tells it so. Done when that axis actually changed, and not on every keystroke: a rebuild
+        // takes the focus out of the field being typed in, and the axis changes only when a range
+        // is chosen — a dialog away, with no field holding the keyboard.
+        const QString graded =
+            OCoverGradedAxisOptions::FromOptions(m_sectionEditor->CurrentOptions()).axis;
+        if (graded != m_gradedAxis)
+        {
+            m_gradedAxis = graded;
+            m_sectionEditor->RefreshCompositeEditors();
+        }
         // The page is redrawn on every keystroke of the form, not only when an information is
         // added or removed: choosing a logo is what the preview is for, and a preview that waited
         // for the next addition would be answering a question nobody asked.
@@ -667,6 +685,10 @@ void OCoverPageEditor::SelectSection(OCoverPageTemplate::Placement placement, in
     if (m_sectionEditor != nullptr)
     {
         m_sectionEditor->SetSection(&m_activeBand, index, &m_table);
+        // Noted as the information opens, so the first keystroke is not mistaken for the axis
+        // having just changed — the axes control would be rebuilt under the user's fingers.
+        m_gradedAxis =
+            OCoverGradedAxisOptions::FromOptions(m_sectionEditor->CurrentOptions()).axis;
     }
 
     const auto it = m_bands.constFind(placement);
@@ -710,6 +732,20 @@ void OCoverPageEditor::RefreshAllBands()
     for (OCoverPageTemplate::Placement placement : OCoverPageTemplate::Placements())
     {
         RefreshBand(placement);
+    }
+    // The languages may be new — a template just opened, or just created — and a control that
+    // renames per language was built against the previous list. Rebuilding the controls is what
+    // gives them the tabs the page now has.
+    FollowLanguages();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OCoverPageEditor::FollowLanguages()
+{
+    if (m_sectionEditor != nullptr)
+    {
+        m_sectionEditor->RefreshCompositeEditors();
     }
 }
 

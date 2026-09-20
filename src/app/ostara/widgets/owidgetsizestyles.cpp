@@ -131,17 +131,16 @@ public:
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing);
         QPen pen(color, penWidth);
-        if (!dashData.isEmpty())
+        QVector<qreal> dashes;
+        dashes.reserve(dashData.size());
+        for (const QVariant &value : dashData)
         {
-            QVector<qreal> pattern;
-            pattern.reserve(static_cast<int>(dashData.size()));
-            for (const QVariant &value : dashData)
-            {
-                pattern.append(value.toReal() * kPtToPx / penWidth); // pt → px motif
-            }
-            pen.setDashPattern(pattern);
-            pen.setCapStyle(Qt::FlatCap);
+            dashes.append(value.toReal());
         }
+        // The very conversion the canvas and the export use, read at this widget's own resolution:
+        // what the row shows is what the size will be drawn with, which is the whole point of the
+        // column. A value with no style keeps a plain pen, and that pen is a solid one.
+        OGradedSizeStyles::ApplyToPen(pen, color, dashes, kPtToPx);
         painter->setPen(pen);
         constexpr qreal kSidePad = 6.0;
         const qreal half = qMax(1.0, (option.rect.width() - 2.0 * kSidePad) / 2.0);

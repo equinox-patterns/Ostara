@@ -53,8 +53,18 @@ public:
 
     void Refresh(const OTemplateOptionContext &context) override;
 
+    /**
+     * @brief Name the axis this control must not let be ticked; empty for none.
+     *
+     * Passed straight to the table, which is where the box is built — see
+     * @ref OAxisRenameEditor::SetReservedAxis. A family that speaks about one of the axes elsewhere
+     * says so here, and this class never learns why.
+     */
+    void SetReservedAxis(const QString &axisName);
+
 private:
     OAxisRenameEditor *m_editor{nullptr};
+    QString m_reservedAxis;
 };
 
 #endif // OTEMPLATEAXISEDITOR_H
