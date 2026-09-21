@@ -51,11 +51,16 @@ class VAbstractPattern;
  * **What comes back is what the page will print**: millimetres, each width once however many times
  * the pattern uses it, brought to the step comparisons are made on so that two routes to the same
  * length cannot come out as two widths.
+ *
+ * **And smallest first, because the walk has no order of its own.** Pieces are read from a hash,
+ * so the sequence they are met in is not one the pattern owns and not one that survives a run. A
+ * page that named them in the order they were found said something different each time it was
+ * drawn.
  */
 namespace OSeamAllowanceValues
 {
 /**
- * @brief Every distinct width @p doc is cut with, in millimetres, in the order they are found.
+ * @brief Every distinct width @p doc is cut with, in millimetres, smallest first.
  *
  * An empty answer is the honest one for a pattern with no seam allowance anywhere, and for no
  * pattern at all: @p doc may be null, which is what a page opened with nothing loaded hands over.

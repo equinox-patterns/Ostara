@@ -43,6 +43,7 @@ class ODetailsPropertyBrowser;
 class OWidgetSizeRanges;
 class OWidgetSizeStyles;
 class OWidgetOutputs;
+class OWidgetCoverPage;
 class VWidgetGroups;
 class VWidgetDetails;
 class VWidgetDependencies;
@@ -87,6 +88,7 @@ public:
     VWidgetDependencies *dependenciesWidget() const;
     OWidgetSizeStyles *sizeStylesWidget() const;
     OWidgetOutputs *outputsWidget() const;
+    OWidgetCoverPage *coverPageWidget() const;
 
     // ── Dock orchestration ──
 
@@ -163,6 +165,7 @@ private:
     OWidgetSizeRanges *m_sizeRangesContent{nullptr};
     OWidgetSizeStyles *m_sizeStylesContent{nullptr};
     OWidgetOutputs *m_outputsContent{nullptr};
+    OWidgetCoverPage *m_coverPageContent{nullptr};
     VWidgetBackgroundImages *m_backgroundImagesContent{nullptr};
     VWidgetDependencies *m_dependenciesContent{nullptr};
 
@@ -171,6 +174,7 @@ private:
     QAction *m_actionSizeRanges{nullptr};
     QAction *m_actionSizeStyles{nullptr};
     QAction *m_actionOutputs{nullptr};
+    QAction *m_actionCoverPage{nullptr};
     QAction *m_actionBackgroundImages{nullptr};
     QAction *m_actionDependencies{nullptr};
     QAction *m_actionMessages{nullptr};
@@ -183,6 +187,7 @@ private:
     bool m_sizeRangesActive{false};
     bool m_sizeStylesActive{false};
     bool m_outputsActive{false};
+    bool m_coverPageActive{false};
 
     QByteArray m_editorDockState{};
     QByteArray m_drawModeDockState{};

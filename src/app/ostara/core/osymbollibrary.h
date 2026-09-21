@@ -68,6 +68,15 @@ namespace OSymbolLibrary
 /** @brief One symbol: the marks it stands for, and what it says in each language. */
 struct Entry
 {
+    /**
+     * @brief What a pattern calls this symbol by — drawn once, and never changed afterwards.
+     *
+     * **The entry has no other name.** What the list shows is the marks it draws, and its place in
+     * the file is the user's to reorder, so neither can be referred to from outside: a pattern that
+     * chose a symbol by its rank would be pointing at whatever took that rank next. See @ref GiveIds.
+     */
+    QString id;
+
     QVector<OSymbolShapes::Shape> shapes; ///< the marks, in the order they are read; never empty
     QMap<QString, QString> texts;         ///< one text per locale, keyed by the locale's code
 
@@ -87,6 +96,20 @@ struct Library
     QStringList languages; ///< locale codes, in display order; never empty
     QList<Entry> entries;  ///< in the order the user put them
 };
+
+/**
+ * @brief Gives an id to every entry that has none, and says whether it filled any in.
+ *
+ * **A pattern refers to a symbol by its id**, so the id is drawn when the entry is created and never
+ * touched again: moving, renaming or re-describing a symbol then leaves every pattern that chose it
+ * still pointing at it, which a place in the list could not promise — the list is the user's to
+ * reorder, and a removal would shift every rank below it.
+ *
+ * Two callers, and they are the two moments an entry can appear without one: @ref Load, reading a
+ * library written before ids existed, and the page, before it writes an entry it has just created.
+ * Both hand the result to @ref Save, so an id given here is on disk before anything can refer to it.
+ */
+auto GiveIds(Library &library) -> bool;
 
 /** @brief The folder the library is kept in, from settings (GetPathSymbols). */
 auto Directory() -> QString;

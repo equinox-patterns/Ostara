@@ -53,16 +53,17 @@ auto OCoverSymbols::TitleWord(const QString &locale) -> QString
 
 //---------------------------------------------------------------------------------------------------------------------
 
-auto OCoverSymbols::Lines(const OSymbolLibrary::Library &library, const QStringList &languages)
-    -> QVector<Line>
+auto OCoverSymbols::Lines(const OSymbolLibrary::Library &library, const QStringList &languages,
+                          const QStringList &chosenIds) -> QVector<Line>
 {
     QVector<Line> lines;
 
     for (const OSymbolLibrary::Entry &entry : library.entries)
     {
-        // **The permanent ones only** — see the header. A symbol with no mark is nothing a legend
-        // could show, and one written that way is left out rather than drawn as a bare word.
-        if (!entry.permanent || entry.shapes.isEmpty())
+        // **The permanent ones, and the ones the pattern asked for** — see the header. A symbol with
+        // no mark is nothing a legend could show, and one written that way is left out rather than
+        // drawn as a bare word.
+        if ((!entry.permanent && !chosenIds.contains(entry.id)) || entry.shapes.isEmpty())
         {
             continue;
         }

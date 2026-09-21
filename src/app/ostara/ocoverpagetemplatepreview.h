@@ -31,9 +31,11 @@
 #include "core/oseamallowancelibrary.h"
 #include "core/osymbollibrary.h"
 
+#include <QPointer>
 #include <QWidget>
 
 class OSizeTable;
+class VAbstractPattern;
 
 /**
  * @brief Shows the page a cover page is written on, and what the template puts on it.
@@ -101,10 +103,22 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
+    /**
+     * @brief Subscribes to the pattern the application has open, once, the first time there is one.
+     *
+     * What a page reads from a pattern is written elsewhere — by the Cover page dock, and by the
+     * pattern's own toolbar for the name — so the page has to hear about it or it would show a
+     * pattern that no longer exists.
+     */
+    void FollowPattern();
+
     const OCoverPageTemplate *m_template{nullptr};
     const OSizeTable *m_table{nullptr};
     const OSymbolLibrary::Library *m_symbols{nullptr};
     const OSeamAllowanceLibrary::Library *m_seamAllowances{nullptr};
+
+    /// The pattern being followed, so the subscription is made once and not once per redraw.
+    QPointer<VAbstractPattern> m_following{};
 };
 
 #endif // OCOVERPAGETEMPLATEPREVIEW_H

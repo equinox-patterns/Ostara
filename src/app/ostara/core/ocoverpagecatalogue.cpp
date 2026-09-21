@@ -569,12 +569,8 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
     // apart from what follows it, a block is brought down the sheet, and neither of those is a
     // word. It is not a line spacing either — that one belongs to the line above and moves with its
     // font's height, where what is wanted here is a distance the user chose.
-    //
-    // The control is the one a font size is given, because it is the same question: a whole number
-    // of pixels, typed rather than measured. The *kind* names the control, not the meaning — what
-    // the number is for is said by the label.
-    OTemplateOptionField kSpaceHeight{QStringLiteral("spaceHeight"), OTemplateOptionKind::FontSize,
-                                      T(QT_TRANSLATE_NOOP("OTemplateSection", "Height (px)"))};
+    OTemplateOptionField kSpaceHeight{QStringLiteral("spaceHeight"), OTemplateOptionKind::Pixels,
+                                      T(QT_TRANSLATE_NOOP("OTemplateSection", "Height"))};
     kSpaceHeight.defaultValue = 25;
 
     const QList<OTemplateOptionField> spaceFields = {kSpaceHeight};
@@ -632,16 +628,18 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
                                       ".omt size table loaded."),
                     sizeFields),
         // The legend: what the marks on the sheet mean. **The library decides what is here** — its
-        // permanent symbols, in the order they were put in — so this information holds no list of its
-        // own, and the description says as much, since a user who opens it must know where a symbol
-        // is added before wondering why this is empty.
+        // permanent symbols, and the ones the pattern asked for, in the order they were put in — so
+        // this information holds no list of its own, and the description says as much, since a user
+        // who opens it must know where a symbol is added, and where a waiting one is asked for,
+        // before wondering why this is empty.
         MakeSection("symbols",
                     QT_TRANSLATE_NOOP("OTemplateSection", "Symbols"),
                     QT_TRANSLATE_NOOP("OTemplateSection",
                                       "What the marks on the pattern mean: one line per symbol your "
-                                      "library holds as permanent, in their own order. A symbol that "
-                                      "waits to be chosen stays in the library until something asks "
-                                      "for it — add and order them in the Symbols page."),
+                                      "library holds as permanent, followed by the ones this pattern "
+                                      "chose — in their own order. Symbols themselves are written and "
+                                      "ordered in the Symbols page; the ones that wait to be chosen "
+                                      "are picked per pattern, in the Cover page dock."),
                     symbolsFields),
         // The margins the pattern is cut with. **The library decides what is here** — the names on
         // its entries — and the pattern decides which of them the page prints, so the description

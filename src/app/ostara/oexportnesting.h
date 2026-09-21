@@ -32,6 +32,8 @@
 #include <QString>
 #include <QVector>
 
+#include <functional>
+
 struct OExportSizeLayer;
 
 /// @brief One placed footprint.
@@ -74,6 +76,14 @@ struct OExportPlacement
 struct OExportNestingResult
 {
     bool ok{false};
+
+    /// @brief The run was given up at the caller's request, and what it holds means nothing.
+    ///
+    /// **Not a failure, and never reported as one.** The user asked for the nesting to stop, and a
+    /// message saying it did not work would be the application arguing with a decision that was
+    /// theirs. Everything else in the result is a half-built plan and is to be discarded.
+    bool abandoned{false};
+
     QString error{};
     QVector<QString> keys{}; ///< footprint key, index-aligned with placements
     QVector<OExportPlacement> placements{};
@@ -100,6 +110,13 @@ struct OExportNestingParams
     // pass on, and nothing else does.
     int    artboardCount{0};   ///< frames side by side across the bin width
     double artboardHeightPx{0.0}; ///< frame height, converted to pixels like the rest
+
+    /// @brief Asked by the engine between its iterations: true means the run is to be given up.
+    ///
+    /// **Handed over rather than decided here**, because who wants the run stopped is the one
+    /// watching it — the dialog in front of the person who closed it. Null leaves the engine with
+    /// nobody to ask. See Engine::Config::abandoned, which this becomes.
+    std::function<bool()> abandoned{};
 };
 
 /// @brief Runs the Trame engine on geometry that never left the application.

@@ -34,6 +34,8 @@
 #include "../vpatterndb/vpiecenode.h"
 #include "xml/vabstractpattern.h"
 
+#include <algorithm>
+
 namespace
 {
 /**
@@ -105,6 +107,12 @@ auto OSeamAllowanceValues::Collect(const VAbstractPattern *doc) -> QVector<qreal
             Keep(values, node.GetSAAfter(&data), *unit);
         }
     }
+
+    // **The pattern's own order, which the walk does not have.** The pieces are read from a hash,
+    // whose iteration order is not specified and does not survive from one run to the next — so
+    // what came back depended on where the container happened to put things. Smallest first is an
+    // order the pattern itself owns, and one a reader of the page can follow.
+    std::sort(values.begin(), values.end());
 
     return values;
 }

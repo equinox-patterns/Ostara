@@ -251,6 +251,26 @@ void OTemplateSectionEditor::Rebuild()
                 PlaceControl(field, spin);
                 break;
             }
+            case OTemplateOptionKind::Pixels:
+            {
+                // **A distance, typed and not measured.** What the distance is *of* — the room an
+                // empty space takes, tomorrow the gap between two other things — belongs to the
+                // field and its label, which is why this control asks only for the number and shows
+                // the unit beside it.
+                //
+                // Unlike a font size there is no « unset » state to fall back on: a distance is a
+                // value, zero included, and the catalogue that wanted room says how much it wants.
+                auto *spin = new QSpinBox(content);
+                spin->setRange(0, 288);
+                spin->setSuffix(QStringLiteral(" px"));
+                spin->setValue(options.value(field.key, 0).toInt());
+                connect(spin, &QSpinBox::valueChanged, this, [this, field](int v) {
+                    m_template->SetSectionOption(m_index, field.key, v);
+                    emit OptionsChanged();
+                });
+                PlaceControl(field, spin);
+                break;
+            }
             case OTemplateOptionKind::LineSpacing:
             {
                 auto *spin = new QSpinBox(content);
@@ -510,6 +530,21 @@ void OTemplateSectionEditor::Rebuild()
                 }
                 connect(combo, &QComboBox::currentIndexChanged, this, [this, field, combo](int) {
                     m_template->SetSectionOption(m_index, field.key, combo->currentData().toString());
+
+                    // **The model has the last word.** An answer the template refuses — a page that
+                    // would be asked twice for the same thing — leaves the model as it was, and the
+                    // control has to say what the model says rather than what was clicked, or the
+                    // page would show an answer that was never taken.
+                    {
+                        const QSignalBlocker blocker(combo);
+                        const int settled =
+                            combo->findData(m_template->SectionOptions(m_index).value(field.key).toString());
+                        if (settled >= 0 && settled != combo->currentIndex())
+                        {
+                            combo->setCurrentIndex(settled);
+                        }
+                    }
+
                     // The answer decides whether the text is written here or elsewhere, so the
                     // field that holds it comes and goes.
                     UpdateFieldVisibility();

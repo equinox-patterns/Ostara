@@ -45,6 +45,7 @@
 #include <atomic>
 
 #include "../vmisc/def.h"
+#include "vcoverpagedata.h"
 #include "vdomdocument.h"
 #include "vtoolrecord.h"
 
@@ -248,6 +249,11 @@ public:
     auto GetFinalMeasurements() const -> QVector<VFinalMeasurement>;
     void SetFinalMeasurements(const QVector<VFinalMeasurement> &measurements);
 
+    /// The pattern's own contribution to its cover page. Setting it to nothing removes the block,
+    /// so a pattern that has nothing to say does not carry an empty one for having been looked at.
+    auto GetCoverPage() const -> VCoverPageData;
+    void SetCoverPage(const VCoverPageData &data);
+
     void SetPatternWasChanged(bool changed);
     auto GetPatternWasChanged() const -> bool;
 
@@ -384,6 +390,9 @@ public:
     static const QString TagBackgroundImage;
     static const QString TagOffset;
     static const QString TagMirrorLine;
+    /// What the cover page reads from the pattern rather than from its own template. Ostara's own
+    /// root element, and the only one the Export mode writes.
+    static const QString TagCoverPage;
 
     static const QString AttrName;
     static const QString AttrEnabled;

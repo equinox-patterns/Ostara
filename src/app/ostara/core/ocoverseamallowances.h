@@ -33,6 +33,7 @@
 #include <QVector>
 
 #include "oseamallowancelibrary.h"
+#include "xml/vcoverpagedata.h"
 
 /**
  * @brief The margins a pattern is cut with, said the way a cover page says them.
@@ -86,20 +87,45 @@ struct Line
 /**
  * @brief The lines @p library has to say about the widths @p values.
  *
- * **One line per entry, in the library's order**, which is the order the user arranged the names in
- * and the order a reader reads them. An entry that answers no width says nothing: a name the
- * pattern does not use is a name the page has no business printing.
+ * **One line per width an entry answers, in the library's order** — which is the order the user
+ * arranged the names in, and the order a reader reads them. An entry that answers no width says
+ * nothing: a name the pattern does not use is a name the page has no business printing.
+ *
+ * **An entry may answer several widths, and then it says several lines.** A library rule written as
+ * "from 2 cm up is a hem" answers both the 2 cm and the 3 cm a pattern may hold, and those are two
+ * different margins a reader has to be able to tell apart — so each is stated, in the pattern's own
+ * order, smallest first. The library names them the same, which is honest: it says what a margin is
+ * *called*, and it cannot know what this pattern calls each one. @p patternNames is where a pattern
+ * says so — see @ref CoverPageMarginNameFor — and a width it has named is printed under that name.
  *
  * **The entry marked as the default answers @p defaultMm**, the width the application is set to —
  * and it prints it, like any other entry, only if the pattern really carries it.
- *
- * **An entry names one width.** Should the pattern hold two widths that answer the same entry, the
- * first one found is the one printed: the entry says what a margin is called, and a library that
- * has two different widths answering to one name is a library that was written wrong, not a page
- * that has something to say.
  */
 auto Lines(const OSeamAllowanceLibrary::Library &library, const QStringList &languages,
-           const QVector<qreal> &values, qreal defaultMm) -> QVector<Line>;
+           const QVector<qreal> &values, qreal defaultMm,
+           const QVector<VCoverPageMarginName> &patternNames) -> QVector<Line>;
+
+/**
+ * @brief The widths of @p values more than one line would have to name the same way.
+ *
+ * **The only widths a pattern has any reason to rename.** A library rule may be written as a
+ * threshold — "from 2 cm up is a hem" — and then a pattern holding both a 2 cm and a 3 cm gets two
+ * lines carrying the same word, which no reader can tell apart. Every other width is named by its
+ * own rule and named once, and nothing about it needs deciding.
+ *
+ * Smallest first, in the pattern's own order. Empty is the ordinary answer.
+ */
+auto Ambiguous(const OSeamAllowanceLibrary::Library &library, const QVector<qreal> &values,
+               qreal defaultMm) -> QVector<qreal>;
+
+/**
+ * @brief What @p library calls a margin of @p mm in @p locale, or nothing when no entry answers it.
+ *
+ * The rule of @ref Lines asked of one width and one language — which is what a field offering the
+ * name to be replaced has to show: **the name that would be printed if nobody renamed anything.**
+ */
+auto LibraryNameFor(const OSeamAllowanceLibrary::Library &library, qreal mm, qreal defaultMm,
+                    const QString &locale) -> QString;
 } // namespace OCoverSeamAllowances
 
 #endif // OCOVERSEAMALLOWANCES_H

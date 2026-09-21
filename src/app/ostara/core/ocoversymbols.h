@@ -75,11 +75,18 @@ struct Line
 /**
  * @brief The lines the given languages call for, in the library's own order.
  *
- * **The permanent symbols only.** A symbol that waits to be chosen is one this page has not chosen:
- * it belongs to whatever switches it on, and a legend that showed everything would be explaining
- * marks the pattern does not carry.
+ * **The permanent symbols, and the ones the pattern chose.** A permanent symbol is on every page
+ * that uses the template without anyone asking. The others wait in the library, and the pattern
+ * asks for one by its id — so the legend says what the pattern carries, and not everything the
+ * library happens to hold.
+ *
+ * **One pass, in the library's order.** A legend is read top to bottom and its order is an argument
+ * the user makes by arranging the library, so a chosen symbol takes its place among the permanent
+ * ones rather than being appended after them: a legend whose order depended on how a symbol got
+ * there would be one nobody could lay out.
  */
-auto Lines(const OSymbolLibrary::Library &library, const QStringList &languages) -> QVector<Line>;
+auto Lines(const OSymbolLibrary::Library &library, const QStringList &languages,
+           const QStringList &chosenIds) -> QVector<Line>;
 } // namespace OCoverSymbols
 
 #endif // OCOVERSYMBOLS_H

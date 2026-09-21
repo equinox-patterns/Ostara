@@ -38,6 +38,7 @@
 #include <QDomElement>
 #include <QFile>
 #include <QSaveFile>
+#include <QUuid>
 
 namespace
 {
@@ -51,6 +52,7 @@ const QString kAttrCode = QStringLiteral("code");
 const QString kAttrShape = QStringLiteral("shape");
 const QString kAttrLocale = QStringLiteral("locale");
 const QString kAttrPermanent = QStringLiteral("permanent");
+const QString kAttrId = QStringLiteral("id");
 const QString kValueFalse = QStringLiteral("false");
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -86,9 +88,31 @@ auto SeededLibrary() -> OSymbolLibrary::Library
     AddSymbol(OSymbolShapes::Family::Grainline, "Grainline");
     AddSymbol(OSymbolShapes::Family::FoldLine, "Fold line");
 
+    // A seeded symbol is an entry like any other, and a pattern may choose it — so it is given its
+    // id here rather than at the first save, which would leave the very first session unable to
+    // refer to the two symbols the library starts with.
+    OSymbolLibrary::GiveIds(library);
+
     return library;
 }
 } // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSymbolLibrary::GiveIds(Library &library) -> bool
+{
+    bool filled = false;
+    for (Entry &entry : library.entries)
+    {
+        if (entry.id.isEmpty())
+        {
+            // A uuid without its braces: the same shape the cartouche's clients are named with, so
+            // an id in this application looks like an id wherever it is met.
+            entry.id = QUuid::createUuid().toString(QUuid::WithoutBraces);
+            filled = true;
+        }
+    }
+    return filled;
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OSymbolLibrary::Directory() -> QString
@@ -156,6 +180,11 @@ auto OSymbolLibrary::Load() -> Library
     {
         Entry entry;
 
+        // An id the library does not carry is not an error: it was written before symbols had one,
+        // and it is filled in below rather than refused here — the file belongs to the user, and a
+        // symbol the application stopped reading would be a symbol that disappeared.
+        entry.id = el.attribute(kAttrId);
+
         // Absent means permanent: an index written before a symbol could wait to be asked is one
         // whose symbols were all meant to be shown, and reading them as "not chosen" would empty
         // every legend written so far.
@@ -205,6 +234,17 @@ auto OSymbolLibrary::Load() -> Library
         library.entries.append(entry);
     }
 
+    // **A library written before ids existed is given them, and the file is written back.** Without
+    // this, every entry would be handed a fresh id each time the library was read, and a pattern
+    // that had chosen one would be pointing at an id that no longer names anything — the choice
+    // would survive in the file and mean nothing. The write is the one the first launch already
+    // does, and its failure is tolerated the same way: the library still works, it simply cannot be
+    // referred to until its folder can be written.
+    if (GiveIds(library))
+    {
+        Save(library);
+    }
+
     return library;
 }
 
@@ -227,6 +267,7 @@ auto OSymbolLibrary::Save(const Library &library, QString *error) -> bool
     for (const Entry &entry : library.entries)
     {
         QDomElement el = doc.createElement(kTagSymbol);
+        el.setAttribute(kAttrId, entry.id);
         el.setAttribute(kAttrPermanent, entry.permanent ? QStringLiteral("true") : kValueFalse);
 
         for (const OSymbolShapes::Shape &shape : entry.shapes)

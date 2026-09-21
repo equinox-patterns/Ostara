@@ -121,6 +121,10 @@ auto OTemplateSection::DefaultValue(const QString &key) const -> QVariant
                 return 0.0;
             case OTemplateOptionKind::LineSpacing:
                 return 0;
+            // A distance nobody asked for is no distance: what a field of pixels measures is its
+            // own business, and a catalogue that wants room says how much in the field itself.
+            case OTemplateOptionKind::Pixels:
+                return 0;
             case OTemplateOptionKind::Axis:
                 return QString();
             case OTemplateOptionKind::MeasureName:

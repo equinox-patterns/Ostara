@@ -59,6 +59,7 @@ enum class OTemplateOptionKind
     FontWeight,   ///< int — QFont::Weight (0 = default)
     FontSize,     ///< int — font size in px (0 = default)
     LineSpacing,  ///< int — extra vertical space in px with the next line (0 = default, negative = tighter)
+    Pixels,       ///< int — a distance in px: a height, a gap, the room something takes (0 = none)
     Axis,         ///< QString — size-axis name from the loaded table
     MeasureName,  ///< QString — measurement full name from the loaded table
     Separator,    ///< QString — separator between name and value ("", ":", "-", "/", "·")

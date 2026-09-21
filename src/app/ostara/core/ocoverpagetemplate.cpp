@@ -104,6 +104,7 @@ void WriteSection(QDomDocument &doc, QDomElement &parent, const OCoverPageTempla
         {
             case OTemplateOptionKind::FontWeight:
             case OTemplateOptionKind::LineSpacing:
+            case OTemplateOptionKind::Pixels:
                 element.setAttribute(field.key, QString::number(value.toInt()));
                 break;
             case OTemplateOptionKind::FontSize:
@@ -204,6 +205,7 @@ auto ReadSection(const QDomElement &element) -> OCoverPageTemplate::Section
         {
             case OTemplateOptionKind::FontWeight:
             case OTemplateOptionKind::LineSpacing:
+            case OTemplateOptionKind::Pixels:
                 section.options.insert(field.key, raw.toInt());
                 break;
             case OTemplateOptionKind::FontSize:
@@ -301,6 +303,40 @@ auto ReadSection(const QDomElement &element) -> OCoverPageTemplate::Section
     }
 
     return section;
+}
+
+/**
+ * @brief Whether a page already asks for this text to be filled in once per pattern, elsewhere.
+ *
+ * **A page asks for it once.** What such a text holds is filled in on the pattern, and the pattern
+ * holds one — so a second information asking the same question would have the two answering with
+ * the same words and no way to tell which was meant. The text written here may be repeated as often
+ * as the page likes, because it is written on the page and needs nothing from anybody.
+ *
+ * Every band is looked at, not just the one being edited: the four are one page.
+ */
+auto FilledInPerPatternElsewhere(const OCoverPageTemplate &tpl,
+                                 OCoverPageTemplate::Placement placement, int index) -> bool
+{
+    for (OCoverPageTemplate::Placement band : OCoverPageTemplate::Placements())
+    {
+        const QList<OCoverPageTemplate::Section> &sections = tpl.Sections(band);
+        for (int i = 0; i < sections.size(); ++i)
+        {
+            if (band == placement && i == index)
+            {
+                continue;
+            }
+            const OCoverPageTemplate::Section &section = sections.at(i);
+            if (section.typeId == QLatin1String("freeText")
+                && section.options.value(QStringLiteral("textSource")).toString()
+                       == OTemplateTextSource::kPerPattern)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 } // namespace
 
@@ -558,5 +594,19 @@ void OCoverPageBandHost::SetSectionOption(int index, const QString &key, const Q
     {
         return;
     }
+
+    // **The one answer a page may give only once.** A free text left to be filled in per pattern is
+    // written on the pattern, and a pattern holds one such text; a second information asking the
+    // same question would answer with the same words and leave no way to tell them apart. Refused
+    // here rather than greyed out in the editor, because the question is about the whole page and
+    // no field can see the whole page — and the control reads the model back, so what it shows is
+    // what was kept.
+    if (key == QLatin1String("textSource")
+        && value.toString() == OTemplateTextSource::kPerPattern
+        && FilledInPerPatternElsewhere(*m_template, m_placement, index))
+    {
+        return;
+    }
+
     sections[index].options.insert(key, value);
 }

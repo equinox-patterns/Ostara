@@ -79,6 +79,40 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <!-- What the cover page reads from the pattern itself, rather than from its own template:
+             the free text a template leaves to be filled in, the symbols chosen from the library
+             for this pattern, and the names this pattern gives to its own seam allowances. Written
+             by the Cover page dock, absent from a pattern that has nothing to say. -->
+        <xs:element name="coverPage" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="freeText" type="xs:string" minOccurs="0" maxOccurs="1"/>
+              <!-- symbolId, not id: an attribute called "id" anywhere in a pattern file is read as
+                   a tool's number, so a uuid under that name makes the document unsaveable. -->
+              <xs:element name="symbol" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="symbolId" type="xs:string" use="required"/>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="marginName" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="text" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute name="locale" type="xs:string" use="required"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="width" type="xs:decimal" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="measurements">
           <xs:complexType>
             <xs:attribute name="path" type="xs:string"/>

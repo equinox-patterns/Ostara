@@ -42,6 +42,7 @@
 #include "dialogs/vwidgetdependencies.h"
 #include "dialogs/vwidgetdetails.h"
 #include "dialogs/vwidgetgroups.h"
+#include "owidgetcoverpage.h"
 #include "owidgetoutputs.h"
 #include "owidgetsizeranges.h"
 #include "owidgetsizestyles.h"
@@ -112,6 +113,12 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
     WrapDockContent(m_ui->dockWidgetOutputs, m_outputsContent);
     m_ui->dockWidgetOutputs->setWindowTitle(tr("Outputs"));
 
+    // Cover page dock — shown in Export mode only, next to the Outputs dock: what a pattern
+    // contributes to its own cover page is gathered where the pattern is exported from.
+    m_coverPageContent = new OWidgetCoverPage(m_host);
+    WrapDockContent(m_ui->dockWidgetCoverPage, m_coverPageContent);
+    m_ui->dockWidgetCoverPage->setWindowTitle(tr("Cover page"));
+
     // ── Messages dock — wrap existing .ui content ──
     {
         QWidget *messagesContent = m_ui->dockWidgetMessages->widget(); // dockWidgetContents_4
@@ -132,6 +139,7 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
     installTitleBar(m_ui->dockWidgetSizeRanges);
     installTitleBar(m_ui->dockWidgetSizeStyles);
     installTitleBar(m_ui->dockWidgetOutputs);
+    installTitleBar(m_ui->dockWidgetCoverPage);
     installTitleBar(m_ui->dockWidgetMessages);
     installTitleBar(m_ui->dockWidgetBackgroundImages);
     installTitleBar(m_ui->dockWidgetDependencies);
@@ -177,6 +185,11 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
     connect(m_actionOutputs, &QAction::triggered, this,
             [this](bool checked) { m_outputsActive = checked; });
     m_ui->menuWindow->addAction(m_actionOutputs);
+
+    m_actionCoverPage = m_ui->dockWidgetCoverPage->toggleViewAction();
+    connect(m_actionCoverPage, &QAction::triggered, this,
+            [this](bool checked) { m_coverPageActive = checked; });
+    m_ui->menuWindow->addAction(m_actionCoverPage);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -254,6 +267,7 @@ void ODockManager::applyDockPreferences()
     m_ui->dockWidgetSizeRanges->setVisible(m_sizeRangesActive);
     m_ui->dockWidgetSizeStyles->setVisible(m_sizeStylesActive);
     m_ui->dockWidgetOutputs->setVisible(m_outputsActive);
+    m_ui->dockWidgetCoverPage->setVisible(m_coverPageActive);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -267,6 +281,7 @@ void ODockManager::syncVisibilityFromDocks()
     m_sizeRangesActive = m_ui->dockWidgetSizeRanges->isVisible();
     m_sizeStylesActive = m_ui->dockWidgetSizeStyles->isVisible();
     m_outputsActive = m_ui->dockWidgetOutputs->isVisible();
+    m_coverPageActive = m_ui->dockWidgetCoverPage->isVisible();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -281,6 +296,7 @@ void ODockManager::hideAllDocks()
     m_ui->dockWidgetSizeRanges->setVisible(false);
     m_ui->dockWidgetSizeStyles->setVisible(false);
     m_ui->dockWidgetOutputs->setVisible(false);
+    m_ui->dockWidgetCoverPage->setVisible(false);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -393,9 +409,11 @@ void ODockManager::applyModeDocks(Draw mode)
             m_ui->dockWidgetSizeRanges->setVisible(false);
             m_ui->dockWidgetSizeStyles->setVisible(false);
             m_ui->dockWidgetOutputs->setVisible(false);
+            m_ui->dockWidgetCoverPage->setVisible(false);
             m_actionSizeRanges->setDisabled(true);
             m_actionSizeStyles->setDisabled(true);
             m_actionOutputs->setDisabled(true);
+            m_actionCoverPage->setDisabled(true);
             m_optionsStack->setCurrentIndex(0); // tool options
             m_ui->dockWidgetOptions->setWindowTitle(tr("Options"));
             m_ui->dockWidgetOptions->setVisible(m_optionsActive);
@@ -416,9 +434,11 @@ void ODockManager::applyModeDocks(Draw mode)
             m_ui->dockWidgetSizeRanges->setVisible(false);
             m_ui->dockWidgetSizeStyles->setVisible(false);
             m_ui->dockWidgetOutputs->setVisible(false);
+            m_ui->dockWidgetCoverPage->setVisible(false);
             m_actionSizeRanges->setDisabled(true);
             m_actionSizeStyles->setDisabled(true);
             m_actionOutputs->setDisabled(true);
+            m_actionCoverPage->setDisabled(true);
             m_groupsStack->setCurrentIndex(1); // Details
             m_ui->dockWidgetGroups->setWindowTitle(tr("Pieces"));
             m_ui->dockWidgetGroups->setVisible(m_groupsActive);
@@ -443,7 +463,9 @@ void ODockManager::applyModeDocks(Draw mode)
             m_ui->dockWidgetSizeRanges->setVisible(false);
             m_ui->dockWidgetSizeStyles->setVisible(false);
             m_ui->dockWidgetOutputs->setVisible(false);
+            m_ui->dockWidgetCoverPage->setVisible(false);
             m_actionOutputs->setDisabled(true);
+            m_actionCoverPage->setDisabled(true);
             m_actionOptions->setDisabled(true);
             m_actionGroups->setDisabled(true);
             m_actionSizeRanges->setDisabled(true);
@@ -464,6 +486,8 @@ void ODockManager::applyModeDocks(Draw mode)
             m_ui->dockWidgetSizeRanges->setWindowTitle(tr("Size Ranges"));
             m_ui->dockWidgetSizeStyles->setVisible(true);
             m_ui->dockWidgetSizeStyles->setWindowTitle(tr("Size Styles"));
+            m_ui->dockWidgetCoverPage->setVisible(false);
+            m_actionCoverPage->setDisabled(true);
             m_actionOptions->setDisabled(true);
             m_actionGroups->setDisabled(true);
             m_actionMessages->setDisabled(true);
@@ -473,7 +497,7 @@ void ODockManager::applyModeDocks(Draw mode)
             m_actionSizeStyles->setEnabled(true);
             break;
         case Draw::Export:
-            // Only the Outputs dock is shown in Export mode.
+            // Only the Outputs and Cover page docks are shown in Export mode.
             m_ui->dockWidgetLayoutPages->setVisible(false);
             m_ui->dockWidgetOptions->setVisible(false);
             m_ui->dockWidgetGroups->setVisible(false);
@@ -484,6 +508,8 @@ void ODockManager::applyModeDocks(Draw mode)
             m_ui->dockWidgetSizeStyles->setVisible(false);
             m_ui->dockWidgetOutputs->setVisible(true);
             m_ui->dockWidgetOutputs->setWindowTitle(tr("Outputs"));
+            m_ui->dockWidgetCoverPage->setVisible(true);
+            m_ui->dockWidgetCoverPage->setWindowTitle(tr("Cover page"));
             m_actionOptions->setDisabled(true);
             m_actionGroups->setDisabled(true);
             m_actionMessages->setDisabled(true);
@@ -492,6 +518,7 @@ void ODockManager::applyModeDocks(Draw mode)
             m_actionSizeRanges->setDisabled(true);
             m_actionSizeStyles->setDisabled(true);
             m_actionOutputs->setEnabled(true);
+            m_actionCoverPage->setEnabled(true);
             break;
     }
 
@@ -516,23 +543,24 @@ void ODockManager::enforceModeDockExclusions(Draw mode)
     {
         case Draw::Calculation:
             excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles,
-                        m_ui->dockWidgetOutputs};
+                        m_ui->dockWidgetOutputs, m_ui->dockWidgetCoverPage};
             break;
         case Draw::Modeling:
             excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles,
                         m_ui->dockWidgetBackgroundImages, m_ui->dockWidgetDependencies,
-                        m_ui->dockWidgetOutputs};
+                        m_ui->dockWidgetOutputs, m_ui->dockWidgetCoverPage};
             break;
         case Draw::Layout:
             excluded = {m_ui->dockWidgetOptions, m_ui->dockWidgetGroups, m_ui->dockWidgetMessages,
                         m_ui->dockWidgetBackgroundImages, m_ui->dockWidgetDependencies,
                         m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles,
-                        m_ui->dockWidgetOutputs};
+                        m_ui->dockWidgetOutputs, m_ui->dockWidgetCoverPage};
             break;
         case Draw::Graded:
             excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetOptions, m_ui->dockWidgetGroups,
                         m_ui->dockWidgetMessages, m_ui->dockWidgetBackgroundImages,
-                        m_ui->dockWidgetDependencies, m_ui->dockWidgetOutputs};
+                        m_ui->dockWidgetDependencies, m_ui->dockWidgetOutputs,
+                        m_ui->dockWidgetCoverPage};
             break;
         case Draw::Export:
             excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetOptions, m_ui->dockWidgetGroups,
@@ -570,6 +598,11 @@ void ODockManager::retranslate()
             if (m_outputsContent != nullptr)
             {
                 m_outputsContent->RetranslateUI();
+            }
+            m_ui->dockWidgetCoverPage->setWindowTitle(tr("Cover page"));
+            if (m_coverPageContent != nullptr)
+            {
+                m_coverPageContent->RetranslateUI();
             }
             break;
         case Draw::Graded:
@@ -711,6 +744,12 @@ OWidgetSizeStyles *ODockManager::sizeStylesWidget() const
 OWidgetOutputs *ODockManager::outputsWidget() const
 {
     return m_outputsContent;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+OWidgetCoverPage *ODockManager::coverPageWidget() const
+{
+    return m_coverPageContent;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

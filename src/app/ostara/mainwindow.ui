@@ -324,6 +324,15 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetOutputsContent"/>
   </widget>
+  <widget class="QDockWidget" name="dockWidgetCoverPage">
+   <property name="windowTitle">
+    <string>Cover page</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetCoverPageContent"/>
+  </widget>
   <widget class="QDockWidget" name="dockWidgetMessages">
    <property name="floating">
     <bool>false</bool>

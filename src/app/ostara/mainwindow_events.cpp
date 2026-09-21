@@ -70,8 +70,15 @@
 #include <QPainter>
 #include <QPalette>
 #include <QShowEvent>
+#include <QTimer>
 #include <QUndoStack>
 #include <QUrl>
+
+namespace
+{
+/// How long a close remembered during a run waits before asking again whether a dialog has gone.
+constexpr int kDeferredCloseRetryMs = 50;
+} // namespace
 
 using namespace Qt::Literals::StringLiterals;
 
@@ -228,6 +235,22 @@ void MainWindow::changeEvent(QEvent *event)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     qCDebug(vMainWindow, "Closing main window");
+
+    // **A close is not carried out while a run of our own is in flight.** The window is deleted on
+    // close, and a deferred deletion is performed by whichever event loop is running when control
+    // returns to one — Qt, QObject::deleteLater(). The export flow waits on a loop of its own, and
+    // the nesting engine has no abort hook, so that loop outlives the dialog that announces it: a
+    // close asked for during a run was carried out by the run's own loop, destroying this window
+    // while the run was still working through it. The request is remembered and granted the moment
+    // the run is over — see OWorkInFlight, which does both.
+    if (m_workInFlight > 0)
+    {
+        qCDebug(vMainWindow, "Closing deferred: a run is in flight.");
+        m_closeRequested = true;
+        event->ignore();
+        return;
+    }
+
     if (MaybeSave())
     {
         FileClosedCorrect();
@@ -240,6 +263,55 @@ void MainWindow::closeEvent(QCloseEvent *event)
         qCDebug(vMainWindow, "Closing canceled.");
         event->ignore();
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::BeginWorkInFlight()
+{
+    ++m_workInFlight;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::EndWorkInFlight()
+{
+    if (m_workInFlight > 0)
+    {
+        --m_workInFlight;
+    }
+
+    if (m_workInFlight > 0 || !m_closeRequested)
+    {
+        return;
+    }
+
+    // **Granted from the loop that asked, not from this call.** A run unwinds through methods of
+    // this window — its own callers among them — so closing here would delete the window while they
+    // are still on the stack, which is the very thing being prevented. A queued call lands once
+    // control is back on the event loop the run was started from.
+    QTimer::singleShot(0, this, &MainWindow::ApplyDeferredClose);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ApplyDeferredClose()
+{
+    if (m_workInFlight > 0 || !m_closeRequested)
+    {
+        return;
+    }
+
+    // **A dialog of its own would carry out the deletion this is deferring.** A modal runs a loop
+    // of its own, and Qt performs a deferred deletion in whichever loop is running when control
+    // returns to one — closing now, with a dialog up, would therefore delete this window inside the
+    // dialog's loop, while the method that opened the dialog is still on the stack. The moment
+    // passes when the dialog does.
+    if (QApplication::activeModalWidget() != nullptr)
+    {
+        QTimer::singleShot(kDeferredCloseRetryMs, this, &MainWindow::ApplyDeferredClose);
+        return;
+    }
+
+    m_closeRequested = false;
+    close();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -119,6 +119,7 @@ const QString VAbstractPattern::TagBackgroundImages = QStringLiteral("backgroudI
 const QString VAbstractPattern::TagBackgroundImage = QStringLiteral("backgroudImage");
 const QString VAbstractPattern::TagOffset = QStringLiteral("offset");
 const QString VAbstractPattern::TagMirrorLine = QStringLiteral("mirrorLine"); // NOLINT(cert-err58-cpp)
+const QString VAbstractPattern::TagCoverPage = QStringLiteral("coverPage");  // NOLINT(cert-err58-cpp)
 
 const QString VAbstractPattern::AttrName = QStringLiteral("name");
 const QString VAbstractPattern::AttrEnabled = QStringLiteral("enabled");
@@ -295,6 +296,98 @@ auto TransformToString(const QTransform &m) -> QString
                              NumberToString(m.m32()),
                              NumberToString(m.m33())};
     return matrix.join(';'_L1);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// The cover page's own vocabulary. Named in one place so that the writer and the reader cannot
+// drift apart, the way the tag constants above are named for the rest of the document.
+const QString kTagCoverFreeText = QStringLiteral("freeText");
+const QString kTagCoverSymbol = QStringLiteral("symbol");
+const QString kTagCoverMarginName = QStringLiteral("marginName");
+const QString kTagCoverText = QStringLiteral("text");
+const QString kAttrCoverLocale = QStringLiteral("locale");
+// **Not "id".** Every attribute named "id" in a pattern file is read as a tool's number, by a walk
+// that goes over the whole document before every save — so a symbol's uuid under that name is not
+// a symbol the file cannot hold, it is a document that cannot be written at all. The entries that
+// carry a name of their own rather than a number say so: imageId, pieceId, groupId.
+const QString kAttrCoverId = QStringLiteral("symbolId");
+const QString kAttrCoverWidth = QStringLiteral("width");
+
+//---------------------------------------------------------------------------------------------------------------------
+auto HasCoverText(const QMap<QString, QString> &texts) -> bool
+{
+    for (auto it = texts.constBegin(); it != texts.constEnd(); ++it)
+    {
+        if (!it.value().isEmpty())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// A block that says nothing is not written: three empty groups are not a thing the pattern holds.
+auto IsCoverPageEmpty(const VCoverPageData &data) -> bool
+{
+    if (!data.freeText.isEmpty())
+    {
+        return false;
+    }
+
+    // A symbol the user has added a row for but not yet chosen says nothing, and is not what makes a
+    // block worth writing: the dock holds such a row so it can be answered, and the file holds the
+    // answers.
+    for (const QString &id : data.symbols)
+    {
+        if (!id.isEmpty())
+        {
+            return false;
+        }
+    }
+
+    for (const VCoverPageMarginName &margin : data.marginNames)
+    {
+        if (HasCoverText(margin.texts))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Reads the <text locale="…"> children of @p parent into one name per locale.
+auto ReadCoverTexts(const QDomElement &parent) -> QMap<QString, QString>
+{
+    QMap<QString, QString> texts;
+    for (QDomElement text = parent.firstChildElement(kTagCoverText); !text.isNull();
+         text = text.nextSiblingElement(kTagCoverText))
+    {
+        const QString locale = text.attribute(kAttrCoverLocale);
+        if (!locale.isEmpty())
+        {
+            texts.insert(locale, text.text());
+        }
+    }
+    return texts;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Writes @p texts as <text locale="…"> children, skipping the locales that say nothing.
+void WriteCoverTexts(VAbstractPattern &doc, QDomElement &parent, const QMap<QString, QString> &texts)
+{
+    for (auto it = texts.constBegin(); it != texts.constEnd(); ++it)
+    {
+        if (it.value().isEmpty())
+        {
+            continue;
+        }
+        QDomElement text = doc.createElement(kTagCoverText);
+        text.setAttribute(kAttrCoverLocale, it.key());
+        text.appendChild(doc.createTextNode(it.value()));
+        parent.appendChild(text);
+    }
 }
 } // namespace
 
@@ -1116,6 +1209,110 @@ void VAbstractPattern::SetFinalMeasurements(const QVector<VFinalMeasurement> &me
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetCoverPage() const -> VCoverPageData
+{
+    VCoverPageData data;
+
+    const QDomNodeList list = elementsByTagName(TagCoverPage);
+    if (list.isEmpty())
+    {
+        return data;
+    }
+
+    const QDomElement element = list.at(0).toElement();
+
+    data.freeText = element.firstChildElement(kTagCoverFreeText).text();
+
+    // A symbol is its id and nothing else: what it draws is the library's to say, and the library
+    // is read when the page is drawn rather than when the pattern is opened. **An id the library no
+    // longer holds is kept rather than dropped** — a library that was reorganised may be put back,
+    // and a reference thrown away here could not be.
+    for (QDomElement symbol = element.firstChildElement(kTagCoverSymbol); !symbol.isNull();
+         symbol = symbol.nextSiblingElement(kTagCoverSymbol))
+    {
+        const QString id = symbol.attribute(kAttrCoverId);
+        if (!id.isEmpty() && !data.symbols.contains(id))
+        {
+            data.symbols.append(id);
+        }
+    }
+
+    for (QDomElement margin = element.firstChildElement(kTagCoverMarginName); !margin.isNull();
+         margin = margin.nextSiblingElement(kTagCoverMarginName))
+    {
+        const qreal mm = margin.attribute(kAttrCoverWidth).toDouble();
+        // Zero is not a margin, and neither is a width with no name under it.
+        if (mm <= 0.0)
+        {
+            continue;
+        }
+        VCoverPageMarginName name;
+        name.mm = mm;
+        name.texts = ReadCoverTexts(margin);
+        data.marginNames.append(name);
+    }
+
+    return data;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetCoverPage(const VCoverPageData &data)
+{
+    const QDomNodeList list = elementsByTagName(TagCoverPage);
+
+    if (IsCoverPageEmpty(data))
+    {
+        // **The block goes rather than standing there empty.** A pattern with nothing to say says it
+        // by carrying nothing: an empty element would be a line in every file that was merely looked
+        // at, and a reader would have to decide what it meant.
+        if (!list.isEmpty())
+        {
+            documentElement().removeChild(list.at(0));
+            modified = true;
+            emit patternChanged(false);
+        }
+        return;
+    }
+
+    QDomElement element = CheckTagExists(TagCoverPage);
+    RemoveAllChildren(element);
+
+    if (!data.freeText.isEmpty())
+    {
+        QDomElement free = createElement(kTagCoverFreeText);
+        free.appendChild(createTextNode(data.freeText));
+        element.appendChild(free);
+    }
+
+    for (const QString &id : data.symbols)
+    {
+        if (id.isEmpty())
+        {
+            continue;
+        }
+        QDomElement symbol = createElement(kTagCoverSymbol);
+        symbol.setAttribute(kAttrCoverId, id);
+        element.appendChild(symbol);
+    }
+
+    for (const VCoverPageMarginName &margin : data.marginNames)
+    {
+        if (margin.mm <= 0.0 || !HasCoverText(margin.texts))
+        {
+            continue;
+        }
+        QDomElement marginElement = createElement(kTagCoverMarginName);
+        marginElement.setAttribute(kAttrCoverWidth, QString::number(margin.mm, 'f', 2));
+        WriteCoverTexts(*this, marginElement, margin.texts);
+        element.appendChild(marginElement);
+    }
+
+    modified = true;
+    emit patternChanged(false);
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
 void VAbstractPattern::SetPatternWasChanged(bool changed)
 {
     patternLabelWasChanged = changed;
@@ -1516,7 +1713,11 @@ auto VAbstractPattern::CheckTagExists(const QString &tag) -> QDomElement
             TagWatermark,         // 12
             TagCartouche,         // 13
             TagFinalMeasurements, // 14
-            TagBackgroundImages   // 15
+            TagBackgroundImages,  // 15
+            TagCoverPage          // 16 — before <measurements>, which is mandatory, so an element
+                                  // created here can never land after it — and therefore never
+                                  // after <draw>, <pieceGroups> or <sizeRanges>, all of which are
+                                  // appended blind by writers that do not look at what is there.
         };
 
         switch (tags.indexOf(tag))
@@ -1565,6 +1766,9 @@ auto VAbstractPattern::CheckTagExists(const QString &tag) -> QDomElement
                 break;
             case 15: // TagBackgroundImages
                 element = createElement(TagBackgroundImages);
+                break;
+            case 16: // TagCoverPage
+                element = createElement(TagCoverPage);
                 break;
             case 0: // TagUnit (Mandatory tag)
             default:

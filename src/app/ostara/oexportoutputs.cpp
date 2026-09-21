@@ -61,10 +61,12 @@
 #include <QFutureWatcher>
 #include <QHash>
 #include <QMessageBox>
+#include <QScopeGuard>
 #include <QStringList>
 #include <QThreadPool>
 #include <QtConcurrent>
 
+#include <atomic>
 #include <memory>
 #include <optional>
 #include <utility>
@@ -147,6 +149,12 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // the one conversion of the run happens here, once. The unit the user typed in plays no
     // part in it — it says how the figures are READ, not what they mean, which is why the
     // same run gives the same plan whatever unit it was entered in.
+    // **The run's way out, declared before anything can read it.** Held by a shared pointer and not
+    // by this window: the engine is handed a lambda that reads it and runs on a worker thread, and
+    // the dialog that sets it is destroyed before the result is read. Created here, ahead of the
+    // params that carry the question, so that nothing is handed over that does not yet exist.
+    auto abandoned = std::make_shared<std::atomic<bool>>(false);
+
     OExportNestingParams params;
     params.binWidthPx = ToPixel(request.documentWidthMm, Unit::Mm);
     params.marginPx = ToPixel(request.marginMm, Unit::Mm);
@@ -157,10 +165,19 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     params.artboardCount    = request.columns;
     params.artboardHeightPx = ToPixel(request.frameHeightMm, Unit::Mm);
 
-    // The engine has no abort hook: this dialog is shown while it works and taken down
-    // after. No Cancel button, so nothing on screen promises an interruption that
-    // cannot happen.
+    // Asked on the worker thread, so it reads an atomic and nothing else: no widget, no document,
+    // nothing a thread that is not the GUI thread may touch.
+    params.abandoned = [abandoned]() { return abandoned->load(); };
+
+    // **Closing this dialog is how the run is given up.** The engine has no abort hook of its own,
+    // so one is handed to it below: the cross sets a flag, the engine reads it between its
+    // iterations, and the run stops where it stands. There is no Cancel button because there is
+    // nothing left to cancel — what a cross means is exactly this, and it now means it.
     std::unique_ptr<OWaitDialog> waitDialog(new OWaitDialog(tr("Nesting. Please, wait."), this));
+
+    // The cross on the dialog is the request; what the engine reads is the flag it was handed.
+    connect(waitDialog.get(), &QDialog::rejected, this, [abandoned]() { abandoned->store(true); });
+
     waitDialog->show();
     QCoreApplication::processEvents();
 
@@ -305,6 +322,14 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     const OExportNestingResult result = future.result();
     waitDialog.reset();
 
+    if (result.abandoned)
+    {
+        // **Nothing is said about it.** The user closed the dialog to stop the run; a message
+        // telling them it did not finish would be the application arguing with a decision that was
+        // theirs to make. Nothing is filed, nothing is changed, and the mode stays where it is.
+        return std::nullopt;
+    }
+
     if (!result.ok)
     {
         QMessageBox::warning(this, tr("Export mode"), result.error, QMessageBox::Ok, QMessageBox::Ok);
@@ -372,6 +397,15 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 auto MainWindow::GenerateNamedExport(const OExportRunRequest &request, const QString &name,
                                      const OGradedSizeRanges::Context &context) -> bool
 {
+    // **The window must not be deleted while this runs.** A generation waits on a loop of its own —
+    // the nesting engine has no abort hook, so that loop outlives the dialog announcing it — and a
+    // deferred deletion is performed by whichever loop is running when control returns to one. A
+    // close asked for here would therefore have been carried out by the run's own loop, deleting
+    // this window while the run was still working through it, which is a method of it. The close is
+    // remembered instead, and granted once the count is back to zero: see MainWindow::closeEvent.
+    BeginWorkInFlight();
+    const auto workGuard = qScopeGuard([this]() { EndWorkInFlight(); });
+
     std::optional<OExportOutput> output = RunExportNesting(request, context);
     if (not output.has_value())
     {

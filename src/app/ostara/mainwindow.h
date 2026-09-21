@@ -432,6 +432,28 @@ private:
     /// the document would read as pattern data, and therefore as up to date.
     OExportOutputStore m_exportOutputs{};
 
+    /// @brief Runs of our own that must be over before this window may be deleted.
+    ///
+    /// The window is deleted on close, and that deletion is performed by whichever event loop is
+    /// running when control returns to one. A run waits on a loop of its own — the nesting engine
+    /// has no abort hook, so the loop outlives the dialog announcing it — and a close asked for
+    /// during a run was carried out by the run's own loop, deleting this window while the run was
+    /// still working through it. While the count is above zero the close is remembered instead;
+    /// @ref ApplyDeferredClose grants it once the count is back to zero and no dialog is up.
+    int m_workInFlight{0};
+
+    /// @brief Whether a close was asked for while a run was in flight.
+    bool m_closeRequested{false};
+
+    /** @brief Declares a run in flight, and calls @ref EndWorkInFlight when it ends. */
+    void BeginWorkInFlight();
+
+    /** @brief Ends a run, and grants a close remembered while it lasted. */
+    void EndWorkInFlight();
+
+    /** @brief Closes this window if a close was remembered, and if nothing is running or asking. */
+    void ApplyDeferredClose();
+
     /// The hand on the plan, session-scoped like the generations it corrects. Owned here
     /// rather than by the Export mode because a correction has to survive a mode switch — the
     /// user leaves the canvas and comes back to the plan exactly as they left it.

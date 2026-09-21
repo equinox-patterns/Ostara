@@ -935,7 +935,8 @@ QFrame#templateLanguageSeparator {
 /* Template — the section form. The information's frame says what is being edited; this rule says
    where one group of its settings ends and the next begins. A line, not a heading: the groups name
    themselves, and a title over each would be saying twice what the controls already say. */
-QFrame#templateSectionRule {
+QFrame#templateSectionRule,
+QFrame#coverPageSectionRule {
     background-color: #d6d6d6;
 }
 QPushButton#templateLanguageTrashBtn,
@@ -1000,7 +1001,9 @@ QPushButton#seamDownBtn:disabled {
 /* Symbols — what "permanent" commits the user to, written under the box that says it. Secondary, so
    that it reads as the box's sentence and not as another setting. */
 QLabel#symbolPermanentHint,
-QLabel#seamDefaultHint {
+QLabel#seamDefaultHint,
+QLabel#coverPageSymbolsHint,
+QLabel#coverPageMarginsHint {
     color: #4c4c4c;
 }
 

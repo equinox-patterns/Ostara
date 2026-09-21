@@ -566,6 +566,11 @@ void OSymbolLibraryPage::OnAdd()
     }
 
     m_library.entries.append(entry);
+
+    // Its id is drawn before anything can be written, so that the one session in which nothing has
+    // been saved yet is not a session in which the symbol cannot be chosen.
+    OSymbolLibrary::GiveIds(m_library);
+
     if (!Save())
     {
         m_library.entries.removeLast();

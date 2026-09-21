@@ -281,9 +281,10 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
                     break;
                 case OTemplateOptionKind::Choice:
                 case OTemplateOptionKind::CheckGroup:
-                    // A cartouche asks no question it must wait for an answer to, and ticks no
-                    // boxes: it declares neither field, so it writes neither. The branches exist
-                    // because the switch is exhaustive.
+                case OTemplateOptionKind::Pixels:
+                    // A cartouche asks no question it must wait for an answer to, ticks no boxes and
+                    // measures no distance of its own: it declares none of these fields, so it
+                    // writes none. The branches exist because the switch is exhaustive.
                     break;
             }
         }
@@ -425,7 +426,8 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                         break;  // a cartouche declares none — see the writer
                     case OTemplateOptionKind::Choice:
                     case OTemplateOptionKind::CheckGroup:
-                        break;  // a cartouche declares neither — see the writer
+                    case OTemplateOptionKind::Pixels:
+                        break;  // a cartouche declares none of them — see the writer
                 }
             }
         }

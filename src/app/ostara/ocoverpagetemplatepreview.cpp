@@ -102,7 +102,39 @@ void OCoverPageTemplatePreview::SetSeamAllowances(const OSeamAllowanceLibrary::L
 
 void OCoverPageTemplatePreview::Refresh()
 {
+    FollowPattern();
     update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OCoverPageTemplatePreview::FollowPattern()
+{
+    if (m_following != nullptr || VAbstractApplication::VApp() == nullptr)
+    {
+        return;
+    }
+
+    VAbstractPattern *doc = VAbstractValApplication::VApp()->getCurrentDocument();
+    if (doc == nullptr)
+    {
+        // **No pattern yet, and this is not a failure**: the editor is opened beside whatever is
+        // open, and may be opened with nothing. The next Refresh tries again, so a pattern opened
+        // afterwards is followed from that moment on.
+        return;
+    }
+
+    // **The page follows the pattern, wherever it is changed from.** The Cover page dock writes
+    // what a pattern contributes to its own cover page, and the name is written from the pattern's
+    // toolbar — both while this window may be open beside them. Without this, a page would show
+    // the pattern as it stood when the template was opened, and a field filled in the dock would
+    // look as though it had done nothing.
+    //
+    // **The document is one object, emptied and refilled rather than replaced**, so a single
+    // connection holds for as long as the application runs and there is nothing to undo here.
+    m_following = doc;
+    connect(doc, &VAbstractPattern::patternChanged, this, [this](bool) { update(); });
+    connect(doc, &VAbstractPattern::FullUpdateFromFile, this, [this]() { update(); });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -153,8 +185,9 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
     }
 
     // What one band has to draw, asked of the resolver — the one place that knows how an
-    // information is drawn. It is given no pattern: the editor draws a template on its own, so
-    // everything that reads the pattern resolves to nothing.
+    // information is drawn. **The resolver is never given the pattern**: everything a page reads
+    // from one is gathered below and handed over as values, so the drawing itself knows nothing of
+    // documents and nothing of libraries, and what it draws is what it was told.
     //
     // **The sizes are worked out here, not by the resolver.** Which sizes a range holds is a
     // question about the loaded table and the styles authored for it — the resolver draws what it
@@ -198,34 +231,44 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
         return fitted;
     };
 
-    const auto LinesOf = [this, &FittedToWidth](OCoverPageTemplate::Placement placement) {
+    // **The pattern the application has open**, read once for the whole page rather than once per
+    // band: four bands ask the same four questions, and a document read between two of them would
+    // not be the same document. There is nothing to read when none is open — a page looked at
+    // before a pattern was chosen — and everything below then stays empty.
+    const VAbstractPattern *pattern = nullptr;
+    if (VAbstractApplication::VApp() != nullptr)
+    {
+        pattern = VAbstractValApplication::VApp()->getCurrentDocument();
+    }
+    const VCoverPageData coverPage = pattern == nullptr ? VCoverPageData() : pattern->GetCoverPage();
+
+    const auto LinesOf = [this, &FittedToWidth, pattern, &coverPage](
+                             OCoverPageTemplate::Placement placement) {
         QVector<OCartoucheRenderLine> lines;
         for (const OCoverPageTemplate::Section &section : m_template->Sections(placement))
         {
             OCoverPageResolver::PatternData data;
             data.sizes = OCoverPageSizes(m_table, OCoverGradedAxisOptions::FromOptions(section.options),
                                          VAbstractApplication::VApp()->Settings());
+
+            // The name the pattern carries, and the text a template left to be filled in for it —
+            // the two things the pattern toolbar and the Cover page dock write. See VCoverPageData.
+            data.name = pattern == nullptr ? QString() : pattern->GetPatternName();
+            data.freeText = coverPage.freeText;
+
             // The legend's lines are worked out here for the same reason the sizes are: which symbols
-            // a page shows is a question about a library and about which of them are permanent — two
-            // things a page is not. See OCoverSymbols.
+            // a page shows is a question about a library and about which of them this pattern chose —
+            // two things a page is not. See OCoverSymbols.
             data.symbols = m_symbols == nullptr
                                ? QVector<OCoverSymbols::Line>()
-                               : OCoverSymbols::Lines(*m_symbols, m_template->languages);
+                               : OCoverSymbols::Lines(*m_symbols, m_template->languages,
+                                                      coverPage.symbols);
 
             // The margins the pattern is cut with, worked out here for the same reason again: the
             // widths belong to the pattern and the names to the library, and a page holds neither.
-            // **The pattern is the one the application has open**, which is the same one the sizes
-            // are read from, and there is nothing to read when none is — a page written before a
-            // pattern was chosen.
             if (m_seamAllowances != nullptr)
             {
-                QVector<qreal> widths;
-                const VAbstractPattern *pattern = nullptr;
-                if (VAbstractApplication::VApp() != nullptr)
-                {
-                    pattern = VAbstractValApplication::VApp()->getCurrentDocument();
-                }
-                widths = OSeamAllowanceValues::Collect(pattern);
+                const QVector<qreal> widths = OSeamAllowanceValues::Collect(pattern);
                 if (!widths.isEmpty())
                 {
                     // **The default margin is the application's, read where it is set.** It is kept
@@ -236,7 +279,8 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
                         UnitConvertor(settings->GetDefaultSeamAllowance(),
                                       StrToUnits(settings->GetUnit()), Unit::Mm);
                     data.seamAllowances = OCoverSeamAllowances::Lines(
-                        *m_seamAllowances, m_template->languages, widths, defaultMm);
+                        *m_seamAllowances, m_template->languages, widths, defaultMm,
+                        coverPage.marginNames);
                 }
             }
 

@@ -243,8 +243,22 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     config.artboardCount  = params.artboardCount;
     config.artboardHeight = params.artboardHeightPx;
 
+    // **The run has to be able to be given up.** It is the whole reason the dialog in front of it
+    // can be closed: the engine has no abort hook of its own, so one is handed to it, and it reads
+    // it between its iterations. Null — a caller with nobody watching — leaves it as it was.
+    config.abandoned = params.abandoned;
+
     const Engine engine{config};
-    std::vector<Placement> placements = engine.place(bin, footprint.polygons);
+    bool abandoned = false;
+    std::vector<Placement> placements = engine.place(bin, footprint.polygons, &abandoned);
+
+    if (abandoned)
+    {
+        // **What it holds is a half-built plan, and it is not read.** Every check below would be
+        // asking a question about a result that was never produced.
+        result.abandoned = true;
+        return result;
+    }
 
     if (placements.size() != footprint.polygons.size())
     {
@@ -290,8 +304,19 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
         spec.sheetHeight   = params.artboardHeightPx;
         spec.gap           = params.gapPx;
         spec.allowRotation = true;
+        // The second engine is asked the same question as the first, and for the same reason: a
+        // run given up during the tiled pass has to stop there too.
+        spec.abandoned     = params.abandoned;
 
-        const std::vector<Placement> tiled = TiledEngine(spec).place(bin, footprint.polygons);
+        bool tiledAbandoned = false;
+        const std::vector<Placement> tiled =
+            TiledEngine(spec).place(bin, footprint.polygons, &tiledAbandoned);
+
+        if (tiledAbandoned)
+        {
+            result.abandoned = true;
+            return result;
+        }
 
         if (tiled.size() == footprint.polygons.size() && AllPlaced(tiled))
         {
