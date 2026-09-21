@@ -111,7 +111,6 @@ void WriteSection(QDomDocument &doc, QDomElement &parent, const OCoverPageTempla
             case OTemplateOptionKind::LogoSize:
                 element.setAttribute(field.key, QString::number(value.toDouble()));
                 break;
-            case OTemplateOptionKind::Multilingual:
             case OTemplateOptionKind::Boolean:
                 element.setAttribute(field.key, value.toBool());
                 break;
@@ -141,7 +140,6 @@ void WriteSection(QDomDocument &doc, QDomElement &parent, const OCoverPageTempla
                 break;
 
             case OTemplateOptionKind::FontFamily:
-            case OTemplateOptionKind::Axis:
             case OTemplateOptionKind::MeasureName:
             case OTemplateOptionKind::Separator:
             case OTemplateOptionKind::NumberStyle:
@@ -212,7 +210,6 @@ auto ReadSection(const QDomElement &element) -> OCoverPageTemplate::Section
             case OTemplateOptionKind::LogoSize:
                 section.options.insert(field.key, raw.toDouble());
                 break;
-            case OTemplateOptionKind::Multilingual:
             case OTemplateOptionKind::Boolean:
                 section.options.insert(field.key,
                                        raw.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0
@@ -256,7 +253,6 @@ auto ReadSection(const QDomElement &element) -> OCoverPageTemplate::Section
             }
 
             case OTemplateOptionKind::FontFamily:
-            case OTemplateOptionKind::Axis:
             case OTemplateOptionKind::MeasureName:
             case OTemplateOptionKind::NumberStyle:
             case OTemplateOptionKind::Logo:

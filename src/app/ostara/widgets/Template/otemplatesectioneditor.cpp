@@ -288,38 +288,6 @@ void OTemplateSectionEditor::Rebuild()
                 PlaceControl(field, spin);
                 break;
             }
-            case OTemplateOptionKind::Axis:
-            {
-                auto *combo = MakeComboBox(content);
-                const QString stored = options.value(field.key).toString();
-                const QStringList axes = m_table != nullptr ? m_table->AxisNames() : QStringList();
-                if (axes.isEmpty())
-                {
-                    combo->setEnabled(false);  // no multi-size table loaded
-                }
-                else
-                {
-                    combo->addItems(axes);
-                    if (!stored.isEmpty() && axes.contains(stored))
-                    {
-                        combo->setCurrentText(stored);
-                    }
-                    else
-                    {
-                        combo->setCurrentIndex(-1);  // stored axis not in the current table
-                    }
-                }
-                connect(combo, &QComboBox::currentTextChanged, this, [this, field](const QString &v) {
-                    m_template->SetSectionOption(m_index, field.key, v);
-                    emit OptionsChanged();
-                    // Another field changed what a composite may be reading — the name it renames.
-                    // It is told, and decides for itself what an alias of a name that is gone is
-                    // worth.
-                    RefreshCompositeEditors();
-                });
-                PlaceControl(field, combo);
-                break;
-            }
             case OTemplateOptionKind::MeasureName:
             {
                 auto *combo = MakeComboBox(content);
@@ -617,26 +585,6 @@ void OTemplateSectionEditor::Rebuild()
                     emit OptionsChanged();
                 });
                 PlaceControl(field, combo);
-                break;
-            }
-            case OTemplateOptionKind::Multilingual:
-            {
-                // Checkbox in plain language (no technical jargon) — it goes
-                // flush-left in the edit zone (not in the form's field column),
-                // aligned with the section description. When checked, the user
-                // fills this information once per block language in the pattern /
-                // piece options (icons = the theme's default square /
-                // square-logo-fill QCheckBox look).
-                auto *check = new QCheckBox(field.label, content);
-                check->setChecked(options.value(field.key, false).toBool());
-                check->setToolTip(tr("When checked, you will write this information once for each language "
-                                     "of the block, in the pattern (or piece) options. "
-                                     "It is not translated automatically."));
-                connect(check, &QCheckBox::toggled, this, [this, field](bool on) {
-                    m_template->SetSectionOption(m_index, field.key, on);
-                    emit OptionsChanged();
-                });
-                layout->addWidget(check);
                 break;
             }
             case OTemplateOptionKind::Boolean:

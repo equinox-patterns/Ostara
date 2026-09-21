@@ -125,8 +125,6 @@ auto OTemplateSection::DefaultValue(const QString &key) const -> QVariant
             // own business, and a catalogue that wants room says how much in the field itself.
             case OTemplateOptionKind::Pixels:
                 return 0;
-            case OTemplateOptionKind::Axis:
-                return QString();
             case OTemplateOptionKind::MeasureName:
                 return QString();
             case OTemplateOptionKind::Separator:
@@ -143,8 +141,6 @@ auto OTemplateSection::DefaultValue(const QString &key) const -> QVariant
                 return OTemplateSizeCase::kSingle;
             case OTemplateOptionKind::LogoSize:
                 return kDefaultLogoSize;
-            case OTemplateOptionKind::Multilingual:
-                return false;
             // A yes-or-no declared without a default is off: the catalogue that wants it on says
             // so in the field, which is where a question's own answer belongs.
             case OTemplateOptionKind::Boolean:

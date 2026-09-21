@@ -246,7 +246,6 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
                     sectionEl.setAttribute(field.key, QString::number(value.toDouble()));
                     break;
                 case OTemplateOptionKind::FontFamily:
-                case OTemplateOptionKind::Axis:
                 case OTemplateOptionKind::MeasureName:
                 case OTemplateOptionKind::Separator:
                 case OTemplateOptionKind::NumberStyle:
@@ -256,7 +255,6 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
                 case OTemplateOptionKind::SizeCase:
                     sectionEl.setAttribute(field.key, value.toString());
                     break;
-                case OTemplateOptionKind::Multilingual:
                 case OTemplateOptionKind::Boolean:
                     sectionEl.setAttribute(field.key,
                                            value.toBool() ? QStringLiteral("true") : QStringLiteral("false"));
@@ -377,7 +375,6 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                     case OTemplateOptionKind::LogoSize:
                         section.options.insert(field.key, attr.toDouble());
                         break;
-                    case OTemplateOptionKind::Axis:
                         // Axis names are user-defined in the table — stored verbatim.
                         section.options.insert(field.key, attr);
                         break;
@@ -410,7 +407,6 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                     case OTemplateOptionKind::SizeCase:
                         section.options.insert(field.key, attr);
                         break;
-                    case OTemplateOptionKind::Multilingual:
                     case OTemplateOptionKind::Boolean:
                         section.options.insert(field.key, attr.toInt() != 0
                                                              || attr.compare(QStringLiteral("true"),

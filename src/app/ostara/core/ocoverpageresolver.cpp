@@ -229,10 +229,21 @@ auto OCoverPageResolver::Resolve(const OCoverPageTemplate::Section &section, con
         QVector<QRectF> outlines;
         QVector<OCartoucheShapeLabel> labels;
         const qreal inset = CmToPixel(kCornerInsetCm);
+
+        // **The stroke is drawn inside the square, not across its edge.** A square test is a
+        // reference someone holds a ruler against, and a ruler meets the OUTSIDE of the line:
+        // drawn centred on its path, the printed square came out at the side asked for **plus one
+        // pen** — 0.26 mm of paper, since a unit of the file is a dot at 96 dpi. Half a percent of
+        // a five centimetre square, for a tool whose whole job is to show whether the printer held
+        // its scale. The path is therefore pulled in by half a pen on every side, which puts the
+        // ink's outer edge exactly on the side asked for. The inner edge is then half a pen short
+        // of it, and that is the trade a stroke forces: both edges cannot be the size.
+        const qreal stroke = OCartouchePainter::kShapePenWidth;
         for (const TestSquare &square : squares)
         {
-            const QRectF outline(frame.center().x() - square.side / 2.0,
-                                 frame.center().y() - square.side / 2.0, square.side, square.side);
+            const QRectF outline(frame.center().x() - square.side / 2.0 + stroke / 2.0,
+                                 frame.center().y() - square.side / 2.0 + stroke / 2.0,
+                                 square.side - stroke, square.side - stroke);
             outlines.append(outline);
 
             // The value stands just inside the square's own top-left corner, written at the size

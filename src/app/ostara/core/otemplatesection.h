@@ -60,14 +60,12 @@ enum class OTemplateOptionKind
     FontSize,     ///< int — font size in px (0 = default)
     LineSpacing,  ///< int — extra vertical space in px with the next line (0 = default, negative = tighter)
     Pixels,       ///< int — a distance in px: a height, a gap, the room something takes (0 = none)
-    Axis,         ///< QString — size-axis name from the loaded table
     MeasureName,  ///< QString — measurement full name from the loaded table
     Separator,    ///< QString — separator between name and value ("", ":", "-", "/", "·")
     NumberStyle,  ///< QString — piece-number padding: "1" or "01"
     Logo,         ///< QString — logo file name from the logo library
     LogoSize,     ///< double — logo size in cm
     Cut,          ///< composite — declared by the cartouche: its sub-options are in the field
-    Multilingual, ///< bool — write this information once per block language
     Boolean,      ///< bool — a plain yes-or-no the information decides for itself
     AxisRename,   ///< composite — declared by the cartouche: its sub-options are in the field
     TextSource,   ///< QString — where a text comes from: written here, or filled in per pattern
