@@ -254,6 +254,33 @@ public:
     auto GetCoverPage() const -> VCoverPageData;
     void SetCoverPage(const VCoverPageData &data);
 
+    // ── Where a root element goes ────────────────────────────────────────
+
+    /**
+     * @brief The children of `<pattern>`, in the order the schema's sequence gives them.
+     *
+     * **The one authority on placement.** The serialized document is validated against the schema
+     * before every save, so an element out of this order is not a document that reads oddly — it is
+     * a document that **cannot be written at all**. Writers used to keep their own idea of the
+     * order: a partial list here, an `insertBefore(sizeRanges)` there, and an `appendChild` that
+     * knew nothing. The one that knew nothing turned *adding a piece* into *this pattern can no
+     * longer be saved*, and nobody could see why.
+     */
+    static auto RootElementOrder() -> const QStringList &;
+
+    /**
+     * @brief Inserts @p element among the children of the root, where the schema puts it.
+     *
+     * **After the nearest neighbour the document already holds** — the last one of its own tag when
+     * it carries any, since a tag may repeat, and otherwise the closest predecessor in
+     * @ref RootElementOrder. Everything between the two is absent, so that slot is this one; and as
+     * `version` and `unit` are required and come first, the walk always finds somewhere to land.
+     *
+     * An element the schema does not name is appended: nothing can be said about where it belongs,
+     * and refusing it would throw away something a reader may still understand.
+     */
+    void InsertRootElement(const QDomElement &element);
+
     void SetPatternWasChanged(bool changed);
     auto GetPatternWasChanged() const -> bool;
 
@@ -393,6 +420,12 @@ public:
     /// What the cover page reads from the pattern rather than from its own template. Ostara's own
     /// root element, and the only one the Export mode writes.
     static const QString TagCoverPage;
+
+    /// The size ranges of the Graded mode — Ostara's own, like the two above.
+    static const QString TagSizeRanges;
+
+    /// The materials a pattern is made of. A root element of the schema that had no constant.
+    static const QString TagPatternMaterials;
 
     static const QString AttrName;
     static const QString AttrEnabled;
@@ -557,7 +590,6 @@ protected:
     static auto ParseSANode(const QDomElement &domElement) -> VPieceNode;
 
     auto CheckTagExists(const QString &tag) -> QDomElement;
-    void InsertTag(const QStringList &tags, const QDomElement &element);
 
     void SetChildTag(const QString &qsParent, const QString &qsChild, const QString &qsValue);
 

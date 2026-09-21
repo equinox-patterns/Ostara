@@ -120,6 +120,8 @@ const QString VAbstractPattern::TagBackgroundImage = QStringLiteral("backgroudIm
 const QString VAbstractPattern::TagOffset = QStringLiteral("offset");
 const QString VAbstractPattern::TagMirrorLine = QStringLiteral("mirrorLine"); // NOLINT(cert-err58-cpp)
 const QString VAbstractPattern::TagCoverPage = QStringLiteral("coverPage");  // NOLINT(cert-err58-cpp)
+const QString VAbstractPattern::TagSizeRanges = QStringLiteral("sizeRanges"); // NOLINT(cert-err58-cpp)
+const QString VAbstractPattern::TagPatternMaterials = QStringLiteral("patternMaterials"); // NOLINT(cert-err58-cpp)
 
 const QString VAbstractPattern::AttrName = QStringLiteral("name");
 const QString VAbstractPattern::AttrEnabled = QStringLiteral("enabled");
@@ -1688,111 +1690,118 @@ auto VAbstractPattern::ParsePathNodes(const QDomElement &domElement) -> VPiecePa
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::CheckTagExists(const QString &tag) -> QDomElement
+auto VAbstractPattern::RootElementOrder() -> const QStringList &
 {
-    const QDomNodeList list = elementsByTagName(tag);
-    QDomElement element;
-    if (list.isEmpty())
-    {
-        // Canonical insertion order MUST match the <xs:sequence> order of the Ostara
-        // schema (ostara/v1.0.0.xsd): the serialized document is validated against it
-        // before every save, so out-of-sequence elements make saving fail.
-        const QStringList tags{
-            TagUnit,              // 0
-            TagImage,             // 1
-            TagDescription,       // 2
-            TagNotes,             // 3
-            TagFabricInfo,        // 4
-            TagCollection,        // 5
-            TagPatternName,       // 6
-            TagPatternNum,        // 7
-            TagCompanyName,       // 8
-            TagCustomerName,      // 9
-            TagCustomerBirthDate, // 10
-            TagCustomerEmail,     // 11
-            TagWatermark,         // 12
-            TagCartouche,         // 13
-            TagFinalMeasurements, // 14
-            TagBackgroundImages,  // 15
-            TagCoverPage          // 16 — before <measurements>, which is mandatory, so an element
-                                  // created here can never land after it — and therefore never
-                                  // after <draw>, <pieceGroups> or <sizeRanges>, all of which are
-                                  // appended blind by writers that do not look at what is there.
-        };
-
-        switch (tags.indexOf(tag))
-        {
-            case 1: // TagImage
-                element = createElement(TagImage);
-                break;
-            case 2: // TagDescription
-                element = createElement(TagDescription);
-                break;
-            case 3: // TagNotes
-                element = createElement(TagNotes);
-                break;
-            case 4: // TagFabricInfo
-                element = createElement(TagFabricInfo);
-                break;
-            case 5: // TagCollection
-                element = createElement(TagCollection);
-                break;
-            case 6: // TagPatternName
-                element = createElement(TagPatternName);
-                break;
-            case 7: // TagPatternNum
-                element = createElement(TagPatternNum);
-                break;
-            case 8: // TagCompanyName
-                element = createElement(TagCompanyName);
-                break;
-            case 9: // TagCustomerName
-                element = createElement(TagCustomerName);
-                break;
-            case 10: // TagCustomerBirthDate
-                element = createElement(TagCustomerBirthDate);
-                break;
-            case 11: // TagCustomerEmail
-                element = createElement(TagCustomerEmail);
-                break;
-            case 12: // TagWatermark
-                element = createElement(TagWatermark);
-                break;
-            case 13: // TagCartouche
-                element = createElement(TagCartouche);
-                break;
-            case 14: // TagFinalMeasurements
-                element = createElement(TagFinalMeasurements);
-                break;
-            case 15: // TagBackgroundImages
-                element = createElement(TagBackgroundImages);
-                break;
-            case 16: // TagCoverPage
-                element = createElement(TagCoverPage);
-                break;
-            case 0: // TagUnit (Mandatory tag)
-            default:
-                return {};
-        }
-        InsertTag(tags, element);
-        return element;
-    }
-    return list.at(0).toElement();
+    // **The order of the <xs:sequence> of <pattern>, from ostara/v1.0.0.xsd.** Written once, here,
+    // and read by InsertRootElement alone: a second list somewhere else would be a second opinion
+    // about where an element goes, and the file can only have one.
+    static const QStringList kOrder{
+        TagVersion,             // 0  required
+        TagUnit,                // 1  required
+        TagImage,               // 2
+        TagDescription,         // 3
+        TagNotes,               // 4
+        TagFabricInfo,          // 5
+        TagCollection,          // 6
+        TagPatternName,         // 7
+        TagPatternNum,          // 8
+        TagCompanyName,         // 9
+        TagCustomerName,        // 10
+        TagCustomerBirthDate,   // 11
+        TagCustomerEmail,       // 12
+        TagWatermark,           // 13
+        TagCartouche,           // 14
+        TagPatternMaterials,    // 15
+        TagFinalMeasurements,   // 16
+        TagBackgroundImages,    // 17
+        TagCoverPage,           // 18
+        TagMeasurements,        // 19 required
+        TagIncrements,          // 20 required
+        TagPreviewCalculations, // 21 required
+        TagLineNames,           // 22
+        TagDraw,                // 23 one or more
+        TagPieceGroups,         // 24
+        TagSizeRanges,          // 25
+    };
+    return kOrder;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::InsertTag(const QStringList &tags, const QDomElement &element)
+void VAbstractPattern::InsertRootElement(const QDomElement &element)
 {
-    QDomElement pattern = documentElement();
-    for (vsizetype i = tags.indexOf(element.tagName()) - 1; i >= 0; --i)
+    QDomElement root = documentElement();
+    if (root.isNull() || element.isNull())
     {
-        if (const QDomNodeList list = elementsByTagName(tags.at(i)); not list.isEmpty())
+        return;
+    }
+
+    // **After the last one of its own tag, when the document holds any.** A tag that may repeat —
+    // `draw` is the one — has to keep its own kind together: placing a second <draw> before the
+    // first would leave the sequence valid and still reorder the pattern blocks, which are
+    // addressed by their rank.
+    const QDomNodeList same = elementsByTagName(element.tagName());
+    if (not same.isEmpty())
+    {
+        root.insertAfter(element, same.at(same.size() - 1));
+        return;
+    }
+
+    const QStringList &order = RootElementOrder();
+    const vsizetype at = order.indexOf(element.tagName());
+    if (at < 0)
+    {
+        // A name the schema does not carry. Nothing can be said about where it belongs, and
+        // refusing it would throw away something a reader may still understand.
+        root.appendChild(element);
+        return;
+    }
+
+    // **After the nearest predecessor the document already holds.** Everything between it and this
+    // element's place is absent — that is why the walk went past it — so this slot is the right
+    // one. `version` and `unit` are required and come first, so the walk always finds somewhere.
+    for (vsizetype i = at - 1; i >= 0; --i)
+    {
+        if (const QDomNodeList list = elementsByTagName(order.at(i)); not list.isEmpty())
         {
-            pattern.insertAfter(element, list.at(0));
-            break;
+            root.insertAfter(element, list.at(list.size() - 1));
+            return;
         }
     }
+
+    // Nothing precedes it: it goes first. Unreachable while `version` is required, and kept so
+    // that an element is never silently dropped if that ever stops being true.
+    root.insertBefore(element, root.firstChild());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::CheckTagExists(const QString &tag) -> QDomElement
+{
+    const QDomNodeList list = elementsByTagName(tag);
+    if (not list.isEmpty())
+    {
+        return list.at(0).toElement();
+    }
+
+    // **What may be created and where it goes are two different questions.** This is the first, and
+    // it is short on purpose: the elements an information is written into, and nothing else. The
+    // mandatory ones are the file's skeleton and are made by CreateEmptyFile; `unit` belongs to the
+    // pattern's settings; the rest have writers of their own. Placement is the second question, and
+    // it has one answer for everybody — see RootElementOrder.
+    static const QStringList kCreatable{
+        TagImage,   TagDescription, TagNotes,      TagFabricInfo,     TagCollection,
+        TagPatternName, TagPatternNum, TagCompanyName, TagCustomerName, TagCustomerBirthDate,
+        TagCustomerEmail, TagWatermark, TagCartouche, TagFinalMeasurements, TagBackgroundImages,
+        TagCoverPage};
+
+    if (not kCreatable.contains(tag))
+    {
+        return {};
+    }
+
+    QDomElement element = createElement(tag);
+    InsertRootElement(element);
     SetVersion();
+    return element;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

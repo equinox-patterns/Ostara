@@ -74,9 +74,11 @@ void AddPatternPiece::redo()
         Doc()->CreateEmptyFile();
     }
 
-    QDomElement rootElement = Doc()->documentElement();
-
-    rootElement.appendChild(GetElement());
+    // **Placed, not appended.** A pattern block belongs before <pieceGroups> and <sizeRanges>, and
+    // appending it put it after them the moment the pattern carried either — a document the schema
+    // refuses, so a pattern that had been graded, or whose pieces had been grouped, could no longer
+    // be saved at all once a piece was drawn. See VAbstractPattern::InsertRootElement.
+    Doc()->InsertRootElement(GetElement());
 
     RedoFullParsing();
 }

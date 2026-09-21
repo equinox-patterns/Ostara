@@ -414,5 +414,8 @@ void AddSizeRanges(VAbstractPattern *doc, QDomElement &rootElement, const VConta
         rangesElement.appendChild(rangeElement);
     }
 
-    rootElement.appendChild(rangesElement);
+    // **Placed rather than appended.** Where <sizeRanges> belongs depends on what the document
+    // already carries — groups, and the draws before them — and that question has one answer, asked
+    // in one place. See VAbstractPattern::InsertRootElement.
+    doc->InsertRootElement(rangesElement);
 }

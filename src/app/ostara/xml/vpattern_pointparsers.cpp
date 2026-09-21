@@ -324,17 +324,11 @@ void VPattern::SyncLineNamesToDom()
     // Create <lineNames> if it doesn't exist
     if (lineNamesElement.isNull())
     {
+        // **Placed, not inserted before the first <draw>.** The `<lineNames>` element comes before
+        // the draws in the schema, and the pattern is the one that knows that — the same answer the
+        // other writers get, so a fifth one cannot get it wrong.
         lineNamesElement = createElement(TagLineNames);
-        // Insert before the first <draw> element so it's parsed first
-        const QDomElement drawElement = root.firstChildElement(TagDraw);
-        if (!drawElement.isNull())
-        {
-            root.insertBefore(lineNamesElement, drawElement);
-        }
-        else
-        {
-            root.appendChild(lineNamesElement);
-        }
+        InsertRootElement(lineNamesElement);
     }
 
     // Remove all existing <line> children
