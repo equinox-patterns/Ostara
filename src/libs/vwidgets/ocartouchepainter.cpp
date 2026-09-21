@@ -170,6 +170,12 @@ auto InkSize(const QVector<OCartoucheRenderLine> &lines, qreal gapScale) -> QSiz
                 own = drawn = bounds.height();
                 break;
             }
+            case OCartoucheRenderLine::Kind::Space:
+                // **Room, and nothing that could be tightened out of it.** A space is the user
+                // asking for a distance: what the line takes is exactly that, and the least it may
+                // be given is the same, since there is no empty part of a blank to close.
+                own = drawn = line.spaceHeight;
+                break;
         }
 
         // **The spacing is counted below every line, the last one included.** That is what the
@@ -340,6 +346,15 @@ OCartoucheRenderLine ShapeLine(const QVector<QRectF> &outlines,
     return line;
 }
 
+OCartoucheRenderLine SpaceLine(qreal heightPx, int lineSpacing)
+{
+    OCartoucheRenderLine line;
+    line.kind = OCartoucheRenderLine::Kind::Space;
+    line.spaceHeight = heightPx;
+    line.lineSpacing = lineSpacing;
+    return line;
+}
+
 QVector<OCartoucheRenderLine> ScaledLines(const QVector<OCartoucheRenderLine> &lines, qreal fontScale)
 {
     QVector<OCartoucheRenderLine> scaled = lines;
@@ -389,6 +404,10 @@ QVector<OCartoucheRenderLine> ScaledLines(const QVector<OCartoucheRenderLine> &l
             case OCartoucheRenderLine::Kind::Logo:
                 // A logo is a pixmap already rendered at the size it is drawn at: there is no font
                 // in it to scale.
+                break;
+            case OCartoucheRenderLine::Kind::Space:
+                // A space is a distance and nothing else — no font, no ink. Like a logo's height, it
+                // is brought to the scale where the room is handed out, in Layout.
                 break;
         }
     }
@@ -454,14 +473,10 @@ qreal LineHeight(const QFont &font, int lineSpacing, qreal scale)
     return QFontMetricsF(font).height() + (kLineGap + lineSpacing) * scale;
 }
 
-qreal LogoLineHeight(qreal logoHeight, int lineSpacing, qreal scale)
+/// The room a line of a known height takes, spacing included — a logo, a shape, and a space.
+qreal FixedLineHeight(qreal lineHeight, int lineSpacing, qreal scale)
 {
-    return logoHeight * scale + (kLineGap + lineSpacing) * scale;
-}
-
-qreal ShapeLineHeight(qreal shapeHeight, int lineSpacing, qreal scale)
-{
-    return shapeHeight * scale + (kLineGap + lineSpacing) * scale;
+    return lineHeight * scale + (kLineGap + lineSpacing) * scale;
 }
 
 QSizeF NaturalSize(const QVector<OCartoucheRenderLine> &lines)
@@ -582,9 +597,15 @@ QVector<OCartoucheRenderItem> Layout(const QRectF &rect, const QVector<OCartouch
                 const qreal drawH = line.logoHeight * scale;
                 item.target = QRectF(rect.left() + (rect.width() - drawW) / 2.0, y, drawW, drawH);
                 items.append(item);
-                y += LogoLineHeight(line.logoHeight, line.lineSpacing, scale);
+                y += FixedLineHeight(line.logoHeight, line.lineSpacing, scale);
                 break;
             }
+            case OCartoucheRenderLine::Kind::Space:
+                // **The room is taken and nothing is left.** No item is handed back, so a painter
+                // finds nothing to draw here and an SVG writer finds nothing to write — which is
+                // what an empty space is. Everything below moves down by what was asked for.
+                y += FixedLineHeight(line.spaceHeight, line.lineSpacing, scale);
+                break;
             case OCartoucheRenderLine::Kind::Shape:
             {
                 // The shape takes the width it says it has, centred like any other line, and what
@@ -651,7 +672,7 @@ QVector<OCartoucheRenderItem> Layout(const QRectF &rect, const QVector<OCartouch
                     }
                 }
 
-                y += ShapeLineHeight(bounds.height(), line.lineSpacing, scale);
+                y += FixedLineHeight(bounds.height(), line.lineSpacing, scale);
                 break;
             }
         }

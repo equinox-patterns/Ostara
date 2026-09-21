@@ -108,6 +108,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsPdfTemplates, ("paths/pdfTe
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCoverPageTemplates, ("paths/coverPageTemplates"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsLogos, ("paths/logos"_L1))                              // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsSymbols, ("paths/symbols"_L1))                          // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsSeamAllowances, ("paths/seamAllowances"_L1))            // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsClients, ("paths/clients"_L1))                          // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsAnnotationStyles, ("paths/annotationstyles"_L1))        // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCollections, ("paths/collections"_L1))                  // NOLINT
@@ -651,6 +652,22 @@ void VCommonSettings::SetPathSymbols(const QString &value) const
 {
     QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
     settings.setValue(*settingPathsSymbols, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetPathSeamAllowances() const -> QString
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingPathsSeamAllowances, QDir::homePath() + QStringLiteral("/Ostara/SeamAllowances"))
+        .toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetPathSeamAllowances(const QString &value) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingPathsSeamAllowances, value);
     settings.sync();
 }
 

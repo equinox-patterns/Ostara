@@ -123,6 +123,9 @@ public:
     auto GetPathSymbols() const -> QString;
     void SetPathSymbols(const QString &value) const;
 
+    auto GetPathSeamAllowances() const -> QString;
+    void SetPathSeamAllowances(const QString &value) const;
+
     auto GetPathClients() const -> QString;
     void SetPathClients(const QString &value) const;
 

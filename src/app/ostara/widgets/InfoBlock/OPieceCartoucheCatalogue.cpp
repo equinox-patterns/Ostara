@@ -78,17 +78,18 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OTemplateSection>
     const OTemplateOptionField kSeparatorNoDash{
         OTemplateSeparatorOptions::kSeparator, OTemplateOptionKind::Separator,
         T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator")),
-        OTemplateSeparatorOptions::AxisValueSeparators(), QString()};
+        OTemplateSeparatorOptions::AxisValueSeparators(), {}, QString()};
     // Piece number: "1 of 10", "1 - 10" or "1 / 10" — no "no separator" choice.
     const OTemplateOptionField kPieceSeparator{
         QStringLiteral("separator"), OTemplateOptionKind::Separator, T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator")),
         {QT_TRANSLATE_NOOP("OInfoBlockPreview", "of"), QStringLiteral("-"), QStringLiteral("/")},
-        QT_TRANSLATE_NOOP("OInfoBlockPreview", "of")};
+        {}, QT_TRANSLATE_NOOP("OInfoBlockPreview", "of")};
     // Piece number style: a single digit as is ("1 of 10") or padded ("01 of 10").
     const OTemplateOptionField kPieceNumberStyle{
         OPieceCartoucheNumber::kStyle, OTemplateOptionKind::NumberStyle,
         T(QT_TRANSLATE_NOOP("OTemplateSection", "Number format")),
-        {OPieceCartoucheNumber::kPlain, OPieceCartoucheNumber::kPadded}, OPieceCartoucheNumber::kPlain};
+        {OPieceCartoucheNumber::kPlain, OPieceCartoucheNumber::kPadded}, {},
+        OPieceCartoucheNumber::kPlain};
     const OTemplateOptionField kLogo{QStringLiteral("logo"), OTemplateOptionKind::Logo, T(QT_TRANSLATE_NOOP("OTemplateSection", "Logo"))};
     const OTemplateOptionField kLogoSize{QStringLiteral("logoSize"),
                                                OTemplateOptionKind::LogoSize, T(QT_TRANSLATE_NOOP("OTemplateSection", "Logo size (cm)"))};

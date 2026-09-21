@@ -279,6 +279,12 @@ auto OPieceCartoucheTemplate::ToXml(QDomDocument &doc) const -> QDomElement
                     // A cartouche states a piece's sizes, never a range of them: it draws no
                     // sample and lists nothing, so it declares no such field and writes none.
                     break;
+                case OTemplateOptionKind::Choice:
+                case OTemplateOptionKind::CheckGroup:
+                    // A cartouche asks no question it must wait for an answer to, and ticks no
+                    // boxes: it declares neither field, so it writes neither. The branches exist
+                    // because the switch is exhaustive.
+                    break;
             }
         }
         sectionsEl.appendChild(sectionEl);
@@ -417,6 +423,9 @@ auto OPieceCartoucheTemplate::LoadFromXml(const QDomElement &root) -> bool
                         break;  // never written, so never read — see the writer
                     case OTemplateOptionKind::SizeRange:
                         break;  // a cartouche declares none — see the writer
+                    case OTemplateOptionKind::Choice:
+                    case OTemplateOptionKind::CheckGroup:
+                        break;  // a cartouche declares neither — see the writer
                 }
             }
         }

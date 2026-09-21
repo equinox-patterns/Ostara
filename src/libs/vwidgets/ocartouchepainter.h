@@ -133,7 +133,8 @@ struct OCartoucheRenderLine
     {
         Text,
         Logo,
-        Shape
+        Shape,
+        Space
     };
 
     Kind kind = Kind::Text;
@@ -145,6 +146,8 @@ struct OCartoucheRenderLine
     int lineSpacing = 0;
     QPixmap logo;         // Kind::Logo — pre-rendered logo pixmap.
     qreal logoHeight = 0; // Kind::Logo — rendered height in px.
+    // Kind::Space — the room the line takes, in px. It draws nothing, and this is all it is.
+    qreal spaceHeight = 0;
     QString sourcePath;   // Kind::Logo — original SVG file path; Paint ignores it,
                           // the SVG writer re-inlines this file (Val Fork behaviour).
     QVector<QRectF> shapeOutlines;               // Kind::Shape — rectangles to stroke, unfilled.
@@ -328,6 +331,24 @@ OCartoucheRenderLine LogoLine(const QPixmap &logo, qreal logoHeight, int lineSpa
  */
 OCartoucheRenderLine ShapeLine(const QVector<QRectF> &outlines,
                                const QVector<OCartoucheShapeLabel> &labels, int lineSpacing);
+
+/**
+ * @brief Build a line that draws nothing and takes room: the user's own spacing.
+ *
+ * **A line, and not a margin.** What a page needs between two informations is sometimes neither a
+ * word nor a picture but a distance — a heading set apart from what follows it, a block brought down
+ * the sheet — and a distance is not something a line spacing can say, since that one belongs to the
+ * line above and moves with its font's height.
+ *
+ * It is a line like any other for everything that measures a block: it takes exactly @p heightPx on
+ * the page, it is counted in @ref InkSize, and it moves everything below it down by that much. What
+ * it never does is leave a trace — @ref Layout hands back no item for it, so a painter and an SVG
+ * writer both find nothing to draw, which is the whole point of an empty space.
+ *
+ * The height is in print pixels and **is scaled like every other measurement** when a block is drawn
+ * at a size other than the one it was written for.
+ */
+OCartoucheRenderLine SpaceLine(qreal heightPx, int lineSpacing = 0);
 
 /** @brief Return the lines with every text pixel size multiplied by fontScale. */
 QVector<OCartoucheRenderLine> ScaledLines(const QVector<OCartoucheRenderLine> &lines, qreal fontScale);

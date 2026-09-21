@@ -31,8 +31,11 @@
 #include "core/otemplateseparatoroptions.h"
 #include "ocoveraxiseditor.h"
 #include "ocovergradedaxiseditor.h"
+#include "ocoverseamallowances.h"
+#include "ocoverseamtitleeditor.h"
 #include "ocoversizerangechooser.h"
 #include "ocoversymbolstitleeditor.h"
+#include "vmisc/def.h"
 #include "widgets/Template/otemplateaxiseditor.h"
 
 #include <QCoreApplication>
@@ -199,7 +202,7 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
     OTemplateOptionField kTitleSeparator{
         OTemplateSeparatorOptions::kLanguageSeparator, OTemplateOptionKind::Separator,
         T(QT_TRANSLATE_NOOP("OTemplateSection", "Title separator")),
-        OTemplateSeparatorOptions::LanguageSeparators(), QString()};
+        OTemplateSeparatorOptions::LanguageSeparators(), {}, QString()};
     //
     // The axes are set in a type of their own, the same for all of them — a second set of the same
     // three questions, which is why their keys carry a prefix: `SectionFont` reads them back by it,
@@ -231,7 +234,7 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
     OTemplateOptionField kAxisSeparator{
         OTemplateSeparatorOptions::kSeparator, OTemplateOptionKind::Separator,
         T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator between axe and value")),
-        OTemplateSeparatorOptions::AxisValueSeparators(), QString()};
+        OTemplateSeparatorOptions::AxisValueSeparators(), {}, QString()};
 
     // A line between two groups of settings, and nothing else: it asks nothing and keeps nothing.
     // Two of them, because a range is written in three parts — the title, the axes that stand
@@ -253,8 +256,13 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
     OTemplateOptionField kSymbolsTitleFontSize = kFontSize;
     OTemplateOptionField kSymbolsTitleLineSpacing = kLineSpacing;
 
+    // **The field carries the name of the map it fills, and not a name of its own.** A composite
+    // stores nothing under its field's key — it stores under the keys it declares — and the section
+    // writer decides what to write by looking that key up. A field named anything else is a field
+    // the writer never sees, and the renames it holds are never saved. The cartouche names its own
+    // rename field the same way, for the same reason.
     OTemplateOptionField kSymbolsTitleRename{
-        QStringLiteral("titleRenames"), OTemplateOptionKind::AxisRename,
+        OTemplateAxisOptions::kRenames, OTemplateOptionKind::AxisRename,
         T(QT_TRANSLATE_NOOP("OTemplateSection", "Rename the title"))};
     // **Only the renames themselves.** The shared writer also knows a list of things and a
     // one-line flag; neither means anything here — there is one title, and it is one line whatever
@@ -268,7 +276,7 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
     OTemplateOptionField kSymbolsTitleSeparator{
         OTemplateSeparatorOptions::kLanguageSeparator, OTemplateOptionKind::Separator,
         T(QT_TRANSLATE_NOOP("OTemplateSection", "Title separator")),
-        OTemplateSeparatorOptions::LanguageSeparators(), QString()};
+        OTemplateSeparatorOptions::LanguageSeparators(), {}, QString()};
 
     const OTemplateOptionField kSymbolsRule{QStringLiteral("symbolsRule"), OTemplateOptionKind::Rule,
                                             QString()};
@@ -300,7 +308,7 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
     OTemplateOptionField kSymbolsSeparator{
         QStringLiteral("symbolsLanguageSeparator"), OTemplateOptionKind::Separator,
         T(QT_TRANSLATE_NOOP("OTemplateSection", "Symbol separator")),
-        OTemplateSeparatorOptions::LanguageSeparators(), QString()};
+        OTemplateSeparatorOptions::LanguageSeparators(), {}, QString()};
     // **The question the whole range page waits on, asked first.** Which sizes the page lists is
     // what decides which axis runs and which stand still, so it stands directly under « written
     // for » and everything that depends on it is unusable until it is answered.
@@ -418,6 +426,159 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
         kSymbolsFontFamily, kSymbolsFontWeight, kSymbolsFontSize, kSymbolsLineSpacing,
         kSymbolsSeparator};
 
+    // ═══ Seam allowances ═══
+    //
+    // **A question the whole information waits on.** A pattern is drawn with its seam allowances or
+    // drawn without them, and which one it is decides what the reader has to be told: without them
+    // the page says so and stops, with them it has to name every margin the pattern is cut with.
+    // The answer is asked first and nothing else can be touched until it is given — see the
+    // enabledWhen below, which is what makes that true rather than merely intended.
+    OTemplateOptionField kSeamCase{OCoverSeamAllowances::kCaseKey, OTemplateOptionKind::Choice,
+                                   T(QT_TRANSLATE_NOOP("OTemplateSection", "Seam allowances"))};
+    // The labels are the words a reader of the page meets, and the values are what the file keeps:
+    // an answer stored as a translated sentence would change meaning with the language of whoever
+    // opened the template next.
+    kSeamCase.values = {OCoverSeamAllowances::kIncluded, OCoverSeamAllowances::kNotIncluded};
+    kSeamCase.valueLabels = {T(QT_TRANSLATE_NOOP("OTemplateSection", "Included in the drawings")),
+                             T(QT_TRANSLATE_NOOP("OTemplateSection", "Not included"))};
+
+    // The heading, which both cases print — each with words of its own, and the two are renamed
+    // independently: a page that says « Marges comprises » says nothing about what it will say when
+    // they are not, and the two titles are long enough that each of them is worth its own one-line
+    // answer.
+    OTemplateOptionField kSeamTitleFontFamily = kFontFamily;
+    kSeamTitleFontFamily.rowLabel = T(QT_TRANSLATE_NOOP("OTemplateSection", "Title"));
+    OTemplateOptionField kSeamTitleFontWeight = kFontWeight;
+    OTemplateOptionField kSeamTitleFontSize = kFontSize;
+    OTemplateOptionField kSeamTitleLineSpacing = kLineSpacing;
+
+    const QString seamTitleRow = QStringLiteral("seamTitle");
+    kSeamTitleFontFamily.rowKey = seamTitleRow;
+    kSeamTitleFontWeight.rowKey = seamTitleRow;
+    kSeamTitleFontSize.rowKey = seamTitleRow;
+
+    // The field carries the name of the map it fills — see the legend's rename above for why.
+    OTemplateOptionField kSeamTitleRename{
+        OTemplateAxisOptions::kRenames, OTemplateOptionKind::AxisRename,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Rename the title"))};
+    // Both renames live in that one map, under a key per case, and the one-line flag is shared: the
+    // two titles are the same heading set the same way, and only their words differ.
+    kSeamTitleRename.compositeDefaults = {{OTemplateAxisOptions::kRenames, QVariantMap{}},
+                                          {OTemplateAxisOptions::kOneLine, false}};
+    kSeamTitleRename.compositeEditor = [](QWidget *parent, const OTemplateOptionContext &context) {
+        return new OCoverSeamTitleEditor(context, parent);
+    };
+    kSeamTitleRename.onOwnRow = true;
+
+    OTemplateOptionField kSeamTitleSeparator{
+        OTemplateSeparatorOptions::kLanguageSeparator, OTemplateOptionKind::Separator,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Title separator")),
+        OTemplateSeparatorOptions::LanguageSeparators(), {}, QString()};
+
+    OTemplateOptionField kSeamRule{QStringLiteral("seamRule"), OTemplateOptionKind::Rule, QString()};
+
+    // Under the rule, the margins themselves. **A second typography**, prefixed so that SectionFont
+    // reads the group back by its own name and cannot take the title's.
+    OTemplateOptionField kSeamValuesFontFamily{
+        QStringLiteral("seamValuesFontFamily"), OTemplateOptionKind::FontFamily,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Margin font family"))};
+    OTemplateOptionField kSeamValuesFontWeight{
+        QStringLiteral("seamValuesFontWeight"), OTemplateOptionKind::FontWeight,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Margin font weight"))};
+    OTemplateOptionField kSeamValuesFontSize{
+        QStringLiteral("seamValuesFontSize"), OTemplateOptionKind::FontSize,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Margin font size (px)"))};
+    OTemplateOptionField kSeamValuesLineSpacing{
+        QStringLiteral("seamValuesLineSpacing"), OTemplateOptionKind::LineSpacing,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Margin line spacing (px)"))};
+
+    const QString seamValuesRow = QStringLiteral("seamValues");
+    kSeamValuesFontFamily.rowKey = seamValuesRow;
+    kSeamValuesFontFamily.rowLabel = T(QT_TRANSLATE_NOOP("OTemplateSection", "Margin lines"));
+    kSeamValuesFontWeight.rowKey = seamValuesRow;
+    kSeamValuesFontSize.rowKey = seamValuesRow;
+
+    // **Two separators again, and for the same reason as the legend's**: a name written in every
+    // language of the page, and — inside that line — a width written in every unit the user asked
+    // for. The first holds languages apart, the second holds units apart, and they are not the same
+    // question.
+    OTemplateOptionField kSeamValuesLanguageSeparator{
+        OCoverSeamAllowances::kValuesLanguageSeparatorKey, OTemplateOptionKind::Separator,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Name separator")),
+        OTemplateSeparatorOptions::LanguageSeparators(), {}, QString()};
+
+    // What stands between a margin's name and its width — « Couture : 1 cm ».
+    OTemplateOptionField kSeamValueSeparator{
+        OTemplateSeparatorOptions::kSeparator, OTemplateOptionKind::Separator,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator between name and value")),
+        OTemplateSeparatorOptions::AllSeparators(), {}, QStringLiteral(":")};
+
+    // **The width is stated in the units the reader measures in**, and the page may have to state it
+    // in more than one: a pattern is cut by people who work in centimetres and by people who work in
+    // inches, and a sheet that only spoke one of the two would be read with a conversion in mind.
+    OTemplateOptionField kSeamUnits{OCoverSeamAllowances::kUnitsKey, OTemplateOptionKind::CheckGroup,
+                                    T(QT_TRANSLATE_NOOP("OTemplateSection", "Units"))};
+    // The stored values are the application's own names for the units, so that what a page wrote is
+    // read by the same table that names a unit everywhere else.
+    kSeamUnits.values = {UnitsToStr(Unit::Mm, false), UnitsToStr(Unit::Cm, false),
+                         UnitsToStr(Unit::Inch, false)};
+    kSeamUnits.defaultValue = QStringList{UnitsToStr(Unit::Cm, false)};
+
+    OTemplateOptionField kSeamUnitSeparator{
+        OCoverSeamAllowances::kUnitSeparatorKey, OTemplateOptionKind::Separator,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Separator between units")),
+        {QStringLiteral("/"), QStringLiteral("-"), QStringLiteral("·")}, {}, QStringLiteral("/")};
+
+    // **The rest of the section waits for the answer, and part of it waits for one of the two.**
+    // Everything below the question is unusable until it is answered — shown but greyed, so that the
+    // user sees what the information is made of and what is holding it back. The margins themselves
+    // are not even that in the other case: a page that says the allowances are not included has no
+    // widths to name, and offering the fields would be offering a setting with nothing to set.
+    const auto answered = [](const QHash<QString, QVariant> &options) {
+        return !options.value(OCoverSeamAllowances::kCaseKey).toString().isEmpty();
+    };
+    const QList<OTemplateOptionField *> seamFieldsWaiting = {
+        &kSeamTitleFontFamily, &kSeamTitleFontWeight, &kSeamTitleFontSize, &kSeamTitleLineSpacing,
+        &kSeamTitleRename,     &kSeamTitleSeparator,   &kSeamRule,
+        &kSeamValuesFontFamily, &kSeamValuesFontWeight, &kSeamValuesFontSize,
+        &kSeamValuesLineSpacing, &kSeamValuesLanguageSeparator, &kSeamValueSeparator, &kSeamUnits,
+        &kSeamUnitSeparator};
+    for (OTemplateOptionField *field : seamFieldsWaiting)
+    {
+        field->enabledWhen = answered;
+    }
+    // The first field of each row carries the conditions for the whole row — a field that joins a
+    // line already open is not registered — so the two rows say « only when included » where they
+    // begin.
+    for (OTemplateOptionField *field : {&kSeamValuesFontFamily, &kSeamValuesLanguageSeparator,
+                                        &kSeamValueSeparator, &kSeamUnits, &kSeamUnitSeparator})
+    {
+        field->visibleWhenKey = OCoverSeamAllowances::kCaseKey;
+        field->visibleWhenValues = {OCoverSeamAllowances::kIncluded};
+    }
+
+    const QList<OTemplateOptionField> seamFields = {
+        kSeamCase,           kSeamTitleFontFamily,        kSeamTitleFontWeight,
+        kSeamTitleFontSize,  kSeamTitleLineSpacing,       kSeamTitleRename,
+        kSeamTitleSeparator, kSeamRule,                   kSeamValuesFontFamily,
+        kSeamValuesFontWeight, kSeamValuesFontSize,       kSeamValuesLineSpacing,
+        kSeamValuesLanguageSeparator, kSeamValueSeparator, kSeamUnits,
+        kSeamUnitSeparator};
+
+    // **A distance, and nothing else.** A page is not only made of what it says: a heading is set
+    // apart from what follows it, a block is brought down the sheet, and neither of those is a
+    // word. It is not a line spacing either — that one belongs to the line above and moves with its
+    // font's height, where what is wanted here is a distance the user chose.
+    //
+    // The control is the one a font size is given, because it is the same question: a whole number
+    // of pixels, typed rather than measured. The *kind* names the control, not the meaning — what
+    // the number is for is said by the label.
+    OTemplateOptionField kSpaceHeight{QStringLiteral("spaceHeight"), OTemplateOptionKind::FontSize,
+                                      T(QT_TRANSLATE_NOOP("OTemplateSection", "Height (px)"))};
+    kSpaceHeight.defaultValue = 25;
+
+    const QList<OTemplateOptionField> spaceFields = {kSpaceHeight};
+
     return {
         // The pattern's own name, read from the pattern — nothing for the user to fill in, and
         // nothing here to hold it: the template says that the name is shown and how, and the
@@ -482,6 +643,27 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
                                       "waits to be chosen stays in the library until something asks "
                                       "for it — add and order them in the Symbols page."),
                     symbolsFields),
+        // The margins the pattern is cut with. **The library decides what is here** — the names on
+        // its entries — and the pattern decides which of them the page prints, so the description
+        // says where a name is written, since a user who opens this must know that before wondering
+        // why it is empty.
+        MakeSection("seamAllowances",
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Seam allowances"),
+                    QT_TRANSLATE_NOOP("OTemplateSection",
+                                      "Whether the seam allowances are part of the drawings and, "
+                                      "when they are, the name of each margin the pattern is cut "
+                                      "with: one line per width the pattern actually carries. "
+                                      "The names are written in the Seam allowances page, and a "
+                                      "pattern must be open for the preview to show them."),
+                    seamFields),
+        // **Room, and nothing in it.** The one thing a page holds that says nothing: what the user
+        // is arranging with it is the page itself, and the height is the only thing there is to set.
+        MakeSection("space",
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Space"),
+                    QT_TRANSLATE_NOOP("OTemplateSection",
+                                      "An empty space, to set the page out: give it the height it "
+                                      "should take, and nothing is drawn in it."),
+                    spaceFields),
     };
 }
 

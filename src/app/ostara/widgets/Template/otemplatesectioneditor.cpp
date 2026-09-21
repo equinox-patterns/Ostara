@@ -618,6 +618,101 @@ void OTemplateSectionEditor::Rebuild()
                 form->addRow(check);
                 break;
             }
+            case OTemplateOptionKind::Choice:
+            {
+                // **A question the section waits on.** The first item is the answer not yet given,
+                // and it is a word rather than a blank: an empty combo says nothing about why it is
+                // empty, which is the "silent round" this application has already had to correct
+                // once — a separator's empty value now reads « No separator ».
+                //
+                // Answering it is what makes the rest of the section usable: the declaring
+                // catalogue puts an enabledWhen on every other field, and this is the answer that
+                // predicate is asked about.
+                auto *combo = MakeComboBox(content);
+                combo->addItem(tr("Choose…"), QString());
+                const QString current = options.value(field.key).toString();
+                for (int i = 0; i < field.values.size(); ++i)
+                {
+                    const QString value = field.values.at(i);
+                    combo->addItem(i < field.valueLabels.size() ? field.valueLabels.at(i) : value,
+                                   value);
+                    if (value == current)
+                    {
+                        combo->setCurrentIndex(combo->count() - 1);
+                    }
+                }
+                connect(combo, &QComboBox::currentIndexChanged, this, [this, field, combo](int) {
+                    m_template->SetSectionOption(m_index, field.key, combo->currentData().toString());
+                    // The answer decides what the rest of the section is, so it is looked at again.
+                    UpdateFieldVisibility();
+                    // **And a composite may be showing something that depends on it** — the title
+                    // of one case is not the title of the other — so it is told which answer stands
+                    // now. Without this it would go on renaming the case the user has just left.
+                    RefreshCompositeEditors();
+                    emit OptionsChanged();
+                });
+                PlaceControl(field, combo);
+                break;
+            }
+            case OTemplateOptionKind::CheckGroup:
+            {
+                // **A row of boxes, and a set that is never empty.** What the group holds is the
+                // values ticked among those the field offers; unticking the last one is refused,
+                // because a set of no answers is not an answer — a value written in no unit at all
+                // is not a value, and the page would print a name followed by nothing.
+                auto *row = new QWidget(content);
+                auto *rowLayout = new QHBoxLayout(row);
+                rowLayout->setContentsMargins(0, 0, 0, 0);
+                rowLayout->setSpacing(8);
+
+                const QStringList ticked = options.value(field.key).toStringList();
+                QVector<QPair<QCheckBox *, QString>> boxes;
+                for (int i = 0; i < field.values.size(); ++i)
+                {
+                    const QString value = field.values.at(i);
+                    auto *box = new QCheckBox(i < field.valueLabels.size() ? field.valueLabels.at(i)
+                                                                           : value,
+                                              row);
+                    box->setChecked(ticked.contains(value));
+                    boxes.append({box, value});
+                    rowLayout->addWidget(box);
+                }
+                rowLayout->addStretch();
+
+                // What stands ticked, read off the boxes rather than off the option: between two
+                // clicks the option is what it was, and the question is what the user is looking at.
+                const auto Ticked = [boxes]() {
+                    QStringList values;
+                    for (const QPair<QCheckBox *, QString> &entry : boxes)
+                    {
+                        if (entry.first->isChecked())
+                        {
+                            values.append(entry.second);
+                        }
+                    }
+                    return values;
+                };
+
+                for (const QPair<QCheckBox *, QString> &entry : boxes)
+                {
+                    QCheckBox *box = entry.first;
+                    connect(box, &QCheckBox::toggled, this, [this, field, box, Ticked](bool) {
+                        if (Ticked().isEmpty())
+                        {
+                            // Put back what the user has just taken away, without writing anything:
+                            // the option never held the empty set, so nothing changed.
+                            QSignalBlocker blocker(box);
+                            box->setChecked(true);
+                            return;
+                        }
+                        m_template->SetSectionOption(m_index, field.key, Ticked());
+                        emit OptionsChanged();
+                    });
+                }
+
+                PlaceControl(field, row);
+                break;
+            }
             // A rule says where one group of settings ends and the next begins. It asks nothing and
             // keeps nothing — the catalogue declares it purely to place it — so it takes its row
             // whole, with no caption, and the editor draws it here because this is the only place

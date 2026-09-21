@@ -50,6 +50,9 @@ const QString kAttrCode = QStringLiteral("code");
 const QString kTagSection = QStringLiteral("section");
 const QString kAttrType = QStringLiteral("type");
 
+/// What holds the values of a group of ticked boxes apart, written and read from here alone.
+const QChar kValueJoin = QLatin1Char(',');
+
 /// The element a band is written under. Named here and nowhere else, so the four move together.
 auto BandTag(OCoverPageTemplate::Placement placement) -> QString
 {
@@ -145,10 +148,21 @@ void WriteSection(QDomDocument &doc, QDomElement &parent, const OCoverPageTempla
             case OTemplateOptionKind::TextSource:
             case OTemplateOptionKind::Text:
             case OTemplateOptionKind::SizeCase:
+            case OTemplateOptionKind::Choice:
                 // A text written here may run over several lines. Qt writes the breaks as &#xa;
                 // inside the attribute, which the parser reads back as breaks — the text is not
                 // flattened onto one line.
+                //
+                // A choice not yet made is written the same way, as an empty attribute: the file
+                // says the question is still open rather than leaving it unsaid.
                 element.setAttribute(field.key, value.toString());
+                break;
+
+            case OTemplateOptionKind::CheckGroup:
+                // **A group of ticked values is written as one text.** What it holds is a list,
+                // which this loop could not otherwise write — but a list joined by a character no
+                // value of the group can contain is a text, and one attribute says it whole.
+                element.setAttribute(field.key, value.toStringList().join(kValueJoin));
                 break;
         }
     }
@@ -167,6 +181,17 @@ auto ReadSection(const QDomElement &element) -> OCoverPageTemplate::Section
     {
         section.options = type.DefaultOptions();
     }
+
+    // **The aliases are read before the loop, and not by it.** A rename is written as a child
+    // element, and the loop's guard asks whether the *field's* key is an attribute of the section —
+    // which, for a rename, is never true: the key names the map the renames live in, and no
+    // attribute carries it. A section whose key happens to be one of the attributes its writer sets
+    // — the axes — would be read either way; one that holds nothing but renames would not be read at
+    // all, and the names the user wrote would be gone the next time the file was opened. The
+    // cartouche reads its own this way, for the same reason.
+    //
+    // Nothing is invented here: what the reader does not find, it does not insert.
+    ReadAxisOptions(element, section.options);
 
     for (const OTemplateOptionField &field : type.Fields())
     {
@@ -196,9 +221,8 @@ auto ReadSection(const QDomElement &element) -> OCoverPageTemplate::Section
                 break;
 
             case OTemplateOptionKind::AxisRename:
-                // The axes this page states. Read by the shared reader, which also reads the shape
-                // a cartouche wrote before it could show more than one.
-                ReadAxisOptions(element, section.options);
+                // Read above, before the guard could turn it away — see the note there. The branch
+                // exists because the switch is exhaustive.
                 break;
 
             case OTemplateOptionKind::SizeRange:
@@ -239,6 +263,40 @@ auto ReadSection(const QDomElement &element) -> OCoverPageTemplate::Section
             case OTemplateOptionKind::SizeCase:
                 section.options.insert(field.key, raw);
                 break;
+
+            case OTemplateOptionKind::Choice:
+            {
+                // **An answer this build no longer offers leaves the question open** rather than
+                // answering it with a word nobody chose, and the rest of the section stays held
+                // back until someone answers it again. The same guard as the separator's, for the
+                // same reason: a file is not a promise that the vocabulary has not moved.
+                const QString fallback =
+                    field.defaultValue.isValid() ? field.defaultValue.toString() : QString();
+                section.options.insert(field.key, field.values.contains(raw) ? raw : fallback);
+                break;
+            }
+
+            case OTemplateOptionKind::CheckGroup:
+            {
+                // What is kept is what the field still offers: a box ticked for a value this build
+                // no longer proposes would be drawn as a choice and could never be unticked. An
+                // answer that comes out empty falls back to the field's own default, because a
+                // group of ticked boxes never comes out empty.
+                QStringList ticked;
+                for (const QString &token : raw.split(kValueJoin, Qt::SkipEmptyParts))
+                {
+                    if (field.values.contains(token) && !ticked.contains(token))
+                    {
+                        ticked.append(token);
+                    }
+                }
+                if (ticked.isEmpty())
+                {
+                    ticked = field.defaultValue.toStringList();
+                }
+                section.options.insert(field.key, ticked);
+                break;
+            }
         }
     }
 

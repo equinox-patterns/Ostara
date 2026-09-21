@@ -29,6 +29,7 @@
 
 #include "ocoverpagesizes.h"
 #include "ocoverpagetemplate.h"
+#include "ocoverseamallowances.h"
 #include "ocoversymbols.h"
 
 #include "vwidgets/ocartouchepainter.h"
@@ -96,6 +97,16 @@ struct PatternData
      * holds it answers and the page draws the answer. Empty when there is nothing to explain.
      */
     QVector<OCoverSymbols::Line> symbols;
+
+    /**
+     * @brief The margins the pattern is cut with, in the library's own order.
+     *
+     * **Handed over rather than looked up**, like the sizes and the legend: reading a pattern's
+     * pieces, and deciding which name answers which width, are questions about a pattern and a
+     * library — neither of which a page holds. Empty when the page states that the allowances are
+     * not included, and when the pattern carries none.
+     */
+    QVector<OCoverSeamAllowances::Line> seamAllowances;
 };
 
 /**

@@ -35,6 +35,7 @@
 #include "widgets/Template/otemplatelanguagerow.h"
 #include "ocoverpagetemplatepreview.h"
 #include "widgets/Template/ologolibrarypage.h"
+#include "widgets/Template/oseamallowancelibrarypage.h"
 #include "widgets/Template/osymbollibrarypage.h"
 #include "widgets/Template/otemplatesectioneditor.h"
 
@@ -67,7 +68,8 @@ enum MenuRow : int
     MenuExistingTemplates = 0,
     MenuCreateTemplate = 1,
     MenuLogos = 2,
-    MenuSymbols = 3
+    MenuSymbols = 3,
+    MenuSeamAllowances = 4
 };
 
 /** What the Edition pane asks for, so that the splitter does not close over it. */
@@ -147,6 +149,10 @@ OCoverPageEditor::OCoverPageEditor(QWidget *parent) : QWidget(parent)
                 ShowSymbolsPage();
                 break;
 
+            case MenuSeamAllowances:
+                ShowSeamAllowancesPage();
+                break;
+
             default:
                 break;
         }
@@ -171,10 +177,17 @@ OCoverPageEditor::OCoverPageEditor(QWidget *parent) : QWidget(parent)
     // the library it draws from has been written.
     connect(m_symbolsPage, &OSymbolLibraryPage::LibraryChanged, this, &OCoverPageEditor::ReloadSymbols);
 
+    // The names a page gives the margins a pattern is cut with. This editor's alone as well, and for
+    // the same reason: what a margin is called is written for the pages, not for the cartouche.
+    m_seamAllowancesPage = new OSeamAllowanceLibraryPage();
+    connect(m_seamAllowancesPage, &OSeamAllowanceLibraryPage::LibraryChanged, this,
+            &OCoverPageEditor::ReloadSeamAllowances);
+
     m_menu->AddPage(m_templatesPage);  // index 0 — existing templates
     m_menu->AddPage(MakeCreatePage()); // index 1 — create a template
     m_menu->AddPage(m_logosPage);      // index 2 — logos
     m_menu->AddPage(m_symbolsPage);    // index 3 — symbols
+    m_menu->AddPage(m_seamAllowancesPage); // index 4 — seam allowances
     layout->addWidget(m_menu, 1);
 
     RetranslateUI();
@@ -201,6 +214,7 @@ void OCoverPageEditor::RetranslateUI()
     m_menu->SetRowLabel(MenuCreateTemplate, tr("Create a template"));
     m_menu->SetRowLabel(MenuLogos, tr("Logo"));
     m_menu->SetRowLabel(MenuSymbols, tr("Symbols"));
+    m_menu->SetRowLabel(MenuSeamAllowances, tr("Seam allowances"));
 
     // A cover page is one leaf and has no blocks, so this says « page » where Information block
     // says « block »: the same row, worded for what it is actually on.
@@ -233,6 +247,11 @@ void OCoverPageEditor::RetranslateUI()
     if (m_symbolsPage != nullptr)
     {
         m_symbolsPage->RetranslateUI();
+    }
+
+    if (m_seamAllowancesPage != nullptr)
+    {
+        m_seamAllowancesPage->RetranslateUI();
     }
 
     if (m_sectionEditor != nullptr)
@@ -284,6 +303,9 @@ QWidget *OCoverPageEditor::MakeCreatePage()
     // The legend's symbols, read from the library of the installation. Set once here like the
     // template, and handed over again whenever the Symbols page writes the library.
     ReloadSymbols();
+    // The margins the pattern is cut with, read the same way and for the same reason: the widths
+    // come from the pattern the editor is opened beside, and the names from a library of their own.
+    ReloadSeamAllowances();
     m_splitter->addWidget(m_preview);
 
     m_splitter->setStretchFactor(0, 1);
@@ -493,7 +515,8 @@ void OCoverPageEditor::ApplyMenuRow()
         // that exists is being edited.
         row = m_filePath.isEmpty() ? MenuCreateTemplate : -1;
     }
-    else if (page == MenuExistingTemplates || page == MenuLogos || page == MenuSymbols)
+    else if (page == MenuExistingTemplates || page == MenuLogos || page == MenuSymbols
+             || page == MenuSeamAllowances)
     {
         row = page;
     }
@@ -850,6 +873,27 @@ void OCoverPageEditor::ReloadSymbols()
     if (m_preview != nullptr)
     {
         m_preview->SetSymbols(&m_symbols);
+        m_preview->Refresh();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OCoverPageEditor::ShowSeamAllowancesPage()
+{
+    m_seamAllowancesPage->Show();
+    ShowMenuPage(MenuSeamAllowances);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OCoverPageEditor::ReloadSeamAllowances()
+{
+    m_seamAllowances = OSeamAllowanceLibrary::Load();
+
+    if (m_preview != nullptr)
+    {
+        m_preview->SetSeamAllowances(&m_seamAllowances);
         m_preview->Refresh();
     }
 }

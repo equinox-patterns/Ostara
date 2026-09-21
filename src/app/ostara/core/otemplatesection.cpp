@@ -146,6 +146,17 @@ auto OTemplateSection::DefaultValue(const QString &key) const -> QVariant
             case OTemplateOptionKind::Boolean:
                 return false;
 
+            // **An answer not yet given, which is a state of its own.** It is what the rest of a
+            // section is held back on: a choice nobody has made is the question still open.
+            case OTemplateOptionKind::Choice:
+                return QString();
+
+            // What starts ticked is the declaring family's to say, through the field's own default.
+            // A family that says nothing gets nothing ticked, which is the honest reading of a
+            // group it never described.
+            case OTemplateOptionKind::CheckGroup:
+                return QStringList();
+
             // Composites carry no value of their own: they expand into their sub-options, which
             // the declaring catalogue puts in the field. Reaching here means one was declared
             // without them, and an option with no default is the honest answer.

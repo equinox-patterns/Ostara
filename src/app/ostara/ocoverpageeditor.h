@@ -28,6 +28,7 @@
 #define OCOVERPAGEEDITOR_H
 
 #include "core/ocoverpagetemplate.h"
+#include "core/oseamallowancelibrary.h"
 #include "core/osizetable.h"
 #include "core/osymbollibrary.h"
 #include "widgets/Template/otemplateguard.h"
@@ -56,6 +57,7 @@ class OCoverPageTemplatesPage;
 class OCoverPageTemplatePreview;
 class OLogoLibraryPage;
 class OSymbolLibraryPage;
+class OSeamAllowanceLibraryPage;
 class OTemplateSectionEditor;
 
 /**
@@ -136,6 +138,7 @@ private:
 
     void ShowLogosPage();
     void ShowSymbolsPage();
+    void ShowSeamAllowancesPage();
 
     /**
      * @brief Reads the symbol library again, and shows it to the preview.
@@ -146,6 +149,14 @@ private:
      * be sure of it.
      */
     void ReloadSymbols();
+
+    /**
+     * @brief The margin library, read again whenever the Seam allowances page writes it.
+     *
+     * **The same file-and-read as the legend's**, and for the same reason: what the preview shows is
+     * what the pattern is cut with, named by a library written on another page of this editor.
+     */
+    void ReloadSeamAllowances();
 
     void ShowMenuPage(int row);
     void ShowTemplatesList();
@@ -253,11 +264,17 @@ private:
     /** The symbol library, read again whenever the Symbols page writes it — see ReloadSymbols. */
     OSymbolLibrary::Library m_symbols;
 
+    /** The margin library, read again whenever the Seam allowances page writes it. */
+    OSeamAllowanceLibrary::Library m_seamAllowances;
+
     /** The logo library, whose page is shared with the cartouche's editor. */
     OLogoLibraryPage *m_logosPage{nullptr};
 
     /** The symbol library, whose page is shared with the cartouche's editor. */
     OSymbolLibraryPage *m_symbolsPage{nullptr};
+
+    /** The margins a page names, whose page belongs to this editor alone. */
+    OSeamAllowanceLibraryPage *m_seamAllowancesPage{nullptr};
 };
 
 #endif // OCOVERPAGEEDITOR_H

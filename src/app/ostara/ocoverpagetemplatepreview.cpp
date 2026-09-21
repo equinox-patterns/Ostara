@@ -31,10 +31,16 @@
 #include "core/ocoverpagelayout.h"
 #include "core/ocoverpageresolver.h"
 #include "core/ocoverpagesizes.h"
+#include "core/ocoverseamallowances.h"
 #include "core/ocoversymbols.h"
+#include "core/oseamallowancevalues.h"
 
+#include "vmisc/def.h"
 #include "vmisc/vabstractapplication.h"
+#include "vmisc/vabstractvalapplication.h"
+#include "vmisc/vcommonsettings.h"
 #include "vwidgets/ocartouchepainter.h"
+#include "xml/vabstractpattern.h"
 
 #include <QPainter>
 #include <QPaintEvent>
@@ -81,6 +87,14 @@ void OCoverPageTemplatePreview::SetTable(const OSizeTable *table)
 void OCoverPageTemplatePreview::SetSymbols(const OSymbolLibrary::Library *symbols)
 {
     m_symbols = symbols;
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OCoverPageTemplatePreview::SetSeamAllowances(const OSeamAllowanceLibrary::Library *seamAllowances)
+{
+    m_seamAllowances = seamAllowances;
     update();
 }
 
@@ -197,6 +211,34 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
             data.symbols = m_symbols == nullptr
                                ? QVector<OCoverSymbols::Line>()
                                : OCoverSymbols::Lines(*m_symbols, m_template->languages);
+
+            // The margins the pattern is cut with, worked out here for the same reason again: the
+            // widths belong to the pattern and the names to the library, and a page holds neither.
+            // **The pattern is the one the application has open**, which is the same one the sizes
+            // are read from, and there is nothing to read when none is — a page written before a
+            // pattern was chosen.
+            if (m_seamAllowances != nullptr)
+            {
+                QVector<qreal> widths;
+                const VAbstractPattern *pattern = nullptr;
+                if (VAbstractApplication::VApp() != nullptr)
+                {
+                    pattern = VAbstractValApplication::VApp()->getCurrentDocument();
+                }
+                widths = OSeamAllowanceValues::Collect(pattern);
+                if (!widths.isEmpty())
+                {
+                    // **The default margin is the application's, read where it is set.** It is kept
+                    // in the unit the application works in, so it is brought to millimetres here —
+                    // the one unit every cover page states a length in.
+                    auto *settings = VAbstractApplication::VApp()->Settings();
+                    const qreal defaultMm =
+                        UnitConvertor(settings->GetDefaultSeamAllowance(),
+                                      StrToUnits(settings->GetUnit()), Unit::Mm);
+                    data.seamAllowances = OCoverSeamAllowances::Lines(
+                        *m_seamAllowances, m_template->languages, widths, defaultMm);
+                }
+            }
 
             QVector<OCartoucheRenderLine> drawn = OCoverPageResolver::Resolve(
                 section, data, OCartouchePainter::BaseFont(), m_template->languages, m_table);

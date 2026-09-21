@@ -28,6 +28,7 @@
 #define OCOVERPAGETEMPLATEPREVIEW_H
 
 #include "core/ocoverpagetemplate.h"
+#include "core/oseamallowancelibrary.h"
 #include "core/osymbollibrary.h"
 
 #include <QWidget>
@@ -82,6 +83,17 @@ public:
      */
     void SetSymbols(const OSymbolLibrary::Library *symbols);
 
+    /**
+     * @brief The seam-allowance library, for the margins a pattern is cut with. Not owned.
+     *
+     * **Handed over for the same reason the legend's is**: what a margin is called is a question
+     * about a library, and which margins the page has to name is a question about the pattern the
+     * editor is opened beside — neither of which is a property of a template. Null is not an error:
+     * it is a template written before its library has been read, and the information then draws its
+     * heading alone.
+     */
+    void SetSeamAllowances(const OSeamAllowanceLibrary::Library *seamAllowances);
+
     /** @brief What the pane asks for when it is left to size itself. */
     auto minimumSizeHint() const -> QSize override;
 
@@ -92,6 +104,7 @@ private:
     const OCoverPageTemplate *m_template{nullptr};
     const OSizeTable *m_table{nullptr};
     const OSymbolLibrary::Library *m_symbols{nullptr};
+    const OSeamAllowanceLibrary::Library *m_seamAllowances{nullptr};
 };
 
 #endif // OCOVERPAGETEMPLATEPREVIEW_H

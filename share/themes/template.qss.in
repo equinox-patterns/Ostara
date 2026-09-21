@@ -959,11 +959,13 @@ QPushButton#symbolMarkTrashBtn:disabled {
     image: url(:/icons/$theme/trash_disabled.svg);
 }
 
-/* Symbols — the two arrows that move a symbol in the list. Carets, not the bands' arrows: what moves
-   here is a line of a list, and a line is what a caret points at. They carry no word — the icon says
-   "up" in every language — so the tooltip is the only place their names live. */
+/* A list's two arrows — the symbols and the margins alike: what moves here is a line of a list, and
+   a line is what a caret points at. They carry no word — the icon says "up" in every language — so
+   the tooltip is the only place their names live. */
 QPushButton#symbolUpBtn,
-QPushButton#symbolDownBtn {
+QPushButton#symbolDownBtn,
+QPushButton#seamUpBtn,
+QPushButton#seamDownBtn {
     background: transparent;
     border: none;
     border-radius: 2px;
@@ -974,24 +976,31 @@ QPushButton#symbolDownBtn {
     padding: 2px;
 }
 QPushButton#symbolUpBtn:hover,
-QPushButton#symbolDownBtn:hover {
+QPushButton#symbolDownBtn:hover,
+QPushButton#seamUpBtn:hover,
+QPushButton#seamDownBtn:hover {
     background: $HoverBg;
 }
-QPushButton#symbolUpBtn {
+QPushButton#symbolUpBtn,
+QPushButton#seamUpBtn {
     image: url(:/icons/$theme/caret-up_$theme.svg);
 }
-QPushButton#symbolDownBtn {
+QPushButton#symbolDownBtn,
+QPushButton#seamDownBtn {
     image: url(:/icons/$theme/caret-down_$theme.svg);
 }
-QPushButton#symbolUpBtn:disabled {
+QPushButton#symbolUpBtn:disabled,
+QPushButton#seamUpBtn:disabled {
     image: url(:/icons/$theme/caret-up_disabled.svg);
 }
-QPushButton#symbolDownBtn:disabled {
+QPushButton#symbolDownBtn:disabled,
+QPushButton#seamDownBtn:disabled {
     image: url(:/icons/$theme/caret-down_disabled.svg);
 }
 /* Symbols — what "permanent" commits the user to, written under the box that says it. Secondary, so
    that it reads as the box's sentence and not as another setting. */
-QLabel#symbolPermanentHint {
+QLabel#symbolPermanentHint,
+QLabel#seamDefaultHint {
     color: $TextSecondary;
 }
 

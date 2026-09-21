@@ -30,6 +30,7 @@
 #include "ocoverpagecatalogue.h"
 #include "ologolibrary.h"
 #include "ologorender.h"
+#include "olengthunits.h"
 #include "osizetable.h"
 #include "otemplateaxisoptions.h"
 #include "otemplateseparatoroptions.h"
@@ -49,6 +50,24 @@ constexpr double kSquareThreeIn = 3.0;
 /// How far the size is written from the square's corner, in centimetres — clear of the line, so
 /// the two do not touch and the value stays readable.
 constexpr double kCornerInsetCm = 0.3;
+
+/// @brief One width stated in every unit the user asked for, held apart by what they chose.
+///
+/// **With the air a written line needs.** A separator between two values is read at a glance, and
+/// `1 cm/3/8"` reads as one token where `1 cm / 3/8"` reads as two. The user picks the sign; how it
+/// is spaced is not a setting, because there is only one answer that can be read.
+auto StatedApart(const QStringList &units, const QString &separator) -> QString
+{
+    if (units.isEmpty())
+    {
+        return QString();
+    }
+    if (separator.isEmpty())
+    {
+        return units.join(QLatin1Char(' '));
+    }
+    return units.join(QStringLiteral(" ") + separator + QStringLiteral(" "));
+}
 
 /// One square of the block: its side at print size, and the value written at its corner.
 struct TestSquare
@@ -329,6 +348,129 @@ auto OCoverPageResolver::Resolve(const OCoverPageTemplate::Section &section, con
         }
 
         return lines;
+    }
+
+    if (section.typeId == QLatin1String("seamAllowances"))
+    {
+        // **Nothing is drawn until the question is answered.** The two cases read differently, and
+        // an information that guessed which one was meant would be printing a sentence its author
+        // never chose — so it draws nothing at all, as it does for a logo nobody picked.
+        const QString seamCase = section.options.value(OCoverSeamAllowances::kCaseKey).toString();
+        if (seamCase.isEmpty())
+        {
+            return {};
+        }
+
+        // What stands between the languages of the heading and of each margin's name. The shared
+        // separator for the heading, and one of the information's own for the names: a heading and a
+        // line of margins are two different sentences.
+        const QString languageSeparator =
+            section.options.value(OTemplateSeparatorOptions::kLanguageSeparator).toString();
+
+        QVector<OCartoucheRenderLine> lines;
+
+        // The heading, renamed or not — and **the two cases are titled separately**, because a page
+        // that says the allowances are included says something else than one that says they are not.
+        const QVariantMap renames = section.options.value(OTemplateAxisOptions::kRenames).toMap();
+        const QString titleKey = OCoverSeamAllowances::TitleKey(seamCase);
+        const auto TitleFor = [&renames, &titleKey, &seamCase](const QString &locale) -> QString
+        {
+            // Keyed by language, and read exactly as an axis alias is: an empty one means the words
+            // were not changed, so the application's own stand.
+            const QString written = renames.value(titleKey)
+                                        .toMap()
+                                        .value(locale)
+                                        .toMap()
+                                        .value(QStringLiteral("name"))
+                                        .toString();
+            return written.isEmpty() ? OCoverSeamAllowances::TitleWord(seamCase, locale) : written;
+        };
+
+        QStringList title;
+        if (languages.isEmpty())
+        {
+            title.append(TitleFor(QString()));
+        }
+        for (const QString &locale : languages)
+        {
+            title.append(TitleFor(locale));
+        }
+
+        if (!title.isEmpty())
+        {
+            // **One line per language when the user asked for it.** These headings are sentences —
+            // « Seam allowances not included » — and two of them held on one line by a separator is
+            // a line a reader has to take apart to find where one language stops.
+            if (section.options.value(OTemplateAxisOptions::kOneLine, false).toBool())
+            {
+                for (const QString &word : title)
+                {
+                    lines.append(OCartouchePainter::TextLine(word, font, lineSpacing));
+                }
+            }
+            else
+            {
+                lines.append(OCartouchePainter::TextLines(
+                    OTemplateSeparatorOptions::Join(title, languageSeparator), font, lineSpacing));
+            }
+        }
+
+        // **Under it, the margins — and only in the case that has any.** A page stating that the
+        // allowances are not part of the drawings has said everything it has to say; the widths it
+        // would name are precisely what the reader is being told not to look for.
+        if (seamCase == OCoverSeamAllowances::kIncluded)
+        {
+            const QFont valuesFont = OCartouchePainter::SectionFont(section.options, baseFont,
+                                                                    QStringLiteral("seamValues"));
+            const int valuesSpacing =
+                section.options.value(QStringLiteral("seamValuesLineSpacing"), 0).toInt();
+            const QString namesSeparator =
+                section.options.value(OCoverSeamAllowances::kValuesLanguageSeparatorKey).toString();
+            const QString valueSeparator =
+                section.options.value(OTemplateSeparatorOptions::kSeparator).toString();
+            const QStringList units =
+                section.options.value(OCoverSeamAllowances::kUnitsKey).toStringList();
+            const QString unitSeparator =
+                section.options.value(OCoverSeamAllowances::kUnitSeparatorKey).toString();
+
+            for (const OCoverSeamAllowances::Line &margin : data.seamAllowances)
+            {
+                // **The same width, said in every unit the user asked for** — « 1 cm / 3/8" » — which
+                // is what lets one page be read by two people who measure differently.
+                QStringList stated;
+                for (const QString &unit : units)
+                {
+                    stated.append(OLengthUnits::Format(margin.mm, StrToUnits(unit)));
+                }
+
+                lines.append(OCartouchePainter::TextLine(
+                    OTemplateSeparatorOptions::Compose(
+                        OTemplateSeparatorOptions::Join(margin.texts, namesSeparator),
+                        StatedApart(stated, unitSeparator), valueSeparator),
+                    valuesFont, valuesSpacing));
+            }
+        }
+
+        return lines;
+    }
+
+    if (section.typeId == QLatin1String("space"))
+    {
+        // **A page has nothing to say here, and that is the information.** An empty space is room
+        // the user asked for between two things, and what it resolves to is a line that draws
+        // nothing and takes exactly that room — see OCartouchePainter::SpaceLine. It is a line and
+        // not a margin because the room has to be counted by everything that measures a band, and
+        // because it moves with the page when the page is drawn at another size.
+        //
+        // A height of nothing is no line at all: a space left at zero would otherwise be a gap
+        // nobody chose, and the preview would have nothing to show for the section.
+        const qreal height = section.options.value(QStringLiteral("spaceHeight"), 0.0).toDouble();
+        if (height <= 0.0)
+        {
+            return {};
+        }
+
+        return {OCartouchePainter::SpaceLine(height)};
     }
 
     if (section.typeId == QLatin1String("sizes"))

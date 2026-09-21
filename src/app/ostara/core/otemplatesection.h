@@ -73,6 +73,8 @@ enum class OTemplateOptionKind
     Text,         ///< QString — a text written here, possibly on several lines
     SizeCase,     ///< QString — which case a size information is written for: one size, or a range
     SizeRange,    ///< composite — the sizes a size information lists, and what each is called
+    Choice,       ///< QString — an exclusive answer among field.values, empty until it is given
+    CheckGroup,   ///< QStringList — the values ticked among field.values, never empty
     Rule          ///< no value — a plain rule between groups of fields, in the editor only
 };
 
@@ -120,6 +122,20 @@ struct OTemplateOptionField
     OTemplateOptionKind kind{OTemplateOptionKind::FontFamily};
     QString label;
     QStringList values{};     ///< candidate values for the editor (e.g. separators); empty = kind default
+    /**
+     * @brief What those values are called on screen, when their own spelling will not do.
+     *
+     * **A stored value is a token, and a token is not a word.** A separator's values *are* what the
+     * user reads — a colon is a colon — so a field that offers punctuation gives no labels and the
+     * editor shows the value itself. A choice between two things the user has to recognise needs
+     * words, and those words must not be what is stored: a file holding a translated word would
+     * read differently depending on the language the page was written in, which is exactly what a
+     * stable token exists to prevent.
+     *
+     * Read in step with @ref values, position by position. Empty, or shorter than it, leaves the
+     * values at the end showing themselves.
+     */
+    QStringList valueLabels{};
     QVariant defaultValue{};  ///< per-field default value; invalid = kind default
 
     /**
