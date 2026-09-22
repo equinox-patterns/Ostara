@@ -132,11 +132,35 @@ static auto SiblingFontKey(const QString &key, const char *wanted) -> QString
 static void FillFontFaces(QComboBox *combo, const QString &family, const QString &stored)
 {
     const QString current = family.isEmpty() ? OCartouchePainter::BaseFont().family() : family;
-    const QStringList faces = QFontDatabase::styles(current);
-    if (faces.isEmpty())
+    const QStringList all = QFontDatabase::styles(current);
+    if (all.isEmpty())
     {
         return; // a family with no face to offer keeps what it had
     }
+
+    // ⚠️ **The italic faces are not offered — decision of Sophie, 22-09-2026.**
+    //
+    // A template sets a FACE, and the PDF redraws the words from their outlines: the re-emission
+    // reads the family, the size and the weight, and never `font-style`. An italic chosen here would
+    // therefore be drawn UPRIGHT, in silence — and a page is supposed to look the way the
+    // application shows it. The frontend's answer is a veto rather than a rendering: the choice is
+    // not offered, so it cannot be made by mistake.
+    //
+    // A family whose only faces are italic keeps them: a control offering nothing at all is worse
+    // than one offering the wrong thing, and no font anybody sets a pattern in is like that.
+    const auto isItalic = [](const QString &face) {
+        return face.contains(QStringLiteral("italic"), Qt::CaseInsensitive)
+               || face.contains(QStringLiteral("oblique"), Qt::CaseInsensitive);
+    };
+    QStringList roman;
+    for (const QString &face : all)
+    {
+        if (!isItalic(face))
+        {
+            roman.append(face);
+        }
+    }
+    const QStringList faces = roman.isEmpty() ? all : roman;
 
     QSignalBlocker block(combo); // filling the list is not the user answering it
     const QString kept = combo->currentData().toString();
