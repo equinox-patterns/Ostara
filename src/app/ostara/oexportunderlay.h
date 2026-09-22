@@ -64,9 +64,8 @@ namespace OExportUnderlay
  * @param marks       the template — frame, assembly marks and pagination — as it stands now.
  * @param artboards   the tiling, which is also the page of the document.
  * @param sheets      which of those sheets is printed; the marks follow the paper.
- * @param framed      whether the format is the one the frame belongs to — « Tiled Framed »
- *                    alone. On any other tiled format the frame and the scissors are not
- *                    drawn, exactly as on screen.
+ * @param framed      whether the format is one of the framed ones. On any other tiled format
+ *                    the frame and the scissors are not drawn, exactly as on screen.
  * @return false when the document could not be written; the reason has been logged.
  */
 bool Write(const QString &svgPath, const QString &planSvgPath, const OExportTemplate &marks,

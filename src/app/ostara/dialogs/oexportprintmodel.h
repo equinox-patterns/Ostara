@@ -47,10 +47,12 @@ enum class OExportPrintShape : qint8
 /**
  * @brief One printable output: the sheet the nesting is laid out on.
  *
- * The six models differ by what they let the user set, and by nothing else — which is
- * why they are a table rather than six classes. What the table does NOT carry is a
- * behaviour: there is no pointer, no virtual, no callback. A model that needs its own
- * code gets its own shape class, and this file stays a list of values.
+ * The models differ by their shape and by whether the plan is cut into a framed sheet, and
+ * by nothing else — which is why they are a table rather than eight classes. None of them is
+ * typed into: every dimension here is the sheet the user prints on, and a sheet she could
+ * edit would be one no printer has. What the table does NOT carry is a behaviour: there is no
+ * pointer, no virtual, no callback. A model that needs its own code gets its own shape class,
+ * and this file stays a list of values.
  *
  * The dimensions are in millimetres, always. They are the one fixed point of the unit
  * combo: millimetres go in, whatever unit the user reads comes out, and converting the
@@ -66,11 +68,13 @@ struct OExportPrintModel
     qreal widthMm{0.0};  ///< the sheet's small side — the one the columns multiply
     qreal heightMm{0.0}; ///< the sheet's long side; irrelevant to a Roll
 
-    /// Whether the two dimensions can be typed. True for the framed model alone: it is
-    /// the one whose whole point is that its useful area is not a standard sheet, so the
-    /// user sizes the frame. Everywhere else the dimensions ARE the standard, and typing
-    /// them would only let the user build a sheet that does not exist.
-    bool dimsEditable{false};
+    /// Whether the plan is cut into a framed sheet — the two framed formats, and them alone.
+    ///
+    /// This is what the decor reads: those two get the frame and the scissors, every other
+    /// format gets a faint stand-in outline. It is a property of the format and not of its
+    /// size — a frame is a decision, and guessing it from the dimensions would mean two
+    /// formats of equal size could not differ.
+    bool hasFrame{false};
 
     /// Whether the model offers a column count. False for the A0 sheet, which is not
     /// assembled after printing: its sheets are whole pages stacked, never placed side
@@ -84,7 +88,8 @@ struct OExportPrintModel
     bool selectable{true};
 };
 
-/// @brief Every model, in the order the combo shows them — largest sheet first.
+/// @brief Every model, in the order the combo shows them — the standard sheets largest first,
+///        and the two framed formats after them, together.
 auto OExportPrintModels() -> const QVector<OExportPrintModel> &;
 
 /// @brief The model carrying @p token, or nullptr. Used to replay a generation, which

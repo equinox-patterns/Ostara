@@ -324,6 +324,19 @@ QPlainTextEdit:disabled {
     border-radius: 2px;
 }
 
+/* A value the user reads and never types — the sheet of a print model, in the Export tab's Print
+   page. Boxed like the fields it stands among: it sits in their column, and a bare line of text
+   there would read as a caption that lost its field. Carries the fields' own padding, so the box
+   is exactly as tall as the field above it. Nothing here is greyed: what it says is what the model
+   imposes, not something the user is being kept from. */
+#exportSheetSizeValue {
+    background-color: #f9f9f9;
+    color: #2b2b2b;
+    border: 1px solid #d6d6d6;
+    border-radius: 2px;
+    padding: 4px 8px;
+}
+
 /* =========================================================================
    QSpinBox / QDoubleSpinBox — Champs numériques
    Design: like QLineEdit + custom up/down buttons (all-or-nothing rule)

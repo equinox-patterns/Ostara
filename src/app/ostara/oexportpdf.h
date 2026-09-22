@@ -72,9 +72,9 @@ namespace OExportPdf
 ///                none resolved — the canvas's own convention, and the same value it is
 ///                given. Null means no underlay at all, which is a state and not an error:
 ///                a folder the user has emptied leaves every plan without marks.
-/// @param framed  whether the format is the one the frame belongs to — « Tiled Framed »
-///                alone. The underlay carries it and the layers do not, because the frame
-///                belongs to the sheet rather than to what is drawn on it.
+/// @param framed  whether the format is one of the framed ones. The underlay carries it and
+///                the layers do not, because the frame belongs to the sheet rather than to
+///                what is drawn on it.
 /// @param addLayoutLayer  whether the layout is written as one of the reader's layers, and so
 ///                can be switched off there. The dialog asks, and it opens on NO.
 ///

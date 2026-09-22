@@ -39,9 +39,9 @@ class QDomDocument;
 /**
  * @brief A template: what it is called, and everything it draws on the sheets of a tiled plan.
  *
- * **It carries no sheet and no format.** One template decorates any tiled plan — A4, A3, Letter,
- * or the free size of « Tiled Framed » — so nothing here names one, and nothing chosen in the
- * format row is saved (§10.1).
+ * **It carries no sheet and no format.** One template decorates any tiled plan — A3, A4, Letter,
+ * Tabloid, or either of the two framed formats — so nothing here names one, and nothing chosen
+ * in the format row is saved (§10.1).
  *
  * **A default-constructed one is what a new template is.** Its three blocks keep the values their
  * own headers declare, which is the state the editor opens in; the template shipped with the

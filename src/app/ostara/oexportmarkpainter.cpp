@@ -243,7 +243,7 @@ void OExportMarkPainter::Paint(QPainter &painter, const QPointF &origin,
     }
     else if (sheetGuide)
     {
-        // The decor belongs to « Tiled Framed » alone — on every other tiled model the frame is
+        // The decor belongs to the framed formats alone — on every other tiled model the frame is
         // ignored, and there is no cut to mark inside the sheet. The sheets still have to be told
         // apart on screen, so a faint outline stands in for it.
         //
@@ -257,7 +257,7 @@ void OExportMarkPainter::Paint(QPainter &painter, const QPointF &origin,
     }
 
     // Drawn whatever the format, as the marks below are: a sheet of A4 is glued to its neighbours
-    // exactly as a sheet of « Tiled Framed » is, and has just as much need to say which one it is.
+    // exactly as a framed sheet is, and has just as much need to say which one it is.
     DrawCentreNumber(painter, origin, grid);
     DrawCornerNumbers(painter, origin, grid);
     DrawEdgeNumbers(painter, origin, grid, true);
@@ -481,7 +481,7 @@ void OExportMarkPainter::DrawScissors(QPainter &painter, const QRectF &sheet, co
     //
     // Neither sits on the corner itself: the pagination and the other marks will want that room.
     // Each is set back along its own edge by a quarter of that edge's length — for the default
-    // « Tiled Framed », 19/4 = 4.75 cm on the top edge, 25.9/4 = 6.475 cm on the right one.
+    // « A4/Letter framed », 19/4 = 4.75 cm on the top edge, 25.9/4 = 6.475 cm on the right one.
     const qreal across = kScissorsAcrossMm * grid.pxPerMm;
     const qreal along = kScissorsAlongMm * grid.pxPerMm;
 

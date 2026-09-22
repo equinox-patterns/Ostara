@@ -698,11 +698,11 @@ auto MainWindow::ExportMarksOf(const OExportOutput &output, OExportTemplate &mar
     // the drawing would then be lying about the very thing it is there to show.
     const bool hasMarks = OExportTemplateStorage::Resolve(output.marksTemplateName, &marks);
 
-    // Whether the format carries a frame — « Tiled Framed » alone, which is the model whose two
-    // sides the user types. Read off the table rather than guessed from the geometry: the frame
-    // is a property of the model, and its sheet happens to be the size the frame is.
+    // Whether the format carries a frame — the two framed formats, and them alone. Read off the
+    // table rather than guessed from the geometry: the frame is a property of the model, and its
+    // sheet happens to be the size the frame is.
     const OExportPrintModel *model = FindPrintModel(output.printModelToken);
-    framed = model != nullptr && model->dimsEditable;
+    framed = model != nullptr && model->hasFrame;
 
     return hasMarks;
 }

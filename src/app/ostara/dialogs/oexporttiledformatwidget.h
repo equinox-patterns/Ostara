@@ -33,7 +33,6 @@
 #include "../vmisc/def.h"
 
 class QLabel;
-class QLineEdit;
 class QSpinBox;
 
 /**
@@ -44,9 +43,10 @@ class QSpinBox;
  * column count, and the width the nesting runs on is their product. Keeping the two apart
  * is what lets the same plan be cut into A4 or into Letter without nesting it twice.
  *
- * The dimensions are read-only except on the framed model, the only one that is not a
- * standard: everywhere else they ARE the standard, and letting them be typed would let the
- * user build a sheet that does not exist and that no printer has.
+ * The sheet's two sides are shown and never typed: they ARE the standard, and letting them be
+ * typed would let the user build a sheet that does not exist and that no printer has. They are
+ * shown on one line, in a box that looks like a field and is not one — everything the box holds
+ * is what the model imposes, and one line says it in less room than two labelled fields.
  *
  * All sides are portrait. The small side is the one the columns multiply, so the width the
  * nesting works on is the sum of the sheets placed side by side, never of their long sides.
@@ -68,10 +68,9 @@ public:
     ///
     /// @param widthMm    the sheet's small side, in millimetres
     /// @param heightMm   the sheet's long side, in millimetres
-    /// @param editable   whether the user may type the two sides — the framed model alone
     /// @param hasColumns whether a column count applies at all — false for the A0 sheet,
     ///                   which is never assembled and so is never placed side by side
-    void SetSheet(qreal widthMm, qreal heightMm, bool editable, bool hasColumns);
+    void SetSheet(qreal widthMm, qreal heightMm, bool hasColumns);
 
     auto SheetWidthMm() const -> qreal;
     auto SheetHeightMm() const -> qreal;
@@ -83,8 +82,8 @@ public:
     void SetUnit(const Unit &unit);
 
 signals:
-    /// Emitted when a field the user can act on changed — the column count, or an edited
-    /// side. The tab recomputes the document width from it.
+    /// Emitted when a field the user can act on changed. The column count is now the only one:
+    /// the two sides are read, never typed. The tab recomputes the document width from it.
     void Changed();
 
 protected:
@@ -93,12 +92,8 @@ protected:
 private:
     void Refresh();
     void Retranslate();
-    void CommitEditedSides();
 
-    QLabel *m_widthLabel{nullptr};
-    QLineEdit *m_widthEdit{nullptr};
-    QLabel *m_heightLabel{nullptr};
-    QLineEdit *m_heightEdit{nullptr};
+    QLabel *m_sidesValue{nullptr};
     QLabel *m_columnsLabel{nullptr};
     QSpinBox *m_columns{nullptr};
 

@@ -33,7 +33,6 @@
 #include "../vmisc/def.h"
 
 class QLabel;
-class QLineEdit;
 
 /**
  * @brief The fields of a Roll model: a width, and nothing else.
@@ -43,9 +42,10 @@ class QLineEdit;
  * nothing to show. That absence is the whole shape: the two fields a tiled model needs,
  * a height and a column count, would have nothing to mean here.
  *
- * The width is shown rather than left out, read-only: a user who cannot see the width the
- * nesting will run on has no way to tell a plan that came out short from one that was
- * asked for short.
+ * The width is shown rather than left out: a user who cannot see the width the nesting will run
+ * on has no way to tell a plan that came out short from one that was asked for short. Shown and
+ * never typed — it is the standard — in the same boxed line the tiled shape uses, so that the
+ * two shapes read alike where they say the same thing.
  */
 class OExportRollFormatWidget : public QWidget
 {
@@ -70,8 +70,7 @@ private:
     void Refresh();
     void Retranslate();
 
-    QLabel *m_widthLabel{nullptr};
-    QLineEdit *m_widthEdit{nullptr};
+    QLabel *m_value{nullptr};
 
     qreal m_widthMm{0.0};
     Unit m_unit{Unit::Cm};

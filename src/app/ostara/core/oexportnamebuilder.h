@@ -45,8 +45,8 @@
  *     name, and a file name does not follow the interface language.
  *
  * Nothing here is translated. What the user reads on screen is the combo's label; what
- * the name carries is the token, and the two are allowed to differ — "Tiled Framed" reads
- * better than "Framed" in a list, and "Framed" reads better in a file name.
+ * the name carries is the token, and the two are allowed to differ — "A4/Letter framed"
+ * reads better in a list than "A4LetterFramed", and a slash cannot go in a file name.
  */
 namespace OExportNameBuilder
 {

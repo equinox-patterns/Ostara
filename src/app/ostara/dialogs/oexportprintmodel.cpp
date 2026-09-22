@@ -35,16 +35,19 @@ namespace
 // out half English in French. The translation itself happens where the label is
 // shown, with QCoreApplication::translate("OExportPrintModel", …).
 const QVector<OExportPrintModel> kModels{
-    //              label                                            token      shape                    widthMm  heightMm  editable columns selectable
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "A0 Roll"),             "A0Roll",  OExportPrintShape::Roll,   841.0,      0.0,   false,   false,   true},
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "A0"),                  "A0",      OExportPrintShape::Tiled,  841.0,   1189.0,   false,   false,   false},
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "A3"),                  "A3",      OExportPrintShape::Tiled,  297.0,    420.0,   false,   true,    true},
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "A4"),                  "A4",      OExportPrintShape::Tiled,  210.0,    297.0,   false,   true,    true},
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "Letter"),              "Letter",  OExportPrintShape::Tiled,  215.9,    279.4,   false,   true,    true},
-    // The framed model is the only one whose dimensions are not a standard: the frame is
-    // sized so the printable area stays inside the sheet's margins, which is exactly what
-    // lets one file come out on A4 AND on Letter. Hence the only editable dimensions.
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "Tiled Framed"),        "Framed",  OExportPrintShape::Tiled,  190.0,    259.0,   true,    true,    true},
+    //              label                    token              shape                     widthMm  heightMm  frame  columns  selectable
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A0 Roll"),           "A0Roll",          OExportPrintShape::Roll,   841.0,      0.0,  false,   false,   true},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A0"),                "A0",              OExportPrintShape::Tiled,  841.0,   1189.0,  false,   false,   false},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A3"),                "A3",              OExportPrintShape::Tiled,  297.0,    420.0,  false,   true,    true},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "Tabloid"),           "Tabloid",         OExportPrintShape::Tiled,  279.4,    431.8,  false,   true,    true},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A4"),                "A4",              OExportPrintShape::Tiled,  210.0,    297.0,  false,   true,    true},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "Letter"),            "Letter",          OExportPrintShape::Tiled,  215.9,    279.4,  false,   true,    true},
+    // The two framed formats are the only ones whose dimensions are not a standard: the frame
+    // is sized so the printable area stays inside the sheet's margins — ten millimetres a side
+    // — which is exactly what lets one file come out on A4 OR on Letter, and the other on A3
+    // OR on Tabloid. They are listed after the standards, together: they are variants of them.
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A4/Letter framed"),  "A4LetterFramed",  OExportPrintShape::Tiled,  190.0,    259.0,   true,   true,    true},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A3/Tabloid framed"), "A3TabloidFramed", OExportPrintShape::Tiled,  259.0,    400.0,   true,   true,    true},
 };
 } // namespace
 

@@ -126,7 +126,7 @@ public:
     ///                gone. Nothing is drawn then, and the plan keeps the cut lines it always
     ///                had. The caller resolves the name: a canvas that looked one up would be a
     ///                second place deciding what gets drawn.
-    /// @param framed  whether the format is the one a frame belongs to — « Tiled Framed » alone.
+    /// @param framed  whether the format is one of the framed ones.
     ///                The frame and its scissors are drawn only there, and the cut lines below
     ///                stand down in their favour: a second line under the user's own would fight
     ///                the opacity she set (§11.5).

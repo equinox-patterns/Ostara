@@ -31,7 +31,6 @@
 #include <QEvent>
 #include <QFormLayout>
 #include <QLabel>
-#include <QLineEdit>
 
 //---------------------------------------------------------------------------------------------------------------------
 OExportRollFormatWidget::OExportRollFormatWidget(QWidget *parent)
@@ -40,13 +39,12 @@ OExportRollFormatWidget::OExportRollFormatWidget(QWidget *parent)
     auto *layout = new QFormLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    // Read-only rather than disabled: a disabled field greys its text out and reads as
-    // something the user is being kept from, when it is in fact what the model imposed.
-    m_widthEdit = new QLineEdit(this);
-    m_widthEdit->setReadOnly(true);
-
-    m_widthLabel = new QLabel(this);
-    layout->addRow(m_widthLabel, m_widthEdit);
+    // Boxed rather than bare: it sits in a column of fields, and a line of plain text there would
+    // read as a caption that lost its field. Not disabled either — a disabled field greys its text
+    // and reads as something the user is being kept from, when it is what the model imposed.
+    m_value = new QLabel(this);
+    m_value->setObjectName(QStringLiteral("exportSheetSizeValue"));
+    layout->addRow(m_value);
 
     Retranslate();
     Refresh();
@@ -75,13 +73,18 @@ void OExportRollFormatWidget::SetUnit(const Unit &unit)
 //---------------------------------------------------------------------------------------------------------------------
 void OExportRollFormatWidget::Refresh()
 {
-    m_widthEdit->setText(OExportUnitFormat::Format(m_widthMm, m_unit));
+    // The same line the tiled shape writes, with one length instead of two — the words and the
+    // unit come from the same places, so the two shapes cannot drift apart in how they read.
+    m_value->setText(tr("Width:") + QLatin1Char(' ') + OExportUnitFormat::Format(m_widthMm, m_unit)
+                     + QLatin1Char(' ') + UnitsToStr(m_unit, true));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void OExportRollFormatWidget::Retranslate()
 {
-    m_widthLabel->setText(tr("Width:"));
+    // Rebuilt, not retitled: the line carries a translated word AND a figure formatted in the
+    // unit of the moment, so there is no widget per word to relabel.
+    Refresh();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

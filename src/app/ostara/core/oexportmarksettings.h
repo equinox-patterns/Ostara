@@ -62,8 +62,8 @@ auto OExportMarkShapes() -> const QVector<OExportMarkShapeModel> &;
  * into two, one per sheet. Each sheet prints its own part, and the whole reappears once the
  * sheets are glued — which is why a mark is positioned from the plan and never from the sheet.
  *
- * Only « Tiled Framed » has room inside the sheet for them; the other tiled models are ignored,
- * as the frame is (§3.4.1).
+ * Only the framed formats have room inside the sheet for them; the other tiled models are
+ * ignored, as the frame is (§3.4.1).
  */
 struct OExportMarkSettings
 {

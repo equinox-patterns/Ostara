@@ -33,7 +33,6 @@
 #include <QEvent>
 #include <QFormLayout>
 #include <QLabel>
-#include <QLineEdit>
 #include <QSignalBlocker>
 #include <QSpinBox>
 #include <cmath>
@@ -54,12 +53,12 @@ OExportTiledFormatWidget::OExportTiledFormatWidget(QWidget *parent)
     auto *layout = new QFormLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    m_widthEdit = new QLineEdit(this);
-    m_heightEdit = new QLineEdit(this);
-    m_widthLabel = new QLabel(this);
-    m_heightLabel = new QLabel(this);
-    layout->addRow(m_widthLabel, m_widthEdit);
-    layout->addRow(m_heightLabel, m_heightEdit);
+    // The sheet's two sides on ONE line, in a box that looks like a field and is not one: there
+    // is nothing to type, and a QLineEdit would promise otherwise. One row rather than two,
+    // because the sheet is a pair of lengths — two labelled fields said the same thing twice.
+    m_sidesValue = new QLabel(this);
+    m_sidesValue->setObjectName(QStringLiteral("exportSheetSizeValue"));
+    layout->addRow(m_sidesValue);
 
     m_columns = new QSpinBox(this);
     m_columns->setMinimum(1);
@@ -71,28 +70,19 @@ OExportTiledFormatWidget::OExportTiledFormatWidget(QWidget *parent)
     m_columnsLabel = new QLabel(this);
     layout->addRow(m_columnsLabel, m_columns);
 
-    // Committed on editingFinished, never on textChanged: re-formatting the field while
-    // it is being typed into would fight the cursor, and half-typed text ("2" on the way
-    // to "21") is not a length yet.
-    connect(m_widthEdit, &QLineEdit::editingFinished, this, &OExportTiledFormatWidget::CommitEditedSides);
-    connect(m_heightEdit, &QLineEdit::editingFinished, this, &OExportTiledFormatWidget::CommitEditedSides);
     connect(m_columns, &QSpinBox::valueChanged, this, [this](int) {
         m_columnsChosen = true; // the count is the user's from here on
         emit Changed();
     });
 
     Retranslate();
-    Refresh();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OExportTiledFormatWidget::SetSheet(qreal widthMm, qreal heightMm, bool editable, bool hasColumns)
+void OExportTiledFormatWidget::SetSheet(qreal widthMm, qreal heightMm, bool hasColumns)
 {
     m_widthMm = widthMm;
     m_heightMm = heightMm;
-
-    m_widthEdit->setReadOnly(!editable);
-    m_heightEdit->setReadOnly(!editable);
 
     m_hasColumns = hasColumns;
     m_columnsLabel->setVisible(hasColumns);
@@ -141,47 +131,26 @@ void OExportTiledFormatWidget::SetUnit(const Unit &unit)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OExportTiledFormatWidget::CommitEditedSides()
-{
-    if (m_widthEdit->isReadOnly())
-    {
-        return; // the model's standard: nothing to commit, and nothing the user could type
-    }
-
-    bool widthOk = false;
-    bool heightOk = false;
-    const qreal widthMm = OExportUnitFormat::Parse(m_widthEdit->text(), m_unit, &widthOk);
-    const qreal heightMm = OExportUnitFormat::Parse(m_heightEdit->text(), m_unit, &heightOk);
-
-    // An unreadable field keeps the previous value rather than falling to zero: a frame
-    // of zero width is not what a mistyped figure was asking for, and the nesting would
-    // take it as a document with no room in it at all.
-    if (widthOk && widthMm > 0.0)
-    {
-        m_widthMm = widthMm;
-    }
-    if (heightOk && heightMm > 0.0)
-    {
-        m_heightMm = heightMm;
-    }
-
-    Refresh();
-    emit Changed();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void OExportTiledFormatWidget::Refresh()
 {
-    m_widthEdit->setText(OExportUnitFormat::Format(m_widthMm, m_unit));
-    m_heightEdit->setText(OExportUnitFormat::Format(m_heightMm, m_unit));
+    // A sentence, because that is what it is: the sheet is a pair of lengths, and the words
+    // around the two figures are the ones the two fields carried. The unit is written after
+    // EACH figure and not once at the end — "19 cm x 25.9" would read as a single length.
+    const QString unit = UnitsToStr(m_unit, true);
+    m_sidesValue->setText(tr("Width:") + QLatin1Char(' ') + OExportUnitFormat::Format(m_widthMm, m_unit)
+                          + QLatin1Char(' ') + unit + QStringLiteral(" x ") + tr("Height:")
+                          + QLatin1Char(' ') + OExportUnitFormat::Format(m_heightMm, m_unit)
+                          + QLatin1Char(' ') + unit);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void OExportTiledFormatWidget::Retranslate()
 {
-    m_widthLabel->setText(tr("Width:"));
-    m_heightLabel->setText(tr("Height:"));
     m_columnsLabel->setText(tr("Columns:"));
+
+    // The line of sides is rebuilt, not merely retitled: it carries translated words AND a
+    // figure formatted in the unit of the moment, so there is no widget per word to relabel.
+    Refresh();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

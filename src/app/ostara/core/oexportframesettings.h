@@ -35,8 +35,8 @@
  * @brief The frame drawn on each sheet of a tiled plan, and the two scissors marks.
  *
  * There is no inset to configure: an artboard *is* the print frame, so the line sits on the
- * sheet's own boundary. Only « Tiled Framed » shows it — for A3, A4 and Letter that boundary is
- * the paper's edge, and drawing it there would trace a second line over the first. See
+ * sheet's own boundary. Only the framed formats show it — for A3, A4, Letter and Tabloid that
+ * boundary is the paper's edge, and drawing it there would trace a second line over the first. See
  * Modifications/Ostara/ExportMode/PDFTemplateEditor.md §3.4.1.
  *
  * Lengths are in points, as the size styles are, and converted at render time by

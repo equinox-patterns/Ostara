@@ -70,12 +70,12 @@ class OExportTemplatesPage;
  * navigating only calls setCurrentIndex().
  *
  * « Create a template » is a split between the Edition pane and a right-hand column holding
- * the preview under a format row. The format row picks the sheet being previewed — A4, A3,
- * Letter, or the free size of « Tiled Framed », whose two fields appear with it — and it is
- * a way of *looking* at the template, not a property of it: one template decorates any tiled
- * format, and nothing chosen there is saved. What it buys is truth: the sheet and everything
- * drawn on it share one scale, so a mark of a fixed size covers less of a big sheet than of a
- * small one, exactly as it will on paper.
+ * the preview under a format row. The format row picks the sheet being previewed — A3, A4,
+ * Letter, Tabloid, or either of the two framed formats — and it is a way of *looking* at the
+ * template, not a property of it: one template decorates any tiled format, and nothing chosen
+ * there is saved. What it buys is truth: the sheet and everything drawn on it share one scale,
+ * so a mark of a fixed size covers less of a big sheet than of a small one, exactly as it will
+ * on paper.
  *
  * The shell and the preview are what exist here. The pages of the menu and the form of the
  * Edition pane are not written yet, and say so on screen.
@@ -184,8 +184,6 @@ private:
     void RefreshZoomLabel();
     void RetranslateUnits();
     void RefreshPreviewSheet();
-    void RefreshFramedFields();
-    void CommitFramedSize();
     void CommitFrameSettings();
     void CommitMarkSettings();
     void CommitPaginationSettings();
@@ -248,20 +246,6 @@ private:
 
     QLabel *m_formatLabel{nullptr};
     QComboBox *m_formatCombo{nullptr};
-    QLabel *m_sheetWidthLabel{nullptr};
-    QLineEdit *m_sheetWidthEdit{nullptr};
-    QLabel *m_sheetHeightLabel{nullptr};
-    QLineEdit *m_sheetHeightEdit{nullptr};
-    QComboBox *m_sheetUnitCombo{nullptr};
-
-    /**
-     * The free size of « Tiled Framed », in millimetres — always millimetres, whatever unit
-     * the two fields display. Held here rather than read back off the fields so that leaving
-     * the format and coming back to it does not lose what was typed.
-     */
-    qreal m_framedWidthMm{190.0};
-    qreal m_framedHeightMm{259.0};
-    Unit m_sheetUnit{Unit::Cm};
 
     QGroupBox *m_frameGroup{nullptr};
     QLabel *m_frameNote{nullptr};

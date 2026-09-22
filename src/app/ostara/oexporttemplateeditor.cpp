@@ -156,11 +156,11 @@ constexpr auto kMarkContext = "OExportMarkSettings";
 constexpr auto kPaginationContext = "OExportPaginationSettings";
 
 /**
- * The model shown when nothing else has been chosen. « Tiled Framed », because it is the one
- * the decor applies to: opening on A3 or Letter would show a template being written for a
- * format whose sheets carry none of it.
+ * The model shown when nothing else has been chosen — « A4/Letter framed », because it is the one
+ * the decor applies to and the smaller of the two: opening on A3 or Letter would show a template
+ * being written for a format whose sheets carry none of it.
  */
-constexpr auto kDefaultModelToken = "Framed";
+constexpr auto kDefaultModelToken = "A4LetterFramed";
 } // namespace
 
 OExportTemplateEditor::OExportTemplateEditor(QWidget *parent) : QWidget(parent)
@@ -226,11 +226,9 @@ void OExportTemplateEditor::RetranslateUI()
     // The sheet being previewed is not a property of the template — one template decorates any
     // tiled format — so the label presents the row as a way of looking, not as a setting.
     m_formatLabel->setText(tr("Preview format:"));
-    m_sheetWidthLabel->setText(tr("Width:"));
-    m_sheetHeightLabel->setText(tr("Height:"));
 
     m_frameGroup->setTitle(tr("Frame"));
-    m_frameNote->setText(tr("Used by « Tiled Framed » only."));
+    m_frameNote->setText(tr("Used by the framed formats only."));
     m_frameWidthLabel->setText(tr("Thickness:"));
     m_frameStyleLabel->setText(tr("Line:"));
     m_dashLabel->setText(tr("Dash:"));
@@ -602,9 +600,8 @@ void OExportTemplateEditor::RefreshZoomLabel()
 void OExportTemplateEditor::RetranslateUnits()
 {
     // The unit names come from the application, not from this widget, so they are re-read
-    // rather than translated here — the same way the print tab does it. Both unit combos, the
-    // preview format's and the mark size's, take them from the same place.
-    for (QComboBox *combo : {m_sheetUnitCombo, m_sizeUnitCombo})
+    // rather than translated here — the same way the print tab does it.
+    for (QComboBox *combo : {m_sizeUnitCombo})
     {
         for (int i = 0; i < combo->count(); ++i)
         {
@@ -624,9 +621,10 @@ void OExportTemplateEditor::RefreshPreviewSheet()
         return;
     }
 
-    // The two fields exist for one model only: « Tiled Framed » is the only one whose size is
-    // free. A4, A3 and Letter have a size of their own and nothing to type.
-    const bool framed = model->dimsEditable;
+    // Whether the plan is cut into a framed sheet — the two framed formats, and them alone. The
+    // model says so, and nothing in this row takes it back: it is the same reading the Export
+    // makes of the same table, so the preview cannot show a decor the sheets will not carry.
+    const bool framed = model->hasFrame;
 
     // The controls stay, whatever the preview is showing. Hiding them would say the template is
     // not meant for the format on screen, when the truth is the opposite: one template decorates
@@ -637,52 +635,9 @@ void OExportTemplateEditor::RefreshPreviewSheet()
     // stand-in outline where it does not, so that the sheets can still be told apart.
     m_preview->SetSheetFramed(framed);
 
-    m_sheetWidthLabel->setVisible(framed);
-    m_sheetWidthEdit->setVisible(framed);
-    m_sheetHeightLabel->setVisible(framed);
-    m_sheetHeightEdit->setVisible(framed);
-    m_sheetUnitCombo->setVisible(framed);
-
-    if (framed)
-    {
-        RefreshFramedFields();
-        m_preview->SetSheetSizeMm(QSizeF(m_framedWidthMm, m_framedHeightMm));
-    }
-    else
-    {
-        m_preview->SetSheetSizeMm(QSizeF(model->widthMm, model->heightMm));
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void OExportTemplateEditor::RefreshFramedFields()
-{
-    m_sheetWidthEdit->setText(OExportUnitFormat::Format(m_framedWidthMm, m_sheetUnit));
-    m_sheetHeightEdit->setText(OExportUnitFormat::Format(m_framedHeightMm, m_sheetUnit));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void OExportTemplateEditor::CommitFramedSize()
-{
-    bool widthOk = false;
-    bool heightOk = false;
-    const qreal widthMm = OExportUnitFormat::Parse(m_sheetWidthEdit->text(), m_sheetUnit, &widthOk);
-    const qreal heightMm = OExportUnitFormat::Parse(m_sheetHeightEdit->text(), m_sheetUnit, &heightOk);
-
-    // A field that cannot be read keeps the previous value rather than collapsing the sheet.
-    if (widthOk && widthMm > 0.0)
-    {
-        m_framedWidthMm = widthMm;
-    }
-    if (heightOk && heightMm > 0.0)
-    {
-        m_framedHeightMm = heightMm;
-    }
-
-    RefreshFramedFields();
-    m_preview->SetSheetSizeMm(QSizeF(m_framedWidthMm, m_framedHeightMm));
+    // The sheet comes from the model, and from nowhere else: it is the format being previewed that
+    // has a size, and no format has a size anyone types any more.
+    m_preview->SetSheetSizeMm(QSizeF(model->widthMm, model->heightMm));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -927,36 +882,9 @@ QWidget *OExportTemplateEditor::MakePreviewFormatRow()
     connect(m_formatCombo, &QComboBox::currentIndexChanged, this, [this](int) { RefreshPreviewSheet(); });
     layout->addWidget(m_formatCombo);
 
-    m_sheetWidthLabel = new QLabel(row);
-    layout->addWidget(m_sheetWidthLabel);
-
-    m_sheetWidthEdit = new QLineEdit(row);
-    m_sheetWidthEdit->setMaximumWidth(kFieldWidth);
-    connect(m_sheetWidthEdit, &QLineEdit::editingFinished, this, &OExportTemplateEditor::CommitFramedSize);
-    layout->addWidget(m_sheetWidthEdit);
-
-    m_sheetHeightLabel = new QLabel(row);
-    layout->addWidget(m_sheetHeightLabel);
-
-    m_sheetHeightEdit = new QLineEdit(row);
-    m_sheetHeightEdit->setMaximumWidth(kFieldWidth);
-    connect(m_sheetHeightEdit, &QLineEdit::editingFinished, this, &OExportTemplateEditor::CommitFramedSize);
-    layout->addWidget(m_sheetHeightEdit);
-
-    m_sheetUnitCombo = MakeComboBox(row);
-    for (const Unit &unit : OExportUnitFormat::SelectableUnits())
-    {
-        m_sheetUnitCombo->addItem(UnitsToStr(unit, true), static_cast<int>(unit));
-    }
-    m_sheetUnitCombo->setCurrentIndex(m_sheetUnitCombo->findData(static_cast<int>(m_sheetUnit)));
-    connect(m_sheetUnitCombo, &QComboBox::currentIndexChanged, this, [this](int) {
-        // A unit is a way of writing the same length, not a new length: the millimetres are
-        // untouched and only the two fields are rewritten. Re-parsing them here would read
-        // "19" as nineteen of the unit just chosen.
-        m_sheetUnit = static_cast<Unit>(m_sheetUnitCombo->currentData().toInt());
-        RefreshFramedFields();
-    });
-    layout->addWidget(m_sheetUnitCombo);
+    // Nothing follows the combo. The two size fields that stood here existed for the one format
+    // whose sides were free; every format now has a sheet of its own, so the size is read off the
+    // model — and with it went the unit combo, which was only ever there to write those two.
 
     layout->addStretch(1);
 
@@ -1051,7 +979,7 @@ QWidget *OExportTemplateEditor::MakeFrameGroup()
 
     // The controls stay live whatever the preview shows: one template decorates every tiled
     // format, and the frame effaces itself where it has nothing to mark. Greying them for a
-    // non-framed format would stop a template being prepared for « Tiled Framed » (§3.4.1).
+    // format without a frame would stop a template being prepared for the framed ones (§3.4.1).
     m_frameNote = new QLabel();
     m_frameNote->setWordWrap(true);
     layout->addWidget(m_frameNote);

@@ -255,9 +255,9 @@ private slots:
      * or the PDF drawing one the screen never showed.
      *
      * @param marks  the resolved template; untouched when none resolved.
-     * @param framed whether the format is « Tiled Framed » — the model whose two sides the
-     *               user types. Read off the print model rather than guessed from the geometry:
-     *               the frame is a property of the model.
+     * @param framed whether the format is one of the framed ones. Read off the print model
+     *               rather than guessed from the geometry: the frame is a property of the
+     *               model, and not of its size.
      * @return whether a template resolved at all. False is a state, not an error: a folder the
      *         user has emptied leaves every generation without marks, and the plan is drawn
      *         alone — as it was before there were templates.

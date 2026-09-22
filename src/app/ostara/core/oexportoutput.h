@@ -125,11 +125,12 @@ struct OExportOutput
     /// to decide whether there is a grid to draw: a roll has no sheet, and the A0 model is
     /// never assembled side by side.
     ///
-    /// Stored rather than looked up by the token, because the framed model is the one whose
-    /// sides the user may TYPE — FindPrintModel would hand back the table's 259 mm whatever
-    /// she entered. The width is deliberately not stored beside it: documentWidthMm divided
-    /// by the columns gives it back, and a second field is a second field for the replay to
-    /// drop in silence.
+    /// Stored rather than looked up by the token, and it is what the readers take: the artboard
+    /// grid and the PDF read the sheet from the generation and never from the model table. Now
+    /// that no format carries a size the user can type, the two agree — the run keeps its own
+    /// record of the sheet it was cut for all the same. The width is deliberately not stored
+    /// beside it: documentWidthMm divided by the columns gives it back, and a second field is a
+    /// second field for the replay to drop in silence.
     qreal frameHeightMm{0.0};
 
     /// The template of assembly marks the plan is drawn with, **by its file name** — the

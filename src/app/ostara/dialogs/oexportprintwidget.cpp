@@ -369,7 +369,7 @@ void OExportPrintWidget::UpdateModel()
     }
     else
     {
-        m_tiledWidget->SetSheet(model->widthMm, model->heightMm, model->dimsEditable, model->hasColumns);
+        m_tiledWidget->SetSheet(model->widthMm, model->heightMm, model->hasColumns);
         m_tiledWidget->SetUnit(m_unit);
         m_shapeStack->setCurrentWidget(m_tiledWidget);
     }

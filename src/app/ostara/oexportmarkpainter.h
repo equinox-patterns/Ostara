@@ -129,7 +129,7 @@ struct OExportMarkGrid
  *   are printed, which is read from the plan and not kept here — see OExportSheets.
  * - **Absolute sizes.** A length is in millimetres, points or pixels and stays that size on a
  *   small artboard as on a large one; `pxPerMm` is the only conversion.
- * - **The frame and its scissors belong to « Tiled Framed » alone.** Every other tiled model has
+ * - **The frame and its scissors belong to the framed formats alone.** Every other tiled model has
  *   its boundary along the paper's own edge, where a frame has nowhere to go. The marks and the
  *   pagination are drawn whatever the format: a sheet of A4 is glued to its neighbours too.
  *
@@ -148,7 +148,7 @@ public:
     OExportMarkPainter(const OExportMarkPainter &other) = delete;
     auto operator=(const OExportMarkPainter &other) -> OExportMarkPainter & = delete;
 
-    /** @brief The frame and the scissors — the decor of « Tiled Framed ». */
+    /** @brief The frame and the scissors — the decor of the framed formats. */
     void SetFrameSettings(const OExportFrameSettings &frame);
 
     /** @brief The assembly marks — what they look like, and where they are set. */
@@ -160,9 +160,8 @@ public:
     /**
      * @brief Draws the whole decor of the template onto @p grid, from @p origin.
      *
-     * @param framed     whether the format is the one the frame belongs to — « Tiled Framed »
-     *                   alone. On every other tiled format the frame and the scissors are not
-     *                   drawn at all.
+     * @param framed     whether the format is one of the framed ones. On every other tiled
+     *                   format the frame and the scissors are not drawn at all.
      * @param sheetGuide whether to stand in for a frame that is not drawn, with a faint outline
      *                   along the tiling's boundaries. The editor's preview says yes: it has
      *                   nothing else to tell its sheets apart, and there the outline is the only

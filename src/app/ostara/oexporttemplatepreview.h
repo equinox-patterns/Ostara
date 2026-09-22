@@ -46,8 +46,8 @@
  *
  * The sheets tile edge to edge, the way the plan glues its artboards.
  *
- * The sheet size is the one of the print model being previewed, in millimetres — A4, A3,
- * Letter, or the free size of « Tiled Framed ». Everything the template draws on a sheet is
+ * The sheet size is the one of the print model being previewed, in millimetres — A3, A4, Letter,
+ * Tabloid, or either of the two framed formats. Everything the template draws on a sheet is
  * drawn at the same scale as the sheet itself, which is what makes the preview truthful:
  * a mark keeps its absolute size from one format to the next, so it occupies a smaller share
  * of a big sheet than of a small one, and the preview shows exactly that.
@@ -120,7 +120,7 @@ private:
      */
     OExportMarkPainter m_decor;
 
-    /** True until the format row says otherwise; « Tiled Framed » is what it shows first. */
+    /** True until the format row says otherwise; « A4/Letter framed » is what it shows first. */
     bool m_sheetFramed{true};
 
     qreal m_zoom{1.0};
