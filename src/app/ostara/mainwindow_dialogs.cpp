@@ -158,7 +158,7 @@ void MainWindow::ActionExportTemplates_triggered(int tab)
         // A template that was just saved is the one the plan on screen is drawn with. The canvas
         // is redrawn on it — and only redrawn: the connection is to a template being written,
         // never to the run that produced the plan.
-        connect(window, &OExportTemplateWindow::TemplateSaved, this, &MainWindow::RefreshExportMarks);
+        connect(window, &OExportTemplateWindow::TemplateSaved, this, &MainWindow::RefreshExportDrawing);
         window->OpenOnTab(tab);
         window->show();
     }

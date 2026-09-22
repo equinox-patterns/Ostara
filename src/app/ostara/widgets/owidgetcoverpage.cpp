@@ -205,6 +205,10 @@ void OWidgetCoverPage::BuildUi()
         // pattern, and one written behind its back would leave the toolbar, the window title and the
         // cover page showing the old one until the file was opened again.
         m_doc->SetPatternName(m_nameEdit->text().trimmed());
+
+        // The pattern's name is an information of the page — so a page on screen has just gone
+        // stale, and it is the second and last write this dock makes. See CoverPageChanged.
+        emit CoverPageChanged();
     });
     root->addWidget(m_nameEdit);
 
@@ -553,4 +557,9 @@ void OWidgetCoverPage::WritePage()
         return;
     }
     m_doc->SetCoverPage(m_page);
+
+    // **The page has changed, and whoever draws it is told.** The write above cannot say it: the
+    // document announces a change it cannot qualify, and the Export mode reads that as "the pattern
+    // may have moved" — see CoverPageChanged.
+    emit CoverPageChanged();
 }

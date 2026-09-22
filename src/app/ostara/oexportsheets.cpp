@@ -130,7 +130,8 @@ auto OExportSheets::All(int columns, int rows) -> Set
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportSheets::Compute(const OExportArtboards::Grid &grid,
-                            const QVector<OExportPlacement> &placements) -> Set
+                            const QVector<OExportPlacement> &placements, const QRectF &reserved)
+    -> Set
 {
     Set sheets;
 
@@ -166,6 +167,17 @@ auto OExportSheets::Compute(const OExportArtboards::Grid &grid,
             const QRectF cell(grid.planRect.left() + col * grid.cellWidthPx,
                               grid.planRect.top() + row * grid.cellHeightPx, grid.cellWidthPx,
                               grid.cellHeightPx);
+
+            // The reserved block first, and for the one sheet it lands on: it is not ink the plan
+            // carries, but the sheet it stands on is printed all the same — see the note in the
+            // header. Tested before the placements so that the sheet is written even when no piece
+            // comes near it.
+            if (!reserved.isEmpty() && cell.intersects(reserved))
+            {
+                sheets.ranks[row * grid.columns + col] = ++sheets.count;
+                continue;
+            }
+
             const QPolygonF sheet(cell);
 
             for (const QPolygonF &shape : ink)

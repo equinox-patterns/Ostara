@@ -124,6 +124,33 @@ auto SaveAs(const OCoverPageTemplate &tpl, const QString &name, const QString &p
 
 /** @brief Reads @p filePath into @p tpl. @p tpl is untouched unless the file is a template. */
 auto Load(const QString &filePath, OCoverPageTemplate *tpl, QString *error = nullptr) -> bool;
+
+/**
+ * @brief The name the installation falls back to when the user has no favourite.
+ *
+ * **Never translated:** it is a file's base name, and the key the favourite points at.
+ *
+ * ⚠️ Nothing SEEDS this file, and that is deliberate — see the note on the library at the top of
+ * this header. A template with no informations in it would be an empty page handed to the user
+ * as if it were a starting point. So on a fresh installation the name answers nothing, and the
+ * combo falls through to "No cover page" — which is exactly what the mode did before a cover
+ * page existed at all.
+ */
+auto DefaultTemplateName() -> QString;
+
+/**
+ * @brief Reads the template @p name into @p tpl.
+ *
+ * **Deliberately NOT OExportTemplateStorage::Resolve's chain.** The marks fall back to a shipped
+ * Default because a plan with no marks is a plan nobody can tape together. A cover page has no
+ * shipped default, and "no cover page" is a state the user CHOSE when the run was made — so a
+ * file that has been deleted or renamed draws NOTHING, and never a different page than the one
+ * the generation was asked for.
+ *
+ * The fallback belongs to the dialog, where the requirement puts it, and not to the reading of a
+ * frozen run.
+ */
+auto Resolve(const QString &name, OCoverPageTemplate *tpl) -> bool;
 } // namespace OCoverPageTemplateStorage
 
 #endif // OCOVERPAGETEMPLATESTORAGE_H

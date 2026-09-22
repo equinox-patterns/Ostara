@@ -115,6 +115,15 @@ public:
      */
     auto MarksTemplateName() const -> QString;
 
+    /**
+     * @brief The cover page the run carries, by its file name.
+     *
+     * **Empty means no cover page** — nothing reserved in the bin, nothing drawn, no page added —
+     * and it is the answer of an untouched combo as much as of one the user set to "No cover
+     * page". One representation for the two, because they mean the same thing.
+     */
+    auto CoverPageTemplateName() const -> QString;
+
     /// @brief How many sheets side by side. Always 1 on a roll, which has no columns.
     auto Columns() const -> int;
 
@@ -147,6 +156,7 @@ private:
     void PopulateDimensions();
     void PopulateModels();
     void PopulateMarks();
+    void PopulateCoverPages();
     void UpdateSourceVisibility();
     void UpdateModel();
     void UpdateUnit();
@@ -178,6 +188,9 @@ private:
 
     QLabel *m_marksLabel{nullptr};
     QComboBox *m_marksCombo{nullptr};
+
+    QLabel *m_coverLabel{nullptr};
+    QComboBox *m_coverCombo{nullptr};
 
     QStackedWidget *m_shapeStack{nullptr};
     OExportRollFormatWidget *m_rollWidget{nullptr};

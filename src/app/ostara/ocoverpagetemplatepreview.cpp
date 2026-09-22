@@ -27,8 +27,8 @@
 #include "ocoverpagetemplatepreview.h"
 
 #include "core/ocovergradedaxis.h"
-#include "core/ocoverpagecatalogue.h"
 #include "core/ocoverpagelayout.h"
+#include "core/ocoverpagerender.h"
 #include "core/ocoverpageresolver.h"
 #include "core/ocoverpagesizes.h"
 #include "core/ocoverseamallowances.h"
@@ -184,53 +184,6 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
         return;
     }
 
-    // What one band has to draw, asked of the resolver — the one place that knows how an
-    // information is drawn. **The resolver is never given the pattern**: everything a page reads
-    // from one is gathered below and handed over as values, so the drawing itself knows nothing of
-    // documents and nothing of libraries, and what it draws is what it was told.
-    //
-    // **The sizes are worked out here, not by the resolver.** Which sizes a range holds is a
-    // question about the loaded table and the styles authored for it — the resolver draws what it
-    // is handed and knows nothing of either, and a pattern being printed will answer the same
-    // question from the range its output was run with.
-    /**
-     * **Nothing runs off the page.** A text wider than the band it stands in is folded onto as many
-     * lines as it takes — a page has edges, and content that goes past them is not content any
-     * more. A logo and a shape measure themselves rather than the page and are left alone.
-     */
-    const auto FittedToWidth = [](const QVector<OCartoucheRenderLine> &drawn, qreal width) {
-        QVector<OCartoucheRenderLine> fitted;
-        for (const OCartoucheRenderLine &line : drawn)
-        {
-            if (line.kind != OCartoucheRenderLine::Kind::Text)
-            {
-                fitted.append(line);
-                continue;
-            }
-            // **What the marks take is not room the words can have.** A legend line is its marks and
-            // its word, and folding the word to the whole band would let it run under them.
-            const qreal marksWidth = line.marks.IsEmpty()
-                                         ? 0.0
-                                         : line.marks.size.width() + OCartouchePainter::kMarksGap;
-            QVector<OCartoucheRenderLine> folded = OCartouchePainter::TextLinesFitting(
-                line.text, line.font, line.lineSpacing, width - marksWidth);
-            // **The sample belongs to the size, not to the line its word happened to land on.** A
-            // size whose name took two lines carries its trace once, after the last of them. The
-            // marks are the same kind of thing: they stand for the symbol, not for whichever line the
-            // word broke on.
-            if (line.trace.HasTrace() && !folded.isEmpty())
-            {
-                folded.last().trace = line.trace;
-            }
-            if (!line.marks.IsEmpty() && !folded.isEmpty())
-            {
-                folded.last().marks = line.marks;
-            }
-            fitted.append(folded);
-        }
-        return fitted;
-    };
-
     // **The pattern the application has open**, read once for the whole page rather than once per
     // band: four bands ask the same four questions, and a document read between two of them would
     // not be the same document. There is nothing to read when none is open — a page looked at
@@ -242,110 +195,64 @@ void OCoverPageTemplatePreview::paintEvent(QPaintEvent *event)
     }
     const VCoverPageData coverPage = pattern == nullptr ? VCoverPageData() : pattern->GetCoverPage();
 
-    const auto LinesOf = [this, &FittedToWidth, pattern, &coverPage](
-                             OCoverPageTemplate::Placement placement) {
-        QVector<OCartoucheRenderLine> lines;
-        for (const OCoverPageTemplate::Section &section : m_template->Sections(placement))
+    // What one band reads, gathered here and nowhere else — the resolver is never given the pattern
+    // nor a library, so everything a page reads from them is turned into values and handed over.
+    // **The export canvas answers the same callable from the RUN it is drawing** (spec §6); this one
+    // answers it from the model and the pattern, which is all a preview has.
+    const auto DataOf = [this, pattern, &coverPage](const OCoverPageTemplate::Section &section)
+        -> OCoverPageResolver::PatternData {
+        OCoverPageResolver::PatternData data;
+
+        // **The sizes are worked out here, not by the resolver.** Which sizes a range holds is a
+        // question about the loaded table and the styles authored for it — the resolver draws what
+        // it is handed and knows nothing of either.
+        data.sizes = OCoverPageSizes(m_table, OCoverGradedAxisOptions::FromOptions(section.options),
+                                     VAbstractApplication::VApp()->Settings());
+
+        // The name the pattern carries, and the text a template left to be filled in for it —
+        // the two things the pattern toolbar and the Cover page dock write. See VCoverPageData.
+        data.name = pattern == nullptr ? QString() : pattern->GetPatternName();
+        data.freeText = coverPage.freeText;
+
+        // The legend's lines are worked out here for the same reason the sizes are: which symbols
+        // a page shows is a question about a library and about which of them this pattern chose —
+        // two things a page is not. See OCoverSymbols.
+        data.symbols = m_symbols == nullptr
+                           ? QVector<OCoverSymbols::Line>()
+                           : OCoverSymbols::Lines(*m_symbols, m_template->languages,
+                                                  coverPage.symbols);
+
+        // The margins the pattern is cut with, worked out here for the same reason again: the
+        // widths belong to the pattern and the names to the library, and a page holds neither.
+        if (m_seamAllowances != nullptr)
         {
-            OCoverPageResolver::PatternData data;
-            data.sizes = OCoverPageSizes(m_table, OCoverGradedAxisOptions::FromOptions(section.options),
-                                         VAbstractApplication::VApp()->Settings());
-
-            // The name the pattern carries, and the text a template left to be filled in for it —
-            // the two things the pattern toolbar and the Cover page dock write. See VCoverPageData.
-            data.name = pattern == nullptr ? QString() : pattern->GetPatternName();
-            data.freeText = coverPage.freeText;
-
-            // The legend's lines are worked out here for the same reason the sizes are: which symbols
-            // a page shows is a question about a library and about which of them this pattern chose —
-            // two things a page is not. See OCoverSymbols.
-            data.symbols = m_symbols == nullptr
-                               ? QVector<OCoverSymbols::Line>()
-                               : OCoverSymbols::Lines(*m_symbols, m_template->languages,
-                                                      coverPage.symbols);
-
-            // The margins the pattern is cut with, worked out here for the same reason again: the
-            // widths belong to the pattern and the names to the library, and a page holds neither.
-            if (m_seamAllowances != nullptr)
+            const QVector<qreal> widths = OSeamAllowanceValues::Collect(pattern);
+            if (!widths.isEmpty())
             {
-                const QVector<qreal> widths = OSeamAllowanceValues::Collect(pattern);
-                if (!widths.isEmpty())
-                {
-                    // **The default margin is the application's, read where it is set.** It is kept
-                    // in the unit the application works in, so it is brought to millimetres here —
-                    // the one unit every cover page states a length in.
-                    auto *settings = VAbstractApplication::VApp()->Settings();
-                    const qreal defaultMm =
-                        UnitConvertor(settings->GetDefaultSeamAllowance(),
-                                      StrToUnits(settings->GetUnit()), Unit::Mm);
-                    data.seamAllowances = OCoverSeamAllowances::Lines(
-                        *m_seamAllowances, m_template->languages, widths, defaultMm,
-                        coverPage.marginNames);
-                }
+                // **The default margin is the application's, read where it is set.** It is kept
+                // in the unit the application works in, so it is brought to millimetres here —
+                // the one unit every cover page states a length in.
+                auto *settings = VAbstractApplication::VApp()->Settings();
+                const qreal defaultMm =
+                    UnitConvertor(settings->GetDefaultSeamAllowance(),
+                                  StrToUnits(settings->GetUnit()), Unit::Mm);
+                data.seamAllowances = OCoverSeamAllowances::Lines(
+                    *m_seamAllowances, m_template->languages, widths, defaultMm,
+                    coverPage.marginNames);
             }
-
-            QVector<OCartoucheRenderLine> drawn = OCoverPageResolver::Resolve(
-                section, data, OCartouchePainter::BaseFont(), m_template->languages, m_table);
-            if (drawn.isEmpty())
-            {
-                // Nothing to draw — a logo nobody chose, a text left to be filled in, a name the
-                // pattern has not given. The page itself draws nothing there; here the information
-                // stands for itself as its own name, as the Information block preview shows its
-                // sections. What is being judged is the arrangement, and an information showing
-                // nothing would look like one that is not there at all.
-                const OTemplateSection &type = OCoverPageCatalogue::Section(section.typeId);
-                const QFont font =
-                    OCartouchePainter::SectionFont(section.options, OCartouchePainter::BaseFont());
-                const int lineSpacing =
-                    section.options.value(QStringLiteral("lineSpacing"), 0).toInt();
-                drawn.append(OCartouchePainter::TextLine(
-                    type.IsValid() ? type.DisplayName() : section.typeId, font, lineSpacing));
-            }
-            // **Folded before the bands are measured**, and not later: a band's height comes from
-            // the lines it holds, so folding after the page was laid out would leave it cut for a
-            // text that no longer exists — too short for what is drawn in it.
-            lines.append(FittedToWidth(drawn, OCoverPageLayout::ContentWidth(placement)));
         }
-        return lines;
+
+        return data;
     };
 
-    const QMap<OCoverPageTemplate::Placement, QVector<OCartoucheRenderLine>> bandLines = {
-        {OCoverPageTemplate::Placement::Top, LinesOf(OCoverPageTemplate::Placement::Top)},
-        {OCoverPageTemplate::Placement::MiddleLeft,
-         LinesOf(OCoverPageTemplate::Placement::MiddleLeft)},
-        {OCoverPageTemplate::Placement::MiddleRight,
-         LinesOf(OCoverPageTemplate::Placement::MiddleRight)},
-        {OCoverPageTemplate::Placement::Bottom, LinesOf(OCoverPageTemplate::Placement::Bottom)},
-    };
+    // **substituteEmpty true, and that is this widget's whole privilege**: standing an information
+    // in as its own name is what lets the user see it is there and waiting. The export canvas draws
+    // the page the paper will carry and passes false — see the nomenclature spec §6.
+    const auto bands = OCoverPageRender::Bands(*m_template, DataOf, OCartouchePainter::BaseFont(),
+                                               m_table, /*substituteEmpty*/ true);
 
     // The page is laid out at its real size, then the whole of it is brought down to what the pane
     // can show: the display scale is applied to what was placed, never laid out into. So what is
     // placed here is what the export draws, at the size it will be printed.
-    const qreal contentScale = page.width() / sheet.width();
-    const auto ToScreen = [&page, contentScale](const QRectF &cell) -> QRectF {
-        return {page.left() + cell.left() * contentScale, page.top() + cell.top() * contentScale,
-                cell.width() * contentScale, cell.height() * contentScale};
-    };
-
-    // The page's own ink for its words. **The lines carry no colour of their own — except the trace
-    // samples**, which are drawn in the colour of the size they stand for: that colour is the whole
-    // point of the sample, and it is borrowed and given back by the painter around each one.
-    painter.setPen(QColor());
-    const QMap<OCoverPageTemplate::Placement, QRectF> cells = OCoverPageLayout::Place(bandLines);
-    for (auto cell = cells.constBegin(); cell != cells.constEnd(); ++cell)
-    {
-        const QVector<OCartoucheRenderLine> lines = bandLines.value(cell.key());
-        if (!lines.isEmpty())
-        {
-            // The fonts are brought to the pane's scale before the lines are laid out: the whole
-            // page is shown at a fraction of its size, so everything on it is drawn at that
-            // fraction — the words as much as a logo, and as much as the geometry of a test
-            // square. Painting the text at its print size inside a reduced page would make it as
-            // much too large as the page is reduced, and a five centimetre square would be drawn
-            // around a label that no longer fits in it.
-            const QVector<OCartoucheRenderLine> shown =
-                OCartouchePainter::ScaledLines(lines, contentScale);
-            OCartouchePainter::Paint(painter, ToScreen(cell.value()), shown, contentScale);
-        }
-    }
+    OCoverPageRender::Paint(painter, page, bands, page.width() / sheet.width());
 }

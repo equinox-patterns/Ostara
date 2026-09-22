@@ -553,11 +553,17 @@ auto OCoverPageResolver::Resolve(const OCoverPageTemplate::Section &section, con
                 continue; // an axis the current table does not declare: dead data, no line
             }
 
-            // **An axis the page does not grade stands where the table says it stands.** A range
-            // says which sizes run; it says nothing about the axes that do not, and the table's own
-            // reference value is the answer a page states when nothing tells it otherwise — the
-            // same value a page stating a single size states.
-            const QString original = table->AnchorValue(axis);
+            // **An axis stands where the RUN put it, and the table answers only when nobody did.**
+            //
+            // A range says which sizes run; it says nothing about the axes that do not, and those
+            // are frozen where the run pinned them. A single-size run pins all of them. `axisValues`
+            // is that answer, handed over by whoever ran the nesting — see the nomenclature spec §6,
+            // and PatternData::axisValues.
+            //
+            // Falling back to the table's own reference value is the preview's case, and the only
+            // honest answer left: a page showing nothing where an axis stands would be showing less
+            // than the table knows.
+            const QString original = data.axisValues.value(axis, table->AnchorValue(axis));
             if (original.isEmpty())
             {
                 continue;

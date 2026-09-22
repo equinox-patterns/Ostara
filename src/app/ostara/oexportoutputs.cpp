@@ -35,6 +35,7 @@
 #include "oexportalignment.h"
 #include "oexportartboards.h"
 #include "oexportcanvas.h"
+#include "oexportcoverpage.h"
 #include "oexportpdf.h"
 #include "oexportsheets.h"
 
@@ -164,6 +165,27 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // engine then has no grid, so no adjustment pass.
     params.artboardCount    = request.columns;
     params.artboardHeightPx = ToPixel(request.frameHeightMm, Unit::Mm);
+
+    // **The block the cover page reserves — and only when its format keeps it in a sheet.** The
+    // seat is the format's own answer (OExportCoverPage), read from the token the run was asked
+    // for: a roll reserves the block at its corner, A3 and Tabloid too, and the three formats
+    // that give the page a sheet of its own reserve NOTHING here — their nesting is the one they
+    // always had.
+    //
+    // Left empty for "No cover page" as well, which is the same test one step earlier: an empty
+    // name is the single representation the whole feature reads.
+    //
+    // Converted here, like every other length, and from millimetres: the block is stated in
+    // millimetres because that is the unit a format is stated in.
+    if (!request.coverPageTemplateName.isEmpty())
+    {
+        // Already in pixels, and read with the RUN's margin: the block is the page's own rectangle,
+        // off the plan's edges by the figure the user set — the same figure the Bin below is built
+        // with, so the block and the nesting agree about where the paper's edges are.
+        params.coverZonePx = OExportCoverPage::BlockPx(
+            OExportCoverPage::SeatOf(FindPrintModel(request.printModelToken)),
+            ToPixel(request.marginMm, Unit::Mm));
+    }
 
     // Asked on the worker thread, so it reads an atomic and nothing else: no widget, no document,
     // nothing a thread that is not the GUI thread may touch.
@@ -380,6 +402,8 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.columns = request.columns;
     output.frameHeightMm = request.frameHeightMm;
     output.marksTemplateName = request.marksTemplateName;
+    output.coverPageTemplateName = request.coverPageTemplateName;
+    output.pinnedAxes = request.pinnedAxes;
     output.layers = std::move(layers);
     output.result = result;
     output.generationMs = generationTimer.elapsed();
@@ -497,19 +521,22 @@ void MainWindow::SetActiveExportOutput(quint32 id)
 }
 
 /**
- * @brief Redraws the shown generation with the template that has just been saved.
+ * @brief Redraws the shown generation with what has just been edited under it.
  *
- * The nesting is NOT re-run. Nothing about the plan changed — the template is drawn under it —
- * so the generation is handed back to the canvas exactly as it was, the same redraw the manual
- * correction asks for. That keeps the zoom the user set and spares a run of several minutes for
- * a frame that moved by a point.
+ * **TWO things are drawn under a plan, and this slot serves both**: the template of assembly marks,
+ * saved from the editor, and the cover page, written from its dock. Neither moves a piece, so both
+ * are handed the same way.
  *
- * Nothing happens when no generation is shown, which is the common case: the editor is a window
- * of its own, and a user may edit templates before nesting anything. And nothing happens in
- * another draw mode — ShowExportOutput guards that itself, because its scene is not the one on
- * screen then.
+ * The nesting is NOT re-run. Nothing about the plan changed — the decor is drawn under it — so the
+ * generation is handed back to the canvas exactly as it was, the same redraw the manual correction
+ * asks for. That keeps the zoom the user set and spares a run of several minutes for a frame that
+ * moved by a point, or for a comma in a free text.
+ *
+ * Nothing happens when no generation is shown, which is the common case: the editor is a window of
+ * its own, and a user may edit templates before nesting anything. And nothing happens in another
+ * draw mode — ShowExportOutput guards that itself, because its scene is not the one on screen then.
  */
-void MainWindow::RefreshExportMarks()
+void MainWindow::RefreshExportDrawing()
 {
     const OExportOutput *output = m_exportOutputs.Find(m_exportOutputs.ActiveId());
     if (output == nullptr)
@@ -735,7 +762,22 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
     // Which of those sheets carry something, for the page count below. The canvas reads the same
     // two things with the same function when it builds the scene — it is not handed this, because
     // a paper the caller could disagree with is a paper that can lie on screen.
-    const OExportSheets::Set sheets = OExportSheets::Compute(artboards, output.result.placements);
+    // **The cover page is resolved here, and nowhere else on this path.** The template by name, the
+    // document read live, and the values filled FROM THE RUN (§6) — so a page the user edits is the
+    // one redrawn, without a nesting being run. The canvas is handed the result: it places and it
+    // paints, and it looks nothing up.
+    const OExportCoverPage::Drawing cover = OExportCoverPage::Of(output, doc);
+
+    // The block, when the format keeps the page in a sheet — the SAME figure the canvas will hand
+    // to its own Compute, read from the same rule. The extra sheet is not passed: it is not a cell.
+    const QRectF coverReserved =
+        (cover.seat == OExportCoverPage::Seat::InSheet && artboards.valid)
+            ? OExportCoverPage::PaperPx(cover.seat, cover.marginPx, artboards.planRect,
+                                        artboards.cellWidthPx, artboards.cellHeightPx)
+            : QRectF();
+
+    const OExportSheets::Set sheets =
+        OExportSheets::Compute(artboards, output.result.placements, coverReserved);
 
     if (m_exportCorrection != nullptr)
     {
@@ -763,7 +805,7 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
 
     OExportCanvas::Build(m_sceneExport, output.layers, output.result,
                          output.hasRange ? &output.range : nullptr, pattern, doc, nullptr, artboards,
-                         hasMarks ? &marks : nullptr, framed);
+                         hasMarks ? &marks : nullptr, framed, &cover);
 
     if (m_exportCorrection != nullptr)
     {
@@ -807,7 +849,14 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
 
     if (artboards.valid)
     {
-        label += tr(" · %n pages", nullptr, sheets.count);
+        // **The cover page's own sheet is a page, and it is said so.** It is printed like the
+        // others — it is the first page of the file — but it is not a cell of the grid, so the
+        // plan's own count does not hold it. Only the ExtraSheet seat adds one; the two other seats
+        // put the page on paper the plan already pays for, and the count stays silent about them.
+        const bool extraSheet = cover.seat == OExportCoverPage::Seat::ExtraSheet;
+        label += extraSheet
+                     ? tr(" · %n pages (cover page included)", nullptr, sheets.count + 1)
+                     : tr(" · %n pages", nullptr, sheets.count);
     }
 
     // On every run, not only the tiled ones: a roll and a sheet of A0 are generated too, and a

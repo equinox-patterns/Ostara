@@ -36,6 +36,7 @@
 
 #include <QFont>
 #include <QHash>
+#include <QMap>
 #include <QString>
 #include <QStringList>
 #include <QVector>
@@ -72,6 +73,14 @@ namespace OCoverPageResolver
  */
 struct PatternData
 {
+    /// The value every axis stands at for the run being drawn, by axis name — **the run's own
+    /// answer, and the reason this field exists** (nomenclature spec §6).
+    ///
+    /// Empty is the preview's case, and a name the map does not hold falls back to the table's
+    /// reference value: a page may ask about an axis the run never pinned, and the table's own
+    /// answer is then the only honest one.
+    QMap<QString, QString> axisValues;
+
     /// The name of the pattern, as the pattern toolbar holds it.
     QString name;
 

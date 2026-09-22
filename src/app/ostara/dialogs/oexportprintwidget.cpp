@@ -30,6 +30,7 @@
 #include "oexportrollformatwidget.h"
 #include "oexporttiledformatwidget.h"
 
+#include "../core/ocoverpagetemplatestorage.h"
 #include "../core/oexporttemplatestorage.h"
 #include "../core/oexportunitformat.h"
 #include "../vpatterndb/osizerange.h"
@@ -81,6 +82,7 @@ OExportPrintWidget::OExportPrintWidget(const VContainer *data, const QSharedPoin
     PopulateSizeRanges();
     PopulateModels();
     PopulateMarks();
+    PopulateCoverPages();
 
     // The default model comes from the table itself — the first entry — so that changing
     // what the combo lists is enough to change what the tab opens on.
@@ -150,6 +152,18 @@ void OExportPrintWidget::BuildUi()
     m_marksCombo = MakeComboBox(this);
     m_marksLabel = new QLabel(this);
     layout->addRow(m_marksLabel, m_marksCombo);
+
+    // ── The cover page, on EVERY format ─────────────────────────────────
+    // Unlike the marks, this row is never hidden: a cover page stands on a roll and on an A0
+    // sheet as much as on a framed one — where it stands is the format's own business, and
+    // every format has an answer (OExportCoverPage). So the row does not follow the grid, and
+    // UpdateModel must not fold it away with the marks.
+    //
+    // "No cover page" is the first entry and is always present: a plan without a cover page is
+    // a state the user chooses, not an empty library.
+    m_coverCombo = MakeComboBox(this);
+    m_coverLabel = new QLabel(this);
+    layout->addRow(m_coverLabel, m_coverCombo);
 
     // ── The two lengths the nesting takes, whatever the model ────────────
     m_marginEdit = new QLineEdit(this);
@@ -349,6 +363,59 @@ void OExportPrintWidget::PopulateMarks()
     }
 
     m_marksCombo->setCurrentIndex(-1);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportPrintWidget::PopulateCoverPages()
+{
+    const QSignalBlocker blocker(m_coverCombo);
+    m_coverCombo->clear();
+
+    // **"No cover page" first, and always present.** Unlike the marks, a plan has a legitimate
+    // state in which there is no cover page — it is what the mode did before this existed — so
+    // the field can answer "nothing" without being empty, and it opens on that answer when the
+    // library holds neither the favourite nor a Default.
+    //
+    // Empty data, like every "none" entry in this application: what the run carries is the
+    // string, and the empty string is the single representation the whole feature tests.
+    m_coverCombo->addItem(tr("No cover page"), QString());
+
+    const QStringList paths = OCoverPageTemplateStorage::ScanDirectory(
+        OCoverPageTemplateStorage::DefaultDirectory());
+    for (const QString &path : paths)
+    {
+        // The base name alone identifies a template, and it is read off the file's name rather
+        // than out of the file: listing a library must not open every template in it.
+        const QString name = QFileInfo(path).completeBaseName();
+        m_coverCombo->addItem(name, name);
+    }
+
+    // The chain, in order: the user's favourite, then the template the installation falls back
+    // to. Then — and only because neither exists — no cover page.
+    //
+    // ⚠️ Note the asymmetry with the marks, and that it is deliberate:
+    // GetDefaultCoverPageTemplate answers EMPTY where GetDefaultPdfTemplate answers "Default",
+    // because nothing seeds a cover page. The empty favourite is skipped rather than looked up,
+    // and the chain falls through to Default — which answers nothing until such a template
+    // exists, this library seeding none.
+    const QString favourite =
+        VAbstractApplication::VApp()->Settings()->GetDefaultCoverPageTemplate();
+    const QStringList candidates{favourite, OCoverPageTemplateStorage::DefaultTemplateName()};
+    for (const QString &candidate : candidates)
+    {
+        const int index = candidate.isEmpty() ? -1 : m_coverCombo->findData(candidate);
+        if (index >= 0)
+        {
+            m_coverCombo->setCurrentIndex(index);
+            return;
+        }
+    }
+
+    // Neither exists: the field opens on "No cover page", which is today's behaviour exactly —
+    // and the composed case is deliberately not an empty field, unlike the marks. There, an
+    // empty library is a state the user made and a message would be about something she cannot
+    // act on; here, "there is no cover page" is a thing she can choose, and it says so.
+    m_coverCombo->setCurrentIndex(0);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -573,6 +640,14 @@ auto OExportPrintWidget::MarksTemplateName() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportPrintWidget::CoverPageTemplateName() const -> QString
+{
+    // "No cover page" carries empty data, so an untouched combo answers empty — which is what
+    // the run then carries: nothing reserved in the bin, nothing drawn, no page added.
+    return m_coverCombo->currentData().toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportPrintWidget::Columns() const -> int
 {
     const OExportPrintModel *model = FindPrintModel(PrintModelToken());
@@ -655,6 +730,7 @@ void OExportPrintWidget::Retranslate()
     m_rangeLabel->setText(tr("Size range:"));
     m_modelLabel->setText(tr("Print model:"));
     m_marksLabel->setText(tr("Assembly marks:"));
+    m_coverLabel->setText(tr("Cover page:"));
     m_marginLabel->setText(tr("Document margin:"));
     m_gapLabel->setText(tr("Space between pieces:"));
     m_documentWidthLabel->setText(tr("Document width:"));

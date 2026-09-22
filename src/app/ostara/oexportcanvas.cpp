@@ -34,6 +34,7 @@
 #include "oexportmarkpainter.h"
 #include "ogradedgeometry.h"
 #include "ogradedsizetrace.h"
+#include "oexportcoverpage.h"
 #include "oexportgeometry.h"
 #include "oexportfootprint.h"
 #include "oexportnesting.h"
@@ -84,6 +85,17 @@ constexpr qreal kBinZ = -1.0;
 /// and the export writes them at that level too (§11.9). A mark drawn over a piece would be a
 /// mark printed on the fabric.
 constexpr qreal kAssemblyMarksZ = -0.5;
+
+/// The cover page — a page's own ink, and it sits over the marks and under the plan.
+///
+/// **Over the marks, and that is not taste.** The pagination of a tiled run puts numbers near the
+/// sheet's corners, which is exactly where an in-sheet cover block is; a page number written across
+/// the cover would be the plan writing on someone else's paper.
+///
+/// **Under the pieces.** In the PDF the cover page is written in the UNDERLAY, under every layer —
+/// so a piece a hand has left on the block is drawn over it there, and the canvas must show the
+/// same thing. A cover drawn on top would make the screen a promise the file does not keep.
+constexpr qreal kCoverZ = -0.25;
 
 constexpr qreal kDecorZ = 1.0;
 constexpr qreal kGridZ = 2.0;
@@ -242,6 +254,43 @@ private:
     bool m_framed{false};
 };
 
+/// The cover page, drawn at the size it will be printed.
+///
+/// **It resolves nothing.** The bands arrive already resolved by OExportCoverPage::Of, which read
+/// the run, the document and the template — the canvas places and paints, and looking a template up
+/// here would be a second place deciding what is drawn.
+///
+/// INERT, for the reason AssemblyMarksItem and ArtboardGridItem are: the hover raises whatever it
+/// lands on, and a page answering the mouse would be taken for a piece of the pattern.
+class CoverPageItem : public QGraphicsItem
+{
+public:
+    CoverPageItem(const QRectF &page, const QMap<OCoverPageTemplate::Placement,
+                                                 QVector<OCartoucheRenderLine>> &bands)
+      : m_page(page), m_bands(bands)
+    {
+        setFlag(QGraphicsItem::ItemIsSelectable, false);
+        setFlag(QGraphicsItem::ItemIsMovable, false);
+        setAcceptedMouseButtons(Qt::NoButton);
+        setZValue(kCoverZ);
+    }
+
+    auto boundingRect() const -> QRectF override { return m_page; }
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
+    {
+        // **Scale 1 — the page is drawn at the size it will be printed**, which is what makes the
+        // canvas evidence about the paper rather than a picture of it (nomenclature spec §6, and
+        // Sophie's decision of 18-09-2026: a logo of two centimetres is two centimetres on a page
+        // of nineteen, on screen as on paper).
+        OCoverPageRender::Paint(*painter, m_page, m_bands, 1.0);
+    }
+
+private:
+    QRectF m_page;
+    QMap<OCoverPageTemplate::Placement, QVector<OCartoucheRenderLine>> m_bands;
+};
+
 /// The paper of a tiled run: the printed sheets, white, and nothing drawn on them.
 ///
 /// ONE RECTANGLE PER PRINTED SHEET, and not one over the plan. A cell with nothing on it is not
@@ -257,6 +306,18 @@ private:
 /// what feeds VisibleItemsBoundingRect, and a rect wider than the paper would leave the plan
 /// pinned to one edge of the viewport when the result is framed. MakeDecorHost tells the same
 /// story from the other end.
+void MakePaper(QGraphicsScene *scene, const QRectF &rect)
+{
+    auto *paper = new QGraphicsRectItem(rect);
+    paper->setPen(Qt::NoPen);
+    paper->setBrush(QBrush(Qt::white));
+    paper->setFlag(QGraphicsItem::ItemIsSelectable, false);
+    paper->setFlag(QGraphicsItem::ItemIsMovable, false);
+    paper->setAcceptedMouseButtons(Qt::NoButton);
+    paper->setZValue(kPaperZ);
+    scene->addItem(paper);
+}
+
 void MakeArtboardPaper(QGraphicsScene *scene, const OExportArtboards::Grid &artboards,
                        const OExportSheets::Set &sheets)
 {
@@ -269,17 +330,12 @@ void MakeArtboardPaper(QGraphicsScene *scene, const OExportArtboards::Grid &artb
                 continue;
             }
 
-            auto *paper = new QGraphicsRectItem(
-                QRectF(artboards.planRect.left() + col * artboards.cellWidthPx,
-                       artboards.planRect.top() + row * artboards.cellHeightPx, artboards.cellWidthPx,
-                       artboards.cellHeightPx));
-            paper->setPen(Qt::NoPen);
-            paper->setBrush(QBrush(Qt::white));
-            paper->setFlag(QGraphicsItem::ItemIsSelectable, false);
-            paper->setFlag(QGraphicsItem::ItemIsMovable, false);
-            paper->setAcceptedMouseButtons(Qt::NoButton);
-            paper->setZValue(kPaperZ);
-            scene->addItem(paper);
+            // A cell is a sheet, and a sheet is what MakePaper draws. The cover page's extra sheet
+            // is the same call with a rectangle that is NOT a cell — which is exactly how it gets
+            // paper without ever entering OExportSheets.
+            MakePaper(scene, QRectF(artboards.planRect.left() + col * artboards.cellWidthPx,
+                                    artboards.planRect.top() + row * artboards.cellHeightPx,
+                                    artboards.cellWidthPx, artboards.cellHeightPx));
         }
     }
 }
@@ -845,7 +901,8 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                           OExportCanvasContent *content,
                           const OExportArtboards::Grid &artboards,
                           const OExportTemplate *marks,
-                          bool framed)
+                          bool framed,
+                          const OExportCoverPage::Drawing *cover)
 {
     if (scene == nullptr || !result.ok)
     {
@@ -898,11 +955,41 @@ void OExportCanvas::Build(QGraphicsScene *scene,
     // Which of those sheets is worth paper is read from the run's own placements: a pure function
     // of two things the caller already handed over, called here and — on the same two — by the PDF
     // writer. So the canvas cannot show a sheet the file will not write, nor hide one it will.
-    const OExportSheets::Set sheets = OExportSheets::Compute(artboards, result.placements);
+    const OExportCoverPage::Seat coverSeat =
+        cover != nullptr ? cover->seat : OExportCoverPage::Seat::None;
+    // The margin travels with the page: a reserved block is placed with it, and with the run's own
+    // — see Drawing::marginPx. Read once, here, rather than at each of the three calls below.
+    const qreal coverMarginPx = cover != nullptr ? cover->marginPx : 0.0;
+
+    // **The reserved block is ink for the one question OExportSheets asks** — which sheets carry
+    // something — and for no other. A plan that happens to keep every piece out of cell (0,0) would
+    // otherwise not write the sheet its own cover page is drawn on. The extra sheet is deliberately
+    // NOT passed: it is not a cell, and it must never be counted as one.
+    //
+    // Guarded by `artboards.valid` because a roll has no grid and no cells to mark — its single
+    // page is the bin, and the cover page stands on it whatever the pieces do.
+    const QRectF reserved =
+        (coverSeat == OExportCoverPage::Seat::InSheet && artboards.valid)
+            ? OExportCoverPage::PaperPx(coverSeat, coverMarginPx, artboards.planRect,
+                                        artboards.cellWidthPx, artboards.cellHeightPx)
+            : QRectF();
+
+    const OExportSheets::Set sheets = OExportSheets::Compute(artboards, result.placements, reserved);
 
     if (artboards.valid)
     {
         MakeArtboardPaper(scene, artboards, sheets);
+
+        // The cover page's own sheet, for the three formats that give it one. **Added here and not
+        // through OExportSheets**: it is not a cell of the grid, so the plan's ranks stay 1..n, its
+        // page count never sees it, and the arbitration that compares printed sheets cannot be moved
+        // by it — which is exactly what the A4/Letter formats need, their nesting being untouched.
+        if (coverSeat == OExportCoverPage::Seat::ExtraSheet)
+        {
+            MakePaper(scene, OExportCoverPage::PaperPx(coverSeat, coverMarginPx, artboards.planRect,
+                                                       artboards.cellWidthPx,
+                                                       artboards.cellHeightPx));
+        }
     }
     else
     {
@@ -927,6 +1014,17 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         grid.sheets = sheets;
 
         scene->addItem(new AssemblyMarksItem(*marks, artboards.planRect.topLeft(), grid, framed));
+    }
+
+    // The page itself, over the marks and under the pieces — see kCoverZ for why that band and not
+    // another. A roll takes the same path as a sheet: its "plan rect" is the empty one, whose
+    // top-left IS the bin's origin, so the block lands at the corner either way.
+    if (cover != nullptr && !cover->IsEmpty())
+    {
+        scene->addItem(new CoverPageItem(
+            OExportCoverPage::PagePx(coverSeat, coverMarginPx, artboards.planRect,
+                                     artboards.cellWidthPx, artboards.cellHeightPx),
+            cover->bands));
     }
 
     for (int i = 0; i < result.placements.size() && i < result.keys.size(); ++i)

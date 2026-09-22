@@ -30,6 +30,7 @@
 #include "../vexception/vexception.h"
 #include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
+#include "widgets/owidgetcoverpage.h"
 #include "widgets/owidgetoutputs.h"
 #include "widgets/owidgetsizeranges.h"
 #include "widgets/owidgetsizestyles.h"
@@ -1337,6 +1338,18 @@ void MainWindow::InitDocksContain()
             &MainWindow::DeleteExportOutput);
     connect(m_dockManager->outputsWidget(), &OWidgetOutputs::exportRequested, this,
             &MainWindow::ExportOutputToPdf);
+
+    // Cover page dock → the canvas, and NOT through the document's own signal. Editing the cover
+    // page raises `patternChanged`, which the Export mode reads as "the pattern may have moved"
+    // and which cannot say that a free text displaces no piece. This dock says what it did.
+    //
+    // Direct, like the template editor's own connection: the redraw is a scene rebuild and no
+    // nesting, so there is no modal run to return out of.
+    if (m_dockManager->coverPageWidget() != nullptr)
+    {
+        connect(m_dockManager->coverPageWidget(), &OWidgetCoverPage::CoverPageChanged, this,
+                &MainWindow::RefreshExportDrawing);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

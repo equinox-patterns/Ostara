@@ -238,3 +238,28 @@ auto OCoverPageTemplateStorage::Load(const QString &filePath, OCoverPageTemplate
     *tpl = loaded;
     return true;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OCoverPageTemplateStorage::DefaultTemplateName() -> QString
+{
+    return QStringLiteral("Default");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OCoverPageTemplateStorage::Resolve(const QString &name, OCoverPageTemplate *tpl) -> bool
+{
+    if (tpl == nullptr || name.isEmpty())
+    {
+        return false;
+    }
+
+    // **One file, and nothing behind it.** A cover page the user has renamed or deleted is a
+    // cover page that is not there any more, and drawing another in its place would print a page
+    // the generation never asked for — with nothing on screen to say so. So there is no second
+    // candidate here, and the chain that picks a name (the favourite, then Default) belongs to
+    // the dialog, which is where choosing happens.
+    //
+    // A name that IS `Default` is read like any other: it simply happens to name nothing until
+    // somebody creates such a template, since this library seeds none.
+    return Load(PathForName(name), tpl);
+}

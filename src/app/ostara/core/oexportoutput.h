@@ -32,6 +32,7 @@
 #ifndef OEXPORTOUTPUT_H
 #define OEXPORTOUTPUT_H
 
+#include <QMap>
 #include <QString>
 #include <QVector>
 
@@ -146,6 +147,29 @@ struct OExportOutput
     /// user has emptied leaves every output without marks, and the canvas then draws the plan
     /// alone — as it did before there was a template at all.
     QString marksTemplateName{};
+
+    /// The cover page this generation carries, **by its file name**, like the marks template
+    /// and for the same reason: a template is a file the user edits, and a run that had copied
+    /// it would go on drawing what the file said the day it was nested.
+    ///
+    /// **Empty means no cover page** — nothing reserved in the bin, nothing drawn on the
+    /// canvas, no page added. One representation, tested at every step from the bin to the
+    /// status bar, and the state the mode had before a cover page existed.
+    QString coverPageTemplateName{};
+
+    /// The value each axis stands at for this run, by axis name, as the measurement table
+    /// labels it — `168`, `M`, whatever the user's own words are.
+    ///
+    /// **The page's own question, answered where it is known.** A cover page that states one
+    /// size must state the size the RUN was asked for; the preview can only state the table's
+    /// reference value, and a page announcing a size the paper does not carry is the defect
+    /// §6 of the nomenclature spec was written about. Filled at nesting time from the tab that
+    /// asked, because the tab is the only place that knows which axis each slot belongs to and
+    /// what the table calls that value.
+    ///
+    /// Empty on a range run, whose frozen axis values are already in `range` — and empty is
+    /// also the preview's case, which is why the reader falls back to the table.
+    QMap<QString, QString> pinnedAxes{};
 };
 
 /**
@@ -171,6 +195,8 @@ struct OExportRunRequest
     int columns{1};
     qreal frameHeightMm{0.0};
     QString marksTemplateName{};
+    QString coverPageTemplateName{};
+    QMap<QString, QString> pinnedAxes{};
 };
 
 /// @brief The request that reproduces @p output — what the Refresh entry hands back.

@@ -114,7 +114,17 @@ auto All(int columns, int rows) -> Set;
 /// outline is used and not its bounding box, because a piece turned forty-five degrees has a box
 /// far larger than itself, and on a narrow column that difference is a whole sheet of paper
 /// asked for nothing.
-auto Compute(const OExportArtboards::Grid &grid, const QVector<OExportPlacement> &placements) -> Set;
+///
+/// **@p reserved is a rectangle the plan keeps free and that still has to be printed** — the block
+/// a cover page stands in. It is ink for this question and for this one alone: a sheet whose whole
+/// content is the cover page must be written, and the block is not a placement, so a plan that
+/// happens to keep every piece out of cell (0,0) would otherwise not write the sheet its own cover
+/// page is drawn on.
+///
+/// The block is PASSED and never re-derived here — the seat rule has one home (OExportCoverPage),
+/// and a second reading of it would be a second answer.
+auto Compute(const OExportArtboards::Grid &grid, const QVector<OExportPlacement> &placements,
+             const QRectF &reserved = {}) -> Set;
 } // namespace OExportSheets
 
 #endif // OEXPORTSHEETS_H

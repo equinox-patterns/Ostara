@@ -78,6 +78,15 @@ public:
     /** @brief Re-apply every word this widget shows by itself (LanguageChange). */
     void RetranslateUI();
 
+signals:
+    /// @brief The page this dock edits has just been written to the document.
+    ///
+    /// **The only announcement the dock makes**, and it exists because nothing else carries the
+    /// news: the write raises `patternChanged`, which the Export mode reads as "the pattern may
+    /// have moved" and which cannot say that a free text cannot displace a piece. Whoever draws
+    /// the page — the canvas — listens here instead, and redraws without a nesting being run.
+    void CoverPageChanged();
+
 protected:
     void showEvent(QShowEvent *event) override;
 

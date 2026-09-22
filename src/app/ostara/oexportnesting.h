@@ -29,6 +29,7 @@
 #define OEXPORTNESTING_H
 
 #include <QPolygonF>
+#include <QRectF>
 #include <QString>
 #include <QVector>
 
@@ -110,6 +111,17 @@ struct OExportNestingParams
     // pass on, and nothing else does.
     int    artboardCount{0};   ///< frames side by side across the bin width
     double artboardHeightPx{0.0}; ///< frame height, converted to pixels like the rest
+
+    /// The block the cover page reserves, in PIXELS from the bin's own top-left corner — empty
+    /// when the run carries no cover page, or when its format gives the page a sheet of its own.
+    ///
+    /// **Empty is not a small number.** Nothing is reserved, `Bin` gets an empty zone list, and
+    /// both engines then place exactly as they did before zones could be handed to them: the
+    /// whole of the no-regression argument, stated as a default.
+    ///
+    /// A rectangle rather than the seat, because the seat is the format's business
+    /// (OExportCoverPage) and the engine is told what it needs and nothing more.
+    QRectF coverZonePx{};
 
     /// @brief Asked by the engine between its iterations: true means the run is to be given up.
     ///

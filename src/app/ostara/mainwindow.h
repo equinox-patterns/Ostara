@@ -320,7 +320,7 @@ private slots:
      *
      *         The nesting is NOT re-run: the plan has not moved, only the ground it is drawn
      *         on. The generation goes back to the canvas exactly as it was, zoom included. */
-    void RefreshExportMarks();
+    void RefreshExportDrawing();
 
     /** @brief Drop the generation @p id, after confirming with the user. Undo will not
      *         bring it back: a generation is session-scoped, never part of the document. */

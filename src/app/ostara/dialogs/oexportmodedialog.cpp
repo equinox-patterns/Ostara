@@ -183,6 +183,7 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
     request.columns = m_printWidget->Columns();
     request.frameHeightMm = m_printWidget->FrameHeightMm();
     request.marksTemplateName = m_printWidget->MarksTemplateName();
+    request.coverPageTemplateName = m_printWidget->CoverPageTemplateName();
     return request;
 }
 

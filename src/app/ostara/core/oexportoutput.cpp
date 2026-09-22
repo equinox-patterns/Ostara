@@ -45,6 +45,8 @@ auto RequestOf(const OExportOutput &output) -> OExportRunRequest
     request.columns = output.columns;
     request.frameHeightMm = output.frameHeightMm;
     request.marksTemplateName = output.marksTemplateName;
+    request.coverPageTemplateName = output.coverPageTemplateName;
+    request.pinnedAxes = output.pinnedAxes;
     return request;
 }
 

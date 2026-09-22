@@ -28,6 +28,7 @@
 #define OEXPORTCANVAS_H
 
 #include "oexportartboards.h"  // OExportArtboards::Grid
+#include "oexportcoverpage.h"  // OExportCoverPage::Drawing
 #include "ogradedsvgwriter.h"  // OGradedSvg::LayoutObject
 
 #include <QList>
@@ -139,7 +140,8 @@ public:
                       OExportCanvasContent *content = nullptr,
                       const OExportArtboards::Grid &artboards = {},
                       const OExportTemplate *marks = nullptr,
-                      bool framed = false);
+                      bool framed = false,
+                      const OExportCoverPage::Drawing *cover = nullptr);
 };
 
 #endif // OEXPORTCANVAS_H

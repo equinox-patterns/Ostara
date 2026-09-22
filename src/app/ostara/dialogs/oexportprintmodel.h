@@ -31,6 +31,8 @@
 #include <QString>
 #include <QVector>
 
+#include "../oexportcoverpage.h"
+
 /// @brief The two shapes a model can take. What the widget shows follows from this,
 ///        and nothing else does.
 enum class OExportPrintShape : qint8
@@ -75,6 +77,15 @@ struct OExportPrintModel
     /// size — a frame is a decision, and guessing it from the dimensions would mean two
     /// formats of equal size could not differ.
     bool hasFrame{false};
+
+    /// Where this format's cover page stands — see OExportCoverPage.
+    ///
+    /// A DECLARED field and not a consequence of the two dimensions above, for the same reason
+    /// `hasFrame` is declared rather than guessed. The deduction "does the sheet admit
+    /// 210 × 297?" answers six formats out of eight and fails on the two that matter: **A4**
+    /// admits the block with no room left for a plan at all, and a **roll** has no sheet
+    /// height to be tested against. A threshold nobody can state is not a rule.
+    OExportCoverPage::Seat coverSeat{OExportCoverPage::Seat::None};
 
     /// Whether the model offers a column count. False for the A0 sheet, which is not
     /// assembled after printing: its sheets are whole pages stacked, never placed side

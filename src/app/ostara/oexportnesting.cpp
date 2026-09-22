@@ -45,6 +45,8 @@
 
 #include <cmath>
 #include <limits>
+#include <utility>
+#include <vector>
 
 namespace
 {
@@ -154,7 +156,10 @@ auto PrintedSheets(const QVector<OExportPlacement> &placements,
         return (std::numeric_limits<int>::max)();
     }
 
-    return OExportSheets::Compute(grid, placements).count;
+    // The cover page's reserved block is handed over like the grid itself, and it is the SAME block
+    // for both candidate plans: it is therefore a constant in the comparison below, and the engine's
+    // choice can only move through the placements — which is what it is there for.
+    return OExportSheets::Compute(grid, placements, params.coverZonePx).count;
 }
 } // namespace
 
@@ -232,7 +237,21 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // the engine consumes every length on the same scale, and the conversion from the
     // millimetres the user set is made once, at the caller — handed over raw, 5.0 would
     // mean 5 px, which is 1.3 mm, and not the policy Rabnest applies.
-    const Bin bin(params.binWidthPx, params.marginPx);
+    // The zones the run has to keep clear — the cover page's block, and nothing else so far.
+    // Handed to BOTH engines through the one Bin, because that is what the arbitration below
+    // compares: two plans measured over ONE obstacle set.
+    std::vector<Bin::Zone> zones;
+    if (!params.coverZonePx.isEmpty())
+    {
+        zones.push_back({params.coverZonePx.x(), params.coverZonePx.y(),
+                         params.coverZonePx.width(), params.coverZonePx.height()});
+    }
+
+    // **The explicit-list constructor, and not the corner one.** An empty list is the absence of
+    // a zone; the corner constructor appends one of its own the moment a dimension is non-zero,
+    // which is how the strip engine's A0 emulation works and is not what a run without a cover
+    // page asks for.
+    const Bin bin(params.binWidthPx, params.marginPx, std::move(zones));
     Engine::Config config;
     config.gap = params.gapPx;
 
