@@ -28,6 +28,8 @@
 
 #include "oexportartboards.h"
 #include "oexportcanvas.h"
+#include "oexportcoverpage.h"
+#include "oexportcoverpagesvg.h"
 #include "oexportsheets.h"
 #include "oexportunderlay.h"
 #include "ogradedsvgwriter.h"
@@ -66,7 +68,8 @@ auto DefaultDecorLayerName() -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
                        const VContainer *pattern, VAbstractPattern *doc,
-                       const OExportTemplate *marks, bool framed, bool addLayoutLayer) -> bool
+                       const OExportTemplate *marks, bool framed, bool addLayoutLayer,
+                       const OExportCoverPage::Drawing *cover) -> bool
 {
     if (pattern == nullptr || doc == nullptr || output.layers.isEmpty() || !output.result.ok)
     {
@@ -95,12 +98,46 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         output.result.binWidthPx, output.result.usedHeightPx, output.frameHeightMm,
         output.columns);
 
+    // Where the cover page stands, read from the FORMAT and nowhere else — the canvas asks the same
+    // call the same question, so the two cannot show the page in different places. A generation with
+    // no cover page answers Seat::None, and none of what follows runs.
+    const OExportCoverPage::Seat coverSeat =
+        cover != nullptr ? cover->seat : OExportCoverPage::Seat::None;
+    // The margin travels with the page, and with the run's own: a reserved block is placed with it.
+    const qreal coverMarginPx = cover != nullptr ? cover->marginPx : 0.0;
+
+    // **The reserved block is ink for the one question OExportSheets asks** — which sheets carry
+    // something — and for no other. A plan that happens to keep every piece out of cell (0,0) must
+    // still write the sheet its own cover page is drawn on, or the page would be delivered on paper
+    // the file does not have. The extra sheet is deliberately NOT passed: it is not a cell, and
+    // counting it here would move the plan's own ranks.
+    const QRectF reserved =
+        (coverSeat == OExportCoverPage::Seat::InSheet && artboards.valid)
+            ? OExportCoverPage::PaperPx(coverSeat, coverMarginPx, artboards.planRect,
+                                        artboards.cellWidthPx, artboards.cellHeightPx)
+            : QRectF();
+
     // Which of those sheets is worth a page, read from the placements the run produced and any
     // hand has moved since — the generation's own, never a copy of them. The canvas asks the same
-    // question of the same two things, so the paper on screen and the paper in the file are one
+    // question of the same three things, so the paper on screen and the paper in the file are one
     // decision: a sheet a hand has emptied is not written, and a piece put back on a dropped one
     // brings its page back with it.
-    const OExportSheets::Set sheets = OExportSheets::Compute(artboards, output.result.placements);
+    const OExportSheets::Set sheets =
+        OExportSheets::Compute(artboards, output.result.placements, reserved);
+
+    // The cover page's own sheet, for the formats that give it one: **the sheet the file opens
+    // on**, and Trame writes it as a page GRAFTED onto the document rather than as a window onto
+    // the plan. Only the rectangle crosses — a cover page's sheet holds the cover page and none of
+    // the plan, which is what grafting means and what keeps the plan's own frame, whose line runs
+    // along that boundary, off it.
+    //
+    // Read from the SEAT and never from the page's own figure: the seat is the format's property,
+    // and asking a second time would be a second place deciding where the page stands.
+    const QRectF coverSheet =
+        (coverSeat == OExportCoverPage::Seat::ExtraSheet && artboards.valid)
+            ? OExportCoverPage::PaperPx(coverSeat, coverMarginPx, artboards.planRect,
+                                        artboards.cellWidthPx, artboards.cellHeightPx)
+            : QRectF();
 
     QVector<QRectF> pages;
     if (artboards.valid)
@@ -250,6 +287,32 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         }
     }
 
+    // The cover page goes in the same way and for the same reason: a second document, drawn on
+    // every page and — the whole point — outside every optional content group, so that nothing in
+    // the reader's panel can deliver the plan without its nomenclature. A plan missing its cover
+    // page looks perfectly normal, and it is the silent kind of wrong.
+    //
+    // Its page is its OWN, and that is where it parts company with the marks: a cover page is
+    // 19 × 25.9 cm wherever its format puts it, so it is not laid out on the plan's page — it is
+    // written in the plan's own coordinates and Trame re-places it against the plan's own frame,
+    // which is what lets the page land where the canvas showed it, sheet of its own or not.
+    //
+    // Written whatever the grid says. A rouleau has no sheet to cut and still carries a cover page,
+    // its block at the bin's own corner; the seat, and only the seat, decides where it stands.
+    QString coverPath;
+    if (cover != nullptr && !cover->IsEmpty())
+    {
+        coverPath = dir.filePath(QStringLiteral("cover.svg"));
+        const QRectF coverPage =
+            OExportCoverPage::PagePx(coverSeat, coverMarginPx, artboards.planRect,
+                                     artboards.cellWidthPx, artboards.cellHeightPx);
+        if (!OExportCoverPageSvg::Write(coverPath, *cover, coverPage))
+        {
+            qWarning() << "OExportPdf: the cover page could not be written";
+            return false;
+        }
+    }
+
     // Trame reads the layers back out of the SVG and rebuilds them as optional content —
     // ONE set of layers for the whole document, not one per sheet, so switching a size off
     // hides it on every page at once. What it takes from us besides the file is the page
@@ -269,8 +332,11 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     // The underlay is the fifth argument, and an empty one says there is none: Trame then
     // writes the page stream it has always written, byte for byte the same. The sixth says
     // whether the layout is offered as a layer — the one thing the dialog asks about, and it
-    // opens on no.
-    if (!converter.convert(svgPath, pages, pdfPath, info, underlayPath, addLayoutLayer))
+    // opens on no. The seventh is the cover page, empty when there is none, and it is drawn
+    // outside every layer whatever the sixth says. The eighth is the sheet that page gets when
+    // its format gives it one: empty leaves it on the plan's own sheets.
+    if (!converter.convert(svgPath, pages, pdfPath, info, underlayPath, addLayoutLayer, coverPath,
+                           coverSheet))
     {
         qWarning() << "OExportPdf: the PDF could not be written";
         return false;

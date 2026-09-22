@@ -451,15 +451,34 @@ QFont SectionFont(const QHash<QString, QVariant> &options, const QFont &baseFont
 {
     QFont font = baseFont;
     const QString family = options.value(FontKey(prefix, "fontFamily")).toString();
-    const int weight = options.value(FontKey(prefix, "fontWeight"), 0).toInt();
+    // **The weight is the FACE, when the file names one.** The editor writes the name of the style
+    // the family really has — « SemiBold », « Book », whatever its designer called it — because a
+    // number names nothing: the same 300 is « Light » in one family and « ExtraLight » in the next,
+    // and measured on the families installed here, asking for « Light » lands on « ExtraLight ».
+    // A file written before that change carries a number, and a number is still read as the weight
+    // it is — the two forms are the same question asked of a new file and an old one.
+    const QVariant weightOption = options.value(FontKey(prefix, "fontWeight"), 0);
     const double size = options.value(FontKey(prefix, "fontSize"), 0.0).toDouble();
     if (!family.isEmpty())
     {
         font.setFamily(family);
     }
-    if (weight > 0)
     {
-        font.setWeight(QFont::Weight(weight));
+        const QString style = weightOption.toString();
+        bool numbered = false;
+        const int weight = style.toInt(&numbered);
+        if (numbered)
+        {
+            // A number of nought is « not set », and not a weight: it keeps the page's own.
+            if (weight > 0)
+            {
+                font.setWeight(QFont::Weight(weight));
+            }
+        }
+        else if (!style.isEmpty())
+        {
+            font.setStyleName(style);
+        }
     }
     if (size > 0.0)
     {

@@ -42,6 +42,12 @@ class QXmlStreamWriter;
 
 namespace OSvg
 {
+/// @brief The namespace Ostara marks its own attributes with — `ostara:layout`, `ostara:font-face`.
+///
+/// Declared on the root of every document that carries one: a prefix with no declaration is not
+/// XML a parser will read, and the reading side asks for the literal qualified name.
+constexpr auto kOstaraNamespace = "urn:ostara";
+
 /** @brief Serialize a QPainterPath into an SVG "d" attribute (M/L/C). */
 QString PainterPathToSvgD(const QPainterPath &path);
 

@@ -26,6 +26,7 @@
 
 #include "oinfoblockexport.h"
 
+#include "ocartouchesvg.h"
 #include "osvgutils.h"
 
 #include <QColor>
@@ -55,37 +56,6 @@ namespace
 {
 constexpr qreal kDefaultStrokeWidth = 0.1;
 
-//---------------------------------------------------------------------------------------------------------------------
-QString PainterPathToSvgD(const QPainterPath &path)
-{
-    QString d;
-    QTextStream stream(&d);
-    stream.setRealNumberNotation(QTextStream::FixedNotation);
-    stream.setRealNumberPrecision(3);
-
-    for (int i = 0; i < path.elementCount(); ++i)
-    {
-        const QPainterPath::Element e = path.elementAt(i);
-        switch (e.type)
-        {
-            case QPainterPath::MoveToElement:
-                stream << "M " << e.x << ' ' << e.y << ' ';
-                break;
-            case QPainterPath::LineToElement:
-                stream << "L " << e.x << ' ' << e.y << ' ';
-                break;
-            case QPainterPath::CurveToElement:
-                stream << "C " << e.x << ' ' << e.y << ' ';
-                break;
-            case QPainterPath::CurveToDataElement:
-                stream << e.x << ' ' << e.y << ' ';
-                break;
-            default:
-                break;
-        }
-    }
-    return d.trimmed();
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 QString SanitizeSvgId(const QString &name)
@@ -291,7 +261,7 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
             }
 
             writer.writeStartElement(QStringLiteral("path"));
-            writer.writeAttribute(QStringLiteral("d"), PainterPathToSvgD(svgPath));
+            writer.writeAttribute(QStringLiteral("d"), OSvg::PainterPathToSvgD(svgPath));
             writer.writeAttribute(QStringLiteral("fill"), fill);
             writer.writeAttribute(QStringLiteral("stroke"), stroke);
             writer.writeAttribute(QStringLiteral("stroke-width"), QString::number(pen.widthF()));
@@ -448,212 +418,9 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
             writer.writeStartElement(QStringLiteral("g"));
             writer.writeAttribute(QStringLiteral("transform"), MatrixAttr(toFile));
 
-            for (const OCartoucheRenderItem &el : laid)
-            {
-                // A shape is the one item that is neither words nor an image: geometry, stroked
-                // where Layout placed it, unfilled, in the black the text is written in. Written
-                // here because Paint draws it — an item the painter draws and the writer drops
-                // would be the preview and the file disagreeing about the same block.
-                if (el.kind == OCartoucheRenderItem::Kind::Shape)
-                {
-                    writer.writeStartElement(QStringLiteral("rect"));
-                    writer.writeAttribute(QStringLiteral("x"), QString::number(el.target.x()));
-                    writer.writeAttribute(QStringLiteral("y"), QString::number(el.target.y()));
-                    writer.writeAttribute(QStringLiteral("width"), QString::number(el.target.width()));
-                    writer.writeAttribute(QStringLiteral("height"), QString::number(el.target.height()));
-                    writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("none"));
-                    writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("black"));
-                    writer.writeAttribute(QStringLiteral("stroke-width"),
-                                          QString::number(OCartouchePainter::kShapePenWidth
-                                                          * block.fontScale));
-                    writer.writeEndElement();  // rect
-                    continue;
-                }
-                if (el.kind == OCartoucheRenderItem::Kind::Text)
-                {
-                    // The marks the line stands for, before its words — written here for the reason
-                    // the shape above is: Paint draws them, and an item the painter draws and the
-                    // writer drops would be the preview and the file disagreeing about the same
-                    // block. Traced first, then filled, which is the order the painter draws them in.
-                    if (!el.marks.IsEmpty())
-                    {
-                        const QTransform place =
-                            QTransform::fromTranslate(el.marksRect.left(), el.marksRect.top());
-                        for (const QPainterPath &path : el.marks.strokes)
-                        {
-                            writer.writeStartElement(QStringLiteral("path"));
-                            writer.writeAttribute(QStringLiteral("d"),
-                                                  PainterPathToSvgD(place.map(path)));
-                            writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("none"));
-                            writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("black"));
-                            writer.writeAttribute(QStringLiteral("stroke-width"),
-                                                  QString::number(OCartouchePainter::kShapePenWidth
-                                                                  * block.fontScale));
-                            writer.writeEndElement();  // path
-                        }
-                        for (const QPainterPath &path : el.marks.fills)
-                        {
-                            writer.writeStartElement(QStringLiteral("path"));
-                            writer.writeAttribute(QStringLiteral("d"),
-                                                  PainterPathToSvgD(place.map(path)));
-                            writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("black"));
-                            writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("none"));
-                            writer.writeEndElement();  // path
-                        }
-                    }
-
-                    const QFontInfo info(el.font);
-                    if (textAsPaths)
-                    {
-                        QPainterPath glyphs;
-                        glyphs.addText(el.pen, el.font, el.text);
-                        if (glyphs.isEmpty())
-                        {
-                            continue;
-                        }
-                        writer.writeStartElement(QStringLiteral("path"));
-                        writer.writeAttribute(QStringLiteral("d"), PainterPathToSvgD(glyphs));
-                        writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("black"));
-                        writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("none"));
-                        writer.writeEndElement();  // path
-                    }
-                    else
-                    {
-                        writer.writeStartElement(QStringLiteral("text"));
-                        writer.writeAttribute(QStringLiteral("x"), QString::number(el.pen.x()));
-                        writer.writeAttribute(QStringLiteral("y"), QString::number(el.pen.y()));
-                        writer.writeAttribute(QStringLiteral("font-family"), info.family());
-                        writer.writeAttribute(QStringLiteral("font-size"),
-                                              QString::number(std::max(info.pixelSize(), 1)));
-                        if (info.style() != QFont::StyleNormal)
-                        {
-                            writer.writeAttribute(QStringLiteral("font-style"),
-                                                  info.style() == QFont::StyleItalic ? QStringLiteral("italic")
-                                                                                    : QStringLiteral("oblique"));
-                        }
-                        // Qt 6 QFont::Weight uses the CSS scale (100..900): write it
-                        // numerically so Medium (500) / DemiBold (600) are not lost.
-                        writer.writeAttribute(QStringLiteral("font-weight"), QString::number(info.weight()));
-                        writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("black"));
-                        writer.writeCharacters(el.text);
-                        writer.writeEndElement();  // text
-                    }
-
-                    // The sample the line carries, written once for both branches: it is not text,
-                    // so it goes out the same way whether the words were drawn or outlined.
-                    if (!el.trace.isNull())
-                    {
-                        OSvg::WriteLine(writer, el.trace, OCartouchePainter::TracePen(el));
-                    }
-                }
-                else
-                {
-                    // Logo: inline the original user SVG (Val Fork behaviour).
-                    const QString logoPath = el.sourcePath;
-                    if (logoPath.isEmpty() || el.target.width() <= 0.0 || el.target.height() <= 0.0)
-                    {
-                        continue;
-                    }
-                    QFile logoFile(logoPath);
-                    if (!logoFile.open(QIODevice::ReadOnly))
-                    {
-                        continue;
-                    }
-                    const QByteArray logoSvgBytes = logoFile.readAll();
-
-                    QXmlStreamReader rd(logoSvgBytes);
-                    while (!rd.atEnd() && !(rd.isStartElement() && rd.name() == QLatin1String("svg")))
-                    {
-                        rd.readNext();
-                    }
-                    qreal naturalW = el.target.width();
-                    qreal naturalH = el.target.height();
-                    if (!rd.atEnd())
-                    {
-                        const QString vb = rd.attributes().value(QLatin1String("viewBox")).toString();
-                        if (!vb.isEmpty())
-                        {
-                            static const QRegularExpression re(QStringLiteral("[\\s,]+"));
-                            const QStringList p = vb.split(re, Qt::SkipEmptyParts);
-                            if (p.size() >= 4)
-                            {
-                                naturalW = p[2].toDouble();
-                                naturalH = p[3].toDouble();
-                            }
-                        }
-                        else
-                        {
-                            const double w = rd.attributes().value(QLatin1String("width")).toDouble();
-                            const double h = rd.attributes().value(QLatin1String("height")).toDouble();
-                            if (w > 0.0)
-                            {
-                                naturalW = w;
-                            }
-                            if (h > 0.0)
-                            {
-                                naturalH = h;
-                            }
-                        }
-                    }
-                    const qreal sx = (naturalW > 0.0) ? el.target.width() / naturalW : 1.0;
-                    const qreal sy = (naturalH > 0.0) ? el.target.height() / naturalH : 1.0;
-
-                    writer.writeStartElement(QStringLiteral("g"));
-                    writer.writeAttribute(
-                        QStringLiteral("transform"),
-                        QStringLiteral("translate(%1,%2) scale(%3,%4)")
-                            .arg(el.target.x(), 0, 'g', 8)
-                            .arg(el.target.y(), 0, 'g', 8)
-                            .arg(sx, 0, 'g', 8)
-                            .arg(sy, 0, 'g', 8));
-
-                    int svgDepth = 0;
-                    while (!rd.atEnd())
-                    {
-                        rd.readNext();
-                        if (rd.isStartElement())
-                        {
-                            ++svgDepth;
-                            const QString ns = rd.namespaceUri().toString();
-                            const QString name = rd.name().toString();
-                            if (ns.isEmpty() || ns == QLatin1String("http://www.w3.org/2000/svg"))
-                            {
-                                writer.writeStartElement(name);
-                            }
-                            else
-                            {
-                                writer.writeStartElement(ns, name);
-                            }
-                            for (const QXmlStreamAttribute &a : rd.attributes())
-                            {
-                                const QString ans = a.namespaceUri().toString();
-                                if (ans.isEmpty())
-                                {
-                                    writer.writeAttribute(a.name().toString(), a.value().toString());
-                                }
-                                else
-                                {
-                                    writer.writeAttribute(ans, a.name().toString(), a.value().toString());
-                                }
-                            }
-                        }
-                        else if (rd.isEndElement())
-                        {
-                            if (svgDepth <= 0)
-                            {
-                                break;
-                            }
-                            --svgDepth;
-                            writer.writeEndElement();
-                        }
-                        else if (rd.isCharacters() && !rd.isWhitespace())
-                        {
-                            writer.writeCharacters(rd.text().toString());
-                        }
-                    }
-                    writer.writeEndElement();  // g (logo)
-                }
-            }
+            // The items go to the shared serializer, so this file and the cover page draw
+            // a block the same way — one definition of what an item becomes as SVG.
+            OCartoucheSvg::WriteItems(writer, laid, block.fontScale, textAsPaths);
             writer.writeEndElement();  // g (block)
         }
 
@@ -740,7 +507,7 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
                         continue;
                     }
                     writer.writeStartElement(QStringLiteral("path"));
-                    writer.writeAttribute(QStringLiteral("d"), PainterPathToSvgD(glyphs));
+                    writer.writeAttribute(QStringLiteral("d"), OSvg::PainterPathToSvgD(glyphs));
                     writer.writeAttribute(QStringLiteral("fill"), fill);
                     writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("none"));
                     writer.writeEndElement();  // path

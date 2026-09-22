@@ -62,6 +62,13 @@ struct OExportTemplate;
  * A single-size run has nothing to switch between, so it goes out flat — no layers, one
  * stream. There is no layer panel to offer, and an entry with no choice is not one.
  */
+// The cover page the generation carries, resolved against the live document by
+// OExportCoverPage::Of. Only its name is needed here: it is handed over, never read.
+namespace OExportCoverPage
+{
+struct Drawing;
+}
+
 namespace OExportPdf
 {
 /// @param output  the generation, as it was filed: its resolved layers and its placements.
@@ -87,10 +94,24 @@ namespace OExportPdf
 ///                It governs the assembly marks too, since they are drawn on the paper the
 ///                layout describes. With no layout layer they have no marker and stand alone,
 ///                which is what they have always done.
+/// @param cover   the cover page the generation carries, or nullptr when it carries none. The
+///                canvas's own value, resolved by the same call it is drawn with, so the paper
+///                cannot carry a page the screen did not show.
+///
+///                **It is written outside every layer.** Nothing in the reader's panel switches it
+///                off, and no combination of layer states hides it: a plan delivered without its
+///                nomenclature looks perfectly normal, and the reader has no way to tell. That is
+///                why it is not optional content — the caller decides nothing, and `addLayoutLayer`
+///                does not reach it.
+///
+///                Its SEAT belongs to the format and decides where the page stands: inside the
+///                plan's own sheet, or on one of its own — and that one becomes the file's first
+///                page, because a cover page opens what it covers.
 /// @return false when the run cannot be reproduced; the reason has been logged.
 bool Write(const OExportOutput &output, const QString &pdfPath,
            const VContainer *pattern, VAbstractPattern *doc,
-           const OExportTemplate *marks, bool framed, bool addLayoutLayer);
+           const OExportTemplate *marks, bool framed, bool addLayoutLayer,
+           const OExportCoverPage::Drawing *cover = nullptr);
 }  // namespace OExportPdf
 
 #endif  // OEXPORTPDF_H

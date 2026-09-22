@@ -40,6 +40,8 @@
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QFontComboBox>
+#include <QFontDatabase>
+#include <QFontInfo>
 #include <QFormLayout>
 #include <QFrame>
 #include <QGroupBox>
@@ -47,12 +49,14 @@
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QRadioButton>
+#include <QSignalBlocker>
 #include <QSpinBox>
 #include <QStringList>
 #include <QTabWidget>
 #include <QVBoxLayout>
 
 #include <algorithm>
+#include <functional>
 
 OTemplateSectionEditor::OTemplateSectionEditor(QWidget *parent) : QWidget(parent)
 {
@@ -76,6 +80,91 @@ void OTemplateSectionEditor::RetranslateUI()
     Rebuild();
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+/// @brief The prefix a font option's key is built on — « fontFamily » and « cornerFontFamily ».
+///
+/// The spelling is `SectionFont`'s own: an empty prefix gives « fontFamily », and a prefix takes
+/// the stem capitalized — « corner » with « FontFamily ». Read here rather than guessed, so a new
+/// group of typography controls needs no third list to be kept in step with the other two.
+static auto FontOptionPrefix(const QString &key) -> QString
+{
+    for (const char *stem : {"fontFamily", "fontWeight", "FontFamily", "FontWeight"})
+    {
+        const QString ending = QString::fromLatin1(stem);
+        if (key.endsWith(ending))
+        {
+            return key.left(key.size() - ending.size());
+        }
+    }
+    return key;
+}
+
+/// @brief The two halves of a typography pair, from either half.
+static auto SiblingFontKey(const QString &key, const char *wanted) -> QString
+{
+    const QString prefix = FontOptionPrefix(key);
+    if (prefix.isEmpty())
+    {
+        return QString::fromLatin1(wanted);
+    }
+    QString stem = QString::fromLatin1(wanted);
+    stem[0] = stem.at(0).toUpper();
+    return prefix + stem;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// @brief Fill @p combo with the faces @p family really has, keeping the answer already given.
+///
+/// **Décision de Sophie, 22-09-2026** — « ça ne devrait être que les vraies graisses de la font,
+/// pas des choix génériques qui n'existent pas. » **Regular is on every family**, and the rest
+/// belongs to the family: that is Illustrator's rule, and the only one that can be true of a font
+/// nobody has seen yet.
+///
+/// The nine numbered entries this control used to offer were CSS weights wearing Qt's names, and
+/// two of them named a face the family never gave: asking « Light » (300) drew « ExtraLight », and
+/// « Black » (900) drew « ExtraBold » — measured on the families installed here. **A list of
+/// numbers cannot name faces**, and cannot be right for the next font either.
+///
+/// @param family the family whose faces are wanted; empty falls back to the page's own font.
+/// @param stored what the file asks for: a face name when it holds one, and — for a file written
+///               before this control named faces — the number whose face it must show. A number of
+///               nought is an unset weight, and an unset weight is Regular.
+static void FillFontFaces(QComboBox *combo, const QString &family, const QString &stored)
+{
+    const QString current = family.isEmpty() ? OCartouchePainter::BaseFont().family() : family;
+    const QStringList faces = QFontDatabase::styles(current);
+    if (faces.isEmpty())
+    {
+        return; // a family with no face to offer keeps what it had
+    }
+
+    QSignalBlocker block(combo); // filling the list is not the user answering it
+    const QString kept = combo->currentData().toString();
+    combo->clear();
+    for (const QString &face : faces)
+    {
+        combo->addItem(face, face);
+    }
+
+    const QString want = kept.isEmpty() ? stored : kept;
+    int at = want.isEmpty() ? -1 : combo->findData(want);
+    bool numbered = false;
+    const int weight = want.toInt(&numbered);
+    if (at < 0 && numbered && weight > 0)
+    {
+        // An old file, and the face its number really resolves to — the same answer the drawing
+        // gets, so the list cannot show one face while the page is drawn in another.
+        QFont probe(current);
+        probe.setWeight(QFont::Weight(weight));
+        at = combo->findText(QFontInfo(probe).styleName());
+    }
+    if (at < 0)
+    {
+        at = combo->findText(QStringLiteral("Regular"));
+    }
+    combo->setCurrentIndex(at < 0 ? 0 : at);
+}
+
 void OTemplateSectionEditor::Rebuild()
 {
     if (m_content != nullptr)
@@ -93,6 +182,7 @@ void OTemplateSectionEditor::Rebuild()
     m_enabled.clear();
     m_composites.clear();
     m_rows.clear();
+    m_weightCombos.clear();
 
     if (m_template == nullptr || m_index < 0 || m_index >= m_template->SectionCount())
     {
@@ -181,6 +271,14 @@ void OTemplateSectionEditor::Rebuild()
                 }
                 connect(combo, &QFontComboBox::currentFontChanged, this, [this, field](const QFont &f) {
                     m_template->SetSectionOption(m_index, field.key, f.family());
+                    // **The faces belong to the family, so they change with it.** Refilled here
+                    // rather than when the list opens, so that what the control shows is true the
+                    // moment it is read — a list still offering the faces of the font that was
+                    // chosen before it would name none of the ones the family actually has.
+                    if (QComboBox *weights = m_weightCombos.value(SiblingFontKey(field.key, "fontWeight")))
+                    {
+                        FillFontFaces(weights, f.family(), QString());
+                    }
                     emit OptionsChanged();
                 });
                 PlaceControl(field, combo);
@@ -188,43 +286,27 @@ void OTemplateSectionEditor::Rebuild()
             }
             case OTemplateOptionKind::FontWeight:
             {
-                struct WeightEntry
-                {
-                    int weight;
-                    const char *name;
-                };
-                static const WeightEntry kWeights[] = {
-                    {100, "Thin"},       {200, "Extra Light"}, {300, "Light"},   {400, "Normal"},
-                    {500, "Medium"},     {600, "Demi Bold"},   {700, "Bold"},    {800, "Extra Bold"},
-                    {900, "Black"},
-                };
-                // **The nine weights are all there is**, and one of them is what an unset weight
-                // means: Regular, which the application's own font carries. An entry called
-                // « Default » offered a tenth weight that is not a weight — the value it stood for
-                // was already on the list. A stored 0 still reads as Regular, and picking anything
-                // from the list — Regular included — writes a real one.
+                // ── What the font really has, and not a list of nine numbers ────────────────
+                //
+                // **Décision de Sophie, 22-09-2026** — « ça ne devrait être que les vraies graisses
+                // de la font, pas des choix génériques qui n'existent pas. » **Regular est sur
+                // toutes les familles**, le reste appartient à la famille : c'est la règle
+                // d'Illustrator, et la seule qui puisse être vraie d'une police qu'on n'a pas vue.
+                //
+                // Les neuf entrées numérotées que ce contrôle offrait étaient des graisses CSS
+                // portant les noms de Qt — « Demi Bold » là où la famille écrit « SemiBold », et
+                // « Light » tombant sur la fonte que la famille nomme « ExtraLight ». Relevé sur les
+                // familles installées ici : dix-huit fontes pour Jost, dix-huit pour Inter, six pour
+                // Helvetica. Une liste de numéros ne peut pas les nommer — ni avoir raison de la
+                // prochaine.
                 auto *combo = MakeComboBox(content);
-                const int stored = options.value(field.key, 0).toInt();
-                const int current = stored > 0 ? stored : QFont::Normal;
-                bool named = false;
-                for (const WeightEntry &entry : kWeights)
-                {
-                    combo->addItem(tr(entry.name), entry.weight);
-                    if (entry.weight == current)
-                    {
-                        combo->setCurrentIndex(combo->count() - 1);
-                        named = true;
-                    }
-                }
-                if (!named)
-                {
-                    // A weight the list does not hold — written by hand, or by a build that knew
-                    // more of them. Showing the first entry would name a weight the file does not
-                    // ask for, so the closest honest answer is the one an unset weight gets.
-                    combo->setCurrentIndex(combo->findData(QFont::Normal));
-                }
+                m_weightCombos.insert(field.key, combo);
+                FillFontFaces(combo, options.value(SiblingFontKey(field.key, "fontFamily")).toString(),
+                              options.value(field.key).toString());
                 connect(combo, &QComboBox::currentIndexChanged, this, [this, field, combo](int) {
-                    m_template->SetSectionOption(m_index, field.key, combo->currentData().toInt());
+                    // **The face's NAME is what is written**, and not a number: a number names no
+                    // face — the same 300 is « Light » in one family and « ExtraLight » in the next.
+                    m_template->SetSectionOption(m_index, field.key, combo->currentData().toString());
                     emit OptionsChanged();
                 });
                 PlaceControl(field, combo);

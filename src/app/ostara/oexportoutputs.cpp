@@ -701,10 +701,20 @@ void MainWindow::ExportOutputToPdf(quint32 id)
     bool framed = false;
     const bool hasMarks = ExportMarksOf(*existing, marks, framed);
 
+    // The very cover page the canvas draws with, resolved by the very same call against the live
+    // document. Everything the page states comes from the RUN — the sizes of a range, the values
+    // the frozen axes hold — so what is delivered is what the paper carries and not what the
+    // template demonstrated; and what belongs to the pattern is re-read here, which is what makes
+    // an edit need no new nesting. An empty one is a state and not an error: "No cover page" is
+    // one of the answers the print widget offers.
+    const OExportCoverPage::Drawing cover = OExportCoverPage::Of(*existing, doc);
+
     // The dialog's one choice, straight through: whether the layout is written as a layer the
-    // reader can switch off. It opens on no, and no is the answer that cannot lose anything.
+    // reader can switch off. It opens on no, and no is the answer that cannot lose anything. The
+    // cover page is not that choice and never was: it goes out of every layer whatever this says.
     if (!OExportPdf::Write(*existing, dialog.FullPath(), pattern, doc,
-                           hasMarks ? &marks : nullptr, framed, dialog.AddLayoutLayer()))
+                           hasMarks ? &marks : nullptr, framed, dialog.AddLayoutLayer(),
+                           cover.IsEmpty() ? nullptr : &cover))
     {
         QMessageBox::warning(this, tr("Export mode"),
                              tr("\"%1\" could not be exported.").arg(existing->name));

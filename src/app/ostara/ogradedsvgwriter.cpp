@@ -64,7 +64,8 @@ constexpr qreal kDefaultStrokeWidth = 0.1;
  *  are markers for the Ostara → Rabnest pipeline only — vector editors never
  *  display them, so they can carry machine meaning without constraining the
  *  visible layer names. */
-constexpr auto kOstaraNamespace = "urn:ostara";
+// The Ostara namespace lives in the shared SVG helpers: a second document now marks its own
+// attributes with it, and two spellings of one identifier is one too many.
 
 /** @brief Value of the ostara:layout marker set on the decor layer's <g>. */
 constexpr auto kOstaraLayoutMarker = "yes";
@@ -351,6 +352,10 @@ void WriteBlock(QXmlStreamWriter &writer, const QPointF &origin,
                                                                         : QStringLiteral("oblique"));
             }
             writer.writeAttribute(QStringLiteral("font-weight"), QString::number(info.weight()));
+            // **The face's NAME, because a weight number names no face** — « Light » (300) draws
+            // « ExtraLight », « Black » (900) draws « ExtraBold », measured on the fonts installed
+            // here. Trame reads this attribute and sets the face itself.
+            writer.writeAttribute(QStringLiteral("ostara:font-face"), info.styleName());
             writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("black"));
             writer.writeCharacters(el.text);
             writer.writeEndElement();  // text
@@ -478,7 +483,7 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
     writer.writeNamespace(QStringLiteral("http://ns.adobe.com/AdobeIllustrator/10.0/"), QStringLiteral("i"));
     writer.writeNamespace(QStringLiteral("http://www.inkscape.org/namespaces/inkscape"),
                           QStringLiteral("inkscape"));
-    writer.writeNamespace(QLatin1String(kOstaraNamespace), QStringLiteral("ostara"));
+    writer.writeNamespace(QLatin1String(OSvg::kOstaraNamespace), QStringLiteral("ostara"));
     writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.1"));
     {
         constexpr qreal dpm = 96.0 / 25.4;

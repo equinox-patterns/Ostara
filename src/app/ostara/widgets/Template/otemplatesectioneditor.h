@@ -147,6 +147,11 @@ private:
     /// The lines the fields share, by the key those fields declare. Rebuilt with the form.
     QHash<QString, QHBoxLayout *> m_rows;
 
+    /// The weight controls, by the key they declare — « fontWeight », « cornerFontWeight ». They
+    /// are held so that a family change can refill the list of faces that belongs to it: the faces
+    /// are the family's, and a list built once would go on offering the wrong font's.
+    QHash<QString, QComboBox *> m_weightCombos;
+
     OTemplateSectionHost *m_template{nullptr};
     const OSizeTable *m_table{nullptr};
     int m_index{-1};
