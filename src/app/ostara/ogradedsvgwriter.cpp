@@ -142,7 +142,17 @@ void WriteText(QXmlStreamWriter &writer, const QTransform &toSVG, QGraphicsSimpl
     {
         writer.writeAttribute(QStringLiteral("font-style"), QStringLiteral("italic"));
     }
-    writer.writeAttribute(QStringLiteral("font-weight"), QString::number(font.weight()));
+    // The RESOLVED weight, never the requested one: an unset weight is asked for as nought, and a
+    // nought written here reads back as the nearest face Qt can find to nothing at all — measured,
+    // « ExtraLight » where the application draws « Regular ». The other two writers of this file
+    // have always read it back from `QFontInfo`, and this one did not.
+    const QFontInfo resolved(font);
+    writer.writeAttribute(QStringLiteral("font-weight"),
+                          QString::number(resolved.weight()));
+    // **The face's NAME, because a weight number names no face** — see WriteBlock, which has carried
+    // it since the 22-09 morning. Without it, Trame re-resolves from the number and can land on
+    // another face than the application's, in silence.
+    writer.writeAttribute(QStringLiteral("ostara:font-face"), resolved.styleName());
     writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("black"));
     writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(tx));
     writer.writeCharacters(textItem->text());
@@ -445,6 +455,8 @@ void WriteAnnotation(QXmlStreamWriter &writer, const QPointF &origin,
         writer.writeAttribute(QStringLiteral("font-size"),
                               QString::number(std::max(resolvedFont.pixelSize(), 1)));
         writer.writeAttribute(QStringLiteral("font-weight"), QString::number(resolvedFont.weight()));
+        // The face's name, as WriteBlock carries it — see the note in WriteText.
+        writer.writeAttribute(QStringLiteral("ostara:font-face"), resolvedFont.styleName());
         writer.writeAttribute(QStringLiteral("fill"), fill);
         writer.writeCharacters(line);
         writer.writeEndElement();  // text
