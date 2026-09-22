@@ -327,33 +327,58 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
         // run given up during the tiled pass has to stop there too.
         spec.abandoned     = params.abandoned;
 
-        bool tiledAbandoned = false;
-        const std::vector<Placement> tiled =
-            TiledEngine(spec).place(bin, footprint.polygons, &tiledAbandoned);
+        // ── TROIS ORDRES, TROIS PLANS, ET C'EST ICI QU'ON CHOISIT ─────────────
+        //
+        // Le moteur est glouton : il pose les pièces dans un ordre, et ne revient jamais. La
+        // première prend la meilleure place, la dernière se contente du reste — donc **l'ordre
+        // décide de tout le plan**. Un seul ordre, c'est un seul plan, et rien ne peut rattraper
+        // une page qu'il a laissée.
+        //
+        // On demande donc trois plans au même moteur, à partir des MÊMES pièces, et on garde
+        // celui qui imprime le moins de feuilles — compté ici, avec `OExportSheets::Compute`,
+        // qui reste le seul endroit où cette règle est écrite.
+        //
+        // **Le plan historique reste la référence** : un autre ne le remplace que s'il imprime
+        // STRICTEMENT moins. Si aucun ne fait mieux, rien ne change — au plan près.
+        const TiledEngine::Spec::Order orders[] = {TiledEngine::Spec::Order::HolderArea,
+                                             TiledEngine::Spec::Order::HolderHeight,
+                                             TiledEngine::Spec::Order::HolderWidth};
 
-        if (tiledAbandoned)
+        const QVector<OExportPlacement> stripPlan =
+            ToExportPlacements(placements, footprint.polygons);
+        int bestSheets = PrintedSheets(
+            stripPlan, Engine::UsedHeight(placements, footprint.polygons, bin), params);
+
+        for (const TiledEngine::Spec::Order order : orders)
         {
-            result.abandoned = true;
-            return result;
-        }
+            spec.order = order;
 
-        if (tiled.size() == footprint.polygons.size() && AllPlaced(tiled))
-        {
-            const QVector<OExportPlacement> stripPlan =
-                ToExportPlacements(placements, footprint.polygons);
-            const QVector<OExportPlacement> tiledPlan =
-                ToExportPlacements(tiled, footprint.polygons);
+            bool tiledAbandoned = false;
+            const std::vector<Placement> tiled =
+                TiledEngine(spec).place(bin, footprint.polygons, &tiledAbandoned);
 
-            const int stripSheets = PrintedSheets(
-                stripPlan, Engine::UsedHeight(placements, footprint.polygons, bin), params);
-            const int tiledSheets = PrintedSheets(
-                tiledPlan, Engine::UsedHeight(tiled, footprint.polygons, bin), params);
-
-            if (tiledSheets < stripSheets)
+            if (tiledAbandoned)
             {
-                placements = tiled;
+                result.abandoned = true;
+                return result;
+            }
+
+            if (tiled.size() != footprint.polygons.size() || !AllPlaced(tiled))
+            {
+                continue;   // ce départ-là n'a pas su tout poser : il ne concourt pas
+            }
+
+            const int tiledSheets = PrintedSheets(
+                ToExportPlacements(tiled, footprint.polygons),
+                Engine::UsedHeight(tiled, footprint.polygons, bin), params);
+
+            if (tiledSheets < bestSheets)
+            {
+                bestSheets  = tiledSheets;
+                placements  = tiled;
             }
         }
+
     }
 
     result.placements = ToExportPlacements(placements, footprint.polygons);
