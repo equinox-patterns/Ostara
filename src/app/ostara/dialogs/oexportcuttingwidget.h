@@ -54,6 +54,9 @@ class VMeasurements;
  *      offers for a single size, from the same measurement table.
  *   2. <b>how wide the fabric is</b> — the laize, a free field: fabrics do not all come the same
  *      width, so no model could answer it. It is the width the nesting runs on, and the only one.
+ *      Right below it, <b>whether that fabric is folded in two</b> — home sewing folds it along the
+ *      selvedge and traces the halves on the folded cloth. The nesting then runs on half the width,
+ *      which is the one thing about the folded answer the user has to be told rather than find.
  *   3. <b>which member of each group</b> — a group serves printing, where two pieces fill one shape
  *      on a sheet. On fabric a piece is cut once, so a group is decomposed and the user says which
  *      of its members she cuts. The box only appears when the pattern has a group to ask about.
@@ -93,6 +96,13 @@ public:
 
     /// @brief « Sens unique » — no piece is turned a half-turn. Removes a sense, not an axis.
     auto IsOneWayLayout() const -> bool;
+
+    /// @brief « Tissu plié » — the fabric is folded in two along the selvedge.
+    ///
+    /// The run then happens on **half the laize**: what is traced on the folded cloth is a half,
+    /// and the fold gives the other one. A piece cut on the fold keeps its fold line on that fold
+    /// edge, so it stays folded — the plan unfolded it, this one lays the half.
+    auto IsFoldedFabric() const -> bool;
 
     /// @brief L'espace gardé entre deux pièces, en millimètres. **Zéro par défaut** : sur du tissu,
     ///        deux pièces peuvent se toucher bord à bord, et rien ne justifie de les écarter.
@@ -148,6 +158,7 @@ private:
     QLabel *m_fabricWidthLabel{nullptr};
     QLineEdit *m_fabricWidthEdit{nullptr};
     QLabel *m_fabricWidthUnit{nullptr};
+    QCheckBox *m_foldedCheck{nullptr};
     QCheckBox *m_oneWayCheck{nullptr};
 
     QLabel *m_gapLabel{nullptr};

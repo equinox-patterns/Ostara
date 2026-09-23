@@ -50,6 +50,7 @@ auto RequestOf(const OExportOutput &output) -> OExportRunRequest
     request.groupMemberChoices = output.groupMemberChoices;
     request.cuttingPlan = output.cuttingPlan;
     request.oneWayLayout = output.oneWayLayout;
+    request.foldedFabric = output.foldedFabric;
     return request;
 }
 

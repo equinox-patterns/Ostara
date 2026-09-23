@@ -193,6 +193,17 @@ struct OExportOutput
     /// prendre du même côté. L'option retire **un sens**, pas un axe — une pièce « Double » garde
     /// le droit-fil et le contre-fil, elle n'est simplement jamais posée à l'envers.
     bool oneWayLayout{false};
+
+    /// @brief Whether this cutting plan was asked for on FOLDED fabric.
+    ///
+    /// Home sewing folds the cloth in two along the selvedge and traces the halves on the folded
+    /// stack. Three things follow, and none of them is a parameter of the run: the nesting happens
+    /// on **half the laize**, a piece cut on the fold is laid **folded and glued to the fold edge**,
+    /// and a piece cut twice is laid **once** — the fold mirrors it.
+    ///
+    /// The laize the user entered is NOT this: she bought 140, the plan runs on 70, and the name
+    /// says 140. Kept so that the Refresh entry replays the same plan.
+    bool foldedFabric{false};
 };
 
 /**
@@ -229,6 +240,9 @@ struct OExportRunRequest
 
     /// @see OExportOutput::oneWayLayout — the same flag, from the other side.
     bool oneWayLayout{false};
+
+    /// @see OExportOutput::foldedFabric — the same flag, from the other side.
+    bool foldedFabric{false};
 };
 
 /// @brief The request that reproduces @p output — what the Refresh entry hands back.

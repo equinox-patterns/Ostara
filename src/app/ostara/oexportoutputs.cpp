@@ -162,7 +162,15 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     auto abandoned = std::make_shared<std::atomic<bool>>(false);
 
     OExportNestingParams params;
-    params.binWidthPx = ToPixel(request.documentWidthMm, Unit::Mm);
+    // **Le tissu plié divise la laize par deux, et c'est ici que ça se dit** — le seul endroit où
+    // une longueur de la requête devient une longueur du run. Le tissu plié en deux dans le sens de
+    // la laize donne un bac de 70 pour une laize de 140, et tout le reste suit sans rien savoir :
+    // le bac, le canvas, la page du PDF et l'image lisent tous `binWidthPx`.
+    // La laize ENTRÉE, elle, ne bouge pas : c'est le tissu acheté, et le nom de la sortie le dit
+    // encore (`Cut-140`).
+    const qreal fabricWidthMm = request.foldedFabric ? request.documentWidthMm / 2.0
+                                                     : request.documentWidthMm;
+    params.binWidthPx = ToPixel(fabricWidthMm, Unit::Mm);
     params.marginPx = ToPixel(request.marginMm, Unit::Mm);
     params.gapPx = ToPixel(request.gapMm, Unit::Mm);
     // The grid follows the same rule as every other length: converted once, here.
@@ -170,6 +178,10 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // engine then has no grid, so no adjustment pass.
     params.artboardCount    = request.columns;
     params.artboardHeightPx = ToPixel(request.frameHeightMm, Unit::Mm);
+
+    // Et le tissu plié, qui ne se dit pas seulement ici : c'est le nesting qui en tire la rotation
+    // d'une pièce au pli et son ancrage au bord. Voir OExportNestingParams::foldedFabric.
+    params.foldedFabric = request.foldedFabric;
 
     // **The block the cover page reserves — and only when its format keeps it in a sheet.** The
     // seat is the format's own answer (OExportCoverPage), read from the token the run was asked
@@ -218,6 +230,9 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // the container it reads is the one the scenes are built from.
     OExportGeometry geometry(pattern, doc, m_m);
     geometry.SetCuttingPlan(request.cuttingPlan);
+    // Et si le tissu est plié : c'est de là que la pièce au pli garde son pli au lieu d'être
+    // dépliée, et qu'une pièce coupée deux fois n'est posée qu'une.
+    geometry.SetFoldedFabric(request.foldedFabric);
 
     // A cutting plan decomposes the groups: it keeps the member the user chose for each and drops
     // the others, so a group is not unioned into a single footprint. Empty means every piece —
@@ -427,6 +442,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.groupMemberChoices = request.groupMemberChoices;
     output.cuttingPlan = request.cuttingPlan;
     output.oneWayLayout = request.oneWayLayout;
+    output.foldedFabric = request.foldedFabric;
     output.layers = std::move(layers);
     output.result = result;
     output.generationMs = generationTimer.elapsed();
@@ -966,7 +982,7 @@ void MainWindow::DrawExportDrawing(QGraphicsScene *scene, const OExportOutput &o
     OExportCanvas::Build(scene, output.layers, output.result,
                          output.hasRange ? &output.range : nullptr, pattern, doc, nullptr,
                          drawing.artboards, hasMarks ? &marks : nullptr, framed, &drawing.cover,
-                         output.cuttingPlan);
+                         {output.cuttingPlan, output.foldedFabric});
 }
 
 /**

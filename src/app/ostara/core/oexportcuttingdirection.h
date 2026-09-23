@@ -60,6 +60,41 @@ struct Direction
     GrainlineArrowDirection arrows{GrainlineArrowDirection::twoWaysUpDown};
 };
 
+/// @brief The fold line of a piece, in the piece's own frame, or a null line when it has none.
+///
+/// **The ONE reading of the fold**, and this feature has paid for the lesson twice: what says a
+/// piece has a fold is the LINE and never its marking's type (`FoldLineType` is born at
+/// `TwoArrowsTextAbove`, so "the type is not None" is true of every piece ever made), and the two
+/// readers of that line must read the SAME one — a guard that tested the seam-allowance line while
+/// the nesting read the seam line let a piece through with no constraint at all, and the plan laid
+/// it at random without saying so.
+auto FoldLine(const VLayoutPiece &piece) -> QLineF;
+
+/// @brief The same line, in the frame the contour is drawn and nested in.
+///
+/// ⚠️ **Not the same line when the piece carries a mirror.** `Force flipping` and the symmetrical
+/// copy put a reflection in the piece's MATRIX, and the matrix does not touch the stored fold line:
+/// reading the line unmapped while the contour is mapped gives a fold that no longer falls on its
+/// own piece's edge.
+auto MappedFoldLine(const VLayoutPiece &piece) -> QLineF;
+
+/// @brief The one rotation that lays a piece cut ON THE FOLD on folded fabric, when there is one.
+///
+/// A folded plan lays the half, and its fold line has to sit exactly on the fabric's fold — so the
+/// only rotation that will do is the one that brings that line **vertical** with the piece's body on
+/// the fabric's side. Of the two rotations a fold axis allows (`{base, base + 180}`), **one** does:
+/// the other lays the body outside the cloth.
+///
+/// The fold wins over the grainline here, which is the opposite of @ref PieceDirection — and it is
+/// not a contradiction: a piece cut on the fold is cut ON THE FOLD, so it is the fold of the fabric
+/// that carries it. Its grainline, if it has one, follows.
+///
+/// @param angle set to the rotation, in the engine's convention, when the answer is true.
+/// @return false when the piece has no fold, or when its fold line is not an edge of its own
+///         outline — in which case there is no rotation to find, and the caller has to say so
+///         rather than lay the piece somewhere.
+auto FoldAngle(const VLayoutPiece &piece, double *angle) -> bool;
+
 /// @brief The direction of a piece: its own grainline when it is switched on, its fold axis otherwise.
 ///
 /// ⚠️ **Never call this on a member of a piece group.** A grouped member carries no direction of its

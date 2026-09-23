@@ -197,6 +197,12 @@ void OExportGeometry::SetCuttingPlan(bool cutting)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportGeometry::SetFoldedFabric(bool folded)
+{
+    m_foldedFabric = folded;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportGeometry::SelectAxis(const OSizerange &range) const -> AxisSelection
 {
     AxisSelection selection;
@@ -386,19 +392,28 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
 
         if (m_cuttingPlan)
         {
-            // ── Le dépliage ───────────────────────────────────────────────────────────────────
+            // ── Le pli, puis le dépliage ──────────────────────────────────────────────────────
             //
-            // Une pièce au pli part **dépliée**, même si « Show unfolded piece » est décochée en
-            // Details : on coupe la forme entière dans le tissu, et le pli est un repère de
-            // patronage, pas une consigne de coupe. Le réglage de la pièce n'est pas touché — c'est
-            // la destination qui force, exactement ce que le cadrage §4 nomme.
+            // Une pièce au pli part **dépliée** : sur un plan déplié, on coupe la forme entière dans
+            // le tissu, et le pli est un repère de patronage, pas une consigne de coupe.
+            //
+            // ⚠️ **Sauf sur du tissu plié.** Là, c'est la moitié qu'on trace sur le tissu plié, et
+            // le pli donne la seconde : la pièce reste donc pliée, et sa foldline tombe sur le bord
+            // du tissu. Le réglage de la pièce en Details n'est pas touché — c'est la destination
+            // qui force, dans un sens comme dans l'autre, exactement ce que le cadrage §4 nomme.
             //
             // Le getter du contour honore déjà ce drapeau : c'est donc la MÊME pièce que l'écran
             // dessine et que le moteur nidifie, et rien ne peut diverger.
             // ⚠️ Sur `geometry.piece`, JAMAIS sur `resolved` : la copie vers `geometry.piece` a déjà
             // eu lieu plus haut, et muter le local ne changeait rien — le drapeau partait à la
             // poubelle et la pièce sortait à moitié. C'est l'erreur qui a coûté ce chantier.
-            geometry.piece.SetShowFullPiece(true);
+            //
+            // ⚠️ Et « au pli » se lit par `FoldLine` — la SEULE lecture du pli, celle que le
+            // résolveur de direction emploie déjà. Jamais sur `FoldLineType` : il naît à
+            // `TwoArrowsTextAbove`, donc « le type n'est pas None » est vrai de toute pièce jamais
+            // créée. C'est le défaut qui a rendu le garde-fou muet.
+            geometry.onFold = not OExportCuttingDirection::FoldLine(resolved).isNull();
+            geometry.piece.SetShowFullPiece(not (m_foldedFabric and geometry.onFold));
 
             // ⚠️ The GROUP first, and the piece only when the group has nothing: a member's own
             // grainline can be enabled while the direction belongs to the group — Create does not
@@ -473,6 +488,21 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             if (quantity <= 0)
             {
                 quantity = 1;
+            }
+
+            // ── Et sur du tissu plié, la moitié ──────────────────────────────────────────────
+            //
+            // ⚠️ **Une pièce hors pli se coupe dans les DEUX épaisseurs** : une seule pose donne
+            // donc deux pièces, la seconde étant le miroir de la première — c'est le pli qui la
+            // fait. Poser « cut » fois en donnerait le double. C'est la moitié qu'on pose,
+            // **arrondie au-dessus** : 1 reste 1 (la pièce sera coupée en double, et c'est sans
+            // conséquence), 3 devient 2, 5 devient 3. Décision de Sophie.
+            //
+            // Une pièce **au pli** ne se divise pas : une pose sur le pli donne UNE pièce entière,
+            // pas deux — le pli n'y ajoute pas une seconde pièce, il complète la première.
+            if (m_foldedFabric and not geometry.onFold)
+            {
+                quantity = (quantity + 1) / 2;
             }
         }
 

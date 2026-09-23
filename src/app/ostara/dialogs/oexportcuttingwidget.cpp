@@ -135,6 +135,14 @@ void OExportCuttingWidget::BuildUi()
     m_fabricWidthLabel = new QLabel(this);
     form->addRow(m_fabricWidthLabel, widthRow);
 
+    // ── Le tissu plié ────────────────────────────────────────────────────
+    // La couture grand public plie le tissu en deux dans le sens de la laize : on trace les moitiés
+    // sur le tissu plié, et le pli donne la seconde. Posée ici, juste sous la laize, parce que
+    // c'est la laize qu'elle change — le nesting tourne alors sur la moitié.
+    m_foldedCheck = new QCheckBox(this);
+    connect(m_foldedCheck, &QCheckBox::toggled, this, [this](bool) { emit Changed(); });
+    form->addRow(m_foldedCheck);
+
     // ── Le sens ──────────────────────────────────────────────────────────
     // Quelle que soit la pièce : aucune n'est retournée d'un demi-tour. Le tissu a un sens —
     // velours, carreaux, imprimé — et toutes les pièces doivent le prendre du même côté.
@@ -492,6 +500,12 @@ auto OExportCuttingWidget::IsOneWayLayout() const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportCuttingWidget::IsFoldedFabric() const -> bool
+{
+    return m_foldedCheck->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportCuttingWidget::DimensionBase(int index) const -> qreal
 {
     if (index < 0)
@@ -609,6 +623,14 @@ void OExportCuttingWidget::Retranslate()
     m_gapLabel->setText(tr("Space between pieces:"));
     m_gapUnit->setText(UnitsToStr(Unit::Cm, true));
     m_gapEdit->setText(OExportUnitFormat::Format(m_gapMm, Unit::Cm));
+
+    m_foldedCheck->setText(tr("Folded fabric"));
+    m_foldedCheck->setToolTip(
+        tr("The fabric is folded in two along its length, and the halves are traced on the folded "
+           "cloth — the fold gives the second half. The nesting then runs on HALF the fabric width: "
+           "140 entered here means a plan laid out on 70. A piece cut on the fold keeps its fold "
+           "line on the fold and stays folded; a piece cut twice is laid once, and the fold mirrors "
+           "it."));
 
     m_oneWayCheck->setText(tr("One-way layout"));
     m_oneWayCheck->setToolTip(

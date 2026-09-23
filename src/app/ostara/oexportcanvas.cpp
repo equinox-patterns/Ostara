@@ -62,6 +62,7 @@
 
 #include <QBrush>
 #include <QGraphicsItem>
+#include <QGraphicsLineItem>
 #include <QGraphicsRectItem>
 #include <QGraphicsSimpleTextItem>
 #include <QHash>
@@ -918,12 +919,16 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                           const OExportTemplate *marks,
                           bool framed,
                           const OExportCoverPage::Drawing *cover,
-                          bool cuttingPlan)
+                          const OExportRunFlags &run)
 {
     if (scene == nullptr || !result.ok)
     {
         return;
     }
+
+    // Lu une fois, sous son ancien nom : le reste de cette fonction demande la même chose à quatre
+    // endroits, et quatre lectures d'un drapeau sont quatre occasions d'en lire un autre.
+    const bool cuttingPlan = run.cuttingPlan;
 
     scene->clear();
 
@@ -1014,6 +1019,23 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         bin->setBrush(QBrush(Qt::white));
         bin->setZValue(kBinZ);
         scene->addItem(bin);
+
+        // ── Le bord du pli, quand le tissu est plié ─────────────────────────────────────────────
+        //
+        // Le bac fait alors la DEMI-laize, et l'un de ses deux grands côtés est le pli — celui
+        // auquel les pièces au pli sont collées, leur foldline dessus. Sans ce trait, les deux
+        // côtés se ressemblent et rien ne dit lequel c'est. C'est le GAUCHE : il faut qu'il soit
+        // fixe, et le choix n'a pas d'importance.
+        //
+        // Il est tracé APRÈS le rectangle, au même plan : à égalité de plan, Qt dessine dans
+        // l'ordre d'ajout, donc il passe par-dessus l'arête du bac au lieu de lutter avec elle.
+        if (run.foldedFabric)
+        {
+            auto *fold = new QGraphicsLineItem(0, 0, 0, result.usedHeightPx);
+            fold->setPen(QPen(Qt::black, 1, Qt::DashDotLine));
+            fold->setZValue(kBinZ);
+            scene->addItem(fold);
+        }
     }
 
     // The assembly marks go on that paper, under everything the run places on it: the plan's own

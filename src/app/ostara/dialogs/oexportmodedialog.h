@@ -113,6 +113,18 @@ public:
     /// added, so two identical lines are not born carrying the same name.
     auto CurrentName() const -> QString;
 
+    /// @brief Le jeton qui dit ce que ce plan de coupe EST : la laize, et si le tissu est plié.
+    ///
+    /// ⚠️ **Une seule écriture du jeton, deux lecteurs** — la sortie décrite une par une
+    /// (`CurrentName`) et les N sorties d'un lot (`DescribedOutputs`). Le second le composait pour
+    /// son compte, et c'est exactement la faute qui a coûté la §16.3 : deux endroits qui répondent à
+    /// la même question finissent par y répondre différemment.
+    ///
+    /// La laize y est parce que le même patron à 140 et à 150 sont deux plans différents ; « plié »
+    /// pour la même raison, à 140 déplié et à 140 plié. Aucun des deux n'est ce sur quoi le nesting
+    /// tourne — sur du tissu plié, il tourne sur la moitié.
+    auto CuttingToken() const -> QString;
+
     /// @brief Hand in the one operation the dialog cannot do itself.
     void SetRunGenerator(RunGenerator generator);
 

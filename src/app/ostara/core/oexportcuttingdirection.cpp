@@ -31,6 +31,7 @@
 #include "../vwidgets/vpiecegrainline.h"
 
 #include <QLineF>
+#include <QTransform>
 #include <QtNumeric>
 
 namespace
@@ -50,6 +51,92 @@ auto Normalized(qreal degrees) -> double
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportCuttingDirection::FoldLine(const VLayoutPiece &piece) -> QLineF
+{
+    // ⚠️ L'ordre compte, et il est le même partout : la ligne de MARGE d'abord, celle d'assemblage
+    // ensuite. Une pièce sans marge rend la ligne d'assemblage telle quelle, donc les deux
+    // répondent la même chose ; et une pièce dont le rayon de l'axe rate le polygone de marge rend
+    // une ligne nulle là où l'autre existe — c'est le cas qui a rendu le garde-fou muet.
+    QLineF fold = piece.GetSeamAllowanceMirrorLine();
+    if (fold.isNull())
+    {
+        fold = piece.GetSeamMirrorLine();
+    }
+    return fold;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportCuttingDirection::MappedFoldLine(const VLayoutPiece &piece) -> QLineF
+{
+    return piece.GetMatrix().map(FoldLine(piece));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportCuttingDirection::FoldAngle(const VLayoutPiece &piece, double *angle) -> bool
+{
+    const QLineF fold = MappedFoldLine(piece);
+    if (fold.isNull())
+    {
+        return false;
+    }
+
+    // Les deux rotations qui mettent le pli vertical — celles que `AllowedAngles` rend déjà pour un
+    // pli. Le signe est celui du chantier, et il vaut la peine d'être redit ici : `QLineF::angle()`
+    // tourne dans un sens, `rotatePath` dans l'autre, d'où le `− 90` et non le `+ 90`.
+    qreal alignment = std::fmod(fold.angle(), 180.0);
+    if (alignment < 0.0)
+    {
+        alignment += 180.0;
+    }
+    const double base = alignment - 90.0;
+
+    // Le contour que le moteur recevra, dans le même repère que le pli : c'est LUI que le pli doit
+    // border, pas la pièce d'un autre repère.
+    const QVector<VLayoutPoint> contour = piece.GetMappedExternalContourPoints();
+
+    // Un dixième de millième de pixel. La rotation est une transformation de coordonnées, et deux
+    // points que le calcul sépare de ça ne sont pas séparés : c'est du bruit, pas une pente.
+    constexpr qreal kTolerance = 1e-4;
+
+    for (const double candidate : {base, base + 180.0})
+    {
+        QTransform turn;
+        turn.rotate(candidate); // Qt tourne dans le sens de l'écran, comme `rotatePath`
+
+        const QLineF turned = turn.map(fold);
+        if (std::abs(turned.dx()) > kTolerance)
+        {
+            continue; // pas verticale
+        }
+
+        // Le corps est du côté du tissu : tout le contour est à droite du pli, et le pli EST donc
+        // le bord extrême de la pièce. C'est la seule des deux rotations qui tient la pièce dans
+        // le tissu — l'autre la met dehors.
+        const qreal edge = turned.x1();
+        bool inside = true;
+        for (const VLayoutPoint &point : contour)
+        {
+            if (turn.map(QPointF(point.x(), point.y())).x() < edge - kTolerance)
+            {
+                inside = false;
+                break;
+            }
+        }
+
+        if (inside)
+        {
+            *angle = Normalized(candidate);
+            return true;
+        }
+    }
+
+    // Ni l'une ni l'autre : le pli n'est pas un bord de sa propre pièce, et aucune rotation ne le
+    // rendra posable. Le dire est le travail de l'appelant — poser la pièce quand même serait un
+    // plan faux qui a l'air fini.
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportCuttingDirection::PieceDirection(const VLayoutPiece &piece) -> Direction
 {
     // The grainline first: it is the explicit one. ⚠️ IsEnabled says the direction was GIVEN —
@@ -63,20 +150,14 @@ auto OExportCuttingDirection::PieceDirection(const VLayoutPiece &piece) -> Direc
     // Otherwise the fold: its axis is the grain (§7 — « la foldline a un sens, et c'est le sens du
     // droit-fil »), and it is the same frame as the grainline.
     //
-    // ⚠️ What says a piece has a fold is the LINE and never its type: FoldLineType is born at
-    // TwoArrowsTextAbove, so "the type is not None" is true of every piece ever created.
-    //
-    // ⚠️ **The SAME line the guard reads.** The guard calls a piece directed when its
-    // SeamAllowanceMirrorLine is not null; reading the seam line here — and the other one only when
-    // the main path happens to be hidden — left a piece the guard had let through with NO
-    // constraint at all. The engine then placed it wherever the annealing liked, and nothing said
-    // so: one piece of a plan, laid at random, in a plan that looked finished. Found by Sophie, who
-    // saw a single piece facing the wrong way and fixed it by adding a grainline.
-    QLineF fold = piece.GetSeamAllowanceMirrorLine();
-    if (fold.isNull())
-    {
-        fold = piece.GetSeamMirrorLine();
-    }
+    // ⚠️ **The SAME line the guard reads** — @ref FoldLine, and not a second reading of it. The
+    // guard calls a piece directed when its seam-allowance mirror line is not null; reading the
+    // seam line here instead — or the other one only when the main path happens to be hidden — left
+    // a piece the guard had let through with NO constraint at all. The engine then placed it
+    // wherever the annealing liked, and nothing said so: one piece of a plan, laid at random, in a
+    // plan that looked finished. Found by Sophie, who saw a single piece facing the wrong way and
+    // fixed it by adding a grainline.
+    const QLineF fold = FoldLine(piece);
     if (not fold.isNull())
     {
         // ⚠️ Un pli est un AXE, pas une direction : ses deux points n'ont pas d'ordre, et `angle()`

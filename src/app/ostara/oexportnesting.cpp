@@ -188,6 +188,11 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
 
     QHash<QString, QVector<double>> anglesByKey;
 
+    // Les touches qui vont AU BORD — celles d'une pièce au pli, sur du tissu plié. Une seconde
+    // carte, à côté des angles, parce que les deux se remplissent au même endroit et se relisent au
+    // même endroit : l'ancrage et la rotation d'une pièce au pli sont une seule décision.
+    QHash<QString, Anchor> anchorByKey;
+
     for (const OExportSizeLayer &layer : layers)
     {
         SizeLayer engineLayer;
@@ -220,8 +225,39 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
             {
                 // Keyed, because the footprint is what the engine constrains — a group is nested as
                 // one block, and its members share the key.
-                anglesByKey.insert(piece.key,
-                                   OExportCuttingDirection::AllowedAngles(piece.direction, params.oneWayLayout));
+                double foldAngle = 0.0;
+                if (params.foldedFabric && piece.onFold)
+                {
+                    // ── Une pièce au pli, sur du tissu plié ──────────────────────────────────────
+                    //
+                    // Elle n'a plus qu'UNE rotation : celle qui met sa foldline verticale, le corps
+                    // dans le tissu — l'autre le mettrait dehors. Et elle est **collée au bord** :
+                    // sa foldline doit tomber EXACTEMENT sur le pli du tissu, et à cinq millimètres
+                    // près, la pièce dépliée est fausse de dix.
+                    //
+                    // ⚠️ Le pli l'emporte sur la grainline, ici et pas ailleurs : `PieceDirection`
+                    // préfère la grainline quand elle est allumée, et c'est juste partout sauf sur
+                    // une pièce qu'on coupe AU PLI — c'est le pli du tissu qui la porte.
+                    if (!OExportCuttingDirection::FoldAngle(piece.piece, &foldAngle))
+                    {
+                        // Aucune des deux rotations ne met le pli sur un bord de sa propre pièce : il
+                        // n'y a pas de rotation à trouver, et poser la pièce quand même serait un
+                        // plan faux qui a l'air fini. On le dit, et on nomme la pièce.
+                        result.error = QObject::tr("The piece \"%1\" (id %2) is cut on the fold, but "
+                                                   "its fold line is not one of its own edges. Check "
+                                                   "its fold line in the Details mode.")
+                                           .arg(piece.name)
+                                           .arg(piece.id);
+                        return result;
+                    }
+                    anglesByKey.insert(piece.key, QVector<double>{foldAngle});
+                    anchorByKey.insert(piece.key, Anchor::LeftWall);
+                }
+                else
+                {
+                    anglesByKey.insert(piece.key,
+                                       OExportCuttingDirection::AllowedAngles(piece.direction, params.oneWayLayout));
+                }
             }
         }
 
@@ -244,6 +280,12 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // Empty on a print run, and an empty list is a piece nobody constrained: the engine keeps its
     // whole sweep, exactly as it did before this parameter existed.
     std::vector<std::vector<double>> allowedAngles;
+
+    // Les pièces collées au bord, dans le MÊME ordre et pour la même raison : le moteur les reçoit
+    // parallèlement à ce qu'il nidifie, et `Footprint::compute` regroupe et réordonne.
+    // Vide sur un run d'impression, et sur tout plan qui n'a rien collé au bord — et vide, le
+    // moteur place exactement comme il l'a toujours fait.
+    std::vector<Anchor> anchors;
 
     const Footprint::Result footprint = Footprint::compute(engineLayers);
     if (footprint.polygons.empty())
@@ -291,16 +333,19 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     if (params.cuttingPlan)
     {
         allowedAngles.reserve(footprint.keys.size());
+        anchors.reserve(footprint.keys.size());
         for (const QString &key : footprint.keys)
         {
             const QVector<double> angles = anglesByKey.value(key);
             allowedAngles.emplace_back(angles.cbegin(), angles.cend());
+            anchors.push_back(anchorByKey.value(key, Anchor::Free));
         }
     }
 
     const Engine engine{config};
     bool abandoned = false;
-    std::vector<Placement> placements = engine.place(bin, footprint.polygons, allowedAngles, &abandoned);
+    std::vector<Placement> placements =
+        engine.place(bin, footprint.polygons, allowedAngles, anchors, &abandoned);
 
     if (abandoned)
     {
@@ -347,7 +392,13 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // surtout PAS `artboardCount == 0`, qui n'arrive jamais : `Columns()` rend
     // 1 sur un roulé, jamais 0. Un moteur qui testerait ça se tromperait sur
     // TOUS les runs actuels.
-    if (params.artboardHeightPx > 0.0 && params.artboardCount > 0)
+    // ⚠️ **Et jamais quand une pièce est collée au bord.** Le moteur Tiled ne connaît ni les angles
+    // par pièce ni l'ancrage : il tourne au quart de tour et pose librement. Lui laisser gagner
+    // l'arbitrage jetterait un plan juste pour un plan qui imprime moins de feuilles — et rien ne
+    // le dirait. Aujourd'hui il est déjà hors jeu (un plan de coupe ne pose pas d'artboard, donc
+    // `artboardHeightPx` vaut zéro), mais c'est une dépendance implicite : le jour où un plan de
+    // coupe recevra un cadre, elle tomberait sans bruit.
+    if (params.artboardHeightPx > 0.0 && params.artboardCount > 0 && anchors.empty())
     {
         TiledEngine::Spec spec;
         spec.sheetWidth    = params.binWidthPx / params.artboardCount;

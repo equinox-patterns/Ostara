@@ -73,6 +73,17 @@ struct OExportPieceGeometry
     /// does not mask a member's grainline — it reads `IsEnabled()` and nothing else — so the flag
     /// can be true while the direction belongs to the group. The masking is done on the item.
     OExportCuttingDirection::Direction direction{};
+
+    /// Whether this piece is cut ON THE FOLD — its fold line is one of its own edges.
+    ///
+    /// **Read on the LINE, never on the marking's type**: `FoldLineType` is born at
+    /// `TwoArrowsTextAbove`, so "the type is not None" is true of every piece ever created — the
+    /// error that left the guard silent the first time (§15.2). What says a piece has a fold is
+    /// `SeamAllowanceMirrorLine` being there, and that is how the canvas reads it too.
+    ///
+    /// On a folded plan such a piece is laid **folded**, with that line glued to the fabric's fold;
+    /// on a flat plan it is laid unfolded, as it always was.
+    bool onFold{false};
 };
 
 /// @brief Every piece of the pattern, resolved for one size of the range.
@@ -160,6 +171,14 @@ public:
     /// piece instead of the union of all its members.
     void SetPieceFilter(const QSet<quint32> &pieceIds);
 
+    /// @brief Whether the fabric this cutting plan is laid on is folded in two.
+    ///
+    /// It decides two things here, and both are about the same piece: a piece cut on the fold is
+    /// laid **folded** — half, its fold line on the fold — instead of being unfolded as a flat plan
+    /// unfolds it; and a piece cut twice is laid **once**, because the fold mirrors it. Without a
+    /// cutting plan this flag changes nothing.
+    void SetFoldedFabric(bool folded);
+
 private:
     /// The graded axis of a range, and the sizes it covers.
     struct AxisSelection
@@ -180,6 +199,8 @@ private:
     QSet<quint32> m_pieceFilter{};
     /// @brief Whether this traversal prepares a cutting plan — see SetCuttingPlan.
     bool m_cuttingPlan{false};
+    /// @brief Whether that cutting plan is laid on folded fabric — see SetFoldedFabric.
+    bool m_foldedFabric{false};
     /// @brief Diagnostics are a side channel: they report on a const traversal.
     mutable QStringList m_diagnostics{};
 };

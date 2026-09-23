@@ -118,6 +118,16 @@ struct OExportNestingParams
     /// Voir OExportCuttingDirection::AllowedAngles, qui en fait tout le calcul.
     bool oneWayLayout{false};
 
+    /// @brief Whether the cutting plan is laid on fabric folded in two.
+    ///
+    /// It changes what the engine is ASKED here, and only here: a piece cut on the fold gets the one
+    /// rotation that lays its fold line on the fabric's fold, and it is **glued to that fold edge**
+    /// instead of being placed freely across the bin. Both are things only this file can say — it is
+    /// the one place that holds the piece's own geometry and the list the engine receives, in the
+    /// order it receives it.
+    /// @see OExportCuttingDirection::FoldAngle, Anchor
+    bool foldedFabric{false};
+
     // The artboard grid — two values that are NOT lengths, unlike the three
     // above, even though the third is a length like them. Zero on both means a
     // run that is not tiled (the roll, A0), and the engine then places exactly

@@ -45,6 +45,24 @@ struct OExportNestingResult;
 struct OExportSizeLayer;
 struct OExportTemplate;
 
+/// @brief Quel genre de plan ce run est, pour ce que le canvas en dessine.
+///
+/// Les deux drapeaux voyagent ensemble parce qu'ils répondent à la même question — *quel plan
+/// est-ce ?* — et parce qu'un booléen de plus à la queue de `Build` aurait été un paramètre de plus
+/// à ne pas confondre avec les onze autres. Le prochain en trouvera sa place ici.
+struct OExportRunFlags
+{
+    /// **Un plan de coupe décompose les groupes** : la pièce retenue n'est plus un membre, c'est la
+    /// pièce qu'on taille — elle porte donc SON décor, et le groupe n'en dessine plus aucun. Voir
+    /// IsGroupedMember, où tout se décide.
+    bool cuttingPlan{false};
+
+    /// **Un plan sur tissu plié est dessiné sur la DEMI-laize** — le bac fait la moitié du tissu
+    /// acheté, et c'est ce qu'on trace. Son côté pli porte alors un trait distinct, pour qu'on voie
+    /// du même coup d'œil où est le pli : c'est le bord auquel les pièces au pli sont collées.
+    bool foldedFabric{false};
+};
+
 /// @brief What the canvas drew, in the shape a writer needs.
 ///
 /// Collected by Build itself rather than rebuilt beside it: the decor has one definition
@@ -142,10 +160,7 @@ public:
                       const OExportTemplate *marks = nullptr,
                       bool framed = false,
                       const OExportCoverPage::Drawing *cover = nullptr,
-                      /// **Un plan de coupe décompose les groupes** : la pièce retenue n'est plus
-                      /// un membre, c'est la pièce qu'on taille — elle porte donc SON décor, et le
-                      /// groupe n'en dessine plus aucun. Voir IsGroupedMember, où tout se décide.
-                      bool cuttingPlan = false);
+                      const OExportRunFlags &run = {});
 };
 
 #endif // OEXPORTCANVAS_H

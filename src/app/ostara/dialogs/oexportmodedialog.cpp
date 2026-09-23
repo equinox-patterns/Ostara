@@ -219,8 +219,7 @@ auto OExportModeDialog::DescribedOutputs() const -> QVector<OExportQueueItem>
         return outputs;
     }
 
-    const QString token =
-        QStringLiteral("Cut-%1").arg(OExportUnitFormat::Format(m_cuttingWidget->FabricWidthMm(), Unit::Cm));
+    const QString token = CuttingToken();
 
     // Les noms se réservent au fur et à mesure, **contre les entrées de ce même appel aussi** :
     // six sorties nommées d'un seul tenant porteraient sinon six fois le même nom.
@@ -307,6 +306,17 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
         request.groupMemberChoices = m_cuttingWidget->MemberChoices();
         request.cuttingPlan = true;
         request.oneWayLayout = m_cuttingWidget->IsOneWayLayout();
+        request.foldedFabric = m_cuttingWidget->IsFoldedFabric();
+
+        // **Sur du tissu plié, la marge est nulle.** Une pièce au pli est collée au bord du tissu :
+        // sa foldline tombe sur le pli, et une marge de 5 mm l'en écarterait — dépliée, la pièce
+        // serait trop étroite de 10 mm. La marge du moteur est la même sur les quatre côtés, et
+        // rien ne sait la rendre nulle d'un seul : sur un run plié, elle est nulle partout. Sur du
+        // tissu, une pièce peut toucher le bord — c'est même ce qu'on lui demande.
+        if (request.foldedFabric)
+        {
+            request.marginMm = 0.0;
+        }
         return request;
     }
 
@@ -353,13 +363,9 @@ auto OExportModeDialog::CurrentName() const -> QString
         }
     }
 
-    // A cutting plan has no print model — it comes out on a bolt of fabric, whose width IS the
-    // laize. The laize is in the name because the same pattern at 140 and at 150 are two different
-    // plans, and the name is the only place the difference shows.
-    const QString token =
-        cutting && m_cuttingWidget != nullptr
-            ? QStringLiteral("Cut-%1").arg(OExportUnitFormat::Format(m_cuttingWidget->FabricWidthMm(), Unit::Cm))
-            : request.printModelToken;
+    // Un plan de coupe n'a pas de modèle d'impression : il sort sur un rouleau de tissu, dont la
+    // largeur EST la laize — et le jeton qui le dit est écrit une seule fois, pour ses deux lecteurs.
+    const QString token = cutting && m_cuttingWidget != nullptr ? CuttingToken() : request.printModelToken;
 
     const QString base = OExportNameBuilder::Base(request.singleSize ? QString() : request.rangeName,
                                                   bases, token);
@@ -371,6 +377,29 @@ auto OExportModeDialog::CurrentName() const -> QString
     taken += m_queue.Names();
 
     return OExportNameBuilder::Unique(base, taken);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportModeDialog::CuttingToken() const -> QString
+{
+    if (m_cuttingWidget == nullptr)
+    {
+        return {};
+    }
+
+    QString token = QStringLiteral("Cut-%1").arg(
+        OExportUnitFormat::Format(m_cuttingWidget->FabricWidthMm(), Unit::Cm));
+
+    // « Plié » est un jeton de plus, pour la même raison que la laize : le même patron à 140 déplié
+    // et à 140 plié sont deux plans différents, et le nom est le seul endroit où la différence se
+    // voit. ⚠️ La laize, elle, reste celle du tissu acheté : le nesting tourne sur la moitié, mais
+    // personne n'achète 70.
+    if (m_cuttingWidget->IsFoldedFabric())
+    {
+        token += QStringLiteral("-Folded");
+    }
+
+    return token;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
