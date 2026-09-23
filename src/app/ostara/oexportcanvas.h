@@ -141,7 +141,11 @@ public:
                       const OExportArtboards::Grid &artboards = {},
                       const OExportTemplate *marks = nullptr,
                       bool framed = false,
-                      const OExportCoverPage::Drawing *cover = nullptr);
+                      const OExportCoverPage::Drawing *cover = nullptr,
+                      /// **Un plan de coupe décompose les groupes** : la pièce retenue n'est plus
+                      /// un membre, c'est la pièce qu'on taille — elle porte donc SON décor, et le
+                      /// groupe n'en dessine plus aucun. Voir IsGroupedMember, où tout se décide.
+                      bool cuttingPlan = false);
 };
 
 #endif // OEXPORTCANVAS_H

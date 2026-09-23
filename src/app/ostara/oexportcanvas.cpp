@@ -449,8 +449,22 @@ auto AnnotationOverrideOf(const OSizerange *range, quint32 ownerId, bool isGroup
 /// Whether a piece belongs to a group that is nested as one rigid block. Below two
 /// members a group is not a block — the canvas, the export and the container all draw
 /// that line in the same place (OGraded::kMinGroupMembers).
-auto IsGroupedMember(const VContainer *pattern, quint32 groupId) -> bool
+auto IsGroupedMember(const VContainer *pattern, quint32 groupId, bool cuttingPlan) -> bool
 {
+    // ⚠️ **Un plan de coupe DÉCOMPOSE les groupes.** Le membre gardé n'est plus un membre, c'est la
+    // pièce qu'on taille — mais il conserve son `groupId`, donc sans cette ligne le canvas
+    // continuerait de le priver de son décor et de dessiner celui du groupe autour de lui. Le
+    // membre porterait le cartouche de son groupe, avec ses annotations et sa grainline, alors que
+    // c'est une autre pièce qui est coupée.
+    //
+    // Le groupe n'est pas touché pour autant : `group.m_glGrainline` reste intact, et le droit-fil
+    // du nesting est résolu bien plus tôt, dans OExportGeometry — le repli sur la grainline du
+    // groupe continue donc de servir au moteur, simplement il ne se DESSINE plus.
+    if (cuttingPlan)
+    {
+        return false;
+    }
+
     if (groupId == 0 || pattern == nullptr)
     {
         return false;
@@ -474,11 +488,12 @@ auto IsGroupedMember(const VContainer *pattern, quint32 groupId) -> bool
 /// the authority here: its override carries the origin and the length, and the piece's
 /// own rotation formula still supplies the angle, since a range stores none.
 void ApplyReferenceGrainline(VLayoutPiece &placed, const OExportPieceGeometry &geometry,
-                             const OSizerange *range, const Unit &unit, const VContainer *pattern)
+                             const OSizerange *range, const Unit &unit, const VContainer *pattern,
+                             bool cuttingPlan)
 {
     VPieceGrainline &grainline = placed.GetGrainline();
 
-    if (IsGroupedMember(pattern, geometry.groupId))
+    if (IsGroupedMember(pattern, geometry.groupId, cuttingPlan))
     {
         // A grouped member carries no grainline of its own: the group hosts one for all
         // of them, exactly as Details and Graded do it.
@@ -902,7 +917,8 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                           const OExportArtboards::Grid &artboards,
                           const OExportTemplate *marks,
                           bool framed,
-                          const OExportCoverPage::Drawing *cover)
+                          const OExportCoverPage::Drawing *cover,
+                          bool cuttingPlan)
 {
     if (scene == nullptr || !result.ok)
     {
@@ -1058,14 +1074,20 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 // The placement is baked into the piece's own matrix rather than into a
                 // transform on the item: an item transform would drag the bounding rect,
                 // the selection and the rubber band along with it.
+                //
+                // **Composed, never overwritten.** The piece may carry a matrix of its own — that is
+                // where a cutting plan's mirror lives, put there while the geometry was collected.
+                // Overwriting it would lose the mirror, and the screen would show something other
+                // than what was nested. A piece with no matrix of its own — the whole print path —
+                // contributes the identity, so this is exactly the matrix it was before.
                 VLayoutPiece placed = geometry.piece;
-                placed.SetMatrix(placementMatrix);
+                placed.SetMatrix(geometry.piece.GetMatrix() * placementMatrix);
 
                 // The decor is set on the piece before GetItem runs, because GetItem is
                 // what builds it — and it is set on the reference layer only.
                 if (isReference)
                 {
-                    ApplyReferenceGrainline(placed, geometry, range, unit, pattern);
+                    ApplyReferenceGrainline(placed, geometry, range, unit, pattern, cuttingPlan);
                 }
 
                 QGraphicsItem *item = placed.GetItem(false, true, false);
@@ -1088,7 +1110,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 {
                     HidePerSizeDecor(item);
                 }
-                else if (IsGroupedMember(pattern, geometry.groupId))
+                else if (IsGroupedMember(pattern, geometry.groupId, cuttingPlan))
                 {
                     // A grouped member carries nothing of its own: the group hosts the
                     // single set, grainline included. Its frame is measured here, at the
@@ -1108,7 +1130,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     geometriesByLayer[l].append(&geometry);
                 }
 
-                if (isReference && !IsGroupedMember(pattern, geometry.groupId))
+                if (isReference && !IsGroupedMember(pattern, geometry.groupId, cuttingPlan))
                 {
                     // The decor layer holds the reference size's decor. Its records are
                     // collected here, where the decision to draw it was taken — a second
@@ -1205,7 +1227,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         for (int k = 0; k < items.size() && k < geometriesByLayer.at(l).size(); ++k)
         {
             const OExportPieceGeometry *geometry = geometriesByLayer.at(l).at(k);
-            const bool grouped = IsGroupedMember(pattern, geometry->groupId);
+            const bool grouped = IsGroupedMember(pattern, geometry->groupId, cuttingPlan);
             const QString name = grouped ? geometry->groupName : geometry->name;
 
             int index = objectOfName.value(name, -1);

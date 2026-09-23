@@ -143,6 +143,18 @@ private:
     /// keep in step with the first. What it described is in the list by the time this runs.
     void ResetPrintTab();
 
+    /// @brief Give the Cutting plan tab a form that has never been touched — same doctrine as
+    ///        ResetPrintTab: rebuilt, never reset field by field.
+    void ResetCuttingTab();
+
+    /// @brief Tout ce que l'onglet en cours décrit, déjà nommé.
+    ///
+    /// Une entrée pour une taille unique — le cas de toujours sur une table sans axes — et **le
+    /// produit cartésien des axes cochés** pour « plusieurs tailles ». Les noms sont réservés au fur
+    /// et à mesure contre ceux déjà pris, y compris contre les entrées de ce même appel : sans ça,
+    /// six sorties nées d'un coup porteraient six fois le même nom.
+    auto DescribedOutputs() const -> QVector<OExportQueueItem>;
+
     /// @brief File what the Print tab describes in the list to generate. Nests nothing.
     void OnAddToList();
 

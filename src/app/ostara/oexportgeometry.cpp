@@ -191,6 +191,12 @@ void OExportGeometry::SetPieceFilter(const QSet<quint32> &pieceIds)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportGeometry::SetCuttingPlan(bool cutting)
+{
+    m_cuttingPlan = cutting;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportGeometry::SelectAxis(const OSizerange &range) const -> AxisSelection
 {
     AxisSelection selection;
@@ -378,10 +384,131 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         geometry.key = geometry.groupId == 0 ? geometry.name : QStringLiteral("g%1").arg(geometry.groupId);
         geometry.piece = resolved;
 
+        if (m_cuttingPlan)
+        {
+            // ── Le dépliage ───────────────────────────────────────────────────────────────────
+            //
+            // Une pièce au pli part **dépliée**, même si « Show unfolded piece » est décochée en
+            // Details : on coupe la forme entière dans le tissu, et le pli est un repère de
+            // patronage, pas une consigne de coupe. Le réglage de la pièce n'est pas touché — c'est
+            // la destination qui force, exactement ce que le cadrage §4 nomme.
+            //
+            // Le getter du contour honore déjà ce drapeau : c'est donc la MÊME pièce que l'écran
+            // dessine et que le moteur nidifie, et rien ne peut diverger.
+            // ⚠️ Sur `geometry.piece`, JAMAIS sur `resolved` : la copie vers `geometry.piece` a déjà
+            // eu lieu plus haut, et muter le local ne changeait rien — le drapeau partait à la
+            // poubelle et la pièce sortait à moitié. C'est l'erreur qui a coûté ce chantier.
+            geometry.piece.SetShowFullPiece(true);
+
+            // ⚠️ The GROUP first, and the piece only when the group has nothing: a member's own
+            // grainline can be enabled while the direction belongs to the group — Create does not
+            // mask it, the masking is done on the item. Read here rather than at nesting time
+            // because this is the only place that still holds the container.
+            geometry.direction = OExportCuttingDirection::PieceDirection(resolved);
+
+            const auto *groups = m_container->DataPieceGroups();
+            if (groups != nullptr && geometry.groupId != NULL_ID)
+            {
+                const auto groupIt = groups->constFind(geometry.groupId);
+                if (groupIt != groups->constEnd())
+                {
+                    const OExportCuttingDirection::Direction groupDirection =
+                        OExportCuttingDirection::GroupDirection(groupIt.value());
+                    if (groupDirection.known)
+                    {
+                        geometry.direction = groupDirection;
+                    }
+                }
+            }
+
+            // ── Le miroir — APRÈS la direction, jamais avant ──────────────────────────────────
+            //
+            // Pas de miroir sauf demande explicite : `Force flipping` est le seul chemin. Décision
+            // de Sophie — le legacy retournait une pièce sans qu'on demande rien, et un plan de
+            // coupe qui retourne tout seul est faux sans le dire.
+            //
+            // ⚠️ Le miroir va dans la MATRICE, et les deux lecteurs doivent l'appliquer : le moteur
+            // par le getter MAPPÉ du contour, l'écran en composant la matrice de placement au lieu
+            // de l'écraser. Poser le drapeau `SetVerticallyFlipped` ne mire rien — il ne fait que
+            // renverser l'ordre des points.
+            //
+            // ⚠️ Et il vient **après** la direction, parce qu'il en CHANGE l'angle : la matrice ne
+            // touche pas la ligne de droit-fil, donc le moteur lirait l'angle d'avant le miroir et
+            // tournerait la pièce comme si elle n'était pas retournée. Un biais à 45° sortait à
+            // l'horizontale au lieu de la verticale. Trouvé par Sophie.
+            if (piece.IsForceFlipping())
+            {
+                const QPointF centre = geometry.piece.DetailBoundingRect().center();
+                geometry.piece.Mirror(QLineF(centre.x(), centre.y(), centre.x(), centre.y() - 100.0));
+                geometry.direction = OExportCuttingDirection::Mirrored(geometry.direction);
+            }
+        }
+
         // Forced alignment point, resolved against `target` while it still holds THIS size.
         geometry.alignPointX = OGraded::UnitAlignPointX(id, piece, target);
 
-        layer.pieces.append(geometry);
+        // ── La quantité ─────────────────────────────────────────────────────────────────────────
+        //
+        // Le membre d'abord, sinon le groupe, sinon 1 — décision de Sophie. Rien dans ce chemin ne
+        // lisait la quantité jusqu'ici : c'est la section Cut du cartouche, et une pièce se coupe
+        // rarement une seule fois.
+        //
+        // Un run d'impression garde une entrée par pièce : une feuille porte une silhouette, et
+        // c'est le moteur qui décide où. Seul un plan de coupe répète.
+        int quantity = 1;
+        if (m_cuttingPlan)
+        {
+            quantity = piece.GetCutFabricQty();
+
+            const auto *groups = m_container->DataPieceGroups();
+            if (quantity <= 0 && groups != nullptr && geometry.groupId != NULL_ID)
+            {
+                const auto groupIt = groups->constFind(geometry.groupId);
+                if (groupIt != groups->constEnd())
+                {
+                    quantity = groupIt.value().m_cutFabricQty;
+                }
+            }
+
+            if (quantity <= 0)
+            {
+                quantity = 1;
+            }
+        }
+
+        for (int copy = 0; copy < quantity; ++copy)
+        {
+            OExportPieceGeometry one = geometry;
+
+            // ⚠️ Chaque copie a **son propre nom ET sa propre clé**. `Footprint::compute` regroupe
+            // sur le nom pour une pièce isolée : même nom = une seule empreinte, et la copie
+            // n'existe nulle part — sans qu'aucune erreur ne soit levée. Même clé = les deux
+            // dessinées empilées, et le second placement réserve une zone vide.
+            //
+            // ⚠️ Et pas de suffixe `_1` : `NestedSvgWriter::stripDedupSuffix` le RETIRE pour
+            // retrouver le transform — deux copies nommées ainsi retomberaient sur le même
+            // placement à la relecture.
+            if (copy > 0)
+            {
+                const QString suffix = QStringLiteral("-c%1").arg(copy + 1);
+                one.name = geometry.name + suffix;
+                one.key = geometry.key + suffix;
+            }
+
+            // Une copie sur deux en miroir, quand la copie symétrique est demandée — le motif de
+            // HandleSymmetricalCopy (libs/vlayout/vbank.cpp), qui retourne les index impairs.
+            if (copy % 2 == 1 && piece.IsSymmetricalCopy())
+            {
+                const QPointF centre = one.piece.DetailBoundingRect().center();
+                one.piece.Mirror(QLineF(centre.x(), centre.y(), centre.x(), centre.y() - 100.0));
+
+                // ⚠️ Même piège que pour `Force flipping` : la copie retournée a un droit-fil à
+                // `180 − a`, et sans ceci elle serait tournée comme si elle était encore à `a`.
+                one.direction = OExportCuttingDirection::Mirrored(one.direction);
+            }
+
+            layer.pieces.append(one);
+        }
     }
 }
 

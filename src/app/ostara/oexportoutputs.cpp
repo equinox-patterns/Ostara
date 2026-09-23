@@ -196,6 +196,11 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // nothing a thread that is not the GUI thread may touch.
     params.abandoned = [abandoned]() { return abandoned->load(); };
 
+    // What separates the two runs. False leaves the engine turning every piece freely, which is
+    // what a print run wants and what it has always done.
+    params.cuttingPlan = request.cuttingPlan;
+    params.oneWayLayout = request.oneWayLayout;
+
     // **Closing this dialog is how the run is given up.** The engine has no abort hook of its own,
     // so one is handed to it below: the cross sets a flag, the engine reads it between its
     // iterations, and the run stops where it stands. There is no Cancel button because there is
@@ -212,6 +217,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // stays on the GUI thread: VLayoutPiece::Create reads the application settings, and
     // the container it reads is the one the scenes are built from.
     OExportGeometry geometry(pattern, doc, m_m);
+    geometry.SetCuttingPlan(request.cuttingPlan);
 
     // A cutting plan decomposes the groups: it keeps the member the user chose for each and drops
     // the others, so a group is not unioned into a single footprint. Empty means every piece —
@@ -419,6 +425,8 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.coverPageTemplateName = request.coverPageTemplateName;
     output.pinnedAxes = request.pinnedAxes;
     output.groupMemberChoices = request.groupMemberChoices;
+    output.cuttingPlan = request.cuttingPlan;
+    output.oneWayLayout = request.oneWayLayout;
     output.layers = std::move(layers);
     output.result = result;
     output.generationMs = generationTimer.elapsed();
@@ -957,7 +965,8 @@ void MainWindow::DrawExportDrawing(QGraphicsScene *scene, const OExportOutput &o
 
     OExportCanvas::Build(scene, output.layers, output.result,
                          output.hasRange ? &output.range : nullptr, pattern, doc, nullptr,
-                         drawing.artboards, hasMarks ? &marks : nullptr, framed, &drawing.cover);
+                         drawing.artboards, hasMarks ? &marks : nullptr, framed, &drawing.cover,
+                         output.cuttingPlan);
 }
 
 /**

@@ -33,11 +33,14 @@
 #include <QVector>
 #include <QWidget>
 
+class QCheckBox;
 class QComboBox;
 class QFormLayout;
 class QGroupBox;
 class QLabel;
 class QLineEdit;
+class QRadioButton;
+class QVBoxLayout;
 class VContainer;
 class VMeasurements;
 
@@ -72,6 +75,29 @@ public:
     /// @brief The member kept for each group: group id → piece id. Empty when it has no group.
     auto MemberChoices() const -> QMap<quint32, quint32>;
 
+    /// @brief Vrai quand une seule taille est décrite — par les combos.
+    ///
+    /// **Toujours vrai sur une table sans axes** : il n'y a pas de taille à choisir, le document
+    /// est sur la sienne, et le formulaire ne pose même pas la question.
+    auto IsSingleSize() const -> bool;
+
+    /// @brief Les bases cochées pour l'axe en slot @p index (0 = X, 1 = Y, 2 = W), dans l'ordre de
+    ///        la table. Vide en taille unique.
+    auto CheckedBases(int index) const -> QVector<qreal>;
+
+    /// @brief Les libellés cochés pour l'axe en slot @p index, dans le même ordre que les bases.
+    auto CheckedLabels(int index) const -> QStringList;
+
+    /// @brief Vrai quand la table porte des axes — donc quand il y a un choix de tailles à faire.
+    auto HasAxes() const -> bool;
+
+    /// @brief « Sens unique » — no piece is turned a half-turn. Removes a sense, not an axis.
+    auto IsOneWayLayout() const -> bool;
+
+    /// @brief L'espace gardé entre deux pièces, en millimètres. **Zéro par défaut** : sur du tissu,
+    ///        deux pièces peuvent se toucher bord à bord, et rien ne justifie de les écarter.
+    auto GapMm() const -> qreal;
+
     /// @brief Base of the axis in slot @p index (0 = X, 1 = Y, 2 = W); -1 when the table carries no such axis.
     auto DimensionBase(int index) const -> qreal;
 
@@ -97,10 +123,23 @@ private:
         QComboBox *combo{nullptr};
     };
 
+    /// Un axe et ses cases à cocher : le contenu du mode « plusieurs tailles ».
+    struct SizeGrid
+    {
+        int slot{-1};
+        QLabel *label{nullptr};
+        QWidget *box{nullptr};
+        QVector<QCheckBox *> boxes{};
+        QVector<qreal> bases{};
+    };
+
     void BuildUi();
     void PopulateDimensions(QFormLayout *form);
+    void PopulateSizeGrids(QVBoxLayout *layout);
+    void UpdateSizeMode();
     void PopulateGroups();
     void CommitFabricWidth();
+    void CommitGap();
     void Retranslate();
 
     const VContainer *m_data{nullptr};
@@ -109,10 +148,25 @@ private:
     QLabel *m_fabricWidthLabel{nullptr};
     QLineEdit *m_fabricWidthEdit{nullptr};
     QLabel *m_fabricWidthUnit{nullptr};
+    QCheckBox *m_oneWayCheck{nullptr};
+
+    QLabel *m_gapLabel{nullptr};
+    QLineEdit *m_gapEdit{nullptr};
+    QLabel *m_gapUnit{nullptr};
+    qreal m_gapMm{0.0};
 
     QVector<QLabel *> m_dimensionLabels{};
     QVector<QComboBox *> m_dimensionCombos{};
     QVector<int> m_dimensionSlots{};
+
+    /// Le cadre des tailles, et le contenu de CHAQUE choix — la radio et ce qu'elle commande
+    /// doivent se lire ensemble : deux cadres voisins du même titre ne se comprenaient pas.
+    QGroupBox *m_sizeModeBox{nullptr};
+    QRadioButton *m_singleRadio{nullptr};
+    QRadioButton *m_severalRadio{nullptr};
+    QWidget *m_singleContent{nullptr};
+    QWidget *m_severalContent{nullptr};
+    QVector<SizeGrid> m_sizeGrids{};
 
     QGroupBox *m_groupsBox{nullptr};
     QVector<GroupRow> m_groupRows{};

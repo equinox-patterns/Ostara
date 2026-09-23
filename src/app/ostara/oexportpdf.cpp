@@ -83,7 +83,8 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     QGraphicsScene scene;
     OExportCanvasContent content;
     OExportCanvas::Build(&scene, output.layers, output.result,
-                         output.hasRange ? &output.range : nullptr, pattern, doc, &content);
+                         output.hasRange ? &output.range : nullptr, pattern, doc, &content,
+                         {}, nullptr, false, nullptr, output.cuttingPlan);
 
     // The page is the bin when the generation has no sheets to cut — a roll, the A0 sheet,
     // anything the print model left untuiled — and that is the whole of this export, left

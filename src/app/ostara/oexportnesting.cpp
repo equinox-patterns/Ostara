@@ -186,6 +186,8 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     QVector<SizeLayer> engineLayers;
     engineLayers.reserve(layers.size());
 
+    QHash<QString, QVector<double>> anglesByKey;
+
     for (const OExportSizeLayer &layer : layers)
     {
         SizeLayer engineLayer;
@@ -202,7 +204,10 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
 
             ContourNode node;
             node.type = QStringLiteral("Contour");
-            node.polyline = ToPath64(piece.piece.GetExternalContourPoints(), piece.alignDelta);
+            // Le contour MAPPÉ : c'est lui qui porte le miroir d'un plan de coupe. Sur un run
+            // d'impression la matrice de la pièce est l'identité, donc les deux getters rendent le
+            // même contour et rien ne bouge.
+            node.polyline = ToPath64(piece.piece.GetMappedExternalContourPoints(), piece.alignDelta);
             if (node.polyline.size() < 3)
             {
                 continue;
@@ -210,6 +215,14 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
             enginePiece.contourNodes.append(node);
 
             engineLayer.pieces.append(enginePiece);
+
+            if (params.cuttingPlan)
+            {
+                // Keyed, because the footprint is what the engine constrains — a group is nested as
+                // one block, and its members share the key.
+                anglesByKey.insert(piece.key,
+                                   OExportCuttingDirection::AllowedAngles(piece.direction, params.oneWayLayout));
+            }
         }
 
         if (!engineLayer.pieces.isEmpty())
@@ -223,6 +236,14 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
         result.error = QObject::tr("No piece of this range could be prepared for nesting.");
         return result;
     }
+
+    // The direction of each piece, by footprint key — and in the FOOTPRINT's order, not the layer's:
+    // `Footprint::compute` regroups and reorders what it is given, and the engine's per-piece
+    // constraints have to line up with what the engine will actually receive.
+    //
+    // Empty on a print run, and an empty list is a piece nobody constrained: the engine keeps its
+    // whole sweep, exactly as it did before this parameter existed.
+    std::vector<std::vector<double>> allowedAngles;
 
     const Footprint::Result footprint = Footprint::compute(engineLayers);
     if (footprint.polygons.empty())
@@ -267,9 +288,19 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // it between its iterations. Null — a caller with nobody watching — leaves it as it was.
     config.abandoned = params.abandoned;
 
+    if (params.cuttingPlan)
+    {
+        allowedAngles.reserve(footprint.keys.size());
+        for (const QString &key : footprint.keys)
+        {
+            const QVector<double> angles = anglesByKey.value(key);
+            allowedAngles.emplace_back(angles.cbegin(), angles.cend());
+        }
+    }
+
     const Engine engine{config};
     bool abandoned = false;
-    std::vector<Placement> placements = engine.place(bin, footprint.polygons, &abandoned);
+    std::vector<Placement> placements = engine.place(bin, footprint.polygons, allowedAngles, &abandoned);
 
     if (abandoned)
     {

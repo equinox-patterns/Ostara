@@ -104,6 +104,20 @@ struct OExportNestingParams
     double marginPx{0.0};   ///< document margin, kept clear on every side of the bin
     double gapPx{0.0};      ///< space kept between two pieces
 
+    /// @brief Whether this run is a cutting plan.
+    ///
+    /// It is the one thing that separates the two runs: a cutting plan lays pieces on fabric, whose
+    /// grain the pieces must follow, so each one is pinned to the rotations its direction allows.
+    /// **A print run is not**, and false here leaves the engine exactly as it was — free to turn
+    /// every piece to any of its 180 orientations.
+    bool cuttingPlan{false};
+
+    /// @brief « Sens unique » — aucune pièce n'est retournée d'un demi-tour.
+    ///
+    /// Retire un **sens**, pas un axe : une pièce « Double » garde le droit-fil ET le contre-fil.
+    /// Voir OExportCuttingDirection::AllowedAngles, qui en fait tout le calcul.
+    bool oneWayLayout{false};
+
     // The artboard grid — two values that are NOT lengths, unlike the three
     // above, even though the third is a length like them. Zero on both means a
     // run that is not tiled (the roll, A0), and the engine then places exactly

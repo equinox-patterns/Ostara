@@ -184,6 +184,105 @@ void OExportModeDialog::ResetPrintTab()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportModeDialog::DescribedOutputs() const -> QVector<OExportQueueItem>
+{
+    QVector<OExportQueueItem> outputs;
+
+    const bool cutting = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex;
+    if (not cutting || m_cuttingWidget == nullptr || m_cuttingWidget->IsSingleSize())
+    {
+        OExportQueueItem one;
+        one.name = CurrentName();
+        one.request = CurrentRequest();
+        outputs.append(one);
+        return outputs;
+    }
+
+    // Le produit cartésien, axe par axe — « tailles 32, 34, 36 × statures 160, 168 » donne six
+    // sorties. On garde le slot de chaque axe, parce que c'est lui qui nomme X, Y, W dans la requête.
+    QVector<int> axisSlots;
+    QVector<QVector<qreal>> values;
+    QVector<QStringList> names;
+    for (int slot = 0; slot < 3; ++slot)
+    {
+        const QVector<qreal> bases = m_cuttingWidget->CheckedBases(slot);
+        if (not bases.isEmpty())
+        {
+            axisSlots.append(slot);
+            values.append(bases);
+            names.append(m_cuttingWidget->CheckedLabels(slot));
+        }
+    }
+
+    if (values.isEmpty())
+    {
+        return outputs;
+    }
+
+    const QString token =
+        QStringLiteral("Cut-%1").arg(OExportUnitFormat::Format(m_cuttingWidget->FabricWidthMm(), Unit::Cm));
+
+    // Les noms se réservent au fur et à mesure, **contre les entrées de ce même appel aussi** :
+    // six sorties nommées d'un seul tenant porteraient sinon six fois le même nom.
+    QStringList taken = m_takenNames;
+    taken += m_queue.Names();
+
+    QVector<int> cursor(values.size(), 0);
+    for (;;)
+    {
+        OExportRunRequest request = CurrentRequest();
+        QStringList sizeLabels;
+        for (int axis = 0; axis < static_cast<int>(values.size()); ++axis)
+        {
+            const qreal base = values.at(axis).at(cursor.at(axis));
+            switch (axisSlots.at(axis))
+            {
+                case 0: request.baseA = base; break;
+                case 1: request.baseB = base; break;
+                default: request.baseC = base; break;
+            }
+            sizeLabels.append(names.at(axis).at(cursor.at(axis)));
+        }
+
+        OExportQueueItem item;
+        item.request = request;
+        item.name = OExportNameBuilder::Unique(OExportNameBuilder::Base(QString(), sizeLabels, token), taken);
+        taken.append(item.name);
+        outputs.append(item);
+
+        // Avance d'un cran dans le produit, du dernier axe vers le premier.
+        int axis = static_cast<int>(cursor.size()) - 1;
+        for (; axis >= 0; --axis)
+        {
+            if (++cursor[axis] < values.at(axis).size())
+            {
+                break;
+            }
+            cursor[axis] = 0;
+        }
+        if (axis < 0)
+        {
+            break; // le tour complet est fait
+        }
+    }
+
+    return outputs;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportModeDialog::ResetCuttingTab()
+{
+    delete m_cuttingWidget;
+
+    m_cuttingWidget = new OExportCuttingWidget(m_data, m_measurements, m_cuttingTab);
+    m_cuttingLayout->insertWidget(0, m_cuttingWidget);
+
+    connect(m_cuttingWidget, &OExportCuttingWidget::Changed, this, &OExportModeDialog::OnFormChanged);
+
+    RefreshGenerateButtons();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
 {
     OExportRunRequest request;
@@ -201,10 +300,13 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
         request.documentWidthMm = m_cuttingWidget->FabricWidthMm();
         request.unit = Unit::Cm;
         request.singleSize = true;
+        request.gapMm = m_cuttingWidget->GapMm();
         request.baseA = m_cuttingWidget->DimensionBase(0);
         request.baseB = m_cuttingWidget->DimensionBase(1);
         request.baseC = m_cuttingWidget->DimensionBase(2);
         request.groupMemberChoices = m_cuttingWidget->MemberChoices();
+        request.cuttingPlan = true;
+        request.oneWayLayout = m_cuttingWidget->IsOneWayLayout();
         return request;
     }
 
@@ -233,19 +335,27 @@ auto OExportModeDialog::CurrentName() const -> QString
     // A single size is named by the axes it sits on, read as the user reads them — the
     // label the combo shows ("160", "32"), never the base underneath. A range is named by
     // the range. An axis the table does not carry contributes nothing and is skipped.
+    // ⚠️ **Quel onglet décrit le run** — et il commande les DEUX morceaux du nom. Les axes se
+    //    lisent sur l'onglet en cours : lire ceux de l'onglet Impression pendant que
+    //    l'utilisatrice remplit celui du plan de coupe nommait la ligne d'après des combos que
+    //    PERSONNE n'a touchés — ils restent sur leur première entrée, donc sur les plus petites
+    //    valeurs du patron. La laize, elle, était déjà lue au bon endroit, d'où un nom dont seule
+    //    la fin changeait. Trouvé par Sophie.
+    const bool cutting = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex;
+
     QStringList bases;
     if (request.singleSize)
     {
         for (int slot = 0; slot < 3; ++slot)
         {
-            bases.append(m_printWidget->DimensionLabel(slot));
+            bases.append(cutting && m_cuttingWidget != nullptr ? m_cuttingWidget->DimensionLabel(slot)
+                                                               : m_printWidget->DimensionLabel(slot));
         }
     }
 
     // A cutting plan has no print model — it comes out on a bolt of fabric, whose width IS the
     // laize. The laize is in the name because the same pattern at 140 and at 150 are two different
     // plans, and the name is the only place the difference shows.
-    const bool cutting = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex;
     const QString token =
         cutting && m_cuttingWidget != nullptr
             ? QStringLiteral("Cut-%1").arg(OExportUnitFormat::Format(m_cuttingWidget->FabricWidthMm(), Unit::Cm))
@@ -278,27 +388,40 @@ auto OExportModeDialog::HasGenerated() const -> bool
 //---------------------------------------------------------------------------------------------------------------------
 void OExportModeDialog::OnAddToList()
 {
-    if (m_batchRunning || not m_printWidget->IsValid())
+    // The button exists on two tabs now, and each has its own idea of a run that can be filed.
+    const bool cutting = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex;
+    const bool valid = cutting ? m_cuttingWidget != nullptr && m_cuttingWidget->IsValid()
+                               : m_printWidget != nullptr && m_printWidget->IsValid();
+
+    if (m_batchRunning || not valid)
     {
         return;
     }
 
     // Named before it is filed, and filed under that name: the list shows it, and what the
-    // list shows is what the run will be called.
-    const QString name = CurrentName();
+    // list shows is what the run will be called. Une description en décrit parfois plusieurs —
+    // « plusieurs tailles » en décrit une par combinaison d'axes.
+    const QVector<OExportQueueItem> outputs = DescribedOutputs();
+    const QString name = outputs.isEmpty() ? QString() : outputs.constFirst().name;
 
-    OExportQueueItem item;
-    item.name = name;
-    item.request = CurrentRequest();
-
-    m_queue.Append(std::move(item));
-    m_listWidget->AppendRow(name);
+    for (const OExportQueueItem &item : outputs)
+    {
+        m_queue.Append(item);
+        m_listWidget->AppendRow(item.name);
+    }
     RefreshGenerateButtons();
 
     // The form is spent: what it described is in the list now, and the next run starts
     // where this one started. Reset before the message, never after — rebuilding the form
     // raises Changed, and Changed is what clears the message.
-    ResetPrintTab();
+    if (cutting)
+    {
+        ResetCuttingTab();
+    }
+    else
+    {
+        ResetPrintTab();
+    }
     ShowAddedMessage(name);
 }
 
@@ -334,6 +457,26 @@ void OExportModeDialog::OnGenerateCutting()
                 .arg(pieces.join(QLatin1Char('\n'))));
         return;
     }
+
+    // Une seule sortie décrite : le chemin de toujours, exécuté par la fenêtre après la fermeture.
+    const QVector<OExportQueueItem> outputs = DescribedOutputs();
+    if (outputs.size() <= 1)
+    {
+        accept();
+        return;
+    }
+
+    // **Plusieurs : la sélection entière.** « Générer cette sortie » veut dire *tout de suite* par
+    // opposition à *plus tard* — pas *une seule* par opposition à *toutes*. On les enchaîne donc
+    // ici, comme la liste le fait, et la fenêtre n'a pas à connaître ce découpage.
+    SetBatchRunning(true);
+    for (const OExportQueueItem &item : outputs)
+    {
+        QCoreApplication::processEvents();
+        const bool done = m_generator(item.request, item.name);
+        m_generated = m_generated || done;
+    }
+    SetBatchRunning(false);
 
     accept();
 }
@@ -422,19 +565,24 @@ void OExportModeDialog::RebuildButtonBox()
             m_addToListButton->setAutoDefault(false);
             connect(m_addToListButton, &QPushButton::clicked, this, &OExportModeDialog::OnAddToList);
 
-            m_generateButton = m_buttonBox->addButton(tr("Generate"), QDialogButtonBox::AcceptRole);
+            // « this output » : le bouton dit exactement ce qu'il fait, et le distingue de la
+            // génération de toute une liste, qui est l'autre bouton de l'autre onglet.
+            m_generateButton = m_buttonBox->addButton(tr("Generate this output"), QDialogButtonBox::AcceptRole);
 
             m_buttonBox->addButton(QDialogButtonBox::Cancel);
             break;
 
         case kCuttingTabIndex:
-            // Nothing to add to a list here: a cutting plan is asked for and run, and the batch
-            // that would file several of them is not built yet.
-            //
+            // Same two ways out as the Print tab: file the description and describe the next one,
+            // or run this one now. The difference is *when*, not *what*.
+            m_addToListButton = m_buttonBox->addButton(tr("Add to list"), QDialogButtonBox::ActionRole);
+            m_addToListButton->setAutoDefault(false);
+            connect(m_addToListButton, &QPushButton::clicked, this, &OExportModeDialog::OnAddToList);
+
             // An action button rather than an accept one, unlike the Print tab: the plan has to be
             // checked before it may run, and an AcceptRole button accepts whether or not anyone
             // looked. Return still reaches it — it is the default button of the bar.
-            m_generateButton = m_buttonBox->addButton(tr("Generate"), QDialogButtonBox::ActionRole);
+            m_generateButton = m_buttonBox->addButton(tr("Generate this output"), QDialogButtonBox::ActionRole);
             m_generateButton->setAutoDefault(false);
             connect(m_generateButton, &QPushButton::clicked, this, &OExportModeDialog::OnGenerateCutting);
 

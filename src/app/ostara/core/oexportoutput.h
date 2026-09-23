@@ -179,6 +179,20 @@ struct OExportOutput
     /// cut once, so a cutting plan decomposes the group and keeps the member the user chose. The
     /// others are simply not collected, and the group's footprint is then the one piece's.
     QMap<quint32, quint32> groupMemberChoices{};
+
+    /// @brief Whether this generation was asked for as a cutting plan.
+    ///
+    /// It says what the run IS, and the two runs differ in more than a parameter: a cutting plan
+    /// lays pieces on fabric, so each one is pinned to the rotations its direction allows and is
+    /// laid unfolded. A print run is none of that. Kept so the Refresh entry replays the same run.
+    bool cuttingPlan{false};
+
+    /// @brief « Sens unique » — aucune pièce n'est retournée d'un demi-tour.
+    ///
+    /// Le tissu a un sens : sur un velours, un carreau ou un imprimé, toutes les pièces doivent le
+    /// prendre du même côté. L'option retire **un sens**, pas un axe — une pièce « Double » garde
+    /// le droit-fil et le contre-fil, elle n'est simplement jamais posée à l'envers.
+    bool oneWayLayout{false};
 };
 
 /**
@@ -209,6 +223,12 @@ struct OExportRunRequest
 
     /// @see OExportOutput::groupMemberChoices — the same map, from the other side.
     QMap<quint32, quint32> groupMemberChoices{};
+
+    /// @see OExportOutput::cuttingPlan — the same flag, from the other side.
+    bool cuttingPlan{false};
+
+    /// @see OExportOutput::oneWayLayout — the same flag, from the other side.
+    bool oneWayLayout{false};
 };
 
 /// @brief The request that reproduces @p output — what the Refresh entry hands back.

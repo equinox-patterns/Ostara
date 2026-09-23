@@ -48,6 +48,8 @@ auto RequestOf(const OExportOutput &output) -> OExportRunRequest
     request.coverPageTemplateName = output.coverPageTemplateName;
     request.pinnedAxes = output.pinnedAxes;
     request.groupMemberChoices = output.groupMemberChoices;
+    request.cuttingPlan = output.cuttingPlan;
+    request.oneWayLayout = output.oneWayLayout;
     return request;
 }
 

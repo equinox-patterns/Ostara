@@ -37,6 +37,7 @@
 #include <QtNumeric>
 
 #include "../vlayout/vlayoutpiece.h"
+#include "core/oexportcuttingdirection.h"
 
 class OSizerange;
 class VContainer;
@@ -65,6 +66,13 @@ struct OExportPieceGeometry
     /// holds the size being collected — OExportAlignment runs later, on the document
     /// put back on its own size.
     qreal alignPointX{qQNaN()};
+
+    /// The piece's direction, resolved for a cutting plan and left unknown otherwise.
+    ///
+    /// ⚠️ **A grouped member takes the GROUP's direction, never its own.** `VLayoutPiece::Create`
+    /// does not mask a member's grainline — it reads `IsEnabled()` and nothing else — so the flag
+    /// can be true while the direction belongs to the group. The masking is done on the item.
+    OExportCuttingDirection::Direction direction{};
 };
 
 /// @brief Every piece of the pattern, resolved for one size of the range.
@@ -137,6 +145,13 @@ public:
     /// whoever calls this has to be able to say what actually happened.
     auto LastDiagnostic() const -> QString;
 
+    /// @brief Whether the run is a cutting plan.
+    ///
+    /// A cutting plan lays pieces on fabric, and fabric has a grain — so the pieces are prepared
+    /// here rather than later: their direction is resolved while the container is still at hand,
+    /// and it is the only thing this flag changes today. A print run is left exactly as it was.
+    void SetCuttingPlan(bool cutting);
+
     /// @brief Keep only these pieces; empty keeps every piece the layout holds.
     ///
     /// **This is how a cutting plan decomposes a group.** A group serves printing, where two
@@ -163,6 +178,8 @@ private:
     QSharedPointer<VMeasurements> m_measurements{};
     /// @brief Pieces to keep. Empty keeps them all — see SetPieceFilter.
     QSet<quint32> m_pieceFilter{};
+    /// @brief Whether this traversal prepares a cutting plan — see SetCuttingPlan.
+    bool m_cuttingPlan{false};
     /// @brief Diagnostics are a side channel: they report on a const traversal.
     mutable QStringList m_diagnostics{};
 };
