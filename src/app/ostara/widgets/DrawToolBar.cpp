@@ -77,6 +77,19 @@ auto IsDarkTheme() -> bool
     return VTheme::ColorSheme() == VColorSheme::Dark;
 }
 
+/// Whether @p id carries an icon the APPLICATION sets, rather than one of the tool icons of
+/// :/tools/ — a PNG that has no theme, or an SVG of :/icons/ that has two.
+///
+/// One list, because three places ask the same question and they must not answer it
+/// differently: makeBtn would look for a file that does not exist, ReloadIcons must not
+/// overwrite what was set, and the flyout must not either. An id added to one of them and
+/// forgotten in another leaves a button with a blank icon, and nothing says so.
+auto IsAppIconTool(const QString &id) -> bool
+{
+    return id == QStringLiteral("detail_export") || id == QStringLiteral("export_templates")
+           || id == QStringLiteral("export_image");
+}
+
 auto FormatTooltip(const QString &toolName, const QAction *action) -> QString
 {
     if (action == nullptr || action->shortcuts().isEmpty())
@@ -214,6 +227,13 @@ void DrawToolBar::ReloadIcons()
         {
             it.value()->setIcon(
                 QIcon(QStringLiteral(":/icons/%1/grid-four-fill_%1.svg").arg(theme)));
+            continue;
+        }
+        // Export as image, likewise
+        if (it.key() == QStringLiteral("export_image"))
+        {
+            it.value()->setIcon(
+                QIcon(QStringLiteral(":/icons/%1/file-image-fill_%1.svg").arg(theme)));
             continue;
         }
         const auto path = QStringLiteral(":/tools/%1/%2.svg").arg(theme, it.key());
@@ -375,6 +395,13 @@ void DrawToolBar::InitializeGroups()
         {tr("Export templates"), {
             {QStringLiteral("export_templates"),        tr("Export templates"), nullptr, nullptr},
         }, kModeExport},
+        // A group of its own for one tool, and that is structural rather than tidy: outside
+        // Draw::Calculation there is no caret (hasCaret is false in a compact mode), so a second
+        // tool of a group that the row budget cannot fit is hidden with NOWHERE to find it —
+        // setVisible(i < visTools), and no flyout to hold it. A group of one cannot overflow.
+        {tr("Export image"), {
+            {QStringLiteral("export_image"),            tr("Export as image..."), nullptr, nullptr},
+        }, kModeExport},
         {tr("Points"), {
             {QStringLiteral("segment"),                 tr("Point at distance and angle"),                nullptr, makeBtn("segment")},
             {QStringLiteral("along_line"),              tr("Point at distance along line"),               nullptr, makeBtn("along_line")},
@@ -473,14 +500,28 @@ void DrawToolBar::InitializeGroups()
                                .arg(IsDarkTheme() ? QStringLiteral("dark") : QStringLiteral("light"))));
         m_buttonMap.insert(QStringLiteral("export_templates"), btn);
     }
+    // The image export button carries an application-set themed icon (:/icons/…), exactly like
+    // Export templates above — same reason, same shape.
+    if (!m_buttonMap.contains(QStringLiteral("export_image")))
+    {
+        auto *btn = new QToolButton(m_root);
+        btn->setObjectName(QStringLiteral("drawToolBtn"));
+        btn->setAutoRaise(true);
+        // Not checkable: it opens a dialog, it does not arm a tool.
+        btn->setCheckable(false);
+        btn->setFixedSize(kButtonSize, kButtonSize);
+        btn->setIconSize(QSize(24, 24));
+        btn->setIcon(QIcon(QStringLiteral(":/icons/%1/file-image-fill_%1.svg")
+                               .arg(IsDarkTheme() ? QStringLiteral("dark") : QStringLiteral("light"))));
+        m_buttonMap.insert(QStringLiteral("export_image"), btn);
+    }
 
     // Update the button pointer in the ToolItem
     for (auto &group : m_groups)
     {
         for (auto &tool : group.tools)
         {
-            if (tool.id == QStringLiteral("detail_export")
-                || tool.id == QStringLiteral("export_templates"))
+            if (IsAppIconTool(tool.id))
             {
                 tool.button = m_buttonMap.value(tool.id);
             }
@@ -694,7 +735,7 @@ void DrawToolBar::BuildLayout()
                     // adapt to light/dark). Skip tools that use PNG icons.
                     if (flyoutMenu != nullptr && i >= visTools)
                     {
-                        if (tool.id != QStringLiteral("detail_export"))
+                        if (!IsAppIconTool(tool.id))
                         {
                             const auto iconPath = QStringLiteral(":/tools/%1/%2.svg").arg(theme, tool.id);
                             tool.action->setIcon(QIcon(iconPath));

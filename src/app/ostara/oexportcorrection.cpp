@@ -309,6 +309,30 @@ void OExportCorrection::Deselect()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportCorrection::WithHolderHidden(const std::function<void()> &capture)
+{
+    if (m_holder == nullptr)
+    {
+        capture();
+        return;
+    }
+
+    // A hidden item is not painted at all — QGraphicsScene's own traversal returns on an
+    // invisible item before asking it to draw — so this is the whole of what a capture needs
+    // from this class. The flag is read back rather than assumed: it is true whenever a
+    // footprint is selected, and false after a rebuild.
+    const bool wasVisible = m_holder->isVisible();
+    m_holder->setVisible(false);
+
+    capture();
+
+    if (m_holder != nullptr)
+    {
+        m_holder->setVisible(wasVisible);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportCorrection::OnMoveStarted(const QPointF &scenePos)
 {
     const OExportOutput *output = m_store->Find(m_outputId);

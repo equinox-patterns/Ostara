@@ -37,8 +37,11 @@
 #include "oexportcanvas.h"
 #include "oexportcoverpage.h"
 #include "oexportpdf.h"
+#include "oexportplanimage.h"
+#include "oexportplanimagewriter.h"
 #include "oexportsheets.h"
 
+#include "dialogs/oexportimagedialog.h"
 #include "dialogs/oexportpdfdialog.h"
 
 #include <QDir>
@@ -665,6 +668,9 @@ void MainWindow::DeleteExportOutput(quint32 id)
         }
 
         m_sceneExport->clear();
+        // Nothing is on the canvas any more, so there is no plan to photograph. An empty
+        // rectangle is what the image export refuses on.
+        m_exportDrawnRect = QRectF();
         VMainGraphicsView::NewSceneRect(m_sceneExport, ui->view);
         m_statusLabel->clear();
     }
@@ -723,6 +729,89 @@ void MainWindow::ExportOutputToPdf(quint32 id)
 
     QMessageBox::information(this, tr("Export mode"),
                              tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ExportActiveOutputToImage()
+{
+    // A click that arrives after the mode was left must not photograph another mode's scene —
+    // the same guard, on the same thing, that ShowExportOutput opens on.
+    if (VAbstractValApplication::VApp()->GetDrawMode() != Draw::Export)
+    {
+        return;
+    }
+
+    // What the canvas is showing, read by the rule the mode already has. The button speaks for
+    // the plan on screen and for no other: there is no id to carry, because a toolbar button
+    // has no row to point at.
+    const OExportOutput *output = ActiveVisibleOutput();
+    if (output == nullptr)
+    {
+        return;
+    }
+
+    if (m_exportDrawnRect.isEmpty())
+    {
+        // Nothing is on the canvas to photograph. Said rather than written: an image with no
+        // content in it is the one failure that reads as a success.
+        QMessageBox::warning(
+            this, tr("Export mode"),
+            tr("\"%1\" is not shown, so there is no plan to export.").arg(output->name));
+        return;
+    }
+
+    // The rectangle the canvas recorded as it drew — the same figure its status label states.
+    const OExportPlanImage::Plan plan = OExportPlanImage::PlanOf(m_exportDrawnRect);
+
+    // The range's own export folder when it has one, Documents otherwise: the rule the PDF
+    // opens on, so that the two exports of one generation land side by side.
+    QString directory = output->hasRange ? output->range.exportPath : QString();
+    if (directory.isEmpty() || !QDir(directory).exists())
+    {
+        directory = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    }
+
+    OExportImageDialog dialog(output->name, directory, plan, this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    // An SVG's page IS a physical size, and PrintDPI is what expresses it; a PNG's pixels ARE
+    // the size, so its resolution is the user's. One figure, chosen here and nowhere else.
+    const OExportPlanImage::Target target = OExportPlanImage::SizeFor(
+        plan, dialog.TargetMm(), dialog.Axis(),
+        dialog.Format() == OExportPlanImageWriter::Format::Svg ? PrintDPI : dialog.Dpi());
+
+    bool written = false;
+    const auto capture = [&]()
+    {
+        written = OExportPlanImageWriter::Write(dialog.FullPath(), m_sceneExport, plan, target,
+                                                dialog.Format(), output->name);
+    };
+
+    // The correction's holder stands whenever a footprint is selected, and it is the one item
+    // of this scene that Build did not draw — a dashed frame with four handles, which has no
+    // place in a file a client receives. Hidden items are not painted, so it is taken out of
+    // the picture for the length of the write, and put back by the class that owns it.
+    if (m_exportCorrection != nullptr)
+    {
+        m_exportCorrection->WithHolderHidden(capture);
+    }
+    else
+    {
+        capture();
+    }
+
+    if (!written)
+    {
+        QMessageBox::warning(this, tr("Export mode"),
+                             tr("\"%1\" could not be exported.").arg(output->name));
+        return;
+    }
+
+    QMessageBox::information(this, tr("Export mode"),
+                             tr("\"%1\" was exported to\n%2").arg(output->name, dialog.FullPath()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -789,15 +878,24 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
     const OExportSheets::Set sheets =
         OExportSheets::Compute(artboards, output.result.placements, coverReserved);
 
+    // What the canvas is about to draw, computed ONCE. Three readers want it — the rectangle a
+    // hand may not leave, the image an export writes, and the figures of the status label below
+    // — and three readings of the same thing are three answers waiting to differ.
+    const QRectF drawnRect =
+        artboards.valid ? artboards.planRect
+                        : QRectF(0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx);
+
+    // Recorded as it is drawn, so that an export of the plan can be built from what the canvas
+    // holds rather than from a second computation of it. Cleared wherever the scene is emptied.
+    m_exportDrawnRect = drawnRect;
+
     if (m_exportCorrection != nullptr)
     {
         // The rectangle a hand may not leave is the one the canvas is about to draw: the
         // sheets when the run is tiled — the dead band of the last row included, since it is
         // paper the nesting already paid for — and the bin otherwise. Read from the same grid
         // Build gets, never from a second computation of the same thing.
-        m_exportCorrection->SetPlan(
-            artboards.valid ? artboards.planRect
-                            : QRectF(0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx));
+        m_exportCorrection->SetPlan(drawnRect);
 
         // Before the rebuild, which empties the scene: a gesture in flight has to be abandoned
         // while the item holding the mouse grab still exists, and a selection made on another
@@ -846,12 +944,8 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
     // file. The run's height is nowhere on screen, and a figure nobody can see is a figure nobody
     // can check.
     const Unit unit = output.unit;
-    const double width = FromPixel(artboards.valid ? artboards.planRect.width()
-                                                   : output.result.binWidthPx,
-                                   unit);
-    const double height = FromPixel(artboards.valid ? artboards.planRect.height()
-                                                    : output.result.usedHeightPx,
-                                    unit);
+    const double width = FromPixel(drawnRect.width(), unit);
+    const double height = FromPixel(drawnRect.height(), unit);
 
     QString label = tr("%1 × %2 %3").arg(QString::number(width, 'f', 1),
                                          QString::number(height, 'f', 1),

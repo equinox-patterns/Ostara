@@ -1156,6 +1156,14 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
+  <action name="actionExportImage">
+   <property name="text">
+    <string>Export as image...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
   <action name="actionInfoBlockTemplates">
    <property name="text">
     <string>Existing templates</string>

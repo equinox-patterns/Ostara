@@ -412,6 +412,10 @@ void MainWindow::CreateActions()
     connect(ui->actionExportTemplates, &QAction::triggered, this,
             [this]() { ActionExportTemplates_triggered(1); });
 
+    // Straight to the slot, with no lambda: unlike the PDF export, this one takes no id — the
+    // button speaks for the plan the canvas is showing, and nothing else.
+    connect(ui->actionExportImage, &QAction::triggered, this, &MainWindow::ExportActiveOutputToImage);
+
     connect(ui->actionAbout_Qt, &QAction::triggered, this, [this]() { QMessageBox::aboutQt(this, tr("About Qt")); });
 
     connect(ui->actionAbout_Valentina, &QAction::triggered, this,

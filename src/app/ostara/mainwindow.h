@@ -329,6 +329,14 @@ private slots:
     /// @brief Write the plan of @p id as a PDF. Asks where, once, and does the rest.
     void ExportOutputToPdf(quint32 id);
 
+    /** @brief Write the plan the canvas is showing as an image — SVG or PNG. Asks where, what
+     *         format and what size, once, and does the rest.
+     *
+     *  No id, where ExportOutputToPdf takes one: the dock names a generation, and a button of
+     *  the toolbar can only speak for what is on screen. What it reads is the mode's own rule,
+     *  ActiveVisibleOutput(), so the button and the canvas cannot mean two different plans. */
+    void ExportActiveOutputToImage();
+
     void on_actionNew_triggered();
     bool hasOpenPattern() const;
     bool on_actionSaveAs_triggered(); // NOLINT(modernize-use-trailing-return-type)
@@ -427,6 +435,14 @@ private:
 
     /** @brief sceneExport export mode scene. */
     VMainGraphicsScene *m_sceneExport{nullptr};
+
+    /** @brief The rectangle the Export canvas is showing — the plan it just drew.
+     *
+     *  Recorded by ShowExportOutput AS it draws, rather than recomputed by whoever wants it:
+     *  that function is the one place that decides what the scene shows, and an image that
+     *  asked the same question elsewhere would be a second answer waiting to differ. Empty
+     *  when there is nothing on the canvas to photograph. */
+    QRectF m_exportDrawnRect{};
 
     /// The generations of this session. Never written to the .ostara: a result filed in
     /// the document would read as pattern data, and therefore as up to date.
