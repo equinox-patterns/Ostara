@@ -34,7 +34,10 @@
 #include "../vmisc/vlockguard.h"
 #include "../vpatterndb/osizerange.h"
 #include "core/oexportoutput.h"
+#include "oexportartboards.h"
 #include "oexportcorrection.h"
+#include "oexportcoverpage.h"
+#include "oexportsheets.h"
 #include "core/ogradedsizeranges.h"
 #include "core/vcmdexport.h"
 #include "mainwindowsnogui.h"
@@ -78,6 +81,28 @@ class BreadcrumbBar;
 class QGraphicsItem;
 class WelcomeScreen;
 class QStackedWidget;
+
+/**
+ * @brief What the Export canvas draws of one generation: the grid, the sheets worth printing,
+ *        the cover page, and the rectangle of the plan itself.
+ *
+ * File-scope and not nested, because a nested one would sit inside MainWindow's `private slots:`
+ * region — where moc reads everything as a slot declaration, and a struct is not one.
+ *
+ * The figures are gathered rather than recomputed by each caller, because the status label states
+ * them and the image export measures itself against them: two readings of the same thing are two
+ * answers waiting to differ.
+ */
+struct OExportDrawing
+{
+    OExportArtboards::Grid artboards{};
+    OExportSheets::Set sheets{};
+    OExportCoverPage::Drawing cover{};
+
+    /// The plan's own rectangle — the sheets on a tiled run, the bin on any other. This is the
+    /// figure the status label states, and what an image of the plan is measured on.
+    QRectF drawnRect{};
+};
 
 /**
  * @brief The MainWindow class main windows.
@@ -265,6 +290,26 @@ private slots:
     auto ExportMarksOf(const OExportOutput &output, OExportTemplate &marks, bool &framed) const
         -> bool;
 
+    /** @brief The figures of @p output as the Export canvas reads them. Computes, draws nothing.
+     *
+     *  Separate from the drawing itself so that the caller can slip between the two: the
+     *  correction has to be told the scene is ABOUT to be rebuilt while the item holding its
+     *  mouse grab still exists, and that call belongs between this and DrawExportDrawing. */
+    auto ComputeExportDrawing(const OExportOutput &output) const -> OExportDrawing;
+
+    /** @brief Draw @p output into @p scene, exactly as the Export canvas draws it.
+     *
+     *  **ONE place decides what is drawn.** The screen calls this pair to fill the scene it
+     *  displays, and an image export calls it to fill a scene of its own — a batch cannot borrow
+     *  the canvas's, which holds the generation on show and no other. Neither can come apart
+     *  from the other, because there is only one of them.
+     *
+     *  It draws the plan and nothing of the screen: the correction's holder is mounted by
+     *  OExportCorrection on the displayed scene alone, which is why a scene filled here carries
+     *  no editing tool — a frame a client would have received. */
+    void DrawExportDrawing(QGraphicsScene *scene, const OExportOutput &output,
+                           const OExportDrawing &drawing) const;
+
     /** @brief Draw @p output in the Export scene. Recomputes nothing — no nesting, no
      *         geometry: that is the whole point of keeping a generation. */
     void ShowExportOutput(const OExportOutput &output, bool zoomFit);
@@ -435,14 +480,6 @@ private:
 
     /** @brief sceneExport export mode scene. */
     VMainGraphicsScene *m_sceneExport{nullptr};
-
-    /** @brief The rectangle the Export canvas is showing — the plan it just drew.
-     *
-     *  Recorded by ShowExportOutput AS it draws, rather than recomputed by whoever wants it:
-     *  that function is the one place that decides what the scene shows, and an image that
-     *  asked the same question elsewhere would be a second answer waiting to differ. Empty
-     *  when there is nothing on the canvas to photograph. */
-    QRectF m_exportDrawnRect{};
 
     /// The generations of this session. Never written to the .ostara: a result filed in
     /// the document would read as pattern data, and therefore as up to date.

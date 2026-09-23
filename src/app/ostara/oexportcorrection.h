@@ -114,21 +114,6 @@ public:
     /// their way back to a plan they are happy with must not lose that by pressing Escape.
     void Deselect();
 
-    /// @brief Runs @p capture with the holder out of the picture, and puts it back as it was.
-    ///
-    /// The frame a selection draws is an editing tool, and an image of the plan is not the
-    /// screen: its dashed rectangle and its four handles have no place in a file a client
-    /// receives. The holder is the ONLY item of this scene that Build did not draw — it is
-    /// mounted here, on the screen's scene alone, so that it can never reach a file — which is
-    /// why taking it out of the picture is the whole of what a capture has to do.
-    ///
-    /// The pairing lives in here rather than at the call site. A caller that hid the holder
-    /// itself could return early — a failed write, a refused folder — and leave it hidden,
-    /// which reads as a lost selection and comes back only at the next rebuild. `m_holder` is a
-    /// QPointer: a capture that rebuilt the scene would leave it null, and nothing is put back
-    /// on a dead item.
-    void WithHolderHidden(const std::function<void()> &capture);
-
     /// @brief This mode's own history, for the window's QUndoGroup to point at while Export is
     ///        the mode on screen.
     ///

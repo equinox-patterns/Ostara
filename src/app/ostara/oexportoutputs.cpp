@@ -42,6 +42,7 @@
 #include "oexportsheets.h"
 
 #include "dialogs/oexportimagedialog.h"
+#include "dialogs/oexportimagelistdialog.h"
 #include "dialogs/oexportpdfdialog.h"
 
 #include <QDir>
@@ -668,9 +669,6 @@ void MainWindow::DeleteExportOutput(quint32 id)
         }
 
         m_sceneExport->clear();
-        // Nothing is on the canvas any more, so there is no plan to photograph. An empty
-        // rectangle is what the image export refuses on.
-        m_exportDrawnRect = QRectF();
         VMainGraphicsView::NewSceneRect(m_sceneExport, ui->view);
         m_statusLabel->clear();
     }
@@ -741,77 +739,138 @@ void MainWindow::ExportActiveOutputToImage()
         return;
     }
 
-    // What the canvas is showing, read by the rule the mode already has. The button speaks for
-    // the plan on screen and for no other: there is no id to carry, because a toolbar button
-    // has no row to point at.
-    const OExportOutput *output = ActiveVisibleOutput();
-    if (output == nullptr)
+    // What the canvas is showing, read by the rule the mode already has. The scope button speaks
+    // for the plan on screen and for no other — a toolbar button has no row to point at.
+    const OExportOutput *active = ActiveVisibleOutput();
+
+    const QVector<quint32> ids = VisibleExportOutputIds();
+    if (ids.isEmpty())
+    {
+        return; // nothing the dock lists, so nothing to offer and nothing to write
+    }
+
+    // Step 1 opens its size field on the plan of the generation on show — the only figure that is
+    // not a guess. Without one, on the first the dock lists: the dialog still has to open on
+    // something, and what it carries is a starting point for a field about to be changed.
+    const OExportOutput *reference =
+        active != nullptr ? active : m_exportOutputs.Find(ids.constFirst());
+    if (reference == nullptr)
     {
         return;
     }
 
-    if (m_exportDrawnRect.isEmpty())
-    {
-        // Nothing is on the canvas to photograph. Said rather than written: an image with no
-        // content in it is the one failure that reads as a success.
-        QMessageBox::warning(
-            this, tr("Export mode"),
-            tr("\"%1\" is not shown, so there is no plan to export.").arg(output->name));
-        return;
-    }
+    const OExportPlanImage::Plan referencePlan =
+        OExportPlanImage::PlanOf(ComputeExportDrawing(*reference).drawnRect);
 
-    // The rectangle the canvas recorded as it drew — the same figure its status label states.
-    const OExportPlanImage::Plan plan = OExportPlanImage::PlanOf(m_exportDrawnRect);
-
-    // The range's own export folder when it has one, Documents otherwise: the rule the PDF
-    // opens on, so that the two exports of one generation land side by side.
-    QString directory = output->hasRange ? output->range.exportPath : QString();
+    // The range's own export folder when it has one, Documents otherwise: the rule the PDF opens
+    // on, so that the two exports of one generation land side by side.
+    QString directory = reference->hasRange ? reference->range.exportPath : QString();
     if (directory.isEmpty() || !QDir(directory).exists())
     {
         directory = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
     }
 
-    OExportImageDialog dialog(output->name, directory, plan, this);
-    if (dialog.exec() != QDialog::Accepted)
+    OExportImageDialog options(directory, referencePlan, active != nullptr, this);
+    if (options.exec() != QDialog::Accepted)
     {
         return;
     }
 
-    // An SVG's page IS a physical size, and PrintDPI is what expresses it; a PNG's pixels ARE
-    // the size, so its resolution is the user's. One figure, chosen here and nowhere else.
-    const OExportPlanImage::Target target = OExportPlanImage::SizeFor(
-        plan, dialog.TargetMm(), dialog.Axis(),
-        dialog.Format() == OExportPlanImageWriter::Format::Svg ? PrintDPI : dialog.Dpi());
-
-    bool written = false;
-    const auto capture = [&]()
+    // Step 2: which generations, and under which names. One line for one generation is the same
+    // question as one line for six, so it is the same dialog.
+    QVector<OExportImageListDialog::Row> rows;
+    if (options.Chosen() == OExportImageDialog::Scope::Active)
     {
-        written = OExportPlanImageWriter::Write(dialog.FullPath(), m_sceneExport, plan, target,
-                                                dialog.Format(), output->name);
-    };
-
-    // The correction's holder stands whenever a footprint is selected, and it is the one item
-    // of this scene that Build did not draw — a dashed frame with four handles, which has no
-    // place in a file a client receives. Hidden items are not painted, so it is taken out of
-    // the picture for the length of the write, and put back by the class that owns it.
-    if (m_exportCorrection != nullptr)
-    {
-        m_exportCorrection->WithHolderHidden(capture);
+        // The button that answers this is dead when nothing is shown, so the pointer is not
+        // expected to be null — reading it anyway costs one line and cannot be a crash.
+        if (active != nullptr)
+        {
+            rows.append({active->id, active->name});
+        }
     }
     else
     {
-        capture();
+        for (const quint32 id : ids)
+        {
+            if (const OExportOutput *output = m_exportOutputs.Find(id))
+            {
+                rows.append({output->id, output->name});
+            }
+        }
     }
 
-    if (!written)
+    OExportImageListDialog list(rows, options.Format(), this);
+    if (list.exec() != QDialog::Accepted)
     {
-        QMessageBox::warning(this, tr("Export mode"),
-                             tr("\"%1\" could not be exported.").arg(output->name));
         return;
     }
 
-    QMessageBox::information(this, tr("Export mode"),
-                             tr("\"%1\" was exported to\n%2").arg(output->name, dialog.FullPath()));
+    // The run. Every generation is drawn into **a scene of its own** — the canvas holds the one on
+    // show and no other, so a batch cannot borrow it — and a scene built here carries no correction
+    // holder: that one is mounted on the displayed scene alone, which is why no image can hold a
+    // dashed frame and four handles meant for the hand.
+    QStringList written;
+    QStringList failed;
+
+    for (const OExportImageListDialog::Row &row : list.Chosen())
+    {
+        const OExportOutput *output = m_exportOutputs.Find(row.id);
+        if (output == nullptr)
+        {
+            continue;
+        }
+
+        const OExportDrawing drawing = ComputeExportDrawing(*output);
+        const OExportPlanImage::Plan plan = OExportPlanImage::PlanOf(drawing.drawnRect);
+
+        // An SVG's page IS a physical size, and PrintDPI is what expresses it; a PNG's pixels ARE
+        // the size, so its resolution is the user's. One figure for the whole run — the size was
+        // asked for once — and each generation's own proportions give it its other side.
+        const OExportPlanImage::Target target = OExportPlanImage::SizeFor(
+            plan, options.TargetMm(), options.Axis(),
+            options.Format() == OExportPlanImageWriter::Format::Svg ? PrintDPI : options.Dpi());
+
+        QGraphicsScene scene;
+        DrawExportDrawing(&scene, *output, drawing);
+
+        const QString path = QDir(options.Directory()).filePath(row.name);
+        if (OExportPlanImageWriter::Write(path, &scene, plan, target, options.Format(), output->name))
+        {
+            written.append(row.name);
+        }
+        else
+        {
+            // A generation that cannot be written does not stop the others. Its line is said at the
+            // end with the rest, which is the only place that knows which generation it was.
+            failed.append(row.name);
+        }
+    }
+
+    // ONE dialog for the whole run, whatever its length: a box per file would be a box the user
+    // has to dismiss six times to learn one thing.
+    QStringList lines;
+    if (!written.isEmpty())
+    {
+        lines << tr("%n file(s) written to %1", "", static_cast<int>(written.size()))
+                     .arg(options.Directory());
+        lines << QString();
+        lines << written;
+    }
+
+    if (failed.isEmpty())
+    {
+        QMessageBox::information(this, tr("Export mode"), lines.join(QLatin1Char('\n')));
+        return;
+    }
+
+    if (!lines.isEmpty())
+    {
+        lines << QString();
+    }
+    lines << tr("%n file(s) could not be written:", "", static_cast<int>(failed.size()));
+    lines << failed;
+
+    QMessageBox::warning(this, tr("Export mode"), lines.join(QLatin1Char('\n')));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -833,6 +892,63 @@ auto MainWindow::ExportMarksOf(const OExportOutput &output, OExportTemplate &mar
     return hasMarks;
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+auto MainWindow::ComputeExportDrawing(const OExportOutput &output) const -> OExportDrawing
+{
+    OExportDrawing drawing;
+
+    // How the plan is cut, when the run is tiled — computed from the generation alone, since
+    // that is all a kept run has. An invalid grid means one continuous sheet, and the canvas
+    // then draws its bin exactly as it always did.
+    drawing.artboards = OExportArtboards::Compute(
+        output.result.binWidthPx, output.result.usedHeightPx, output.frameHeightMm, output.columns);
+
+    // **The cover page is resolved here, and nowhere else on this path.** The template by name, the
+    // document read live, and the values filled FROM THE RUN (§6) — so a page the user edits is the
+    // one redrawn, without a nesting being run. The canvas is handed the result: it places and it
+    // paints, and it looks nothing up.
+    drawing.cover = OExportCoverPage::Of(output, doc);
+
+    // The block, when the format keeps the page in a sheet — the SAME figure the canvas will hand
+    // to its own Compute, read from the same rule. The extra sheet is not passed: it is not a cell.
+    const QRectF coverReserved =
+        (drawing.cover.seat == OExportCoverPage::Seat::InSheet && drawing.artboards.valid)
+            ? OExportCoverPage::PaperPx(drawing.cover.seat, drawing.cover.marginPx,
+                                        drawing.artboards.planRect, drawing.artboards.cellWidthPx,
+                                        drawing.artboards.cellHeightPx)
+            : QRectF();
+
+    drawing.sheets =
+        OExportSheets::Compute(drawing.artboards, output.result.placements, coverReserved);
+
+    // What the canvas is about to draw, computed ONCE. Three readers want it — the rectangle a
+    // hand may not leave, the image an export writes, and the figures of the status label — and
+    // three readings of the same thing are three answers waiting to differ.
+    drawing.drawnRect =
+        drawing.artboards.valid
+            ? drawing.artboards.planRect
+            : QRectF(0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx);
+
+    return drawing;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::DrawExportDrawing(QGraphicsScene *scene, const OExportOutput &output,
+                                   const OExportDrawing &drawing) const
+{
+    // The template of assembly marks, resolved here and now rather than stored in the run: the
+    // file behind the name can be edited, renamed or deleted between two rebuilds, and what is
+    // drawn has to be what the file says today. A name that resolves to nothing falls back to the
+    // shipped template, and a library with neither draws no marks at all.
+    OExportTemplate marks;
+    bool framed = false;
+    const bool hasMarks = ExportMarksOf(output, marks, framed);
+
+    OExportCanvas::Build(scene, output.layers, output.result,
+                         output.hasRange ? &output.range : nullptr, pattern, doc, nullptr,
+                         drawing.artboards, hasMarks ? &marks : nullptr, framed, &drawing.cover);
+}
+
 /**
  * @brief ShowExportOutput draw a kept generation in the Export scene.
  *
@@ -852,42 +968,10 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
         return;
     }
 
-    // How the plan is cut, when the run is tiled — computed from the generation alone, since
-    // that is all a kept run has. An invalid grid means one continuous sheet, and the canvas
-    // then draws its bin exactly as it always did.
-    const OExportArtboards::Grid artboards = OExportArtboards::Compute(
-        output.result.binWidthPx, output.result.usedHeightPx, output.frameHeightMm, output.columns);
-
-    // Which of those sheets carry something, for the page count below. The canvas reads the same
-    // two things with the same function when it builds the scene — it is not handed this, because
-    // a paper the caller could disagree with is a paper that can lie on screen.
-    // **The cover page is resolved here, and nowhere else on this path.** The template by name, the
-    // document read live, and the values filled FROM THE RUN (§6) — so a page the user edits is the
-    // one redrawn, without a nesting being run. The canvas is handed the result: it places and it
-    // paints, and it looks nothing up.
-    const OExportCoverPage::Drawing cover = OExportCoverPage::Of(output, doc);
-
-    // The block, when the format keeps the page in a sheet — the SAME figure the canvas will hand
-    // to its own Compute, read from the same rule. The extra sheet is not passed: it is not a cell.
-    const QRectF coverReserved =
-        (cover.seat == OExportCoverPage::Seat::InSheet && artboards.valid)
-            ? OExportCoverPage::PaperPx(cover.seat, cover.marginPx, artboards.planRect,
-                                        artboards.cellWidthPx, artboards.cellHeightPx)
-            : QRectF();
-
-    const OExportSheets::Set sheets =
-        OExportSheets::Compute(artboards, output.result.placements, coverReserved);
-
-    // What the canvas is about to draw, computed ONCE. Three readers want it — the rectangle a
-    // hand may not leave, the image an export writes, and the figures of the status label below
-    // — and three readings of the same thing are three answers waiting to differ.
-    const QRectF drawnRect =
-        artboards.valid ? artboards.planRect
-                        : QRectF(0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx);
-
-    // Recorded as it is drawn, so that an export of the plan can be built from what the canvas
-    // holds rather than from a second computation of it. Cleared wherever the scene is emptied.
-    m_exportDrawnRect = drawnRect;
+    // The figures of the drawing and the drawing itself are two calls, so that the correction can
+    // slip between them: it has to be told the scene is ABOUT to be rebuilt while the item holding
+    // its mouse grab still exists. Both come from the one place that decides what is drawn.
+    const OExportDrawing drawing = ComputeExportDrawing(output);
 
     if (m_exportCorrection != nullptr)
     {
@@ -895,7 +979,7 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
         // sheets when the run is tiled — the dead band of the last row included, since it is
         // paper the nesting already paid for — and the bin otherwise. Read from the same grid
         // Build gets, never from a second computation of the same thing.
-        m_exportCorrection->SetPlan(drawnRect);
+        m_exportCorrection->SetPlan(drawing.drawnRect);
 
         // Before the rebuild, which empties the scene: a gesture in flight has to be abandoned
         // while the item holding the mouse grab still exists, and a selection made on another
@@ -903,17 +987,7 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
         m_exportCorrection->OnSceneAboutToBeRebuilt(output.id);
     }
 
-    // The template of assembly marks, resolved here and now rather than stored in the run: the
-    // file behind the name can be edited, renamed or deleted between two rebuilds, and what is
-    // on screen has to be what the file says today. A name that resolves to nothing falls back
-    // to the shipped template, and a library with neither draws no marks at all.
-    OExportTemplate marks;
-    bool framed = false;
-    const bool hasMarks = ExportMarksOf(output, marks, framed);
-
-    OExportCanvas::Build(m_sceneExport, output.layers, output.result,
-                         output.hasRange ? &output.range : nullptr, pattern, doc, nullptr, artboards,
-                         hasMarks ? &marks : nullptr, framed, &cover);
+    DrawExportDrawing(m_sceneExport, output, drawing);
 
     if (m_exportCorrection != nullptr)
     {
@@ -944,23 +1018,23 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
     // file. The run's height is nowhere on screen, and a figure nobody can see is a figure nobody
     // can check.
     const Unit unit = output.unit;
-    const double width = FromPixel(drawnRect.width(), unit);
-    const double height = FromPixel(drawnRect.height(), unit);
+    const double width = FromPixel(drawing.drawnRect.width(), unit);
+    const double height = FromPixel(drawing.drawnRect.height(), unit);
 
     QString label = tr("%1 × %2 %3").arg(QString::number(width, 'f', 1),
                                          QString::number(height, 'f', 1),
                                          UnitsToStr(unit, true));
 
-    if (artboards.valid)
+    if (drawing.artboards.valid)
     {
         // **The cover page's own sheet is a page, and it is said so.** It is printed like the
         // others — it is the first page of the file — but it is not a cell of the grid, so the
         // plan's own count does not hold it. Only the ExtraSheet seat adds one; the two other seats
         // put the page on paper the plan already pays for, and the count stays silent about them.
-        const bool extraSheet = cover.seat == OExportCoverPage::Seat::ExtraSheet;
+        const bool extraSheet = drawing.cover.seat == OExportCoverPage::Seat::ExtraSheet;
         label += extraSheet
-                     ? tr(" · %n pages (cover page included)", nullptr, sheets.count + 1)
-                     : tr(" · %n pages", nullptr, sheets.count);
+                     ? tr(" · %n pages (cover page included)", nullptr, drawing.sheets.count + 1)
+                     : tr(" · %n pages", nullptr, drawing.sheets.count);
     }
 
     // On every run, not only the tiled ones: a roll and a sheet of A0 are generated too, and a

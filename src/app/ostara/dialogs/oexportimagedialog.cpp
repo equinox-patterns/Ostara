@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   23/09/2026
  **
- **  @brief  Implementation of the image destination dialog.
+ **  @brief  Implementation of the image export's first step.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -34,7 +34,6 @@
 #include <QDir>
 #include <QEvent>
 #include <QFileDialog>
-#include <QFileInfo>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -44,11 +43,6 @@
 
 namespace
 {
-/// What the file is called, per format. Each owns its own, so that switching rewrites only
-/// the extension the other one put there.
-constexpr auto kSvgSuffix = ".svg";
-constexpr auto kPngSuffix = ".png";
-
 /// The resolution a raster opens on. The print standard, and more than a plan read on a page
 /// ever needs — the field is there to be lowered, not raised.
 constexpr int kDefaultDpi = 300;
@@ -56,16 +50,11 @@ constexpr int kMinDpi = 72;
 constexpr int kMaxDpi = 1200;
 
 using Format = OExportPlanImageWriter::Format;
-
-auto SuffixOf(Format format) -> const char *
-{
-    return (format == Format::Png) ? kPngSuffix : kSvgSuffix;
-}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-OExportImageDialog::OExportImageDialog(const QString &outputName, const QString &directory,
-                                       const OExportPlanImage::Plan &plan, QWidget *parent)
+OExportImageDialog::OExportImageDialog(const QString &directory, const OExportPlanImage::Plan &plan,
+                                       bool hasActive, QWidget *parent)
   : QDialog(parent),
     m_plan(plan)
 {
@@ -73,9 +62,6 @@ OExportImageDialog::OExportImageDialog(const QString &outputName, const QString 
     setMinimumWidth(520);
 
     auto *layout = new QGridLayout(this);
-
-    m_nameLabel = new QLabel(this);
-    m_nameEdit = new QLineEdit(outputName, this);
 
     m_pathLabel = new QLabel(this);
     m_pathEdit = new QLineEdit(directory, this);
@@ -117,87 +103,71 @@ OExportImageDialog::OExportImageDialog(const QString &outputName, const QString 
     m_dpiSpin->setRange(kMinDpi, kMaxDpi);
     m_dpiSpin->setValue(kDefaultDpi);
 
-    // The field opens on the plan's own size, so that the dialog starts at "no reduction" and
-    // the user descends from the only figure that is not a guess. The side it measures is the
-    // one the axis combo names.
+    // The field opens on the plan's own size, so that the dialog starts at "no reduction" and the
+    // user descends from the only figure that is not a guess. The side it measures is the one the
+    // axis combo names.
     m_sizeMm = m_plan.widthMm;
     m_sizeEdit->setText(OExportUnitFormat::Format(m_sizeMm, m_unit));
 
-    // Connected once the combos hold their items: adding the first item to an empty combo
-    // moves its index, and a handler wired before that would run on a half-built dialog.
+    // Connected once the combos hold their items: adding the first item to an empty combo moves
+    // its index, and a handler wired before that would run on a half-built dialog.
     connect(m_formatCombo, &QComboBox::currentIndexChanged, this, &OExportImageDialog::OnFormatChanged);
     connect(m_axisCombo, &QComboBox::currentIndexChanged, this, &OExportImageDialog::OnAxisChanged);
     connect(m_unitCombo, &QComboBox::currentIndexChanged, this, &OExportImageDialog::OnUnitChanged);
-    // textEdited and not textChanged: only what the user types has to recompute the other side,
-    // so the reformatting this dialog does on a unit change cannot come back as a keystroke.
+    // textEdited and not textChanged: only what the user types has to recompute the other side, so
+    // the reformatting this dialog does on a unit change cannot come back as a keystroke.
     connect(m_sizeEdit, &QLineEdit::textEdited, this, &OExportImageDialog::OnSizeEdited);
 
-    layout->addWidget(m_nameLabel, 0, 0);
-    layout->addWidget(m_nameEdit, 0, 1, 1, 2);
-    layout->addWidget(m_pathLabel, 1, 0);
-    layout->addWidget(m_pathEdit, 1, 1);
-    layout->addWidget(m_browseButton, 1, 2);
-    layout->addWidget(m_formatLabel, 2, 0);
-    layout->addWidget(m_formatCombo, 2, 1, 1, 2);
-    layout->addWidget(m_axisLabel, 3, 0);
-    layout->addWidget(m_axisCombo, 3, 1, 1, 2);
-    layout->addWidget(m_planLabel, 4, 0);
-    layout->addWidget(m_planValue, 4, 1, 1, 2);
-    layout->addWidget(m_sizeLabel, 5, 0);
-    layout->addWidget(m_sizeEdit, 5, 1);
-    layout->addWidget(m_unitCombo, 5, 2);
-    layout->addWidget(m_otherLabel, 6, 0);
-    layout->addWidget(m_otherValue, 6, 1, 1, 2);
-    layout->addWidget(m_dpiLabel, 7, 0);
-    layout->addWidget(m_dpiSpin, 7, 1, 1, 2);
+    layout->addWidget(m_pathLabel, 0, 0);
+    layout->addWidget(m_pathEdit, 0, 1);
+    layout->addWidget(m_browseButton, 0, 2);
+    layout->addWidget(m_formatLabel, 1, 0);
+    layout->addWidget(m_formatCombo, 1, 1, 1, 2);
+    layout->addWidget(m_axisLabel, 2, 0);
+    layout->addWidget(m_axisCombo, 2, 1, 1, 2);
+    layout->addWidget(m_planLabel, 3, 0);
+    layout->addWidget(m_planValue, 3, 1, 1, 2);
+    layout->addWidget(m_sizeLabel, 4, 0);
+    layout->addWidget(m_sizeEdit, 4, 1);
+    layout->addWidget(m_unitCombo, 4, 2);
+    layout->addWidget(m_otherLabel, 5, 0);
+    layout->addWidget(m_otherValue, 5, 1, 1, 2);
+    layout->addWidget(m_dpiLabel, 6, 0);
+    layout->addWidget(m_dpiSpin, 6, 1, 1, 2);
 
     m_buttonBox = new QDialogButtonBox(this);
-    auto *exportButton = m_buttonBox->addButton(tr("Export"), QDialogButtonBox::AcceptRole);
-    exportButton->setAutoDefault(false);
-    m_buttonBox->addButton(QDialogButtonBox::Cancel);
-    // Asserted last, once every button is in: the box lays its buttons out as they arrive and
-    // can hand the default to the one added after Export — Return would then cancel the export
-    // the user just described.
-    exportButton->setDefault(true);
+    auto *activeButton =
+        m_buttonBox->addButton(QString(), QDialogButtonBox::AcceptRole);
+    activeButton->setAutoDefault(false);
+    activeButton->setEnabled(hasActive);
 
-    connect(m_buttonBox, &QDialogButtonBox::accepted, this, &OExportImageDialog::OnAccept);
+    auto *listButton = m_buttonBox->addButton(QString(), QDialogButtonBox::ActionRole);
+    listButton->setAutoDefault(false);
+
+    m_buttonBox->addButton(QDialogButtonBox::Cancel);
+
+    // Asserted last, once every button is in: the box lays its buttons out as they arrive and can
+    // hand the default to the one added after the first — Return would then do something else than
+    // what the dialog opened on.
+    (hasActive ? activeButton : listButton)->setDefault(true);
+
+    // The two ways out carry their own answer. A shared accepted() would have to guess which
+    // button raised it, and a button is the one thing that knows.
+    connect(activeButton, &QPushButton::clicked, this, [this]() { Choose(Scope::Active); });
+    connect(listButton, &QPushButton::clicked, this, [this]() { Choose(Scope::All); });
     connect(m_buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
-    layout->addWidget(m_buttonBox, 8, 0, 1, 3);
+    layout->addWidget(m_buttonBox, 7, 0, 1, 3);
 
     Retranslate();
-    m_nameEdit->setFocus();
-    m_nameEdit->selectAll();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OExportImageDialog::FileName() const -> QString
-{
-    QString name = m_nameEdit->text().trimmed();
-    if (name.isEmpty())
-    {
-        return name;
-    }
-
-    const QString suffix = QLatin1String(SuffixOf(Format()));
-    if (!name.endsWith(suffix, Qt::CaseInsensitive))
-    {
-        name += suffix;
-    }
-
-    return name;
+    m_sizeEdit->setFocus();
+    m_sizeEdit->selectAll();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportImageDialog::Directory() const -> QString
 {
     return m_pathEdit->text().trimmed();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OExportImageDialog::FullPath() const -> QString
-{
-    return QDir(Directory()).filePath(FileName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -225,17 +195,23 @@ auto OExportImageDialog::Dpi() const -> qreal
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportImageDialog::Chosen() const -> OExportImageDialog::Scope
+{
+    return m_scope;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportImageDialog::RefreshDerived()
 {
-    const bool raster = (Format() == OExportPlanImageWriter::Format::Png);
+    const bool raster = (Format() == Format::Png);
     const QString unitText = UnitsToStr(m_unit, true);
 
     m_planValue->setText(tr("%1 × %2 %3").arg(OExportUnitFormat::Format(m_plan.widthMm, m_unit),
                                               OExportUnitFormat::Format(m_plan.heightMm, m_unit),
                                               unitText));
 
-    // The field's label names the side it measures; the line below names the one that follows.
-    // One typed length and one computed — never two fields to hold in agreement.
+    // The field's label names the side it measures; the line below names the one that follows. One
+    // typed length and one computed — never two fields to hold in agreement.
     const OExportPlanImage::Axis axis = Axis();
     const bool measuresWidth = (axis == OExportPlanImage::Axis::Width);
     m_sizeLabel->setText(measuresWidth ? tr("Width:") : tr("Height:"));
@@ -247,8 +223,8 @@ void OExportImageDialog::RefreshDerived()
                               : QString());
 
     // An SVG's page IS a physical size and has no resolution to be asked for; a raster has only
-    // pixels, and the figure is what gives them a size. Label and field go together — a lone
-    // field would read as a setting left over from somewhere else.
+    // pixels, and the figure is what gives them a size. Label and field go together — a lone field
+    // would read as a setting left over from somewhere else.
     m_dpiLabel->setVisible(raster);
     m_dpiSpin->setVisible(raster);
 }
@@ -266,19 +242,6 @@ void OExportImageDialog::OnBrowse()
 //---------------------------------------------------------------------------------------------------------------------
 void OExportImageDialog::OnFormatChanged()
 {
-    // The name follows the format — a file called "plan.png" that holds an SVG is a name that
-    // lies about its own content. Only an extension the OTHER format owns is rewritten: a name
-    // the user typed without one is left alone, and FileName() gives it the right suffix.
-    const QString previous = QLatin1String((Format() == Format::Png) ? kSvgSuffix : kPngSuffix);
-    const QString name = m_nameEdit->text().trimmed();
-
-    if (name.endsWith(previous, Qt::CaseInsensitive))
-    {
-        QString renamed = name;
-        renamed.chop(previous.size());
-        m_nameEdit->setText(renamed + QLatin1String(SuffixOf(Format())));
-    }
-
     RefreshDerived();
 }
 
@@ -294,8 +257,8 @@ void OExportImageDialog::OnAxisChanged()
 void OExportImageDialog::OnUnitChanged()
 {
     // The field is read in the unit it is WRITTEN in, which is the one being left — so it is
-    // parsed first, and the unit changed after. The other order would read "19" as nineteen of
-    // the new unit and turn centimetres into inches without a word.
+    // parsed first, and the unit changed after. The other order would read "19" as nineteen of the
+    // new unit and turn centimetres into inches without a word.
     bool ok = false;
     const qreal typed = OExportUnitFormat::Parse(m_sizeEdit->text(), m_unit, &ok);
     if (ok)
@@ -315,22 +278,15 @@ void OExportImageDialog::OnSizeEdited()
     bool ok = false;
     const qreal typed = OExportUnitFormat::Parse(m_sizeEdit->text(), m_unit, &ok);
     // Not a number is not zero: zero is a size the user could mean, and a text that is not a
-    // number is not. Both leave the other side empty, and OnAccept refuses on the difference.
+    // number is not. Both leave the other side empty, and Choose refuses on the difference.
     m_sizeMm = ok ? typed : 0.0;
 
     RefreshDerived();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OExportImageDialog::OnAccept()
+void OExportImageDialog::Choose(Scope scope)
 {
-    if (FileName().isEmpty())
-    {
-        QMessageBox::warning(this, tr("Export"), tr("The file needs a name."));
-        m_nameEdit->setFocus();
-        return;
-    }
-
     const QFileInfo folder(Directory());
     if (!folder.isDir())
     {
@@ -347,9 +303,11 @@ void OExportImageDialog::OnAccept()
         return;
     }
 
-    // The very Target the writer will be handed, computed by the very call it will make: a size
-    // this dialog accepts is a size that can be written, and the refusal happens here, where it
-    // can still be typed over.
+    // The very Target the writer will be handed for the plan on show, computed by the very call it
+    // will make: a size this dialog accepts is a size that can be written for the generation the
+    // figure was read on. ⚠️ A generation of the batch is measured on its OWN plan, and one far
+    // larger than this one can still be refused when its turn comes — the run then says so on
+    // that line, which is the only place that knows which generation it was.
     const qreal dpi = (Format() == Format::Png) ? Dpi() : PrintDPI;
     const OExportPlanImage::Target target = OExportPlanImage::SizeFor(m_plan, m_sizeMm, Axis(), dpi);
     if (!target.IsValid())
@@ -360,8 +318,8 @@ void OExportImageDialog::OnAccept()
         return;
     }
 
-    // An SVG carries numbers; a PNG carries pixels, and Qt refuses an allocation it cannot make
-    // — with a qWarning, which in Ostara opens a modal box of its own before we could say what
+    // An SVG carries numbers; a PNG carries pixels, and Qt refuses an allocation it cannot make —
+    // with a qWarning, which in Ostara opens a modal box of its own before we could say what
     // happened. Asking beforehand is what keeps that case unreachable.
     const qint64 pixels = static_cast<qint64>(target.sizePx.width()) * target.sizePx.height();
     if (Format() == Format::Png && pixels > OExportPlanImage::kMaxPixels)
@@ -373,18 +331,7 @@ void OExportImageDialog::OnAccept()
         return;
     }
 
-    const QString path = FullPath();
-    if (QFileInfo::exists(path))
-    {
-        const auto answer = QMessageBox::question(this, tr("Export"),
-                                                  tr("%1 already exists. Replace it?").arg(FileName()),
-                                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-        if (answer != QMessageBox::Yes)
-        {
-            return;
-        }
-    }
-
+    m_scope = scope;
     accept();
 }
 
@@ -393,7 +340,6 @@ void OExportImageDialog::Retranslate()
 {
     setWindowTitle(tr("Export the plan as an image"));
 
-    m_nameLabel->setText(tr("File name:"));
     m_pathLabel->setText(tr("Folder:"));
     m_browseButton->setText(tr("Browse..."));
 
@@ -414,6 +360,26 @@ void OExportImageDialog::Retranslate()
 
     m_dpiLabel->setText(tr("Resolution:"));
     m_dpiSpin->setSuffix(tr(" dpi"));
+
+    // The two ways out, where their place in the bar already says which is which.
+    const QList<QAbstractButton *> buttons = m_buttonBox->buttons();
+    for (QAbstractButton *button : buttons)
+    {
+        switch (m_buttonBox->buttonRole(button))
+        {
+            case QDialogButtonBox::AcceptRole:
+                button->setText(tr("Export the active output"));
+                break;
+            case QDialogButtonBox::ActionRole:
+                button->setText(tr("Export several outputs..."));
+                break;
+            case QDialogButtonBox::RejectRole:
+                button->setText(tr("Cancel"));
+                break;
+            default:
+                break;
+        }
+    }
 
     RefreshDerived();
 }

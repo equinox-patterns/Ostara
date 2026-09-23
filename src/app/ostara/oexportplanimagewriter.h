@@ -34,22 +34,22 @@
 class QGraphicsScene;
 
 /**
- * @brief Writes the plan the Export canvas is showing into an image file.
+ * @brief Writes the plan of an Export generation into an image file.
  *
- * The scene is the CANVAS'S OWN, handed over rather than rebuilt. §13.5 of the mode's record
- * forbids a second place that would decide what is drawn, and a scene built here would have to
- * repeat ShowExportOutput's preamble line by line — the artboards, the cover page, the sheets,
- * the marks — and would drift from it in silence the day one of them changes.
- *
- * ⚠️ Handing over the screen's scene means handing over the ONE thing it carries that an image
- * must not: the correction's holder, which is up whenever a footprint is selected. Hidden items
- * are not painted, so it is out of the picture as long as nothing is selected — which is not a
- * guarantee. The caller takes it out before calling: see OExportCorrection::WithHolderHidden.
+ * The scene is drawn by MainWindow::DrawExportDrawing — the one place that decides what the
+ * Export canvas shows, and the very call the screen uses. §13.5 of the mode's record forbids a
+ * second place that would decide it, and a batch makes that impossible anyway: the canvas holds
+ * one generation at a time, so the others could not be borrowed from it even if one wanted to.
  *
  * The plan is PAINTED, not serialised. Half of what the canvas shows — the paper, the bin, the
  * board grid, the assembly marks, the cover page — are items that draw themselves rather than
  * paths the graded writer could walk, so re-playing their paint() is the only way to capture
  * all of it. It is what makes an image of the plan possible at all.
+ *
+ * ⚠️ **That scene is one of its own, never the canvas's.** The canvas holds the generation on
+ * show and no other, which a batch cannot work with; and it carries the correction's holder, a
+ * dashed frame with four handles that a hand uses and a client must never see. A scene built for
+ * a file has neither problem, by construction rather than by a guard that could be forgotten.
  */
 class OExportPlanImageWriter
 {

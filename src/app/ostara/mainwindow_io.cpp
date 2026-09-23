@@ -527,9 +527,6 @@ void MainWindow::Clear()
     if (m_sceneExport != nullptr)
     {
         m_sceneExport->clear();
-        // The rectangle the canvas was showing dies with the scene it described: an image
-        // export must refuse rather than write the plan of a pattern that is no longer open.
-        m_exportDrawnRect = QRectF();
     }
     // Generations belong to the session: closing the pattern takes them with the rest,
     // and none of them was ever written to the .ostara.
