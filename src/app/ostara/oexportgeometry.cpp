@@ -185,6 +185,12 @@ auto OExportGeometry::LastDiagnostic() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportGeometry::SetPieceFilter(const QSet<quint32> &pieceIds)
+{
+    m_pieceFilter = pieceIds;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportGeometry::SelectAxis(const OSizerange &range) const -> AxisSelection
 {
     AxisSelection selection;
@@ -290,6 +296,14 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
     {
         const quint32 id = detail.id;
         const VPiece &piece = detail.piece;
+
+        // A cutting plan keeps only the pieces it will cut: the member it chose for each group,
+        // and every piece outside one. The others are dropped here rather than later, so the
+        // group's footprint is that single piece and not the union of all its members.
+        if (not m_pieceFilter.isEmpty() && not m_pieceFilter.contains(id))
+        {
+            continue;
+        }
 
         // A piece is resolved against the container of the drawing tool that carries
         // it — that is what the graded capture does (MainWindowsNoGUI::PrepareDetailsForLayout

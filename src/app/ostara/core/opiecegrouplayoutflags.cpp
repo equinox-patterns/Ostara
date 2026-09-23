@@ -35,13 +35,11 @@
 #include "../vpatterndb/vpiece.h"
 #include "../vtools/undocommands/savepieceoptions.h"
 
-namespace
-{
 //---------------------------------------------------------------------------------------------------------------------
-// The members of the group that still exist, in the order the group lists them.
-auto ExistingMembers(const QVector<quint32> &pieceIds, const VContainer *data) -> QVector<VPiece>
+auto OPieceGroupLayoutFlags::ExistingMemberIds(const QVector<quint32> &pieceIds, const VContainer *data)
+    -> QVector<quint32>
 {
-    QVector<VPiece> members;
+    QVector<quint32> members;
     if (data == nullptr || data->DataPieces() == nullptr)
     {
         return members;
@@ -52,25 +50,24 @@ auto ExistingMembers(const QVector<quint32> &pieceIds, const VContainer *data) -
     {
         if (data->DataPieces()->contains(pieceId))
         {
-            members.append(data->GetPiece(pieceId));
+            members.append(pieceId);
         }
     }
     return members;
 }
-} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OPieceGroupLayoutFlags::ForceFlipping(const QVector<quint32> &pieceIds, const VContainer *data) -> bool
 {
-    const QVector<VPiece> members = ExistingMembers(pieceIds, data);
+    const QVector<quint32> members = ExistingMemberIds(pieceIds, data);
     if (members.isEmpty())
     {
         return false;
     }
 
-    for (const auto &member : members)
+    for (quint32 pieceId : members)
     {
-        if (not member.IsForceFlipping())
+        if (not data->GetPiece(pieceId).IsForceFlipping())
         {
             return false;
         }
@@ -82,15 +79,15 @@ auto OPieceGroupLayoutFlags::ForceFlipping(const QVector<quint32> &pieceIds, con
 //---------------------------------------------------------------------------------------------------------------------
 auto OPieceGroupLayoutFlags::SymmetricalCopy(const QVector<quint32> &pieceIds, const VContainer *data) -> bool
 {
-    const QVector<VPiece> members = ExistingMembers(pieceIds, data);
+    const QVector<quint32> members = ExistingMemberIds(pieceIds, data);
     if (members.isEmpty())
     {
         return false;
     }
 
-    for (const auto &member : members)
+    for (quint32 pieceId : members)
     {
-        if (not member.IsSymmetricalCopy())
+        if (not data->GetPiece(pieceId).IsSymmetricalCopy())
         {
             return false;
         }

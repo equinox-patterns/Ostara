@@ -170,6 +170,15 @@ struct OExportOutput
     /// Empty on a range run, whose frozen axis values are already in `range` — and empty is
     /// also the preview's case, which is why the reader falls back to the table.
     QMap<QString, QString> pinnedAxes{};
+
+    /// The member kept for each piece group: group id → piece id. **Only a cutting plan fills
+    /// it**, and empty means the run cuts every piece the layout holds — which is what a pattern
+    /// with no group asks for anyway.
+    ///
+    /// A group serves printing, where two pieces fill one shape on a sheet. On fabric a piece is
+    /// cut once, so a cutting plan decomposes the group and keeps the member the user chose. The
+    /// others are simply not collected, and the group's footprint is then the one piece's.
+    QMap<quint32, quint32> groupMemberChoices{};
 };
 
 /**
@@ -197,6 +206,9 @@ struct OExportRunRequest
     QString marksTemplateName{};
     QString coverPageTemplateName{};
     QMap<QString, QString> pinnedAxes{};
+
+    /// @see OExportOutput::groupMemberChoices — the same map, from the other side.
+    QMap<quint32, quint32> groupMemberChoices{};
 };
 
 /// @brief The request that reproduces @p output — what the Refresh entry hands back.

@@ -26,10 +26,13 @@
 
 #include "oexportmodedialog.h"
 
+#include "oexportcuttingwidget.h"
 #include "oexportgenerationlistwidget.h"
 #include "oexportprintwidget.h"
 
+#include "../core/oexportcuttingguard.h"
 #include "../core/oexportnamebuilder.h"
+#include "../core/oexportunitformat.h"
 
 #include <QAbstractButton>
 #include <QCoreApplication>
@@ -37,6 +40,7 @@
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QTabBar>
 #include <QTabWidget>
@@ -49,10 +53,16 @@ namespace
 /// The tab that holds the runs described but not fired.
 constexpr int kListTabIndex = 0;
 
+/// The tab that cuts pieces out of fabric, one size at a time.
+constexpr int kCuttingTabIndex = 1;
+
 /// Where the tab that can be acted on sits. The dialog opens on it rather than on the
 /// first tab: two of the four have nothing to offer yet, and landing on one of those
 /// would show an empty page every time the mode is entered.
 constexpr int kPrintTabIndex = 2;
+
+/// The tab that throws the plan on a wall.
+constexpr int kProjectorTabIndex = 3;
 
 /// Below this the Print tab's form is cramped, whatever the tab bar needs.
 constexpr int kMinDialogWidth = 560;
@@ -89,7 +99,14 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
                 RefreshGenerateButtons();
             });
 
-    m_cuttingTab = MakeComingSoonTab(m_tabs);
+    m_cuttingTab = new QWidget(m_tabs);
+    m_cuttingLayout = new QVBoxLayout(m_cuttingTab);
+    // The stretch keeps the form at the top of the page; the widget is inserted before it.
+    m_cuttingLayout->addStretch();
+
+    m_cuttingWidget = new OExportCuttingWidget(m_data, m_measurements, m_cuttingTab);
+    m_cuttingLayout->insertWidget(0, m_cuttingWidget);
+    connect(m_cuttingWidget, &OExportCuttingWidget::Changed, this, &OExportModeDialog::OnFormChanged);
 
     m_printTab = new QWidget(m_tabs);
     m_printLayout = new QVBoxLayout(m_printTab);
@@ -161,7 +178,7 @@ void OExportModeDialog::ResetPrintTab()
     m_printWidget = new OExportPrintWidget(m_data, m_measurements, m_context, m_printTab);
     m_printLayout->insertWidget(0, m_printWidget);
 
-    connect(m_printWidget, &OExportPrintWidget::Changed, this, &OExportModeDialog::OnPrintChanged);
+    connect(m_printWidget, &OExportPrintWidget::Changed, this, &OExportModeDialog::OnFormChanged);
 
     RefreshGenerateButtons();
 }
@@ -170,6 +187,27 @@ void OExportModeDialog::ResetPrintTab()
 auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
 {
     OExportRunRequest request;
+
+    // Two tabs describe a run, and they describe it their own way: the Print tab says which sheet
+    // it prints on, the Cutting plan tab how wide the fabric is. What neither asks — the margin
+    // and the space between pieces — stays at the default the request already carries.
+    if (m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex)
+    {
+        if (m_cuttingWidget == nullptr)
+        {
+            return request;
+        }
+
+        request.documentWidthMm = m_cuttingWidget->FabricWidthMm();
+        request.unit = Unit::Cm;
+        request.singleSize = true;
+        request.baseA = m_cuttingWidget->DimensionBase(0);
+        request.baseB = m_cuttingWidget->DimensionBase(1);
+        request.baseC = m_cuttingWidget->DimensionBase(2);
+        request.groupMemberChoices = m_cuttingWidget->MemberChoices();
+        return request;
+    }
+
     request.documentWidthMm = m_printWidget->DocumentWidthMm();
     request.unit = m_printWidget->DisplayUnit();
     request.rangeName = m_printWidget->SizeRangeName();
@@ -204,8 +242,17 @@ auto OExportModeDialog::CurrentName() const -> QString
         }
     }
 
+    // A cutting plan has no print model — it comes out on a bolt of fabric, whose width IS the
+    // laize. The laize is in the name because the same pattern at 140 and at 150 are two different
+    // plans, and the name is the only place the difference shows.
+    const bool cutting = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex;
+    const QString token =
+        cutting && m_cuttingWidget != nullptr
+            ? QStringLiteral("Cut-%1").arg(OExportUnitFormat::Format(m_cuttingWidget->FabricWidthMm(), Unit::Cm))
+            : request.printModelToken;
+
     const QString base = OExportNameBuilder::Base(request.singleSize ? QString() : request.rangeName,
-                                                  bases, request.printModelToken);
+                                                  bases, token);
 
     // The lines of the list count as taken just as much as the generations the dock lists:
     // a line is named when it is added, so two identical runs added one after the other
@@ -256,6 +303,42 @@ void OExportModeDialog::OnAddToList()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportModeDialog::OnGenerateCutting()
+{
+    if (m_batchRunning || m_cuttingWidget == nullptr)
+    {
+        return;
+    }
+
+    // A cutting plan lays pieces on fabric, and fabric has a grain. The nesting cannot invent a
+    // direction: a plan launched on a piece that has none comes out looking right and being wrong,
+    // which is the one failure this mode cannot afford. So it is refused, and the pieces to fix
+    // are named — the number she gave them, because a piece name is not unique.
+    const QVector<OExportCuttingGuard::FaultyPiece> faulty =
+        OExportCuttingGuard::FaultyPieces(m_cuttingWidget->MemberChoices(), m_data);
+
+    if (not faulty.isEmpty())
+    {
+        QStringList pieces;
+        pieces.reserve(faulty.size());
+        for (const OExportCuttingGuard::FaultyPiece &piece : faulty)
+        {
+            pieces.append(QStringLiteral("%1. %2").arg(piece.number).arg(piece.name));
+        }
+
+        QMessageBox::warning(
+            this, tr("Cutting plan"),
+            tr("The nesting cannot invent a direction, and these pieces have none:\n\n%1\n\n"
+               "Give each one a grainline or a fold line in the Details mode, then ask for the "
+               "plan again.")
+                .arg(pieces.join(QLatin1Char('\n'))));
+        return;
+    }
+
+    accept();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportModeDialog::OnGenerateAll()
 {
     if (m_batchRunning || not m_generator || m_queue.IsEmpty())
@@ -297,7 +380,7 @@ void OExportModeDialog::ShowAddedMessage(const QString &name)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OExportModeDialog::OnPrintChanged()
+void OExportModeDialog::OnFormChanged()
 {
     // The message reports one add. The first field touched after it makes it stale — the
     // user is describing something else now.
@@ -344,6 +427,20 @@ void OExportModeDialog::RebuildButtonBox()
             m_buttonBox->addButton(QDialogButtonBox::Cancel);
             break;
 
+        case kCuttingTabIndex:
+            // Nothing to add to a list here: a cutting plan is asked for and run, and the batch
+            // that would file several of them is not built yet.
+            //
+            // An action button rather than an accept one, unlike the Print tab: the plan has to be
+            // checked before it may run, and an AcceptRole button accepts whether or not anyone
+            // looked. Return still reaches it — it is the default button of the bar.
+            m_generateButton = m_buttonBox->addButton(tr("Generate"), QDialogButtonBox::ActionRole);
+            m_generateButton->setAutoDefault(false);
+            connect(m_generateButton, &QPushButton::clicked, this, &OExportModeDialog::OnGenerateCutting);
+
+            m_buttonBox->addButton(QDialogButtonBox::Cancel);
+            break;
+
         case kListTabIndex:
             m_generateAllButton = m_buttonBox->addButton(tr("Generate the whole list"),
                                                          QDialogButtonBox::ActionRole);
@@ -382,6 +479,10 @@ void OExportModeDialog::SetBatchRunning(bool running)
     // is in the engine, nothing on the Print tab can be acted on.
     m_listWidget->SetBusy(running);
     m_printWidget->setEnabled(!running);
+    if (m_cuttingWidget != nullptr)
+    {
+        m_cuttingWidget->setEnabled(!running);
+    }
     // The bar as well: mid-batch there is nothing to confirm, nothing to add and nowhere to
     // go — and reject() refuses the close anyway, so an enabled button would be a button
     // that lies.
@@ -393,16 +494,20 @@ void OExportModeDialog::SetBatchRunning(bool running)
 //---------------------------------------------------------------------------------------------------------------------
 void OExportModeDialog::RefreshGenerateButtons()
 {
-    const bool valid = m_printWidget != nullptr && m_printWidget->IsValid() && not m_batchRunning;
+    // Each is only alive on its own tab: the bar carries one tab's buttons at a time. Generate is
+    // shared by two tabs, and each has its own idea of a run that can be asked for — a sheet for
+    // the Print tab, a laize and one piece per group for the Cutting plan.
+    const bool printValid = m_printWidget != nullptr && m_printWidget->IsValid() && not m_batchRunning;
+    const bool cuttingValid = m_cuttingWidget != nullptr && m_cuttingWidget->IsValid() && not m_batchRunning;
+    const bool valid = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex ? cuttingValid : printValid;
 
-    // Each is only alive on its own tab: the bar carries one tab's buttons at a time.
     if (m_generateButton != nullptr)
     {
         m_generateButton->setEnabled(valid);
     }
     if (m_addToListButton != nullptr)
     {
-        m_addToListButton->setEnabled(valid);
+        m_addToListButton->setEnabled(printValid);
     }
     if (m_generateAllButton != nullptr)
     {
@@ -427,20 +532,17 @@ void OExportModeDialog::Retranslate()
     setWindowTitle(tr("Export"));
 
     m_tabs->setTabText(kListTabIndex, tr("List to generate"));
-    m_tabs->setTabText(1, tr("Cutting plan"));
+    m_tabs->setTabText(kCuttingTabIndex, tr("Cutting plan"));
     m_tabs->setTabText(kPrintTabIndex, tr("Print"));
-    m_tabs->setTabText(3, tr("Projector"));
+    m_tabs->setTabText(kProjectorTabIndex, tr("Projector"));
 
-    // Read back off the pages rather than kept beside them: a second copy of the two
-    // labels would be one more pair to hold together, and each label is right there.
-    // tr() rather than QObject::tr(): the placeholder belongs to this dialog, and a string
-    // filed under QObject lands in a context every widget in the application shares.
-    for (QWidget *page : {m_cuttingTab, m_projectorTab})
+    // Read back off the page rather than kept beside it: a second copy of the label would be one
+    // more thing to hold together, and the label is right there.
+    // tr() rather than QObject::tr(): the placeholder belongs to this dialog, and a string filed
+    // under QObject lands in a context every widget in the application shares.
+    if (auto *label = m_projectorTab->findChild<QLabel *>(QStringLiteral("comingSoonLabel")))
     {
-        if (auto *label = page->findChild<QLabel *>(QStringLiteral("comingSoonLabel")))
-        {
-            label->setText(tr("Coming soon"));
-        }
+        label->setText(tr("Coming soon"));
     }
 
     m_addedLabel->setText(m_addedName.isEmpty() ? QString() : tr("%1 was added to the list.").arg(m_addedName));

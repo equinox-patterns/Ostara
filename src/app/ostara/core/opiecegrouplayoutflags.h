@@ -43,6 +43,13 @@ class VContainer;
  */
 namespace OPieceGroupLayoutFlags
 {
+/// @brief The members of a group that still exist, in the order the group lists them.
+///
+/// A group's `pieceIds` is not cleaned when a piece is deleted, and `VContainer::GetPiece()` THROWS
+/// on an unknown id rather than returning empty. Every reader of a group has to filter first, so the
+/// filter lives here, once.
+auto ExistingMemberIds(const QVector<quint32> &pieceIds, const VContainer *data) -> QVector<quint32>;
+
 /// True when EVERY member carries the flag. Members that no longer exist are ignored; no member means false.
 auto ForceFlipping(const QVector<quint32> &pieceIds, const VContainer *data) -> bool;
 auto SymmetricalCopy(const QVector<quint32> &pieceIds, const VContainer *data) -> bool;

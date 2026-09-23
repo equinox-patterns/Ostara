@@ -47,6 +47,7 @@ auto RequestOf(const OExportOutput &output) -> OExportRunRequest
     request.marksTemplateName = output.marksTemplateName;
     request.coverPageTemplateName = output.coverPageTemplateName;
     request.pinnedAxes = output.pinnedAxes;
+    request.groupMemberChoices = output.groupMemberChoices;
     return request;
 }
 

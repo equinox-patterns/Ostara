@@ -28,6 +28,7 @@
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
 #include "core/ogradedsizeranges.h"
+#include "core/oexportcuttingguard.h"
 #include "core/oexportoutput.h"
 #include "core/oexporttemplatestorage.h"
 #include "dialogs/oexportprintmodel.h"
@@ -211,6 +212,15 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // stays on the GUI thread: VLayoutPiece::Create reads the application settings, and
     // the container it reads is the one the scenes are built from.
     OExportGeometry geometry(pattern, doc, m_m);
+
+    // A cutting plan decomposes the groups: it keeps the member the user chose for each and drops
+    // the others, so a group is not unioned into a single footprint. Empty means every piece —
+    // which is what a print run asks for, and what a pattern with no group asks for anyway.
+    if (not request.groupMemberChoices.isEmpty())
+    {
+        const QVector<quint32> kept = OExportCuttingGuard::PiecesToCut(request.groupMemberChoices, pattern);
+        geometry.SetPieceFilter(QSet<quint32>(kept.cbegin(), kept.cend()));
+    }
 
     // The size the document was found on — the range traversal puts it back there.
     const qreal savedA = m_currentDimensionA;
@@ -408,6 +418,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.marksTemplateName = request.marksTemplateName;
     output.coverPageTemplateName = request.coverPageTemplateName;
     output.pinnedAxes = request.pinnedAxes;
+    output.groupMemberChoices = request.groupMemberChoices;
     output.layers = std::move(layers);
     output.result = result;
     output.generationMs = generationTimer.elapsed();

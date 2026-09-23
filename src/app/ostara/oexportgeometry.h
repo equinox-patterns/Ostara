@@ -29,6 +29,7 @@
 #define OEXPORTGEOMETRY_H
 
 #include <QPointF>
+#include <QSet>
 #include <QSharedPointer>
 #include <QString>
 #include <QStringList>
@@ -136,6 +137,14 @@ public:
     /// whoever calls this has to be able to say what actually happened.
     auto LastDiagnostic() const -> QString;
 
+    /// @brief Keep only these pieces; empty keeps every piece the layout holds.
+    ///
+    /// **This is how a cutting plan decomposes a group.** A group serves printing, where two
+    /// pieces fill one shape on a sheet; on fabric a piece is cut once. The plan keeps the member
+    /// the user chose and drops the others, so the footprint keyed on the group covers that one
+    /// piece instead of the union of all its members.
+    void SetPieceFilter(const QSet<quint32> &pieceIds);
+
 private:
     /// The graded axis of a range, and the sizes it covers.
     struct AxisSelection
@@ -152,6 +161,8 @@ private:
     VContainer *m_container{nullptr};
     VPattern *m_doc{nullptr};
     QSharedPointer<VMeasurements> m_measurements{};
+    /// @brief Pieces to keep. Empty keeps them all — see SetPieceFilter.
+    QSet<quint32> m_pieceFilter{};
     /// @brief Diagnostics are a side channel: they report on a const traversal.
     mutable QStringList m_diagnostics{};
 };

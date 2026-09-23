@@ -39,6 +39,7 @@
 #include "../core/oexportrunqueue.h"
 #include "../vmisc/def.h"
 
+class OExportCuttingWidget;
 class OExportGenerationListWidget;
 class OExportPrintWidget;
 class QDialogButtonBox;
@@ -145,6 +146,12 @@ private:
     /// @brief File what the Print tab describes in the list to generate. Nests nothing.
     void OnAddToList();
 
+    /// @brief Run the Cutting plan tab — once the guard has let it through.
+    ///
+    /// The guard is the reason this is not a plain AcceptRole button: a cutting plan refuses to
+    /// start on a piece whose direction is unknown, and it has to say so before anything runs.
+    void OnGenerateCutting();
+
     /// @brief Walk the list, one run at a time, and let each line say how it went.
     void OnGenerateAll();
 
@@ -158,8 +165,10 @@ private:
     /// @brief The tab changed: its buttons come with it, and the last confirmation goes.
     void OnTabChanged();
 
-    /// @brief The Print tab's form changed: what was added is no longer the last thing done.
-    void OnPrintChanged();
+    /// @brief The tab's form changed: what was added is no longer the last thing done, and the
+    ///        buttons it feeds may no longer describe a run that can be asked for. One slot for
+    ///        both forms — the Print tab and the Cutting plan tab ask the same question of it.
+    void OnFormChanged();
 
     /// @brief Lock the dialog while the batch walks it.
     void SetBatchRunning(bool running);
@@ -182,9 +191,11 @@ private:
     OGradedSizeRanges::Context m_context{};
 
     OExportPrintWidget *m_printWidget{nullptr};
+    OExportCuttingWidget *m_cuttingWidget{nullptr};
     OExportGenerationListWidget *m_listWidget{nullptr};
     QTabWidget *m_tabs{nullptr};
     QVBoxLayout *m_printLayout{nullptr};
+    QVBoxLayout *m_cuttingLayout{nullptr};
     QDialogButtonBox *m_buttonBox{nullptr};
     QLabel *m_addedLabel{nullptr};
 

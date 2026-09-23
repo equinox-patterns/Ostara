@@ -1,0 +1,125 @@
+/************************************************************************
+ **
+ **  @file   oexportcuttingwidget.h
+ **  @author Sophie Denys <contact@sophiedenys.com>
+ **  @date   23/09/2026
+ **
+ **  @brief  The Cutting plan tab of the Export dialog — the width, and one
+ **          piece per group.
+ **
+ **  @copyright
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+ **
+ **  This program is free software: you can redistribute it and/or modify
+ **  it under the terms of the GNU General Public License as published by
+ **  the Free Software Foundation, either version 3 of the License, or
+ **  (at your option) any later version.
+ **
+ **  This program is distributed in the hope that it will be useful,
+ **  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ **  GNU General Public License for more details.
+ **
+ **  You should have received a copy of the GNU General Public License
+ **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **
+ *************************************************************************/
+
+#ifndef OEXPORTCUTTINGWIDGET_H
+#define OEXPORTCUTTINGWIDGET_H
+
+#include <QMap>
+#include <QSharedPointer>
+#include <QVector>
+#include <QWidget>
+
+class QComboBox;
+class QFormLayout;
+class QGroupBox;
+class QLabel;
+class QLineEdit;
+class VContainer;
+class VMeasurements;
+
+/**
+ * @brief The Cutting plan tab: the width the pieces are cut from, and which member of each group is cut.
+ *
+ * Three questions, in the order the user answers them:
+ *
+ *   1. <b>which size</b> — one, never a range. A cutting machine cuts one size at a time, and a plan
+ *      holds the pieces of that size laid on the fabric. The axes are the same rows the Print tab
+ *      offers for a single size, from the same measurement table.
+ *   2. <b>how wide the fabric is</b> — the laize, a free field: fabrics do not all come the same
+ *      width, so no model could answer it. It is the width the nesting runs on, and the only one.
+ *   3. <b>which member of each group</b> — a group serves printing, where two pieces fill one shape
+ *      on a sheet. On fabric a piece is cut once, so a group is decomposed and the user says which
+ *      of its members she cuts. The box only appears when the pattern has a group to ask about.
+ *
+ * The laize is collected in millimetres and shown in centimetres: a laize is always read in
+ * centimetres, and a pattern measured in inches does not make one.
+ */
+class OExportCuttingWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit OExportCuttingWidget(const VContainer *data, const QSharedPointer<VMeasurements> &measurements,
+                                  QWidget *parent = nullptr);
+
+    /// @brief The laize, in millimetres — the width the nesting runs on.
+    auto FabricWidthMm() const -> qreal;
+
+    /// @brief The member kept for each group: group id → piece id. Empty when it has no group.
+    auto MemberChoices() const -> QMap<quint32, quint32>;
+
+    /// @brief Base of the axis in slot @p index (0 = X, 1 = Y, 2 = W); -1 when the table carries no such axis.
+    auto DimensionBase(int index) const -> qreal;
+
+    /// @brief What the axis in slot @p index reads as, empty when the table carries none.
+    auto DimensionLabel(int index) const -> QString;
+
+    /// @brief Whether the tab currently describes a run that can be asked for.
+    auto IsValid() const -> bool;
+
+signals:
+    /// Anything the dialog's Generate button depends on changed.
+    void Changed();
+
+protected:
+    void changeEvent(QEvent *event) override;
+
+private:
+    /// One row of the group box: the group's name, and the members to choose from.
+    struct GroupRow
+    {
+        quint32 groupId{0};
+        QLabel *label{nullptr};
+        QComboBox *combo{nullptr};
+    };
+
+    void BuildUi();
+    void PopulateDimensions(QFormLayout *form);
+    void PopulateGroups();
+    void CommitFabricWidth();
+    void Retranslate();
+
+    const VContainer *m_data{nullptr};
+    QSharedPointer<VMeasurements> m_measurements{};
+
+    QLabel *m_fabricWidthLabel{nullptr};
+    QLineEdit *m_fabricWidthEdit{nullptr};
+    QLabel *m_fabricWidthUnit{nullptr};
+
+    QVector<QLabel *> m_dimensionLabels{};
+    QVector<QComboBox *> m_dimensionCombos{};
+    QVector<int> m_dimensionSlots{};
+
+    QGroupBox *m_groupsBox{nullptr};
+    QVector<GroupRow> m_groupRows{};
+
+    /// Kept in millimetres rather than re-read from the field: an unreadable field would come back
+    /// as zero, and zero is a laize that would run the nesting on nothing.
+    qreal m_fabricWidthMm{1400.0};
+};
+
+#endif // OEXPORTCUTTINGWIDGET_H
