@@ -164,7 +164,6 @@ void VLayoutGenerator::Generate(const QElapsedTimer &timer, qint64 timeout, Layo
             paper.SetShift(shift);
             paper.SetPaperIndex(static_cast<quint32>(papers.count()));
             paper.SetRotate(rotate);
-            paper.SetFollowGrainline(followGrainline);
             paper.SetRotationNumber(rotationNumber);
             paper.SetSaveLength(saveLength);
             paper.SetOriginPaperPortrait(IsPortrait());
@@ -393,11 +392,6 @@ void VLayoutGenerator::SetShowLayoutAllowance(bool value)
 //---------------------------------------------------------------------------------------------------------------------
 auto VLayoutGenerator::IsRotationNeeded() const -> bool
 {
-    if (followGrainline)
-    {
-        return bank->IsRotationNeeded();
-    }
-
     return true;
 }
 
@@ -506,7 +500,6 @@ void VLayoutGenerator::GatherPages()
         paper.SetShift(shift);
         paper.SetPaperIndex(static_cast<quint32>(i));
         paper.SetRotate(rotate);
-        paper.SetFollowGrainline(followGrainline);
         paper.SetRotationNumber(rotationNumber);
         paper.SetSaveLength(saveLength);
         paper.SetDetails(nDetails.at(i));
@@ -633,7 +626,6 @@ void VLayoutGenerator::UnitePages()
         paper.SetShift(shift);
         paper.SetPaperIndex(static_cast<quint32>(i));
         paper.SetRotate(rotate);
-        paper.SetFollowGrainline(followGrainline);
         paper.SetRotationNumber(rotationNumber);
         paper.SetSaveLength(saveLength);
         paper.SetDetails(nDetails.at(i));
@@ -763,7 +755,6 @@ auto VLayoutGenerator::MasterPage() const -> VLayoutPaper
     paper.SetShift(shift);
     paper.SetPaperIndex(static_cast<quint32>(0));
     paper.SetRotate(rotate);
-    paper.SetFollowGrainline(followGrainline);
     paper.SetRotationNumber(rotationNumber);
     paper.SetSaveLength(saveLength);
     paper.SetDetails(nDetails.at(0));
@@ -859,18 +850,6 @@ auto VLayoutGenerator::GetRotate() const -> bool
 void VLayoutGenerator::SetRotate(bool value)
 {
     rotate = value;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VLayoutGenerator::GetFollowGrainline() const -> bool
-{
-    return followGrainline;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VLayoutGenerator::SetFollowGrainline(bool value)
-{
-    followGrainline = value;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

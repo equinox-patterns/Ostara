@@ -108,6 +108,11 @@ private:
 
     void Commit(std::function<void(OPieceGroup &)> func);
     void ModifyMemberPiece(quint32 pieceId, std::function<void(VPiece &)> func);
+    // The layout flags belong to the members, not to the group: reading shows what the members say, writing
+    // writes into all of them (one undo step). See OPieceGroupLayoutFlags.
+    auto MemberPieceIds() const -> QVector<quint32>;
+    void ShowLayoutFlags();
+    void WriteLayoutFlags(bool forceFlipping, bool symmetricalCopy);
     void RefreshGroupMemberFoldLines();
     void BuildMemberFoldLines();
     void OnMemberToggle(quint32 pieceId, bool expanded);
@@ -126,6 +131,10 @@ private:
     // Forced alignment point: the group's common point, the one chosen when the pieces were linked.
     QCheckBox *m_alignOnPointCheck{nullptr};
     QCheckBox *m_showAlignPointCheck{nullptr};
+
+    // Layout flags of the members. Checked when EVERY member carries the flag.
+    QCheckBox *m_forceFlippingCheck{nullptr};
+    QCheckBox *m_symmetricalCopyCheck{nullptr};
     bool m_showAlignPointState{true};          // UI state, per group: on by default
     quint32 m_alignPointHighlightId{NULL_ID};  // node currently painted orange, 0 when none
 

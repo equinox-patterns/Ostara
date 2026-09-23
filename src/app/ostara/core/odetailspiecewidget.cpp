@@ -312,21 +312,13 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         flagsSeparator->setFrameShadow(QFrame::Sunken);
         layout->addWidget(flagsSeparator);
 
-        m_forbidFlippingCheck = new QCheckBox(tr("Forbid flipping"));
-        m_forbidFlippingCheck->setToolTip(tr("Forbid piece be mirrored in a layout."));
-        layout->addWidget(m_forbidFlippingCheck);
-
         m_forceFlippingCheck = new QCheckBox(tr("Force flipping"));
         m_forceFlippingCheck->setToolTip(tr("Force piece to be always flipped in a layout."));
         layout->addWidget(m_forceFlippingCheck);
 
         m_symmetricalCopyCheck = new QCheckBox(tr("Symmetrical copy"));
-        m_symmetricalCopyCheck->setToolTip(tr("When the number of copies is greater than 1 and either 'Force Flipping' or 'Forbid Flipping' is selected, each even-numbered copy of the piece will be flipped vertically. The 'Force Flipping' or 'Forbid Flipping' setting will also toggle for each copy, applying the opposite of the initially selected option for each subsequent copy."));
+        m_symmetricalCopyCheck->setToolTip(tr("When the number of copies is greater than 1 and 'Force flipping' is selected, each even-numbered copy of the piece will be flipped vertically."));
         layout->addWidget(m_symmetricalCopyCheck);
-
-        m_followGrainlineCheck = new QCheckBox(tr("Follow grainline"));
-        m_followGrainlineCheck->setToolTip(tr("Force piece to always follow grainline direction regardless of layout settings."));
-        layout->addWidget(m_followGrainlineCheck);
 
         auto *flagsEndSeparator = new QFrame();
         flagsEndSeparator->setFrameShape(QFrame::HLine);
@@ -496,10 +488,6 @@ void ODetailsPieceWidget::RetranslateUI()
                                                                                      : tr("+ Add passmarks"));
     m_removePassmarksBtn->setText(m_passmarkSelectState == PassmarkSelectState::Removing ? tr("Cancel")
                                                                                          : tr("- Remove passmarks"));
-    if (m_forbidFlippingCheck)
-    {
-        m_forbidFlippingCheck->setText(tr("Forbid flipping"));
-    }
     if (m_forceFlippingCheck)
     {
         m_forceFlippingCheck->setText(tr("Force flipping"));
@@ -507,10 +495,6 @@ void ODetailsPieceWidget::RetranslateUI()
     if (m_symmetricalCopyCheck)
     {
         m_symmetricalCopyCheck->setText(tr("Symmetrical copy"));
-    }
-    if (m_followGrainlineCheck)
-    {
-        m_followGrainlineCheck->setText(tr("Follow grainline"));
     }
     m_tabWidget->setTabText(0, tr("General"));
     m_tabWidget->setTabText(1, tr("Grainline"));
@@ -650,32 +634,11 @@ void ODetailsPieceWidget::ConnectControls()
 
     // ── Layout flags (flipping & grainline) ──────────────────────
 
-    connect(m_forbidFlippingCheck, &QCheckBox::toggled, this, [this](bool checked)
-    {
-        if (m_updating || !m_currentTool)
-        {
-            return;
-        }
-        if (checked && m_forceFlippingCheck->isChecked())
-        {
-            m_updating = true;
-            m_forceFlippingCheck->setChecked(false);
-            m_updating = false;
-        }
-        ModifyPiece([checked](VPiece &det) { det.SetForbidFlipping(checked); });
-    });
-
     connect(m_forceFlippingCheck, &QCheckBox::toggled, this, [this](bool checked)
     {
         if (m_updating || !m_currentTool)
         {
             return;
-        }
-        if (checked && m_forbidFlippingCheck->isChecked())
-        {
-            m_updating = true;
-            m_forbidFlippingCheck->setChecked(false);
-            m_updating = false;
         }
         ModifyPiece([checked](VPiece &det) { det.SetForceFlipping(checked); });
     });
@@ -687,15 +650,6 @@ void ODetailsPieceWidget::ConnectControls()
             return;
         }
         ModifyPiece([checked](VPiece &det) { det.SetSymmetricalCopy(checked); });
-    });
-
-    connect(m_followGrainlineCheck, &QCheckBox::toggled, this, [this](bool checked)
-    {
-        if (m_updating || !m_currentTool)
-        {
-            return;
-        }
-        ModifyPiece([checked](VPiece &det) { det.SetFollowGrainline(checked); });
     });
 
     // ── Passmark multi-selection ──────────────────────────────────
@@ -837,10 +791,8 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
     // Alignment: both rows, the forced point, and the enabled/disabled states that follow from it.
     ApplyAlignPointControls(detail, tool->getData());
 
-    m_forbidFlippingCheck->setChecked(detail.IsForbidFlipping());
     m_forceFlippingCheck->setChecked(detail.IsForceFlipping());
     m_symmetricalCopyCheck->setChecked(detail.IsSymmetricalCopy());
-    m_followGrainlineCheck->setChecked(detail.IsFollowGrainline());
 
     // ── Grainline tab ────────────────────────────────────────────
     m_grainlineWidget->Show(detail.GetGrainlineGeometry(),

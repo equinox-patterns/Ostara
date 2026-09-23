@@ -51,7 +51,6 @@ struct VPositionData
     int j{-1};
     bool rotate{false};
     int rotationNumber{0};
-    bool followGrainline{false};
     QVector<VCachedPositions> positionsCache{};
     bool isOriginPaperOrientationPortrait{true};
 #ifdef LAYOUT_DEBUG

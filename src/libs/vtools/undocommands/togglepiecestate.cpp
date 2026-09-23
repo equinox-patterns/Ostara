@@ -87,51 +87,28 @@ void TogglePieceInLayout::Do(bool state)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-TogglePieceForceForbidFlipping::TogglePieceForceForbidFlipping(
-    quint32 id, bool state, ForceForbidFlippingType type, VContainer *data, VAbstractPattern *doc, QUndoCommand *parent)
+TogglePieceForceFlipping::TogglePieceForceFlipping(quint32 id, bool state, VContainer *data, VAbstractPattern *doc,
+                                                   QUndoCommand *parent)
   : VUndoCommand(doc, parent),
     m_id(id),
     m_data(data),
-    m_type(type)
+    m_newState(state)
 {
     setText(tr("piece flipping"));
 
     VPiece det = m_data->DataPieces()->value(m_id);
 
-    m_oldForceState = det.IsForceFlipping();
-    m_oldForbidState = det.IsForbidFlipping();
-
-    if (m_type == ForceForbidFlippingType::ForceFlipping)
-    {
-        m_newForceState = state;
-        det.SetForbidFlipping(state);
-        m_newForbidState = det.IsForbidFlipping();
-    }
-    else
-    {
-        m_newForbidState = state;
-        det.SetForceFlipping(state);
-        m_newForceState = det.IsForceFlipping();
-    }
+    m_oldState = det.IsForceFlipping();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void TogglePieceForceForbidFlipping::undo()
+void TogglePieceForceFlipping::undo()
 {
     QDomElement detail = Doc()->FindElementById(m_id, VAbstractPattern::TagDetail);
     if (detail.isElement())
     {
         VPiece det = m_data->DataPieces()->value(m_id);
-        if (m_type == ForceForbidFlippingType::ForceFlipping)
-        {
-            det.SetForceFlipping(m_oldForceState);
-            det.SetForbidFlipping(m_oldForbidState);
-        }
-        else
-        {
-            det.SetForbidFlipping(m_oldForbidState);
-            det.SetForceFlipping(m_oldForceState);
-        }
+        det.SetForceFlipping(m_oldState);
         m_data->UpdatePiece(m_id, det);
 
         // Probably overkill, but will help to avoid mistakes
@@ -144,20 +121,13 @@ void TogglePieceForceForbidFlipping::undo()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void TogglePieceForceForbidFlipping::redo()
+void TogglePieceForceFlipping::redo()
 {
     QDomElement detail = Doc()->FindElementById(m_id, VAbstractPattern::TagDetail);
     if (detail.isElement())
     {
         VPiece det = m_data->DataPieces()->value(m_id);
-        if (m_type == ForceForbidFlippingType::ForceFlipping)
-        {
-            det.SetForceFlipping(m_newForceState);
-        }
-        else
-        {
-            det.SetForbidFlipping(m_newForbidState);
-        }
+        det.SetForceFlipping(m_newState);
         m_data->UpdatePiece(m_id, det);
 
         // Probably overkill, but will help to avoid mistakes

@@ -713,13 +713,11 @@ void VToolSeamAllowance::AddAttributes(VAbstractPattern *doc, QDomElement &domEl
     doc->SetAttribute(domElement, AttrMy, VAbstractValApplication::VApp()->fromPixel(piece.GetMy()));
     doc->SetAttributeOrRemoveIf<bool>(domElement, AttrInLayout, piece.IsInLayout(),
                                       [](bool inLayout) noexcept { return inLayout; });
-    doc->SetAttribute(domElement, AttrForbidFlipping, piece.IsForbidFlipping());
     doc->SetAttribute(domElement, AttrForceFlipping, piece.IsForceFlipping());
     doc->SetAttributeOrRemoveIf<bool>(domElement,
                                       AttrSymmetricalCopy,
                                       piece.IsSymmetricalCopy(),
                                       [](bool sCopy) noexcept { return not sCopy; });
-    doc->SetAttribute(domElement, AttrFollowGrainline, piece.IsFollowGrainline());
     doc->SetAttribute(domElement, AttrSewLineOnDrawing, piece.IsSewLineOnDrawing());
     doc->SetAttributeOrRemoveIf<bool>(domElement, AttrSeamAllowance, piece.IsSeamAllowance(),
                                       [](bool seamAllowance) noexcept { return not seamAllowance; });
@@ -2210,12 +2208,10 @@ void VToolSeamAllowance::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
     const bool inLayout = detail.IsInLayout();
     const bool hideMainPath = detail.IsHideMainPath();
-    const bool forbidFlipping = detail.IsForbidFlipping();
     const bool forceFlipping = detail.IsForceFlipping();
 
     QAction *inLayoutOption = addToggle(tr("In layout"), inLayout);
     QAction *hideMainPathOption = addToggle(tr("Hide main path"), hideMainPath);
-    QAction *forbidFlippingOption = addToggle(tr("Forbid flipping"), forbidFlipping);
     QAction *forceFlippingOption = addToggle(tr("Force flipping"), forceFlipping);
 
     QAction *showFullPiece = menu.addAction(tr("Show full piece"));
@@ -2282,10 +2278,6 @@ void VToolSeamAllowance::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     else if (selectedAction == hideMainPathOption)
     {
         ToggleHideMainPath(not hideMainPath);
-    }
-    else if (selectedAction == forbidFlippingOption)
-    {
-        ToggleForbidFlipping(not forbidFlipping);
     }
     else if (selectedAction == forceFlippingOption)
     {
@@ -2781,17 +2773,10 @@ void VToolSeamAllowance::ToggleHideMainPath(bool checked)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::ToggleForbidFlipping(bool checked)
-{
-    VAbstractApplication::VApp()->getUndoStack()->push(new TogglePieceForceForbidFlipping(
-        m_id, checked, ForceForbidFlippingType::ForbidFlipping, &(VAbstractTool::data), doc));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::ToggleForceFlipping(bool checked)
 {
-    VAbstractApplication::VApp()->getUndoStack()->push(new TogglePieceForceForbidFlipping(
-        m_id, checked, ForceForbidFlippingType::ForceFlipping, &(VAbstractTool::data), doc));
+    VAbstractApplication::VApp()->getUndoStack()->push(
+        new TogglePieceForceFlipping(m_id, checked, &(VAbstractTool::data), doc));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3026,8 +3011,6 @@ void VToolSeamAllowance::InitNode(const VPieceNode &node, VMainGraphicsScene *sc
                 connect(tool, &VNodePoint::ShowOptions, parent, &VToolSeamAllowance::ShowOptions, Qt::UniqueConnection);
                 connect(tool, &VNodePoint::ToggleInLayout, parent, &VToolSeamAllowance::ToggleInLayout,
                         Qt::UniqueConnection);
-                connect(tool, &VNodePoint::ToggleForbidFlipping, parent, &VToolSeamAllowance::ToggleForbidFlipping,
-                        Qt::UniqueConnection);
                 connect(tool, &VNodePoint::ToggleForceFlipping, parent, &VToolSeamAllowance::ToggleForceFlipping,
                         Qt::UniqueConnection);
                 connect(tool, &VNodePoint::ToggleShowFullPiece, parent, &VToolSeamAllowance::ToggleShowFullPiece,
@@ -3084,11 +3067,6 @@ void VToolSeamAllowance::InitInternalNode(const VPieceNode &node, VToolSeamAllow
                         &VNodePoint::ToggleInLayout,
                         parent,
                         &VToolSeamAllowance::ToggleInLayout,
-                        Qt::UniqueConnection);
-                connect(tool,
-                        &VNodePoint::ToggleForbidFlipping,
-                        parent,
-                        &VToolSeamAllowance::ToggleForbidFlipping,
                         Qt::UniqueConnection);
                 connect(tool,
                         &VNodePoint::ToggleForceFlipping,

@@ -334,7 +334,7 @@ auto VPosition::CheckCombineEdges(VLayoutPiece &detail, int j, int &dEdge) -> bo
             break;
     }
 
-    if (flagMirror && not detail.IsForbidFlipping())
+    if (flagMirror)
     {
 #ifdef LAYOUT_DEBUG
 #ifdef SHOW_MIRROR
@@ -380,7 +380,7 @@ auto VPosition::CheckRotationEdges(VLayoutPiece &detail, int j, int dEdge, qreal
 
     if (detail.IsForceFlipping())
     {
-        detail.Mirror(m_data.followGrainline || detail.IsFollowGrainline() ? QLineF(10, 10, 10, 100) : globalEdge);
+        detail.Mirror(globalEdge);
     }
 
     RotateEdges(detail, globalEdge, dEdge, angle);
@@ -546,9 +546,7 @@ void VPosition::FollowGrainline()
     if (m_data.detail.IsForceFlipping())
     {
         VLayoutPiece workDetail = m_data.detail; // We need copy for temp change
-        workDetail.Mirror(m_data.followGrainline || workDetail.IsFollowGrainline()
-                              ? QLineF(10, 10, 10, 100)
-                              : m_data.gContour.GlobalEdge(m_data.j));
+        workDetail.Mirror(m_data.gContour.GlobalEdge(m_data.j));
         detailGrainline = workDetail.GetMatrix().map(detailGrainline);
     }
 
@@ -616,12 +614,6 @@ void VPosition::FindBestPosition()
 {
     if (stop->load())
     {
-        return;
-    }
-
-    if (m_data.detail.IsGrainlineEnabled() && (m_data.followGrainline || m_data.detail.IsFollowGrainline()))
-    {
-        FollowGrainline();
         return;
     }
 

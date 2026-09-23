@@ -517,6 +517,58 @@ auto StripShortNameAttributes(QDomDocument *doc) -> bool
     return foundShortName;
 }
 
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+// Remove one legacy attribute from every <detail> element. Only <detail> is visited: both attributes named here are
+// read and written on pieces only.
+auto StripDetailAttribute(QDomDocument *doc, const QString &attribute) -> bool
+{
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    bool found = false;
+    const QDomNodeList details = root.elementsByTagName(QStringLiteral("detail"));
+    for (int i = 0; i < details.size(); ++i)
+    {
+        QDomElement detail = details.at(i).toElement();
+        if (detail.isNull() || not detail.hasAttribute(attribute))
+        {
+            continue;
+        }
+
+        found = true;
+        detail.removeAttribute(attribute);
+    }
+
+    return found;
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto StripForbidFlippingAttributes(QDomDocument *doc) -> bool
+{
+    // Ostara no longer offers "forbid flipping": a piece is never mirrored unless "force flipping" asks for it. The
+    // attribute is dropped from the DOM so it cannot survive a load/save round-trip and break the schema.
+    return StripDetailAttribute(doc, QStringLiteral("forbidFlipping"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto StripFollowGrainlineAttributes(QDomDocument *doc) -> bool
+{
+    // Ostara no longer offers "follow grainline": following the grainline is an obligation of the cutting plan, not an
+    // option. The attribute is dropped from the DOM so it cannot survive a load/save round-trip and break the schema.
+    return StripDetailAttribute(doc, QStringLiteral("followGrainline"));
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 auto StripBuiltInSeamAllowanceAttributes(QDomDocument *doc) -> bool
 {

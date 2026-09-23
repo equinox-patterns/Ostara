@@ -115,41 +115,19 @@ OPiecePieceStep::OPiecePieceStep(QWidget *parent)
     flagsSeparator->setFrameShadow(QFrame::Sunken);
     flagsLayout->addWidget(flagsSeparator);
 
-    m_forbidFlippingCheck = new QCheckBox(tr("Forbid flipping"));
-    m_forbidFlippingCheck->setToolTip(tr("Forbid piece be mirrored in a layout."));
-    flagsLayout->addWidget(m_forbidFlippingCheck);
-
     m_forceFlippingCheck = new QCheckBox(tr("Force flipping"));
     m_forceFlippingCheck->setToolTip(tr("Force piece to be always flipped in a layout."));
     flagsLayout->addWidget(m_forceFlippingCheck);
 
     m_symmetricalCopyCheck = new QCheckBox(tr("Symmetrical copy"));
-    m_symmetricalCopyCheck->setToolTip(tr("When the number of copies is greater than 1 and either 'Force Flipping' or 'Forbid Flipping' is selected, each even-numbered copy of the piece will be flipped vertically. The 'Force Flipping' or 'Forbid Flipping' setting will also toggle for each copy, applying the opposite of the initially selected option for each subsequent copy."));
+    m_symmetricalCopyCheck->setToolTip(tr("When the number of copies is greater than 1 and 'Force flipping' is selected, each even-numbered copy of the piece will be flipped vertically."));
+    // A new piece is born with the symmetrical copy checked (cutting plan prerequisite).
+    m_symmetricalCopyCheck->setChecked(true);
     flagsLayout->addWidget(m_symmetricalCopyCheck);
-
-    m_followGrainlineCheck = new QCheckBox(tr("Follow grainline"));
-    m_followGrainlineCheck->setToolTip(tr("Force piece to always follow grainline direction regardless of layout settings."));
-    flagsLayout->addWidget(m_followGrainlineCheck);
 
     mainLayout->addWidget(m_flagsBlock);
 
     mainLayout->addStretch();
-
-    // Forbid ↔ Force flipping are mutually exclusive.
-    connect(m_forbidFlippingCheck, &QCheckBox::toggled, this, [this](bool checked)
-    {
-        if (checked && m_forceFlippingCheck->isChecked())
-        {
-            m_forceFlippingCheck->setChecked(false);
-        }
-    });
-    connect(m_forceFlippingCheck, &QCheckBox::toggled, this, [this](bool checked)
-    {
-        if (checked && m_forbidFlippingCheck->isChecked())
-        {
-            m_forbidFlippingCheck->setChecked(false);
-        }
-    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -249,15 +227,15 @@ auto OPiecePieceStep::GetGradedAlignV() const -> int
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPiecePieceStep::IsForbidFlipping() const -> bool
-{
-    return m_forbidFlippingCheck->isChecked();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto OPiecePieceStep::IsForceFlipping() const -> bool
 {
     return m_forceFlippingCheck->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPiecePieceStep::SetForceFlipping(bool checked)
+{
+    m_forceFlippingCheck->setChecked(checked);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -267,9 +245,9 @@ auto OPiecePieceStep::IsSymmetricalCopy() const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPiecePieceStep::IsFollowGrainline() const -> bool
+void OPiecePieceStep::SetSymmetricalCopy(bool checked)
 {
-    return m_followGrainlineCheck->isChecked();
+    m_symmetricalCopyCheck->setChecked(checked);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

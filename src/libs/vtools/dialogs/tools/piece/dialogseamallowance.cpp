@@ -294,10 +294,8 @@ void DialogSeamAllowance::SetPiece(const VPiece &piece)
 
     CustomSAChanged(0);
 
-    uiTabPaths->checkBoxForbidFlipping->setChecked(piece.IsForbidFlipping());
     uiTabPaths->checkBoxForceFlipping->setChecked(piece.IsForceFlipping());
     uiTabPaths->checkBoxSymmetricalCopy->setChecked(piece.IsSymmetricalCopy());
-    uiTabPaths->checkBoxFollowGrainline->setChecked(piece.IsFollowGrainline());
     uiTabPaths->checkBoxOnDrawing->setChecked(piece.IsSewLineOnDrawing());
     uiTabPaths->checkBoxSeams->setChecked(piece.IsSeamAllowance());
     uiTabPaths->lineEditName->setText(piece.GetName());
@@ -1279,10 +1277,8 @@ auto DialogSeamAllowance::CreatePiece() const -> VPiece
     piece.SetCustomSARecords(GetListInternals<CustomSARecord>(uiTabPaths->listWidgetCustomSA));
     piece.SetInternalPaths(GetListInternals<quint32>(uiTabPaths->listWidgetInternalPaths));
     piece.SetPlaceLabels(GetListInternals<quint32>(uiTabPlaceLabels->listWidgetPlaceLabels));
-    piece.SetForbidFlipping(uiTabPaths->checkBoxForbidFlipping->isChecked());
     piece.SetForceFlipping(uiTabPaths->checkBoxForceFlipping->isChecked());
     piece.SetSymmetricalCopy(uiTabPaths->checkBoxSymmetricalCopy->isChecked());
-    piece.SetFollowGrainline(uiTabPaths->checkBoxFollowGrainline->isChecked());
     piece.SetSewLineOnDrawing(uiTabPaths->checkBoxOnDrawing->isChecked());
     piece.SetSeamAllowance(uiTabPaths->checkBoxSeams->isChecked());
     piece.SetHideMainPath(uiTabPaths->checkBoxHideMainPath->isChecked());
@@ -1927,27 +1923,10 @@ void DialogSeamAllowance::InitPieceTab()
 
     uiTabPaths->lineEditName->setText(GetDefaultPieceName());
 
-    connect(uiTabPaths->checkBoxForbidFlipping, CHECKBOX_STATE_CHANGED, this,
-            [this](int state)
-            {
-                if (state == Qt::Checked)
-                {
-                    uiTabPaths->checkBoxForceFlipping->setChecked(false);
-                }
-            });
-
-    connect(uiTabPaths->checkBoxForceFlipping, CHECKBOX_STATE_CHANGED, this,
-            [this](int state)
-            {
-                if (state == Qt::Checked)
-                {
-                    uiTabPaths->checkBoxForbidFlipping->setChecked(false);
-                }
-            });
-
     VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-    uiTabPaths->checkBoxForbidFlipping->setChecked(settings->GetForbidWorkpieceFlipping());
     uiTabPaths->checkBoxForceFlipping->setChecked(settings->GetForceWorkpieceFlipping());
+    // A new piece is born with the symmetrical copy checked (cutting plan prerequisite).
+    uiTabPaths->checkBoxSymmetricalCopy->setChecked(true);
     uiTabPaths->checkBoxOnDrawing->setChecked(settings->GetSewLineOnDrawing());
 
     connect(uiTabPaths->lineEditUUID, &QLineEdit::textChanged, this, &DialogSeamAllowance::DetailUUIDChanged);

@@ -498,13 +498,6 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="checkBoxFollowGrainline">
-            <property name="text">
-             <string>Follow grainline</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QCheckBox" name="checkBoxManualPriority">
             <property name="text">
              <string>Manual priority</string>

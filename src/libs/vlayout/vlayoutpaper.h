@@ -75,8 +75,6 @@ public:
     auto GetRotate() const -> bool;
     void SetRotate(bool value);
 
-    auto GetFollowGrainline() const -> bool;
-    void SetFollowGrainline(bool value);
 
     auto GetRotationNumber() const -> int;
     void SetRotationNumber(int value);

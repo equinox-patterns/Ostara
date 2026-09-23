@@ -165,7 +165,6 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingsConfigurationAskSendCrashReport
                           ("configuration/askSendCrashReport"_L1))
 
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternUndo, ("pattern/undo"_L1))                         // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternForbidFlipping, ("pattern/forbidFlipping"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternForceFlipping, ("pattern/forceFlipping"_L1))       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSewLineOnDrawing, ("pattern/sewLineOnDrawing"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternHideMainPath, ("pattern/hideMainPath"_L1))         // NOLINT
@@ -1375,23 +1374,6 @@ void VCommonSettings::SetDateOfLastRemind(const QDate &date) const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetForbidWorkpieceFlipping() const -> bool
-{
-    return value(*settingPatternForbidFlipping, false).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetForbidWorkpieceFlipping(bool value)
-{
-    setValue(*settingPatternForbidFlipping, value);
-
-    if (value)
-    {
-        SetForceWorkpieceFlipping(not value);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetForceWorkpieceFlipping() const -> bool
 {
     return value(*settingPatternForceFlipping, false).toBool();
@@ -1401,11 +1383,6 @@ auto VCommonSettings::GetForceWorkpieceFlipping() const -> bool
 void VCommonSettings::SetForceWorkpieceFlipping(bool value)
 {
     setValue(*settingPatternForceFlipping, value);
-
-    if (value)
-    {
-        SetForbidWorkpieceFlipping(not value);
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

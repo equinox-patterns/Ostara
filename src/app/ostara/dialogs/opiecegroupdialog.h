@@ -54,6 +54,11 @@ public:
     /** @brief Builds the group from the step fields (id / pieceIds filled by the caller). */
     auto GetGroup() const -> OPieceGroup;
 
+    /** @brief Layout flags chosen for the group. A group carries none of them: the caller writes them into every
+     *         member piece (see ODetailsGroupWidget, which edits them the same way). */
+    auto IsForceFlipping() const -> bool;
+    auto IsSymmetricalCopy() const -> bool;
+
 private:
     void UpdateButtons(const QString &name);
 

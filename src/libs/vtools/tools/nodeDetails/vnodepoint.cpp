@@ -106,7 +106,6 @@ enum class ContextMenuOption : std::uint8_t
     CheckMarkClockwise,
     Option,
     InLayout,
-    ForbidFlipping,
     ForceFlipping,
     ShowFullPiece,
     Remove,
@@ -492,10 +491,6 @@ auto VNodePoint::InitContextMenu(QMenu *menu, vidtype pieceId, RemoveStatus stat
         AddNodeToggle(menu, QCoreApplication::translate("VNodePoint", "In layout"), detail.IsInLayout());
     contextMenu.insert(static_cast<int>(ContextMenuOption::InLayout), inLayoutOption);
 
-    QAction *forbidFlippingOption = AddNodeToggle(menu, QCoreApplication::translate("VNodePoint", "Forbid flipping"),
-                                                  detail.IsForbidFlipping());
-    contextMenu.insert(static_cast<int>(ContextMenuOption::ForbidFlipping), forbidFlippingOption);
-
     QAction *forceFlippingOption = AddNodeToggle(menu, QCoreApplication::translate("VNodePoint", "Force flipping"),
                                                  detail.IsForceFlipping());
     contextMenu.insert(static_cast<int>(ContextMenuOption::ForceFlipping), forceFlippingOption);
@@ -742,7 +737,7 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     auto const selectedOption = static_cast<ContextMenuOption>(
         contextMenu.key(selectedAction, static_cast<int>(ContextMenuOption::NoSelection)));
 
-    Q_STATIC_ASSERT_X(static_cast<int>(ContextMenuOption::LAST_ONE_DO_NOT_USE) == 35, "Not all options were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(ContextMenuOption::LAST_ONE_DO_NOT_USE) == 34, "Not all options were handled.");
 
     QT_WARNING_PUSH
     QT_WARNING_DISABLE_GCC("-Wswitch-default")
@@ -759,9 +754,6 @@ void VNodePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
             break; // "Options" is no longer offered in the node context menu
         case ContextMenuOption::InLayout:
             emit ToggleInLayout(not selectedAction->property("active").toBool());
-            break;
-        case ContextMenuOption::ForbidFlipping:
-            emit ToggleForbidFlipping(not selectedAction->property("active").toBool());
             break;
         case ContextMenuOption::ForceFlipping:
             emit ToggleForceFlipping(not selectedAction->property("active").toBool());

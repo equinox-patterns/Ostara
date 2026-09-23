@@ -197,11 +197,9 @@ auto OPieceDialog::GetPiece() const -> VPiece
     piece.SetGradedAlignH(m_pieceStep->GetGradedAlignH());
     piece.SetGradedAlignV(m_pieceStep->GetGradedAlignV());
 
-    // Layout flags, as chosen in the step-2 dialog (all unchecked by default).
-    piece.SetForbidFlipping(m_pieceStep->IsForbidFlipping());
+    // Layout flags, as chosen in the step-2 dialog (symmetrical copy is checked by default).
     piece.SetForceFlipping(m_pieceStep->IsForceFlipping());
     piece.SetSymmetricalCopy(m_pieceStep->IsSymmetricalCopy());
-    piece.SetFollowGrainline(m_pieceStep->IsFollowGrainline());
 
     return piece;
 }

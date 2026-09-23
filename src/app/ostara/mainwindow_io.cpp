@@ -940,6 +940,12 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         // the pattern impossible to save. Silent by design, see the function.
         ConvertRemovedFoldLineTypes(doc);
 
+        // Drop the two layout flags Ostara no longer offers. Same reasoning as above: they are dropped from the DOM
+        // for a .ostara too, because Ostara itself wrote them until now, and the save schema no longer accepts them.
+        // Silent by design, see the functions.
+        StripForbidFlippingAttributes(doc);
+        StripFollowGrainlineAttributes(doc);
+
         if (!customMeasureFile.isEmpty())
         {
             doc->SetMPath(RelativeMPath(fileName, customMeasureFile));

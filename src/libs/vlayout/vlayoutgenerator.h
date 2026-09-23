@@ -96,9 +96,6 @@ public:
     auto GetRotate() const -> bool;
     void SetRotate(bool value);
 
-    auto GetFollowGrainline() const -> bool;
-    void SetFollowGrainline(bool value);
-
     auto GetManualPriority() const -> bool;
     void SetManualPriority(bool value);
 
@@ -164,7 +161,6 @@ private:
     LayoutErrors state{LayoutErrors::NoError};
     qreal shift{0};
     bool rotate{true};
-    bool followGrainline{false};
     int rotationNumber{2};
     bool autoCropLength{false};
     bool autoCropWidth{false};

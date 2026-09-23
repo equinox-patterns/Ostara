@@ -405,10 +405,8 @@ auto VLayoutPiece::Create(const VPiece &piece, vidtype id, const VContainer *pat
     det.SetUUID(piece.GetUUID());
 
     det.SetSAWidth(VAbstractValApplication::VApp()->toPixel(piece.GetSAWidth()));
-    det.SetForbidFlipping(piece.IsForbidFlipping());
     det.SetForceFlipping(piece.IsForceFlipping());
     det.SetSymmetricalCopy(piece.IsSymmetricalCopy());
-    det.SetFollowGrainline(piece.IsFollowGrainline());
     det.SetSewLineOnDrawing(piece.IsSewLineOnDrawing());
     det.SetShowFullPiece(piece.IsShowFullPiece());
     det.SetSeamMirrorLine(piece.SeamMirrorLine(pattern));

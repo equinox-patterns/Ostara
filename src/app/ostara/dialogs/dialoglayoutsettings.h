@@ -71,8 +71,6 @@ public:
     auto GetGroup() const -> Cases;
     void SetGroup(const Cases &value);
 
-    auto GetFollowGrainline() const -> bool;
-    void SetFollowGrainline(bool state);
 
     auto GetManualPriority() const -> bool;
     void SetManualPriority(bool state);

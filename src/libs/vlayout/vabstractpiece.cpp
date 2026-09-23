@@ -1377,23 +1377,6 @@ void VAbstractPiece::SetName(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPiece::IsForbidFlipping() const -> bool
-{
-    return d->m_forbidFlipping;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPiece::SetForbidFlipping(bool value)
-{
-    d->m_forbidFlipping = value;
-
-    if (value)
-    {
-        d->m_forceFlipping = not value;
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPiece::IsForceFlipping() const -> bool
 {
     return d->m_forceFlipping;
@@ -1403,11 +1386,6 @@ auto VAbstractPiece::IsForceFlipping() const -> bool
 void VAbstractPiece::SetForceFlipping(bool value)
 {
     d->m_forceFlipping = value;
-
-    if (value)
-    {
-        d->m_forbidFlipping = not value;
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1420,18 +1398,6 @@ auto VAbstractPiece::IsSymmetricalCopy() const -> bool
 void VAbstractPiece::SetSymmetricalCopy(bool value)
 {
     d->m_symmetricalCopy = value;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPiece::IsFollowGrainline() const -> bool
-{
-    return d->m_followGrainline;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPiece::SetFollowGrainline(bool value)
-{
-    d->m_followGrainline = value;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

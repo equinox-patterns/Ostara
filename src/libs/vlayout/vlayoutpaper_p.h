@@ -63,7 +63,6 @@ public:
     int globalRotationNumber{2};       // NOLINT (misc-non-private-member-variables-in-classes)
     int localRotationNumber{2};        // NOLINT (misc-non-private-member-variables-in-classes)
     bool saveLength{false};            // NOLINT (misc-non-private-member-variables-in-classes)
-    bool followGrainline{false};       // NOLINT (misc-non-private-member-variables-in-classes)
     bool originPaperOrientation{true}; // NOLINT (misc-non-private-member-variables-in-classes)
 
 private:

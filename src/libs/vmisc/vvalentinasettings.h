@@ -82,10 +82,6 @@ public:
     static auto GetDefLayoutGroup() -> Cases;
     void SetLayoutGroup(const Cases &value);
 
-    auto GetLayoutFollowGrainline() const -> bool;
-    static auto GetDefLayoutFollowGrainline() -> bool;
-    void SetLayoutFollowGrainline(bool value);
-
     auto GetLayoutManualPriority() const -> bool;
     static auto GetDefLayoutManualPriority() -> bool;
     void SetLayoutManualPriority(bool value);

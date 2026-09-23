@@ -69,7 +69,6 @@ public:
 signals:
     void ShowOptions();
     void ToggleInLayout(bool checked);
-    void ToggleForbidFlipping(bool checked);
     void ToggleForceFlipping(bool checked);
     void ToggleShowFullPiece(bool checked);
     void Delete();

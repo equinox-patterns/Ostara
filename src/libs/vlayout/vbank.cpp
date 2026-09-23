@@ -63,11 +63,7 @@ auto HandleSymmetricalCopy(const VLayoutPiece &piece, int copyIndex) -> VLayoutP
     {
         if (piece.IsForceFlipping())
         {
-            copy.SetForbidFlipping(true);
-        }
-        else if (piece.IsForbidFlipping())
-        {
-            copy.SetForceFlipping(true);
+            copy.SetForceFlipping(false);
         }
     }
 
@@ -85,7 +81,7 @@ auto PrepareQuantity(const QVector<VLayoutPiece> &details) -> QVector<VLayoutPie
         {
             for (int i = 0; i < quantity; ++i)
             {
-                if (piece.IsSymmetricalCopy() && (piece.IsForceFlipping() || piece.IsForbidFlipping()))
+                if (piece.IsSymmetricalCopy() && piece.IsForceFlipping())
                 {
                     withQuantity.append(HandleSymmetricalCopy(piece, i));
                 }

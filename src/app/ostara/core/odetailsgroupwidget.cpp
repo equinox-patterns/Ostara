@@ -54,6 +54,7 @@
 #include "../widgets/ogradedalignwidget.h"
 #include "odetailsgrainlinewidget.h"
 #include "opiececommonpoint.h"
+#include "opiecegrouplayoutflags.h"
 #include "../vtools/undocommands/savepieceoptions.h"
 #include "../vtheme/vtheme.h"
 #include "oannotationsconfigwidget.h"
@@ -198,6 +199,39 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     m_alignWidget->AddExtraContent(m_showAlignPointCheck);
     connect(m_alignOnPointCheck, &QCheckBox::toggled, this, &ODetailsGroupWidget::OnAlignOnPointToggled);
     connect(m_showAlignPointCheck, &QCheckBox::toggled, this, &ODetailsGroupWidget::OnShowAlignPointToggled);
+
+    // Layout flags. The group carries none of them — they belong to the pieces: ticking one here writes it into
+    // every member, so the user neither unlinks the group nor ticks each member in the tree. Same labels and
+    // texts as the piece browser.
+    auto *flagsSeparator = new QFrame(generalPage);
+    flagsSeparator->setFrameShape(QFrame::HLine);
+    flagsSeparator->setFrameShadow(QFrame::Sunken);
+    generalLayout->addWidget(flagsSeparator);
+
+    m_forceFlippingCheck = new QCheckBox(tr("Force flipping"), generalPage);
+    m_forceFlippingCheck->setToolTip(tr("Force piece to be always flipped in a layout."));
+    generalLayout->addWidget(m_forceFlippingCheck);
+
+    m_symmetricalCopyCheck = new QCheckBox(tr("Symmetrical copy"), generalPage);
+    m_symmetricalCopyCheck->setToolTip(tr("When the number of copies is greater than 1 and 'Force flipping' is selected, each even-numbered copy of the piece will be flipped vertically."));
+    generalLayout->addWidget(m_symmetricalCopyCheck);
+
+    connect(m_forceFlippingCheck, &QCheckBox::toggled, this, [this](bool checked)
+    {
+        if (m_updating)
+        {
+            return;
+        }
+        WriteLayoutFlags(checked, m_symmetricalCopyCheck->isChecked());
+    });
+    connect(m_symmetricalCopyCheck, &QCheckBox::toggled, this, [this](bool checked)
+    {
+        if (m_updating)
+        {
+            return;
+        }
+        WriteLayoutFlags(m_forceFlippingCheck->isChecked(), checked);
+    });
 
     generalLayout->addStretch();
 
@@ -354,6 +388,7 @@ void ODetailsGroupWidget::Show(quint32 groupId, VContainer *data, VAbstractPatte
         m_alignWidget->SetAlignV(group.alignV);
     }
     ApplyAlignPointControls(group);
+    ShowLayoutFlags();
 
     // Common grainline editor (same widget as the PB Piece); the canvas holder
     // centers a freshly-activated grainline itself (no centerProvider here).
@@ -529,6 +564,36 @@ void ODetailsGroupWidget::ModifyMemberPiece(quint32 pieceId, std::function<void(
     VPiece newDet = oldDet;
     func(newDet);
     VAbstractApplication::VApp()->getUndoStack()->push(new SavePieceOptions(oldDet, newDet, m_doc, pieceId));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsGroupWidget::MemberPieceIds() const -> QVector<quint32>
+{
+    const auto *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;
+    if (groups == nullptr || not groups->contains(m_groupId))
+    {
+        return {};
+    }
+    return groups->value(m_groupId).pieceIds;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::ShowLayoutFlags()
+{
+    const QVector<quint32> ids = MemberPieceIds();
+
+    m_updating = true;
+    m_forceFlippingCheck->setChecked(OPieceGroupLayoutFlags::ForceFlipping(ids, m_data));
+    m_symmetricalCopyCheck->setChecked(OPieceGroupLayoutFlags::SymmetricalCopy(ids, m_data));
+    m_updating = false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::WriteLayoutFlags(bool forceFlipping, bool symmetricalCopy)
+{
+    OPieceGroupLayoutFlags::Apply(MemberPieceIds(), forceFlipping, symmetricalCopy, m_data, m_doc);
+    // One member may already have carried the value: the tick has to follow what the pieces now say, not the click.
+    ShowLayoutFlags();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

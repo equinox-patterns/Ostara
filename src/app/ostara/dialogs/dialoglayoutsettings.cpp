@@ -254,18 +254,6 @@ void DialogLayoutSettings::SetGroup(const Cases &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogLayoutSettings::GetFollowGrainline() const -> bool
-{
-    return ui->checkBoxFollowGrainline->isChecked();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogLayoutSettings::SetFollowGrainline(bool state)
-{
-    ui->checkBoxFollowGrainline->setChecked(state);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto DialogLayoutSettings::GetManualPriority() const -> bool
 {
     return ui->checkBoxManualPriority->isChecked();
@@ -662,7 +650,6 @@ void DialogLayoutSettings::DialogAccepted()
     m_generator->SetPaperWidth(GetPaperWidth());
     m_generator->SetNestingTime(GetNestingTime());
     m_generator->SetEfficiencyCoefficient(GetEfficiencyCoefficient());
-    m_generator->SetFollowGrainline(GetFollowGrainline());
     m_generator->SetManualPriority(GetManualPriority());
     m_generator->SetAutoCropLength(GetAutoCropLength());
     m_generator->SetAutoCropWidth(GetAutoCropWidth());
@@ -738,7 +725,6 @@ void DialogLayoutSettings::RestoreDefaults()
 
     SetLayoutWidth(VValentinaSettings::GetDefLayoutWidth());
     SetGroup(VValentinaSettings::GetDefLayoutGroup());
-    SetFollowGrainline(VValentinaSettings::GetDefLayoutFollowGrainline());
     SetManualPriority(VValentinaSettings::GetDefLayoutManualPriority());
     SetFields(GetDefPrinterFields());
     SetIgnoreAllFields(VValentinaSettings::GetDefIgnoreAllFields());
@@ -1060,7 +1046,6 @@ void DialogLayoutSettings::ReadSettings()
     const qreal height = UnitConvertor(settings->GetLayoutPaperHeight(), Unit::Px, LayoutUnit());
     SheetSize(QSizeF(width, height));
     SetGroup(settings->GetLayoutGroup());
-    SetFollowGrainline(settings->GetLayoutFollowGrainline());
     SetManualPriority(settings->GetLayoutManualPriority());
     SetAutoCropLength(settings->GetLayoutAutoCropLength());
     SetAutoCropWidth(settings->GetLayoutAutoCropWidth());
@@ -1089,7 +1074,6 @@ void DialogLayoutSettings::WriteSettings() const
     settings->SetLayoutGroup(GetGroup());
     settings->SetLayoutPaperHeight(GetPaperHeight());
     settings->SetLayoutPaperWidth(GetPaperWidth());
-    settings->SetLayoutFollowGrainline(GetFollowGrainline());
     settings->SetLayoutManualPriority(GetManualPriority());
     settings->SetLayoutAutoCropLength(GetAutoCropLength());
     settings->SetLayoutAutoCropWidth(GetAutoCropWidth());

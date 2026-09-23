@@ -279,9 +279,6 @@ public:
     auto GetDateOfLastRemind() const -> QDate;
     void SetDateOfLastRemind(const QDate &date) const;
 
-    auto GetForbidWorkpieceFlipping() const -> bool;
-    void SetForbidWorkpieceFlipping(bool value);
-
     auto GetForceWorkpieceFlipping() const -> bool;
     void SetForceWorkpieceFlipping(bool value);
 

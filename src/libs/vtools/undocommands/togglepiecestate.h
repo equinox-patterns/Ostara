@@ -113,32 +113,23 @@ private:
     void Do(bool state);
 };
 
-enum class ForceForbidFlippingType : qint8
-{
-    ForceFlipping,
-    ForbidFlipping
-};
-
-class TogglePieceForceForbidFlipping : public VUndoCommand
+class TogglePieceForceFlipping : public VUndoCommand
 {
     Q_OBJECT // NOLINT
 
 public:
-    TogglePieceForceForbidFlipping(quint32 id, bool state, ForceForbidFlippingType type, VContainer *data,
-                                   VAbstractPattern *doc, QUndoCommand *parent = nullptr);
-    ~TogglePieceForceForbidFlipping() override = default;
+    TogglePieceForceFlipping(quint32 id, bool state, VContainer *data, VAbstractPattern *doc,
+                             QUndoCommand *parent = nullptr);
+    ~TogglePieceForceFlipping() override = default;
     void undo() override;
     void redo() override;
 
 private:
-    Q_DISABLE_COPY_MOVE(TogglePieceForceForbidFlipping) // NOLINT
+    Q_DISABLE_COPY_MOVE(TogglePieceForceFlipping) // NOLINT
     quint32 m_id;
     VContainer *m_data;
-    ForceForbidFlippingType m_type;
-    bool m_oldForceState{false};
-    bool m_newForceState{false};
-    bool m_oldForbidState{false};
-    bool m_newForbidState{false};
+    bool m_oldState{false};
+    bool m_newState{false};
 };
 
 #endif // TOGGLEDETAILINLAYOUT_H

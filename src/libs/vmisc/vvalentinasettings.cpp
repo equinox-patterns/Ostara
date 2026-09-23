@@ -105,7 +105,6 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutSorting, ("layout/sorting"
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutPaperHeight, ("layout/paperHeight"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutPaperWidth, ("layout/paperWidth"_L1))   // NOLINT
 // NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutFollowGrainline, ("layout/followGrainline"_L1))
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutManualPriority, ("layout/manualPriority"_L1))
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutNestQuantity, ("layout/nestQuantity"_L1)) // NOLINT
@@ -343,24 +342,6 @@ auto VValentinaSettings::GetDefLayoutGroup() -> Cases
 void VValentinaSettings::SetLayoutGroup(const Cases &value)
 {
     setValue(*settingLayoutSorting, static_cast<int>(value));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VValentinaSettings::GetLayoutFollowGrainline() const -> bool
-{
-    return value(*settingLayoutFollowGrainline, GetDefLayoutFollowGrainline()).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VValentinaSettings::GetDefLayoutFollowGrainline() -> bool
-{
-    return false;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VValentinaSettings::SetLayoutFollowGrainline(bool value)
-{
-    setValue(*settingLayoutFollowGrainline, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

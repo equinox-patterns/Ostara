@@ -230,7 +230,6 @@ private slots:
     void SaveResizeAnnotation(int index, qreal newW, qreal newH, qreal origW, qreal origH);
     void ToggleInLayout(bool checked);
     void ToggleHideMainPath(bool checked);
-    void ToggleForbidFlipping(bool checked);
     void ToggleForceFlipping(bool checked);
     void ToggleShowFullPiece(bool checked);
     void ToggleExcludeState(quint32 id);

@@ -160,18 +160,6 @@ void VLayoutPaper::SetRotate(bool value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VLayoutPaper::GetFollowGrainline() const -> bool
-{
-    return d->followGrainline;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VLayoutPaper::SetFollowGrainline(bool value)
-{
-    d->followGrainline = value;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VLayoutPaper::GetRotationNumber() const -> int
 {
     return d->globalRotationNumber;
@@ -228,7 +216,7 @@ auto VLayoutPaper::ArrangeDetail(const VLayoutPiece &detail, std::atomic_bool &s
         return false; // Not enough edges
     }
 
-    if ((detail.IsForceFlipping() || detail.IsForbidFlipping()) && not d->globalRotate)
+    if (detail.IsForceFlipping() && not d->globalRotate)
     { // Compensate forbidden flipping by rotating. 180 degree will be enough.
         d->localRotate = true;
         d->localRotationNumber = 2;
@@ -247,7 +235,6 @@ auto VLayoutPaper::ArrangeDetail(const VLayoutPiece &detail, std::atomic_bool &s
                                 .detail = detail,
                                 .rotate = d->localRotate,
                                 .rotationNumber = d->localRotationNumber,
-                                .followGrainline = d->followGrainline,
                                 .positionsCache = d->positionsCache,
                                 .isOriginPaperOrientationPortrait = d->originPaperOrientation,
 #ifdef LAYOUT_DEBUG

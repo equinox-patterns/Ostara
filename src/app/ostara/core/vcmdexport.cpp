@@ -172,7 +172,6 @@ auto VCommandLine::DefaultGenerator() const -> VLayoutGeneratorPtr
     }
 
     diag.SetFields(ParseMargins(diag));
-    diag.SetFollowGrainline(IsOptionSet(LONG_OPTION_FOLLOW_GRAINLINE));
     diag.SetManualPriority(IsOptionSet(LONG_OPTION_MANUAL_PRIORITY));
     diag.SetNestQuantity(IsOptionSet(LONG_OPTION_NEST_QUANTITY));
     diag.SetNestingTime(OptNestingTime());
@@ -750,8 +749,6 @@ void VCommandLine::InitCommandLineOptions()
          translate("VCommandLine", "Set vertical scale factor from 0.01 to 3.0 (default = 1.0, export mode)."),
          translate("VCommandLine", "Vertical scale")},
         //==============================================================================================================
-        {LONG_OPTION_FOLLOW_GRAINLINE,
-         translate("VCommandLine", "Order detail to follow grainline direction (export mode).")},
         {LONG_OPTION_MANUAL_PRIORITY,
          translate("VCommandLine", "Follow manual priority over priority by square (export mode).")},
         {LONG_OPTION_NEST_QUANTITY, translate("VCommandLine", "Nest quantity copies of each piece (export mode).")},

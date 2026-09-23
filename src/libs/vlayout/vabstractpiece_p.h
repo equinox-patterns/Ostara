@@ -54,11 +54,8 @@ public:
     friend auto operator>>(QDataStream &dataStream, VAbstractPieceData &piece) -> QDataStream &;
 
     QString m_name{tr("Detail")}; // NOLINT (misc-non-private-member-variables-in-classes)
-    /** @brief forbidFlipping forbid piece to be mirrored in a layout. */
-    bool m_forbidFlipping{false};                            // NOLINT (misc-non-private-member-variables-in-classes)
     bool m_forceFlipping{false};                             // NOLINT (misc-non-private-member-variables-in-classes)
-    bool m_symmetricalCopy{false};                           // NOLINT (misc-non-private-member-variables-in-classes)
-    bool m_followGrainline{false};                           // NOLINT (misc-non-private-member-variables-in-classes)
+    bool m_symmetricalCopy{true};                            // NOLINT (misc-non-private-member-variables-in-classes)
     bool m_seamAllowance{false};                             // NOLINT (misc-non-private-member-variables-in-classes)
     bool m_hideMainPath{false};                              // NOLINT (misc-non-private-member-variables-in-classes)
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
@@ -84,7 +81,7 @@ private:
     Q_DISABLE_ASSIGN_MOVE(VAbstractPieceData) // NOLINT
 
     static constexpr quint32 streamHeader = 0x05CDD73A; // CRC-32Q string "VAbstractPieceData"
-    static constexpr quint16 classVersion = 12;
+    static constexpr quint16 classVersion = 13;
 };
 
 QT_WARNING_POP
@@ -97,7 +94,6 @@ inline auto operator<<(QDataStream &dataStream, const VAbstractPieceData &piece)
 
     // Added in classVersion = 1
     dataStream << piece.m_name;
-    dataStream << piece.m_forbidFlipping;
     dataStream << piece.m_forceFlipping;
     dataStream << piece.m_seamAllowance;
     dataStream << piece.m_hideMainPath;
@@ -113,9 +109,6 @@ inline auto operator<<(QDataStream &dataStream, const VAbstractPieceData &piece)
 
     // Added in classVersion = 4
     dataStream << piece.m_onDrawing;
-
-    // Added in classVersion = 5
-    dataStream << piece.m_followGrainline;
 
     // Added in classVersion = 6
     dataStream << piece.m_showFullPiece;
@@ -168,7 +161,11 @@ inline auto operator>>(QDataStream &dataStream, VAbstractPieceData &piece) -> QD
     }
 
     dataStream >> piece.m_name;
-    dataStream >> piece.m_forbidFlipping;
+    if (actualClassVersion < 13)
+    { // forbidFlipping was dropped in classVersion 13; skip the field of legacy blobs
+        bool forbidFlippingDummy = false;
+        dataStream >> forbidFlippingDummy;
+    }
     dataStream >> piece.m_forceFlipping;
     dataStream >> piece.m_seamAllowance;
     if (actualClassVersion < 11)
@@ -196,9 +193,10 @@ inline auto operator>>(QDataStream &dataStream, VAbstractPieceData &piece) -> QD
         dataStream >> piece.m_onDrawing;
     }
 
-    if (actualClassVersion >= 5)
-    {
-        dataStream >> piece.m_followGrainline;
+    if (actualClassVersion >= 5 && actualClassVersion < 13)
+    { // followGrainline was dropped in classVersion 13; skip the field of legacy blobs
+        bool followGrainlineDummy = false;
+        dataStream >> followGrainlineDummy;
     }
 
     if (actualClassVersion >= 6)

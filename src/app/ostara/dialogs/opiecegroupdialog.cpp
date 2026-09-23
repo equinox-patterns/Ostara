@@ -41,9 +41,9 @@ OPieceGroupDialog::OPieceGroupDialog(const VContainer *data, int memberCount, QW
 
     auto *layout = new QVBoxLayout(this);
     m_step = new OPiecePieceStep(this);
-    // The layout flags (Forbid/Force flipping, Symmetrical copy, Follow grainline) belong to a
-    // standalone piece, not to a linked group — the shared step hides that block here.
-    m_step->SetFlippingFlagsVisible(false);
+    // The layout flags belong to the pieces, not to the group: the group carries none of them. They are read here
+    // (IsForceFlipping / IsSymmetricalCopy) and written into every member by the caller — checking a flag for the
+    // group is checking it for its members.
     layout->addWidget(m_step);
 
     // Piece number total: the group replaces its memberCount standalone pieces by 1
@@ -83,4 +83,16 @@ auto OPieceGroupDialog::GetGroup() const -> OPieceGroup
     group.alignH = m_step->GetGradedAlignH();
     group.alignV = m_step->GetGradedAlignV();
     return group;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceGroupDialog::IsForceFlipping() const -> bool
+{
+    return m_step->IsForceFlipping();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceGroupDialog::IsSymmetricalCopy() const -> bool
+{
+    return m_step->IsSymmetricalCopy();
 }

@@ -84,17 +84,11 @@ public:
     virtual auto GetName() const -> QString;
     void SetName(const QString &value);
 
-    auto IsForbidFlipping() const -> bool;
-    void SetForbidFlipping(bool value);
-
     auto IsForceFlipping() const -> bool;
     void SetForceFlipping(bool value);
 
     auto IsSymmetricalCopy() const -> bool;
     void SetSymmetricalCopy(bool value);
-
-    auto IsFollowGrainline() const -> bool;
-    void SetFollowGrainline(bool value);
 
     auto IsSeamAllowance() const -> bool;
     void SetSeamAllowance(bool value);

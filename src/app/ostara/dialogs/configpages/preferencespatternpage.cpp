@@ -123,7 +123,6 @@ PreferencesPatternPage::PreferencesPatternPage(QWidget *parent)
 
     InitDefaultSeamAllowance();
 
-    ui->forbidFlippingCheck->setChecked(settings->GetForbidWorkpieceFlipping());
     ui->checkBoxSewLineOnDrawing->setChecked(settings->GetSewLineOnDrawing());
     ui->doublePassmarkCheck->setChecked(settings->IsDoublePassmark());
     ui->checkBoxHideMainPath->setChecked(settings->IsHideMainPath());
@@ -190,7 +189,6 @@ auto PreferencesPatternPage::Apply() -> QStringList
 
     settings->SetDefaultSeamAllowance(ui->defaultSeamAllowance->value());
 
-    settings->SetForbidWorkpieceFlipping(ui->forbidFlippingCheck->isChecked());
     settings->SetSewLineOnDrawing(ui->checkBoxSewLineOnDrawing->isChecked());
     settings->SetHideMainPath(ui->checkBoxHideMainPath->isChecked());
     settings->SetLabelFont(ui->fontComboBoxLabelFont->currentFont());

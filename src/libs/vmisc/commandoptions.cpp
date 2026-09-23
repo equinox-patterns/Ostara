@@ -128,7 +128,6 @@ const QString LONG_OPTION_TILED_PDF_TOP_MARGIN = QStringLiteral("tiledtmargin");
 const QString LONG_OPTION_TILED_PDF_BOTTOM_MARGIN = QStringLiteral("tiledbmargin");
 const QString LONG_OPTION_TILED_PDF_LANDSCAPE = QStringLiteral("tiledLandscape");
 
-const QString LONG_OPTION_FOLLOW_GRAINLINE = QStringLiteral("followGrainline");
 const QString LONG_OPTION_MANUAL_PRIORITY = QStringLiteral("manualPriority");
 
 const QString LONG_OPTION_LANDSCAPE_ORIENTATION = QStringLiteral("landscapeOrientation");
@@ -213,7 +212,6 @@ auto AllKeys() -> QStringList
                        LONG_OPTION_TILED_PDF_TOP_MARGIN,
                        LONG_OPTION_TILED_PDF_BOTTOM_MARGIN,
                        LONG_OPTION_TILED_PDF_LANDSCAPE,
-                       LONG_OPTION_FOLLOW_GRAINLINE,
                        LONG_OPTION_MANUAL_PRIORITY,
                        LONG_OPTION_LANDSCAPE_ORIENTATION,
                        LONG_OPTION_NEST_QUANTITY,

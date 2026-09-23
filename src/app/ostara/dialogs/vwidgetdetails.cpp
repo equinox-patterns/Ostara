@@ -41,6 +41,7 @@
 #include "../vtools/undocommands/togglegroupinlayout.h"
 #include "../vtools/undocommands/unlinkpiecegroup.h"
 #include "../core/opiececommonpoint.h"
+#include "../core/opiecegrouplayoutflags.h"
 #include "opiecegroupdialog.h"
 #include "ui_vwidgetdetails.h"
 
@@ -904,9 +905,19 @@ void VWidgetDetails::CompleteGroupCreation()
     group.alignPointSourceId = m_pendingAlignSourceId;
     group.alignPointMemberId = m_pendingAlignMemberId;
 
+    // The layout flags are the members' own: a group carries none. Read here, before the dialog goes away.
+    const bool groupForceFlipping = dialog.IsForceFlipping();
+    const bool groupSymmetricalCopy = dialog.IsSymmetricalCopy();
+
     auto *linkCommand = new LinkPieceGroup(group, m_doc, m_data);
     connect(linkCommand, &LinkPieceGroup::UpdateGroups, this, &VWidgetDetails::UpdateList);
-    VAbstractApplication::VApp()->getUndoStack()->push(linkCommand);
+
+    // Linking and the flags the group was given are one action, so they are one undo step.
+    QUndoStack *stack = VAbstractApplication::VApp()->getUndoStack();
+    stack->beginMacro(tr("Link pieces"));
+    stack->push(linkCommand);
+    OPieceGroupLayoutFlags::Apply(group.pieceIds, groupForceFlipping, groupSymmetricalCopy, m_data, m_doc);
+    stack->endMacro();
 
     // Mask the members' own children (derived from GetPieceGroupId at render).
     RefreshGroupedChildren(group.pieceIds);

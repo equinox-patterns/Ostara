@@ -201,16 +201,6 @@ This option will take an affect after restart.</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <widget class="QCheckBox" name="forbidFlippingCheck">
-            <property name="toolTip">
-             <string>By default forbid flipping for all new created workpieces</string>
-            </property>
-            <property name="text">
-             <string>Forbid flipping</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QCheckBox" name="checkBoxSewLineOnDrawing">
             <property name="toolTip">
              <string>By default export to DXF-AAMA sew line on Draw layer for all new created workpieces</string>

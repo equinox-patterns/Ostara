@@ -240,14 +240,10 @@ void VPattern::ParseDetailElement(QDomElement &domElement, const Document &parse
             GetParametrBool(domElement, VToolSeamAllowance::AttrSecondPassmarkOnSeamLine,
                             QString().setNum(VAbstractValApplication::VApp()->Settings()->IsDoublePassmark())));
         initData.detail.SetShowFullPiece(GetParametrBool(domElement, VToolSeamAllowance::AttrShowFullPiece, trueStr));
-        initData.detail.SetForbidFlipping(GetParametrBool(
-            domElement, AttrForbidFlipping,
-            QString().setNum(VAbstractValApplication::VApp()->ValentinaSettings()->GetForbidWorkpieceFlipping())));
         initData.detail.SetForceFlipping(GetParametrBool(
             domElement, AttrForceFlipping,
             QString().setNum(VAbstractValApplication::VApp()->ValentinaSettings()->GetForceWorkpieceFlipping())));
         initData.detail.SetSymmetricalCopy(GetParametrBool(domElement, AttrSymmetricalCopy, falseStr));
-        initData.detail.SetFollowGrainline(GetParametrBool(domElement, AttrFollowGrainline, falseStr));
         initData.detail.SetSewLineOnDrawing(GetParametrBool(
             domElement, AttrSewLineOnDrawing,
             QString().setNum(VAbstractValApplication::VApp()->ValentinaSettings()->GetSewLineOnDrawing())));
