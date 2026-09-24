@@ -6,8 +6,9 @@
  **
  **  @brief  Dock "Outputs" content (Export mode): a compact list of the
  **          generated outputs — one row each, an "Add an output" button and an
- **          "Add a group" button on top, four move buttons under them, and one
- **          icon action per row (favorite/edit/refresh/export/delete).
+ **          "Export several outputs" button on top, and one icon action per row
+ **          (favorite/refresh/export/delete). An "Edit" column was drawn and never
+ **          wired; it was removed on 24-09-2026.
  **          The output shown in the canvas is marked by a filled check-circle.
  **
  **  @copyright
@@ -54,6 +55,11 @@ struct OExportOutputRow
     QString name{};  ///< what the user named it; unique among the rows of the same context
     bool favorite{false};    ///< a favorite of the current context already carries this name
     bool canFavorite{true};  ///< false when the pattern has no measurements table to key on
+
+    /// Whether this generation was asked for as a cutting plan. A cutting plan has **no export**
+    /// today — HPGL/PLT comes later — so its export cell is drawn disabled. The dock is told the
+    /// fact and draws it; it is not the dock's to know what a format is (spec CuttingPlan §8).
+    bool cuttingPlan{false};
 };
 
 /**
@@ -64,8 +70,9 @@ struct OExportOutputRow
  *        will act through signals once the behaviour lands.
  *
  *        Favorite (24-09-2026) is wired: the star adds the generation's recipe to the
- *        software-level favorites, or removes it. **Edit is still the shell** — drawn,
- *        and inert. See spec Modifications/Ostara/ExportMode/DockOutputs.md.
+ *        software-level favorites, or removes it. The "Edit" column was removed the same
+ *        day: it was drawn, never wired, and never would be.
+ *        See spec Modifications/Ostara/ExportMode/DockOutputs.md.
  */
 class OWidgetOutputs final : public QWidget
 {
@@ -89,6 +96,14 @@ public:
 signals:
     /** @brief The "Add an output" button was clicked. MainWindow opens the dialog and runs. */
     void addRequested();
+
+    /**
+     * @brief The "Export several outputs" button was clicked: open the batch dialog.
+     *
+     * Carries nothing: a batch is not about a row. Which generations it offers, and by which
+     * categories, is MainWindow's to resolve — it owns the store and the current context.
+     */
+    void exportSeveralRequested();
 
     /**
      * @brief The user renamed a row inline. @p id is the stable generation identity
@@ -125,6 +140,7 @@ protected:
 
 private slots:
     void OnAddClicked();
+    void OnExportSeveralClicked();
     void OnNameEdited(QTableWidgetItem *item);
     void OnCellClicked(int row, int column);
 
@@ -135,8 +151,13 @@ private:
     QPushButton *MakeIconButton(const QString &objectName, const QString &iconBase);
     void FlashNameError(QTableWidgetItem *item);
 
+    /// @brief Whether the batch button has anything to offer — and if not, why not, said on the
+    ///        button's tooltip rather than left to be guessed.
+    void UpdateExportSeveralState();
+
     QTableWidget *m_table{nullptr};
     QPushButton *m_addOutputButton{nullptr};
+    QPushButton *m_exportSeveralButton{nullptr};
 
     // Icon buttons: base name + the two variants, re-read on every theme change.
     // A button created inline in a lambda would not be reachable from the slot,

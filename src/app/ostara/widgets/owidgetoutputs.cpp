@@ -28,6 +28,7 @@
 
 #include <QAbstractItemView>
 #include <QHeaderView>
+#include <QHBoxLayout>
 #include <QIcon>
 #include <QPainter>
 #include <QPushButton>
@@ -47,15 +48,16 @@ namespace
 constexpr int kIconSize = 20;
 
 // Table columns: active dot + name on the left, action icons on the right.
-// Same seven columns as the Size Ranges dock — "Refresh" replaces its
-// "Duplicate" (spec DockOutputs §7.2).
+// Six columns — one fewer than the Size Ranges dock, whose "Duplicate" is this dock's
+// "Refresh" and whose "Edit" has no counterpart here. An Edit column was drawn and
+// never wired; it was removed on 24-09-2026 rather than left as a promise
+// (spec DockOutputs §7.2).
 constexpr int kStatus = 0;
 constexpr int kName = 1;
 constexpr int kFavorite = 2;
-constexpr int kEdit = 3;
-constexpr int kRefresh = 4;
-constexpr int kExport = 5;
-constexpr int kDelete = 6;
+constexpr int kRefresh = 3;
+constexpr int kExport = 4;
+constexpr int kDelete = 5;
 
 // Custom roles on the Name cell. Qt::UserRole carries the stable row identity; the
 // previous-name role sits one slot above — see OnNameEdited() for why "previous" must be
@@ -158,18 +160,37 @@ void OWidgetOutputs::BuildUi()
     rootLayout->setContentsMargins(0, 0, 0, 0);
     rootLayout->setSpacing(6);
 
-    // ── "Add an output" ──
-    // The only control above the list. There are no groups and no move buttons: a
-    // generation is not kept beyond the session, so there is nothing to file it under
-    // and nothing to reorder it against (spec DockOutputs §10).
+    // ── "Add an output" and "Export several outputs" ──
+    // The two controls above the list, side by side and centred as a pair. There are no groups
+    // and no move buttons: a generation is not kept beyond the session, so there is nothing to
+    // file it under and nothing to reorder it against (spec DockOutputs §10).
+    //
+    // The batch button is built by the very same MakeIconButton as its neighbour: same size, same
+    // stylesheet, and the same hover — the dark variant of its glyph, because the hovered
+    // background is an accent and it is dark in both themes. That is what the icon event filter
+    // is there for, and it is why the button is created here rather than inline.
     m_addOutputButton = MakeIconButton(QStringLiteral("addOutputButton"),
                                        QStringLiteral("stack-plus-fill"));
     m_addOutputButton->setText(tr("Add an output"));
     connect(m_addOutputButton, &QPushButton::clicked, this, &OWidgetOutputs::OnAddClicked);
-    rootLayout->addWidget(m_addOutputButton, 0, Qt::AlignHCenter);
+
+    m_exportSeveralButton = MakeIconButton(QStringLiteral("exportSeveralButton"),
+                                           QStringLiteral("download-fill"));
+    m_exportSeveralButton->setText(tr("Export several outputs"));
+    connect(m_exportSeveralButton, &QPushButton::clicked, this,
+            &OWidgetOutputs::OnExportSeveralClicked);
+
+    auto *buttonRow = new QHBoxLayout();
+    buttonRow->setContentsMargins(0, 0, 0, 0);
+    buttonRow->setSpacing(6);
+    buttonRow->addStretch();
+    buttonRow->addWidget(m_addOutputButton);
+    buttonRow->addWidget(m_exportSeveralButton);
+    buttonRow->addStretch();
+    rootLayout->addLayout(buttonRow);
 
     // ── Outputs list ──
-    m_table = new QTableWidget(0, 7, this);
+    m_table = new QTableWidget(0, 6, this);
     m_table->setObjectName(QStringLiteral("outputsTable"));
     m_table->setShowGrid(false);
     m_table->setSelectionMode(QAbstractItemView::NoSelection);
@@ -190,7 +211,6 @@ void OWidgetOutputs::BuildUi()
     m_table->horizontalHeader()->setSectionResizeMode(kName, QHeaderView::Stretch);
     m_table->setColumnWidth(kStatus, 36);
     m_table->setColumnWidth(kFavorite, 44);
-    m_table->setColumnWidth(kEdit, 44);
     m_table->setColumnWidth(kRefresh, 44);
     m_table->setColumnWidth(kExport, 44);
     m_table->setColumnWidth(kDelete, 44);
@@ -200,7 +220,7 @@ void OWidgetOutputs::BuildUi()
     m_table->verticalHeader()->setDefaultSectionSize(36);
 
     m_table->setIconSize(QSize(kIconSize, kIconSize));
-    for (int col : {kStatus, kFavorite, kEdit, kRefresh, kExport, kDelete})
+    for (int col : {kStatus, kFavorite, kRefresh, kExport, kDelete})
     {
         m_table->setItemDelegateForColumn(col, new IconDelegate(m_table));
     }
@@ -340,11 +360,6 @@ void OWidgetOutputs::Populate()
         }
         m_table->setItem(row, kFavorite, favoriteItem);
 
-        auto *editItem = new QTableWidgetItem(MakeCellIcon(QStringLiteral("gear-six"), dark), QString());
-        editItem->setFlags(editItem->flags() & ~Qt::ItemIsEditable);
-        editItem->setToolTip(tr("Edit"));
-        m_table->setItem(row, kEdit, editItem);
-
         auto *refreshItem =
             new QTableWidgetItem(MakeCellIcon(QStringLiteral("arrows-clockwise"), dark), QString());
         refreshItem->setFlags(refreshItem->flags() & ~Qt::ItemIsEditable);
@@ -355,7 +370,20 @@ void OWidgetOutputs::Populate()
         auto *exportItem = new QTableWidgetItem(MakeCellIcon(QStringLiteral("download"), dark), QString());
         exportItem->setFlags(exportItem->flags() & ~Qt::ItemIsEditable);
         exportItem->setData(Qt::UserRole, output.id); // the cell knows the row it acts on
-        exportItem->setToolTip(tr("Export"));
+        if (output.cuttingPlan)
+        {
+            // A cutting plan has no export today — HPGL/PLT comes later — so its cell is drawn
+            // disabled, exactly like a star on a pattern with no measurements table: a cell that
+            // says why, rather than a button that would write a PDF nobody asked for. A disabled
+            // item is not clickable, and that is what keeps `exportRequested` from ever carrying
+            // one.
+            exportItem->setFlags(exportItem->flags() & ~Qt::ItemIsEnabled);
+            exportItem->setToolTip(tr("A cutting plan has no export yet"));
+        }
+        else
+        {
+            exportItem->setToolTip(tr("Export"));
+        }
         m_table->setItem(row, kExport, exportItem);
 
         auto *deleteItem = new QTableWidgetItem(MakeCellIcon(QStringLiteral("trash"), dark), QString());
@@ -368,12 +396,50 @@ void OWidgetOutputs::Populate()
     }
 
     m_filling = false;
+
+    UpdateExportSeveralState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OWidgetOutputs::UpdateExportSeveralState()
+{
+    if (m_exportSeveralButton == nullptr)
+    {
+        return;
+    }
+
+    // A batch is asked for when there is something to batch, and there are two ways of having
+    // nothing — which do not say the same thing. An empty dock is a dock waiting for its first
+    // generation; a dock full of cutting plans holds generations that have no export yet. The
+    // tooltip says which one it is: a disabled control that keeps its reason to itself is a
+    // control the user cannot act on (rules §4.3), and the star already answers this way.
+    bool hasExportable = false;
+    for (const OExportOutputRow &output : m_outputs)
+    {
+        if (!output.cuttingPlan)
+        {
+            hasExportable = true;
+            break;
+        }
+    }
+
+    m_exportSeveralButton->setEnabled(hasExportable);
+    m_exportSeveralButton->setToolTip(hasExportable
+                                          ? tr("Export several outputs at once")
+                                          : (m_outputs.isEmpty() ? tr("There is no output to export yet")
+                                                                 : tr("A cutting plan has no export yet")));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void OWidgetOutputs::OnAddClicked()
 {
     emit addRequested();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OWidgetOutputs::OnExportSeveralClicked()
+{
+    emit exportSeveralRequested();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -384,7 +450,8 @@ void OWidgetOutputs::OnAddClicked()
  * cell that was clicked, not off a neighbour. The name column is edited inline, and a
  * single click there must not take the canvas away from the generation being renamed,
  * which is why it does not share the status branch the way the Size Ranges dock shares
- * its own two. The star is wired too now; edit is still the shell (§7.2).
+ * its own two. The star and the export cell are wired too (§7.2); the Edit column was
+ * removed on 24-09-2026, so there is no inert column left in the table.
  */
 void OWidgetOutputs::OnCellClicked(int row, int column)
 {
@@ -541,6 +608,7 @@ void OWidgetOutputs::FlashNameError(QTableWidgetItem *item)
 void OWidgetOutputs::RetranslateUI()
 {
     m_addOutputButton->setText(tr("Add an output"));
+    m_exportSeveralButton->setText(tr("Export several outputs"));
     UpdateButtonIcons();
     Populate();
 }

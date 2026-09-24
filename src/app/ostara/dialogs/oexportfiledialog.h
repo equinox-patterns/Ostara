@@ -78,6 +78,16 @@ public:
     /// @brief Folder and file name together.
     auto FullPath() const -> QString;
 
+    /// @brief La question d'écrasement, posée une fois par fichier.
+    ///
+    /// **Une seule définition**, parce que l'export en lot écrit plusieurs fichiers sans passer par
+    /// ce dialogue : deux copies de cette question seraient deux façons d'écraser un fichier, et le
+    /// jour où l'une oublie de demander est le jour où un fichier est perdu sans un mot — c'est
+    /// exactement ce pourquoi ce dialogue existe.
+    ///
+    /// @return true quand il faut écrire — donc aussi quand le fichier n'existe pas.
+    static bool ConfirmOverwrite(QWidget *parent, const QString &filePath);
+
 protected:
     void changeEvent(QEvent *event) override;
 

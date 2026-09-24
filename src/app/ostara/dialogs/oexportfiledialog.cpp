@@ -123,6 +123,21 @@ void OExportFileDialog::AddOption(QWidget *option)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportFileDialog::ConfirmOverwrite(QWidget *parent, const QString &filePath) -> bool
+{
+    if (!QFileInfo::exists(filePath))
+    {
+        return true;
+    }
+
+    const auto answer = QMessageBox::question(parent, tr("Export"),
+                                              tr("%1 already exists. Replace it?")
+                                                  .arg(QFileInfo(filePath).fileName()),
+                                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+    return answer == QMessageBox::Yes;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportFileDialog::OnBrowse()
 {
     const QString chosen = QFileDialog::getExistingDirectory(this, tr("Folder"), Directory());
@@ -151,15 +166,9 @@ void OExportFileDialog::OnAccept()
     }
 
     const QString path = FullPath();
-    if (QFileInfo::exists(path))
+    if (!ConfirmOverwrite(this, path))
     {
-        const auto answer = QMessageBox::question(this, tr("Export"),
-                                                  tr("%1 already exists. Replace it?").arg(FileName()),
-                                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-        if (answer != QMessageBox::Yes)
-        {
-            return;
-        }
+        return;
     }
 
     accept();

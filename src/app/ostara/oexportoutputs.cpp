@@ -39,6 +39,7 @@
 #include "oexportartboards.h"
 #include "oexportcanvas.h"
 #include "oexportcoverpage.h"
+#include "oexportfolder.h"
 #include "oexportpdf.h"
 #include "oexportplanimage.h"
 #include "oexportplanimagewriter.h"
@@ -51,7 +52,6 @@
 #include "dialogs/oexportimagelistdialog.h"
 #include "dialogs/oexportpdfdialog.h"
 
-#include <QStandardPaths>
 #include "oexportgeometry.h"
 #include "oexportnesting.h"
 #include "widgets/ODockManager.h"
@@ -89,48 +89,6 @@ namespace
 /// of the application, and the documented trap of this codebase is a nested
 /// submission that deadlocks the pool.
 constexpr int kExportNestingThreads = 1;
-
-/// @brief Le dossier que le prochain export d'un run proposera.
-///
-/// Trois sources, dans cet ordre, et **une seule définition pour les trois exports** — PDF, SVG de
-/// plotter, image : le dossier de la GAMME quand le run en a une (les autres fichiers de ce plan y
-/// sont déjà), sinon le dernier dossier d'export de l'application, sinon Documents.
-///
-/// ⚠️ Le réglage de l'application est celui des exports du mode Layout et du dock Size Ranges —
-/// `paths/layoutExport`. Une destination d'export est une propriété de **l'utilisatrice**, pas d'un
-/// patron : un patron partagé ne doit pas porter le chemin d'une machine, et c'est aussi pourquoi
-/// rien de tout cela n'est écrit dans le `.ostara`.
-auto ExportFolder(const OExportOutput &output) -> QString
-{
-    QString directory = output.hasRange ? output.range.exportPath : QString();
-    if (directory.isEmpty() || !QDir(directory).exists())
-    {
-        directory = VAbstractValApplication::VApp()->Settings()->GetPathLayoutExport();
-    }
-
-    if (directory.isEmpty() || !QDir(directory).exists())
-    {
-        directory = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-    }
-
-    return directory;
-}
-
-/// @brief Retient le dossier où un export vient d'écrire : c'est celui que le suivant proposera.
-///
-/// Sans ça, chaque export d'un run repartait de Documents — le dossier de la gamme étant vide pour
-/// tout run en taille unique, plotter compris — et l'utilisatrice retapait le même chemin tous les
-/// jours.
-///
-/// Un dossier disparu n'est pas retenu : le proposer au prochain export ne mènerait nulle part, et
-/// `ExportFolder` le remplacerait de toute façon.
-void RememberExportFolder(const QString &directory)
-{
-    if (!directory.isEmpty() && QDir(directory).exists())
-    {
-        VAbstractValApplication::VApp()->Settings()->SetPathLayoutExport(directory);
-    }
-}
 
 /// @brief A duration said out loud: "2 minutes and 35 seconds".
 ///
@@ -1131,6 +1089,17 @@ void MainWindow::DeleteExportOutput(quint32 id)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ExportOutputToPdf(quint32 id)
 {
+    // Un plan de coupe n'a **aucun export** aujourd'hui : sa sortie sera HPGL/PLT, et elle est
+    // reportée (décision de Sophie, 24-09-2026). La cellule du dock est déjà dessinée désactivée
+    // pour ces lignes ; cette garde est la **même** décision prise là où le chemin commence, pour
+    // qu'aucun autre appel ne l'ouvre en PDF par mégarde — le PDF générique l'acceptait, et son
+    // rendu était mauvais (CuttingPlan §8).
+    if (const OExportOutput *cutting = m_exportOutputs.Find(id);
+        cutting != nullptr && cutting->cuttingPlan)
+    {
+        return;
+    }
+
     // Un run plotter ne sort pas en PDF : son fichier est un SVG structuré, **un objet par morceau,
     // pas un mot**. Le même bouton ouvre le dialogue de son type de run — c'est ainsi que le dock
     // reste le seul endroit qui décide ce qu'un run produit, sans une colonne de plus ni un menu.
@@ -1597,7 +1566,8 @@ void MainWindow::RefreshOutputsDock()
     {
         if (const OExportOutput *output = m_exportOutputs.Find(id))
         {
-            rows.append(OExportOutputRow{output->id, output->name, favorites.contains(output->name), canFavorite});
+            rows.append(OExportOutputRow{output->id, output->name, favorites.contains(output->name),
+                                         canFavorite, output->cuttingPlan});
         }
     }
 

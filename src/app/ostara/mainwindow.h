@@ -394,6 +394,21 @@ private slots:
      *  ActiveVisibleOutput(), so the button and the canvas cannot mean two different plans. */
     void ExportActiveOutputToImage();
 
+    /**
+     * @brief Write several generations of the current context in one go — the dock's
+     *        "Export several outputs" button.
+     *
+     *  The dialog asks the category: Print writes a PDF per generation (with the decor layer as
+     *  an option for the whole run), Plotter writes a SVG per generation, and the Cutting plan
+     *  tab is there and disabled — a cutting plan has no export yet. Each page carries its own
+     *  folder, so the batch is one format at a time.
+     *
+     *  No id, like the image export: a batch is not about a row. The generations offered are the
+     *  ones the dock lists — the current (table, axis) context, resolved here because it is the
+     *  only owner of that rule — and a cutting plan is left out of both pages.
+     */
+    void ExportSeveralOutputs();
+
     void on_actionNew_triggered();
     bool hasOpenPattern() const;
     bool on_actionSaveAs_triggered(); // NOLINT(modernize-use-trailing-return-type)

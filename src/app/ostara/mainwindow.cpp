@@ -1343,6 +1343,11 @@ void MainWindow::InitDocksContain()
             &MainWindow::DeleteExportOutput);
     connect(m_dockManager->outputsWidget(), &OWidgetOutputs::exportRequested, this,
             &MainWindow::ExportOutputToPdf);
+    // Le lot : le même dock, un cran au-dessus. Direct, comme la cellule d'export : le dialogue est
+    // modal et l'écriture est synchrone — il n'y a aucun nesting à attendre derrière, donc rien à
+    // mettre en file.
+    connect(m_dockManager->outputsWidget(), &OWidgetOutputs::exportSeveralRequested, this,
+            &MainWindow::ExportSeveralOutputs);
 
     // Cover page dock → the canvas, and NOT through the document's own signal. Editing the cover
     // page raises `patternChanged`, which the Export mode reads as "the pattern may have moved"
