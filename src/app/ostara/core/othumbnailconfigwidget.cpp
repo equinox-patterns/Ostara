@@ -46,7 +46,7 @@ OThumbnailConfigWidget::OThumbnailConfigWidget(QWidget *parent) : QWidget(parent
 
     // No inner scroll area and no intermediate raw QWidget: the group box brings the
     // $DockBody background itself (SubtiliteCode §13/§14).
-    m_infoGroup = new QGroupBox(tr("Piece miniature"), this);
+    m_infoGroup = new QGroupBox(tr("Piece thumbnail"), this);
     // Less side margin than the theme default (8px) for this group only.
     m_infoGroup->setStyleSheet(QStringLiteral("QGroupBox { margin-left: 0px; margin-right: 0px; }"));
     auto *groupLayout = new QVBoxLayout(m_infoGroup);
@@ -94,8 +94,8 @@ void OThumbnailConfigWidget::Clear()
 void OThumbnailConfigWidget::RetranslateUI()
 {
     m_activeCheck->setText(tr("Activate thumbnail"));
-    m_infoGroup->setTitle(tr("Piece miniature"));
-    m_hintLabel->setText(tr("The miniature draws the piece with its seam allowances, its notches and its internal "
+    m_infoGroup->setTitle(tr("Piece thumbnail"));
+    m_hintLabel->setText(tr("The thumbnail draws the piece with its seam allowances, its notches and its internal "
                             "paths, at the reference size of each axis — so it keeps showing the same size when the "
                             "active size changes. Move and resize it directly on the canvas."));
 }

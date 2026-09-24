@@ -16507,13 +16507,21 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="49"/>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="97"/>
-        <source>Piece miniature</source>
+        <source>Piece thumbnail</source>
         <translation>Miniature de la pièce</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="98"/>
-        <source>The miniature draws the piece with its seam allowances, its notches and its internal paths, at the reference size of each axis — so it keeps showing the same size when the active size changes. Move and resize it directly on the canvas.</source>
+        <source>The thumbnail draws the piece with its seam allowances, its notches and its internal paths, at the reference size of each axis — so it keeps showing the same size when the active size changes. Move and resize it directly on the canvas.</source>
         <translation>La miniature dessine la pièce avec ses marges de couture, ses crans et ses chemins internes, à la taille de référence de chaque axe — elle continue donc de montrer la même taille quand la taille active change. Déplacez-la et redimensionnez-la directement sur le plan de travail.</translation>
+    </message>
+    <message>
+        <source>Piece miniature</source>
+        <translation type="vanished">Miniature de la pièce</translation>
+    </message>
+    <message>
+        <source>The miniature draws the piece with its seam allowances, its notches and its internal paths, at the reference size of each axis — so it keeps showing the same size when the active size changes. Move and resize it directly on the canvas.</source>
+        <translation type="vanished">La miniature dessine la pièce avec ses marges de couture, ses crans et ses chemins internes, à la taille de référence de chaque axe — elle continue donc de montrer la même taille quand la taille active change. Déplacez-la et redimensionnez-la directement sur le plan de travail.</translation>
     </message>
 </context>
 <context>

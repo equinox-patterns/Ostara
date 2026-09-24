@@ -16252,12 +16252,12 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="49"/>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="97"/>
-        <source>Piece miniature</source>
+        <source>Piece thumbnail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="98"/>
-        <source>The miniature draws the piece with its seam allowances, its notches and its internal paths, at the reference size of each axis — so it keeps showing the same size when the active size changes. Move and resize it directly on the canvas.</source>
+        <source>The thumbnail draws the piece with its seam allowances, its notches and its internal paths, at the reference size of each axis — so it keeps showing the same size when the active size changes. Move and resize it directly on the canvas.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
