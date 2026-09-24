@@ -118,6 +118,11 @@ public:
 
     void RefreshDirtyPieceGeometry(const QList<vidtype> &list);
 
+    // Apply the pending piece geometry now, whatever the active canvas. The mode-guarded slot only
+    // defers the flush when the app is off the modeling canvas, which is not good enough for a caller
+    // that reads the scene items right away — the piece thumbnail snapshot does exactly that.
+    void FlushPieceGeometry();
+
     void SetGBBackupFilePath(const QString &fileName);
 
 signals:

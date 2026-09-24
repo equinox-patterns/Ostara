@@ -102,7 +102,11 @@ void MainWindow::ApplyReferenceSize(qreal baseA, qreal baseB, qreal baseC)
     m_m->ReadMeasurements(baseA, baseB, baseC);
     doc->LiteParseTree(Document::FullLiteParse);
     StoreDimensions();
-    doc->RefreshPieceGeometry();
+    // The capture that follows reads the scene items, so they must already carry the reference
+    // geometry. The mode-guarded refresh would only mark them dirty when the app is off the modeling
+    // canvas — exactly the state a file open leaves behind — and the capture would then glue the
+    // reference internal paths to the active outline, a drawing that belongs to no size at all.
+    doc->FlushPieceGeometry();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

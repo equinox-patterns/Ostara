@@ -50,6 +50,7 @@
 #include "../vformat/vmeasurements.h"
 #include "../vexception/vexception.h"
 #include "../vmisc/projectversion.h"
+#include "../vtools/tools/othumbnailcache.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include <QApplication>
 #include <QComboBox>
@@ -497,6 +498,10 @@ void MainWindow::Clear()
     ActionDraw(true);
     qCDebug(vMainWindow, "Returned to Draw mode.");
     setCurrentFile(QString()); // Keep before cleaning a pattern data to prevent a crash
+    // The miniature cache is a global keyed by piece id alone: the drawings of the document being
+    // cleared must not outlive it, or the next document's pieces — whose ids restart at 1 — would
+    // paint them until the first snapshot round trip replaces them.
+    OThumbnailCache::Clear();
     pattern->Clear();
     qCDebug(vMainWindow, "Clearing pattern.");
     if (not VAbstractValApplication::VApp()->GetPatternPath().isEmpty() && not doc->MPath().isEmpty())

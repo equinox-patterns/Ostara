@@ -1700,11 +1700,18 @@ auto VToolSeamAllowance::ThumbnailContent() const -> QPainterPath
     {
         content.addPath(m_passmarks->path());
     }
+    const QVector<quint32> internalPaths = VAbstractTool::data.GetPiece(m_id).GetInternalPaths();
     for (QGraphicsItem *child : childItems())
     {
         if (auto *tool = qgraphicsitem_cast<VToolPiecePath *>(child))
         {
-            content.addPath(tool->path());
+            // Only the paths the piece still lists: a path removed from the piece keeps its scene item
+            // — HideOrphanInternalPaths() merely hides it, it never clears its path() — so drawing
+            // every child would glue the geometry of an older pass into the miniature.
+            if (internalPaths.contains(tool->getId()))
+            {
+                content.addPath(tool->path());
+            }
         }
     }
     return content;

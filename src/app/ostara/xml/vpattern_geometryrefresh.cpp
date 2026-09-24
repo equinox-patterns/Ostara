@@ -117,19 +117,30 @@ void VPattern::RefreshPieceGeometry()
     // no pending timer fire follows and triggers a redundant refresh.
     m_refreshGeometryTimer->stop();
 
+    // Off the modeling canvas the pieces are not on screen, so the flush is deferred to the switch
+    // back to it. A caller that reads the scene items immediately must ask for the flush itself
+    // instead of relying on this slot: see FlushPieceGeometry().
     if (!VAbstractApplication::VApp()->IsAppInGUIMode()
         || VAbstractValApplication::VApp()->GetDrawMode() == Draw::Modeling)
     {
-        if (updatePieces.isEmpty())
-        {
-            updatePieces = data->DataPieces()->keys();
-        }
-        RefreshDirtyPieceGeometry(updatePieces);
+        FlushPieceGeometry();
     }
     else
     {
         m_pieceGeometryDirty = true;
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::FlushPieceGeometry()
+{
+    m_refreshGeometryTimer->stop();
+
+    if (updatePieces.isEmpty())
+    {
+        updatePieces = data->DataPieces()->keys();
+    }
+    RefreshDirtyPieceGeometry(updatePieces);
 
     updatePieces.clear();
 }
