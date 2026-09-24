@@ -506,10 +506,23 @@ void OExportModeDialog::OnGenerateCutting()
     for (const OExportQueueItem &item : outputs)
     {
         QCoreApplication::processEvents();
-        const bool done = m_generator(item.request, item.name);
-        m_generated = m_generated || done;
+        // Le compte rendu de chaque run est porté par le générateur lui-même : ce que ce dialogue doit
+        // retenir, c'est qu'il a FAIT son lot, pas ce que chaque run est devenu.
+        m_generator(item.request, item.name);
     }
     SetBatchRunning(false);
+
+    // ⚠️ **« A fait son lot », et pas « a réussi ».**
+    //
+    // C'est ce que la fenêtre doit savoir pour ne pas générer une seconde fois (`oexportmode.cpp:290`) :
+    // si le lot échouait ENTIER, le drapeau resterait faux et elle retenterait `CurrentRequest()` — une
+    // requête de taille unique lue dans les combos mono-taille, donc la sortie fantôme que ce dialogue
+    // vient précisément de cesser de produire.
+    //
+    // Le dialogue a décrit, exécuté et refermé : son lot est fait, réussisse-t-il ou non. La branche
+    // d'annulation, elle, garde l'autre sens — « a réussi » — et c'est pourquoi ce drapeau est posé ici
+    // en dur plutôt que par le `done` de chaque run.
+    m_generated = true;
 
     accept();
 }
