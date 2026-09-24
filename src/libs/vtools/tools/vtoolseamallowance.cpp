@@ -108,6 +108,7 @@ const quint8 VToolSeamAllowance::pieceVersion = 2;
 
 OInfoBlockContentBuilder VToolSeamAllowance::s_infoBlockContentBuilder; // NOLINT(cert-err58-cpp)
 OAnnotationStyleResolver VToolSeamAllowance::s_annotationStyleResolver; // NOLINT(cert-err58-cpp)
+OThumbnailTextResolver VToolSeamAllowance::s_thumbnailTextResolver;     // NOLINT(cert-err58-cpp)
 
 bool VToolSeamAllowance::s_isInGroupMoveMacro = false;
 
@@ -124,6 +125,9 @@ const QString VToolSeamAllowance::TagAnnotation = QStringLiteral("annotation"); 
 const QString VToolSeamAllowance::TagText = QStringLiteral("text");                             // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagGeom = QStringLiteral("geom");                             // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagThumbnail = QStringLiteral("thumbnail");                   // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagSeamAllowances = QStringLiteral("seamAllowances");         // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagLabel = QStringLiteral("label");                           // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagLegend = QStringLiteral("legend");                         // NOLINT(cert-err58-cpp)
 
 const QString VToolSeamAllowance::AttrSeamAllowance = QStringLiteral("seamAllowance"); // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrHideMainPath = QStringLiteral("hideMainPath");   // NOLINT(cert-err58-cpp)
@@ -137,6 +141,9 @@ const QString VToolSeamAllowance::AttrActive = QStringLiteral("active");        
 const QString VToolSeamAllowance::AttrBlock = QStringLiteral("block");                   // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrIndex = QStringLiteral("index");                   // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrFontScale = QStringLiteral("fontScale");           // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::AttrCentimeters = QStringLiteral("centimeters");       // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::AttrInches = QStringLiteral("inches");                 // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::AttrMm = QStringLiteral("mm");                         // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrPiecePriority = QStringLiteral("priority");        // NOLINT(cert-err58-cpp)
 
 namespace
@@ -967,6 +974,14 @@ void VToolSeamAllowance::AddThumbnail(VAbstractPattern *doc, QDomElement &domEle
     doc->SetAttributeOrRemoveIf<bool>(thumbnailEl, VToolSeamAllowance::AttrActive, data.IsActive(),
                                       [](bool active) noexcept { return not active; });
 
+    // The two unit switches are written the way `active` is: the attribute is absent while it says
+    // what the miniature says by default, so a file that never touched them stays the file it was.
+    // Centimetres are on unless the user turned them off; inches are off until they are asked for.
+    doc->SetAttributeOrRemoveIf<bool>(thumbnailEl, VToolSeamAllowance::AttrCentimeters,
+                                      data.ShowCentimeters(), [](bool show) noexcept { return show; });
+    doc->SetAttributeOrRemoveIf<bool>(thumbnailEl, VToolSeamAllowance::AttrInches, data.ShowInches(),
+                                      [](bool show) noexcept { return not show; });
+
     if (data.HasGeometry())
     {
         // mx/my are written even when null: their presence is the "geometry stored" marker, exactly
@@ -983,6 +998,40 @@ void VToolSeamAllowance::AddThumbnail(VAbstractPattern *doc, QDomElement &domEle
                                            [](qreal width) noexcept { return qFuzzyIsNull(width); });
         doc->SetAttributeOrRemoveIf<qreal>(thumbnailEl, AttrHeight, geom.height,
                                            [](qreal height) noexcept { return qFuzzyIsNull(height); });
+    }
+
+    // **What the miniature says, after where it sits.** One <label> per printed value, in the order
+    // the user added them, then the legend. No count is written: how many times a width is printed
+    // is how many labels carry it, which is what keeps a panel and a drawing from disagreeing.
+    const QVector<OThumbnailLabel> labels = data.Labels();
+    if (not labels.isEmpty() || data.HasLegendOffset())
+    {
+        QDomElement seamEl = doc->createElement(VToolSeamAllowance::TagSeamAllowances);
+
+        for (const OThumbnailLabel &label : labels)
+        {
+            QDomElement labelEl = doc->createElement(VToolSeamAllowance::TagLabel);
+            doc->SetAttribute(labelEl, VToolSeamAllowance::AttrMm, label.mm);
+            if (label.placed)
+            {
+                // mx/my are the "placed by hand" marker they are for the block itself: their
+                // presence is what makes an offset deliberate, and a (0,0) offset a real move.
+                doc->SetAttribute(labelEl, AttrMx, label.offset.x());
+                doc->SetAttribute(labelEl, AttrMy, label.offset.y());
+            }
+            seamEl.appendChild(labelEl);
+        }
+
+        if (data.HasLegendOffset())
+        {
+            const QPointF legend = data.LegendOffset();
+            QDomElement legendEl = doc->createElement(VToolSeamAllowance::TagLegend);
+            doc->SetAttribute(legendEl, AttrMx, legend.x());
+            doc->SetAttribute(legendEl, AttrMy, legend.y());
+            seamEl.appendChild(legendEl);
+        }
+
+        thumbnailEl.appendChild(seamEl);
     }
 
     domElement.appendChild(thumbnailEl);
@@ -1102,6 +1151,12 @@ void VToolSeamAllowance::SetAnnotationStyleResolver(OAnnotationStyleResolver res
 auto VToolSeamAllowance::AnnotationStyleResolver() -> const OAnnotationStyleResolver &
 {
     return s_annotationStyleResolver;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::SetThumbnailTextResolver(OThumbnailTextResolver resolver)
+{
+    s_thumbnailTextResolver = std::move(resolver);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1440,8 +1495,15 @@ void VToolSeamAllowance::ResetChildren(QGraphicsItem *pItem)
     {
         annotationItem->SetActive(annotationItem == pAnnotation);
     }
-    // Same for the miniature block.
+    // Same for the miniature block. **The click that selects is not the click that opens**: this runs
+    // on the press, ahead of the item's own handler, so what is read here is the state the pointer
+    // found — and that is the only thing that tells a selection from an opening.
+    const bool wasThumbnailActive = m_thumbnailItem->IsActive();
     m_thumbnailItem->SetActive(m_thumbnailItem == pItem);
+    if (m_thumbnailItem == pItem)
+    {
+        m_thumbnailItem->SetOpensOnClick(wasThumbnailActive);
+    }
 
     setSelected(selected);
     update();
@@ -1777,6 +1839,29 @@ void VToolSeamAllowance::UpdateThumbnail()
         geom.pos = m_pieceBoundingRect.center() - QPointF(geom.width / 2.0, geom.height / 2.0);
     }
 
+    // **The words, resolved above the library.** Units, decimal separator and the languages the
+    // legend is written in are all application knowledge, so the tool asks for them instead of
+    // inventing them — the same door the information blocks and the annotations already use.
+    QVector<OThumbnailItem::LabelView> labels;
+    QString legend;
+    if (s_thumbnailTextResolver)
+    {
+        const OThumbnailTexts texts = s_thumbnailTextResolver(detail, doc, getData());
+        legend = texts.legend;
+
+        const QVector<OThumbnailLabel> stored = data.Labels();
+        labels.reserve(stored.size());
+        for (int i = 0; i < stored.size(); ++i)
+        {
+            OThumbnailItem::LabelView view;
+            view.text = i < texts.values.size() ? texts.values.at(i) : QString();
+            view.offset = stored.at(i).offset;
+            view.placed = stored.at(i).placed;
+            labels.append(view);
+        }
+    }
+
+    m_thumbnailItem->SetLabels(labels, legend, data.LegendOffset(), data.HasLegendOffset());
     m_thumbnailItem->SetContent(content, contentBounds);
     m_thumbnailItem->SetBlockGeom(geom);
     m_thumbnailItem->setVisible(true);
@@ -1980,6 +2065,56 @@ void VToolSeamAllowance::SaveMoveAnnotation(int index, const QPointF &pos)
 
     PushChildChange(oldDet, newDet, tr("move annotation"));
     UpdateAnnotations();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::SaveMoveThumbnailLabel(int index, const QPointF &offset)
+{
+    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
+    VPiece newDet = oldDet;
+    OThumbnailData data = std::as_const(newDet).GetThumbnailData();
+    QVector<OThumbnailLabel> labels = data.Labels();
+    if (index < 0 || index >= labels.size())
+    {
+        return;
+    }
+    labels[index].offset = offset;
+    labels[index].placed = true;
+    data.SetLabels(labels);
+    data.SetSet(true);
+    newDet.SetThumbnailData(data);
+
+    PushChildChange(oldDet, newDet, tr("move seam allowance value"));
+    UpdateThumbnail();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::SaveMoveThumbnailLegend(const QPointF &offset)
+{
+    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
+    VPiece newDet = oldDet;
+    OThumbnailData data = std::as_const(newDet).GetThumbnailData();
+    data.SetLegendOffset(offset);
+    data.SetSet(true);
+    newDet.SetThumbnailData(data);
+
+    PushChildChange(oldDet, newDet, tr("move seam allowance legend"));
+    UpdateThumbnail();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::IsThumbnailEditing() const -> bool
+{
+    return m_thumbnailItem != nullptr && m_thumbnailItem->IsEditing();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::CancelThumbnailEdit()
+{
+    if (m_thumbnailItem != nullptr)
+    {
+        m_thumbnailItem->SetEditing(false);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2598,6 +2733,17 @@ VToolSeamAllowance::VToolSeamAllowance(const VToolSeamAllowanceInitData &initDat
     // On-piece miniature block, hidden until the piece activates it (UpdateThumbnail decides).
     m_thumbnailItem = new OThumbnailItem(this);
     connect(m_thumbnailItem, &OThumbnailItem::GeometryChanged, this, &VToolSeamAllowance::SaveThumbnailGeometry);
+    connect(m_thumbnailItem, &OThumbnailItem::LabelMoved, this, &VToolSeamAllowance::SaveMoveThumbnailLabel);
+    connect(m_thumbnailItem, &OThumbnailItem::LegendMoved, this, &VToolSeamAllowance::SaveMoveThumbnailLegend);
+    connect(m_thumbnailItem, &OThumbnailItem::EditingChanged, this, [this](bool editing)
+    {
+        // The Details-mode convention is the persistent status label, and the tool sits below it —
+        // so the word goes out through the scene, which the window already listens to.
+        if (m_sceneDetails != nullptr)
+        {
+            m_sceneDetails->ShowStatusTip(editing ? tr("Press Escape to leave the thumbnail") : QString());
+        }
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

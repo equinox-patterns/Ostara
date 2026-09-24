@@ -106,3 +106,16 @@ auto OLengthUnits::Format(qreal mm, const Unit &unit) -> QString
     // how the two would come to disagree.
     return OExportUnitFormat::Format(mm, unit) + QLatin1Char(' ') + UnitsToStr(unit, true);
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OLengthUnits::Value(qreal mm, const Unit &unit) -> QString
+{
+    if (unit == Unit::Inch)
+    {
+        // Bare as well: the inch sign belongs to the unit, and here the unit is named elsewhere. The
+        // fraction itself is the same one @ref Format writes, reduced the same way.
+        return Fraction(mm / kMmPerInch);
+    }
+
+    return OExportUnitFormat::Format(mm, unit);
+}

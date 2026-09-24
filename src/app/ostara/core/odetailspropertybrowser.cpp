@@ -341,6 +341,18 @@ void ODetailsPropertyBrowser::CancelAlignPointSelection()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto ODetailsPropertyBrowser::IsEditingThumbnail() const -> bool
+{
+    return m_pieceWidget->IsEditingThumbnail();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::CancelThumbnailEdit()
+{
+    m_pieceWidget->CancelThumbnailEdit();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto ODetailsPropertyBrowser::IsSelectingSAPoints() const -> bool
 {
     return m_pieceWidget->IsSelectingSAPoints();

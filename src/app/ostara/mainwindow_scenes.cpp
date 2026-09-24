@@ -304,6 +304,10 @@ void MainWindow::InitScenes()
     connect(this, &MainWindow::EnableDetailHover, m_sceneDetails, &VMainGraphicsScene::ToggleDetailHover);
 
     connect(m_sceneDetails, &VMainGraphicsScene::mouseMove, this, &MainWindow::MouseMove);
+    // A tool says what it is doing through the scene, because the scene is what the window already
+    // listens to — and the Details-mode message is the persistent status label, not a transient popup.
+    connect(m_sceneDetails, &VMainGraphicsScene::ShowStatusTip, this,
+            [this](const QString &text) { m_statusLabel->setText(text); });
 
     m_sceneGraded = new VMainGraphicsScene(this);
     connect(m_sceneGraded, &VMainGraphicsScene::mouseMove, this, &MainWindow::MouseMove);

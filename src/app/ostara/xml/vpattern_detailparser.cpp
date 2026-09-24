@@ -170,6 +170,12 @@ auto VPattern::ParsePieceThumbnail(const QDomElement &domElement) const -> OThum
     thumbnail.SetSet(true);
     thumbnail.SetActive(GetParametrBool(domElement, VToolSeamAllowance::AttrActive, falseStr));
 
+    // The switches are read with the defaults the writer omits: centimetres on, inches off. Reading
+    // them back as "false" would turn off a unit the file never mentioned.
+    thumbnail.SetShowCentimeters(
+        GetParametrBool(domElement, VToolSeamAllowance::AttrCentimeters, trueStr));
+    thumbnail.SetShowInches(GetParametrBool(domElement, VToolSeamAllowance::AttrInches, falseStr));
+
     // The writer emits mx/my whenever the block was moved or resized: their presence is the
     // "geometry stored" marker, so a (0,0) position survives a round-trip as a real user move.
     if (domElement.hasAttribute(AttrMx) || domElement.hasAttribute(AttrMy))
@@ -181,6 +187,39 @@ auto VPattern::ParsePieceThumbnail(const QDomElement &domElement) const -> OThum
         geom.height = GetParametrDouble(domElement, AttrHeight, QStringLiteral("0.0"));
         geom.anchor = ParseChildAnchor(domElement);
         thumbnail.SetGeom(geom);
+    }
+
+    // What the miniature says. The labels are read in file order, which is the order the writer
+    // emitted them — the model keeps that same order, so the nth <label> is the nth of the list.
+    const QDomElement seamEl = domElement.firstChildElement(VToolSeamAllowance::TagSeamAllowances);
+    if (not seamEl.isNull())
+    {
+        QVector<OThumbnailLabel> labels;
+        QDomElement labelEl = seamEl.firstChildElement(VToolSeamAllowance::TagLabel);
+        while (not labelEl.isNull())
+        {
+            OThumbnailLabel label;
+            label.mm = GetParametrDouble(labelEl, VToolSeamAllowance::AttrMm, QStringLiteral("0.0"));
+            // Same marker as the block's: mx/my present means the offset was placed by hand, so a
+            // label sitting at (0,0) is a deliberate placement and not an absent one.
+            if (labelEl.hasAttribute(AttrMx) || labelEl.hasAttribute(AttrMy))
+            {
+                label.offset = QPointF(GetParametrDouble(labelEl, AttrMx, QStringLiteral("0.0")),
+                                       GetParametrDouble(labelEl, AttrMy, QStringLiteral("0.0")));
+                label.placed = true;
+            }
+            labels.append(label);
+            labelEl = labelEl.nextSiblingElement(VToolSeamAllowance::TagLabel);
+        }
+        thumbnail.SetLabels(labels);
+
+        const QDomElement legendEl = seamEl.firstChildElement(VToolSeamAllowance::TagLegend);
+        if (not legendEl.isNull())
+        {
+            thumbnail.SetLegendOffset(
+                QPointF(GetParametrDouble(legendEl, AttrMx, QStringLiteral("0.0")),
+                        GetParametrDouble(legendEl, AttrMy, QStringLiteral("0.0"))));
+        }
     }
 
     return thumbnail;

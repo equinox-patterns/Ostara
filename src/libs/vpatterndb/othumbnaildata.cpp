@@ -76,4 +76,67 @@ void OThumbnailData::Clear()
     m_active = false;
     m_geom = OThumbnailGeom();
     m_hasGeom = false;
+
+    // A cleared miniature is a piece that never configured one: back to the defaults, not to a
+    // half-state that would print nothing because no unit happens to be selected.
+    m_showCentimeters = true;
+    m_showInches = false;
+    m_labels.clear();
+    m_legendOffset = QPointF();
+    m_hasLegendOffset = false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailData::ShowCentimeters() const -> bool
+{
+    return m_showCentimeters;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailData::SetShowCentimeters(bool show)
+{
+    m_showCentimeters = show;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailData::ShowInches() const -> bool
+{
+    return m_showInches;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailData::SetShowInches(bool show)
+{
+    m_showInches = show;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailData::Labels() const -> const QVector<OThumbnailLabel> &
+{
+    return m_labels;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailData::SetLabels(const QVector<OThumbnailLabel> &labels)
+{
+    m_labels = labels;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailData::LegendOffset() const -> QPointF
+{
+    return m_legendOffset;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailData::HasLegendOffset() const -> bool
+{
+    return m_hasLegendOffset;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailData::SetLegendOffset(const QPointF &offset)
+{
+    m_legendOffset = offset;
+    m_hasLegendOffset = true;
 }

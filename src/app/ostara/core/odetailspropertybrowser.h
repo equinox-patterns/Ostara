@@ -95,6 +95,9 @@ public:
     void OnNodeSelectedForAlignPoint(quint32 nodeId);
     void CancelAlignPointSelection();
 
+    auto IsEditingThumbnail() const -> bool;
+    void CancelThumbnailEdit();
+
 signals:
     void ShowStatusTip(const QString &text);
     void HighlightNode(quint32 nodeId, bool highlight, QColor color = Qt::red);

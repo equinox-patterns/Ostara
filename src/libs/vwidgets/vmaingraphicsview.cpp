@@ -74,6 +74,7 @@
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "global.h"
+#include "idoubleclickconsumer.h"
 #include "vcontrolpointspline.h"
 #include "vmaingraphicsscene.h"
 #include "scalesceneitems.h"
@@ -856,12 +857,25 @@ void VMainGraphicsView::focusOutEvent(QFocusEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void VMainGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    bool claimed = false; // the gesture belongs to an item and means something of its own
+
     if (event->button() == Qt::LeftButton)
     {
         // Hit-test the double-clicked item and forward it (used for attachment isolation).
         const QList<QGraphicsItem *> list = PrioritizeItems(items(event->pos()), mapToScene(event->pos()));
         for (auto *item : list)
         {
+            // **An item that takes the double-click takes it here, before the scene is asked.**
+            // The zoom below is emitted ahead of `QGraphicsView::mouseDoubleClickEvent`, so the item
+            // under the cursor never gets the chance to refuse it — asking in advance is the only
+            // way for a miniature to open on the gesture without the canvas jumping as well.
+            if (auto *consumer = dynamic_cast<IDoubleClickConsumer *>(item);
+                consumer != nullptr && consumer->ConsumesDoubleClick())
+            {
+                claimed = true;
+                break;
+            }
+
             if (item != nullptr && item->acceptedMouseButtons() != Qt::NoButton &&
                 item->type() > QGraphicsItem::UserType && item->type() <= VScaledLine::Type)
             {
@@ -871,7 +885,7 @@ void VMainGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
         }
     }
 
-    if (event->button() == Qt::LeftButton &&
+    if (not claimed && event->button() == Qt::LeftButton &&
         VAbstractApplication::VApp()->Settings()->IsDoubleClickZoomFitBestCurrentPP())
     {
         emit ZoomFitBestCurrent();

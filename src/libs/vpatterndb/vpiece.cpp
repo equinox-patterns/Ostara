@@ -45,6 +45,8 @@
 #include "vpassmark.h"
 #include "vpiece_p.h"
 
+#include <algorithm>
+
 #include <QDebug>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -57,6 +59,21 @@ using namespace Qt::Literals::StringLiterals;
 
 namespace
 {
+/// @brief The hundredth of a millimetre a seam-allowance width is compared on.
+///
+/// **The same step as `OSeamAllowanceLibrary::kComparisonSteps`, and it has to stay the same one.**
+/// A width arrives from arithmetic and not from a keyboard — a centimetre and a half comes back
+/// from the pattern's unit as a number that is only nearly fifteen — so both sides are brought to
+/// the same step before they are compared. Two functions rounding on two different steps would stop
+/// agreeing about what the piece is made of.
+constexpr qreal kSAWidthSteps = 100.0;
+
+//---------------------------------------------------------------------------------------------------------------------
+auto RoundedMm(qreal mm) -> qreal
+{
+    return static_cast<qreal>(qRound64(mm * kSAWidthSteps)) / kSAWidthSteps;
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 auto IsPassmarksPossible(const QVector<VPieceNode> &path) -> bool
 {
@@ -1204,6 +1221,60 @@ auto VPiece::GetUnitedPath(const VContainer *data) const -> QVector<VPieceNode>
         united = midBefore + customNodes + midAfter;
     }
     return united;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::DistinctSAWidths(const VContainer *data) const -> QVector<qreal>
+{
+    SCASSERT(data != nullptr)
+
+    // A piece cut without a seam allowance has no margin to state. Naming a zero here would
+    // announce a margin nobody sews: the piece is cut on its sewing line.
+    if (not IsSeamAllowance())
+    {
+        return {};
+    }
+
+    const Unit *unit = data->GetPatternUnit();
+    if (unit == nullptr)
+    {
+        return {};
+    }
+
+    // **The width a point inherits when it overrides nothing.** It is one of the piece's real
+    // margins, so the panel offers it like any other — a piece whose every point was given a width
+    // of its own still offers the default it was drawn from.
+    const qreal inherited = RoundedMm(UnitConvertor(GetSAWidth(), *unit, Unit::Mm));
+
+    QVector<qreal> widths{inherited};
+
+    // **The path the engine offsets, not the raw one**: a custom margin is worked into the piece by
+    // splicing its nodes here, and the widths it brings are the piece's widths too.
+    for (const VPieceNode &node : GetUnitedPath(data))
+    {
+        // A point that is not drawn has no margin to read, and only a point node carries a width of
+        // its own — the setters of the other kinds quietly store nothing.
+        if (node.IsExcluded() || node.GetTypeTool() != Tool::NodePoint)
+        {
+            continue;
+        }
+
+        for (const qreal width : {node.GetSABefore(data), node.GetSAAfter(data)})
+        {
+            // **The sentinel is not a zero.** A negative answer means "I inherit", and resolves to
+            // the piece's own width; a zero means the user asked for no margin right there. Reading
+            // one as the other would drop the default from every piece in the pattern.
+            const qreal mm = width < 0.0 ? inherited : RoundedMm(UnitConvertor(width, *unit, Unit::Mm));
+            if (not widths.contains(mm))
+            {
+                widths.append(mm);
+            }
+        }
+    }
+
+    // Smallest first: an order the piece itself owns, and one a panel can be read down.
+    std::sort(widths.begin(), widths.end());
+    return widths;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

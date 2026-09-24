@@ -699,6 +699,13 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 m_dockManager->detailsWidget()->CancelGroupSelection();
                 break;
             }
+            if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsEditingThumbnail())
+            {
+                // The innermost gesture on the Details canvas: Escape gave the miniature, Escape
+                // takes it back.
+                m_dockManager->detailsOptions()->CancelThumbnailEdit();
+                break;
+            }
             if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingPassmarkPoints())
             {
                 m_dockManager->detailsOptions()->CancelPassmarkSelection();

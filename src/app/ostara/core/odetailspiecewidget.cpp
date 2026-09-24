@@ -209,7 +209,7 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         }
         m_blockConfigWidget->Show(detail, currentTool->getData());
         m_annotationsConfigWidget->Show(detail, currentTool->getData());
-        m_thumbnailConfigWidget->Show(detail, currentTool->getData());
+        m_thumbnailConfigWidget->Show(detail, currentTool->getData(), currentTool->getId());
     });
 
     m_tabWidget = new QTabWidget();
@@ -795,7 +795,7 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
     m_pieceInfoWidget->Show(detail, tool->getData());
     m_blockConfigWidget->Show(detail, tool->getData());
     m_annotationsConfigWidget->Show(detail, tool->getData());
-    m_thumbnailConfigWidget->Show(detail, tool->getData());
+    m_thumbnailConfigWidget->Show(detail, tool->getData(), tool->getId());
 
     // Alignment: both rows, the forced point, and the enabled/disabled states that follow from it.
     ApplyAlignPointControls(detail, tool->getData());
@@ -1177,6 +1177,21 @@ void ODetailsPieceWidget::CancelAlignPointSelection()
     m_alignPointSelectState = AlignPointSelectState::Idle;
     m_alignPointBtn->setText(tr("Align on a point"));
     emit ShowStatusTip(QString());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsPieceWidget::IsEditingThumbnail() const -> bool
+{
+    return m_currentTool != nullptr && m_currentTool->IsThumbnailEditing();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::CancelThumbnailEdit()
+{
+    if (m_currentTool != nullptr)
+    {
+        m_currentTool->CancelThumbnailEdit();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -37,6 +37,7 @@
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
 #include "widgets/InfoBlock/OPieceCartoucheStorage.h"
 #include "core/oexporttemplatestorage.h"
+#include "core/othumbnailtextbuilder.h"
 
 #include "vabstractapplication.h"
 #include "vvalentinasettings.h"
@@ -133,6 +134,13 @@ auto main(int argc, char *argv[]) -> int
     VToolSeamAllowance::SetInfoBlockContentBuilder(
         [](const VPiece &piece, VAbstractPattern *doc, const VContainer *data) -> OInfoBlockEffectiveState {
             return OInfoBlockResolver::ResolveEffectiveState(piece, doc, data);
+        });
+
+    // Register the app-side wording builder for the piece miniature, so the piece tools (libs) can
+    // print seam-allowance values and their legend without a libs -> app dependency.
+    VToolSeamAllowance::SetThumbnailTextResolver(
+        [](const VPiece &piece, VAbstractPattern *doc, const VContainer *data) -> OThumbnailTexts {
+            return OThumbnailTextBuilder::Build(piece, doc, data);
         });
 
     // Register the app-side annotation style resolver so the piece tools (libs)

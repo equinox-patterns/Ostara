@@ -122,6 +122,14 @@ signals:
     void          AddBackgroundImage(const QPointF &pos, const QString &fileName);
 
     /**
+     * @brief Asks the window to write a line in its status area.
+     *
+     * A tool lives below the window and holds no reference to it; the scene is what the window
+     * already listens to, so this is where the word goes out.
+     */
+    void          ShowStatusTip(const QString &text);
+
+    /**
      * @brief ChoosedObject send option choosed object.
      * @param id object id.
      * @param type object scene type.

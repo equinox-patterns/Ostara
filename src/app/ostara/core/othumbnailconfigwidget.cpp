@@ -27,10 +27,51 @@
 
 #include "othumbnailconfigwidget.h"
 
+#include "../vmisc/def.h"
+#include "../vpatterndb/vcontainer.h"
+#include "../vpatterndb/vpiece.h"
+#include "othumbnailtextbuilder.h"
+
 #include <QCheckBox>
+#include <QGridLayout>
 #include <QGroupBox>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QSpinBox>
 #include <QVBoxLayout>
+
+namespace
+{
+/// @brief A count high enough to cover any real piece, low enough to be typed without thinking.
+constexpr int kMaxLabelCount = 99;
+
+/// @brief The hundredth of a millimetre the piece reports its widths on, so a comparison is made on
+/// the same step as the report — the step `VPiece::DistinctSAWidths()` rounds to.
+constexpr qreal kWidthSteps = 100.0;
+
+/// @brief Whether @p a and @p b name the same margin.
+auto SameWidth(qreal a, qreal b) -> bool
+{
+    return qRound64(a * kWidthSteps) == qRound64(b * kWidthSteps);
+}
+
+/// @brief Whether two width lists are the same list, on that same step.
+auto SameWidths(const QVector<qreal> &a, const QVector<qreal> &b) -> bool
+{
+    if (a.size() != b.size())
+    {
+        return false;
+    }
+    for (qsizetype i = 0; i < a.size(); ++i)
+    {
+        if (not SameWidth(a.at(i), b.at(i)))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 OThumbnailConfigWidget::OThumbnailConfigWidget(QWidget *parent) : QWidget(parent)
@@ -54,6 +95,33 @@ OThumbnailConfigWidget::OThumbnailConfigWidget(QWidget *parent) : QWidget(parent
     m_hintLabel = new QLabel(m_infoGroup);
     m_hintLabel->setWordWrap(true);
     groupLayout->addWidget(m_hintLabel);
+
+    // **One group, not two.** The seam-allowance section is part of what the miniature says, so it
+    // lives in the miniature's own group behind a plain heading and two lines of explanation — a
+    // group inside a group reads as two subjects for one subject.
+    m_seamTitle = new QLabel(tr("Seam allowances to show"), m_infoGroup);
+    groupLayout->addWidget(m_seamTitle);
+
+    m_seamHint = new QLabel(m_infoGroup);
+    m_seamHint->setWordWrap(true);
+    groupLayout->addWidget(m_seamHint);
+
+    m_rowsGrid = new QGridLayout();
+    m_rowsGrid->setSpacing(6);
+    m_rowsGrid->setColumnStretch(2, 1); // Keeps the rows left-aligned instead of spread across.
+    groupLayout->addLayout(m_rowsGrid);
+
+    // The two units share a line: they are one choice with two answers, not two successive questions.
+    m_unitsLine = new QHBoxLayout();
+    m_unitsLine->setSpacing(12);
+    m_centimetersCheck = new QCheckBox(tr("Centimeters"), m_infoGroup);
+    m_centimetersCheck->setChecked(true);
+    m_unitsLine->addWidget(m_centimetersCheck);
+    m_inchesCheck = new QCheckBox(tr("Inches"), m_infoGroup);
+    m_unitsLine->addWidget(m_inchesCheck);
+    m_unitsLine->addStretch();
+    groupLayout->addLayout(m_unitsLine);
+
     groupLayout->addStretch();
     layout->addWidget(m_infoGroup, 1);
 
@@ -62,6 +130,24 @@ OThumbnailConfigWidget::OThumbnailConfigWidget(QWidget *parent) : QWidget(parent
         {
             return;
         }
+        Commit();
+    });
+
+    connect(m_centimetersCheck, &QCheckBox::toggled, this, [this](bool) {
+        if (m_loading)
+        {
+            return;
+        }
+        RefreshRowTexts();
+        Commit();
+    });
+
+    connect(m_inchesCheck, &QCheckBox::toggled, this, [this](bool) {
+        if (m_loading)
+        {
+            return;
+        }
+        RefreshRowTexts();
         Commit();
     });
 }
@@ -73,13 +159,17 @@ void OThumbnailConfigWidget::SetModifyPending(std::function<void(std::function<v
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OThumbnailConfigWidget::Show(const IPieceInfo &detail, const VContainer *data)
+void OThumbnailConfigWidget::Show(const IPieceInfo &detail, const VContainer *data, quint32 pieceId)
 {
-    Q_UNUSED(data)
+    const OThumbnailData thumbnail = detail.GetThumbnailData();
 
     m_loading = true;
-    m_activeCheck->setChecked(detail.GetThumbnailData().IsActive());
+    m_activeCheck->setChecked(thumbnail.IsActive());
+    m_centimetersCheck->setChecked(thumbnail.ShowCentimeters());
+    m_inchesCheck->setChecked(thumbnail.ShowInches());
     m_loading = false;
+
+    SyncRows(WidthsFor(pieceId, data), thumbnail);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -87,7 +177,12 @@ void OThumbnailConfigWidget::Clear()
 {
     m_loading = true;
     m_activeCheck->setChecked(false);
+    m_centimetersCheck->setChecked(true);
+    m_inchesCheck->setChecked(false);
     m_loading = false;
+
+    ClearRows();
+    m_widths.clear();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -98,6 +193,11 @@ void OThumbnailConfigWidget::RetranslateUI()
     m_hintLabel->setText(tr("The thumbnail draws the piece with its seam allowances, its notches and its internal "
                             "paths, at the reference size of each axis — so it keeps showing the same size when the "
                             "active size changes. Move and resize it directly on the canvas."));
+    m_seamTitle->setText(tr("Seam allowances to show"));
+    m_seamHint->setText(tr("How many times each value is printed. To place them, click the thumbnail once to select "
+                           "it, then once more to open it: the values and the legend can then be dragged."));
+    m_centimetersCheck->setText(tr("Centimeters"));
+    m_inchesCheck->setText(tr("Inches"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -106,6 +206,8 @@ auto OThumbnailConfigWidget::BuildData(const IPieceInfo &det) const -> OThumbnai
     // Never start from a fresh object: the stored geometry must survive an activation change.
     OThumbnailData data = det.GetThumbnailData();
     data.SetActive(m_activeCheck->isChecked());
+    data.SetShowCentimeters(m_centimetersCheck->isChecked());
+    data.SetShowInches(m_inchesCheck->isChecked());
     data.SetSet(true);
     return data;
 }
@@ -118,4 +220,171 @@ void OThumbnailConfigWidget::Commit()
         return;
     }
     m_modifyPending([this](IPieceInfo &det) { det.SetThumbnailData(BuildData(det)); });
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailConfigWidget::WidthsFor(quint32 pieceId, const VContainer *data) -> QVector<qreal>
+{
+    if (data == nullptr || pieceId == NULL_ID)
+    {
+        return {};
+    }
+
+    // **The piece's own answer, never a second reading of its nodes.** The panel and the drawing
+    // both ask the piece; two readings is how they would come to disagree about which margins it is
+    // made of. No seam allowance at all answers with nothing, and the panel has nothing to show.
+    return data->GetPiece(pieceId).DistinctSAWidths(data);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailConfigWidget::CountFor(const OThumbnailData &data, qreal mm) -> int
+{
+    int count = 0;
+    for (const OThumbnailLabel &label : data.Labels())
+    {
+        if (SameWidth(label.mm, mm))
+        {
+            ++count;
+        }
+    }
+    return count;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailConfigWidget::SyncRows(const QVector<qreal> &widths, const OThumbnailData &data)
+{
+    // **A count change must not rebuild the row it came from.** Committing a spin box can come
+    // straight back here, and deleting the widget that is still emitting is a crash and not a
+    // refresh. So the rows are rebuilt only when the piece's margins themselves changed; a count
+    // alone only rewrites values.
+    if (not SameWidths(widths, m_widths))
+    {
+        ClearRows();
+        BuildRows(widths, data);
+        m_widths = widths;
+        return;
+    }
+
+    m_loading = true;
+    for (const Row &row : m_rows)
+    {
+        row.spin->setValue(CountFor(data, row.mm));
+    }
+    m_loading = false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailConfigWidget::BuildRows(const QVector<qreal> &widths, const OThumbnailData &data)
+{
+    m_loading = true;
+    for (int i = 0; i < widths.size(); ++i)
+    {
+        const qreal mm = widths.at(i);
+
+        auto *label = new QLabel(m_infoGroup);
+        auto *spin = new QSpinBox(m_infoGroup);
+        spin->setRange(0, kMaxLabelCount);
+        spin->setValue(CountFor(data, mm));
+        label->setBuddy(spin);
+
+        // **The same two columns for every row**, so the counts line up under the widest value
+        // whatever the widths of the words beside them — which is what one hand-made row layout per
+        // row could never promise, each holding a column of its own.
+        m_rowsGrid->addWidget(label, i, 0);
+        m_rowsGrid->addWidget(spin, i, 1, Qt::AlignLeft);
+
+        connect(spin, QOverload<int>::of(&QSpinBox::valueChanged), this, [this, mm](int count) {
+            if (m_loading)
+            {
+                return;
+            }
+            CommitCount(mm, count);
+        });
+
+        m_rows.append(Row{mm, label, spin});
+    }
+    m_loading = false;
+
+    RefreshRowTexts();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailConfigWidget::ClearRows()
+{
+    for (const Row &row : m_rows)
+    {
+        // Out of the grid before the delete, so no cell is left holding a place for a row that is
+        // about to be a different row.
+        m_rowsGrid->removeWidget(row.label);
+        m_rowsGrid->removeWidget(row.spin);
+        delete row.label;
+        delete row.spin;
+    }
+    m_rows.clear();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailConfigWidget::RefreshRowTexts()
+{
+    const bool centimeters = m_centimetersCheck->isChecked();
+    const bool inches = m_inchesCheck->isChecked();
+
+    for (const Row &row : m_rows)
+    {
+        // The label previews the canvas in the units that are on. With no unit on there is nothing to
+        // preview, so the row names its margin in centimetres — it still has a count to carry.
+        row.label->setText(centimeters || inches ? OThumbnailTextBuilder::ValueText(row.mm, centimeters, inches)
+                                                 : OThumbnailTextBuilder::ValueText(row.mm, true, false));
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailConfigWidget::CommitCount(qreal mm, int count)
+{
+    if (m_loading || m_modifyPending == nullptr)
+    {
+        return;
+    }
+
+    m_modifyPending([mm, count](IPieceInfo &det)
+    {
+        OThumbnailData data = det.GetThumbnailData();
+        QVector<OThumbnailLabel> labels = data.Labels();
+
+        int existing = 0;
+        for (const OThumbnailLabel &label : labels)
+        {
+            if (SameWidth(label.mm, mm))
+            {
+                ++existing;
+            }
+        }
+
+        if (count > existing)
+        {
+            // A new value goes to the end of the list, which is also the end of the default row.
+            OThumbnailLabel label;
+            label.mm = mm;
+            for (int i = existing; i < count; ++i)
+            {
+                labels.append(label);
+            }
+        }
+        else if (count < existing)
+        {
+            // The last ones go first: the placements the user made earliest are the ones kept.
+            for (qsizetype i = labels.size() - 1; i >= 0 && existing > count; --i)
+            {
+                if (SameWidth(labels.at(i).mm, mm))
+                {
+                    labels.removeAt(i);
+                    --existing;
+                }
+            }
+        }
+
+        data.SetLabels(labels);
+        data.SetSet(true);
+        det.SetThumbnailData(data);
+    });
 }

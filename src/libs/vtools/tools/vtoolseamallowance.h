@@ -116,6 +116,9 @@ public:
     static const QString TagText;
     static const QString TagGeom;
     static const QString TagThumbnail;
+    static const QString TagSeamAllowances;
+    static const QString TagLabel;
+    static const QString TagLegend;
 
     static const QString AttrSeamAllowance;
     static const QString AttrHideMainPath;
@@ -128,6 +131,9 @@ public:
     static const QString AttrBlock;
     static const QString AttrIndex;
     static const QString AttrFontScale;
+    static const QString AttrCentimeters;
+    static const QString AttrInches;
+    static const QString AttrMm;
 
     void RemoveWithConfirm(bool ask);
 
@@ -152,6 +158,13 @@ public:
     static auto AnnotationStyleResolver() -> const OAnnotationStyleResolver &;
     /** @brief Registers the app-side annotation style resolver (called once at app startup). */
     static void SetAnnotationStyleResolver(OAnnotationStyleResolver resolver);
+    /** @brief Registers the app-side wording resolver for the miniature (called once at app startup). */
+    static void SetThumbnailTextResolver(OThumbnailTextResolver resolver);
+
+    /** @brief Whether the miniature block is open for placing its seam-allowance values. */
+    auto IsThumbnailEditing() const -> bool;
+    /** @brief Leaves the miniature sub-mode, if it is open — what Escape does. */
+    void CancelThumbnailEdit();
 
     void SetName(const QString &name);
     void Move(qreal x, qreal y);
@@ -238,6 +251,8 @@ private slots:
     void SaveMoveAnnotation(int index, const QPointF &pos);
     void SaveResizeAnnotation(int index, qreal newW, qreal newH, qreal origW, qreal origH);
     void SaveThumbnailGeometry(const QPointF &pos, qreal width, qreal height);
+    void SaveMoveThumbnailLabel(int index, const QPointF &offset);
+    void SaveMoveThumbnailLegend(const QPointF &offset);
     void ToggleInLayout(bool checked);
     void ToggleHideMainPath(bool checked);
     void ToggleForceFlipping(bool checked);
@@ -289,6 +304,7 @@ private:
 
     /** @brief App-registered annotation style resolver (layering bridge). */
     static OAnnotationStyleResolver s_annotationStyleResolver;
+    static OThumbnailTextResolver s_thumbnailTextResolver;
 
     bool m_acceptHoverEvents{true};
 

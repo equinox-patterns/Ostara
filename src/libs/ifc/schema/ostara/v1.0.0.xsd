@@ -881,7 +881,30 @@
                           </xs:element>
                           <xs:element name="thumbnail" minOccurs="0" maxOccurs="1">
                             <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="seamAllowances" minOccurs="0" maxOccurs="1">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="label" minOccurs="0" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                          <xs:attribute name="mm" type="xs:double" use="required"/>
+                                          <xs:attribute name="mx" type="xs:double"/>
+                                          <xs:attribute name="my" type="xs:double"/>
+                                        </xs:complexType>
+                                      </xs:element>
+                                      <xs:element name="legend" minOccurs="0" maxOccurs="1">
+                                        <xs:complexType>
+                                          <xs:attribute name="mx" type="xs:double"/>
+                                          <xs:attribute name="my" type="xs:double"/>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
                               <xs:attribute name="active" type="xs:boolean"/>
+                              <xs:attribute name="centimeters" type="xs:boolean"/>
+                              <xs:attribute name="inches" type="xs:boolean"/>
                               <xs:attribute name="mx" type="xs:double"/>
                               <xs:attribute name="my" type="xs:double"/>
                               <xs:attribute name="nx" type="xs:double"/>
@@ -1078,7 +1101,30 @@
                     </xs:element>
                     <xs:element name="thumbnail" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="seamAllowances" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="label" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:attribute name="mm" type="xs:double" use="required"/>
+                                    <xs:attribute name="mx" type="xs:double"/>
+                                    <xs:attribute name="my" type="xs:double"/>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="legend" minOccurs="0" maxOccurs="1">
+                                  <xs:complexType>
+                                    <xs:attribute name="mx" type="xs:double"/>
+                                    <xs:attribute name="my" type="xs:double"/>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
                         <xs:attribute name="active" type="xs:boolean"/>
+                        <xs:attribute name="centimeters" type="xs:boolean"/>
+                        <xs:attribute name="inches" type="xs:boolean"/>
                         <xs:attribute name="mx" type="xs:double"/>
                         <xs:attribute name="my" type="xs:double"/>
                         <xs:attribute name="nx" type="xs:double"/>

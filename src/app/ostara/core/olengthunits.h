@@ -83,6 +83,14 @@ inline const QString kInchSign = QStringLiteral("\"");
 /// a page and a length of the print tab cannot come out disagreeing. Fractional for inches.
 auto Format(qreal mm, const Unit &unit) -> QString;
 
+/// @brief @p mm written in @p unit with **no unit sign at all** — the value alone.
+///
+/// For a place where the unit is named once for a whole group of values: a legend under a table, a
+/// column heading, a caption. The value itself has to read exactly as @ref Format writes it, or the
+/// same margin would come out as two different numbers on one page — which is the whole reason this
+/// function is here and not written again where it is needed.
+auto Value(qreal mm, const Unit &unit) -> QString;
+
 /// @brief @p inch written as the nearest sixteenth, reduced, with the inch sign.
 ///
 /// `0.3937` gives `3/8"`, `1.375` gives `1 3/8"`, `2.0` gives `2"`. A whole number of inches keeps no

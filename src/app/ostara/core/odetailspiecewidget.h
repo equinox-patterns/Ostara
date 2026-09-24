@@ -102,6 +102,11 @@ public:
     auto IsSelectingAlignPoint() const -> bool;
     void OnNodeSelectedForAlignPoint(quint32 nodeId);
     void CancelAlignPointSelection();
+
+    /** @brief Whether the current piece's miniature block is open for placing its margin values. */
+    auto IsEditingThumbnail() const -> bool;
+    /** @brief Closes that miniature block — what Escape does on the Details canvas. */
+    void CancelThumbnailEdit();
     void ClearAlignPointHighlight();
 
     /** @brief Bring the General tab back to the front of this piece's page. */

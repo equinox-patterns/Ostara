@@ -178,6 +178,18 @@ public:
 
     auto GetUnitedPath(const VContainer *data) const -> QVector<VPieceNode>;
 
+    /**
+     * @brief The distinct seam-allowance widths this piece is cut with, in millimetres, smallest first.
+     *
+     * **A width belongs to a run, not to the piece.** Ostara cannot know how many independent runs
+     * the user means to label, so it reports what the piece is made of and lets the panel decide how
+     * many times each width is printed.
+     *
+     * @note Empty when the piece carries no seam allowance: there is then nothing to state, and a
+     * zero would name a margin nobody sews.
+     */
+    auto DistinctSAWidths(const VContainer *data) const -> QVector<qreal>;
+
     auto SeamAllowancePointsWithRotation(const VContainer *data, vsizetype makeFirst) const -> QVector<VLayoutPoint>;
     auto FullSeamAllowancePointsWithRotation(const VContainer *data, vsizetype makeFirst) const
         -> QVector<VLayoutPoint>;

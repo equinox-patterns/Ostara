@@ -27,15 +27,39 @@
 #include "othumbnailitem.h"
 
 #include <QApplication>
+#include <QFontMetricsF>
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsSceneMouseEvent>
+#include <QLineF>
 #include <QPainter>
+#include <QStringList>
 #include <QStyleOptionGraphicsItem>
 #include <QtGlobal>
 
 #include "../../vmisc/vabstractapplication.h"
 #include "../../vwidgets/global.h"
 #include "../../vwidgets/ocartouchepainter.h"
+
+namespace
+{
+/// @brief The box a word occupies — as wide as its widest line, as tall as all of its lines.
+///
+/// **`QFontMetricsF::horizontalAdvance()` is not that box.** A legend written in two languages is one
+/// string with a line break in it, and the advance of that string measures the two languages joined
+/// end to end: centred on that number the legend slides off to one side, and a one-line box handed to
+/// `drawText()` clips the second language away entirely.
+auto TextSize(const QFontMetricsF &metrics, const QString &text) -> QSizeF
+{
+    const QStringList lines = text.split(QLatin1Char('\n'));
+
+    qreal width = 0.0;
+    for (const QString &line : lines)
+    {
+        width = qMax(width, metrics.horizontalAdvance(line));
+    }
+    return QSizeF(width, metrics.height() * static_cast<qreal>(lines.size()));
+}
+} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 OThumbnailItem::OThumbnailItem(QGraphicsItem *parent) : QGraphicsRectItem(parent)
@@ -74,6 +98,9 @@ void OThumbnailItem::SetReadOnly(bool readOnly)
     setAcceptedMouseButtons(readOnly ? Qt::NoButton : Qt::AllButtons);
     if (readOnly)
     {
+        // A block that cannot be touched cannot be open either: the sub-mode is a gesture, and there
+        // is no gesture left to leave it with.
+        SetEditing(false);
         setActive(false);
         unsetCursor();
     }
@@ -97,10 +124,79 @@ auto OThumbnailItem::IsActive() const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OThumbnailItem::SetLabels(const QVector<LabelView> &labels, const QString &legend,
+                               const QPointF &legendOffset, bool legendPlaced)
+{
+    // The words are inside what the item claims to paint, so a change of words is a change of
+    // bounding rect — and the scene has to be told before it happens, not after.
+    prepareGeometryChange();
+
+    m_labels = labels;
+    m_legend = legend;
+    m_legendOffset = legendOffset;
+    m_legendPlaced = legendPlaced;
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailItem::SetOpensOnClick(bool opens)
+{
+    m_opensOnClick = opens;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailItem::SetEditing(bool editing)
+{
+    if (m_editing == editing)
+    {
+        return;
+    }
+    m_editing = editing;
+    m_dragTarget = -2;
+    // Leaving the sub-mode puts the cursor back where the block expects it: the handles are the
+    // gesture outside, the words are the gesture inside, and the pointer says which one is live.
+    setCursor(m_editing ? Qt::OpenHandCursor : Qt::SizeAllCursor);
+    update();
+    emit EditingChanged(m_editing);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::IsEditing() const -> bool
+{
+    return m_editing;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::ConsumesDoubleClick() const -> bool
+{
+    // Only while the block is there to be entered: a hidden or read-only miniature has no
+    // sub-mode, and claiming the gesture would then take the zoom away for nothing.
+    return m_active && not m_readOnly && not m_editing;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OThumbnailItem::boundingRect() const -> QRectF
 {
     // Handles are painted just outside the rect, and the hit area is wider still.
-    return rect().adjusted(-kHandleHitHalf, -kHandleHitHalf, kHandleHitHalf, kHandleHitHalf);
+    QRectF box = rect().adjusted(-kHandleHitHalf, -kHandleHitHalf, kHandleHitHalf, kHandleHitHalf);
+
+    // The words too, and at their current place rather than at a band: a word dragged near the
+    // block, or over it, has to stay inside what the item claims to paint. An empty word is not a
+    // word and claims nothing.
+    for (int i = 0; i < m_labels.size(); ++i)
+    {
+        if (m_labels.at(i).text.isEmpty())
+        {
+            continue;
+        }
+        box = box.united(TextRect(m_labels.at(i).text, EffectiveOffset(i)));
+    }
+    if (not m_legend.isEmpty())
+    {
+        box = box.united(TextRect(m_legend, EffectiveLegendOffset()));
+    }
+
+    return box;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -109,6 +205,101 @@ auto OThumbnailItem::shape() const -> QPainterPath
     QPainterPath path;
     path.addRect(boundingRect());
     return path;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::Font() -> QFont
+{
+    // **The application's own text, not a chosen one.** The miniature borrows the interface's font
+    // so that it reads as part of the app, and the size is the one the app shows today — the
+    // miniature editor's font settings will take this over.
+    QFont font = QApplication::font();
+    font.setPixelSize(kLabelPixelSize);
+    return font;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::TextRect(const QString &text, const QPointF &offset) const -> QRectF
+{
+    const QFontMetricsF metrics(Font());
+    return QRectF(offset, TextSize(metrics, text));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::EffectiveOffset(int index) const -> QPointF
+{
+    const LabelView &label = m_labels.at(index);
+    if (label.placed)
+    {
+        return label.offset;
+    }
+
+    // **The row is not stored, it is derived.** Values the user never moved sit above the block in
+    // the order they were added, centred on it — so adding a fourth value moves the row instead of
+    // leaving a gap where a value was once dragged away.
+    const QFontMetricsF metrics(Font());
+    qreal rowWidth = 0.0;
+    int unplaced = 0;
+    for (const LabelView &other : m_labels)
+    {
+        if (other.placed || other.text.isEmpty())
+        {
+            continue; // An empty word holds no place in the row, and no gap either.
+        }
+        rowWidth += TextSize(metrics, other.text).width() + kLabelGap;
+        ++unplaced;
+    }
+    if (unplaced > 0)
+    {
+        rowWidth -= kLabelGap; // No gap after the last word of the row.
+    }
+
+    qreal x = rect().center().x() - rowWidth / 2.0;
+    for (int i = 0; i < index; ++i)
+    {
+        if (m_labels.at(i).placed || m_labels.at(i).text.isEmpty())
+        {
+            continue;
+        }
+        x += TextSize(metrics, m_labels.at(i).text).width() + kLabelGap;
+    }
+
+    return QPointF(x, -kBandGap - metrics.height());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::EffectiveLegendOffset() const -> QPointF
+{
+    if (m_legendPlaced)
+    {
+        return m_legendOffset;
+    }
+
+    const QFontMetricsF metrics(Font());
+    // **Centred on the block, which is the rectangle the miniature is.** Not on the piece: the legend
+    // is the block's caption, and centring it on the piece would slide it away from the drawing it
+    // speaks for as soon as the block is not sitting on the piece's middle.
+    return QPointF(rect().center().x() - TextSize(metrics, m_legend).width() / 2.0,
+                   rect().bottom() + kBandGap);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::HitTestWord(const QPointF &pos) const -> int
+{
+    // Last painted is on top, so the search runs backwards — the same order the eye reads the
+    // stacking in.
+    if (not m_legend.isEmpty() && TextRect(m_legend, EffectiveLegendOffset()).contains(pos))
+    {
+        return kLegendTarget;
+    }
+    for (qsizetype i = m_labels.size() - 1; i >= 0; --i)
+    {
+        if (TextRect(m_labels.at(i).text, EffectiveOffset(static_cast<int>(i))).contains(pos))
+        {
+            return static_cast<int>(i);
+        }
+    }
+    return -2;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -162,9 +353,40 @@ void OThumbnailItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->restore();
     }
 
+    // **The words, in the item's own coordinates — not inside the fit transform.** They are the
+    // block's caption, not part of the piece drawing: resizing the block resizes the drawing and
+    // leaves the words where they are, while a change of zoom carries them exactly as it carries the
+    // cartouche's text. They also stay out of the cached content, which is geometry alone.
+    painter->setFont(Font());
+    painter->setPen(textColor);
+    painter->setBrush(Qt::NoBrush);
+    for (int i = 0; i < m_labels.size(); ++i)
+    {
+        if (m_labels.at(i).text.isEmpty())
+        {
+            continue;
+        }
+        painter->drawText(TextRect(m_labels.at(i).text, EffectiveOffset(i)), Qt::AlignLeft | Qt::AlignTop,
+                          m_labels.at(i).text);
+    }
+    if (not m_legend.isEmpty())
+    {
+        painter->drawText(TextRect(m_legend, EffectiveLegendOffset()), Qt::AlignLeft | Qt::AlignTop, m_legend);
+    }
+
     // Light dashed outline + 8 filled square handles only when the block is active (clicked), like
-    // the information blocks — otherwise only the drawing is visible.
-    if (m_active)
+    // the information blocks — otherwise only the drawing and its words are visible.
+    if (m_editing)
+    {
+        // **Orange, and no handles.** It is the colour the canvas already uses to say a piece is
+        // held rather than merely selected, and it means here what it means there: this block is
+        // open. The handles go because inside the miniature the gesture is moving a word, not the
+        // frame.
+        painter->setPen(QPen(QColor(255, 165, 0), 1, Qt::DashLine));
+        painter->setBrush(Qt::NoBrush);
+        painter->drawRect(r);
+    }
+    else if (m_active)
     {
         QColor borderColor = textColor;
         borderColor.setAlpha(130);
@@ -350,11 +572,44 @@ void OThumbnailItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
+    // **Inside the miniature, the press belongs to the words.** The block neither moves nor resizes
+    // there: the sub-mode exists to place values, and a frame that shifted under the same gesture
+    // would make every placement a guess.
+    if (m_editing)
+    {
+        m_dragTarget = HitTestWord(event->pos());
+        m_dragWordStartPos = event->pos();
+        m_dragWordWasPlaced = m_dragTarget == kLegendTarget ? m_legendPlaced
+                              : m_dragTarget >= 0           ? m_labels.at(m_dragTarget).placed
+                                                            : false;
+        if (m_dragTarget == kLegendTarget)
+        {
+            m_dragWordStart = EffectiveLegendOffset();
+            m_legendOffset = m_dragWordStart;
+            m_legendPlaced = true;
+        }
+        else if (m_dragTarget >= 0)
+        {
+            m_dragWordStart = EffectiveOffset(m_dragTarget);
+            m_labels[m_dragTarget].offset = m_dragWordStart;
+            m_labels[m_dragTarget].placed = true;
+        }
+        setCursor(m_dragTarget == -2 ? Qt::ArrowCursor : Qt::ClosedHandCursor);
+        event->accept();
+        return;
+    }
+
     m_activeHandle = HitTestHandle(event->pos());
     m_dragStartScenePos = event->scenePos();
     m_dragStartPos = pos();
     m_dragStartRect = rect();
     m_geometryChanged = false;
+
+    // **A press on an already-selected block is a click, and a click opens the miniature** — but
+    // only if the pointer stays put. The decision is therefore taken on release, so that the same
+    // press can still drag the block; see mouseReleaseEvent(). The "already selected" answer comes
+    // from the piece, because by now the selection has been granted either way.
+    m_pendingEnter = m_opensOnClick && m_activeHandle == Handle::None;
 
     if (m_activeHandle != Handle::None)
     {
@@ -368,11 +623,53 @@ void OThumbnailItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OThumbnailItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    // Qt never delivers the second press of a fast pair: the pair arrives as a press, then as this
+    // event. It is the same gesture as the second click, so it does the same thing — and the view
+    // stays out of it, which is what ConsumesDoubleClick() is for.
+    if (m_readOnly || m_editing || event->button() != Qt::LeftButton
+        || HitTestHandle(event->pos()) != Handle::None)
+    {
+        event->ignore();
+        return;
+    }
+
+    m_pendingEnter = false;
+    SetEditing(true);
+    event->accept();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OThumbnailItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if (m_readOnly || (event->buttons() & Qt::LeftButton) == 0)
     {
         event->ignore();
+        return;
+    }
+
+    if (m_editing)
+    {
+        if (m_dragTarget == -2)
+        {
+            event->accept();
+            return;
+        }
+        const QPointF delta = event->pos() - m_dragWordStartPos;
+        if (m_dragTarget == kLegendTarget)
+        {
+            m_legendOffset = m_dragWordStart + delta;
+        }
+        else
+        {
+            m_labels[m_dragTarget].offset = m_dragWordStart + delta;
+        }
+        // The words can be moved out of the block's own box; boundingRect() follows them, so the
+        // item keeps claiming everything it paints.
+        prepareGeometryChange();
+        update();
+        event->accept();
         return;
     }
 
@@ -405,11 +702,70 @@ void OThumbnailItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
+    if (m_editing)
+    {
+        const int target = m_dragTarget;
+        m_dragTarget = -2;
+        setCursor(Qt::OpenHandCursor);
+        event->accept();
+
+        if (target == -2)
+        {
+            return;
+        }
+
+        const bool moved = target == kLegendTarget ? m_legendOffset != m_dragWordStart
+                                                   : m_labels.at(target).offset != m_dragWordStart;
+        if (not moved)
+        {
+            // A click that moved nothing is not a placement: putting the word back in the default
+            // row is what keeps a mere click from freezing it out of that row for good.
+            if (target == kLegendTarget)
+            {
+                m_legendPlaced = m_dragWordWasPlaced;
+            }
+            else
+            {
+                m_labels[target].placed = m_dragWordWasPlaced;
+            }
+            return;
+        }
+
+        if (target == kLegendTarget)
+        {
+            emit LegendMoved(m_legendOffset);
+        }
+        else
+        {
+            emit LabelMoved(target, m_labels.at(target).offset);
+        }
+        return;
+    }
+
     const bool resized = m_activeHandle != Handle::None;
     const bool moved = pos() != m_dragStartPos;
+    // **A hand that shook is still a click.** Judging the entry on any movement at all would refuse
+    // it to anyone but a machine, and would leave a one-pixel nudge — with its undo step — in place
+    // of the miniature.
+    const qreal travel = QLineF(event->scenePos(), m_dragStartScenePos).length();
+    const bool click = m_pendingEnter && travel < QApplication::startDragDistance();
     m_activeHandle = Handle::None;
+    m_pendingEnter = false;
     setCursor(Qt::SizeAllCursor);
     event->accept();
+
+    if (click)
+    {
+        if (moved)
+        {
+            // Opening the miniature must not leave the nudge that preceded it behind.
+            setPos(m_dragStartPos);
+            setRect(m_dragStartRect);
+            m_geometryChanged = false;
+        }
+        SetEditing(true);
+        return;
+    }
 
     if (m_geometryChanged && (resized || moved))
     {
@@ -424,7 +780,14 @@ void OThumbnailItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
     if (not m_readOnly)
     {
-        setCursor(CursorForHandle(HitTestHandle(event->pos())));
+        if (m_editing)
+        {
+            setCursor(HitTestWord(event->pos()) == -2 ? Qt::ArrowCursor : Qt::OpenHandCursor);
+        }
+        else
+        {
+            setCursor(CursorForHandle(HitTestHandle(event->pos())));
+        }
     }
     QGraphicsRectItem::hoverMoveEvent(event);
 }
@@ -434,7 +797,7 @@ void OThumbnailItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     if (not m_readOnly)
     {
-        setCursor(Qt::SizeAllCursor);
+        setCursor(m_editing ? Qt::ArrowCursor : Qt::SizeAllCursor);
     }
     QGraphicsRectItem::hoverLeaveEvent(event);
 }

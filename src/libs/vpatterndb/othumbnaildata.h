@@ -31,9 +31,18 @@
 #define OTHUMBNAILDATA_H
 
 #include <QPointF>
+#include <QString>
+#include <QStringList>
+#include <QVector>
 #include <QtGlobal>
 
+#include <functional>
+
 #include "onormalizedanchor.h"
+
+class VPiece;
+class VAbstractPattern;
+class VContainer;
 
 /**
  * @brief Geometry of the thumbnail block, in piece-local scene pixels.
@@ -51,11 +60,51 @@ struct OThumbnailGeom
 };
 
 /**
+ * @brief One printed seam-allowance value of the miniature.
+ *
+ * The miniature says what margins the piece is cut with, and the same width may be printed
+ * several times — three independent runs of 1 cm are three labels, not one label reading "3".
+ *
+ * @note The count the panel shows is **not** stored. It is the number of entries carrying that
+ * width. A stored count beside a stored list of placements is two places counting the same thing,
+ * and that is how a panel and a drawing come to disagree.
+ */
+struct OThumbnailLabel
+{
+    qreal mm{0.0};      // The seam-allowance width this label prints, in millimetres.
+    QPointF offset{};   // Offset from the image rect's top-left corner, in scene px.
+    bool placed{false}; // The "moved by hand" mark: a (0,0) offset is a real move, not an absence.
+};
+
+/**
+ * @brief The words the miniature prints, ready to be drawn.
+ *
+ * **The miniature owns its geometry; the application owns its words.** Units, decimal separator,
+ * translation and the languages a page is written in all live above this library, so a pattern
+ * measured in inches and a pattern read in French are the same miniature with different wording —
+ * not a second miniature.
+ */
+struct OThumbnailTexts
+{
+    QStringList values; // One per stored label, in the same order.
+    QString legend;     // Empty when no unit is asked for.
+};
+
+/// @brief Builds the miniature's wording — registered once at application startup.
+using OThumbnailTextResolver = std::function<OThumbnailTexts(const VPiece &piece, VAbstractPattern *doc,
+                                                             const VContainer *data)>;
+
+/**
  * @brief Per-piece thumbnail state.
  *
  * A piece is either "unset" (the file has no <thumbnail> element: the user
  * never configured a miniature) or "set" (the piece carries explicit data).
  * Activation is a plain flag: the miniature may be configured while hidden.
+ *
+ * The unit flags and the label list are the *content* of the miniature, as the geometry is its
+ * frame: what the drawing says, and where each word of it sits. The words themselves are not
+ * stored — they are formatted from @ref OThumbnailLabel::mm and these two flags, so switching to
+ * inches reformats every label instead of rewriting it.
  */
 class OThumbnailData
 {
@@ -74,6 +123,24 @@ public:
     auto HasGeometry() const -> bool;
     void SetGeom(const OThumbnailGeom &geom);
 
+    /** @return Whether the values are printed in centimetres. On by default. */
+    auto ShowCentimeters() const -> bool;
+    void SetShowCentimeters(bool show);
+
+    /** @return Whether the values are printed in inches — beside the centimetres when both are on. */
+    auto ShowInches() const -> bool;
+    void SetShowInches(bool show);
+
+    /** @return One entry per printed value, in the order the user added them. */
+    auto Labels() const -> const QVector<OThumbnailLabel> &;
+    void SetLabels(const QVector<OThumbnailLabel> &labels);
+
+    /** @return Offset of the legend from the image rect's top-left corner, in scene px. */
+    auto LegendOffset() const -> QPointF;
+    /** @return Whether the legend was moved by hand (same mark, and same reason, as the labels). */
+    auto HasLegendOffset() const -> bool;
+    void SetLegendOffset(const QPointF &offset);
+
     void Clear();
 
 private:
@@ -81,6 +148,12 @@ private:
     bool m_active{false};
     OThumbnailGeom m_geom{};
     bool m_hasGeom{false}; // A (0,0) position is a real move, not an "unset" marker.
+
+    bool m_showCentimeters{true}; // The unit a pattern's margins are read in by default.
+    bool m_showInches{false};
+    QVector<OThumbnailLabel> m_labels{};
+    QPointF m_legendOffset{};
+    bool m_hasLegendOffset{false};
 };
 
 #endif // OTHUMBNAILDATA_H
