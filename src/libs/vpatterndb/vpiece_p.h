@@ -38,6 +38,7 @@
 #include "floatItemData/vgrainlinedata.h"
 #include "oannotationdata.h"
 #include "oinfoblockdata.h"
+#include "othumbnaildata.h"
 #include "vpiecepath.h"
 
 QT_WARNING_PUSH
@@ -78,6 +79,9 @@ public:
 
     /** @brief Per-piece floating annotations. */
     OAnnotationData m_annotations{}; // NOLINT(misc-non-private-member-variables-in-classes)
+
+    /** @brief Per-piece thumbnail state (piece miniature). */
+    OThumbnailData m_thumbnail{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     QString m_formulaWidth{'0'}; // NOLINT(misc-non-private-member-variables-in-classes)
 

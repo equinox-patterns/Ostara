@@ -47,6 +47,7 @@ class QTabWidget;
 class QTimer;
 class OBlockConfigWidget;
 class OAnnotationsConfigWidget;
+class OThumbnailConfigWidget;
 class ODetailsFoldLineWidget;
 class ODetailsGrainlineWidget;
 class ODetailsInternalPathWidget;
@@ -79,6 +80,8 @@ public:
     void ShowBlocksTab();
     /** @brief Show the Information tab (outer tab 3) and its Annotations sub-tab. */
     void ShowAnnotationsTab();
+    /** @brief Show the Information tab (outer tab 3) and its Thumbnail sub-tab. */
+    void ShowThumbnailTab();
 
     void RetranslateUI();
 
@@ -148,6 +151,9 @@ private:
 
     // Information tab — Annotations sub-tab
     OAnnotationsConfigWidget *m_annotationsConfigWidget{nullptr};
+
+    // Information tab — Thumbnail sub-tab
+    OThumbnailConfigWidget *m_thumbnailConfigWidget{nullptr};
 
     // Piece sub-tab (Information) — name + piece info widget
     QLineEdit *m_nameEdit{nullptr};

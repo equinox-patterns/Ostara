@@ -164,6 +164,29 @@ auto VPattern::ParsePieceCartoucheBlocks(const QDomElement &domElement) const ->
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VPattern::ParsePieceThumbnail(const QDomElement &domElement) const -> OThumbnailData
+{
+    OThumbnailData thumbnail;
+    thumbnail.SetSet(true);
+    thumbnail.SetActive(GetParametrBool(domElement, VToolSeamAllowance::AttrActive, falseStr));
+
+    // The writer emits mx/my whenever the block was moved or resized: their presence is the
+    // "geometry stored" marker, so a (0,0) position survives a round-trip as a real user move.
+    if (domElement.hasAttribute(AttrMx) || domElement.hasAttribute(AttrMy))
+    {
+        OThumbnailGeom geom;
+        geom.pos = QPointF(GetParametrDouble(domElement, AttrMx, QStringLiteral("0.0")),
+                           GetParametrDouble(domElement, AttrMy, QStringLiteral("0.0")));
+        geom.width = GetParametrDouble(domElement, AttrWidth, QStringLiteral("0.0"));
+        geom.height = GetParametrDouble(domElement, AttrHeight, QStringLiteral("0.0"));
+        geom.anchor = ParseChildAnchor(domElement);
+        thumbnail.SetGeom(geom);
+    }
+
+    return thumbnail;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VPattern::ParsePieceAnnotations(const QDomElement &domElement) const -> OAnnotationData
 {
     OAnnotationData annotations;
@@ -312,7 +335,8 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
                            VAbstractPattern::TagMirrorLine,
                            VToolSeamAllowance::TagSaMarginProperties,
                            VToolSeamAllowance::TagCartoucheBlocks,
-                           VToolSeamAllowance::TagAnnotations};
+                           VToolSeamAllowance::TagAnnotations,
+                           VToolSeamAllowance::TagThumbnail};
 
     QFuture<QVector<VPieceNode>> futurePathV1;
     QFuture<VPiecePath> futurePathV2;
@@ -411,6 +435,9 @@ void VPattern::ParseDetailInternals(const QDomElement &domElement, VPiece &detai
                     break;
                 case 9: // VToolSeamAllowance::TagAnnotations
                     detail.SetAnnotationData(ParsePieceAnnotations(element));
+                    break;
+                case 10: // VToolSeamAllowance::TagThumbnail
+                    detail.SetThumbnailData(ParsePieceThumbnail(element));
                     break;
                 default:
                     break;

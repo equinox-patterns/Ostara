@@ -166,6 +166,10 @@ public:
     auto GetAnnotationData() const -> const OAnnotationData & override;
     auto GetAnnotationData() -> OAnnotationData & override;
 
+    void SetThumbnailData(const OThumbnailData &data) override;
+    auto GetThumbnailData() const -> const OThumbnailData & override;
+    auto GetThumbnailData() -> OThumbnailData & override;
+
     void SetMirrorLineStartPoint(quint32 id);
     auto GetMirrorLineStartPoint() const -> quint32;
 

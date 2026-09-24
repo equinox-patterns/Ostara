@@ -822,4 +822,28 @@ void Paint(QPainter &painter, const QRectF &rect, const QVector<OCartoucheRender
         }
     }
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+QTransform FitTransform(const QRectF &box, const QRectF &rect)
+{
+    qreal scale = 1.0;
+    if (box.width() > 0 && box.height() > 0)
+    {
+        scale = (std::min)(rect.width() / box.width(), rect.height() / box.height());
+    }
+    else if (box.width() > 0)
+    {
+        scale = rect.width() / box.width();
+    }
+    else if (box.height() > 0)
+    {
+        scale = rect.height() / box.height();
+    }
+
+    QTransform transform;
+    transform.translate(rect.center().x(), rect.center().y());
+    transform.scale(scale, scale);
+    transform.translate(-box.center().x(), -box.center().y());
+    return transform;
+}
 }  // namespace OCartouchePainter

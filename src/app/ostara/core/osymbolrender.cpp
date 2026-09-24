@@ -31,6 +31,7 @@
 #include "vlayout/vabstractpiece.h"
 #include "vlayout/vfoldline.h"
 #include "vpatterndb/vpassmark.h"
+#include "vwidgets/ocartouchepainter.h"
 #include "vwidgets/vpiecegrainline.h"
 
 #include <QPainter>
@@ -273,26 +274,9 @@ auto FitTransform(const QRectF &box, const QRectF &rect) -> QTransform
 {
     // A mark is fitted on the side that binds and never stretched: a notch drawn as wide as a square
     // is a notch nobody recognises. A mark may have no width at all — a single line has none — which
-    // is why the two sides are asked for one at a time.
-    qreal scale = 1.0;
-    if (box.width() > 0 && box.height() > 0)
-    {
-        scale = (std::min)(rect.width() / box.width(), rect.height() / box.height());
-    }
-    else if (box.width() > 0)
-    {
-        scale = rect.width() / box.width();
-    }
-    else if (box.height() > 0)
-    {
-        scale = rect.height() / box.height();
-    }
-
-    QTransform transform;
-    transform.translate(rect.center().x(), rect.center().y());
-    transform.scale(scale, scale);
-    transform.translate(-box.center().x(), -box.center().y());
-    return transform;
+    // is why the two sides are asked for one at a time. One formula for the whole application: see
+    // OCartouchePainter::FitTransform, also used by the piece miniature block.
+    return OCartouchePainter::FitTransform(box, rect);
 }
 } // namespace
 

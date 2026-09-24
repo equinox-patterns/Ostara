@@ -167,6 +167,7 @@ private:
     auto ParsePieceGrainline(const QDomElement &domElement, VGrainlineData gGeometry) const -> VGrainlineData;
     auto ParsePieceCartoucheBlocks(const QDomElement &domElement) const -> OInfoBlockData;
     auto ParsePieceAnnotations(const QDomElement &domElement) const -> OAnnotationData;
+    auto ParsePieceThumbnail(const QDomElement &domElement) const -> OThumbnailData;
     void ParseDetails(const QDomElement &domElement, const Document &parse);
     void ParsePieceGroups(const QDomElement &domElement);
     void ParseSizeRanges(const QDomElement &domElement);

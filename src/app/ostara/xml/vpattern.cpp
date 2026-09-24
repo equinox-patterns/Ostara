@@ -329,6 +329,17 @@ void SyncOwnerChildren(VDomDocument *doc, QDomElement &ownerElement, const IPiec
         }
     }
 
+    if (QDomElement thumbnailEl = ownerElement.firstChildElement(VToolSeamAllowance::TagThumbnail);
+        !thumbnailEl.isNull())
+    {
+        const OThumbnailData &thumbnailData = owner.GetThumbnailData();
+        if (thumbnailData.HasGeometry())
+        {
+            const OThumbnailGeom geom = thumbnailData.Geom();
+            WriteChildGeometry(doc, thumbnailEl, geom.pos, geom.anchor);
+        }
+    }
+
     if (QDomElement annotationsEl = ownerElement.firstChildElement(VToolSeamAllowance::TagAnnotations);
         !annotationsEl.isNull())
     {
@@ -941,6 +952,10 @@ void VPattern::ParsePieceGroups(const QDomElement &domElement)
                             // lives on the member piece designated here — the one that draws it.
                             group.m_foldLineMemberId =
                                 GetParametrUInt(childElement, QStringLiteral("foldLineMember"), NULL_ID_STR);
+                        }
+                        else if (tagName == VToolSeamAllowance::TagThumbnail)
+                        {
+                            group.m_thumbnail = ParsePieceThumbnail(childElement);
                         }
                     }
                     memberNode = memberNode.nextSibling();

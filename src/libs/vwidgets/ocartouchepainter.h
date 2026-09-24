@@ -390,6 +390,15 @@ QVector<OCartoucheRenderItem> Layout(const QRectF &rect, const QVector<OCartouch
 void Paint(QPainter &painter, const QRectF &rect, const QVector<OCartoucheRenderLine> &lines, qreal scale = 1.0);
 
 /**
+ * @brief Fit a box inside a rect, centered, on the side that binds — never stretched.
+ *
+ * Single source of the "shrink a drawing into its frame" formula: a mark or a miniature drawn as
+ * wide as it is tall is one nobody recognises, so both sides are asked for one at a time (a box may
+ * legitimately have no width or no height at all).
+ */
+QTransform FitTransform(const QRectF &box, const QRectF &rect);
+
+/**
  * @brief The pen a placed trace sample is drawn with.
  *
  * **One builder, because three things draw the same sample**: the screen painter, and the two SVG

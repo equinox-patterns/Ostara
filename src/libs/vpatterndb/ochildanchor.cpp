@@ -34,6 +34,7 @@
 #include "oannotationdata.h"
 #include "oinfoblockdata.h"
 #include "opiecegroup.h"
+#include "othumbnaildata.h"
 #include "vcontainer.h"
 #include "vpiece.h"
 
@@ -181,6 +182,18 @@ auto SyncChildren(const VGrainlineData &grainlineBefore, VGrainlineData &grainli
         changed = true;
     }
 
+    // The miniature records its anchor the same way: a block the gesture moved must carry the
+    // anchor of where it landed, or the next refresh would pull it back and undo the drag.
+    const OThumbnailData &thumbnailBefore = before.GetThumbnailData();
+    OThumbnailData &thumbnailAfter = after.GetThumbnailData();
+    if (thumbnailAfter.HasGeometry() && thumbnailBefore.Geom().pos != thumbnailAfter.Geom().pos)
+    {
+        OThumbnailGeom geom = thumbnailAfter.Geom();
+        geom.anchor = OChildAnchor::FromAbsolute(geom.pos, ref);
+        thumbnailAfter.SetGeom(geom);
+        changed = true;
+    }
+
     return changed;
 }
 
@@ -190,6 +203,7 @@ auto MaterializeChildren(VGrainlineData &grainline, IPieceInfo &owner, const QRe
     bool changed = OChildAnchor::Materialize(grainline, ref);
     changed = OChildAnchor::Materialize(owner.GetInfoBlockData(), ref) || changed;
     changed = OChildAnchor::Materialize(owner.GetAnnotationData(), ref) || changed;
+    changed = OChildAnchor::Materialize(owner.GetThumbnailData(), ref) || changed;
     return changed;
 }
 } // namespace
@@ -365,6 +379,33 @@ auto OChildAnchor::Materialize(OAnnotationData &annotations, const QRectF &ref) 
     }
 
     return changed;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OChildAnchor::Materialize(OThumbnailData &thumbnail, const QRectF &ref) -> bool
+{
+    // A miniature that was never placed is auto-centred at every refresh: there is no deliberate
+    // position to keep, and adopting the derived one would freeze the auto-placement on a spot the
+    // user never chose. HasGeometry is the marker, exactly like HasStoredGeometry for a block.
+    if (!thumbnail.HasGeometry())
+    {
+        return false;
+    }
+
+    OThumbnailGeom geom = thumbnail.Geom();
+    ONormalizedAnchor anchor = geom.anchor;
+    QPointF pos = geom.pos;
+
+    // A stored placement is deliberate even at (0, 0).
+    if (!Follow(anchor, pos, ref, true))
+    {
+        return false;
+    }
+
+    geom.anchor = anchor;
+    geom.pos = pos;
+    thumbnail.SetGeom(geom);
+    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

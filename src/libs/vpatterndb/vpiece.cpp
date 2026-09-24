@@ -982,6 +982,32 @@ auto VPiece::GetAnnotationData() -> OAnnotationData &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetThumbnailData(const OThumbnailData &data)
+{
+    d->m_thumbnail = data;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief VDetail::GetThumbnailData returns the read-only reference to the per-piece thumbnail state
+ * @return reference to the thumbnail state
+ */
+auto VPiece::GetThumbnailData() const -> const OThumbnailData &
+{
+    return d->m_thumbnail;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief VDetail::GetThumbnailData full access to the per-piece thumbnail state
+ * @return reference to the thumbnail state
+ */
+auto VPiece::GetThumbnailData() -> OThumbnailData &
+{
+    return d->m_thumbnail;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VPiece::SetMirrorLineStartPoint(quint32 id)
 {
     d->m_mirrorLineStartPoint = id;

@@ -40,6 +40,7 @@
 #include "../vwidgets/vgrainlineitem.h"
 #include "oannotationdata.h"
 #include "oinfoblockcontent.h"
+#include "othumbnaildata.h"
 #include "vinteractivetool.h"
 
 class DialogTool;
@@ -50,6 +51,7 @@ class VNoBrushScalePathItem;
 class VPatternGraph;
 class OAnnotationItem;
 class OInfoBlockItem;
+class OThumbnailItem;
 class ONodePlaceLabel;
 
 struct VToolSeamAllowanceInitData : VAbstractToolInitData
@@ -113,6 +115,7 @@ public:
     static const QString TagAnnotation;
     static const QString TagText;
     static const QString TagGeom;
+    static const QString TagThumbnail;
 
     static const QString AttrSeamAllowance;
     static const QString AttrHideMainPath;
@@ -141,6 +144,7 @@ public:
     static void AddMirrorLine(VAbstractPattern *doc, QDomElement &domElement, const VPiece &piece);
     static void AddCartoucheBlocks(VAbstractPattern *doc, QDomElement &domElement, const OInfoBlockData &info);
     static void AddAnnotations(VAbstractPattern *doc, QDomElement &domElement, const OAnnotationData &data);
+    static void AddThumbnail(VAbstractPattern *doc, QDomElement &domElement, const OThumbnailData &data);
     static void AddPieceGroups(VAbstractPattern *doc, QDomElement &domElement, const VContainer *data);
 
     /** @brief Registers the app-side content builder (called once at app startup). */
@@ -216,6 +220,11 @@ public slots:
      *  count changes because a group is created/removed). Public so the main window can
      *  re-render every piece's blocks without touching the geometry. */
     void UpdateInfoBlocks();
+    /** @brief Re-render this piece's miniature block from its stored state. */
+    void UpdateThumbnail();
+    /** @brief Remember this piece's miniature drawing — call it while the document stands on the
+     *  reference size, the only moment that geometry exists. */
+    void CaptureThumbnailContent();
 
 private slots:
     void UpdateGrainline();
@@ -228,6 +237,7 @@ private slots:
     void UpdateAnnotations();
     void SaveMoveAnnotation(int index, const QPointF &pos);
     void SaveResizeAnnotation(int index, qreal newW, qreal newH, qreal origW, qreal origH);
+    void SaveThumbnailGeometry(const QPointF &pos, qreal width, qreal height);
     void ToggleInLayout(bool checked);
     void ToggleHideMainPath(bool checked);
     void ToggleForceFlipping(bool checked);
@@ -266,6 +276,9 @@ private:
     /** @brief On-piece annotation items (one per annotation, grown on demand, never recreated). */
     QList<OAnnotationItem *> m_annotationItems;
 
+    /** @brief On-piece miniature block, hidden by default. */
+    OThumbnailItem *m_thumbnailItem{nullptr};
+
     /** @brief Per-place-label clickable handles (one per label, grown on demand, never
      *  recreated). The labels themselves stay drawn by the aggregated m_placeLabels path;
      *  these handles give each label a "real point" to hover/click in Details. */
@@ -298,6 +311,9 @@ private:
     explicit VToolSeamAllowance(const VToolSeamAllowanceInitData &initData, QGraphicsItem *parent = nullptr);
 
     auto ResolveAnnotationStyle(const QString &name) const -> OAnnotationRenderStyle;
+    /** @brief Drawing the miniature block shows: the piece outline with its seam allowances and
+     *  notches, plus the internal paths, in this item's own coordinates. */
+    auto ThumbnailContent() const -> QPainterPath;
     auto EvaluateAnnotationRotation(const QString &formula) const -> qreal;
 
     void AddToFile() override;

@@ -5,6 +5,7 @@ set(VPATTERN_SOURCES
     ochildanchor.cpp
     oinfoblockdata.cpp
     osizerange.cpp
+    othumbnaildata.cpp
     testpassmark.cpp
     vcontainer.cpp
     calculator.cpp
@@ -20,6 +21,7 @@ set(VPATTERN_SOURCES
     oinfoblockdata.h
     onormalizedanchor.h
     osizerange.h
+    othumbnaildata.h
     ipieceinfo.h
     opiecegroup.h
     testpassmark.h

@@ -71,6 +71,7 @@ struct OPieceGroup : public IPieceInfo
     VGrainlineData m_glGrainline{};
     OInfoBlockData m_infoBlocks{};
     OAnnotationData m_annotations{};
+    OThumbnailData m_thumbnail{};
     uint m_pieceNumber{0};
     int m_cutFabricQty{0};
     bool m_cutFabricOnFold{false};
@@ -117,6 +118,10 @@ struct OPieceGroup : public IPieceInfo
     auto GetAnnotationData() const -> const OAnnotationData & override { return m_annotations; }
     auto GetAnnotationData() -> OAnnotationData & override { return m_annotations; }
     void SetAnnotationData(const OAnnotationData &data) override { m_annotations = data; }
+
+    auto GetThumbnailData() const -> const OThumbnailData & override { return m_thumbnail; }
+    auto GetThumbnailData() -> OThumbnailData & override { return m_thumbnail; }
+    void SetThumbnailData(const OThumbnailData &data) override { m_thumbnail = data; }
 };
 
 #endif // OPIECEGROUP_H

@@ -31,6 +31,8 @@
 #include "oannotationitem.h"
 #include "oinfoblockitem.h"
 #include "otoolseamallowance_autoplace.h"
+#include "othumbnailcache.h"
+#include "othumbnailitem.h"
 #include "../dialogs/tools/piece/dialogduplicatedetail.h"
 #include "../dialogs/tools/piece/dialogseamallowance.h"
 #include "../ifc/exception/vexceptionwrongid.h"
@@ -121,6 +123,7 @@ const QString VToolSeamAllowance::TagAnnotations = QStringLiteral("annotations")
 const QString VToolSeamAllowance::TagAnnotation = QStringLiteral("annotation");                 // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagText = QStringLiteral("text");                             // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagGeom = QStringLiteral("geom");                             // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::TagThumbnail = QStringLiteral("thumbnail");                   // NOLINT(cert-err58-cpp)
 
 const QString VToolSeamAllowance::AttrSeamAllowance = QStringLiteral("seamAllowance"); // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrHideMainPath = QStringLiteral("hideMainPath");   // NOLINT(cert-err58-cpp)
@@ -953,6 +956,39 @@ void VToolSeamAllowance::AddAnnotations(VAbstractPattern *doc, QDomElement &domE
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::AddThumbnail(VAbstractPattern *doc, QDomElement &domElement, const OThumbnailData &data)
+{
+    if (not data.IsSet())
+    {
+        return;  // a piece that never configured a miniature carries no <thumbnail> element
+    }
+
+    QDomElement thumbnailEl = doc->createElement(VToolSeamAllowance::TagThumbnail);
+    doc->SetAttributeOrRemoveIf<bool>(thumbnailEl, VToolSeamAllowance::AttrActive, data.IsActive(),
+                                      [](bool active) noexcept { return not active; });
+
+    if (data.HasGeometry())
+    {
+        // mx/my are written even when null: their presence is the "geometry stored" marker, exactly
+        // like <block index> for the information blocks. A (0,0) position is a real user move.
+        const OThumbnailGeom geom = data.Geom();
+        doc->SetAttribute(thumbnailEl, AttrMx, geom.pos.x());
+        doc->SetAttribute(thumbnailEl, AttrMy, geom.pos.y());
+        if (geom.anchor.valid)
+        {
+            doc->SetAttribute(thumbnailEl, AttrNx, geom.anchor.uv.x());
+            doc->SetAttribute(thumbnailEl, AttrNy, geom.anchor.uv.y());
+        }
+        doc->SetAttributeOrRemoveIf<qreal>(thumbnailEl, AttrWidth, geom.width,
+                                           [](qreal width) noexcept { return qFuzzyIsNull(width); });
+        doc->SetAttributeOrRemoveIf<qreal>(thumbnailEl, AttrHeight, geom.height,
+                                           [](qreal height) noexcept { return qFuzzyIsNull(height); });
+    }
+
+    domElement.appendChild(thumbnailEl);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::AddPieceGroups(VAbstractPattern *doc, QDomElement &domElement, const VContainer *data)
 {
     // <pieceGroups> is a single sibling element under the pattern root — replace any stale copy.
@@ -1035,6 +1071,8 @@ void VToolSeamAllowance::AddPieceGroups(VAbstractPattern *doc, QDomElement &domE
         doc->SetAttributeOrRemoveIf<quint32>(mirrorEl, QStringLiteral("foldLineMember"), group.m_foldLineMemberId,
                                              [](quint32 id) noexcept { return id == NULL_ID; });
         groupElement.appendChild(mirrorEl);
+
+        AddThumbnail(doc, groupElement, group.m_thumbnail);
 
         pieceGroupsEl.appendChild(groupElement);
     }
@@ -1223,6 +1261,10 @@ void VToolSeamAllowance::EnableToolMove(bool move)
     {
         annotationItem->SetReadOnly(!move);
     }
+    if (m_thumbnailItem != nullptr)
+    {
+        m_thumbnailItem->SetReadOnly(!move);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1239,6 +1281,10 @@ void VToolSeamAllowance::AllowHover(bool enabled)
     for (OAnnotationItem *annotationItem : m_annotationItems)
     {
         annotationItem->setAcceptHoverEvents(enabled);
+    }
+    if (m_thumbnailItem != nullptr)
+    {
+        m_thumbnailItem->setAcceptHoverEvents(enabled);
     }
 }
 
@@ -1343,6 +1389,7 @@ void VToolSeamAllowance::RefreshGroupedChildren()
     UpdateGrainline();
     UpdateInfoBlocks();
     UpdateAnnotations();
+    UpdateThumbnail();
     RefreshFoldLine();
 }
 
@@ -1375,7 +1422,7 @@ void VToolSeamAllowance::ResetChildren(QGraphicsItem *pItem)
         }
     }
     const bool myChildPressed = (pGLI != nullptr && pGLI == m_grainLine) || pBlock != nullptr
-                                || pAnnotation != nullptr;
+                                || pAnnotation != nullptr || (pItem != nullptr && pItem == m_thumbnailItem);
     const bool selected = isSelected() || myChildPressed;
 
     if (pGLI != m_grainLine && detail.GetGrainlineGeometry().IsEnabled())
@@ -1393,6 +1440,8 @@ void VToolSeamAllowance::ResetChildren(QGraphicsItem *pItem)
     {
         annotationItem->SetActive(annotationItem == pAnnotation);
     }
+    // Same for the miniature block.
+    m_thumbnailItem->SetActive(m_thumbnailItem == pItem);
 
     setSelected(selected);
     update();
@@ -1629,6 +1678,132 @@ void VToolSeamAllowance::SaveResizeInfoBlock(int blockIndex, qreal newW, qreal n
 
     PushChildChange(oldDet, newDet, tr("resize information block"));
     UpdateInfoBlocks();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::ThumbnailContent() const -> QPainterPath
+{
+    // The real outline of the piece — seam line, seam allowance boundary and notches, the very
+    // sources the canvas draws — plus the internal paths. All of them live in this item's own
+    // coordinate system, which is exactly what the miniature block needs: the block only fits them
+    // into its rect, it never has to know where the piece sits.
+    QPainterPath content;
+    if (m_seamAllowance != nullptr && not m_seamAllowance->path().isEmpty())
+    {
+        content.addPath(m_seamAllowance->path());
+    }
+    else
+    {
+        content.addPath(path());
+    }
+    if (m_passmarks != nullptr)
+    {
+        content.addPath(m_passmarks->path());
+    }
+    for (QGraphicsItem *child : childItems())
+    {
+        if (auto *tool = qgraphicsitem_cast<VToolPiecePath *>(child))
+        {
+            content.addPath(tool->path());
+        }
+    }
+    return content;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::UpdateThumbnail()
+{
+    if (m_thumbnailItem == nullptr)
+    {
+        return;
+    }
+
+    // A group member's own miniature is masked, like its blocks: the group carries the common one.
+    const VPiece detail = VAbstractTool::data.GetPiece(m_id);
+    const OThumbnailData data = std::as_const(detail).GetThumbnailData();
+    if (not data.IsActive() || VAbstractTool::data.GetPieceGroupId(m_id) != NULL_ID)
+    {
+        m_thumbnailItem->SetActive(false);
+        m_thumbnailItem->hide();
+        return;
+    }
+
+    // At the reference size the drawing was captured while the document stood on that size: the
+    // geometry of another size cannot be recomputed on the fly, it is memoized at parse time.
+    QPainterPath content = OThumbnailCache::Content(m_id);
+    if (content.isEmpty())
+    {
+        if (OThumbnailCache::IsFrozenReference())
+        {
+            // The live geometry is the active size, not the one the miniature must show. Waiting for
+            // the capture leaves the block empty for a moment; painting it now would show the wrong
+            // size and then jump to the right one, right under the user's eyes.
+            m_thumbnailItem->SetActive(false);
+            m_thumbnailItem->hide();
+            return;
+        }
+        content = ThumbnailContent();
+    }
+    const QRectF contentBounds = content.boundingRect();
+    if (content.isEmpty() || contentBounds.isEmpty())
+    {
+        m_thumbnailItem->SetActive(false);
+        m_thumbnailItem->hide();
+        return;
+    }
+    OThumbnailGeom geom = data.Geom();
+    if (qFuzzyIsNull(geom.width) || qFuzzyIsNull(geom.height))
+    {
+        // Auto-size: a third of the piece, clamped between 5 and 15 cm — small enough to read as a
+        // thumbnail, large enough to stay legible.
+        constexpr qreal kFraction = 0.30;
+        constexpr qreal kMinCm = 5.0;
+        constexpr qreal kMaxCm = 15.0;
+        const qreal cmW = qBound(kMinCm, FromPixel(m_pieceBoundingRect.width(), Unit::Cm) * kFraction, kMaxCm);
+        const qreal cmH = qBound(kMinCm, FromPixel(m_pieceBoundingRect.height(), Unit::Cm) * kFraction, kMaxCm);
+        geom.width = ToPixel(cmW, Unit::Cm);
+        geom.height = ToPixel(cmH, Unit::Cm);
+    }
+
+    if (not data.HasGeometry())
+    {
+        geom.pos = m_pieceBoundingRect.center() - QPointF(geom.width / 2.0, geom.height / 2.0);
+    }
+
+    m_thumbnailItem->SetContent(content, contentBounds);
+    m_thumbnailItem->SetBlockGeom(geom);
+    m_thumbnailItem->setVisible(true);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::CaptureThumbnailContent()
+{
+    // Called while the document stands on the reference size: remember the drawing of every piece
+    // that asks for a miniature, so it can be shown again once the active size is restored.
+    const VPiece detail = VAbstractTool::data.GetPiece(m_id);
+    if (not std::as_const(detail).GetThumbnailData().IsActive())
+    {
+        return;
+    }
+    OThumbnailCache::Store(m_id, ThumbnailContent());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::SaveThumbnailGeometry(const QPointF &pos, qreal width, qreal height)
+{
+    VPiece const oldDet = VAbstractTool::data.GetPiece(m_id);
+    VPiece newDet = oldDet;
+    OThumbnailData data = std::as_const(newDet).GetThumbnailData();
+    OThumbnailGeom geom = data.Geom();
+    geom.pos = pos;
+    geom.width = width;
+    geom.height = height;
+    data.SetGeom(geom);
+    data.SetSet(true);
+    newDet.SetThumbnailData(data);
+
+    PushChildChange(oldDet, newDet, tr("move thumbnail"));
+    UpdateThumbnail();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1956,6 +2131,7 @@ void VToolSeamAllowance::AddToFile()
     AddMirrorLine(doc, domElement, piece);
     AddCartoucheBlocks(doc, domElement, piece.GetInfoBlockData());
     AddAnnotations(doc, domElement, piece.GetAnnotationData());
+    AddThumbnail(doc, domElement, piece.GetThumbnailData());
 
     VAbstractApplication::VApp()->getUndoStack()->push(
         new AddPiece(domElement, doc, VAbstractTool::data, m_sceneDetails, m_drawName));
@@ -1992,6 +2168,7 @@ void VToolSeamAllowance::RefreshDataInFile()
         AddMirrorLine(doc, domElement, piece);
         AddCartoucheBlocks(doc, domElement, piece.GetInfoBlockData());
         AddAnnotations(doc, domElement, piece.GetAnnotationData());
+        AddThumbnail(doc, domElement, piece.GetThumbnailData());
     }
 }
 
@@ -2410,6 +2587,10 @@ VToolSeamAllowance::VToolSeamAllowance(const VToolSeamAllowanceInitData &initDat
         connect(blockItem, &OInfoBlockItem::Resized, this, &VToolSeamAllowance::SaveResizeInfoBlock);
         m_infoBlockItems.append(blockItem);
     }
+
+    // On-piece miniature block, hidden until the piece activates it (UpdateThumbnail decides).
+    m_thumbnailItem = new OThumbnailItem(this);
+    connect(m_thumbnailItem, &OThumbnailItem::GeometryChanged, this, &VToolSeamAllowance::SaveThumbnailGeometry);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2685,6 +2866,7 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
     UpdateGrainline();
     UpdateInfoBlocks();
     UpdateAnnotations();
+    UpdateThumbnail();
     UpdatePlaceLabels();
     UpdateExcludeState();
     if (updateChildren)

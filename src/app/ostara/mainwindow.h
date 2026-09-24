@@ -462,6 +462,15 @@ private slots:
 
     void GradationChanged();
 
+    /** @brief Arm the deferred piece-miniature refresh (coalesces a burst of edits). */
+    void ScheduleThumbnailSnapshots();
+    /** @brief Capture every piece miniature at the reference size, then restore the active size. */
+    void RefreshThumbnailSnapshots();
+    /** @brief Stand the document on a size and rebuild every piece there. */
+    void ApplyReferenceSize(qreal baseA, qreal baseB, qreal baseC);
+    /** @brief Tell the miniature blocks whether the geometry to show is the live one. */
+    void UpdateThumbnailReferenceFlag();
+
     void ShowProgress();
     void ClearPatternMessages();
 
@@ -643,8 +652,12 @@ private:
     qreal m_currentDimensionC{0};
 
     QSharedPointer<VMeasurements> m_m{};
-
     QTimer *m_gradation;
+
+    /** @brief Coalesces the piece-miniature refresh: freezing the reference size costs two parses. */
+    QTimer *m_thumbnailSnapshots{nullptr};
+    /** @brief Guards the miniature capture against re-entrance: it parses the document twice. */
+    bool m_thumbnailSnapshotBusy{false};
 
     QMap<QUuid, VBackgroundImageItem *> m_backgroundImages{};
     VBackgroundImageControls *m_backgroudcontrols{nullptr};

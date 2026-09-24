@@ -362,7 +362,12 @@ void MainWindow::GradationChanged()
         // A size switch is a discrete user action: refresh piece geometry immediately instead of
         // waiting for the debounce timer started by the parse. RefreshPieceGeometry() also refreshes
         // the piece labels, so the previous eager DimensionsChanged() emit is no longer needed.
+        // The miniatures may have to wait for a reference drawing: settle that before anything repaints.
+        UpdateThumbnailReferenceFlag();
         doc->RefreshPieceGeometry();
+        // The miniatures are frozen on the reference size: a size switch is exactly the moment their
+        // drawing has to be captured again.
+        ScheduleThumbnailSnapshots();
     }
     else
     {

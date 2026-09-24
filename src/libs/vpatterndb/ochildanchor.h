@@ -36,6 +36,7 @@
 
 class OAnnotationData;
 class OInfoBlockData;
+class OThumbnailData;
 struct OPieceGroup; // a struct, and -Wmismatched-tags is an error here
 class VContainer;
 class VGrainlineData;
@@ -98,6 +99,7 @@ auto Resolve(const ONormalizedAnchor &anchor, const QRectF &ref, const QPointF &
 auto Materialize(VGrainlineData &grainline, const QRectF &ref) -> bool;
 auto Materialize(OInfoBlockData &blocks, const QRectF &ref) -> bool;
 auto Materialize(OAnnotationData &annotations, const QRectF &ref) -> bool;
+auto Materialize(OThumbnailData &thumbnail, const QRectF &ref) -> bool;
 
 /// Every child of @p piece / @p group, in one call. @return true when something changed.
 auto Materialize(VPiece &piece, const QRectF &ref) -> bool;

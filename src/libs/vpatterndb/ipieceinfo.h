@@ -31,6 +31,7 @@
 
 #include "oannotationdata.h"
 #include "oinfoblockdata.h"
+#include "othumbnaildata.h"
 
 /**
  * @brief The IPieceInfo interface — the shared "piece-like" contract.
@@ -74,6 +75,10 @@ public:
     virtual auto GetAnnotationData() const -> const OAnnotationData & = 0;
     virtual auto GetAnnotationData() -> OAnnotationData & = 0;
     virtual void SetAnnotationData(const OAnnotationData &data) = 0;
+
+    virtual auto GetThumbnailData() const -> const OThumbnailData & = 0;
+    virtual auto GetThumbnailData() -> OThumbnailData & = 0;
+    virtual void SetThumbnailData(const OThumbnailData &data) = 0;
 };
 
 #endif // IPIECEINFO_H

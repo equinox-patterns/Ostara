@@ -158,7 +158,11 @@ void MainWindow::FullParseFile()
     // with only the node points → a white "flash". RefreshPieceGeometry() stops the debounce timer
     // and applies the geometry now (Modeling mode). CheckLayout (emitted when the geometry is
     // applied) → RefreshGroupHolders rebuilds the group holders from the final geometry.
+    // The miniatures may have to wait for a reference drawing: settle that before anything repaints.
+    UpdateThumbnailReferenceFlag();
     doc->RefreshPieceGeometry();
+    // A full parse can have brought in, or removed, pieces that show a miniature.
+    ScheduleThumbnailSnapshots();
 
     VMainGraphicsView::NewSceneRect(m_sceneDraw, VAbstractValApplication::VApp()->getSceneView());
     VMainGraphicsView::NewSceneRect(m_sceneDetails, VAbstractValApplication::VApp()->getSceneView());

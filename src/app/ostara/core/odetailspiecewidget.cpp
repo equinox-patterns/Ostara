@@ -33,6 +33,7 @@
 #include "odetailsinternalpathwidget.h"
 #include "odetailsseamallowancewidget.h"
 #include "opieceinfowidget.h"
+#include "othumbnailconfigwidget.h"
 
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractapplication.h"
@@ -208,6 +209,7 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         }
         m_blockConfigWidget->Show(detail, currentTool->getData());
         m_annotationsConfigWidget->Show(detail, currentTool->getData());
+        m_thumbnailConfigWidget->Show(detail, currentTool->getData());
     });
 
     m_tabWidget = new QTabWidget();
@@ -396,7 +398,7 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         m_tabWidget->addTab(tab, tr("Seam Allowance"));
     }
 
-    // ── Information tab — sub-tabs: Piece, Blocks, Annotations (Thumbnail later). ──
+    // ── Information tab — sub-tabs: Piece, Blocks, Annotations, Thumbnail. ──
     {
         auto *tab = new QFrame();
         tab->setFrameStyle(QFrame::NoFrame);
@@ -438,6 +440,9 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
 
         m_annotationsConfigWidget = new OAnnotationsConfigWidget(m_infoSubTabs);
         m_infoSubTabs->addTab(m_annotationsConfigWidget, tr("Annotations"));
+
+        m_thumbnailConfigWidget = new OThumbnailConfigWidget(m_infoSubTabs);
+        m_infoSubTabs->addTab(m_thumbnailConfigWidget, tr("Thumbnail"));
 
         m_tabWidget->addTab(tab, tr("Information"));
     }
@@ -503,6 +508,7 @@ void ODetailsPieceWidget::RetranslateUI()
     m_infoSubTabs->setTabText(0, tr("Piece"));
     m_infoSubTabs->setTabText(1, tr("Blocks"));
     m_infoSubTabs->setTabText(2, tr("Annotations"));
+    m_infoSubTabs->setTabText(3, tr("Thumbnail"));
 
     // Sub-widgets (Grainline tab, Fold line, Seam Allowance, Internal path)
     m_grainlineWidget->RetranslateUI();
@@ -511,6 +517,7 @@ void ODetailsPieceWidget::RetranslateUI()
     m_internalPathWidget->RetranslateUI();
     m_blockConfigWidget->RetranslateUI();
     m_annotationsConfigWidget->RetranslateUI();
+    m_thumbnailConfigWidget->RetranslateUI();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -533,6 +540,7 @@ void ODetailsPieceWidget::ConnectControls()
     m_saWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
     m_blockConfigWidget->SetModifyPending([this](std::function<void(IPieceInfo &)> func) { ModifyPiece(func); });
     m_annotationsConfigWidget->SetModifyPending([this](std::function<void(IPieceInfo &)> func) { ModifyPiece(func); });
+    m_thumbnailConfigWidget->SetModifyPending([this](std::function<void(IPieceInfo &)> func) { ModifyPiece(func); });
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::HighlightNode, this,
             [this](quint32 nodeId, bool highlight, QColor color)
@@ -787,6 +795,7 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
     m_pieceInfoWidget->Show(detail, tool->getData());
     m_blockConfigWidget->Show(detail, tool->getData());
     m_annotationsConfigWidget->Show(detail, tool->getData());
+    m_thumbnailConfigWidget->Show(detail, tool->getData());
 
     // Alignment: both rows, the forced point, and the enabled/disabled states that follow from it.
     ApplyAlignPointControls(detail, tool->getData());
@@ -836,6 +845,7 @@ void ODetailsPieceWidget::Clear()
     m_internalPathWidget->Clear();
     m_blockConfigWidget->Clear();
     m_annotationsConfigWidget->Clear();
+    m_thumbnailConfigWidget->Clear();
     m_alignPointSelectState = AlignPointSelectState::Idle;
     m_showAlignPointState = true;
 
@@ -888,6 +898,13 @@ void ODetailsPieceWidget::ShowAnnotationsTab()
 {
     m_tabWidget->setCurrentIndex(3);
     m_infoSubTabs->setCurrentIndex(2);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::ShowThumbnailTab()
+{
+    m_tabWidget->setCurrentIndex(3);
+    m_infoSubTabs->setCurrentIndex(3);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

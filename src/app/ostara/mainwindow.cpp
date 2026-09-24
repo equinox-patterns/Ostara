@@ -162,6 +162,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_gradation, &QTimer::timeout, this, &MainWindow::GradationChanged);
 
+    // A piece's geometry is memoized at parse time, so freezing the miniatures on the reference size
+    // means standing the document on that size and parsing twice. That is far too expensive to run
+    // on every edit: the timer collapses a burst into one round trip.
+    m_thumbnailSnapshots = new QTimer(this);
+    m_thumbnailSnapshots->setSingleShot(true);
+    m_thumbnailSnapshots->setInterval(400);
+    connect(m_thumbnailSnapshots, &QTimer::timeout, this, &MainWindow::RefreshThumbnailSnapshots);
+
+    // Any committed edit (undo/redo included) can change what a miniature has to show.
+    connect(VAbstractApplication::VApp()->getUndoStack(), &QUndoStack::indexChanged, this,
+            [this](int)
+            {
+                ScheduleThumbnailSnapshots();
+            });
+
     doc = new VPattern(pattern, m_sceneDraw, m_sceneDetails);
     connect(doc, &VPattern::ClearMainWindow, this, &MainWindow::Clear);
     connect(doc, &VPattern::patternChanged, this, &MainWindow::PatternChangesWereSaved);

@@ -879,6 +879,17 @@
                               </xs:sequence>
                             </xs:complexType>
                           </xs:element>
+                          <xs:element name="thumbnail" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:attribute name="active" type="xs:boolean"/>
+                              <xs:attribute name="mx" type="xs:double"/>
+                              <xs:attribute name="my" type="xs:double"/>
+                              <xs:attribute name="nx" type="xs:double"/>
+                              <xs:attribute name="ny" type="xs:double"/>
+                              <xs:attribute name="width" type="xs:double"/>
+                              <xs:attribute name="height" type="xs:double"/>
+                            </xs:complexType>
+                          </xs:element>
                         </xs:sequence>
                         <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
                         <xs:attribute name="version" type="pieceVersion"/>
@@ -1063,6 +1074,17 @@
                         <xs:attribute name="manualWidth" type="xs:boolean"/>
                         <xs:attribute name="manualCenter" type="xs:boolean"/>
                         <xs:attribute name="foldLineMember" type="xs:unsignedInt"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="thumbnail" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:attribute name="active" type="xs:boolean"/>
+                        <xs:attribute name="mx" type="xs:double"/>
+                        <xs:attribute name="my" type="xs:double"/>
+                        <xs:attribute name="nx" type="xs:double"/>
+                        <xs:attribute name="ny" type="xs:double"/>
+                        <xs:attribute name="width" type="xs:double"/>
+                        <xs:attribute name="height" type="xs:double"/>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
