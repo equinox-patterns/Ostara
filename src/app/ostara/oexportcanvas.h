@@ -42,6 +42,7 @@ class VAbstractPattern;
 class VContainer;
 class OSizerange;
 struct OExportNestingResult;
+struct OExportGroupDecor;
 struct OExportPieceDecor;
 struct OExportPieceGeometry;
 struct OExportPieceGrainline;
@@ -66,6 +67,19 @@ auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *r
 auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerange *range,
                            const Unit &unit, const VContainer *pattern, bool cuttingPlan)
     -> OExportPieceGrainline;
+
+/// @brief One GROUP's decor, resolved as the canvas would draw it — the frozen form a run stores.
+///
+/// @param members the layer's pieces that belong to this group: it is on them that the group's frame
+///                is measured — the union of their unplaced extents, whose centre is what a child that
+///                was never placed falls back on. Measured here, at generation, on the same frozen
+///                geometry the drawing will use, so the two agree.
+///
+/// ⚠️ The same constraint as the pieces: it reads the DOCUMENT, so it is only correct while the
+/// document is on the size being recorded.
+auto ResolveGroupDecor(const QVector<OExportPieceGeometry> &members, quint32 groupId,
+                       const OSizerange *range, const Unit &unit, const VContainer *pattern,
+                       VAbstractPattern *doc, bool cuttingPlan) -> OExportGroupDecor;
 
 /// @brief Quel genre de plan ce run est, pour ce que le canvas en dessine.
 ///

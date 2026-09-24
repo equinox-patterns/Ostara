@@ -48,6 +48,7 @@
 #include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
 #include "../vpatterndb/ipieceinfo.h"
+#include "../vpatterndb/ochildanchor.h"
 #include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/osizerange.h"
 #include "../vpatterndb/vcontainer.h"
@@ -1024,8 +1025,9 @@ void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry
 /// builds the same invisible carrier — its origin is the top-left corner of the members,
 /// which is the frame the group stores all of its children in.
 void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &frame,
-                     const OSizerange *range, const Unit &unit, const VContainer *pattern,
-                     VAbstractPattern *doc, OGradedSvg::LayoutObject *decor = nullptr)
+                     const OExportGroupDecor *frozen, const OSizerange *range, const Unit &unit,
+                     const VContainer *pattern, VAbstractPattern *doc,
+                     OGradedSvg::LayoutObject *decor = nullptr)
 {
     const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
     if (groups == nullptr || frame.bounds.isNull())
@@ -1051,20 +1053,48 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
     const VGrainlineData &geom = group.value().m_glGrainline;
     if (geom.IsEnabled() && geom.IsVisible())
     {
-        const OSizerange::GrainlineOverride ov = GrainlineOverrideOf(range, groupId, true);
-        const OGraded::GrainlinePlacement placement =
-            OGraded::ResolveGrainline(geom, ov, true, pattern, unit, centerLocal);
-        const qreal rotation = OGraded::GrainlineRotation(geom.GetRotation(), true, pattern);
+        // ⚠️ **The frozen placement wins.** It was resolved at generation, while the document was still
+        // on the reference layer's size; the live branch below reads the document, so it would draw the
+        // group's grainline at whatever size the document is on NOW. That is exactly the defect Sophie
+        // found by changing the Details size and coming back to the plan.
+        if (frozen != nullptr && frozen->grainline.resolved)
+        {
+            const OGraded::GrainlinePlacement placement{frozen->grainline.pos,
+                                                        frozen->grainline.lengthPx};
+            OGraded::MakeGrainlineItem(host, geom, placement, frozen->grainline.rotationDegrees);
+        }
+        else
+        {
+            const OSizerange::GrainlineOverride ov = GrainlineOverrideOf(range, groupId, true);
+            const OGraded::GrainlinePlacement placement =
+                OGraded::ResolveGrainline(geom, ov, true, pattern, unit, centerLocal);
+            const qreal rotation = OGraded::GrainlineRotation(geom.GetRotation(), true, pattern);
 
-        OGraded::MakeGrainlineItem(host, geom, placement, rotation);
+            OGraded::MakeGrainlineItem(host, geom, placement, rotation);
+        }
     }
 
     // No mirror for a group: nothing in this path reflects one — the reflection is a property of a
     // PIECE (the folded twin, `Force flipping`, the symmetrical copy), and a grouped member carries
     // no decor of its own. The group's carrier is also built in another frame, where the axis above
     // would not mean anything.
-    BuildOwnerDecor(host, group.value(), true, groupId, centerLocal, qQNaN(), range, pattern, doc,
-                    decor);
+    if (frozen != nullptr && frozen->owner.resolved)
+    {
+        // The group's cartouche and annotations, frozen with the run like a piece's — see
+        // @ref OExportGroupDecor. The carrier differs; the resolution is the same one.
+        DrawOwnerDecor(host, frozen->owner);
+
+        if (decor != nullptr)
+        {
+            decor->blocks = frozen->owner.blocks;
+            decor->annotations = frozen->owner.annotations;
+        }
+    }
+    else
+    {
+        BuildOwnerDecor(host, group.value(), true, groupId, centerLocal, qQNaN(), range, pattern, doc,
+                        decor);
+    }
 
     if (decor != nullptr)
     {
@@ -1161,6 +1191,83 @@ auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerang
 
     frozen.resolved = true;
     frozen.mainLine = moved.GetMainLine();
+    return frozen;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ResolveGroupDecor(const QVector<OExportPieceGeometry> &members, quint32 groupId,
+                       const OSizerange *range, const Unit &unit, const VContainer *pattern,
+                       VAbstractPattern *doc, bool cuttingPlan) -> OExportGroupDecor
+{
+    OExportGroupDecor frozen;
+
+    // A cutting plan DECOMPOSES the groups — the kept member carries its own decor and the group draws
+    // none. The very test the drawing side makes, asked once, here: nothing to freeze where nothing is
+    // drawn.
+    if (!IsGroupedMember(pattern, groupId, cuttingPlan))
+    {
+        return frozen;
+    }
+
+    const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
+    if (groups == nullptr)
+    {
+        return frozen;
+    }
+
+    const auto group = groups->constFind(groupId);
+    if (group == groups->cend())
+    {
+        return frozen;
+    }
+
+    // The group's frame, measured exactly as the drawing measures it: the union of its members'
+    // unplaced extents, and the centre of that union is what a child that was never placed falls back
+    // on. ⚠️ Taken on the FROZEN geometry, so generation and drawing agree about it — and the drawing
+    // measures the same union over the same members of the same layer.
+    QRectF bounds;
+    for (const OExportPieceGeometry &member : members)
+    {
+        bounds = bounds.united(UnplacedBounds(member.piece));
+    }
+    const QPointF centerLocal = bounds.center() - bounds.topLeft();
+
+    // ⚠️ **Ce que le document porte n'est PAS la position de la taille du run** — il faut la recalculer.
+    //
+    // Les enfants d'une PIÈCE sont re-matérialisés à chaque mise à la taille : `VPattern::Parse` les
+    // parcourt. Ceux d'un GROUPE, non — le parse ne connaît que `DataPieces()`, et le seul écrivain de
+    // leurs positions est `OPieceGroupHolderItem::Refresh`, atteint uniquement par `CheckLayout`, qui ne
+    // part jamais en mode Export. La position stockée est donc celle de la dernière fois que Sophie a
+    // REGARDÉ le groupe dans la scène Details, et l'export la relisait telle quelle.
+    //
+    // ⚠️ **Et l'origine du détenteur se déduit, elle ne se devine pas.** `RefRect(groupe, data, origine)`
+    // translate chaque membre par son `(mx, my)` avant d'unionner, puis retranche `origine`. Le
+    // détenteur prend pour origine le coin de l'union **dans les coordonnées de scène** — donc dans cet
+    // espace DÉJÀ TRANSLATÉ, qui est exactement ce que rend `RefRect(..., QPointF(0, 0))`. Prendre le
+    // coin de l'union des `UnplacedBounds`, qui ne porte pas la translation, plaçait les enfants aux
+    // coordonnées de la scène Details — la tentative qui les a sortis du canvas.
+    OPieceGroup sized = group.value();
+    const QRectF pointsBox = OChildAnchor::RefRect(sized, pattern, QPointF(0.0, 0.0));
+    const QRectF ref = OChildAnchor::RefRect(sized, pattern, pointsBox.topLeft());
+    OChildAnchor::Materialize(sized, ref);
+
+    frozen.owner = ResolveOwnerDecor(sized, true, groupId, centerLocal, qQNaN(), range, pattern, doc);
+
+    const VGrainlineData &geom = sized.m_glGrainline;
+    if (geom.IsEnabled() && geom.IsVisible())
+    {
+        const OSizerange::GrainlineOverride ov = GrainlineOverrideOf(range, groupId, true);
+        const OGraded::GrainlinePlacement placement =
+            OGraded::ResolveGrainline(geom, ov, true, pattern, unit, centerLocal);
+        const qreal rotation = OGraded::GrainlineRotation(geom.GetRotation(), true, pattern);
+
+        frozen.grainline.resolved = true;
+        frozen.grainline.pos = placement.pos;
+        frozen.grainline.lengthPx = placement.lengthPx;
+        frozen.grainline.rotationDegrees = rotation;
+    }
+
+    frozen.resolved = true;
     return frozen;
 }
 
@@ -1289,8 +1396,11 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         // ── Le tissu plié : où sont les plis, et comment il se replie ────────────────────────────
         //
         // **Le trait de pli se lit sur les zones, jamais sur une convention.** Un plan à bord
-        // unique a une zone — la colonne — dont le pli peut être à gauche comme à droite : c'est
-        // la pièce au pli qui en décide, pas le canvas. Un plan à deux bords en a trois.
+        // unique a une zone — la colonne — dont le pli est **à gauche, et toujours** : le candidat à
+        // un bord l'écrit en dur (`PlanFoldedFabric`), et ses pièces au pli se collent à cette paroi.
+        // ⚠️ Ce commentaire a affirmé le contraire — « c'est la pièce au pli qui en décide » — et
+        // c'était faux : **aucune variabilité de côté n'existe dans le code pour ce cas.** Un plan à
+        // deux bords, lui, en a trois, et leurs côtés sont fixés par zone.
         //
         // Et les rectangles ne se dessinent **qu'à partir de deux** : une seule zone EST la
         // colonne, et le trait du bac la dessine déjà. **Pointillé noir à 50 %**, purement visuel :
@@ -1472,9 +1582,15 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         DecorFrame &frame = it.value();
         frame.origin = frame.bounds.topLeft();
 
+        // The group's decor, frozen with the run — see @ref OExportGroupDecor. Absent on a cutting
+        // plan, which decomposes the groups, and on any group the run did not resolve.
+        const auto frozenEntry = result.groupDecor.constFind(it.key());
+        const OExportGroupDecor *frozen =
+            frozenEntry == result.groupDecor.cend() ? nullptr : &frozenEntry.value();
+
         OGradedSvg::LayoutObject entry;
         entry.origin = QPointF(0.0, 0.0);
-        BuildGroupDecor(scene, it.key(), frame, range, unit, pattern, doc,
+        BuildGroupDecor(scene, it.key(), frame, frozen, range, unit, pattern, doc,
                         content != nullptr ? &entry : nullptr);
 
         if (content != nullptr && (!entry.blocks.isEmpty() || !entry.annotations.isEmpty()

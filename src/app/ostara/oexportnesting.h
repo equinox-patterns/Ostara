@@ -28,12 +28,15 @@
 #ifndef OEXPORTNESTING_H
 #define OEXPORTNESTING_H
 
+#include <QHash>
 #include <QPolygonF>
 #include <QRectF>
 #include <QString>
 #include <QVector>
 
 #include <functional>
+
+#include "oexportgeometry.h" // OExportGroupDecor : le décor d'un groupe voyage dans le résultat
 
 struct OExportSizeLayer;
 
@@ -86,8 +89,11 @@ struct OExportPlacement
 ///   |         B           |     B : pli sur le bord GAUCHE
 ///   +---------------------+     (le pli simple, sous les deux bandes)
 ///
-/// Vide sur un plan à bord unique : la colonne est d'un seul tenant, et le canvas dessine
-/// exactement ce qu'il dessinait avant.
+/// ⚠️ **Un plan à bord unique en a UNE, pas zéro.** Ce commentaire a annoncé le contraire, et
+/// c'était faux : `PlanFoldedFabric` en ajoute toujours une, y compris sur le candidat à un bord.
+/// C'est la colonne elle-même, et le canvas ne dessine les rectangles **qu'à partir de deux** — ce
+/// qui revient au même à l'écran, mais pas dans la donnée, et un lecteur qui croyait la liste vide
+/// cherchait un découpage là où il n'y en a pas.
 struct OExportFoldedZone
 {
     /// Pixels, dans le repère de la colonne — celui du bac, (0, 0) en haut à gauche.
@@ -116,10 +122,17 @@ struct OExportNestingResult
     double binWidthPx{0.0};
     double usedHeightPx{0.0};
 
-    /// Les rectangles du tissu plié à deux bords, et rien sur un bord unique. **Le dessin du
-    /// découpage** : ce sont eux que le canvas trace en pointillé, pour que l'utilisatrice
-    /// comprenne comment plier son tissu.
+    /// Les rectangles du tissu plié — **un seul** sur un plan à bord unique (la colonne), **trois**
+    /// sur un plan à deux bords. **Le dessin du découpage** : ce sont eux que le canvas trace en
+    /// pointillé, pour que l'utilisatrice comprenne comment plier son tissu.
     QVector<OExportFoldedZone> foldedZones{};
+
+    /// Le décor de chaque GROUPE de la couche de référence, résolu à la génération.
+    ///
+    /// ⚠️ Il voyage ici, et pas ailleurs, pour une seule raison : `result` est la seule chose que
+    /// `OExportCanvas::Build` reçoit déjà qui appartienne à UNE génération. Une pièce a sa place dans
+    /// les couches et y porte son décor ; un groupe n'est pas une pièce et n'en a pas.
+    QHash<quint32, OExportGroupDecor> groupDecor{};
 };
 
 /// @brief What the engine needs besides the geometry itself.

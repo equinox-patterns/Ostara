@@ -90,6 +90,37 @@ struct OExportPieceGrainline
     QLineF mainLine;
 };
 
+/// @brief The reference layer's grainline for one GROUP, RESOLVED — see @ref OExportPieceDecor.
+///
+/// ⚠️ **Frozen as a PLACEMENT, not as a line**, because a group's grainline is not written onto any
+/// model object the way a piece's is: it is drawn straight into the scene under the carrier
+/// (`OGraded::MakeGrainlineItem`). So what has to survive the trip is where it starts and how long it
+/// is, plus its angle.
+///
+/// ⚠️ Of those three, only the POSITION depends on the size: a group's length and angle are literals,
+/// not formulas evaluated against the container. But they are frozen together all the same — one
+/// record, read once, at the size that matters.
+struct OExportGroupGrainline
+{
+    bool resolved{false};
+    QPointF pos;
+    qreal lengthPx{0.0};
+    qreal rotationDegrees{0.0};
+};
+
+/// @brief One GROUP's decor, RESOLVED — its cartouche, its annotations, and its grainline.
+///
+/// A group is not a piece: it has no slot of its own in the layers, and its children are stored
+/// against the top-left corner of its members rather than against the document origin. Only its
+/// carrier differs, though, and the resolution is the pieces' own — which is why the cartouche and the
+/// annotations travel in an @ref OExportPieceDecor.
+struct OExportGroupDecor
+{
+    OExportPieceDecor owner{};
+    OExportGroupGrainline grainline{};
+    bool resolved{false};
+};
+
 /// @brief One piece of the pattern, resolved for one size of the range.
 struct OExportPieceGeometry
 {

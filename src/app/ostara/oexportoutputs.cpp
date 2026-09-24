@@ -318,7 +318,14 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // ⚠️ **Only the reference layer carries decor** — the first one; the canvas strips every other.
     // And the resolution must happen DURING the walk, on that first layer: past the walk the range
     // path has already put the document back on the size it was found on.
+    // Le décor des GROUPES de la couche de référence, résolu au même moment et pour la même raison —
+    // voir OExportGroupDecor. Rangé à part parce que le résultat du nesting n'existe pas encore : il
+    // naîtra de l'appel au moteur, plus bas.
+    QHash<quint32, OExportGroupDecor> groupDecor;
+
     const auto freezeDecor = [&](OExportSizeLayer &layer) {
+        QHash<quint32, QVector<OExportPieceGeometry>> members;
+
         for (OExportPieceGeometry &piece : layer.pieces)
         {
             piece.decor = ResolvePieceDecor(piece, range, pattern, doc);
@@ -328,6 +335,20 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
             // as a single-size run left the document on the run's own size.
             piece.grainline = ResolvePieceGrainline(piece, range, request.unit, pattern,
                                                     request.cuttingPlan);
+
+            if (piece.groupId != 0)
+            {
+                members[piece.groupId].append(piece);
+            }
+        }
+
+        // Un groupe n'est résolu qu'UNE fois, sur l'ensemble de ses membres : c'est leur union qui
+        // donne son cadre, et c'est d'elle que vient le repli d'un enfant jamais placé.
+        for (auto it = members.cbegin(); it != members.cend(); ++it)
+        {
+            groupDecor.insert(it.key(),
+                              ResolveGroupDecor(it.value(), it.key(), range, request.unit, pattern,
+                                                doc, request.cuttingPlan));
         }
     };
 
@@ -537,6 +558,11 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.foldedFabric = request.foldedFabric;
     output.layers = std::move(layers);
     output.result = result;
+
+    // Le décor des groupes de la couche de référence, résolu pendant la marche des tailles. Il rejoint
+    // le résultat ici, et pas ailleurs : c'est la seule chose que le canvas reçoit qui appartienne à
+    // UNE génération — une pièce a sa place dans les couches, un groupe n'en a pas.
+    output.result.groupDecor = groupDecor;
     output.generationMs = generationTimer.elapsed();
     return output;
 }
