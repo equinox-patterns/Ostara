@@ -33,6 +33,8 @@
 #include <QStyleOptionGraphicsItem>
 #include <QtGlobal>
 
+#include "../../vmisc/vabstractapplication.h"
+#include "../../vwidgets/global.h"
 #include "../../vwidgets/ocartouchepainter.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -123,17 +125,39 @@ void OThumbnailItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
     if (not m_content.isEmpty() && not m_contentBounds.isEmpty())
     {
-        // Clipped to the block rect so the drawing can never paint outside boundingRect (otherwise
-        // moving the block would leave trails). Fitted on the binding side, never stretched.
+        // Clipped to the item's bounding rect, not to the block rect: the drawing can still never
+        // paint outside boundingRect (otherwise moving the block would leave trails), but the stroke
+        // stays whole. Fitting the drawing to the block rect lays the outline exactly on that rect's
+        // edges, so clipping there shaves off the outer half of every stroke running along the
+        // bounding box — on a piece that is the straight hem, and only it, over its whole length
+        // (the top and sides merely touch the box at a tangent point). The half stroke allowed back
+        // is half a pixel, far inside the 10-unit margin boundingRect() already reserves.
         painter->save();
-        painter->setClipRect(r);
+        painter->setClipRect(boundingRect());
         painter->setRenderHint(QPainter::Antialiasing, true);
+        const QTransform fit = OCartouchePainter::FitTransform(m_contentBounds, r);
+        painter->setTransform(fit, true);
+
+        // Both scales are read off the painter: `fit` maps the drawing into the block rect, and the
+        // painter transform adds the view zoom on top of it. So `viewScale` is the canvas zoom, and
+        // dividing by the full scale lands the requested number of pixels on screen whatever the
+        // size of the block.
+        const qreal scale = painter->transform().m11();
+        const qreal fitScale = fit.m11();
+        const qreal viewScale = fitScale > 0.0 ? scale / fitScale : 1.0;
+
+        // The miniature never carries a heavier line than the piece it draws, and never more than one
+        // pixel. The pieces' own stroke shrinks below 100 % zoom (`ScaleWidth()` only compensates
+        // above 1), so a stroke pinned at one pixel reads heavier and heavier as the canvas shrinks.
+        // Mirroring the pieces' law keeps the miniature in step with them at every zoom, while the
+        // one pixel ceiling keeps the drawing light where the piece's line is at full strength.
+        const qreal hairLine = VAbstractApplication::VApp()->Settings()->WidthHairLine();
+        const qreal stroke = qMin(1.0, ScaleWidth(hairLine, viewScale) * viewScale);
+
         QPen pen(textColor);
-        pen.setWidthF(1.0);
-        pen.setCosmetic(true);
+        pen.setWidthF(scale > 0.0 ? stroke / scale : stroke);
         painter->setPen(pen);
         painter->setBrush(Qt::NoBrush);
-        painter->setTransform(OCartouchePainter::FitTransform(m_contentBounds, r), true);
         painter->drawPath(m_content);
         painter->restore();
     }
