@@ -30,26 +30,30 @@
 
 #include <QString>
 
+#include <cmath>
+
 namespace
 {
 /// The millimetres in an inch — the exact definition, and the only conversion this file needs.
 constexpr qreal kMmPerInch = 25.4;
-} // namespace
 
-//---------------------------------------------------------------------------------------------------------------------
-auto OLengthUnits::Fraction(qreal inch) -> QString
+/// The millimetres in a yard — exact too: 36 inches by definition.
+constexpr qreal kMmPerYard = 914.4;
+
+/// @p graduations of @p denominator, written as a mixed number and reduced.
+///
+/// `6/16` gives `3/8`, `16/16` gives `1`, `22/8` gives `2 3/4`. Both callers round their own way
+/// before they get here — the inch to the nearest graduation, the yard up to the next one — and that
+/// is deliberate, so the rounding stays **out** of this function: it is the one thing the two must
+/// not share. What they do share is the writing, and that is all this is.
+auto MixedNumber(int graduations, int denominator) -> QString
 {
-    // **Rounded first, then reduced.** Rounding to the nearest graduation is what turns a converted
-    // length back into something a tape measure can be read against: a centimetre is 0.3937 of an
-    // inch, which is no graduation at all, and 3/8" is the graduation beside it.
-    const int sixteenths = qRound(inch * kInchDenominator);
-    const int whole = sixteenths / kInchDenominator;
-    int numerator = sixteenths % kInchDenominator;
-    int denominator = kInchDenominator;
+    const int whole = graduations / denominator;
+    int numerator = graduations % denominator;
 
     if (numerator == 0)
     {
-        // A whole number of inches keeps no denominator: 2", never 2 0/16".
+        // A whole number keeps no denominator: 2", never 2 0/16".
         return QString::number(whole);
     }
 
@@ -60,11 +64,33 @@ auto OLengthUnits::Fraction(qreal inch) -> QString
         denominator /= 2;
     }
 
-    // Above an inch the fraction is carried beside the whole inches — 1 3/8" — which is how a tape
+    // Above the unit the fraction is carried beside the whole ones — 1 3/8 — which is how a tape
     // measure is read: past the last whole mark, then on by graduations.
     const QString fraction =
         QString::number(numerator) + QLatin1Char('/') + QString::number(denominator);
     return whole > 0 ? QString::number(whole) + QLatin1Char(' ') + fraction : fraction;
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OLengthUnits::Fraction(qreal inch) -> QString
+{
+    // **Rounded first, then reduced.** Rounding to the nearest graduation is what turns a converted
+    // length back into something a tape measure can be read against: a centimetre is 0.3937 of an
+    // inch, which is no graduation at all, and 3/8" is the graduation beside it.
+    return MixedNumber(qRound(inch * kInchDenominator), kInchDenominator);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OLengthUnits::Yards(qreal mm) -> QString
+{
+    // **Rounded up, and that is the opposite of the inch above — on purpose.** An inch is a
+    // measurement, so it takes the nearest graduation. A yardage is a purchase: rounding 1.81 down to
+    // 1 3/4 would send the reader to the shop for fabric the plan does not fit in, which is the one
+    // error nothing downstream can repair. See the header for why the two are not harmonised.
+    const qreal yards = mm / kMmPerYard;
+    const int eighths = static_cast<int>(std::ceil(yards * kYardDenominator));
+    return MixedNumber(eighths, kYardDenominator) + QLatin1Char(' ') + kYardSign;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

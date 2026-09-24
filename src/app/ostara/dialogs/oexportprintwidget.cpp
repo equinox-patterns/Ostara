@@ -481,22 +481,37 @@ void OExportPrintWidget::UpdateSourceVisibility()
 //---------------------------------------------------------------------------------------------------------------------
 void OExportPrintWidget::UpdateUnit()
 {
-    const int raw = m_unitCombo->currentData().toInt();
-    m_unit = static_cast<Unit>(raw);
+    // ⚠️ **Lire avec l'ANCIENNE unité, changer, puis réafficher avec la NOUVELLE — dans cet ordre.**
+    // L'ordre inverse relit les mêmes chiffres dans l'unité qui vient d'être choisie : « 0.5 » cm
+    // deviendrait 0,5 pouce, soit 12,7 mm au lieu de 5 — et **pas un chiffre ne bougerait à
+    // l'écran** pour le dire, puisque le champ est réécrit avec la même valeur numérique. Une unité
+    // est une façon d'écrire une longueur, jamais une longueur.
+    ReadEditedLengths(m_unit);
+
+    m_unit = static_cast<Unit>(m_unitCombo->currentData().toInt());
 
     m_rollWidget->SetUnit(m_unit);
     m_tiledWidget->SetUnit(m_unit);
-    CommitEditedLengths();
+    WriteEditedLengths();
     UpdateDocumentWidth();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void OExportPrintWidget::CommitEditedLengths()
 {
+    ReadEditedLengths(m_unit);
+    WriteEditedLengths();
+
+    emit Changed();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportPrintWidget::ReadEditedLengths(const Unit &unit)
+{
     bool marginOk = false;
     bool gapOk = false;
-    const qreal marginMm = OExportUnitFormat::Parse(m_marginEdit->text(), m_unit, &marginOk);
-    const qreal gapMm = OExportUnitFormat::Parse(m_gapEdit->text(), m_unit, &gapOk);
+    const qreal marginMm = OExportUnitFormat::Parse(m_marginEdit->text(), unit, &marginOk);
+    const qreal gapMm = OExportUnitFormat::Parse(m_gapEdit->text(), unit, &gapOk);
 
     // A margin of zero is legitimate — it is a plan run to the edge — so only a genuinely
     // unreadable field is ignored, and the previous value stands.
@@ -508,11 +523,13 @@ void OExportPrintWidget::CommitEditedLengths()
     {
         m_gapMm = gapMm;
     }
+}
 
+//---------------------------------------------------------------------------------------------------------------------
+void OExportPrintWidget::WriteEditedLengths()
+{
     m_marginEdit->setText(OExportUnitFormat::Format(m_marginMm, m_unit));
     m_gapEdit->setText(OExportUnitFormat::Format(m_gapMm, m_unit));
-
-    emit Changed();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -739,6 +756,23 @@ void OExportPrintWidget::Retranslate()
     for (int i = 0; i < m_unitCombo->count(); ++i)
     {
         m_unitCombo->setItemText(i, UnitsToStr(static_cast<Unit>(m_unitCombo->itemData(i).toInt()), true));
+    }
+
+    // Each axis row is named by the measurement table itself, exactly as the Details top bar names
+    // them: the table says what an axis is called, and a second name here would be one more thing
+    // to keep in step with it. The rows and the dimensions are walked in the same order — the table
+    // is a map, so its key order is the one PopulateDimensions built the rows in.
+    if (m_measurements.isNull())
+    {
+        return;
+    }
+
+    const VDimensions dimensions = m_measurements->Dimensions();
+    int row = 0;
+    for (auto it = dimensions.constBegin(); it != dimensions.constEnd() && row < m_dimensionLabels.size();
+         ++it, ++row)
+    {
+        m_dimensionLabels.at(row)->setText(it.value()->Name() + QLatin1Char(':'));
     }
 }
 

@@ -5,8 +5,9 @@
  **  @date   21/09/2026
  **
  **  @brief  A length written in the unit the reader of a page thinks in,
- **          inches included — and inches are written the way a seamstress
- **          reads them, as a fraction of a sixteenth.
+ **          inches and yards included — and written the way that reader
+ **          handles them: a sixteenth of an inch for a tape measure, an
+ **          eighth of a yard for a shop's counter.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -47,6 +48,17 @@
  * has to convert in their head before they can use it — which is exactly what the fraction spares
  * them.
  *
+ * **The yard is a fraction for the same reason, on a different ladder.** Fabric is not measured, it
+ * is *bought*, and a shop cuts it in eighths of a yard — so a yardage is written `1 7/8 yd`, never
+ * `1.81 yd`, which no counter can cut. The eighth is the shop's graduation, where the inch's
+ * sixteenth is the tape measure's.
+ *
+ * **And that is why the two round in opposite directions.** An inch is rounded to the *nearest*
+ * graduation, because it is a measurement; a yardage is rounded *up*, because it is a purchase, and
+ * short is the one error a cutting plan must never make. Rounding them alike would be tidier and
+ * wrong — see @ref Fraction and @ref Yards. The reduction of the fraction is the only thing they
+ * share, and it lives in one place so that it cannot drift.
+ *
  * **Millimetres are the unit everything is kept in**, as they are in the print tab: a length stored
  * in whatever unit the page happened to show would change meaning the day somebody changed the page.
  */
@@ -54,6 +66,9 @@ namespace OLengthUnits
 {
 /// @brief How finely an inch is cut — the smallest graduation a tape measure carries.
 inline constexpr int kInchDenominator = 16;
+
+/// @brief How finely a yard is cut — the smallest length a fabric shop will sell.
+inline constexpr int kYardDenominator = 8;
 
 /// @brief The sign an inch carries, in place of the word other units are written with.
 ///
@@ -73,6 +88,20 @@ auto Format(qreal mm, const Unit &unit) -> QString;
 /// `0.3937` gives `3/8"`, `1.375` gives `1 3/8"`, `2.0` gives `2"`. A whole number of inches keeps no
 /// denominator, because `2 0/16` is not how anyone writes it.
 auto Fraction(qreal inch) -> QString;
+
+/// @brief The mark a yard carries. Like the inch's, it is not translated — `yd` is the same
+/// abbreviation wherever fabric is sold by it.
+inline const QString kYardSign = QStringLiteral("yd");
+
+/// @brief @p mm written as a yardage — the next eighth **up**, reduced, with the yard mark.
+///
+/// `1655` gives `1 7/8 yd`, `1829` gives `2 yd`, `0` gives `0 yd`. What it answers is not "how long
+/// is this plan" but **"how much do I ask the shop for"**, and those two differ by up to an eighth of
+/// a yard: the plan is 165.5 cm, the shop cuts 171.45. That gap is the point of the function, not a
+/// defect in it.
+///
+/// A zero stays a zero: a plan that placed nothing must not announce 11.4 cm of fabric.
+auto Yards(qreal mm) -> QString;
 } // namespace OLengthUnits
 
 #endif // OLENGTHUNITS_H

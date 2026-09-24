@@ -162,6 +162,13 @@ private:
     void UpdateUnit();
     void UpdateDocumentWidth();
     void CommitEditedLengths();
+    /// @brief Lit les deux champs de longueur **dans @p unit** et garde les millimètres.
+    ///
+    /// Séparé de l'écriture pour que le changement d'unité puisse lire dans l'ancienne avant de
+    /// passer à la nouvelle : c'est tout le défaut que la séparation répare (voir UpdateUnit).
+    void ReadEditedLengths(const Unit &unit);
+    /// @brief Réécrit les deux champs de longueur dans @ref m_unit, depuis les millimètres gardés.
+    void WriteEditedLengths();
     void Retranslate();
 
     auto HasAxes() const -> bool;

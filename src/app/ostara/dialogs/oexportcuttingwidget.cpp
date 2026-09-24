@@ -128,8 +128,20 @@ void OExportCuttingWidget::BuildUi()
     connect(m_fabricWidthEdit, &QLineEdit::editingFinished, this, &OExportCuttingWidget::CommitFabricWidth);
     widthRow->addWidget(m_fabricWidthEdit);
 
-    m_fabricWidthUnit = new QLabel(this);
-    widthRow->addWidget(m_fabricWidthUnit);
+    // **Le combo est rempli et posé AVANT d'être connecté.** Sinon `currentIndexChanged` part à la
+    // construction, sur un champ encore vide, et `UpdateFabricWidthUnit` lirait zéro. L'onglet Print
+    // n'y échappe que par l'ordre de son constructeur — on ne s'appuie pas là-dessus.
+    m_fabricWidthUnitCombo = MakeComboBox(this);
+    for (const Unit &unit : OExportUnitFormat::FabricWidthUnits())
+    {
+        m_fabricWidthUnitCombo->addItem(UnitsToStr(unit, true), static_cast<int>(unit));
+    }
+    m_fabricWidthUnitCombo->setCurrentIndex(
+        m_fabricWidthUnitCombo->findData(static_cast<int>(m_fabricWidthUnit)));
+    connect(m_fabricWidthUnitCombo, &QComboBox::currentIndexChanged, this,
+            [this](int) { UpdateFabricWidthUnit(); });
+    widthRow->addWidget(m_fabricWidthUnitCombo);
+
     widthRow->addStretch();
 
     m_fabricWidthLabel = new QLabel(this);
@@ -164,6 +176,24 @@ void OExportCuttingWidget::BuildUi()
 
     m_gapLabel = new QLabel(this);
     form->addRow(m_gapLabel, gapRow);
+
+    // ── L'espace depuis les bords ────────────────────────────────────────
+    // Zéro par défaut, comme l'espacement. **C'est une marge d'erreur** — un tissu n'est pas
+    // toujours coupé droit — donc chaque rectangle du plan la garde sur **trois côtés : tous sauf
+    // le pli**, qui est droit par construction. Sur du tissu plié, c'est le nesting qui la répartit
+    // par rectangle : voir `SeatMargins`, dans oexportnesting.cpp.
+    auto *edgeRow = new QHBoxLayout();
+    m_edgeMarginEdit = new QLineEdit(this);
+    connect(m_edgeMarginEdit, &QLineEdit::editingFinished, this,
+            &OExportCuttingWidget::CommitEdgeMargin);
+    edgeRow->addWidget(m_edgeMarginEdit);
+
+    m_edgeMarginUnit = new QLabel(this);
+    edgeRow->addWidget(m_edgeMarginUnit);
+    edgeRow->addStretch();
+
+    m_edgeMarginLabel = new QLabel(this);
+    form->addRow(m_edgeMarginLabel, edgeRow);
 
     UpdateSizeMode();
 
@@ -435,7 +465,7 @@ void OExportCuttingWidget::PopulateGroups()
 void OExportCuttingWidget::CommitFabricWidth()
 {
     bool ok = false;
-    const qreal widthMm = OExportUnitFormat::Parse(m_fabricWidthEdit->text(), Unit::Cm, &ok);
+    const qreal widthMm = OExportUnitFormat::Parse(m_fabricWidthEdit->text(), m_fabricWidthUnit, &ok);
 
     // A laize of zero or less is not a narrow fabric, it is a field that was not filled: the
     // previous value stands rather than running the nesting on nothing.
@@ -444,9 +474,37 @@ void OExportCuttingWidget::CommitFabricWidth()
         m_fabricWidthMm = widthMm;
     }
 
-    m_fabricWidthEdit->setText(OExportUnitFormat::Format(m_fabricWidthMm, Unit::Cm));
+    m_fabricWidthEdit->setText(OExportUnitFormat::Format(m_fabricWidthMm, m_fabricWidthUnit));
 
     emit Changed();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportCuttingWidget::UpdateFabricWidthUnit()
+{
+    // ⚠️ **Lire avec l'ANCIENNE unité, puis réafficher avec la NOUVELLE — dans cet ordre.**
+    // L'ordre inverse relit les mêmes chiffres dans l'unité qui vient d'être choisie : « 140 » cm
+    // deviendrait 140 pouces, la laize serait multipliée par 2,54, et **pas un chiffre ne bougerait
+    // à l'écran**. C'est le défaut de l'onglet Print (`oexportprintwidget.cpp:482`), et le dialogue
+    // d'image montre l'ordre juste. Ici la laize est stockée en millimètres : l'unité n'est qu'une
+    // façon de l'écrire, elle ne doit jamais changer le tissu.
+    bool ok = false;
+    const qreal widthMm = OExportUnitFormat::Parse(m_fabricWidthEdit->text(), m_fabricWidthUnit, &ok);
+    if (ok && widthMm > 0.0)
+    {
+        m_fabricWidthMm = widthMm;
+    }
+
+    m_fabricWidthUnit = static_cast<Unit>(m_fabricWidthUnitCombo->currentData().toInt());
+    m_fabricWidthEdit->setText(OExportUnitFormat::Format(m_fabricWidthMm, m_fabricWidthUnit));
+
+    emit Changed();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportCuttingWidget::DisplayUnit() const -> Unit
+{
+    return m_fabricWidthUnit;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -474,9 +532,36 @@ void OExportCuttingWidget::CommitGap()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportCuttingWidget::CommitEdgeMargin()
+{
+    bool ok = false;
+    const qreal edgeMm = OExportUnitFormat::Parse(m_edgeMarginEdit->text(), Unit::Cm, &ok);
+
+    // **Zéro est légitime** — c'est même le défaut — donc seul un champ illisible est ignoré, et la
+    // valeur précédente tient. Un négatif, lui, n'a pas de sens et n'est pas pris.
+    //
+    // La borne HAUTE, elle, ne se lit pas ici mais contre la laize : c'est `IsValid`, et c'est
+    // délibéré — elle doit tenir même si la laize change APRÈS l'espace.
+    if (ok && edgeMm >= 0.0)
+    {
+        m_edgeMarginMm = edgeMm;
+    }
+
+    m_edgeMarginEdit->setText(OExportUnitFormat::Format(m_edgeMarginMm, Unit::Cm));
+
+    emit Changed();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportCuttingWidget::GapMm() const -> qreal
 {
     return m_gapMm;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportCuttingWidget::EdgeMarginMm() const -> qreal
+{
+    return m_edgeMarginMm;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -593,6 +678,29 @@ auto OExportCuttingWidget::IsValid() const -> bool
         }
     }
 
+    // **L'espace depuis les bords ne peut pas manger toute la largeur.**
+    //
+    // ⚠️ **Un seul chiffre suffit pour les DEUX lectures**, et c'est ce qui rend la règle tenable :
+    // le tissu plié tourne sur la demi-laize, et son rectangle le plus étroit — la colonne — a UN
+    // bord de pli, gratuit, et un bord de lisière, donc `demi − m` ; le bac déplié a deux bords
+    // payants, donc `laize − 2 m`. Les deux sont positifs exactement quand `2 m < laize`. La case
+    // « tissu plié » n'entre donc pas dans ce test — et n'y entrera pas le jour où un rectangle
+    // paiera un bord de plus.
+    //
+    // **Nécessaire et non suffisante** : une grande pièce peut encore ne pas tenir. C'est le moteur
+    // qui tranche, et le message du run dit alors lequel des deux a parlé.
+    //
+    // Même doctrine que la laize juste au-dessus : ce n'est pas une valeur limite, c'est un champ
+    // qui ne décrit plus de plan. Le bouton se grise, comme pour une laize à zéro.
+    //
+    // Et ici plutôt que dans le commit, parce que `IsValid` est réévalué à CHAQUE `Changed()` : la
+    // règle tient donc même si la laize est modifiée APRÈS l'espace, ce qu'un contrôle à la saisie
+    // ne peut pas faire.
+    if (2.0 * EdgeMarginMm() >= FabricWidthMm())
+    {
+        return false;
+    }
+
     return true;
 }
 
@@ -600,7 +708,24 @@ auto OExportCuttingWidget::IsValid() const -> bool
 void OExportCuttingWidget::Retranslate()
 {
     m_fabricWidthLabel->setText(tr("Fabric width:"));
-    m_fabricWidthUnit->setText(UnitsToStr(Unit::Cm, true));
+
+    // Le libellé du combo EST l'unité du champ — c'est ce qui remplace le QLabel d'unité d'hier.
+    // Relus depuis le catalogue, comme les unités de l'onglet Print.
+    for (int i = 0; i < m_fabricWidthUnitCombo->count(); ++i)
+    {
+        m_fabricWidthUnitCombo->setItemText(
+            i, UnitsToStr(static_cast<Unit>(m_fabricWidthUnitCombo->itemData(i).toInt()), true));
+    }
+
+    // **Le champ s'ouvre sur la valeur stockée.** Sans cette ligne il s'ouvre VIDE alors que la laize
+    // vaut 1400 mm : `setText` n'existait que dans `CommitFabricWidth`, donc rien ne l'écrivait avant
+    // la première saisie. Le champ espacement, lui, s'initialise ici depuis toujours.
+    //
+    // C'est un réaffichage depuis les millimètres, jamais une relecture : passer par `Retranslate`
+    // sur un changement de langue ne peut donc pas altérer la laize, même si le champ portait une
+    // saisie en cours.
+    m_fabricWidthEdit->setText(OExportUnitFormat::Format(m_fabricWidthMm, m_fabricWidthUnit));
+
     m_groupsBox->setTitle(tr("One piece per group"));
 
     m_sizeModeBox->setTitle(tr("Sizes to cut"));
@@ -623,6 +748,15 @@ void OExportCuttingWidget::Retranslate()
     m_gapLabel->setText(tr("Space between pieces:"));
     m_gapUnit->setText(UnitsToStr(Unit::Cm, true));
     m_gapEdit->setText(OExportUnitFormat::Format(m_gapMm, Unit::Cm));
+
+    m_edgeMarginLabel->setText(tr("Space from the edges:"));
+    m_edgeMarginUnit->setText(UnitsToStr(Unit::Cm, true));
+    m_edgeMarginEdit->setText(OExportUnitFormat::Format(m_edgeMarginMm, Unit::Cm));
+    m_edgeMarginLabel->setToolTip(
+        tr("The space kept between the pieces and the fabric's edges. It is a margin for error — "
+           "cloth is not always cut straight — so every rectangle of the plan keeps it on THREE "
+           "sides: all of them except the fold. A piece cut on the fold keeps its fold line on the "
+           "fold, which is straight by construction."));
 
     m_foldedCheck->setText(tr("Folded fabric"));
     m_foldedCheck->setToolTip(

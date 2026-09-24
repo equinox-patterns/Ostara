@@ -104,13 +104,23 @@ struct OExportOutput
     /// The margin and the gap belong to that same list, and for the same reason: both move
     /// the pieces. A replay that guessed them would draw a plan nobody asked for while
     /// claiming to be refreshing the one on screen.
-    qreal marginMm{5.0}; ///< the document margin the run was asked for, in millimetres
+    /// L'espace gardé depuis les bords, en millimètres — **deux onglets, deux noms, une grandeur**.
+    /// L'onglet Print l'appelle sa marge de document ; l'onglet Cutting plan, l'espace depuis les
+    /// bords du tissu. Sur un plan de coupe plié, le nesting la répartit par rectangle et **le bord
+    /// d'un pli n'en paie rien** — voir `SeatMargins`, dans oexportnesting.cpp.
+    qreal marginMm{5.0};
     qreal gapMm{5.0};    ///< the space between two pieces, in millimetres
 
-    /// The unit the run was entered in. It changes nothing about the result — every length
-    /// is stored in millimetres — but it is what the figures are written in, here and in
-    /// the status bar: without it the same run would read "84,1 cm" in the dialog and
-    /// "841 mm" once generated.
+    /// The unit the run was entered in — the one the dialog's own fields were read and written in,
+    /// and, on the print tab, the one the status figures come back in, so that what the user has just
+    /// read in the dialog is what returns to her. It changes **nothing** about the result: every
+    /// length is stored in millimetres.
+    ///
+    /// ⚠️ **Une barre de statut de plan de coupe ne s'en sert pas.** Elle dit la laize et le métrage
+    /// dans les DEUX systèmes à la fois, quel que soit celui du run — voir `ExportResultText` — parce
+    /// qu'un plan de coupe se traduit en une course à faire, et que ses deux lectrices n'achètent pas
+    /// leur tissu de la même façon. Le nom de la sortie, lui, reste en centimètres : il est un chemin
+    /// de fichier. Sur un plan de coupe, ce champ est donc d'abord la trace de ce qui a été saisi.
     Unit unit{Unit::Cm};
 
     /// The print model, by token rather than by pointer: the table is a static, but the

@@ -30,6 +30,7 @@
 #include "core/ogradedsizeranges.h"
 #include "core/oexportcuttingguard.h"
 #include "core/oexportoutput.h"
+#include "core/olengthunits.h"
 #include "core/oexporttemplatestorage.h"
 #include "dialogs/oexportprintmodel.h"
 #include "dialogs/owaitdialog.h"
@@ -132,6 +133,105 @@ auto GenerationTimeText(qint64 milliseconds) -> QString
     const QString last = parts.takeLast();
     return parts.isEmpty() ? last
                            : MainWindow::tr("%1 and %2").arg(parts.join(QStringLiteral(", ")), last);
+}
+
+/// @brief Ce qu'un run a donné, dit dans les deux systèmes d'unités.
+///
+/// Un plan de coupe sert à **acheter** du tissu, et ses deux lectrices n'achètent pas de la même
+/// façon : une Européenne lit la laize en centimètres et le métrage en centimètres, une Américaine lit
+/// la laize en pouces — « du 54 » — et demande son métrage en yards. Le run n'a qu'une unité à lui ;
+/// la barre les dit toutes les deux, parce qu'elle est le seul endroit où le plan se traduit en une
+/// course à faire.
+///
+/// **Les deux chiffres ne viennent pas du même endroit, et c'est voulu.** La laize est celle qui a été
+/// SAISIE (`output.documentWidthMm`, en millimètres, **jamais** divisée par le pli) : c'est le tissu
+/// acheté, et personne n'achète 70 pour une laize de 140. Le métrage vient du rectangle réellement
+/// dessiné — la lecture unique du plan, déjà faite pour le canvas, l'image et le PDF.
+///
+/// La note de pli **ouvre la ligne**, sans parenthèses, et dans la même unité que la laize qui suit.
+/// Sur un tissu plié, le premier chiffre que l'œil rencontre doit dire ce que le canvas montre
+/// vraiment — une demi-laize — sinon « 140 » décrit un canvas qui en fait 70. Les deux chiffres
+/// restent voisins et dans la même unité, donc le rapport « moitié » se vérifie d'un coup d'œil.
+///
+/// Les runs des autres onglets gardent leur forme : sur un run tuilé la « largeur » est celle du
+/// PAPIER, et « Laize » n'y voudrait rien dire.
+///
+/// Le temps de génération ferme les deux formes, et sur **tous** les runs : un rouleau et une feuille
+/// d'A0 se génèrent aussi, et un chiffre qui n'apparaîtrait que sous une grille manquerait exactement
+/// là où le coût se voit le moins. Le temps est celui du run — voir `generationMs` — pour que
+/// sélectionner une autre ligne du dock, ou annuler une correction, ramène le temps qui l'a produite.
+auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing) -> QString
+{
+    if (!output.cuttingPlan)
+    {
+        // ⚠️ **Le test porte sur `cuttingPlan`, surtout PAS sur « pas d'artboards »** : un rouleau
+        // d'impression n'a pas d'artboards lui non plus, et la forme neuve y paraîtrait juste par
+        // accident — en appelant « laize » la largeur d'un rouleau de papier.
+        //
+        // On a tiled run what is shown is the PAPER, not the nesting: the plan's extent reaches the
+        // bottom of its last row whether or not the pieces do, so the label gives the sheets' own
+        // extent — and, for the count, the sheets that will actually be printed. A blank sheet is not
+        // written, and a count that promised it would be one the user could not reconcile with the
+        // file. The run's height is nowhere on screen, and a figure nobody can see is a figure nobody
+        // can check.
+        const Unit unit = output.unit;
+        const double width = FromPixel(drawing.drawnRect.width(), unit);
+        const double height = FromPixel(drawing.drawnRect.height(), unit);
+
+        QString label = MainWindow::tr("%1 × %2 %3").arg(QString::number(width, 'f', 1),
+                                                         QString::number(height, 'f', 1),
+                                                         UnitsToStr(unit, true));
+
+        if (drawing.artboards.valid)
+        {
+            // **The cover page's own sheet is a page, and it is said so.** It is printed like the
+            // others — it is the first page of the file — but it is not a cell of the grid, so the
+            // plan's own count does not hold it. Only the ExtraSheet seat adds one; the two other
+            // seats put the page on paper the plan already pays for.
+            const bool extraSheet = drawing.cover.seat == OExportCoverPage::Seat::ExtraSheet;
+            label += extraSheet
+                         ? MainWindow::tr(" · %n pages (cover page included)", nullptr,
+                                          drawing.sheets.count + 1)
+                         : MainWindow::tr(" · %n pages", nullptr, drawing.sheets.count);
+        }
+
+        return label + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
+    }
+
+    const qreal widthMm = output.documentWidthMm;
+    const qreal lengthMm = FromPixel(drawing.drawnRect.height(), Unit::Mm);
+
+    // « Fabric width » et « length » plutôt que « laize » et « métrage » : la chaîne source d'Ostara
+    // est en anglais, et la traduction française lui donnera ses mots du métier. La même chaîne sert
+    // aux deux systèmes — seul le nombre change de langue.
+    QString label;
+
+    // **La note de pli ouvre la ligne.** Elle est écrite dans la même unité que la laize qui suit —
+    // 70 puis 140 — pour que le rapport « moitié » se vérifie sans conversion mentale.
+    if (output.foldedFabric)
+    {
+        label += MainWindow::tr("Canvas: half fabric width %1")
+                     .arg(OLengthUnits::Format(widthMm / 2.0, Unit::Cm))
+                 + QStringLiteral(" · ");
+    }
+
+    label += MainWindow::tr("Fabric width %1 · length %2")
+                 .arg(OLengthUnits::Format(widthMm, Unit::Cm),
+                      OLengthUnits::Format(lengthMm, Unit::Cm));
+
+    // Les pouces en fraction et le métrage en yards : deux arrondis différents et tous deux voulus —
+    // le pouce au seizième le plus proche, le yard au huitième SUPÉRIEUR, parce qu'un métrage
+    // s'achète. Voir OLengthUnits.
+    //
+    // ⚠️ **`QStringLiteral`, jamais `QLatin1String`, pour ce séparateur.** Le point médian est
+    // `U+00B7`, deux octets en UTF-8 (`C2 B7`), et `QLatin1String` lit chaque octet comme un
+    // caractère Latin-1 : le `C2` devenait un `Â` à l'écran, entre le pli et la longueur. Tout
+    // littéral non ASCII de ce fichier passe par `QStringLiteral`.
+    label += QStringLiteral(" · ")
+             + MainWindow::tr("Fabric width %1 · length %2")
+                   .arg(OLengthUnits::Format(widthMm, Unit::Inch), OLengthUnits::Yards(lengthMm));
+
+    return label + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
 }
 } // namespace
 
@@ -323,6 +423,16 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // naîtra de l'appel au moteur, plus bas.
     QHash<quint32, OExportGroupDecor> groupDecor;
 
+    // **L'unité du droit-fil est celle du PATRON, jamais celle du run.** La longueur d'une ligne de
+    // droit-fil est un réglage du DOCUMENT — « 10 cm » — et c'est dans l'unité du patron qu'elle est
+    // écrite : `OGraded::ResolveGrainline` documente son paramètre comme « pattern unit, for the
+    // design length », et le canvas vivant lit bien celle-là (`oexportcanvas.cpp:1311`). Le run n'a
+    // rien à y voir, et il donnait le change tant que la ligne de coupe le forçait au centimètre.
+    // Depuis que l'onglet laisse saisir la laize en pouces, passer `request.unit` serait un facteur
+    // 2,54 sur la ligne GELÉE — qui l'emporte sur la vivante.
+    const Unit *patternUnit = pattern != nullptr ? pattern->GetPatternUnit() : nullptr;
+    const Unit grainlineUnit = patternUnit != nullptr ? *patternUnit : Unit::Mm;
+
     const auto freezeDecor = [&](OExportSizeLayer &layer) {
         QHash<quint32, QVector<OExportPieceGeometry>> members;
 
@@ -333,7 +443,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
             // The grainline is the same story read from the same document — and it is frozen HERE,
             // in the same breath, because it is the same defect: it stayed invisible only for as long
             // as a single-size run left the document on the run's own size.
-            piece.grainline = ResolvePieceGrainline(piece, range, request.unit, pattern,
+            piece.grainline = ResolvePieceGrainline(piece, range, grainlineUnit, pattern,
                                                     request.cuttingPlan);
 
             if (piece.groupId != 0)
@@ -347,7 +457,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         for (auto it = members.cbegin(); it != members.cend(); ++it)
         {
             groupDecor.insert(it.key(),
-                              ResolveGroupDecor(it.value(), it.key(), range, request.unit, pattern,
+                              ResolveGroupDecor(it.value(), it.key(), range, grainlineUnit, pattern,
                                                 doc, request.cuttingPlan));
         }
     };
@@ -1161,43 +1271,11 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
         ui->view->ZoomFitBestFramed();
     }
 
-    // The status label belongs to what IS shown, not to the run that produced it — and it
-    // is written in the unit the generation was asked in, not the pattern's: the figures
-    // the user just read in the dialog are the ones that have to come back here.
-    //
-    // On a tiled run what is shown is the PAPER, not the nesting: the plan's extent reaches the
-    // bottom of its last row whether or not the pieces do, so the label gives the sheets' own
-    // extent — and, for the count, the sheets that will actually be printed. A blank sheet is not
-    // written, and a count that promised it would be one the user could not reconcile with the
-    // file. The run's height is nowhere on screen, and a figure nobody can see is a figure nobody
-    // can check.
-    const Unit unit = output.unit;
-    const double width = FromPixel(drawing.drawnRect.width(), unit);
-    const double height = FromPixel(drawing.drawnRect.height(), unit);
-
-    QString label = tr("%1 × %2 %3").arg(QString::number(width, 'f', 1),
-                                         QString::number(height, 'f', 1),
-                                         UnitsToStr(unit, true));
-
-    if (drawing.artboards.valid)
-    {
-        // **The cover page's own sheet is a page, and it is said so.** It is printed like the
-        // others — it is the first page of the file — but it is not a cell of the grid, so the
-        // plan's own count does not hold it. Only the ExtraSheet seat adds one; the two other seats
-        // put the page on paper the plan already pays for, and the count stays silent about them.
-        const bool extraSheet = drawing.cover.seat == OExportCoverPage::Seat::ExtraSheet;
-        label += extraSheet
-                     ? tr(" · %n pages (cover page included)", nullptr, drawing.sheets.count + 1)
-                     : tr(" · %n pages", nullptr, drawing.sheets.count);
-    }
-
-    // On every run, not only the tiled ones: a roll and a sheet of A0 are generated too, and a
-    // figure that appeared only under a grid would be missing exactly where the cost is least
-    // obvious. The count that goes with it is the run's own — see generationMs — so selecting
-    // another row in the dock, or undoing a correction, brings back the time it was made in.
-    label += tr(" · %1").arg(GenerationTimeText(output.generationMs));
-
-    m_statusLabel->setText(label);
+    // The status label belongs to what IS shown, not to the run that produced it. Ce qu'elle dit
+    // dépend du genre de plan : les deux formes sont côte à côte dans ExportResultText, avec ce qui
+    // les justifie — un plan de coupe parle laize et métrage dans les deux systèmes d'unités, un run
+    // d'impression dit l'étendue du papier et son nombre de pages.
+    m_statusLabel->setText(ExportResultText(output, drawing));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

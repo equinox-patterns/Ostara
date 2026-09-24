@@ -144,7 +144,15 @@ struct OExportNestingResult
 struct OExportNestingParams
 {
     double binWidthPx{0.0}; ///< imposed bin width — the height is what the nesting produces
-    double marginPx{0.0};   ///< document margin, kept clear on every side of the bin
+
+    /// L'espace gardé depuis les bords du TISSU, en pixels — **un seul nombre, deux lectures**.
+    ///
+    /// Sur un bac déplié il vaut sur ses quatre côtés. Sur du tissu plié, c'est le nesting qui le
+    /// répartit par rectangle, et **le bord d'un pli n'en paie rien** : une pièce au pli a sa
+    /// foldline SUR le pli, et `m` l'en écarterait, donc la pièce dépliée serait trop étroite de
+    /// `2 m`. Voir `SeatMargins`, dans oexportnesting.cpp, qui est le seul endroit à écrire les
+    /// quatre marges d'un rectangle.
+    double marginPx{0.0};
     double gapPx{0.0};      ///< space kept between two pieces
 
     /// @brief Whether this run is a cutting plan.

@@ -32,12 +32,22 @@ namespace
 /// half-millimetres as often as in whole ones, and rounding to the unit would silently
 /// turn 0.5 into 1.
 const QVector<Unit> kUnits{Unit::Mm, Unit::Cm, Unit::Inch};
+
+/// A laize, in the two worlds a fabric shop lives in. Centimetres first: a metric bolt is labelled
+/// 140, and that is the reading the tab opens on.
+const QVector<Unit> kFabricWidthUnits{Unit::Cm, Unit::Inch};
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportUnitFormat::SelectableUnits() -> const QVector<Unit> &
 {
     return kUnits;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportUnitFormat::FabricWidthUnits() -> const QVector<Unit> &
+{
+    return kFabricWidthUnits;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

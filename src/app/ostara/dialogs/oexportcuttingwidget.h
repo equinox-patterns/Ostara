@@ -33,6 +33,8 @@
 #include <QVector>
 #include <QWidget>
 
+#include "../vmisc/def.h"
+
 class QCheckBox;
 class QComboBox;
 class QFormLayout;
@@ -75,6 +77,13 @@ public:
     /// @brief The laize, in millimetres — the width the nesting runs on.
     auto FabricWidthMm() const -> qreal;
 
+    /// @brief L'unité dans laquelle la laize est SAISIE à l'écran — `cm` ou `inch`, jamais le mm.
+    ///
+    /// Ce n'est pas une conversion : la laize reste stockée en millimètres, et changer d'unité ne
+    /// change pas un millimètre de tissu. C'est ce que l'utilisatrice tape et relit — et c'est le
+    /// monde dans lequel elle achète, donc c'est aussi ce que son run enregistre.
+    auto DisplayUnit() const -> Unit;
+
     /// @brief The member kept for each group: group id → piece id. Empty when it has no group.
     auto MemberChoices() const -> QMap<quint32, quint32>;
 
@@ -107,6 +116,15 @@ public:
     /// @brief L'espace gardé entre deux pièces, en millimètres. **Zéro par défaut** : sur du tissu,
     ///        deux pièces peuvent se toucher bord à bord, et rien ne justifie de les écarter.
     auto GapMm() const -> qreal;
+
+    /// @brief L'espace gardé depuis les BORDS du tissu, en millimètres. **Zéro par défaut.**
+    ///
+    /// **C'est une marge d'erreur** — un tissu n'est pas toujours coupé droit — et elle s'applique
+    /// donc à **trois côtés de chaque rectangle : tous sauf le pli**. Une pièce au pli garde en effet
+    /// sa foldline SUR le pli, sans quoi elle serait trop étroite du double une fois le tissu
+    /// déplié. Sur du tissu plié, le nesting la répartit par rectangle — voir `SeatMargins`, dans
+    /// oexportnesting.cpp, seul endroit qui écrive ces marges.
+    auto EdgeMarginMm() const -> qreal;
 
     /// @brief Base of the axis in slot @p index (0 = X, 1 = Y, 2 = W); -1 when the table carries no such axis.
     auto DimensionBase(int index) const -> qreal;
@@ -149,7 +167,9 @@ private:
     void UpdateSizeMode();
     void PopulateGroups();
     void CommitFabricWidth();
+    void UpdateFabricWidthUnit();
     void CommitGap();
+    void CommitEdgeMargin();
     void Retranslate();
 
     const VContainer *m_data{nullptr};
@@ -157,7 +177,11 @@ private:
 
     QLabel *m_fabricWidthLabel{nullptr};
     QLineEdit *m_fabricWidthEdit{nullptr};
-    QLabel *m_fabricWidthUnit{nullptr};
+
+    /// L'unité de la laize, choisie par l'utilisatrice : cm ou inch. Le libellé du combo la dit, donc
+    /// il n'y a plus de QLabel d'unité à côté du champ — il n'aurait plus rien à dire.
+    QComboBox *m_fabricWidthUnitCombo{nullptr};
+    Unit m_fabricWidthUnit{Unit::Cm};
     QCheckBox *m_foldedCheck{nullptr};
     QCheckBox *m_oneWayCheck{nullptr};
 
@@ -165,6 +189,11 @@ private:
     QLineEdit *m_gapEdit{nullptr};
     QLabel *m_gapUnit{nullptr};
     qreal m_gapMm{0.0};
+
+    QLabel *m_edgeMarginLabel{nullptr};
+    QLineEdit *m_edgeMarginEdit{nullptr};
+    QLabel *m_edgeMarginUnit{nullptr};
+    qreal m_edgeMarginMm{0.0};
 
     QVector<QLabel *> m_dimensionLabels{};
     QVector<QComboBox *> m_dimensionCombos{};

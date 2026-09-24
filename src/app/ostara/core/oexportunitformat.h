@@ -50,6 +50,14 @@ namespace OExportUnitFormat
 /// @brief The units the print tab offers, in the order its combo lists them.
 auto SelectableUnits() -> const QVector<Unit> &;
 
+/// @brief The units a laize may be entered in, in the order its combo lists them.
+///
+/// A second catalogue rather than a filter over the first, because the two answer different
+/// questions: the print tab offers every unit a *sheet* may be described in, and a sheet can be
+/// described in millimetres. Nobody buys 1400 mm of cloth. A laize is either metric or imperial —
+/// the two worlds a fabric shop lives in — and the millimetre belongs to neither.
+auto FabricWidthUnits() -> const QVector<Unit> &;
+
 /// @brief How many decimals @p unit is written with before trailing zeros are dropped.
 auto Decimals(const Unit &unit) -> int;
 

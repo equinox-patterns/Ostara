@@ -331,13 +331,32 @@ auto ConstraintsFor(const QVector<PieceTalk> &talks, const std::vector<int> &ran
 }
 
 
+/// Le message d'un plan qui ne rentre pas — **et il a désormais deux causes, dont une seule est
+/// nommée par le moteur.**
+///
+/// Un espace depuis les bords trop grand rétrécit le bac sans que la laize y soit pour quoi que ce
+/// soit. Le moteur a raison de dire « ça ne rentre pas » : il ignore qu'un espace a été demandé.
+/// L'appelant, lui, le sait — d'où cette phrase, écrite ici une fois pour les deux chemins. Sans
+/// elle, la seule piste laissée à l'utilisatrice est sa laize, qui n'y est pour rien.
+auto TooNarrowError(const OExportNestingParams &params) -> QString
+{
+    if (params.marginPx > 0.0)
+    {
+        return QObject::tr("The document is too narrow: some pieces could not be placed. "
+                           "The space kept from the fabric's edges may be what leaves too little "
+                           "room.");
+    }
+
+    return QObject::tr("The document is too narrow: some pieces could not be placed.");
+}
+
 /// Nidifie les rangs d'un plan dans un bac de largeur @p widthPx.
 ///
 /// Rend faux quand le moteur a été interrompu — et pose @p abandoned, l'appelant devant alors tout
 /// jeter : une nidification à moitié faite n'est pas un plan — ou quand le bac ne peut pas tout
 /// porter, avec le message qui le dit.
 auto NestRanks(const Footprint::Result &footprint, const std::vector<ZoneConstraint> &constraints,
-               double widthPx, const OExportNestingParams &params,
+               double widthPx, const Bin::Margins &margins, const OExportNestingParams &params,
                const std::vector<Bin::Zone> &zones, const Engine::Config &config, ZonePlan *plan,
                QString *error, bool *abandoned) -> bool
 {
@@ -357,8 +376,9 @@ auto NestRanks(const Footprint::Result &footprint, const std::vector<ZoneConstra
     }
 
     // Le bac, un par rectangle : `Bin` prend ses zones par valeur, donc chacun a la sienne — et
-    // les trois voient le même bloc interdit.
-    const Bin bin(widthPx, params.marginPx, zones);
+    // les trois voient le même bloc interdit. **Ses marges viennent de l'appelant**, parce qu'elles
+    // diffèrent d'un rectangle à l'autre : le bord d'un pli ne paie rien. Voir `SeatMargins`.
+    const Bin bin(widthPx, margins, zones);
 
     bool stopped = false;
     plan->placements = Engine{config}.place(bin, plan->polygons, angles, anchors, &stopped);
@@ -377,12 +397,57 @@ auto NestRanks(const Footprint::Result &footprint, const std::vector<ZoneConstra
 
     if (!AllPlaced(plan->placements))
     {
-        *error = QObject::tr("The document is too narrow: some pieces could not be placed.");
+        *error = TooNarrowError(params);
         return false;
     }
 
     plan->usedHeightPx = Engine::UsedHeight(plan->placements, plan->polygons, bin);
     return true;
+}
+
+/// Un rectangle du plan plié : son côté de pli, sa largeur, et ce qu'il laisse libre sur ses bords.
+///
+/// **Les trois vont ensemble** parce qu'ils répondent à une seule question — *où une pièce peut-elle
+/// aller dans ce rectangle ?* — et c'est de les avoir tenus séparés que venait le défaut : une pièce
+/// jugée déplaçable d'après la largeur BRUTE d'un rectangle que le moteur refusait ensuite de
+/// remplir.
+struct Seat
+{
+    bool foldOnTheLeft{true};
+    double widthPx{0.0};
+    Bin::Margins margins{};
+
+    /// La largeur où une pièce peut réellement aller.
+    auto usableWidthPx() const -> double { return widthPx - margins.left - margins.right; }
+};
+
+/// Les marges d'un rectangle plié : **trois côtés qui paient, et le pli qui ne paie rien.**
+///
+/// **Le bord du pli vaut zéro, et c'est une contrainte, pas un choix.** Une pièce au pli a sa
+/// foldline SUR le pli — `ConstraintsFor` l'ancre à la paroi, et la paroi EST la ligne de marge —
+/// donc une marge de `m` de ce côté l'en écarte de `m`, et la pièce dépliée sort trop étroite de
+/// `2 m`. C'est la règle de la spec §18.2, et **le moteur ne peut pas la vérifier** : il ne connaît
+/// pas les plis. C'est ce helper, et lui seul, qui la pose — d'où le soin à mettre dans ces quatre
+/// lignes.
+///
+/// **Les trois autres paient `m` sans exception, le haut et le bas compris.** Deux rectangles
+/// empilés paient donc chacun la ligne qui les sépare, et la bande vide entre eux vaut `2 m` : c'est
+/// voulu, et c'est la règle telle qu'elle a été donnée — *« pour chaque rectangle, on applique la
+/// marge sur trois côtés, donc tous les côtés sauf le pli »*. Un plan se lit comme une pile de
+/// rectangles, et chacun garde son espace sur tout ce qui l'entoure — sans quoi la bande vide
+/// manquerait précisément là où l'œil la cherche, entre deux rectangles dessinés côte à côte.
+///
+/// ⚠️ **Et ça ne passe PAS par `Bin::Zone`**, si tentant que ce soit : `NestZone::Build` gonfle
+/// chaque zone du jeu ENTIER, donc une zone qui dirait « garde `m` du bord » garderait `m + gap`.
+/// Deux règles différentes, deux endroits différents.
+auto SeatMargins(bool foldOnTheLeft, double edgePx) -> Bin::Margins
+{
+    Bin::Margins out;
+    out.left = foldOnTheLeft ? 0.0 : edgePx;
+    out.right = foldOnTheLeft ? edgePx : 0.0;
+    out.top = edgePx;
+    out.bottom = edgePx;
+    return out;
 }
 
 /// Le plan d'un tissu plié — **deux pliages en concurrence, et le plus court gagne.**
@@ -479,9 +544,22 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
     // deux plus larges poses au pli**, une par bande. Le surplus est partagé également : chaque
     // bande prend la largeur de sa pose, plus la moitié de ce qui reste. Le centième de pixel
     // d'indulgence évite qu'une somme juste à l'arrondi près ferme la porte au double bord.
+    //
+    // ⚠️ **Et chaque bande paie son espace depuis les bords.** Elle a un pli — qui ne coûte rien,
+    // sa marge est nulle — et une lisière, qui coûte `m` : d'où les `2 m` ci-dessous, écrits une
+    // seule fois, ici, avant que les rectangles existent.
+    //
+    // Ce n'est pas une précaution mais l'inégalité qui rend le partage juste, et elle se démontre.
+    // Le partage donne `leftWidth = w_A + surplus/2`, soit `(columnPx + w_A − w_B)/2` — donc la
+    // largeur UTILE de la bande gauche vaut `leftWidth − m = w_A + surplus/2 − m`, et elle garde la
+    // largeur de sa pose si et seulement si `surplus/2 ≥ m`, c'est-à-dire `w_A + w_B + 2m ≤
+    // columnPx` : exactement ce que la porte achète. Idem à droite, par symétrie.
+    const double bandsEdgeCostPx = 2.0 * params.marginPx;
+
     const bool doubleEdge =
         poses.size() >= 2
         && widthOfPose(poses.at(posesByWidth.at(0))) + widthOfPose(poses.at(posesByWidth.at(1)))
+               + bandsEdgeCostPx
                <= columnPx + kWideningPx;
 
     // L'affectation se lit par RANG, mais **se décide par pose** : les deux variantes d'une pose
@@ -495,12 +573,13 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
     double leftWidth = 0.0;
     double rightWidth = 0.0;
 
-    // Nidifie un candidat : ses rectangles — leur côté de pli — et la pose de chaque rang.
-    const auto evaluate = [&](const std::vector<bool> &foldOnTheLeft,
-                              const std::vector<int> &assignment, const std::vector<double> &widths,
+    // Nidifie un candidat : ses rectangles — leur côté de pli, leur largeur, leurs marges — et la
+    // pose de chaque rang.
+    const auto evaluate = [&](const std::vector<Seat> &seats, const std::vector<int> &assignment,
                               ZonePlan *plans, double *height) -> bool {
-        for (std::size_t seat = 0; seat < foldOnTheLeft.size(); ++seat)
+        for (std::size_t seat = 0; seat < seats.size(); ++seat)
         {
+            const Seat &here = seats.at(seat);
             std::vector<int> ranks;
             for (int rank = 0; rank < talks.size(); ++rank)
             {
@@ -513,7 +592,7 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
                 {
                     // Une pose : seule la variante du côté de ce rectangle entre dans ce bac.
                     const int pose = poseOfRank.at(rank);
-                    if (pose < 0 || rank != VariantFor(talks, poses.at(pose), foldOnTheLeft.at(seat)))
+                    if (pose < 0 || rank != VariantFor(talks, poses.at(pose), here.foldOnTheLeft))
                     {
                         continue;
                     }
@@ -523,8 +602,8 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
             }
 
             plans[seat].ranks = ranks;
-            if (!NestRanks(footprint, ConstraintsFor(talks, ranks, foldOnTheLeft.at(seat)),
-                           widths.at(seat), params, zones, config, &plans[seat], error, abandoned))
+            if (!NestRanks(footprint, ConstraintsFor(talks, ranks, here.foldOnTheLeft), here.widthPx,
+                           here.margins, params, zones, config, &plans[seat], error, abandoned))
             {
                 return false;
             }
@@ -532,10 +611,18 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
 
         // La hauteur de la colonne : les bandes côte à côte, puis ce qui est dessous. Un seul
         // rectangle — le bord unique — et c'est simplement sa hauteur.
-        *height = foldOnTheLeft.size() < 3
-                      ? plans[0].usedHeightPx
-                      : std::max(plans[kLeftZone].usedHeightPx, plans[kRightZone].usedHeightPx)
-                            + plans[kBelowZone].usedHeightPx;
+        //
+        // ⚠️ **Un rectangle resté vide ne doit rien coûter.** `Engine::UsedHeight` d'un plan vide
+        // rend sa marge BASSE — et depuis que les trois côtés paient, tout rectangle en a une, y
+        // compris ceux du haut. Sans ce test, un plan dont rien n'est descendu sous les bandes
+        // finirait sur `m` de tissu que personne n'utilise, et que le canvas ne dessine même pas :
+        // un rectangle vide ne s'écrit pas.
+        const auto heightOf = [&plans](int seat) {
+            return plans[seat].ranks.empty() ? 0.0 : plans[seat].usedHeightPx;
+        };
+        *height = seats.size() < 3 ? heightOf(0)
+                                   : std::max(heightOf(kLeftZone), heightOf(kRightZone))
+                                         + heightOf(kBelowZone);
         return true;
     };
 
@@ -549,13 +636,14 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
 
     // ── Le candidat à UN bord ────────────────────────────────────────────────────────────────
     {
-        const std::vector<bool> seats{true};
-        const std::vector<double> widths{columnPx};
+        // Le pli à gauche, et la colonne entière : elle paie ses trois autres côtés.
+        const std::vector<Seat> seats{
+            Seat{true, columnPx, SeatMargins(true, params.marginPx)}};
         std::vector<int> assignment(static_cast<std::size_t>(talks.size()), 0);
 
         ZonePlan plans[3];
         double height = 0.0;
-        if (!evaluate(seats, assignment, widths, plans, &height))
+        if (!evaluate(seats, assignment, plans, &height))
         {
             return false;
         }
@@ -567,8 +655,18 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
     // ── Le candidat à DEUX bords ─────────────────────────────────────────────────────────────
     if (doubleEdge)
     {
-        const std::vector<bool> seats{true, false, true};
-        const std::vector<double> widths{leftWidth, rightWidth, columnPx};
+        // L et R sont les deux bandes du haut, chacune avec son pli ; B est la colonne entière sous
+        // elles. **Les trois paient leurs trois côtés** : les deux rectangles du haut paient donc
+        // chacun la ligne qui les sépare de celui du bas, et celui du bas la paie aussi — la bande
+        // vide entre eux vaut `2 m`, et c'est la règle.
+        //
+        // ⚠️ `foldOnTheLeft` est le PREMIER argument, et il vaut `false` pour R — c'est ce qui met
+        // la marge de R du bon côté. Les quatre nombres ne sont écrits nulle part ailleurs que dans
+        // `SeatMargins` : c'est la seule défense contre une inversion gauche/droite.
+        const std::vector<Seat> seats{
+            Seat{true, leftWidth, SeatMargins(true, params.marginPx)},
+            Seat{false, rightWidth, SeatMargins(false, params.marginPx)},
+            Seat{true, columnPx, SeatMargins(true, params.marginPx)}};
 
         // Le départ : les deux poses que les bandes ont été dimensionnées pour, une par bande — et
         // **les deux variantes ensemble**, puisque c'est le côté du rectangle qui décide laquelle
@@ -590,7 +688,7 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
 
         ZonePlan plans[3];
         double height = 0.0;
-        if (!evaluate(seats, assignment, widths, plans, &height))
+        if (!evaluate(seats, assignment, plans, &height))
         {
             return false;
         }
@@ -605,7 +703,20 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
             {
                 return false;
             }
-            if (talkWidth(talks, rank) > widths.at(static_cast<std::size_t>(seat)) + kWideningPx)
+
+            // ⚠️ **La largeur UTILE du rectangle, jamais sa largeur brute.** Il paie sa lisière
+            // avant d'accueillir quoi que ce soit, et comparer à la largeur brute envoie une pièce
+            // dans une bande où le moteur refuse de la poser — `ifpX1 <= ifpX0`, et la pièce
+            // revient avec `rotation = -1`.
+            //
+            // Le prix de cette erreur n'est pas une case perdue : `evaluate` rend faux, et
+            // `PlanFoldedFabric` **jette alors le candidat à un bord qui avait déjà réussi**. Un
+            // plan juste devient un échec, avec pour toute explication « The document is too
+            // narrow ». Et la fenêtre où le défaut se produit n'est plus de 0,01 px comme quand la
+            // marge valait zéro : elle vaut `m`, ce qui rend un espace de 2 cm franchement
+            // atteignable.
+            if (talkWidth(talks, rank)
+                > seats.at(static_cast<std::size_t>(seat)).usableWidthPx() + kWideningPx)
             {
                 return false;
             }
@@ -653,7 +764,7 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
                     // la comparaison, `trialHeight` reste à zéro, et `0.0 < height` accepte alors
                     // tous les essais — la recherche ne redescend plus, `improved` reste vrai à
                     // chaque tour et la boucle ne rend jamais la main. Le nesting se bloquait là.
-                    if (!evaluate(seats, trial, widths, trialPlans, &trialHeight))
+                    if (!evaluate(seats, trial, trialPlans, &trialHeight))
                     {
                         return false;
                     }
@@ -1019,7 +1130,7 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // nothing else — no status, no exception.
     if (!AllPlaced(placements))
     {
-        result.error = QObject::tr("The document is too narrow: some pieces could not be placed.");
+        result.error = TooNarrowError(params);
         return result;
     }
 

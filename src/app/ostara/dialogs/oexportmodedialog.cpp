@@ -287,8 +287,9 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
     OExportRunRequest request;
 
     // Two tabs describe a run, and they describe it their own way: the Print tab says which sheet
-    // it prints on, the Cutting plan tab how wide the fabric is. What neither asks — the margin
-    // and the space between pieces — stays at the default the request already carries.
+    // it prints on, the Cutting plan tab how wide the fabric is — **and both now say the two spaces
+    // that hold the pieces off each other and off the fabric's edges.** Nothing is left at the
+    // request's default on this path.
     if (m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex)
     {
         if (m_cuttingWidget == nullptr)
@@ -297,9 +298,26 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
         }
 
         request.documentWidthMm = m_cuttingWidget->FabricWidthMm();
-        request.unit = Unit::Cm;
+
+        // L'unité du run est celle de la LAIZE : le monde dans lequel l'utilisatrice achète son
+        // tissu, et celui dans lequel elle vient de taper son chiffre. Elle ne pèse sur aucun
+        // résultat — la laize est stockée en millimètres juste au-dessus, et le droit-fil gelé se
+        // mesure dans l'unité du PATRON, jamais dans celle-ci (voir RunExportNesting).
+        request.unit = m_cuttingWidget->DisplayUnit();
         request.singleSize = true;
         request.gapMm = m_cuttingWidget->GapMm();
+
+        // **L'espace depuis les bords, et c'est ICI qu'il devient la marge du run.** Le champ de
+        // l'onglet porte le nom du tissu, la requête porte le nom du modèle — `marginMm` — et les
+        // deux sont la même grandeur : ce qui reste libre depuis le bord du bac. **Un seul nombre,
+        // deux lectures** : un bac déplié le met sur ses quatre côtés, un bac plié le répartit par
+        // rectangle, en exemptant le bord de chaque pli (`SeatMargins`, dans oexportnesting.cpp).
+        //
+        // ⚠️ Et il n'y a donc plus rien à forcer ici : une marge de `m` sur le côté du pli écartait
+        // la pièce au pli du pli, et la pièce dépliée sortait trop étroite de `2 m` — c'était la
+        // raison du `if (foldedFabric) marginMm = 0.0` d'hier. C'est le nesting qui porte
+        // désormais cette règle, par rectangle, parce que lui seul sait de quel côté est le pli.
+        request.marginMm = m_cuttingWidget->EdgeMarginMm();
         request.baseA = m_cuttingWidget->DimensionBase(0);
         request.baseB = m_cuttingWidget->DimensionBase(1);
         request.baseC = m_cuttingWidget->DimensionBase(2);
@@ -308,15 +326,6 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
         request.oneWayLayout = m_cuttingWidget->IsOneWayLayout();
         request.foldedFabric = m_cuttingWidget->IsFoldedFabric();
 
-        // **Sur du tissu plié, la marge est nulle.** Une pièce au pli est collée au bord du tissu :
-        // sa foldline tombe sur le pli, et une marge de 5 mm l'en écarterait — dépliée, la pièce
-        // serait trop étroite de 10 mm. La marge du moteur est la même sur les quatre côtés, et
-        // rien ne sait la rendre nulle d'un seul : sur un run plié, elle est nulle partout. Sur du
-        // tissu, une pièce peut toucher le bord — c'est même ce qu'on lui demande.
-        if (request.foldedFabric)
-        {
-            request.marginMm = 0.0;
-        }
         return request;
     }
 
