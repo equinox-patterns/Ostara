@@ -51,6 +51,11 @@ auto RequestOf(const OExportOutput &output) -> OExportRunRequest
     request.cuttingPlan = output.cuttingPlan;
     request.oneWayLayout = output.oneWayLayout;
     request.foldedFabric = output.foldedFabric;
+    request.plotterPlan = output.plotterPlan;
+    request.excludedPieces = output.excludedPieces;
+    request.matWidthMm = output.matWidthMm;
+    request.matHeightMm = output.matHeightMm;
+    request.matUnit = output.matUnit;
     return request;
 }
 

@@ -27,16 +27,6 @@
 #include "oexportpdfdialog.h"
 
 #include <QCheckBox>
-#include <QDialogButtonBox>
-#include <QDir>
-#include <QEvent>
-#include <QFileDialog>
-#include <QFileInfo>
-#include <QGridLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QMessageBox>
-#include <QPushButton>
 
 namespace
 {
@@ -46,80 +36,18 @@ constexpr auto kPdfSuffix = ".pdf";
 
 //---------------------------------------------------------------------------------------------------------------------
 OExportPdfDialog::OExportPdfDialog(const QString &outputName, const QString &directory, QWidget *parent)
-  : QDialog(parent)
+  : OExportFileDialog(outputName, directory, QString::fromLatin1(kPdfSuffix), parent)
 {
-    setModal(true);
-    setMinimumWidth(520);
-
-    auto *layout = new QGridLayout(this);
-
-    m_nameLabel = new QLabel(this);
-    m_nameEdit = new QLineEdit(outputName, this);
-
-    m_pathLabel = new QLabel(this);
-    m_pathEdit = new QLineEdit(directory, this);
-    m_browseButton = new QPushButton(this);
-    connect(m_browseButton, &QPushButton::clicked, this, &OExportPdfDialog::OnBrowse);
-
     // Unchecked, and deliberately so: an unticked box is what a decor layer needs to be safe,
     // because a plan printed without its cartouche and its annotations looks perfectly normal.
     // The box is there for the user who wants the layer, not for the one who does not know.
     m_layoutLayerCheck = new QCheckBox(this);
     m_layoutLayerCheck->setChecked(false);
+    AddOption(m_layoutLayerCheck);
 
-    layout->addWidget(m_nameLabel, 0, 0);
-    layout->addWidget(m_nameEdit, 0, 1, 1, 2);
-    layout->addWidget(m_pathLabel, 1, 0);
-    layout->addWidget(m_pathEdit, 1, 1);
-    layout->addWidget(m_browseButton, 1, 2);
-    layout->addWidget(m_layoutLayerCheck, 2, 0, 1, 3);
-
-    m_buttonBox = new QDialogButtonBox(this);
-    auto *exportButton = m_buttonBox->addButton(tr("Export"), QDialogButtonBox::AcceptRole);
-    exportButton->setAutoDefault(false);
-    m_buttonBox->addButton(QDialogButtonBox::Cancel);
-    // Asserted last, once every button is in: the box lays its buttons out as they arrive
-    // and can hand the default to the one added after Export — Return would then cancel
-    // the export the user just described.
-    exportButton->setDefault(true);
-
-    connect(m_buttonBox, &QDialogButtonBox::accepted, this, &OExportPdfDialog::OnAccept);
-    connect(m_buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
-    layout->addWidget(m_buttonBox, 3, 0, 1, 3);
-
+    // Retranslate est rappelée : la passe du squelette a posé ses textes et SON titre, alors que la
+    // partie dérivée n'existait pas encore pour dire le sien ni nommer sa case.
     Retranslate();
-    m_nameEdit->setFocus();
-    m_nameEdit->selectAll();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OExportPdfDialog::FileName() const -> QString
-{
-    QString name = m_nameEdit->text().trimmed();
-    if (name.isEmpty())
-    {
-        return name;
-    }
-
-    if (!name.endsWith(QLatin1String(kPdfSuffix), Qt::CaseInsensitive))
-    {
-        name += QLatin1String(kPdfSuffix);
-    }
-
-    return name;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OExportPdfDialog::Directory() const -> QString
-{
-    return m_pathEdit->text().trimmed();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OExportPdfDialog::FullPath() const -> QString
-{
-    return QDir(Directory()).filePath(FileName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -129,70 +57,15 @@ auto OExportPdfDialog::AddLayoutLayer() const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OExportPdfDialog::OnBrowse()
-{
-    const QString chosen = QFileDialog::getExistingDirectory(this, tr("Folder"), Directory());
-    if (!chosen.isEmpty())
-    {
-        m_pathEdit->setText(chosen);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void OExportPdfDialog::OnAccept()
-{
-    if (FileName().isEmpty())
-    {
-        QMessageBox::warning(this, tr("Export"), tr("The file needs a name."));
-        m_nameEdit->setFocus();
-        return;
-    }
-
-    const QFileInfo folder(Directory());
-    if (!folder.isDir())
-    {
-        QMessageBox::warning(this, tr("Export"), tr("That folder does not exist."));
-        m_pathEdit->setFocus();
-        return;
-    }
-
-    const QString path = FullPath();
-    if (QFileInfo::exists(path))
-    {
-        const auto answer = QMessageBox::question(this, tr("Export"),
-                                                  tr("%1 already exists. Replace it?").arg(FileName()),
-                                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-        if (answer != QMessageBox::Yes)
-        {
-            return;
-        }
-    }
-
-    accept();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void OExportPdfDialog::Retranslate()
 {
+    OExportFileDialog::Retranslate();
+
     setWindowTitle(tr("Export the plan as PDF"));
-    m_nameLabel->setText(tr("File name:"));
-    m_pathLabel->setText(tr("Folder:"));
-    m_browseButton->setText(tr("Browse..."));
     m_layoutLayerCheck->setText(tr("Add Layout layer"));
     m_layoutLayerCheck->setToolTip(
         tr("Write the layout as one of the PDF's layers, so a printer can switch it off.\n"
            "Left unchecked, the layout is printed with the plan and cannot be switched off —\n"
            "which is the safer setting: a plan printed without its information block, its\n"
            "folds and its annotations looks perfectly normal."));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void OExportPdfDialog::changeEvent(QEvent *event)
-{
-    if (event->type() == QEvent::LanguageChange)
-    {
-        Retranslate();
-    }
-
-    QDialog::changeEvent(event);
 }

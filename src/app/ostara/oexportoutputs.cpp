@@ -29,6 +29,7 @@
 #include "mainwindow_helpers.h"
 #include "core/ogradedsizeranges.h"
 #include "core/oexportcuttingguard.h"
+#include "core/oexportfavorites.h"
 #include "core/oexportoutput.h"
 #include "core/olengthunits.h"
 #include "core/oexporttemplatestorage.h"
@@ -41,13 +42,15 @@
 #include "oexportpdf.h"
 #include "oexportplanimage.h"
 #include "oexportplanimagewriter.h"
+#include "oexportplotterlayout.h"
+#include "oexportplottersvg.h"
 #include "oexportsheets.h"
 
 #include "dialogs/oexportimagedialog.h"
+#include "dialogs/oexportfiledialog.h"
 #include "dialogs/oexportimagelistdialog.h"
 #include "dialogs/oexportpdfdialog.h"
 
-#include <QDir>
 #include <QStandardPaths>
 #include "oexportgeometry.h"
 #include "oexportnesting.h"
@@ -56,6 +59,7 @@
 #include "../vformat/vmeasurements.h"
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractvalapplication.h"
+#include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/osizerange.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/vmaingraphicsscene.h"
@@ -64,6 +68,7 @@
 #include <QCoreApplication>
 #include <QElapsedTimer>
 #include <QEventLoop>
+#include <QDir>
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QHash>
@@ -84,6 +89,48 @@ namespace
 /// of the application, and the documented trap of this codebase is a nested
 /// submission that deadlocks the pool.
 constexpr int kExportNestingThreads = 1;
+
+/// @brief Le dossier que le prochain export d'un run proposera.
+///
+/// Trois sources, dans cet ordre, et **une seule définition pour les trois exports** — PDF, SVG de
+/// plotter, image : le dossier de la GAMME quand le run en a une (les autres fichiers de ce plan y
+/// sont déjà), sinon le dernier dossier d'export de l'application, sinon Documents.
+///
+/// ⚠️ Le réglage de l'application est celui des exports du mode Layout et du dock Size Ranges —
+/// `paths/layoutExport`. Une destination d'export est une propriété de **l'utilisatrice**, pas d'un
+/// patron : un patron partagé ne doit pas porter le chemin d'une machine, et c'est aussi pourquoi
+/// rien de tout cela n'est écrit dans le `.ostara`.
+auto ExportFolder(const OExportOutput &output) -> QString
+{
+    QString directory = output.hasRange ? output.range.exportPath : QString();
+    if (directory.isEmpty() || !QDir(directory).exists())
+    {
+        directory = VAbstractValApplication::VApp()->Settings()->GetPathLayoutExport();
+    }
+
+    if (directory.isEmpty() || !QDir(directory).exists())
+    {
+        directory = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    }
+
+    return directory;
+}
+
+/// @brief Retient le dossier où un export vient d'écrire : c'est celui que le suivant proposera.
+///
+/// Sans ça, chaque export d'un run repartait de Documents — le dossier de la gamme étant vide pour
+/// tout run en taille unique, plotter compris — et l'utilisatrice retapait le même chemin tous les
+/// jours.
+///
+/// Un dossier disparu n'est pas retenu : le proposer au prochain export ne mènerait nulle part, et
+/// `ExportFolder` le remplacerait de toute façon.
+void RememberExportFolder(const QString &directory)
+{
+    if (!directory.isEmpty() && QDir(directory).exists())
+    {
+        VAbstractValApplication::VApp()->Settings()->SetPathLayoutExport(directory);
+    }
+}
 
 /// @brief A duration said out loud: "2 minutes and 35 seconds".
 ///
@@ -162,6 +209,43 @@ auto GenerationTimeText(qint64 milliseconds) -> QString
 /// sélectionner une autre ligne du dock, ou annuler une correction, ramène le temps qui l'a produite.
 auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing) -> QString
 {
+    if (output.plotterPlan)
+    {
+        // Un plan plotter n'a ni laize ni pages : il a un **tapis**, et un **nombre de morceaux** —
+        // le chiffre que tout l'onglet cherche à faire descendre. Le tapis ouvre la ligne, parce
+        // que c'est lui la contrainte ; il est écrit dans l'unité où l'utilisatrice l'a saisi, et
+        // le canevas en centimètres, comme partout ailleurs dans le mode.
+        //
+        // Le compte des morceaux se lit dans les COUCHES et non dans le résultat : c'est la
+        // géométrie qui porte les morceaux, et c'est elle qui dit combien la machine en découpera.
+        int parts = 0;
+        for (const OExportSizeLayer &layer : std::as_const(output.layers))
+        {
+            parts += layer.pieces.size();
+        }
+
+        const qreal canvasWidthMm = FromPixel(output.result.binWidthPx, Unit::Mm);
+        const qreal canvasHeightMm = FromPixel(output.result.usedHeightPx, Unit::Mm);
+
+        QString label = MainWindow::tr("Mat %1 × %2")
+                            .arg(OLengthUnits::Format(output.matWidthMm, output.matUnit),
+                                 OLengthUnits::Format(output.matHeightMm, output.matUnit));
+
+        label += MainWindow::tr(" · %n piece(s)", nullptr, parts);
+
+        // Le nombre de TAPIS, à côté du nombre de morceaux : c'est le chiffre que le rangement fait
+        // descendre, et il ne se déduit pas du canevas — les tapis se rangent en rectangle proche du
+        // carré, donc la dernière rangée peut être incomplète.
+        label += MainWindow::tr(" · %n mat(s)", nullptr, output.result.matCount);
+
+        label += QStringLiteral(" · ")
+                 + MainWindow::tr("Canvas %1 × %2")
+                       .arg(OLengthUnits::Format(canvasWidthMm, Unit::Cm),
+                            OLengthUnits::Format(canvasHeightMm, Unit::Cm));
+
+        return label + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
+    }
+
     if (!output.cuttingPlan)
     {
         // ⚠️ **Le test porte sur `cuttingPlan`, surtout PAS sur « pas d'artboards »** : un rouleau
@@ -333,6 +417,24 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // Et si le tissu est plié : c'est de là que la pièce au pli garde son pli au lieu d'être
     // dépliée, et qu'une pièce coupée deux fois n'est posée qu'une.
     geometry.SetFoldedFabric(request.foldedFabric);
+
+    // Un plotter domestique découpe sur des **tapis** : ses pièces ne sont plus des pièces mais des
+    // **morceaux**, découpés aux bords du tapis pendant que la géométrie est collectée. C'est de là
+    // que vient « un objet par morceau » — la géométrie le porte, et l'écriture n'a rien à découper.
+    //
+    // La conversion mm → px est la même qu'ailleurs, et au même endroit que les autres : une seule
+    // fois, à l'entrée du run.
+    if (request.plotterPlan)
+    {
+        geometry.SetCuttingMat(ToPixel(request.matWidthMm, Unit::Mm),
+                               ToPixel(request.matHeightMm, Unit::Mm));
+
+        // Les membres de groupe que l'utilisatrice a décochés. Ce n'est PAS un filtre de pièces : un
+        // plotter décompose les groupes, donc les cases ne gardent pas un membre, elles en écartent
+        // un. Vide — le cas de toutes les cases cochées — n'écarte rien et laisse le run tel qu'il a
+        // toujours été.
+        geometry.SetPieceExclusion(request.excludedPieces);
+    }
 
     // A cutting plan decomposes the groups: it keeps the member the user chose for each and drops
     // the others, so a group is not unioned into a single footprint. Empty means every piece —
@@ -606,8 +708,19 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     QThreadPool pool;
     pool.setMaxThreadCount(kExportNestingThreads);
 
+    // Un run plotter ne parle PAS au moteur de nesting, et ce n'est pas un raccourci : un vrai
+    // nesting déplacerait et tournerait les morceaux, et le puzzle ne se recollerait plus. Sa mise
+    // en page est arithmétique — les morceaux empilés par blocs — et c'est tout ce qu'un plotter
+    // domestique demande, puisque c'est son propre logiciel qui re-neste ensuite sur ses tapis.
+    //
+    // Le même endroit, le même thread, le même dialogue d'attente, le même report d'erreur : seule
+    // la fonction qui calcule change.
     QFuture<OExportNestingResult> future =
-        QtConcurrent::run(&pool, &OExportNesting::Run, layers, params);
+        request.plotterPlan
+            ? QtConcurrent::run(&pool, &OExportPlotterLayout::Run, layers,
+                                OExportPlotter::Mat{ToPixel(request.matWidthMm, Unit::Mm),
+                                                    ToPixel(request.matHeightMm, Unit::Mm)})
+            : QtConcurrent::run(&pool, &OExportNesting::Run, layers, params);
 
     QFutureWatcher<OExportNestingResult> watcher;
     QEventLoop loop;
@@ -666,6 +779,11 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.cuttingPlan = request.cuttingPlan;
     output.oneWayLayout = request.oneWayLayout;
     output.foldedFabric = request.foldedFabric;
+    output.plotterPlan = request.plotterPlan;
+    output.excludedPieces = request.excludedPieces;
+    output.matWidthMm = request.matWidthMm;
+    output.matHeightMm = request.matHeightMm;
+    output.matUnit = request.matUnit;
     output.layers = std::move(layers);
     output.result = result;
 
@@ -758,7 +876,78 @@ void MainWindow::RenameExportOutput(quint32 id, const QString &newName)
         return;
     }
 
+    const QString oldName = existing->name; // read BEFORE the write: the favorite is keyed by it
+    const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
+    auto *settings = VAbstractApplication::VApp()->Settings();
+
+    // Renaming a generation that is a favorite carries the favorite with it. Left behind, the
+    // star would empty itself on this very row while the favorite still existed under the old
+    // name — a dock that says "not a favorite" about a favorite.
+    if (!context.canonical.isEmpty()
+        && OExportFavorites::IsFavorite(settings, context.canonical, context.axis, oldName))
+    {
+        if (OExportFavorites::IsFavorite(settings, context.canonical, context.axis, newName))
+        {
+            // Two favorites under one name are one favorite, so the move is refused — and the
+            // dock is re-popped straight away, which is not cosmetic: OnNameEdited has already
+            // written the refused text into the cell AND into kPreviousNameRole. Without this
+            // refresh the next edit would compare the new name to itself, find them equal, and
+            // never emit again — renaming would stop working, silently, for good.
+            QMessageBox::warning(this, tr("Export mode"), tr("A favorite already has this name. Choose another name."),
+                                 QMessageBox::Ok, QMessageBox::Ok);
+            RefreshOutputsDock();
+            return;
+        }
+
+        // Read, then remove, then store: RequestFromFavorite after the removal would read a
+        // recipe that is no longer there.
+        const OExportRunRequest recipe =
+            OExportFavorites::RequestFromFavorite(settings, context.canonical, context.axis, oldName);
+        OExportFavorites::RemoveFavorite(settings, context.canonical, context.axis, oldName);
+        OExportFavorites::StoreFavorite(settings, context.canonical, context.axis, newName, recipe);
+    }
+
     m_exportOutputs.SetName(id, newName);
+    RefreshOutputsDock();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToggleExportFavorite(quint32 id)
+{
+    const OExportOutput *output = m_exportOutputs.Find(id);
+    if (output == nullptr)
+    {
+        // The row is gone between the emit and this slot — nothing to key a favorite on.
+        RefreshOutputsDock();
+        return;
+    }
+
+    const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
+    if (context.canonical.isEmpty())
+    {
+        // No measurements table, so no key: a favorite stored here would be shared with
+        // nobody. The star is drawn disabled for that reason — this is the same door, shut
+        // once more for the case where the table was unloaded after the dock was filled.
+        return;
+    }
+
+    auto *settings = VAbstractApplication::VApp()->Settings();
+    const QString name = output->name;
+
+    if (OExportFavorites::IsFavorite(settings, context.canonical, context.axis, name))
+    {
+        OExportFavorites::RemoveFavorite(settings, context.canonical, context.axis, name);
+    }
+    else
+    {
+        // The recipe of the run as it stands — what a Refresh would replay — minus the two
+        // fields that speak of this pattern's pieces: those are asked again, once per batch,
+        // in the pre-flight dialog (see OExportFavorite).
+        OExportFavorites::StoreFavorite(settings, context.canonical, context.axis, name, RequestOf(*output));
+    }
+
+    // `output` is not used below: the refresh rebuilds the dock, and the store may have
+    // moved under it.
     RefreshOutputsDock();
 }
 
@@ -942,21 +1131,26 @@ void MainWindow::DeleteExportOutput(quint32 id)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ExportOutputToPdf(quint32 id)
 {
+    // Un run plotter ne sort pas en PDF : son fichier est un SVG structuré, **un objet par morceau,
+    // pas un mot**. Le même bouton ouvre le dialogue de son type de run — c'est ainsi que le dock
+    // reste le seul endroit qui décide ce qu'un run produit, sans une colonne de plus ni un menu.
+    if (const OExportOutput *plotter = m_exportOutputs.Find(id);
+        plotter != nullptr && plotter->plotterPlan)
+    {
+        ExportOutputToPlotterSvg(id);
+        return;
+    }
+
     const OExportOutput *existing = m_exportOutputs.Find(id);
     if (existing == nullptr)
     {
         return;
     }
 
-    // Where it opens: the range's own export folder when it has one — this plan's other
-    // files are already there — and Documents when it has not, or when it has gone.
-    QString directory = existing->hasRange ? existing->range.exportPath : QString();
-    if (directory.isEmpty() || !QDir(directory).exists())
-    {
-        directory = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-    }
-
-    OExportPdfDialog dialog(existing->name, directory, this);
+    // Où il s'ouvre : le dossier de la gamme quand elle en a un — les autres fichiers de ce plan y
+    // sont déjà — sinon le dernier dossier d'export, sinon Documents. La règle est celle
+    // d'`ExportFolder`, et les trois exports la partagent.
+    OExportPdfDialog dialog(existing->name, ExportFolder(*existing), this);
     if (dialog.exec() != QDialog::Accepted)
     {
         return;
@@ -987,6 +1181,50 @@ void MainWindow::ExportOutputToPdf(quint32 id)
                              tr("\"%1\" could not be exported.").arg(existing->name));
         return;
     }
+
+    // Le dossier vient d'être choisi : c'est celui que le prochain export proposera.
+    RememberExportFolder(dialog.Directory());
+
+    QMessageBox::information(this, tr("Export mode"),
+                             tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ExportOutputToPlotterSvg(quint32 id)
+{
+    const OExportOutput *existing = m_exportOutputs.Find(id);
+    if (existing == nullptr || !existing->result.ok)
+    {
+        return;
+    }
+
+    // Où il s'ouvre : le dossier de la gamme quand elle en a un, sinon le dernier dossier d'export,
+    // sinon Documents — la règle d'`ExportFolder`, celle du PDF.
+    //
+    // Un seul dialogue, et rien à y demander : ni format — c'est un SVG — ni taille, ni résolution.
+    // Les trois casseraient le plan, et sans le dire : les lignes de coupe cesseraient d'être à des
+    // multiples **exacts** du tapis, et le plotter couperait au mauvais endroit.
+    //
+    // **Le même dialogue que l'export d'un print**, et non la boîte du système : le nom s'y propose
+    // au lieu de se taper, le dossier est celui du run, et un fichier qui existe déjà se demande
+    // avant d'être écrasé — au lieu de l'être sans un mot. Le suffixe est la seule chose qui change,
+    // et c'est le seul endroit où il est écrit.
+    OExportFileDialog dialog(existing->name, ExportFolder(*existing), QStringLiteral(".svg"), this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        // Elle a fermé le dialogue : rien à dire, et rien à faire.
+        return;
+    }
+
+    if (!OExportPlotterSvg::Write(dialog.FullPath(), *existing, pattern, doc))
+    {
+        QMessageBox::warning(this, tr("Export mode"),
+                             tr("\"%1\" could not be exported.").arg(existing->name));
+        return;
+    }
+
+    // Le dossier vient d'être choisi : c'est celui que le prochain export proposera.
+    RememberExportFolder(dialog.Directory());
 
     QMessageBox::information(this, tr("Export mode"),
                              tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()));
@@ -1025,15 +1263,9 @@ void MainWindow::ExportActiveOutputToImage()
     const OExportPlanImage::Plan referencePlan =
         OExportPlanImage::PlanOf(ComputeExportDrawing(*reference).drawnRect);
 
-    // The range's own export folder when it has one, Documents otherwise: the rule the PDF opens
-    // on, so that the two exports of one generation land side by side.
-    QString directory = reference->hasRange ? reference->range.exportPath : QString();
-    if (directory.isEmpty() || !QDir(directory).exists())
-    {
-        directory = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-    }
-
-    OExportImageDialog options(directory, referencePlan, active != nullptr, this);
+    // Le dossier de la gamme quand elle en a un — la règle d'`ExportFolder`, celle du PDF : les deux
+    // exports d'une même génération atterrissent côte à côte.
+    OExportImageDialog options(ExportFolder(*reference), referencePlan, active != nullptr, this);
     if (options.exec() != QDialog::Accepted)
     {
         return;
@@ -1107,6 +1339,13 @@ void MainWindow::ExportActiveOutputToImage()
             // end with the rest, which is the only place that knows which generation it was.
             failed.append(row.name);
         }
+    }
+
+    // Le dossier où le run vient d'écrire — s'il a écrit quelque chose : c'est celui que le prochain
+    // export proposera.
+    if (!written.isEmpty())
+    {
+        RememberExportFolder(options.Directory());
     }
 
     // ONE dialog for the whole run, whatever its length: a box per file would be a box the user
@@ -1210,7 +1449,8 @@ void MainWindow::DrawExportDrawing(QGraphicsScene *scene, const OExportOutput &o
     OExportCanvas::Build(scene, output.layers, output.result,
                          output.hasRange ? &output.range : nullptr, pattern, doc, nullptr,
                          drawing.artboards, hasMarks ? &marks : nullptr, framed, &drawing.cover,
-                         {output.cuttingPlan, output.foldedFabric});
+                         {output.cuttingPlan, output.foldedFabric, output.plotterPlan,
+                          output.matWidthMm, output.matHeightMm, output.result.matCount});
 }
 
 /**
@@ -1342,6 +1582,14 @@ void MainWindow::RefreshOutputsDock()
         return;
     }
 
+    // The favorites of the context, read ONCE for the whole list and not once per row: each
+    // of those reads opens the settings file, and the Size Ranges dock had to grow the same
+    // cache for the same reason.
+    const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
+    auto *settings = VAbstractApplication::VApp()->Settings();
+    const QSet<QString> favorites = OExportFavorites::Names(settings, context.canonical, context.axis);
+    const bool canFavorite = !context.canonical.isEmpty();
+
     QVector<OExportOutputRow> rows;
     const QVector<quint32> visible = VisibleExportOutputIds();
     rows.reserve(visible.size());
@@ -1349,7 +1597,7 @@ void MainWindow::RefreshOutputsDock()
     {
         if (const OExportOutput *output = m_exportOutputs.Find(id))
         {
-            rows.append(OExportOutputRow{output->id, output->name});
+            rows.append(OExportOutputRow{output->id, output->name, favorites.contains(output->name), canFavorite});
         }
     }
 

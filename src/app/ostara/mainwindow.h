@@ -357,6 +357,12 @@ private slots:
      *         Nothing is recomputed: the generation carries its own result. */
     void SetActiveExportOutput(quint32 id);
 
+    /** @brief Add the recipe of the generation @p id to the favorites of the current
+     *         (table, axis) context, or take it out when it is already there — the click on
+     *         the dock's star. Favorites are software-level (never in the .ostara): every
+     *         pattern loading the same measurements table offers the same ones. */
+    void ToggleExportFavorite(quint32 id);
+
     /** @brief Re-run the nesting of the generation @p id with what it recorded when it was
      *         made, and keep its row. Never runs on its own — the user asks for it. */
     void RefreshExportOutput(quint32 id);
@@ -373,6 +379,12 @@ private slots:
 
     /// @brief Write the plan of @p id as a PDF. Asks where, once, and does the rest.
     void ExportOutputToPdf(quint32 id);
+
+    /// @brief Write the plan of @p id for a domestic plotter. Asks where, once, and does the rest.
+    ///
+    /// Le **même bouton** que le PDF, et le dialogue de son type de run : c'est ce qui garde au dock
+    /// un seul endroit qui décide ce qu'un run produit, sans une colonne de plus ni un menu.
+    void ExportOutputToPlotterSvg(quint32 id);
 
     /** @brief Write the plan the canvas is showing as an image — SVG or PNG. Asks where, what
      *         format and what size, once, and does the rest.
@@ -755,6 +767,17 @@ private:
     /// does not exist or the new name is already taken (the dock already rejects
     /// those before emitting).
     void RenameGradedRange(const QString &oldName, const QString &newName);
+
+    /// Whether renaming @p oldRange to @p newName would collide with a favorite, and
+    /// says so when it would. Shared by the two rename paths (inline edit, edit
+    /// dialog) — they each wrote the guard and its message before this.
+    auto RangeRenameHitsFavorite(const OSizerange &oldRange, const QString &newName) -> bool;
+
+    /// Everything that named @p oldRange follows it to @p newRange: the graded
+    /// favorite, the favorites of the Export mode (whose recipes name the range they
+    /// were built on), and the generations of this session (replayed by name — left
+    /// alone, they replay into an empty size loop). Called by the two rename paths.
+    void PropagateRangeRename(const OSizerange &oldRange, const OSizerange &newRange);
 
     /// Make @p rangeName the active size range (single click in the dock list).
     void ActivateGradedRange(const QString &rangeName);

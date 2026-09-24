@@ -26,6 +26,7 @@
 
 #include "savegradedrangecontent.h"
 
+#include "ogradedrangerenames.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../xml/opattern_graded.h"
@@ -50,16 +51,30 @@ SaveGradedRangeContent::SaveGradedRangeContent(VAbstractPattern *doc, VContainer
 //---------------------------------------------------------------------------------------------------------------------
 void SaveGradedRangeContent::ApplyRange(const OSizerange &range)
 {
+    // The name this command carries is the one the range had when the command was pushed, and
+    // a range is found by its name. It may have been renamed since — resolved through the
+    // renames of the session (see OGradedRangeRenames), which is the one thing Qt cannot do
+    // for us: the commands on the stack are not reachable, so the names they hold cannot be
+    // rewritten in place.
+    //
+    // ⚠️ And the resolved name is used for the WRITE as well as for the test. Resolving it for
+    // the test alone would write the range back under the name it no longer has — resurrecting
+    // it beside the renamed one, which is exactly what the guard below exists to prevent.
+    const QString name = OGradedRangeRenames::Resolve(range.name);
+
     // A content command only ever edits an EXISTING range. If the range is no longer present
     // (deliberately dropped/replaced on re-entry), applying here would resurrect it via undo —
     // skip instead.
-    if (!m_data->SizeRanges()->contains(range.name))
+    if (!m_data->SizeRanges()->contains(name))
     {
         return;
     }
 
+    OSizerange current = range;
+    current.name = name;
+
     QHash<QString, OSizerange> ranges = *m_data->SizeRanges();
-    ranges.insert(range.name, range);
+    ranges.insert(name, current);
     m_data->SetSizeRanges(ranges);
 
     if (m_doc != nullptr)

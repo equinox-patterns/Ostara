@@ -97,6 +97,32 @@ struct OExportRunFlags
     /// acheté, et c'est ce qu'on trace. Son côté pli porte alors un trait distinct, pour qu'on voie
     /// du même coup d'œil où est le pli : c'est le bord auquel les pièces au pli sont collées.
     bool foldedFabric{false};
+
+    /// **Un plan plotter est dessiné sur ses TAPIS.** Un tapis est une CELLULE DURE : rien de plus
+    /// grand que lui ne peut être découpé, et c'est pourquoi l'aperçu les montre — chaque tapis est
+    /// un chargement de machine.
+    ///
+    /// ⚠️ **Ils ne sont plus les lignes de coupe.** Ils l'étaient tant que chaque pièce gardait son
+    /// bloc de tapis et que les morceaux tombaient sur les bords ; les morceaux se rangent maintenant
+    /// là où ils tiennent, donc un bord de tapis ne coïncide plus avec une coupe — et c'est sans
+    /// conséquence, la découpe étant dans la géométrie du morceau et non dans le cadre.
+    ///
+    /// ⚠️ **Affichage seulement.** Le fichier est écrit en parcourant le CONTENU, jamais la scène :
+    /// cette grille n'y entre pas — et c'est heureux, le logiciel du plotter découperait les bords
+    /// des tapis.
+    bool plotterPlan{false};
+
+    /// La zone utile du tapis, en MILLIMÈTRES. `Build` la convertit : c'est le seul endroit qui
+    /// dessine, et il n'y a pas deux conversions à tenir en accord. Nulle : pas de tapis.
+    qreal matWidthMm{0.0};
+    qreal matHeightMm{0.0};
+
+    /// Le nombre de tapis que le run a ouverts. **Zéro : il n'y a pas de tapis à dessiner.**
+    ///
+    /// Il vient du résultat et n'est pas recompté ici : la dernière rangée d'un rangement compact
+    /// reste incomplète, donc dessiner la grille jusqu'au bord du canevas montrerait un tapis de
+    /// plus que ce que la machine demandera — et c'est précisément ce que l'onglet fait descendre.
+    int matCount{0};
 };
 
 /// @brief What the canvas drew, in the shape a writer needs.

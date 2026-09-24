@@ -1,0 +1,118 @@
+/************************************************************************
+ **
+ **  @file   oexportfiledialog.h
+ **  @author Sophie Denys <contact@sophiedenys.com>
+ **  @date   24/09/2026
+ **
+ **  @brief  Export mode — where an exported file goes, and what it is
+ **          called. One skeleton for every format.
+ **
+ **  @copyright
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+ **
+ **  This program is free software: you can redistribute it and/or modify
+ **  it under the terms of the GNU General Public License as published by
+ **  the Free Software Foundation, either version 3 of the License, or
+ **  (at your option) any later version.
+ **
+ **  This program is distributed in the hope that it will be useful,
+ **  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ **  GNU General Public License for more details.
+ **
+ **  You should have received a copy of the GNU General Public License
+ **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **
+ *************************************************************************/
+
+#ifndef OEXPORTFILEDIALOG_H
+#define OEXPORTFILEDIALOG_H
+
+#include <QDialog>
+#include <QString>
+
+class QDialogButtonBox;
+class QEvent;
+class QGridLayout;
+class QLabel;
+class QLineEdit;
+class QPushButton;
+
+/**
+ * @brief Where an exported file is written: a name, a folder, and nothing else.
+ *
+ * The one question the dock cannot answer by itself. Everything else a run needs is already settled
+ * when the button is clicked — the generation is filed, its geometry frozen — and what is left is
+ * where the file goes and what it is called.
+ *
+ * **Shared by every export that writes a file the user names**: the PDF of a print, the SVG of a
+ * plotter plan. They ask the very same thing, and the thing has **one definition** — the folder goes
+ * through the same check, an existing file gets the same question, and the suffix is appended the
+ * same way. A copy per format would be four places to keep in step, and the day one of them forgets
+ * the overwrite question is the day a file is lost without a word.
+ *
+ * A format that needs one more switch derives from this and adds it with AddOption — the PDF's decor
+ * layer is exactly that, and nothing else about the dialog changes.
+ *
+ * The name is offered rather than typed: it opens on the generation's own name, which is what the
+ * list calls it and what a folder of six of them wants to read. It stays editable because the file
+ * is a delivery, and a delivery is named for whoever receives it.
+ */
+class OExportFileDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    /// @param outputName the generation's name, offered as the file name.
+    /// @param directory  where it opens; the folder last used, or Documents.
+    /// @param suffix     the extension of this format, dot included — ".pdf", ".svg".
+    explicit OExportFileDialog(const QString &outputName, const QString &directory,
+                               const QString &suffix, QWidget *parent = nullptr);
+
+    /// @brief The file name, with the format's suffix — appended here if the user left it off.
+    auto FileName() const -> QString;
+
+    /// @brief The folder, as typed or browsed to.
+    auto Directory() const -> QString;
+
+    /// @brief Folder and file name together.
+    auto FullPath() const -> QString;
+
+protected:
+    void changeEvent(QEvent *event) override;
+
+    /// @brief Les textes du dialogue.
+    ///
+    /// **Surchargeable, et appelée deux fois par un dialogue dérivé** : la première passe est celle de
+    /// ce squelette, où la partie dérivée n'existe pas encore — son titre et ses options ne sont pas
+    /// posés. Un dialogue qui ajoute une option la rappelle une fois la sienne construite.
+    virtual void Retranslate();
+
+    /// @brief Ajoute une option sous les deux champs, au-dessus des boutons.
+    ///
+    /// Le squelette reste ici : une option de plus ne doit pas obliger son auteur à savoir à quelle
+    /// ligne du tableau vivent les boutons, ni à les déplacer quand elle en ajoute une seconde.
+    void AddOption(QWidget *option);
+
+private slots:
+    void OnBrowse();
+    void OnAccept();
+
+private:
+    /// L'extension du format, ajoutée au nom si l'utilisatrice l'a omise. C'est la seule chose qui
+    /// distingue deux dialogues de formats différents, avec le titre.
+    QString m_suffix{};
+
+    QGridLayout *m_grid{nullptr};
+    /// La ligne où la prochaine option se pose — et celle des boutons, qui la suit toujours.
+    int m_optionRow{2};
+
+    QLabel *m_nameLabel{nullptr};
+    QLabel *m_pathLabel{nullptr};
+    QLineEdit *m_nameEdit{nullptr};
+    QLineEdit *m_pathEdit{nullptr};
+    QPushButton *m_browseButton{nullptr};
+    QDialogButtonBox *m_buttonBox{nullptr};
+};
+
+#endif  // OEXPORTFILEDIALOG_H

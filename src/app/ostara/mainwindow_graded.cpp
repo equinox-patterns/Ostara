@@ -28,6 +28,8 @@
 
 #include "dialogs/ogradedrangedialog.h"
 #include "core/ogradedfavorites.h"
+#include "core/ogradedrangerenames.h"
+#include "core/oexportfavorites.h"
 #include "core/ogradedsizeranges.h"
 #include "mainwindow_helpers.h"
 #include "mainwindowsnogui.h"
@@ -569,15 +571,9 @@ bool MainWindow::EditGradedRange(const QString &rangeName)
     edited.pieceContent = stored.pieceContent;
     edited.groupContent = stored.groupContent;
 
-    const bool wasFavorite =
-        OGradedFavorites::IsFavorite(settings, stored.measurement, stored.sizeAxis, stored.name);
     // Renaming a favorited range onto another favorite's name is refused.
-    if (wasFavorite && edited.name != stored.name
-        && OGradedFavorites::IsFavorite(settings, stored.measurement, stored.sizeAxis, edited.name))
+    if (RangeRenameHitsFavorite(stored, edited.name))
     {
-        QMessageBox::warning(this, tr("Graded mode"),
-                             tr("A favorite already has this name. Choose another name."),
-                             QMessageBox::Ok);
         return false;
     }
 
@@ -596,12 +592,10 @@ bool MainWindow::EditGradedRange(const QString &rangeName)
     AddSizeRanges(doc, rootElement, pattern);
     doc->SetModified(true);
 
-    // Keep the software favorite in sync when the edited range was a favorite.
-    if (wasFavorite)
-    {
-        OGradedFavorites::RemoveFavorite(settings, stored);
-        OGradedFavorites::StoreFavorite(settings, edited);
-    }
+    // Everything that followed the range by its name follows it here: the graded favorite,
+    // the favorites of the Export mode, and the generations of the session. One definition,
+    // three readers — see PropagateRangeRename.
+    PropagateRangeRename(stored, edited);
 
     // The active range may have been renamed, or its size interval changed (the
     // layer count depends on min/max) → force a full re-capture.
@@ -671,6 +665,90 @@ bool MainWindow::DeleteGradedRange(const QString &rangeName)
     return true;
 }
 
+/**
+ * @brief Whether renaming @p oldRange to @p newName would collide with a favorite — and says so.
+ *
+ * The software store of favorites is keyed by the range's NAME, so two favorites of the same
+ * context cannot carry it. When it happens the move is refused, and the dialog says why rather
+ * than leaving a rename that silently did nothing.
+ *
+ * One definition for the two rename paths (the dock's inline editor and the edit dialog): the
+ * guard, and the sentence it shows, were written twice before this.
+ */
+auto MainWindow::RangeRenameHitsFavorite(const OSizerange &oldRange, const QString &newName) -> bool
+{
+    if (newName == oldRange.name)
+    {
+        return false; // an edition, not a rename — no name is being taken
+    }
+
+    auto *settings = VAbstractApplication::VApp()->Settings();
+    const bool hits =
+        OGradedFavorites::IsFavorite(settings, oldRange.measurement, oldRange.sizeAxis, oldRange.name)
+        && OGradedFavorites::IsFavorite(settings, oldRange.measurement, oldRange.sizeAxis, newName);
+    if (hits)
+    {
+        QMessageBox::warning(this, tr("Graded mode"), tr("A favorite already has this name. Choose another name."),
+                             QMessageBox::Ok);
+    }
+    return hits;
+}
+
+/**
+ * @brief Everything that named @p oldRange follows it to @p newRange.
+ *
+ * A size range is addressed by its NAME — it is the key of `SizeRanges()` — so renaming one is
+ * a move in the key space, and three things outside the pattern were holding the old name:
+ *
+ * - the **graded favorite**, whose record is the range's definition (name, min/max, frozen axis
+ *   values). Removed and stored again rather than renamed, because an edition moves the
+ *   definition as much as the name;
+ * - the **favorites of the Export mode**, whose recipe names the range it was built on, resolved
+ *   against the pattern at replay time;
+ * - the **generations of this session**, replayed by name in the same way. Left alone, each of
+ *   them replays into a size loop with nothing to walk and comes out empty — which is what the
+ *   user saw when she refreshed a plan made before a rename. Their own name is NOT touched:
+ *   what was broken was the reference, not the label.
+ */
+void MainWindow::PropagateRangeRename(const OSizerange &oldRange, const OSizerange &newRange)
+{
+    auto *settings = VAbstractApplication::VApp()->Settings();
+
+    if (OGradedFavorites::IsFavorite(settings, oldRange.measurement, oldRange.sizeAxis, oldRange.name))
+    {
+        OGradedFavorites::RemoveFavorite(settings, oldRange);
+        OGradedFavorites::StoreFavorite(settings, newRange);
+    }
+
+    if (oldRange.name == newRange.name)
+    {
+        return; // an edition: nothing outside the range addresses it by a name that moved
+    }
+
+    // Written down so that the content commands already on the undo stack — which hold the name
+    // the range had when they were pushed, and which Qt does not let us reach — can still find
+    // it. See OGradedRangeRenames.
+    OGradedRangeRenames::Remember(oldRange.name, newRange.name);
+
+    OExportFavorites::RenameRange(settings, oldRange.measurement, oldRange.sizeAxis, oldRange.name, newRange.name);
+
+    for (const OExportOutput &output : m_exportOutputs.Outputs())
+    {
+        if (output.rangeName != oldRange.name)
+        {
+            continue;
+        }
+
+        OExportOutput renamed = output;
+        renamed.rangeName = newRange.name;
+        // The frozen copy carries the range's IDENTITY, not its measurements: a copy still
+        // naming the range it no longer is would be a copy that lies about what it holds.
+        // Replace() keeps the generation's own name — only what it points at moves.
+        renamed.range.name = newRange.name;
+        m_exportOutputs.Replace(renamed.id, renamed);
+    }
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::RenameGradedRange(const QString &oldName, const QString &newName)
 {
@@ -684,15 +762,11 @@ void MainWindow::RenameGradedRange(const QString &oldName, const QString &newNam
 
     QHash<QString, OSizerange> ranges = *existing;
     OSizerange range = ranges.take(oldName);
-    const OSizerange oldRange = range; // favorite bookkeeping uses the pre-rename range
+    const OSizerange oldRange = range; // everything that follows the name uses the pre-rename range
 
-    auto *settings = VAbstractApplication::VApp()->Settings();
-    const bool wasFavorite =
-        OGradedFavorites::IsFavorite(settings, oldRange.measurement, oldRange.sizeAxis, oldRange.name);
     // Renaming a favorited range onto another favorite's name is refused — nothing
     // has been stored yet, so the dock list refresh reverts the edited cell.
-    if (wasFavorite && newName != oldRange.name
-        && OGradedFavorites::IsFavorite(settings, oldRange.measurement, oldRange.sizeAxis, newName))
+    if (RangeRenameHitsFavorite(oldRange, newName))
     {
         RefreshSizeRangesDock();
         return;
@@ -706,12 +780,9 @@ void MainWindow::RenameGradedRange(const QString &oldName, const QString &newNam
     AddSizeRanges(doc, rootElement, pattern);
     doc->SetModified(true);
 
-    // Keep the software favorite in sync (the favorite follows the range name).
-    if (wasFavorite)
-    {
-        OGradedFavorites::RemoveFavorite(settings, oldRange);
-        OGradedFavorites::StoreFavorite(settings, range);
-    }
+    // The favorite follows the range name, and so does everything else that named it — one
+    // definition, several readers: see PropagateRangeRename.
+    PropagateRangeRename(oldRange, range);
 
     if (m_activeGradedRangeName == oldName)
     {

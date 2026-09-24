@@ -741,7 +741,11 @@ void OExportPrintWidget::Retranslate()
     };
 
     m_unitLabel->setText(tr("Unit:"));
-    m_sourceLabel->setText(tr("Nest:"));
+    // « Generate: », et non « Nest: » : la ligne ne dit pas au logiciel comment imbriquer, elle dit
+    // CE QUI va être produit — une gamme entière ou une seule taille. C'est aussi le mot des boutons
+    // (« Generate this output »), et il ne répète pas les deux entrées (« Size range », « Single
+    // size ») qui, elles, sont les réponses.
+    m_sourceLabel->setText(tr("Generate:"));
     renameByData(QStringLiteral("range"), tr("Size range"));
     renameByData(QStringLiteral("single"), tr("Single size"));
     m_rangeLabel->setText(tr("Size range:"));

@@ -281,6 +281,17 @@ public:
     /// piece instead of the union of all its members.
     void SetPieceFilter(const QSet<quint32> &pieceIds);
 
+    /// @brief Leave these pieces out of the run, whatever else it keeps. Empty leaves none out.
+    ///
+    /// **C'est ainsi que le choix de l'onglet Plotter devient de la géométrie.** Un plotter
+    /// *décompose* les groupes — chaque membre est une pièce à couper — donc l'onglet ne choisit pas
+    /// un membre, il en raye. D'où une liste d'EXCLUSIONS et non un filtre : `SetPieceFilter` répond
+    /// « garde celles-ci », et ne sait pas dire « n'en garde aucune » — un ensemble vide y garde tout.
+    /// Une exclusion vide, elle, n'exclut rien : c'est le comportement d'avant les cases.
+    ///
+    /// Les deux se composent : une pièce survit si le filtre la garde ET si l'exclusion ne la raye pas.
+    void SetPieceExclusion(const QSet<quint32> &pieceIds);
+
     /// @brief Whether the fabric this cutting plan is laid on is folded in two.
     ///
     /// It decides two things here, and both are about the same piece: a piece cut on the fold is
@@ -288,6 +299,17 @@ public:
     /// unfolds it; and a piece cut twice is laid **once**, because the fold mirrors it. Without a
     /// cutting plan this flag changes nothing.
     void SetFoldedFabric(bool folded);
+
+    /// @brief La zone utile du tapis d'un plotter domestique, en pixels. **Nulle : pas de tapis.**
+    ///
+    /// Ce n'est pas un paramètre de mise en page, c'est une **contrainte de machine** : un plotter
+    /// domestique découpe sur des tapis, et son logiciel refuse une forme plus grande que le sien.
+    /// Une pièce qui dépasse est donc **découpée aux bords des tapis**, et chacun de ses morceaux
+    /// devient une géométrie à part entière.
+    ///
+    /// Posé, ce tapis change la nature de ce que la traversée produit — des morceaux au lieu de
+    /// pièces — et rien d'autre : la mise en page, elle, se décide ailleurs.
+    void SetCuttingMat(qreal widthPx, qreal heightPx);
 
 private:
     /// The graded axis of a range, and the sizes it covers.
@@ -307,10 +329,15 @@ private:
     QSharedPointer<VMeasurements> m_measurements{};
     /// @brief Pieces to keep. Empty keeps them all — see SetPieceFilter.
     QSet<quint32> m_pieceFilter{};
+    /// @brief Pieces to leave out. Empty leaves none out — see SetPieceExclusion.
+    QSet<quint32> m_pieceExclusion{};
     /// @brief Whether this traversal prepares a cutting plan — see SetCuttingPlan.
     bool m_cuttingPlan{false};
     /// @brief Whether that cutting plan is laid on folded fabric — see SetFoldedFabric.
     bool m_foldedFabric{false};
+    /// @brief La zone utile du tapis de découpe, en pixels — voir SetCuttingMat. Nulle : pas de tapis.
+    qreal m_matWidthPx{0.0};
+    qreal m_matHeightPx{0.0};
     /// @brief Diagnostics are a side channel: they report on a const traversal.
     mutable QStringList m_diagnostics{};
 };

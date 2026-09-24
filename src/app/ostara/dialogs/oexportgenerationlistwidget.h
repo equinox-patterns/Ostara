@@ -28,15 +28,11 @@
 #ifndef OEXPORTGENERATIONLISTWIDGET_H
 #define OEXPORTGENERATIONLISTWIDGET_H
 
-#include <QVector>
-#include <QWidget>
+#include "oexportrowlistwidget.h"
 
 #include "../core/oexportrunqueue.h"
 
 class OExportGenerationRowWidget;
-class QLabel;
-class QScrollArea;
-class QVBoxLayout;
 
 /**
  * @brief The list of runs to generate, as a stack of rows.
@@ -50,11 +46,10 @@ class QVBoxLayout;
  * would rebuild every row on every change, and the batch repaints this list line by line
  * while the user watches.
  *
- * It carries no action button. The tab is a page of a dialog whose button bar follows it
- * — "Generate the whole list" belongs there, with the other ways out, not here where a
- * second button would answer to almost the same name as the bar's own.
+ * The frame — the scroll area, the hint shown while the list is empty, what busy means —
+ * belongs to OExportRowListWidget, which every list of this dialog's entry screen shares.
  */
-class OExportGenerationListWidget : public QWidget
+class OExportGenerationListWidget : public OExportRowListWidget
 {
     Q_OBJECT // NOLINT
 
@@ -71,15 +66,6 @@ public:
     /// @brief Write where the row at @p index stands. No-op when the index is out of range.
     void SetState(int index, OExportRunState state);
 
-    auto IsEmpty() const -> bool;
-
-    /// @brief Lock what acts on the list, without greying what it shows.
-    ///
-    /// A batch locks the list while it walks it — a row taken down under the walk would
-    /// shift every row after it — but the rows themselves must stay legible: the states
-    /// are exactly what the user is watching.
-    void SetBusy(bool busy);
-
 signals:
     /// @brief The delete button of the row at @p index was clicked.
     void RemoveRequested(int index);
@@ -87,22 +73,14 @@ signals:
 protected:
     void changeEvent(QEvent *event) override;
 
+    /// @brief Show or hide the rows and the hint — and lock the delete buttons while a batch
+    ///        walks the list.
+    void Refresh() override;
+
 private:
     void Retranslate();
 
-    /// @brief Put the empty hint and the rows back in step with the list.
-    void Refresh();
-
     auto RowAt(int index) const -> OExportGenerationRowWidget *;
-
-    QVector<OExportGenerationRowWidget *> m_rows{};
-    QScrollArea *m_scrollArea{nullptr};
-    QWidget *m_listContainer{nullptr};
-    QVBoxLayout *m_listLayout{nullptr};
-    QLabel *m_emptyHint{nullptr};
-    bool m_busy{false};
-
-    Q_DISABLE_COPY_MOVE(OExportGenerationListWidget) // NOLINT
 };
 
 #endif // OEXPORTGENERATIONLISTWIDGET_H

@@ -315,10 +315,29 @@ void OWidgetOutputs::Populate()
         nameItem->setData(kPreviousNameRole, output.name);       // name BEFORE the next edit
         m_table->setItem(row, kName, nameItem);
 
-        // Favorite and edit still belong to the shell: drawn, and inert.
-        auto *favoriteItem = new QTableWidgetItem(MakeCellIcon(QStringLiteral("star"), dark), QString());
+        // The star says whether this generation's recipe is one of the favorites of the
+        // current (table, axis) context, and a click adds it or takes it out. Whether it is
+        // full is NOT the widget's to know: MainWindow hands it in on the row, because the
+        // store is not the dock's to read.
+        auto *favoriteItem = new QTableWidgetItem(
+            MakeCellIcon(output.favorite ? QStringLiteral("star-fill") : QStringLiteral("star"), dark), QString());
         favoriteItem->setFlags(favoriteItem->flags() & ~Qt::ItemIsEditable);
-        favoriteItem->setToolTip(tr("Add to favorites"));
+        favoriteItem->setData(Qt::UserRole, output.id); // the cell knows the row it acts on
+        if (!output.canFavorite)
+        {
+            // Without a measurements table there is no key, so no favorite — a disabled cell
+            // that says why, rather than a star that looks clickable and does nothing.
+            favoriteItem->setFlags(favoriteItem->flags() & ~Qt::ItemIsEnabled);
+            favoriteItem->setToolTip(tr("Favorites need a measurements table"));
+        }
+        else if (output.favorite)
+        {
+            favoriteItem->setToolTip(tr("Remove from favorites"));
+        }
+        else
+        {
+            favoriteItem->setToolTip(tr("Add to favorites"));
+        }
         m_table->setItem(row, kFavorite, favoriteItem);
 
         auto *editItem = new QTableWidgetItem(MakeCellIcon(QStringLiteral("gear-six"), dark), QString());
@@ -365,11 +384,11 @@ void OWidgetOutputs::OnAddClicked()
  * cell that was clicked, not off a neighbour. The name column is edited inline, and a
  * single click there must not take the canvas away from the generation being renamed,
  * which is why it does not share the status branch the way the Size Ranges dock shares
- * its own two. The rest — favorite and edit — are still the shell (§7.2).
+ * its own two. The star is wired too now; edit is still the shell (§7.2).
  */
 void OWidgetOutputs::OnCellClicked(int row, int column)
 {
-    if (column != kStatus && column != kRefresh && column != kDelete && column != kExport)
+    if (column != kStatus && column != kRefresh && column != kDelete && column != kExport && column != kFavorite)
     {
         return;
     }
@@ -385,6 +404,10 @@ void OWidgetOutputs::OnCellClicked(int row, int column)
         return;
     }
 
+    // ⚠️ `id` is read off the clicked cell HERE, before anything is emitted, and `cell` is
+    // never touched again: the favorite handler refreshes the dock, which re-pops the table,
+    // which frees every item of it — including this one, while this handler is still on the
+    // stack.
     const quint32 id = cell->data(Qt::UserRole).toUInt();
     if (id == 0)
     {
@@ -404,6 +427,9 @@ void OWidgetOutputs::OnCellClicked(int row, int column)
             break;
         case kExport:
             emit exportRequested(id);
+            break;
+        case kFavorite:
+            emit favoriteRequested(id);
             break;
         default:
             break;

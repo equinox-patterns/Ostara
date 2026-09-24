@@ -29,6 +29,9 @@
 
 #include "mainwindow_helpers.h"
 #include "mainwindowsnogui.h"
+#include "oexportfragment.h"
+#include "oexportplotter.h"
+#include "oexportpuzzlereference.h"
 #include "ogradedgeometry.h"
 #include "xml/vpattern.h"
 
@@ -42,8 +45,15 @@
 #include "../vpatterndb/vpiece.h"
 #include "../vtools/tools/vabstracttool.h"
 #include "../vexception/vexception.h"
+#include "../vlayout/vfoldline.h"
+#include "../vlayout/vlayoutpiecepath.h"
+#include "../vlayout/vlayoutpoint.h"
 
 #include <QDebug>
+#include <QLineF>
+#include <QPainterPath>
+#include <QPolygonF>
+#include <QTransform>
 
 #include <algorithm>
 
@@ -55,6 +65,259 @@ constexpr qreal kBaseTolerance = 1e-9;
 
 /// Enough to identify the cause, few enough to stay readable in a message box.
 constexpr int kMaxDiagnostics = 4;
+
+/// Le repère de recollage : **un centimètre**. Assez grand pour se voir sur du tissu, assez petit
+/// pour ne pas gêner. **Ce n'est pas un réglage** : rien dans l'interface ne le demande, et deux
+/// plans du même patron doivent porter les mêmes repères pour se relire l'un contre l'autre.
+///
+/// Un centimètre pour TOUTES les formes du répertoire — le rond comme le carré — et non la taille
+/// d'un rond : c'est la boîte où chaque forme se dessine. Sinon un carré paraîtrait plus gros que le
+/// rond qu'il remplace, et un repère se reconnaît avant de se mesurer.
+constexpr double kPuzzleReferenceMm = 10.0;
+
+/// Ce qu'une pièce devient sur un tapis de découpe : **un morceau par cellule**.
+///
+/// Le morceau naît ICI, dans la géométrie, et non dans le peintre. C'est ce qui fait que l'aperçu du
+/// canvas montre exactement ce qui sera coupé — écran et fichier disent la même chose — et que
+/// l'écriture n'a plus rien à découper : elle écrit ce qu'on lui donne, un objet par morceau.
+///
+/// ⚠️ **Ce qui est remis à zéro, et pourquoi.**
+///
+/// `id` et `groupId` : un morceau n'est **pas** la pièce du modèle. Garder l'id de la mère ferait
+/// résoudre son cartouche — un morceau porterait la carte d'identité de la pièce entière — et ferait
+/// **remplacer sa grainline** par celle de la pièce, qui ne passe plus par lui. Et `groupId` à zéro
+/// est ce qui **décompose le groupe** : `IsGroupedMember` répond faux, chaque membre est un objet.
+/// C'est la réponse du plotter à une question que `cuttingPlan` porte aujourd'hui pour le tissu —
+/// sans avoir à réutiliser ce drapeau, qui décide de dix choses sans rapport.
+///
+/// `alignDelta` : l'alignement fait correspondre une même pièce d'une taille à l'autre. Un run
+/// plotter est en taille unique et ses morceaux ne se correspondent pas — l'écart est nul.
+///
+/// `decor` et `grainline` gelés : la pièce du modèle n'en a plus besoin ici, le morceau porte les
+/// siens — son contour, et ses lignes.
+/// Les polylignes d'une FORME : une marque est un contour, et le canal de découpe ne connaît que des
+/// polylignes. C'est ici que la forme redevient des points, avant d'être coupée à la cellule.
+///
+/// ⚠️ Un sous-chemin fermé (une flèche, une lettre) revient avec son premier point répété à la fin :
+/// la découpe le traite donc comme une polyligne qui se referme sur elle-même, et le contour est
+/// conservé. Une plume trace des contours — elle ne remplit pas — donc ce qui est porté est
+/// exactement ce qui sera tracé.
+void AppendSubpaths(const QPainterPath &shape, QVector<QVector<QPointF>> &lines)
+{
+    for (const QPolygonF &subpath : shape.toSubpathPolygons())
+    {
+        if (subpath.size() < 2)
+        {
+            continue;
+        }
+
+        QVector<QPointF> points;
+        points.reserve(subpath.size());
+        for (const QPointF &point : subpath)
+        {
+            points.append(point);
+        }
+
+        lines.append(points);
+    }
+}
+
+auto FragmentsOf(const OExportPieceGeometry &geometry, const OExportPlotter::Mat &mat)
+    -> QVector<OExportPieceGeometry>
+{
+    QVector<OExportPieceGeometry> parts;
+
+    // La ligne de coupe : la marge de couture quand elle existe, le contour sinon — exactement le
+    // bord que le canvas dessine comme la pièce. Les crans y sont cousus (`togetherWithNotches`) :
+    // sans eux, un morceau perdrait ses repères de montage, et ça ne se voit qu'à la machine.
+    const QVector<VLayoutPoint> external = geometry.piece.IsSeamAllowance()
+                                               ? geometry.piece.GetMappedFullSeamAllowancePoints(true)
+                                               : geometry.piece.GetMappedFullContourPoints(true);
+
+    QVector<QPointF> outline;
+    outline.reserve(external.size());
+    for (const VLayoutPoint &point : external)
+    {
+        outline.append(point);
+    }
+
+    // ── Les lignes de la pièce ──────────────────────────────────────────────────────────────────
+    //
+    // Une pièce, c'est un contour, une marge de couture, des crans sur le contour — **et des CHEMINS
+    // INTERNES**. Les trois premiers font la ligne de coupe ; les derniers se DESSINENT, ils ne se
+    // découpent pas. Et il n'appartient pas à Ostara d'en juger : le logiciel du plotter assigne
+    // « couper » ou « dessiner » à chaque ligne du fichier, et le travail d'Ostara est de lui donner
+    // la géométrie. Elles sont donc portées TOUTES, y compris celles que le modèle marque à couper.
+    //
+    // Mappées par la matrice de la pièce — le même geste que `OExportCuttingDirection::MappedFoldLine`,
+    // et pour la même raison : une ligne se lit dans le repère où le contour est dessiné.
+    QVector<QVector<QPointF>> lines;
+
+    const QTransform matrix = geometry.piece.GetMatrix();
+    for (const VLayoutPiecePath &path : geometry.piece.GetInternalPaths())
+    {
+        QVector<QPointF> points;
+        points.reserve(path.Points().size());
+        for (const VLayoutPoint &point : path.Points())
+        {
+            points.append(matrix.map(point));
+        }
+
+        if (points.size() >= 2)
+        {
+            lines.append(points);
+        }
+    }
+
+    // ── Les MARQUES ─────────────────────────────────────────────────────────────────────────────
+    //
+    // ⚠️ **Une grainline n'est pas un trait, et une foldline non plus.** La première porte ses
+    // flèches, la seconde sa marque et son libellé : c'est ainsi que l'application les dessine
+    // PARTOUT — `CreateGrainlineItem` et `CreateFoldLineItem` — et c'est ce que l'utilisatrice
+    // attend sur son papier. Porter l'AXE à la place donne deux traits nus : celui du droit-fil, et
+    // pour une pièce au pli un trait posé sur le bord, puisque l'axe du pli EST le bord de la
+    // demi-pièce.
+    //
+    // Les deux sont donc prises en FORME, exactement celles que ces deux fonctions dessinent.
+    if (geometry.piece.IsGrainlineEnabled() && geometry.piece.IsGrainlineVisible())
+    {
+        AppendSubpaths(VLayoutPiece::GrainlinePath(geometry.piece.GetMappedGrainlineShape()), lines);
+    }
+
+    // La marque du pli vit dans le repère de la pièce — elle se mappe par la matrice, comme le
+    // contour.
+    //
+    // ⚠️ **La marque, jamais le libellé.** `FoldLineMarkPoints` rend les FLÈCHES, là où
+    // `FoldLinePath` y ajoute le texte du pli, vectorisé. Un fichier de découpe ne porte pas de
+    // texte : le §4.2 le dit, et la règle vaut aussi pour des lettres tracées en contours — le
+    // logiciel du plotter les graverait. Les flèches, elles, disent le pli, et le bord de la
+    // demi-pièce le dit déjà par lui-même : l'axe du pli EST ce bord.
+    for (const QVector<QPointF> &arrow : geometry.piece.FoldLine().FoldLineMarkPoints())
+    {
+        QVector<QPointF> points;
+        points.reserve(arrow.size());
+        for (const QPointF &point : arrow)
+        {
+            points.append(matrix.map(point));
+        }
+
+        if (points.size() >= 2)
+        {
+            lines.append(points);
+        }
+    }
+
+    // ── La LIGNE MIROIR, quand la pièce est dépliée ─────────────────────────────────────────────
+    //
+    // Une pièce au pli que le mode Details affiche ENTIÈRE est dépliée ici aussi — même
+    // `IsShowFullPiece`, lu par le même getter, et rien dans ce fichier ne le force. Ce qui manquait
+    // au fichier, c'est ce que l'écran dessine alors **en plus** de la foldline : la ligne miroir,
+    // l'axe du pli raccourci aux deux points où il rencontre le contour déplié.
+    //
+    // ⚠️ **Les deux mêmes conditions que l'écran, ni plus ni moins.** `RenderMirrorLine`
+    // (`vtoolseamallowance.cpp`) et `PaintMirrorLine` (`vpgraphicspiece.cpp`) la gardent toutes deux
+    // par `IsShowFullPiece() && IsShowMirrorLine()`. Un fichier de découpe dit ce que le patron dit :
+    // il n'a pas sa propre idée de ce qu'est une pièce dépliée.
+    //
+    // Le getter applique lui-même la matrice de la pièce, et son repère est donc celui du contour et
+    // des marques — pas celui des chemins internes, qui se mappent. `togetherWithNotches` suit le
+    // contour pris plus haut : l'axe se raccourcit sur le bord qui découpe.
+    if (geometry.piece.IsShowFullPiece() && geometry.piece.IsShowMirrorLine())
+    {
+        const QLineF mirror = geometry.piece.GetMappedCorrectedMirrorLine(true);
+        if (!mirror.isNull())
+        {
+            lines.append(QVector<QPointF>{mirror.p1(), mirror.p2()});
+        }
+    }
+
+    const OExportPlotter::PiecePlan plan =
+        OExportPlotter::Plan(geometry.piece.MappedDetailBoundingRect(), mat);
+
+    // ── Les repères de recollage ────────────────────────────────────────────────────────────────
+    //
+    // Une pièce coupée en plusieurs morceaux ne dit plus, une fois coupée, lequel va à côté de
+    // lequel : le nom est dans le fichier, pas sur le tissu. Une FORME posée à cheval sur chaque
+    // coupe le dit — chaque morceau emporte sa moitié, et deux moitiés ne reforment la forme qu'à une
+    // seule position : le bon voisin, à la bonne place. Un trait droit, lui, glisserait le long de la
+    // coupe et ne dirait rien.
+    //
+    // Le répertoire des formes et l'ordre des coupes vivent dans `OExportPuzzleReference` : la règle
+    // est là-bas, et elle n'a qu'un lecteur.
+    //
+    // Ce sont des lignes comme les autres : la découpe à la cellule les sépare d'elle-même, chacune
+    // du bon côté, et elles arrivent donc à l'écran comme au fichier sans une ligne de plus.
+    lines += OExportPuzzleReference::Marks(outline, plan.turn, plan,
+                                           ToPixel(kPuzzleReferenceMm, Unit::Mm));
+
+    const QVector<OExportFragment::Part> split = OExportFragment::Split(outline, lines, plan);
+
+    int index = 0;
+    for (const OExportFragment::Part &part : split)
+    {
+        ++index;
+
+        OExportPieceGeometry one = geometry;
+
+        // Un morceau neuf, fait de son contour et de ses lignes. Rien d'autre : ni marge de couture
+        // — elle EST devenue la ligne de coupe — ni allowance de nesting, ni crans séparés.
+        QVector<VLayoutPoint> points;
+        points.reserve(part.outline.size());
+        for (const QPointF &point : part.outline)
+        {
+            // Tous les sommets en coin vif. Sans ça la déduplication d'un contour tolère un demi
+            // millimètre et replierait un morceau étroit sur lui-même.
+            VLayoutPoint corner(point);
+            corner.SetTurnPoint(true);
+            points.append(corner);
+        }
+
+        VLayoutPiece piece;
+        piece.SetContourPoints(points);
+        piece.SetName(one.name);
+
+        QVector<VLayoutPiecePath> internal;
+        internal.reserve(part.lines.size());
+        for (const QVector<QPointF> &line : part.lines)
+        {
+            QVector<VLayoutPoint> linePoints;
+            linePoints.reserve(line.size());
+            for (const QPointF &point : line)
+            {
+                linePoints.append(VLayoutPoint(point));
+            }
+            internal.append(VLayoutPiecePath(linePoints));
+        }
+        piece.SetInternalPaths(internal);
+
+        one.piece = piece;
+        one.id = 0;
+        one.groupId = 0;
+        one.groupName.clear();
+        one.alignDelta = QPointF();
+        one.decor = OExportPieceDecor();
+        one.grainline = OExportPieceGrainline();
+
+        // ⚠️ **Le nom ET la clé viennent du nom de la PIÈCE, jamais de la clé du groupe.**
+        //
+        // Deux membres d'un groupe partagent la clé `g<groupId>` — et c'est voulu pour le nesting,
+        // où le groupe est posé comme un bloc rigide. Mais un run plotter **décompose les groupes** :
+        // chaque membre est un objet à part entière. Deux morceaux qui garderaient cette clé
+        // commune seraient **dessinés l'un sur l'autre** — le canvas apparie les géométries par clé,
+        // donc chaque placement dessinerait les deux.
+        //
+        // ⚠️ Et **pas de suffixe `_1`** : l'écrivain de Trame retire `_` + chiffres pour retrouver
+        // le transform, et deux morceaux nommés ainsi retomberaient l'un sur l'autre. La clé est le
+        // nom, qui est déjà unique.
+        const QString suffix = split.size() > 1 ? QStringLiteral("-f%1").arg(index) : QString();
+        one.name = geometry.name + suffix;
+        one.key = one.name;
+
+        parts.append(one);
+    }
+
+    return parts;
+}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -191,6 +454,12 @@ void OExportGeometry::SetPieceFilter(const QSet<quint32> &pieceIds)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportGeometry::SetPieceExclusion(const QSet<quint32> &pieceIds)
+{
+    m_pieceExclusion = pieceIds;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportGeometry::SetCuttingPlan(bool cutting)
 {
     m_cuttingPlan = cutting;
@@ -200,6 +469,13 @@ void OExportGeometry::SetCuttingPlan(bool cutting)
 void OExportGeometry::SetFoldedFabric(bool folded)
 {
     m_foldedFabric = folded;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportGeometry::SetCuttingMat(qreal widthPx, qreal heightPx)
+{
+    m_matWidthPx = widthPx;
+    m_matHeightPx = heightPx;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -313,6 +589,17 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         // and every piece outside one. The others are dropped here rather than later, so the
         // group's footprint is that single piece and not the union of all its members.
         if (not m_pieceFilter.isEmpty() && not m_pieceFilter.contains(id))
+        {
+            continue;
+        }
+
+        // Et une pièce DÉCOCHÉE dans l'onglet Plotter ne se coupe pas. C'est ici, et ici seulement,
+        // que ce choix devient de la géométrie — et, comme tout ce que la traversée laisse de côté,
+        // elle quitte AUSSI l'aperçu : le canvas et le fichier lisent les mêmes `layers`, et c'est
+        // exactement ce qu'on veut d'eux. L'écran montre ce qui sera coupé, et une pièce écartée n'en
+        // fait plus partie. Elle allège d'ailleurs le plan : un morceau de moins, c'est parfois un
+        // tapis de moins.
+        if (not m_pieceExclusion.isEmpty() && m_pieceExclusion.contains(id))
         {
             continue;
         }
@@ -539,7 +826,17 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
                 one.direction = OExportCuttingDirection::Mirrored(one.direction);
             }
 
-            layer.pieces.append(one);
+            // Un tapis de découpe découpe la pièce : elle devient plusieurs morceaux, un par
+            // cellule, et chacun est une géométrie à part entière — c'est ce qui donnera un objet
+            // distinct dans le fichier. Sans tapis, la pièce reste entière.
+            if (m_matWidthPx > 0.0 && m_matHeightPx > 0.0)
+            {
+                layer.pieces += FragmentsOf(one, {m_matWidthPx, m_matHeightPx});
+            }
+            else
+            {
+                layer.pieces.append(one);
+            }
 
             // ── Et la variante EN MIROIR d'une pièce au pli ────────────────────────────────────
             //

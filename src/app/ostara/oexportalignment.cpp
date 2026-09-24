@@ -82,7 +82,27 @@ void IndexLayers(const QVector<OExportSizeLayer> &layers, QHash<quint32, QVector
         const OExportSizeLayer &layer = layers.at(l);
         for (int p = 0; p < layer.pieces.size(); ++p)
         {
-            slotsByPiece[layer.pieces.at(p).id].append({l, p});
+            // ⚠️ **Un id nul n'est pas une pièce du modèle**, et n'a donc rien à aligner.
+            //
+            // C'est la marque d'une géométrie DÉRIVÉE — le morceau d'une pièce, découpé aux bords
+            // d'un tapis de plotter (voir `FragmentsOf`, dans oexportgeometry.cpp). Tous les
+            // morceaux d'un run portent cet id, et les indexer ici les faisait passer pour **une
+            // seule pièce présente N fois** : la garde « moins de deux positions » de chaque passe
+            // laissait alors passer l'alignement, et un écart était écrit sur chacun d'eux.
+            //
+            // Or la mise en page d'un run plotter les place **sans** cet écart, et le canvas
+            // l'ajoute par-dessus : les morceaux partaient de travers — hors du canevas, et les uns
+            // sur les autres — pendant que la taille du canevas, elle, se calculait sans l'écart.
+            //
+            // L'alignement sert à faire correspondre **une même pièce d'une taille à l'autre**.
+            // Un morceau n'existe qu'à une taille.
+            const quint32 id = layer.pieces.at(p).id;
+            if (id == 0)
+            {
+                continue;
+            }
+
+            slotsByPiece[id].append({l, p});
         }
     }
 }

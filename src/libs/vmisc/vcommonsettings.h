@@ -154,6 +154,15 @@ public:
                            const QVariantMap &record) const;
     void RemoveGradedFavorite(const QString &canonicalPath, const QString &axisName, const QString &name) const;
 
+    /// Export-mode favorites, stored per canonical path + size axis in the software store
+    /// (never in the .omt / .ostara) — the same (table, axis) key as the graded favorites,
+    /// so that every pattern loading the same table offers the same ones. Returns
+    /// name -> record, where a record holds the recipe of one run, field by field.
+    auto GetExportFavorites(const QString &canonicalPath, const QString &axisName) const -> QVariantMap;
+    void SetExportFavorite(const QString &canonicalPath, const QString &axisName, const QString &name,
+                           const QVariantMap &record) const;
+    void RemoveExportFavorite(const QString &canonicalPath, const QString &axisName, const QString &name) const;
+
     /// Graded trace styles (color + pt dashes + optional layer-name override) for
     /// the graded mode, stored per canonical path + size axis in the software store
     /// (never in the .omt / .ostara). Returns size-value label -> record, where a

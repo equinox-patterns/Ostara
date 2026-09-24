@@ -52,6 +52,8 @@ struct OExportOutputRow
 {
     quint32 id{0};   ///< stable identity — the row index is not one
     QString name{};  ///< what the user named it; unique among the rows of the same context
+    bool favorite{false};    ///< a favorite of the current context already carries this name
+    bool canFavorite{true};  ///< false when the pattern has no measurements table to key on
 };
 
 /**
@@ -61,9 +63,9 @@ struct OExportOutputRow
  *        them into. Like the Size Ranges dock it never touches the pattern: it
  *        will act through signals once the behaviour lands.
  *
- *        Shell stage (14-09-2026): every control is present and inert — the
- *        buttons do nothing. See spec
- *        Modifications/Ostara/ExportMode/DockOutputs.md.
+ *        Favorite (24-09-2026) is wired: the star adds the generation's recipe to the
+ *        software-level favorites, or removes it. **Edit is still the shell** — drawn,
+ *        and inert. See spec Modifications/Ostara/ExportMode/DockOutputs.md.
  */
 class OWidgetOutputs final : public QWidget
 {
@@ -109,6 +111,14 @@ signals:
 
     /** @brief The Export icon of @p id was clicked: write its plan as a PDF. */
     void exportRequested(quint32 id);
+
+    /**
+     * @brief The favorite star of @p id was clicked: add that generation's recipe to the
+     *        favorites of the current (table, axis) context, or take it out when it is
+     *        already there. Which of the two it is belongs to MainWindow — it owns the
+     *        store, and the widget never sees it.
+     */
+    void favoriteRequested(quint32 id);
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;

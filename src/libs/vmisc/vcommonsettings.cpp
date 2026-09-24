@@ -116,6 +116,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCollectionsSortAscending, ("info
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingMeasurementFavorites, ("paths/measurementFavorites"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedSizeAxis, ("graded/sizeAxis"_L1))                       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedFavorites, ("graded/favorites"_L1))                     // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingExportFavorites, ("export/favorites"_L1))                     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedSizeStyles, ("graded/sizeStyles"_L1))                   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedSizeStylesShowInCanvas,
                           ("graded/showSizeStylesInCanvas"_L1))                                                // NOLINT
@@ -825,6 +826,73 @@ void VCommonSettings::RemoveGradedFavorite(const QString &canonicalPath, const Q
     }
 
     settings.setValue(*settingGradedFavorites, outer);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetExportFavorites(const QString &canonicalPath, const QString &axisName) const -> QVariantMap
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingExportFavorites).toMap()
+        .value(canonicalPath).toMap()
+        .value(axisName).toMap();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetExportFavorite(const QString &canonicalPath, const QString &axisName, const QString &name,
+                                        const QVariantMap &record) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+
+    QVariantMap outer = settings.value(*settingExportFavorites).toMap();
+    QVariantMap perAxis = outer.value(canonicalPath).toMap();
+    QVariantMap names = perAxis.value(axisName).toMap();
+    names.insert(name, record);
+    perAxis.insert(axisName, names);
+    outer.insert(canonicalPath, perAxis);
+
+    settings.setValue(*settingExportFavorites, outer);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::RemoveExportFavorite(const QString &canonicalPath, const QString &axisName,
+                                           const QString &name) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+
+    QVariantMap outer = settings.value(*settingExportFavorites).toMap();
+    QVariantMap perAxis = outer.value(canonicalPath).toMap();
+    QVariantMap names = perAxis.value(axisName).toMap();
+    names.remove(name);
+    if (names.isEmpty())
+    {
+        perAxis.remove(axisName);
+    }
+    else
+    {
+        perAxis.insert(axisName, names);
+    }
+    if (perAxis.isEmpty())
+    {
+        outer.remove(canonicalPath);
+    }
+    else
+    {
+        outer.insert(canonicalPath, perAxis);
+    }
+
+    // Et la clé elle-même quand plus rien ne pend dessous. Le store des favoris de gammes laisse
+    // pour sa part une carte vide derrière lui (même code, autre clé) : une clé morte dans le
+    // fichier de réglages n'est pas une faute, mais elle n'a rien à y faire non plus.
+    if (outer.isEmpty())
+    {
+        settings.remove(*settingExportFavorites);
+    }
+    else
+    {
+        settings.setValue(*settingExportFavorites, outer);
+    }
     settings.sync();
 }
 

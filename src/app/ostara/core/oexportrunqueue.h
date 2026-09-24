@@ -29,6 +29,7 @@
 #ifndef OEXPORTRUNQUEUE_H
 #define OEXPORTRUNQUEUE_H
 
+#include <QCoreApplication>
 #include <QString>
 #include <QStringList>
 #include <QVector>
@@ -48,6 +49,17 @@ enum class OExportRunState
     Done,    ///< generated and filed in the dock
     Failed   ///< the engine refused it — the reason has already been shown
 };
+
+/// @brief What @p state reads as on screen.
+///
+/// Next to the enum, and out of the row widget it used to be private to, because a second kind
+/// of row shows the same states now (the favorites of the entry dialog). Two readers, one
+/// definition — a state spelled twice is a state that ends up saying two different things.
+///
+/// ⚠️ It carries its own translation context (`OExportRunState`) rather than borrowing the
+/// widget's: those four words will need an entry of their own in the .ts catalogs, which is a
+/// translation pass, not a code change.
+[[nodiscard]] auto OExportRunStateText(OExportRunState state) -> QString;
 
 /// @brief One line of the list: what to generate, under which name, and where it stands.
 struct OExportQueueItem

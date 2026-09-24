@@ -1330,6 +1330,10 @@ void MainWindow::InitDocksContain()
     // Direct: the status icon is a plain click, and it redraws the scene under it.
     connect(m_dockManager->outputsWidget(), &OWidgetOutputs::activeRequested, this,
             &MainWindow::SetActiveExportOutput);
+    // Direct too, and for the same reason: the star is a plain click. It writes the software
+    // store and refills the dock — no nesting runs behind it, so there is nothing to wait for.
+    connect(m_dockManager->outputsWidget(), &OWidgetOutputs::favoriteRequested, this,
+            &MainWindow::ToggleExportFavorite);
     // Queued: a refresh runs a nesting behind a modal wait dialog with a nested event
     // loop. Returning into the view's own mouse handling once the run is over — minutes
     // later — is what queuing avoids.

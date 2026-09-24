@@ -27,35 +27,28 @@
 #ifndef OEXPORTPDFDIALOG_H
 #define OEXPORTPDFDIALOG_H
 
-#include <QDialog>
-#include <QString>
+#include "oexportfiledialog.h"
 
-class QDialogButtonBox;
-class QEvent;
-class QLabel;
 class QCheckBox;
-class QLineEdit;
-class QPushButton;
+class QEvent;
 
 /**
- * @brief Where the PDF of a generation is written: a name, a folder, and one choice.
+ * @brief Where the PDF of a generation is written: the file, and one choice about the paper.
  *
- * Two fields for the delivery — a name and a folder — and one switch for the paper. Everything
- * else the run needs is already settled: the generation is filed, its geometry frozen, its page
- * given by the bin.
+ * Le nom, le dossier, le contrôle du dossier et la question de l'écrasement sont ceux de
+ * `OExportFileDialog` : un seul endroit les définit, et le `.pdf` y entre par le suffixe.
  *
- * The name is offered rather than typed: it opens on the generation's own name, which is
- * what the list calls it and what a folder of six of them wants to read. It stays editable
- * because the file is a delivery, and a delivery is named for whoever receives it.
+ * Ce que ce dialogue ajoute est la **seule** chose qui soit propre au PDF : une case pour écrire le
+ * décor du plan comme un calque du document, que le lecteur peut éteindre.
  *
- * ⚠️ The switch is the one thing here that is not about the file, and the header used to say
+ * ⚠️ The switch is the one thing here that is not about the file, and this header used to say
  * « Two fields and nothing else » — which was true until the decor layer could be offered or
  * withheld. It is OFF by default, and that default is the point rather than a taste: a plan
  * whose decor is a layer can be printed without its cartouche, its folds and its annotations
  * and look perfectly normal. Printers untick boxes. So the safe answer is the one the dialog
  * opens on, and the layer is something the user has to ask for.
  */
-class OExportPdfDialog : public QDialog
+class OExportPdfDialog : public OExportFileDialog
 {
     Q_OBJECT
 
@@ -64,15 +57,6 @@ public:
     /// @param directory  where it opens; the folder last used, or Documents.
     explicit OExportPdfDialog(const QString &outputName, const QString &directory,
                               QWidget *parent = nullptr);
-
-    /// @brief The file name, with a .pdf suffix — added here if the user left it off.
-    auto FileName() const -> QString;
-
-    /// @brief The folder, as typed or browsed to.
-    auto Directory() const -> QString;
-
-    /// @brief Folder and file name together.
-    auto FullPath() const -> QString;
 
     /// @brief Whether the decor is written as one of the reader's layers.
     ///
@@ -83,22 +67,10 @@ public:
     auto AddLayoutLayer() const -> bool;
 
 protected:
-    void changeEvent(QEvent *event) override;
-
-private slots:
-    void OnBrowse();
-    void OnAccept();
+    void Retranslate() override;
 
 private:
-    void Retranslate();
-
-    QLabel *m_nameLabel{nullptr};
-    QLabel *m_pathLabel{nullptr};
-    QLineEdit *m_nameEdit{nullptr};
-    QLineEdit *m_pathEdit{nullptr};
-    QPushButton *m_browseButton{nullptr};
     QCheckBox *m_layoutLayerCheck{nullptr};
-    QDialogButtonBox *m_buttonBox{nullptr};
 };
 
 #endif  // OEXPORTPDFDIALOG_H

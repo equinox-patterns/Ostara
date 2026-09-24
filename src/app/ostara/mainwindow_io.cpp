@@ -37,6 +37,7 @@
 #include "../vmisc/def.h"
 #include "core/vapplication.h"
 #include "core/odetailspropertybrowser.h"
+#include "core/ogradedrangerenames.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "dialogs/DialogOpenMeasurements.h"
 #include "dialogs/dialognewpattern.h"
@@ -531,6 +532,10 @@ void MainWindow::Clear()
     // Generations belong to the session: closing the pattern takes them with the rest,
     // and none of them was ever written to the .ostara.
     m_exportOutputs.Clear();
+
+    // The renames followed the ranges of the pattern that is going away: keeping them would
+    // rename the ranges of the next one (see OGradedRangeRenames).
+    OGradedRangeRenames::Forget();
 
     // The generations are gone, so the selection naming a footprint of one and the history of
     // gestures made on it are gone too. Reset() is documented for this exact moment; until now

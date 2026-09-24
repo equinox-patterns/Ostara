@@ -27,9 +27,12 @@
 #include "oexportmodedialog.h"
 
 #include "oexportcuttingwidget.h"
+#include "oexportfavoriteswidget.h"
 #include "oexportgenerationlistwidget.h"
+#include "oexportplotterwidget.h"
 #include "oexportprintwidget.h"
 
+#include "oexportbatchpreflightdialog.h"
 #include "../core/oexportcuttingguard.h"
 #include "../core/oexportnamebuilder.h"
 #include "../core/oexportunitformat.h"
@@ -50,19 +53,29 @@
 
 namespace
 {
-/// The tab that holds the runs described but not fired.
+/// The tab that holds the runs described but not fired. **C'est la page sur laquelle le dialogue
+/// s'ouvre** : c'est là que se voit le travail déjà fait — les runs décrits, et les favoris gardés
+/// — et une liste vide le dit elle-même, là où un formulaire d'impression vierge ne dit rien.
 constexpr int kListTabIndex = 0;
 
 /// The tab that cuts pieces out of fabric, one size at a time.
 constexpr int kCuttingTabIndex = 1;
 
-/// Where the tab that can be acted on sits. The dialog opens on it rather than on the
-/// first tab: two of the four have nothing to offer yet, and landing on one of those
-/// would show an empty page every time the mode is entered.
+/// Where the Print tab sits.
 constexpr int kPrintTabIndex = 2;
 
-/// The tab that throws the plan on a wall.
-constexpr int kProjectorTabIndex = 3;
+/// The tab that cuts a pattern on the mats of a domestic plotter.
+constexpr int kPlotterTabIndex = 3;
+
+// ── Les sous-onglets de la page « à générer » ────────────────────────────────────────────────
+//
+// La liste de travail, puis une liste de favoris par type. Les favoris sont triés par la recette
+// elle-même (`cuttingPlan`, `plotterPlan`, ni l'un ni l'autre pour un print) : il n'y a pas de
+// champ « type » à tenir en accord avec elle.
+constexpr int kWorkingListTabIndex = 0;
+constexpr int kCuttingFavoritesTabIndex = 1;
+constexpr int kPrintFavoritesTabIndex = 2;
+constexpr int kPlotterFavoritesTabIndex = 3;
 
 /// Below this the Print tab's form is cramped, whatever the tab bar needs.
 constexpr int kMinDialogWidth = 560;
@@ -74,11 +87,12 @@ constexpr int kTabBarChrome = 40;
 //---------------------------------------------------------------------------------------------------------------------
 OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointer<VMeasurements> &measurements,
                                      const OGradedSizeRanges::Context &context, const QStringList &takenNames,
-                                     QWidget *parent)
+                                     const QVector<OExportFavorite> &favorites, QWidget *parent)
   : QDialog(parent),
     m_data(data),
     m_measurements(measurements),
     m_context(context),
+    m_favorites(favorites),
     m_takenNames(takenNames)
 {
     setWindowTitle(tr("Export"));
@@ -88,7 +102,22 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
 
     m_tabs = new QTabWidget(this);
 
-    m_listWidget = new OExportGenerationListWidget(m_tabs);
+    // ── La page 0 : la liste de travail, et les favoris ───────────────────
+    //
+    // La page est un CONTENEUR, et non plus la liste elle-même : quatre sous-onglets y vivent — la
+    // liste de travail, et une liste de favoris par type de plan. Le dispatch des boutons ne bouge
+    // pas pour autant : il lit toujours l'onglet EXTERNE (m_tabs), et la page 0 reste la page 0.
+    m_listPage = new QWidget(m_tabs);
+    auto *listPageLayout = new QVBoxLayout(m_listPage);
+    listPageLayout->setContentsMargins(0, 0, 0, 0);
+
+    m_listTabs = new QTabWidget(m_listPage);
+    // La même règle que la barre extérieure : une barre à court de place raccourcit ses libellés ou
+    // cache le surplus derrière des flèches, et ni l'un ni l'autre ne se lit.
+    m_listTabs->setElideMode(Qt::ElideNone);
+    m_listTabs->setUsesScrollButtons(false);
+
+    m_listWidget = new OExportGenerationListWidget(m_listTabs);
     connect(m_listWidget, &OExportGenerationListWidget::RemoveRequested, this,
             [this](int index)
             {
@@ -98,6 +127,34 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
                 m_listWidget->RemoveRow(index);
                 RefreshGenerateButtons();
             });
+
+    m_cuttingFavorites = new OExportFavoritesWidget(m_listTabs);
+    m_printFavorites = new OExportFavoritesWidget(m_listTabs);
+    m_plotterFavorites = new OExportFavoritesWidget(m_listTabs);
+
+    m_listTabs->addTab(m_listWidget, QString());
+    m_listTabs->addTab(m_cuttingFavorites, QString());
+    m_listTabs->addTab(m_printFavorites, QString());
+    m_listTabs->addTab(m_plotterFavorites, QString());
+    m_listTabs->setTabToolTip(kWorkingListTabIndex,
+                              tr("The runs described in the tabs beside, waiting to be generated.\n"
+                                 "They are not kept: closing the pattern takes them with the session."));
+
+    for (OExportFavoritesWidget *favoritesView : {m_cuttingFavorites, m_printFavorites, m_plotterFavorites})
+    {
+        // Ce qui est coché décide de ce que le lot lance : le bouton suit chaque case, sinon il
+        // promettrait un lot vide ou refuserait un lot plein.
+        connect(favoritesView, &OExportFavoritesWidget::CheckedChanged, this,
+                &OExportModeDialog::RefreshGenerateButtons);
+    }
+    connect(m_cuttingFavorites, &OExportFavoritesWidget::RemoveRequested, this,
+            [this](const QString &name) { OnFavoriteRemoveRequested(name, m_cuttingFavorites); });
+    connect(m_printFavorites, &OExportFavoritesWidget::RemoveRequested, this,
+            [this](const QString &name) { OnFavoriteRemoveRequested(name, m_printFavorites); });
+    connect(m_plotterFavorites, &OExportFavoritesWidget::RemoveRequested, this,
+            [this](const QString &name) { OnFavoriteRemoveRequested(name, m_plotterFavorites); });
+
+    listPageLayout->addWidget(m_listTabs);
 
     m_cuttingTab = new QWidget(m_tabs);
     m_cuttingLayout = new QVBoxLayout(m_cuttingTab);
@@ -114,7 +171,14 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
     // form at index 0, before it.
     m_printLayout->addStretch();
 
-    m_projectorTab = MakeComingSoonTab(m_tabs);
+    m_plotterTab = new QWidget(m_tabs);
+    m_plotterLayout = new QVBoxLayout(m_plotterTab);
+    // The stretch keeps the form at the top of the page; the widget is inserted before it.
+    m_plotterLayout->addStretch();
+
+    m_plotterWidget = new OExportPlotterWidget(m_data, m_measurements, m_plotterTab);
+    m_plotterLayout->insertWidget(0, m_plotterWidget);
+    connect(m_plotterWidget, &OExportPlotterWidget::Changed, this, &OExportModeDialog::OnFormChanged);
 
     // A tab bar that runs out of room shortens its labels, or hides the surplus behind
     // scroll arrows. Neither is readable, so the dialog is widened to the labels instead
@@ -122,12 +186,16 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
     m_tabs->setElideMode(Qt::ElideNone);
     m_tabs->setUsesScrollButtons(false);
 
-    m_tabs->addTab(m_listWidget, QString());
+    m_tabs->addTab(m_listPage, QString());
     m_tabs->addTab(m_cuttingTab, QString());
     m_tabs->addTab(m_printTab, QString());
-    m_tabs->addTab(m_projectorTab, QString());
-    m_tabs->setCurrentIndex(kPrintTabIndex);
+    m_tabs->addTab(m_plotterTab, QString());
+    m_tabs->setCurrentIndex(kListTabIndex);
     layout->addWidget(m_tabs);
+
+    // Après les onglets et avant Retranslate, dont RebuildButtonBox demande l'état du bouton du lot
+    // — lequel dépend de ce qui est coché ici.
+    PopulateFavorites(m_favorites);
 
     // The bar sits on the right with the last thing said on its left: what was added is
     // reported where the user is already looking when she clicks, not in a status line
@@ -147,8 +215,9 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
 
     connect(m_tabs, &QTabWidget::currentChanged, this, [this](int) { OnTabChanged(); });
 
-    // After the page it goes on, and before Retranslate, which builds the bar from the tab
-    // in force — the Print tab, whose buttons read the form this creates.
+    // The form of the Print tab, avant Retranslate : le dialogue s'ouvre sur la liste, dont les
+    // boutons ne lisent pas ce formulaire, mais RefreshGenerateButtons lit sa validité — et un onglet
+    // Print sans formulaire ferait un « Generate this output » mort.
     ResetPrintTab();
 
     Retranslate();
@@ -156,18 +225,16 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OExportModeDialog::MakeComingSoonTab(QWidget *parent) -> QWidget *
+void OExportModeDialog::ResetPlotterTab()
 {
-    auto *page = new QWidget(parent);
-    auto *layout = new QVBoxLayout(page);
+    delete m_plotterWidget;
 
-    auto *label = new QLabel(page);
-    label->setAlignment(Qt::AlignCenter);
-    label->setObjectName(QStringLiteral("comingSoonLabel"));
-    label->setText(OExportModeDialog::tr("Coming soon"));
-    layout->addWidget(label);
+    m_plotterWidget = new OExportPlotterWidget(m_data, m_measurements, m_plotterTab);
+    m_plotterLayout->insertWidget(0, m_plotterWidget);
 
-    return page;
+    connect(m_plotterWidget, &OExportPlotterWidget::Changed, this, &OExportModeDialog::OnFormChanged);
+
+    RefreshGenerateButtons();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -329,6 +396,39 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
         return request;
     }
 
+    if (m_tabs != nullptr && m_tabs->currentIndex() == kPlotterTabIndex)
+    {
+        if (m_plotterWidget == nullptr)
+        {
+            return request;
+        }
+
+        request.unit = m_plotterWidget->MatUnit();
+        request.singleSize = true;
+        request.baseA = m_plotterWidget->DimensionBase(0);
+        request.baseB = m_plotterWidget->DimensionBase(1);
+        request.baseC = m_plotterWidget->DimensionBase(2);
+
+        // La destination. C'est elle qui fait découper la géométrie en morceaux — et c'est elle
+        // aussi qui décidera du dialogue que le bouton d'export ouvrira.
+        request.plotterPlan = true;
+        request.matWidthMm = m_plotterWidget->MatWidthMm();
+        request.matHeightMm = m_plotterWidget->MatHeightMm();
+        request.matUnit = m_plotterWidget->MatUnit();
+
+        // **Et les membres de groupe que l'utilisatrice a décochés.** Le plotter décompose les
+        // groupes — chaque membre est une pièce à couper — donc ces cases ne choisissent pas un
+        // membre, elles en écartent : c'est une liste d'EXCLUSIONS, et vide veut dire « toutes ».
+        // Un `groupMemberChoices` ici serait le contresens exact : il ne garderait qu'un membre par
+        // groupe, là où un plotter les coupe tous.
+        request.excludedPieces = m_plotterWidget->ExcludedPieces();
+
+        // Et rien d'autre : ni laize, ni pli, ni espacement, ni marge — un plotter coupe un patron,
+        // une fois, sur un tapis. **Ni modèle de repères ni page de garde** : les laisser nommés
+        // poserait des repères et un second document sur un fichier de découpe.
+        return request;
+    }
+
     request.documentWidthMm = m_printWidget->DocumentWidthMm();
     request.unit = m_printWidget->DisplayUnit();
     request.rangeName = m_printWidget->SizeRangeName();
@@ -361,20 +461,34 @@ auto OExportModeDialog::CurrentName() const -> QString
     //    valeurs du patron. La laize, elle, était déjà lue au bon endroit, d'où un nom dont seule
     //    la fin changeait. Trouvé par Sophie.
     const bool cutting = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex;
+    const bool plotter = m_tabs != nullptr && m_tabs->currentIndex() == kPlotterTabIndex;
 
     QStringList bases;
     if (request.singleSize)
     {
         for (int slot = 0; slot < 3; ++slot)
         {
-            bases.append(cutting && m_cuttingWidget != nullptr ? m_cuttingWidget->DimensionLabel(slot)
-                                                               : m_printWidget->DimensionLabel(slot));
+            if (cutting && m_cuttingWidget != nullptr)
+            {
+                bases.append(m_cuttingWidget->DimensionLabel(slot));
+            }
+            else if (plotter && m_plotterWidget != nullptr)
+            {
+                bases.append(m_plotterWidget->DimensionLabel(slot));
+            }
+            else
+            {
+                bases.append(m_printWidget->DimensionLabel(slot));
+            }
         }
     }
 
     // Un plan de coupe n'a pas de modèle d'impression : il sort sur un rouleau de tissu, dont la
     // largeur EST la laize — et le jeton qui le dit est écrit une seule fois, pour ses deux lecteurs.
-    const QString token = cutting && m_cuttingWidget != nullptr ? CuttingToken() : request.printModelToken;
+    // Un plan plotter non plus : sa largeur est celle de son tapis, et son jeton dit lequel.
+    const QString token = cutting && m_cuttingWidget != nullptr ? CuttingToken()
+                         : plotter && m_plotterWidget != nullptr ? PlotterToken()
+                                                                 : request.printModelToken;
 
     const QString base = OExportNameBuilder::Base(request.singleSize ? QString() : request.rangeName,
                                                   bases, token);
@@ -412,9 +526,181 @@ auto OExportModeDialog::CuttingToken() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportModeDialog::PlotterToken() const -> QString
+{
+    if (m_plotterWidget == nullptr)
+    {
+        return {};
+    }
+
+    // Le tapis, comme la laize pour le plan de coupe : deux tapis différents donnent deux
+    // découpages différents — un autre nombre de morceaux, à d'autres endroits — et le nom est le
+    // seul endroit où la différence se voit. La zone utile est nommée en centimètres, l'unité dans
+    // laquelle on la lit.
+    return QStringLiteral("Plot-%1x%2")
+        .arg(OExportUnitFormat::Format(m_plotterWidget->MatWidthMm(), Unit::Cm),
+             OExportUnitFormat::Format(m_plotterWidget->MatHeightMm(), Unit::Cm));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportModeDialog::SetRunGenerator(RunGenerator generator)
 {
     m_generator = std::move(generator);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportModeDialog::SetFavoriteRemover(FavoriteRemover remover)
+{
+    m_favoriteRemover = std::move(remover);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportModeDialog::KindOf(const OExportRunRequest &request) -> FavoriteKind
+{
+    if (request.cuttingPlan)
+    {
+        return FavoriteKind::Cutting;
+    }
+    if (request.plotterPlan)
+    {
+        return FavoriteKind::Plotter;
+    }
+    return FavoriteKind::Print;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportModeDialog::ViewFor(FavoriteKind kind) const -> OExportFavoritesWidget *
+{
+    switch (kind)
+    {
+        case FavoriteKind::Cutting:
+            return m_cuttingFavorites;
+        case FavoriteKind::Plotter:
+            return m_plotterFavorites;
+        case FavoriteKind::Print:
+        default:
+            return m_printFavorites;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportModeDialog::PopulateFavorites(const QVector<OExportFavorite> &favorites)
+{
+    QStringList cutting;
+    QStringList print;
+    QStringList plotter;
+
+    for (const OExportFavorite &favorite : favorites)
+    {
+        switch (KindOf(favorite.request))
+        {
+            case FavoriteKind::Cutting:
+                cutting.append(favorite.name);
+                break;
+            case FavoriteKind::Plotter:
+                plotter.append(favorite.name);
+                break;
+            case FavoriteKind::Print:
+            default:
+                print.append(favorite.name);
+                break;
+        }
+    }
+
+    m_cuttingFavorites->SetFavorites(cutting);
+    m_printFavorites->SetFavorites(print);
+    m_plotterFavorites->SetFavorites(plotter);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportModeDialog::CheckedFavorites(FavoriteKind kind) const -> QVector<OExportFavorite>
+{
+    const OExportFavoritesWidget *view = ViewFor(kind);
+
+    QVector<OExportFavorite> checked;
+    for (const OExportFavorite &favorite : m_favorites)
+    {
+        if (KindOf(favorite.request) != kind)
+        {
+            continue;
+        }
+        // La case est la seule réponse à « ce favori part-il ? » — on la lit, on ne la recalcule pas.
+        if (view != nullptr && view->IsChecked(favorite.name))
+        {
+            checked.append(favorite);
+        }
+    }
+    return checked;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportModeDialog::BatchJobs() const -> QVector<BatchJob>
+{
+    QVector<BatchJob> jobs;
+    jobs.reserve(m_queue.Count() + static_cast<int>(m_favorites.size()));
+
+    // La liste de travail d'abord, dans son ordre : c'est celui dans lequel l'utilisatrice les a
+    // décrits, et celui qu'elle voit.
+    for (int index = 0; index < m_queue.Count(); ++index)
+    {
+        const OExportQueueItem &item = m_queue.At(index);
+        jobs.append(BatchJob{BatchJob::Source::List, index, item.name, item.request});
+    }
+
+    // Puis les favoris cochés, un sous-onglet à la fois — l'ordre dans lequel ils sont montrés.
+    for (FavoriteKind kind : {FavoriteKind::Cutting, FavoriteKind::Print, FavoriteKind::Plotter})
+    {
+        for (const OExportFavorite &favorite : CheckedFavorites(kind))
+        {
+            jobs.append(BatchJob{BatchJob::Source::Favorite, 0, favorite.name, favorite.request});
+        }
+    }
+
+    return jobs;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportModeDialog::SetJobState(const BatchJob &job, OExportRunState state)
+{
+    if (job.source == BatchJob::Source::List)
+    {
+        m_queue.SetState(job.index, state);
+        m_listWidget->SetState(job.index, state);
+        return;
+    }
+
+    if (OExportFavoritesWidget *view = ViewFor(KindOf(job.request)); view != nullptr)
+    {
+        view->SetState(job.name, state);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportModeDialog::OnFavoriteRemoveRequested(const QString &name, OExportFavoritesWidget *from)
+{
+    if (m_favoriteRemover != nullptr)
+    {
+        m_favoriteRemover(name);
+    }
+
+    // La ligne part, les autres gardent leur case : reposer toute la liste décocherait ce que
+    // l'utilisatrice venait de régler.
+    if (from != nullptr)
+    {
+        from->RemoveRow(name);
+    }
+
+    // Et le favori sort de ce que le lot parcourt : une recette qui n'existe plus ne se lance pas.
+    for (int index = static_cast<int>(m_favorites.size()) - 1; index >= 0; --index)
+    {
+        if (m_favorites.at(index).name == name)
+        {
+            m_favorites.removeAt(index);
+        }
+    }
+
+    RefreshGenerateButtons();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -455,6 +741,10 @@ void OExportModeDialog::OnAddToList()
     if (cutting)
     {
         ResetCuttingTab();
+    }
+    else if (m_tabs != nullptr && m_tabs->currentIndex() == kPlotterTabIndex)
+    {
+        ResetPlotterTab();
     }
     else
     {
@@ -539,31 +829,69 @@ void OExportModeDialog::OnGenerateCutting()
 //---------------------------------------------------------------------------------------------------------------------
 void OExportModeDialog::OnGenerateAll()
 {
-    if (m_batchRunning || not m_generator || m_queue.IsEmpty())
+    if (m_batchRunning || not m_generator)
     {
         return;
     }
 
+    const QVector<BatchJob> jobs = BatchJobs();
+    if (jobs.isEmpty())
+    {
+        // Le même critère que l'état du bouton : allumé pour un lot vide, ce clic serait un clic
+        // qui ne fait rien.
+        return;
+    }
+
+    // Le pré-vol. Les favoris ne portent PAS leurs choix de pièces — ils dépendent des pièces du
+    // patron, et c'est ce qui les rend transposables (voir OExportFavorite) : on les demande donc
+    // une fois pour tout le lot, et seulement pour les types qui en contiennent.
+    const bool cuttingFavorites = !CheckedFavorites(FavoriteKind::Cutting).isEmpty();
+    const bool plotterFavorites = !CheckedFavorites(FavoriteKind::Plotter).isEmpty();
+
+    QMap<quint32, quint32> groupChoices;
+    QSet<quint32> excludedPieces;
+    if (cuttingFavorites || plotterFavorites)
+    {
+        OExportBatchPreflightDialog preflight(m_data, cuttingFavorites, plotterFavorites, this);
+        if (preflight.HasQuestions() && preflight.exec() != QDialog::Accepted)
+        {
+            // Annuler le pré-vol annule le lot : rien ne part, pas même la liste de travail.
+            return;
+        }
+        groupChoices = preflight.GroupChoices();
+        excludedPieces = preflight.ExcludedPieces();
+    }
+
     SetBatchRunning(true);
 
-    for (int index = 0; index < m_queue.Count(); ++index)
+    for (const BatchJob &job : jobs)
     {
-        // Read out before the call, never held across it: the line belongs to the queue,
-        // and the generator below runs an event loop of its own while the engine works.
-        const OExportQueueItem item = m_queue.At(index);
-
-        m_queue.SetState(index, OExportRunState::Running);
-        m_listWidget->SetState(index, OExportRunState::Running);
-        // The list is what the user watches while this takes its time. Without a repaint
-        // here nothing of the batch would be drawn until the whole of it was over.
+        SetJobState(job, OExportRunState::Running);
+        // Ce que le lot écrit est ce que l'utilisatrice regarde pendant qu'il prend son temps : sans
+        // repaint ici, rien ne se dessinerait avant la fin du lot entier.
         QCoreApplication::processEvents();
 
-        const bool done = m_generator(item.request, item.name);
+        OExportRunRequest request = job.request;
+        if (job.source == BatchJob::Source::Favorite)
+        {
+            // Les réponses du pré-vol, écrites au dernier moment — le seul endroit qui sache qu'elles
+            // valent pour ce run-ci. Un favori de la liste de travail n'est pas concerné : il a été
+            // décrit dans son onglet, où ses choix ont déjà été faits.
+            if (request.cuttingPlan)
+            {
+                request.groupMemberChoices = groupChoices;
+            }
+            else if (request.plotterPlan)
+            {
+                request.excludedPieces = excludedPieces;
+            }
+        }
 
-        // A line the engine refused does not stop the walk: the other runs were asked for
-        // too, and the one that failed says so on its own line.
-        m_queue.SetState(index, done ? OExportRunState::Done : OExportRunState::Failed);
-        m_listWidget->SetState(index, done ? OExportRunState::Done : OExportRunState::Failed);
+        const bool done = m_generator(request, job.name);
+
+        // A run the engine refused does not stop the walk: the others were asked for too, and the
+        // one that failed says so on its own line.
+        SetJobState(job, done ? OExportRunState::Done : OExportRunState::Failed);
         m_generated = m_generated || done;
     }
 
@@ -603,10 +931,17 @@ void OExportModeDialog::RebuildButtonBox()
 {
     for (QAbstractButton *button : m_buttonBox->buttons())
     {
-        // removeButton hands the button back unparented: deleting it is ours to do, and not
+        // removeButton hands the button back unparented: destroying it is ours to do, and not
         // doing it would stack one tab's buttons on the next one's.
+        //
+        // ⚠️ **Différé, jamais `delete` sec.** Cette méthode est atteinte depuis le `clicked()` de
+        // l'un de ces boutons : « Generate the whole list » tourne un lot, le lot laisse passer la
+        // boucle d'événements entre deux runs (`processEvents`, pour que les états se dessinent), et
+        // un clic sur un onglet pendant ce passage arrive ici. Détruire le bouton dont le signal est
+        // encore sur la pile est exactement ce que `deleteLater` existe pour éviter ; la ligne suivante
+        // reconstruit la barre, donc le bouton condamné a déjà quitté la boîte et n'est plus lu.
         m_buttonBox->removeButton(button);
-        delete button;
+        button->deleteLater();
     }
 
     m_generateButton = nullptr;
@@ -640,6 +975,19 @@ void OExportModeDialog::RebuildButtonBox()
             m_generateButton = m_buttonBox->addButton(tr("Generate this output"), QDialogButtonBox::ActionRole);
             m_generateButton->setAutoDefault(false);
             connect(m_generateButton, &QPushButton::clicked, this, &OExportModeDialog::OnGenerateCutting);
+
+            m_buttonBox->addButton(QDialogButtonBox::Cancel);
+            break;
+
+        case kPlotterTabIndex:
+            // Le plotter décrit un run à la fois, comme le plan de coupe. Son bouton Generate
+            // accepte le dialogue sans générer lui-même : c'est `OExportMode::Run` qui génère
+            // ensuite, une fois et une seule, à partir de `CurrentRequest()`.
+            m_addToListButton = m_buttonBox->addButton(tr("Add to list"), QDialogButtonBox::ActionRole);
+            m_addToListButton->setAutoDefault(false);
+            connect(m_addToListButton, &QPushButton::clicked, this, &OExportModeDialog::OnAddToList);
+
+            m_generateButton = m_buttonBox->addButton(tr("Generate this output"), QDialogButtonBox::AcceptRole);
 
             m_buttonBox->addButton(QDialogButtonBox::Cancel);
             break;
@@ -681,10 +1029,23 @@ void OExportModeDialog::SetBatchRunning(bool running)
     // its states are what the user is watching. Everything else can go grey — while a run
     // is in the engine, nothing on the Print tab can be acted on.
     m_listWidget->SetBusy(running);
+    for (OExportFavoritesWidget *favorites : {m_cuttingFavorites, m_printFavorites, m_plotterFavorites})
+    {
+        // Les listes de favoris sont verrouillées de la même façon, et pour la même raison : c'est
+        // là que le lot écrit ses états, et c'est ce que l'utilisatrice regarde.
+        if (favorites != nullptr)
+        {
+            favorites->SetBusy(running);
+        }
+    }
     m_printWidget->setEnabled(!running);
     if (m_cuttingWidget != nullptr)
     {
         m_cuttingWidget->setEnabled(!running);
+    }
+    if (m_plotterWidget != nullptr)
+    {
+        m_plotterWidget->setEnabled(!running);
     }
     // The bar as well: mid-batch there is nothing to confirm, nothing to add and nowhere to
     // go — and reject() refuses the close anyway, so an enabled button would be a button
@@ -702,7 +1063,10 @@ void OExportModeDialog::RefreshGenerateButtons()
     // the Print tab, a laize and one piece per group for the Cutting plan.
     const bool printValid = m_printWidget != nullptr && m_printWidget->IsValid() && not m_batchRunning;
     const bool cuttingValid = m_cuttingWidget != nullptr && m_cuttingWidget->IsValid() && not m_batchRunning;
-    const bool valid = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex ? cuttingValid : printValid;
+    const bool plotterValid = m_plotterWidget != nullptr && m_plotterWidget->IsValid() && not m_batchRunning;
+    const bool valid = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex ? cuttingValid
+                     : m_tabs != nullptr && m_tabs->currentIndex() == kPlotterTabIndex ? plotterValid
+                                                                                       : printValid;
 
     if (m_generateButton != nullptr)
     {
@@ -710,11 +1074,21 @@ void OExportModeDialog::RefreshGenerateButtons()
     }
     if (m_addToListButton != nullptr)
     {
-        m_addToListButton->setEnabled(printValid);
+        // ⚠️ Gouverné par l'onglet EN COURS, et non par la validité de Print. Le bouton
+        // « Add to list » du plan de coupe était gouverné par le formulaire d'impression — un défaut
+        // d'origine, que le troisième onglet aurait aggravé.
+        m_addToListButton->setEnabled(valid);
     }
     if (m_generateAllButton != nullptr)
     {
-        m_generateAllButton->setEnabled(not m_queue.IsEmpty() && not m_batchRunning);
+        // La liste de travail OU au moins un favori coché : c'est exactement ce que le lot parcourt,
+        // et le garde de OnGenerateAll dit la même chose — un bouton allumé pour un lot vide serait
+        // un bouton qui ment, et un bouton éteint pour un lot plein un bouton qui bloque.
+        const bool anyFavorite = (m_cuttingFavorites != nullptr && m_cuttingFavorites->CheckedCount() > 0)
+                              || (m_printFavorites != nullptr && m_printFavorites->CheckedCount() > 0)
+                              || (m_plotterFavorites != nullptr && m_plotterFavorites->CheckedCount() > 0);
+
+        m_generateAllButton->setEnabled((not m_queue.IsEmpty() || anyFavorite) && not m_batchRunning);
     }
 }
 
@@ -737,16 +1111,15 @@ void OExportModeDialog::Retranslate()
     m_tabs->setTabText(kListTabIndex, tr("List to generate"));
     m_tabs->setTabText(kCuttingTabIndex, tr("Cutting plan"));
     m_tabs->setTabText(kPrintTabIndex, tr("Print"));
-    m_tabs->setTabText(kProjectorTabIndex, tr("Projector"));
+    m_tabs->setTabText(kPlotterTabIndex, tr("Plotter"));
 
-    // Read back off the page rather than kept beside it: a second copy of the label would be one
-    // more thing to hold together, and the label is right there.
-    // tr() rather than QObject::tr(): the placeholder belongs to this dialog, and a string filed
-    // under QObject lands in a context every widget in the application shares.
-    if (auto *label = m_projectorTab->findChild<QLabel *>(QStringLiteral("comingSoonLabel")))
-    {
-        label->setText(tr("Coming soon"));
-    }
+    // Les sous-onglets de la page 0. « Working list » plutôt que « List to generate » : c'est la
+    // liste qu'on remplit et qu'on ne garde pas, et le mot doit le dire — les trois autres
+    // sous-onglets, eux, sont sauvegardés.
+    m_listTabs->setTabText(kWorkingListTabIndex, tr("Working list"));
+    m_listTabs->setTabText(kCuttingFavoritesTabIndex, tr("Cutting plan favorites"));
+    m_listTabs->setTabText(kPrintFavoritesTabIndex, tr("Print favorites"));
+    m_listTabs->setTabText(kPlotterFavoritesTabIndex, tr("Plotter favorites"));
 
     m_addedLabel->setText(m_addedName.isEmpty() ? QString() : tr("%1 was added to the list.").arg(m_addedName));
 
@@ -765,7 +1138,13 @@ void OExportModeDialog::AdjustMinimumWidth()
     const QTabBar *bar = m_tabs->tabBar();
     const int tabBarWidth = bar != nullptr ? bar->sizeHint().width() : 0;
 
-    setMinimumWidth(qMax(kMinDialogWidth, tabBarWidth + kTabBarChrome));
+    // Et la barre IMBRIQUÉE, qui vit dans la page 0 : la fenêtre doit être assez large pour elle
+    // aussi, sinon c'est elle qui élide ses titres — et quatre sous-onglets illisibles sont quatre
+    // sous-onglets qu'on ne peut pas choisir.
+    const QTabBar *innerBar = m_listTabs != nullptr ? m_listTabs->tabBar() : nullptr;
+    const int innerBarWidth = innerBar != nullptr ? innerBar->sizeHint().width() + kTabBarChrome : 0;
+
+    setMinimumWidth(qMax(kMinDialogWidth, qMax(tabBarWidth + kTabBarChrome, innerBarWidth)));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -26,22 +26,13 @@
 
 #include "oexportgenerationrowwidget.h"
 
-#include "../vtheme/vtheme.h"
+#include "oexportrowiconbutton.h"
+#include "oexportrowlistwidget.h" // kExportRowStateWidth : la colonne d'état des deux sortes de lignes
 
 #include <QEvent>
 #include <QHBoxLayout>
-#include <QIcon>
 #include <QLabel>
 #include <QPushButton>
-
-namespace
-{
-/// Wide enough for the longest of the four states, so that the names beside them stay in
-/// one column instead of stepping in and out as the batch walks the list.
-constexpr int kStateColumnWidth = 70;
-
-constexpr int kDeleteButtonWidth = 30;
-} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 OExportGenerationRowWidget::OExportGenerationRowWidget(const QString &name, QWidget *parent)
@@ -55,46 +46,23 @@ OExportGenerationRowWidget::OExportGenerationRowWidget(const QString &name, QWid
     layout->addWidget(m_nameLabel, 1);
 
     m_stateLabel = new QLabel(this);
-    m_stateLabel->setMinimumWidth(kStateColumnWidth);
+    m_stateLabel->setMinimumWidth(kExportRowStateWidth); // the same column as the favorites lists
     layout->addWidget(m_stateLabel);
 
-    m_deleteButton = new QPushButton(this);
-    // An icon-only button must never become the dialog's default button (it would
-    // take the :default style — same look as :hover in the theme).
-    m_deleteButton->setAutoDefault(false);
-    m_deleteButton->setFixedWidth(kDeleteButtonWidth);
+    // Le bouton porte lui-même la règle des icônes de ligne : variante du thème au repos, `_dark`
+    // au survol — le fond de survol est l'accent, donc sombre dans les deux thèmes.
+    m_deleteButton = new OExportRowIconButton(QStringLiteral("trash"), this);
     m_deleteButton->setToolTip(tr("Remove this run from the list"));
-    RefreshDeleteIcon();
     layout->addWidget(m_deleteButton);
 
-    // Reload the themed trash icon when the theme changes (Light/Dark toggle).
-    connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, &OExportGenerationRowWidget::RefreshDeleteIcon);
-
     Retranslate();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OExportGenerationRowWidget::StateText(OExportRunState state) -> QString
-{
-    switch (state)
-    {
-        case OExportRunState::Running:
-            return tr("Running");
-        case OExportRunState::Done:
-            return tr("Done");
-        case OExportRunState::Failed:
-            return tr("Failed");
-        case OExportRunState::Pending:
-        default:
-            return tr("Waiting");
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void OExportGenerationRowWidget::SetState(OExportRunState state)
 {
     m_state = state;
-    m_stateLabel->setText(StateText(m_state));
+    m_stateLabel->setText(OExportRunStateText(m_state));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -104,17 +72,9 @@ auto OExportGenerationRowWidget::DeleteButton() const -> QPushButton *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OExportGenerationRowWidget::RefreshDeleteIcon()
-{
-    const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
-    m_deleteButton->setIcon(QIcon(QStringLiteral(":/icons/%1/trash_%1.svg")
-                                      .arg(dark ? QStringLiteral("dark") : QStringLiteral("light"))));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void OExportGenerationRowWidget::Retranslate()
 {
-    m_stateLabel->setText(StateText(m_state));
+    m_stateLabel->setText(OExportRunStateText(m_state));
     m_deleteButton->setToolTip(tr("Remove this run from the list"));
 }
 

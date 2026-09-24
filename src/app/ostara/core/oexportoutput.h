@@ -33,6 +33,7 @@
 #define OEXPORTOUTPUT_H
 
 #include <QMap>
+#include <QSet>
 #include <QString>
 #include <QVector>
 
@@ -214,6 +215,39 @@ struct OExportOutput
     /// The laize the user entered is NOT this: she bought 140, the plan runs on 70, and the name
     /// says 140. Kept so that the Refresh entry replays the same plan.
     bool foldedFabric{false};
+
+    /// @brief Whether this run is a plan for a DOMESTIC PLOTTER — one that cuts on mats.
+    ///
+    /// Three things follow, and none of them is a parameter of the run: there is no continuous
+    /// length (the mat is a hard cell), the goal is not the smallest height but the **fewest
+    /// pieces**, and a piece larger than a mat is **split at the mat borders**, its parts put back
+    /// together like a puzzle.
+    ///
+    /// Deliberately NOT `cuttingPlan`: that flag carries a dozen unrelated decisions, and a plotter
+    /// cuts the pattern as the model draws it — unfolded, and once.
+    bool plotterPlan{false};
+
+    /// @brief The cutting mat's usable size, in millimetres. **Zero on a run that has no mat.**
+    ///
+    /// What the user reads in her plotter's own software. These two numbers decide the whole split:
+    /// a piece that exceeds one of them is cut at its multiples, counted from the piece's own corner.
+    qreal matWidthMm{0.0};
+    qreal matHeightMm{0.0};
+
+    /// @brief The unit the mat is ENTERED and READ in — `cm` or `inch`, never the mm.
+    ///
+    /// Not a conversion: the mat stays stored in millimetres. It is what the user types and reads
+    /// back, and a commercial mat's usable area is sold in inches.
+    Unit matUnit{Unit::Cm};
+
+    /// @brief Les pièces que l'utilisatrice a DÉCOCHÉES dans les groupes. Vide : aucune.
+    ///
+    /// Un plotter **décompose** les groupes — chaque membre est une pièce à couper — donc l'onglet
+    /// Plotter n'offre pas de choisir un membre, mais de l'écarter. C'est une liste d'EXCLUSIONS, et
+    /// surtout pas `groupMemberChoices` : celle-ci ne garderait qu'un membre par groupe, l'inverse
+    /// exact de ce qu'un plotter fait. Le seul onglet qui remplit l'une ou l'autre est celui qui est
+    /// courant, et les deux ne se croisent jamais.
+    QSet<quint32> excludedPieces{};
 };
 
 /**
@@ -253,6 +287,21 @@ struct OExportRunRequest
 
     /// @see OExportOutput::foldedFabric — the same flag, from the other side.
     bool foldedFabric{false};
+
+    /// @see OExportOutput::plotterPlan — the same flag, from the other side.
+    bool plotterPlan{false};
+
+    /// @see OExportOutput::excludedPieces — the same set, from the other side.
+    QSet<quint32> excludedPieces{};
+
+    /// @see OExportOutput::matWidthMm — the same length, from the other side.
+    qreal matWidthMm{0.0};
+
+    /// @see OExportOutput::matHeightMm — the same length, from the other side.
+    qreal matHeightMm{0.0};
+
+    /// @see OExportOutput::matUnit — the same unit, from the other side.
+    Unit matUnit{Unit::Cm};
 };
 
 /// @brief The request that reproduces @p output — what the Refresh entry hands back.

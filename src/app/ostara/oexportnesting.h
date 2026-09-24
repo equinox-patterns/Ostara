@@ -122,6 +122,15 @@ struct OExportNestingResult
     double binWidthPx{0.0};
     double usedHeightPx{0.0};
 
+    /// Le nombre de TAPIS qu'un run plotter ouvre — **zéro sur tout autre run**.
+    ///
+    /// ⚠️ Il voyage ici pour la même raison que `groupDecor` : `result` est la seule chose que le
+    /// canvas et la barre de statut reçoivent déjà qui appartienne à UNE génération. Et il n'est
+    /// **pas** déductible de `binWidthPx` / `usedHeightPx` : les tapis se rangent en rectangle
+    /// proche du carré, donc la dernière rangée peut être incomplète — un compte faux étant
+    /// exactement ce que ce chiffre existe pour éviter.
+    int matCount{0};
+
     /// Les rectangles du tissu plié — **un seul** sur un plan à bord unique (la colonne), **trois**
     /// sur un plan à deux bords. **Le dessin du découpage** : ce sont eux que le canvas trace en
     /// pointillé, pour que l'utilisatrice comprenne comment plier son tissu.

@@ -26,6 +26,7 @@
  *************************************************************************/
 
 #include "oexportcuttingwidget.h"
+#include "oexportgroupchoicewidget.h"
 
 #include "../core/opiecegrouplayoutflags.h"
 #include "../core/oexportunitformat.h"
@@ -198,8 +199,13 @@ void OExportCuttingWidget::BuildUi()
     UpdateSizeMode();
 
     // ── Which member of each group ───────────────────────────────────────
-    PopulateGroups();
-    layout->addWidget(m_groupsBox);
+    //
+    // La question est portée par un widget à part : le pré-vol du lot la repose, une fois, pour
+    // tous les favoris de coupe. Deux lectures concurrentes de la même liste finiraient par
+    // diverger, et c'est la recette de peuplement qui est délicate, pas la boîte.
+    m_groupChoice = new OExportGroupChoiceWidget(m_data, this);
+    connect(m_groupChoice, &OExportGroupChoiceWidget::Changed, this, &OExportCuttingWidget::Changed);
+    layout->addWidget(m_groupChoice);
 
     layout->addStretch();
 }
@@ -405,63 +411,6 @@ auto OExportCuttingWidget::CheckedLabels(int index) const -> QStringList
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OExportCuttingWidget::PopulateGroups()
-{
-    m_groupsBox = new QGroupBox(this);
-
-    auto *rows = new QVBoxLayout(m_groupsBox);
-    m_groupRows.clear();
-
-    const QHash<quint32, OPieceGroup> *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;
-    if (groups != nullptr)
-    {
-        QList<quint32> groupIds = groups->keys();
-        std::sort(groupIds.begin(), groupIds.end());
-
-        for (quint32 groupId : groupIds)
-        {
-            const OPieceGroup group = groups->value(groupId);
-            const QVector<quint32> members = OPieceGroupLayoutFlags::ExistingMemberIds(group.pieceIds, m_data);
-
-            // A group of fewer than two members is not a group: the canvas, the export and the
-            // container all read it that way. There is nothing to choose between, so there is no
-            // question to ask — its members are cut as ordinary pieces.
-            if (members.size() < OGraded::kMinGroupMembers)
-            {
-                continue;
-            }
-
-            auto *row = new QHBoxLayout();
-
-            auto *name = new QLabel(this);
-            name->setText(group.GetName().isEmpty() ? tr("Unnamed group") : group.GetName());
-            row->addWidget(name);
-
-            auto *combo = MakeComboBox(this);
-            for (quint32 pieceId : members)
-            {
-                const VPiece piece = m_data->GetPiece(pieceId);
-                combo->addItem(piece.GetName().isEmpty() ? tr("Unnamed") : piece.GetName(), pieceId);
-            }
-            // Nothing is chosen to begin with: the user must say which piece she cuts, and a combo
-            // that had already answered would let a plan run on a piece nobody picked.
-            combo->setCurrentIndex(-1);
-            connect(combo, &QComboBox::currentIndexChanged, this, [this](int) { emit Changed(); });
-            row->addWidget(combo);
-
-            row->addStretch();
-            rows->addLayout(row);
-
-            m_groupRows.append(GroupRow{groupId, name, combo});
-        }
-    }
-
-    // The box says nothing when there is no group to ask about, and an empty box with a title
-    // would be a question with no answer to give.
-    m_groupsBox->setVisible(not m_groupRows.isEmpty());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void OExportCuttingWidget::CommitFabricWidth()
 {
     bool ok = false;
@@ -567,15 +516,7 @@ auto OExportCuttingWidget::EdgeMarginMm() const -> qreal
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportCuttingWidget::MemberChoices() const -> QMap<quint32, quint32>
 {
-    QMap<quint32, quint32> choices;
-    for (const GroupRow &row : m_groupRows)
-    {
-        if (row.combo->currentIndex() >= 0)
-        {
-            choices.insert(row.groupId, row.combo->currentData().toUInt());
-        }
-    }
-    return choices;
+    return m_groupChoice != nullptr ? m_groupChoice->MemberChoices() : QMap<quint32, quint32>();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -656,12 +597,9 @@ auto OExportCuttingWidget::IsValid() const -> bool
 
     // Every group must have its piece: a group left unanswered is a piece the plan would have to
     // pick for the user.
-    for (const GroupRow &row : m_groupRows)
+    if (m_groupChoice != nullptr && !m_groupChoice->IsComplete())
     {
-        if (row.combo->currentIndex() < 0)
-        {
-            return false;
-        }
+        return false;
     }
 
     // En plusieurs tailles, chaque axe doit garder au moins une case cochée : un axe vide ne
@@ -725,8 +663,6 @@ void OExportCuttingWidget::Retranslate()
     // sur un changement de langue ne peut donc pas altérer la laize, même si le champ portait une
     // saisie en cours.
     m_fabricWidthEdit->setText(OExportUnitFormat::Format(m_fabricWidthMm, m_fabricWidthUnit));
-
-    m_groupsBox->setTitle(tr("One piece per group"));
 
     m_sizeModeBox->setTitle(tr("Sizes to cut"));
     m_singleRadio->setText(tr("Single size"));

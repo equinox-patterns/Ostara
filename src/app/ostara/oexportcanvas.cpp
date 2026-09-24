@@ -37,6 +37,7 @@
 #include "oexportcoverpage.h"
 #include "oexportgeometry.h"
 #include "oexportfootprint.h"
+#include "oexportmatpacking.h"
 #include "oexportnesting.h"
 #include "oexportsheets.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
@@ -1383,6 +1384,45 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         bin->setBrush(QBrush(Qt::white));
         bin->setZValue(kBinZ);
         scene->addItem(bin);
+
+        // ── La grille des tapis d'un plotter ──────────────────────────────────────────────────────
+        //
+        // Un tapis est une CELLULE DURE : le logiciel du plotter refuse une forme qui la déborde, et
+        // c'est pourquoi l'aperçu la montre — chaque tapis est un chargement de machine, et leur
+        // nombre est ce que l'onglet cherche à faire descendre.
+        //
+        // ⚠️ **Un bord de tapis n'est plus une ligne de coupe.** Il l'était tant que chaque pièce
+        // gardait son bloc de tapis et que ses morceaux tombaient sur les bords ; les morceaux se
+        // rangent maintenant là où ils tiennent, donc les deux se croisent. Sans conséquence : la
+        // découpe est dans la géométrie du morceau, jamais dans le cadre qui l'entoure.
+        //
+        // Le Z du dessus est celui de la grille d'artboards : les deux disent la même chose, l'endroit
+        // où le papier ou le tapis s'arrête, et aucun plan de découpe n'a les deux à la fois.
+        //
+        // ⚠️ **Affichage seulement** — le fichier est écrit en parcourant le contenu, jamais la scène.
+        if (run.plotterPlan && run.matCount > 0 && run.matWidthMm > 0.0 && run.matHeightMm > 0.0)
+        {
+            const qreal matWidthPx = ToPixel(run.matWidthMm, Unit::Mm);
+            const qreal matHeightPx = ToPixel(run.matHeightMm, Unit::Mm);
+            const QSize arrangement = OExportMatPacking::Arrangement(run.matCount);
+
+            QPen matPen(Qt::gray, 1, Qt::DashLine);
+
+            // Un trait par tapis, et **seulement les tapis ouverts** : la dernière rangée d'un
+            // rangement compact reste incomplète, et tracer la grille jusqu'au bord du canevas
+            // annoncerait un tapis que personne ne chargera.
+            for (int index = 0; index < run.matCount; ++index)
+            {
+                const QRectF tile = OExportMatPacking::TileRect(index, arrangement, matWidthPx,
+                                                                matHeightPx);
+
+                auto *item = new QGraphicsRectItem(tile);
+                item->setPen(matPen);
+                item->setBrush(Qt::NoBrush);
+                item->setZValue(kGridZ);
+                scene->addItem(item);
+            }
+        }
 
         // ── Le bord du pli, quand le tissu est plié ─────────────────────────────────────────────
         //

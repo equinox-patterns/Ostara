@@ -35,12 +35,15 @@
 
 #include <functional>
 
+#include "../core/oexportfavorites.h"
 #include "../core/ogradedsizeranges.h"
 #include "../core/oexportrunqueue.h"
 #include "../vmisc/def.h"
 
 class OExportCuttingWidget;
+class OExportFavoritesWidget;
 class OExportGenerationListWidget;
+class OExportPlotterWidget;
 class OExportPrintWidget;
 class QDialogButtonBox;
 class QEvent;
@@ -58,8 +61,10 @@ class VMeasurements;
  * and they have almost nothing in common but the nesting underneath. Hence one tab each
  * rather than one form that grew a second meaning.
  *
- * <b>Print</b> is the only tab that describes a run; the other two announce themselves and
- * nothing more. The dialog opens on Print, the one tab that can be acted on.
+ * <b>Le dialogue s'ouvre sur la liste</b> — la page 0, « List to generate » : celle qui montre ce
+ * qui a déjà été décrit, les runs en attente et les favoris gardés, chacun dans sa sous-onglet. Une
+ * liste vide le dit elle-même et renvoie vers l'onglet Print ; un formulaire vierge, lui, ne dirait
+ * rien de ce qui existe déjà.
  *
  * Two ways out of it, and the difference matters. <b>Generate</b> nests what the Print tab
  * currently describes, once. <b>Add to list</b> nests nothing: it files the description in
@@ -93,15 +98,25 @@ public:
     /// @return false when the run failed — the reason has already been shown.
     using RunGenerator = std::function<bool(const OExportRunRequest &request, const QString &name)>;
 
+    /// @brief Drop the favorite named @p name from the software store.
+    ///
+    /// The same arrangement as the run generator, and for the same reason: the store is keyed by
+    /// the (measurements table, axis) context, and the dialog holds no pattern to resolve one.
+    /// The dialog asks, the window writes.
+    using FavoriteRemover = std::function<void(const QString &name)>;
+
     /// @param context    the (measurements table, declared grading axis) the pattern is on.
     ///                   The dialog cannot resolve it: it holds no document. The range list
     ///                   is restricted to it, exactly as the Graded dock restricts its own.
     /// @param takenNames the names already listed in the dock, filtered exactly as the dock
     ///                   filters them. Naming happens here now, and a name is only unique
     ///                   against what the user can see.
+    /// @param favorites  the favorites of that same context, already filtered the same way and
+    ///                   with the recipes attached. The dialog shows them; it does not read the
+    ///                   store, which is keyed by a context it cannot resolve.
     explicit OExportModeDialog(const VContainer *data, const QSharedPointer<VMeasurements> &measurements,
                                const OGradedSizeRanges::Context &context, const QStringList &takenNames,
-                               QWidget *parent = nullptr);
+                               const QVector<OExportFavorite> &favorites, QWidget *parent = nullptr);
 
     /// @brief Everything the Print tab currently describes, in one piece.
     auto CurrentRequest() const -> OExportRunRequest;
@@ -125,8 +140,14 @@ public:
     /// tourne — sur du tissu plié, il tourne sur la moitié.
     auto CuttingToken() const -> QString;
 
+    /// @brief Le jeton de l'onglet Plotter, sur le même contrat que CuttingToken.
+    auto PlotterToken() const -> QString;
+
     /// @brief Hand in the one operation the dialog cannot do itself.
     void SetRunGenerator(RunGenerator generator);
+
+    /// @brief Hand in the other one: dropping a favorite from the software store.
+    void SetFavoriteRemover(FavoriteRemover remover);
 
     /// @brief Whether a batch has filed at least one generation.
     ///
@@ -144,10 +165,6 @@ protected:
     void changeEvent(QEvent *event) override;
 
 private:
-    /// @brief A tab that exists and does nothing yet, saying so rather than showing
-    ///        an empty page.
-    static auto MakeComingSoonTab(QWidget *parent) -> QWidget *;
-
     /// @brief Give the Print tab a form that has never been touched.
     ///
     /// Rebuilt rather than reset field by field: the state a fresh tab is in is the state
@@ -158,6 +175,10 @@ private:
     /// @brief Give the Cutting plan tab a form that has never been touched — same doctrine as
     ///        ResetPrintTab: rebuilt, never reset field by field.
     void ResetCuttingTab();
+
+    /// @brief Give the Plotter tab a form that has never been touched — same doctrine as
+    ///        ResetPrintTab: rebuilt, never reset field by field.
+    void ResetPlotterTab();
 
     /// @brief Tout ce que l'onglet en cours décrit, déjà nommé.
     ///
@@ -200,6 +221,60 @@ private:
     void RefreshGenerateButtons();
     void Retranslate();
 
+    /// @brief Which of the three lists a favorite's recipe belongs to.
+    ///
+    /// Read from the recipe's own flags — `cuttingPlan`, `plotterPlan`, and neither for a print —
+    /// because that is what the generator switches on. A kind stored beside them would be a
+    /// second answer to a question that already has one.
+    enum class FavoriteKind
+    {
+        Cutting,
+        Print,
+        Plotter
+    };
+
+    static auto KindOf(const OExportRunRequest &request) -> FavoriteKind;
+
+    /// @brief Show @p favorites, each in the list its recipe belongs to, every box ticked.
+    void PopulateFavorites(const QVector<OExportFavorite> &favorites);
+
+    /// @brief The list that shows @p kind.
+    auto ViewFor(FavoriteKind kind) const -> OExportFavoritesWidget *;
+
+    /// @brief The ticked favorites of @p kind — what the batch will run of it.
+    auto CheckedFavorites(FavoriteKind kind) const -> QVector<OExportFavorite>;
+
+    /// @brief Drop the favorite @p name: the store through the remover, then the row, then what
+    ///        the button bar allows.
+    void OnFavoriteRemoveRequested(const QString &name, OExportFavoritesWidget *from);
+
+    /// @brief One thing the batch will do, and where its line lives.
+    ///
+    /// Two sources, one walk. The runs of the Working list carry their own per-piece choices; the
+    /// favorites do not (see OExportFavorite), so the pre-flight's answers are written into their
+    /// request at the last moment. The generator is handed a request either way, so what differs
+    /// is only which view shows the line's state.
+    struct BatchJob
+    {
+        enum class Source
+        {
+            List,    ///< a line of the Working list, at @p index
+            Favorite ///< a stored recipe, named @p name
+        };
+
+        Source source{Source::List};
+        int index{0};
+        QString name{};
+        OExportRunRequest request{};
+    };
+
+    /// @brief Every run the batch would start, in the order it starts them: the Working list
+    ///        first, then the ticked favorites, one sub-tab at a time.
+    auto BatchJobs() const -> QVector<BatchJob>;
+
+    /// @brief Write where @p job stands, in the view that shows it.
+    void SetJobState(const BatchJob &job, OExportRunState state);
+
     /// @brief Keep the dialog at least as wide as its tab bar.
     ///
     /// A QTabWidget whose tabs do not fit does not grow: it elides the labels, or grows
@@ -216,10 +291,12 @@ private:
 
     OExportPrintWidget *m_printWidget{nullptr};
     OExportCuttingWidget *m_cuttingWidget{nullptr};
+    OExportPlotterWidget *m_plotterWidget{nullptr};
     OExportGenerationListWidget *m_listWidget{nullptr};
     QTabWidget *m_tabs{nullptr};
     QVBoxLayout *m_printLayout{nullptr};
     QVBoxLayout *m_cuttingLayout{nullptr};
+    QVBoxLayout *m_plotterLayout{nullptr};
     QDialogButtonBox *m_buttonBox{nullptr};
     QLabel *m_addedLabel{nullptr};
 
@@ -234,7 +311,24 @@ private:
 
     QWidget *m_cuttingTab{nullptr};
     QWidget *m_printTab{nullptr};
-    QWidget *m_projectorTab{nullptr};
+    QWidget *m_plotterTab{nullptr};
+
+    /// La page 0 : un conteneur, et non plus la liste elle-même — quatre sous-onglets y vivent.
+    /// Le dispatch des boutons ne bouge pas : il lit toujours l'onglet EXTERNE (m_tabs).
+    QWidget *m_listPage{nullptr};
+    QTabWidget *m_listTabs{nullptr};
+
+    /// Les trois listes de favoris : la même classe, instanciée trois fois, chacune montrant les
+    /// favoris d'un type. Le type n'est pas un réglage du widget — c'est la sous-onglet qui le dit.
+    OExportFavoritesWidget *m_cuttingFavorites{nullptr};
+    OExportFavoritesWidget *m_printFavorites{nullptr};
+    OExportFavoritesWidget *m_plotterFavorites{nullptr};
+
+    /// Les favoris du contexte, tels que le MainWindow les a filtrés — RECETTES COMPRISES : le lot
+    /// les rejoue, et le dialogue ne lit pas le store (il ne sait pas résoudre le contexte qui le
+    /// indexe). Le retrait d'un favori passe par le remover, pas par une écriture d'ici.
+    QVector<OExportFavorite> m_favorites{};
+    FavoriteRemover m_favoriteRemover{};
 
     OExportRunQueue m_queue{};
     QStringList m_takenNames{};

@@ -43,6 +43,7 @@ class QLabel;
 class QLineEdit;
 class QRadioButton;
 class QVBoxLayout;
+class OExportGroupChoiceWidget;
 class VContainer;
 class VMeasurements;
 
@@ -143,14 +144,6 @@ protected:
     void changeEvent(QEvent *event) override;
 
 private:
-    /// One row of the group box: the group's name, and the members to choose from.
-    struct GroupRow
-    {
-        quint32 groupId{0};
-        QLabel *label{nullptr};
-        QComboBox *combo{nullptr};
-    };
-
     /// Un axe et ses cases à cocher : le contenu du mode « plusieurs tailles ».
     struct SizeGrid
     {
@@ -165,7 +158,6 @@ private:
     void PopulateDimensions(QFormLayout *form);
     void PopulateSizeGrids(QVBoxLayout *layout);
     void UpdateSizeMode();
-    void PopulateGroups();
     void CommitFabricWidth();
     void UpdateFabricWidthUnit();
     void CommitGap();
@@ -208,8 +200,9 @@ private:
     QWidget *m_severalContent{nullptr};
     QVector<SizeGrid> m_sizeGrids{};
 
-    QGroupBox *m_groupsBox{nullptr};
-    QVector<GroupRow> m_groupRows{};
+    /// La question des groupes, posée par le widget qui la porte : le même que celui du pré-vol,
+    /// pour qu'il n'y ait pas deux façons de peupler cette liste (voir OExportGroupChoiceWidget).
+    OExportGroupChoiceWidget *m_groupChoice{nullptr};
 
     /// Kept in millimetres rather than re-read from the field: an unreadable field would come back
     /// as zero, and zero is a laize that would run the nesting on nothing.

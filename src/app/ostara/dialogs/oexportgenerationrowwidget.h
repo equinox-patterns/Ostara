@@ -34,6 +34,7 @@
 
 class QLabel;
 class QPushButton;
+class OExportRowIconButton;
 
 /**
  * @brief One line of the list to generate, as a single horizontal row.
@@ -64,14 +65,12 @@ protected:
     void changeEvent(QEvent *event) override;
 
 private:
-    static auto StateText(OExportRunState state) -> QString;
-
     void RefreshDeleteIcon();
     void Retranslate();
 
     QLabel *m_nameLabel{nullptr};
     QLabel *m_stateLabel{nullptr};
-    QPushButton *m_deleteButton{nullptr};
+    OExportRowIconButton *m_deleteButton{nullptr};
     OExportRunState m_state{OExportRunState::Pending};
 
     Q_DISABLE_COPY_MOVE(OExportGenerationRowWidget) // NOLINT

@@ -26,7 +26,26 @@
 
 #include "oexportrunqueue.h"
 
+#include <QCoreApplication>
+
 #include <utility>
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportRunStateText(OExportRunState state) -> QString
+{
+    switch (state)
+    {
+        case OExportRunState::Running:
+            return QCoreApplication::translate("OExportRunState", "Running");
+        case OExportRunState::Done:
+            return QCoreApplication::translate("OExportRunState", "Done");
+        case OExportRunState::Failed:
+            return QCoreApplication::translate("OExportRunState", "Failed");
+        case OExportRunState::Pending:
+        default:
+            return QCoreApplication::translate("OExportRunState", "Waiting");
+    }
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportRunQueue::IsEmpty() const -> bool

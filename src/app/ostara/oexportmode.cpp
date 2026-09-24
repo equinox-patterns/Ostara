@@ -29,6 +29,7 @@
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
 #include "core/ogradedsizeranges.h"
+#include "core/oexportfavorites.h"
 #include "core/oexportoutput.h"
 #include "dialogs/oexportmodedialog.h"
 #include "dialogs/ooutputsstale.h"
@@ -264,13 +265,46 @@ auto MainWindow::AddExportOutputImpl(bool allowCancel) -> bool
         }
     }
 
-    OExportModeDialog dialog(pattern, m_m, context, takenNames, this);
+    // Les favoris du contexte, recettes comprises : le dialogue les montre et le lot les rejoue,
+    // mais il ne lit pas le store — il ne sait pas résoudre le contexte qui l'indexe.
+    //
+    // Et **ceux dont la gamme existe encore, seulement eux** : le rejeu d'un favori de print
+    // ré-résout sa gamme par son nom dans le patron, donc une gamme supprimée est un run qui
+    // échouerait. Le montrer serait promettre un plan qui ne sortira pas.
+    auto *settings = VAbstractApplication::VApp()->Settings();
+    const QHash<QString, OSizerange> *ranges = pattern->SizeRanges();
+
+    QVector<OExportFavorite> favorites;
+    for (const OExportFavorite &favorite : OExportFavorites::All(settings, context.canonical, context.axis))
+    {
+        if (not favorite.request.rangeName.isEmpty()
+            && (ranges == nullptr || not ranges->contains(favorite.request.rangeName)))
+        {
+            continue;
+        }
+
+        favorites.append(favorite);
+        // Et son nom compte comme pris. Sans ça un nouveau run pourrait naître avec le nom d'un
+        // favori, porter une étoile pleine qui ne le concerne pas, et retirer le favori d'un clic.
+        takenNames.append(favorite.name);
+    }
+
+    OExportModeDialog dialog(pattern, m_m, context, takenNames, favorites, this);
 
     // The list to generate fires its own runs, and the dialog cannot nest — it holds no
     // document, no pattern and no scene. Handing it the one operation it lacks keeps the
     // dependency pointing the way it already does: the dialog asks, the window runs.
     dialog.SetRunGenerator([this, &context](const OExportRunRequest &request, const QString &name)
                            { return GenerateNamedExport(request, name, context); });
+
+    // Et la seconde opération qu'il ne peut pas faire lui-même : retirer un favori du store, qui est
+    // indexé par un contexte que seul le MainWindow sait résoudre. Le dock suit, parce qu'une étoile
+    // pleine sur un favori qui n'existe plus serait un mensonge.
+    dialog.SetFavoriteRemover([this, &context, settings](const QString &name)
+                              {
+                                  OExportFavorites::RemoveFavorite(settings, context.canonical, context.axis, name);
+                                  RefreshOutputsDock();
+                              });
 
     if (dialog.exec() != QDialog::Accepted)
     {
