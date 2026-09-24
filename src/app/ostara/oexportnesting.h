@@ -73,6 +73,31 @@ struct OExportPlacement
     QPolygonF outline{};
 };
 
+/// @brief Un rectangle du tissu plié : où il est dans la colonne, et de quel côté son pli.
+///
+/// **Le tissu plié à deux bords n'est pas un bac, c'est trois.** Les lisières gauche et droite
+/// repliées vers l'intérieur font des deux grands côtés de la pile deux plis, et des lisières une
+/// ligne au milieu : les pièces au pli se collent donc à l'un ou à l'autre, et une pièce ne peut
+/// pas traverser la ligne des lisières.
+///
+///   +----------+----------+     L : pli sur le bord GAUCHE
+///   |    L     |    R     |     R : pli sur le bord DROIT
+///   +----------+----------+     la ligne du milieu : les deux lisières
+///   |         B           |     B : pli sur le bord GAUCHE
+///   +---------------------+     (le pli simple, sous les deux bandes)
+///
+/// Vide sur un plan à bord unique : la colonne est d'un seul tenant, et le canvas dessine
+/// exactement ce qu'il dessinait avant.
+struct OExportFoldedZone
+{
+    /// Pixels, dans le repère de la colonne — celui du bac, (0, 0) en haut à gauche.
+    QRectF rect{};
+
+    /// Le côté du rectangle où le tissu est plié. L'autre côté est une lisière (ou une cassure de
+    /// lisière), donc une matière à ne pas traverser.
+    bool foldOnTheLeft{true};
+};
+
 /// @brief The result of one nesting run.
 struct OExportNestingResult
 {
@@ -90,6 +115,11 @@ struct OExportNestingResult
     QVector<OExportPlacement> placements{};
     double binWidthPx{0.0};
     double usedHeightPx{0.0};
+
+    /// Les rectangles du tissu plié à deux bords, et rien sur un bord unique. **Le dessin du
+    /// découpage** : ce sont eux que le canvas trace en pointillé, pour que l'utilisatrice
+    /// comprenne comment plier son tissu.
+    QVector<OExportFoldedZone> foldedZones{};
 };
 
 /// @brief What the engine needs besides the geometry itself.

@@ -89,11 +89,27 @@ auto MappedFoldLine(const VLayoutPiece &piece) -> QLineF;
 /// not a contradiction: a piece cut on the fold is cut ON THE FOLD, so it is the fold of the fabric
 /// that carries it. Its grainline, if it has one, follows.
 ///
-/// @param angle set to the rotation, in the engine's convention, when the answer is true.
+/// ⚠️ **Le SENS appartient au patron, pas au nesting, et c'est le piège de ce calcul.** Les deux
+/// rotations qui mettent la foldline verticale diffèrent d'un demi-tour, et **les deux sont
+/// posables** : l'une a le corps du côté du tissu, l'autre le retourne — mais retournée, la pièce
+/// est toujours dans le tissu, elle est simplement à l'envers. Choisir « celle qui tient dans le
+/// tissu » ne choisit donc rien : **il n'y a qu'une bonne réponse, c'est celle qui ne retourne pas
+/// la pièce.** Sur un tissu à motif, toutes les pièces prennent le tissu du même côté, et une pièce
+/// au pli la première. C'est le même choix que @ref AllowedAngles fait pour une grainline avec
+/// `g − 90` — et l'oublier ici a retourné toutes les pièces au pli d'un plan, sans que rien ne le
+/// dise : une pièce à l'envers ressemble à une pièce à l'endroit.
+///
+/// Et le côté en découle, il ne se choisit pas : la pièce étant dans son bon sens, son corps tombe
+/// d'un côté de sa foldline ou de l'autre, et c'est **ce côté qui dit quel pli peut la porter**.
+/// Certaines pièces sont dessinées pour un pli à gauche, d'autres pour un pli à droite.
+///
+/// @param angle the rotation, in the engine's convention, when the answer is true.
+/// @param foldOnTheRight vrai quand le corps tombe à GAUCHE de la foldline — donc quand il faut un
+///        pli sur le bord droit pour l'accueillir.
 /// @return false when the piece has no fold, or when its fold line is not an edge of its own
 ///         outline — in which case there is no rotation to find, and the caller has to say so
 ///         rather than lay the piece somewhere.
-auto FoldAngle(const VLayoutPiece &piece, double *angle) -> bool;
+auto FoldAngle(const VLayoutPiece &piece, double *angle, bool *foldOnTheRight) -> bool;
 
 /// @brief The direction of a piece: its own grainline when it is switched on, its fold axis otherwise.
 ///

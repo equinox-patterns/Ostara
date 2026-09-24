@@ -42,8 +42,30 @@ class VAbstractPattern;
 class VContainer;
 class OSizerange;
 struct OExportNestingResult;
+struct OExportPieceDecor;
+struct OExportPieceGeometry;
+struct OExportPieceGrainline;
 struct OExportSizeLayer;
 struct OExportTemplate;
+
+/// @brief The decor of one piece, resolved as the canvas would draw it — the frozen form a run stores.
+///
+/// It lives beside the drawing rather than beside the model on purpose: the resolution and the drawing
+/// are two halves of one computation, and splitting them across two files is how the two readings of a
+/// cartouche's position — one for the screen, one for the paper — came to exist in the first place.
+///
+/// ⚠️ It reads the DOCUMENT, so it is only correct while the document is on the size being recorded.
+/// The caller resolves it during the run, on the reference layer, and never afterwards.
+auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *range,
+                       const VContainer *pattern, VAbstractPattern *doc) -> OExportPieceDecor;
+
+/// @brief The reference layer's grainline for one piece, resolved as the canvas would draw it.
+///
+/// The same contract as @ref ResolvePieceDecor, and the same constraint: it reads the DOCUMENT, so it
+/// is only correct while the document is on the size being recorded.
+auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerange *range,
+                           const Unit &unit, const VContainer *pattern, bool cuttingPlan)
+    -> OExportPieceGrainline;
 
 /// @brief Quel genre de plan ce run est, pour ce que le canvas en dessine.
 ///

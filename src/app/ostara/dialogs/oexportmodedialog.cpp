@@ -487,17 +487,21 @@ void OExportModeDialog::OnGenerateCutting()
         return;
     }
 
-    // Une seule sortie décrite : le chemin de toujours, exécuté par la fenêtre après la fermeture.
+    // **Tout ce que le formulaire décrit, toujours — même quand cela ne vaut qu'une sortie.**
+    //
+    // « Générer cette sortie » veut dire *tout de suite* par opposition à *plus tard*, pas *une seule*
+    // par opposition à *toutes* : on enchaîne donc ici la sélection entière, comme la liste le fait,
+    // et la fenêtre n'a pas à connaître ce découpage.
+    //
+    // ⚠️ **Et surtout pas le raccourci d'avant** — « une seule sortie décrite : la fenêtre s'en charge
+    // après la fermeture ». Sous « Several sizes », cocher UNE seule taille décrit bien une sortie
+    // unique, et le raccourci laissait alors la fenêtre générer `CurrentRequest()` : sur cet onglet
+    // c'est une requête de TAILLE UNIQUE, lue dans les combos mono-taille restés à leur premier index.
+    // La taille cochée était donc silencieusement remplacée par la plus petite de chaque axe.
+    // « Une seule chose décrite » et « ce que la fenêtre décrit » ne sont pas la même chose, et c'est
+    // ce raccourci qui les confondait.
     const QVector<OExportQueueItem> outputs = DescribedOutputs();
-    if (outputs.size() <= 1)
-    {
-        accept();
-        return;
-    }
 
-    // **Plusieurs : la sélection entière.** « Générer cette sortie » veut dire *tout de suite* par
-    // opposition à *plus tard* — pas *une seule* par opposition à *toutes*. On les enchaîne donc
-    // ici, comme la liste le fait, et la fenêtre n'a pas à connaître ce découpage.
     SetBatchRunning(true);
     for (const OExportQueueItem &item : outputs)
     {

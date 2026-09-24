@@ -43,6 +43,7 @@
 
 #include <QObject>
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <utility>
@@ -53,6 +54,10 @@ namespace
 /// The engine works in fixed-point: one pixel is kTrameScale units. Every
 /// coordinate handed to it, and every coordinate it returns, uses that scale.
 constexpr double kTrameScale = 1e6;
+
+/// Le centième de pixel d'indulgence des comparaisons de largeur : une somme juste à l'arrondi
+/// près ne doit pas fermer la porte au double bord, ni faire échouer un déplacement qui tient.
+constexpr double kWideningPx = 0.01;
 
 /// @param offset the piece's alignment shift, in pixels — the same one the canvas
 ///               applies, so the bin and the screen show the same geometry.
@@ -161,6 +166,595 @@ auto PrintedSheets(const QVector<OExportPlacement> &placements,
     // choice can only move through the placements — which is what it is there for.
     return OExportSheets::Compute(grid, placements, params.coverZonePx).count;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Le tissu plié à deux bords — trois rectangles, et deux pliages en concurrence
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Les trois rectangles d'un tissu plié à deux bords.
+///
+/// Les deux bandes du haut portent chacune un pli sur son bord EXTÉRIEUR — c'est ce que fait un
+/// tissu dont les deux lisières sont repliées vers l'intérieur — et la ligne qui les sépare est
+/// celle où les deux lisières se rejoignent. Le rectangle du bas est la colonne entière, avec un
+/// seul pli : c'est là que va ce qui ne rentre dans aucune bande.
+enum ZoneSeat
+{
+    kLeftZone = 0,
+    kRightZone = 1,
+    kBelowZone = 2,
+};
+
+/// Ce qu'une pièce dit au découpage : si elle est au pli, ses angles, et sa largeur.
+struct PieceTalk
+{
+    bool onFold{false};
+    std::vector<double> angles{}; ///< les angles de sa direction — jamais vide sur un plan de coupe
+    double foldAngle{0.0};        ///< sa rotation au pli, dans son bon sens
+
+    /// Le côté que sa rotation au pli appelle : vrai quand il faut un pli sur le bord DROIT.
+    /// **C'est une donnée du patron**, pas un choix : la pièce est dessinée pour un pli, et la
+    /// retourner la met à l'envers — sur un tissu à motif, c'est un plan faux.
+    bool foldOnTheRight{false};
+
+    double widthPx{0.0}; ///< sa largeur la plus étroite — son « rectangle »
+
+    /// Vrai pour la variante EN MIROIR d'une pièce au pli — celle qui ouvre l'autre bord.
+    bool mirrored{false};
+
+    QString name{}; ///< pour nommer la pièce quand aucun pliage ne peut la porter
+    quint32 id{0};
+};
+
+/// La largeur d'un rang — pour la recherche, qui raisonne par rang et non par pose.
+auto talkWidth(const QVector<PieceTalk> &talks, int rank) -> double
+{
+    return rank >= 0 && rank < talks.size() ? talks.at(rank).widthPx : 0.0;
+}
+
+/// Une pose au pli : **ses deux variantes**, dont une seule sera posée.
+///
+/// La pièce est dessinée pour un bord ; son miroir est la même pièce retournée, qui va sur l'autre.
+/// Les deux sont des empreintes distinctes, avec des clés distinctes, et le nesting n'en garde
+/// qu'une : celle dont le côté correspond au rectangle où la pose atterrit. L'autre n'entre ni dans
+/// le résultat ni dans le dessin.
+struct FoldPose
+{
+    int natural{-1}; ///< le rang de la pièce telle qu'elle est dessinée
+    int mirror{-1};  ///< le rang de son miroir, ou -1 quand elle n'en a pas
+};
+
+/// Le rang à poser dans un rectangle dont le pli est de ce côté — la variante qui va de ce côté.
+///
+/// ⚠️ Le côté se lit sur la variante elle-même, jamais sur une convention : `foldOnTheRight` dit
+/// qu'il faut un pli sur le bord droit, donc ce rectangle-là ne peut la porter que si son pli y est.
+auto VariantFor(const QVector<PieceTalk> &talks, const FoldPose &pose, bool foldOnTheLeft) -> int
+{
+    const auto suits = [&talks, foldOnTheLeft](int rank) {
+        return rank >= 0 && talks.at(rank).foldOnTheRight != foldOnTheLeft;
+    };
+
+    if (suits(pose.natural))
+    {
+        return pose.natural;
+    }
+    return suits(pose.mirror) ? pose.mirror : -1;
+}
+
+/// Ce qu'un rectangle demande à une pièce : les angles qu'elle y prend, et la paroi où elle colle.
+struct ZoneConstraint
+{
+    std::vector<double> angles{};
+    Anchor anchor{Anchor::Free};
+};
+
+/// Une nidification : un sous-ensemble d'empreintes, et ce que le moteur en a fait.
+struct ZonePlan
+{
+    std::vector<int> ranks{};                 ///< les rangs du footprint, dans l'ordre des placements
+    std::vector<Clipper2Lib::Path64> polygons{}; ///< parallèle à @ref ranks — ce que le moteur a reçu
+    std::vector<Placement> placements{};      ///< parallèle à @ref ranks
+    double usedHeightPx{0.0};
+};
+
+/// La largeur la plus étroite d'un chemin, sur les angles qu'on lui donne.
+///
+/// **C'est le « rectangle » d'une pièce**, et c'est lui qui décide si elle rentre dans une bande :
+/// elle n'y entre que si l'un de ses angles y tient. Prendre le plus étroit est le bon test — le
+/// moteur essaiera les autres, et s'il n'y arrive pas il le dit (pièce non placée) plutôt que de
+/// la laisser dépasser.
+///
+/// ⚠️ Les angles sont ceux du MOTEUR : c'est `NestGeom::rotatePath` qui tourne, le même que celui
+/// qui posera la pièce. Un signe faux ici ne se verrait nulle part ailleurs — la pièce serait
+/// simplement jugée trop large pour une bande où elle entrait.
+auto NarrowestWidth(const Clipper2Lib::Path64 &path, const std::vector<double> &angles) -> double
+{
+    if (path.empty())
+    {
+        return 0.0;
+    }
+
+    bool any = false;
+    double narrowest = 0.0;
+    for (const double angle : angles)
+    {
+        const BBox box = NestGeom::bboxFromPath(NestGeom::rotatePath(path, angle));
+        const double width = static_cast<double>(box.xMax - box.xMin) / kTrameScale;
+        if (!any || width < narrowest)
+        {
+            narrowest = width;
+            any = true;
+        }
+    }
+
+    // Aucun angle : un plan de coupe en donne toujours. Un appelant qui n'en donnerait pas ne doit
+    // pas lire une largeur nulle — la pièce ne rentrerait nulle part.
+    if (!any)
+    {
+        const BBox box = NestGeom::bboxFromPath(path);
+        narrowest = static_cast<double>(box.xMax - box.xMin) / kTrameScale;
+    }
+
+    return narrowest;
+}
+
+/// Les contraintes qu'un rectangle impose aux pièces qu'il porte.
+///
+/// ⚠️ **C'est ici que le pli l'emporte sur la grainline**, et c'est le seul endroit où ça se dit :
+/// une pièce coupée au pli est portée par le pli du tissu, pas par son droit-fil. Ailleurs — un plan
+/// déplié — la grainline reste la direction, et la pièce est dépliée.
+auto ConstraintsFor(const QVector<PieceTalk> &talks, const std::vector<int> &ranks,
+                    bool foldOnTheLeft) -> std::vector<ZoneConstraint>
+{
+    std::vector<ZoneConstraint> out;
+    out.reserve(ranks.size());
+
+    for (const int rank : ranks)
+    {
+        const PieceTalk &talk = talks.at(rank);
+        ZoneConstraint constraint;
+        if (talk.onFold)
+        {
+            // ⚠️ Le rectangle ne choisit pas la rotation : elle est celle de la pièce dans son bon
+            // sens. Le côté, lui, doit correspondre — c'est la répartition qui le garantit, et une
+            // pièce au pli du mauvais côté serait posée à l'envers.
+            constraint.angles = {talk.foldAngle};
+            constraint.anchor = foldOnTheLeft ? Anchor::LeftWall : Anchor::RightWall;
+        }
+        else
+        {
+            constraint.angles = talk.angles;
+        }
+        out.push_back(std::move(constraint));
+    }
+
+    return out;
+}
+
+
+/// Nidifie les rangs d'un plan dans un bac de largeur @p widthPx.
+///
+/// Rend faux quand le moteur a été interrompu — et pose @p abandoned, l'appelant devant alors tout
+/// jeter : une nidification à moitié faite n'est pas un plan — ou quand le bac ne peut pas tout
+/// porter, avec le message qui le dit.
+auto NestRanks(const Footprint::Result &footprint, const std::vector<ZoneConstraint> &constraints,
+               double widthPx, const OExportNestingParams &params,
+               const std::vector<Bin::Zone> &zones, const Engine::Config &config, ZonePlan *plan,
+               QString *error, bool *abandoned) -> bool
+{
+    plan->polygons.clear();
+    std::vector<std::vector<double>> angles;
+    std::vector<Anchor> anchors;
+    plan->polygons.reserve(plan->ranks.size());
+    angles.reserve(plan->ranks.size());
+    anchors.reserve(plan->ranks.size());
+
+    for (std::size_t i = 0; i < plan->ranks.size(); ++i)
+    {
+        const std::size_t rank = static_cast<std::size_t>(plan->ranks.at(i));
+        plan->polygons.push_back(footprint.polygons.at(rank));
+        angles.push_back(constraints.at(i).angles);
+        anchors.push_back(constraints.at(i).anchor);
+    }
+
+    // Le bac, un par rectangle : `Bin` prend ses zones par valeur, donc chacun a la sienne — et
+    // les trois voient le même bloc interdit.
+    const Bin bin(widthPx, params.marginPx, zones);
+
+    bool stopped = false;
+    plan->placements = Engine{config}.place(bin, plan->polygons, angles, anchors, &stopped);
+
+    if (stopped)
+    {
+        *abandoned = true;
+        return false;
+    }
+
+    if (plan->placements.size() != plan->polygons.size())
+    {
+        *error = QObject::tr("The nesting engine returned an incomplete result.");
+        return false;
+    }
+
+    if (!AllPlaced(plan->placements))
+    {
+        *error = QObject::tr("The document is too narrow: some pieces could not be placed.");
+        return false;
+    }
+
+    plan->usedHeightPx = Engine::UsedHeight(plan->placements, plan->polygons, bin);
+    return true;
+}
+
+/// Le plan d'un tissu plié — **deux pliages en concurrence, et le plus court gagne.**
+///
+/// **Un bord** : la colonne entière, le pli sur un seul grand côté. C'est le plan validé, et c'est
+/// aussi ce que donne un tissu dont les deux plus larges pièces au pli ne tiennent pas côte à côte.
+///
+/// **Deux bords** : deux bandes dont les plis sont les DEUX grands côtés de la pile, et sous elles
+/// la colonne. Le partage des bandes est une **règle**, pas une recherche : chacune prend la largeur
+/// de sa pièce au pli, et **le surplus est partagé également**. Comme le surplus est positif,
+/// chaque bande est forcément au moins aussi large que la pièce qu'elle porte.
+///
+/// Puis c'est le **nesting qui choisit** où vont les autres pièces : il essaie de les déplacer,
+/// renidifie les rectangles touchés, et garde le déplacement quand la hauteur totale baisse. La
+/// hauteur gardée est donc **mesurée**, jamais estimée. ⚠️ Les deux pièces au pli des bandes, elles,
+/// ne bougent pas : ce sont elles qui justifient le double bord.
+///
+/// ⚠️ **Le chevauchement est impossible par construction** : chaque rectangle est un bac à part, et
+/// le moteur ne pose jamais hors de son bac. La règle dure ne coûte pas une ligne.
+auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTalk> &talks,
+                      const OExportNestingParams &params, const std::vector<Bin::Zone> &zones,
+                      const Engine::Config &config, QVector<OExportPlacement> *placements,
+                      std::vector<int> *orderedRanks, QVector<OExportFoldedZone> *foldedZones,
+                      double *usedHeightPx, QString *error, bool *abandoned) -> bool
+{
+    const double columnPx = params.binWidthPx;
+    // ── Les poses au pli, et leurs deux variantes ──────────────────────────────────────────────
+    //
+    // Une pièce au pli arrive en DEUX empreintes : elle-même, et son miroir. Une seule sera posée —
+    // celle dont le côté correspond au rectangle où la pose atterrit. **Le miroir est ce qui ouvre
+    // les deux bords** : sans lui, une pièce dessinée pour la gauche ne pourrait jamais entrer dans
+    // la bande de droite, et tout ce qui est du mauvais côté finirait sous les bandes, en hauteur
+    // perdue. Le côté reste la nature de la pièce ; il cesse d'être une contrainte.
+    QVector<FoldPose> poses;
+    QVector<int> poseOfRank(talks.size(), -1);
+    QHash<QString, int> poseOfKey;
+    for (int rank = 0; rank < talks.size(); ++rank)
+    {
+        if (!talks.at(rank).onFold)
+        {
+            continue;
+        }
+
+        // ⚠️ **Le rattachement ne suppose pas l'ordre.** Les deux variantes sortent d'une même
+        // boucle, mais `Footprint::compute` regroupe et retrie : rien ne dit que la pièce passe
+        // avant son miroir — elles ont la même aire, et c'est la clé qui tranche. Chaque clé trouve
+        // ou crée sa pose, et la seconde des deux la complète.
+        const QString &key = footprint.keys.at(static_cast<std::size_t>(rank));
+        const QString poseKey = talks.at(rank).mirrored && key.endsWith(QStringLiteral("-m"))
+                                    ? key.left(static_cast<int>(key.size()) - 2)
+                                    : key;
+
+        int pose = poseOfKey.value(poseKey, -1);
+        if (pose < 0)
+        {
+            pose = static_cast<int>(poses.size());
+            poses.append(FoldPose{});
+            poseOfKey.insert(poseKey, pose);
+        }
+
+        if (talks.at(rank).mirrored)
+        {
+            poses[pose].mirror = rank;
+        }
+        else
+        {
+            poses[pose].natural = rank;
+        }
+        poseOfRank[rank] = pose;
+    }
+
+    // La largeur d'une pose : la plus large de ses deux variantes — le miroir donne la même, mais
+    // le lire plutôt que le supposer coûte une ligne.
+    const auto widthOfPose = [&talks](const FoldPose &pose) {
+        return std::max(pose.natural >= 0 ? talks.at(pose.natural).widthPx : 0.0,
+                        pose.mirror >= 0 ? talks.at(pose.mirror).widthPx : 0.0);
+    };
+
+    std::vector<int> posesByWidth(static_cast<std::size_t>(poses.size()));
+    for (int pose = 0; pose < poses.size(); ++pose)
+    {
+        posesByWidth[static_cast<std::size_t>(pose)] = pose;
+    }
+    std::sort(posesByWidth.begin(), posesByWidth.end(), [&poses, &widthOfPose](int a, int b) {
+        return widthOfPose(poses.at(a)) > widthOfPose(poses.at(b));
+    });
+
+    // ── Les deux pliages possibles ────────────────────────────────────────────────────────────
+    //
+    // **Un bord** : une colonne, et son pli se met d'un côté — lequel n'importe plus, puisque le
+    // miroir ouvre l'autre à toutes les poses. Il concourt toujours.
+    //
+    // **Deux bords** : deux bandes dont les plis sont les deux grands côtés de la pile, donc **les
+    // deux plus larges poses au pli**, une par bande. Le surplus est partagé également : chaque
+    // bande prend la largeur de sa pose, plus la moitié de ce qui reste. Le centième de pixel
+    // d'indulgence évite qu'une somme juste à l'arrondi près ferme la porte au double bord.
+    const bool doubleEdge =
+        poses.size() >= 2
+        && widthOfPose(poses.at(posesByWidth.at(0))) + widthOfPose(poses.at(posesByWidth.at(1)))
+               <= columnPx + kWideningPx;
+
+    // L'affectation se lit par RANG, mais **se décide par pose** : les deux variantes d'une pose
+    // vont toujours au même rectangle, et c'est celle du bon côté qui y est posée. Une pose n'est
+    // donc jamais coupée deux fois.
+    std::vector<int> zoneOfRank(static_cast<std::size_t>(talks.size()), kBelowZone);
+
+    double bestHeight = std::numeric_limits<double>::max();
+    bool bestIsDouble = false;
+    ZonePlan best[3];
+    double leftWidth = 0.0;
+    double rightWidth = 0.0;
+
+    // Nidifie un candidat : ses rectangles — leur côté de pli — et la pose de chaque rang.
+    const auto evaluate = [&](const std::vector<bool> &foldOnTheLeft,
+                              const std::vector<int> &assignment, const std::vector<double> &widths,
+                              ZonePlan *plans, double *height) -> bool {
+        for (std::size_t seat = 0; seat < foldOnTheLeft.size(); ++seat)
+        {
+            std::vector<int> ranks;
+            for (int rank = 0; rank < talks.size(); ++rank)
+            {
+                if (assignment.at(static_cast<std::size_t>(rank)) != static_cast<int>(seat))
+                {
+                    continue;
+                }
+
+                if (talks.at(rank).onFold)
+                {
+                    // Une pose : seule la variante du côté de ce rectangle entre dans ce bac.
+                    const int pose = poseOfRank.at(rank);
+                    if (pose < 0 || rank != VariantFor(talks, poses.at(pose), foldOnTheLeft.at(seat)))
+                    {
+                        continue;
+                    }
+                }
+
+                ranks.push_back(rank);
+            }
+
+            plans[seat].ranks = ranks;
+            if (!NestRanks(footprint, ConstraintsFor(talks, ranks, foldOnTheLeft.at(seat)),
+                           widths.at(seat), params, zones, config, &plans[seat], error, abandoned))
+            {
+                return false;
+            }
+        }
+
+        // La hauteur de la colonne : les bandes côte à côte, puis ce qui est dessous. Un seul
+        // rectangle — le bord unique — et c'est simplement sa hauteur.
+        *height = foldOnTheLeft.size() < 3
+                      ? plans[0].usedHeightPx
+                      : std::max(plans[kLeftZone].usedHeightPx, plans[kRightZone].usedHeightPx)
+                            + plans[kBelowZone].usedHeightPx;
+        return true;
+    };
+
+    if (doubleEdge)
+    {
+        const double surplus = columnPx - widthOfPose(poses.at(posesByWidth.at(0)))
+                               - widthOfPose(poses.at(posesByWidth.at(1)));
+        leftWidth = widthOfPose(poses.at(posesByWidth.at(0))) + surplus / 2.0;
+        rightWidth = columnPx - leftWidth;
+    }
+
+    // ── Le candidat à UN bord ────────────────────────────────────────────────────────────────
+    {
+        const std::vector<bool> seats{true};
+        const std::vector<double> widths{columnPx};
+        std::vector<int> assignment(static_cast<std::size_t>(talks.size()), 0);
+
+        ZonePlan plans[3];
+        double height = 0.0;
+        if (!evaluate(seats, assignment, widths, plans, &height))
+        {
+            return false;
+        }
+
+        bestHeight = height;
+        best[kLeftZone] = plans[0];
+    }
+
+    // ── Le candidat à DEUX bords ─────────────────────────────────────────────────────────────
+    if (doubleEdge)
+    {
+        const std::vector<bool> seats{true, false, true};
+        const std::vector<double> widths{leftWidth, rightWidth, columnPx};
+
+        // Le départ : les deux poses que les bandes ont été dimensionnées pour, une par bande — et
+        // **les deux variantes ensemble**, puisque c'est le côté du rectangle qui décide laquelle
+        // sera posée. Tout le reste dans la bande du bas.
+        std::vector<int> assignment(static_cast<std::size_t>(talks.size()), kBelowZone);
+        const auto settle = [&](int pose, int seat) {
+            const FoldPose &foldPose = poses.at(pose);
+            if (foldPose.natural >= 0)
+            {
+                assignment[static_cast<std::size_t>(foldPose.natural)] = seat;
+            }
+            if (foldPose.mirror >= 0)
+            {
+                assignment[static_cast<std::size_t>(foldPose.mirror)] = seat;
+            }
+        };
+        settle(posesByWidth.at(0), kLeftZone);
+        settle(posesByWidth.at(1), kRightZone);
+
+        ZonePlan plans[3];
+        double height = 0.0;
+        if (!evaluate(seats, assignment, widths, plans, &height))
+        {
+            return false;
+        }
+
+        // ⚠️ **Une pose se déplace entière** : ses deux variantes suivent, sinon la pièce serait
+        // assignée à un rectangle du mauvais côté et sa variante n'y entrerait pas. Et les deux
+        // poses que les bandes accueillent ne bougent pas : ce sont elles qui justifient le pliage,
+        // les sortir viderait leur bande de sa raison.
+        const auto canMove = [&](int rank, int seat) {
+            const int pose = talks.at(rank).onFold ? poseOfRank.at(rank) : -1;
+            if (pose == posesByWidth.at(0) || pose == posesByWidth.at(1))
+            {
+                return false;
+            }
+            if (talkWidth(talks, rank) > widths.at(static_cast<std::size_t>(seat)) + kWideningPx)
+            {
+                return false;
+            }
+            return true;
+        };
+
+        bool improved = true;
+        while (improved)
+        {
+            improved = false;
+            for (int rank = 0; rank < talks.size() && !improved; ++rank)
+            {
+                const int pose = talks.at(rank).onFold ? poseOfRank.at(rank) : -1;
+                const int from = assignment.at(static_cast<std::size_t>(rank));
+
+                for (int seat = 0; seat < 3 && !improved; ++seat)
+                {
+                    if (seat == from || !canMove(rank, seat))
+                    {
+                        continue;
+                    }
+
+                    std::vector<int> trial = assignment;
+                    if (pose >= 0)
+                    {
+                        const FoldPose &foldPose = poses.at(pose);
+                        if (foldPose.natural >= 0)
+                        {
+                            trial[static_cast<std::size_t>(foldPose.natural)] = seat;
+                        }
+                        if (foldPose.mirror >= 0)
+                        {
+                            trial[static_cast<std::size_t>(foldPose.mirror)] = seat;
+                        }
+                    }
+                    else
+                    {
+                        trial[static_cast<std::size_t>(rank)] = seat;
+                    }
+
+                    ZonePlan trialPlans[3];
+                    double trialHeight = 0.0;
+                    // ⚠️ **`&trialHeight`, jamais `&height`.** La hauteur de l'essai et celle qui
+                    // est tenue sont deux choses : écrire l'essai dans `height` la remplace AVANT
+                    // la comparaison, `trialHeight` reste à zéro, et `0.0 < height` accepte alors
+                    // tous les essais — la recherche ne redescend plus, `improved` reste vrai à
+                    // chaque tour et la boucle ne rend jamais la main. Le nesting se bloquait là.
+                    if (!evaluate(seats, trial, widths, trialPlans, &trialHeight))
+                    {
+                        return false;
+                    }
+
+                    if (trialHeight < height)
+                    {
+                        assignment = std::move(trial);
+                        for (int z = 0; z < 3; ++z)
+                        {
+                            plans[z] = trialPlans[z];
+                        }
+                        height = trialHeight;
+                        improved = true;
+                    }
+                }
+            }
+        }
+
+        // Strictement moins : à égalité, le bord unique reste la référence.
+        if (height < bestHeight)
+        {
+            bestHeight = height;
+            bestIsDouble = true;
+            for (int z = 0; z < 3; ++z)
+            {
+                best[z] = plans[z];
+            }
+        }
+    }
+
+
+    // ── La sortie ────────────────────────────────────────────────────────────────────────────
+    placements->clear();
+    orderedRanks->clear();
+    foldedZones->clear();
+    *usedHeightPx = bestHeight;
+
+    const auto append = [&](const ZonePlan &plan, double dx, double dy) {
+        const QVector<OExportPlacement> placed = ToExportPlacements(plan.placements, plan.polygons);
+        for (int i = 0; i < placed.size(); ++i)
+        {
+            OExportPlacement moved = placed.at(i);
+            moved.x += dx;
+            moved.y += dy;
+            placements->append(moved);
+            orderedRanks->push_back(plan.ranks.at(static_cast<std::size_t>(i)));
+        }
+    };
+
+    if (!bestIsDouble)
+    {
+        // Le bord unique : **un seul rectangle, la colonne elle-même**, dont le pli est du côté que
+        // ses pièces au pli demandent. Ce n'est pas un découpage — le canvas ne dessine les
+        // rectangles qu'à partir de deux, celui du bac dit déjà où est la colonne — mais son côté
+        // de pli, lui, se dit ici : c'est lui qui met le trait au bon bord.
+        append(best[kLeftZone], 0.0, 0.0);
+
+        OExportFoldedZone zone;
+        zone.rect = QRectF(0.0, 0.0, columnPx, bestHeight);
+        zone.foldOnTheLeft = true;
+        foldedZones->append(zone);
+        return true;
+    }
+
+    // ⚠️ **Les trois rectangles sont translatés dans le repère de la colonne** — L en (0, 0),
+    // R en (leftWidth, 0), B sous les deux autres. C'est ce qui permet au canvas de tout dessiner
+    // comme un seul plan, sans rien savoir du découpage.
+    const double upperHeight = std::max(best[kLeftZone].usedHeightPx, best[kRightZone].usedHeightPx);
+
+    const struct
+    {
+        int zone;
+        double dx;
+        double dy;
+    } seats[] = {
+        {kLeftZone, 0.0, 0.0},
+        {kRightZone, leftWidth, 0.0},
+        {kBelowZone, 0.0, upperHeight},
+    };
+
+    for (const auto &seat : seats)
+    {
+        const ZonePlan &plan = best[seat.zone];
+        if (plan.ranks.empty())
+        {
+            continue;   // un rectangle vide ne se dessine pas
+        }
+
+        append(plan, seat.dx, seat.dy);
+
+        OExportFoldedZone zone;
+        zone.rect = QRectF(seat.dx, seat.dy,
+                           seat.zone == kLeftZone ? leftWidth
+                                                  : (seat.zone == kRightZone ? rightWidth : columnPx),
+                           plan.usedHeightPx);
+        zone.foldOnTheLeft = seat.zone != kRightZone;
+        foldedZones->append(zone);
+    }
+
+    return true;
+}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -188,10 +782,10 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
 
     QHash<QString, QVector<double>> anglesByKey;
 
-    // Les touches qui vont AU BORD — celles d'une pièce au pli, sur du tissu plié. Une seconde
-    // carte, à côté des angles, parce que les deux se remplissent au même endroit et se relisent au
-    // même endroit : l'ancrage et la rotation d'une pièce au pli sont une seule décision.
-    QHash<QString, Anchor> anchorByKey;
+    /// Ce que chaque pièce dit au découpage du tissu plié — sa largeur, ses angles, et ses deux
+    /// rotations au pli. Une carte à part des angles : sur du tissu plié, ce n'est plus une liste
+    /// d'angles qu'on transmet au moteur, c'est un **découpage** qu'on décide.
+    QHash<QString, PieceTalk> talkByKey;
 
     for (const OExportSizeLayer &layer : layers)
     {
@@ -225,38 +819,61 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
             {
                 // Keyed, because the footprint is what the engine constrains — a group is nested as
                 // one block, and its members share the key.
-                double foldAngle = 0.0;
-                if (params.foldedFabric && piece.onFold)
-                {
-                    // ── Une pièce au pli, sur du tissu plié ──────────────────────────────────────
-                    //
-                    // Elle n'a plus qu'UNE rotation : celle qui met sa foldline verticale, le corps
-                    // dans le tissu — l'autre le mettrait dehors. Et elle est **collée au bord** :
-                    // sa foldline doit tomber EXACTEMENT sur le pli du tissu, et à cinq millimètres
-                    // près, la pièce dépliée est fausse de dix.
-                    //
-                    // ⚠️ Le pli l'emporte sur la grainline, ici et pas ailleurs : `PieceDirection`
-                    // préfère la grainline quand elle est allumée, et c'est juste partout sauf sur
-                    // une pièce qu'on coupe AU PLI — c'est le pli du tissu qui la porte.
-                    if (!OExportCuttingDirection::FoldAngle(piece.piece, &foldAngle))
-                    {
-                        // Aucune des deux rotations ne met le pli sur un bord de sa propre pièce : il
-                        // n'y a pas de rotation à trouver, et poser la pièce quand même serait un
-                        // plan faux qui a l'air fini. On le dit, et on nomme la pièce.
-                        result.error = QObject::tr("The piece \"%1\" (id %2) is cut on the fold, but "
-                                                   "its fold line is not one of its own edges. Check "
-                                                   "its fold line in the Details mode.")
-                                           .arg(piece.name)
-                                           .arg(piece.id);
-                        return result;
-                    }
-                    anglesByKey.insert(piece.key, QVector<double>{foldAngle});
-                    anchorByKey.insert(piece.key, Anchor::LeftWall);
-                }
-                else
+                if (!params.foldedFabric)
                 {
                     anglesByKey.insert(piece.key,
                                        OExportCuttingDirection::AllowedAngles(piece.direction, params.oneWayLayout));
+                }
+                else
+                {
+                    // ── Ce que la pièce dit au découpage du tissu plié ──────────────────────────
+                    //
+                    // Sa **largeur** — son « rectangle », celui dont le bord décide si elle rentre
+                    // dans une bande. Et si elle est **au pli**, ses deux rotations : une pièce au
+                    // pli n'a plus qu'une orientation par paroi, celle qui met sa foldline verticale
+                    // avec le corps dans le tissu. L'autre le mettrait dehors.
+                    PieceTalk talk;
+                    talk.onFold = piece.onFold;
+                    talk.mirrored = piece.mirrored;
+                    talk.name = piece.name;
+                    talk.id = piece.id;
+
+                    if (talk.onFold)
+                    {
+                        // ⚠️ Le pli l'emporte sur la grainline, ici et pas ailleurs : c'est le pli
+                        // du tissu qui porte une pièce qu'on coupe au pli, pas son droit-fil.
+                        // Et c'est SA rotation qui décide de son côté — la pièce est posée dans le
+                        // sens où elle est dessinée, jamais retournée.
+                        if (!OExportCuttingDirection::FoldAngle(piece.piece, &talk.foldAngle,
+                                                                &talk.foldOnTheRight))
+                        {
+                            // Aucune rotation ne met le pli sur un bord de sa propre pièce : il n'y
+                            // a pas de rotation à trouver, et poser la pièce quand même serait un
+                            // plan faux qui a l'air fini. On le dit, et on nomme la pièce.
+                            result.error =
+                                QObject::tr("The piece \"%1\" (id %2) is cut on the fold, but its "
+                                            "fold line is not one of its own edges. Check its fold "
+                                            "line in the Details mode.")
+                                    .arg(piece.name)
+                                    .arg(piece.id);
+                            return result;
+                        }
+
+                        // ⚠️ Sa largeur se mesure À SA ROTATION DE PLI, jamais sur les angles de sa
+                        // direction : une pièce qui aurait une grainline ET un pli verrait sa
+                        // largeur mesurée dans la mauvaise orientation, et une bande jugée trop
+                        // étroite pour elle.
+                        talk.widthPx = NarrowestWidth(node.polyline, {talk.foldAngle});
+                    }
+                    else
+                    {
+                        const QVector<double> angles = OExportCuttingDirection::AllowedAngles(
+                            piece.direction, params.oneWayLayout);
+                        talk.angles.assign(angles.cbegin(), angles.cend());
+                        talk.widthPx = NarrowestWidth(node.polyline, talk.angles);
+                    }
+
+                    talkByKey.insert(piece.key, std::move(talk));
                 }
             }
         }
@@ -280,12 +897,6 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // Empty on a print run, and an empty list is a piece nobody constrained: the engine keeps its
     // whole sweep, exactly as it did before this parameter existed.
     std::vector<std::vector<double>> allowedAngles;
-
-    // Les pièces collées au bord, dans le MÊME ordre et pour la même raison : le moteur les reçoit
-    // parallèlement à ce qu'il nidifie, et `Footprint::compute` regroupe et réordonne.
-    // Vide sur un run d'impression, et sur tout plan qui n'a rien collé au bord — et vide, le
-    // moteur place exactement comme il l'a toujours fait.
-    std::vector<Anchor> anchors;
 
     const Footprint::Result footprint = Footprint::compute(engineLayers);
     if (footprint.polygons.empty())
@@ -314,7 +925,9 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // a zone; the corner constructor appends one of its own the moment a dimension is non-zero,
     // which is how the strip engine's A0 emulation works and is not what a run without a cover
     // page asks for.
-    const Bin bin(params.binWidthPx, params.marginPx, std::move(zones));
+    // ⚠️ `zones` n'est PAS déplacé : le tissu plié construit un bac par rectangle, et chacun doit
+    // voir le même bloc interdit. La liste est minuscule, la copie ne coûte rien.
+    const Bin bin(params.binWidthPx, params.marginPx, zones);
     Engine::Config config;
     config.gap = params.gapPx;
 
@@ -330,22 +943,57 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // it between its iterations. Null — a caller with nobody watching — leaves it as it was.
     config.abandoned = params.abandoned;
 
+    // ── Le tissu plié s'arrête ici : il ne remplit pas un bac, il découpe la colonne ──────────
+    //
+    // Il a sa propre route parce que tout ce qui suit — l'arbitrage tuilé, le résultat — suppose
+    // UN bac de la largeur `binWidthPx`. Le sien en fait trois, et il rend un plan déjà translaté
+    // dans le repère de la colonne : le canvas n'a donc rien à savoir du découpage.
+    const bool foldedFabricPlan = params.cuttingPlan && params.foldedFabric;
+
+    if (foldedFabricPlan)
+    {
+        QVector<PieceTalk> talks;
+        talks.reserve(static_cast<int>(footprint.keys.size()));
+        for (const QString &key : footprint.keys)
+        {
+            talks.append(talkByKey.value(key));
+        }
+
+        QVector<OExportPlacement> cutPlacements;
+        std::vector<int> cutRanks;
+        double cutHeightPx = 0.0;
+        if (!PlanFoldedFabric(footprint, talks, params, zones, config, &cutPlacements, &cutRanks,
+                              &result.foldedZones, &cutHeightPx, &result.error, &result.abandoned))
+        {
+            return result;   // abandonné ou en erreur : les deux sont déjà posés dans le résultat
+        }
+
+        result.placements = cutPlacements;
+        result.keys.reserve(static_cast<int>(cutRanks.size()));
+        for (const int rank : cutRanks)
+        {
+            result.keys.append(footprint.keys.at(static_cast<std::size_t>(rank)));
+        }
+        result.usedHeightPx = cutHeightPx;
+
+        result.ok = true;
+        return result;
+    }
+
     if (params.cuttingPlan)
     {
         allowedAngles.reserve(footprint.keys.size());
-        anchors.reserve(footprint.keys.size());
         for (const QString &key : footprint.keys)
         {
             const QVector<double> angles = anglesByKey.value(key);
             allowedAngles.emplace_back(angles.cbegin(), angles.cend());
-            anchors.push_back(anchorByKey.value(key, Anchor::Free));
         }
     }
 
     const Engine engine{config};
     bool abandoned = false;
     std::vector<Placement> placements =
-        engine.place(bin, footprint.polygons, allowedAngles, anchors, &abandoned);
+        engine.place(bin, footprint.polygons, allowedAngles, {}, &abandoned);
 
     if (abandoned)
     {
@@ -398,7 +1046,7 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // le dirait. Aujourd'hui il est déjà hors jeu (un plan de coupe ne pose pas d'artboard, donc
     // `artboardHeightPx` vaut zéro), mais c'est une dépendance implicite : le jour où un plan de
     // coupe recevra un cadre, elle tomberait sans bruit.
-    if (params.artboardHeightPx > 0.0 && params.artboardCount > 0 && anchors.empty())
+    if (params.artboardHeightPx > 0.0 && params.artboardCount > 0 && !foldedFabricPlan)
     {
         TiledEngine::Spec spec;
         spec.sheetWidth    = params.binWidthPx / params.artboardCount;

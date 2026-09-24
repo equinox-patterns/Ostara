@@ -455,6 +455,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             {
                 const QPointF centre = geometry.piece.DetailBoundingRect().center();
                 geometry.piece.Mirror(QLineF(centre.x(), centre.y(), centre.x(), centre.y() - 100.0));
+                geometry.mirrorX = centre.x();
                 geometry.direction = OExportCuttingDirection::Mirrored(geometry.direction);
             }
         }
@@ -531,6 +532,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             {
                 const QPointF centre = one.piece.DetailBoundingRect().center();
                 one.piece.Mirror(QLineF(centre.x(), centre.y(), centre.x(), centre.y() - 100.0));
+                one.mirrorX = centre.x();
 
                 // ⚠️ Même piège que pour `Force flipping` : la copie retournée a un droit-fil à
                 // `180 − a`, et sans ceci elle serait tournée comme si elle était encore à `a`.
@@ -538,6 +540,40 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             }
 
             layer.pieces.append(one);
+
+            // ── Et la variante EN MIROIR d'une pièce au pli ────────────────────────────────────
+            //
+            // Une pièce au pli est **dessinée** pour un bord — gauche ou droite — et c'est sa
+            // nature. Mais le miroir (flip vertical) lui ouvre l'autre bord : mise en miroir, une
+            // pièce destinée à gauche va sur le bord droit. C'est ce qui permet au nesting de
+            // remplir indifféremment les deux bandes, au lieu de rejeter sous elles tout ce qui est
+            // du mauvais côté — et c'est de la hauteur gagnée.
+            //
+            // ⚠️ **Le moteur ne sait pas refléter** : sa banque est purement rotationnelle, et un
+            // placement n'a ni miroir ni flip. La variante doit donc EXISTER en géométrie — comme
+            // une copie — et c'est la même mécanique que `Force flipping` et la copie symétrique :
+            // le miroir va dans la matrice, que le moteur lit par le contour MAPPÉ et que l'écran
+            // compose au lieu de l'écraser.
+            //
+            // ⚠️ Une variante par pose, et **le nesting n'en garde qu'une** : celle qui correspond
+            // au côté du rectangle où la pose atterrit. L'autre n'entre ni dans le résultat ni dans
+            // le dessin — le canvas ne dessine que ce que le nesting a gardé. Les deux clés
+            // diffèrent, sans quoi `Footprint::compute` les unirait en une seule empreinte, et la
+            // pose serait une fois et demie.
+            if (m_foldedFabric and one.onFold)
+            {
+                OExportPieceGeometry twin = one;
+                twin.name = one.name + QStringLiteral("-m");
+                twin.key = one.key + QStringLiteral("-m");
+                twin.mirrored = true;
+
+                const QPointF centre = twin.piece.DetailBoundingRect().center();
+                twin.piece.Mirror(QLineF(centre.x(), centre.y(), centre.x(), centre.y() - 100.0));
+                twin.mirrorX = centre.x();
+                twin.direction = OExportCuttingDirection::Mirrored(twin.direction);
+
+                layer.pieces.append(twin);
+            }
         }
     }
 }

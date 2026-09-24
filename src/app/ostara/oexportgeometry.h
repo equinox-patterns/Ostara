@@ -38,11 +38,57 @@
 
 #include "../vlayout/vlayoutpiece.h"
 #include "core/oexportcuttingdirection.h"
+#include "widgets/InfoBlock/oinfoblockexport.h"
 
 class OSizerange;
 class VContainer;
 class VMeasurements;
 class VPattern;
+
+/// @brief One piece's decor, RESOLVED — its cartouche and its annotations, as they are drawn.
+///
+/// The children of a piece do not live in the piece: they live in the DOCUMENT. A block's position is
+/// re-materialised there every time the document is put on a size (`OChildAnchor::Materialize`), and
+/// an annotation's rotation is a formula evaluated against the live variables. Drawing them from the
+/// document therefore draws whatever size it happens to be on NOW, not the size the run was generated
+/// at — outlines frozen, children alive, and the two drift apart the moment the user generates at one
+/// size and looks at another. That is the bug this type exists to close.
+///
+/// ⚠️ The record form is the SVG writer's own — the very one it has always consumed — because it is
+/// already enough to redraw both items, and because it means screen and paper read ONE computation
+/// instead of two that can disagree. The graded exporter has been resolving-then-writing this way all
+/// along; the export path is the one that was still resolving at draw time.
+struct OExportPieceDecor
+{
+    QVector<OInfoBlockSvg::Block> blocks;
+    QVector<OInfoBlockSvg::Annotation> annotations;
+
+    /// Whether this piece's decor was ever resolved. False on a piece the run had no decor to record
+    /// for — an unworn layer, or a piece the document no longer holds.
+    bool resolved{false};
+
+    auto IsEmpty() const -> bool
+    {
+        return not resolved or (blocks.isEmpty() and annotations.isEmpty());
+    }
+};
+
+/// @brief The reference layer's grainline for one piece, RESOLVED — see @ref OExportPieceDecor.
+///
+/// Exactly the same story, found the same way: the grainline the range asks for is resolved from the
+/// DOCUMENT — the piece's stored grainline geometry, and its rotation formula evaluated against the
+/// live container. Resolving it at draw time drew the size the document was on *then*, not the one the
+/// run was generated at. It stayed invisible for as long as a single-size run left the document on the
+/// run's own size; giving the document back at the end of the run is what showed it.
+///
+/// The LINE is stored rather than the three numbers it is built from. Those three are turned into a
+/// line by @ref VPieceGrainline, whose constructor also takes an arrow type — and freezing the line
+/// leaves nothing about that conversion to be re-decided at draw time.
+struct OExportPieceGrainline
+{
+    bool resolved{false};
+    QLineF mainLine;
+};
 
 /// @brief One piece of the pattern, resolved for one size of the range.
 struct OExportPieceGeometry
@@ -84,6 +130,39 @@ struct OExportPieceGeometry
     /// On a folded plan such a piece is laid **folded**, with that line glued to the fabric's fold;
     /// on a flat plan it is laid unfolded, as it always was.
     bool onFold{false};
+
+    /// Whether this geometry is the **mirrored twin** of a piece cut on the fold.
+    ///
+    /// A piece cut on the fold is drawn for one edge, and the mirror (the flip vertical) opens it
+    /// the other one: mirrored, a piece meant for the left edge goes on the right. Both twins are
+    /// emitted, as two footprints with two keys, and **the nesting keeps only one** — the one whose
+    /// edge matches the rectangle the pose lands in. The other is in no result and on no drawing.
+    bool mirrored{false};
+
+    /// Pattern-frame X of the vertical line this geometry is REFLECTED about, or NaN when it is not
+    /// reflected at all.
+    ///
+    /// The reflection lives in the piece's matrix, which the engine reads through the mapped contour
+    /// and the outline composes rather than overwrites. The information block and the annotations do
+    /// **not** go through it: they belong to the document, and the carrier that draws them knows only
+    /// how to translate and to turn — a reflection is neither. So the axis is stated here, in the very
+    /// frame those children store their coordinates in, and the decor mirrors each of them by hand.
+    ///
+    /// ⚠️ It is set by the three places that reflect a piece — the folded twin, `Force flipping` and
+    /// the symmetrical copy — and it is the x of the piece's outline box centre. It is read on the
+    /// UNMAPPED contour (@ref VLayoutPiece::DetailBoundingRect), so the value is the same before and
+    /// after the reflection: a box reflected about its own centre is its own image.
+    qreal mirrorX{qQNaN()};
+
+    /// This piece's cartouche and annotations, resolved at generation — see @ref OExportPieceDecor.
+    ///
+    /// Filled for the reference layer only: that is the one layer the canvas draws decor for, every
+    /// other being stripped of it. Empty on a flat plan that never carried any.
+    OExportPieceDecor decor{};
+
+    /// The reference layer's grainline for this piece, resolved at generation — see
+    /// @ref OExportPieceGrainline. Filled for the reference layer only, like the decor.
+    OExportPieceGrainline grainline{};
 };
 
 /// @brief Every piece of the pattern, resolved for one size of the range.

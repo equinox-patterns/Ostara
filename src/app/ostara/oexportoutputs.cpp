@@ -243,10 +243,25 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         geometry.SetPieceFilter(QSet<quint32>(kept.cbegin(), kept.cend()));
     }
 
-    // The size the document was found on — the range traversal puts it back there.
+    // ── Ce que la marche des tailles abîme, et qu'il faut remettre ─────────────────────────────
+    //
+    // Marcher les tailles re-parse le document, et un parseur qui réécrit une formule fait
+    // `modified = true` puis `emit patternChanged(false)`. Ce signal est branché en direct sur
+    // `MainWindow::PatternChangesWereSaved`, qui marque la fenêtre modifiée, la mise en page périmée
+    // et les sorties périmées — **alors que l'utilisatrice n'a rien touché**. Elle lisait donc « tu as
+    // modifié la pièce » après un simple run.
+    //
+    // Le mode Graded a la parade depuis toujours, et c'est elle qu'on reprend ici : un `QSignalBlocker`
+    // sur le document pendant toute la traversée — le signal n'atteint jamais le slot, donc les trois
+    // effets n'ont pas lieu — plus une sauvegarde de `IsModified()` pour la seule chose qui a
+    // réellement changé. ⚠️ Restaurer le drapeau SANS le bloqueur ne suffirait pas : la fenêtre et les
+    // drapeaux périmés auraient déjà été touchés.
     const qreal savedA = m_currentDimensionA;
     const qreal savedB = m_currentDimensionB;
     const qreal savedC = m_currentDimensionC;
+    const bool wasModified = doc->IsModified();
+    const bool wasWindowModified = isWindowModified();
+    const bool wasLayoutStale = m_layoutSettings != nullptr && m_layoutSettings->IsLayoutStale();
 
     // The only way the export puts the document on a size: the one Details uses for its
     // own drop-downs. Reading the measurements here instead — which is what this code
@@ -258,12 +273,62 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // range the same way, without writing anything. Writing it here added a `dimensionX`
     // attribute to documents that do not carry one, and the schema refuses any value
     // below 1 (dimesionValue): such a document could no longer be saved at all.
-    const auto applySize = [this](qreal a, qreal b, qreal c)
+    bool sizeMoved = false;
+    const auto applySize = [this, &sizeMoved](qreal a, qreal b, qreal c)
     {
         m_currentDimensionA = a;
         m_currentDimensionB = b;
         m_currentDimensionC = c;
         GradationChanged();
+        sizeMoved = true;
+    };
+
+    // The range is the authority on where the decor of the reference layer goes: it holds
+    // an override for every owner the user positioned in Graded, and the mode reads it
+    // without ever writing to it. A single-size run names no range — there is nothing to
+    // read, and every piece keeps the geometry it carries.
+    //
+    // The generation takes a COPY of it: a generation is frozen, so editing or deleting
+    // the live range must not move what was already nested.
+    //
+    // ⚠️ Resolved HERE, before the sizes are walked, and not where it used to be: the frozen decor
+    // below is resolved on the FIRST layer, while the document is still on that layer's size, and it
+    // needs the range at that moment.
+    OSizerange exportRange;
+    const OSizerange *range = nullptr;
+    if (const QHash<QString, OSizerange> *ranges = pattern->SizeRanges(); ranges != nullptr)
+    {
+        const auto it = ranges->constFind(request.rangeName);
+        if (it != ranges->cend())
+        {
+            exportRange = it.value();
+            range = &exportRange;
+        }
+    }
+
+    // ── The decor of the reference layer, frozen at generation ────────────────────────────────
+    //
+    // A piece's cartouche and annotations do not live in the piece: they live in the DOCUMENT, where
+    // their position is re-materialised every time it is put on a size, and where a rotation is a
+    // formula evaluated against the live variables. Drawing them from the document therefore draws
+    // the size it is on at the moment of the DRAWING — outlines frozen, children alive, and the two
+    // drift apart the moment a run generated at one size is looked at from another. They are resolved
+    // ONCE, here, and travel in the output beside the frozen geometry.
+    //
+    // ⚠️ **Only the reference layer carries decor** — the first one; the canvas strips every other.
+    // And the resolution must happen DURING the walk, on that first layer: past the walk the range
+    // path has already put the document back on the size it was found on.
+    const auto freezeDecor = [&](OExportSizeLayer &layer) {
+        for (OExportPieceGeometry &piece : layer.pieces)
+        {
+            piece.decor = ResolvePieceDecor(piece, range, pattern, doc);
+
+            // The grainline is the same story read from the same document — and it is frozen HERE,
+            // in the same breath, because it is the same defect: it stayed invisible only for as long
+            // as a single-size run left the document on the run's own size.
+            piece.grainline = ResolvePieceGrainline(piece, range, request.unit, pattern,
+                                                    request.cuttingPlan);
+        }
     };
 
     QVector<OExportSizeLayer> layers;
@@ -276,16 +341,30 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // whole table and re-parse the pattern only to arrive where it started.
     const bool hasAxes = !m_m.isNull() && !m_m->Dimensions().isEmpty();
 
+    // ⚠️ The document's signals are cut for the whole walk. The parsers still run and still set
+    // `modified` — nothing can stop that — but `patternChanged` never reaches
+    // `PatternChangesWereSaved`, so the window, the layout and the outputs are never marked. That is
+    // the bug. Restoring `IsModified()` alone would NOT have been enough: those three marks would
+    // already have been made.
+    //
+    // `blockSignals` rather than a scoped blocker because a `QSignalBlocker` cannot be closed early:
+    // it would have to live to the end of the function, and the nesting below — which talks to a
+    // worker thread and drives a wait dialog — has no business running with the document mute.
+    const bool wasSignalsBlocked = doc->signalsBlocked();
+    doc->blockSignals(true);
+
     if (request.singleSize)
     {
         if (!hasAxes)
         {
             // Already on its only size: the geometry is read as it stands.
             layers = geometry.CollectCurrentSize(tr("Single size"));
+            freezeDecor(layers.last());
         }
         else
         {
-            // The user asked for this size: the document stays on it.
+            // The document is put on the requested size for the run, and given back afterwards like
+            // the range path — see the restore below.
             //
             // An axis the measurement table does not carry has no size to offer, and the
             // dialog says so with -1 — a value shaped like a size without being one, handed
@@ -302,6 +381,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
             applySize(baseOfA, baseOfB, baseOfC);
             layers = geometry.CollectCurrentSize(
                 QStringLiteral("A=%1 B=%2 C=%3").arg(baseOfA).arg(baseOfB).arg(baseOfC));
+            freezeDecor(layers.last());
         }
     }
     else
@@ -335,10 +415,38 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
             }
 
             layers += geometry.CollectCurrentSize(size.label);
+
+            // The first size of the range is the reference layer — the only one that carries decor.
+            // The document is on it right now; it will not be again after the walk.
+            if (layers.size() == 1)
+            {
+                freezeDecor(layers.last());
+            }
         }
 
-        // The document was only borrowed to walk the range: put it back where it was.
+        // The document was not put back here: the restore is shared with the single-size path, below,
+        // because both borrow the document and both must give it back.
+    }
+
+    doc->blockSignals(wasSignalsBlocked);
+
+    // ── Rendre le document tel qu'on l'a trouvé ────────────────────────────────────────────────
+    //
+    // The document was only borrowed to walk: put it back where it was found, **whatever path ran**.
+    // The single-size path used to keep it — "the user asked for this size" — and that is what left
+    // Details rendering the export's size, since the Details scene is built from the live combination
+    // and its size drop-downs read it too. It no longer has to stay: the reference layer's decor is
+    // frozen into the output, so nothing that gets displayed needs the document on the run's size.
+    if (sizeMoved)
+    {
         applySize(savedA, savedB, savedC);
+    }
+
+    doc->SetModified(wasModified);
+    setWindowModified(wasWindowModified);
+    if (m_layoutSettings != nullptr)
+    {
+        m_layoutSettings->SetLayoutStale(wasLayoutStale);
     }
 
     // Each size sits where the model puts it, and a piece pinned at its fold does not
@@ -393,24 +501,8 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         return std::nullopt;
     }
 
-    // The range is the authority on where the decor of the reference layer goes: it holds
-    // an override for every owner the user positioned in Graded, and the mode reads it
-    // without ever writing to it. A single-size run names no range — there is nothing to
-    // read, and every piece keeps the geometry it carries.
-    //
-    // The generation takes a COPY of it: a generation is frozen, so editing or deleting
-    // the live range must not move what was already nested.
-    OSizerange exportRange;
-    const OSizerange *range = nullptr;
-    if (const QHash<QString, OSizerange> *ranges = pattern->SizeRanges(); ranges != nullptr)
-    {
-        const auto it = ranges->constFind(request.rangeName);
-        if (it != ranges->cend())
-        {
-            exportRange = it.value();
-            range = &exportRange;
-        }
-    }
+    // The range is resolved ABOVE, before the sizes are walked: the frozen decor needs it while the
+    // document is still on the reference layer's size.
 
     OExportOutput output;
     // Left nameless on purpose: the name comes from the entry dialog, which this function

@@ -284,9 +284,23 @@ auto MainWindow::AddExportOutputImpl(bool allowCancel) -> bool
     // is the only side that knows the axis labels a single size is named by, and the only
     // one that can see the list a name must not collide with.
     //
+    // ⚠️ **Only when the dialog has not already run.** The Cutting tab's "Generate this output" is a
+    // BATCH: it runs every size the form describes itself and then accepts, because the window has no
+    // business knowing how that tab cuts a selection into runs. Accepting therefore does not mean
+    // "run what the form describes" there — but this call read it that way, and generated one run too
+    // many. That run came from `CurrentRequest()`, which on the Cutting tab is hardcoded to a SINGLE
+    // size and reads the single-size combos: the tab only DISABLES them under "Several sizes", it
+    // never clears them, so they answered with their first entry — the smallest value of every axis.
+    // The user got one unasked-for plan pinned to the smallest sizes, beside the ones she asked for.
+    //
+    // `HasGenerated()` is that question, and the refusal branch above has always asked it.
+    //
     // A failure has already been reported and the mode stays. The dialog can be reopened
     // by clicking the mode button or the dock button again — the list is still in whatever
     // state it was in before this run.
-    GenerateNamedExport(dialog.CurrentRequest(), dialog.CurrentName(), context);
+    if (not dialog.HasGenerated())
+    {
+        GenerateNamedExport(dialog.CurrentRequest(), dialog.CurrentName(), context);
+    }
     return true;
 }

@@ -72,7 +72,8 @@ auto OExportCuttingDirection::MappedFoldLine(const VLayoutPiece &piece) -> QLine
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OExportCuttingDirection::FoldAngle(const VLayoutPiece &piece, double *angle) -> bool
+auto OExportCuttingDirection::FoldAngle(const VLayoutPiece &piece, double *angle, bool *foldOnTheRight)
+    -> bool
 {
     const QLineF fold = MappedFoldLine(piece);
     if (fold.isNull())
@@ -81,14 +82,30 @@ auto OExportCuttingDirection::FoldAngle(const VLayoutPiece &piece, double *angle
     }
 
     // Les deux rotations qui mettent le pli vertical — celles que `AllowedAngles` rend déjà pour un
-    // pli. Le signe est celui du chantier, et il vaut la peine d'être redit ici : `QLineF::angle()`
-    // tourne dans un sens, `rotatePath` dans l'autre, d'où le `− 90` et non le `+ 90`.
+    // pli. Le signe est celui du chantier : `QLineF::angle()` tourne dans un sens, `rotatePath` dans
+    // l'autre, d'où le `− 90` et non le `+ 90`.
     qreal alignment = std::fmod(fold.angle(), 180.0);
     if (alignment < 0.0)
     {
         alignment += 180.0;
     }
     const double base = alignment - 90.0;
+
+    // ⚠️ **Laquelle des deux ? Celle qui ne retourne pas la pièce.** Elles diffèrent d'un
+    // demi-tour : l'une laisse la pièce dans son sens, l'autre la couche tête en bas — et les deux
+    // sont posables, la seconde simplement à l'envers. Un demi-tour, c'est un cosinus négatif :
+    // `rotatePath` retranche l'angle de l'angle écran, donc la rotation qui ne retourne rien est
+    // celle dont le cosinus est positif. C'est le même choix que `g − 90` pour une grainline.
+    const double candidates[2] = {base, base + 180.0};
+    double chosen = candidates[0];
+    for (const double candidate : candidates)
+    {
+        if (std::cos(candidate * M_PI / 180.0) > 0.0)
+        {
+            chosen = candidate;
+            break;
+        }
+    }
 
     // Le contour que le moteur recevra, dans le même repère que le pli : c'est LUI que le pli doit
     // border, pas la pièce d'un autre repère.
@@ -98,41 +115,38 @@ auto OExportCuttingDirection::FoldAngle(const VLayoutPiece &piece, double *angle
     // points que le calcul sépare de ça ne sont pas séparés : c'est du bruit, pas une pente.
     constexpr qreal kTolerance = 1e-4;
 
-    for (const double candidate : {base, base + 180.0})
+    QTransform turn;
+    turn.rotate(chosen); // Qt tourne dans le sens de l'écran, comme `rotatePath`
+
+    const QLineF turned = turn.map(fold);
+    if (std::abs(turned.dx()) <= kTolerance)
     {
-        QTransform turn;
-        turn.rotate(candidate); // Qt tourne dans le sens de l'écran, comme `rotatePath`
-
-        const QLineF turned = turn.map(fold);
-        if (std::abs(turned.dx()) > kTolerance)
-        {
-            continue; // pas verticale
-        }
-
-        // Le corps est du côté du tissu : tout le contour est à droite du pli, et le pli EST donc
-        // le bord extrême de la pièce. C'est la seule des deux rotations qui tient la pièce dans
-        // le tissu — l'autre la met dehors.
+        // Le corps tombe d'un côté du pli — ou de l'autre. Le pli doit être le bord extrême de la
+        // pièce dans ce sens-là, sinon il n'est pas un bord de sa propre pièce et rien ne le rendra
+        // posable : le dire est le travail de l'appelant.
         const qreal edge = turned.x1();
-        bool inside = true;
+        bool bodyOnTheRight = true;
+        bool bodyOnTheLeft = true;
         for (const VLayoutPoint &point : contour)
         {
-            if (turn.map(QPointF(point.x(), point.y())).x() < edge - kTolerance)
+            const qreal x = turn.map(QPointF(point.x(), point.y())).x();
+            bodyOnTheRight = bodyOnTheRight && (x >= edge - kTolerance);
+            bodyOnTheLeft = bodyOnTheLeft && (x <= edge + kTolerance);
+            if (!bodyOnTheRight && !bodyOnTheLeft)
             {
-                inside = false;
                 break;
             }
         }
 
-        if (inside)
+        if (bodyOnTheRight != bodyOnTheLeft)
         {
-            *angle = Normalized(candidate);
+            *angle = Normalized(chosen);
+            // Le corps à gauche veut un pli sur le bord DROIT pour l'accueillir, et réciproquement.
+            *foldOnTheRight = bodyOnTheLeft;
             return true;
         }
     }
 
-    // Ni l'une ni l'autre : le pli n'est pas un bord de sa propre pièce, et aucune rotation ne le
-    // rendra posable. Le dire est le travail de l'appelant — poser la pièce quand même serait un
-    // plan faux qui a l'air fini.
     return false;
 }
 

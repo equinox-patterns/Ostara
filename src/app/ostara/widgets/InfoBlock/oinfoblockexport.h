@@ -57,6 +57,10 @@ namespace OInfoBlockSvg
  */
 struct Block
 {
+    /// The owner's own block number. It orders the blocks on screen — the canvas item takes it as
+    /// its z-value — and it is the only thing the writers do NOT need: they walk the vector.
+    int index = 0;
+
     QVector<OCartoucheRenderLine> lines;
     qreal fontScale = 1.0;
     QRectF rect;
@@ -74,6 +78,9 @@ struct Block
  */
 struct Annotation
 {
+    /// The owner's own annotation index, for the same reason as @ref Block::index.
+    int index = 0;
+
     QString text;
     QString fontFamily;     // empty = default
     int fontWeight{0};      // Qt weight (CSS 100-900), 0 = default

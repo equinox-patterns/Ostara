@@ -510,6 +510,16 @@ void ApplyReferenceGrainline(VLayoutPiece &placed, const OExportPieceGeometry &g
         return;
     }
 
+    // ⚠️ **The frozen line wins.** It was resolved at generation, while the document was still on the
+    // reference layer's size. The live resolution below reads the document, so it would draw whatever
+    // size the document is on NOW — which the run no longer guarantees, precisely because the document
+    // is now given back at the end of it.
+    if (geometry.grainline.resolved)
+    {
+        grainline.SetMainLine(geometry.grainline.mainLine);
+        return;
+    }
+
     const auto *pieces = pattern != nullptr ? pattern->DataPieces() : nullptr;
     if (pieces == nullptr)
     {
@@ -562,6 +572,14 @@ struct DecorFrame
     qreal rotation{0.0};  ///< the angle inside @c placement, in degrees
     QPointF origin{};     ///< the point of the owner's frame that is its local (0, 0)
     QRectF bounds{};      ///< the owner's extent, in its own frame
+
+    /// The vertical line the owner's children must be mirrored about, in the frame those children
+    /// store their coordinates in — or NaN when the owner is not reflected.
+    ///
+    /// It cannot be folded into @c placement, tempting as that is: the carrier's transform reaches
+    /// the cartouche's TEXT along with its box, and a cartouche is read, not looked at. The children
+    /// are therefore re-laid one by one, and this is the line they are re-laid about.
+    qreal mirrorX{qQNaN()};
 
     /// Which placement of the result this owner is — what its carrier advertises, so that a
     /// click on the decor reaches the footprint it decorates. -1 for a frame with no
@@ -632,6 +650,41 @@ template <typename DecorItem> void MakeDecorReadOnly(DecorItem *item)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/// A decor child re-laid so that it appears MIRRORED about a vertical line: where its box starts, and
+/// the angle it is recorded at.
+struct MirroredDecor
+{
+    QPointF topLeft;
+    qreal rotation{0.0};
+};
+
+/// @brief Mirror one decor child about the vertical line @p axisX — its box and its angle together.
+///
+/// ⚠️ **Negating the position and the angle is not enough, and the near miss looks right.** The
+/// child's position is the box's CORNER — both item classes set their rect at (0, 0) from it — and Qt
+/// turns an item about its transform origin, which defaults to that very corner. A reflection
+/// reverses the box's own x direction, so the child's new local (0, 0) has to land where its TOP-RIGHT
+/// corner was. Without that term the box slides by one rotated width, and a cartouche a width off
+/// still reads as "roughly in place" — which is exactly why this is derived rather than eyeballed.
+///
+/// ⚠️ The angle is only NEGATED, never a negative scale: the child is re-laid, not reflected through
+/// a transform, so the glyphs it holds stay upright. A mirrored cartouche is an unreadable one.
+///
+/// @param rotation the child's RECORDED angle — the one both item classes turn by its negation, the
+///                 same reading the SVG writer takes (@c rot.rotate(-block.rotation))
+auto MirrorDecor(const QPointF &topLeft, const QSizeF &size, qreal rotation, qreal axisX)
+    -> MirroredDecor
+{
+    QTransform turn;
+    turn.rotate(-rotation); // the child's own rotation, as it will be applied to it
+
+    // Where the box's top-right corner lands in the carrier's frame — the point that becomes the new
+    // top-left once the box is reflected.
+    const QPointF topRight = topLeft + turn.map(QPointF(size.width(), 0.0));
+    return {QPointF(2.0 * axisX - topRight.x(), topRight.y()), -rotation};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /// Add an owner's information blocks and annotations under @p host, in @p host's frame.
 ///
 /// The owner is the group when the piece belongs to one — a grouped member carries none of
@@ -639,14 +692,19 @@ template <typename DecorItem> void MakeDecorReadOnly(DecorItem *item)
 /// SVG export all draw that same line.
 ///
 /// @param centerLocal the point a child that was never placed falls back on, in that frame
-auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup, quint32 ownerId,
-                     const QPointF &centerLocal, const OSizerange *range, const VContainer *pattern,
-                     VAbstractPattern *doc, OGradedSvg::LayoutObject *decor = nullptr)
+/// @param mirrorX the vertical line the children are mirrored about, or NaN when the owner is not
+///                reflected — see @ref DecorFrame::mirrorX
+auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
+                       const QPointF &centerLocal, qreal mirrorX, const OSizerange *range,
+                       const VContainer *pattern, VAbstractPattern *doc) -> OExportPieceDecor
 {
+    OExportPieceDecor decor;
     if (pattern == nullptr)
     {
-        return;
+        return decor;
     }
+
+    decor.resolved = true;
 
     // A block exists when the template dispatches a section to it and that section has
     // content: the resolver leaves nothing else in blockContent. Without a document there
@@ -675,24 +733,28 @@ auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup,
             geom.rotation = placement.rotation;
             geom.fontScale = placement.fontScale;
 
-            auto *item = new OInfoBlockItem(block, host);
-            item->SetBlockGeom(geom);
-            item->SetContent(lines, placement.fontScale);
-            MakeDecorReadOnly(item);
-
-            if (decor != nullptr)
+            // The piece this block belongs to may be reflected — the folded twin, `Force flipping`,
+            // a symmetrical copy. The block is hung in the DOCUMENT frame, which no reflection
+            // reaches, so it is re-laid here or it stays on the wrong side of the piece.
+            if (qIsFinite(mirrorX))
             {
-                // The same four values the item was just given, in the record form the SVG
-                // writer takes. Read off `placement` rather than off the item: the item
-                // resolves its own layout, and asking it back would be asking a drawing
-                // for the numbers it was drawn from.
-                OInfoBlockSvg::Block record;
-                record.lines = lines;
-                record.fontScale = placement.fontScale;
-                record.rect = QRectF(placement.topLeft, placement.size);
-                record.rotation = placement.rotation;
-                decor->blocks.append(record);
+                const MirroredDecor mirror = MirrorDecor(geom.pos, placement.size, geom.rotation, mirrorX);
+                geom.pos = mirror.topLeft;
+                geom.rotation = mirror.rotation;
             }
+
+            // The same four values the drawing will be given, in the record form the SVG writer
+            // takes. Read off `geom` rather than off an item: an item resolves its own layout, and
+            // asking it back would be asking a drawing for the numbers it was drawn from. Reading
+            // `geom` is also what carries the mirror into the record — screen and paper are given
+            // one set of numbers, never two.
+            OInfoBlockSvg::Block record;
+            record.index = block;
+            record.lines = lines;
+            record.fontScale = placement.fontScale;
+            record.rect = QRectF(geom.pos, placement.size);
+            record.rotation = geom.rotation;
+            decor.blocks.append(record);
         }
     }
 
@@ -724,55 +786,137 @@ auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup,
                                                      : OAnnotationRenderStyle();
         const qreal rotation = OGraded::AnnotationRotation(annotation.rotationFormula, isGroup, pattern);
 
-        auto *item = new OAnnotationItem(i, host);
-        item->SetIndex(i);
+        // The box the item will draw, computed BEFORE it exists: the mirror needs its width, and the
+        // record needs the same numbers. An auto-sized box takes its size from the natural size of
+        // its text — the arithmetic OGradedDecor does for the graded SVG. It is written once here for
+        // all three, because if they ever disagree, a cartouche would sit differently on screen and
+        // on paper, which is the one thing this whole path exists to prevent.
+        QFont font;
+        if (!style.fontFamily.isEmpty())
+        {
+            font.setFamily(style.fontFamily);
+        }
+        if (style.fontWeight != 0)
+        {
+            font.setWeight(static_cast<QFont::Weight>(style.fontWeight));
+        }
+        if (style.fontSize > 0)
+        {
+            font.setPixelSize(style.fontSize);
+        }
+        const QRectF natural = QFontMetricsF(font).boundingRect(
+            QRectF(0.0, 0.0, 0.0, 0.0), Qt::AlignLeft, annotation.text);
+
+        const qreal fontScale = geom.fontScale > 0.0 ? geom.fontScale : 1.0;
+        const qreal contentW = natural.width() * fontScale;
+        const qreal contentH = natural.height() * fontScale;
+        const qreal w = qFuzzyIsNull(geom.boxWidth) ? contentW : qMax(geom.boxWidth, contentW);
+        const qreal h = qFuzzyIsNull(geom.boxHeight) ? contentH : qMax(geom.boxHeight, contentH);
+
+        // Same reflection as the information block, and for the same reason: an annotation is hung
+        // in the document frame too, which the piece's own mirror never reaches.
+        qreal drawnRotation = rotation;
+        if (qIsFinite(mirrorX))
+        {
+            const MirroredDecor mirror = MirrorDecor(geom.pos, QSizeF(w, h), rotation, mirrorX);
+            geom.pos = mirror.topLeft;
+            drawnRotation = mirror.rotation;
+        }
+
+        OInfoBlockSvg::Annotation record;
+        record.index = i;
+        record.text = annotation.text;
+        record.fontFamily = style.fontFamily;
+        record.fontWeight = style.fontWeight;
+        record.fontSizePx = style.fontSize;
+        record.textColor = style.textColor.isEmpty() ? QStringLiteral("#000000") : style.textColor;
+        record.backgroundColor = style.backgroundColor;
+        record.fontScale = fontScale;
+        record.rotation = drawnRotation;
+        record.rect = QRectF(geom.pos, QSizeF(w, h));
+        decor.annotations.append(record);
+    }
+
+    return decor;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Draw an owner's RESOLVED decor under @p host — from the records alone.
+///
+/// No document, no container, no range, no formula: everything this needs was decided when the records
+/// were made. That is what lets the same records serve the live canvas, a stored output, and the SVG
+/// writer, with no third reading of the truth to disagree with.
+///
+/// ⚠️ The annotation's box is handed back as its stored width and height rather than as "auto" (the
+/// 0 sentinel of @ref OAnnotationGeom): the record holds the box already resolved, and the item takes
+/// @c max(box, natural) — which is the box again, so the drawing is identical. What is lost is the
+/// ability of this item to follow a later text change, and nothing here edits text.
+void DrawOwnerDecor(QGraphicsItem *host, const OExportPieceDecor &decor)
+{
+    if (host == nullptr)
+    {
+        return;
+    }
+
+    for (const OInfoBlockSvg::Block &record : decor.blocks)
+    {
+        OInfoBlockGeom geom;
+        geom.pos = record.rect.topLeft();
+        geom.width = record.rect.width();
+        geom.height = record.rect.height();
+        geom.rotation = record.rotation;
+        geom.fontScale = record.fontScale;
+
+        auto *item = new OInfoBlockItem(record.index, host);
+        item->SetBlockGeom(geom);
+        item->SetContent(record.lines, record.fontScale);
+        MakeDecorReadOnly(item);
+    }
+
+    for (const OInfoBlockSvg::Annotation &record : decor.annotations)
+    {
+        OAnnotationGeom geom;
+        geom.pos = record.rect.topLeft();
+        geom.boxWidth = record.rect.width();
+        geom.boxHeight = record.rect.height();
+        geom.fontScale = record.fontScale;
+
+        OAnnotationRenderStyle style;
+        style.fontFamily = record.fontFamily;
+        style.fontWeight = record.fontWeight;
+        style.fontSize = record.fontSizePx;
+        style.textColor = record.textColor;
+        style.backgroundColor = record.backgroundColor;
+
+        auto *item = new OAnnotationItem(record.index, host);
+        item->SetIndex(record.index);
         // SetContent before SetAnnotationGeom: an auto-sized box takes its size from the
         // natural size SetContent measured. Details and Graded both call them in this order.
-        item->SetContent(annotation.text, style);
-        item->SetAnnotationGeom(geom, rotation);
+        item->SetContent(record.text, style);
+        item->SetAnnotationGeom(geom, record.rotation);
         MakeDecorReadOnly(item);
+    }
+}
 
-        if (decor != nullptr)
-        {
-            // An auto-sized box takes its size from the natural size of its text — the
-            // same arithmetic OGradedDecor does for the graded SVG. It is written twice
-            // because the two live in different translation units; if they ever disagree,
-            // a cartouche would sit differently on screen and on paper, which is the one
-            // thing this whole path exists to prevent.
-            QFont font;
-            if (!style.fontFamily.isEmpty())
-            {
-                font.setFamily(style.fontFamily);
-            }
-            if (style.fontWeight != 0)
-            {
-                font.setWeight(static_cast<QFont::Weight>(style.fontWeight));
-            }
-            if (style.fontSize > 0)
-            {
-                font.setPixelSize(style.fontSize);
-            }
-            const QRectF natural = QFontMetricsF(font).boundingRect(
-                QRectF(0.0, 0.0, 0.0, 0.0), Qt::AlignLeft, annotation.text);
+//---------------------------------------------------------------------------------------------------------------------
+/// Resolve an owner's decor and draw it in one go — the LIVE path, for the callers that hold no frozen
+/// records: the decor drawn over a group, and anything that still reads the document as it stands.
+///
+/// ⚠️ A caller that CAN hold the records — the pieces of the reference layer — must not come through
+/// here: it would resolve at draw time, which is the drift this whole split exists to remove.
+auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup, quint32 ownerId,
+                     const QPointF &centerLocal, qreal mirrorX, const OSizerange *range,
+                     const VContainer *pattern, VAbstractPattern *doc,
+                     OGradedSvg::LayoutObject *decor = nullptr) -> void
+{
+    const OExportPieceDecor records = ResolveOwnerDecor(owner, isGroup, ownerId, centerLocal, mirrorX,
+                                                        range, pattern, doc);
+    DrawOwnerDecor(host, records);
 
-            const qreal fontScale = geom.fontScale > 0.0 ? geom.fontScale : 1.0;
-            const qreal contentW = natural.width() * fontScale;
-            const qreal contentH = natural.height() * fontScale;
-            const qreal w = qFuzzyIsNull(geom.boxWidth) ? contentW : qMax(geom.boxWidth, contentW);
-            const qreal h = qFuzzyIsNull(geom.boxHeight) ? contentH : qMax(geom.boxHeight, contentH);
-
-            OInfoBlockSvg::Annotation record;
-            record.text = annotation.text;
-            record.fontFamily = style.fontFamily;
-            record.fontWeight = style.fontWeight;
-            record.fontSizePx = style.fontSize;
-            record.textColor = style.textColor.isEmpty() ? QStringLiteral("#000000") : style.textColor;
-            record.backgroundColor = style.backgroundColor;
-            record.fontScale = fontScale;
-            record.rotation = rotation;
-            record.rect = QRectF(geom.pos, QSizeF(w, h));
-            decor->annotations.append(record);
-        }
+    if (decor != nullptr)
+    {
+        decor->blocks = records.blocks;
+        decor->annotations = records.annotations;
     }
 }
 
@@ -806,24 +950,39 @@ void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry
                      const OSizerange *range, const VContainer *pattern, VAbstractPattern *doc,
                      OGradedSvg::LayoutObject *decor = nullptr)
 {
-    const auto *pieces = pattern != nullptr ? pattern->DataPieces() : nullptr;
-    if (pieces == nullptr)
-    {
-        return;
-    }
-
-    const auto piece = pieces->constFind(geometry.id);
-    if (piece == pieces->cend())
-    {
-        return;
-    }
-
     DecorFrame frame;
     frame.placement = placement;
     frame.rotation = rotation;
     frame.origin = QPointF(0.0, 0.0);
     frame.bounds = UnplacedBounds(geometry.piece);
     frame.footprintIndex = footprintIndex;
+    // The piece's children are hung in the document frame, which the piece's own reflection never
+    // reaches — the outline is drawn through the matrix and they are not. The axis travels with the
+    // frame so that the decor can re-lay each of them on the side the piece actually is.
+    frame.mirrorX = geometry.mirrorX;
+
+    const auto *pieces = pattern != nullptr ? pattern->DataPieces() : nullptr;
+
+    // ⚠️ **The frozen decor wins, and it is the whole point.** A piece of the reference layer carries
+    // its cartouche and its annotations RESOLVED, recorded when the output was generated. Drawing them
+    // from here is what keeps an output showing its own size: the live path reads the document, whose
+    // children are re-materialised every time it is put on a size — so a run generated at one size and
+    // looked at from another drew its outlines frozen and its children alive, at two different sizes.
+    const bool frozen = geometry.decor.resolved;
+
+    if (!frozen)
+    {
+        // The live path needs the piece itself, and it is the document that holds it.
+        if (pieces == nullptr)
+        {
+            return;
+        }
+
+        if (pieces->constFind(geometry.id) == pieces->cend())
+        {
+            return;
+        }
+    }
 
     auto *host = MakeDecorHost(scene, frame);
     if (decor != nullptr)
@@ -833,8 +992,23 @@ void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry
         // they are already placed — hence two wrappers in the SVG.
         decor->transform = host->sceneTransform();
     }
-    BuildOwnerDecor(host, piece.value(), false, geometry.id, frame.bounds.center() - frame.origin, range,
-                    pattern, doc, decor);
+
+    if (frozen)
+    {
+        DrawOwnerDecor(host, geometry.decor);
+
+        if (decor != nullptr)
+        {
+            decor->blocks = geometry.decor.blocks;
+            decor->annotations = geometry.decor.annotations;
+        }
+    }
+    else
+    {
+        BuildOwnerDecor(host, pieces->constFind(geometry.id).value(), false, geometry.id,
+                        frame.bounds.center() - frame.origin, frame.mirrorX, range, pattern, doc,
+                        decor);
+    }
 
     if (host->childItems().isEmpty())
     {
@@ -885,7 +1059,12 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
         OGraded::MakeGrainlineItem(host, geom, placement, rotation);
     }
 
-    BuildOwnerDecor(host, group.value(), true, groupId, centerLocal, range, pattern, doc, decor);
+    // No mirror for a group: nothing in this path reflects one — the reflection is a property of a
+    // PIECE (the folded twin, `Force flipping`, the symmetrical copy), and a grouped member carries
+    // no decor of its own. The group's carrier is also built in another frame, where the axis above
+    // would not mean anything.
+    BuildOwnerDecor(host, group.value(), true, groupId, centerLocal, qQNaN(), range, pattern, doc,
+                    decor);
 
     if (decor != nullptr)
     {
@@ -906,6 +1085,84 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
     }
 }
 } // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *range,
+                       const VContainer *pattern, VAbstractPattern *doc) -> OExportPieceDecor
+{
+    const auto *pieces = pattern != nullptr ? pattern->DataPieces() : nullptr;
+    if (pieces == nullptr)
+    {
+        return {};
+    }
+
+    const auto piece = pieces->constFind(geometry.id);
+    if (piece == pieces->cend())
+    {
+        return {};
+    }
+
+    // The very centre the live path falls back on for a child that was never placed — measured on the
+    // frozen piece, so that the record and a later drawing agree about where "on its owner" is.
+    const QPointF centerLocal = UnplacedBounds(geometry.piece).center();
+    return ResolveOwnerDecor(piece.value(), false, geometry.id, centerLocal, geometry.mirrorX, range,
+                             pattern, doc);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerange *range,
+                           const Unit &unit, const VContainer *pattern, bool cuttingPlan)
+    -> OExportPieceGrainline
+{
+    OExportPieceGrainline frozen;
+
+    // A grouped member is answered by the DRAWING side, which turns the grainline off on the placed
+    // piece — that answer depends on nothing the document says about a size, so it is not frozen here.
+    if (IsGroupedMember(pattern, geometry.groupId, cuttingPlan))
+    {
+        return frozen;
+    }
+
+    const auto *pieces = pattern != nullptr ? pattern->DataPieces() : nullptr;
+    if (pieces == nullptr)
+    {
+        return frozen;
+    }
+
+    const auto piece = pieces->constFind(geometry.id);
+    if (piece == pieces->cend())
+    {
+        return frozen;
+    }
+
+    // Read on the FROZEN copy, which is the same object the drawing side will guard on: a piece with
+    // no grainline, or one whose grainline was refused when it was built, has nothing to replace.
+    const VPieceGrainline &own = geometry.piece.GetGrainline();
+    if (!own.IsEnabled() || !own.IsVisible())
+    {
+        return frozen;
+    }
+
+    const VGrainlineData &geom = piece.value().GetGrainlineGeometry();
+
+    // The line GetItem built ignores the range, but its start point is the Details placement — the
+    // fallback for a grainline that was never placed, so it does not land on the document origin.
+    const QPointF fallback = own.GetMainLine().p1();
+
+    const OSizerange::GrainlineOverride ov = GrainlineOverrideOf(range, geometry.id, false);
+    const OGraded::GrainlinePlacement placement =
+        OGraded::ResolveGrainline(geom, ov, false, pattern, unit, fallback);
+    const qreal rotation = OGraded::GrainlineRotation(geom.GetRotation(), false, pattern);
+
+    // The piece hands its grainline out, and the range only ever moves the origin and the length: the
+    // angle stays the piece's own formula, which this same call evaluated.
+    const VPieceGrainline moved(placement.pos, placement.lengthPx, qDegreesToRadians(rotation),
+                                geom.GetArrowType());
+
+    frozen.resolved = true;
+    frozen.mainLine = moved.GetMainLine();
+    return frozen;
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 void OExportCanvas::Build(QGraphicsScene *scene,
@@ -1029,9 +1286,33 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         //
         // Il est tracé APRÈS le rectangle, au même plan : à égalité de plan, Qt dessine dans
         // l'ordre d'ajout, donc il passe par-dessus l'arête du bac au lieu de lutter avec elle.
-        if (run.foldedFabric)
+        // ── Le tissu plié : où sont les plis, et comment il se replie ────────────────────────────
+        //
+        // **Le trait de pli se lit sur les zones, jamais sur une convention.** Un plan à bord
+        // unique a une zone — la colonne — dont le pli peut être à gauche comme à droite : c'est
+        // la pièce au pli qui en décide, pas le canvas. Un plan à deux bords en a trois.
+        //
+        // Et les rectangles ne se dessinent **qu'à partir de deux** : une seule zone EST la
+        // colonne, et le trait du bac la dessine déjà. **Pointillé noir à 50 %**, purement visuel :
+        // la ligne du milieu d'un plan à deux bords est celle où les deux lisières se rejoignent, et
+        // aucune pièce ne la traverse — non parce que ce trait l'interdit, mais parce que chaque
+        // rectangle est un bac à part et que le moteur ne pose jamais hors de son bac.
+        //
+        // Tout part dans l'écran, dans le PNG et dans le SVG : l'export d'image rend la scène. Le
+        // plan de coupe n'a pas de PDF — il n'y a donc rien d'autre à nourrir.
+        for (const OExportFoldedZone &zone : result.foldedZones)
         {
-            auto *fold = new QGraphicsLineItem(0, 0, 0, result.usedHeightPx);
+            if (result.foldedZones.size() > 1)
+            {
+                auto *rect = new QGraphicsRectItem(zone.rect);
+                rect->setPen(QPen(QColor(0, 0, 0, 128), 1, Qt::DotLine));
+                rect->setBrush(Qt::NoBrush);
+                rect->setZValue(kBinZ);
+                scene->addItem(rect);
+            }
+
+            const qreal foldX = zone.foldOnTheLeft ? zone.rect.left() : zone.rect.right();
+            auto *fold = new QGraphicsLineItem(foldX, zone.rect.top(), foldX, zone.rect.bottom());
             fold->setPen(QPen(Qt::black, 1, Qt::DashDotLine));
             fold->setZValue(kBinZ);
             scene->addItem(fold);
