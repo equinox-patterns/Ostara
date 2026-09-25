@@ -1773,6 +1773,17 @@ auto VToolSeamAllowance::ThumbnailContent() const -> QPainterPath
     {
         content.addPath(m_passmarks->path());
     }
+    // The fold line's mark — the two arrows and the line joining them — and deliberately NOT its
+    // label. "Cut on fold" is a caption, and at the miniature's size it would be an illegible smudge
+    // on a drawing that reads as pure geometry; m_foldLineLabel (the same caption as a glyph path,
+    // for the single-line/single-stroke fonts) and m_foldLineLabelText carry the text alone, so
+    // taking the mark item is what leaves it out. The mark's item is empty whenever the canvas shows
+    // no fold line at all — type None, a member whose fold line its group masks, or a piece shown
+    // whole — so the miniature follows the canvas without restating any of those rules.
+    if (m_foldLineMark != nullptr)
+    {
+        content.addPath(m_foldLineMark->path());
+    }
     const QVector<quint32> internalPaths = VAbstractTool::data.GetPiece(m_id).GetInternalPaths();
     for (QGraphicsItem *child : childItems())
     {
