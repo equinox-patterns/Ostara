@@ -77,8 +77,16 @@ constexpr int kCuttingFavoritesTabIndex = 1;
 constexpr int kPrintFavoritesTabIndex = 2;
 constexpr int kPlotterFavoritesTabIndex = 3;
 
-/// Below this the Print tab's form is cramped, whatever the tab bar needs.
-constexpr int kMinDialogWidth = 560;
+/// Below this the dialog is cramped, whatever the tab bars need.
+///
+/// ⚠️ `setMinimumWidth()` is an **explicit** minimum: Qt then stops enforcing the layout's own
+/// minimum (`QLayout::SetDefaultConstraint` yields to a widget that already has one), so whatever
+/// the formula below forgets is not merely cramped — it is cut. Measured on a bench (French labels,
+/// default style): the inner tab bar asks for 537 px, +kTabBarChrome = 577, so this constant was the
+/// binding value and the dialog opened at 560 whatever the list page needed. Raised on Sophie's
+/// order (25-09) so the page that holds the runs — their rows and their bottom bar — has room to
+/// spare, the vertical scrollbar included.
+constexpr int kMinDialogWidth = 800;
 
 /// What the tab widget's frame and margins add around the tab bar itself.
 constexpr int kTabBarChrome = 40;
@@ -214,6 +222,12 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
     layout->addLayout(barRow);
 
     connect(m_tabs, &QTabWidget::currentChanged, this, [this](int) { OnTabChanged(); });
+
+    // Le sous-onglet interne ne change pas de page : il change la PORTÉE du lot et le libellé du
+    // bouton, tous deux lus au moment où la barre se construit. On la refait donc, par le même chemin
+    // qu'un changement d'onglet externe — qui finit par RefreshGenerateButtons, donc par le même
+    // critère que le clic.
+    connect(m_listTabs, &QTabWidget::currentChanged, this, [this](int) { RebuildButtonBox(); });
 
     // The form of the Print tab, avant Retranslate : le dialogue s'ouvre sur la liste, dont les
     // boutons ne lisent pas ce formulaire, mais RefreshGenerateButtons lit sa validité — et un onglet
@@ -638,23 +652,52 @@ auto OExportModeDialog::CheckedFavorites(FavoriteKind kind) const -> QVector<OEx
 auto OExportModeDialog::BatchJobs() const -> QVector<BatchJob>
 {
     QVector<BatchJob> jobs;
-    jobs.reserve(m_queue.Count() + static_cast<int>(m_favorites.size()));
 
-    // La liste de travail d'abord, dans son ordre : c'est celui dans lequel l'utilisatrice les a
-    // décrits, et celui qu'elle voit.
-    for (int index = 0; index < m_queue.Count(); ++index)
+    const int innerTab = m_listTabs != nullptr ? m_listTabs->currentIndex() : kWorkingListTabIndex;
+
+    // Le sous-onglet EN COURS, et lui seul (décision de Sophie, 25-09). Le lot tournait les quatre
+    // à la fois — la liste de travail ET les trois jeux de favoris — donc des runs que l'utilisatrice
+    // n'avait pas sous les yeux, et qu'elle oubliait qu'elle lançait.
+    if (innerTab == kWorkingListTabIndex)
     {
-        const OExportQueueItem &item = m_queue.At(index);
-        jobs.append(BatchJob{BatchJob::Source::List, index, item.name, item.request});
+        jobs.reserve(m_queue.Count());
+
+        // Dans son ordre : c'est celui dans lequel elle les a décrits, et celui qu'elle voit.
+        for (int index = 0; index < m_queue.Count(); ++index)
+        {
+            const OExportQueueItem &item = m_queue.At(index);
+            jobs.append(BatchJob{BatchJob::Source::List, index, item.name, item.request});
+        }
+
+        return jobs;
     }
 
-    // Puis les favoris cochés, un sous-onglet à la fois — l'ordre dans lequel ils sont montrés.
-    for (FavoriteKind kind : {FavoriteKind::Cutting, FavoriteKind::Print, FavoriteKind::Plotter})
+    // ⚠️ L'index de la file reste ABSOLU : `SetJobState` s'en sert pour la file ET pour la ligne,
+    // donc renuméroter la sous-liste poserait l'état d'un run sur un autre.
+    auto appendChecked = [this, &jobs](FavoriteKind kind)
     {
         for (const OExportFavorite &favorite : CheckedFavorites(kind))
         {
             jobs.append(BatchJob{BatchJob::Source::Favorite, 0, favorite.name, favorite.request});
         }
+    };
+
+    switch (innerTab)
+    {
+        case kCuttingFavoritesTabIndex:
+            appendChecked(FavoriteKind::Cutting);
+            break;
+
+        case kPrintFavoritesTabIndex:
+            appendChecked(FavoriteKind::Print);
+            break;
+
+        case kPlotterFavoritesTabIndex:
+            appendChecked(FavoriteKind::Plotter);
+            break;
+
+        default:
+            break;
     }
 
     return jobs;
@@ -844,9 +887,22 @@ void OExportModeDialog::OnGenerateAll()
 
     // Le pré-vol. Les favoris ne portent PAS leurs choix de pièces — ils dépendent des pièces du
     // patron, et c'est ce qui les rend transposables (voir OExportFavorite) : on les demande donc
-    // une fois pour tout le lot, et seulement pour les types qui en contiennent.
-    const bool cuttingFavorites = !CheckedFavorites(FavoriteKind::Cutting).isEmpty();
-    const bool plotterFavorites = !CheckedFavorites(FavoriteKind::Plotter).isEmpty();
+    // une fois pour le lot, et seulement pour les types qu'il contient réellement.
+    //
+    // ⚠️ Lu sur le LOT, jamais sur les vues : depuis que la portée est le sous-onglet en cours, un
+    // lot peut n'être fait que de la liste de travail — qui n'a rien à demander, chaque run ayant
+    // été décrit dans son propre onglet — ou d'un seul type de favoris.
+    bool cuttingFavorites = false;
+    bool plotterFavorites = false;
+    for (const BatchJob &job : jobs)
+    {
+        if (job.source != BatchJob::Source::Favorite)
+        {
+            continue;
+        }
+        cuttingFavorites = cuttingFavorites || job.request.cuttingPlan;
+        plotterFavorites = plotterFavorites || job.request.plotterPlan;
+    }
 
     QMap<quint32, quint32> groupChoices;
     QSet<quint32> excludedPieces;
@@ -927,6 +983,19 @@ void OExportModeDialog::OnTabChanged()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportModeDialog::GenerateAllLabel() const -> QString
+{
+    const int innerTab = m_listTabs != nullptr ? m_listTabs->currentIndex() : kWorkingListTabIndex;
+
+    // La barre est commune aux quatre sous-onglets, et le bouton ne tourne plus que celui qui est
+    // affiché : « the whole list » serait donc faux sur un onglet de favoris — exactement le
+    // malentendu que la portée rétablie supprime. Le libellé le dit, faute de quoi l'utilisatrice
+    // devrait se souvenir de ce que le bouton fait au lieu de le lire.
+    return innerTab == kWorkingListTabIndex ? tr("Generate the whole list")
+                                            : tr("Generate the checked favorites");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportModeDialog::RebuildButtonBox()
 {
     for (QAbstractButton *button : m_buttonBox->buttons())
@@ -993,8 +1062,7 @@ void OExportModeDialog::RebuildButtonBox()
             break;
 
         case kListTabIndex:
-            m_generateAllButton = m_buttonBox->addButton(tr("Generate the whole list"),
-                                                         QDialogButtonBox::ActionRole);
+            m_generateAllButton = m_buttonBox->addButton(GenerateAllLabel(), QDialogButtonBox::ActionRole);
             m_generateAllButton->setAutoDefault(false);
             connect(m_generateAllButton, &QPushButton::clicked, this, &OExportModeDialog::OnGenerateAll);
 
@@ -1081,14 +1149,12 @@ void OExportModeDialog::RefreshGenerateButtons()
     }
     if (m_generateAllButton != nullptr)
     {
-        // La liste de travail OU au moins un favori coché : c'est exactement ce que le lot parcourt,
-        // et le garde de OnGenerateAll dit la même chose — un bouton allumé pour un lot vide serait
-        // un bouton qui ment, et un bouton éteint pour un lot plein un bouton qui bloque.
-        const bool anyFavorite = (m_cuttingFavorites != nullptr && m_cuttingFavorites->CheckedCount() > 0)
-                              || (m_printFavorites != nullptr && m_printFavorites->CheckedCount() > 0)
-                              || (m_plotterFavorites != nullptr && m_plotterFavorites->CheckedCount() > 0);
-
-        m_generateAllButton->setEnabled((not m_queue.IsEmpty() || anyFavorite) && not m_batchRunning);
+        // Le bouton et le lot lisent la MÊME fonction : la portée ne peut donc pas diverger entre
+        // ce qui s'allume et ce qui part. C'est la seule façon de tenir la promesse que ce commentaire
+        // portait déjà — un bouton allumé pour un lot vide serait un bouton qui ment, et un bouton
+        // éteint pour un lot plein un bouton qui bloque — maintenant que « le lot » dépend du
+        // sous-onglet en cours.
+        m_generateAllButton->setEnabled(not BatchJobs().isEmpty() && not m_batchRunning);
     }
 }
 

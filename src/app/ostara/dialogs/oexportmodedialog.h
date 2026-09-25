@@ -268,12 +268,22 @@ private:
         OExportRunRequest request{};
     };
 
-    /// @brief Every run the batch would start, in the order it starts them: the Working list
-    ///        first, then the ticked favorites, one sub-tab at a time.
+    /// @brief Every run the batch would start, in the order it starts them — and **only for the
+    ///        sub-tab in view**: the Working list when it is the one shown, otherwise the ticked
+    ///        favorites of that one kind.
+    ///
+    /// The scope is read from `m_listTabs->currentIndex()` at call time, and it is the single source
+    /// of both the batch and the button's enable state, so the two cannot drift apart.
     auto BatchJobs() const -> QVector<BatchJob>;
 
     /// @brief Write where @p job stands, in the view that shows it.
     void SetJobState(const BatchJob &job, OExportRunState state);
+
+    /// @brief The label of the batch button, which is read from the INNER tab in view.
+    ///
+    /// The button bar is shared by the four sub-tabs of the list page, and the batch is now the one
+    /// in view: on a favorites sub-tab, "the whole list" would name a scope the button no longer has.
+    auto GenerateAllLabel() const -> QString;
 
     /// @brief Keep the dialog at least as wide as its tab bar.
     ///
