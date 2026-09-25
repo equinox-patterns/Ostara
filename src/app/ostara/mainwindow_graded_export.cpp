@@ -223,6 +223,14 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
                                               "Decor layout layer default name in a graded SVG export")
                                         : range.exportLayoutLayerName;
 
+    // The miniatures the decor layer carries are drawn at the PATTERN's reference size — the very
+    // drawing Details and the live canvas show — while the walk below leaves the document on the
+    // last size it takes. Freeze them here, before anything is disturbed, and NOT when the layer is
+    // written: asked later, the live fallback would hand this export a size of its own range and the
+    // layer would show that one instead. A no-op when no piece carries a miniature, and the same
+    // call the Details export makes — so both documents are guaranteed the same drawings.
+    RefreshThumbnailSnapshots(/*freeze*/ true);
+
     // --- Headless per-size capture into a private scene (canvas untouched). ----
     QGraphicsScene scene;
     const QSignalBlocker signalBlocker(doc);

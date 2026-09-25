@@ -48,6 +48,9 @@
 #include "vwidgets/ocartouchepainter.h"
 
 class QGraphicsItem;
+class OThumbnailData;
+class VPiece;
+struct OThumbnailGeom;
 
 namespace OInfoBlockSvg
 {
@@ -130,6 +133,41 @@ struct Thumbnail
     /// shows — the miniature editor's font settings will move it, and the writer follows.
     QFont font;
 };
+
+/**
+ * @brief Build the record of one miniature, from the very sources the canvas reads.
+ *
+ * The record is assembled here, once, for both SVG writers: the flat Details sheet and the graded
+ * sheet's decor layer draw the same miniature, and a second transcription of the placing rules would
+ * be a second answer to the same question — the two would drift the day one of them learned a new
+ * kind of word.
+ *
+ * @param geom      the frame the caller has settled on — a range's override when there is one, the
+ *                  piece's own stored geometry otherwise.
+ * @param pieceBox  the box @p geom is measured against when nobody ever chose one: the piece's own
+ *                  rectangle, in whichever frame the block is written in.
+ * @param geomChosen whether that frame was ever placed by hand. A frame nobody placed is sized from
+ *                  @p pieceBox and centred on it; a placed one is left exactly as it was stored.
+ *
+ * @return a record whose @ref Thumbnail::content is empty when the canvas draws nothing: the tool is
+ *         gone, or the reference drawing was never captured. The caller drops it — there is nothing
+ *         to write, and nothing missing either.
+ */
+auto BuildThumbnail(quint32 pieceId, const VPiece &piece, const OThumbnailData &data,
+                    const OThumbnailGeom &geom, const QRectF &pieceBox, bool geomChosen) -> Thumbnail;
+
+/**
+ * @brief The miniature's stroke width, in document pixels.
+ *
+ * The canvas never draws it heavier than the piece it draws, and never more than one pixel: its law
+ * is `min(1, ScaleWidth(hairline, zoom) × zoom)`, and a document has no zoom — the export stands at
+ * 100 %, where `ScaleWidth()` leaves the hairline alone. The floor is this file's own: every other
+ * path that reaches it with no width is given the same 0.1 px the rest of this writer falls back to,
+ * and a miniature drawn thinner than a hair would simply not be there. The document's scale is
+ * deliberately NOT applied: no other stroke in either writer compensates for it, so a scaled sheet
+ * shrinks every line by the same amount instead of thinning only this one.
+ */
+auto MiniatureStroke() -> qreal;
 
 /**
  * @brief Write the flat Details SVG: pieces geometry + information blocks.

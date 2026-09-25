@@ -7,9 +7,10 @@
  **  @brief  Graded SVG writer: one Illustrator/Inkscape layer per size (grand →
  **          petit in document order, so the smallest ends up on top of the
  **          layers panel) + a final decor layer holding the shared decor
- **          (grainline, fold, info blocks, annotations) of the reference size.
- **          Size layers carry geometry only; the decor layer carries no
- **          contour. Text is ALWAYS emitted as editable <text> (never paths).
+ **          (grainline, fold, info blocks, annotations, miniatures) of the
+ **          reference size. Size layers carry geometry only; the decor layer
+ **          carries no contour. Text is ALWAYS emitted as editable <text> (never
+ **          paths).
  **          The decor layer's <g> is marked ostara:layout="yes" — a backend
  **          marker (namespace "ostara", see ogradedsvgwriter.cpp) that Rabnest
  **          uses to identify the layer. No editor displays it, so the visible
@@ -89,6 +90,12 @@ struct LayoutObject
     QList<QGraphicsItem *> decorChildren;      // grainline / fold / text items (already in scene coords)
     QVector<OInfoBlockSvg::Block> blocks;
     QVector<OInfoBlockSvg::Annotation> annotations;
+
+    /// The owner's miniatures — a piece's own, or the one a group carries per member.
+    ///
+    /// Records rather than items, for the same reason the blocks and the annotations are: nobody
+    /// ever placed a miniature on the export scene, and the frame it is drawn in is the owner's.
+    QVector<OInfoBlockSvg::Thumbnail> thumbnails;
 
     /// Placement of the owner, applied to this object's wrapper — never to its children.
     ///

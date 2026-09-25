@@ -41,6 +41,7 @@
 #include "../vpatterndb/oinfoblockdata.h"
 #include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/osizerange.h"
+#include "../vpatterndb/othumbnaildata.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiece.h"
 #include "../vlayout/vgraphicsfillitem.h"
@@ -263,6 +264,45 @@ auto OwnerAnnotations(const OAnnotationData &annData, bool isGroup, const OSizer
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/// The miniature of one owner — a lone piece's own, or the one a group carries for a member.
+///
+/// **The same three sources the live canvas reads**, in the same order: the drawing comes from the
+/// tool at the PATTERN's reference size (never from the layer this run happens to be standing on),
+/// the frame from the range when the user moved it there and from the piece's own geometry
+/// otherwise, and the box an unplaced frame is measured against from the member's own rectangle in
+/// the owner's frame. Where the canvas and the file read one computation, they cannot disagree.
+void AppendThumbnail(QVector<OInfoBlockSvg::Thumbnail> &out, quint32 pieceId, const VPiece &piece,
+                     const OThumbnailData &stored, const OSizerange::ThumbnailOverride &override,
+                     const QRectF &pieceBox)
+{
+    if (!stored.IsActive())
+    {
+        return;  // nothing asked for, in Details or in the group
+    }
+    OThumbnailGeom geom;
+    if (override.valid)
+    {
+        geom.pos = override.pos;
+        geom.width = override.width;
+        geom.height = override.height;
+    }
+    else
+    {
+        geom = stored.Geom();
+    }
+    OInfoBlockSvg::Thumbnail record =
+        OInfoBlockSvg::BuildThumbnail(pieceId, piece, stored, geom, pieceBox,
+                                      override.valid || stored.HasGeometry());
+    if (record.content.isEmpty())
+    {
+        // The tool is gone, or the reference drawing was never captured: the canvas draws no
+        // miniature either, and a block with nothing in it is not a block this file should carry.
+        return;
+    }
+    out.append(record);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /// Reference (first size) item of a piece in a scene, or nullptr.
 auto ReferenceItemOf(QGraphicsScene *scene, quint32 pieceId) -> QGraphicsItem *
 {
@@ -400,6 +440,11 @@ QList<OGradedSvg::LayoutObject> BuildReferenceDecor(QGraphicsScene *scene, const
             OwnerBlocks(piece.GetInfoBlockData(), content, {}, false, state, centerLocal);
         object.annotations =
             OwnerAnnotations(piece.GetAnnotationData(), false, content, {}, pattern, centerLocal);
+        // The piece's own miniature, in its own frame — the very frame Details stores it in, so a
+        // range needs no conversion to apply it. The box an unplaced frame is measured against is
+        // the piece's own rectangle, which is what the canvas measures too.
+        AppendThumbnail(object.thumbnails, pieceId, piece, piece.GetThumbnailData(), content.thumbnail,
+                        ref->boundingRect());
         out.append(object);
     }
 
@@ -492,6 +537,23 @@ QList<OGradedSvg::LayoutObject> BuildReferenceDecor(QGraphicsScene *scene, const
             OwnerBlocks(group.GetInfoBlockData(), {}, content, true, state, unionCenterLocal);
         object.annotations =
             OwnerAnnotations(group.GetAnnotationData(), true, {}, content, pattern, unionCenterLocal);
+
+        // The group's miniatures, in the group's own frame: one per member, exactly as the live
+        // holder draws them. Each is measured against its own member's box — never the group's
+        // union — so an unplaced frame lands on the piece it draws wherever the group sits.
+        for (quint32 memberId : group.pieceIds)
+        {
+            QGraphicsItem *const memberItem = ReferenceItemOf(scene, memberId);
+            if (memberItem == nullptr || piecesMap == nullptr || !piecesMap->contains(memberId))
+            {
+                continue;  // a member with no reference layer: nothing to measure a frame on
+            }
+            const OSizerange::ThumbnailOverride memberOverride =
+                content.memberThumbnails.value(memberId);
+            AppendThumbnail(object.thumbnails, memberId, piecesMap->value(memberId),
+                            group.MemberThumbnail(memberId), memberOverride,
+                            memberItem->sceneBoundingRect().translated(-box.x(), -box.y()));
+        }
         out.append(object);
     }
 

@@ -29,6 +29,7 @@
 
 #include "ogradedsvgwriter.h"
 
+#include "ocartouchesvg.h"
 #include "osvgutils.h"
 #include "../vlayout/vgraphicsfillitem.h"
 
@@ -463,6 +464,93 @@ void WriteAnnotation(QXmlStreamWriter &writer, const QPointF &origin,
     }
     writer.writeEndElement();  // g (annotation)
 }
+
+/** @brief Emit one miniature: the piece's drawing at the reference size, and the words it carries.
+ *
+ * The frame goes in by hand exactly as a block's does — the caller has placed the block in its
+ * owner's frame, and this writer only adds the translation to that top-left. No `toSVG` here for the
+ * same reason WriteBlock takes none: the page offset belongs to the wrapper the record is written
+ * into, applied AFTER the owner's placement, where in the chain it belongs.
+ *
+ * ⚠️ **The fit is applied FIRST, and the factors below are written in the order they apply — left
+ * first**: Qt's `A * B` means "A, then B" (the rule the block comment above spells out). Read the
+ * other way round, the drawing is fitted LAST and the miniature lands near the pattern origin.
+ */
+void WriteMiniature(QXmlStreamWriter &writer, const QPointF &origin,
+                    const OInfoBlockSvg::Thumbnail &thumb)
+{
+    if (thumb.content.isEmpty() || thumb.contentBounds.isEmpty() || thumb.rect.width() <= 0.0
+        || thumb.rect.height() <= 0.0)
+    {
+        return;
+    }
+
+    // The drawing goes out as one absolute path, like every other path in this document: the piece's
+    // coordinates are fitted into the block, the block is put where it belongs in its owner, and the
+    // wrapper does the rest. No group has to carry it, and the stroke keeps the width the other
+    // paths of this document are given.
+    const QRectF block(0.0, 0.0, thumb.rect.width(), thumb.rect.height());
+    QTransform tr;
+    tr.translate(origin.x() + thumb.rect.x(), origin.y() + thumb.rect.y());
+    const QPainterPath svgPath =
+        (OCartouchePainter::FitTransform(thumb.contentBounds, block) * tr).map(thumb.content);
+
+    writer.writeStartElement(QStringLiteral("path"));
+    writer.writeAttribute(QStringLiteral("d"), OSvg::PainterPathToSvgD(svgPath));
+    writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("none"));
+    writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("black"));
+    writer.writeAttribute(QStringLiteral("stroke-width"),
+                          QString::number(OInfoBlockSvg::MiniatureStroke()));
+    writer.writeEndElement();  // path (miniature drawing)
+
+    if (thumb.words.isEmpty())
+    {
+        return;
+    }
+
+    // The words are already placed in the block's frame — the item answers where a word goes, and
+    // both canvases and both writers ask it the same question. They take the block's own placement
+    // as their transform, in the same application order as the drawing above.
+    writer.writeStartElement(QStringLiteral("g"));
+    writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(tr));
+
+    QVector<OCartoucheRenderItem> wordItems;
+    wordItems.reserve(thumb.words.size());
+    const QFontMetricsF metrics(thumb.font);
+    for (const OInfoBlockSvg::ThumbnailWord &word : thumb.words)
+    {
+        if (word.text.isEmpty())
+        {
+            continue;
+        }
+        // **One line per language, as on the canvas.** A legend written in two languages is one
+        // string with a line break in it, and SVG has no line break: a newline inside `<text>`
+        // collapses into a space, so the two languages came out end to end on a single line — far
+        // wider than the block they belong to. The pitch is the font's own `height()`, the same one
+        // the item measures its box with.
+        const QStringList lines = word.text.split(QLatin1Char('\n'));
+        qreal baseline = word.origin.y() + metrics.ascent();
+        for (const QString &line : lines)
+        {
+            if (!line.isEmpty())
+            {
+                OCartoucheRenderItem item;
+                item.kind = OCartoucheRenderItem::Kind::Text;
+                item.text = line;
+                item.font = thumb.font;
+                // The anchor is the top-left of the word's box, all that the screen ever needs; a
+                // `<text>` wants its baseline, which is one ascent lower.
+                item.pen = QPointF(word.origin.x(), baseline);
+                wordItems.append(item);
+            }
+            baseline += metrics.height();
+        }
+    }
+    // The items go to the shared serializer, so a miniature's wording is written exactly like a
+    // block's elsewhere in this document — and, since this document's text stays editable, as words.
+    OCartoucheSvg::WriteItems(writer, wordItems, 1.0, /*textAsPaths*/ false);
+    writer.writeEndElement();  // g (miniature words)
+}
 }  // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -674,6 +762,13 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
             for (const OInfoBlockSvg::Annotation &annotation : object.annotations)
             {
                 WriteAnnotation(writer, object.origin, annotation);
+            }
+            // The miniatures close the records, after the two families of text. They are a child of
+            // the piece like the others: one per owner — a group carries one per member — written
+            // once, in the reference layer, whichever sizes the run covers.
+            for (const OInfoBlockSvg::Thumbnail &thumbnail : object.thumbnails)
+            {
+                WriteMiniature(writer, object.origin, thumbnail);
             }
             if (placed)
             {

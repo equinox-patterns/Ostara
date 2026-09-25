@@ -464,8 +464,15 @@ private slots:
 
     /** @brief Arm the deferred piece-miniature refresh (coalesces a burst of edits). */
     void ScheduleThumbnailSnapshots();
-    /** @brief Capture every piece miniature at the reference size, then restore the active size. */
-    void RefreshThumbnailSnapshots();
+    /**
+     * @brief Capture every piece miniature at the reference size, then restore the active size.
+     *
+     * @param freeze also capture when the document already stands on the reference size, where the
+     *               live geometry is the drawing and nothing needs copying. A reader that will ask
+     *               LATER — the graded export walks a whole size range before it writes — cannot
+     *               count on the document still standing there, and has to freeze the answer now.
+     */
+    void RefreshThumbnailSnapshots(bool freeze = false);
     /** @brief Stand the document on a size and rebuild every piece there. */
     void ApplyReferenceSize(qreal baseA, qreal baseB, qreal baseC);
     /** @brief Tell the miniature blocks whether the geometry to show is the live one. */

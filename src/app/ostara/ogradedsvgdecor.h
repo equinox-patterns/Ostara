@@ -8,9 +8,9 @@
  **          layer. Reproduces the live Graded canvas behaviour on a headless
  **          temporary scene: group members' own decor is masked in favour of
  **          the group's (like the classic Details SVG export), and every child
- **          (grainline, fold, info blocks, annotations) is placed at its RANGE
- **          position (overrides / resolved centres), never at the default
- **          Details-mode position.
+ **          (grainline, fold, info blocks, annotations, miniatures) is placed at
+ **          its RANGE position (overrides / resolved centres), never at the
+ **          default Details-mode position.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>

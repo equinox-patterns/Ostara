@@ -46,7 +46,12 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+#include "../ifc/xml/vabstractpattern.h"
 #include "../vlayout/vgraphicsfillitem.h"
+#include "../vpatterndb/othumbnaildata.h"
+#include "../vpatterndb/vpiece.h"
+#include "../vtools/tools/othumbnailitem.h"
+#include "../vtools/tools/vtoolseamallowance.h"
 
 #include "vmisc/vabstractapplication.h"
 #include "vmisc/vcommonsettings.h"
@@ -127,25 +132,83 @@ QGraphicsPathItem *AsPathItem(QGraphicsItem *item)
     }
     return qgraphicsitem_cast<QGraphicsPathItem *>(item);
 }
-
-//---------------------------------------------------------------------------------------------------------------------
-/// @brief The miniature's stroke width, in document pixels.
-///
-/// The canvas never draws it heavier than the piece it draws, and never more than one pixel: its law
-/// is `min(1, ScaleWidth(hairline, zoom) × zoom)`, and a document has no zoom — the export stands at
-/// 100 %, where `ScaleWidth()` leaves the hairline alone. The floor is this file's own: every other
-/// path that reaches it with no width is given @ref kDefaultStrokeWidth, and a miniature drawn
-/// thinner than a hair would simply not be there. The document's scale is deliberately NOT applied:
-/// no other stroke in this file compensates for it either, so a scaled sheet shrinks every line by
-/// the same amount instead of thinning only this one.
-qreal MiniatureStroke()
-{
-    return qBound(kDefaultStrokeWidth, VAbstractApplication::VApp()->Settings()->WidthHairLine(), 1.0);
-}
 }  // namespace
 
 namespace OInfoBlockSvg
 {
+//---------------------------------------------------------------------------------------------------------------------
+auto MiniatureStroke() -> qreal
+{
+    return qBound(kDefaultStrokeWidth, VAbstractApplication::VApp()->Settings()->WidthHairLine(), 1.0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto BuildThumbnail(quint32 pieceId, const VPiece &piece, const OThumbnailData &data,
+                    const OThumbnailGeom &geom, const QRectF &pieceBox, bool geomChosen) -> Thumbnail
+{
+    Thumbnail record;
+
+    // The drawing of the REFERENCE size, from wherever it comes: the cache when the active size is
+    // another one, the live geometry when the two are the same. Asking the tool is also what makes
+    // the export agree with the canvas by construction — an empty answer means the canvas shows
+    // nothing either, so omitting the block is not a loss.
+    //
+    // **`getTool()` is not a guard: it throws** when the tool is gone (the family of bugs.md 22-08
+    // and 27-08). An export must not die on a piece whose tool is missing.
+    VToolSeamAllowance *tool = nullptr;
+    try
+    {
+        tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
+    }
+    catch (const VException &)
+    {
+        tool = nullptr;
+    }
+    if (tool == nullptr)
+    {
+        return record;  // no canvas at all (batch export): there is nothing "what you see" could mean
+    }
+    const QPainterPath content = tool->ThumbnailReferenceContent();
+    if (content.isEmpty())
+    {
+        return record;  // the reference drawing is still on its way, and the canvas shows none of it
+    }
+
+    const OThumbnailGeom resolved = OThumbnailItem::ResolveBlockGeom(geom, pieceBox, geomChosen);
+    const QRectF block(0.0, 0.0, resolved.width, resolved.height);
+    const QRectF contentBounds = content.boundingRect();
+    const QFont font = OThumbnailItem::LabelFont();
+    const VToolSeamAllowance::ThumbnailWording wording = tool->ResolveThumbnailWording(piece, data);
+
+    record.content = content;
+    record.contentBounds = contentBounds;
+    record.rect = QRectF(resolved.pos, QSizeF(resolved.width, resolved.height));
+    record.font = font;
+    for (int w = 0; w < wording.labels.size(); ++w)
+    {
+        const OThumbnailItem::LabelView &label = wording.labels.at(w);
+        if (label.text.isEmpty())
+        {
+            continue;  // an empty word is not a word, and holds no place in the row
+        }
+        const QPointF inBlock = label.placed
+                                    ? OThumbnailItem::FittedWordOrigin(contentBounds, block,
+                                                                       label.offset)
+                                    : OThumbnailItem::DefaultWordOrigin(wording.labels, w, block,
+                                                                        font);
+        record.words.append({label.text, inBlock});
+    }
+    if (!wording.legend.isEmpty())
+    {
+        const QPointF inBlock =
+            data.HasLegendOffset()
+                ? OThumbnailItem::FittedWordOrigin(contentBounds, block, data.LegendOffset())
+                : OThumbnailItem::DefaultLegendOrigin(wording.legend, block, font);
+        record.words.append({wording.legend, inBlock});
+    }
+    return record;
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
               const QList<QVector<Block>> &blocksByPiece,

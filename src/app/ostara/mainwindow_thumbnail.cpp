@@ -111,7 +111,7 @@ void MainWindow::ApplyReferenceSize(qreal baseA, qreal baseB, qreal baseC)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::RefreshThumbnailSnapshots()
+void MainWindow::RefreshThumbnailSnapshots(bool freeze)
 {
     if (doc == nullptr || m_m.isNull())
     {
@@ -181,11 +181,52 @@ void MainWindow::RefreshThumbnailSnapshots()
     const qreal refB = ResolveReferenceBase(m_m->DimensionBBase(), m_currentDimensionB);
     const qreal refC = ResolveReferenceBase(m_m->DimensionCBase(), m_currentDimensionC);
 
+    // Freezing is taking every piece's drawing out of the tools and into the cache — the one place a
+    // reader can still find it once the document has moved on to another size.
+    const auto captureDrawings = [this]()
+    {
+        OThumbnailCache::Clear();
+        const QHash<quint32, VPiece> *pieces = std::as_const(*pattern).DataPieces();
+        if (pieces == nullptr)
+        {
+            return;
+        }
+        for (auto it = pieces->constBegin(); it != pieces->constEnd(); ++it)
+        {
+            // **`getTool()` is not a guard: it throws** on an id the document no longer holds — the
+            // cmd+W family of bugs.md. A capture is never worth a crash.
+            try
+            {
+                if (auto *tool =
+                        qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key()));
+                    tool != nullptr)
+                {
+                    tool->CaptureThumbnailContent();
+                }
+            }
+            catch (const VException &)
+            {
+                continue;
+            }
+        }
+    };
+
     if (qFuzzyCompare(refA, m_currentDimensionA) && qFuzzyCompare(refB, m_currentDimensionB)
         && qFuzzyCompare(refC, m_currentDimensionC))
     {
-        // Already standing on the reference size: the tools carry the right geometry.
-        OThumbnailCache::Clear();
+        // Already standing on the reference size: the tools carry the right geometry. Left live, it
+        // is the right geometry only for as long as the document goes on standing here — so a caller
+        // that will read the drawings LATER asks for them to be frozen. The graded export is that
+        // caller: it walks a whole range of sizes before it writes, and the live fallback would then
+        // hand it whichever size the walk happened to leave behind.
+        if (freeze)
+        {
+            captureDrawings();
+        }
+        else
+        {
+            OThumbnailCache::Clear();
+        }
         return;
     }
 
@@ -199,19 +240,7 @@ void MainWindow::RefreshThumbnailSnapshots()
 
     // 2. Remember every miniature drawing — the parse above recreated all the tools, so this has to
     //    happen now, while the reference geometry is the one in memory.
-    OThumbnailCache::Clear();
-    const QHash<quint32, VPiece> *referencePieces = std::as_const(*pattern).DataPieces();
-    if (referencePieces != nullptr)
-    {
-        for (auto it = referencePieces->constBegin(); it != referencePieces->constEnd(); ++it)
-        {
-            if (auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key()));
-                tool != nullptr)
-            {
-                tool->CaptureThumbnailContent();
-            }
-        }
-    }
+    captureDrawings();
 
     // 3. Put the document back exactly where the user left it — including its "modified" flag: a
     //    thumbnail must never make the pattern look edited.

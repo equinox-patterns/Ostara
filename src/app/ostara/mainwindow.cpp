@@ -169,7 +169,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_thumbnailSnapshots = new QTimer(this);
     m_thumbnailSnapshots->setSingleShot(true);
     m_thumbnailSnapshots->setInterval(400);
-    connect(m_thumbnailSnapshots, &QTimer::timeout, this, &MainWindow::RefreshThumbnailSnapshots);
+    connect(m_thumbnailSnapshots, &QTimer::timeout, this,
+            [this]() { RefreshThumbnailSnapshots(); });
 
     // Any committed edit (undo/redo included) can change what a miniature has to show.
     connect(VAbstractApplication::VApp()->getUndoStack(), &QUndoStack::indexChanged, this,
