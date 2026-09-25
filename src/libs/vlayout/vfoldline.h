@@ -31,7 +31,13 @@
 #include <QCoreApplication>
 #include <QFont>
 #include <QLineF>
+#include <QPointF>
+#include <QString>
+#include <QStringList>
 #include <QTransform>
+#include <QVector>
+
+#include <functional>
 
 #include "../vmisc/def.h"
 
@@ -40,6 +46,7 @@ class VSvgFontEngine;
 class QGraphicsSimpleTextItem;
 class VPiece;
 class VContainer;
+class VAbstractPattern;
 
 struct TextPosData
 {
@@ -54,12 +61,19 @@ struct ArrowsTextPosData : public TextPosData
     qreal arrowsHeight{0};
 };
 
+/// @brief One drawn line of a fold line's caption: the words, and where this line's own origin
+/// goes. A caption written in several languages is several lines, one item each.
+struct FoldLabelLine
+{
+    QString text{}; // NOLINT(misc-non-private-member-variables-in-classes)
+    QPointF pos{};  // NOLINT(misc-non-private-member-variables-in-classes)
+};
+
 struct FoldLabelPosData
 {
-    QFont font{};    // NOLINT(misc-non-private-member-variables-in-classes)
-    QPointF pos{};   // NOLINT(misc-non-private-member-variables-in-classes)
-    QString label{}; // NOLINT(misc-non-private-member-variables-in-classes)
-    qreal angle{0};  // NOLINT(misc-non-private-member-variables-in-classes)
+    QFont font{};                   // NOLINT(misc-non-private-member-variables-in-classes)
+    QVector<FoldLabelLine> lines{}; // NOLINT(misc-non-private-member-variables-in-classes)
+    qreal angle{0};                 // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
 class VFoldLine
@@ -84,9 +98,33 @@ public:
      *
      * @param piece the piece whose fold line is wanted
      * @param data the pattern container the formulas are evaluated against
+     * @param doc the pattern, so the generic caption can be asked for in the piece's own cartouche
+     *            languages; nullptr is allowed and falls back to the application's default text
      * @return the fold line, ready to be asked for its paths or its values
      */
-    static auto Create(const VPiece &piece, const VContainer *data) -> VFoldLine;
+    static auto Create(const VPiece &piece, const VContainer *data, VAbstractPattern *doc = nullptr) -> VFoldLine;
+
+    /**
+     * @brief Ce que cette bibliothèque ne peut pas savoir et que l'application, elle, sait dire :
+     * la légende générique dans les langues du cartouche de la pièce.
+     *
+     * Une foldline sans texte à elle porte un texte générique. L'application sait l'écrire dans
+     * chaque langue d'un cartouche ; quel cartouche, et quelles langues, est une connaissance de
+     * l'application et non de cette bibliothèque. Elle est donc injectée, comme les autres
+     * résolveurs du projet. Un résolveur qui rend une chaîne vide laisse le texte par défaut
+     * s'appliquer.
+     */
+    using OFoldLineLabelResolver = std::function<QString(const VPiece &piece, VAbstractPattern *doc)>;
+
+    static void SetLabelResolver(OFoldLineLabelResolver resolver);
+
+    /**
+     * @brief ResolvedLabel est le texte que la foldline dessine : celui de la pièce quand elle en a
+     * un, la légende générique autrement.
+     *
+     * Public parce que le chemin de mise en page construit sa foldline sans passer par Create.
+     */
+    static auto ResolvedLabel(const VPiece &piece, VAbstractPattern *doc) -> QString;
 
     /**
      * @brief ApplyManualFoldValues evaluates the three manual fold formulas of @a piece.
@@ -155,11 +193,33 @@ public:
 
     auto LabelPosition(bool &ok) const -> FoldLabelPosData;
 
-    void UpdateFoldLineLabel(QGraphicsSimpleTextItem *item) const;
+    /**
+     * @brief LabelLineCount is how many text items this fold line's caption needs.
+     *
+     * A QGraphicsSimpleTextItem draws a single line, so a caption written in several languages is
+     * several items. Zero when this fold line draws no caption at all.
+     */
+    auto LabelLineCount() const -> vsizetype;
+
+    /**
+     * @brief UpdateFoldLineLabel places one line of the caption on @a item.
+     *
+     * The caller owns the items and asks for as many as LabelLineCount() announces, one call per
+     * line. How a line is placed — where it sits, at what angle, and which way a mirrored piece
+     * turns it — is the fold line's business and not the caller's.
+     *
+     * @param item the item that carries line @a lineIndex
+     * @param lineIndex the line's rank, 0 being the one farthest from the fold line
+     */
+    void UpdateFoldLineLabel(QGraphicsSimpleTextItem *item, vsizetype lineIndex) const;
 
     static auto DefaultFoldLineLabel() -> QString;
 
 private:
+    /// Le résolveur installé par l'application, s'il y en a un. Statique parce qu'il dit ce que
+    /// l'application sait, et non ce qu'une foldline particulière est.
+    static OFoldLineLabelResolver s_labelResolver;
+
     QLineF m_foldLine{};
     FoldLineType m_type{FoldLineType::TwoArrowsTextAbove};
     qreal m_height{0};

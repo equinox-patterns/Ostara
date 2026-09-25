@@ -126,7 +126,8 @@ private:
     VGraphicsFillItem *m_grainlineItem{nullptr};
     QVector<QGraphicsPathItem *> m_labelPathItems{};
     QVector<QGraphicsSimpleTextItem *> m_labelTextItems{};
-    QGraphicsSimpleTextItem *m_foldLineLabelText{nullptr};
+    /** @brief The fold line caption, one item per line, grown on demand and never recreated. */
+    QVector<QGraphicsSimpleTextItem *> m_foldLineLabelTexts{};
 
     void InitLabels();
     void InitPieceLabelSVGFont(const QVector<QPointF> &labelShape, const VTextManager &tm);

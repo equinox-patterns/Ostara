@@ -112,6 +112,12 @@ public:
      * away), never a property of the piece that a save would carry from one run to the next. */
     bool m_showFoldLineLabel{true}; // NOLINT(misc-non-private-member-variables-in-classes)
 
+    /** @brief m_foldLineCaption the text the fold-line caption draws on this piece: its own, or
+     * the generic one resolved in the cartouche's languages when the piece was built. Deliberately
+     * out of the data stream, like m_showFoldLineLabel: it is what the application could say at one
+     * moment, not a property of the piece. An empty value falls back to the piece's own label. */
+    QString m_foldLineCaption{}; // NOLINT(misc-non-private-member-variables-in-classes)
+
 private:
     Q_DISABLE_ASSIGN_MOVE(VLayoutPieceData) // NOLINT
 

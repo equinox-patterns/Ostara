@@ -214,7 +214,7 @@ auto MainWindow::switchScene(Draw mode, const QVector<DetailForLayout> &details)
             SaveCurrentScene();
             try
             {
-                listDetails = PrepareDetailsForLayout(details);
+                listDetails = PrepareDetailsForLayout(details, doc);
             }
             catch (VException &e)
             {

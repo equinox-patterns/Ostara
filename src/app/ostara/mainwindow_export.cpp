@@ -200,7 +200,7 @@ void MainWindow::ExportDetailsAs(bool checked)
     QVector<VLayoutPiece> listDetails;
     try
     {
-        listDetails = PrepareDetailsForLayout(detailsInLayout);
+        listDetails = PrepareDetailsForLayout(detailsInLayout, doc);
     }
     catch (VException &e)
     {
@@ -327,7 +327,7 @@ void MainWindow::on_actionCreateManualLayout_triggered()
         QVector<VLayoutPiece> listDetails;
         try
         {
-            listDetails = PrepareDetailsForLayout(detailsInLayout);
+            listDetails = PrepareDetailsForLayout(detailsInLayout, doc);
         }
         catch (VException &e)
         {
@@ -405,7 +405,7 @@ void MainWindow::on_actionUpdateManualLayout_triggered()
         QVector<VLayoutPiece> listDetails;
         try
         {
-            listDetails = PrepareDetailsForLayout(detailsInLayout);
+            listDetails = PrepareDetailsForLayout(detailsInLayout, doc);
         }
         catch (VException &e)
         {
@@ -467,7 +467,7 @@ auto MainWindow::DoExport(const VCommandLinePtr &expParams) -> bool
             return false;
         }
     }
-    listDetails = PrepareDetailsForLayout(details);
+    listDetails = PrepareDetailsForLayout(details, doc);
 
     if (const bool exportOnlyDetails = expParams->IsExportOnlyDetails(); exportOnlyDetails)
     {

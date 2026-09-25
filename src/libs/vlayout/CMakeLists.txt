@@ -12,6 +12,7 @@ set(VLAYOUT_SOURCES
     vrawlayout.cpp
     vprintlayout.cpp
     vtextmanager.cpp
+    otextwrap.cpp
     vposter.cpp
     vgraphicsfillitem.cpp
     vabstractpiece.cpp
@@ -37,6 +38,7 @@ set(VLAYOUT_SOURCES
     vprintlayout.h
     vsapoint.h
     vtextmanager.h
+    otextwrap.h
     vposter.h
     vgraphicsfillitem.h
     vabstractpiece.h

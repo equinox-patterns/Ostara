@@ -63,6 +63,13 @@ auto ValueText(qreal mm, bool centimeters, bool inches) -> QString;
 /// empty @p languages is the application's own language, the convention every resolver in this
 /// application reads its words by.
 auto Legend(const QStringList &languages, bool centimeters, bool inches) -> QString;
+
+/// @brief Les langues du cartouche de @a piece, dans l'ordre où le template les porte.
+///
+/// Exposé parce que la légende générique d'une foldline se dit, elle aussi, dans les langues du
+/// cartouche : une seule résolution pour toute l'application, plutôt qu'une copie par surface qui
+/// voudrait s'en servir — c'est ainsi que deux surfaces finissent par ne plus dire la même chose.
+auto Languages(const VPiece &piece, VAbstractPattern *doc) -> QStringList;
 } // namespace OThumbnailTextBuilder
 
 #endif // OTHUMBNAILTEXTBUILDER_H

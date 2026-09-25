@@ -1312,7 +1312,7 @@ void MainWindowsNoGUI::PrintTiled()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &details,
+auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &details, VAbstractPattern *doc,
                                                bool showProgress) -> QVector<VLayoutPiece>
 {
     if (details.isEmpty())
@@ -1345,7 +1345,7 @@ auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &d
     {
         auto *tool = qobject_cast<VAbstractTool *>(VAbstractPattern::getTool(data.id));
         SCASSERT(tool != nullptr)
-        layoutDetails.append(VLayoutPiece::Create(data.piece, data.id, tool->getData())); // may throw → caller catches
+        layoutDetails.append(VLayoutPiece::Create(data.piece, data.id, tool->getData(), doc)); // may throw → caller catches
         if (progress != nullptr)
         {
             progress->setValue(++done);

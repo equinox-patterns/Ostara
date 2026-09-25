@@ -1777,7 +1777,7 @@ auto VToolSeamAllowance::ThumbnailContent() const -> QPainterPath
     // The fold line's mark — the two arrows and the line joining them — and deliberately NOT its
     // label. "Cut on fold" is a caption, and at the miniature's size it would be an illegible smudge
     // on a drawing that reads as pure geometry; m_foldLineLabel (the same caption as a glyph path,
-    // for the single-line/single-stroke fonts) and m_foldLineLabelText carry the text alone, so
+    // for the single-line/single-stroke fonts) and m_foldLineLabelTexts carry the text alone, so
     // taking the mark item is what leaves it out. The mark's item is empty whenever the canvas shows
     // no fold line at all — type None, a member whose fold line its group masks, or a piece shown
     // whole — so the miniature follows the canvas without restating any of those rules.
@@ -2247,7 +2247,10 @@ void VToolSeamAllowance::RefreshScale()
     // (theme-aware: re-applied on every Light/Dark toggle via RefreshSceneItemPens).
     const QBrush foldLineBrush(VSceneStylesheet::PatternPieceStyle().PieceColor());
     m_foldLineMark->setBrush(foldLineBrush);
-    m_foldLineLabelText->setBrush(foldLineBrush);
+    for (vsizetype i = 0; i < m_foldLineLabelTexts.size(); ++i)
+    {
+        m_foldLineLabelTexts.at(i)->setBrush(foldLineBrush);
+    }
 
     VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
     if (settings->GetSingleStrokeOutlineFont() || settings->GetSingleLineFonts())
@@ -2732,7 +2735,6 @@ VToolSeamAllowance::VToolSeamAllowance(const VToolSeamAllowanceInitData &initDat
     m_mirrorLine(new QGraphicsPathItem(this)),
     m_foldLineMark(new QGraphicsPathItem(this)),
     m_foldLineLabel(new QGraphicsPathItem(this)),
-    m_foldLineLabelText(new QGraphicsSimpleTextItem(this)),
     m_saHighlights(this)
 {
     VPiece const detail = initData.data->GetPiece(initData.id);
@@ -2764,7 +2766,10 @@ VToolSeamAllowance::VToolSeamAllowance(const VToolSeamAllowanceInitData &initDat
     // not a hard-coded black: the black fill was invisible on the dark canvas.
     const QBrush foldLineBrush(VSceneStylesheet::PatternPieceStyle().PieceColor());
     m_foldLineMark->setBrush(foldLineBrush);
-    m_foldLineLabelText->setBrush(foldLineBrush);
+    for (vsizetype i = 0; i < m_foldLineLabelTexts.size(); ++i)
+    {
+        m_foldLineLabelTexts.at(i)->setBrush(foldLineBrush);
+    }
 
     // On-piece information blocks (one per block 1..11), hidden until a piece
     // configures them (UpdateInfoBlocks decides visibility).
@@ -2962,7 +2967,7 @@ auto VToolSeamAllowance::ComputePieceGeometry(bool combineTogether, bool pieceSh
         geom.passmarks = RenderPassmarks(detail, containerData);
     }
 
-    geom.foldLine = VFoldLine::Create(detail, containerData);
+    geom.foldLine = VFoldLine::Create(detail, containerData, doc);
     geom.mirrorLine = RenderMirrorLine(detail, containerData, combineTogether);
 
     geom.hasSeamAllowance = detail.IsSeamAllowance();
@@ -3803,7 +3808,7 @@ auto VToolSeamAllowance::DuplicatePlaceLabels(const QVector<quint32> &placeLabel
 void VToolSeamAllowance::RefreshFoldLine()
 {
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
-    UpdateFoldLine(VFoldLine::Create(detail, getData()));
+    UpdateFoldLine(VFoldLine::Create(detail, getData(), doc));
 
     // m_foldLineLabel's brush (filled glyph vs. stroke-only path) depends on the same
     // single-stroke/single-line font settings and is otherwise only refreshed by the full
@@ -3827,7 +3832,10 @@ void VToolSeamAllowance::UpdateFoldLine(const VFoldLine &foldLine)
                                         && groups->value(groupId).m_foldLineMemberId == m_id;
         if (!isGroupFoldCarrier)
         {
-            m_foldLineLabelText->setVisible(false);
+            for (vsizetype i = 0; i < m_foldLineLabelTexts.size(); ++i)
+            {
+                m_foldLineLabelTexts.at(i)->setVisible(false);
+            }
             m_foldLineMark->setPath(QPainterPath());
             m_foldLineLabel->setPath(QPainterPath());
             m_mirrorLine->setPath(QPainterPath());
@@ -3837,7 +3845,10 @@ void VToolSeamAllowance::UpdateFoldLine(const VFoldLine &foldLine)
 
     if (detail.GetFoldLineType() == FoldLineType::None || (detail.IsShowFullPiece() && !detail.IsShowMirrorLine()))
     {
-        m_foldLineLabelText->setVisible(false);
+        for (vsizetype i = 0; i < m_foldLineLabelTexts.size(); ++i)
+        {
+            m_foldLineLabelTexts.at(i)->setVisible(false);
+        }
         m_foldLineMark->setPath(QPainterPath());
         m_foldLineLabel->setPath(QPainterPath());
         return;
@@ -3845,14 +3856,10 @@ void VToolSeamAllowance::UpdateFoldLine(const VFoldLine &foldLine)
 
     VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
 
-    if (settings->GetSingleStrokeOutlineFont() || settings->GetSingleLineFonts())
-    {
-        m_foldLineLabelText->setVisible(false);
-    }
-    else
-    {
-        foldLine.UpdateFoldLineLabel(m_foldLineLabelText);
-    }
+    // The caption is drawn as text when neither outline setting is on, and as glyph outlines
+    // otherwise — in which case the text items are hidden rather than left over.
+    const bool labelAsText = !settings->GetSingleStrokeOutlineFont() && !settings->GetSingleLineFonts();
+    ApplyFoldLineLabel(foldLine, labelAsText);
 
     QVector<QPainterPath> const shape = foldLine.FoldLinePath();
 
@@ -3881,6 +3888,34 @@ void VToolSeamAllowance::UpdateFoldLine(const VFoldLine &foldLine)
         VAbstractApplication::VApp()->IsPedantic()
             ? throw VException(errorMsg)
             : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::ApplyFoldLineLabel(const VFoldLine &foldLine, bool visible)
+{
+    // One item per line: a QGraphicsSimpleTextItem draws a single line, and the caption takes
+    // several once it carries more than one language or does not fit the fold line's width.
+    const vsizetype count = visible ? foldLine.LabelLineCount() : 0;
+
+    while (m_foldLineLabelTexts.size() < count)
+    {
+        auto *item = new QGraphicsSimpleTextItem(this);
+        item->setBrush(QBrush(VSceneStylesheet::PatternPieceStyle().PieceColor()));
+        m_foldLineLabelTexts.append(item);
+    }
+
+    for (vsizetype i = 0; i < m_foldLineLabelTexts.size(); ++i)
+    {
+        QGraphicsSimpleTextItem *item = m_foldLineLabelTexts.at(i);
+        if (i < count)
+        {
+            foldLine.UpdateFoldLineLabel(item, i);
+        }
+        else
+        {
+            item->setVisible(false);
+        }
     }
 }
 

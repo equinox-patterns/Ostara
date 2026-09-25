@@ -76,7 +76,8 @@ public:
     VLayoutPiece(VLayoutPiece &&detail) noexcept;
     auto operator=(VLayoutPiece &&detail) noexcept -> VLayoutPiece &;
 
-    static auto Create(const VPiece &piece, vidtype id, const VContainer *pattern) -> VLayoutPiece;
+    static auto Create(const VPiece &piece, vidtype id, const VContainer *pattern,
+                       VAbstractPattern *doc = nullptr) -> VLayoutPiece;
     static auto ConvertPassmarks(const VPiece &piece, const VContainer *pattern) -> QVector<VLayoutPassmark>;
 
     auto GetUniqueID() const -> QString override;
@@ -187,6 +188,20 @@ public:
     /// @see VLayoutPieceData::m_showFoldLineLabel — not persisted, on purpose.
     auto IsShowFoldLineLabel() const -> bool;
     void SetShowFoldLineLabel(bool show);
+
+    /**
+     * @brief FoldLineCaption est le texte que la légende de pli dessine sur ce morceau.
+     *
+     * Le texte de la pièce quand elle en a un, et la légende générique résolue par l'application
+     * autrement — celle-ci l'écrit dans les langues du cartouche, ce que cette bibliothèque ne sait
+     * pas faire seule. Résolu une fois, à la construction du morceau : le rendu n'a pas à
+     * redemander à l'application à chaque image.
+     *
+     * @see VLayoutPieceData::m_foldLineCaption — not persisted, on purpose: a layout file carries
+     * the piece, never a rendering decision taken at one moment.
+     */
+    auto FoldLineCaption() const -> QString;
+    void SetFoldLineCaption(const QString &caption);
 
     void Translate(const QPointF &p);
     void Translate(qreal dx, qreal dy);

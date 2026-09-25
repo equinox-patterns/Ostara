@@ -26,6 +26,7 @@
  **
  *************************************************************************/
 #include "vfoldline.h"
+#include "otextwrap.h"
 #include "../vformat/vsinglelineoutlinechar.h"
 #include "../vgeometry/vgeometrydef.h"
 #include "../vmisc/compatibility.h"
@@ -65,7 +66,39 @@ VFoldLine::VFoldLine(const QLineF &line, FoldLineType type)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::Create(const VPiece &piece, const VContainer *data) -> VFoldLine
+VFoldLine::OFoldLineLabelResolver VFoldLine::s_labelResolver; // NOLINT(cert-err58-cpp)
+
+//---------------------------------------------------------------------------------------------------------------------
+void VFoldLine::SetLabelResolver(OFoldLineLabelResolver resolver)
+{
+    s_labelResolver = std::move(resolver);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::ResolvedLabel(const VPiece &piece, VAbstractPattern *doc) -> QString
+{
+    const QString own = piece.GetFoldLineLabel();
+    if (!own.isEmpty())
+    {
+        // A text the user typed is THE text: it stands as written, in the language it was written
+        // in, and is neither translated nor repeated in another language.
+        return own;
+    }
+
+    if (s_labelResolver != nullptr)
+    {
+        const QString caption = s_labelResolver(piece, doc);
+        if (!caption.isEmpty())
+        {
+            return caption;
+        }
+    }
+
+    return DefaultFoldLineLabel();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::Create(const VPiece &piece, const VContainer *data, VAbstractPattern *doc) -> VFoldLine
 {
     QLineF const foldLine = piece.IsHideMainPath() ? piece.SeamAllowanceMirrorLine(data)
                                                    : piece.SeamMirrorLine(data);
@@ -73,7 +106,7 @@ auto VFoldLine::Create(const VPiece &piece, const VContainer *data) -> VFoldLine
 
     const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
     fLine.SetLabelSvgFontSize(static_cast<unsigned int>(settings->GetFoldLineLabelFontPixelSize()));
-    fLine.SetLabel(piece.GetFoldLineLabel());
+    fLine.SetLabel(ResolvedLabel(piece, doc));
 
     {
         QFont font(settings->GetFoldLineLabelFontFamily());
@@ -434,29 +467,61 @@ auto VFoldLine::LabelPosition(bool &ok) const -> FoldLabelPosData
     baseLine = SimpleParallelLine(baseLine.p1(), baseLine.p2(), -(margin + data->labelHeight));
 
     posData.font = LabelOutlineFont();
-    QFontMetrics const fm(posData.font);
-    posData.label = fm.elidedText(FoldLineLabel(), Qt::ElideRight, qFloor(data->labelWidth));
+
+    // The caption is WRAPPED, never elided: a fold line too short for one line takes two, and a
+    // caption written in several languages keeps every language it carries. It is measured with the
+    // font this placement is built for — the same font the caller's item will be drawn with.
+    OTextWrap::Measure const measure = OTextWrap::FontMeasure(posData.font);
+    QStringList const lines = OTextWrap::Lines(FoldLineLabel(), data->labelWidth, measure);
+    if (lines.isEmpty())
+    {
+        ok = false;
+        return {};
+    }
+
+    // The block is aligned as a whole, on its widest line, so a centred caption stays centred on
+    // the fold line however many lines it takes.
+    qreal blockWidth = 0;
+    for (const QString &line : lines)
+    {
+        blockWidth = qMax(blockWidth, measure.word(line));
+    }
 
     if (m_alignment & Qt::AlignHCenter) // NOLINT(readability-implicit-bool-conversion)
     {
-        qreal const shift = (data->labelWidth - fm.horizontalAdvance(posData.label)) / 2;
+        qreal const shift = (data->labelWidth - blockWidth) / 2;
         baseLine.setLength(baseLine.length() - shift);
     }
     else if (m_alignment & Qt::AlignRight) // NOLINT(readability-implicit-bool-conversion)
     {
-        qreal const shift = data->labelWidth - fm.horizontalAdvance(posData.label);
+        qreal const shift = data->labelWidth - blockWidth;
         baseLine.setLength(baseLine.length() - shift);
     }
 
-    posData.pos = baseLine.p2();
     posData.angle = QLineF(center, data->base.p1()).angle();
+
+    // The lines stack AWAY from the fold line, so the last one sits exactly where a one-line
+    // caption has always sat: a caption that fits does not move, and a second line grows outward
+    // rather than onto the arrows.
+    QFontMetrics const fm(posData.font);
+    const qreal lineHeight = fm.height();
+    const auto count = static_cast<vsizetype>(lines.size());
+    QTransform const stacking = QTransform().rotate(-posData.angle);
+
+    posData.lines.reserve(count);
+    for (vsizetype i = 0; i < count; ++i)
+    {
+        const qreal dy = static_cast<qreal>(i - (count - 1)) * lineHeight;
+        posData.lines.append({lines.at(i), baseLine.p2() + stacking.map(QPointF(0, dy))});
+    }
+
     ok = true;
 
     return posData;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VFoldLine::UpdateFoldLineLabel(QGraphicsSimpleTextItem *item) const
+void VFoldLine::UpdateFoldLineLabel(QGraphicsSimpleTextItem *item, vsizetype lineIndex) const
 {
     if (item == nullptr)
     {
@@ -475,19 +540,20 @@ void VFoldLine::UpdateFoldLineLabel(QGraphicsSimpleTextItem *item) const
         return;
     }
 
-    item->setVisible(true);
-
     bool ok = false;
     FoldLabelPosData const labelPos = LabelPosition(ok);
 
-    if (not ok)
+    if (not ok || lineIndex < 0 || lineIndex >= labelPos.lines.size())
     {
         item->setVisible(false);
         return;
     }
 
+    item->setVisible(true);
+
+    QPointF const origin = labelPos.lines.at(lineIndex).pos;
     item->setFont(labelPos.font);
-    item->setText(labelPos.label);
+    item->setText(labelPos.lines.at(lineIndex).text);
 
     QRectF const rect = item->boundingRect();
 
@@ -523,7 +589,7 @@ void VFoldLine::UpdateFoldLineLabel(QGraphicsSimpleTextItem *item) const
         QPointF const rectCenter = rect.center();
 
         QTransform refTransform;
-        refTransform.translate(labelPos.pos.x(), labelPos.pos.y());
+        refTransform.translate(origin.x(), origin.y());
         refTransform.rotate(-labelPos.angle);
         QPointF const refRectCenter = refTransform.map(rectCenter);
 
@@ -534,13 +600,21 @@ void VFoldLine::UpdateFoldLineLabel(QGraphicsSimpleTextItem *item) const
     }
     else
     {
-        matrix.translate(labelPos.pos.x(), labelPos.pos.y());
+        matrix.translate(origin.x(), origin.y());
         matrix.rotate(-labelPos.angle);
     }
 
     matrix *= m_matrix;
 
     item->setTransform(matrix);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::LabelLineCount() const -> vsizetype
+{
+    bool ok = false;
+    FoldLabelPosData const labelPos = LabelPosition(ok);
+    return ok ? labelPos.lines.size() : 0;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -662,20 +736,36 @@ auto VFoldLine::OutlineFontLabel(const QLineF &base, qreal width, qreal textHeig
 
     QFont const font = LabelOutlineFont();
     QFontMetrics const fm(font);
-    QString const label = fm.elidedText(FoldLineLabel(), Qt::ElideRight, qFloor(width));
+
+    // Measured the same way the placement is, and WRAPPED rather than elided: one rule for the
+    // item path and for the outlines, so a caption cannot say one thing on screen and another in
+    // the exported drawing.
+    OTextWrap::Measure const measure = OTextWrap::FontMeasure(font);
+    QStringList const lines = OTextWrap::Lines(FoldLineLabel(), width, measure);
+
+    qreal blockWidth = 0;
+    for (const QString &line : lines)
+    {
+        blockWidth = qMax(blockWidth, measure.word(line));
+    }
 
     if (m_alignment & Qt::AlignHCenter) // NOLINT(readability-implicit-bool-conversion)
     {
-        qreal const shift = (width - fm.horizontalAdvance(label)) / 2;
+        qreal const shift = (width - blockWidth) / 2;
         baseLine.setLength(baseLine.length() - shift);
     }
     else if (m_alignment & Qt::AlignRight) // NOLINT(readability-implicit-bool-conversion)
     {
-        qreal const shift = width - fm.horizontalAdvance(label);
+        qreal const shift = width - blockWidth;
         baseLine.setLength(baseLine.length() - shift);
     }
 
     QPainterPath labelPath;
+
+    // The lines stack AWAY from the fold line: the first is the farthest, the last sits where a
+    // one-line caption has always sat, so a caption that fits does not move.
+    const qreal lineHeight = fm.height();
+    const auto count = static_cast<vsizetype>(lines.size());
 
     if (const VCommonSettings *settings = VAbstractApplication::VApp()->Settings();
         settings->GetSingleStrokeOutlineFont())
@@ -686,11 +776,15 @@ auto VFoldLine::OutlineFontLabel(const QLineF &base, qreal width, qreal textHeig
             corrector.LoadCorrections(settings->GetPathFontCorrections());
         }
 
-        int w = 0;
-        for (auto c : std::as_const(label))
+        for (vsizetype i = 0; i < count; ++i)
         {
-            labelPath.addPath(corrector.DrawChar(w, static_cast<qreal>(fm.ascent()), c));
-            w += fm.horizontalAdvance(c);
+            const qreal dy = static_cast<qreal>(i - (count - 1)) * lineHeight;
+            int w = 0;
+            for (auto c : std::as_const(lines.at(i)))
+            {
+                labelPath.addPath(corrector.DrawChar(w, static_cast<qreal>(fm.ascent()) + dy, c));
+                w += fm.horizontalAdvance(c);
+            }
         }
 
         QTransform matrix;
@@ -732,7 +826,12 @@ auto VFoldLine::OutlineFontLabel(const QLineF &base, qreal width, qreal textHeig
         Swap(baseLine);
         baseLine.setAngle(baseLine.angle() + 90);
         baseLine.setLength(fm.descent() + CmToPixel(0.2));
-        labelPath.addText(QPointF(), font, label);
+
+        for (vsizetype i = 0; i < count; ++i)
+        {
+            const qreal dy = static_cast<qreal>(i - (count - 1)) * lineHeight;
+            labelPath.addText(QPointF(0, dy), font, lines.at(i));
+        }
 
         QTransform matrix;
 
@@ -802,20 +901,38 @@ auto VFoldLine::SVGFontLabel(const QLineF &base, qreal width, qreal textHeight) 
     baseLine.setLength(width);
     Swap(baseLine);
 
-    QString const label = engine.ElidedText(FoldLineLabel(), SVGTextElideMode::ElideRight, qFloor(width));
+    // Same measuring and same wrapping rule as the outline path — this one just draws with the
+    // plotter font instead of the outline font.
+    OTextWrap::Measure const measure = OTextWrap::EngineMeasure(engine, 0);
+    QStringList const lines = OTextWrap::Lines(FoldLineLabel(), width, measure);
+
+    qreal blockWidth = 0;
+    for (const QString &line : lines)
+    {
+        blockWidth = qMax(blockWidth, measure.word(line));
+    }
 
     if (m_alignment & Qt::AlignHCenter) // NOLINT(readability-implicit-bool-conversion)
     {
-        qreal const shift = (width - engine.TextWidth(label)) / 2;
+        qreal const shift = (width - blockWidth) / 2;
         baseLine.setLength(baseLine.length() - shift);
     }
     else if (m_alignment & Qt::AlignRight) // NOLINT(readability-implicit-bool-conversion)
     {
-        qreal const shift = width - engine.TextWidth(label);
+        qreal const shift = width - blockWidth;
         baseLine.setLength(baseLine.length() - shift);
     }
 
-    QPainterPath labelPath = engine.DrawPath(QPointF(), label);
+    QPainterPath labelPath;
+
+    // Same stacking rule as the outline path: the last line keeps the one-line placement.
+    const qreal lineHeight = engine.FontHeight();
+    const auto count = static_cast<vsizetype>(lines.size());
+    for (vsizetype i = 0; i < count; ++i)
+    {
+        const qreal dy = static_cast<qreal>(i - (count - 1)) * lineHeight;
+        labelPath.addPath(engine.DrawPath(QPointF(0, dy), lines.at(i)));
+    }
 
     QTransform matrix;
 

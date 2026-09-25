@@ -38,6 +38,7 @@
 #include "widgets/InfoBlock/OPieceCartoucheStorage.h"
 #include "core/oexporttemplatestorage.h"
 #include "core/othumbnailtextbuilder.h"
+#include "core/ofoldlinelabelbuilder.h"
 
 #include "vabstractapplication.h"
 #include "vvalentinasettings.h"
@@ -141,6 +142,13 @@ auto main(int argc, char *argv[]) -> int
     VToolSeamAllowance::SetThumbnailTextResolver(
         [](const VPiece &piece, const OThumbnailData &thumbnail, VAbstractPattern *doc) -> OThumbnailTexts {
             return OThumbnailTextBuilder::Build(piece, thumbnail, doc);
+        });
+
+    // Register the app-side wording builder for a fold line's generic caption, so the drawing code
+    // (libs) can print it in the cartouche's languages without knowing what a cartouche is.
+    VFoldLine::SetLabelResolver(
+        [](const VPiece &piece, VAbstractPattern *doc) -> QString {
+            return OFoldLineLabelBuilder::Caption(piece, doc);
         });
 
     // Register the app-side annotation style resolver so the piece tools (libs)

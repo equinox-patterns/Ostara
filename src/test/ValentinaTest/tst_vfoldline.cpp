@@ -148,14 +148,14 @@ void TST_VFoldLine::LabelStaysAnchoredAcrossAngles() const
         // QGraphicsSimpleTextItem's transform (position + rotation + flip correction) exactly
         // as the real piece-rendering code does.
         QGraphicsSimpleTextItem item;
-        foldLineObj.UpdateFoldLineLabel(&item);
+        foldLineObj.UpdateFoldLineLabel(&item, 0);
 
         // The item's own bounding-rect center is the point the flip correction anchors on (see
         // UpdateFoldLineLabel): mapping it through the item's transform should land at a
         // constant distance from labelPos.pos regardless of angle, the same way it would for the
         // non-flipped case (rotation alone preserves distance from the rotation's own center).
         QPointF const anchor = item.transform().map(item.boundingRect().center());
-        distances.append(QLineF(anchor, posData.pos).length());
+        distances.append(QLineF(anchor, posData.lines.constFirst().pos).length());
     }
 
     // A correct transform pivots this anchor rigidly around labelPos.pos: rotating the fold
@@ -259,7 +259,7 @@ void TST_VFoldLine::LabelOrientationMatchesNonFlipped() const
         nonFlipped.SetOutlineFont(QFont());
 
         QGraphicsSimpleTextItem itemA;
-        nonFlipped.UpdateFoldLineLabel(&itemA);
+        nonFlipped.UpdateFoldLineLabel(&itemA, 0);
 
         // Item B: the SAME fold line, but flipped, with m_matrix set to the mirror this flip
         // state implies. This mimics how VLayoutPiece actually wires up a flipped piece: same
@@ -272,7 +272,7 @@ void TST_VFoldLine::LabelOrientationMatchesNonFlipped() const
         flipped.SetMatrix(mirror);
 
         QGraphicsSimpleTextItem itemB;
-        flipped.UpdateFoldLineLabel(&itemB);
+        flipped.UpdateFoldLineLabel(&itemB, 0);
 
         // itemA's own linear part is whatever LabelPosition() decided for this fold line (its
         // angle need not equal the raw sweep angle -- LabelPosition() derives it from the fold
@@ -363,7 +363,7 @@ void TST_VFoldLine::LabelStaysCloseToFoldLine() const
         nonFlipped.SetOutlineFont(QFont());
 
         QGraphicsSimpleTextItem itemA;
-        nonFlipped.UpdateFoldLineLabel(&itemA);
+        nonFlipped.UpdateFoldLineLabel(&itemA, 0);
 
         // Same fold line again, but flipped with m_matrix set to the corresponding mirror.
         VFoldLine flipped(foldLine, FoldLineType::TwoArrowsTextAbove);
@@ -374,7 +374,7 @@ void TST_VFoldLine::LabelStaysCloseToFoldLine() const
         flipped.SetMatrix(mirror);
 
         QGraphicsSimpleTextItem itemB;
-        flipped.UpdateFoldLineLabel(&itemB);
+        flipped.UpdateFoldLineLabel(&itemB, 0);
 
         // Comparing only perpendicular distance to the infinite fold line -- as an earlier
         // version of this test did -- cannot catch a label that has drifted sideways *along* the

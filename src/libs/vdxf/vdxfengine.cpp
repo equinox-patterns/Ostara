@@ -1017,45 +1017,52 @@ void VDxfEngine::ExportAnnotationText(const QSharedPointer<dx_ifaceBlock> &detai
     }
 
     QFontMetrics const fm(labelData.font);
-    QPointF pos = labelData.pos;
     qreal const height = fm.height() * qMin(detail.GetXScale(), detail.GetYScale());
-    qreal const width = fm.horizontalAdvance(labelData.label);
 
-    QLineF base(pos, QPointF(pos.x() + 100, pos.y()));
-    base.setAngle(base.angle() - 180);
-    base.setLength(height);
-    pos = base.p2();
-
-    QTransform matrix;
-    if ((detail.IsVerticallyFlipped() && !detail.IsHorizontallyFlipped()) ||
-        (!detail.IsVerticallyFlipped() && detail.IsHorizontallyFlipped()))
+    // One TEXT entity per line: a DXF text is a single line by nature, so a caption that wraps —
+    // because it carries several languages, or because the fold line is short — is several
+    // entities. Nothing else changes: each line is laid out exactly as the single one used to be.
+    for (const FoldLabelLine &line : labelData.lines)
     {
-        matrix.translate(pos.x(), pos.y());
-        matrix.rotate(180);
-        matrix.translate(-pos.x(), -pos.y());
-        matrix.translate(-width, fm.height());
+        QPointF pos = line.pos;
+        qreal const width = fm.horizontalAdvance(line.text);
+
+        QLineF base(pos, QPointF(pos.x() + 100, pos.y()));
+        base.setAngle(base.angle() - 180);
+        base.setLength(height);
+        pos = base.p2();
+
+        QTransform matrix;
+        if ((detail.IsVerticallyFlipped() && !detail.IsHorizontallyFlipped()) ||
+            (!detail.IsVerticallyFlipped() && detail.IsHorizontallyFlipped()))
+        {
+            matrix.translate(pos.x(), pos.y());
+            matrix.rotate(180);
+            matrix.translate(-pos.x(), -pos.y());
+            matrix.translate(-width, fm.height());
+        }
+
+        matrix *= detail.GetMatrix();
+
+        QLineF angleLine(QPointF(), QPointF(1000, 0));
+        angleLine.setAngle(labelData.angle);
+        angleLine = matrix.map(angleLine);
+
+        const QPointF textPos = matrix.map(pos);
+
+        auto *text = new DRW_Text();
+        text->basePoint = DRW_Coord(FromPixel(textPos.x(), m_varInsunits),
+                                    FromPixel(GetSize().height() - textPos.y(), m_varInsunits), 0);
+        text->secPoint = DRW_Coord(FromPixel(textPos.x(), m_varInsunits),
+                                   FromPixel(GetSize().height() - textPos.y(), m_varInsunits), 0);
+        text->height = FromPixel(height / 2, m_varInsunits);
+        text->layer = layer;
+        text->text = line.text.toStdString();
+        text->style = m_input->AddFont(labelData.font);
+        text->angle = angleLine.angle();
+
+        detailBlock->ent.push_back(text);
     }
-
-    matrix *= detail.GetMatrix();
-
-    QLineF angleLine(QPointF(), QPointF(1000, 0));
-    angleLine.setAngle(labelData.angle);
-    angleLine = matrix.map(angleLine);
-
-    pos = matrix.map(pos);
-
-    auto *text = new DRW_Text();
-    text->basePoint =
-        DRW_Coord(FromPixel(pos.x(), m_varInsunits), FromPixel(GetSize().height() - pos.y(), m_varInsunits), 0);
-    text->secPoint =
-        DRW_Coord(FromPixel(pos.x(), m_varInsunits), FromPixel(GetSize().height() - pos.y(), m_varInsunits), 0);
-    text->height = FromPixel(height / 2, m_varInsunits);
-    text->layer = layer;
-    text->text = labelData.label.toStdString();
-    text->style = m_input->AddFont(labelData.font);
-    text->angle = angleLine.angle();
-
-    detailBlock->ent.push_back(text);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

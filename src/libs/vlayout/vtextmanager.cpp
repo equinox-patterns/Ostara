@@ -43,97 +43,10 @@
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vtranslator.h"
 #include "../vpatterndb/calculator.h"
+#include "otextwrap.h"
 #include "vtextmanager.h"
 
 using namespace Qt::Literals::StringLiterals;
-
-namespace
-{
-//---------------------------------------------------------------------------------------------------------------------
-auto SplitTextByWidth(const QString &text, const QFont &font, int maxWidth) -> QStringList
-{
-    QFontMetrics const fontMetrics(font);
-    if (fontMetrics.horizontalAdvance(text) <= maxWidth)
-    {
-        return {text};
-    }
-
-    QStringList substrings;
-    substrings.reserve(2);
-
-    const auto textLength = static_cast<int>(text.length());
-    int lineWidth = 0;
-
-    for (int endIndex = 0; endIndex < textLength; ++endIndex)
-    {
-        QChar const currentChar = text.at(endIndex);
-        const int charWidth = fontMetrics.horizontalAdvance(currentChar);
-
-        if (lineWidth + charWidth > maxWidth)
-        {
-            if (endIndex > 0)
-            {
-                substrings.append(text.mid(0, endIndex));
-            }
-
-            if (endIndex < textLength)
-            {
-                substrings.append(text.mid(endIndex));
-            }
-
-            break;
-        }
-
-        lineWidth += charWidth;
-    }
-
-    return substrings;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto SplitTextByWidth(const QString &text, const VSvgFont &font, int maxWidth, qreal penWidth) -> QStringList
-{
-    VSvgFontDatabase  const*db = VAbstractApplication::VApp()->SVGFontDatabase();
-    VSvgFontEngine const engine = db->FontEngine(font);
-
-    if (engine.TextWidth(text, penWidth) <= maxWidth)
-    {
-        return {text};
-    }
-
-    QStringList substrings;
-    substrings.reserve(2);
-
-    const auto textLength = static_cast<int>(text.length());
-    qreal lineWidth = 0;
-
-    for (int endIndex = 0; endIndex < textLength; ++endIndex)
-    {
-        QChar const currentChar = text.at(endIndex);
-        const qreal charWidth = engine.TextWidth(currentChar, penWidth);
-
-        if (lineWidth + charWidth > maxWidth)
-        {
-            if (endIndex > 0)
-            {
-                substrings.append(text.mid(0, endIndex));
-            }
-
-            if (endIndex < textLength)
-            {
-                substrings.append(text.mid(endIndex));
-            }
-
-            break;
-        }
-
-        lineWidth += charWidth;
-    }
-
-    return substrings;
-}
-
-} // namespace
 
 const quint32 TextLine::streamHeader = 0xA3881E49; // CRC-32Q string "TextLine"
 const quint16 TextLine::classVersion = 1;
@@ -448,90 +361,15 @@ auto VTextManager::GetLabelSourceLines(int width, const VSvgFont &font, qreal pe
 //---------------------------------------------------------------------------------------------------------------------
 auto VTextManager::BreakTextIntoLines(const QString &text, const QFont &font, int maxWidth) -> QStringList
 {
-    QStringList words = text.split(' ');
-
-    QString currentLine;
-    int currentLineWidth = 0;
-    const int spaceWidth = HorizontalAdvance(QChar(' '), font);
-    const float tolerance = 0.3F;
-
-    QStringList lines;
-    lines.reserve(words.size());
-    QMutableListIterator iterator(words);
-
-    auto AppendWord = [&currentLine, &currentLineWidth](const QString &word, int totalWidth)
-    {
-        if (!currentLine.isEmpty())
-        {
-            currentLine += ' '_L1;
-        }
-        currentLine += word;
-        currentLineWidth = totalWidth;
-    };
-
-    while (iterator.hasNext())
-    {
-        const QString &word = iterator.next();
-        int const wordWidth = HorizontalAdvance(word, font);
-        int const totalWidth = !currentLine.isEmpty() ? currentLineWidth + spaceWidth + wordWidth : wordWidth;
-
-        if (totalWidth <= maxWidth)
-        {
-            // Append the word to the current line
-            AppendWord(word, totalWidth);
-        }
-        else if ((maxWidth - currentLineWidth) <= qRound(static_cast<float>(maxWidth) * tolerance) &&
-                 maxWidth >= wordWidth)
-        {
-            // Start a new line with the word if it doesn't exceed the tolerance
-            lines.append(currentLine);
-            currentLine = word;
-            currentLineWidth = wordWidth;
-        }
-        else
-        {
-            // Word is too long, force line break
-            if (currentLineWidth + spaceWidth + HorizontalAdvance(word.at(0), font) > maxWidth)
-            {
-                lines.append(currentLine);
-                currentLine.clear();
-                currentLineWidth = 0;
-            }
-
-            const int subWordWidth = !currentLine.isEmpty() ? maxWidth - (currentLineWidth + spaceWidth) : maxWidth;
-            const QStringList subWords = SplitTextByWidth(word, font, subWordWidth);
-
-            if (subWords.isEmpty() || subWords.size() > 2)
-            {
-                AppendWord(word, totalWidth);
-            }
-            else
-            {
-                const int width = HorizontalAdvance(subWords.constFirst(), font);
-                const int tWidth = !currentLine.isEmpty() ? currentLineWidth + spaceWidth + width : width;
-                AppendWord(subWords.constFirst(), tWidth);
-                lines.append(currentLine);
-
-                if (subWords.size() == 2)
-                {
-                    currentLine.clear();
-                    currentLineWidth = 0;
-
-                    // Insert the item after the current item
-                    iterator.insert(subWords.constLast());
-                    iterator.previous();
-                }
-            }
-        }
-    }
-
-    // Add the last line
-    if (!currentLine.isEmpty())
-    {
-        lines.append(currentLine);
-    }
-
-    return lines;
+    // Le repli lui-même vit dans OTextWrap. Ce qui reste ici est la seule chose que ce moteur
+    // ajoute : la façon dont l'application mesure un texte, qui dépend du réglage « police
+    // filaire ». Un mot se mesure avec cette convention, un caractère avec les métriques brutes —
+    // exactement comme avant l'extraction.
+    QFontMetrics const metrics(font);
+    OTextWrap::Measure measure;
+    measure.word = [&font](const QString &value) -> qreal { return HorizontalAdvance(value, font); };
+    measure.part = [metrics](const QString &value) -> qreal { return metrics.horizontalAdvance(value); };
+    return OTextWrap::Lines(text, maxWidth, measure);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -548,90 +386,8 @@ auto VTextManager::BreakTextIntoLines(const QString &text, const VSvgFont &font,
         return {text};
     }
 
-    QStringList words = text.split(' ');
-
-    QString currentLine;
-    int currentLineWidth = 0;
-    const int spaceWidth = qRound(engine.TextWidth(QChar(' ')));
-    const float tolerance = 0.3F;
-
-    QStringList lines;
-    lines.reserve(words.size());
-    QMutableListIterator iterator(words);
-
-    auto AppendWord = [&currentLine, &currentLineWidth](const QString &word, int totalWidth)
-    {
-        if (!currentLine.isEmpty())
-        {
-            currentLine += ' '_L1;
-        }
-        currentLine += word;
-        currentLineWidth = totalWidth;
-    };
-
-    while (iterator.hasNext())
-    {
-        const QString &word = iterator.next();
-        int const wordWidth = qRound(engine.TextWidth(word, penWidth));
-        int const totalWidth = !currentLine.isEmpty() ? currentLineWidth + spaceWidth + wordWidth : wordWidth;
-
-        if (totalWidth <= maxWidth)
-        {
-            // Append the word to the current line
-            AppendWord(word, totalWidth);
-        }
-        else if ((maxWidth - currentLineWidth) <= qFloor(static_cast<float>(maxWidth) * tolerance) &&
-                 maxWidth >= wordWidth)
-        {
-            // Start a new line with the word if it doesn't exceed the tolerance
-            lines.append(currentLine);
-            currentLine = word;
-            currentLineWidth = wordWidth;
-        }
-        else
-        {
-            // Word is too long, force line break
-            if (currentLineWidth + spaceWidth + engine.TextWidth(word.at(0), penWidth) > maxWidth)
-            {
-                lines.append(currentLine);
-                currentLine.clear();
-                currentLineWidth = 0;
-            }
-
-            const int subWordWidth = !currentLine.isEmpty() ? maxWidth - (currentLineWidth + spaceWidth) : maxWidth;
-            const QStringList subWords = SplitTextByWidth(word, svgFont, subWordWidth, penWidth);
-
-            if (subWords.isEmpty() || subWords.size() > 2)
-            {
-                AppendWord(word, totalWidth);
-            }
-            else
-            {
-                const int width = qRound(engine.TextWidth(subWords.constFirst(), penWidth));
-                const int tWidth = !currentLine.isEmpty() ? currentLineWidth + spaceWidth + width : width;
-                AppendWord(subWords.constFirst(), tWidth);
-                lines.append(currentLine);
-
-                if (subWords.size() == 2)
-                {
-                    currentLine.clear();
-                    currentLineWidth = 0;
-
-                    // Insert the item after the current item
-                    iterator.insert(subWords.constLast());
-                    iterator.previous();
-                }
-            }
-        }
-    }
-
-    // Add the last line
-    if (!currentLine.isEmpty())
-    {
-        lines.append(currentLine);
-    }
-
-    return lines;
+    // Le repli vit dans OTextWrap ; ici on ne dit que comment un moteur de police de tracé mesure.
+    return OTextWrap::Lines(text, maxWidth, OTextWrap::EngineMeasure(engine, penWidth));
 }
 
 

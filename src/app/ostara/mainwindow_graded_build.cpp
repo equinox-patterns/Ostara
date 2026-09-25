@@ -339,7 +339,7 @@ void MainWindow::BuildGradedScene()
         try
         {
             details = SortDetailsForLayout(pattern->DataPieces(), pattern);
-            pieces = PrepareDetailsForLayout(details, false);
+            pieces = PrepareDetailsForLayout(details, doc, false);
         }
         catch (const VException &e)
         {

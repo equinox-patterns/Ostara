@@ -620,7 +620,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         VLayoutPiece resolved;
         try
         {
-            resolved = VLayoutPiece::Create(piece, id, target);
+            resolved = VLayoutPiece::Create(piece, id, target, m_doc);
         }
         catch (const VException &e)
         {

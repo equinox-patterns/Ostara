@@ -211,3 +211,9 @@ auto OThumbnailTextBuilder::Build(const VPiece &piece, const OThumbnailData &thu
     }
     return texts;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailTextBuilder::Languages(const VPiece &piece, VAbstractPattern *doc) -> QStringList
+{
+    return LanguagesFor(piece, doc);
+}

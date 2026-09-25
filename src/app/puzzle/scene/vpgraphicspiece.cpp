@@ -905,9 +905,9 @@ void VPGraphicsPiece::PaintMirrorLine(QPainter *painter, const VPPiecePtr &piece
 //---------------------------------------------------------------------------------------------------------------------
 void VPGraphicsPiece::HideFoldLineLabel()
 {
-    if (m_foldLineLabelText != nullptr)
+    for (vsizetype i = 0; i < m_foldLineLabelTexts.size(); ++i)
     {
-        m_foldLineLabelText->setVisible(false);
+        m_foldLineLabelTexts.at(i)->setVisible(false);
     }
 }
 
@@ -916,16 +916,33 @@ void VPGraphicsPiece::PrepareFoldLineLabel(const VFoldLine &fLine, const VCommon
 {
     if (!m_textAsPaths && !settings->GetSingleStrokeOutlineFont() && !settings->GetSingleLineFonts())
     {
-        if (m_foldLineLabelText == nullptr)
+        // One item per line: a QGraphicsSimpleTextItem draws a single line, and the caption takes
+        // several once it carries more than one language or does not fit the fold line's width.
+        // Grown on demand, never recreated — a caption that loses a line hides the extra item.
+        const vsizetype count = fLine.LabelLineCount();
+
+        while (m_foldLineLabelTexts.size() < count)
         {
-            m_foldLineLabelText = new QGraphicsSimpleTextItem(this);
+            m_foldLineLabelTexts.append(new QGraphicsSimpleTextItem(this));
         }
-        fLine.UpdateFoldLineLabel(m_foldLineLabelText);
-        m_foldLineLabelText->setBrush(QBrush(PieceColor()));
+
+        for (vsizetype i = 0; i < m_foldLineLabelTexts.size(); ++i)
+        {
+            QGraphicsSimpleTextItem *item = m_foldLineLabelTexts.at(i);
+            if (i < count)
+            {
+                fLine.UpdateFoldLineLabel(item, i);
+                item->setBrush(QBrush(PieceColor()));
+            }
+            else
+            {
+                item->setVisible(false);
+            }
+        }
     }
-    else if (m_foldLineLabelText != nullptr)
+    else
     {
-        m_foldLineLabelText->setVisible(false);
+        HideFoldLineLabel();
     }
 }
 

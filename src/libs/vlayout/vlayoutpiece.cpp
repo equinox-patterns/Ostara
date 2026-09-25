@@ -383,8 +383,13 @@ auto VLayoutPiece::operator=(VLayoutPiece &&detail) noexcept -> VLayoutPiece &
 VLayoutPiece::~VLayoutPiece() = default;
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VLayoutPiece::Create(const VPiece &piece, vidtype id, const VContainer *pattern) -> VLayoutPiece
+auto VLayoutPiece::Create(const VPiece &piece, vidtype id, const VContainer *pattern,
+                          VAbstractPattern *doc) -> VLayoutPiece
 {
+    // Resolved ONCE, here: the application's answer costs a cartouche lookup, and a drawing asks for
+    // the caption again on every repaint.
+    const QString foldLineCaption = VFoldLine::ResolvedLabel(piece, doc);
+
     QFuture<QVector<VLayoutPoint>> const futureSeamAllowance = QtConcurrent::run(
         [piece, pattern]() -> QVector<VLayoutPoint>
         {
@@ -423,6 +428,9 @@ auto VLayoutPiece::Create(const VPiece &piece, vidtype id, const VContainer *pat
     det.SetSeamAllowanceMirrorLine(piece.SeamAllowanceMirrorLine(pattern));
     det.SetShowMirrorLine(piece.IsShowMirrorLine());
     det.SetId(id);
+
+    // Le texte de la légende est décidé une fois, ici : le dessin ne fait ensuite que le lire.
+    det.SetFoldLineCaption(foldLineCaption);
 
     if (not futureSeamAllowanceValid.result())
     {
@@ -848,6 +856,18 @@ void VLayoutPiece::SetShowFoldLineLabel(bool show)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VLayoutPiece::FoldLineCaption() const -> QString
+{
+    return d->m_foldLineCaption;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VLayoutPiece::SetFoldLineCaption(const QString &caption)
+{
+    d->m_foldLineCaption = caption;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VLayoutPiece::SetGrainline(const VPieceGrainline &grainline)
 {
     d->m_grainline = grainline;
@@ -1100,7 +1120,11 @@ auto VLayoutPiece::FoldLine() const -> VFoldLine
     QLineF const foldLine = IsHideMainPath() ? GetSeamAllowanceMirrorLine() : GetSeamMirrorLine();
     VFoldLine fLine(foldLine, GetFoldLineType());
     fLine.SetLabelSvgFontSize(GetFoldLineSvgFontSize());
-    fLine.SetLabel(GetFoldLineLabel());
+
+    // Le texte résolu à la construction du morceau ; un morceau venu d'un fichier de mise en page
+    // n'en a pas et retombe sur son propre texte, comme avant que la légende n'existe.
+    const QString caption = FoldLineCaption();
+    fLine.SetLabel(caption.isEmpty() ? GetFoldLineLabel() : caption);
     fLine.SetHeight(GetFoldLineHeight());
     fLine.SetWidth(GetFoldLineWidth());
     fLine.SetCenterPosition(GetFoldLineCenterPosition());
@@ -1588,8 +1612,14 @@ void VLayoutPiece::CreateFoldLineItem(QGraphicsItem *parent, bool textAsPaths) c
     VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
     if (withLabel && !textAsPaths && !settings->GetSingleStrokeOutlineFont() && !settings->GetSingleLineFonts())
     {
-        auto *item = new QGraphicsSimpleTextItem(parent);
-        fLine.UpdateFoldLineLabel(item);
+        // One item per line: a QGraphicsSimpleTextItem draws a single line, and the caption may
+        // take several once it carries more than one language.
+        const vsizetype count = fLine.LabelLineCount();
+        for (vsizetype i = 0; i < count; ++i)
+        {
+            auto *item = new QGraphicsSimpleTextItem(parent);
+            fLine.UpdateFoldLineLabel(item, i);
+        }
     }
 
     auto FoldLineMark = [parent](const QPainterPath &shape)

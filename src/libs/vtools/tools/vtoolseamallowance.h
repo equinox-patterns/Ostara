@@ -303,6 +303,11 @@ private:
     VMainGraphicsScene *m_sceneDetails;
     QString m_drawName;
 
+    /** @brief Un item de texte par ligne de la légende de pli, créés à la demande et jamais
+     *  recréés. @a visible à faux cache sans détruire : une légende qui revient ne reconstruit
+     *  rien, et une légende qui se raccourcit ne laisse pas d'item orphelin visible. */
+    void ApplyFoldLineLabel(const VFoldLine &foldLine, bool visible);
+
     VNoBrushScalePathItem *m_seamAllowance;
     VGrainlineItem *m_grainLine;
     QGraphicsPathItem *m_passmarks;
@@ -310,7 +315,10 @@ private:
     QGraphicsPathItem *m_mirrorLine;
     QGraphicsPathItem *m_foldLineMark;
     QGraphicsPathItem *m_foldLineLabel;
-    QGraphicsSimpleTextItem *m_foldLineLabelText;
+
+    /** @brief The fold line caption, one item per line, grown on demand and never recreated. */
+    QVector<QGraphicsSimpleTextItem *> m_foldLineLabelTexts;
+
     OSAMarginHighlights m_saHighlights;
 
     /** @brief On-piece information block items (one per block 1..11), hidden by default. */

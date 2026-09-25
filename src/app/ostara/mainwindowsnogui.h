@@ -47,6 +47,7 @@ class QGraphicsScene;
 struct PosterData;
 class QGraphicsRectItem;
 class VMeasurements;
+class VAbstractPattern;
 
 #if defined(Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 class QWinTaskbarButton;
@@ -125,7 +126,7 @@ protected:
     QWinTaskbarProgress *m_taskbarProgress{nullptr}; // NOLINT(misc-non-private-member-variables-in-classes)
 #endif
 
-    static auto PrepareDetailsForLayout(const QVector<DetailForLayout> &details,
+    static auto PrepareDetailsForLayout(const QVector<DetailForLayout> &details, VAbstractPattern *doc,
                                         bool showProgress = true) -> QVector<VLayoutPiece>;
 
     void ExportData(const QVector<VLayoutPiece> &listDetails);
