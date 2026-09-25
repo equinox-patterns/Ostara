@@ -78,7 +78,13 @@ struct OAnnotation
 struct OAnnotationRenderStyle
 {
     QString fontFamily;
-    int fontWeight = 0;
+
+    /// The FACE, by NAME — a number names no face (decision of Sophie, 22-09-2026 : « que les vraies
+    /// graisses de la font »). Empty is the family's Regular. A style library written before the faces
+    /// were named holds a weight instead, and @ref OPieceCartoucheStorage resolves it **once, at read
+    /// time** — so nothing downstream ever sees two ways of saying the same thing.
+    QString fontFace;
+
     int fontSize = 0;
     QString backgroundColor;
     QString textColor;

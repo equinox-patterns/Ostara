@@ -28,8 +28,11 @@
 
 #include "oannotationpreview.h"
 
+#include "core/ofontfaces.h"
+
 #include "vmisc/FactoryWidgets.h"
 
+#include <QApplication>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QFontComboBox>
@@ -112,17 +115,25 @@ OAnnotationStylesPage::OAnnotationStylesPage(QWidget *parent) : QWidget(parent)
     form->addRow(tr("Name:"), m_nameEdit);
 
     m_fontCombo = new QFontComboBox();
-    connect(m_fontCombo, &QFontComboBox::currentFontChanged, this, &OAnnotationStylesPage::OnStyleFieldChanged);
     form->addRow(tr("Font:"), m_fontCombo);
 
+    // **The faces belong to the family, so they change with it** — and the list is the family's REAL
+    // faces, italics excluded, never nine numbers wearing Qt's names (see @ref FillFontFaces).
     m_weightCombo = MakeComboBox(this);
     RebuildWeightCombo();
+    connect(m_fontCombo, &QFontComboBox::currentFontChanged, this, [this](const QFont &font) {
+        FillFontFaces(m_weightCombo, font.family(), QString());
+        OnStyleFieldChanged();
+    });
     connect(m_weightCombo, &QComboBox::currentIndexChanged, this, &OAnnotationStylesPage::OnStyleFieldChanged);
     form->addRow(tr("Weight:"), m_weightCombo);
 
+    // A real number of pixels, and never a word like « Default » — the same rule the Thumbnail page and
+    // the template editor follow. What it shows when nothing is stored is the application's own size,
+    // which is exactly what an annotation naming no size is drawn in (see OAnnotationItem::ResolveFont).
     m_sizeSpin = new QSpinBox();
-    m_sizeSpin->setRange(0, 288);
-    m_sizeSpin->setSpecialValueText(tr("Default"));
+    m_sizeSpin->setRange(1, 288);
+    m_sizeSpin->setSuffix(QStringLiteral(" px"));
     connect(m_sizeSpin, &QSpinBox::valueChanged, this, &OAnnotationStylesPage::OnStyleFieldChanged);
     form->addRow(tr("Size:"), m_sizeSpin);
 
@@ -233,7 +244,8 @@ void OAnnotationStylesPage::UpdateRow(QTreeWidgetItem *item,
 {
     item->setText(0, entry.name);
     item->setText(1, entry.fontFamily);
-    item->setText(2, entry.fontWeight == 0 ? tr("Default") : QString::number(entry.fontWeight));
+    // A face NAME — or « Default », which is what an empty one means: the family's Regular.
+    item->setText(2, entry.fontFace.isEmpty() ? tr("Default") : entry.fontFace);
     item->setText(3, entry.fontSize == 0 ? tr("Default") : QString::number(entry.fontSize));
     if (entry.backgroundColor.isEmpty())
     {
@@ -273,8 +285,8 @@ void OAnnotationStylesPage::OnStyleSelected(QTreeWidgetItem *current)
         m_removeStyleBtn->setEnabled(false);
         m_nameEdit->clear();
         m_fontCombo->setCurrentFont(QFont());
-        m_weightCombo->setCurrentIndex(0);
-        m_sizeSpin->setValue(0);
+        RebuildWeightCombo();
+        m_sizeSpin->setValue(DefaultFontPixelSize());
         m_backgroundEdit->clear();
         m_whiteTextCheck->setChecked(false);
         m_preview->SetStyle(OPieceCartoucheStorage::AnnotationStyleEntry());
@@ -296,12 +308,12 @@ void OAnnotationStylesPage::OnStyleSelected(QTreeWidgetItem *current)
 
             m_nameEdit->setText(entry.name);
             m_fontCombo->setCurrentFont(entry.fontFamily.isEmpty() ? QFont() : QFont(entry.fontFamily));
-            m_weightCombo->setCurrentIndex(m_weightCombo->findData(entry.fontWeight));
-            if (m_weightCombo->currentIndex() < 0)
-            {
-                m_weightCombo->setCurrentIndex(0);
-            }
-            m_sizeSpin->setValue(entry.fontSize);
+            // The list is rebuilt for the family the entry names, and the entry's own face is chosen
+            // among them. The previous selection goes first: it is not this entry's answer, and
+            // @ref FillFontFaces keeps whatever the control already holds.
+            m_weightCombo->setCurrentIndex(-1);
+            FillFontFaces(m_weightCombo, m_fontCombo->currentFont().family(), entry.fontFace);
+            m_sizeSpin->setValue(entry.fontSize > 0 ? entry.fontSize : DefaultFontPixelSize());
             m_backgroundEdit->setText(entry.backgroundColor);
             m_whiteTextCheck->setChecked(entry.textColor == QStringLiteral("#FFFFFF"));
 
@@ -396,8 +408,11 @@ void OAnnotationStylesPage::OnStyleFieldChanged()
         if (entry.name == name)
         {
             entry.fontFamily = m_fontCombo->currentFont().family();
-            entry.fontWeight = m_weightCombo->currentData().toInt();
-            entry.fontSize = m_sizeSpin->value();
+            entry.fontFace = m_weightCombo->currentData().toString();
+            // The application's own size is stored as « unset » (0), exactly as an empty family is
+            // stored as empty: a style that never chose one keeps following the theme instead of pinning
+            // today's number. There is no « Default » entry to say so any more — the number is real.
+            entry.fontSize = (m_sizeSpin->value() == DefaultFontPixelSize()) ? 0 : m_sizeSpin->value();
             // White text is only honored on a real background (the checkbox is
             // disabled otherwise).
             const QString hex = NormalizeHex(m_backgroundEdit->text());
@@ -599,30 +614,25 @@ void OAnnotationStylesPage::UpdateSwatch()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OAnnotationStylesPage::DefaultFontPixelSize() -> int
+{
+    // **What an annotation that names no size is drawn in**: the application's own text — the font the
+    // preview and the canvas both start from (OAnnotationItem::ResolveFont, OAnnotationPreview). It is
+    // shown, not stored: a style that never chose a size keeps following the theme, exactly as a style
+    // that never chose a family does.
+    const int px = QApplication::font().pixelSize();
+    return px > 0 ? px : 14;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OAnnotationStylesPage::RebuildWeightCombo()
 {
-    const QVariant current = m_weightCombo == nullptr ? QVariant() : m_weightCombo->currentData();
-    if (m_weightCombo != nullptr)
-    {
-        m_weightCombo->blockSignals(true);
-        m_weightCombo->clear();
-    }
-    m_weightCombo->addItem(tr("Default"), 0);
-    m_weightCombo->addItem(tr("Thin"), QFont::Thin);
-    m_weightCombo->addItem(tr("Extra Light"), QFont::ExtraLight);
-    m_weightCombo->addItem(tr("Light"), QFont::Light);
-    m_weightCombo->addItem(tr("Normal"), QFont::Normal);
-    m_weightCombo->addItem(tr("Medium"), QFont::Medium);
-    m_weightCombo->addItem(tr("Demi Bold"), QFont::DemiBold);
-    m_weightCombo->addItem(tr("Bold"), QFont::Bold);
-    m_weightCombo->addItem(tr("Extra Bold"), QFont::ExtraBold);
-    m_weightCombo->addItem(tr("Black"), QFont::Black);
-    if (m_weightCombo != nullptr)
-    {
-        const int index = m_weightCombo->findData(current);
-        m_weightCombo->setCurrentIndex(index >= 0 ? index : 0);
-        m_weightCombo->blockSignals(false);
-    }
+    // **Filled from the family, and from nothing else.** The nine numbered entries this control used to
+    // offer named faces the family never gave: « Light » (300) drew « ExtraLight », « Black » (900) drew
+    // « ExtraBold » — measured on the families installed here. A number is not a name, and cannot be
+    // right about the next font either: see @ref FillFontFaces, now the only implementation of the rule.
+    const QString family = m_fontCombo == nullptr ? QString() : m_fontCombo->currentFont().family();
+    FillFontFaces(m_weightCombo, family, QString());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -638,8 +648,8 @@ void OAnnotationStylesPage::RetranslateUI()
     m_previewTextEdit->setPlaceholderText(tr("Annotation text"));
 
     m_updatingStyles = true;
-    RebuildWeightCombo();
-    // Rebuild the rows with the translated "Default"/"Transparent" strings.
+    // The rows are rebuilt for the translated « Default » and « Transparent » strings. The Weight
+    // control is NOT rebuilt: it lists face names, and a face name is not translated.
     if (!m_styleEntries.isEmpty() && m_stylesTree->topLevelItemCount() > 0)
     {
         for (int i = 0; i < m_stylesTree->topLevelItemCount(); ++i)

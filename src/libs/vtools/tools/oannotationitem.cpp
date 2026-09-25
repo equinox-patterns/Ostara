@@ -146,9 +146,9 @@ auto OAnnotationItem::ResolveFont() const -> QFont
     {
         font.setFamily(m_style.fontFamily);
     }
-    if (m_style.fontWeight != 0)
+    if (!m_style.fontFace.isEmpty())
     {
-        font.setWeight(static_cast<QFont::Weight>(m_style.fontWeight));
+        font.setStyleName(m_style.fontFace);
     }
     if (m_style.fontSize > 0)
     {

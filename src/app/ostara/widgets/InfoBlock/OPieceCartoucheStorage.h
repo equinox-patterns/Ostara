@@ -65,7 +65,7 @@ struct AnnotationStyleEntry
 {
     QString name;            ///< stable key, referenced by the pieces
     QString fontFamily;      ///< font family; empty = default
-    int fontWeight = 0;      ///< weight; 0 = default
+    QString fontFace;        ///< face name; empty = the family's Regular
     int fontSize = 0;        ///< size in px; 0 = default
     QString backgroundColor; ///< hex "#RRGGBB"; empty = transparent
     QString textColor;       ///< hex; empty = black #000000
@@ -144,7 +144,7 @@ auto RemoveAnnotationStyle(const QString &name, QString *error = nullptr) -> boo
 /// when they differ; creates the entry if needed). Returns false and fills
 /// `error` on failure.
 auto UpdateAnnotationStyleMeta(const QString &oldName, const QString &newName, const QString &fontFamily,
-                               int fontWeight, int fontSize, const QString &backgroundColor,
+                               const QString &fontFace, int fontSize, const QString &backgroundColor,
                                const QString &textColor, QString *error = nullptr) -> bool;
 
 /// Monotonic version bumped by every successful SaveAnnotationStyles — lets

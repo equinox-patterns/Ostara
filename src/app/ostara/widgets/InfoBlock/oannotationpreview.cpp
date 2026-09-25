@@ -83,9 +83,9 @@ void OAnnotationPreview::paintEvent(QPaintEvent *event)
     {
         font.setPixelSize(m_style.fontSize);
     }
-    if (m_style.fontWeight != 0)
+    if (!m_style.fontFace.isEmpty())
     {
-        font.setWeight(static_cast<QFont::Weight>(m_style.fontWeight));
+        font.setStyleName(m_style.fontFace);
     }
     painter.setFont(font);
 

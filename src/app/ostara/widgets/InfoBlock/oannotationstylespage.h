@@ -92,6 +92,8 @@ private:
     void SelectStyle(const QString &name);
     static auto NormalizeHex(const QString &text) -> QString;
     static auto IsValidHex(const QString &text) -> bool;
+    /// @brief The size an annotation that names none is drawn in: the application's own text.
+    static auto DefaultFontPixelSize() -> int;
 
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(OAnnotationStylesPage) // NOLINT

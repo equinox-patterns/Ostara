@@ -217,9 +217,9 @@ auto OwnerAnnotations(const OAnnotationData &annData, bool isGroup, const OSizer
         {
             font.setFamily(style.fontFamily);
         }
-        if (style.fontWeight != 0)
+        if (!style.fontFace.isEmpty())
         {
-            font.setWeight(static_cast<QFont::Weight>(style.fontWeight));
+            font.setStyleName(style.fontFace);
         }
         if (style.fontSize > 0)
         {
@@ -250,7 +250,7 @@ auto OwnerAnnotations(const OAnnotationData &annData, bool isGroup, const OSizer
         OInfoBlockSvg::Annotation ann;
         ann.text = annotation.text;
         ann.fontFamily = style.fontFamily;
-        ann.fontWeight = style.fontWeight;
+        ann.fontFace = style.fontFace;
         ann.fontSizePx = style.fontSize;
         ann.textColor = style.textColor.isEmpty() ? QStringLiteral("#000000") : style.textColor;
         ann.backgroundColor = style.backgroundColor;

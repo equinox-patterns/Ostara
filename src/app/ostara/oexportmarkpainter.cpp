@@ -520,7 +520,20 @@ void OExportMarkPainter::ApplyTextStyle(QPainter &painter,
     {
         font.setFamily(style.fontFamily);
     }
-    font.setWeight(static_cast<QFont::Weight>(style.weight));
+    // **A face NAME, never a number** (decision of Sophie, 22-09-2026 : « que les vraies graisses de
+    // la font »). An old template holds a weight in the same field, and that is what the fallback
+    // reads: a number names no face, but it is the only thing such a file says — and Qt resolves it
+    // exactly the face the editor's Weight control showed for it.
+    bool numbered = false;
+    const int legacyWeight = style.fontFace.toInt(&numbered);
+    if (numbered && legacyWeight > 0)
+    {
+        font.setWeight(QFont::Weight(legacyWeight));
+    }
+    else if (!style.fontFace.isEmpty())
+    {
+        font.setStyleName(style.fontFace);
+    }
     font.setPixelSize(qMax(1, qRound(style.sizePx * kMmPerPx * grid.pxPerMm)));
 
     QColor ink(Qt::black);

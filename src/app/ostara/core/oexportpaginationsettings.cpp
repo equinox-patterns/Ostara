@@ -42,28 +42,9 @@ const QVector<OExportPaginationFormModel> kForms{
     {QT_TRANSLATE_NOOP("OExportPaginationSettings", "Number + letter"), "number+letter"},
 };
 
-/** The nine weights, in the order the Information block lists them (§3.4.3). */
-const QVector<OExportPaginationWeightModel> kWeights{
-    {QT_TRANSLATE_NOOP("OExportPaginationSettings", "Thin"), 100},
-    {QT_TRANSLATE_NOOP("OExportPaginationSettings", "Extra Light"), 200},
-    {QT_TRANSLATE_NOOP("OExportPaginationSettings", "Light"), 300},
-    {QT_TRANSLATE_NOOP("OExportPaginationSettings", "Normal"), 400},
-    {QT_TRANSLATE_NOOP("OExportPaginationSettings", "Medium"), 500},
-    {QT_TRANSLATE_NOOP("OExportPaginationSettings", "Demi Bold"), 600},
-    {QT_TRANSLATE_NOOP("OExportPaginationSettings", "Bold"), 700},
-    {QT_TRANSLATE_NOOP("OExportPaginationSettings", "Extra Bold"), 800},
-    {QT_TRANSLATE_NOOP("OExportPaginationSettings", "Black"), 900},
-};
 } // namespace
 
 auto OExportPaginationForms() -> const QVector<OExportPaginationFormModel> &
 {
     return kForms;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-auto OExportPaginationWeights() -> const QVector<OExportPaginationWeightModel> &
-{
-    return kWeights;
 }

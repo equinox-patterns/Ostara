@@ -166,7 +166,14 @@ void WriteTextStyle(QDomElement &element, const OExportPaginationTextStyle &styl
     {
         element.setAttribute(kAttrFontFamily, style.fontFamily);
     }
-    element.setAttribute(kAttrFontWeight, QString::number(style.weight));
+    // **A face NAME, not a number** (decision of Sophie, 22-09-2026: « que les vraies graisses de la
+    // font »). The attribute keeps its name, so a template written before the faces were named stays
+    // readable — it holds the number there, and both ends resolve it (see FillFontFaces). Empty is
+    // the family's Regular, and is not written at all, like an empty family.
+    if (!style.fontFace.isEmpty())
+    {
+        element.setAttribute(kAttrFontWeight, style.fontFace);
+    }
     element.setAttribute(kAttrFontSize, QString::number(style.sizePx));
     element.setAttribute(kAttrOpacity, QString::number(style.opacity));
 }
@@ -174,7 +181,7 @@ void WriteTextStyle(QDomElement &element, const OExportPaginationTextStyle &styl
 void ReadTextStyle(const QDomElement &element, OExportPaginationTextStyle &style)
 {
     style.fontFamily = ReadText(element, kAttrFontFamily, style.fontFamily);
-    style.weight = ReadInt(element, kAttrFontWeight, style.weight);
+    style.fontFace = ReadText(element, kAttrFontWeight, style.fontFace);
     style.sizePx = ReadInt(element, kAttrFontSize, style.sizePx);
     style.opacity = ReadInt(element, kAttrOpacity, style.opacity);
 }

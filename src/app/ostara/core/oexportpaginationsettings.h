@@ -80,21 +80,6 @@ struct OExportPaginationFormModel
 auto OExportPaginationForms() -> const QVector<OExportPaginationFormModel> &;
 
 /**
- * @brief One weight of the weight combo: what it shows, and the value a template carries.
- *
- * The same nine the Template Information block lists for a text section (§3.4.3): a weight is a
- * weight, and a second list of them would only be a place for the two to drift apart.
- */
-struct OExportPaginationWeightModel
-{
-    const char *label{nullptr};
-    int weight{0};
-};
-
-/** @brief The weights, heaviest last, without the « Default » entry the combo puts first. */
-auto OExportPaginationWeights() -> const QVector<OExportPaginationWeightModel> &;
-
-/**
  * @brief How far a corner number is set back from each of the two edges it hugs, in millimetres.
  *
  * Half a centimetre — Sophie's figure, 17-09-2026, and it is not a taste: a printer cannot put
@@ -123,8 +108,15 @@ struct OExportPaginationTextStyle
     /** Empty leaves the default face in place. */
     QString fontFamily;
 
-    /** One of OExportPaginationWeights(). Regular until another is chosen. */
-    int weight{400};
+    /**
+     * The FACE the number is set in — a name, never a number (decision of Sophie, 22-09-2026 : « que
+     * les vraies graisses de la font »). Empty is the family's Regular.
+     *
+     * ⚠️ A template written before the faces were named holds a **weight** in the same attribute:
+     * @ref FillFontFaces resolves it for the editor, and the painter resolves it too, so an old file
+     * keeps the face it was drawn in.
+     */
+    QString fontFace;
 
     /**
      * The size, in pixels. An absolute length, as every size of the decor is: 96 pixels make an

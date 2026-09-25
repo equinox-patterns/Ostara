@@ -406,9 +406,9 @@ void WriteAnnotation(QXmlStreamWriter &writer, const QPointF &origin,
     {
         font.setFamily(annotation.fontFamily);
     }
-    if (annotation.fontWeight != 0)
+    if (!annotation.fontFace.isEmpty())
     {
-        font.setWeight(static_cast<QFont::Weight>(annotation.fontWeight));
+        font.setStyleName(annotation.fontFace);
     }
     if (annotation.fontSizePx > 0)
     {

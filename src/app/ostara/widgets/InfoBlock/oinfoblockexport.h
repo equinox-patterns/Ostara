@@ -89,7 +89,7 @@ struct Annotation
 
     QString text;
     QString fontFamily;     // empty = default
-    int fontWeight{0};      // Qt weight (CSS 100-900), 0 = default
+    QString fontFace;       // face name; empty = the family's Regular
     int fontSizePx{0};      // 0 = base font pixel
     QString textColor{QLatin1String("#000000")};
     QString backgroundColor;  // empty = transparent

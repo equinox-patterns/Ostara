@@ -27,6 +27,7 @@
 #include "preferencesappearancepage.h"
 
 #include "../../core/vapplication.h"
+#include "../../core/ofontfaces.h"
 #include "../vmisc/FactoryWidgets.h"
 #include "../vmisc/vvalentinasettings.h"
 
@@ -37,26 +38,6 @@
 #include <QLabel>
 #include <QSpinBox>
 #include <QVBoxLayout>
-
-namespace
-{
-struct FoldLineWeight
-{
-    QFont::Weight weight;
-    const char *label;
-};
-constexpr FoldLineWeight kFoldLineWeights[] = {
-    {QFont::Thin,       "Thin"},
-    {QFont::ExtraLight, "Extra Light"},
-    {QFont::Light,      "Light"},
-    {QFont::Normal,     "Normal"},
-    {QFont::Medium,     "Medium"},
-    {QFont::DemiBold,   "Demi Bold"},
-    {QFont::Bold,       "Bold"},
-    {QFont::ExtraBold,  "Extra Bold"},
-    {QFont::Black,      "Black"},
-};
-} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 PreferencesAppearancePage::PreferencesAppearancePage(QWidget *parent)
@@ -84,6 +65,12 @@ PreferencesAppearancePage::PreferencesAppearancePage(QWidget *parent)
     mainLayout->addWidget(group);
     mainLayout->addStretch();
 
+    // **The faces belong to the family, so they change with it** — a list still offering the faces of
+    // the family chosen before it would name none of the ones the new family really has.
+    connect(m_fontFamily, &QFontComboBox::currentFontChanged, this, [this](const QFont &f) {
+        FillFontFaces(m_weightCombo, f.family(), QString());
+    });
+
     InitFoldLineText();
 }
 
@@ -92,16 +79,17 @@ void PreferencesAppearancePage::InitFoldLineText()
 {
     const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
 
-    m_fontFamily->setCurrentFont(QFont(settings->GetFoldLineLabelFontFamily()));
+    const QString family = settings->GetFoldLineLabelFontFamily();
+    m_fontFamily->setCurrentFont(QFont(family));
 
-    m_weightCombo->clear();
-    for (const auto &w : kFoldLineWeights)
-    {
-        m_weightCombo->addItem(tr(w.label), static_cast<int>(w.weight));
-    }
-    const int currentWeight = static_cast<int>(settings->GetFoldLineLabelFontWeight());
-    const qint32 idx = m_weightCombo->findData(currentWeight);
-    m_weightCombo->setCurrentIndex(idx != -1 ? idx : m_weightCombo->findData(static_cast<int>(QFont::Normal)));
+    // **Only the faces the family really has, italics excluded** — see @ref FillFontFaces. The stored
+    // answer is a face NAME; a settings file written before it was one holds a number, and FillFontFaces
+    // resolves that number to the face it really draws — the same answer the drawing gets, so the list
+    // cannot show one face while the label is drawn in another.
+    const QString face = settings->GetFoldLineLabelFontFace();
+    FillFontFaces(m_weightCombo, family,
+                  face.isEmpty() ? QString::number(static_cast<int>(settings->GetFoldLineLabelFontWeight()))
+                                 : face);
 
     m_sizeSpin->setValue(settings->GetFoldLineLabelFontPixelSize());
 }
@@ -112,7 +100,7 @@ auto PreferencesAppearancePage::Apply() -> QStringList
     QStringList options;
     VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
     settings->SetFoldLineLabelFontFamily(m_fontFamily->currentFont().family());
-    settings->SetFoldLineLabelFontWeight(static_cast<QFont::Weight>(m_weightCombo->currentData().toInt()));
+    settings->SetFoldLineLabelFontFace(m_weightCombo->currentData().toString());
     settings->SetFoldLineLabelFontPixelSize(m_sizeSpin->value());
     return options;
 }

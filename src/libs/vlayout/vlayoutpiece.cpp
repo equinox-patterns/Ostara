@@ -265,7 +265,17 @@ void InitFoldLine(VLayoutPiece &det, const VPiece &piece, const VContainer *patt
         const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
         det.SetFoldLineSvgFontSize(static_cast<unsigned int>(settings->GetFoldLineLabelFontPixelSize()));
         QFont font(settings->GetFoldLineLabelFontFamily());
-        font.setWeight(settings->GetFoldLineLabelFontWeight());
+        // **A face NAME, never a number** — same rule and same fallback as VFoldLine::Create
+        // (vfoldline.cpp): a settings file written before the face was named holds a weight.
+        const QString face = settings->GetFoldLineLabelFontFace();
+        if (!face.isEmpty())
+        {
+            font.setStyleName(face);
+        }
+        else
+        {
+            font.setWeight(settings->GetFoldLineLabelFontWeight());
+        }
         font.setPixelSize(settings->GetFoldLineLabelFontPixelSize());
         det.SetFoldLineOutlineFont(font);
         det.SetFoldLineSVGFontFamily(settings->GetLabelSVGFont());

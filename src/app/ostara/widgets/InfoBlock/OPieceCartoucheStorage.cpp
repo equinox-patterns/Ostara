@@ -26,6 +26,8 @@
 
 #include "OPieceCartoucheStorage.h"
 
+#include "core/ofontfaces.h"
+
 #include "vabstractapplication.h"
 #include "xml/vdomdocument.h"
 
@@ -190,7 +192,16 @@ QList<OPieceCartoucheStorage::AnnotationStyleEntry> ReadAnnotationStylesMeta()
         OPieceCartoucheStorage::AnnotationStyleEntry entry;
         entry.name = el.attribute(QStringLiteral("name"));
         entry.fontFamily = el.firstChildElement(QStringLiteral("fontFamily")).text();
-        entry.fontWeight = el.firstChildElement(QStringLiteral("fontWeight")).text().toInt();
+        entry.fontFace = el.firstChildElement(QStringLiteral("fontFace")).text();
+        if (entry.fontFace.isEmpty())
+        {
+            // ⚠️ **The one migration, here and nowhere else.** A library written before the faces were
+            // named holds a weight; resolving it once, at read time, leaves every reader and every
+            // writer with a single representation — a face name — and loses nothing of the old number's
+            // meaning, since it is the very face that number drew (see @ref FontFaceFromWeight).
+            entry.fontFace = FontFaceFromWeight(
+                entry.fontFamily, el.firstChildElement(QStringLiteral("fontWeight")).text().toInt());
+        }
         entry.fontSize = el.firstChildElement(QStringLiteral("fontSize")).text().toInt();
         entry.backgroundColor = el.firstChildElement(QStringLiteral("backgroundColor")).text();
         entry.textColor = el.firstChildElement(QStringLiteral("textColor")).text();
@@ -543,11 +554,11 @@ auto SaveAnnotationStyles(const QList<AnnotationStyleEntry> &styles, QString *er
             fontFamily.appendChild(doc.createTextNode(entry.fontFamily));
             el.appendChild(fontFamily);
         }
-        if (entry.fontWeight != 0)
+        if (!entry.fontFace.isEmpty())
         {
-            QDomElement fontWeight = doc.createElement(QStringLiteral("fontWeight"));
-            fontWeight.appendChild(doc.createTextNode(QString::number(entry.fontWeight)));
-            el.appendChild(fontWeight);
+            QDomElement fontFace = doc.createElement(QStringLiteral("fontFace"));
+            fontFace.appendChild(doc.createTextNode(entry.fontFace));
+            el.appendChild(fontFace);
         }
         if (entry.fontSize != 0)
         {
@@ -645,7 +656,7 @@ auto RemoveAnnotationStyle(const QString &name, QString *error) -> bool
 }
 
 auto UpdateAnnotationStyleMeta(const QString &oldName, const QString &newName, const QString &fontFamily,
-                               int fontWeight, int fontSize, const QString &backgroundColor,
+                               const QString &fontFace, int fontSize, const QString &backgroundColor,
                                const QString &textColor, QString *error) -> bool
 {
     QList<AnnotationStyleEntry> entries = LoadAnnotationStyles();
@@ -664,7 +675,7 @@ auto UpdateAnnotationStyleMeta(const QString &oldName, const QString &newName, c
         {
             entry.name = newName;
             entry.fontFamily = fontFamily;
-            entry.fontWeight = fontWeight;
+            entry.fontFace = fontFace;
             entry.fontSize = fontSize;
             entry.backgroundColor = backgroundColor;
             entry.textColor = textColor;
@@ -677,7 +688,7 @@ auto UpdateAnnotationStyleMeta(const QString &oldName, const QString &newName, c
         AnnotationStyleEntry entry;
         entry.name = newName;
         entry.fontFamily = fontFamily;
-        entry.fontWeight = fontWeight;
+        entry.fontFace = fontFace;
         entry.fontSize = fontSize;
         entry.backgroundColor = backgroundColor;
         entry.textColor = textColor;

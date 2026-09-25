@@ -960,9 +960,9 @@ auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
         {
             font.setFamily(style.fontFamily);
         }
-        if (style.fontWeight != 0)
+        if (!style.fontFace.isEmpty())
         {
-            font.setWeight(static_cast<QFont::Weight>(style.fontWeight));
+            font.setStyleName(style.fontFace);
         }
         if (style.fontSize > 0)
         {
@@ -991,7 +991,7 @@ auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
         record.index = i;
         record.text = annotation.text;
         record.fontFamily = style.fontFamily;
-        record.fontWeight = style.fontWeight;
+        record.fontFace = style.fontFace;
         record.fontSizePx = style.fontSize;
         record.textColor = style.textColor.isEmpty() ? QStringLiteral("#000000") : style.textColor;
         record.backgroundColor = style.backgroundColor;
@@ -1047,7 +1047,7 @@ void DrawOwnerDecor(QGraphicsItem *host, const OExportPieceDecor &decor)
 
         OAnnotationRenderStyle style;
         style.fontFamily = record.fontFamily;
-        style.fontWeight = record.fontWeight;
+        style.fontFace = record.fontFace;
         style.fontSize = record.fontSizePx;
         style.textColor = record.textColor;
         style.backgroundColor = record.backgroundColor;

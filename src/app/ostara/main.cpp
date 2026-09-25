@@ -161,7 +161,7 @@ auto main(int argc, char *argv[]) -> int
                 {
                     OAnnotationRenderStyle style;
                     style.fontFamily = entry.fontFamily;
-                    style.fontWeight = entry.fontWeight;
+                    style.fontFace = entry.fontFace;
                     style.fontSize = entry.fontSize;
                     style.backgroundColor = entry.backgroundColor;
                     style.textColor = entry.textColor;

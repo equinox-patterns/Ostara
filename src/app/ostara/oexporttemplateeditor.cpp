@@ -26,6 +26,7 @@
 
 #include "oexporttemplateeditor.h"
 
+#include "core/ofontfaces.h"
 #include "core/oexportunitformat.h"
 #include "dialogs/oexportprintmodel.h"
 #include "ocoverpageeditor.h"
@@ -408,20 +409,6 @@ void OExportTemplateEditor::PopulatePaginationCombos()
     // The table's order is the enum's, which is what the form value indexes.
     m_paginationFormCombo->setCurrentIndex(static_cast<int>(m_pagination.form));
 
-    // Every placement offers the same weights, and each reads them off the one table — never
-    // written out here, and never written once per placement.
-    for (const TextStyleRow *style :
-         {&m_centreStyle, &m_cornerStyle, &m_verticalStyle, &m_horizontalStyle})
-    {
-        const QSignalBlocker weightBlocker(style->weightCombo);
-
-        style->weightCombo->clear();
-        for (const OExportPaginationWeightModel &model : OExportPaginationWeights())
-        {
-            style->weightCombo->addItem(
-                QCoreApplication::translate(kPaginationContext, model.label), model.weight);
-        }
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -536,11 +523,13 @@ void OExportTemplateEditor::RefreshTextStyle(const TextStyleRow &widgets,
     widgets.fontCombo->setCurrentFont(style.fontFamily.isEmpty() ? widgets.fontCombo->font()
                                                                  : QFont(style.fontFamily));
 
-    const int weightIndex = widgets.weightCombo->findData(style.weight);
-    if (weightIndex >= 0)
-    {
-        widgets.weightCombo->setCurrentIndex(weightIndex);
-    }
+    // **The faces belong to the family**, so the list is built for the family the combo now shows —
+    // and it is built HERE rather than once for the four placements, because the four can be set in
+    // four different families. The previous selection is dropped first: it is not the stored answer,
+    // and `FillFontFaces` keeps whatever the combo holds. A stored WEIGHT is resolved too, so a
+    // template written before the faces were named keeps the face it was drawn in.
+    widgets.weightCombo->setCurrentIndex(-1);
+    FillFontFaces(widgets.weightCombo, widgets.fontCombo->currentFont().family(), style.fontFace);
 
     widgets.sizeSpin->setValue(style.sizePx);
     widgets.opacitySpin->setValue(style.opacity);
@@ -560,7 +549,9 @@ void OExportTemplateEditor::CommitTextStyle(const TextStyleRow &widgets,
     style.fontFamily =
         (family == widgets.fontCombo->font().family()) ? QString() : family;
 
-    style.weight = widgets.weightCombo->currentData().toInt();
+    // **A face NAME, never a number** — and empty means the family's Regular, which is what the
+    // control shows when the family offers nothing else (see @ref FillFontFaces).
+    style.fontFace = widgets.weightCombo->currentData().toString();
     style.sizePx = widgets.sizeSpin->value();
     style.opacity = widgets.opacitySpin->value();
 }
@@ -1247,7 +1238,14 @@ QWidget *OExportTemplateEditor::MakePaginationGroup()
          {&m_centreStyle, &m_cornerStyle, &m_verticalStyle, &m_horizontalStyle})
     {
         connect(style->fontCombo, &QFontComboBox::currentFontChanged, this,
-                &OExportTemplateEditor::CommitPaginationSettings);
+                [this, style](const QFont &font) {
+                    // **The faces belong to the family, so they change with it**: a list still
+                    // offering the previous family's faces would name none of the new one's. The
+                    // selection goes first — an old face is not an answer for the new family.
+                    style->weightCombo->setCurrentIndex(-1);
+                    FillFontFaces(style->weightCombo, font.family(), QString());
+                    CommitPaginationSettings();
+                });
         connect(style->weightCombo, &QComboBox::currentIndexChanged, this,
                 &OExportTemplateEditor::CommitPaginationSettings);
         connect(style->sizeSpin, &QSpinBox::valueChanged, this,
