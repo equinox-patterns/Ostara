@@ -312,6 +312,18 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
         type = QtDebugMsg;
     }
 
+    // Same family, same reason, found the same way: a pen refuses a width that is not a positive finite
+    // number ("QPen::setWidth/setWidthF: Setting a pen width that is out of range") and says so. Raised
+    // from a paint() — which is where a pen is built — that warning became **one modal box per repaint**,
+    // and each box repainted the canvas that raised it: the queue never drained, and the application
+    // could neither be used nor closed. The miniature drew a rotated owner with a width derived from
+    // `m11()` — zero at 90°, negative past it (see OThumbnailItem::paint); the arithmetic is fixed at
+    // the source, and this keeps the log the only place any future slip is heard.
+    if ((type == QtWarningMsg) && msg.startsWith("QPen::"_L1))
+    {
+        type = QtDebugMsg;
+    }
+
     // This qWarning about "Cowardly refusing to send clipboard message to hung application..."
     // is something that can easily happen if you are debugging and the application is paused.
     // As it is so common, not worth popping up a dialog.
