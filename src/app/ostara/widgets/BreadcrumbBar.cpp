@@ -69,8 +69,22 @@ BreadcrumbBar::BreadcrumbBar(QWidget *parent)
 BreadcrumbBar::~BreadcrumbBar() = default;
 
 //---------------------------------------------------------------------------------------------------------------------
+void BreadcrumbBar::RetranslateUI()
+{
+    m_canvasButton->setText(tr("Canvas"));
+
+    // Le nom du groupe est un nom de patron, pas un mot traduit : seule la formule « Group %1 »
+    // change de langue. Un groupe vide n'a rien à réécrire.
+    if (not m_groupName.isEmpty())
+    {
+        m_groupButton->setText(tr("Group %1").arg(m_groupName));
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void BreadcrumbBar::Update(const QString &groupName, const QString &objectName)
 {
+    m_groupName = groupName;
     m_groupButton->setText(tr("Group %1").arg(groupName));
 
     const bool hasObject = not objectName.isEmpty();
@@ -83,4 +97,14 @@ void BreadcrumbBar::Update(const QString &groupName, const QString &objectName)
 
     show();
     raise();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void BreadcrumbBar::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        RetranslateUI();
+    }
+    QWidget::changeEvent(event);
 }

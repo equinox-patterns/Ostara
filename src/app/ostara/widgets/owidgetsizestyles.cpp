@@ -337,3 +337,13 @@ void OWidgetSizeStyles::RetranslateUI()
     UpdateEditButtonIcon();
     Populate();
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+void OWidgetSizeStyles::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        RetranslateUI();
+    }
+    QWidget::changeEvent(event);
+}

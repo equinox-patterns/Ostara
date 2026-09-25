@@ -48,7 +48,16 @@ class VWidgetGroups : public QWidget
 
 public:
     explicit VWidgetGroups(VAbstractPattern *doc, QWidget *parent = nullptr);
+    /// @brief Retraduit le panneau au changement de langue.
+    ///
+    /// Doc Qt, « Prepare for Dynamic Language Changes » : `LanguageChange` parcourt tout l'arbre des
+    /// widgets, et **chaque widget doit surcharger `changeEvent`** — la classe de base ne retraduit
+    /// rien. Sans cette surcharge, ce panneau garde la langue de sa construction.
+    void changeEvent(QEvent *event) override;
+
     ~VWidgetGroups() override;
+
+    void RetranslateUI();
 
 public slots:
     void UpdateGroups();

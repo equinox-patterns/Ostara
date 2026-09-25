@@ -34,6 +34,7 @@
 #include "../vmisc/FactoryWidgets.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
+#include "otranslation.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -65,13 +66,20 @@ OBlockConfigWidget::OBlockConfigWidget(QWidget *parent) : QWidget(parent)
     topSection->setContentsMargins(0, 0, 0, 0);
     topSection->setSpacing(6);
 
-    m_activeCheck = new QCheckBox(tr("Activate information block"), this);
+    // ⚠️ **Ces trois textes passent par le poseur** (`otranslation.h`). La classe a bien un
+    // `RetranslateUI()` complet, mais la page de groupe en crée une **seconde instance** à laquelle
+    // personne ne pense à l'appeler : c'est celle-là qui gardait « Split into multiple blocks » en
+    // anglais dans un mode Details français. Avec le poseur, les deux instances sont couvertes par
+    // le moteur, sans que l'appelant ait quoi que ce soit à savoir.
+    m_activeCheck = new QCheckBox(this);
+    OTranslation::SetText(this, m_activeCheck, "Activate information block");
     topSection->addWidget(m_activeCheck);
 
     auto *templateRow = new QHBoxLayout();
     templateRow->setContentsMargins(0, 0, 0, 0);
     templateRow->setSpacing(6);
-    m_templateLabel = new QLabel(tr("Template:"), this);
+    m_templateLabel = new QLabel(this);
+    OTranslation::SetText(this, m_templateLabel, "Template:");
     m_templateCombo = MakeComboBox(this);
     m_templateCombo->setEnabled(false);
     templateRow->addWidget(m_templateLabel);
@@ -84,7 +92,8 @@ OBlockConfigWidget::OBlockConfigWidget(QWidget *parent) : QWidget(parent)
     // No inner scroll area: the dispatch list lives directly in the group box so
     // it shares the group's $DockBody background (a QScrollArea viewport would be
     // forced to $DockTitle by ApplyThemeToWindows — SubtiliteCode §13).
-    m_dispatchGroup = new QGroupBox(tr("Split into multiple blocks"), this);
+    m_dispatchGroup = new QGroupBox(this);
+    OTranslation::SetTitle(this, m_dispatchGroup, "Split into multiple blocks");
     // Less side margin than the theme default (8px) for this group only.
     m_dispatchGroup->setStyleSheet(QStringLiteral("QGroupBox { margin-left: 0px; margin-right: 0px; }"));
     auto *groupLayout = new QVBoxLayout(m_dispatchGroup);

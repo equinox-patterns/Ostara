@@ -28,6 +28,7 @@
 
 #include "core/ocoverpagetemplatestorage.h"
 
+#include "core/otranslation.h"
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
 #include "vtheme.h"
@@ -152,6 +153,8 @@ void OCoverPageTemplatesPage::SetupUI()
     m_table->setObjectName(QStringLiteral("coverPageTemplatesTable"));
     m_table->setColumnCount(4);
     m_table->setHorizontalHeaderLabels({QString(), tr("Name"), QString(), QString()});
+    // ⚠️ **L'en-tête est posé une seule fois** : `RetranslateUI()` ne le rappelait pas.
+    OTranslation::SetHeaderText(this, m_table, 1, "Name");
     // 0 — the favourite, 2 — edit, 3 — delete. Only the name has anything to say, so it is the
     // one that takes the room.
     m_table->setColumnWidth(0, 44);

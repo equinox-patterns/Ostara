@@ -304,6 +304,11 @@ void OWidgetCoverPage::RetranslateUI()
     m_freeTextLabel->setText(tr("Free text"));
     m_marginsLabel->setText(tr("Margins"));
     m_marginsHint->setText(tr("Margins this pattern names differently from the library."));
+
+    // ⚠️ **Les lignes de symboles portent deux textes traduits** — « Choose… » et « Remove » — que
+    // `RebuildSymbolRows` écrit. Sans ce rappel, les deux seuls mots de la liste restaient dans la
+    // langue du lancement alors que les sept libellés ci-dessus revenaient en français.
+    RebuildSymbolRows();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -562,4 +567,14 @@ void OWidgetCoverPage::WritePage()
     // document announces a change it cannot qualify, and the Export mode reads that as "the pattern
     // may have moved" — see CoverPageChanged.
     emit CoverPageChanged();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OWidgetCoverPage::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        RetranslateUI();
+    }
+    QWidget::changeEvent(event);
 }

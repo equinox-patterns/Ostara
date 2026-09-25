@@ -52,6 +52,7 @@
 #include "../vtools/dialogs/support/dialogeditwrongformula.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/undocommands/saveplacelabeloptions.h"
+#include "otranslation.h"
 #include "vtheme.h"
 
 // The types and the words they go by are the shared catalogue's (OSymbolShapes), so this page shows
@@ -119,7 +120,11 @@ ODetailsPlaceLabelWidget::ODetailsPlaceLabelWidget(QWidget *parent)
     m_typeCombo = MakeComboBox(m_groupBox);
     for (const OSymbolShapes::PlaceLabelEntry &entry : OSymbolShapes::PlaceLabels())
     {
+        // ⚠️ **Les items passent par le poseur.** `RetranslateUI()` ne faisait ni `clear()` ni
+        // `addItem` : les dix noms de type — « Cross », « Rectangle », « T-shaped »… — restaient
+        // dans la langue du premier affichage pour toute la vie du widget.
         m_typeCombo->addItem(tr(entry.name), static_cast<int>(entry.type));
+        OTranslation::SetItemText(this, m_typeCombo, m_typeCombo->count() - 1, entry.name);
     }
     m_grid->addWidget(m_typeLabel, row, 0);
     m_grid->addWidget(m_typeCombo, row, 1, 1, 2);
@@ -394,4 +399,11 @@ void ODetailsPlaceLabelWidget::RetranslateUI()
     m_visibleLabel->setText(tr("Visibility"));
     m_visibleHint->setText(tr("1 = visible, 0 = invisible, formulas allowed"));
     m_notMirroredCheck->setText(tr("Not mirrored"));
+
+    // ⚠️ Les boutons « fx » portent une infobulle posée à leur construction : une infobulle n'est pas
+    // un widget, la classe de base ne la retouche jamais. Ils sont gardés dans `m_fxButtons`.
+    for (QToolButton *button : m_fxButtons)
+    {
+        button->setToolTip(tr("Edit expression"));
+    }
 }

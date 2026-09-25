@@ -144,6 +144,44 @@ using namespace Qt::Literals::StringLiterals;
 
 #include "mainwindow_helpers.h"
 
+#if defined(Q_OS_MAC)
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Builds (or rebuilds) the macOS Dock menu.
+ *
+ * ⚠️ **Les quatre entrées sont écrites ici, et nulle part ailleurs** : rien de ce menu ne vient de
+ * `mainwindow.ui`, donc `ui->retranslateUi` ne peut pas les atteindre. La fonction est rappelée par
+ * `RetranslateActions()` — `clear()` supprime les actions précédentes, la reconstruction les recrée
+ * et les reconnecte, il n'y a donc pas de doublon.
+ */
+void MainWindow::BuildDockMenu()
+{
+    if (m_dockMenu == nullptr)
+    {
+        m_dockMenu = new QMenu(this);
+    }
+    m_dockMenu->clear();
+
+    QAction *actionNewPattern = m_dockMenu->addAction(tr("New pattern"));
+    actionNewPattern->setMenuRole(QAction::NoRole);
+    connect(actionNewPattern, &QAction::triggered, this, &MainWindow::on_actionNew_triggered);
+
+    QAction *actionOpenPattern = m_dockMenu->addAction(tr("Open pattern"));
+    actionOpenPattern->setMenuRole(QAction::NoRole);
+    connect(actionOpenPattern, &QAction::triggered, this, &MainWindow::on_actionOpen_triggered);
+
+    QAction *actionNewMeasurement = m_dockMenu->addAction(tr("Create/Edit measurements"));
+    actionNewMeasurement->setMenuRole(QAction::NoRole);
+    connect(actionNewMeasurement, &QAction::triggered, this, &MainWindow::OnNewMeasurements);
+
+    QAction *actionPreferences = m_dockMenu->addAction(tr("Preferences"));
+    actionPreferences->setMenuRole(QAction::NoRole);
+    connect(actionPreferences, &QAction::triggered, this, &MainWindow::Preferences);
+
+    m_dockMenu->setAsDockMenu();
+}
+#endif // defined(Q_OS_MAC)
+
 //---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief MainWindow constructor.
@@ -338,26 +376,8 @@ MainWindow::MainWindow(QWidget *parent)
 #if defined(Q_OS_MAC)
     setUnifiedTitleAndToolBarOnMac(true);
 
-    // Mac OS Dock Menu
-    QMenu *menu = new QMenu(this);
-
-    QAction *actionNewPattern = menu->addAction(tr("New pattern"));
-    actionNewPattern->setMenuRole(QAction::NoRole);
-    connect(actionNewPattern, &QAction::triggered, this, &MainWindow::on_actionNew_triggered);
-
-    QAction *actionOpenPattern = menu->addAction(tr("Open pattern"));
-    actionOpenPattern->setMenuRole(QAction::NoRole);
-    connect(actionOpenPattern, &QAction::triggered, this, &MainWindow::on_actionOpen_triggered);
-
-    QAction *actionNewMeasurement = menu->addAction(tr("Create/Edit measurements"));
-    actionNewMeasurement->setMenuRole(QAction::NoRole);
-    connect(actionNewMeasurement, &QAction::triggered, this, &MainWindow::OnNewMeasurements);
-
-    QAction *actionPreferences = menu->addAction(tr("Preferences"));
-    actionPreferences->setMenuRole(QAction::NoRole);
-    connect(actionPreferences, &QAction::triggered, this, &MainWindow::Preferences);
-
-    menu->setAsDockMenu();
+    // Mac OS Dock Menu — rebuilt as a whole on a language change (see RetranslateActions()).
+    BuildDockMenu();
 #endif // defined(Q_OS_MAC)
 
     connect(ui->toolButtonMessagesZoomInFont, &QToolButton::clicked, this,

@@ -149,6 +149,10 @@ void ODetailsPropertyBrowser::RetranslateUI()
     m_pieceWidget->RetranslateUI();
     m_placeLabelWidget->RetranslateUI();
     m_nodeWidget->RetranslateUI();
+    // ⚠️ La page de groupe manquait à cette liste : ses quatre cases, leurs infobulles, le titre
+    // « Member fold lines » et le sélecteur d'alignement gradué restaient dans la langue du
+    // lancement, alors que tout le reste du dock revenait en français.
+    m_groupWidget->RetranslateUI();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

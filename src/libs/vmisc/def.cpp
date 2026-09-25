@@ -646,10 +646,27 @@ void InitLanguages(QComboBox *combobox)
     InitLanguageList(combobox);
 
     // set default translators and language checked
-    qint32 const index = combobox->findData(VAbstractApplication::VApp()->Settings()->GetLocale());
+    const QString current = VAbstractApplication::VApp()->Settings()->GetLocale();
+    qint32 const index = combobox->findData(current);
     if (index != -1)
     {
         combobox->setCurrentIndex(index);
+        return;
+    }
+
+    // ⚠️ **Le réglage n'est pas dans la liste** — une locale dont le .qm manque, par exemple. Sans
+    // cette branche la liste resterait sur son premier élément, c'est-à-dire sur une langue qui n'est
+    // PAS celle de l'application : l'utilisatrice lirait un choix qu'elle n'a pas fait, et le
+    // premier « Appliquer » des préférences le persisterait. On ajoute l'entrée manquante pour que la
+    // liste dise la vérité.
+    if (not current.isEmpty())
+    {
+        AddLanguageItems(combobox, QStringList{current});
+        const qint32 added = combobox->findData(current);
+        if (added != -1)
+        {
+            combobox->setCurrentIndex(added);
+        }
     }
 }
 

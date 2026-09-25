@@ -39,6 +39,7 @@
 #include "../vformat/knownmeasurements/vknownmeasurementsdatabase.h"
 #include "../vganalytics/vganalytics.h"
 #include "../vdispatch/qt_dispatch.h"
+#include "otranslation.h"
 #include "vtheme.h"
 #include "../vmisc/vsysexits.h"
 #include "../vmisc/vvalentinasettings.h"
@@ -430,6 +431,13 @@ VApplication::VApplication(int &argc, char **argv)
     setApplicationVersion(AppDisplayVersion());
     // making sure will create new instance...just in case we will ever do 2 objects of VApplication
     VCommandLine::Reset();
+
+    // ⚠️ **Le moteur de retraduction, installé une fois pour toute l'application.** Il écoute
+    // `LanguageChange` sur l'objet application et rejoue les textes que le poseur a mémorisés sur
+    // leurs widgets (voir `otranslation.h`). Sans lui, chaque classe doit se souvenir de réécrire
+    // ses propres libellés — c'est ce qui laissait des surfaces entières dans la langue du premier
+    // affichage, dock Options en tête.
+    OTranslation::InstallWatcher();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

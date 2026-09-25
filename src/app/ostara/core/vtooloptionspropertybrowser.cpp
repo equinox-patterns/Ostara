@@ -550,6 +550,16 @@ void VToolOptionsPropertyBrowser::RetranslateUI()
 {
     // Re-open the current item's options so the property names/titles are re-evaluated.
     RefreshOptions();
+
+    // ⚠️ **Et la page « champs du patron », que `RefreshOptions()` ne peut pas atteindre.**
+    // Elle se reconstruit en passant la sélection à `nullptr`, mais ce chemin retourne
+    // immédiatement quand aucun outil n'est déjà sélectionné — l'état par défaut du dock Options en
+    // mode Draw, et donc celui qu'on voit le plus. Sans cet appel, les quatre libellés de
+    // `OPatternPropertiesWidget` gardaient la langue du premier affichage.
+    if (m_patternWidget != nullptr)
+    {
+        m_patternWidget->RetranslateUI();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

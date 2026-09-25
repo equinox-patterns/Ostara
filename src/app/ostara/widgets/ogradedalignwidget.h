@@ -32,6 +32,7 @@
 #include <QWidget>
 
 class QButtonGroup;
+class QGroupBox;
 class QLabel;
 class QPushButton;
 class QVBoxLayout;
@@ -47,6 +48,13 @@ class OGradedAlignWidget final : public QWidget
     Q_OBJECT
 
 public:
+    /// @brief Retraduit le panneau au changement de langue.
+    ///
+    /// Doc Qt, « Prepare for Dynamic Language Changes » : `LanguageChange` parcourt tout l'arbre des
+    /// widgets, et **chaque widget doit surcharger `changeEvent`** — la classe de base ne retraduit
+    /// rien. Sans cette surcharge, ce panneau garde la langue de sa construction.
+    void changeEvent(QEvent *event) override;
+
     explicit OGradedAlignWidget(QWidget *parent = nullptr);
 
     void SetAlignH(int value);
@@ -68,6 +76,12 @@ public:
     /// as the rows they qualify. The piece dialog appends nothing and is left unchanged.
     void AddExtraContent(QWidget *widget);
 
+    /// @brief Re-apply every text of the selector after a UI language change.
+    ///
+    /// The selector is built once, by its constructor, and neither the group box title nor the six
+    /// button labels come from a .ui form: `ui->retranslateUi` cannot reach them.
+    void RetranslateUI();
+
 signals:
     void AlignHChanged(int value);
     void AlignVChanged(int value);
@@ -77,7 +91,9 @@ protected:
 
 private:
     void RefreshAlignIcons();
+    void UpdateButtonWidths();
 
+    QGroupBox *m_alignGroupBox{nullptr};
     QVBoxLayout *m_alignLayout{nullptr};
     QButtonGroup *m_alignHGroup{nullptr};
     QButtonGroup *m_alignVGroup{nullptr};

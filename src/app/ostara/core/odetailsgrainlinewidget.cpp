@@ -26,6 +26,8 @@
 
 #include "odetailsgrainlinewidget.h"
 
+#include "otranslation.h"
+
 #include "../vmisc/typedef.h"
 #include "../vpatterndb/floatItemData/vgrainlinedata.h"
 
@@ -65,21 +67,30 @@ ODetailsGrainlineWidget::ODetailsGrainlineWidget(QWidget *parent)
     auto *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
-    m_grainlineGroup = new QGroupBox(tr("Grainline"));
+    // ⚠️ **Les textes passent par le poseur.** La classe a un `RetranslateUI()` complet, mais elle
+    // est instanciée deux fois — une fois pour la page Pièce, une fois pour la page de groupe — et
+    // seul l'appel de la page Pièce existe : l'instance du groupe gardait donc ses huit textes dans
+    // la langue du premier affichage. Avec le poseur, les deux instances sont couvertes par le
+    // moteur, sans que l'appelant ait à savoir qu'il y en a deux.
+    m_grainlineGroup = new QGroupBox();
+    OTranslation::SetTitle(this, m_grainlineGroup, "Grainline");
     auto *grainLayout = new QVBoxLayout(m_grainlineGroup);
 
-    m_activeCheck = new QCheckBox(tr("Activate grainline"));
+    m_activeCheck = new QCheckBox();
+    OTranslation::SetText(this, m_activeCheck, "Activate grainline");
     grainLayout->addWidget(m_activeCheck);
 
     // Length presets
-    m_lenLabel = new QLabel(tr("Length"));
+    m_lenLabel = new QLabel();
+    OTranslation::SetText(this, m_lenLabel, "Length");
     auto *lenLayout = new QHBoxLayout();
     m_lengthGroup = new QButtonGroup(this);
     m_lengthGroup->setExclusive(true);
 
     for (int i = 0; i < kGrainlinePresetCount; ++i)
     {
-        auto *btn = new QPushButton(tr(kGrainlinePresets[i].label));
+        auto *btn = new QPushButton();
+        OTranslation::SetText(this, btn, kGrainlinePresets[i].label);
         btn->setCheckable(true);
         btn->setProperty("lengthValue", kGrainlinePresets[i].length);
         m_lengthGroup->addButton(btn, i);
@@ -96,6 +107,12 @@ ODetailsGrainlineWidget::ODetailsGrainlineWidget(QWidget *parent)
     m_rotationSpin->setSuffix(QStringLiteral("°"));
     rotForm->addRow(tr("Rotation"), m_rotationSpin);
     m_rotLabel = qobject_cast<QLabel *>(rotForm->labelForField(m_rotationSpin));
+    // Le libellé de la ligne appartient au QFormLayout : on l'enregistre auprès du poseur, sans
+    // quoi il resterait dans la langue du premier affichage là où `RetranslateUI()` n'est pas appelé.
+    if (m_rotLabel != nullptr)
+    {
+        OTranslation::SetText(this, m_rotLabel, "Rotation");
+    }
     grainLayout->addLayout(rotForm);
 
     // Arrow type
@@ -103,13 +120,15 @@ ODetailsGrainlineWidget::ODetailsGrainlineWidget(QWidget *parent)
     m_arrowGroup = new QButtonGroup(this);
     m_arrowGroup->setExclusive(true);
 
-    m_simpleBtn = new QPushButton(tr("Simple"));
+    m_simpleBtn = new QPushButton();
+    OTranslation::SetText(this, m_simpleBtn, "Simple");
     m_simpleBtn->setCheckable(true);
     m_simpleBtn->setProperty("arrowType", static_cast<int>(GrainlineArrowDirection::twoWaysUpDown));
     m_arrowGroup->addButton(m_simpleBtn, 0);
     arrowLayout->addWidget(m_simpleBtn);
 
-    m_doubleBtn = new QPushButton(tr("Double"));
+    m_doubleBtn = new QPushButton();
+    OTranslation::SetText(this, m_doubleBtn, "Double");
     m_doubleBtn->setCheckable(true);
     m_doubleBtn->setProperty("arrowType", static_cast<int>(GrainlineArrowDirection::fourWays));
     m_arrowGroup->addButton(m_doubleBtn, 1);

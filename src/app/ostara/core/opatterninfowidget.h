@@ -36,6 +36,7 @@
 
 class QCheckBox;
 class QComboBox;
+class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QPlainTextEdit;
@@ -106,6 +107,14 @@ private:
     QLabel *m_clientLabel{nullptr};
     QLabel *m_collectionLabel{nullptr};
     QLabel *m_fabricLabel{nullptr};
+    // ⚠️ **Les trois titres de groupe, gardés — sinon `RetranslateUI()` ne peut pas les atteindre.**
+    // Ils étaient construits anonymes : `RetranslateUI()` reposait bien ses treize textes, mais
+    // « Pattern », « Seam Allowances » et « Information block » n'étaient dans aucun membre, donc
+    // restaient dans la langue du premier affichage. C'est ce « Pattern » que l'utilisatrice voyait
+    // dans le dock Options en mode Details.
+    QGroupBox *m_patternGroup{nullptr};
+    QGroupBox *m_seamAllowanceGroup{nullptr};
+    QGroupBox *m_infoBlockGroup{nullptr};
     QTimer *m_commitTimer{nullptr};
     bool m_loading = false;
 

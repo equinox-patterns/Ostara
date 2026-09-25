@@ -89,6 +89,33 @@ void MainWindow::UpdateMeasurementState()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::SyncShowAllLabelsText()
+{
+    ui->actionShowAllLabels->setText(VAbstractValApplication::VApp()->ValentinaSettings()->GetShowAllLabels()
+                                         ? tr("Show all point names")
+                                         : tr("Hide point names"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RetranslateActionToolTips()
+{
+    ui->actionDraw->setToolTip(FormatActionToolTip(ui->actionDraw));
+    ui->actionDetails->setToolTip(FormatActionToolTip(ui->actionDetails));
+    ui->actionGraded->setToolTip(FormatActionToolTip(ui->actionGraded));
+    ui->actionLayout->setToolTip(FormatActionToolTip(ui->actionLayout));
+    ui->actionExport->setToolTip(FormatActionToolTip(ui->actionExport));
+
+    ui->actionNewDraw->setToolTip(FormatActionToolTip(ui->actionNewDraw));
+
+    ui->actionLoadMeasurements->setToolTip(FormatActionToolTip(ui->actionLoadMeasurements));
+    ui->actionTable->setToolTip(FormatActionToolTip(ui->actionTable));
+
+    ui->actionZoomIn->setToolTip(FormatActionToolTip(ui->actionZoomIn));
+    ui->actionZoomOut->setToolTip(FormatActionToolTip(ui->actionZoomOut));
+    ui->actionZoomFitBest->setToolTip(FormatActionToolTip(ui->actionZoomFitBest));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolBarStages()
 {
     // Navigation labels (used by mode-switch code, kept alive for pixmap updates)
@@ -202,19 +229,13 @@ void MainWindow::ToolBarTools()
     m_shortcutActions.insert(VShortcutAction::ShowAllLabels, ui->actionShowAllLabels);
     ui->actionShowAllLabels->setCheckable(true);
     ui->actionShowAllLabels->setChecked(true); // check always visible; the text reflects the state
-    const auto syncShowAllLabelsText = [this]()
-    {
-        ui->actionShowAllLabels->setText(VAbstractValApplication::VApp()->ValentinaSettings()->GetShowAllLabels()
-                                             ? tr("Show all point names")
-                                             : tr("Hide point names"));
-    };
-    syncShowAllLabelsText();
+    SyncShowAllLabelsText();
     connect(ui->actionShowAllLabels, &QAction::triggered, this,
-            [this, syncShowAllLabelsText]()
+            [this]()
             {
                 auto *settings = VAbstractValApplication::VApp()->ValentinaSettings();
                 settings->SetShowAllLabels(not settings->GetShowAllLabels());
-                syncShowAllLabelsText();
+                SyncShowAllLabelsText();
                 ui->actionShowAllLabels->setChecked(true); // keep the check visible
                 ScaleChanged(ui->view->transform().m11());
             });

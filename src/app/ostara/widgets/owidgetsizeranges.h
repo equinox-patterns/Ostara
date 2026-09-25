@@ -52,6 +52,13 @@ class OWidgetSizeRanges final : public QWidget
     Q_OBJECT
 
 public:
+    /// @brief Retraduit le panneau au changement de langue.
+    ///
+    /// Doc Qt, « Prepare for Dynamic Language Changes » : `LanguageChange` parcourt tout l'arbre des
+    /// widgets, et **chaque widget doit surcharger `changeEvent`** — la classe de base ne retraduit
+    /// rien. Sans cette surcharge, ce panneau garde la langue de sa construction.
+    void changeEvent(QEvent *event) override;
+
     explicit OWidgetSizeRanges(VContainer *pattern, QWidget *parent = nullptr);
 
     /** @brief Re-read the pattern ranges and show @p activeRangeName as active. */

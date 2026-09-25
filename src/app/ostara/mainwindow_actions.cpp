@@ -673,3 +673,17 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ToolGraduatedCurve, ui->actionGraduatedCurveTool, &MainWindow::ToolGraduatedCurve);
     InitToolButton(VShortcutAction::ToolArmholeCurve, ui->actionArmholeCurveTool, &MainWindow::ToolArmholeCurve);
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RetranslateActions()
+{
+    // ⚠️ **Après `ui->retranslateUi(this)`, jamais avant** : c'est lui qui réécrit depuis le .ui le
+    // texte de `actionShowAllLabels` et les dix infobulles qu'il déclare. Appelé avant, ce travail
+    // serait aussitôt écrasé.
+    SyncShowAllLabelsText();
+    RetranslateActionToolTips();
+
+#if defined(Q_OS_MAC)
+    BuildDockMenu();
+#endif
+}

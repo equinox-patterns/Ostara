@@ -29,6 +29,7 @@
 #include "../dialogs/oannotationdialog.h"
 #include "../vpatterndb/oannotationdata.h"
 #include "../vpatterndb/vcontainer.h"
+#include "otranslation.h"
 
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -197,10 +198,16 @@ void OAnnotationsConfigWidget::RebuildList()
         auto *buttons = new QHBoxLayout();
         buttons->setContentsMargins(0, 0, 0, 0);
         buttons->setSpacing(6);
-        auto *editBtn = new QPushButton(tr("Edit annotation"), m_listGroup);
+        // ⚠️ **Les deux boutons de la ligne passent par le poseur.** Ils sont recréés à chaque
+        // remplissage de la liste, et `RetranslateUI()` — qui couvre le bouton d'ajout, le titre du
+        // groupe et le libellé vide — n'a aucun moyen de les atteindre. Le poseur les couvre tous,
+        // quelle que soit la ligne.
+        auto *editBtn = new QPushButton(m_listGroup);
+        OTranslation::SetText(this, editBtn, "Edit annotation");
         connect(editBtn, &QPushButton::clicked, this, [this, index]() { EditAnnotation(index); });
         buttons->addWidget(editBtn, 1);
-        auto *removeBtn = new QPushButton(tr("Delete annotation"), m_listGroup);
+        auto *removeBtn = new QPushButton(m_listGroup);
+        OTranslation::SetText(this, removeBtn, "Delete annotation");
         connect(removeBtn, &QPushButton::clicked, this, [this, index]() { RemoveAnnotation(index); });
         buttons->addWidget(removeBtn, 1);
         // Both buttons stretch equally — the button row spans the same width as

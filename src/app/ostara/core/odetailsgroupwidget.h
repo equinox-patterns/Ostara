@@ -41,6 +41,7 @@ class QCheckBox;
 class QButtonGroup;
 class QComboBox;
 class QFrame;
+class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
@@ -69,9 +70,22 @@ class ODetailsGroupWidget : public QWidget
 
 public:
     explicit ODetailsGroupWidget(QWidget *parent = nullptr);
+    /// @brief Retraduit le panneau au changement de langue.
+    ///
+    /// Doc Qt, « Prepare for Dynamic Language Changes » : `LanguageChange` parcourt tout l'arbre des
+    /// widgets, et **chaque widget doit surcharger `changeEvent`** — la classe de base ne retraduit
+    /// rien. Sans cette surcharge, ce panneau garde la langue de sa construction.
+    void changeEvent(QEvent *event) override;
+
     ~ODetailsGroupWidget() override = default;
 
     void Clear();
+
+    /// @brief Re-apply every text the widget wrote in code.
+    ///
+    /// The page has no .ui form, and neither has the graded alignment selector it embeds: nothing
+    /// here is reachable by `ui->retranslateUi`, so the details property browser must call this.
+    void RetranslateUI();
 
     /// @brief Switches to the tab that configures what was clicked on the canvas — the same routing
     /// a piece's children use (grainline, info blocks, annotations, miniature).
@@ -167,6 +181,7 @@ private:
     OGroupThumbnailsConfigWidget *m_thumbnailsConfigWidget{nullptr};
 
     // Member foldlines
+    QGroupBox *m_memberSection{nullptr};
     QVBoxLayout *m_memberFLLayout{nullptr};
     QHash<quint32, MemberFLRow> m_memberFLRows{};
 

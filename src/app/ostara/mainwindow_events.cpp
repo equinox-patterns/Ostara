@@ -130,59 +130,12 @@ void MainWindow::changeEvent(QEvent *event)
 {
     if (event->type() == QEvent::LanguageChange)
     {
-        // retranslate designer form (single inheritance approach)
-        ui->retranslateUi(this);
-        m_welcomeScreen->RetranslateUI();
-        // Undo and Redo are plain actions whose text nothing else ever writes, so this is the one
-        // place that retranslates them — and it works here, which it did not while they were
-        // built by a QUndoGroup: the group rewrote the text on every index change and would have
-        // undone this at the next gesture.
-        undoAction->setText(tr("&Undo"));
-        redoAction->setText(tr("&Redo"));
-        statusBar()->showMessage(tr("Changes applied."), 5000);
-        m_patternPieceLabel->setText(tr("Piece:"));
-
-        m_dockManager->retranslate();
-
-        UpdateMeasurementState();
-
-
-        if (VApplication::VApp()->ValentinaSettings()->IsUseToolGroups())
-        {
-            m_drawToolBar->SetMode(VApplication::VApp()->GetDrawMode());
-        }
-
-        // Re-translate the docks and toolbar (children of the QMainWindow do not
-        // receive QEvent::LanguageChange on their own).
-        m_drawToolBar->RetranslateGroups();
-        if (m_dockManager->detailsOptions())
-        {
-            m_dockManager->detailsOptions()->RetranslateUI();
-        }
-        if (m_dockManager->toolOptions())
-        {
-            m_dockManager->toolOptions()->RetranslateUI();
-        }
-
-        UpdateWindowTitle();
-        emit m_sceneDetails->LanguageChanged();
-
-        if (m_globalPenStyleLabel)
-        {
-            m_globalPenStyleLabel->setText(tr("Pen style:"));
-        }
-        if (m_globalColorLabel)
-        {
-            m_globalColorLabel->setText(tr("Color:"));
-        }
-
-        // Rebuild color combo for translated names.
-        if (m_colorCombo)
-        {
-            const QString storedName = GetColorComboCurrentName(m_colorCombo);
-            InitColorCombo(m_colorCombo);
-            SetColorComboCurrentName(m_colorCombo, storedName);
-        }
+        // Instrumentation laissée volontairement dans le journal : elle répond à la seule question
+        // qui compte quand l'interface ne se retraduit pas — l'événement est-il arrivé jusqu'ici ?
+        // Si cette ligne n'apparaît pas après une bascule de langue, c'est que Qt ne l'a pas posté
+        // (ou l'a posté sans le livrer), et c'est `Preferences()` qui fait le travail à la place.
+        qDebug() << "MainWindow::changeEvent — LanguageChange reçu";
+        RetranslateAll();
     }
 
     if (event->type() == QEvent::ThemeChange)
@@ -802,4 +755,77 @@ void MainWindow::EndVisualization(bool click)
     }
 
     m_dialogTool->ShowDialog(click);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RetranslateAll()
+{
+    // ⚠️ **Cette fonction existe parce que l'événement ne suffit pas.**
+    //
+    // La doc Qt dit qu'un `LanguageChange` posté parcourt tout l'arbre des widgets. En pratique, dans
+    // cette application, une bascule de langue ne retraduisait RIEN : le journal s'arrête net à
+    // « Checked locale ». Elle est donc appelée de deux façons — par `changeEvent` quand l'événement
+    // arrive bien, et **directement** par `MainWindow::Preferences()`, juste après la fermeture du
+    // dialogue, là où la langue vient d'être changée. Elle est idempotente : l'appeler deux fois ne
+    // coûte rien et ne casse rien.
+    ui->retranslateUi(this);
+    m_welcomeScreen->RetranslateUI();
+    // Undo and Redo are plain actions whose text nothing else ever writes, so this is the one
+    // place that retranslates them — and it works here, which it did not while they were
+    // built by a QUndoGroup: the group rewrote the text on every index change and would have
+    // undone this at the next gesture.
+    undoAction->setText(tr("&Undo"));
+    redoAction->setText(tr("&Redo"));
+    statusBar()->showMessage(tr("Changes applied."), 5000);
+    m_patternPieceLabel->setText(tr("Piece:"));
+
+    // Ce que le .ui ne porte pas : menu du Dock macOS, libellé d'état de « Show all labels », et les
+    // infobulles construites depuis le texte de leur action. Appelé après `retranslateUi`, qui écrase
+    // justement ces dernières.
+    RetranslateActions();
+    if (m_breadcrumb != nullptr)
+    {
+        m_breadcrumb->RetranslateUI();
+    }
+
+    m_dockManager->retranslate();
+
+    UpdateMeasurementState();
+
+    if (VApplication::VApp()->ValentinaSettings()->IsUseToolGroups())
+    {
+        m_drawToolBar->SetMode(VApplication::VApp()->GetDrawMode());
+    }
+
+    // Le dock manager est un QObject, pas un widget : il ne reçoit jamais `LanguageChange`, c'est son
+    // appelant qui doit le reprendre — d'où `retranslate()` juste au-dessus.
+    m_drawToolBar->RetranslateGroups();
+    if (m_dockManager->detailsOptions())
+    {
+        m_dockManager->detailsOptions()->RetranslateUI();
+    }
+    if (m_dockManager->toolOptions())
+    {
+        m_dockManager->toolOptions()->RetranslateUI();
+    }
+
+    UpdateWindowTitle();
+    emit m_sceneDetails->LanguageChanged();
+
+    if (m_globalPenStyleLabel)
+    {
+        m_globalPenStyleLabel->setText(tr("Pen style:"));
+    }
+    if (m_globalColorLabel)
+    {
+        m_globalColorLabel->setText(tr("Color:"));
+    }
+
+    // Rebuild color combo for translated names.
+    if (m_colorCombo)
+    {
+        const QString storedName = GetColorComboCurrentName(m_colorCombo);
+        InitColorCombo(m_colorCombo);
+        SetColorComboCurrentName(m_colorCombo, storedName);
+    }
 }

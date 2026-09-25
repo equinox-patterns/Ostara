@@ -52,6 +52,7 @@
 #include "../vtools/undocommands/savepieceoptions.h"
 #include "../vtools/undocommands/savepiecepathoptions.h"
 #include "../vtheme/vtheme.h"
+#include "otranslation.h"
 
 #include <QAbstractButton>
 #include <QButtonGroup>
@@ -386,7 +387,12 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         separator->setFrameShadow(QFrame::Sunken);
         layout->addWidget(separator);
 
-        auto *internalOutlineLabel = new QLabel(tr("Internal outline"), tab);
+        // ⚠️ **Le poseur, et non `tr()` seul.** Ce libellé était le seul texte de la classe sans
+        // référence conservée : `RetranslateUI()` réappliquait les douze autres et ne pouvait pas
+        // l'atteindre. Le poseur s'en passe — il pose la traduction et garde la source sur le
+        // widget, que le moteur rejoue à chaque bascule.
+        auto *internalOutlineLabel = new QLabel(tab);
+        OTranslation::SetText(this, internalOutlineLabel, "Internal outline");
         internalOutlineLabel->setAlignment(Qt::AlignCenter);
         layout->addWidget(internalOutlineLabel);
 
@@ -496,10 +502,17 @@ void ODetailsPieceWidget::RetranslateUI()
     if (m_forceFlippingCheck)
     {
         m_forceFlippingCheck->setText(tr("Force flipping"));
+        // ⚠️ Les deux cases portent aussi une infobulle, posée à la construction du panneau. Une
+        // infobulle n'est pas un widget : la classe de base ne la retouche jamais, donc sans ces deux
+        // lignes la page Piece gardait les explications dans la langue du lancement.
+        m_forceFlippingCheck->setToolTip(tr("Force piece to be always flipped in a layout."));
     }
     if (m_symmetricalCopyCheck)
     {
         m_symmetricalCopyCheck->setText(tr("Symmetrical copy"));
+        m_symmetricalCopyCheck->setToolTip(
+            tr("When the number of copies is greater than 1 and 'Force flipping' is selected, each "
+               "even-numbered copy of the piece will be flipped vertically."));
     }
     m_tabWidget->setTabText(0, tr("General"));
     m_tabWidget->setTabText(1, tr("Grainline"));

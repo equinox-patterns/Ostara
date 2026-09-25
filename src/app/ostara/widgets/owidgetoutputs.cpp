@@ -612,3 +612,13 @@ void OWidgetOutputs::RetranslateUI()
     UpdateButtonIcons();
     Populate();
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+void OWidgetOutputs::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        RetranslateUI();
+    }
+    QWidget::changeEvent(event);
+}

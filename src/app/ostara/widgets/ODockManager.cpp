@@ -579,6 +579,8 @@ void ODockManager::enforceModeDockExclusions(Draw mode)
 //---------------------------------------------------------------------------------------------------------------------
 void ODockManager::retranslate()
 {
+    // Le switch ne porte QUE les libellés qui dépendent du mode — « Layers » en tracé, « Pieces » en
+    // modélisation.
     switch (VAbstractValApplication::VApp()->GetDrawMode())
     {
         case Draw::Calculation:
@@ -595,28 +597,43 @@ void ODockManager::retranslate()
             break;
         case Draw::Export:
             m_ui->dockWidgetOutputs->setWindowTitle(tr("Outputs"));
-            if (m_outputsContent != nullptr)
-            {
-                m_outputsContent->RetranslateUI();
-            }
             m_ui->dockWidgetCoverPage->setWindowTitle(tr("Cover page"));
-            if (m_coverPageContent != nullptr)
-            {
-                m_coverPageContent->RetranslateUI();
-            }
             break;
         case Draw::Graded:
             m_ui->dockWidgetSizeRanges->setWindowTitle(tr("Size Ranges"));
             m_ui->dockWidgetSizeStyles->setWindowTitle(tr("Size Styles"));
-            if (m_sizeRangesContent != nullptr)
-            {
-                m_sizeRangesContent->RetranslateUI();
-            }
-            if (m_sizeStylesContent != nullptr)
-            {
-                m_sizeStylesContent->RetranslateUI();
-            }
             break;
+    }
+
+    // ⚠️ **Les contenus se retraduisent TOUS, et hors du switch.** Ces panneaux sont construits une
+    // fois, à l'ouverture du patron, dans la langue du moment ; ils restent montés quand on change de
+    // mode. Les retraduire dans la seule branche du mode affiché laissait donc les autres figés dans
+    // la langue du lancement : Size Styles, Size Ranges, Outputs et Page de garde restaient anglais
+    // jusqu'au redémarrage alors qu'ils sont traduits depuis toujours. Un panneau monté ne reçoit pas
+    // cet appel de lui-même — `ODockManager` est un QObject, pas un widget : c'est le seul chemin.
+    if (m_groupsContent != nullptr)
+    {
+        m_groupsContent->RetranslateUI();
+    }
+    if (m_backgroundImagesContent != nullptr)
+    {
+        m_backgroundImagesContent->RetranslateUI();
+    }
+    if (m_sizeRangesContent != nullptr)
+    {
+        m_sizeRangesContent->RetranslateUI();
+    }
+    if (m_sizeStylesContent != nullptr)
+    {
+        m_sizeStylesContent->RetranslateUI();
+    }
+    if (m_outputsContent != nullptr)
+    {
+        m_outputsContent->RetranslateUI();
+    }
+    if (m_coverPageContent != nullptr)
+    {
+        m_coverPageContent->RetranslateUI();
     }
 }
 

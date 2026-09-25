@@ -334,6 +334,17 @@ void VWidgetGroups::UpdateGroups()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::RetranslateUI()
+{
+    ui->retranslateUi(this);
+
+    // ⚠️ L'infobulle de catégories est écrite dans `FillTable`, donc en code, et `ui->retranslateUi`
+    // ne la voit pas. `UpdateGroups` la réécrit sans reconstruire le widget : aucune connexion n'est
+    // rejouée, contrairement à un appel du constructeur.
+    UpdateGroups();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VWidgetGroups::FillTable(QMap<quint32, VGroupData> groups)
 {
     ui->lineEditTags->SetCompletion(m_doc->GetGroupCategories());
@@ -387,4 +398,14 @@ void VWidgetGroups::FillTable(QMap<quint32, VGroupData> groups)
     ui->tableWidget->sortItems(1, Qt::AscendingOrder);
     ui->tableWidget->resizeColumnsToContents();
     ui->tableWidget->resizeRowsToContents();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        RetranslateUI();
+    }
+    QWidget::changeEvent(event);
 }

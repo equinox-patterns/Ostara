@@ -143,16 +143,9 @@ DrawToolBar::~DrawToolBar() = default;
 //---------------------------------------------------------------------------------------------------------------------
 void DrawToolBar::SetActions(const QHash<QString, QAction *> &actions)
 {
-    for (auto &group : m_groups)
-    {
-        for (auto &tool : group.tools)
-        {
-            if (actions.contains(tool.id))
-            {
-                tool.action = actions.value(tool.id);
-            }
-        }
-    }
+    // The map outlives every rebuild of `m_groups` — that is the whole point of keeping it.
+    m_actionMap = actions;
+    ApplyStoredActions();
 
     // Update button tooltips now that actions are set
     for (auto &group : m_groups)
@@ -167,6 +160,28 @@ void DrawToolBar::SetActions(const QHash<QString, QAction *> &actions)
     }
 
     BuildLayout();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Re-attach the stored actions to the tools of a freshly rebuilt `m_groups`.
+ *
+ * `InitializeGroups()` rebuilds `m_groups` from a literal table whose action column holds nothing
+ * but `nullptr`, and restores only the buttons. Everything `BuildLayout()` does for a tool lives
+ * under `if (tool.action != nullptr)` — the tooltip, the checked state, the click connection and
+ * the overflow menu entry. Without this call the first rebuild silently dropped all four: the
+ * tooltips kept the language they were written in at startup, and the tools that do not fit in the
+ * rows became unreachable, the caret menu having nothing left to list.
+ */
+void DrawToolBar::ApplyStoredActions()
+{
+    for (auto &group : m_groups)
+    {
+        for (auto &tool : group.tools)
+        {
+            tool.action = m_actionMap.value(tool.id, nullptr);
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -527,6 +542,9 @@ void DrawToolBar::InitializeGroups()
             }
         }
     }
+
+    // And put the actions back: the table above cannot carry them.
+    ApplyStoredActions();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

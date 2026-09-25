@@ -231,6 +231,15 @@ void MainWindow::Preferences()
         if (guard->exec() == QDialog::Accepted)
         {
             InitAutoSave();
+
+            // ⚠️ **La retraduction est faite ICI, de façon synchrone.** Qt poste un `LanguageChange`
+            // quand un traducteur est installé, et la doc dit qu'il parcourt tout l'arbre des widgets
+            // — mais il n'arrive pas jusqu'à cette fenêtre dans cette application : constaté au
+            // journal, la bascule de langue ne retraduisait rien du tout. La page Préférences a déjà
+            // installé le nouveau traducteur ; on reprend donc la fenêtre nous-mêmes, au seul moment
+            // où l'on sait que la langue vient de changer. Idempotent : sans changement de langue,
+            // ce n'est qu'un passage à vide.
+            RetranslateAll();
         }
     }
 }

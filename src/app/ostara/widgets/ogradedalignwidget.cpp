@@ -114,8 +114,8 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
     auto *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
-    auto *groupBox = new QGroupBox(tr("Graded alignment"));
-    m_alignLayout = new QVBoxLayout(groupBox);
+    m_alignGroupBox = new QGroupBox(tr("Graded alignment"));
+    m_alignLayout = new QVBoxLayout(m_alignGroupBox);
     auto *alignLayout = m_alignLayout;
 
     // Horizontal
@@ -192,7 +192,7 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
     alignLayout->addWidget(m_alignVLabel);
     alignLayout->addLayout(vLayout);
 
-    mainLayout->addWidget(groupBox);
+    mainLayout->addWidget(m_alignGroupBox);
 
     RefreshAlignIcons();
     connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, &OGradedAlignWidget::RefreshAlignIcons);
@@ -201,6 +201,17 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
     // window each row keeps its own natural size and "Left" (longer text) renders wider than
     // "Top". Share one minimum width across all six buttons so the selector looks like every
     // other alignment selector in the app (Dialog Piece step 2, PB Details general tab).
+    UpdateButtonWidths();
+
+    // The model default is center/center (VPiece::m_gradedAlignH/V = 2): show it
+    // selected instead of leaving the six buttons unchecked until a caller sets a value.
+    SetAlignH(2);
+    SetAlignV(2);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedAlignWidget::UpdateButtonWidths()
+{
     int maxAlignWidth = 0;
     for (int i = 0; i < 3; ++i)
     {
@@ -212,11 +223,24 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
         m_alignHBtns[i]->setMinimumWidth(maxAlignWidth);
         m_alignVBtns[i]->setMinimumWidth(maxAlignWidth);
     }
+}
 
-    // The model default is center/center (VPiece::m_gradedAlignH/V = 2): show it
-    // selected instead of leaving the six buttons unchecked until a caller sets a value.
-    SetAlignH(2);
-    SetAlignV(2);
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedAlignWidget::RetranslateUI()
+{
+    m_alignGroupBox->setTitle(tr("Graded alignment"));
+    m_alignHLabel->setText(tr("Horizontal"));
+    m_alignVLabel->setText(tr("Vertical"));
+    for (int i = 0; i < 3; ++i)
+    {
+        m_alignHBtns[i]->setText(tr(kAlignHItems[i].text));
+        m_alignVBtns[i]->setText(tr(kAlignVItems[i].text));
+    }
+
+    // ⚠️ **La largeur commune se recalcule.** « Left » et « Top » n'ont pas le même rapport de
+    // longueur d'une langue à l'autre : sans ce rappel, les six boutons gardent la largeur mesurée
+    // dans l'ancienne langue, et la rangée la plus longue déborde sur la plus courte.
+    UpdateButtonWidths();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -325,4 +349,14 @@ auto OGradedAlignWidget::GetAlignV() const -> int
 {
     const int id = m_alignVGroup->checkedId();
     return id >= 0 ? id : 2;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedAlignWidget::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        RetranslateUI();
+    }
+    QWidget::changeEvent(event);
 }

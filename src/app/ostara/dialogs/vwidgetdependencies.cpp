@@ -262,6 +262,9 @@ void VWidgetDependencies::changeEvent(QEvent *event)
     {
         ui->retranslateUi(this);
     }
+    // La classe de base traite les autres événements (palette, police, activation) : l'oublier les
+    // avalait en silence. Même forme que `VWidgetDetails::changeEvent`.
+    QWidget::changeEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

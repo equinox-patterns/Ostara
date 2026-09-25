@@ -575,3 +575,13 @@ void OWidgetSizeRanges::RetranslateUI()
     UpdateAddButtonIcon();
     Populate();
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+void OWidgetSizeRanges::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        RetranslateUI();
+    }
+    QWidget::changeEvent(event);
+}

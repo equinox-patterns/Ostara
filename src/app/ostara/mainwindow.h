@@ -79,6 +79,7 @@ class DrawToolBar;
 class TopBar;
 class BreadcrumbBar;
 class QGraphicsItem;
+class QMenu;
 class WelcomeScreen;
 class QStackedWidget;
 
@@ -157,6 +158,23 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void showEvent(QShowEvent *event) override;
     void changeEvent(QEvent *event) override;
+
+    /// @brief Re-apply the action texts and tooltips that this window writes in code.
+    ///
+    /// `ui->retranslateUi(this)` restores what mainwindow.ui declares — and only that. Every menu
+    /// entry, tooltip and label built in C++ keeps the language it was built in, and two of them are
+    /// worse than stale: `actionShowAllLabels` is recomputed from the setting, and
+    /// `actionZoomFitBest` declares no tooltip at all in the .ui. Called from `changeEvent`, after
+    /// `ui->retranslateUi(this)`.
+    void RetranslateActions();
+
+    /// @brief Re-applies every text of this window and of everything it hosts.
+    ///
+    /// Called from `changeEvent` **and** directly from `Preferences()`: the `LanguageChange` event
+    /// that Qt posts when a translator is installed does not reach this window in practice, so the
+    /// one moment where the language is known to have changed — the Preferences dialog closing —
+    /// retranslates explicitly rather than waiting for an event that never comes.
+    void RetranslateAll();
     void paintEvent(QPaintEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
     void customEvent(QEvent *event) override;
@@ -701,6 +719,27 @@ private:
     void ToolBarPenOptions();
     void ToolBarTools();
     void ToolBarMeasurements();
+
+    /// @brief Rewrites `actionShowAllLabels`'s text from the setting.
+    ///
+    /// The text says what the next click will do, so it cannot come from the .ui: `ui->retranslateUi`
+    /// would restore « Hide point names » whatever the state, and the label would contradict it.
+    void SyncShowAllLabelsText();
+
+    /// @brief Re-applies the tooltips built from an action's own text (with its shortcut).
+    ///
+    /// They cache the text of the moment, and the .ui overwrites ten of them — dropping the
+    /// « (raccourci) » suffix — while `actionZoomFitBest`, which declares no tooltip, would keep the
+    /// old language forever.
+    void RetranslateActionToolTips();
+
+#if defined(Q_OS_MAC)
+    /// @brief Rebuilds the macOS Dock menu, whose four entries are written here and reachable
+    /// nowhere else.
+    void BuildDockMenu();
+    QMenu *m_dockMenu{nullptr};
+#endif
+
     void UpdateMeasurementFileNameLabel();
     void UpdateMeasurementSeparatorIcon();
     void UpdateTopBarIcons();

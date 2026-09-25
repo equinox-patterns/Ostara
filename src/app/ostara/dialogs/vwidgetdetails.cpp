@@ -185,6 +185,17 @@ void VWidgetDetails::changeEvent(QEvent *event)
     if (event->type() == QEvent::LanguageChange)
     {
         ui->retranslateUi(this);
+
+        // ⚠️ **Le libellé du bouton de fusion ne vient pas du `.ui`.** Il dépend de l'état du
+        // groupe : « Merge pieces into one » au repos, « Cancel » pendant le travail — écrit par
+        // `SetGroupToolState()`, qui sort tôt quand l'état n'a pas changé et ne peut donc pas être
+        // rappelé ici. `retranslateUi()` réécrit le texte du `.ui` : il remettait « Fusionner les
+        // pièces en une seule » alors que le travail était en cours, et le bouton annonçait le
+        // contraire de ce qu'il fait. On repose la chaîne qui correspond à l'état, dans la langue
+        // qui vient d'être installée.
+        const bool active = m_groupToolState != GroupToolState::Idle;
+        ui->linkPiecesButton->setChecked(active);
+        ui->linkPiecesButton->setText(active ? tr("Cancel") : tr("Merge pieces into one"));
     }
 
     // remember to call base class implementation

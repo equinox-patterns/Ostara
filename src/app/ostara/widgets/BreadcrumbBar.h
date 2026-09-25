@@ -37,9 +37,23 @@ class BreadcrumbBar final : public QWidget
 
 public:
     explicit BreadcrumbBar(QWidget *parent = nullptr);
+    /// @brief Retraduit le panneau au changement de langue.
+    ///
+    /// Doc Qt, « Prepare for Dynamic Language Changes » : `LanguageChange` parcourt tout l'arbre des
+    /// widgets, et **chaque widget doit surcharger `changeEvent`** — la classe de base ne retraduit
+    /// rien. Sans cette surcharge, ce panneau garde la langue de sa construction.
+    void changeEvent(QEvent *event) override;
+
     ~BreadcrumbBar() override;
 
     void Update(const QString &groupName, const QString &objectName);
+
+    /// @brief Re-apply the two words the bar writes in code.
+    ///
+    /// The bar is built once and lives for the session: `tr("Canvas")` is evaluated in the member
+    /// initialiser, and `Update()` — which writes « Group %1 » — only runs on navigation. Without
+    /// this, a language change leaves both in the language of the launch.
+    void RetranslateUI();
 
 signals:
     void canvasClicked();
@@ -52,6 +66,10 @@ private:
     QLabel *m_groupSeparator{nullptr};
     QLabel *m_objectSeparator{nullptr};
     QLabel *m_objectLabel{nullptr};
+
+    /// @brief The group name of the last `Update()`, kept so the label can be rebuilt in another
+    /// language without the caller having to navigate again.
+    QString m_groupName{};
 };
 
 #endif // BREADCRUMBBAR_H

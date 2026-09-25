@@ -28,6 +28,7 @@
 
 #include "OPieceCartoucheStorage.h"
 
+#include "core/otranslation.h"
 #include "def.h"
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
@@ -203,7 +204,11 @@ void OInfoBlockTemplatesPage::SetupUI()
     layout->setContentsMargins(8, 8, 8, 8);
     layout->setSpacing(8);
 
-    auto *title = new QLabel(tr("Existing templates"), this);
+    // ⚠️ **Le poseur, pour les trois textes que `RetranslateUI()` ne pouvait pas atteindre.**
+    // Le titre était anonyme, et les deux en-têtes de colonne sont posés une seule fois, par
+    // `setHorizontalHeaderLabels` — que `RetranslateUI()` ne rappelait jamais.
+    auto *title = new QLabel(this);
+    OTranslation::SetText(this, title, "Existing templates");
     QFont titleFont = title->font();
     titleFont.setPointSize(13);
     titleFont.setBold(true);
@@ -212,7 +217,7 @@ void OInfoBlockTemplatesPage::SetupUI()
 
     // --- Search bar ---
     m_searchEdit = new QLineEdit(this);
-    m_searchEdit->setPlaceholderText(tr("Search templates…"));
+    OTranslation::SetPlaceholderText(this, m_searchEdit, "Search templates…");
     const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
     m_searchEdit->addAction(QIcon(IconResPath(QStringLiteral("magnifying-glass"), dark)), QLineEdit::LeadingPosition);
     connect(m_searchEdit, &QLineEdit::textChanged, this, &OInfoBlockTemplatesPage::FilterTable);
@@ -227,6 +232,8 @@ void OInfoBlockTemplatesPage::SetupUI()
                                         tr("Languages"), // 2
                                         QString(),       // 3: edit
                                         QString()});     // 4: delete
+    OTranslation::SetHeaderText(this, m_table, 1, "Name");
+    OTranslation::SetHeaderText(this, m_table, 2, "Languages");
 
     m_table->setColumnWidth(0, 44);
     m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Interactive);  // Name: modest, user-resizable

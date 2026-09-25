@@ -68,6 +68,11 @@ PreferencesConfigurationPage::PreferencesConfigurationPage(QWidget *parent)
     ui->autoSaveCheck->setChecked(VAbstractValApplication::VApp()->ValentinaSettings()->GetAutosaveState());
 
     InitLanguages(ui->langCombo);
+    // ⚠️ **`currentIndexChanged`, pas `activated`.** `activated` ne se lève que sur une sélection
+    // confirmée dans la liste déroulante : sur un geste qui ne la confirme pas, le drapeau restait
+    // faux et la langue n'était plus jamais enregistrée — le changement ne prenait pas du tout.
+    // `currentIndexChanged` est sûr ici : rien ne touche ce combo par programme après cette
+    // connexion (vérifié), donc il ne se lève que sur une action de l'utilisatrice.
     connect(ui->langCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             [this]() { m_langChanged = true; });
 
@@ -263,9 +268,17 @@ auto PreferencesConfigurationPage::Apply() -> QStringList
 
     if (m_langChanged)
     {
+        // ⚠️ **Le drapeau retombe, comme ses trois voisins.** Il ne retombait jamais : une fois la
+        // liste touchée, chaque « Appliquer » de la session — et « Appliquer » puis « OK » en font
+        // deux — réécrivait la langue depuis la liste, sans que l'utilisatrice ait rien redemandé.
+        // C'est par là que le réglage a pu repartir en anglais tout seul.
+        m_langChanged = false;
         const auto locale = qvariant_cast<QString>(ui->langCombo->currentData());
-        settings->SetLocale(locale);
-        VAbstractApplication::VApp()->LoadTranslation(locale);
+        if (locale != settings->GetLocale())
+        {
+            settings->SetLocale(locale);
+            VAbstractApplication::VApp()->LoadTranslation(locale);
+        }
     }
 
     if (m_unitChanged)

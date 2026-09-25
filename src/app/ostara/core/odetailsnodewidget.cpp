@@ -569,6 +569,13 @@ void ODetailsNodeWidget::RetranslateUI()
     m_visibleHint->setText(tr("1 = visible, 0 = invisible, formulas allowed"));
     m_seamTypeLabel->setText(tr("Type"));
 
+    // ⚠️ Les boutons « fx » portent une infobulle posée à leur construction : une infobulle n'est pas
+    // un widget, la classe de base ne la retouche jamais. Ils sont gardés dans `m_fxButtons`.
+    for (QToolButton *button : m_fxButtons)
+    {
+        button->setToolTip(tr("Edit expression"));
+    }
+
     PopulateCombos();
     if (m_piece != nullptr)
     {

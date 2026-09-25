@@ -75,6 +75,7 @@ private:
     int  ComputeColumns() const;
     int  ComputeMinWidth() const;
     void InitializeGroups();
+    void ApplyStoredActions();
     void UpdateBackground();
 
     int m_lastColCount = 0;
@@ -86,6 +87,15 @@ private:
     QVBoxLayout *m_rootLayout = nullptr;
 
     QHash<QString, QToolButton *> m_buttonMap;
+    // ⚠️ **Les actions, gardées à part de `m_groups`.** `InitializeGroups()` reconstruit `m_groups`
+    // de zéro — c'est ce qui lui permet de réévaluer les `tr()` — mais la table littérale ne porte
+    // que des `nullptr` à la place des actions : l'association outil → action était donc perdue au
+    // premier appel, et tout ce que `BuildLayout()` fait sous `if (tool.action != nullptr)` cessait
+    // d'être atteint. Les infobulles restaient dans la langue du démarrage, et le menu des outils
+    // en débordement n'était plus rempli — ces outils devenaient inaccessibles. Cette table-ci
+    // survit aux reconstructions : `SetActions()` l'alimente une fois, `InitializeGroups()` la
+    // réapplique à chaque passage.
+    QHash<QString, QAction *> m_actionMap;
     QVector<ToolGroup> m_groups;
     QList<QToolButton *> m_caretButtons;
     Draw m_currentMode = Draw::Calculation;

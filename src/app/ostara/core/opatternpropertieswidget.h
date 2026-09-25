@@ -31,6 +31,8 @@
 #include <QPointer>
 #include <QWidget>
 
+class QGroupBox;
+class QLabel;
 class QLineEdit;
 class QPlainTextEdit;
 class QTimer;
@@ -53,8 +55,12 @@ public:
     /** Reload the fields from the current pattern document. */
     void Refresh();
 
+    /** Re-apply the four labels from the translator installed right now. */
+    void RetranslateUI();
+
 protected:
     void showEvent(QShowEvent *event) override;
+    void changeEvent(QEvent *event) override;
 
 private slots:
     void CommitPatternName();
@@ -69,6 +75,15 @@ private:
     void Populate();
 
     QPointer<VAbstractPattern> m_doc{};
+    // ⚠️ **Ces quatre-là sont des membres, et c'est tout l'objet du correctif.** Ils étaient
+    // construits anonymes dans le constructeur : rien ne gardait de référence, donc rien ne
+    // pouvait réécrire leurs textes, et ils restaient dans la langue du premier affichage pour
+    // toute la vie de la fenêtre. Cette page est celle que le dock Options montre par défaut en
+    // mode Draw, aucun outil sélectionné — donc celle qu'on voit le plus.
+    QGroupBox *m_groupBox{nullptr};
+    QLabel *m_nameLabel{nullptr};
+    QLabel *m_descriptionLabel{nullptr};
+    QLabel *m_notesLabel{nullptr};
     QLineEdit *m_patternNameEdit{nullptr};
     QPlainTextEdit *m_descriptionEdit{nullptr};
     QPlainTextEdit *m_notesEdit{nullptr};

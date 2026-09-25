@@ -149,12 +149,19 @@ void ODetailsFoldLineValuesWidget::RefreshFxIcons()
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsFoldLineValuesWidget::RetranslateUI()
 {
-    // The labels and the hint are the only translated strings here. The fx buttons keep the tooltip
-    // they were built with, like their siblings in the other dock widgets.
     m_labels[kWidthField]->setText(tr("Width"));
     m_labels[kHeightField]->setText(tr("Height"));
     m_labels[kCenterField]->setText(tr("Center"));
     m_hintLabel->setText(tr("0 = automatic value, formulas allowed"));
+
+    // ⚠️ **Une infobulle n'est pas un widget, et la classe de base ne la retouche jamais.** Celle des
+    // boutons « fx » est posée à leur construction ; ils sont gardés dans `m_fxButtons`, donc on les
+    // reprend ici. C'était le dernier texte de cette page à rester dans la langue du lancement — et
+    // le commentaire qui affirmait le contraire a été retiré.
+    for (QToolButton *button : m_fxButtons)
+    {
+        button->setToolTip(tr("Edit expression"));
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

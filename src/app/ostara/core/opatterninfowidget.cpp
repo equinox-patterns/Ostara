@@ -31,6 +31,7 @@
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../widgets/InfoBlock/OPieceCartoucheStorage.h"
+#include "otranslation.h"
 
 #include <algorithm>
 
@@ -61,7 +62,15 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
     m_collectionCombo = MakeComboBox(this);
     m_fabricInfoEdit = new QPlainTextEdit(this);
 
-    auto *groupBox = new QGroupBox(tr("Pattern"), this);
+    // ⚠️ **Le titre passe par le poseur, il n'est plus écrit à la main.** Trois titres de ce widget
+    // — celui-ci, « Seam Allowances » et « Information block » — étaient construits avec `tr()` dans
+    // le constructeur et jamais repris : `RetranslateUI()` ne pouvait pas les atteindre, faute de
+    // référence, et c'est ce « Pattern » qui restait en anglais dans le dock Options en mode
+    // Details. Le poseur garde la chaîne source sur le widget, et le moteur la rejoue à chaque
+    // bascule de langue — sans que cette classe ait à s'en occuper.
+    m_patternGroup = new QGroupBox(this);
+    OTranslation::SetTitle(this, m_patternGroup, "Pattern");
+    auto *groupBox = m_patternGroup;
     auto *groupLayout = new QVBoxLayout(groupBox);
     groupLayout->setSpacing(6);
 
@@ -104,7 +113,9 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
 
     // Seam allowances — pattern-level seeds applied to every piece created
     // afterwards (same semantics as the dialog step 1).
-    auto *seamAllowanceGroup = new QGroupBox(tr("Seam Allowances"), this);
+    m_seamAllowanceGroup = new QGroupBox(this);
+    OTranslation::SetTitle(this, m_seamAllowanceGroup, "Seam Allowances");
+    auto *seamAllowanceGroup = m_seamAllowanceGroup;
     auto *saLayout = new QVBoxLayout(seamAllowanceGroup);
     saLayout->setSpacing(6);
 
@@ -132,7 +143,9 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
     // box is checked and picks the template (the pattern's template wins over
     // the settings favourite). Same seed semantics as the seam allowances.
     OPieceCartoucheStorage::EnsureDefaultTemplate();
-    auto *infoBlockGroup = new QGroupBox(tr("Information block"), this);
+    m_infoBlockGroup = new QGroupBox(this);
+    OTranslation::SetTitle(this, m_infoBlockGroup, "Information block");
+    auto *infoBlockGroup = m_infoBlockGroup;
     auto *ibLayout = new QVBoxLayout(infoBlockGroup);
     ibLayout->setSpacing(6);
 

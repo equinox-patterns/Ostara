@@ -829,6 +829,41 @@ auto VWidgetBackgroundImages::CurrentScaleUnit() const -> ScaleUnit
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VWidgetBackgroundImages::RetranslateUI()
+{
+    ui->retranslateUi(this);
+
+    // ⚠️ **Les deux combos d'unités sont remplis en code, pas dans le .ui**, et `ui->retranslateUi` ne
+    // les voit donc pas. On les re-remplit sur place en conservant l'unité choisie : rappeler
+    // `InitImageTranslation()` rejouerait ses `connect` et doublerait chaque connexion.
+    const auto refill = [](QComboBox *combo, const QList<QPair<QString, QVariant>> &entries)
+    {
+        const QVariant current = combo->currentData();
+        const QSignalBlocker blocker(combo);
+        combo->clear();
+        for (const auto &entry : entries)
+        {
+            combo->addItem(entry.first, entry.second);
+        }
+        const int index = combo->findData(current);
+        combo->setCurrentIndex(index >= 0 ? index : 0);
+    };
+
+    refill(ui->comboBoxTranslateUnit,
+           {{tr("Pixels"), QVariant(static_cast<int>(Unit::Px))},
+            {tr("Millimiters"), QVariant(static_cast<int>(Unit::Mm))},
+            {tr("Centimeters"), QVariant(static_cast<int>(Unit::Cm))},
+            {tr("Inches"), QVariant(static_cast<int>(Unit::Inch))}});
+
+    refill(ui->comboBoxScaleUnit,
+           {{QString(QChar('%')), QVariant(static_cast<int>(ScaleUnit::Percent))},
+            {tr("Millimiters"), QVariant(static_cast<int>(ScaleUnit::Mm))},
+            {tr("Centimeters"), QVariant(static_cast<int>(ScaleUnit::Cm))},
+            {tr("Inches"), QVariant(static_cast<int>(ScaleUnit::Inch))},
+            {tr("Pixels"), QVariant(static_cast<int>(ScaleUnit::Px))}});
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VWidgetBackgroundImages::InitImageTranslation()
 {
     // Translate
@@ -1028,4 +1063,14 @@ void VWidgetBackgroundImages::SetAbsolutePisition(const QUuid &id)
         UnitConvertor(rect.topLeft().x(), Unit::Px, CurrentTranslateUnit()));
     ui->doubleSpinBoxImageVerticalTranslate->setValue(
         UnitConvertor(rect.topLeft().y(), Unit::Px, CurrentTranslateUnit()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetBackgroundImages::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        RetranslateUI();
+    }
+    QWidget::changeEvent(event);
 }

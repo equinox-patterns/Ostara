@@ -63,6 +63,7 @@
 #include "odetailsfoldlinevalueswidget.h"
 #include "ofoldlinetypes.h"
 #include "opieceinfowidget.h"
+#include "otranslation.h"
 
 namespace
 {
@@ -260,7 +261,11 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
         Commit([v](OPieceGroup &group) { group.alignV = v; });
     });
 
-    m_tabWidget->addTab(generalPage, tr("General"));
+    // ⚠️ **Les titres d'onglets passent par le poseur.** Ils sont posés une fois ici et aucun
+    // `setTabText` n'existait dans la classe : ils restaient donc dans la langue du premier
+    // affichage. Le poseur n'exige aucune référence supplémentaire — le widget est déjà connu.
+    const int generalTabIndex = m_tabWidget->addTab(generalPage, QString());
+    OTranslation::SetTabText(this, m_tabWidget, generalTabIndex, "General");
 
     // The common point is owned by the General tab: its orange highlight follows that tab.
     connect(m_tabWidget, &QTabWidget::currentChanged, this, [this](int) { RefreshAlignPointHighlight(); });
@@ -276,13 +281,14 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     m_grainlineWidget = new ODetailsGrainlineWidget(grainlinePage);
     grainlineLayout->addWidget(m_grainlineWidget);
 
-    auto *memberSection = new QGroupBox(tr("Member fold lines"), grainlinePage);
-    auto *memberLayout = new QVBoxLayout(memberSection);
+    m_memberSection = new QGroupBox(tr("Member fold lines"), grainlinePage);
+    auto *memberLayout = new QVBoxLayout(m_memberSection);
     m_memberFLLayout = memberLayout;
-    grainlineLayout->addWidget(memberSection);
+    grainlineLayout->addWidget(m_memberSection);
     grainlineLayout->addStretch();
 
-    m_tabWidget->addTab(grainlinePage, tr("Grainline"));
+    const int grainlineTabIndex = m_tabWidget->addTab(grainlinePage, QString());
+    OTranslation::SetTabText(this, m_tabWidget, grainlineTabIndex, "Grainline");
 
     // ── Information tab: Group / Blocks / Annotations ────────────────
     // Same structure as the PB Piece's Information tab: the PAGE is the container
@@ -306,7 +312,11 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
 
     auto *form = new QFormLayout();
     m_nameEdit = new QLineEdit(groupTab);
-    form->addRow(tr("Name"), m_nameEdit);
+    // Le libellé est créé par nous pour pouvoir être retraduit : `form->addRow(tr("Name"), …)`
+    // confie le QLabel au QFormLayout, et plus personne ne peut le réécrire.
+    auto *nameLabel = new QLabel(groupTab);
+    OTranslation::SetText(this, nameLabel, "Name");
+    form->addRow(nameLabel, m_nameEdit);
     groupLayout->addLayout(form);
 
     m_groupInfoWidget = new OPieceInfoWidget(groupTab);
@@ -316,12 +326,17 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     m_blockConfigWidget = new OBlockConfigWidget(infoTabs);
     m_annotationsConfigWidget = new OAnnotationsConfigWidget(infoTabs);
     m_thumbnailsConfigWidget = new OGroupThumbnailsConfigWidget(infoTabs);
-    infoTabs->addTab(groupTab, tr("Group"));
-    infoTabs->addTab(m_blockConfigWidget, tr("Blocks"));
-    infoTabs->addTab(m_annotationsConfigWidget, tr("Annotations"));
-    infoTabs->addTab(m_thumbnailsConfigWidget, tr("Thumbnail"));
+    const int groupTabIndex = infoTabs->addTab(groupTab, QString());
+    OTranslation::SetTabText(this, infoTabs, groupTabIndex, "Group");
+    const int blocksTabIndex = infoTabs->addTab(m_blockConfigWidget, QString());
+    OTranslation::SetTabText(this, infoTabs, blocksTabIndex, "Blocks");
+    const int annotationsTabIndex = infoTabs->addTab(m_annotationsConfigWidget, QString());
+    OTranslation::SetTabText(this, infoTabs, annotationsTabIndex, "Annotations");
+    const int thumbnailTabIndex = infoTabs->addTab(m_thumbnailsConfigWidget, QString());
+    OTranslation::SetTabText(this, infoTabs, thumbnailTabIndex, "Thumbnail");
     infoLayout->addWidget(infoTabs);
-    m_tabWidget->addTab(infoPage, tr("Information"));
+    const int informationTabIndex = m_tabWidget->addTab(infoPage, QString());
+    OTranslation::SetTabText(this, m_tabWidget, informationTabIndex, "Information");
 
     connect(m_nameEdit, &QLineEdit::editingFinished, this, [this]()
     {
@@ -495,6 +510,31 @@ auto ODetailsGroupWidget::ReferenceMemberNode(const OPieceGroup &group) const ->
     }
     return OPieceCommonPoint::PieceNodeWithSource(pieces->value(group.alignPointMemberId),
                                                   group.alignPointSourceId, m_data);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::RetranslateUI()
+{
+    // Le sélecteur d'alignement est construit par son propre constructeur : rien de lui n'est dans un
+    // .ui, et `ui->retranslateUi` ne peut donc pas l'atteindre.
+    m_alignWidget->RetranslateUI();
+
+    m_alignOnPointCheck->setText(tr("Align on the common point"));
+    m_showAlignPointCheck->setText(tr("Show alignment point"));
+
+    m_forceFlippingCheck->setText(tr("Force flipping"));
+    m_forceFlippingCheck->setToolTip(tr("Force piece to be always flipped in a layout."));
+    m_symmetricalCopyCheck->setText(tr("Symmetrical copy"));
+    m_symmetricalCopyCheck->setToolTip(
+        tr("When the number of copies is greater than 1 and 'Force flipping' is selected, each "
+           "even-numbered copy of the piece will be flipped vertically."));
+
+    m_memberSection->setTitle(tr("Member fold lines"));
+
+    // ⚠️ **Les lignes de membres ne sont PAS reconstruites ici, et c'est délibéré.** Leur état déplié
+    // ne vit que dans la visibilité de leur contenu (`OnMemberToggle`), donc repasser par
+    // `BuildMemberFoldLines()` replierait toutes les lignes ouvertes. Elles reprennent la bonne langue
+    // au prochain affichage du groupe, ce qui est aussi le moment où elles sont reconstruites.
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1076,4 +1116,14 @@ void ODetailsGroupWidget::SetMemberFoldLineSelecting(quint32 pieceId, bool selec
 void ODetailsGroupWidget::ResetFoldLineHighlight()
 {
     // No persistent node-highlight state in this widget; the status tip is enough.
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        RetranslateUI();
+    }
+    QWidget::changeEvent(event);
 }

@@ -30,6 +30,7 @@
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vmisc/vabstractvalapplication.h"
 
+#include <QEvent>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
@@ -46,16 +47,20 @@ OPatternPropertiesWidget::OPatternPropertiesWidget(QWidget *parent)
     m_notesEdit = new QPlainTextEdit(this);
 
     auto *groupBox = new QGroupBox(tr("Pattern"), this);
+    m_groupBox = groupBox;
     auto *groupLayout = new QVBoxLayout(groupBox);
     groupLayout->setSpacing(6);
 
-    groupLayout->addWidget(new QLabel(tr("Pattern name:"), groupBox));
+    m_nameLabel = new QLabel(tr("Pattern name:"), groupBox);
+    groupLayout->addWidget(m_nameLabel);
     groupLayout->addWidget(m_patternNameEdit);
 
-    groupLayout->addWidget(new QLabel(tr("Description:"), groupBox));
+    m_descriptionLabel = new QLabel(tr("Description:"), groupBox);
+    groupLayout->addWidget(m_descriptionLabel);
     groupLayout->addWidget(m_descriptionEdit);
 
-    groupLayout->addWidget(new QLabel(tr("Notes:"), groupBox));
+    m_notesLabel = new QLabel(tr("Notes:"), groupBox);
+    groupLayout->addWidget(m_notesLabel);
     groupLayout->addWidget(m_notesEdit);
 
     groupLayout->addStretch();
@@ -80,6 +85,32 @@ void OPatternPropertiesWidget::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
     Refresh();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPatternPropertiesWidget::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        RetranslateUI();
+    }
+    QWidget::changeEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Re-apply the four labels from the translator installed right now.
+ *
+ * Called by `changeEvent()` and, explicitly, from `VToolOptionsPropertyBrowser::RetranslateUI()` —
+ * that browser's own retranslation goes through `RefreshOptions()`, which returns at once when no
+ * tool is selected, which is precisely the state this page is shown in.
+ */
+void OPatternPropertiesWidget::RetranslateUI()
+{
+    m_groupBox->setTitle(tr("Pattern"));
+    m_nameLabel->setText(tr("Pattern name:"));
+    m_descriptionLabel->setText(tr("Description:"));
+    m_notesLabel->setText(tr("Notes:"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
