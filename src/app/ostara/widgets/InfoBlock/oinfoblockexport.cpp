@@ -492,17 +492,23 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
             const QVector<OCartoucheRenderItem> laid =
                 OCartouchePainter::Layout(contentRect, scaledLines, block.fontScale);
 
-            // content -> scene -> file.
-            // Qt combines transforms in row-vector order: (A*B) applies A then B,
-            // so a naive "translate then rotate" rotates in the LAST step and the
-            // translation gets rotated too (the box flies to the pattern origin).
-            // To map a content point c to  origin + rect.topLeft + R·c  (rotation
-            // about the box top-left), compose the rotation FIRST, then translate.
+            // content -> scene -> file, and the three steps are written in the order they APPLY —
+            // leftmost first, because Qt's (A*B) applies A then B. A content point c therefore
+            // reaches origin + rect.topLeft + R·c, exactly where the canvas item draws it
+            // (setPos(pos) + setRotation(-rotation) + setRect(0,0,w,h)), and the page transform is
+            // applied to that SCENE point last. A naive "translate then rotate" would rotate in the
+            // last step and carry the translation with it (the box flies to the pattern origin);
+            // folding toSVG in first — which is what this line used to do — reads a block-local
+            // point as if it were a scene point, so the record's offset passes through none of the
+            // page's own scale and turning. The error is (R−I)·m + (1−σ)·t, where m is the page
+            // offset and t the record's scene position: tens of millimetres on a page whose margins
+            // and rotations make those non-zero, and exactly zero at rotation 0 and a 100 % scale —
+            // which is how it went unnoticed. The miniature below has always composed this way.
             QTransform rot;
             rot.rotate(-block.rotation);
             QTransform tr;
             tr.translate(origin.x() + block.rect.x(), origin.y() + block.rect.y());
-            const QTransform toFile = toSVG * (rot * tr);
+            const QTransform toFile = (rot * tr) * toSVG;
 
             writer.writeStartElement(QStringLiteral("g"));
             writer.writeAttribute(QStringLiteral("transform"), MatrixAttr(toFile));
@@ -524,13 +530,14 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
                 return;
             }
 
-            // content -> scene -> file (same row-vector composition as the blocks:
-            // rotation FIRST, then the translation).
+            // content -> scene -> file (the same composition as the blocks, and for the same
+            // reason: rotation FIRST, then the translation, and the page transform on the scene
+            // point LAST — see the note above).
             QTransform rot;
             rot.rotate(-annotation.rotation);
             QTransform tr;
             tr.translate(origin.x() + annotation.rect.x(), origin.y() + annotation.rect.y());
-            const QTransform toFile = toSVG * (rot * tr);
+            const QTransform toFile = (rot * tr) * toSVG;
 
             // Rebuild the render font exactly like the canvas item: base pixel
             // = style size, or the resolved default, then × fontScale.
