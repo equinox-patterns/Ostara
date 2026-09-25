@@ -76,6 +76,13 @@ public:
         bool placed{false}; // False: the item lays it out in the row above the block.
     };
 
+    /** @brief One word whose place is already DECIDED — the form a stored record carries it in. */
+    struct PlacedWord
+    {
+        QString text;
+        QPointF origin{}; // In the block's own frame, the fit already applied.
+    };
+
     explicit OThumbnailItem(QGraphicsItem *parent = nullptr);
     ~OThumbnailItem() override = default;
 
@@ -117,6 +124,18 @@ public:
     /** @brief The words to draw. The legend is empty when no unit is asked for. */
     void SetLabels(const QVector<LabelView> &labels, const QString &legend, const QPointF &legendOffset,
                    bool legendPlaced);
+    /**
+     * @brief Draw words whose places are ALREADY decided, instead of computing them.
+     *
+     * The canvas decides where a word goes (see @ref EffectiveOffset); a stored record does not — the
+     * writers were handed the finished places, and redrawing it has to land them exactly there. So the
+     * item is told the places themselves rather than the raw offsets, and stops computing.
+     *
+     * The legends travel in the same list: a record does not say which word is a legend, and it does
+     * not have to — all of them are words at a place. Setting the words this way therefore clears any
+     * @ref SetLabels wording, and vice versa.
+     */
+    void SetPlacedWords(const QVector<PlacedWord> &words);
     /** @brief Enter/leave the "inside the miniature" sub-mode, in which the words can be moved. */
     void SetEditing(bool editing);
     auto IsEditing() const -> bool;
@@ -235,6 +254,9 @@ private:
     QString m_legend;
     QPointF m_legendOffset;
     bool m_legendPlaced{false};
+    /// Whether the words of @ref m_labels are already placed — see @ref SetPlacedWords. Their
+    /// @c offset is then the finished origin, in the block's frame, and nothing is computed.
+    bool m_wordsInBlock{false};
 
     bool m_readOnly{false};
     bool m_active{false};

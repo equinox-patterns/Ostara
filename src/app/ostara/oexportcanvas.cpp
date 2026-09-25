@@ -52,11 +52,13 @@
 #include "../vpatterndb/ochildanchor.h"
 #include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/osizerange.h"
+#include "../vpatterndb/othumbnaildata.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiece.h"
 #include "../vtools/tools/oannotationitem.h"
 #include "../vtools/tools/oinfoblockcontent.h"
 #include "../vtools/tools/oinfoblockitem.h"
+#include "../vtools/tools/othumbnailitem.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vwidgets/ocartouchepainter.h"
 #include "../vwidgets/vmaingraphicsscene.h"
@@ -449,6 +451,35 @@ auto AnnotationOverrideOf(const OSizerange *range, quint32 ownerId, bool isGroup
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/// The range's frame for the miniature of one piece, or an invalid one.
+///
+/// Same rule as the two above, with one difference: a miniature belongs to a PIECE, never to a group —
+/// so the group's overrides are keyed by the MEMBER they lay out, not by the group. A group carries one
+/// per member, and each is looked up on the piece it draws.
+auto ThumbnailOverrideOf(const OSizerange *range, quint32 ownerId, bool isGroup, quint32 pieceId)
+    -> OSizerange::ThumbnailOverride
+{
+    if (range == nullptr)
+    {
+        return {};
+    }
+
+    if (isGroup)
+    {
+        const auto it = range->groupContent.constFind(ownerId);
+        if (it == range->groupContent.cend())
+        {
+            return {};
+        }
+        const auto ov = it.value().memberThumbnails.constFind(pieceId);
+        return ov == it.value().memberThumbnails.cend() ? OSizerange::ThumbnailOverride{} : ov.value();
+    }
+
+    const auto it = range->pieceContent.constFind(ownerId);
+    return it == range->pieceContent.cend() ? OSizerange::ThumbnailOverride{} : it.value().thumbnail;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /// Whether a piece belongs to a group that is nested as one rigid block. Below two
 /// members a group is not a block — the canvas, the export and the container all draw
 /// that line in the same place (OGraded::kMinGroupMembers).
@@ -587,6 +618,14 @@ struct DecorFrame
     /// click on the decor reaches the footprint it decorates. -1 for a frame with no
     /// placement behind it, and the carrier then carries no role at all.
     int footprintIndex{-1};
+
+    /// One box per member of a GROUP, by piece id, in the frame the group's children are stored in —
+    /// which takes its origin off @c bounds, hence the translation done once the walk is over.
+    ///
+    /// It exists for the miniatures alone, and for the reason the Graded canvas measures them the same
+    /// way: **a miniature nobody ever placed lands on the PIECE IT DRAWS**, never on the union of the
+    /// group. Empty for a lone piece, which is its own box (@c bounds).
+    QHash<quint32, QRectF> memberBoxes{};
 };
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -687,7 +726,108 @@ auto MirrorDecor(const QPointF &topLeft, const QSizeF &size, qreal rotation, qre
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/// Add an owner's information blocks and annotations under @p host, in @p host's frame.
+/// One owner's miniatures, RESOLVED — the record form both the writers and the canvas consume.
+///
+/// A miniature is a child of the piece like its cartouche, and it is resolved from the very three
+/// sources the Details and Graded canvases read, in the very order they read them: the owner's own
+/// miniature data — a group carries one per MEMBER, never one of its own — the range's frame when it
+/// has one, and the box of the piece it DRAWS, which is what an unplaced frame is measured on.
+///
+/// The record itself is the shared builder's (@ref OInfoBlockSvg::BuildThumbnail), so this mode, the
+/// flat sheet and the graded sheet cannot come to three answers about the same miniature. It comes
+/// back with empty content when the tool is gone or the reference drawing was never captured, and the
+/// canvas draws nothing then either — so dropping it here is not a loss.
+///
+/// ⚠️ **Un plan de coupe n'en porte aucune** (décision de Sophie). Ce n'est pas un détail de
+/// dessin : la règle est posée **ici**, à la résolution, pour qu'aucun record n'existe et qu'aucun des
+/// trois chemins ne puisse en dessiner un par mégarde — le champ est vide, pas caché.
+///
+/// @param boxes the box each piece is measured on when nobody ever placed its frame, by piece id, in
+///              the owner's own frame. A piece absent from it is skipped: there is nothing to measure
+///              an unplaced frame on, and a miniature without a frame is not one.
+auto ResolveOwnerMiniatures(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
+                            const OSizerange *range, const QHash<quint32, QRectF> &boxes,
+                            const VContainer *pattern, bool cuttingPlan)
+    -> QVector<OInfoBlockSvg::Thumbnail>
+{
+    QVector<OInfoBlockSvg::Thumbnail> out;
+
+    if (cuttingPlan || pattern == nullptr)
+    {
+        return out;
+    }
+
+    const auto *pieces = pattern->DataPieces();
+    if (pieces == nullptr)
+    {
+        return out;
+    }
+
+    // Who carries what: a lone piece carries its own miniature, a group one per member. The downcast
+    // is what tells the two apart — `IPieceInfo` has no per-member accessor, and a group is the only
+    // owner that needs one. It fails safe: an owner that is not the group it claims to be carries
+    // nothing rather than somebody else's drawing.
+    const auto *group = isGroup ? dynamic_cast<const OPieceGroup *>(&owner) : nullptr;
+    if (isGroup && group == nullptr)
+    {
+        return out;
+    }
+
+    QVector<quint32> pieceIds;
+    if (isGroup)
+    {
+        pieceIds = group->pieceIds;
+    }
+    else
+    {
+        pieceIds.append(ownerId);
+    }
+
+    for (const quint32 pieceId : pieceIds)
+    {
+        const auto piece = pieces->constFind(pieceId);
+        const auto box = boxes.constFind(pieceId);
+        if (piece == pieces->cend() || box == boxes.cend())
+        {
+            continue; // a member the document no longer holds, or one nothing measured
+        }
+
+        const OThumbnailData stored = isGroup ? group->MemberThumbnail(pieceId)
+                                              : owner.GetThumbnailData();
+        if (!stored.IsActive())
+        {
+            continue; // nothing asked for, in Details or in the group
+        }
+
+        const OSizerange::ThumbnailOverride ov = ThumbnailOverrideOf(range, ownerId, isGroup, pieceId);
+
+        OThumbnailGeom geom;
+        if (ov.valid)
+        {
+            geom.pos = ov.pos;
+            geom.width = ov.width;
+            geom.height = ov.height;
+        }
+        else
+        {
+            geom = stored.Geom();
+        }
+
+        OInfoBlockSvg::Thumbnail record =
+            OInfoBlockSvg::BuildThumbnail(pieceId, piece.value(), stored, geom, box.value(),
+                                          ov.valid || stored.HasGeometry());
+        if (record.content.isEmpty())
+        {
+            continue;
+        }
+        out.append(record);
+    }
+
+    return out;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Add an owner's information blocks, annotations and miniatures, in @p host's frame.
 ///
 /// The owner is the group when the piece belongs to one — a grouped member carries none of
 /// these, exactly as it carries no grainline of its own. Details, the Graded canvas and its
@@ -696,9 +836,14 @@ auto MirrorDecor(const QPointF &topLeft, const QSizeF &size, qreal rotation, qre
 /// @param centerLocal the point a child that was never placed falls back on, in that frame
 /// @param mirrorX the vertical line the children are mirrored about, or NaN when the owner is not
 ///                reflected — see @ref DecorFrame::mirrorX
+/// @param miniatureBoxes the box each piece is measured on when nobody ever placed its miniature's
+///                frame, by piece id, in that same frame — see @ref ResolveOwnerMiniatures
+/// @param cuttingPlan a cutting plan carries no miniature at all
 auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
                        const QPointF &centerLocal, qreal mirrorX, const OSizerange *range,
-                       const VContainer *pattern, VAbstractPattern *doc) -> OExportPieceDecor
+                       const VContainer *pattern, VAbstractPattern *doc,
+                       const QHash<quint32, QRectF> &miniatureBoxes, bool cuttingPlan)
+    -> OExportPieceDecor
 {
     OExportPieceDecor decor;
     if (pattern == nullptr)
@@ -707,6 +852,12 @@ auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
     }
 
     decor.resolved = true;
+
+    // The third child, resolved in the same breath as the two below and from the same three sources
+    // the canvases read — see @ref ResolveOwnerMiniatures, which is also where a cutting plan is told
+    // it carries none.
+    decor.thumbnails = ResolveOwnerMiniatures(owner, isGroup, ownerId, range, miniatureBoxes, pattern,
+                                              cuttingPlan);
 
     // A block exists when the template dispatches a section to it and that section has
     // content: the resolver leaves nothing else in blockContent. Without a document there
@@ -898,6 +1049,38 @@ void DrawOwnerDecor(QGraphicsItem *host, const OExportPieceDecor &decor)
         item->SetAnnotationGeom(geom, record.rotation);
         MakeDecorReadOnly(item);
     }
+
+    for (const OInfoBlockSvg::Thumbnail &record : decor.thumbnails)
+    {
+        // ⚠️ No mirror here, unlike the two loops above, and it is structural rather than an omission:
+        // a miniature is resolved for a PRINT run alone (see @ref ResolveOwnerMiniatures), and a print
+        // run never reflects a piece — the three places that set @c mirrorX (the folded twin,
+        // `Force flipping`, the symmetrical copy) all sit behind the cutting-plan branch of
+        // OExportGeometry. Were that to change, this is the line that would have to learn to flip the
+        // drawing and not only the box.
+        OThumbnailGeom geom;
+        geom.pos = record.rect.topLeft();
+        geom.width = record.rect.width();
+        geom.height = record.rect.height();
+
+        auto *item = new OThumbnailItem(host);
+        item->SetContent(record.content, record.contentBounds);
+        item->SetBlockGeom(geom);
+
+        // ⚠️ The words are given PLACES, not offsets: the record's are already through the fit, and
+        // putting them through it a second time is what a `SetLabels` call would do — see
+        // OThumbnailItem::SetPlacedWords. A record does not separate a legend from a value either, so
+        // all of its words are handed over together and the legend is left empty.
+        QVector<OThumbnailItem::PlacedWord> words;
+        words.reserve(record.words.size());
+        for (const OInfoBlockSvg::ThumbnailWord &word : record.words)
+        {
+            words.append({word.text, word.origin});
+        }
+        item->SetPlacedWords(words);
+
+        MakeDecorReadOnly(item);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -909,16 +1092,19 @@ void DrawOwnerDecor(QGraphicsItem *host, const OExportPieceDecor &decor)
 auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup, quint32 ownerId,
                      const QPointF &centerLocal, qreal mirrorX, const OSizerange *range,
                      const VContainer *pattern, VAbstractPattern *doc,
+                     const QHash<quint32, QRectF> &miniatureBoxes, bool cuttingPlan,
                      OGradedSvg::LayoutObject *decor = nullptr) -> void
 {
     const OExportPieceDecor records = ResolveOwnerDecor(owner, isGroup, ownerId, centerLocal, mirrorX,
-                                                        range, pattern, doc);
+                                                        range, pattern, doc, miniatureBoxes,
+                                                        cuttingPlan);
     DrawOwnerDecor(host, records);
 
     if (decor != nullptr)
     {
         decor->blocks = records.blocks;
         decor->annotations = records.annotations;
+        decor->thumbnails = records.thumbnails;
     }
 }
 
@@ -950,7 +1136,7 @@ auto IsDecorChild(QGraphicsItem *child) -> bool
 void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry,
                      const QTransform &placement, qreal rotation, int footprintIndex,
                      const OSizerange *range, const VContainer *pattern, VAbstractPattern *doc,
-                     OGradedSvg::LayoutObject *decor = nullptr)
+                     bool cuttingPlan, OGradedSvg::LayoutObject *decor = nullptr)
 {
     DecorFrame frame;
     frame.placement = placement;
@@ -1003,13 +1189,16 @@ void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry
         {
             decor->blocks = geometry.decor.blocks;
             decor->annotations = geometry.decor.annotations;
+            decor->thumbnails = geometry.decor.thumbnails;
         }
     }
     else
     {
+        // A lone piece is its own box: the miniature nobody placed lands on it, not on a frame of
+        // its own that nothing ever measured.
         BuildOwnerDecor(host, pieces->constFind(geometry.id).value(), false, geometry.id,
                         frame.bounds.center() - frame.origin, frame.mirrorX, range, pattern, doc,
-                        decor);
+                        {{geometry.id, frame.bounds}}, cuttingPlan, decor);
     }
 
     if (host->childItems().isEmpty())
@@ -1027,7 +1216,7 @@ void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry
 /// which is the frame the group stores all of its children in.
 void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &frame,
                      const OExportGroupDecor *frozen, const OSizerange *range, const Unit &unit,
-                     const VContainer *pattern, VAbstractPattern *doc,
+                     const VContainer *pattern, VAbstractPattern *doc, bool cuttingPlan,
                      OGradedSvg::LayoutObject *decor = nullptr)
 {
     const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
@@ -1081,7 +1270,7 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
     // would not mean anything.
     if (frozen != nullptr && frozen->owner.resolved)
     {
-        // The group's cartouche and annotations, frozen with the run like a piece's — see
+        // The group's cartouche, annotations and miniatures, frozen with the run like a piece's — see
         // @ref OExportGroupDecor. The carrier differs; the resolution is the same one.
         DrawOwnerDecor(host, frozen->owner);
 
@@ -1089,18 +1278,29 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
         {
             decor->blocks = frozen->owner.blocks;
             decor->annotations = frozen->owner.annotations;
+            decor->thumbnails = frozen->owner.thumbnails;
         }
     }
     else
     {
+        // The members' boxes brought into the frame the group's children are written in — the origin
+        // is the union's top-left corner, which the walk has just settled. A miniature nobody placed
+        // is measured on the member it draws, never on the union: the same rule the Graded canvas and
+        // the graded export apply.
+        QHash<quint32, QRectF> memberBoxes;
+        for (auto it = frame.memberBoxes.cbegin(); it != frame.memberBoxes.cend(); ++it)
+        {
+            memberBoxes.insert(it.key(), it.value().translated(-frame.origin.x(), -frame.origin.y()));
+        }
+
         BuildOwnerDecor(host, group.value(), true, groupId, centerLocal, qQNaN(), range, pattern, doc,
-                        decor);
+                        memberBoxes, cuttingPlan, decor);
     }
 
     if (decor != nullptr)
     {
-        // The grainline only — the carrier's other children are the cartouche and the
-        // annotations, which travel as records, in their owner's frame.
+        // The grainline only — the carrier's other children are the cartouche, the annotations and
+        // the miniatures, which travel as records, in their owner's frame.
         for (QGraphicsItem *child : host->childItems())
         {
             if (IsDecorChild(child))
@@ -1119,7 +1319,8 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
 
 //---------------------------------------------------------------------------------------------------------------------
 auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *range,
-                       const VContainer *pattern, VAbstractPattern *doc) -> OExportPieceDecor
+                       const VContainer *pattern, VAbstractPattern *doc, bool cuttingPlan)
+    -> OExportPieceDecor
 {
     const auto *pieces = pattern != nullptr ? pattern->DataPieces() : nullptr;
     if (pieces == nullptr)
@@ -1137,7 +1338,8 @@ auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *r
     // frozen piece, so that the record and a later drawing agree about where "on its owner" is.
     const QPointF centerLocal = UnplacedBounds(geometry.piece).center();
     return ResolveOwnerDecor(piece.value(), false, geometry.id, centerLocal, geometry.mirrorX, range,
-                             pattern, doc);
+                             pattern, doc, {{geometry.id, UnplacedBounds(geometry.piece)}},
+                             cuttingPlan);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1252,7 +1454,20 @@ auto ResolveGroupDecor(const QVector<OExportPieceGeometry> &members, quint32 gro
     const QRectF ref = OChildAnchor::RefRect(sized, pattern, pointsBox.topLeft());
     OChildAnchor::Materialize(sized, ref);
 
-    frozen.owner = ResolveOwnerDecor(sized, true, groupId, centerLocal, qQNaN(), range, pattern, doc);
+    // The boxes a miniature nobody placed is measured on, in the frame the group's children are
+    // written in: its own member's extent, brought back by the union's corner — never the union, which
+    // is what the group's cartouche is centred on. The drawing side builds them the same way, off the
+    // same frozen geometry, so screen and paper cannot measure two different boxes.
+    QHash<quint32, QRectF> memberBoxes;
+    for (const OExportPieceGeometry &member : members)
+    {
+        memberBoxes.insert(member.id,
+                           UnplacedBounds(member.piece).translated(-bounds.topLeft().x(),
+                                                                   -bounds.topLeft().y()));
+    }
+
+    frozen.owner = ResolveOwnerDecor(sized, true, groupId, centerLocal, qQNaN(), range, pattern, doc,
+                                     memberBoxes, cuttingPlan);
 
     const VGrainlineData &geom = sized.m_glGrainline;
     if (geom.IsEnabled() && geom.IsVisible())
@@ -1572,6 +1787,10 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     frame.placement = placementMatrix;
                     frame.rotation = placement.rotation;
                     frame.bounds = frame.bounds.united(UnplacedBounds(geometry.piece));
+                    // The member's own box, kept beside the union: a miniature is measured on the
+                    // piece it draws, never on the group. Brought into the group's frame at the end
+                    // of the walk, when that frame's origin is known.
+                    frame.memberBoxes.insert(geometry.id, UnplacedBounds(geometry.piece));
                     frame.footprintIndex = i;
                 }
 
@@ -1602,9 +1821,10 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     }
 
                     BuildPieceDecor(scene, geometry, placementMatrix, placement.rotation, i, range,
-                                    pattern, doc, content != nullptr ? &entry : nullptr);
+                                    pattern, doc, cuttingPlan, content != nullptr ? &entry : nullptr);
 
                     if (content != nullptr && (!entry.blocks.isEmpty() || !entry.annotations.isEmpty()
+                                               || !entry.thumbnails.isEmpty()
                                                || !entry.decorChildren.isEmpty()))
                     {
                         content->decor.append(entry);
@@ -1630,10 +1850,11 @@ void OExportCanvas::Build(QGraphicsScene *scene,
 
         OGradedSvg::LayoutObject entry;
         entry.origin = QPointF(0.0, 0.0);
-        BuildGroupDecor(scene, it.key(), frame, frozen, range, unit, pattern, doc,
+        BuildGroupDecor(scene, it.key(), frame, frozen, range, unit, pattern, doc, cuttingPlan,
                         content != nullptr ? &entry : nullptr);
 
         if (content != nullptr && (!entry.blocks.isEmpty() || !entry.annotations.isEmpty()
+                                   || !entry.thumbnails.isEmpty()
                                    || !entry.decorChildren.isEmpty()))
         {
             content->decor.append(entry);

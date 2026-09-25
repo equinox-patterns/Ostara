@@ -57,8 +57,12 @@ struct OExportTemplate;
 ///
 /// ⚠️ It reads the DOCUMENT, so it is only correct while the document is on the size being recorded.
 /// The caller resolves it during the run, on the reference layer, and never afterwards.
+///
+/// @param cuttingPlan un plan de coupe n'enregistre **aucune miniature** — voir
+///                    @ref OExportPieceDecor::thumbnails. Le drapeau est lu ici, à la résolution.
 auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *range,
-                       const VContainer *pattern, VAbstractPattern *doc) -> OExportPieceDecor;
+                       const VContainer *pattern, VAbstractPattern *doc, bool cuttingPlan)
+    -> OExportPieceDecor;
 
 /// @brief The reference layer's grainline for one piece, resolved as the canvas would draw it.
 ///

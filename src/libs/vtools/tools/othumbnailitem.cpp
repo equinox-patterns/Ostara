@@ -141,6 +141,32 @@ void OThumbnailItem::SetLabels(const QVector<LabelView> &labels, const QString &
     m_legend = legend;
     m_legendOffset = legendOffset;
     m_legendPlaced = legendPlaced;
+    m_wordsInBlock = false;
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailItem::SetPlacedWords(const QVector<PlacedWord> &words)
+{
+    // The same courtesy as SetLabels: the words are inside what the item claims to paint.
+    prepareGeometryChange();
+
+    m_labels.clear();
+    m_labels.reserve(words.size());
+    for (const PlacedWord &word : words)
+    {
+        // `placed` is deliberately left false: it is what tells EffectiveOffset to run the fit, and
+        // there is no fit left to run — `origin` already went through it. m_wordsInBlock is the flag
+        // that says so.
+        m_labels.append({word.text, word.origin, false});
+    }
+
+    // A record does not tell a legend from a value: every word it carries is placed, the legend
+    // included. Keeping one here would draw it twice.
+    m_legend.clear();
+    m_legendOffset = QPointF();
+    m_legendPlaced = false;
+    m_wordsInBlock = true;
     update();
 }
 
@@ -343,6 +369,12 @@ auto OThumbnailItem::DefaultLegendOrigin(const QString &legend, const QRectF &bl
 auto OThumbnailItem::EffectiveOffset(int index) const -> QPointF
 {
     const LabelView &label = m_labels.at(index);
+    if (m_wordsInBlock)
+    {
+        // The place came from a record, fit included — see SetPlacedWords. It is not a point of the
+        // drawing to be fitted, it is where the words already are.
+        return label.offset;
+    }
     if (label.placed)
     {
         // A placed word is a point of the drawing: it follows the piece wherever the fit puts it.
@@ -411,7 +443,23 @@ void OThumbnailItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         // painter transform adds the view zoom on top of it. So `viewScale` is the canvas zoom, and
         // dividing by the full scale lands the requested number of pixels on screen whatever the
         // size of the block.
-        const qreal scale = painter->transform().m11();
+        //
+        // ⚠️ **`m11()` is not that scale once the transform turns**, and reading it as one is what
+        // broke the miniature on the Export canvas. The entry is the first column of the matrix, so a
+        // rotation of θ makes it `scale · cos θ` — the true scale at 0°, half of it at 60°, **zero at
+        // 90°** and **negative past it**. A null scale collapsed the stroke to nothing; a negative one
+        // handed `setWidthF()` a width it refuses ("Setting a pen width that is out of range") and a
+        // stroke the canvas then drew at the wrong weight — the whole miniature wrong, on a rotated
+        // owner alone. Details and Graded never showed it because nothing turns a miniature there; the
+        // Export canvas hangs one under the carrier of a placed owner, and the nesting turns a carrier
+        // by any angle.
+        //
+        // The scale is the LENGTH of the image of a unit vector, which is the one thing a rotation
+        // leaves alone. `fit` is a pure scale (@ref OCartouchePainter::FitTransform), so its own
+        // `m11()` is still its scale, and the ratio of the two is the zoom.
+        const QTransform device = painter->transform();
+        const qreal scale =
+            QLineF(device.map(QPointF(0.0, 0.0)), device.map(QPointF(1.0, 0.0))).length();
         const qreal fitScale = fit.m11();
         const qreal viewScale = fitScale > 0.0 ? scale / fitScale : 1.0;
 
@@ -424,7 +472,15 @@ void OThumbnailItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         const qreal stroke = qMin(1.0, ScaleWidth(hairLine, viewScale) * viewScale);
 
         QPen pen(textColor);
-        pen.setWidthF(scale > 0.0 ? stroke / scale : stroke);
+        // ⚠️ A pen refuses a width that is not a positive finite number, and says so. The scale above
+        // cannot be zero on any transform these canvases build — but a pen that is never handed a
+        // width it refuses is worth the guard: it keeps the default and draws, where a refusal left it
+        // at whatever the last paint had asked for.
+        const qreal penWidth = scale > 0.0 ? stroke / scale : stroke;
+        if (qIsFinite(penWidth) and penWidth > 0.0)
+        {
+            pen.setWidthF(penWidth);
+        }
         painter->setPen(pen);
         painter->setBrush(Qt::NoBrush);
         painter->drawPath(m_content);

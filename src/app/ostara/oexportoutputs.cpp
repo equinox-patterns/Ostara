@@ -478,6 +478,10 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // ⚠️ **Only the reference layer carries decor** — the first one; the canvas strips every other.
     // And the resolution must happen DURING the walk, on that first layer: past the walk the range
     // path has already put the document back on the size it was found on.
+    //
+    // La MINIATURE est du voyage, résolue dans le même appel : c'est le même dessin
+    // gelé, la même fenêtre, et un plan de coupe n'en porte aucune — `request.cuttingPlan` le dit à
+    // `ResolvePieceDecor`, qui ne l'enregistre alors pas du tout.
     // Le décor des GROUPES de la couche de référence, résolu au même moment et pour la même raison —
     // voir OExportGroupDecor. Rangé à part parce que le résultat du nesting n'existe pas encore : il
     // naîtra de l'appel au moteur, plus bas.
@@ -498,7 +502,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
         for (OExportPieceGeometry &piece : layer.pieces)
         {
-            piece.decor = ResolvePieceDecor(piece, range, pattern, doc);
+            piece.decor = ResolvePieceDecor(piece, range, pattern, doc, request.cuttingPlan);
 
             // The grainline is the same story read from the same document — and it is frozen HERE,
             // in the same breath, because it is the same defect: it stayed invisible only for as long
@@ -543,6 +547,32 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // worker thread and drives a wait dialog — has no business running with the document mute.
     const bool wasSignalsBlocked = doc->signalsBlocked();
     doc->blockSignals(true);
+
+    // ⚠️ **Le dessin de référence des miniatures est gelé AVANT la marche des tailles** — la même
+    // précaution que l'export Graded (`mainwindow_graded_export.cpp`), et au même moment du raisonnement :
+    // `freezeDecor` résout les miniatures de la couche de référence, et `ThumbnailReferenceContent()`
+    // rend la géométrie **VIVANTE** tant que rien n'a été capturé. La marche commence sur la première
+    // taille du range, qui n'est pas forcément l'ancre du patron : la miniature serait alors dessinée à
+    // cette taille-là. Gelé, le cache donne aux trois exports — Details, Graded, Export — le même dessin.
+    //
+    // ⚠️ **Sous le bloqueur, jamais avant.** Le service fait un aller-retour de parsing complet du
+    // document ; laissé émettre, il marquerait la fenêtre modifiée, la mise en page périmée et les
+    // sorties périmées AVANT que ce run n'ait pris les trois drapeaux qu'il doit restaurer — et il les
+    // restaurerait donc déjà sales. C'est le défaut que le bloc au-dessus existe pour éteindre.
+    //
+    // Le minuteur qui aurait fait ce gel est arrêté au passage : sa capture est désormais faite, et son
+    // aller-retour n'a plus rien à apprendre à personne — le laisser partir pendant le nesting ci-dessous
+    // ferait re-parser le document pour rien.
+    //
+    // Ni un plan de coupe ni un run plotter n'en porte : rien à geler, et donc rien à leur donner.
+    if (not request.cuttingPlan and not request.plotterPlan)
+    {
+        if (m_thumbnailSnapshots != nullptr)
+        {
+            m_thumbnailSnapshots->stop();
+        }
+        RefreshThumbnailSnapshots(/*freeze*/ true);
+    }
 
     if (request.singleSize)
     {

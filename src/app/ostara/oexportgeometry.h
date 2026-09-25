@@ -63,13 +63,24 @@ struct OExportPieceDecor
     QVector<OInfoBlockSvg::Block> blocks;
     QVector<OInfoBlockSvg::Annotation> annotations;
 
+    /// The owner's miniatures — a piece's own, or the one a group carries per member.
+    ///
+    /// A record rather than an item, for the same reason the blocks and the annotations are: nobody
+    /// ever placed a miniature on the export scene, and the frame it is drawn in is the owner's.
+    ///
+    /// ⚠️ **Un plan de coupe n'en porte aucune** (décision de Sophie) : un plan de coupe dit
+    /// quoi tailler, la miniature est une aide de papier. La règle est posée **à la résolution**, dans
+    /// `ResolveOwnerMiniatures`, et non au dessin — un record jamais fait ne peut pas être dessiné par
+    /// mégarde. Le champ est donc vide sur tout run de coupe, et sur lui seul.
+    QVector<OInfoBlockSvg::Thumbnail> thumbnails;
+
     /// Whether this piece's decor was ever resolved. False on a piece the run had no decor to record
     /// for — an unworn layer, or a piece the document no longer holds.
     bool resolved{false};
 
     auto IsEmpty() const -> bool
     {
-        return not resolved or (blocks.isEmpty() and annotations.isEmpty());
+        return not resolved or (blocks.isEmpty() and annotations.isEmpty() and thumbnails.isEmpty());
     }
 };
 
