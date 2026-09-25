@@ -12656,47 +12656,47 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1498"/>
         <source>One line</source>
-        <translation type="unfinished">Jedna crta</translation>
+        <translation>Jedna crta</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1499"/>
         <source>Two lines</source>
-        <translation type="unfinished">Dvije crte</translation>
+        <translation>Dvije crte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1500"/>
         <source>Three lines</source>
-        <translation type="unfinished">Tri crte</translation>
+        <translation>Tri crte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1501"/>
         <source>T mark</source>
-        <translation type="unfinished">T oznaka</translation>
+        <translation>T oznaka</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1502"/>
         <source>External V mark</source>
-        <translation type="unfinished">Vanjska V oznaka</translation>
+        <translation>Vanjska V oznaka</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1503"/>
         <source>Internal V mark</source>
-        <translation type="unfinished">Unutarnja V oznaka</translation>
+        <translation>Unutarnja V oznaka</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1504"/>
         <source>U mark</source>
-        <translation type="unfinished">U oznaka</translation>
+        <translation>U oznaka</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1505"/>
         <source>Box mark</source>
-        <translation type="unfinished">Oznaka pravokutnik</translation>
+        <translation>Oznaka pravokutnik</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1506"/>
         <source>Check mark</source>
-        <translation type="unfinished">Oznaka provjere</translation>
+        <translation>Oznaka provjere</translation>
     </message>
 </context>
 <context>

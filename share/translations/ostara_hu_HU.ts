@@ -12617,47 +12617,47 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1498"/>
         <source>One line</source>
-        <translation type="unfinished">Egy vonal</translation>
+        <translation>Egy vonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1499"/>
         <source>Two lines</source>
-        <translation type="unfinished">Két vonal</translation>
+        <translation>Két vonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1500"/>
         <source>Three lines</source>
-        <translation type="unfinished">Három vonal</translation>
+        <translation>Három vonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1501"/>
         <source>T mark</source>
-        <translation type="unfinished">T jel</translation>
+        <translation>T jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1502"/>
         <source>External V mark</source>
-        <translation type="unfinished">Külső V jel</translation>
+        <translation>Külső V jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1503"/>
         <source>Internal V mark</source>
-        <translation type="unfinished">Belső V jel</translation>
+        <translation>Belső V jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1504"/>
         <source>U mark</source>
-        <translation type="unfinished">U jel</translation>
+        <translation>U jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1505"/>
         <source>Box mark</source>
-        <translation type="unfinished">Doboz jel</translation>
+        <translation>Doboz jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1506"/>
         <source>Check mark</source>
-        <translation type="unfinished">Pipa jel</translation>
+        <translation>Pipa jel</translation>
     </message>
 </context>
 <context>

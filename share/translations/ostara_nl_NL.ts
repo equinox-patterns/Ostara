@@ -12647,47 +12647,47 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1498"/>
         <source>One line</source>
-        <translation type="unfinished">Een lijn</translation>
+        <translation>Een lijn</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1499"/>
         <source>Two lines</source>
-        <translation type="unfinished">Twee lijnen</translation>
+        <translation>Twee lijnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1500"/>
         <source>Three lines</source>
-        <translation type="unfinished">Drie lijnen</translation>
+        <translation>Drie lijnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1501"/>
         <source>T mark</source>
-        <translation type="unfinished">T markering</translation>
+        <translation>T markering</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1502"/>
         <source>External V mark</source>
-        <translation type="unfinished">Externe V-markering</translation>
+        <translation>Externe V-markering</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1503"/>
         <source>Internal V mark</source>
-        <translation type="unfinished">Interne V-markering</translation>
+        <translation>Interne V-markering</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1504"/>
         <source>U mark</source>
-        <translation type="unfinished">U markering</translation>
+        <translation>U markering</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1505"/>
         <source>Box mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Vierkante markering</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1506"/>
         <source>Check mark</source>
-        <translation type="unfinished">Vinkje</translation>
+        <translation>Vinkje</translation>
     </message>
 </context>
 <context>

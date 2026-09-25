@@ -531,10 +531,11 @@ void ODetailsGroupWidget::RetranslateUI()
 
     m_memberSection->setTitle(tr("Member fold lines"));
 
-    // ⚠️ **Les lignes de membres ne sont PAS reconstruites ici, et c'est délibéré.** Leur état déplié
-    // ne vit que dans la visibilité de leur contenu (`OnMemberToggle`), donc repasser par
-    // `BuildMemberFoldLines()` replierait toutes les lignes ouvertes. Elles reprennent la bonne langue
-    // au prochain affichage du groupe, ce qui est aussi le moment où elles sont reconstruites.
+    // ⚠️ **Les lignes de membres ne sont PAS reconstruites ici — mais elles sont bien retraduites.**
+    // Leur état déplié ne vit que dans la visibilité de leur contenu (`OnMemberToggle`) : repasser par
+    // `BuildMemberFoldLines()` replierait tout ce que l'utilisatrice a ouvert. C'est précisément
+    // pourquoi la reprise existe à part, et réécrit les textes sans toucher aux widgets.
+    RetranslateMemberRows();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1018,6 +1019,77 @@ void ODetailsGroupWidget::CancelFoldLineSelection()
     m_foldLineFirstPoint = NULL_ID;
     m_foldLinePath = VPiecePath();
     emit ShowStatusTip(QString());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Réécrit les textes des lignes de membres **existantes**, sans les reconstruire.
+ *
+ * ⚠️ **La reconstruction est ce qu'il faut éviter ici, et c'est tout l'objet de cette fonction.**
+ * L'état déplié d'une ligne ne vit que dans la visibilité de son contenu (`OnMemberToggle`) :
+ * repasser par `BuildMemberFoldLines()` replierait tout ce que l'utilisatrice a ouvert. Chaque ligne
+ * garde donc ses widgets, et on se contente de réécrire ce qu'ils portent.
+ */
+void ODetailsGroupWidget::RetranslateMemberRows()
+{
+    for (auto it = m_memberFLRows.cbegin(); it != m_memberFLRows.cend(); ++it)
+    {
+        const quint32 pieceId = it.key();
+        const MemberFLRow &row = it.value();
+
+        // Le bouton de repli porte le NOM de la pièce — une donnée, qui ne se traduit pas — ou son
+        // repli, qui si.
+        if (row.toggleBtn != nullptr && m_data != nullptr && m_data->DataPieces() != nullptr
+            && m_data->DataPieces()->contains(pieceId))
+        {
+            const QString name = m_data->GetPiece(pieceId).GetName();
+            row.toggleBtn->setText(name.isEmpty() ? tr("Unnamed") : name);
+        }
+
+        if (row.defineBtn != nullptr)
+        {
+            row.defineBtn->setText(tr("Define foldline"));
+        }
+        if (row.deactivateBtn != nullptr)
+        {
+            row.deactivateBtn->setText(tr("Deactivate"));
+        }
+        if (row.showFullPieceCheck != nullptr)
+        {
+            row.showFullPieceCheck->setText(tr("Show unfolded piece"));
+        }
+        if (row.showMirrorLineCheck != nullptr)
+        {
+            row.showMirrorLineCheck->setText(tr("Show symmetry line"));
+        }
+        if (row.labelEdit != nullptr)
+        {
+            row.labelEdit->setPlaceholderText(tr("Cut on fold"));
+        }
+
+        // Les boutons de type viennent de la liste partagée avec la page Pièce : `OFoldLineTypeText`
+        // les traduit dans le contexte de l'éditeur de pliure, qui est le leur.
+        if (row.typeGroup != nullptr)
+        {
+            for (const OFoldLineTypeItem &item : OFoldLineTypeItems())
+            {
+                if (QAbstractButton *btn = row.typeGroup->button(static_cast<int>(item.type)); btn != nullptr)
+                {
+                    btn->setText(OFoldLineTypeText(item));
+                }
+            }
+        }
+
+        // Largeur / hauteur / centre, et leurs infobulles.
+        if (row.valuesWidget != nullptr)
+        {
+            row.valuesWidget->RetranslateUI();
+        }
+    }
+
+    // Le libellé d'état — « définie » ou « pas définie » — s'écrit en HTML : on le repose par le
+    // chemin qui l'écrit d'ordinaire, plutôt que de reconstruire sa mise en forme ici.
+    RefreshMemberFoldLineStatuses();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

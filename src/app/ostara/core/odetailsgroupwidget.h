@@ -142,6 +142,8 @@ private:
     void OnMemberDeactivate(quint32 pieceId);
     void UpdateMemberFoldLineStatus(quint32 pieceId);
     void RefreshMemberFoldLineStatuses();
+    /// Re-apply the texts of the member rows that already exist, without rebuilding them.
+    void RetranslateMemberRows();
     auto IsFoldLineCarrier(quint32 pieceId) const -> bool;
     void SetMemberFoldLineSelecting(quint32 pieceId, bool selecting);
     void ResetFoldLineHighlight();
