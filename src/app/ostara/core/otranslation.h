@@ -35,6 +35,7 @@ class QComboBox;
 class QGroupBox;
 class QLabel;
 class QLineEdit;
+class QPlainTextEdit;
 class QTabWidget;
 class QTableWidget;
 class QWidget;
@@ -49,7 +50,7 @@ class QWidget;
  * laissé passer, une à une, des surfaces entières du dock Options.
  *
  * **La réponse.** On ne demande plus à aucune classe de se souvenir de rien. Le texte passe par un
- * poseur — `OTTranslation::SetText(...)` — qui **mémorise la chaîne source, son contexte et sa
+ * poseur — `OTranslation::SetText(...)` — qui **mémorise la chaîne source, son contexte et sa
  * place sur le widget lui-même**, puis pose la traduction courante. Un moteur installé une fois sur
  * l'application écoute `QEvent::LanguageChange`, parcourt tous les widgets et **rejoue ce qui a été
  * mémorisé**, dans la langue qui vient d'être installée.
@@ -113,6 +114,11 @@ void SetHeaderText(const QObject *owner, QTableWidget *widget, int column, const
  * @brief Pose un texte d'invite traduit et le rend retraduisible.
  */
 void SetPlaceholderText(const QObject *owner, QLineEdit *widget, const char *source);
+
+/**
+ * @brief Idem, pour un champ multiligne.
+ */
+void SetPlaceholderText(const QObject *owner, QPlainTextEdit *widget, const char *source);
 
 /**
  * @brief Rejoue tout ce qui a été mémorisé, dans la langue installée à cet instant.

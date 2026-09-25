@@ -35,6 +35,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNodeList>
+#include <QEvent>
 #include <QFile>
 #include <QFileInfo>
 #include <QGuiApplication>
@@ -81,6 +82,24 @@ void MeasurementWindow::UpdateWindowTitle()
         ? tr("New measurement table")
         : QFileInfo(m_workspace->FilePath()).fileName();
     setWindowTitle(title + QStringLiteral(" - Ostara"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MeasurementWindow::changeEvent(QEvent *event)
+{
+    // ⚠️ **Cette fenêtre est modeless sur quatre sites : elle peut rester ouverte pendant une
+    // bascule de langue, et rien d'autre ne la reprend.** `MainWindow::RetranslateAll()` ne la
+    // connaît pas — aucun pointeur n'est conservé de lui à elle. C'est donc elle qui se reprend, et
+    // elle reprend l'espace de travail qu'elle héberge.
+    if (event->type() == QEvent::LanguageChange)
+    {
+        UpdateWindowTitle();
+        if (m_workspace != nullptr)
+        {
+            m_workspace->RetranslateUI();
+        }
+    }
+    QMainWindow::changeEvent(event);
 }
 
 void MeasurementWindow::SetOrigin(MeasurementWorkspace::Origin origin)

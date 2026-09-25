@@ -69,11 +69,13 @@
     <name>BreadcrumbBar</name>
     <message>
         <location filename="../../src/app/ostara/widgets/BreadcrumbBar.cpp" line="36"/>
+        <location filename="../../src/app/ostara/widgets/BreadcrumbBar.cpp" line="74"/>
         <source>Canvas</source>
         <translation>Zone de dessin</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/BreadcrumbBar.cpp" line="74"/>
+        <location filename="../../src/app/ostara/widgets/BreadcrumbBar.cpp" line="80"/>
+        <location filename="../../src/app/ostara/widgets/BreadcrumbBar.cpp" line="88"/>
         <source>Group %1</source>
         <translation>Groupe %1</translation>
     </message>
@@ -8208,275 +8210,275 @@ Cette action ne peut pas être annulée.</translation>
     <name>DrawToolBar</name>
     <message>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="110"/>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="536"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="554"/>
         <source>Tools</source>
         <translation>Outils</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="392"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="407"/>
         <source>Selection</source>
         <translation>Sélection</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="393"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="408"/>
         <source>Select</source>
         <translation>Sélectionner</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="395"/>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="396"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="410"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="411"/>
         <source>Export templates</source>
         <translation>Modèles d&apos;export</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="402"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="417"/>
         <source>Export image</source>
         <translation>Export d&apos;image</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="403"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="418"/>
         <source>Export as image...</source>
         <translation>Exporter comme image…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="405"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="420"/>
         <source>Points</source>
         <translation>Points</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="406"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="421"/>
         <source>Point at distance and angle</source>
         <translation>Point à distance et angle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="407"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="422"/>
         <source>Point at distance along line</source>
         <translation>Point à distance dans l&apos;axe d&apos;un segment</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="408"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="423"/>
         <source>Midpoint between two points</source>
         <translation>Point à mi-distance entre deux points</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="409"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="424"/>
         <source>Point along perpendicular</source>
         <translation>Point sur perpendiculaire</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="410"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="425"/>
         <source>Point along bisector</source>
         <translation>Point sur bissectrice</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="411"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="426"/>
         <source>Perpendicular point along line</source>
         <translation>Point perpendiculaire sur axe d&apos;un segment</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="412"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="427"/>
         <source>Point from X and Y of two other points</source>
         <translation>Point à l&apos;X d&apos;un point et l&apos;Y d&apos;un autre</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="413"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="428"/>
         <source>Point at line intersection</source>
         <translation>Point à l&apos;intersection de 2 lignes</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="414"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="429"/>
         <source>Special point on shoulder</source>
         <translation>Point épaule</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="415"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="430"/>
         <source>Triangle tool</source>
         <translation>Outil Triangle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="416"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="431"/>
         <source>Point intersect line and axis</source>
         <translation>Point à l&apos;intersection d&apos;une ligne et d&apos;un axe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="418"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="433"/>
         <source>Line</source>
         <translation>Ligne</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="419"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="434"/>
         <source>Line between points</source>
         <translation>Ligne entre 2 points</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="421"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="436"/>
         <source>Curves</source>
         <translation>Courbes</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="422"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="437"/>
         <source>Curve tool which uses point as control handle</source>
         <translation>Courbe simple utilisant les points comme poignées de contrôle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="423"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="438"/>
         <source>Curved path tool which uses point as control handle</source>
         <translation>Courbe complexe utilisant les points comme poignées de contrôle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="424"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="439"/>
         <source>Point intersect curve and axis</source>
         <translation>Point d&apos;intersection d&apos;une courbe et d&apos;un axe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="425"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="440"/>
         <source>Point intersection curves</source>
         <translation>Point d&apos;intersection de 2 courbes</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="426"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="441"/>
         <source>Parallel curve tool</source>
         <translation>Courbe parallèle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="427"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="442"/>
         <source>Graduated curve tool</source>
         <translation>Gradation de courbe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="429"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="444"/>
         <source>Arcs</source>
         <translation>Arcs</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="430"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="445"/>
         <source>Arc</source>
         <translation>Arc</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="431"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="446"/>
         <source>Arc with given length</source>
         <translation>Arc de longueur donnée</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="432"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="447"/>
         <source>Elliptical Arc</source>
         <translation>Arc elliptique</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="433"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="448"/>
         <source>Elliptical arc with given length</source>
         <translation>Arc elliptique de longueur donnée</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="434"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="449"/>
         <source>Segment an arc</source>
         <translation>Segmenter un arc</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="435"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="450"/>
         <source>Arc start point</source>
         <translation>Point de départ de l&apos;arc</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="436"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="451"/>
         <source>Arc end point</source>
         <translation>Point d&apos;arrivée de l&apos;arc</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="437"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="452"/>
         <source>Point of intersection arcs</source>
         <translation>Point à l&apos;intersection de 2 arcs</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="438"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="453"/>
         <source>Point of intersection arc and axis</source>
         <translation>Point d&apos;intersection d&apos;un arc et d&apos;un axe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="439"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="454"/>
         <source>Point of intersection circles</source>
         <translation>Point d&apos;intersection de 2 cercles</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="440"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="455"/>
         <source>Point from arc and tangent</source>
         <translation>Point à l&apos;intersection d&apos;un arc et d&apos;une tangente</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="441"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="456"/>
         <source>Point from circle and tangent</source>
         <translation>Point à l&apos;intersection d&apos;un cercle et d&apos;une tangente</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="442"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="457"/>
         <source>Point of intersection circle and segment</source>
         <translation>Point à l&apos;intersection d&apos;un cercle et d&apos;un segment</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="444"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="459"/>
         <source>Operations</source>
         <translation>Opérations</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="445"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="460"/>
         <source>Layer</source>
         <translation>Calque</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="446"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="461"/>
         <source>Group</source>
         <translation>Groupe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="447"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="462"/>
         <source>Flipping objects by axis</source>
         <translation>Miroir des objets par rapport à un axe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="448"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="463"/>
         <source>Flipping objects by line</source>
         <translation>Miroir des objets par rapport à une ligne</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="449"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="464"/>
         <source>Rotate objects</source>
         <translation>Rotation des objets</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="450"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="465"/>
         <source>Move objects</source>
         <translation>Déplacer des objets</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="451"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="466"/>
         <source>True darts</source>
         <translation>Pince automatique</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="453"/>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="459"/>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="463"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="468"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="474"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="478"/>
         <source>Pieces</source>
         <translation>Pièces</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="454"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="469"/>
         <source>Workpiece tool</source>
         <translation>Extraction de contour principal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="455"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="470"/>
         <source>Internal path tool</source>
         <translation>Extraction de chemin interne</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="456"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="471"/>
         <source>Insert node tool</source>
         <translation>Outil Insérer un nœud</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="457"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="472"/>
         <source>Internal mark</source>
         <translation>Repère interne</translation>
     </message>
@@ -8485,42 +8487,42 @@ Cette action ne peut pas être annulée.</translation>
         <translation type="vanished">Outil Placer un repère</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="460"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="475"/>
         <source>Union tool</source>
         <translation>Outil Fusion de pièces</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="461"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="476"/>
         <source>Duplicate detail tool</source>
         <translation>Outil Duplication de pièce</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="464"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="479"/>
         <source>Export</source>
         <translation>Exporter</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="466"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="481"/>
         <source>New</source>
         <translation>Nouveau</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="467"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="482"/>
         <source>Curve</source>
         <translation>Courbe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="468"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="483"/>
         <source>Segment a curve</source>
         <translation>Segmenter une courbe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="469"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="484"/>
         <source>Armhole curve passing through 4 points</source>
         <translation>Courbe d&apos;emmanchure passant par 4 points</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="768"/>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="786"/>
         <source>%1 more tools</source>
         <translation>%1 outils supplémentaires</translation>
     </message>
@@ -8683,7 +8685,7 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>InitPieceLabelLanguages</name>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="661"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="678"/>
         <source>Default</source>
         <translation>Par défaut</translation>
     </message>
@@ -8910,7 +8912,7 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="816"/>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="356"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="177"/>
         <source>Preferences</source>
         <translation>Préférences</translation>
     </message>
@@ -9158,13 +9160,13 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="328"/>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="140"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="777"/>
         <source>&amp;Undo</source>
         <translation>&amp;Annuler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="335"/>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="141"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="778"/>
         <source>&amp;Redo</source>
         <translation>&amp;Rétablir</translation>
     </message>
@@ -9177,7 +9179,7 @@ Cette action ne peut pas être annulée.</translation>
         <translation type="vanished">Contient tous les calques</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="649"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="602"/>
         <source>Object</source>
         <translation>Objet</translation>
     </message>
@@ -9386,15 +9388,15 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Sélectionner le premier point de la ligne de base</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="715"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="735"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="244"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="251"/>
         <source>Detail mode</source>
         <translation>Mode Pièces</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="781"/>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="794"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="801"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="814"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="193"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="320"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="398"/>
@@ -9544,17 +9546,17 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Pince automatique</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="344"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="165"/>
         <source>New pattern</source>
         <translation>Nouveau patron</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="348"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="169"/>
         <source>Open pattern</source>
         <translation>Ouvrir le patron</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="352"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="173"/>
         <source>Create/Edit measurements</source>
         <translation>Créer/éditer une table de mensurations</translation>
     </message>
@@ -9607,7 +9609,7 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2278"/>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="642"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="595"/>
         <source>Group</source>
         <translation>Groupe</translation>
     </message>
@@ -9720,17 +9722,17 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Outil Insérer un noeud</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="716"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="736"/>
         <source>You can&apos;t use Detail mode yet. Please, create at least one workpiece.</source>
         <translation>Vous ne pouvez pas utiliser le mode Pièces à ce stade. Créez SVP au moins une pièce de patron en utilisant l&apos;outil &apos;Extraction du contour principal&apos; en mode Traçage.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="782"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="802"/>
         <source>You can&apos;t use Layout mode yet. Please, create at least one workpiece.</source>
         <translation>Vous ne pouvez pas utiliser le mode Plan de coupe à ce stade. Créez SVP au moins une pièce de patron en utilisant l&apos;outil &apos;Extraction du contour principal&apos; en mode Traçage.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="795"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="815"/>
         <source>You can&apos;t use Layout mode yet. Please, include at least one detail in layout.</source>
         <translation>Vous ne pouvez pas utiliser le mode Plan de coupe à ce stade. Intégrez au moins une pièce pour transfert dans le plan de coupe, en la cochant en mode Pièces.</translation>
     </message>
@@ -9884,7 +9886,7 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Le fichier de mesures &apos;%1&apos; n&apos;a pas été trouvé à l&apos;emplacement spécifié ou ne contient pas toutes les informations nécessaires.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="282"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="320"/>
         <source>Create new pattern piece to start working.</source>
         <translation>Créer un nouvel élément de patron pour commencer.</translation>
     </message>
@@ -9894,7 +9896,7 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Ostara</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="142"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="779"/>
         <source>Changes applied.</source>
         <translation>Modifications appliquées.</translation>
     </message>
@@ -10231,7 +10233,7 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1358"/>
-        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="209"/>
+        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="96"/>
         <source>Hide point names</source>
         <translation>Masquer les noms de points</translation>
     </message>
@@ -10485,12 +10487,12 @@ Ostara utilise le format .omt/.otu. Choisissez comment procéder :</translation>
         <translation>Sélectionner le point central de l&apos;arc elliptique</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="172"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="817"/>
         <source>Pen style:</source>
         <translation>Style de tracé :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="176"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="821"/>
         <source>Color:</source>
         <translation>Couleur :</translation>
     </message>
@@ -10531,18 +10533,18 @@ Ostara utilise le format .omt/.otu. Choisissez comment procéder :</translation>
         <translation>Afficher le guide de précision</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="143"/>
-        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="114"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="780"/>
+        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="141"/>
         <source>Piece:</source>
         <translation>Pièce :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="208"/>
+        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="95"/>
         <source>Show all point names</source>
         <translation>Afficher tous les noms de points</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="356"/>
+        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="377"/>
         <source>Load measurements table</source>
         <translation>Charger un tableau de mensurations</translation>
     </message>
@@ -10998,97 +11000,100 @@ Voulez-vous charger un autre fichier de mesures ?</translation>
 <context>
     <name>MeasurementDetailPanel</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="49"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="491"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="621"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="50"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="177"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="517"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="647"/>
         <source>Measurement details</source>
         <translation>Détails de la mesure</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="82"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="83"/>
         <source>Name used in formulas (@ auto)</source>
         <translation>Nom utilisé dans les formules (@ auto)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="84"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="86"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="88"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="91"/>
         <source>e.g., Chest circumference</source>
         <translation>par ex., Tour de poitrine</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="90"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="94"/>
         <source>Full name:</source>
         <translation>Nom complet :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="95"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="100"/>
         <source>Measurement description</source>
         <translation>Description de la mesure</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="113"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="119"/>
         <source>Description:</source>
         <translation>Description :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="119"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="174"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="126"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="200"/>
         <source>Value at reference size</source>
         <translation>Valeur à la taille de référence</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="122"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="171"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="130"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="197"/>
         <source>Base value:</source>
         <translation>Valeur de base :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="146"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="314"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="155"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="182"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="340"/>
         <source>Select or create a measurement</source>
         <translation>Sélectionner ou créer une mesure</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="171"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="197"/>
         <source>Value:</source>
         <translation>Valeur :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="173"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="199"/>
         <source>Measurement value</source>
         <translation>Valeur de la mesure</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="242"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="268"/>
         <source>Interval &lt;b&gt;%1&lt;/b&gt;</source>
         <translation>Intervalle &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="247"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="273"/>
         <source>Linear</source>
         <translation>Linéaire</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="250"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="276"/>
         <source>Non-linear</source>
         <translation>Non linéaire</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="258"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="284"/>
         <source>Configure ranges</source>
         <translation>Configurer les plages</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="295"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="321"/>
         <source>No range groups defined. Click Configure ranges.</source>
         <translation>Aucun groupe de plages défini. Cliquez sur Configurer les plages.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="582"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="177"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="608"/>
         <source>Group properties</source>
         <translation>Propriétés du groupe</translation>
     </message>
@@ -11096,22 +11101,22 @@ Voulez-vous charger un autre fichier de mesures ?</translation>
 <context>
     <name>MeasurementWindow</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="81"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="82"/>
         <source>New measurement table</source>
         <translation>Nouveau tableau de mensurations</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="172"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="191"/>
         <source>Conversion error</source>
         <translation>Erreur de conversion</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="173"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="192"/>
         <source>Unable to convert .vst file.</source>
         <translation>Impossible de convertir le fichier .vst.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="182"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="201"/>
         <source>This legacy .vst file has been converted to .omt format.
 
 Ostara calculates measurements differently from Tape, so the converted values may differ from the original file.
@@ -11124,38 +11129,38 @@ Ostara calcule les mensurations différemment de Tape, les valeurs converties pe
 Veuillez vérifier les valeurs de mesures et les ajuster si nécessaire avant d&apos;enregistrer.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="189"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="208"/>
         <source>Unresolved measurements: %1</source>
         <translation>Mensurations non résolues : %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="192"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="251"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="211"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="270"/>
         <source>Conversion complete</source>
         <translation>Conversion terminée</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="202"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="221"/>
         <source>Read error</source>
         <translation>Erreur de lecture</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="203"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="222"/>
         <source>Unable to open file %1.</source>
         <translation>Impossible d&apos;ouvrir le fichier %1.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="211"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="230"/>
         <source>XML error</source>
         <translation>Erreur XML</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="212"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="231"/>
         <source>Invalid .vit file: %1</source>
         <translation>Fichier .vit invalide : %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="252"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="271"/>
         <source>This legacy .vit file has been converted to .otu format.
 
 Ostara calculates measurements differently from Tape, so the converted values may differ from the original file.
@@ -11168,34 +11173,34 @@ Ostara calcule les mensurations différemment de Tape, les valeurs converties pe
 Veuillez vérifier les valeurs de mesures et les ajuster si nécessaire avant d&apos;enregistrer.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="259"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="278"/>
         <source>Unsupported format</source>
         <translation>Format non pris en charge</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="260"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="279"/>
         <source>File %1 is not a recognized format.</source>
         <translation>Le fichier %1 n&apos;est pas un format reconnu.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="307"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="326"/>
         <source>Unsaved table</source>
         <translation>Tableau non enregistré</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="308"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="327"/>
         <source>The measurement table was not saved.
 If you close without saving, data will be lost.</source>
         <translation>Le tableau de mensurations n&apos;a pas été enregistré.
 Si vous fermez sans enregistrer, les données seront perdues.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="334"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="353"/>
         <source>Unsaved changes</source>
         <translation>Changements non enregistrés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="335"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="354"/>
         <source>The measurement table has been modified.
 Do you want to save changes before closing?</source>
         <translation>Le tableau de mensurations a été modifié.
@@ -11205,64 +11210,65 @@ Voulez-vous enregistrer les modifications avant de fermer ?</translation>
 <context>
     <name>MeasurementWorkspace</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="105"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="218"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="248"/>
         <source>New measurement table</source>
         <translation>Nouveau tableau de mensurations</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="139"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="144"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="145"/>
         <source>Save</source>
         <translation>Enregistrer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="143"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="149"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="150"/>
         <source>Save As…</source>
         <translation>Enregistrer sous…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="147"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="372"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="156"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="402"/>
         <source>Home</source>
         <translation>Accueil</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="172"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="182"/>
         <source>&lt; Back</source>
         <translation>&lt; Précédent</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="179"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="190"/>
         <source>Next &gt;</source>
         <translation>Suivant &gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="193"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="223"/>
         <source>Measurements</source>
         <translation>Mensurations</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="199"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="229"/>
         <source>Step %1: %2 Sizes  %3 Measurements</source>
         <translation>Étape %1 : %2 tailles  %3 mesures</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="329"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="359"/>
         <source>table</source>
         <translation>tableau</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="377"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="407"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="407"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="437"/>
         <source>Save error</source>
         <translation>Erreur d&apos;enregistrement</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="408"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="438"/>
         <source>Unable to save file.
 
 %1</source>
@@ -11271,12 +11277,12 @@ Voulez-vous enregistrer les modifications avant de fermer ?</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="426"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="456"/>
         <source>File already exists</source>
         <translation>Le fichier existe déjà</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="427"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="457"/>
         <source>A file named &quot;%1&quot; already exists at this location.
 Do you want to overwrite it?</source>
         <translation>Un fichier nommé « %1 » existe déjà à cet emplacement.
@@ -11376,7 +11382,7 @@ Voulez-vous le remplacer ?</translation>
 <context>
     <name>OAnnotationPreview</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationpreview.cpp" line="73"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationpreview.cpp" line="74"/>
         <source>No annotation selected</source>
         <translation>Aucune annotation sélectionnée</translation>
     </message>
@@ -11384,158 +11390,158 @@ Voulez-vous le remplacer ?</translation>
 <context>
     <name>OAnnotationStylesPage</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="86"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="641"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="87"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="658"/>
         <source>Add annotation style</source>
         <translation>Ajouter un style d&apos;annotation</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="89"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="541"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="642"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="90"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="558"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="659"/>
         <source>Remove style</source>
         <translation>Supprimer le style</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="97"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="643"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="97"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="643"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Font</source>
         <translation>Police</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="97"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="643"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Weight</source>
         <translation>Graisse</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="97"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="643"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Size</source>
         <translation>Taille</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="97"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="643"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Background</source>
         <translation>Fond</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="107"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="644"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="108"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="661"/>
         <source>Annotation style</source>
         <translation>Style d&apos;annotation</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="113"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="645"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="118"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="662"/>
         <source>Style name</source>
         <translation>Nom du style</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="115"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="121"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="118"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="126"/>
         <source>Font:</source>
         <translation>Police :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="129"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="139"/>
         <source>Weight:</source>
         <translation>Graisse :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="248"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="249"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="265"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="266"/>
         <source>Default</source>
         <translation>Défaut</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="138"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="150"/>
         <source>Size:</source>
         <translation>Taille :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="146"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="646"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="159"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="663"/>
         <source>#RRGGBB, empty = transparent</source>
         <translation>#RRGGBB, vide = transparent</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="154"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="168"/>
         <source>Background:</source>
         <translation>Fond :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="159"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="175"/>
         <source>Presets:</source>
         <translation>Préréglages :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="161"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="178"/>
         <source>White</source>
         <translation>Blanc</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="167"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="184"/>
         <source>Black</source>
         <translation>Noir</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="175"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="647"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="192"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="664"/>
         <source>White text for dark backgrounds</source>
         <translation>Texte blanc pour fonds sombres</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="187"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="648"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="204"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="665"/>
         <source>Annotation text</source>
         <translation>Texte de l&apos;annotation</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="189"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="206"/>
         <source>This is an annotation</source>
         <translation>Ceci est une annotation</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="228"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="245"/>
         <source>No styles yet. Add one.</source>
         <translation>Aucun style pour l&apos;instant. Ajoutez-en un.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="252"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="269"/>
         <source>Transparent</source>
         <translation>Transparent</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="517"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="549"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="562"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="534"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="566"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="579"/>
         <source>Annotations</source>
         <translation>Annotations</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="524"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="541"/>
         <source>Annotation style added</source>
         <translation>Style d&apos;annotation ajouté</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="541"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="558"/>
         <source>Remove the style &quot;%1&quot; from the library?</source>
         <translation>Supprimer le style &quot;%1&quot; de la bibliothèque ?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="553"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="570"/>
         <source>Annotation style removed</source>
         <translation>Style d&apos;annotation supprimé</translation>
     </message>
@@ -11575,36 +11581,36 @@ Voulez-vous le remplacer ?</translation>
 <context>
     <name>OAnnotationsConfigWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="53"/>
-        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="365"/>
+        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="54"/>
+        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="372"/>
         <source>Add annotation</source>
         <translation>Ajouter une annotation</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="61"/>
-        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="366"/>
+        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="62"/>
+        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="373"/>
         <source>Active annotations</source>
         <translation>Annotations actives</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="72"/>
-        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="367"/>
+        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="73"/>
+        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="374"/>
         <source>No annotations yet. Add one.</source>
         <translation>Aucune annotation pour l&apos;instant. Ajoutez-en une.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="200"/>
+        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="206"/>
         <source>Edit annotation</source>
         <translation>Modifier l&apos;annotation</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="203"/>
-        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="344"/>
+        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="210"/>
+        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="351"/>
         <source>Delete annotation</source>
         <translation>Supprimer l&apos;annotation</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="345"/>
+        <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="352"/>
         <source>Delete the annotation &quot;%1&quot;?</source>
         <translation>Supprimer l&apos;annotation &quot;%1&quot; ?</translation>
     </message>
@@ -11629,25 +11635,25 @@ Voulez-vous le remplacer ?</translation>
 <context>
     <name>OBlockConfigWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="68"/>
-        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="193"/>
+        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="75"/>
+        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="202"/>
         <source>Activate information block</source>
         <translation>Activer le bloc d&apos;information</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="74"/>
-        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="194"/>
+        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="82"/>
+        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="203"/>
         <source>Template:</source>
         <translation>Modèle :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="87"/>
-        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="195"/>
+        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="96"/>
+        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="204"/>
         <source>Split into multiple blocks</source>
         <translation>Répartir en plusieurs blocs</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="250"/>
+        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="259"/>
         <source>Block %1</source>
         <translation>Bloc %1</translation>
     </message>
@@ -11818,57 +11824,58 @@ Choisissez un autre nom.</translation>
 <context>
     <name>OCoverPageTemplatesPage</name>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="154"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="155"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="157"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="197"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="200"/>
         <source>Existing templates</source>
         <translation>Modèles existants</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="198"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="201"/>
         <source>Search templates…</source>
         <translation>Rechercher des modèles…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="199"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="202"/>
         <source>Open folder</source>
         <translation>Ouvrir le dossier</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="241"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="244"/>
         <source>No templates yet. Create one.</source>
         <translation>Aucun modèle pour l&apos;instant. Créez-en un.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="268"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="271"/>
         <source>This is the default template</source>
         <translation>C&apos;est le modèle par défaut</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="269"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="272"/>
         <source>Make this the default template</source>
         <translation>Définir comme modèle par défaut</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="277"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="280"/>
         <source>Edit</source>
         <translation>Modifier</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="281"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="284"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="337"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="340"/>
         <source>Confirm deletion</source>
         <translation>Confirmer la suppression</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="338"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="341"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
@@ -11877,12 +11884,12 @@ This action cannot be undone.</source>
 Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="357"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="360"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="357"/>
+        <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="360"/>
         <source>Could not delete the file.</source>
         <translation>Impossible de supprimer le fichier.</translation>
     </message>
@@ -11947,26 +11954,27 @@ Cette action ne peut pas être annulée.</translation>
     <name>ODetailsFoldLineValuesWidget</name>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="105"/>
+        <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="163"/>
         <source>Edit expression</source>
         <translation>Modifier l&apos;expression</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="154"/>
+        <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="152"/>
         <source>Width</source>
         <translation>Largeur</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="155"/>
+        <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="153"/>
         <source>Height</source>
         <translation>Hauteur</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="156"/>
+        <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="154"/>
         <source>Center</source>
         <translation>Centre</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="157"/>
+        <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="155"/>
         <source>0 = automatic value, formulas allowed</source>
         <translation>0 = valeur automatique, formules autorisées</translation>
     </message>
@@ -12071,63 +12079,64 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>ODetailsGrainlineWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="52"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="54"/>
         <source>5 cm</source>
         <translation>5 cm</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="53"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="55"/>
         <source>10 cm</source>
         <translation>10 cm</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="54"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="56"/>
         <source>20 cm</source>
         <translation>20 cm</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="55"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="57"/>
         <source>40 cm</source>
         <translation>40 cm</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="56"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="58"/>
         <source>80 cm</source>
         <translation>80 cm</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="68"/>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="128"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="76"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="147"/>
         <source>Grainline</source>
         <translation>Droit-fil</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="71"/>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="129"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="80"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="148"/>
         <source>Activate grainline</source>
         <translation>Activer le droit-fil</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="75"/>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="130"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="85"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="149"/>
         <source>Length</source>
         <translation>Longueur</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="97"/>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="133"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="108"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="114"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="152"/>
         <source>Rotation</source>
         <translation>Rotation</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="106"/>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="135"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="124"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="154"/>
         <source>Simple</source>
         <translation>Simple</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="112"/>
-        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="136"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="131"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="155"/>
         <source>Double</source>
         <translation>Double</translation>
     </message>
@@ -12135,105 +12144,112 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>ODetailsGroupWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="201"/>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="507"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="202"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="522"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="547"/>
         <source>Align on the common point</source>
         <translation>Aligner sur le point commun</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="203"/>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="508"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="204"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="523"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="548"/>
         <source>Show alignment point</source>
         <translation>Afficher le point d&apos;alignement</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="217"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="218"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="525"/>
         <source>Force flipping</source>
         <translation>Forcer le placement en miroir</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="218"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="219"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="526"/>
         <source>Force piece to be always flipped in a layout.</source>
         <translation>Forcer le retournement de la pièce dans le plan de coupe.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="221"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="222"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="527"/>
         <source>Symmetrical copy</source>
         <translation>Copie symétrique</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="222"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="223"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="529"/>
         <source>When the number of copies is greater than 1 and &apos;Force flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically.</source>
         <translation>Lorsque le nombre de copies est supérieur à 1 et que « Forcer le placement en miroir » est coché, chaque copie paire de la pièce est retournée verticalement.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="263"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="268"/>
         <source>General</source>
         <translation>Général</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="279"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="284"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="532"/>
         <source>Member fold lines</source>
         <translation>Lignes de pli des membres</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="285"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="291"/>
         <source>Grainline</source>
         <translation>Droit-fil</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="309"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="318"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="319"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="330"/>
         <source>Group</source>
         <translation>Groupe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="320"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="332"/>
         <source>Blocks</source>
         <translation>Blocs</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="321"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="334"/>
         <source>Annotations</source>
         <translation>Annotations</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="322"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="336"/>
         <source>Thumbnail</source>
         <translation>Miniature</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="324"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="339"/>
         <source>Information</source>
         <translation>Information</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="690"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="730"/>
         <source>Unnamed</source>
         <translation>Sans nom</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="717"/>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="1071"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="757"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="1111"/>
         <source>Define foldline</source>
         <translation>Définir la ligne de pli</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="718"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="758"/>
         <source>Deactivate</source>
         <translation>Désactiver</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="723"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="763"/>
         <source>Show unfolded piece</source>
         <translation>Afficher la pièce dépliée</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="724"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="764"/>
         <source>Show symmetry line</source>
         <translation>Afficher la ligne de symétrie</translation>
     </message>
@@ -12246,42 +12262,42 @@ Cette action ne peut pas être annulée.</translation>
         <translation type="vanished">Avec texte</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="756"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="796"/>
         <source>Cut on fold</source>
         <translation>Couper au pli</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="865"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="905"/>
         <source>Select the first point of the foldline — respect clockwise direction</source>
         <translation>Sélectionnez le premier point de la ligne de pli — respectez le sens des aiguilles d&apos;une montre</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="914"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="954"/>
         <source>This point does not belong to the selected piece</source>
         <translation>Ce point n&apos;appartient pas à la pièce sélectionnée</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="921"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="961"/>
         <source>Select the second point of the foldline — respect clockwise direction</source>
         <translation>Sélectionnez le second point de la ligne de pli — respectez le sens des aiguilles d&apos;une montre</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="933"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="973"/>
         <source>Invalid points — start over</source>
         <translation>Points invalides — recommencer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="997"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="1037"/>
         <source>Foldline defined</source>
         <translation>Ligne de pli définie</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="1002"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="1042"/>
         <source>Foldline not defined</source>
         <translation>Ligne de pli non définie</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="1071"/>
+        <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="1111"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
@@ -12492,6 +12508,7 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="119"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="576"/>
         <source>Edit expression</source>
         <translation>Modifier l&apos;expression</translation>
     </message>
@@ -12505,8 +12522,8 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>ODetailsPieceWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="428"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="463"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="434"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="469"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
@@ -12519,89 +12536,90 @@ Cette action ne peut pas être annulée.</translation>
         <translation type="vanished">Numéro</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="226"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="468"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="227"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="474"/>
         <source>Graded alignment</source>
         <translation>Alignement de tailles</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="230"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="472"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="231"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="478"/>
         <source>Horizontal</source>
         <translation>Horizontal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="134"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="135"/>
         <source>Left</source>
         <translation>À gauche</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="135"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="141"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="136"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="142"/>
         <source>Center</source>
         <translation>Centre</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="136"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="137"/>
         <source>Right</source>
         <translation>À droite</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="261"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="476"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="262"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="482"/>
         <source>Vertical</source>
         <translation>Vertical</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="140"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="141"/>
         <source>Top</source>
         <translation>En haut</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="142"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="143"/>
         <source>Bottom</source>
         <translation>En bas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="322"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="323"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="514"/>
         <source>When the number of copies is greater than 1 and &apos;Force flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically.</source>
         <translation>Lorsque le nombre de copies est supérieur à 1 et que « Forcer le placement en miroir » est coché, chaque copie paire de la pièce est retournée verticalement.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="389"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="395"/>
         <source>Internal outline</source>
         <translation>Tracé interne</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="436"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="508"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="442"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="521"/>
         <source>Piece</source>
         <translation>Pièce</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="332"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="493"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1128"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="333"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="499"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1141"/>
         <source>+ Add passmarks</source>
         <translation>+ Ajouter des crans</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="298"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="487"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1190"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1375"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="299"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="493"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1203"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1388"/>
         <source>Align on a point</source>
         <translation>Aligner sur un point</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="301"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="488"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="302"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="494"/>
         <source>Remove point</source>
         <translation>Retirer le point</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="305"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="489"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="306"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="495"/>
         <source>Show alignment point</source>
         <translation>Afficher le point d&apos;alignement</translation>
     </message>
@@ -12610,7 +12628,8 @@ Cette action ne peut pas être annulée.</translation>
         <translation type="vanished">Interdire le retournement de la pièce dans le plan de coupe.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="318"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="319"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="508"/>
         <source>Force piece to be always flipped in a layout.</source>
         <translation>Forcer le retournement de la pièce dans le plan de coupe.</translation>
     </message>
@@ -12623,33 +12642,33 @@ Cette action ne peut pas être annulée.</translation>
         <translation type="vanished">Forcer le placement de la pièce dans le droit-fil, quel que soit le réglage du plan de coupe.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="335"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="495"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1129"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="336"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="501"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1142"/>
         <source>- Remove passmarks</source>
         <translation>- Retirer des crans</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="340"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="491"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="341"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="497"/>
         <source>Manage main path</source>
         <translation>Gérer le contour principal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="345"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="504"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="346"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="517"/>
         <source>General</source>
         <translation>Général</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="369"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="505"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="370"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="518"/>
         <source>Grainline</source>
         <translation>Droit-fil</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="398"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="506"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="404"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="519"/>
         <source>Seam Allowance</source>
         <translation>Marge de couture</translation>
     </message>
@@ -12658,94 +12677,139 @@ Cette action ne peut pas être annulée.</translation>
         <translation type="vanished">Chemin interne</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="439"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="509"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="445"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="522"/>
         <source>Blocks</source>
         <translation>Blocs</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="442"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="510"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="448"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="523"/>
         <source>Annotations</source>
         <translation>Annotations</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="445"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="511"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="451"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="524"/>
         <source>Thumbnail</source>
         <translation>Miniature</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="447"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="507"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="453"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="520"/>
         <source>Information</source>
         <translation>Information</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="486"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="492"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="494"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1073"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1106"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1226"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1374"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="498"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="500"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1086"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1119"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1239"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1387"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="987"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1003"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1000"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1016"/>
         <source>Delete internal path</source>
         <translation>Supprimer le chemin interne</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="988"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1001"/>
         <source>Delete internal path &quot;%1&quot;?</source>
         <translation>Supprimer le chemin interne « %1 » ?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1087"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1100"/>
         <source>Click points to add passmarks — Enter to confirm, Esc to cancel</source>
         <translation>Cliquez sur les points pour ajouter des crans d&apos;assemblage — Entrée pour confirmer, Échap pour annuler</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1120"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1133"/>
         <source>Click passmark points to remove — Enter to confirm, Esc to cancel</source>
         <translation>Cliquez sur les points des crans à retirer — Entrée pour confirmer, Échap pour annuler</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1227"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1240"/>
         <source>Click the point to align on, on the piece outline (Esc to cancel)</source>
         <translation>Cliquez sur le point d&apos;alignement, sur le contour de la pièce (Échap pour annuler)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1242"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1255"/>
         <source>This point is not on the piece outline — click a point of the piece</source>
         <translation>Ce point n&apos;est pas sur le contour de la pièce — cliquez sur un point de la pièce</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1451"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1464"/>
         <source>%1 point(s) selected — Enter to confirm, Esc to cancel</source>
         <translation>%1 point(s) sélectionné(s) — Entrée pour confirmer, Échap pour annuler</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1472"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1485"/>
         <source>Choose Passmark Type</source>
         <translation>Choisir le type de cran d&apos;assemblage</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1498"/>
+        <source>One line</source>
+        <translation>Un trait</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1499"/>
+        <source>Two lines</source>
+        <translation>Deux traits</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1500"/>
+        <source>Three lines</source>
+        <translation>Trois traits</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1501"/>
+        <source>T mark</source>
+        <translation>En forme de T</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1502"/>
+        <source>External V mark</source>
+        <translation>Marque en V externe</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1503"/>
+        <source>Internal V mark</source>
+        <translation>Marque en V interne</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1504"/>
+        <source>U mark</source>
+        <translation>En forme de U</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1505"/>
+        <source>Box mark</source>
+        <translation>Rectangle</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1506"/>
+        <source>Check mark</source>
+        <translation>En forme de coche</translation>
     </message>
     <message>
         <source>Forbid flipping</source>
         <translation type="vanished">Interdire le placement en miroir</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="317"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="498"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="318"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="504"/>
         <source>Force flipping</source>
         <translation>Forcer le placement en miroir</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="321"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="502"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="322"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="512"/>
         <source>Symmetrical copy</source>
         <translation>Copie symétrique</translation>
     </message>
@@ -12807,55 +12871,56 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Cercle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="65"/>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="389"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="66"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="394"/>
         <source>Internal mark</source>
         <translation>Repère interne</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="77"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="78"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="407"/>
         <source>Edit expression</source>
         <translation>Modifier l&apos;expression</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="85"/>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="390"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="86"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="395"/>
         <source>Width</source>
         <translation>Largeur</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="96"/>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="391"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="97"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="396"/>
         <source>Height</source>
         <translation>Hauteur</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="107"/>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="392"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="108"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="397"/>
         <source>Angle</source>
         <translation>Angle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="118"/>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="393"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="119"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="398"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="138"/>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="394"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="143"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="399"/>
         <source>Visibility</source>
         <translation>Visibilité</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="148"/>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="395"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="153"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="400"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
         <translation>1 = visible, 0 = invisible, formules autorisées</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="155"/>
-        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="396"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="160"/>
+        <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="401"/>
         <source>Not mirrored</source>
         <translation>Ne pas reproduire en miroir</translation>
     </message>
@@ -12998,60 +13063,60 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="104"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="486"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="609"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="603"/>
         <source>Size Ranges</source>
         <translation>Panel de tailles</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="109"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="488"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="610"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="604"/>
         <source>Size Styles</source>
         <translation>Styles de tailles</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="114"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="510"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="597"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="599"/>
         <source>Outputs</source>
         <translation>Sorties</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="120"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="512"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="602"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="600"/>
         <source>Cover page</source>
         <translation>Page de garde</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="418"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="447"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="587"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="592"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="589"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="594"/>
         <source>Options</source>
         <translation>Options</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="421"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="585"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="587"/>
         <source>Layers</source>
         <translation>Calques</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="423"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="586"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="588"/>
         <source>Contains all layers</source>
         <translation>Contient tous les calques</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="443"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="590"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="592"/>
         <source>Pieces</source>
         <translation>Pièces</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="445"/>
-        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="591"/>
+        <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="593"/>
         <source>Show which details will go in layout</source>
         <translation>Pièces de patrons qui seront intégrées au plan de coupe</translation>
     </message>
@@ -14176,57 +14241,58 @@ L&apos;enregistrer avant de fermer ?</translation>
 <context>
     <name>OExportTemplatesPage</name>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="156"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="157"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="162"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="198"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="202"/>
         <source>Existing templates</source>
         <translation>Modèles existants</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="199"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="203"/>
         <source>Search templates…</source>
         <translation>Rechercher des modèles…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="200"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="204"/>
         <source>Open folder</source>
         <translation>Ouvrir le dossier</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="241"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="245"/>
         <source>No templates yet. Create one.</source>
         <translation>Aucun modèle pour l&apos;instant. Créez-en un.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="268"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="272"/>
         <source>This is the default template</source>
         <translation>C&apos;est le modèle par défaut</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="269"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="273"/>
         <source>Make this the default template</source>
         <translation>Définir comme modèle par défaut</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="277"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="281"/>
         <source>Edit</source>
         <translation>Modifier</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="281"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="285"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="337"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="341"/>
         <source>Confirm deletion</source>
         <translation>Confirmer la suppression</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="338"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="342"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
@@ -14235,12 +14301,12 @@ This action cannot be undone.</source>
 Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="359"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="363"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="359"/>
+        <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="363"/>
         <source>Could not delete the file.</source>
         <translation>Impossible de supprimer le fichier.</translation>
     </message>
@@ -14299,16 +14365,19 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="117"/>
+        <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="231"/>
         <source>Graded alignment</source>
         <translation>Alignement de tailles</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="122"/>
+        <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="232"/>
         <source>Horizontal</source>
         <translation>Horizontal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="159"/>
+        <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="233"/>
         <source>Vertical</source>
         <translation>Vertical</translation>
     </message>
@@ -14515,37 +14584,37 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="163"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="275"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="284"/>
         <source>Template name</source>
         <translation>Nom du modèle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="164"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="282"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="291"/>
         <source>+ Add information</source>
         <translation>+ Ajouter une information</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="167"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="294"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="303"/>
         <source>Move up</source>
         <translation>Déplacer vers le haut</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="168"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="309"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="318"/>
         <source>Move down</source>
         <translation>Déplacer vers le bas</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="165"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="324"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="333"/>
         <source>Save</source>
         <translation>Enregistrer</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="166"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="328"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="337"/>
         <source>Save As…</source>
         <translation>Enregistrer sous…</translation>
     </message>
@@ -14560,8 +14629,8 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="202"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="221"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="503"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="803"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="512"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="812"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
@@ -14594,7 +14663,7 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="169"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="365"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="374"/>
         <source>Remove information</source>
         <translation>Retirer l&apos;information</translation>
     </message>
@@ -14611,8 +14680,8 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="194"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="214"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="518"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="818"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="527"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="827"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
@@ -14626,182 +14695,182 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="193"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="513"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="714"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="766"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="522"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="723"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="775"/>
         <source>Client</source>
         <translation>Client</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="195"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="523"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="532"/>
         <source>Email:</source>
         <translation>Email :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="196"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="528"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="537"/>
         <source>Phone:</source>
         <translation>Téléphone :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="197"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="534"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="543"/>
         <source>Information:</source>
         <translation>Informations :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="198"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="516"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="525"/>
         <source>Client name</source>
         <translation>Nom du client</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="199"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="521"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="530"/>
         <source>Email</source>
         <translation>Email</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="200"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="526"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="535"/>
         <source>Phone</source>
         <translation>Téléphone</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="201"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="531"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="540"/>
         <source>Information</source>
         <translation>Information</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="203"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="492"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="724"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="501"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="733"/>
         <source>Add Client</source>
         <translation>Ajouter un client</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="204"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="495"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="757"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="504"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="766"/>
         <source>Remove Client</source>
         <translation>Supprimer le client</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="205"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="227"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="538"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="839"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="547"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="848"/>
         <source>History</source>
         <translation>Historique</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="206"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="228"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="540"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="841"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="549"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="850"/>
         <source>No associated patterns yet.</source>
         <translation>Aucun patron associé pour l&apos;instant.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="209"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="573"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="582"/>
         <source>No clients yet. Add one.</source>
         <translation>Aucun client pour l&apos;instant. Ajoutez-en un.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="213"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="813"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1031"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1084"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="822"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1040"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1093"/>
         <source>Collection</source>
         <translation>Collection</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="215"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="823"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="832"/>
         <source>Year:</source>
         <translation>Année :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="216"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="828"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="837"/>
         <source>Period:</source>
         <translation>Période :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="217"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="835"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="844"/>
         <source>Description:</source>
         <translation>Description :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="218"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="816"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="825"/>
         <source>Collection name</source>
         <translation>Nom de la collection</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="219"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="221"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="803"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="826"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="812"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="835"/>
         <source>Period</source>
         <translation>Période</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="220"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="831"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="840"/>
         <source>Description</source>
         <translation>Description</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="221"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="803"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="812"/>
         <source>Year</source>
         <translation>Année</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="222"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="785"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1041"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="794"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1050"/>
         <source>Add Collection</source>
         <translation>Ajouter une collection</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="223"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="788"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1074"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="797"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1083"/>
         <source>Remove Collection</source>
         <translation>Supprimer la collection</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="224"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="792"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="801"/>
         <source>Sort by year:</source>
         <translation>Trier par année :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="225"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="795"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="804"/>
         <source>Newest first</source>
         <translation>Plus récentes d&apos;abord</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="226"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="796"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="805"/>
         <source>Oldest first</source>
         <translation>Plus anciennes d&apos;abord</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="231"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="876"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="885"/>
         <source>No collections yet. Add one.</source>
         <translation>Aucune collection pour l&apos;instant. Ajoutez-en un.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1362"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1371"/>
         <source>Unsaved information block</source>
         <translation>Bloc d&apos;information non enregistré</translation>
     </message>
@@ -14830,52 +14899,52 @@ Cette action ne peut pas être annulée.</translation>
         <translation type="vanished">Logo supprimé</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="581"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="632"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="884"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="937"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="590"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="641"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="893"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="946"/>
         <source>(unnamed)</source>
         <translation>(sans nom)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="740"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="749"/>
         <source>Client added</source>
         <translation>Client ajouté</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="757"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="766"/>
         <source>Remove the client &quot;%1&quot; from the library?</source>
         <translation>Supprimer le client « %1 » de la bibliothèque ?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="770"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="779"/>
         <source>Client removed</source>
         <translation>Client supprimé</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1057"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1066"/>
         <source>Collection added</source>
         <translation>Collection ajoutée</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1075"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1084"/>
         <source>Remove the collection &quot;%1&quot; from the library?</source>
         <translation>Supprimer la collection « %1 » de la bibliothèque ?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1088"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1097"/>
         <source>Collection removed</source>
         <translation>Collection supprimée</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1102"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1111"/>
         <source>Template 1</source>
         <translation>Modèle 1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1171"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1235"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1278"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1180"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1244"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1287"/>
         <source>Information block</source>
         <translation>Bloc d&apos;information</translation>
     </message>
@@ -14884,17 +14953,17 @@ Cette action ne peut pas être annulée.</translation>
         <translation type="vanished">Aucun modèle pour l&apos;instant. Créez-en un.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1236"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1245"/>
         <source>Save failed</source>
         <translation>Échec de l&apos;enregistrement</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1241"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1250"/>
         <source>Template saved</source>
         <translation>Modèle enregistré</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1279"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1288"/>
         <source>A template called &quot;%1&quot; already exists.
 
 Choose another name.</source>
@@ -14903,12 +14972,12 @@ Choose another name.</source>
 Choisissez un autre nom.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1311"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1320"/>
         <source>Save cartouche template</source>
         <translation>Enregistrer le modèle de cartouche</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1312"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1321"/>
         <source>Cartouche template (*.oct)</source>
         <translation>Modèle de cartouche (*.oct)</translation>
     </message>
@@ -14966,64 +15035,66 @@ Choisissez un autre nom.</translation>
 <context>
     <name>OInfoBlockTemplatesPage</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="195"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="215"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="196"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="220"/>
         <source>Search templates…</source>
         <translation>Rechercher des modèles…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="196"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="260"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="197"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="267"/>
         <source>Open folder</source>
         <translation>Ouvrir le dossier</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="206"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="211"/>
         <source>Existing templates</source>
         <translation>Modèles existants</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="226"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="231"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="235"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="227"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="232"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="236"/>
         <source>Languages</source>
         <translation>Langues</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="273"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="280"/>
         <source>No templates yet. Create one.</source>
         <translation>Aucun modèle pour l&apos;instant. Créez-en un.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="299"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="306"/>
         <source>This is the default cartouche</source>
         <translation>C&apos;est le cartouche par défaut</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="299"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="306"/>
         <source>Make this the default cartouche</source>
         <translation>Faire de ce cartouche le cartouche par défaut</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="317"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="324"/>
         <source>Edit</source>
         <translation>Modifier</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="325"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="332"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="368"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="375"/>
         <source>Confirm deletion</source>
         <translation>Confirmer la suppression</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="369"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="376"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
@@ -15032,12 +15103,12 @@ This action cannot be undone.</source>
 Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="387"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="394"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="387"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="394"/>
         <source>Could not delete the file.</source>
         <translation>Impossible de supprimer le fichier.</translation>
     </message>
@@ -15143,12 +15214,12 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>OLogoPreview</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/Template/ologopreview.cpp" line="53"/>
+        <location filename="../../src/app/ostara/widgets/Template/ologopreview.cpp" line="54"/>
         <source>No logo selected</source>
         <translation>Aucun logo sélectionné</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/Template/ologopreview.cpp" line="61"/>
+        <location filename="../../src/app/ostara/widgets/Template/ologopreview.cpp" line="62"/>
         <source>Invalid SVG</source>
         <translation>SVG invalide</translation>
     </message>
@@ -15156,42 +15227,42 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>OMeasurementTableModel</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="244"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="260"/>
         <source>Ranges (%1)</source>
         <translation>Plages (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="255"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="271"/>
         <source>Group: %1</source>
         <translation>Groupe : %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="289"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="305"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="290"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="306"/>
         <source>Full name</source>
         <translation>Nom complet</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="294"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="310"/>
         <source>Calculated value (%1)</source>
         <translation>Valeur calculée (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="300"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="316"/>
         <source>Value (%1)</source>
         <translation>Valeur (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="301"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="317"/>
         <source>Base value (%1)</source>
         <translation>Valeur de base (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="308"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="324"/>
         <source>Interval &quot;%1&quot;</source>
         <translation>Intervalle « %1 »</translation>
     </message>
@@ -15233,74 +15304,74 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>OPatternInfoWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="64"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="72"/>
         <source>Pattern</source>
         <translation>Patron</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="68"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="335"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="77"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="348"/>
         <source>Pattern name:</source>
         <translation>Nom du patron :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="72"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="339"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="81"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="352"/>
         <source>Client:</source>
         <translation>Client :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="76"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="343"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="85"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="356"/>
         <source>Collection:</source>
         <translation>Collection :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="80"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="347"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="89"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="360"/>
         <source>Fabric info:</source>
         <translation>Infos tissu :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="107"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="117"/>
         <source>Seam Allowances</source>
         <translation>Marges de couture</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="113"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="140"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="361"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="382"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="124"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="153"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="374"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="395"/>
         <source>Applies to all pieces, including those created afterwards. Not retroactive: existing pieces are left unchanged.</source>
         <translation>S&apos;applique à toutes les pièces, y compris celles créées par la suite. Non rétroactif : les pièces existantes ne sont pas modifiées.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="120"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="366"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="131"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="379"/>
         <source>Activate seam allowances</source>
         <translation>Activer les marges de couture</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="122"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="370"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="133"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="383"/>
         <source>Hide main path</source>
         <translation>Cacher le contour principal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="124"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="374"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="135"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="387"/>
         <source>Show the second passmark on seam line</source>
         <translation>Afficher le second cran d&apos;assemblage sur la ligne de couture</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="126"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="378"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="137"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="391"/>
         <source>Export the sew line with the drawings (DXF-AAMA)</source>
         <translation>Exporter la ligne de couture avec les tracés (DXF-AAMA)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="147"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="387"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="160"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="400"/>
         <source>Activate information block</source>
         <translation>Activer le bloc d&apos;information</translation>
     </message>
@@ -15321,7 +15392,7 @@ Cette action ne peut pas être annulée.</translation>
         <translation type="vanished">Exporter la ligne de couture avec les tracés pour toutes les pièces (DXF-AAMA)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="135"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="147"/>
         <source>Information block</source>
         <translation>Bloc d&apos;information</translation>
     </message>
@@ -15330,14 +15401,14 @@ Cette action ne peut pas être annulée.</translation>
         <translation type="vanished">Activer le bloc d&apos;information pour toutes les pièces</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="242"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="351"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="255"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="364"/>
         <source>No client</source>
         <translation>Aucun client</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="268"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="356"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="281"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="369"/>
         <source>No collection</source>
         <translation>Aucune collection</translation>
     </message>
@@ -15345,22 +15416,26 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>OPatternPropertiesWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="48"/>
+        <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="49"/>
+        <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="110"/>
         <source>Pattern</source>
         <translation>Patron</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="52"/>
+        <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="54"/>
+        <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="111"/>
         <source>Pattern name:</source>
         <translation>Nom du patron :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="55"/>
+        <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="58"/>
+        <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="112"/>
         <source>Description:</source>
         <translation>Description :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="58"/>
+        <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="62"/>
+        <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="113"/>
         <source>Notes:</source>
         <translation>Notes :</translation>
     </message>
@@ -15905,7 +15980,7 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>OSymbolPreview</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/Template/osymbolpreview.cpp" line="80"/>
+        <location filename="../../src/app/ostara/widgets/Template/osymbolpreview.cpp" line="81"/>
         <source>No symbol selected</source>
         <translation>Aucun symbole sélectionné</translation>
     </message>
@@ -16714,6 +16789,53 @@ L&apos;enregistrer avant de le quitter ?</translation>
     </message>
 </context>
 <context>
+    <name>OTranslation</name>
+    <message>
+        <source>e.g., Height</source>
+        <translation type="obsolete">par ex., Stature</translation>
+    </message>
+    <message>
+        <source>e.g., Commercial size</source>
+        <translation type="obsolete">par ex., Taille commerciale</translation>
+    </message>
+    <message>
+        <source>e.g., Cup or Body type</source>
+        <translation type="obsolete">par ex., Bonnet ou morphologie</translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation type="obsolete">Nom :</translation>
+    </message>
+    <message>
+        <source>e.g., 160 cm, 168 cm, 176 cm</source>
+        <translation type="obsolete">par ex., 160 cm, 168 cm, 176 cm</translation>
+    </message>
+    <message>
+        <source>e.g., A, B, C</source>
+        <translation type="obsolete">par ex., A, B, C</translation>
+    </message>
+    <message>
+        <source>Values:</source>
+        <translation type="obsolete">Valeurs :</translation>
+    </message>
+    <message>
+        <source>Separate each value with a comma</source>
+        <translation type="obsolete">Séparez chaque valeur par une virgule</translation>
+    </message>
+    <message>
+        <source>Generate</source>
+        <translation type="obsolete">Générer</translation>
+    </message>
+    <message>
+        <source>Base:</source>
+        <translation type="obsolete">Base :</translation>
+    </message>
+    <message>
+        <source>Reference size for calculating other sizes</source>
+        <translation type="obsolete">Taille de référence pour le calcul des autres tailles</translation>
+    </message>
+</context>
+<context>
     <name>OWidgetCoverPage</name>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="299"/>
@@ -16751,12 +16873,12 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <translation>Les marges que ce patron nomme différemment de la bibliothèque.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="418"/>
+        <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="423"/>
         <source>Choose…</source>
         <translation>Choisir…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="454"/>
+        <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="459"/>
         <source>Remove</source>
         <translation>Retirer</translation>
     </message>
@@ -17051,54 +17173,54 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <translation>Un libellé accompagne les icônes (recommandé pour les débutants).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="412"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="425"/>
         <source>With OS options</source>
         <translation>Celui du système</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="335"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="348"/>
         <source>send crash report</source>
         <translation>Envoyer le rapport de plantage</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="342"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="355"/>
         <source>user email in case of crash</source>
         <translation>Votre adresse mail en cas de plantage</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="390"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="403"/>
         <source>Dark</source>
         <comment>theme</comment>
         <translation>Nuit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="389"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="402"/>
         <source>Light</source>
         <comment>theme</comment>
         <translation>Clair</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="397"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="410"/>
         <source>Tool icon cursor</source>
         <translation>Inclut l&apos;outil en cours d&apos;utilisation</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="398"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="411"/>
         <source>Arrow cursor</source>
         <translation>Curseur simple</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="404"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="417"/>
         <source>Centimeters</source>
         <translation>Centimètres</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="405"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="418"/>
         <source>Millimiters</source>
         <translation>Millimètres</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="406"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="419"/>
         <source>Inches</source>
         <translation>Pouces</translation>
     </message>
@@ -17113,7 +17235,7 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <translation>Mode &quot;courbe libre&quot;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="276"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.cpp" line="289"/>
         <source>default unit</source>
         <translation>Unité par défaut</translation>
     </message>
@@ -18187,12 +18309,12 @@ This option will take an affect after restart.</source>
         <translation>Erreur de compatibilité VTextManager : actualClassVersion = %1 et classVersion = %2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="700"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="717"/>
         <source>CustomSARecord prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
         <translation>Erreur de correspondance de préfixe CustomSARecord : actualStreamHeader = 0x%1 et streamHeader = 0x%2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="712"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="729"/>
         <source>CustomSARecord compatibility error: actualClassVersion = %1 and classVersion = %2</source>
         <translation>Erreur de compatibilité CustomSARecord : actualClassVersion = %1 et classVersion = %2</translation>
     </message>
@@ -19138,124 +19260,124 @@ This option will take an affect after restart.</source>
 <context>
     <name>SizeGridPanel</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="51"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="54"/>
         <source>Configure size groups</source>
         <translation>Configurer les groupes de tailles</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="60"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="65"/>
         <source>Each group represents an axis (e.g., Height, Size…). Name it and enter its values to activate it.</source>
         <translation>Chaque groupe représente un axe (par ex., Stature, Taille…). Nommez-le et saisissez ses valeurs pour l&apos;activer.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="69"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="116"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="76"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="129"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="71"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="79"/>
         <source>Table name</source>
         <translation>Nom du tableau</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="81"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="92"/>
         <source>Group 1</source>
         <translation>Groupe 1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="82"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="93"/>
         <source>Group 2</source>
         <translation>Groupe 2</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="83"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="94"/>
         <source>Group 3</source>
         <translation>Groupe 3</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="111"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="123"/>
         <source>e.g., Height</source>
         <translation>par ex., Stature</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="112"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="124"/>
         <source>e.g., Commercial size</source>
         <translation>par ex., Taille commerciale</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="113"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="125"/>
         <source>e.g., Cup or Body type</source>
         <translation>par ex., Bonnet ou morphologie</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="122"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="136"/>
         <source>e.g., 160 cm, 168 cm, 176 cm</source>
         <translation>par ex., 160 cm, 168 cm, 176 cm</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="123"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="140"/>
         <source>e.g., 32, 34, 36  or  XS, S, M  or  6 years, 8 years, 10 years</source>
         <translation>par ex., 32, 34, 36  ou  XS, S, M  ou  6 ans, 8 ans, 10 ans</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="124"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="142"/>
         <source>e.g., A, B, C</source>
         <translation>par ex., A, B, C</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="127"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="146"/>
         <source>Values:</source>
         <translation>Valeurs :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="131"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="152"/>
         <source>Separate each value with a comma</source>
         <translation>Séparez chaque valeur par une virgule</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="137"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="159"/>
         <source>Generate</source>
         <translation>Générer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="151"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="174"/>
         <source>Base:</source>
         <translation>Base :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="165"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="189"/>
         <source>Reference size for calculating other sizes</source>
         <translation>Taille de référence pour le calcul des autres tailles</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="227"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="251"/>
         <source>Group %1</source>
         <translation>Groupe %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="229"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="289"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="253"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="313"/>
         <source>Group &quot;%1&quot; · %2 values</source>
         <translation>Groupe « %1 » · %2 valeurs</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="350"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="374"/>
         <source>Name at least one group and generate its values.</source>
         <translation>Nommez au moins un groupe et générez ses valeurs.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="367"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="391"/>
         <source>Group &quot;%1&quot; must have at least 2 values.</source>
         <translation>Le groupe « %1 » doit avoir au moins 2 valeurs.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="375"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="399"/>
         <source>Generate values and select a base for group &quot;%1&quot;.</source>
         <translation>Générez les valeurs et sélectionnez une base pour le groupe « %1 ».</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="387"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="411"/>
         <source>Group name &quot;%1&quot; is used multiple times.</source>
         <translation>Le nom de groupe « %1 » est utilisé plusieurs fois.</translation>
     </message>
@@ -19263,109 +19385,109 @@ This option will take an affect after restart.</source>
 <context>
     <name>Step2Container</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="117"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="119"/>
         <source>Edit measurements</source>
         <translation>Modifier les mesures</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="125"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="282"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="128"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="314"/>
         <source>Select a size in the bar below, then edit the measurements in the details panel.</source>
         <translation>Sélectionnez une taille dans la barre ci-dessous, puis modifiez les mesures dans le panneau de détails.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="132"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="136"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="134"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="139"/>
         <source>Table name</source>
         <translation>Nom du tableau</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="152"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="158"/>
         <source>Import from table</source>
         <translation>Importer depuis un tableau</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="168"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="246"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="175"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="257"/>
         <source>+ Add measurement</source>
         <translation>+ Ajouter une mesure</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="172"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="180"/>
         <source>+ Add group</source>
         <translation>+ Ajouter un groupe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="173"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="181"/>
         <source>Add a measurement group</source>
         <translation>Ajouter un groupe de mesures</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="182"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="251"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="191"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="262"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="196"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="206"/>
         <source>↑</source>
         <translation>↑</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="197"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="252"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="207"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="263"/>
         <source>Move up</source>
         <translation>Déplacer vers le haut</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="202"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="213"/>
         <source>↓</source>
         <translation>↓</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="203"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="253"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="214"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="264"/>
         <source>Move down</source>
         <translation>Déplacer vers le bas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="227"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="238"/>
         <source>Search measurements…</source>
         <translation>Rechercher des mesures…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="247"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="258"/>
         <source>+ Insert group</source>
         <translation>+ Insérer un groupe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="278"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="310"/>
         <source>Add and edit measurements in the details panel.</source>
         <translation>Ajoutez et modifiez les mesures dans le panneau de détails.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="500"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="532"/>
         <source>New group</source>
         <translation>Nouveau groupe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="582"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="614"/>
         <source>Import complete</source>
         <translation>Importation terminée</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="583"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="615"/>
         <source>%1 measurement(s)/group(s) imported.
 %2 measurement(s)/group(s) skipped (name already exists).</source>
         <translation>%1 mesure(s)/groupe(s) importée(s).
 %2 mesure(s)/groupe(s) ignorée(s) (nom déjà existant).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="630"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="662"/>
         <source>Group &quot;%1&quot; contains %2 measurement(s).
 Deleting the group will also delete all its measurements.
 Do you want to continue?</source>
@@ -19374,22 +19496,22 @@ La suppression du groupe supprimera aussi toutes ses mesures.
 Voulez-vous continuer ?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="638"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="670"/>
         <source>Do you want to delete group &quot;%1&quot;?</source>
         <translation>Voulez-vous supprimer le groupe « %1 » ?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="643"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="675"/>
         <source>Delete group</source>
         <translation>Supprimer le groupe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="719"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="751"/>
         <source>Delete group and its measurements</source>
         <translation>Supprimer le groupe et ses mesures</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="723"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="755"/>
         <source>Delete measurement</source>
         <translation>Supprimer la mesure</translation>
     </message>
@@ -21292,52 +21414,52 @@ Voulez-vous continuer ?</translation>
 <context>
     <name>VApplication</name>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="509"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="517"/>
         <source>Error parsing file. Program will be terminated.</source>
         <translation>Erreur d&apos;analyse du fichier. Fermeture du programme.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="515"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="523"/>
         <source>Error bad id. Program will be terminated.</source>
         <translation>Erreur d&apos;identifiant. Fermeture du programme.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="521"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="529"/>
         <source>Error can&apos;t convert value. Program will be terminated.</source>
         <translation>Erreur : valeur non convertissable. Fermeture du programme.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="527"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="535"/>
         <source>Error empty parameter. Program will be terminated.</source>
         <translation>Erreur : paramètre vide. Fermeture du programme.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="533"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="541"/>
         <source>Error wrong id. Program will be terminated.</source>
         <translation>Erreur : mauvais identifiant. Fermeture du programme.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="552"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="560"/>
         <source>Something&apos;s wrong!!</source>
         <translation>Quelque chose ne se passe pas correctement !!</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="566"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="574"/>
         <source>Parser error: %1. Program will be terminated.</source>
         <translation>Erreur analyseur : %1. Fermeture du programme.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="571"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="579"/>
         <source>Exception thrown: %1. Program will be terminated.</source>
         <translation>Exception soulevée : %1. Fermeture du programme.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="546"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="554"/>
         <source>Invalid notch.</source>
         <translation>Cran invalide.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="558"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="566"/>
         <source>Formula warning: %1. Program will be terminated.</source>
         <translation>Problème de formule : %1. Le programme va s&apos;arrêter.</translation>
     </message>
@@ -27779,26 +27901,34 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Tout montrer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="835"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="890"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="853"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="863"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="870"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="925"/>
         <source>Pixels</source>
         <translation>Pixels</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="836"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="887"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="854"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="860"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="871"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="922"/>
         <source>Millimiters</source>
         <translation>Millimètres</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="837"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="888"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="855"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="861"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="872"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="923"/>
         <source>Centimeters</source>
         <translation>Centimètres</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="838"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="889"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="856"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="862"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="873"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="924"/>
         <source>Inches</source>
         <translation>Pouces</translation>
     </message>
@@ -27836,27 +27966,27 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Descendre le plus bas possible dans l&apos;historique</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="673"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="676"/>
         <source>Expand All</source>
         <translation>Tout déplier</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="674"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="677"/>
         <source>Collapse All</source>
         <translation>Tout replier</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="676"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="679"/>
         <source>Copy ID</source>
         <translation>Copier ID</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="678"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="681"/>
         <source>Go to Object</source>
         <translation>Aller à l&apos;objet</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="680"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="683"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
@@ -27870,85 +28000,87 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.ui" line="33"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="998"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="198"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="1009"/>
         <source>Merge pieces into one</source>
         <translation>Fusionner les pièces en une seule</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="296"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="324"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="307"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="335"/>
         <source>Unnamed</source>
         <translation>Sans nom</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="534"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="545"/>
         <source>In layout</source>
         <translation>Dans le plan de coupe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="545"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="556"/>
         <source>Select all</source>
         <translation>Tout sélectionner</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="546"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="557"/>
         <source>Select none</source>
         <translation>Tout désélectionner</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="577"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="588"/>
         <source>Unlink all</source>
         <translation>Tout délier</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="687"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="698"/>
         <source>select all details</source>
         <translation>Selectionner toutes les pièces</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="693"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="704"/>
         <source>select none details</source>
         <translation>Ne sélectionner aucune pièce</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="760"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="788"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="771"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="799"/>
         <source>Select pieces to link (min 2, Enter to confirm, Esc to cancel)</source>
         <translation>Sélectionnez les pièces à lier (min 2, Entrée pour confirmer, Échap pour annuler)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="774"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="785"/>
         <source>This piece is already part of a group</source>
         <translation>Cette pièce fait déjà partie d&apos;un groupe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="794"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="805"/>
         <source>%1 piece(s) selected — Enter to confirm, Esc to cancel</source>
         <translation>%1 pièce(s) sélectionnée(s) — Entrée pour confirmer, Échap pour annuler</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="809"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="820"/>
         <source>Less than 2 pieces selected — cancelled</source>
         <translation>Moins de 2 pièces sélectionnées — annulé</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="822"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="833"/>
         <source>Click the common point (Esc to cancel)</source>
         <translation>Cliquez le point commun (Échap pour annuler)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="849"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="917"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="860"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="928"/>
         <source>Link pieces</source>
         <translation>Lier les pièces</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="850"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="861"/>
         <source>The selected point is not common to the %1 pieces of the group</source>
         <translation>Le point sélectionné n&apos;est pas commun aux %1 pièces du groupe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="998"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="198"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="1009"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
@@ -27970,12 +28102,12 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation type="vanished">Options de la pièce</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="596"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="607"/>
         <source>Delete piece</source>
         <translation>Supprimer la pièce</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="603"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="614"/>
         <source>Cannot find piece by id &apos;%1&apos;</source>
         <translation>Impossible de trouver la pièce avec l&apos;identifiant &apos;%1&apos;</translation>
     </message>
@@ -28028,7 +28160,7 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Préférences</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="374"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="385"/>
         <source>Categories: %1.</source>
         <translation>Catégories : %1.</translation>
     </message>
@@ -28781,47 +28913,47 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
 <context>
     <name>vNoisyHandler</name>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="143"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="144"/>
         <source>DEBUG:</source>
         <translation>DEBUGAGE :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="154"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="155"/>
         <source>WARNING:</source>
         <translation>AVERTISSEMENT :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="165"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="166"/>
         <source>CRITICAL:</source>
         <translation>CRITIQUE :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="172"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="173"/>
         <source>FATAL:</source>
         <translation>FATAL :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="183"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="184"/>
         <source>INFO:</source>
         <translation>INFO :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="208"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="209"/>
         <source>Warning</source>
         <translation>Avertissement</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="212"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="213"/>
         <source>Critical error</source>
         <translation>Erreur critique</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="216"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="217"/>
         <source>Fatal error</source>
         <translation>Erreur fatale</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="220"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="221"/>
         <source>Information</source>
         <translation>Information</translation>
     </message>

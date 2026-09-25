@@ -115,15 +115,15 @@ OAnnotationStylesPage::OAnnotationStylesPage(QWidget *parent) : QWidget(parent)
     // réappliquait le titre de la page, jamais ces cinq lignes. On crée donc le libellé nous-mêmes
     // pour pouvoir l'enregistrer.
     m_nameEdit = new QLineEdit();
-    OTranslation::SetPlaceholderText(this, m_nameEdit, "Style name");
+    OTranslation::SetPlaceholderText(this, m_nameEdit, QT_TRANSLATE_NOOP("OAnnotationStylesPage", "Style name"));
     connect(m_nameEdit, &QLineEdit::textChanged, this, &OAnnotationStylesPage::OnStyleNameEdited);
     auto *nameLabel = new QLabel();
-    OTranslation::SetText(this, nameLabel, "Name:");
+    OTranslation::SetText(this, nameLabel, QT_TRANSLATE_NOOP("OAnnotationStylesPage", "Name:"));
     form->addRow(nameLabel, m_nameEdit);
 
     m_fontCombo = new QFontComboBox();
     auto *fontLabel = new QLabel();
-    OTranslation::SetText(this, fontLabel, "Font:");
+    OTranslation::SetText(this, fontLabel, QT_TRANSLATE_NOOP("OAnnotationStylesPage", "Font:"));
     form->addRow(fontLabel, m_fontCombo);
 
     // **The faces belong to the family, so they change with it** — and the list is the family's REAL
@@ -136,7 +136,7 @@ OAnnotationStylesPage::OAnnotationStylesPage(QWidget *parent) : QWidget(parent)
     });
     connect(m_weightCombo, &QComboBox::currentIndexChanged, this, &OAnnotationStylesPage::OnStyleFieldChanged);
     auto *weightLabel = new QLabel();
-    OTranslation::SetText(this, weightLabel, "Weight:");
+    OTranslation::SetText(this, weightLabel, QT_TRANSLATE_NOOP("OAnnotationStylesPage", "Weight:"));
     form->addRow(weightLabel, m_weightCombo);
 
     // A real number of pixels, and never a word like « Default » — the same rule the Thumbnail page and
@@ -147,7 +147,7 @@ OAnnotationStylesPage::OAnnotationStylesPage(QWidget *parent) : QWidget(parent)
     m_sizeSpin->setSuffix(QStringLiteral(" px"));
     connect(m_sizeSpin, &QSpinBox::valueChanged, this, &OAnnotationStylesPage::OnStyleFieldChanged);
     auto *sizeLabel = new QLabel();
-    OTranslation::SetText(this, sizeLabel, "Size:");
+    OTranslation::SetText(this, sizeLabel, QT_TRANSLATE_NOOP("OAnnotationStylesPage", "Size:"));
     form->addRow(sizeLabel, m_sizeSpin);
 
     // Background: free hex input (+#), color swatch committed at editingFinished,
@@ -156,7 +156,7 @@ OAnnotationStylesPage::OAnnotationStylesPage(QWidget *parent) : QWidget(parent)
     bgRow->setContentsMargins(0, 0, 0, 0);
     bgRow->setSpacing(6);
     m_backgroundEdit = new QLineEdit();
-    OTranslation::SetPlaceholderText(this, m_backgroundEdit, "#RRGGBB, empty = transparent");
+    OTranslation::SetPlaceholderText(this, m_backgroundEdit, QT_TRANSLATE_NOOP("OAnnotationStylesPage", "#RRGGBB, empty = transparent"));
     connect(m_backgroundEdit, &QLineEdit::textChanged, this, &OAnnotationStylesPage::OnBackgroundTextChanged);
     connect(m_backgroundEdit, &QLineEdit::editingFinished, this, &OAnnotationStylesPage::OnBackgroundEditingFinished);
     m_backgroundSwatch = new QLabel();
@@ -165,23 +165,23 @@ OAnnotationStylesPage::OAnnotationStylesPage(QWidget *parent) : QWidget(parent)
     bgRow->addWidget(m_backgroundEdit, 1);
     bgRow->addWidget(m_backgroundSwatch);
     auto *backgroundLabel = new QLabel();
-    OTranslation::SetText(this, backgroundLabel, "Background:");
+    OTranslation::SetText(this, backgroundLabel, QT_TRANSLATE_NOOP("OAnnotationStylesPage", "Background:"));
     form->addRow(backgroundLabel, bgRow);
 
     auto *presets = new QHBoxLayout();
     presets->setContentsMargins(0, 0, 0, 0);
     presets->setSpacing(6);
     auto *presetsLabel = new QLabel();
-    OTranslation::SetText(this, presetsLabel, "Presets:");
+    OTranslation::SetText(this, presetsLabel, QT_TRANSLATE_NOOP("OAnnotationStylesPage", "Presets:"));
     presets->addWidget(presetsLabel);
     m_presetWhiteBtn = new QPushButton();
-    OTranslation::SetToolTip(this, m_presetWhiteBtn, "White");
+    OTranslation::SetToolTip(this, m_presetWhiteBtn, QT_TRANSLATE_NOOP("OAnnotationStylesPage", "White"));
     m_presetWhiteBtn->setFixedSize(28, 24);
     m_presetWhiteBtn->setStyleSheet(QStringLiteral("QPushButton { background-color: #FFFFFF; border: 1px solid #888888; }"));
     connect(m_presetWhiteBtn, &QPushButton::clicked, this, [this]() { OnPresetClicked(QStringLiteral("#FFFFFF")); });
     presets->addWidget(m_presetWhiteBtn);
     m_presetBlackBtn = new QPushButton();
-    OTranslation::SetToolTip(this, m_presetBlackBtn, "Black");
+    OTranslation::SetToolTip(this, m_presetBlackBtn, QT_TRANSLATE_NOOP("OAnnotationStylesPage", "Black"));
     m_presetBlackBtn->setFixedSize(28, 24);
     m_presetBlackBtn->setStyleSheet(QStringLiteral("QPushButton { background-color: #000000; border: 1px solid #888888; }"));
     connect(m_presetBlackBtn, &QPushButton::clicked, this, [this]() { OnPresetClicked(QStringLiteral("#000000")); });

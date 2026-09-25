@@ -71,6 +71,9 @@ public:
     /// Set the currently selected values and recompute step offsets.
     void SetSelectedValues(const QMap<QString, QString> &selected);
 
+    /// Re-emit every header and cell so the view re-reads the texts this model computes from `tr()`.
+    void RefreshTexts();
+
     // QAbstractTableModel interface
     auto rowCount(const QModelIndex &parent = {}) const -> int override;
     auto columnCount(const QModelIndex &parent = {}) const -> int override;
@@ -121,6 +124,9 @@ class MeasurementTablePanel : public QWidget
 public:
     explicit MeasurementTablePanel(QWidget *parent = nullptr);
     ~MeasurementTablePanel() override = default;
+
+    /// Ask the view to re-read every header and cell text, which the model computes from `tr()`.
+    void RetranslateUI();
 
     void SetAxisGroups(const QStringList &groupNames);
 

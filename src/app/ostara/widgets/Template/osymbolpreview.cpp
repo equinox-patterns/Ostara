@@ -29,6 +29,7 @@
 
 #include "core/osymbolrender.h"
 
+#include <QEvent>
 #include <QPainter>
 
 namespace
@@ -103,4 +104,16 @@ void OSymbolPreview::paintEvent(QPaintEvent *event)
     painter.setPen(palette().text().color());
     const QRectF textRect(x, 0, width() - x - kMargin, height());
     painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, m_text);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OSymbolPreview::changeEvent(QEvent *event)
+{
+    // ⚠️ **Le texte de cet aperçu est PEINT, pas posé** — le moteur de retraduction ne peut pas
+    // l'atteindre. Sur `LanguageChange`, on redemande un repaint pour que `paintEvent` relise `tr()`.
+    if (event->type() == QEvent::LanguageChange)
+    {
+        update();
+    }
+    QWidget::changeEvent(event);
 }

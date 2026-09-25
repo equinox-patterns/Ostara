@@ -154,7 +154,7 @@ void OCoverPageTemplatesPage::SetupUI()
     m_table->setColumnCount(4);
     m_table->setHorizontalHeaderLabels({QString(), tr("Name"), QString(), QString()});
     // ⚠️ **L'en-tête est posé une seule fois** : `RetranslateUI()` ne le rappelait pas.
-    OTranslation::SetHeaderText(this, m_table, 1, "Name");
+    OTranslation::SetHeaderText(this, m_table, 1, QT_TRANSLATE_NOOP("OCoverPageTemplatesPage", "Name"));
     // 0 — the favourite, 2 — edit, 3 — delete. Only the name has anything to say, so it is the
     // one that takes the room.
     m_table->setColumnWidth(0, 44);

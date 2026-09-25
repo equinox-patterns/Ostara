@@ -26,6 +26,7 @@
 
 #include "oannotationpreview.h"
 
+#include <QEvent>
 #include <QPainter>
 
 OAnnotationPreview::OAnnotationPreview(QWidget *parent) : QWidget(parent)
@@ -101,4 +102,18 @@ void OAnnotationPreview::paintEvent(QPaintEvent *event)
     }
     painter.setPen(textColor);
     painter.drawText(rect(), Qt::AlignCenter, m_text);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OAnnotationPreview::changeEvent(QEvent *event)
+{
+    // ⚠️ **Le texte de cet aperçu est PEINT, pas posé.** Il n'est la propriété d'aucun widget, donc
+    // le moteur de retraduction ne peut pas l'atteindre — un texte peint dans un `paintEvent` n'est
+    // pas une chaîne mémorisable. Le seul geste qui ait un sens sur `LanguageChange` est de
+    // redemander un repaint, pour que le `paintEvent` relise `tr()`.
+    if (event->type() == QEvent::LanguageChange)
+    {
+        update();
+    }
+    QWidget::changeEvent(event);
 }

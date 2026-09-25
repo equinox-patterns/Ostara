@@ -26,6 +26,8 @@
 
 #include "SizeGridPanel.h"
 
+#include "core/otranslation.h"
+
 #include <QComboBox>
 #include <QFormLayout>
 #include <QFrame>
@@ -48,7 +50,8 @@ SizeGridPanel::SizeGridPanel(QWidget *parent)
     mainLayout->setSpacing(12);
 
     // Title — centered
-    auto *titleLabel = new QLabel(tr("Configure size groups"));
+    auto *titleLabel = new QLabel();
+    OTranslation::SetText(this, titleLabel, QT_TRANSLATE_NOOP("SizeGridPanel", "Configure size groups"));
     QFont titleFont = titleLabel->font();
     titleFont.setPointSize(14);
     titleFont.setBold(true);
@@ -57,8 +60,11 @@ SizeGridPanel::SizeGridPanel(QWidget *parent)
     mainLayout->addWidget(titleLabel);
 
     // Hint — centered
-    auto *hintLabel = new QLabel(tr("Each group represents an axis (e.g., Height, Size…). "
-                                     "Name it and enter its values to activate it."));
+    auto *hintLabel = new QLabel();
+    OTranslation::SetText(this, hintLabel,
+                          QT_TRANSLATE_NOOP("SizeGridPanel",
+                                            "Each group represents an axis (e.g., Height, Size…). "
+                                            "Name it and enter its values to activate it."));
     hintLabel->setWordWrap(true);
     hintLabel->setAlignment(Qt::AlignCenter);
     mainLayout->addWidget(hintLabel);
@@ -66,9 +72,11 @@ SizeGridPanel::SizeGridPanel(QWidget *parent)
     // Table name — from the dialog, editable here
     auto *nameRow = new QHBoxLayout();
     nameRow->addStretch();
-    nameRow->addWidget(new QLabel(tr("Name:")));
+    auto *tableNameLabel = new QLabel();
+    OTranslation::SetText(this, tableNameLabel, QT_TRANSLATE_NOOP("SizeGridPanel", "Name:"));
+    nameRow->addWidget(tableNameLabel);
     m_tableNameEdit = new QLineEdit();
-    m_tableNameEdit->setPlaceholderText(tr("Table name"));
+    OTranslation::SetPlaceholderText(this, m_tableNameEdit, QT_TRANSLATE_NOOP("SizeGridPanel", "Table name"));
     m_tableNameEdit->setMaximumWidth(380);
     nameRow->addWidget(m_tableNameEdit);
     nameRow->addStretch();
@@ -78,9 +86,12 @@ SizeGridPanel::SizeGridPanel(QWidget *parent)
     auto *columnsLayout = new QHBoxLayout();
     columnsLayout->setSpacing(16);
     columnsLayout->addStretch();
-    SetupColumn(0, tr("Group 1"));
-    SetupColumn(1, tr("Group 2"));
-    SetupColumn(2, tr("Group 3"));
+    // ⚠️ **Le marquage est au site d'appel, et pas seulement dans `SetupColumn`.** `lupdate`
+    // n'extrait pas un argument de fonction : le `QT_TRANSLATE_NOOP` posé sur le paramètre `source`
+    // porte sur une variable et ne voit rien. Les trois titres seraient passés en `vanished`.
+    SetupColumn(0, QT_TRANSLATE_NOOP("SizeGridPanel", "Group 1"));
+    SetupColumn(1, QT_TRANSLATE_NOOP("SizeGridPanel", "Group 2"));
+    SetupColumn(2, QT_TRANSLATE_NOOP("SizeGridPanel", "Group 3"));
     for (int i = 0; i < NumGroups; ++i)
     {
         m_columns[i].box->setMaximumWidth(380);
@@ -95,11 +106,12 @@ SizeGridPanel::SizeGridPanel(QWidget *parent)
     mainLayout->addWidget(m_validationLabel);
 }
 
-void SizeGridPanel::SetupColumn(int index, const QString &title)
+void SizeGridPanel::SetupColumn(int index, const char *source)
 {
     GroupColumn &col = m_columns[index];
 
-    col.box = new QGroupBox(title);
+    col.box = new QGroupBox();
+    OTranslation::SetTitle(this, col.box, source);
     auto *form = new QFormLayout(col.box);
     form->setContentsMargins(16, 12, 16, 16);
     form->setSpacing(8);
@@ -108,33 +120,43 @@ void SizeGridPanel::SetupColumn(int index, const QString &title)
     col.nameEdit = new QLineEdit();
     switch (index)
     {
-    case 0: col.nameEdit->setPlaceholderText(tr("e.g., Height")); break;
-    case 1: col.nameEdit->setPlaceholderText(tr("e.g., Commercial size")); break;
-    case 2: col.nameEdit->setPlaceholderText(tr("e.g., Cup or Body type")); break;
+    case 0: OTranslation::SetPlaceholderText(this, col.nameEdit, QT_TRANSLATE_NOOP("SizeGridPanel", "e.g., Height")); break;
+    case 1: OTranslation::SetPlaceholderText(this, col.nameEdit, QT_TRANSLATE_NOOP("SizeGridPanel", "e.g., Commercial size")); break;
+    case 2: OTranslation::SetPlaceholderText(this, col.nameEdit, QT_TRANSLATE_NOOP("SizeGridPanel", "e.g., Cup or Body type")); break;
     }
     connect(col.nameEdit, &QLineEdit::textChanged, this, &SizeGridPanel::OnGroupDataChanged);
-    form->addRow(tr("Name:"), col.nameEdit);
+    auto *colNameLabel = new QLabel();
+    OTranslation::SetText(this, colNameLabel, QT_TRANSLATE_NOOP("SizeGridPanel", "Name:"));
+    form->addRow(colNameLabel, col.nameEdit);
 
     // Values — domain-specific placeholder per group
     col.valuesEdit = new QLineEdit();
     switch (index)
     {
-    case 0: col.valuesEdit->setPlaceholderText(tr("e.g., 160 cm, 168 cm, 176 cm")); break;
-    case 1: col.valuesEdit->setPlaceholderText(tr("e.g., 32, 34, 36  or  XS, S, M  or  6 years, 8 years, 10 years")); break;
-    case 2: col.valuesEdit->setPlaceholderText(tr("e.g., A, B, C")); break;
+    case 0: OTranslation::SetPlaceholderText(this, col.valuesEdit, QT_TRANSLATE_NOOP("SizeGridPanel", "e.g., 160 cm, 168 cm, 176 cm")); break;
+    case 1:
+        OTranslation::SetPlaceholderText(
+            this, col.valuesEdit,
+            QT_TRANSLATE_NOOP("SizeGridPanel", "e.g., 32, 34, 36  or  XS, S, M  or  6 years, 8 years, 10 years"));
+        break;
+    case 2: OTranslation::SetPlaceholderText(this, col.valuesEdit, QT_TRANSLATE_NOOP("SizeGridPanel", "e.g., A, B, C")); break;
     }
     connect(col.valuesEdit, &QLineEdit::textChanged, this, &SizeGridPanel::OnGroupDataChanged);
-    form->addRow(tr("Values:"), col.valuesEdit);
+    auto *colValuesLabel = new QLabel();
+    OTranslation::SetText(this, colValuesLabel, QT_TRANSLATE_NOOP("SizeGridPanel", "Values:"));
+    form->addRow(colValuesLabel, col.valuesEdit);
 
     // Hint below values field
     {
-        auto *hint = new QLabel(tr("Separate each value with a comma"));
+        auto *hint = new QLabel();
+        OTranslation::SetText(this, hint, QT_TRANSLATE_NOOP("SizeGridPanel", "Separate each value with a comma"));
         hint->setObjectName(QStringLiteral("fieldHint"));
         form->addRow(hint);
     }
 
     // Generate button
-    col.generateBtn = new QPushButton(tr("Generate"));
+    col.generateBtn = new QPushButton();
+    OTranslation::SetText(this, col.generateBtn, QT_TRANSLATE_NOOP("SizeGridPanel", "Generate"));
     connect(col.generateBtn, &QPushButton::clicked, this, [this, index]() {
         OnGenerateClicked(index);
     });
@@ -148,7 +170,8 @@ void SizeGridPanel::SetupColumn(int index, const QString &title)
     }
 
     // Base dropdown
-    col.baseLabel = new QLabel(tr("Base:"));
+    col.baseLabel = new QLabel();
+    OTranslation::SetText(this, col.baseLabel, QT_TRANSLATE_NOOP("SizeGridPanel", "Base:"));
     col.baseCombo = new QComboBox();
     col.baseCombo->setView(new QListView()); // bypass native macOS popup that ignores QSS
     col.baseCombo->setEnabled(false); // empty until values are generated
@@ -162,7 +185,8 @@ void SizeGridPanel::SetupColumn(int index, const QString &title)
 
     // Hint below Base dropdown
     {
-        auto *hint = new QLabel(tr("Reference size for calculating other sizes"));
+        auto *hint = new QLabel();
+        OTranslation::SetText(this, hint, QT_TRANSLATE_NOOP("SizeGridPanel", "Reference size for calculating other sizes"));
         hint->setObjectName(QStringLiteral("fieldHint"));
         form->addRow(hint);
     }

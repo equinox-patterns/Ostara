@@ -392,7 +392,7 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         // l'atteindre. Le poseur s'en passe — il pose la traduction et garde la source sur le
         // widget, que le moteur rejoue à chaque bascule.
         auto *internalOutlineLabel = new QLabel(tab);
-        OTranslation::SetText(this, internalOutlineLabel, "Internal outline");
+        OTranslation::SetText(this, internalOutlineLabel, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Internal outline"));
         internalOutlineLabel->setAlignment(Qt::AlignCenter);
         layout->addWidget(internalOutlineLabel);
 
@@ -1490,19 +1490,27 @@ void ODetailsPieceWidget::FinishPassmarkSelection()
             PassmarkLineType type;
             const char *text;
         } items[] = {
-            {PassmarkLineType::OneLine,       "One line"},
-            {PassmarkLineType::TwoLines,      "Two lines"},
-            {PassmarkLineType::ThreeLines,    "Three lines"},
-            {PassmarkLineType::TMark,         "T mark"},
-            {PassmarkLineType::ExternalVMark, "External V mark"},
-            {PassmarkLineType::InternalVMark, "Internal V mark"},
-            {PassmarkLineType::UMark,         "U mark"},
-            {PassmarkLineType::BoxMark,       "Box mark"},
-            {PassmarkLineType::CheckMark,     "Check mark"},
+            // ⚠️ **Les littéraux DOIVENT être marqués.** `lupdate` n'extrait que les littéraux : une
+            // chaîne atteinte par variable — ici `tr(item.text)` — n'est vue par personne. Ces neuf
+            // libellés n'existaient donc dans **aucun** `.ts`, dans aucune langue, et s'affichaient
+            // en anglais quelles que soient les préférences. C'est un défaut d'extraction, pas de
+            // retraduction. Même marquage que la table de `osymbolshapes.cpp`.
+            {PassmarkLineType::OneLine,       QT_TRANSLATE_NOOP("ODetailsPieceWidget", "One line")},
+            {PassmarkLineType::TwoLines,      QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Two lines")},
+            {PassmarkLineType::ThreeLines,    QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Three lines")},
+            {PassmarkLineType::TMark,         QT_TRANSLATE_NOOP("ODetailsPieceWidget", "T mark")},
+            {PassmarkLineType::ExternalVMark, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "External V mark")},
+            {PassmarkLineType::InternalVMark, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Internal V mark")},
+            {PassmarkLineType::UMark,         QT_TRANSLATE_NOOP("ODetailsPieceWidget", "U mark")},
+            {PassmarkLineType::BoxMark,       QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Box mark")},
+            {PassmarkLineType::CheckMark,     QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Check mark")},
         };
+        int itemIndex = 0;
         for (const auto &item : items)
         {
-            combo->addItem(tr(item.text), static_cast<int>(item.type));
+            combo->addItem(QString(), static_cast<int>(item.type));
+            OTranslation::SetItemText(this, combo, itemIndex, item.text);
+            ++itemIndex;
         }
         dlgLayout->addWidget(combo);
         auto *buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);

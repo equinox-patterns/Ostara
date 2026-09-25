@@ -26,6 +26,7 @@
 
 #include "ologopreview.h"
 
+#include <QEvent>
 #include <QPainter>
 #include <QSvgRenderer>
 
@@ -73,4 +74,16 @@ void OLogoPreview::paintEvent(QPaintEvent *event)
                         QSizeF(fit));
     }
     renderer.render(&painter, target);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OLogoPreview::changeEvent(QEvent *event)
+{
+    // ⚠️ **Le texte de cet aperçu est PEINT, pas posé** — le moteur de retraduction ne peut pas
+    // l'atteindre. Sur `LanguageChange`, on redemande un repaint pour que `paintEvent` relise `tr()`.
+    if (event->type() == QEvent::LanguageChange)
+    {
+        update();
+    }
+    QWidget::changeEvent(event);
 }

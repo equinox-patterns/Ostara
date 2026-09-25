@@ -103,7 +103,7 @@ private:
         QLabel *feedbackValues{nullptr};
     };
 
-    void SetupColumn(int index, const QString &title);
+    void SetupColumn(int index, const char *source);
     auto FindColumnByName(const QString &name) -> GroupColumn *;
     auto FindColumnByName(const QString &name) const -> const GroupColumn *;
     static auto ParseValues(const QString &text) -> QStringList;

@@ -203,11 +203,11 @@ void OAnnotationsConfigWidget::RebuildList()
         // groupe et le libellé vide — n'a aucun moyen de les atteindre. Le poseur les couvre tous,
         // quelle que soit la ligne.
         auto *editBtn = new QPushButton(m_listGroup);
-        OTranslation::SetText(this, editBtn, "Edit annotation");
+        OTranslation::SetText(this, editBtn, QT_TRANSLATE_NOOP("OAnnotationsConfigWidget", "Edit annotation"));
         connect(editBtn, &QPushButton::clicked, this, [this, index]() { EditAnnotation(index); });
         buttons->addWidget(editBtn, 1);
         auto *removeBtn = new QPushButton(m_listGroup);
-        OTranslation::SetText(this, removeBtn, "Delete annotation");
+        OTranslation::SetText(this, removeBtn, QT_TRANSLATE_NOOP("OAnnotationsConfigWidget", "Delete annotation"));
         connect(removeBtn, &QPushButton::clicked, this, [this, index]() { RemoveAnnotation(index); });
         buttons->addWidget(removeBtn, 1);
         // Both buttons stretch equally — the button row spans the same width as

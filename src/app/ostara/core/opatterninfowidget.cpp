@@ -69,7 +69,7 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
     // Details. Le poseur garde la chaîne source sur le widget, et le moteur la rejoue à chaque
     // bascule de langue — sans que cette classe ait à s'en occuper.
     m_patternGroup = new QGroupBox(this);
-    OTranslation::SetTitle(this, m_patternGroup, "Pattern");
+    OTranslation::SetTitle(this, m_patternGroup, QT_TRANSLATE_NOOP("OPatternInfoWidget", "Pattern"));
     auto *groupBox = m_patternGroup;
     auto *groupLayout = new QVBoxLayout(groupBox);
     groupLayout->setSpacing(6);
@@ -114,7 +114,7 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
     // Seam allowances — pattern-level seeds applied to every piece created
     // afterwards (same semantics as the dialog step 1).
     m_seamAllowanceGroup = new QGroupBox(this);
-    OTranslation::SetTitle(this, m_seamAllowanceGroup, "Seam Allowances");
+    OTranslation::SetTitle(this, m_seamAllowanceGroup, QT_TRANSLATE_NOOP("OPatternInfoWidget", "Seam Allowances"));
     auto *seamAllowanceGroup = m_seamAllowanceGroup;
     auto *saLayout = new QVBoxLayout(seamAllowanceGroup);
     saLayout->setSpacing(6);
@@ -144,7 +144,7 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
     // the settings favourite). Same seed semantics as the seam allowances.
     OPieceCartoucheStorage::EnsureDefaultTemplate();
     m_infoBlockGroup = new QGroupBox(this);
-    OTranslation::SetTitle(this, m_infoBlockGroup, "Information block");
+    OTranslation::SetTitle(this, m_infoBlockGroup, QT_TRANSLATE_NOOP("OPatternInfoWidget", "Information block"));
     auto *infoBlockGroup = m_infoBlockGroup;
     auto *ibLayout = new QVBoxLayout(infoBlockGroup);
     ibLayout->setSpacing(6);

@@ -58,6 +58,9 @@ public:
     explicit MeasurementDetailPanel(QWidget *parent = nullptr);
     ~MeasurementDetailPanel() override = default;
 
+    /// Re-apply the panel's texts, its increment sections and its title in the installed language.
+    void RetranslateUI();
+
     void SetAxisGroups(const QStringList &groupNames);
     void SetGroupValues(const QMap<QString, QStringList> &groupValues);
     void SetAllRecords(const QVector<MeasurementRecord> &records);

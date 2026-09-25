@@ -52,6 +52,9 @@ public:
     explicit Step2Container(QWidget *parent = nullptr);
     ~Step2Container() override = default;
 
+    /// Re-apply the container's texts, its hint and its two panels in the installed language.
+    void RetranslateUI();
+
     /// Set the measurement unit for column header display.
     void SetUnit(Unit unit);
 

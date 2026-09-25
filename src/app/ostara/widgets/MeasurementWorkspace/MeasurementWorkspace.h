@@ -59,6 +59,9 @@ public:
 
     bool eventFilter(QObject *obj, QEvent *event) override;
 
+    /// Re-apply every text of the workspace, and of its two pages, in the installed language.
+    void RetranslateUI();
+
     /// Load an existing multi-size document for editing.
     void LoadDocument(std::unique_ptr<OOmtDocument> doc);
 

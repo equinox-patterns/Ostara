@@ -265,7 +265,7 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     // `setTabText` n'existait dans la classe : ils restaient donc dans la langue du premier
     // affichage. Le poseur n'exige aucune référence supplémentaire — le widget est déjà connu.
     const int generalTabIndex = m_tabWidget->addTab(generalPage, QString());
-    OTranslation::SetTabText(this, m_tabWidget, generalTabIndex, "General");
+    OTranslation::SetTabText(this, m_tabWidget, generalTabIndex, QT_TRANSLATE_NOOP("ODetailsGroupWidget", "General"));
 
     // The common point is owned by the General tab: its orange highlight follows that tab.
     connect(m_tabWidget, &QTabWidget::currentChanged, this, [this](int) { RefreshAlignPointHighlight(); });
@@ -288,7 +288,7 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     grainlineLayout->addStretch();
 
     const int grainlineTabIndex = m_tabWidget->addTab(grainlinePage, QString());
-    OTranslation::SetTabText(this, m_tabWidget, grainlineTabIndex, "Grainline");
+    OTranslation::SetTabText(this, m_tabWidget, grainlineTabIndex, QT_TRANSLATE_NOOP("ODetailsGroupWidget", "Grainline"));
 
     // ── Information tab: Group / Blocks / Annotations ────────────────
     // Same structure as the PB Piece's Information tab: the PAGE is the container
@@ -315,7 +315,7 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     // Le libellé est créé par nous pour pouvoir être retraduit : `form->addRow(tr("Name"), …)`
     // confie le QLabel au QFormLayout, et plus personne ne peut le réécrire.
     auto *nameLabel = new QLabel(groupTab);
-    OTranslation::SetText(this, nameLabel, "Name");
+    OTranslation::SetText(this, nameLabel, QT_TRANSLATE_NOOP("ODetailsGroupWidget", "Name"));
     form->addRow(nameLabel, m_nameEdit);
     groupLayout->addLayout(form);
 
@@ -327,16 +327,16 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     m_annotationsConfigWidget = new OAnnotationsConfigWidget(infoTabs);
     m_thumbnailsConfigWidget = new OGroupThumbnailsConfigWidget(infoTabs);
     const int groupTabIndex = infoTabs->addTab(groupTab, QString());
-    OTranslation::SetTabText(this, infoTabs, groupTabIndex, "Group");
+    OTranslation::SetTabText(this, infoTabs, groupTabIndex, QT_TRANSLATE_NOOP("ODetailsGroupWidget", "Group"));
     const int blocksTabIndex = infoTabs->addTab(m_blockConfigWidget, QString());
-    OTranslation::SetTabText(this, infoTabs, blocksTabIndex, "Blocks");
+    OTranslation::SetTabText(this, infoTabs, blocksTabIndex, QT_TRANSLATE_NOOP("ODetailsGroupWidget", "Blocks"));
     const int annotationsTabIndex = infoTabs->addTab(m_annotationsConfigWidget, QString());
-    OTranslation::SetTabText(this, infoTabs, annotationsTabIndex, "Annotations");
+    OTranslation::SetTabText(this, infoTabs, annotationsTabIndex, QT_TRANSLATE_NOOP("ODetailsGroupWidget", "Annotations"));
     const int thumbnailTabIndex = infoTabs->addTab(m_thumbnailsConfigWidget, QString());
-    OTranslation::SetTabText(this, infoTabs, thumbnailTabIndex, "Thumbnail");
+    OTranslation::SetTabText(this, infoTabs, thumbnailTabIndex, QT_TRANSLATE_NOOP("ODetailsGroupWidget", "Thumbnail"));
     infoLayout->addWidget(infoTabs);
     const int informationTabIndex = m_tabWidget->addTab(infoPage, QString());
-    OTranslation::SetTabText(this, m_tabWidget, informationTabIndex, "Information");
+    OTranslation::SetTabText(this, m_tabWidget, informationTabIndex, QT_TRANSLATE_NOOP("ODetailsGroupWidget", "Information"));
 
     connect(m_nameEdit, &QLineEdit::editingFinished, this, [this]()
     {

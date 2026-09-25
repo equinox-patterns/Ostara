@@ -159,7 +159,7 @@ void OExportTemplatesPage::SetupUI()
                                         QString()}); // 3 — delete
     // ⚠️ **L'en-tête est posé une seule fois** : `RetranslateUI()` ne le rappelait pas, il restait
     // donc dans la langue du premier affichage. Le poseur le couvre.
-    OTranslation::SetHeaderText(this, m_table, 1, "Name");
+    OTranslation::SetHeaderText(this, m_table, 1, QT_TRANSLATE_NOOP("OExportTemplatesPage", "Name"));
 
     m_table->setColumnWidth(0, 44);
     m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);

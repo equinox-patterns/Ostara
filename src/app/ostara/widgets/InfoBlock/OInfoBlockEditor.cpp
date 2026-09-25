@@ -260,6 +260,15 @@ void OInfoBlockEditor::RetranslateUI()
     {
         m_thumbnailStylesPage->RetranslateUI();
     }
+
+    // ⚠️ **Les deux arbres, pour la seule chaîne qu'ils portent eux-mêmes.** Le repli
+    // `tr("(unnamed)")` d'une entrée sans nom est écrit dans `RefreshClientsList()` et
+    // `RefreshCollectionsList()`, que rien ne rappelait ici : une entrée non nommée restait
+    // « (unnamed) » dans une interface française. Les états vides, eux, sont déjà repris plus haut.
+    // (`tr("Template 1")` n'est PAS concerné : c'est le **nom** donné à un nouveau modèle, une
+    // donnée enregistrée — la retraduire renommerait un modèle existant au changement de langue.)
+    RefreshClientsList();
+    RefreshCollectionsList();
 }
 
 void OInfoBlockEditor::SetupEditorPage()

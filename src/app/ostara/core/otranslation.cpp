@@ -35,6 +35,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
+#include <QPlainTextEdit>
 #include <QString>
 #include <QTabWidget>
 #include <QTableWidget>
@@ -61,7 +62,8 @@ enum class Slot : int
     TabText = 4,
     ItemText = 5,
     HeaderText = 6,
-    Placeholder = 7
+    Placeholder = 7,
+    PlaceholderPlain = 8
 };
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -124,6 +126,12 @@ void Apply(QWidget *widget, Slot slot, int index, const QString &text)
             break;
         case Slot::Placeholder:
             if (auto *edit = qobject_cast<QLineEdit *>(widget); edit != nullptr)
+            {
+                edit->setPlaceholderText(text);
+            }
+            break;
+        case Slot::PlaceholderPlain:
+            if (auto *edit = qobject_cast<QPlainTextEdit *>(widget); edit != nullptr)
             {
                 edit->setPlaceholderText(text);
             }
@@ -303,6 +311,16 @@ void OTranslation::SetPlaceholderText(const QObject *owner, QLineEdit *widget, c
         return;
     }
     Remember(widget, owner, source, Slot::Placeholder, 0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OTranslation::SetPlaceholderText(const QObject *owner, QPlainTextEdit *widget, const char *source)
+{
+    if (owner == nullptr || widget == nullptr || source == nullptr)
+    {
+        return;
+    }
+    Remember(widget, owner, source, Slot::PlaceholderPlain, 0);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

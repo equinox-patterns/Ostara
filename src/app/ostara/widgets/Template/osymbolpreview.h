@@ -65,6 +65,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void changeEvent(QEvent *event) override;
 
 private:
     QVector<OSymbolShapes::Shape> m_shapes;

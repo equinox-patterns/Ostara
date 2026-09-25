@@ -45,6 +45,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void changeEvent(QEvent *event) override;
 
 private:
     QString m_filePath;

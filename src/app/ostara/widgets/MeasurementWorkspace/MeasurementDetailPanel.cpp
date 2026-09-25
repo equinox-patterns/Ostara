@@ -28,6 +28,7 @@
 #include "MeasurementTablePanel.h"
 #include "DialogRangeGroups.h"
 #include "widgets/OSelectAllSpinBox.h"
+#include "core/otranslation.h"
 
 #include <QButtonGroup>
 #include <QComboBox>
@@ -79,20 +80,24 @@ void MeasurementDetailPanel::SetupUI()
     // Name
     m_nameEdit = new QLineEdit();
     m_nameEdit->setPlaceholderText(QStringLiteral("@..."));
-    m_nameEdit->setToolTip(tr("Name used in formulas (@ auto)"));
+    OTranslation::SetToolTip(this, m_nameEdit, QT_TRANSLATE_NOOP("MeasurementDetailPanel", "Name used in formulas (@ auto)"));
     connect(m_nameEdit, &QLineEdit::textEdited, this, &MeasurementDetailPanel::OnFieldChanged);
-    m_form->addRow(tr("Name:"), m_nameEdit);
+    auto *nameLabel = new QLabel();
+    OTranslation::SetText(this, nameLabel, QT_TRANSLATE_NOOP("MeasurementDetailPanel", "Name:"));
+    m_form->addRow(nameLabel, m_nameEdit);
 
     // Full name
     m_fullNameEdit = new QLineEdit();
-    m_fullNameEdit->setPlaceholderText(tr("e.g., Chest circumference"));
+    OTranslation::SetPlaceholderText(this, m_fullNameEdit, QT_TRANSLATE_NOOP("MeasurementDetailPanel", "e.g., Chest circumference"));
     connect(m_fullNameEdit, &QLineEdit::textEdited, this, &MeasurementDetailPanel::OnFieldChanged);
-    m_form->addRow(tr("Full name:"), m_fullNameEdit);
+    auto *fullNameLabel = new QLabel();
+    OTranslation::SetText(this, fullNameLabel, QT_TRANSLATE_NOOP("MeasurementDetailPanel", "Full name:"));
+    m_form->addRow(fullNameLabel, m_fullNameEdit);
 
     // Description — default height ~60px. A grip below the field lets the
     // user resize it by dragging, even within the scroll area.
     m_descriptionEdit = new QPlainTextEdit();
-    m_descriptionEdit->setPlaceholderText(tr("Measurement description"));
+    OTranslation::SetPlaceholderText(this, m_descriptionEdit, QT_TRANSLATE_NOOP("MeasurementDetailPanel", "Measurement description"));
     m_descriptionEdit->setFixedHeight(60);
     connect(m_descriptionEdit, &QPlainTextEdit::textChanged, this, &MeasurementDetailPanel::OnFieldChanged);
 
@@ -110,16 +115,20 @@ void MeasurementDetailPanel::SetupUI()
     descLayout->addWidget(m_descriptionEdit);
     descLayout->addWidget(m_descGrip);
 
-    m_form->addRow(tr("Description:"), descWidget);
+    auto *descriptionLabel = new QLabel();
+    OTranslation::SetText(this, descriptionLabel, QT_TRANSLATE_NOOP("MeasurementDetailPanel", "Description:"));
+    m_form->addRow(descriptionLabel, descWidget);
 
     // Base value
     m_anchorValueSpin = new OSelectAllSpinBox();
     m_anchorValueSpin->setRange(-10000.0, 10000.0);
     m_anchorValueSpin->setDecimals(2);
-    m_anchorValueSpin->setToolTip(tr("Value at reference size"));
+    OTranslation::SetToolTip(this, m_anchorValueSpin, QT_TRANSLATE_NOOP("MeasurementDetailPanel", "Value at reference size"));
     connect(m_anchorValueSpin, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
             this, &MeasurementDetailPanel::OnFieldChanged);
-    m_form->addRow(tr("Base value:"), m_anchorValueSpin);
+    auto *baseValueLabel = new QLabel();
+    OTranslation::SetText(this, baseValueLabel, QT_TRANSLATE_NOOP("MeasurementDetailPanel", "Base value:"));
+    m_form->addRow(baseValueLabel, m_anchorValueSpin);
 
     mainLayout->addLayout(m_form);
 
@@ -155,6 +164,23 @@ void MeasurementDetailPanel::SetupUI()
     scrollArea->setWidget(scrollWidget);
 
     Clear();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MeasurementDetailPanel::RetranslateUI()
+{
+    // Les sections d'incrément sont construites avec `tr()` — un libellé de titre, deux boutons
+    // radio et un bouton par groupe d'axes. Les refaire est le seul moyen de les atteindre.
+    RebuildIncrementSections();
+
+    // Le titre du panneau dépend du mode : « Measurement details » ou « Group properties ».
+    setTitle(m_isGroupMode ? tr("Group properties") : tr("Measurement details"));
+
+    // L'invite affichée quand aucune mesure n'est choisie.
+    if (m_placeholderLabel != nullptr)
+    {
+        m_placeholderLabel->setText(tr("Select or create a measurement"));
+    }
 }
 
 void MeasurementDetailPanel::SetAxisGroups(const QStringList &groupNames)

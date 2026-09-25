@@ -31,6 +31,7 @@
 #include "xml/oomtdocument.h"
 #include "xml/ootudocument.h"
 #include "vtheme.h"
+#include "core/otranslation.h"
 
 #include <QDir>
 #include <QEvent>
@@ -102,7 +103,11 @@ void MeasurementWorkspace::SetupUI()
     auto *titleBar = new QHBoxLayout();
     titleBar->setContentsMargins(16, 16, 16, 8);
 
-    m_titleLabel = new QLabel(tr("New measurement table"));
+    // ⚠️ **Le titre n'est PAS confié au poseur**, et c'est délibéré : il porte soit « New measurement
+    // table », soit le **nom du fichier** ouvert (voir `UpdateTitle()`). L'enregistrer auprès du
+    // moteur écraserait le nom de fichier à chaque bascule de langue. Il est donc repris par
+    // `RetranslateUI()`, qui sait lequel des deux écrire.
+    m_titleLabel = new QLabel();
     QFont titleFont = m_titleLabel->font();
     titleFont.setPointSize(16);
     titleFont.setBold(true);
@@ -137,13 +142,17 @@ void MeasurementWorkspace::SetupUI()
     };
 
     m_saveBtn = makeToolBtn(QStringLiteral("floppy-disk"), tr("Save"));
+    OTranslation::SetToolTip(this, m_saveBtn, QT_TRANSLATE_NOOP("MeasurementWorkspace", "Save"));
     connect(m_saveBtn, &QToolButton::clicked, this, &MeasurementWorkspace::OnSave);
     titleBar->addWidget(m_saveBtn);
 
     m_saveAsBtn = makeToolBtn(QStringLiteral("file-arrow-up"), tr("Save As…"));
+    OTranslation::SetToolTip(this, m_saveAsBtn, QT_TRANSLATE_NOOP("MeasurementWorkspace", "Save As…"));
     connect(m_saveAsBtn, &QToolButton::clicked, this, &MeasurementWorkspace::OnSaveAs);
     titleBar->addWidget(m_saveAsBtn);
 
+    // Son infobulle dépend de l'origine (« Home » ou « Close ») : c'est `SetOrigin()` qui la pose,
+    // et `RetranslateUI()` le rappelle.
     m_closeBtn = makeToolBtn(QStringLiteral("house-fill"), tr("Home"));
     connect(m_closeBtn, &QToolButton::clicked, this, &MeasurementWorkspace::OnClose);
     titleBar->addWidget(m_closeBtn);
@@ -169,14 +178,16 @@ void MeasurementWorkspace::SetupUI()
     auto *navBar = new QHBoxLayout();
     navBar->setContentsMargins(16, 8, 16, 8);
 
-    m_prevBtn = new QPushButton(tr("< Back"));
+    m_prevBtn = new QPushButton();
+    OTranslation::SetText(this, m_prevBtn, QT_TRANSLATE_NOOP("MeasurementWorkspace", "< Back"));
     m_prevBtn->setEnabled(false);
     connect(m_prevBtn, &QPushButton::clicked, this, &MeasurementWorkspace::OnPrevStep);
     navBar->addWidget(m_prevBtn);
 
     navBar->addStretch();
 
-    m_nextBtn = new QPushButton(tr("Next >"));
+    m_nextBtn = new QPushButton();
+    OTranslation::SetText(this, m_nextBtn, QT_TRANSLATE_NOOP("MeasurementWorkspace", "Next >"));
     connect(m_nextBtn, &QPushButton::clicked, this, &MeasurementWorkspace::OnNextStep);
     navBar->addWidget(m_nextBtn);
 
@@ -184,6 +195,25 @@ void MeasurementWorkspace::SetupUI()
 
     UpdateStepIndicator();
     UpdateTitle();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MeasurementWorkspace::RetranslateUI()
+{
+    // Ce qui dépend d'un état est repris ici, parce que le moteur ne peut pas le deviner : le titre
+    // (nom de fichier **ou** libellé), l'indicateur d'étape, et l'infobulle du bouton de fermeture,
+    // qui vaut « Home » ou « Close » selon l'origine.
+    UpdateTitle();
+    UpdateStepIndicator();
+    SetOrigin(m_origin);
+
+    // Et la seconde page, qui porte des textes dépendant de son état (l'indice d'aide, l'infobulle
+    // du bouton de suppression). La première — la grille de tailles — n'a que des textes fixes :
+    // le poseur les couvre, elle n'a rien à reprendre ici.
+    if (m_step2Container != nullptr)
+    {
+        m_step2Container->RetranslateUI();
+    }
 }
 
 void MeasurementWorkspace::UpdateStepIndicator()

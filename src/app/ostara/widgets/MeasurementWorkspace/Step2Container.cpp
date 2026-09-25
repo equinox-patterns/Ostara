@@ -30,6 +30,7 @@
 #include "MeasurementLibraryScanner.h"
 #include "dialogues/DialogImportStructure.h"
 #include "vtheme.h"
+#include "core/otranslation.h"
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
 
@@ -114,14 +115,16 @@ void Step2Container::SetupUI()
     mainLayout->setSpacing(12);
 
     // Title
-    auto *titleLabel = new QLabel(tr("Edit measurements"));
+    auto *titleLabel = new QLabel();
+    OTranslation::SetText(this, titleLabel, QT_TRANSLATE_NOOP("Step2Container", "Edit measurements"));
     QFont titleFont = titleLabel->font();
     titleFont.setPointSize(14);
     titleFont.setBold(true);
     titleLabel->setFont(titleFont);
     mainLayout->addWidget(titleLabel);
 
-    // Hint
+    // Hint — son texte dépend de l'état (mesure ou groupe sélectionné) : c'est `UpdateHint()` qui
+    // le pose, et `RetranslateUI()` le rappelle. Le confier au poseur figerait une des deux formes.
     m_hintLabel = new QLabel(tr("Select a size in the bar below, "
                                  "then edit the measurements in the details panel."));
     m_hintLabel->setWordWrap(true);
@@ -129,9 +132,11 @@ void Step2Container::SetupUI()
 
     // Table name — editable, synced with the document
     auto *nameRow = new QHBoxLayout();
-    nameRow->addWidget(new QLabel(tr("Name:")));
+    auto *tableNameLabel = new QLabel();
+    OTranslation::SetText(this, tableNameLabel, QT_TRANSLATE_NOOP("Step2Container", "Name:"));
+    nameRow->addWidget(tableNameLabel);
     m_tableNameEdit = new QLineEdit();
-    m_tableNameEdit->setPlaceholderText(tr("Table name"));
+    OTranslation::SetPlaceholderText(this, m_tableNameEdit, QT_TRANSLATE_NOOP("Step2Container", "Table name"));
     m_tableNameEdit->setMaximumWidth(380);
     nameRow->addWidget(m_tableNameEdit, 1);
     nameRow->addStretch();
@@ -149,7 +154,8 @@ void Step2Container::SetupUI()
     {
         QIcon normalIcon = MakeToolIcon(QStringLiteral("download"), dark);
         QIcon hoverIcon = dark ? normalIcon : MakeToolIcon(QStringLiteral("download"), true);
-        m_importBtn = new QPushButton(tr("Import from table"));
+        m_importBtn = new QPushButton();
+        OTranslation::SetText(this, m_importBtn, QT_TRANSLATE_NOOP("Step2Container", "Import from table"));
         m_importBtn->setIcon(normalIcon);
         m_importBtn->setIconSize(QSize(20, 20));
         m_importBtn->setProperty("normalIcon", QVariant::fromValue(normalIcon));
@@ -165,12 +171,14 @@ void Step2Container::SetupUI()
     sep->setFrameShadow(QFrame::Sunken);
     buttonLayout->addWidget(sep);
 
-    m_addBtn = new QPushButton(tr("+ Add measurement"));
+    m_addBtn = new QPushButton();
+    OTranslation::SetText(this, m_addBtn, QT_TRANSLATE_NOOP("Step2Container", "+ Add measurement"));
     connect(m_addBtn, &QPushButton::clicked, this, &Step2Container::OnAddMeasurement);
     buttonLayout->addWidget(m_addBtn);
 
-    m_groupBtn = new QPushButton(tr("+ Add group"));
-    m_groupBtn->setToolTip(tr("Add a measurement group"));
+    m_groupBtn = new QPushButton();
+    OTranslation::SetText(this, m_groupBtn, QT_TRANSLATE_NOOP("Step2Container", "+ Add group"));
+    OTranslation::SetToolTip(this, m_groupBtn, QT_TRANSLATE_NOOP("Step2Container", "Add a measurement group"));
     connect(m_groupBtn, &QPushButton::clicked, this, &Step2Container::OnAddGroup);
     buttonLayout->addWidget(m_groupBtn);
 
@@ -179,7 +187,8 @@ void Step2Container::SetupUI()
         QIcon normalIcon = MakeToolIcon(QStringLiteral("trash"), dark);
         QIcon hoverIcon = dark ? normalIcon : MakeToolIcon(QStringLiteral("trash"), true);
         QIcon disabledIcon = MakeDisabledIcon(QStringLiteral("trash"), dark);
-        m_deleteBtn = new QPushButton(tr("Delete"));
+        m_deleteBtn = new QPushButton();
+        OTranslation::SetText(this, m_deleteBtn, QT_TRANSLATE_NOOP("Step2Container", "Delete"));
         m_deleteBtn->setIcon(disabledIcon); // disabled by default
         m_deleteBtn->setIconSize(QSize(20, 20));
         m_deleteBtn->setProperty("normalIcon", QVariant::fromValue(normalIcon));
@@ -193,14 +202,16 @@ void Step2Container::SetupUI()
 
     buttonLayout->addStretch();
 
-    m_upBtn = new QPushButton(tr("↑"));
-    m_upBtn->setToolTip(tr("Move up"));
+    m_upBtn = new QPushButton();
+    OTranslation::SetText(this, m_upBtn, QT_TRANSLATE_NOOP("Step2Container", "↑"));
+    OTranslation::SetToolTip(this, m_upBtn, QT_TRANSLATE_NOOP("Step2Container", "Move up"));
     m_upBtn->setEnabled(false);
     connect(m_upBtn, &QPushButton::clicked, this, &Step2Container::OnMoveUp);
     buttonLayout->addWidget(m_upBtn);
 
-    m_downBtn = new QPushButton(tr("↓"));
-    m_downBtn->setToolTip(tr("Move down"));
+    m_downBtn = new QPushButton();
+    OTranslation::SetText(this, m_downBtn, QT_TRANSLATE_NOOP("Step2Container", "↓"));
+    OTranslation::SetToolTip(this, m_downBtn, QT_TRANSLATE_NOOP("Step2Container", "Move down"));
     m_downBtn->setEnabled(false);
     connect(m_downBtn, &QPushButton::clicked, this, &Step2Container::OnMoveDown);
     buttonLayout->addWidget(m_downBtn);
@@ -224,7 +235,7 @@ void Step2Container::SetupUI()
 
     // Search bar with magnifying-glass icon inside the QLineEdit
     auto *searchEdit = new QLineEdit();
-    searchEdit->setPlaceholderText(tr("Search measurements…"));
+    OTranslation::SetPlaceholderText(this, searchEdit, QT_TRANSLATE_NOOP("Step2Container", "Search measurements…"));
     searchEdit->addAction(MakeToolIcon(QStringLiteral("magnifying-glass"), dark), QLineEdit::LeadingPosition);
 
     connect(searchEdit, &QLineEdit::textChanged, m_tablePanel, &MeasurementTablePanel::SetFilter);
@@ -261,6 +272,27 @@ void Step2Container::SetupUI()
 }
 
 // ===== Axis Groups =====
+
+//---------------------------------------------------------------------------------------------------------------------
+void Step2Container::RetranslateUI()
+{
+    // L'indice dépend du mode : « mesures » ou « groupes ». On le rejoue depuis l'état mémorisé
+    // plutôt que de le confier au poseur, qui figerait une des deux formes.
+    SetAxisGroups(m_groupNames, m_groupValues, m_anchorBindings);
+
+    // L'infobulle du bouton de suppression nomme tantôt un groupe, tantôt une mesure.
+    UpdateButtonStates();
+
+    // Les deux panneaux ont leurs propres textes.
+    if (m_tablePanel != nullptr)
+    {
+        m_tablePanel->RetranslateUI();
+    }
+    if (m_detailPanel != nullptr)
+    {
+        m_detailPanel->RetranslateUI();
+    }
+}
 
 void Step2Container::SetAxisGroups(const QStringList &groupNames,
                                     const QList<QStringList> &groupValues,

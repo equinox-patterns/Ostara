@@ -83,6 +83,22 @@ void OMeasurementTableModel::SetSelectedValues(const QMap<QString, QString> &sel
     RecomputeStepOffsets();
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+void OMeasurementTableModel::RefreshTexts()
+{
+    // Les en-têtes (unités, intervalles, noms de groupe) et plusieurs libellés de lignes sont
+    // calculés à la demande depuis `tr()`. Rien n'est mémorisé : il suffit de dire à la vue de
+    // relire, et la nouvelle langue apparaît.
+    if (const int columns = columnCount(); columns > 0)
+    {
+        emit headerDataChanged(Qt::Horizontal, 0, columns - 1);
+    }
+    if (const int rows = rowCount(); rows > 0)
+    {
+        emit dataChanged(index(0, 0), index(rows - 1, qMax(0, columnCount() - 1)));
+    }
+}
+
 void OMeasurementTableModel::RecomputeStepOffsets()
 {
     m_stepOffsets.clear();
@@ -477,6 +493,15 @@ MeasurementTablePanel::MeasurementTablePanel(QWidget *parent)
             this, &MeasurementTablePanel::SelectionChanged);
 
     mainLayout->addWidget(m_tableView, 1);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MeasurementTablePanel::RetranslateUI()
+{
+    if (m_model != nullptr)
+    {
+        m_model->RefreshTexts();
+    }
 }
 
 void MeasurementTablePanel::SetAxisGroups(const QStringList &groupNames)

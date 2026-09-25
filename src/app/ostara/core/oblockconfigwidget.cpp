@@ -72,14 +72,14 @@ OBlockConfigWidget::OBlockConfigWidget(QWidget *parent) : QWidget(parent)
     // anglais dans un mode Details français. Avec le poseur, les deux instances sont couvertes par
     // le moteur, sans que l'appelant ait quoi que ce soit à savoir.
     m_activeCheck = new QCheckBox(this);
-    OTranslation::SetText(this, m_activeCheck, "Activate information block");
+    OTranslation::SetText(this, m_activeCheck, QT_TRANSLATE_NOOP("OBlockConfigWidget", "Activate information block"));
     topSection->addWidget(m_activeCheck);
 
     auto *templateRow = new QHBoxLayout();
     templateRow->setContentsMargins(0, 0, 0, 0);
     templateRow->setSpacing(6);
     m_templateLabel = new QLabel(this);
-    OTranslation::SetText(this, m_templateLabel, "Template:");
+    OTranslation::SetText(this, m_templateLabel, QT_TRANSLATE_NOOP("OBlockConfigWidget", "Template:"));
     m_templateCombo = MakeComboBox(this);
     m_templateCombo->setEnabled(false);
     templateRow->addWidget(m_templateLabel);
@@ -93,7 +93,7 @@ OBlockConfigWidget::OBlockConfigWidget(QWidget *parent) : QWidget(parent)
     // it shares the group's $DockBody background (a QScrollArea viewport would be
     // forced to $DockTitle by ApplyThemeToWindows — SubtiliteCode §13).
     m_dispatchGroup = new QGroupBox(this);
-    OTranslation::SetTitle(this, m_dispatchGroup, "Split into multiple blocks");
+    OTranslation::SetTitle(this, m_dispatchGroup, QT_TRANSLATE_NOOP("OBlockConfigWidget", "Split into multiple blocks"));
     // Less side margin than the theme default (8px) for this group only.
     m_dispatchGroup->setStyleSheet(QStringLiteral("QGroupBox { margin-left: 0px; margin-right: 0px; }"));
     auto *groupLayout = new QVBoxLayout(m_dispatchGroup);
