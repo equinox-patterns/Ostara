@@ -1669,19 +1669,31 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         // deux bords, lui, en a trois, et leurs côtés sont fixés par zone.
         //
         // Et les rectangles ne se dessinent **qu'à partir de deux** : une seule zone EST la
-        // colonne, et le trait du bac la dessine déjà. **Pointillé noir à 50 %**, purement visuel :
-        // la ligne du milieu d'un plan à deux bords est celle où les deux lisières se rejoignent, et
-        // aucune pièce ne la traverse — non parce que ce trait l'interdit, mais parce que chaque
-        // rectangle est un bac à part et que le moteur ne pose jamais hors de son bac.
+        // colonne, et le trait du bac la dessine déjà. **Noir à 75 %, tirets 20 / 10** (Sophie,
+        // 25-09) : le pointillé noir à 50 % ne se lisait pas sur le bac blanc, et c'est ce trait qui
+        // dit où s'arrête chaque zone. Purement visuel : la ligne du milieu d'un plan à deux bords
+        // est celle où les deux lisières se rejoignent, et aucune pièce ne la traverse — non parce
+        // que ce trait l'interdit, mais parce que chaque rectangle est un bac à part et que le
+        // moteur ne pose jamais hors de son bac.
+        //
+        // ⚠️ **Les longueurs sont des PIXELS** : `setDashPattern` les prend en multiples de la
+        // largeur de plume, qui vaut 1 ici — 20 px de tiret, 10 px d'espace. Et le bout est PLAT,
+        // sans quoi un tiret de 20 px en mesurerait 21 et l'espace 9 : c'est la règle que `WriteLine`
+        // s'impose déjà, « butt, like the pen the screen draws with ». Vérifié sur banc :
+        // `QSvgGenerator` écrit `stroke-dasharray="20,10"` et `stroke-opacity="0.74902"`.
         //
         // Tout part dans l'écran, dans le PNG et dans le SVG : l'export d'image rend la scène. Le
         // plan de coupe n'a pas de PDF — il n'y a donc rien d'autre à nourrir.
+        QPen zonePen(QColor(0, 0, 0, 191), 1); // 191 / 255 : le noir à 75 %
+        zonePen.setCapStyle(Qt::FlatCap);
+        zonePen.setDashPattern({20.0, 10.0});
+
         for (const OExportFoldedZone &zone : result.foldedZones)
         {
             if (result.foldedZones.size() > 1)
             {
                 auto *rect = new QGraphicsRectItem(zone.rect);
-                rect->setPen(QPen(QColor(0, 0, 0, 128), 1, Qt::DotLine));
+                rect->setPen(zonePen);
                 rect->setBrush(Qt::NoBrush);
                 rect->setZValue(kBinZ);
                 scene->addItem(rect);
