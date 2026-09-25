@@ -162,6 +162,13 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
     writer.writeDefaultNamespace(QStringLiteral("http://www.w3.org/2000/svg"));
     writer.writeNamespace(QStringLiteral("http://ns.adobe.com/AdobeIllustrator/10.0/"), QStringLiteral("i"));
     writer.writeNamespace(QStringLiteral("http://www.inkscape.org/namespaces/inkscape"), QStringLiteral("inkscape"));
+    // Ostara's own attribute prefix, declared here because the info blocks' text goes out through
+    // OCartoucheSvg::WriteItems, which marks every line with `ostara:font-face`. A prefix with no
+    // declaration is not a document a namespace-aware parser will read at all: Illustrator refuses
+    // the file, and so do Inkscape and xmllint. QXmlStreamReader, which reads these files back with
+    // namespace processing off, never complained — it asks for the literal qualified name — so the
+    // fault only ever showed on the outside.
+    writer.writeNamespace(QLatin1String(OSvg::kOstaraNamespace), QStringLiteral("ostara"));
     writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.1"));
     {
         constexpr qreal dpm = 96.0 / 25.4;
