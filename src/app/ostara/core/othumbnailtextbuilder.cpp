@@ -129,34 +129,6 @@ auto Translate(const QString &locale, const char *source) -> QString
     return TranslateToLocale(locale, "OTemplateSection", source);
 }
 
-/// @brief The legend, one line per language: the units the values are printed in, named once.
-///
-/// **One line per language, because this is a sentence.** The cartouche resolver holds single words
-/// on one line however many languages there are, and gives a heading a line of its own — a reader
-/// has to be able to see where one language stops.
-auto Legend(const QStringList &languages, bool centimeters, bool inches) -> QString
-{
-    QStringList lines;
-    for (const QString &locale : languages)
-    {
-        if (centimeters && inches)
-        {
-            lines.append(Translate(locale, QT_TRANSLATE_NOOP("OTemplateSection",
-                                                            "Seam allowances in centimeters (in inches)")));
-        }
-        else if (centimeters)
-        {
-            lines.append(Translate(locale, QT_TRANSLATE_NOOP("OTemplateSection",
-                                                            "Seam allowances in centimeters")));
-        }
-        else if (inches)
-        {
-            lines.append(Translate(locale, QT_TRANSLATE_NOOP("OTemplateSection", "Seam allowances in inches")));
-        }
-    }
-    return lines.join(QLatin1Char('\n'));
-}
-
 /// @brief One text per stored value, in the same order — so that the nth value and the nth text are
 /// the same margin.
 auto Values(const OThumbnailData &data, bool centimeters, bool inches) -> QStringList
@@ -194,6 +166,30 @@ auto OThumbnailTextBuilder::ValueText(qreal mm, bool centimeters, bool inches) -
     // No unit asked for: no value, and no legend either. An empty word is not a word, and the block
     // says nothing rather than saying something in a unit nobody chose.
     return QString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailTextBuilder::Legend(const QStringList &languages, bool centimeters, bool inches) -> QString
+{
+    QStringList lines;
+    for (const QString &locale : languages)
+    {
+        if (centimeters && inches)
+        {
+            lines.append(Translate(locale, QT_TRANSLATE_NOOP("OTemplateSection",
+                                                            "Seam allowances in centimeters (in inches)")));
+        }
+        else if (centimeters)
+        {
+            lines.append(Translate(locale, QT_TRANSLATE_NOOP("OTemplateSection",
+                                                            "Seam allowances in centimeters")));
+        }
+        else if (inches)
+        {
+            lines.append(Translate(locale, QT_TRANSLATE_NOOP("OTemplateSection", "Seam allowances in inches")));
+        }
+    }
+    return lines.join(QLatin1Char('\n'));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -38,6 +38,8 @@
 
 #include "../../vmisc/def.h"
 #include "../../vmisc/vabstractapplication.h"
+#include "../../vmisc/vabstractvalapplication.h"
+#include "../../vmisc/vvalentinasettings.h"
 #include "../../vwidgets/global.h"
 #include "../../vwidgets/ocartouchepainter.h"
 
@@ -158,11 +160,12 @@ void OThumbnailItem::SetPlacedWords(const QVector<PlacedWord> &words)
         // `placed` is deliberately left false: it is what tells EffectiveOffset to run the fit, and
         // there is no fit left to run — `origin` already went through it. m_wordsInBlock is the flag
         // that says so.
-        m_labels.append({word.text, word.origin, false});
+        m_labels.append({word.text, word.origin, false, word.legend});
     }
 
-    // A record does not tell a legend from a value: every word it carries is placed, the legend
-    // included. Keeping one here would draw it twice.
+    // The legend travels in the same list — a record carries every word placed, the caption among
+    // them, and each now says which of the two texts it is. Keeping one here as well would draw it
+    // twice.
     m_legend.clear();
     m_legendOffset = QPointF();
     m_legendPlaced = false;
@@ -233,11 +236,12 @@ auto OThumbnailItem::boundingRect() const -> QRectF
         {
             continue;
         }
-        box = box.united(TextRect(m_labels.at(i).text, EffectiveOffset(i)));
+        const LabelView &word = m_labels.at(i);
+        box = box.united(TextRect(word.text, EffectiveOffset(i), word.legend ? LegendFont() : ValuesFont()));
     }
     if (not m_legend.isEmpty())
     {
-        box = box.united(TextRect(m_legend, EffectiveLegendOffset()));
+        box = box.united(TextRect(m_legend, EffectiveLegendOffset(), LegendFont()));
     }
 
     return box;
@@ -252,15 +256,38 @@ auto OThumbnailItem::shape() const -> QPainterPath
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OThumbnailItem::LabelFont() -> QFont
+auto OThumbnailItem::StyledFont(const QString &family, const QString &face, int pixelSize) -> QFont
 {
-    // **The application's own text, not a chosen one.** The miniature borrows the interface's font
-    // so that it reads as part of the app, and the size is the one the app shows today — the
-    // miniature editor's font settings will take this over. The SVG export draws the words from
-    // here, so the document cannot end up with a typography the screen never showed.
-    QFont font = QApplication::font();
-    font.setPixelSize(kLabelPixelSize);
+    // **One answer for the screen and the file.** The SVG export draws the words from here too, so
+    // the document cannot end up with a typography the screen never showed: the Thumbnail page of the
+    // block editor writes the preferences, this reads them, and neither invents anything.
+    //
+    // The face is a NAME and not a weight (see FillFontFaces): a family calls its bold « DemiBold »
+    // where Qt calls it « Demi Bold », and only the family knows which face that is. Empty means the
+    // family's Regular, which is what a miniature nobody has styled keeps.
+    QFont font(family);
+    if (!face.isEmpty())
+    {
+        font.setStyleName(face);
+    }
+    font.setPixelSize(pixelSize > 0 ? pixelSize : kLabelPixelSize);
     return font;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::ValuesFont() -> QFont
+{
+    const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+    return StyledFont(settings->GetThumbnailValuesFontFamily(), settings->GetThumbnailValuesFontFace(),
+                      settings->GetThumbnailValuesFontPixelSize());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::LegendFont() -> QFont
+{
+    const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+    return StyledFont(settings->GetThumbnailLegendFontFamily(), settings->GetThumbnailLegendFontFace(),
+                      settings->GetThumbnailLegendFontPixelSize());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -282,9 +309,9 @@ auto OThumbnailItem::LabelTextSize(const QString &text, const QFont &font) -> QS
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OThumbnailItem::TextRect(const QString &text, const QPointF &offset) const -> QRectF
+auto OThumbnailItem::TextRect(const QString &text, const QPointF &offset, const QFont &font) const -> QRectF
 {
-    return QRectF(offset, LabelTextSize(text, LabelFont()));
+    return QRectF(offset, LabelTextSize(text, font));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -380,7 +407,9 @@ auto OThumbnailItem::EffectiveOffset(int index) const -> QPointF
         // A placed word is a point of the drawing: it follows the piece wherever the fit puts it.
         return WordOrigin(label.offset);
     }
-    return DefaultWordOrigin(m_labels, index, rect(), LabelFont());
+    // The row this lays out is the values' own: a replayed word is already placed and never reaches
+    // this line (see m_wordsInBlock), so the row is measured in the values' font.
+    return DefaultWordOrigin(m_labels, index, rect(), ValuesFont());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -390,7 +419,7 @@ auto OThumbnailItem::EffectiveLegendOffset() const -> QPointF
     {
         return WordOrigin(m_legendOffset);
     }
-    return DefaultLegendOrigin(m_legend, rect(), LabelFont());
+    return DefaultLegendOrigin(m_legend, rect(), LegendFont());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -398,13 +427,15 @@ auto OThumbnailItem::HitTestWord(const QPointF &pos) const -> int
 {
     // Last painted is on top, so the search runs backwards — the same order the eye reads the
     // stacking in.
-    if (not m_legend.isEmpty() && TextRect(m_legend, EffectiveLegendOffset()).contains(pos))
+    if (not m_legend.isEmpty() && TextRect(m_legend, EffectiveLegendOffset(), LegendFont()).contains(pos))
     {
         return kLegendTarget;
     }
     for (qsizetype i = m_labels.size() - 1; i >= 0; --i)
     {
-        if (TextRect(m_labels.at(i).text, EffectiveOffset(static_cast<int>(i))).contains(pos))
+        const LabelView &word = m_labels.at(i);
+        const QFont font = word.legend ? LegendFont() : ValuesFont();
+        if (TextRect(word.text, EffectiveOffset(static_cast<int>(i)), font).contains(pos))
         {
             return static_cast<int>(i);
         }
@@ -491,21 +522,28 @@ void OThumbnailItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     // block's caption, not part of the piece drawing: resizing the block resizes the drawing and
     // leaves the words where they are, while a change of zoom carries them exactly as it carries the
     // cartouche's text. They also stay out of the cached content, which is geometry alone.
-    painter->setFont(LabelFont());
     painter->setPen(textColor);
     painter->setBrush(Qt::NoBrush);
     for (int i = 0; i < m_labels.size(); ++i)
     {
-        if (m_labels.at(i).text.isEmpty())
+        const LabelView &word = m_labels.at(i);
+        if (word.text.isEmpty())
         {
             continue;
         }
-        painter->drawText(TextRect(m_labels.at(i).text, EffectiveOffset(i)), Qt::AlignLeft | Qt::AlignTop,
-                          m_labels.at(i).text);
+        // **Each word in its own font.** A value and the caption that names its unit are two texts
+        // with two settings; and the caption travels among the values when a record is replayed (see
+        // SetPlacedWords), so it must not come out as loud as the numbers it captions.
+        const QFont font = word.legend ? LegendFont() : ValuesFont();
+        painter->setFont(font);
+        painter->drawText(TextRect(word.text, EffectiveOffset(i), font), Qt::AlignLeft | Qt::AlignTop,
+                          word.text);
     }
     if (not m_legend.isEmpty())
     {
-        painter->drawText(TextRect(m_legend, EffectiveLegendOffset()), Qt::AlignLeft | Qt::AlignTop, m_legend);
+        painter->setFont(LegendFont());
+        painter->drawText(TextRect(m_legend, EffectiveLegendOffset(), LegendFont()),
+                          Qt::AlignLeft | Qt::AlignTop, m_legend);
     }
 
     // Light dashed outline + 8 filled square handles only when the block is active (clicked), like

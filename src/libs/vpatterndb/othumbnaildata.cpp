@@ -26,6 +26,29 @@
 
 #include "othumbnaildata.h"
 
+#include "../vmisc/vabstractvalapplication.h"
+#include "../vmisc/vvalentinasettings.h"
+
+//---------------------------------------------------------------------------------------------------------------------
+OThumbnailData::OThumbnailData()
+{
+    // The units a miniature is born with are the preference's (see the header): the Thumbnail page of
+    // the block editor decides them, and a miniature nobody has styled yet follows it. Saving the
+    // piece freezes the two flags in the file, so a later change of preference cannot rewrite a
+    // miniature that already carries its own answer.
+    const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+    m_showCentimeters = settings->IsThumbnailShowCentimeters();
+    m_showInches = settings->IsThumbnailShowInches();
+
+    // ⚠️ At least one unit is always on, whatever a settings file edited by hand may say: with
+    // neither, the miniature prints no value at all (see OThumbnailTextBuilder::ValueText), and a
+    // block holding a drawing captioned about nothing is worse than one holding a unit too many.
+    if (!m_showCentimeters && !m_showInches)
+    {
+        m_showCentimeters = true;
+    }
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 auto OThumbnailData::IsSet() const -> bool
 {

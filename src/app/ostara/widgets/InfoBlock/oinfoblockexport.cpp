@@ -177,13 +177,15 @@ auto BuildThumbnail(quint32 pieceId, const VPiece &piece, const OThumbnailData &
     const OThumbnailGeom resolved = OThumbnailItem::ResolveBlockGeom(geom, pieceBox, geomChosen);
     const QRectF block(0.0, 0.0, resolved.width, resolved.height);
     const QRectF contentBounds = content.boundingRect();
-    const QFont font = OThumbnailItem::LabelFont();
+    const QFont font = OThumbnailItem::ValuesFont();
+    const QFont legendFont = OThumbnailItem::LegendFont();
     const VToolSeamAllowance::ThumbnailWording wording = tool->ResolveThumbnailWording(piece, data);
 
     record.content = content;
     record.contentBounds = contentBounds;
     record.rect = QRectF(resolved.pos, QSizeF(resolved.width, resolved.height));
     record.font = font;
+    record.legendFont = legendFont;
     for (int w = 0; w < wording.labels.size(); ++w)
     {
         const OThumbnailItem::LabelView &label = wording.labels.at(w);
@@ -196,15 +198,15 @@ auto BuildThumbnail(quint32 pieceId, const VPiece &piece, const OThumbnailData &
                                                                        label.offset)
                                     : OThumbnailItem::DefaultWordOrigin(wording.labels, w, block,
                                                                         font);
-        record.words.append({label.text, inBlock});
+        record.words.append({label.text, inBlock, false});
     }
     if (!wording.legend.isEmpty())
     {
         const QPointF inBlock =
             data.HasLegendOffset()
                 ? OThumbnailItem::FittedWordOrigin(contentBounds, block, data.LegendOffset())
-                : OThumbnailItem::DefaultLegendOrigin(wording.legend, block, font);
-        record.words.append({wording.legend, inBlock});
+                : OThumbnailItem::DefaultLegendOrigin(wording.legend, block, legendFont);
+        record.words.append({wording.legend, inBlock, true});
     }
     return record;
 }
@@ -685,13 +687,18 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
 
             QVector<OCartoucheRenderItem> wordItems;
             wordItems.reserve(thumb.words.size());
-            const QFontMetricsF metrics(thumb.font);
             for (const ThumbnailWord &word : thumb.words)
             {
                 if (word.text.isEmpty())
                 {
                     continue;
                 }
+                // **The two texts are set apart.** A record carries the legend among the values —
+                // the writers place words, they never label them — and this is where the two fonts
+                // are told apart again: each word is measured and drawn in the font its own text is
+                // set in, or the caption would come out as loud as the numbers it captions.
+                const QFont &wordFont = word.legend ? thumb.legendFont : thumb.font;
+                const QFontMetricsF metrics(wordFont);
                 // **One line per language, as on the canvas.** A legend written in two languages is
                 // one string with a line break in it, and SVG has no line break: a newline inside
                 // `<text>` collapses into a space, so the two languages came out end to end on a
@@ -707,7 +714,7 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
                         OCartoucheRenderItem item;
                         item.kind = OCartoucheRenderItem::Kind::Text;
                         item.text = line;
-                        item.font = thumb.font;
+                        item.font = wordFont;
                         // The anchor is the top-left of the word's box, all that the screen ever
                         // needs; a <text> wants its baseline, which is one ascent lower.
                         item.pen = QPointF(word.origin.x(), baseline);

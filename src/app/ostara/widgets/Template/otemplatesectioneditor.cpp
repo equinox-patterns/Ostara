@@ -31,6 +31,7 @@
 #include "core/otemplateseparatoroptions.h"
 
 #include "core/ologolibrary.h"
+#include "core/ofontfaces.h"
 
 #include "vmisc/FactoryWidgets.h"
 #include "vwidgets/ocartouchepainter.h"
@@ -110,83 +111,6 @@ static auto SiblingFontKey(const QString &key, const char *wanted) -> QString
     QString stem = QString::fromLatin1(wanted);
     stem[0] = stem.at(0).toUpper();
     return prefix + stem;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/// @brief Fill @p combo with the faces @p family really has, keeping the answer already given.
-///
-/// **Décision de Sophie, 22-09-2026** — « ça ne devrait être que les vraies graisses de la font,
-/// pas des choix génériques qui n'existent pas. » **Regular is on every family**, and the rest
-/// belongs to the family: that is Illustrator's rule, and the only one that can be true of a font
-/// nobody has seen yet.
-///
-/// The nine numbered entries this control used to offer were CSS weights wearing Qt's names, and
-/// two of them named a face the family never gave: asking « Light » (300) drew « ExtraLight », and
-/// « Black » (900) drew « ExtraBold » — measured on the families installed here. **A list of
-/// numbers cannot name faces**, and cannot be right for the next font either.
-///
-/// @param family the family whose faces are wanted; empty falls back to the page's own font.
-/// @param stored what the file asks for: a face name when it holds one, and — for a file written
-///               before this control named faces — the number whose face it must show. A number of
-///               nought is an unset weight, and an unset weight is Regular.
-static void FillFontFaces(QComboBox *combo, const QString &family, const QString &stored)
-{
-    const QString current = family.isEmpty() ? OCartouchePainter::BaseFont().family() : family;
-    const QStringList all = QFontDatabase::styles(current);
-    if (all.isEmpty())
-    {
-        return; // a family with no face to offer keeps what it had
-    }
-
-    // ⚠️ **The italic faces are not offered — decision of Sophie, 22-09-2026.**
-    //
-    // A template sets a FACE, and the PDF redraws the words from their outlines: the re-emission
-    // reads the family, the size and the weight, and never `font-style`. An italic chosen here would
-    // therefore be drawn UPRIGHT, in silence — and a page is supposed to look the way the
-    // application shows it. The frontend's answer is a veto rather than a rendering: the choice is
-    // not offered, so it cannot be made by mistake.
-    //
-    // A family whose only faces are italic keeps them: a control offering nothing at all is worse
-    // than one offering the wrong thing, and no font anybody sets a pattern in is like that.
-    const auto isItalic = [](const QString &face) {
-        return face.contains(QStringLiteral("italic"), Qt::CaseInsensitive)
-               || face.contains(QStringLiteral("oblique"), Qt::CaseInsensitive);
-    };
-    QStringList roman;
-    for (const QString &face : all)
-    {
-        if (!isItalic(face))
-        {
-            roman.append(face);
-        }
-    }
-    const QStringList faces = roman.isEmpty() ? all : roman;
-
-    QSignalBlocker block(combo); // filling the list is not the user answering it
-    const QString kept = combo->currentData().toString();
-    combo->clear();
-    for (const QString &face : faces)
-    {
-        combo->addItem(face, face);
-    }
-
-    const QString want = kept.isEmpty() ? stored : kept;
-    int at = want.isEmpty() ? -1 : combo->findData(want);
-    bool numbered = false;
-    const int weight = want.toInt(&numbered);
-    if (at < 0 && numbered && weight > 0)
-    {
-        // An old file, and the face its number really resolves to — the same answer the drawing
-        // gets, so the list cannot show one face while the page is drawn in another.
-        QFont probe(current);
-        probe.setWeight(QFont::Weight(weight));
-        at = combo->findText(QFontInfo(probe).styleName());
-    }
-    if (at < 0)
-    {
-        at = combo->findText(QStringLiteral("Regular"));
-    }
-    combo->setCurrentIndex(at < 0 ? 0 : at);
 }
 
 void OTemplateSectionEditor::Rebuild()

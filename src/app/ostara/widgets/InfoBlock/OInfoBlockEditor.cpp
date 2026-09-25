@@ -34,6 +34,7 @@
 #include "OPieceCartoucheCatalogue.h"
 #include "OPieceCartoucheStorage.h"
 #include "oannotationstylespage.h"
+#include "othumbnailstylespage.h"
 
 #include "core/ologolibrary.h"
 
@@ -107,6 +108,10 @@ void OInfoBlockEditor::SetupUI()
         {
             ShowAnnotationsPage();
         }
+        else if (row == 6)
+        {
+            ShowThumbnailPage();
+        }
 
         // Last, and whatever happened. An action that ran has just moved the page this reads; one
         // that was cancelled by the unsaved-changes prompt has left it alone — and in that case the
@@ -121,6 +126,7 @@ void OInfoBlockEditor::SetupUI()
     SetupClientsPage();       // index 3
     SetupCollectionsPage();   // index 4
     SetupAnnotationsPage();   // index 5
+    SetupThumbnailPage();     // index 6
 
     // Named here as well as on a language change: this editor is retranslated when the language
     // changes and not when it is shown, and rows without names are a column of nothing.
@@ -132,7 +138,7 @@ void OInfoBlockEditor::SetupUI()
 
 void OInfoBlockEditor::NameMenuRows()
 {
-    // Six fixed entries — and **the rows are not the pages**. The library is the first row and the
+    // Seven fixed entries — and **the rows are not the pages**. The library is the first row and the
     // editor's own page the second, where the pages themselves are stacked the other way round:
     // which row opens which page is decided in SetupUI, and everything else here counts rows.
     m_menu->SetRowLabel(0, tr("Existing templates"));
@@ -141,6 +147,7 @@ void OInfoBlockEditor::NameMenuRows()
     m_menu->SetRowLabel(3, tr("Clients"));
     m_menu->SetRowLabel(4, tr("Collections"));
     m_menu->SetRowLabel(5, tr("Annotations"));
+    m_menu->SetRowLabel(6, tr("Thumbnail"));
 }
 
 void OInfoBlockEditor::RetranslateUI()
@@ -246,6 +253,12 @@ void OInfoBlockEditor::RetranslateUI()
     if (m_annotationStylesPage != nullptr)
     {
         m_annotationStylesPage->RetranslateUI();
+    }
+
+    // Thumbnail page — its own widget, which words itself.
+    if (m_thumbnailStylesPage != nullptr)
+    {
+        m_thumbnailStylesPage->RetranslateUI();
     }
 }
 
@@ -446,6 +459,21 @@ void OInfoBlockEditor::ShowAnnotationsPage()
 {
     m_annotationStylesPage->Show();
     m_menu->ShowPage(5);
+}
+
+void OInfoBlockEditor::SetupThumbnailPage()
+{
+    m_thumbnailStylesPage = new OThumbnailStylesPage();
+    m_menu->AddPage(m_thumbnailStylesPage);  // index 6
+}
+
+void OInfoBlockEditor::ShowThumbnailPage()
+{
+    // `Show()` reloads the controls from the preferences, so coming back to the page never shows a
+    // stale answer, and the languages are the template's own.
+    m_thumbnailStylesPage->SetLanguages(m_template.Languages());
+    m_thumbnailStylesPage->Show();
+    m_menu->ShowPage(6);
 }
 
 
@@ -1117,6 +1145,10 @@ void OInfoBlockEditor::OpenOnPage(int page)
             m_menu->HighlightRow(5);
             ShowAnnotationsPage();
             break;
+        case 6:
+            m_menu->HighlightRow(6);
+            ShowThumbnailPage();
+            break;
         default:
             break;
     }
@@ -1185,6 +1217,14 @@ void OInfoBlockEditor::RefreshPreview()
 {
     m_table.Load();  // no-op when the resolved .omt path has not changed
     m_preview->Refresh();
+
+    // The Thumbnail page writes one legend line per language of the template being edited, so it
+    // follows the same language row the cartouche preview does — pushed here, at the one place that
+    // row is read.
+    if (m_thumbnailStylesPage != nullptr)
+    {
+        m_thumbnailStylesPage->SetLanguages(m_template.Languages());
+    }
 }
 
 void OInfoBlockEditor::DoSave(const QString &filePath)

@@ -110,6 +110,10 @@ struct ThumbnailWord
 {
     QString text;
     QPointF origin;
+    /// True for the caption of the values rather than a value. A record carries the legend among the
+    /// values — the writers place words, they do not label them — and this is what tells the two
+    /// fonts apart again at writing time.
+    bool legend{false};
 };
 
 /**
@@ -129,9 +133,12 @@ struct Thumbnail
     QRectF contentBounds;
     QRectF rect;
     QVector<ThumbnailWord> words;
-    /// The render font of the words. Carried here so the document shows the typography the screen
-    /// shows — the miniature editor's font settings will move it, and the writer follows.
+    /// The render font of the values, and the legend's own — two texts, set apart, so the caption of
+    /// the numbers is not forced to be as loud as they are. Both are carried here so the document
+    /// shows the typography the screen shows: the Thumbnail page of the block editor sets them, and
+    /// the writer follows.
     QFont font;
+    QFont legendFont;
 };
 
 /**

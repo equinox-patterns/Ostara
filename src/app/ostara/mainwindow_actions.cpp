@@ -403,6 +403,7 @@ void MainWindow::CreateActions()
     connect(ui->actionInfoBlockClients, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(3); });
     connect(ui->actionInfoBlockCollections, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(4); });
     connect(ui->actionInfoBlockAnnotations, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(5); });
+    connect(ui->actionInfoBlockThumbnail, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(6); });
 
     // 0 = Cover page, 1 = Assembly marks — the two tabs of the PDF editor.
     connect(ui->actionPdfEditorCoverPage, &QAction::triggered, this,

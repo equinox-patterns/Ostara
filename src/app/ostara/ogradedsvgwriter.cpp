@@ -516,13 +516,17 @@ void WriteMiniature(QXmlStreamWriter &writer, const QPointF &origin,
 
     QVector<OCartoucheRenderItem> wordItems;
     wordItems.reserve(thumb.words.size());
-    const QFontMetricsF metrics(thumb.font);
     for (const OInfoBlockSvg::ThumbnailWord &word : thumb.words)
     {
         if (word.text.isEmpty())
         {
             continue;
         }
+        // **The two texts are set apart**, exactly as OInfoBlockSvg::WriteSvg writes the same
+        // miniature: a record carries the legend among the values — the writers place words, they
+        // never label them — so each word is measured and drawn in the font its own text is set in.
+        const QFont &wordFont = word.legend ? thumb.legendFont : thumb.font;
+        const QFontMetricsF metrics(wordFont);
         // **One line per language, as on the canvas.** A legend written in two languages is one
         // string with a line break in it, and SVG has no line break: a newline inside `<text>`
         // collapses into a space, so the two languages came out end to end on a single line — far
@@ -537,7 +541,7 @@ void WriteMiniature(QXmlStreamWriter &writer, const QPointF &origin,
                 OCartoucheRenderItem item;
                 item.kind = OCartoucheRenderItem::Kind::Text;
                 item.text = line;
-                item.font = thumb.font;
+                item.font = wordFont;
                 // The anchor is the top-left of the word's box, all that the screen ever needs; a
                 // `<text>` wants its baseline, which is one ascent lower.
                 item.pen = QPointF(word.origin.x(), baseline);

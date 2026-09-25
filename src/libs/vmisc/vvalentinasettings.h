@@ -285,9 +285,52 @@ public:
     static auto GetDefFoldLineLabelFontWeight() -> QFont::Weight;
     void SetFoldLineLabelFontWeight(QFont::Weight weight);
 
+    /// The face the fold-line label is written in — a NAME, never a number (decision of Sophie,
+    /// 22-09-2026 : « que les vraies graisses de la font »). A settings file written before the face
+    /// was named holds the number instead (@ref GetFoldLineLabelFontWeight), and the callers resolve
+    /// it; the same fallback the section editor and the Thumbnail page make.
+    auto GetFoldLineLabelFontFace() const -> QString;
+    void SetFoldLineLabelFontFace(const QString &value);
+
     auto GetFoldLineLabelFontPixelSize() const -> int;
     static auto GetDefFoldLineLabelFontPixelSize() -> int;
     void SetFoldLineLabelFontPixelSize(int size);
+
+    // Miniature typography and units — the defaults every miniature is born with.
+    //
+    // Two texts, set separately: the seam-allowance values a piece is cut with, and the legend that
+    // names their unit. A reader wants the numbers legible and the caption discreet, so the two
+    // carry a family, a face and a size of their own and share nothing.
+    auto GetThumbnailValuesFontFamily() const -> QString;
+    static auto GetDefThumbnailValuesFontFamily() -> QString;
+    void SetThumbnailValuesFontFamily(const QString &value);
+
+    /// Empty is not a face but an answer: the family's own Regular.
+    auto GetThumbnailValuesFontFace() const -> QString;
+    void SetThumbnailValuesFontFace(const QString &value);
+
+    auto GetThumbnailValuesFontPixelSize() const -> int;
+    static auto GetDefThumbnailValuesFontPixelSize() -> int;
+    void SetThumbnailValuesFontPixelSize(int size);
+
+    auto GetThumbnailLegendFontFamily() const -> QString;
+    static auto GetDefThumbnailLegendFontFamily() -> QString;
+    void SetThumbnailLegendFontFamily(const QString &value);
+
+    auto GetThumbnailLegendFontFace() const -> QString;
+    void SetThumbnailLegendFontFace(const QString &value);
+
+    auto GetThumbnailLegendFontPixelSize() const -> int;
+    static auto GetDefThumbnailLegendFontPixelSize() -> int;
+    void SetThumbnailLegendFontPixelSize(int size);
+
+    // The units a miniature is born with. At least one is always on: a miniature that states no unit
+    // at all says nothing about the margin it is cut with.
+    auto IsThumbnailShowCentimeters() const -> bool;
+    void SetThumbnailShowCentimeters(bool value);
+
+    auto IsThumbnailShowInches() const -> bool;
+    void SetThumbnailShowInches(bool value);
 
 signals:
     void UserToolColorsChanged();

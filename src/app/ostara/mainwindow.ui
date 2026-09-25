@@ -152,6 +152,7 @@
     <addaction name="actionInfoBlockClients"/>
     <addaction name="actionInfoBlockCollections"/>
     <addaction name="actionInfoBlockAnnotations"/>
+    <addaction name="actionInfoBlockThumbnail"/>
    </widget>
    <widget class="QMenu" name="menuPdfEditor">
     <property name="title">
@@ -1207,6 +1208,14 @@
   <action name="actionInfoBlockAnnotations">
    <property name="text">
     <string>Annotations</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionInfoBlockThumbnail">
+   <property name="text">
+    <string>Thumbnail</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

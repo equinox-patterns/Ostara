@@ -55,6 +55,7 @@ class OTemplateLanguageRow;
 class OTemplateSectionEditor;
 class OInfoBlockTemplatesPage;
 class OAnnotationStylesPage;
+class OThumbnailStylesPage;
 
 /**
  * @brief Information block editor — the template editing widget.
@@ -100,12 +101,13 @@ private:
     void SetupEditorPage();
     void SetupLanguageRow();
 
-    /// Names the six rows of the left menu.
+    /// Names the seven rows of the left menu.
     void NameMenuRows();
     void SetupTemplatesPage();
     void SetupLogosPage();
     void SetupClientsPage();
     void SetupAnnotationsPage();
+    void SetupThumbnailPage();
     void NewTemplate();
 
     /** @brief Asks before throwing away changes that were never saved. True = carry on. */
@@ -130,6 +132,7 @@ private:
     void ShowLogosPage();
     void ShowClientsPage();
     void ShowAnnotationsPage();
+    void ShowThumbnailPage();
     void LoadFile(const QString &filePath);
     void OnAddSection(const QString &typeId);
     void OnAddClient();
@@ -196,6 +199,11 @@ private:
 
     // Annotation styles page
     OAnnotationStylesPage *m_annotationStylesPage{nullptr};
+
+    // Thumbnail page — the typography and the units of every miniature. These are the application's
+    // settings and not the template's: the page writes the preferences, and every miniature obeys them
+    // (see OThumbnailStylesPage).
+    OThumbnailStylesPage *m_thumbnailStylesPage{nullptr};
 
     // Clients page
     QGroupBox *m_clientEditGroup{nullptr};

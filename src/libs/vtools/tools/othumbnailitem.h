@@ -74,6 +74,10 @@ public:
         QString text;
         QPointF offset{};   // In the drawing's own coordinates when placed — the block's frame when not.
         bool placed{false}; // False: the item lays it out in the row above the block.
+        /// True for the caption of the values rather than a value: it is drawn in the legend's own
+        /// font — a record carries the legend among the values (see @ref SetPlacedWords), and the
+        /// two texts are set separately.
+        bool legend{false};
     };
 
     /** @brief One word whose place is already DECIDED — the form a stored record carries it in. */
@@ -81,6 +85,7 @@ public:
     {
         QString text;
         QPointF origin{}; // In the block's own frame, the fit already applied.
+        bool legend{false};
     };
 
     explicit OThumbnailItem(QGraphicsItem *parent = nullptr);
@@ -147,8 +152,10 @@ public:
     // paints with them, and the SVG writer places the same words with the same numbers instead of
     // transcribing the formulas — a second transcription would drift the first time one of them
     // learned something new.
-    /** @brief The application's own text, at the size the miniature borrows. */
-    static auto LabelFont() -> QFont;
+    /** @brief The font the seam-allowance values are drawn in. */
+    static auto ValuesFont() -> QFont;
+    /** @brief The font the legend is drawn in — set apart from the values, as its own text. */
+    static auto LegendFont() -> QFont;
     /** @brief The box a word occupies — as wide as its widest line, as tall as all of its lines. */
     static auto LabelTextSize(const QString &text, const QFont &font) -> QSizeF;
     /** @brief Where a word nobody moved sits: the row above @p block, centred, in the order given. */
@@ -211,8 +218,8 @@ private:
     static constexpr qreal kHandleHitHalf = 10.0;
     static constexpr qreal kMinSize = 40.0; // ~1 cm at 96 DPI
 
-    /// @brief The app's own text, at its default size — the miniature's wording until the font
-    /// settings of the miniature editor exist.
+    /// @brief The size a miniature falls back on when the preference holds none — a font set in
+    /// points has no pixel size at all. The real one is the Thumbnail page's, in the preferences.
     static constexpr int kLabelPixelSize = 14;
     static constexpr qreal kLabelGap = 6.0; // Between two values of the default row.
     static constexpr qreal kBandGap = 4.0;  // Between a band and the block rect.
@@ -225,7 +232,10 @@ private:
     /** @brief New rect + position for a resize gesture, aspect ratio preserved. */
     void ResizeTo(const QPointF &mouseInParent, QRectF &newRect, QPointF &newPos) const;
 
-    auto TextRect(const QString &text, const QPointF &offset) const -> QRectF;
+    /// @brief The font a family, a face and a pixel size make — one answer for the screen and the file.
+    static auto StyledFont(const QString &family, const QString &face, int pixelSize) -> QFont;
+
+    auto TextRect(const QString &text, const QPointF &offset, const QFont &font) const -> QRectF;
     /**
      * @brief Where a placed word lands on screen: a point of the drawing, put through the same fit
      * the drawing itself goes through.

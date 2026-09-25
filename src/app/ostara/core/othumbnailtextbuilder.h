@@ -51,6 +51,18 @@ auto Build(const VPiece &piece, const OThumbnailData &thumbnail, VAbstractPatter
 /// The panel previews a row with this and the canvas prints with it, so the two cannot come out
 /// saying different things about the same margin.
 auto ValueText(qreal mm, bool centimeters, bool inches) -> QString;
+
+/// @brief The legend, one line per language: the units the values are printed in, named once.
+///
+/// **One line per language, because this is a sentence.** The cartouche resolver holds single words
+/// on one line however many languages there are, and gives a heading a line of its own — a reader has
+/// to be able to see where one language stops.
+///
+/// @ref Build writes it on the canvas and the Thumbnail page's preview writes it here: one
+/// implementation, so a caption cannot promise a unit the values beside it are not printed in. An
+/// empty @p languages is the application's own language, the convention every resolver in this
+/// application reads its words by.
+auto Legend(const QStringList &languages, bool centimeters, bool inches) -> QString;
 } // namespace OThumbnailTextBuilder
 
 #endif // OTHUMBNAILTEXTBUILDER_H

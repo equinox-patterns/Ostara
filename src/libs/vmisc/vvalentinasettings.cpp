@@ -158,6 +158,27 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingFoldLineLabelFontWeight, ("patte
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingFoldLineLabelFontPixelSize, ("pattern/foldLineLabelFontPixelSize"_L1))
 // NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingFoldLineLabelFontFace, ("pattern/foldLineLabelFontFace"_L1))
+
+// Miniature typography and units — global settings
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingThumbnailValuesFontFamily, ("thumbnail/valuesFontFamily"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingThumbnailValuesFontFace, ("thumbnail/valuesFontFace"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingThumbnailValuesFontPixelSize, ("thumbnail/valuesFontPixelSize"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingThumbnailLegendFontFamily, ("thumbnail/legendFontFamily"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingThumbnailLegendFontFace, ("thumbnail/legendFontFace"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingThumbnailLegendFontPixelSize, ("thumbnail/legendFontPixelSize"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingThumbnailShowCentimeters, ("thumbnail/showCentimeters"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingThumbnailShowInches, ("thumbnail/showInches"_L1))
+
+// NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternMessagesFontSize, ("font/patternMessagesSize"_L1))
 
 // NOLINTNEXTLINE
@@ -1302,6 +1323,148 @@ auto VValentinaSettings::GetDefFoldLineLabelFontPixelSize() -> int
 void VValentinaSettings::SetFoldLineLabelFontPixelSize(int size)
 {
     setValue(*settingFoldLineLabelFontPixelSize, size);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetFoldLineLabelFontFace() const -> QString
+{
+    // Empty is the family's Regular, and it is also what a settings file written before this key
+    // existed answers — the callers then fall back on the weight below, which is the same rule the
+    // new Weight controls follow for a template.
+    return ValueOrDef<QString>(*this, *settingFoldLineLabelFontFace, QString());
+}
+
+void VValentinaSettings::SetFoldLineLabelFontFace(const QString &value)
+{
+    setValue(*settingFoldLineLabelFontFace, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// Miniature typography — what the words of a miniature are drawn in when nobody has styled it.
+//
+// The default is the application's OWN text (see OThumbnailItem::ValuesFont), so a miniature drawn
+// by a user who never opened the Thumbnail page looks exactly like the one drawn before these
+// settings existed. The face stays empty until it is chosen: empty means the family's Regular, and
+// FillFontFaces resolves it — the same answer the renderer gets.
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetThumbnailValuesFontFamily() const -> QString
+{
+    return ValueOrDef<QString>(*this, *settingThumbnailValuesFontFamily, GetDefThumbnailValuesFontFamily());
+}
+
+auto VValentinaSettings::GetDefThumbnailValuesFontFamily() -> QString
+{
+    return QApplication::font().family();
+}
+
+void VValentinaSettings::SetThumbnailValuesFontFamily(const QString &value)
+{
+    setValue(*settingThumbnailValuesFontFamily, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetThumbnailValuesFontFace() const -> QString
+{
+    return ValueOrDef<QString>(*this, *settingThumbnailValuesFontFace, QString());
+}
+
+void VValentinaSettings::SetThumbnailValuesFontFace(const QString &value)
+{
+    setValue(*settingThumbnailValuesFontFace, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetThumbnailValuesFontPixelSize() const -> int
+{
+    return ValueOrDef<int>(*this, *settingThumbnailValuesFontPixelSize, GetDefThumbnailValuesFontPixelSize());
+}
+
+auto VValentinaSettings::GetDefThumbnailValuesFontPixelSize() -> int
+{
+    // The size the application writes its own interface in. A font set in points has no pixel size,
+    // and the miniature has always been fourteen pixels (OThumbnailItem::kLabelPixelSize).
+    const int px = QApplication::font().pixelSize();
+    return px > 0 ? px : 14;
+}
+
+void VValentinaSettings::SetThumbnailValuesFontPixelSize(int size)
+{
+    setValue(*settingThumbnailValuesFontPixelSize, size);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetThumbnailLegendFontFamily() const -> QString
+{
+    return ValueOrDef<QString>(*this, *settingThumbnailLegendFontFamily, GetDefThumbnailLegendFontFamily());
+}
+
+auto VValentinaSettings::GetDefThumbnailLegendFontFamily() -> QString
+{
+    return QApplication::font().family();
+}
+
+void VValentinaSettings::SetThumbnailLegendFontFamily(const QString &value)
+{
+    setValue(*settingThumbnailLegendFontFamily, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetThumbnailLegendFontFace() const -> QString
+{
+    return ValueOrDef<QString>(*this, *settingThumbnailLegendFontFace, QString());
+}
+
+void VValentinaSettings::SetThumbnailLegendFontFace(const QString &value)
+{
+    setValue(*settingThumbnailLegendFontFace, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetThumbnailLegendFontPixelSize() const -> int
+{
+    return ValueOrDef<int>(*this, *settingThumbnailLegendFontPixelSize, GetDefThumbnailLegendFontPixelSize());
+}
+
+auto VValentinaSettings::GetDefThumbnailLegendFontPixelSize() -> int
+{
+    const int px = QApplication::font().pixelSize();
+    return px > 0 ? px : 14;
+}
+
+void VValentinaSettings::SetThumbnailLegendFontPixelSize(int size)
+{
+    setValue(*settingThumbnailLegendFontPixelSize, size);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// The units of a miniature — the default it is created with, and the one every miniature with no
+// unit of its own follows.
+//
+// ⚠️ **At least one is always on.** A miniature with neither shows no value at all (see
+// OThumbnailTextBuilder::ValueText): the block would be a drawing with a caption about nothing. The
+// controls that write these two keys refuse to uncheck the last one, so the impossible state is not
+// reachable from the interface — and the miniature itself falls back on centimetres if a settings
+// file ever arrives holding it (OThumbnailConfigWidget).
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::IsThumbnailShowCentimeters() const -> bool
+{
+    return ValueOrDef<bool>(*this, *settingThumbnailShowCentimeters, true);
+}
+
+void VValentinaSettings::SetThumbnailShowCentimeters(bool value)
+{
+    setValue(*settingThumbnailShowCentimeters, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::IsThumbnailShowInches() const -> bool
+{
+    return ValueOrDef<bool>(*this, *settingThumbnailShowInches, false);
+}
+
+void VValentinaSettings::SetThumbnailShowInches(bool value)
+{
+    setValue(*settingThumbnailShowInches, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -133,23 +133,35 @@ OThumbnailConfigWidget::OThumbnailConfigWidget(QWidget *parent) : QWidget(parent
         Commit();
     });
 
-    connect(m_centimetersCheck, &QCheckBox::toggled, this, [this](bool) {
+    // ⚠️ **A miniature always states a unit — decision of Sophie, 25-09-2026.** Unchecking the last unit
+    // checked is not refused and shows no message: it hands the answer to the other unit, in one click —
+    // centimetres off puts inches on, and the other way round. With neither, the miniature prints no
+    // value at all (see OThumbnailTextBuilder::ValueText): a block holding a drawing captioned about
+    // nothing is worse than one holding a unit too many. The impossible state is therefore made
+    // unreachable, rather than repaired after the fact.
+    const auto onUnitToggled = [this](bool centimeters, bool checked) {
         if (m_loading)
         {
             return;
         }
+        QCheckBox *const other = centimeters ? m_inchesCheck : m_centimetersCheck;
+        if (!checked && !other->isChecked())
+        {
+            // The other switch turning on is this gesture's answer, not a second one: it must not
+            // re-enter and commit a half-applied state.
+            m_loading = true;
+            other->setChecked(true);
+            m_loading = false;
+        }
         RefreshRowTexts();
         Commit();
-    });
+    };
 
-    connect(m_inchesCheck, &QCheckBox::toggled, this, [this](bool) {
-        if (m_loading)
-        {
-            return;
-        }
-        RefreshRowTexts();
-        Commit();
-    });
+    connect(m_centimetersCheck, &QCheckBox::toggled, this,
+            [onUnitToggled](bool on) { onUnitToggled(true, on); });
+
+    connect(m_inchesCheck, &QCheckBox::toggled, this,
+            [onUnitToggled](bool on) { onUnitToggled(false, on); });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -229,6 +241,12 @@ void OThumbnailConfigWidget::ApplySwitches(OThumbnailData &data) const
     data.SetActive(m_activeCheck->isChecked());
     data.SetShowCentimeters(m_centimetersCheck->isChecked());
     data.SetShowInches(m_inchesCheck->isChecked());
+    // Belt and braces: the two switches refuse to leave both units off, and a miniature with neither
+    // prints nothing at all — so the state is caught here as well, at the one door that writes the data.
+    if (!data.ShowCentimeters() && !data.ShowInches())
+    {
+        data.SetShowCentimeters(true);
+    }
     data.SetSet(true);
 }
 

@@ -1080,13 +1080,13 @@ void DrawOwnerDecor(QGraphicsItem *host, const OExportPieceDecor &decor)
 
         // ⚠️ The words are given PLACES, not offsets: the record's are already through the fit, and
         // putting them through it a second time is what a `SetLabels` call would do — see
-        // OThumbnailItem::SetPlacedWords. A record does not separate a legend from a value either, so
-        // all of its words are handed over together and the legend is left empty.
+        // OThumbnailItem::SetPlacedWords. All of its words are handed over together, the legend among
+        // them, and each carries which of the two texts it is: they are set in their own fonts.
         QVector<OThumbnailItem::PlacedWord> words;
         words.reserve(record.words.size());
         for (const OInfoBlockSvg::ThumbnailWord &word : record.words)
         {
-            words.append({word.text, word.origin});
+            words.append({word.text, word.origin, word.legend});
         }
         item->SetPlacedWords(words);
 

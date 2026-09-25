@@ -170,11 +170,15 @@ auto VPattern::ParsePieceThumbnail(const QDomElement &domElement) const -> OThum
     thumbnail.SetSet(true);
     thumbnail.SetActive(GetParametrBool(domElement, VToolSeamAllowance::AttrActive, falseStr));
 
-    // The switches are read with the defaults the writer omits: centimetres on, inches off. Reading
-    // them back as "false" would turn off a unit the file never mentioned.
-    thumbnail.SetShowCentimeters(
-        GetParametrBool(domElement, VToolSeamAllowance::AttrCentimeters, trueStr));
-    thumbnail.SetShowInches(GetParametrBool(domElement, VToolSeamAllowance::AttrInches, falseStr));
+    // ⚠️ **A miniature with no unit attribute of its own keeps the unit it was born with** — the
+    // preference in force when the object was made (see OThumbnailData), and not a constant of this
+    // parser. Reading an absent switch back as "false" would turn off a unit the file never
+    // mentioned; the writer now emits both on everything it saves, so an absent one means a file
+    // written before the Thumbnail page existed.
+    thumbnail.SetShowCentimeters(GetParametrBool(domElement, VToolSeamAllowance::AttrCentimeters,
+                                                thumbnail.ShowCentimeters() ? trueStr : falseStr));
+    thumbnail.SetShowInches(GetParametrBool(domElement, VToolSeamAllowance::AttrInches,
+                                           thumbnail.ShowInches() ? trueStr : falseStr));
 
     // The writer emits mx/my whenever the block was moved or resized: their presence is the
     // "geometry stored" marker, so a (0,0) position survives a round-trip as a real user move.

@@ -977,13 +977,14 @@ void VToolSeamAllowance::AddThumbnail(VAbstractPattern *doc, QDomElement &domEle
     doc->SetAttributeOrRemoveIf<bool>(thumbnailEl, VToolSeamAllowance::AttrActive, data.IsActive(),
                                       [](bool active) noexcept { return not active; });
 
-    // The two unit switches are written the way `active` is: the attribute is absent while it says
-    // what the miniature says by default, so a file that never touched them stays the file it was.
-    // Centimetres are on unless the user turned them off; inches are off until they are asked for.
-    doc->SetAttributeOrRemoveIf<bool>(thumbnailEl, VToolSeamAllowance::AttrCentimeters,
-                                      data.ShowCentimeters(), [](bool show) noexcept { return show; });
-    doc->SetAttributeOrRemoveIf<bool>(thumbnailEl, VToolSeamAllowance::AttrInches, data.ShowInches(),
-                                      [](bool show) noexcept { return not show; });
+    // ⚠️ **Both unit switches are written, always.** They used to be omitted while they said what the
+    // miniature holds "by default" — which made an explicit choice indistinguishable from no choice
+    // at all: a miniature the user had deliberately set to centimetres only carried nothing, and a
+    // change of the preference would then have rewritten it. Writing them freezes the miniature's own
+    // answer in the file; the preference rules over what has not been written yet, and over nothing
+    // else.
+    doc->SetAttribute(thumbnailEl, VToolSeamAllowance::AttrCentimeters, data.ShowCentimeters());
+    doc->SetAttribute(thumbnailEl, VToolSeamAllowance::AttrInches, data.ShowInches());
 
     if (data.HasGeometry())
     {

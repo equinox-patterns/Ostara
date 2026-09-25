@@ -114,7 +114,16 @@ struct OThumbnailTexts
 class OThumbnailData
 {
 public:
-    OThumbnailData() = default;
+    /**
+     * @brief A miniature's content, born with the units the application prefers.
+     *
+     * ⚠️ **The unit flags start from the preference, not from a constant of this class.** The
+     * Thumbnail page of the block editor decides what a miniature is created with, and a piece drawn
+     * after that decision must obey it without being saved and reopened first — so the default is
+     * read here, where a miniature is born, and the two flags then belong to the piece: once written,
+     * a miniature keeps the unit it was given, whatever the preference becomes.
+     */
+    OThumbnailData();
 
     auto IsSet() const -> bool;
     void SetSet(bool set);
