@@ -13283,7 +13283,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="705"/>
         <source>One-way layout</source>
-        <translation>Plan dans un seul sens</translation>
+        <translation>Toutes les pièces dans le même sens</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="707"/>
@@ -16060,7 +16060,7 @@ L&apos;enregistrer avant de le quitter ?</translation>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="122"/>
         <source>Square test</source>
-        <translation>Carré de contrôle</translation>
+        <translation>Carré test</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="126"/>
