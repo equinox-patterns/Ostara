@@ -182,6 +182,12 @@ public:
     auto GetFoldLineSVGFontFamily() const -> QString;
     void SetFoldLineSVGFontFamily(const QString &font);
 
+    /// Whether this drawing draws the fold-line caption. The mark — the line and its two arrows —
+    /// is untouched: only the text leaves, and at the drawing rather than by hiding an item.
+    /// @see VLayoutPieceData::m_showFoldLineLabel — not persisted, on purpose.
+    auto IsShowFoldLineLabel() const -> bool;
+    void SetShowFoldLineLabel(bool show);
+
     void Translate(const QPointF &p);
     void Translate(qreal dx, qreal dy);
     void Scale(qreal sx, qreal sy);

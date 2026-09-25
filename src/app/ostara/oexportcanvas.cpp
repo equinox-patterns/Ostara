@@ -859,6 +859,17 @@ auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
     decor.thumbnails = ResolveOwnerMiniatures(owner, isGroup, ownerId, range, miniatureBoxes, pattern,
                                               cuttingPlan);
 
+    // A cutting plan carries no block and no annotation either (Sophie's decision), and the rule is
+    // posed here, at resolution, exactly like the miniature's just above: both fields stay empty,
+    // they are never hidden, so none of the three paths — canvas, image, PDF — can draw one by
+    // mistake, and there is no guard to forget in a fourth. The fold-line caption obeys the same
+    // decision but does not live in this record: @ref OExportCanvas::Build turns it off on the copy
+    // of the piece that GetItem is about to draw.
+    if (cuttingPlan)
+    {
+        return decor;
+    }
+
     // A block exists when the template dispatches a section to it and that section has
     // content: the resolver leaves nothing else in blockContent. Without a document there
     // is no template to resolve, so the blocks are skipped and the annotations are not.
@@ -1750,6 +1761,14 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 // contributes the identity, so this is exactly the matrix it was before.
                 VLayoutPiece placed = geometry.piece;
                 placed.SetMatrix(geometry.piece.GetMatrix() * placementMatrix);
+
+                // "Cut on fold" is a caption, and a cutting plan shows none: the mark — the line and
+                // its two arrows — stays, the text leaves. Asked of the piece here, on the copy
+                // GetItem is about to draw, so the canvas, the image and the PDF lose it together.
+                if (cuttingPlan)
+                {
+                    placed.SetShowFoldLineLabel(false);
+                }
 
                 // The decor is set on the piece before GetItem runs, because GetItem is
                 // what builds it — and it is set on the reference layer only.

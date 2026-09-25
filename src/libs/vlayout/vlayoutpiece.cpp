@@ -826,6 +826,18 @@ void VLayoutPiece::SetFoldLineSVGFontFamily(const QString &font)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VLayoutPiece::IsShowFoldLineLabel() const -> bool
+{
+    return d->m_showFoldLineLabel;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VLayoutPiece::SetShowFoldLineLabel(bool show)
+{
+    d->m_showFoldLineLabel = show;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VLayoutPiece::SetGrainline(const VPieceGrainline &grainline)
 {
     d->m_grainline = grainline;
@@ -1558,8 +1570,13 @@ void VLayoutPiece::CreateFoldLineItem(QGraphicsItem *parent, bool textAsPaths) c
         return;
     }
 
+    // The caption is the one part of the fold line a drawing may be asked away: when it is off, the
+    // text (or its glyph outlines) is **not built**, rather than built and hidden — so no later pass
+    // can forget the rule. The mark below is never concerned.
+    const bool withLabel = IsShowFoldLineLabel();
+
     VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-    if (!textAsPaths && !settings->GetSingleStrokeOutlineFont() && !settings->GetSingleLineFonts())
+    if (withLabel && !textAsPaths && !settings->GetSingleStrokeOutlineFont() && !settings->GetSingleLineFonts())
     {
         auto *item = new QGraphicsSimpleTextItem(parent);
         fLine.UpdateFoldLineLabel(item);
@@ -1601,7 +1618,7 @@ void VLayoutPiece::CreateFoldLineItem(QGraphicsItem *parent, bool textAsPaths) c
     {
         FoldLineMark(shape.constFirst());
 
-        if (shape.size() > 1 &&
+        if (withLabel && shape.size() > 1 &&
             (textAsPaths || settings->GetSingleStrokeOutlineFont() || settings->GetSingleLineFonts()))
         {
             FoldLineLabel(shape.constLast());

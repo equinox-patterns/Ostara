@@ -107,6 +107,11 @@ public:
     QFont m_foldLineOutlineFont{};     // NOLINT (misc-non-private-member-variables-in-classes)
     QString m_foldLineSvgFontFamily{}; // NOLINT (misc-non-private-member-variables-in-classes)
 
+    /** @brief m_showFoldLineLabel whether this drawing shows the fold-line caption ("Cut on fold").
+     * Deliberately out of the data stream: it is a decision of ONE drawing (a cutting plan asks it
+     * away), never a property of the piece that a save would carry from one run to the next. */
+    bool m_showFoldLineLabel{true}; // NOLINT(misc-non-private-member-variables-in-classes)
+
 private:
     Q_DISABLE_ASSIGN_MOVE(VLayoutPieceData) // NOLINT
 
