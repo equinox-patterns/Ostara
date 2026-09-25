@@ -50,6 +50,7 @@ class OAnnotationsConfigWidget;
 class ODetailsGrainlineWidget;
 class OGradedAlignWidget;
 class ODetailsFoldLineValuesWidget;
+class OGroupThumbnailsConfigWidget;
 class OPieceInfoWidget;
 class OBlockConfigWidget;
 class VAbstractPattern;
@@ -71,6 +72,13 @@ public:
     ~ODetailsGroupWidget() override = default;
 
     void Clear();
+
+    /// @brief Switches to the tab that configures what was clicked on the canvas — the same routing
+    /// a piece's children use (grainline, info blocks, annotations, miniature).
+    void ShowGrainlineTab();
+    void ShowBlocksTab();
+    void ShowAnnotationsTab();
+    void ShowThumbnailTab();
     void Show(quint32 groupId, VContainer *data, VAbstractPattern *doc);
     /** @brief True if this group is the one currently displayed. The canvas holder re-emits
      *  Clicked on the press that starts a drag, so the property browser skips a redundant
@@ -154,6 +162,9 @@ private:
     OPieceInfoWidget *m_groupInfoWidget{nullptr};
     OBlockConfigWidget *m_blockConfigWidget{nullptr};
     OAnnotationsConfigWidget *m_annotationsConfigWidget{nullptr};
+    /// @brief One miniature editor per member: the group owns no miniature of its own, so this tab
+    /// edits the members' pieces — through the same SavePieceOptions command a piece page uses.
+    OGroupThumbnailsConfigWidget *m_thumbnailsConfigWidget{nullptr};
 
     // Member foldlines
     QVBoxLayout *m_memberFLLayout{nullptr};

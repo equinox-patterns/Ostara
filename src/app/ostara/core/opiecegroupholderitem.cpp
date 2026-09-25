@@ -41,11 +41,13 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vtools/tools/oannotationitem.h"
 #include "../vtools/tools/oinfoblockitem.h"
+#include "../vtools/tools/othumbnailitem.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/undocommands/movepiece.h"
 #include "../vtools/undocommands/savepiecegroupoptions.h"
 #include "../vwidgets/global.h"
 #include "../vwidgets/vgrainlineitem.h"
+#include "../vwidgets/vmaingraphicsscene.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
 
 namespace
@@ -127,6 +129,10 @@ void OPieceGroupHolderItem::SetInteractive(bool interactive)
     {
         annotationItem->setAcceptedMouseButtons(buttons);
     }
+    for (auto it = m_thumbnailItems.cbegin(); it != m_thumbnailItems.cend(); ++it)
+    {
+        it.value()->setAcceptedMouseButtons(buttons);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -174,7 +180,21 @@ void OPieceGroupHolderItem::Refresh(const OPieceGroup &group, VAbstractPattern *
     // makes a group's grainline, blocks and annotations follow a member being resized.
     m_childRefRect = OChildAnchor::RefRect(group, data, bounds.topLeft());
     OPieceGroup followed = group;
-    if (OChildAnchor::Materialize(followed, m_childRefRect))
+    bool materialized = OChildAnchor::Materialize(followed, m_childRefRect);
+
+    // The members' miniatures belong to the group and follow the same frame: the holder's origin
+    // moves as soon as a member is resized, so a miniature stored in it has to be re-anchored too —
+    // otherwise it would slide away from the piece it draws.
+    for (quint32 pieceId : followed.pieceIds)
+    {
+        OThumbnailData thumbnail = followed.MemberThumbnail(pieceId);
+        if (OChildAnchor::Materialize(thumbnail, m_childRefRect))
+        {
+            followed.SetMemberThumbnail(pieceId, thumbnail);
+            materialized = true;
+        }
+    }
+    if (materialized)
     {
         data->UpdatePieceGroup(m_groupId, followed);
     }
@@ -182,6 +202,7 @@ void OPieceGroupHolderItem::Refresh(const OPieceGroup &group, VAbstractPattern *
     RefreshGrainline(followed, data);
     RefreshBlocks(followed, doc, data);
     RefreshAnnotations(followed);
+    RefreshThumbnails(followed, data);
     update();
 }
 
@@ -286,6 +307,168 @@ void OPieceGroupHolderItem::RefreshAnnotations(const OPieceGroup &group)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OPieceGroupHolderItem::RefreshThumbnails(const OPieceGroup &group, VContainer *data)
+{
+    PruneThumbnailItems(group);
+
+    for (quint32 pieceId : group.pieceIds)
+    {
+        OThumbnailItem *thumbnail = m_thumbnailItems.value(pieceId, nullptr);
+        if (thumbnail == nullptr)
+        {
+            thumbnail = new OThumbnailItem(this);
+            // One item per member, created once: the pieces never disagree on what a miniature shows,
+            // because what it shows is their own drawing — only its frame belongs to the group.
+            connect(thumbnail, &OThumbnailItem::GeometryChanged, this,
+                    [this, pieceId](const QPointF &pos, qreal width, qreal height) {
+                        OnThumbnailGeometryChanged(pieceId, pos, width, height);
+                    });
+            connect(thumbnail, &OThumbnailItem::LabelMoved, this,
+                    [this, pieceId](int index, const QPointF &offset) {
+                        OnThumbnailLabelMoved(pieceId, index, offset);
+                    });
+            connect(thumbnail, &OThumbnailItem::LegendMoved, this,
+                    [this, pieceId](const QPointF &offset) { OnThumbnailLegendMoved(pieceId, offset); });
+            connect(thumbnail, &OThumbnailItem::EditingChanged, this, [this](bool editing)
+            {
+                // The mode's convention: what Escape does is said in the window's permanent status
+                // label, and the scene is the only door an item has to it.
+                if (auto *detailsScene = qobject_cast<VMainGraphicsScene *>(scene()); detailsScene != nullptr)
+                {
+                    detailsScene->ShowStatusTip(editing ? tr("Press Escape to leave the thumbnail") : QString());
+                }
+            });
+            m_thumbnailItems.insert(pieceId, thumbnail);
+        }
+
+        const OThumbnailData stored = group.MemberThumbnail(pieceId);
+        if (not stored.IsActive())
+        {
+            thumbnail->SetActive(false);
+            thumbnail->hide();
+            continue;
+        }
+
+        // **`getTool()` is not a guard: it *throws* when the tool is gone** (VExceptionBadId — the
+        // same family as the cmd+W crash of 22-08 and the piece deletion of 27-08). The holder is
+        // refreshed from `QUndoStack::indexChanged`, so it is refreshed while the pattern is being
+        // closed: a member id can already be out of the document then.
+        try
+        {
+            auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
+            if (tool == nullptr)
+            {
+                thumbnail->hide();
+                continue;
+            }
+            const QPainterPath content = tool->ThumbnailReferenceContent();
+            const QRectF contentBounds = content.boundingRect();
+            if (content.isEmpty() || contentBounds.isEmpty())
+            {
+                // Nothing honest to draw yet: the reference drawing is captured on its own schedule,
+                // and the block appears once it exists (the holder follows each undo step).
+                thumbnail->hide();
+                continue;
+            }
+
+            // The frame lives in the group's frame — the holder's own — but what it is measured
+            // against when nobody chose it is the member it draws, not the group's union box.
+            const QRectF pieceBox = mapRectFromScene(tool->sceneBoundingRect());
+            const OThumbnailGeom geom =
+                OThumbnailItem::ResolveBlockGeom(stored.Geom(), pieceBox, stored.HasGeometry());
+
+            // The group's miniature of that member, not the piece's own: drawn is what is printed.
+            const VToolSeamAllowance::ThumbnailWording wording =
+                tool->ResolveThumbnailWording(data->GetPiece(pieceId), stored);
+
+            thumbnail->SetLabels(wording.labels, wording.legend, stored.LegendOffset(), stored.HasLegendOffset());
+            thumbnail->SetContent(content, contentBounds);
+            thumbnail->SetBlockGeom(geom);
+            thumbnail->show();
+        }
+        catch (const VExceptionBadId &)
+        {
+            thumbnail->SetActive(false);
+            thumbnail->hide();
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceGroupHolderItem::PruneThumbnailItems(const OPieceGroup &group)
+{
+    // Collect first, delete afterwards: removing an entry while walking the hash would invalidate the
+    // walk, and deleting an item may reach back into this holder through its signals.
+    QVector<quint32> gone;
+    for (auto it = m_thumbnailItems.cbegin(); it != m_thumbnailItems.cend(); ++it)
+    {
+        if (not group.pieceIds.contains(it.key()))
+        {
+            gone.append(it.key());
+        }
+    }
+    for (quint32 pieceId : gone)
+    {
+        delete m_thumbnailItems.take(pieceId); // an unlinked member takes its miniature with it
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceGroupHolderItem::CommitMemberThumbnail(quint32 pieceId, const std::function<void(OThumbnailData &)> &mutate)
+{
+    CommitGroup([this, pieceId, &mutate](OPieceGroup &group)
+    {
+        OThumbnailData thumbnail = group.MemberThumbnail(pieceId);
+        mutate(thumbnail);
+        // Where the gesture left the block becomes its anchor, or the next refresh would pull it back
+        // and undo the drag — the same mark the group's own children carry.
+        if (thumbnail.HasGeometry())
+        {
+            OThumbnailGeom geom = thumbnail.Geom();
+            geom.anchor = OChildAnchor::FromAbsolute(geom.pos, m_childRefRect);
+            thumbnail.SetGeom(geom);
+        }
+        group.SetMemberThumbnail(pieceId, thumbnail);
+    });
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceGroupHolderItem::OnThumbnailGeometryChanged(quint32 pieceId, const QPointF &pos, qreal width, qreal height)
+{
+    CommitMemberThumbnail(pieceId, [&pos, width, height](OThumbnailData &thumbnail)
+    {
+        OThumbnailGeom geom = thumbnail.Geom();
+        geom.pos = pos;
+        geom.width = width;
+        geom.height = height;
+        thumbnail.SetGeom(geom);
+        thumbnail.SetSet(true);
+    });
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceGroupHolderItem::OnThumbnailLabelMoved(quint32 pieceId, int index, const QPointF &offset)
+{
+    CommitMemberThumbnail(pieceId, [index, &offset](OThumbnailData &thumbnail)
+    {
+        QVector<OThumbnailLabel> labels = thumbnail.Labels();
+        if (index < 0 || index >= labels.size())
+        {
+            return;
+        }
+        labels[index].offset = offset;
+        labels[index].placed = true;
+        thumbnail.SetLabels(labels);
+    });
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceGroupHolderItem::OnThumbnailLegendMoved(quint32 pieceId, const QPointF &offset)
+{
+    CommitMemberThumbnail(pieceId, [&offset](OThumbnailData &thumbnail) { thumbnail.SetLegendOffset(offset); });
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 QRectF OPieceGroupHolderItem::boundingRect() const
 {
     if (m_groupBounds.isNull())
@@ -327,7 +510,7 @@ void OPieceGroupHolderItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     m_pressScenePos = event->scenePos();
     m_dragging = true;
     m_movedSincePress = false;
-    emit Clicked(m_groupId);
+    emit Clicked(m_groupId, Child::None); // the frame itself: this is how a group gets selected
     event->accept();
 }
 
@@ -471,6 +654,28 @@ void OPieceGroupHolderItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *eve
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OPieceGroupHolderItem::IsEditingThumbnail() const -> bool
+{
+    for (auto it = m_thumbnailItems.cbegin(); it != m_thumbnailItems.cend(); ++it)
+    {
+        if (it.value()->IsEditing())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceGroupHolderItem::CancelThumbnailEdit()
+{
+    for (auto it = m_thumbnailItems.cbegin(); it != m_thumbnailItems.cend(); ++it)
+    {
+        it.value()->SetEditing(false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OPieceGroupHolderItem::CommitGroup(std::function<void(OPieceGroup &)> func)
 {
     if (m_doc == nullptr || m_data == nullptr)
@@ -516,6 +721,18 @@ void OPieceGroupHolderItem::ResetChildren(QGraphicsItem *pItem)
             break;
         }
     }
+    OThumbnailItem *pThumbnail = nullptr;
+    for (auto it = m_thumbnailItems.cbegin(); it != m_thumbnailItems.cend(); ++it)
+    {
+        if (it.value() == pItem)
+        {
+            pThumbnail = it.value();
+            break;
+        }
+    }
+    // Read before granting it: the press that selects and the press that opens look exactly alike
+    // from inside the block (mirror of VToolSeamAllowance::ResetChildren).
+    const bool wasThumbnailActive = pThumbnail != nullptr && pThumbnail->IsActive();
 
     // Only the clicked grainline keeps its editing handles (mirror of the piece).
     if (pGLI != m_grainlineItem && m_grainlineItem->isVisible())
@@ -530,9 +747,32 @@ void OPieceGroupHolderItem::ResetChildren(QGraphicsItem *pItem)
     {
         annotationItem->SetActive(annotationItem == pAnnotation);
     }
-    if (pGLI != nullptr || pBlock != nullptr || pAnnotation != nullptr)
+    for (auto it = m_thumbnailItems.cbegin(); it != m_thumbnailItems.cend(); ++it)
     {
-        emit Clicked(m_groupId);  // selecting a group child selects the group (like a piece)
+        it.value()->SetActive(it.value() == pThumbnail);
+    }
+    if (pThumbnail != nullptr)
+    {
+        pThumbnail->SetOpensOnClick(wasThumbnailActive);
+    }
+
+    // The clicked child is what the dock has to configure; the group's own selection block is left
+    // alone, exactly as a piece's is when one of its children is clicked.
+    if (pGLI != nullptr)
+    {
+        emit Clicked(m_groupId, Child::Grainline);
+    }
+    else if (pBlock != nullptr)
+    {
+        emit Clicked(m_groupId, Child::InfoBlock);
+    }
+    else if (pAnnotation != nullptr)
+    {
+        emit Clicked(m_groupId, Child::Annotation);
+    }
+    else if (pThumbnail != nullptr)
+    {
+        emit Clicked(m_groupId, Child::Thumbnail);
     }
 }
 

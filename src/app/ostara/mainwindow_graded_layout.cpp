@@ -104,7 +104,8 @@ GradedContentDiff DiffGradedRangeContent(const OSizerange &applied, const OSizer
             !qFuzzyCompare(a.dx, it.value().dx) || !qFuzzyCompare(a.dy, it.value().dy);
         const bool child =
             !(a.grainline == it.value().grainline && a.blocks == it.value().blocks
-              && a.annotations == it.value().annotations && a.annotationsFp == it.value().annotationsFp);
+              && a.annotations == it.value().annotations && a.thumbnail == it.value().thumbnail
+              && a.annotationsFp == it.value().annotationsFp);
         pieceMoved = pieceMoved || moved;
         pieceChild = pieceChild || child;
     }
@@ -139,7 +140,9 @@ GradedContentDiff DiffGradedRangeContent(const OSizerange &applied, const OSizer
             !qFuzzyCompare(a.dx, it.value().dx) || !qFuzzyCompare(a.dy, it.value().dy);
         const bool child =
             !(a.grainline == it.value().grainline && a.blocks == it.value().blocks
-              && a.annotations == it.value().annotations && a.annotationsFp == it.value().annotationsFp);
+              && a.annotations == it.value().annotations
+              && a.memberThumbnails == it.value().memberThumbnails
+              && a.annotationsFp == it.value().annotationsFp);
         groupMoved = groupMoved || moved;
         groupChild = groupChild || child;
     }
@@ -232,6 +235,7 @@ void MainWindow::ApplyGradedLayoutOffsets(bool forceFull)
         RefreshGradedReferenceGrainlines();
         RefreshGradedReferenceInfoBlocks();
         RefreshGradedReferenceAnnotations();
+        RefreshGradedReferenceThumbnails();
     }
     else if (kind == ChangeKind::PieceOffset)
     {
@@ -243,12 +247,14 @@ void MainWindow::ApplyGradedLayoutOffsets(bool forceFull)
         RefreshGradedReferenceGrainlines(ownerId, 0);
         RefreshGradedReferenceInfoBlocks(ownerId, 0);
         RefreshGradedReferenceAnnotations(ownerId, 0);
+        RefreshGradedReferenceThumbnails(ownerId, 0);
     }
     else // GroupChild
     {
         RefreshGradedReferenceGrainlines(0, ownerId);
         RefreshGradedReferenceInfoBlocks(0, ownerId);
         RefreshGradedReferenceAnnotations(0, ownerId);
+        RefreshGradedReferenceThumbnails(0, ownerId);
     }
 
     // Remember the applied content so the next deferred apply can diff against it.

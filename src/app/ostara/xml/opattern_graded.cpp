@@ -81,6 +81,10 @@ const QString kTagAnnotation = QStringLiteral("annotation");
 const QString kAttrWidth     = QStringLiteral("width");
 const QString kAttrHeight    = QStringLiteral("height");
 
+// Per-range miniature override stored inside a <piece> content element. Only its frame is stored:
+// the drawing is always the piece at the reference size of the pattern, whichever the range.
+const QString kTagThumbnail = QStringLiteral("thumbnail");
+
 void ReadGrainlineOverride(const QDomElement &ownerElement, OSizerange::GrainlineOverride &gl)
 {
     for (QDomNode node = ownerElement.firstChild(); not node.isNull(); node = node.nextSibling())
@@ -225,6 +229,89 @@ void AppendAnnotationOverrides(VAbstractPattern *doc, QDomElement &ownerElement,
         ownerElement.appendChild(annotationElement);
     }
 }
+
+void ReadThumbnailOverride(const QDomElement &ownerElement, OSizerange::ThumbnailOverride &thumbnail)
+{
+    for (QDomNode node = ownerElement.firstChild(); not node.isNull(); node = node.nextSibling())
+    {
+        if (not node.isElement())
+        {
+            continue;
+        }
+        const QDomElement child = node.toElement();
+        if (child.tagName() != kTagThumbnail)
+        {
+            continue;
+        }
+        thumbnail.valid = true;
+        thumbnail.pos = QPointF(child.attribute(kAttrMx).toDouble(), child.attribute(kAttrMy).toDouble());
+        thumbnail.width = child.attribute(kAttrWidth).toDouble();
+        thumbnail.height = child.attribute(kAttrHeight).toDouble();
+        return;
+    }
+}
+
+void ReadMemberThumbnailOverrides(const QDomElement &ownerElement,
+                                  QHash<quint32, OSizerange::ThumbnailOverride> &out)
+{
+    for (QDomNode node = ownerElement.firstChild(); not node.isNull(); node = node.nextSibling())
+    {
+        if (not node.isElement())
+        {
+            continue;
+        }
+        const QDomElement child = node.toElement();
+        if (child.tagName() != kTagThumbnail)
+        {
+            continue;
+        }
+        const quint32 pieceId = child.attribute(kAttrPieceId).toUInt(); // malformed → 0 = NULL
+        if (pieceId == NULL_ID)
+        {
+            continue;
+        }
+        OSizerange::ThumbnailOverride override;
+        override.valid = true;
+        override.pos = QPointF(child.attribute(kAttrMx).toDouble(), child.attribute(kAttrMy).toDouble());
+        override.width = child.attribute(kAttrWidth).toDouble();
+        override.height = child.attribute(kAttrHeight).toDouble();
+        out.insert(pieceId, override);
+    }
+}
+
+void AppendMemberThumbnailOverrides(VAbstractPattern *doc, QDomElement &ownerElement,
+                                    const QHash<quint32, OSizerange::ThumbnailOverride> &thumbnails)
+{
+    for (auto it = thumbnails.cbegin(); it != thumbnails.cend(); ++it)
+    {
+        if (!it.value().valid)
+        {
+            continue;
+        }
+        QDomElement thumbnailElement = doc->createElement(kTagThumbnail);
+        doc->SetAttribute(thumbnailElement, kAttrPieceId, it.key());
+        doc->SetAttribute(thumbnailElement, kAttrMx, it.value().pos.x());
+        doc->SetAttribute(thumbnailElement, kAttrMy, it.value().pos.y());
+        doc->SetAttribute(thumbnailElement, kAttrWidth, it.value().width);
+        doc->SetAttribute(thumbnailElement, kAttrHeight, it.value().height);
+        ownerElement.appendChild(thumbnailElement);
+    }
+}
+
+void AppendThumbnailOverride(VAbstractPattern *doc, QDomElement &ownerElement,
+                             const OSizerange::ThumbnailOverride &thumbnail)
+{
+    if (!thumbnail.valid)
+    {
+        return;
+    }
+    QDomElement thumbnailElement = doc->createElement(kTagThumbnail);
+    doc->SetAttribute(thumbnailElement, kAttrMx, thumbnail.pos.x());
+    doc->SetAttribute(thumbnailElement, kAttrMy, thumbnail.pos.y());
+    doc->SetAttribute(thumbnailElement, kAttrWidth, thumbnail.width);
+    doc->SetAttribute(thumbnailElement, kAttrHeight, thumbnail.height);
+    ownerElement.appendChild(thumbnailElement);
+}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -294,6 +381,7 @@ void VPattern::ParseSizeRanges(const QDomElement &domElement)
                 ReadGrainlineOverride(childElement, content.grainline);
                 ReadBlockOverrides(childElement, content.blocks);
                 ReadAnnotationOverrides(childElement, content.annotations);
+                ReadThumbnailOverride(childElement, content.thumbnail);
                 const quint32 pieceId = childElement.attribute(kAttrPieceId).toUInt(); // malformed → 0 = NULL
                 if (pieceId != NULL_ID)
                 {
@@ -308,6 +396,7 @@ void VPattern::ParseSizeRanges(const QDomElement &domElement)
                 ReadGrainlineOverride(childElement, content.grainline);
                 ReadBlockOverrides(childElement, content.blocks);
                 ReadAnnotationOverrides(childElement, content.annotations);
+                ReadMemberThumbnailOverrides(childElement, content.memberThumbnails);
                 const quint32 groupId = childElement.attribute(kAttrGroupId).toUInt(); // malformed → 0 = NULL
                 if (groupId != NULL_ID)
                 {
@@ -396,6 +485,7 @@ void AddSizeRanges(VAbstractPattern *doc, QDomElement &rootElement, const VConta
             AppendGrainlineOverride(doc, pieceElement, pc.value().grainline);
             AppendBlockOverrides(doc, pieceElement, pc.value().blocks);
             AppendAnnotationOverrides(doc, pieceElement, pc.value().annotations);
+            AppendThumbnailOverride(doc, pieceElement, pc.value().thumbnail);
             rangeElement.appendChild(pieceElement);
         }
 
@@ -408,6 +498,7 @@ void AddSizeRanges(VAbstractPattern *doc, QDomElement &rootElement, const VConta
             AppendGrainlineOverride(doc, groupElement, gc.value().grainline);
             AppendBlockOverrides(doc, groupElement, gc.value().blocks);
             AppendAnnotationOverrides(doc, groupElement, gc.value().annotations);
+            AppendMemberThumbnailOverrides(doc, groupElement, gc.value().memberThumbnails);
             rangeElement.appendChild(groupElement);
         }
 

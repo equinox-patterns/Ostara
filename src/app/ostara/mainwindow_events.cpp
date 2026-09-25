@@ -34,6 +34,7 @@
 
 #include "WelcomeScreen.h"
 #include "core/odetailspropertybrowser.h"
+#include "core/opiecegroupholderitem.h"
 #include "core/vapplication.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "dialogs/vwidgetdependencies.h"
@@ -674,6 +675,24 @@ void MainWindow::MouseMove(const QPointF &scenePos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+auto MainWindow::CancelGroupThumbnailEdit() -> bool
+{
+    // A group's miniatures are edited on the group's own frame, so the piece page knows nothing about
+    // them: Escape has to ask the holders themselves.
+    for (auto it = m_groupHolders.cbegin(); it != m_groupHolders.cend(); ++it)
+    {
+        OPieceGroupHolderItem *holder = it.value();
+        if (holder != nullptr && holder->IsEditingThumbnail())
+        {
+            holder->CancelThumbnailEdit();
+            return true;
+        }
+    }
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief keyPressEvent handle key press events.
  * @param event key event.
@@ -704,6 +723,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 // The innermost gesture on the Details canvas: Escape gave the miniature, Escape
                 // takes it back.
                 m_dockManager->detailsOptions()->CancelThumbnailEdit();
+                break;
+            }
+            if (CancelGroupThumbnailEdit())
+            {
+                // Same gesture, same key — but the block belongs to a group, whose miniatures are
+                // edited on the group's frame and not through the piece page.
                 break;
             }
             if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingPassmarkPoints())

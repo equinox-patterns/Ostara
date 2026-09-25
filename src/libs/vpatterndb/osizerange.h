@@ -99,6 +99,29 @@ public:
         }
     };
 
+    /**
+     * @brief Optional per-range miniature override (a move/resize done in Graded).
+     *
+     * The miniature's drawing never changes with the range — it is the piece at the reference size
+     * of the pattern — so only its frame is recorded here. No entry (or valid == false) means the
+     * frame is the piece's own one, exactly what Details shows.
+     */
+    struct ThumbnailOverride
+    {
+        bool valid = false; // an override exists → it wins over the Details geometry
+        QPointF pos{};      // parent-local px
+        qreal width = 0.0;  // px (0 = auto-size, the Details rule)
+        qreal height = 0.0;
+
+        friend bool operator==(const ThumbnailOverride &l, const ThumbnailOverride &r)
+        {
+            return l.valid == r.valid
+                   && (!l.valid
+                       || (l.pos == r.pos && qFuzzyCompare(l.width, r.width)
+                           && qFuzzyCompare(l.height, r.height)));
+        }
+    };
+
     /** @brief Content recorded for one piece inside this range. */
     struct PieceContent
     {
@@ -107,13 +130,14 @@ public:
         GrainlineOverride grainline;              // only meaningful for a lone (non-grouped) piece
         QHash<int, BlockOverride> blocks;         // block index 1..11 → override (only edited ones)
         QHash<int, AnnotationOverride> annotations; // annotation list index → override (0-based)
+        ThumbnailOverride thumbnail;              // only meaningful for a lone (non-grouped) piece
         QString annotationsFp;                    // fingerprint of the annotation list that the
                                                   // overrides were made against (empty = none)
 
         friend bool operator==(const PieceContent &l, const PieceContent &r)
         {
             return qFuzzyCompare(l.dx, r.dx) && qFuzzyCompare(l.dy, r.dy) && l.grainline == r.grainline
-                   && l.blocks == r.blocks && l.annotations == r.annotations
+                   && l.blocks == r.blocks && l.annotations == r.annotations && l.thumbnail == r.thumbnail
                    && l.annotationsFp == r.annotationsFp;
         }
     };
@@ -126,13 +150,16 @@ public:
         GrainlineOverride grainline;              // the group's shared grainline
         QHash<int, BlockOverride> blocks;         // block index 1..11 → override
         QHash<int, AnnotationOverride> annotations; // annotation list index → override (0-based)
+        /** The frame of each member's miniature, by piece id: a group carries no miniature of its own,
+         *  it carries one per member — and a range records the frame of every one of them. */
+        QHash<quint32, ThumbnailOverride> memberThumbnails;
         QString annotationsFp;                    // fingerprint of the annotation list (see above)
 
         friend bool operator==(const GroupContent &l, const GroupContent &r)
         {
             return qFuzzyCompare(l.dx, r.dx) && qFuzzyCompare(l.dy, r.dy) && l.grainline == r.grainline
                    && l.blocks == r.blocks && l.annotations == r.annotations
-                   && l.annotationsFp == r.annotationsFp;
+                   && l.memberThumbnails == r.memberThumbnails && l.annotationsFp == r.annotationsFp;
         }
     };
 

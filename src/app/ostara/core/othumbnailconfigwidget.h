@@ -36,7 +36,6 @@
 #include <functional>
 #include <utility>
 
-#include "../vpatterndb/ipieceinfo.h"
 #include "../vpatterndb/othumbnaildata.h"
 
 class QCheckBox;
@@ -62,14 +61,35 @@ public:
     explicit OThumbnailConfigWidget(QWidget *parent = nullptr);
     ~OThumbnailConfigWidget() override = default;
 
-    /** Callback that applies a piece-like mutation and commits it to the undo stack. */
-    void SetModifyPending(std::function<void(std::function<void(IPieceInfo &)>)> callback);
+    /** Callback that applies a miniature mutation to the live owner data and commits it to the undo
+     *  stack. It hands over the **live** object — a piece for the piece page, the group's stored
+     *  miniature of a member for the group page — never a copy made here: the geometry the canvas
+     *  stored has to survive an activation change. */
+    using ThumbnailModifier = std::function<void(std::function<void(OThumbnailData &)>)>;
+    void SetModifyPending(ThumbnailModifier callback);
 
-    void Show(const IPieceInfo &detail, const VContainer *data, quint32 pieceId);
+    /**
+     * @brief Shows the miniature state of one owner.
+     *
+     * @param thumbnail The state edited — the piece's own on the piece page, the group's per-member
+     *                  one on the group page. The only source of the switches and of the labels.
+     * @param data      The container the seam-allowance widths are read from.
+     * @param pieceId   The piece whose widths are listed.
+     * @param ownerName When set, the labels name that owner ("Activate thumbnail for Manche") and the
+     *                  inner group box reads as a plain section: the caller already brings the box
+     *                  (the group page shows one per member), and a box in a box is two subjects.
+     */
+    void Show(const OThumbnailData &thumbnail, const VContainer *data, quint32 pieceId,
+              const QString &ownerName = QString());
     void Clear();
     void RetranslateUI();
 
 private:
+    /// @brief The three texts that depend on whether the miniature has a named owner.
+    void ApplyTexts();
+    /// @brief Writes the widget's switches onto the data handed over by the owner's commit callback.
+    void ApplySwitches(OThumbnailData &data) const;
+
     /**
      * @brief One seam-allowance width of the piece, with the words that print it and the count of
      * how many times it appears on the miniature.
@@ -81,9 +101,7 @@ private:
         QSpinBox *spin{nullptr};
     };
 
-    auto BuildData(const IPieceInfo &det) const -> OThumbnailData;
     void Commit();
-
     /// @brief The distinct widths the piece is cut with — empty when it carries no seam allowance.
     static auto WidthsFor(quint32 pieceId, const VContainer *data) -> QVector<qreal>;
     static auto CountFor(const OThumbnailData &data, qreal mm) -> int;
@@ -96,7 +114,11 @@ private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(OThumbnailConfigWidget) // NOLINT
 
-    std::function<void(std::function<void(IPieceInfo &)>)> m_modifyPending;
+    ThumbnailModifier m_modifyPending;
+
+    /// @brief The owner's name, when the miniature is shown for somebody else's piece (a group
+    /// member). Empty on the piece page, where the piece is its own owner.
+    QString m_ownerName;
 
     QCheckBox *m_activeCheck{nullptr};
     QGroupBox *m_infoGroup{nullptr};

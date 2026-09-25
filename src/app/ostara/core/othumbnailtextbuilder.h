@@ -33,7 +33,6 @@
 
 class VPiece;
 class VAbstractPattern;
-class VContainer;
 
 /**
  * @brief The application's answer to @ref OThumbnailTextResolver.
@@ -45,7 +44,7 @@ class VContainer;
  */
 namespace OThumbnailTextBuilder
 {
-auto Build(const VPiece &piece, VAbstractPattern *doc, const VContainer *data) -> OThumbnailTexts;
+auto Build(const VPiece &piece, const OThumbnailData &thumbnail, VAbstractPattern *doc) -> OThumbnailTexts;
 
 /// @brief One value as the miniature prints it: `1`, `3/8`, or both at once as `1 (3/8)`.
 ///

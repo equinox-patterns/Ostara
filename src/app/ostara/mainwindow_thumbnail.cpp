@@ -39,6 +39,7 @@
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vformat/vmeasurements.h"
 #include "../vmisc/vabstractvalapplication.h"
+#include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vtools/tools/othumbnailcache.h"
 #include "../vtools/tools/vtoolseamallowance.h"
@@ -142,6 +143,26 @@ void MainWindow::RefreshThumbnailSnapshots()
             break;
         }
     }
+    // A group carries one miniature per member, and the members' own switches say nothing about it:
+    // those drawings need the capture just as much, so they count here too.
+    if (not anyThumbnail)
+    {
+        const auto *groups = pattern->DataPieceGroups();
+        if (groups != nullptr)
+        {
+            for (auto git = groups->constBegin(); git != groups->constEnd() && not anyThumbnail; ++git)
+            {
+                for (quint32 pieceId : git.value().pieceIds)
+                {
+                    if (git.value().MemberThumbnail(pieceId).IsActive())
+                    {
+                        anyThumbnail = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
     if (not anyThumbnail)
     {
         OThumbnailCache::Clear();
@@ -202,5 +223,13 @@ void MainWindow::RefreshThumbnailSnapshots()
     if (m_dockManager != nullptr)
     {
         m_dockManager->detailsOptions()->RefreshPieceAfterParse();
+    }
+
+    // 5. The graded canvas draws the same drawing from the same cache, and it may have been built
+    //    while this capture was still on its way (the cache was empty and flagged "frozen", so
+    //    there was nothing honest to show yet). Now it exists: give the graded layer its blocks.
+    if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
+    {
+        RefreshGradedReferenceThumbnails();
     }
 }

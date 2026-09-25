@@ -41,6 +41,7 @@
 #include "oannotationdata.h"
 #include "oinfoblockcontent.h"
 #include "othumbnaildata.h"
+#include "othumbnailitem.h"
 #include "vinteractivetool.h"
 
 class DialogTool;
@@ -51,7 +52,6 @@ class VNoBrushScalePathItem;
 class VPatternGraph;
 class OAnnotationItem;
 class OInfoBlockItem;
-class OThumbnailItem;
 class ONodePlaceLabel;
 
 struct VToolSeamAllowanceInitData : VAbstractToolInitData
@@ -134,6 +134,8 @@ public:
     static const QString AttrCentimeters;
     static const QString AttrInches;
     static const QString AttrMm;
+    static const QString AttrCx;
+    static const QString AttrCy;
 
     void RemoveWithConfirm(bool ask);
 
@@ -216,6 +218,28 @@ public:
      * node, in which case nothing is anchored. */
     auto ChildAnchorRefRect() const -> QRectF;
 
+    /** @brief The miniature block's wording: the stored seam-allowance labels paired with the
+     *  app-side resolver's texts, plus the legend sentence. Empty when no resolver is registered. */
+    struct ThumbnailWording
+    {
+        QVector<OThumbnailItem::LabelView> labels;
+        QString legend;
+    };
+
+    /** @brief The drawing the miniature must show: the one captured at the reference size of the
+     *  pattern, or the live geometry when the document already stands on that size. Empty while the
+     *  capture is still pending — painting the active size then would make the block jump under the
+     *  user's eyes once the right drawing arrives. */
+    auto ThumbnailReferenceContent() const -> QPainterPath;
+
+    /** @brief Resolves the wording of a miniature: @p piece says which margins it names and in which
+     *  languages, @p thumbnail says which of them are printed and in which units — application
+     *  knowledge injected through SetThumbnailTextResolver().
+     *
+     *  The data is a parameter and not read off the piece: a group carries one miniature per member,
+     *  and the block shown for a member prints that one's values, not the piece's own. */
+    auto ResolveThumbnailWording(const VPiece &piece, const OThumbnailData &thumbnail) const -> ThumbnailWording;
+
 public slots:
     void FullUpdateFromGuiApply() override;
     void FullUpdateFromFile() override;
@@ -238,6 +262,10 @@ public slots:
     /** @brief Remember this piece's miniature drawing — call it while the document stands on the
      *  reference size, the only moment that geometry exists. */
     void CaptureThumbnailContent();
+
+    /** @brief Whether this piece shows a miniature somewhere — its own, or the one a group carries
+     *  for it. What decides whether its reference drawing has to be captured. */
+    auto IsThumbnailShown() const -> bool;
 
 private slots:
     void UpdateGrainline();

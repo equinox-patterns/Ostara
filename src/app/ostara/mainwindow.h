@@ -762,6 +762,10 @@ private:
     void InitDocksContain();
     void RefreshGroupHolders();
 
+    /// Leaves the "inside the miniature" sub-mode of a group's miniatures, if one is open. False when
+    /// none was: the piece page's own miniature is handled by the options dock.
+    auto CancelGroupThumbnailEdit() -> bool;
+
     void SetAllGroupHoldersInteractive(bool interactive);
     void UpdateGroupHolderSelection(quint32 groupId);
     auto OpenNewValentina(const QString &fileName = QString()) const -> bool;
@@ -950,6 +954,19 @@ private:
     /// Persist an annotation move/resize of a lone piece (isGroup=false) or of a group into
     /// the active size range and push the undo command. Rotation is never stored.
     void StoreGradedAnnotation(quint32 ownerId, bool isGroup, int index, const OAnnotationGeom &geom);
+
+    /// (Re)build the interactive miniature blocks on the graded reference layer. A lone piece carries
+    /// its own on its reference item; a member of a group has its miniature carried by the group —
+    /// one per member, from the group's data — on the group's host. The drawing is always the one of
+    /// the reference size of the pattern: a range only carries frames, never another size's geometry.
+    /// Positions must be final when called. onlyPieceId/onlyGroupId (0 = all owners) restrict the
+    /// rebuild.
+    void RefreshGradedReferenceThumbnails(quint32 onlyPieceId = 0, quint32 onlyGroupId = 0);
+
+    /// Persist a miniature move/resize into the active size range and push the undo command. A lone
+    /// piece stores it on itself (@p groupId NULL_ID); a group member stores it in the group, per
+    /// member — the piece's own miniature is never touched by a group gesture.
+    void StoreGradedThumbnail(quint32 groupId, quint32 pieceId, const QPointF &pos, qreal width, qreal height);
 
     // Measurement slots (from embedded WelcomeScreen)
     void WelcomeNewMeasurement();

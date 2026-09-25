@@ -139,8 +139,8 @@ auto main(int argc, char *argv[]) -> int
     // Register the app-side wording builder for the piece miniature, so the piece tools (libs) can
     // print seam-allowance values and their legend without a libs -> app dependency.
     VToolSeamAllowance::SetThumbnailTextResolver(
-        [](const VPiece &piece, VAbstractPattern *doc, const VContainer *data) -> OThumbnailTexts {
-            return OThumbnailTextBuilder::Build(piece, doc, data);
+        [](const VPiece &piece, const OThumbnailData &thumbnail, VAbstractPattern *doc) -> OThumbnailTexts {
+            return OThumbnailTextBuilder::Build(piece, thumbnail, doc);
         });
 
     // Register the app-side annotation style resolver so the piece tools (libs)

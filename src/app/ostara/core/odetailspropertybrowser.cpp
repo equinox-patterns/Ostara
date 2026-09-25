@@ -196,19 +196,48 @@ void ODetailsPropertyBrowser::ShowGroupOptions(quint32 groupId, VContainer *data
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPropertyBrowser::ShowGrainlineTab()
 {
+    // **One door, two pages.** The canvas routes a click to "the tab that configures it", and which
+    // page owns that tab depends on what the click selected — a piece or a group. The page is already
+    // the current one when this is called: the click switches it first (SelectedDetail / ShowGroupOptions).
+    if (m_stack->currentWidget() == m_groupWidget)
+    {
+        m_groupWidget->ShowGrainlineTab();
+        return;
+    }
     m_pieceWidget->ShowGrainlineTab();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPropertyBrowser::ShowBlocksTab()
 {
+    if (m_stack->currentWidget() == m_groupWidget)
+    {
+        m_groupWidget->ShowBlocksTab();
+        return;
+    }
     m_pieceWidget->ShowBlocksTab();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPropertyBrowser::ShowAnnotationsTab()
 {
+    if (m_stack->currentWidget() == m_groupWidget)
+    {
+        m_groupWidget->ShowAnnotationsTab();
+        return;
+    }
     m_pieceWidget->ShowAnnotationsTab();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::ShowThumbnailTab()
+{
+    if (m_stack->currentWidget() == m_groupWidget)
+    {
+        m_groupWidget->ShowThumbnailTab();
+        return;
+    }
+    m_pieceWidget->ShowThumbnailTab();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

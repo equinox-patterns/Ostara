@@ -144,6 +144,9 @@ const QString VToolSeamAllowance::AttrFontScale = QStringLiteral("fontScale");  
 const QString VToolSeamAllowance::AttrCentimeters = QStringLiteral("centimeters");       // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrInches = QStringLiteral("inches");                 // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrMm = QStringLiteral("mm");                         // NOLINT(cert-err58-cpp)
+/** Placed word of the miniature: a point of the drawing, never a distance to the block's corner. */
+const QString VToolSeamAllowance::AttrCx = QStringLiteral("cx");                         // NOLINT(cert-err58-cpp)
+const QString VToolSeamAllowance::AttrCy = QStringLiteral("cy");                         // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::AttrPiecePriority = QStringLiteral("priority");        // NOLINT(cert-err58-cpp)
 
 namespace
@@ -1014,10 +1017,12 @@ void VToolSeamAllowance::AddThumbnail(VAbstractPattern *doc, QDomElement &domEle
             doc->SetAttribute(labelEl, VToolSeamAllowance::AttrMm, label.mm);
             if (label.placed)
             {
-                // mx/my are the "placed by hand" marker they are for the block itself: their
-                // presence is what makes an offset deliberate, and a (0,0) offset a real move.
-                doc->SetAttribute(labelEl, AttrMx, label.offset.x());
-                doc->SetAttribute(labelEl, AttrMy, label.offset.y());
+                // cx/cy, not mx/my: a placed word is a point of the drawing (see OThumbnailLabel), so
+                // its coordinates are the piece's own. mx/my stay declared for the files the previous
+                // writer produced, but they no longer mean anything here — a word written with them
+                // goes back to the default row rather than being drawn at a place nobody chose.
+                doc->SetAttribute(labelEl, VToolSeamAllowance::AttrCx, label.offset.x());
+                doc->SetAttribute(labelEl, VToolSeamAllowance::AttrCy, label.offset.y());
             }
             seamEl.appendChild(labelEl);
         }
@@ -1026,8 +1031,8 @@ void VToolSeamAllowance::AddThumbnail(VAbstractPattern *doc, QDomElement &domEle
         {
             const QPointF legend = data.LegendOffset();
             QDomElement legendEl = doc->createElement(VToolSeamAllowance::TagLegend);
-            doc->SetAttribute(legendEl, AttrMx, legend.x());
-            doc->SetAttribute(legendEl, AttrMy, legend.y());
+            doc->SetAttribute(legendEl, VToolSeamAllowance::AttrCx, legend.x());
+            doc->SetAttribute(legendEl, VToolSeamAllowance::AttrCy, legend.y());
             seamEl.appendChild(legendEl);
         }
 
@@ -1106,6 +1111,12 @@ void VToolSeamAllowance::AddPieceGroups(VAbstractPattern *doc, QDomElement &domE
                                       QStringLiteral("%1,%2").arg(offset.x()).arg(offset.y()));
                 }
             }
+
+            // The member's miniature, nested in its own <member>: the group carries one per member,
+            // and it is the very <thumbnail> element a piece writes — read back by the same parser.
+            // The piece's own miniature is untouched by this (it is masked while linked).
+            AddThumbnail(doc, memberElement, group.MemberThumbnail(pieceId));
+
             groupElement.appendChild(memberElement);
         }
 
@@ -1780,6 +1791,52 @@ auto VToolSeamAllowance::ThumbnailContent() const -> QPainterPath
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::ThumbnailReferenceContent() const -> QPainterPath
+{
+    const QPainterPath captured = OThumbnailCache::Content(m_id);
+    if (not captured.isEmpty())
+    {
+        return captured;
+    }
+    // Nothing captured: either the live geometry already is the reference one — the document stands
+    // on that size, so the tools carry it — or the capture is still on its way and there is nothing
+    // honest to draw yet. Showing the active size in the meantime is what makes a block jump.
+    if (OThumbnailCache::IsFrozenReference())
+    {
+        return {};
+    }
+    return ThumbnailContent();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::ResolveThumbnailWording(const VPiece &piece, const OThumbnailData &thumbnail) const
+    -> ThumbnailWording
+{
+    ThumbnailWording wording;
+    if (not s_thumbnailTextResolver)
+    {
+        return wording;
+    }
+
+    const OThumbnailTexts texts = s_thumbnailTextResolver(piece, thumbnail, doc);
+    wording.legend = texts.legend;
+
+    // One word per stored label, in the order they were added: the count is derived from the storage,
+    // never from the texts, so the two can never disagree on how many values the miniature names.
+    const QVector<OThumbnailLabel> stored = thumbnail.Labels();
+    wording.labels.reserve(stored.size());
+    for (qsizetype i = 0; i < stored.size(); ++i)
+    {
+        OThumbnailItem::LabelView view;
+        view.text = i < texts.values.size() ? texts.values.at(i) : QString();
+        view.offset = stored.at(i).offset;
+        view.placed = stored.at(i).placed;
+        wording.labels.append(view);
+    }
+    return wording;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::UpdateThumbnail()
 {
     if (m_thumbnailItem == nullptr)
@@ -1787,7 +1844,9 @@ void VToolSeamAllowance::UpdateThumbnail()
         return;
     }
 
-    // A group member's own miniature is masked, like its blocks: the group carries the common one.
+    // **A member's own miniature stays masked.** The group carries its own miniatures — one per
+    // member, in its own data — so a linked piece shows nothing of its own here, and an unlink finds
+    // its miniature exactly as it was. This is the rule every other child of a member follows.
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
     const OThumbnailData data = std::as_const(detail).GetThumbnailData();
     if (not data.IsActive() || VAbstractTool::data.GetPieceGroupId(m_id) != NULL_ID)
@@ -1799,20 +1858,7 @@ void VToolSeamAllowance::UpdateThumbnail()
 
     // At the reference size the drawing was captured while the document stood on that size: the
     // geometry of another size cannot be recomputed on the fly, it is memoized at parse time.
-    QPainterPath content = OThumbnailCache::Content(m_id);
-    if (content.isEmpty())
-    {
-        if (OThumbnailCache::IsFrozenReference())
-        {
-            // The live geometry is the active size, not the one the miniature must show. Waiting for
-            // the capture leaves the block empty for a moment; painting it now would show the wrong
-            // size and then jump to the right one, right under the user's eyes.
-            m_thumbnailItem->SetActive(false);
-            m_thumbnailItem->hide();
-            return;
-        }
-        content = ThumbnailContent();
-    }
+    const QPainterPath content = ThumbnailReferenceContent();
     const QRectF contentBounds = content.boundingRect();
     if (content.isEmpty() || contentBounds.isEmpty())
     {
@@ -1820,48 +1866,15 @@ void VToolSeamAllowance::UpdateThumbnail()
         m_thumbnailItem->hide();
         return;
     }
-    OThumbnailGeom geom = data.Geom();
-    if (qFuzzyIsNull(geom.width) || qFuzzyIsNull(geom.height))
-    {
-        // Auto-size: a third of the piece, clamped between 5 and 15 cm — small enough to read as a
-        // thumbnail, large enough to stay legible.
-        constexpr qreal kFraction = 0.30;
-        constexpr qreal kMinCm = 5.0;
-        constexpr qreal kMaxCm = 15.0;
-        const qreal cmW = qBound(kMinCm, FromPixel(m_pieceBoundingRect.width(), Unit::Cm) * kFraction, kMaxCm);
-        const qreal cmH = qBound(kMinCm, FromPixel(m_pieceBoundingRect.height(), Unit::Cm) * kFraction, kMaxCm);
-        geom.width = ToPixel(cmW, Unit::Cm);
-        geom.height = ToPixel(cmH, Unit::Cm);
-    }
-
-    if (not data.HasGeometry())
-    {
-        geom.pos = m_pieceBoundingRect.center() - QPointF(geom.width / 2.0, geom.height / 2.0);
-    }
+    const OThumbnailGeom geom =
+        OThumbnailItem::ResolveBlockGeom(data.Geom(), m_pieceBoundingRect, data.HasGeometry());
 
     // **The words, resolved above the library.** Units, decimal separator and the languages the
     // legend is written in are all application knowledge, so the tool asks for them instead of
     // inventing them — the same door the information blocks and the annotations already use.
-    QVector<OThumbnailItem::LabelView> labels;
-    QString legend;
-    if (s_thumbnailTextResolver)
-    {
-        const OThumbnailTexts texts = s_thumbnailTextResolver(detail, doc, getData());
-        legend = texts.legend;
+    const ThumbnailWording wording = ResolveThumbnailWording(detail, data);
 
-        const QVector<OThumbnailLabel> stored = data.Labels();
-        labels.reserve(stored.size());
-        for (int i = 0; i < stored.size(); ++i)
-        {
-            OThumbnailItem::LabelView view;
-            view.text = i < texts.values.size() ? texts.values.at(i) : QString();
-            view.offset = stored.at(i).offset;
-            view.placed = stored.at(i).placed;
-            labels.append(view);
-        }
-    }
-
-    m_thumbnailItem->SetLabels(labels, legend, data.LegendOffset(), data.HasLegendOffset());
+    m_thumbnailItem->SetLabels(wording.labels, wording.legend, data.LegendOffset(), data.HasLegendOffset());
     m_thumbnailItem->SetContent(content, contentBounds);
     m_thumbnailItem->SetBlockGeom(geom);
     m_thumbnailItem->setVisible(true);
@@ -1871,13 +1884,35 @@ void VToolSeamAllowance::UpdateThumbnail()
 void VToolSeamAllowance::CaptureThumbnailContent()
 {
     // Called while the document stands on the reference size: remember the drawing of every piece
-    // that asks for a miniature, so it can be shown again once the active size is restored.
-    const VPiece detail = VAbstractTool::data.GetPiece(m_id);
-    if (not std::as_const(detail).GetThumbnailData().IsActive())
+    // that shows a miniature somewhere, so it can be shown again once the active size is restored.
+    if (not IsThumbnailShown())
     {
         return;
     }
     OThumbnailCache::Store(m_id, ThumbnailContent());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::IsThumbnailShown() const -> bool
+{
+    // The piece's own miniature, or the one a group carries for it. A group keeps one miniature per
+    // member — the member's own switch says nothing about it, and the drawing has to be captured all
+    // the same, or the group's block would have nothing to show at any size but the reference one.
+    if (VAbstractTool::data.GetPiece(m_id).GetThumbnailData().IsActive())
+    {
+        return true;
+    }
+    const quint32 groupId = VAbstractTool::data.GetPieceGroupId(m_id);
+    if (groupId == NULL_ID)
+    {
+        return false;
+    }
+    const auto *groups = VAbstractTool::data.DataPieceGroups();
+    if (groups == nullptr || !groups->contains(groupId))
+    {
+        return false;
+    }
+    return groups->value(groupId).MemberThumbnail(m_id).IsActive();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

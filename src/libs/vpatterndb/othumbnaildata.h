@@ -68,11 +68,20 @@ struct OThumbnailGeom
  * @note The count the panel shows is **not** stored. It is the number of entries carrying that
  * width. A stored count beside a stored list of placements is two places counting the same thing,
  * and that is how a panel and a drawing come to disagree.
+ *
+ * @note **A word is placed on the drawing, never in the block.**
+ *
+ * `offset` is a point of the traced piece — the very coordinates @ref ThumbnailContent() returns —
+ * and not a distance to the block's corner. The block is resized, and in Graded a size range gives
+ * it another frame altogether: a distance to a corner would slide the word off the seam it names
+ * as soon as the frame changed, while a point of the drawing follows it, whichever canvas draws it.
+ * Only the words the user never moved are laid out against the block (the row above it, the legend
+ * centred under it), and those are derived at paint time, never stored.
  */
 struct OThumbnailLabel
 {
     qreal mm{0.0};      // The seam-allowance width this label prints, in millimetres.
-    QPointF offset{};   // Offset from the image rect's top-left corner, in scene px.
+    QPointF offset{};   // Placed position, in the drawing's own coordinates.
     bool placed{false}; // The "moved by hand" mark: a (0,0) offset is a real move, not an absence.
 };
 
@@ -89,10 +98,6 @@ struct OThumbnailTexts
     QStringList values; // One per stored label, in the same order.
     QString legend;     // Empty when no unit is asked for.
 };
-
-/// @brief Builds the miniature's wording — registered once at application startup.
-using OThumbnailTextResolver = std::function<OThumbnailTexts(const VPiece &piece, VAbstractPattern *doc,
-                                                             const VContainer *data)>;
 
 /**
  * @brief Per-piece thumbnail state.
@@ -135,7 +140,8 @@ public:
     auto Labels() const -> const QVector<OThumbnailLabel> &;
     void SetLabels(const QVector<OThumbnailLabel> &labels);
 
-    /** @return Offset of the legend from the image rect's top-left corner, in scene px. */
+    /** @return Where the legend sits, in the drawing's own coordinates — the labels' frame, and
+     *  for the same reason: a caption belongs to the drawing it captions, not to the block's corner. */
     auto LegendOffset() const -> QPointF;
     /** @return Whether the legend was moved by hand (same mark, and same reason, as the labels). */
     auto HasLegendOffset() const -> bool;
@@ -155,5 +161,15 @@ private:
     QPointF m_legendOffset{};
     bool m_hasLegendOffset{false};
 };
+
+/**
+ * @brief Builds the miniature's wording — registered once at application startup.
+ *
+ * The data to print is handed over rather than read off the piece: a miniature is not always the
+ * piece's own. A group carries one per member, and it is that one — its units, its counts — that the
+ * block shows.
+ */
+using OThumbnailTextResolver = std::function<OThumbnailTexts(const VPiece &piece, const OThumbnailData &thumbnail,
+                                                             VAbstractPattern *doc)>;
 
 #endif // OTHUMBNAILDATA_H

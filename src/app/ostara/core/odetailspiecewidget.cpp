@@ -209,7 +209,7 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         }
         m_blockConfigWidget->Show(detail, currentTool->getData());
         m_annotationsConfigWidget->Show(detail, currentTool->getData());
-        m_thumbnailConfigWidget->Show(detail, currentTool->getData(), currentTool->getId());
+        m_thumbnailConfigWidget->Show(detail.GetThumbnailData(), currentTool->getData(), currentTool->getId());
     });
 
     m_tabWidget = new QTabWidget();
@@ -540,7 +540,19 @@ void ODetailsPieceWidget::ConnectControls()
     m_saWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
     m_blockConfigWidget->SetModifyPending([this](std::function<void(IPieceInfo &)> func) { ModifyPiece(func); });
     m_annotationsConfigWidget->SetModifyPending([this](std::function<void(IPieceInfo &)> func) { ModifyPiece(func); });
-    m_thumbnailConfigWidget->SetModifyPending([this](std::function<void(IPieceInfo &)> func) { ModifyPiece(func); });
+    m_thumbnailConfigWidget->SetModifyPending([this](std::function<void(OThumbnailData &)> func)
+    {
+        // The miniature editor speaks of the miniature alone; the piece page turns that into a piece
+        // mutation, which is what the undo command and the XML writer expect. The type is spelled out:
+        // a lambda taking IPieceInfo& fits both ModifyPiece overloads, and the call would be ambiguous.
+        const std::function<void(IPieceInfo &)> mutate = [&func](IPieceInfo &det)
+        {
+            OThumbnailData data = det.GetThumbnailData();
+            func(data);
+            det.SetThumbnailData(data);
+        };
+        ModifyPiece(mutate);
+    });
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);
     connect(m_saWidget, &ODetailsSeamAllowanceWidget::HighlightNode, this,
             [this](quint32 nodeId, bool highlight, QColor color)
@@ -795,7 +807,7 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
     m_pieceInfoWidget->Show(detail, tool->getData());
     m_blockConfigWidget->Show(detail, tool->getData());
     m_annotationsConfigWidget->Show(detail, tool->getData());
-    m_thumbnailConfigWidget->Show(detail, tool->getData(), tool->getId());
+    m_thumbnailConfigWidget->Show(detail.GetThumbnailData(), tool->getData(), tool->getId());
 
     // Alignment: both rows, the forced point, and the enabled/disabled states that follow from it.
     ApplyAlignPointControls(detail, tool->getData());

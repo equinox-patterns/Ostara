@@ -33,6 +33,7 @@
 #include "../vmisc/defglobal.h"
 #include "../vtools/tools/oannotationitem.h"
 #include "../vtools/tools/oinfoblockitem.h"
+#include "../vtools/tools/othumbnailitem.h"
 #include "../vwidgets/vgrainlineitem.h"
 
 #include <QBrush>
@@ -61,7 +62,8 @@ void StyleSubtree(QGraphicsItem *item, const QColor &defaultColor, const OGraded
     // Interactive children of a graded piece/host resolve their own colors → leave
     // them untouched (and do not descend: their interior text/fills are theirs).
     const int type = item->type();
-    if (type == OInfoBlockItem::Type || type == OAnnotationItem::Type || type == VGrainlineItem::Type)
+    if (type == OInfoBlockItem::Type || type == OAnnotationItem::Type || type == VGrainlineItem::Type
+        || type == OThumbnailItem::Type)
     {
         return;
     }

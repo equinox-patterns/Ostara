@@ -61,6 +61,7 @@ public:
     void ShowGrainlineTab();
     void ShowBlocksTab();
     void ShowAnnotationsTab();
+    void ShowThumbnailTab();
     /** @brief Shows the property page of a clicked place label (an "internal mark"). */
     void ShowPlaceLabelOptions(VToolSeamAllowance *piece, quint32 labelId);
     /** @brief Shows the property page of a clicked piece contour (main path) node. */

@@ -58,6 +58,7 @@
 #include "../vtools/undocommands/savepieceoptions.h"
 #include "../vtheme/vtheme.h"
 #include "oannotationsconfigwidget.h"
+#include "ogroupthumbnailsconfigwidget.h"
 #include "oblockconfigwidget.h"
 #include "odetailsfoldlinevalueswidget.h"
 #include "ofoldlinetypes.h"
@@ -170,7 +171,12 @@ auto ValidateMirrorLinePoints(const VPiecePath &path, quint32 startPoint, quint3
 // Outer-tab indices of the group options (order of addTab), then the first sub-tab of the
 // Information tab (Group / Blocks / Annotations). A group opens on the first of each.
 constexpr int kGeneralTabIndex = 0;
+constexpr int kGrainlineTabIndex = 1;
+constexpr int kInformationTabIndex = 2;
 constexpr int kGroupInfoSubTabIndex = 0;
+constexpr int kBlocksSubTabIndex = 1;
+constexpr int kAnnotationsSubTabIndex = 2;
+constexpr int kThumbnailsSubTabIndex = 3;
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -309,9 +315,11 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
 
     m_blockConfigWidget = new OBlockConfigWidget(infoTabs);
     m_annotationsConfigWidget = new OAnnotationsConfigWidget(infoTabs);
+    m_thumbnailsConfigWidget = new OGroupThumbnailsConfigWidget(infoTabs);
     infoTabs->addTab(groupTab, tr("Group"));
     infoTabs->addTab(m_blockConfigWidget, tr("Blocks"));
     infoTabs->addTab(m_annotationsConfigWidget, tr("Annotations"));
+    infoTabs->addTab(m_thumbnailsConfigWidget, tr("Thumbnail"));
     infoLayout->addWidget(infoTabs);
     m_tabWidget->addTab(infoPage, tr("Information"));
 
@@ -333,6 +341,13 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     m_groupInfoWidget->SetModifyPending(modifyGroup);
     m_blockConfigWidget->SetModifyPending(modifyGroup);
     m_annotationsConfigWidget->SetModifyPending(modifyGroup);
+
+    // The miniatures are group data — one per member, the group carrying no miniature of its own —
+    // so they commit through the group snapshot pipeline, exactly like the group's blocks.
+    m_thumbnailsConfigWidget->SetModifyGroup([this](std::function<void(OPieceGroup &)> func)
+    {
+        Commit(func);
+    });
 
     // The common grainline commits through the group snapshot pipeline as well.
     m_grainlineWidget->SetModifyPending([this](std::function<void(VGrainlineData &)> func)
@@ -397,6 +412,7 @@ void ODetailsGroupWidget::Show(quint32 groupId, VContainer *data, VAbstractPatte
     m_groupInfoWidget->Show(group, data);
     m_blockConfigWidget->Show(group, data);
     m_annotationsConfigWidget->Show(group, data);
+    m_thumbnailsConfigWidget->Show(groupId, data);
 
     BuildMemberFoldLines();
 
@@ -499,6 +515,33 @@ void ODetailsGroupWidget::ApplyAlignPointControls(const OPieceGroup &group)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::ShowGrainlineTab()
+{
+    m_tabWidget->setCurrentIndex(kGrainlineTabIndex);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::ShowBlocksTab()
+{
+    m_tabWidget->setCurrentIndex(kInformationTabIndex);
+    m_infoSubTabs->setCurrentIndex(kBlocksSubTabIndex);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::ShowAnnotationsTab()
+{
+    m_tabWidget->setCurrentIndex(kInformationTabIndex);
+    m_infoSubTabs->setCurrentIndex(kAnnotationsSubTabIndex);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGroupWidget::ShowThumbnailTab()
+{
+    m_tabWidget->setCurrentIndex(kInformationTabIndex);
+    m_infoSubTabs->setCurrentIndex(kThumbnailsSubTabIndex);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODetailsGroupWidget::Clear()
 {
     m_groupId = NULL_ID;
@@ -515,6 +558,7 @@ void ODetailsGroupWidget::Clear()
     m_groupInfoWidget->Clear();
     m_blockConfigWidget->Clear();
     m_annotationsConfigWidget->Clear();
+    m_thumbnailsConfigWidget->Clear();
 
     // Delete the member-row widgets (same cleanup as BuildMemberFoldLines) so a
     // later Show rebuilds a clean list instead of stacking duplicates.

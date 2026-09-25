@@ -197,11 +197,9 @@ auto OThumbnailTextBuilder::ValueText(qreal mm, bool centimeters, bool inches) -
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OThumbnailTextBuilder::Build(const VPiece &piece, VAbstractPattern *doc, const VContainer *data) -> OThumbnailTexts
+auto OThumbnailTextBuilder::Build(const VPiece &piece, const OThumbnailData &thumbnail,
+                                  VAbstractPattern *doc) -> OThumbnailTexts
 {
-    Q_UNUSED(data)
-
-    const OThumbnailData &thumbnail = std::as_const(piece).GetThumbnailData();
     const bool centimeters = thumbnail.ShowCentimeters();
     const bool inches = thumbnail.ShowInches();
 

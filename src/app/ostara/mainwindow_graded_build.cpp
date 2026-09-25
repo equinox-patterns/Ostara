@@ -40,6 +40,7 @@
 #include "../vmisc/def.h"
 #include "../vtools/tools/oannotationitem.h"
 #include "../vtools/tools/oinfoblockitem.h"
+#include "../vtools/tools/othumbnailitem.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
@@ -433,6 +434,7 @@ void MainWindow::BuildGradedScene()
         connect(m_sceneGraded, &VMainGraphicsScene::ItemByMousePress, this, [this](QGraphicsItem *pressed) {
             auto *pressedBlock = dynamic_cast<OInfoBlockItem *>(pressed);
             auto *pressedAnnotation = dynamic_cast<OAnnotationItem *>(pressed);
+            auto *pressedThumbnail = dynamic_cast<OThumbnailItem *>(pressed);
             const auto sceneItems = m_sceneGraded->items();
             for (auto *it : sceneItems)
             {
@@ -443,6 +445,10 @@ void MainWindow::BuildGradedScene()
                 else if (auto *ann = dynamic_cast<OAnnotationItem *>(it))
                 {
                     ann->SetActive(ann == pressedAnnotation);
+                }
+                else if (auto *thumb = dynamic_cast<OThumbnailItem *>(it))
+                {
+                    thumb->SetActive(thumb == pressedThumbnail);
                 }
             }
         });
@@ -509,7 +515,8 @@ namespace
 {
 /// Re-color one layout item subtree (the silhouette tree returned by VLayoutPiece::GetItem) with
 /// the theme's piece color, mirroring what Details paints every piece trace with (VColorRole::PieceColor).
-/// Interactive children (info blocks, annotations, grainline) manage their own colors and are skipped.
+/// Interactive children (info blocks, annotations, grainline, miniature) manage their own colors
+/// and are skipped.
 void RecolorGradedLayoutSubtree(QGraphicsItem *item, const QColor &color)
 {
     if (item == nullptr)
@@ -519,7 +526,7 @@ void RecolorGradedLayoutSubtree(QGraphicsItem *item, const QColor &color)
     // Interactive children of a graded piece/host resolve their own colors → leave them untouched
     // (and do not descend: their interior text/fills are theirs to color).
     if (item->type() == OInfoBlockItem::Type || item->type() == OAnnotationItem::Type
-        || item->type() == VGrainlineItem::Type)
+        || item->type() == VGrainlineItem::Type || item->type() == OThumbnailItem::Type)
     {
         return;
     }

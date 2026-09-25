@@ -36,6 +36,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QtGlobal>
 
+#include "../../vmisc/def.h"
 #include "../../vmisc/vabstractapplication.h"
 #include "../../vwidgets/global.h"
 #include "../../vwidgets/ocartouchepainter.h"
@@ -88,6 +89,32 @@ void OThumbnailItem::SetBlockGeom(const OThumbnailGeom &geom)
 {
     setPos(geom.pos);
     setRect(0.0, 0.0, geom.width, geom.height);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::ResolveBlockGeom(OThumbnailGeom geom, const QRectF &hostBounds, bool placed)
+    -> OThumbnailGeom
+{
+    if (qFuzzyIsNull(geom.width) || qFuzzyIsNull(geom.height))
+    {
+        // Auto-size: a third of the piece, clamped between 5 and 15 cm — small enough to read as a
+        // thumbnail, large enough to stay legible.
+        constexpr qreal kFraction = 0.30;
+        constexpr qreal kMinCm = 5.0;
+        constexpr qreal kMaxCm = 15.0;
+        const qreal cmW = qBound(kMinCm, FromPixel(hostBounds.width(), Unit::Cm) * kFraction, kMaxCm);
+        const qreal cmH = qBound(kMinCm, FromPixel(hostBounds.height(), Unit::Cm) * kFraction, kMaxCm);
+        geom.width = ToPixel(cmW, Unit::Cm);
+        geom.height = ToPixel(cmH, Unit::Cm);
+    }
+
+    if (not placed)
+    {
+        // Never placed: centred, and centred on the host — an untouched miniature sits on the piece
+        // it draws, on whichever canvas draws it.
+        geom.pos = hostBounds.center() - QPointF(geom.width / 2.0, geom.height / 2.0);
+    }
+    return geom;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -145,6 +172,18 @@ void OThumbnailItem::SetOpensOnClick(bool opens)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OThumbnailItem::SetSubModeEnabled(bool enabled)
+{
+    m_subModeEnabled = enabled;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::IsSubModeEnabled() const -> bool
+{
+    return m_subModeEnabled;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OThumbnailItem::SetEditing(bool editing)
 {
     if (m_editing == editing)
@@ -169,9 +208,9 @@ auto OThumbnailItem::IsEditing() const -> bool
 //---------------------------------------------------------------------------------------------------------------------
 auto OThumbnailItem::ConsumesDoubleClick() const -> bool
 {
-    // Only while the block is there to be entered: a hidden or read-only miniature has no
-    // sub-mode, and claiming the gesture would then take the zoom away for nothing.
-    return m_active && not m_readOnly && not m_editing;
+    // Only while the block is there to be entered: a hidden, read-only or sub-mode-less miniature
+    // has no sub-mode, and claiming the gesture would then take the zoom away for nothing.
+    return m_subModeEnabled && m_active && not m_readOnly && not m_editing;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -226,12 +265,36 @@ auto OThumbnailItem::TextRect(const QString &text, const QPointF &offset) const 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::WordOrigin(const QPointF &contentPos) const -> QPointF
+{
+    // No drawing yet: there is no fit to go through, and nothing is painted anyway.
+    if (m_contentBounds.isEmpty())
+    {
+        return contentPos;
+    }
+    return OCartouchePainter::FitTransform(m_contentBounds, rect()).map(contentPos);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::WordPlacement(const QPointF &origin) const -> QPointF
+{
+    if (m_contentBounds.isEmpty())
+    {
+        return origin;
+    }
+    bool invertible = false;
+    const QTransform inverse = OCartouchePainter::FitTransform(m_contentBounds, rect()).inverted(&invertible);
+    return invertible ? inverse.map(origin) : origin;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OThumbnailItem::EffectiveOffset(int index) const -> QPointF
 {
     const LabelView &label = m_labels.at(index);
     if (label.placed)
     {
-        return label.offset;
+        // A placed word is a point of the drawing: it follows the piece wherever the fit puts it.
+        return WordOrigin(label.offset);
     }
 
     // **The row is not stored, it is derived.** Values the user never moved sit above the block in
@@ -272,7 +335,7 @@ auto OThumbnailItem::EffectiveLegendOffset() const -> QPointF
 {
     if (m_legendPlaced)
     {
-        return m_legendOffset;
+        return WordOrigin(m_legendOffset);
     }
 
     const QFontMetricsF metrics(Font());
@@ -585,13 +648,13 @@ void OThumbnailItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
         if (m_dragTarget == kLegendTarget)
         {
             m_dragWordStart = EffectiveLegendOffset();
-            m_legendOffset = m_dragWordStart;
+            m_legendOffset = WordPlacement(m_dragWordStart);
             m_legendPlaced = true;
         }
         else if (m_dragTarget >= 0)
         {
             m_dragWordStart = EffectiveOffset(m_dragTarget);
-            m_labels[m_dragTarget].offset = m_dragWordStart;
+            m_labels[m_dragTarget].offset = WordPlacement(m_dragWordStart);
             m_labels[m_dragTarget].placed = true;
         }
         setCursor(m_dragTarget == -2 ? Qt::ArrowCursor : Qt::ClosedHandCursor);
@@ -609,7 +672,7 @@ void OThumbnailItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     // only if the pointer stays put. The decision is therefore taken on release, so that the same
     // press can still drag the block; see mouseReleaseEvent(). The "already selected" answer comes
     // from the piece, because by now the selection has been granted either way.
-    m_pendingEnter = m_opensOnClick && m_activeHandle == Handle::None;
+    m_pendingEnter = m_subModeEnabled && m_opensOnClick && m_activeHandle == Handle::None;
 
     if (m_activeHandle != Handle::None)
     {
@@ -628,7 +691,7 @@ void OThumbnailItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     // Qt never delivers the second press of a fast pair: the pair arrives as a press, then as this
     // event. It is the same gesture as the second click, so it does the same thing — and the view
     // stays out of it, which is what ConsumesDoubleClick() is for.
-    if (m_readOnly || m_editing || event->button() != Qt::LeftButton
+    if (not m_subModeEnabled || m_readOnly || m_editing || event->button() != Qt::LeftButton
         || HitTestHandle(event->pos()) != Handle::None)
     {
         event->ignore();
@@ -657,13 +720,16 @@ void OThumbnailItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             return;
         }
         const QPointF delta = event->pos() - m_dragWordStartPos;
+        // The pointer speaks in item coordinates, what is stored speaks of the drawing: the gesture
+        // is converted at every step, so the word lands where the mouse is and is remembered as a
+        // spot of the piece — the block's frame never enters what is kept.
         if (m_dragTarget == kLegendTarget)
         {
-            m_legendOffset = m_dragWordStart + delta;
+            m_legendOffset = WordPlacement(m_dragWordStart + delta);
         }
         else
         {
-            m_labels[m_dragTarget].offset = m_dragWordStart + delta;
+            m_labels[m_dragTarget].offset = WordPlacement(m_dragWordStart + delta);
         }
         // The words can be moved out of the block's own box; boundingRect() follows them, so the
         // item keeps claiming everything it paints.
@@ -714,8 +780,12 @@ void OThumbnailItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             return;
         }
 
-        const bool moved = target == kLegendTarget ? m_legendOffset != m_dragWordStart
-                                                   : m_labels.at(target).offset != m_dragWordStart;
+        // Judged in item coordinates, where the gesture happened — the stored place now lives on the
+        // drawing, and a round trip through the fit is not an exact equality: a click would read as a
+        // move and freeze the word out of its row for good. Half a pixel is a hand shaking.
+        const QPointF landed =
+            target == kLegendTarget ? EffectiveLegendOffset() : EffectiveOffset(target);
+        const bool moved = QLineF(landed, m_dragWordStart).length() > 0.5;
         if (not moved)
         {
             // A click that moved nothing is not a placement: putting the word back in the default

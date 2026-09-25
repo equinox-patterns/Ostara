@@ -932,6 +932,16 @@ void VPattern::ParsePieceGroups(const QDomElement &domElement)
                                         }
                                     }
                                 }
+
+                                // The member's miniature, when the group carries one for it. Absent
+                                // stays absent: the map is sparse, a member with no miniature being
+                                // the ordinary case, not a stored inactive thumbnail.
+                                const QDomElement memberThumbnail =
+                                    childElement.firstChildElement(VToolSeamAllowance::TagThumbnail);
+                                if (not memberThumbnail.isNull())
+                                {
+                                    group.SetMemberThumbnail(pieceId, ParsePieceThumbnail(memberThumbnail));
+                                }
                             }
                         }
                         else if (tagName == TagGrainline)

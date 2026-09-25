@@ -122,6 +122,30 @@ struct OPieceGroup : public IPieceInfo
     auto GetThumbnailData() const -> const OThumbnailData & override { return m_thumbnail; }
     auto GetThumbnailData() -> OThumbnailData & override { return m_thumbnail; }
     void SetThumbnailData(const OThumbnailData &data) override { m_thumbnail = data; }
+
+    /**
+     * @brief The miniature of one member piece — the group carries one per member.
+     *
+     * **Not the member's own miniature.** A piece's miniature belongs to the piece: it stays masked
+     * while the piece is linked, and an unlink finds it exactly as it was. What is stored here is a
+     * miniature the group shows for as long as the group exists — one per member, the way a group
+     * holds one set of blocks, one grainline and one set of annotations for itself. A group has no
+     * single miniature: what a miniature draws is one piece, and a group is several.
+     *
+     * @note The interface member above (@ref GetThumbnailData) stays for the group's own sake and is
+     * unused: nothing renders or edits it. This map is the one the group holder draws.
+     */
+    QHash<quint32, OThumbnailData> memberThumbnails{};
+
+    /** @return The miniature stored for @p pieceId, or a fresh inactive one when it has none. */
+    auto MemberThumbnail(quint32 pieceId) const -> OThumbnailData
+    {
+        return memberThumbnails.value(pieceId);
+    }
+    void SetMemberThumbnail(quint32 pieceId, const OThumbnailData &data)
+    {
+        memberThumbnails.insert(pieceId, data);
+    }
 };
 
 #endif // OPIECEGROUP_H

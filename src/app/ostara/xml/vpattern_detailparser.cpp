@@ -200,12 +200,17 @@ auto VPattern::ParsePieceThumbnail(const QDomElement &domElement) const -> OThum
         {
             OThumbnailLabel label;
             label.mm = GetParametrDouble(labelEl, VToolSeamAllowance::AttrMm, QStringLiteral("0.0"));
-            // Same marker as the block's: mx/my present means the offset was placed by hand, so a
-            // label sitting at (0,0) is a deliberate placement and not an absent one.
-            if (labelEl.hasAttribute(AttrMx) || labelEl.hasAttribute(AttrMy))
+            // Same marker as the block's, on the drawing's own axes: cx/cy present means the word was
+            // placed by hand, so a word sitting at (0,0) of the drawing is a deliberate placement.
+            // mx/my are not read: they were written in the block's frame, which no longer says where
+            // a word goes — such a word simply returns to the default row above the block.
+            if (labelEl.hasAttribute(VToolSeamAllowance::AttrCx)
+                || labelEl.hasAttribute(VToolSeamAllowance::AttrCy))
             {
-                label.offset = QPointF(GetParametrDouble(labelEl, AttrMx, QStringLiteral("0.0")),
-                                       GetParametrDouble(labelEl, AttrMy, QStringLiteral("0.0")));
+                label.offset = QPointF(GetParametrDouble(labelEl, VToolSeamAllowance::AttrCx,
+                                                         QStringLiteral("0.0")),
+                                       GetParametrDouble(labelEl, VToolSeamAllowance::AttrCy,
+                                                         QStringLiteral("0.0")));
                 label.placed = true;
             }
             labels.append(label);
@@ -214,11 +219,13 @@ auto VPattern::ParsePieceThumbnail(const QDomElement &domElement) const -> OThum
         thumbnail.SetLabels(labels);
 
         const QDomElement legendEl = seamEl.firstChildElement(VToolSeamAllowance::TagLegend);
-        if (not legendEl.isNull())
+        if (not legendEl.isNull()
+            && (legendEl.hasAttribute(VToolSeamAllowance::AttrCx)
+                || legendEl.hasAttribute(VToolSeamAllowance::AttrCy)))
         {
             thumbnail.SetLegendOffset(
-                QPointF(GetParametrDouble(legendEl, AttrMx, QStringLiteral("0.0")),
-                        GetParametrDouble(legendEl, AttrMy, QStringLiteral("0.0"))));
+                QPointF(GetParametrDouble(legendEl, VToolSeamAllowance::AttrCx, QStringLiteral("0.0")),
+                        GetParametrDouble(legendEl, VToolSeamAllowance::AttrCy, QStringLiteral("0.0"))));
         }
     }
 

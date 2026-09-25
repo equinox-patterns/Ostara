@@ -81,6 +81,7 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
 #include "../vtools/tools/oannotationitem.h"
 #include "../vtools/tools/oinfoblockitem.h"
+#include "../vtools/tools/othumbnailitem.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/undocommands/undoattachment.h"
 #include "../vtools/undocommands/unlinkpiecegroup.h"
@@ -1089,6 +1090,13 @@ void MainWindow::InitDocksContain()
             doc->SelectedDetail(piece->getId());
             m_dockManager->detailsOptions()->ShowAnnotationsTab();
         }
+        else if (qgraphicsitem_cast<OThumbnailItem *>(pItem) != nullptr)
+        {
+            // The miniature is one of the piece's children, and clicking it opens the tab that
+            // configures it — the same door the grainline, the blocks and the annotations use.
+            doc->SelectedDetail(piece->getId());
+            m_dockManager->detailsOptions()->ShowThumbnailTab();
+        }
     });
 
     connect(m_dockManager->detailsOptions(), &ODetailsPropertyBrowser::ShowStatusTip, this,
@@ -1412,15 +1420,47 @@ void MainWindow::RefreshGroupHolders()
             connect(m_sceneDetails, &VMainGraphicsScene::ItemByMousePress, holder,
                     &OPieceGroupHolderItem::ResetChildren);
             connect(holder, &OPieceGroupHolderItem::Clicked, this,
-                    [this](quint32 groupId)
+                    [this](quint32 groupId, OPieceGroupHolderItem::Child child)
             {
-                // A selected group shows its selection block on the canvas, like a piece.
-                UpdateGroupHolderSelection(groupId);
+                // **The frame selects the group, a child selects the child.** A click on the group's
+                // own frame shows its selection block on the canvas, like a piece; a click on one of
+                // its children draws nothing on the group — exactly what happens on a piece, whose
+                // own selection is not drawn either when a block or the miniature is clicked.
+                if (child == OPieceGroupHolderItem::Child::None)
+                {
+                    UpdateGroupHolderSelection(groupId);
+                }
+                else
+                {
+                    // Any previous group's block goes too: what is being edited is a child, and the
+                    // canvas must show that child's frame and nothing else.
+                    UpdateGroupHolderSelection(NULL_ID);
+                }
                 m_dockManager->detailsOptions()->ShowGroupOptions(groupId, pattern, doc);
                 // Like a piece (SelectedDetail → SelectDetail), a canvas click on the group
                 // must activate the group node in the pieces tree — it never was, so the
                 // group was never visually active (unlike a selected piece).
                 m_dockManager->detailsWidget()->SelectDetail(groupId);
+
+                // Then open what configures the thing that was clicked — the same routing a piece's
+                // children use. The group page owns those tabs, and it is the current page by now.
+                switch (child)
+                {
+                    case OPieceGroupHolderItem::Child::Grainline:
+                        m_dockManager->detailsOptions()->ShowGrainlineTab();
+                        break;
+                    case OPieceGroupHolderItem::Child::InfoBlock:
+                        m_dockManager->detailsOptions()->ShowBlocksTab();
+                        break;
+                    case OPieceGroupHolderItem::Child::Annotation:
+                        m_dockManager->detailsOptions()->ShowAnnotationsTab();
+                        break;
+                    case OPieceGroupHolderItem::Child::Thumbnail:
+                        m_dockManager->detailsOptions()->ShowThumbnailTab();
+                        break;
+                    case OPieceGroupHolderItem::Child::None:
+                        break;
+                }
             });
             // Canvas right-click on a group → single action "Unlink all" (mirror of the Pieces
             // tree menu). Queued: the undo push deletes this very holder while it is handling

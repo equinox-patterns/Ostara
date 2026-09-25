@@ -71,7 +71,7 @@ public:
     struct LabelView
     {
         QString text;
-        QPointF offset{};   // From the block rect's top-left corner, in the item's coordinates.
+        QPointF offset{};   // In the drawing's own coordinates when placed — the block's frame when not.
         bool placed{false}; // False: the item lays it out in the row above the block.
     };
 
@@ -80,7 +80,17 @@ public:
 
     /** @brief Source drawing (piece coordinates) and the frame it must be fitted into. */
     void SetContent(const QPainterPath &content, const QRectF &contentBounds);
+    /** @brief The frame of the block, in its parent's coordinates. */
     void SetBlockGeom(const OThumbnailGeom &geom);
+    /**
+     * @brief Completes a frame nobody ever chose: `width`/`height` at 0 → a third of the host box,
+     * clamped between 5 and 15 cm; `placed == false` → centred on the host box.
+     *
+     * One rule for two canvases: the Details canvas measures the piece the miniature belongs to, the
+     * Graded canvas measures the reference-layer item — and "not chosen yet" has to mean the same
+     * thing on both, or the same untouched miniature would change size when the mode changes.
+     */
+    static auto ResolveBlockGeom(OThumbnailGeom geom, const QRectF &hostBounds, bool placed) -> OThumbnailGeom;
     void SetReadOnly(bool readOnly);
     /** @brief Show/hide the editing outline + resize handles (active on click). */
     void SetActive(bool active);
@@ -93,6 +103,15 @@ public:
      * granted.
      */
     void SetOpensOnClick(bool opens);
+    /**
+     * @brief Whether a click on the selected block opens the "inside the miniature" sub-mode.
+     *
+     * Off on the Graded canvas: the wording has no placement of its own in a size range, so the
+     * second click must stay what it is for every other child — nothing — and the double-click must
+     * stay the view's zoom (see ConsumesDoubleClick()).
+     */
+    void SetSubModeEnabled(bool enabled);
+    auto IsSubModeEnabled() const -> bool;
 
     /** @brief The words to draw. The legend is empty when no unit is asked for. */
     void SetLabels(const QVector<LabelView> &labels, const QString &legend, const QPointF &legendOffset,
@@ -164,6 +183,18 @@ private:
 
     static auto Font() -> QFont;
     auto TextRect(const QString &text, const QPointF &offset) const -> QRectF;
+    /**
+     * @brief Where a placed word lands on screen: a point of the drawing, put through the same fit
+     * the drawing itself goes through.
+     *
+     * This is what makes a resize carry the words: the frame changes, the fit changes with it, and
+     * every word stays on the spot of the piece it names — the block's own corner is never a
+     * reference.
+     */
+    auto WordOrigin(const QPointF &contentPos) const -> QPointF;
+    /** @brief The other way round: an item position, read back as a point of the drawing — what a
+     *  word drag commits, so that what is stored is a place on the piece and not a place on screen. */
+    auto WordPlacement(const QPointF &origin) const -> QPointF;
     /** @brief Where a word actually sits: its own place, or the default row when it has none. */
     auto EffectiveOffset(int index) const -> QPointF;
     auto EffectiveLegendOffset() const -> QPointF;
@@ -185,6 +216,7 @@ private:
     bool m_active{false};
     bool m_editing{false};
     bool m_opensOnClick{false};
+    bool m_subModeEnabled{true};
     Handle m_activeHandle{Handle::None};
 
     int m_dragTarget{-2}; // -2: nothing, -1: the legend, >= 0: a label.

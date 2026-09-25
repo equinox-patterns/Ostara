@@ -153,15 +153,17 @@ OThumbnailConfigWidget::OThumbnailConfigWidget(QWidget *parent) : QWidget(parent
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OThumbnailConfigWidget::SetModifyPending(std::function<void(std::function<void(IPieceInfo &)>)> callback)
+void OThumbnailConfigWidget::SetModifyPending(ThumbnailModifier callback)
 {
     m_modifyPending = std::move(callback);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OThumbnailConfigWidget::Show(const IPieceInfo &detail, const VContainer *data, quint32 pieceId)
+void OThumbnailConfigWidget::Show(const OThumbnailData &thumbnail, const VContainer *data, quint32 pieceId,
+                                  const QString &ownerName)
 {
-    const OThumbnailData thumbnail = detail.GetThumbnailData();
+    m_ownerName = ownerName;
+    ApplyTexts();
 
     m_loading = true;
     m_activeCheck->setChecked(thumbnail.IsActive());
@@ -188,12 +190,10 @@ void OThumbnailConfigWidget::Clear()
 //---------------------------------------------------------------------------------------------------------------------
 void OThumbnailConfigWidget::RetranslateUI()
 {
-    m_activeCheck->setText(tr("Activate thumbnail"));
-    m_infoGroup->setTitle(tr("Piece thumbnail"));
+    ApplyTexts();
     m_hintLabel->setText(tr("The thumbnail draws the piece with its seam allowances, its notches and its internal "
                             "paths, at the reference size of each axis — so it keeps showing the same size when the "
                             "active size changes. Move and resize it directly on the canvas."));
-    m_seamTitle->setText(tr("Seam allowances to show"));
     m_seamHint->setText(tr("How many times each value is printed. To place them, click the thumbnail once to select "
                            "it, then once more to open it: the values and the legend can then be dragged."));
     m_centimetersCheck->setText(tr("Centimeters"));
@@ -201,15 +201,35 @@ void OThumbnailConfigWidget::RetranslateUI()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OThumbnailConfigWidget::BuildData(const IPieceInfo &det) const -> OThumbnailData
+void OThumbnailConfigWidget::ApplyTexts()
 {
-    // Never start from a fresh object: the stored geometry must survive an activation change.
-    OThumbnailData data = det.GetThumbnailData();
+    const bool named = not m_ownerName.isEmpty();
+
+    // Two distinct sentences rather than one assembled from fragments: "Activate thumbnail" + "for" +
+    // a name cannot be translated, while a placeholder sentence can.
+    m_activeCheck->setText(named ? tr("Activate thumbnail for %1").arg(m_ownerName) : tr("Activate thumbnail"));
+    m_seamTitle->setText(named ? tr("Seam allowances to show for %1").arg(m_ownerName)
+                               : tr("Seam allowances to show"));
+
+    // A named owner already brings its box: this one then reads as a plain section of it.
+    m_infoGroup->setTitle(named ? QString() : tr("Piece thumbnail"));
+    m_infoGroup->setFlat(named);
+
+    // **No explanation under a named owner.** Its box is a list — a heading, the values and the two
+    // units, nothing else: the paragraphs belong to the piece page, where the miniature is the
+    // subject, and repeated under every member they would push the switches they explain out of sight.
+    m_hintLabel->setVisible(not named);
+    m_seamHint->setVisible(not named);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OThumbnailConfigWidget::ApplySwitches(OThumbnailData &data) const
+{
+    // The data handed over is the live one, so the geometry the canvas stored survives untouched.
     data.SetActive(m_activeCheck->isChecked());
     data.SetShowCentimeters(m_centimetersCheck->isChecked());
     data.SetShowInches(m_inchesCheck->isChecked());
     data.SetSet(true);
-    return data;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -219,7 +239,7 @@ void OThumbnailConfigWidget::Commit()
     {
         return;
     }
-    m_modifyPending([this](IPieceInfo &det) { det.SetThumbnailData(BuildData(det)); });
+    m_modifyPending([this](OThumbnailData &data) { ApplySwitches(data); });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -346,9 +366,8 @@ void OThumbnailConfigWidget::CommitCount(qreal mm, int count)
         return;
     }
 
-    m_modifyPending([mm, count](IPieceInfo &det)
+    m_modifyPending([mm, count](OThumbnailData &data)
     {
-        OThumbnailData data = det.GetThumbnailData();
         QVector<OThumbnailLabel> labels = data.Labels();
 
         int existing = 0;
@@ -385,6 +404,5 @@ void OThumbnailConfigWidget::CommitCount(qreal mm, int count)
 
         data.SetLabels(labels);
         data.SetSet(true);
-        det.SetThumbnailData(data);
     });
 }

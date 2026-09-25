@@ -29,15 +29,18 @@
 #define OPIECEGROUPHOLDERITEM_H
 
 #include <QGraphicsObject>
+#include <QHash>
 #include <QPainterPath>
 #include <QVector>
 
 #include <functional>
 
 #include "../vpatterndb/opiecegroup.h"
+#include "../vpatterndb/othumbnaildata.h"
 
 class OAnnotationItem;
 class OInfoBlockItem;
+class OThumbnailItem;
 class QGraphicsSceneContextMenuEvent;
 class VAbstractPattern;
 class VContainer;
@@ -57,6 +60,18 @@ public:
     ~OPieceGroupHolderItem() override;
 
     auto type() const -> int override { return UserType + 90; }
+
+    /** @brief What was clicked inside the group — what the options dock has to open. */
+    enum class Child
+    {
+        None, // the group itself (its frame): nothing of its children was under the pointer
+        Grainline,
+        InfoBlock,
+        Annotation,
+        Thumbnail
+    };
+    Q_ENUM(Child) // NOLINT
+
     void Refresh(const OPieceGroup &group, VAbstractPattern *doc, VContainer *data);
     /** @brief Toggle mouse interaction on the holder and its children. During the Link tool the
      *  holders stay visible (their children must not vanish) but become click-transparent so the
@@ -65,9 +80,19 @@ public:
     /** @brief Mark the group selected on the canvas — draws the selection block (dashed rect +
      *  handles), like a selected piece. */
     void SetSelected(bool selected);
+    /** @brief Whether one of the group's miniatures is open for placing its values. */
+    auto IsEditingThumbnail() const -> bool;
+    /** @brief Leaves that sub-mode, if it is open — what Escape does. */
+    void CancelThumbnailEdit();
 
 signals:
-    void Clicked(quint32 groupId);
+    /** @brief The group was clicked. @p child says what was under the pointer, so the dock can open
+     *  the page that configures it — the same door a piece's children open.
+     *
+     *  **A click on a child is about the child.** The group is only marked selected (its selection
+     *  block drawn) when @p child is None: on a piece, clicking a block or the miniature does not
+     *  draw the piece's own selection either. */
+    void Clicked(quint32 groupId, Child child);
     /** @brief Right-click "Unlink all": dissolve the group. MainWindow runs the undo command
      *  (the push removes this very holder, so it must not run inside this event handler). */
     void UnlinkAllRequested(quint32 groupId);
@@ -94,6 +119,16 @@ private:
     void RefreshGrainline(const OPieceGroup &group, VContainer *data);
     void RefreshBlocks(const OPieceGroup &group, VAbstractPattern *doc, VContainer *data);
     void RefreshAnnotations(const OPieceGroup &group);
+    /** @brief The group's miniatures: one per member, drawn from the **group's** data — a member's
+     *  own miniature stays masked while it is linked, and an unlink finds it untouched. */
+    void RefreshThumbnails(const OPieceGroup &group, VContainer *data);
+    /** @brief Drops the miniatures of members that left the group. */
+    void PruneThumbnailItems(const OPieceGroup &group);
+    /** @brief Applies a mutation to one member's miniature (group data) and commits the group. */
+    void CommitMemberThumbnail(quint32 pieceId, const std::function<void(OThumbnailData &)> &mutate);
+    void OnThumbnailGeometryChanged(quint32 pieceId, const QPointF &pos, qreal width, qreal height);
+    void OnThumbnailLabelMoved(quint32 pieceId, int index, const QPointF &offset);
+    void OnThumbnailLegendMoved(quint32 pieceId, const QPointF &offset);
     void CommitGroup(std::function<void(OPieceGroup &)> func);
 
     void OnGrainlineMoved(const QPointF &pos);
@@ -119,6 +154,9 @@ private:
     VGrainlineItem *m_grainlineItem{nullptr};
     QVector<OInfoBlockItem *> m_blockItems;
     QVector<OAnnotationItem *> m_annotationItems;
+    /** @brief One miniature per member, created on demand and kept as long as the piece is a member.
+     *  Keyed by piece id; the holder owns them (Qt deletes the children with it). */
+    QHash<quint32, OThumbnailItem *> m_thumbnailItems;
     VAbstractPattern *m_doc{nullptr};
     VContainer *m_data{nullptr};
 };
