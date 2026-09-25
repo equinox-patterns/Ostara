@@ -34,9 +34,12 @@
 #ifndef OINFOBLOCKEXPORT_H
 #define OINFOBLOCKEXPORT_H
 
+#include <QFont>
 #include <QHash>
 #include <QList>
 #include <QMarginsF>
+#include <QPainterPath>
+#include <QPointF>
 #include <QRectF>
 #include <QString>
 #include <QStringList>
@@ -93,18 +96,57 @@ struct Annotation
 };
 
 /**
+ * @brief One word of a miniature, placed: the text and the top-left of its box.
+ *
+ * The anchor is in the BLOCK's own frame — the rectangle @ref Thumbnail::rect describes but whose
+ * origin is its top-left corner, exactly the frame the item paints the words in. The caller has
+ * already put a hand-placed word through the fit that maps the drawing into that block; the writer
+ * places the word, it never lays it out.
+ */
+struct ThumbnailWord
+{
+    QString text;
+    QPointF origin;
+};
+
+/**
+ * @brief One miniature to draw: the piece at its reference size, with the values it is cut with.
+ *
+ * `content` is the drawing in the piece's OWN coordinates and `rect` is the block in the owner's
+ * local frame — the two frames @ref OThumbnailItem keeps apart too, so the writer redoes the same
+ * fit the canvas paint does and nothing else. The words sit in the block's frame, one translation
+ * away from the owner's.
+ *
+ * A group carries one miniature per member: the caller emits them under the group, in the group's
+ * frame, which is what the canvas holder does as well.
+ */
+struct Thumbnail
+{
+    QPainterPath content;
+    QRectF contentBounds;
+    QRectF rect;
+    QVector<ThumbnailWord> words;
+    /// The render font of the words. Carried here so the document shows the typography the screen
+    /// shows — the miniature editor's font settings will move it, and the writer follows.
+    QFont font;
+};
+
+/**
  * @brief Write the flat Details SVG: pieces geometry + information blocks.
  *
  * @param pieces the piece root items, already positioned in their scene
  *        (same items the current QSvgGenerator export would render).
  * @param blocksByPiece one entry per piece, aligned by index.
  * @param annotationsByPiece one entry per piece, aligned by index.
+ * @param thumbnailsByPiece one entry per piece, aligned by index — the miniatures the canvas
+ *        shows, a piece's own or the ones a group carries for its members.
  * @param pieceNames display names used to build <g> ids.
  * @param imageRect scene content rect (paper rect in the flat export).
  */
 bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
               const QList<QVector<Block>> &blocksByPiece,
-              const QList<QVector<Annotation>> &annotationsByPiece, const QStringList &pieceNames,
+              const QList<QVector<Annotation>> &annotationsByPiece,
+              const QList<QVector<Thumbnail>> &thumbnailsByPiece, const QStringList &pieceNames,
               const QRectF &imageRect, const QMarginsF &margins, qreal xScale, qreal yScale,
               const QString &title, const QString &description, bool textAsPaths,
               bool showGrainline, const QHash<int, QVector<int>> &groupMembers = {});

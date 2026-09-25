@@ -42,10 +42,12 @@
 #include "../vmisc/vsysexits.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/calculator.h"
+#include "../vpatterndb/othumbnaildata.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/vpiece.h"
 #include "../vtools/tools/vabstracttool.h"
+#include "../vtools/tools/othumbnailitem.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "core/vapplication.h"
@@ -945,17 +947,107 @@ void MainWindowsNoGUI::ExportDetailsAsFlatLayout(const QVector<VLayoutPiece> &li
             return out;
         };
 
+        // The miniatures the canvas shows, rebuilt from the very sources it reads. One per piece,
+        // and one per member for a group — a member's own stays masked while it is linked, exactly
+        // as its blocks and annotations do.
+        //
+        // Nothing here recomputes where a word goes: the item answers that, and both canvases and
+        // this file ask it the same question, so the screen and the document cannot disagree.
+        auto appendThumbnail = [&](QVector<OInfoBlockSvg::Thumbnail> &out, quint32 pieceId,
+                                   const VPiece &piece, const OThumbnailData &data,
+                                   const QRectF &hostBounds)
+        {
+            // The drawing of the REFERENCE size, from wherever it comes: the cache when the active
+            // size is another one, the live geometry when the two are the same. Asking the tool is
+            // also what makes the export agree with the canvas by construction — an empty answer
+            // means the canvas shows nothing either, so omitting the block is not a loss.
+            VToolSeamAllowance *tool = nullptr;
+            if (pattern->DataPieces()->contains(pieceId))
+            {
+                // **`getTool()` is not a guard: it throws** when the tool is gone (the family of
+                // bugs.md 22-08 and 27-08). An export must not die on a piece whose tool is missing.
+                try
+                {
+                    tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
+                }
+                catch (const VException &)
+                {
+                    tool = nullptr;
+                }
+            }
+            if (tool == nullptr)
+            {
+                return;  // no canvas at all (batch export): there is nothing "what you see" could mean
+            }
+            const QPainterPath content = tool->ThumbnailReferenceContent();
+            if (content.isEmpty())
+            {
+                return;  // the reference drawing is still on its way, and the canvas shows none of it
+            }
+
+            const OThumbnailGeom geom =
+                OThumbnailItem::ResolveBlockGeom(data.Geom(), hostBounds, data.HasGeometry());
+            const QRectF block(0.0, 0.0, geom.width, geom.height);
+            const QRectF contentBounds = content.boundingRect();
+            const QFont font = OThumbnailItem::LabelFont();
+            const VToolSeamAllowance::ThumbnailWording wording =
+                tool->ResolveThumbnailWording(piece, data);
+
+            OInfoBlockSvg::Thumbnail record;
+            record.content = content;
+            record.contentBounds = contentBounds;
+            record.rect = QRectF(geom.pos, QSizeF(geom.width, geom.height));
+            record.font = font;
+            for (int w = 0; w < wording.labels.size(); ++w)
+            {
+                const OThumbnailItem::LabelView &label = wording.labels.at(w);
+                if (label.text.isEmpty())
+                {
+                    continue;  // an empty word is not a word, and holds no place in the row
+                }
+                const QPointF inBlock = label.placed
+                                            ? OThumbnailItem::FittedWordOrigin(contentBounds, block,
+                                                                               label.offset)
+                                            : OThumbnailItem::DefaultWordOrigin(wording.labels, w, block,
+                                                                                font);
+                record.words.append({label.text, inBlock});
+            }
+            if (!wording.legend.isEmpty())
+            {
+                const QPointF inBlock =
+                    data.HasLegendOffset()
+                        ? OThumbnailItem::FittedWordOrigin(contentBounds, block, data.LegendOffset())
+                        : OThumbnailItem::DefaultLegendOrigin(wording.legend, block, font);
+                record.words.append({wording.legend, inBlock});
+            }
+            out.append(record);
+        };
+
+        // The box a piece's own miniature is measured against when nobody ever sized it: the contour
+        // as it is exported, which is the rectangle the canvas measures too.
+        auto pieceHostBounds = [](QGraphicsItem *item) -> QRectF
+        {
+            if (auto *pathItem = qgraphicsitem_cast<QGraphicsPathItem *>(item); pathItem != nullptr)
+            {
+                return pathItem->path().controlPointRect();
+            }
+            return item != nullptr ? item->boundingRect() : QRectF();
+        };
+
         QList<QVector<OInfoBlockSvg::Block>> blocksByPiece;
         QList<QVector<OInfoBlockSvg::Annotation>> annotationsByPiece;
+        QList<QVector<OInfoBlockSvg::Thumbnail>> thumbnailsByPiece;
         QStringList pieceNames;
         blocksByPiece.reserve(list.size());
         annotationsByPiece.reserve(list.size());
+        thumbnailsByPiece.reserve(list.size());
         pieceNames.reserve(list.size());
 
         for (int i = 0; i < list.size(); ++i)
         {
             QVector<OInfoBlockSvg::Block> pieceBlocks;
             QVector<OInfoBlockSvg::Annotation> pieceAnnotations;
+            QVector<OInfoBlockSvg::Thumbnail> pieceThumbnails;
             QString baseName;
             if (i < listDetails.size())
             {
@@ -975,6 +1067,11 @@ void MainWindowsNoGUI::ExportDetailsAsFlatLayout(const QVector<VLayoutPiece> &li
                     pieceAnnotations = annotationsFromState(source.GetAnnotationData(), centerLocal,
                                                             layout.IsForceFlipping(),
                                                             evalAnnotationRotation);
+                    if (source.GetThumbnailData().IsActive())
+                    {
+                        appendThumbnail(pieceThumbnails, layout.GetId(), source,
+                                        source.GetThumbnailData(), pieceHostBounds(list.at(i)));
+                    }
                 }
             }
             else
@@ -993,16 +1090,37 @@ void MainWindowsNoGUI::ExportDetailsAsFlatLayout(const QVector<VLayoutPiece> &li
                 pieceAnnotations = annotationsFromState(group.GetAnnotationData(),
                                                         firstCenter - origin, false,
                                                         evalGroupAnnotationRotation);
+                // The group's miniatures, in the group's own frame: the canvas holder measures each
+                // member's box the same way, which is why the two agree on where a member's
+                // miniature sits without either of them storing a second copy of it.
+                for (int mi : groupMembers.value(i))
+                {
+                    if (mi < 0 || mi >= listDetails.size() || list.at(mi) == nullptr)
+                    {
+                        continue;
+                    }
+                    const quint32 memberId = listDetails.at(mi).GetId();
+                    if (const OThumbnailData memberThumb = group.MemberThumbnail(memberId);
+                        memberThumb.IsActive())
+                    {
+                        const QRectF memberBox =
+                            list.at(mi)->sceneBoundingRect().translated(-origin.x(), -origin.y());
+                        appendThumbnail(pieceThumbnails, memberId,
+                                        pattern->DataPieces()->value(memberId), memberThumb,
+                                        memberBox);
+                    }
+                }
             }
             pieceNames.append(baseName.isEmpty() ? QStringLiteral("piece_%1").arg(i + 1) : baseName);
             blocksByPiece.append(pieceBlocks);
             annotationsByPiece.append(pieceAnnotations);
+            thumbnailsByPiece.append(pieceThumbnails);
         }
 
         const QString name = path + '/'_L1 + m_dialogSaveLayout->FileName()
                              + VLayoutExporter::ExportFormatSuffix(m_dialogSaveLayout->Format());
-        OInfoBlockSvg::WriteSvg(name, list, blocksByPiece, annotationsByPiece, pieceNames, rect,
-                                svgMargins, m_dialogSaveLayout->GetXScale(),
+        OInfoBlockSvg::WriteSvg(name, list, blocksByPiece, annotationsByPiece, thumbnailsByPiece,
+                                pieceNames, rect, svgMargins, m_dialogSaveLayout->GetXScale(),
                                 m_dialogSaveLayout->GetYScale(), tr("Pattern"),
                                 doc->GetDescription().toHtmlEscaped(),
                                 m_dialogSaveLayout->IsTextAsPaths(),

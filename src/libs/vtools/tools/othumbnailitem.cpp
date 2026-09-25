@@ -41,27 +41,6 @@
 #include "../../vwidgets/global.h"
 #include "../../vwidgets/ocartouchepainter.h"
 
-namespace
-{
-/// @brief The box a word occupies — as wide as its widest line, as tall as all of its lines.
-///
-/// **`QFontMetricsF::horizontalAdvance()` is not that box.** A legend written in two languages is one
-/// string with a line break in it, and the advance of that string measures the two languages joined
-/// end to end: centred on that number the legend slides off to one side, and a one-line box handed to
-/// `drawText()` clips the second language away entirely.
-auto TextSize(const QFontMetricsF &metrics, const QString &text) -> QSizeF
-{
-    const QStringList lines = text.split(QLatin1Char('\n'));
-
-    qreal width = 0.0;
-    for (const QString &line : lines)
-    {
-        width = qMax(width, metrics.horizontalAdvance(line));
-    }
-    return QSizeF(width, metrics.height() * static_cast<qreal>(lines.size()));
-}
-} // namespace
-
 //---------------------------------------------------------------------------------------------------------------------
 OThumbnailItem::OThumbnailItem(QGraphicsItem *parent) : QGraphicsRectItem(parent)
 {
@@ -247,32 +226,57 @@ auto OThumbnailItem::shape() const -> QPainterPath
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OThumbnailItem::Font() -> QFont
+auto OThumbnailItem::LabelFont() -> QFont
 {
     // **The application's own text, not a chosen one.** The miniature borrows the interface's font
     // so that it reads as part of the app, and the size is the one the app shows today — the
-    // miniature editor's font settings will take this over.
+    // miniature editor's font settings will take this over. The SVG export draws the words from
+    // here, so the document cannot end up with a typography the screen never showed.
     QFont font = QApplication::font();
     font.setPixelSize(kLabelPixelSize);
     return font;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::LabelTextSize(const QString &text, const QFont &font) -> QSizeF
+{
+    // **`QFontMetricsF::horizontalAdvance()` is not that box.** A legend written in two languages is
+    // one string with a line break in it, and the advance of that string measures the two languages
+    // joined end to end: centred on that number the legend slides off to one side, and a one-line box
+    // handed to `drawText()` clips the second language away entirely.
+    const QFontMetricsF metrics(font);
+    const QStringList lines = text.split(QLatin1Char('\n'));
+
+    qreal width = 0.0;
+    for (const QString &line : lines)
+    {
+        width = qMax(width, metrics.horizontalAdvance(line));
+    }
+    return QSizeF(width, metrics.height() * static_cast<qreal>(lines.size()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OThumbnailItem::TextRect(const QString &text, const QPointF &offset) const -> QRectF
 {
-    const QFontMetricsF metrics(Font());
-    return QRectF(offset, TextSize(metrics, text));
+    return QRectF(offset, LabelTextSize(text, LabelFont()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::FittedWordOrigin(const QRectF &contentBounds, const QRectF &block,
+                                      const QPointF &contentPos) -> QPointF
+{
+    // No drawing yet: there is no fit to go through, and nothing is painted anyway.
+    if (contentBounds.isEmpty())
+    {
+        return contentPos;
+    }
+    return OCartouchePainter::FitTransform(contentBounds, block).map(contentPos);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OThumbnailItem::WordOrigin(const QPointF &contentPos) const -> QPointF
 {
-    // No drawing yet: there is no fit to go through, and nothing is painted anyway.
-    if (m_contentBounds.isEmpty())
-    {
-        return contentPos;
-    }
-    return OCartouchePainter::FitTransform(m_contentBounds, rect()).map(contentPos);
+    return FittedWordOrigin(m_contentBounds, rect(), contentPos);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -288,6 +292,54 @@ auto OThumbnailItem::WordPlacement(const QPointF &origin) const -> QPointF
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::DefaultWordOrigin(const QVector<LabelView> &labels, int index, const QRectF &block,
+                                       const QFont &font) -> QPointF
+{
+    // **The row is not stored, it is derived.** Values the user never moved sit above the block in
+    // the order they were added, centred on it — so adding a fourth value moves the row instead of
+    // leaving a gap where a value was once dragged away.
+    const QFontMetricsF metrics(font);
+    qreal rowWidth = 0.0;
+    int unplaced = 0;
+    for (const LabelView &other : labels)
+    {
+        if (other.placed || other.text.isEmpty())
+        {
+            continue; // An empty word holds no place in the row, and no gap either.
+        }
+        rowWidth += LabelTextSize(other.text, font).width() + kLabelGap;
+        ++unplaced;
+    }
+    if (unplaced > 0)
+    {
+        rowWidth -= kLabelGap; // No gap after the last word of the row.
+    }
+
+    qreal x = block.center().x() - rowWidth / 2.0;
+    for (int i = 0; i < index; ++i)
+    {
+        if (labels.at(i).placed || labels.at(i).text.isEmpty())
+        {
+            continue;
+        }
+        x += LabelTextSize(labels.at(i).text, font).width() + kLabelGap;
+    }
+
+    return QPointF(x, -kBandGap - metrics.height());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::DefaultLegendOrigin(const QString &legend, const QRectF &block, const QFont &font)
+    -> QPointF
+{
+    // **Centred on the block, which is the rectangle the miniature is.** Not on the piece: the legend
+    // is the block's caption, and centring it on the piece would slide it away from the drawing it
+    // speaks for as soon as the block is not sitting on the piece's middle.
+    return QPointF(block.center().x() - LabelTextSize(legend, font).width() / 2.0,
+                   block.bottom() + kBandGap);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OThumbnailItem::EffectiveOffset(int index) const -> QPointF
 {
     const LabelView &label = m_labels.at(index);
@@ -296,38 +348,7 @@ auto OThumbnailItem::EffectiveOffset(int index) const -> QPointF
         // A placed word is a point of the drawing: it follows the piece wherever the fit puts it.
         return WordOrigin(label.offset);
     }
-
-    // **The row is not stored, it is derived.** Values the user never moved sit above the block in
-    // the order they were added, centred on it — so adding a fourth value moves the row instead of
-    // leaving a gap where a value was once dragged away.
-    const QFontMetricsF metrics(Font());
-    qreal rowWidth = 0.0;
-    int unplaced = 0;
-    for (const LabelView &other : m_labels)
-    {
-        if (other.placed || other.text.isEmpty())
-        {
-            continue; // An empty word holds no place in the row, and no gap either.
-        }
-        rowWidth += TextSize(metrics, other.text).width() + kLabelGap;
-        ++unplaced;
-    }
-    if (unplaced > 0)
-    {
-        rowWidth -= kLabelGap; // No gap after the last word of the row.
-    }
-
-    qreal x = rect().center().x() - rowWidth / 2.0;
-    for (int i = 0; i < index; ++i)
-    {
-        if (m_labels.at(i).placed || m_labels.at(i).text.isEmpty())
-        {
-            continue;
-        }
-        x += TextSize(metrics, m_labels.at(i).text).width() + kLabelGap;
-    }
-
-    return QPointF(x, -kBandGap - metrics.height());
+    return DefaultWordOrigin(m_labels, index, rect(), LabelFont());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -337,13 +358,7 @@ auto OThumbnailItem::EffectiveLegendOffset() const -> QPointF
     {
         return WordOrigin(m_legendOffset);
     }
-
-    const QFontMetricsF metrics(Font());
-    // **Centred on the block, which is the rectangle the miniature is.** Not on the piece: the legend
-    // is the block's caption, and centring it on the piece would slide it away from the drawing it
-    // speaks for as soon as the block is not sitting on the piece's middle.
-    return QPointF(rect().center().x() - TextSize(metrics, m_legend).width() / 2.0,
-                   rect().bottom() + kBandGap);
+    return DefaultLegendOrigin(m_legend, rect(), LabelFont());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -420,7 +435,7 @@ void OThumbnailItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     // block's caption, not part of the piece drawing: resizing the block resizes the drawing and
     // leaves the words where they are, while a change of zoom carries them exactly as it carries the
     // cartouche's text. They also stay out of the cached content, which is geometry alone.
-    painter->setFont(Font());
+    painter->setFont(LabelFont());
     painter->setPen(textColor);
     painter->setBrush(Qt::NoBrush);
     for (int i = 0; i < m_labels.size(); ++i)

@@ -48,6 +48,9 @@
 
 #include "../vlayout/vgraphicsfillitem.h"
 
+#include "vmisc/vabstractapplication.h"
+#include "vmisc/vcommonsettings.h"
+
 #include <QtGlobal>
 
 #include <algorithm>
@@ -124,6 +127,21 @@ QGraphicsPathItem *AsPathItem(QGraphicsItem *item)
     }
     return qgraphicsitem_cast<QGraphicsPathItem *>(item);
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+/// @brief The miniature's stroke width, in document pixels.
+///
+/// The canvas never draws it heavier than the piece it draws, and never more than one pixel: its law
+/// is `min(1, ScaleWidth(hairline, zoom) × zoom)`, and a document has no zoom — the export stands at
+/// 100 %, where `ScaleWidth()` leaves the hairline alone. The floor is this file's own: every other
+/// path that reaches it with no width is given @ref kDefaultStrokeWidth, and a miniature drawn
+/// thinner than a hair would simply not be there. The document's scale is deliberately NOT applied:
+/// no other stroke in this file compensates for it either, so a scaled sheet shrinks every line by
+/// the same amount instead of thinning only this one.
+qreal MiniatureStroke()
+{
+    return qBound(kDefaultStrokeWidth, VAbstractApplication::VApp()->Settings()->WidthHairLine(), 1.0);
+}
 }  // namespace
 
 namespace OInfoBlockSvg
@@ -131,7 +149,8 @@ namespace OInfoBlockSvg
 //---------------------------------------------------------------------------------------------------------------------
 bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
               const QList<QVector<Block>> &blocksByPiece,
-              const QList<QVector<Annotation>> &annotationsByPiece, const QStringList &pieceNames,
+              const QList<QVector<Annotation>> &annotationsByPiece,
+              const QList<QVector<Thumbnail>> &thumbnailsByPiece, const QStringList &pieceNames,
               const QRectF &imageRect, const QMarginsF &margins, qreal xScale, qreal yScale,
               const QString &title, const QString &description, bool textAsPaths,
               bool showGrainline, const QHash<int, QVector<int>> &groupMembers)
@@ -544,6 +563,95 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
         {
             writeAnnotation(annotation);
         }
+
+        // --- Miniatures ------------------------------------------------------
+        // The canvas paint has two layers — the drawing, then the words — and so has this: the same
+        // geometry, the same words at the same places, minus everything that belongs to the screen
+        // (selection handles, the palette, the view zoom).
+        const QVector<Thumbnail> &thumbnails = thumbnailsByPiece.value(pi);
+        for (const Thumbnail &thumb : thumbnails)
+        {
+            if (thumb.content.isEmpty() || thumb.contentBounds.isEmpty() || thumb.rect.width() <= 0.0
+                || thumb.rect.height() <= 0.0)
+            {
+                continue;
+            }
+
+            // The drawing goes out as one absolute path, like every other path in this document:
+            // the piece's coordinates are fitted into the block, the block is put where it belongs
+            // in the piece, and the file transform does the rest. No group has to carry it, and the
+            // stroke keeps the width the other paths are given.
+            //
+            // ⚠️ **The factors are written in the order they APPLY — left first**: Qt's `A * B`
+            // means "A, then B" (the same rule the block comment above spells out). Read the other
+            // way round — "the right-hand factor is applied first", which is how the usual matrix
+            // product reads — this line fits the drawing LAST, and the whole miniature lands near
+            // the pattern origin: the fit is then applied to already-placed coordinates, so it
+            // scales the block's position by the fit scale instead of scaling the drawing.
+            const QRectF block(0.0, 0.0, thumb.rect.width(), thumb.rect.height());
+            QTransform tr;
+            tr.translate(origin.x() + thumb.rect.x(), origin.y() + thumb.rect.y());
+            const QPainterPath svgPath =
+                (OCartouchePainter::FitTransform(thumb.contentBounds, block) * tr * toSVG)
+                    .map(thumb.content);
+
+            writer.writeStartElement(QStringLiteral("path"));
+            writer.writeAttribute(QStringLiteral("d"), OSvg::PainterPathToSvgD(svgPath));
+            writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("none"));
+            writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("black"));
+            writer.writeAttribute(QStringLiteral("stroke-width"), QString::number(MiniatureStroke()));
+            writer.writeEndElement();  // path (miniature drawing)
+
+            if (thumb.words.isEmpty())
+            {
+                continue;
+            }
+
+            // The words carry their own transform, as a block's do: the caller has placed them in
+            // the block's frame, and everything above that is the block's position in the file —
+            // same application order as the drawing's transform above.
+            writer.writeStartElement(QStringLiteral("g"));
+            writer.writeAttribute(QStringLiteral("transform"), MatrixAttr(tr * toSVG));
+
+            QVector<OCartoucheRenderItem> wordItems;
+            wordItems.reserve(thumb.words.size());
+            const QFontMetricsF metrics(thumb.font);
+            for (const ThumbnailWord &word : thumb.words)
+            {
+                if (word.text.isEmpty())
+                {
+                    continue;
+                }
+                // **One line per language, as on the canvas.** A legend written in two languages is
+                // one string with a line break in it, and SVG has no line break: a newline inside
+                // `<text>` collapses into a space, so the two languages came out end to end on a
+                // single line — far wider than the block they belong to. The pitch is the font's
+                // own `height()`, the same one the item measures its box with (and the same one the
+                // annotations above are laid out with).
+                const QStringList lines = word.text.split(QLatin1Char('\n'));
+                qreal baseline = word.origin.y() + metrics.ascent();
+                for (const QString &line : lines)
+                {
+                    if (!line.isEmpty())
+                    {
+                        OCartoucheRenderItem item;
+                        item.kind = OCartoucheRenderItem::Kind::Text;
+                        item.text = line;
+                        item.font = thumb.font;
+                        // The anchor is the top-left of the word's box, all that the screen ever
+                        // needs; a <text> wants its baseline, which is one ascent lower.
+                        item.pen = QPointF(word.origin.x(), baseline);
+                        wordItems.append(item);
+                    }
+                    baseline += metrics.height();
+                }
+            }
+            // The items go to the shared serializer, so a miniature's wording is written — as text
+            // or as glyph outlines — exactly like a block's.
+            OCartoucheSvg::WriteItems(writer, wordItems, 1.0, textAsPaths);
+            writer.writeEndElement();  // g (miniature words)
+        }
+
         writer.writeEndElement();  // g (information)
         writer.writeEndElement();  // g (piece)
     }

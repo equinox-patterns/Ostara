@@ -37,6 +37,7 @@
 #include <QPainterPath>
 #include <QPointF>
 #include <QRectF>
+#include <QSizeF>
 #include <QString>
 #include <QVector>
 
@@ -120,6 +121,30 @@ public:
     void SetEditing(bool editing);
     auto IsEditing() const -> bool;
 
+    // --- Where a word goes: one implementation, two canvases and the export --------------------
+    //
+    // The screen and the file have to put a word at the same place, and the only way to keep that
+    // promise is to have a single answer to "where does it go". These are that answer: the item
+    // paints with them, and the SVG writer places the same words with the same numbers instead of
+    // transcribing the formulas — a second transcription would drift the first time one of them
+    // learned something new.
+    /** @brief The application's own text, at the size the miniature borrows. */
+    static auto LabelFont() -> QFont;
+    /** @brief The box a word occupies — as wide as its widest line, as tall as all of its lines. */
+    static auto LabelTextSize(const QString &text, const QFont &font) -> QSizeF;
+    /** @brief Where a word nobody moved sits: the row above @p block, centred, in the order given. */
+    static auto DefaultWordOrigin(const QVector<LabelView> &labels, int index, const QRectF &block,
+                                  const QFont &font) -> QPointF;
+    /** @brief Where a legend nobody moved sits: centred under @p block. */
+    static auto DefaultLegendOrigin(const QString &legend, const QRectF &block, const QFont &font)
+        -> QPointF;
+    /**
+     * @brief Where a word placed by hand lands: a point of the drawing, put through the same fit
+     * the drawing itself goes through.
+     */
+    static auto FittedWordOrigin(const QRectF &contentBounds, const QRectF &block,
+                                 const QPointF &contentPos) -> QPointF;
+
     auto type() const -> int override { return Type; }
     enum
     {
@@ -181,7 +206,6 @@ private:
     /** @brief New rect + position for a resize gesture, aspect ratio preserved. */
     void ResizeTo(const QPointF &mouseInParent, QRectF &newRect, QPointF &newPos) const;
 
-    static auto Font() -> QFont;
     auto TextRect(const QString &text, const QPointF &offset) const -> QRectF;
     /**
      * @brief Where a placed word lands on screen: a point of the drawing, put through the same fit
