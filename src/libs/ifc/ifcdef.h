@@ -102,6 +102,10 @@ extern const QString AttrRadius2;
 extern const QString AttrAngle;
 extern const QString AttrAngle1;
 extern const QString AttrAngle2;
+// The three points of a dart that closes a tool, and how much of its opening is closed (see OToolCloseDart).
+extern const QString AttrMovingPoint;
+extern const QString AttrTargetPoint;
+extern const QString AttrClosingDivisor;
 extern const QString AttrRotationAngle;
 extern const QString AttrLength1;
 extern const QString AttrLength2;

@@ -324,6 +324,11 @@
                           <xs:attribute name="center" type="xs:unsignedInt"/>
                           <xs:attribute name="angle" type="xs:string"/>
                           <xs:attribute name="rotationAngle" type="xs:string"/>
+                          <!-- The tool that closes a dart keeps the three points of the dart and how much of
+                               its opening is closed; the angle itself is derived, never stored. -->
+                          <xs:attribute name="movingPoint" type="xs:unsignedInt"/>
+                          <xs:attribute name="targetPoint" type="xs:unsignedInt"/>
+                          <xs:attribute name="closingDivisor" type="xs:string"/>
                           <xs:attribute name="length" type="xs:string"/>
                           <xs:attribute name="suffix" type="nameSuffix"/>
                           <xs:attribute name="type" type="xs:string" use="required"/>

@@ -1189,7 +1189,7 @@ void VPattern::DrawToolsCommonAttributes(const QDomElement &domElement, quint32 
 auto VPattern::ActiveDrawBoundingRect() const -> QRectF
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were used.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were used.");
 
     QRectF rec;
 
@@ -1268,6 +1268,7 @@ auto VPattern::ActiveDrawBoundingRect() const -> QRectF
                 rec = ToolBoundingRect<VToolDoublePoint>(rec, tool.GetId());
                 break;
             case Tool::Rotation:
+            case Tool::CloseDart:
             case Tool::FlippingByLine:
             case Tool::FlippingByAxis:
             case Tool::Move:

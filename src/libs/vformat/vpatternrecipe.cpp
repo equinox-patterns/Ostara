@@ -43,6 +43,7 @@
 
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
+#include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
@@ -95,6 +96,7 @@ namespace
 #define AttrLabel QStringLiteral("label")
 #define AttrLengthValue QStringLiteral("lengthValue")
 #define AttrAngleValue QStringLiteral("angleValue")
+#define AttrClosingDivisorValue QStringLiteral("closingDivisorValue")
 #define AttrAngle1Value QStringLiteral("angle1Value")
 #define AttrAngle2Value QStringLiteral("angle2Value")
 #define AttrLength1Value QStringLiteral("length1Value")
@@ -362,7 +364,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -463,6 +465,8 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
                 return EllipticalArc(tool);
             case Tool::Rotation:
                 return Rotation(tool, data);
+            case Tool::CloseDart:
+                return CloseDart(tool, data);
             case Tool::FlippingByLine:
                 return FlippingByLine(tool, data);
             case Tool::FlippingByAxis:
@@ -1150,6 +1154,24 @@ auto VPatternRecipe::Rotation(const VToolRecord &record, const VContainer &data)
     SetAttribute(step, AttrType, VToolRotation::ToolType);
     SetAttribute(step, AttrCenter, tool->OriginPointName());
     Formula(step, tool->GetFormulaAngle(), AttrAngle, AttrAngleValue);
+
+    step.appendChild(GroupOperationSource(tool, record.GetId(), data));
+
+    return step;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPatternRecipe::CloseDart(const VToolRecord &record, const VContainer &data) -> QDomElement
+{
+    auto *tool = GetPatternTool<OToolCloseDart>(record.GetId());
+
+    QDomElement step = createElement(TagStep);
+
+    SetAttribute(step, AttrType, OToolCloseDart::ToolType);
+    SetAttribute(step, AttrCenter, tool->OriginPointName());
+    SetAttribute(step, AttrMovingPoint, tool->MovingPointName());
+    SetAttribute(step, AttrTargetPoint, tool->TargetPointName());
+    Formula(step, tool->GetFormulaDivisor(), AttrClosingDivisor, AttrClosingDivisorValue);
 
     step.appendChild(GroupOperationSource(tool, record.GetId(), data));
 

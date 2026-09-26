@@ -87,7 +87,7 @@ auto IsDarkTheme() -> bool
 auto IsAppIconTool(const QString &id) -> bool
 {
     return id == QStringLiteral("detail_export") || id == QStringLiteral("export_templates")
-           || id == QStringLiteral("export_image");
+           || id == QStringLiteral("export_image") || id == QStringLiteral("close_dart");
 }
 
 auto FormatTooltip(const QString &toolName, const QAction *action) -> QString
@@ -482,6 +482,9 @@ void DrawToolBar::InitializeGroups()
             {QStringLiteral("curve"),                    tr("Curve"),                                            nullptr, makeBtn("curve")},
             {QStringLiteral("curve_cut_point"),          tr("Segment a curve"),                                 nullptr, makeBtn("curve_cut_point")},
             {QStringLiteral("armhole_curve"),            tr("Armhole curve passing through 4 points"),          nullptr, makeBtn("armhole_curve")},
+            // No close_dart.svg exists yet, so this button is built by hand further down and borrows the icon
+            // of the rotation it comes from. The tool waits here until it has artwork of its own.
+            {QStringLiteral("close_dart"),               tr("Close dart tool"),                                 nullptr, nullptr},
         }, kModeDraw},
     };
     // clang-format on
@@ -529,6 +532,21 @@ void DrawToolBar::InitializeGroups()
         btn->setIcon(QIcon(QStringLiteral(":/icons/%1/file-image-fill_%1.svg")
                                .arg(IsDarkTheme() ? QStringLiteral("dark") : QStringLiteral("light"))));
         m_buttonMap.insert(QStringLiteral("export_image"), btn);
+    }
+
+    // The tool that closes a dart waits for its own artwork: with no close_dart.svg to load — and makeBtn()
+    // would complain about it — its button borrows the icon of the rotation it comes from, from the
+    // application rather than from :/tools/. Built by hand for the same reason as the export tool.
+    if (!m_buttonMap.contains(QStringLiteral("close_dart")))
+    {
+        auto *btn = new QToolButton(m_root);
+        btn->setObjectName(QStringLiteral("drawToolBtn"));
+        btn->setAutoRaise(true);
+        btn->setCheckable(true);
+        btn->setFixedSize(kButtonSize, kButtonSize);
+        btn->setIconSize(QSize(24, 24));
+        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("rotation.png")));
+        m_buttonMap.insert(QStringLiteral("close_dart"), btn);
     }
 
     // Update the button pointer in the ToolItem

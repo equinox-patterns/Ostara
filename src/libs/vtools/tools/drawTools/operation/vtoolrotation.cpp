@@ -57,6 +57,7 @@
 #include "../vgeometry/vsplinepath.h"
 #include "ooperationdestination.h"
 #include "orotationlength.h"
+#include "orotationtransform.h"
 #include "vexception.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
@@ -77,25 +78,6 @@ const QString VToolRotation::DefaultAngle = QStringLiteral("10");
 
 namespace
 {
-//---------------------------------------------------------------------------------------------------------------------
-/** @brief The transformation of a rotation: every source object is turned around the pivot by the same angle.
- *  Points, arcs, splines and the three curve-with-segments types all answer to Rotate(origin, angle, name),
- *  so one template serves every shape. */
-class ORotationTransform
-{
-public:
-    ORotationTransform(const QPointF &origin, qreal angle) : m_origin(origin), m_angle(angle) {}
-
-    template <class Item> auto Image(const Item &item, const QString &name) const -> Item
-    {
-        return item.Rotate(m_origin, m_angle, name);
-    }
-
-private:
-    QPointF m_origin;
-    qreal m_angle;
-};
-
 //---------------------------------------------------------------------------------------------------------------------
 auto MakeDestination(quint32 originId, qreal calcAngle, VContainer *data)
     -> OOperationDestination<ORotationTransform>

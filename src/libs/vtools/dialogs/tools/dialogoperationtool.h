@@ -35,6 +35,7 @@
 #include <QPair>
 #include <QSet>
 #include <QUuid>
+#include <QVBoxLayout>
 
 class QAbstractButton;
 class QGroupBox;
@@ -193,6 +194,30 @@ template <class Ui> auto OperationWidgetsFrom(const Ui *ui, QComboBox *color) ->
             .groupTags = ui->lineEditGroupTags,
             .visibilityGroupLine = ui->lineEditVisibilityGroup,
             .visibilityGroup = ui->groupBoxVisibilityGroup};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Put a formula field where a .ui left a placeholder.
+ *
+ * A formula field is a C++ component, so a .ui cannot declare one: it declares an empty widget instead, and the
+ * field takes its place in the same vertical layout. Written once here, for every operation dialog that has one
+ * — a rotation has two, the tool that closes a dart has one.
+ */
+inline void InsertFormulaField(QWidget *placeholder, QWidget *field)
+{
+    if (placeholder == nullptr)
+    {
+        return;
+    }
+
+    auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+    if (parentLayout == nullptr)
+    {
+        return;
+    }
+
+    parentLayout->insertWidget(parentLayout->indexOf(placeholder), field);
+    placeholder->deleteLater();
 }
 
 #endif // DIALOGOPERATIONTOOL_H

@@ -8552,7 +8552,12 @@ Cette action ne peut pas être annulée.</translation>
         <source>%1 more tools</source>
         <translation>%1 outils supplémentaires</translation>
     </message>
-</context>
+        <message>
+            <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="465"/>
+            <source>Close dart tool</source>
+            <translation>Fermer une pince</translation>
+        </message>
+    </context>
 <context>
     <name>FoldLine</name>
     <message>
@@ -10882,7 +10887,17 @@ Cette action ne peut pas être annulée.</translation>
             <numerusform>%n fichiers laissés tels quels :</numerusform>
         </translation>
     </message>
-</context>
+        <message>
+            <location filename="../../src/app/ostara/mainwindow.ui" line="2242"/>
+            <source>Close dart</source>
+            <translation>Fermer une pince</translation>
+        </message>
+        <message>
+            <location filename="../../src/app/ostara/mainwindow.ui" line="2245"/>
+            <source>Close a dart: turn one leg onto the other</source>
+            <translation>Fermer une pince : ramener un bras sur l’autre</translation>
+        </message>
+    </context>
 <context>
     <name>MainWindowsNoGUI</name>
     <message>
@@ -21373,7 +21388,12 @@ Voulez-vous continuer ?</translation>
         <comment>shortcut for action</comment>
         <translation>Outil &apos;Gradation de courbe&apos;</translation>
     </message>
-</context>
+        <message>
+            <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="472"/>
+            <source>Tool 'Close dart'</source>
+            <translation>Outil 'Fermer une pince'</translation>
+        </message>
+    </context>
 <context>
     <name>VAbstractTool</name>
     <message>
@@ -22525,7 +22545,12 @@ Voulez-vous continuer ?</translation>
         <source>Line_%1_%2</source>
         <translation>Ligne_%1_%2</translation>
     </message>
-</context>
+        <message>
+            <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="994"/>
+            <source>Close dart</source>
+            <translation>Fermer une pince</translation>
+        </message>
+    </context>
 <context>
     <name>VDomDocument</name>
     <message>
@@ -25036,7 +25061,12 @@ Voulez-vous continuer ?</translation>
         <source>Can&apos;t find increment &apos;%1&apos;</source>
         <translation>Impossible de trouver l&apos;incrément &apos;%1&apos;</translation>
     </message>
-</context>
+        <message>
+            <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="438"/>
+            <source>Error creating or updating the operation that closes a dart</source>
+            <translation>Erreur lors de la création ou de la mise à jour de l’opération qui ferme une pince</translation>
+        </message>
+    </context>
 <context>
     <name>VPatternConverter</name>
     <message>
@@ -26807,7 +26837,12 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <source>Axis type:</source>
         <translation>Type d&apos;axe :</translation>
     </message>
-</context>
+        <message>
+            <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="191"/>
+            <source>Closing divisor:</source>
+            <translation>Diviseur de fermeture :</translation>
+        </message>
+    </context>
 <context>
     <name>VToolPlaceLabel</name>
     <message>
@@ -28989,4 +29024,118 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Information</translation>
     </message>
 </context>
+    <context>
+        <name>OToolCloseDart</name>
+        <message>
+            <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="1"/>
+            <source>Closing divisor:</source>
+            <translation>Diviseur de fermeture :</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="377"/>
+            <source>Pivot point</source>
+            <translation>Point pivot</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="383"/>
+            <source>Moving point</source>
+            <translation>Point à déplacer</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="389"/>
+            <source>Target point</source>
+            <translation>Point cible</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="319"/>
+            <source>close a dart</source>
+            <translation>fermer une pince</translation>
+        </message>
+    </context>
+    <context>
+        <name>ODialogCloseDart</name>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="80"/>
+            <source>Closing divisor:</source>
+            <translation>Diviseur de fermeture :</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="81"/>
+            <source>Edit the closing divisor</source>
+            <translation>Modifier le diviseur de fermeture</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="261"/>
+            <source>Select the pivot point</source>
+            <translation>Sélectionner le point pivot</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="364"/>
+            <source>This point cannot be the pivot point. Please, select another point</source>
+            <translation>Ce point ne peut pas être le point pivot. Sélectionnez-en un autre</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="387"/>
+            <source>Select the Moving point: the one that will close onto the other one</source>
+            <translation>Sélectionner le point à déplacer : celui qui va se refermer sur l’autre</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="395"/>
+            <source>The Moving point must be another point than the pivot point</source>
+            <translation>Le point à déplacer doit être un autre point que le point pivot</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="408"/>
+            <source>Select the Target point: the one the Moving point lands on</source>
+            <translation>Sélectionner le point cible : celui sur lequel le point à déplacer vient se poser</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="416"/>
+            <source>The Target point must be a third point, different from the pivot and the Moving point</source>
+            <translation>Le point cible doit être un troisième point, différent du point pivot et du point à déplacer</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="424"/>
+            <source>The Target point does not move, so it cannot be one of the objects to rotate either. Remove it from the selection, or choose another point</source>
+            <translation>Le point cible ne bouge pas : il ne peut pas non plus faire partie des objets à faire tourner. Retirez-le de la sélection, ou choisissez un autre point</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="545"/>
+            <source>The pivot, the Moving point and the Target point must be three different points</source>
+            <translation>Le point pivot, le point à déplacer et le point cible doivent être trois points différents</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="549"/>
+            <source>The closing divisor cannot be zero</source>
+            <translation>Le diviseur de fermeture ne peut pas être zéro</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="535"/>
+            <source>Ready</source>
+            <translation>Prêt</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="553"/>
+            <source>Invalid name</source>
+            <translation>Nom non valide</translation>
+        </message>
+        <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="557"/>
+            <source>Invalid layer name</source>
+            <translation>Nom de calque invalide</translation>
+        </message>
+            <message>
+            <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="451"/>
+            <source>Close dart</source>
+            <translation>Fermer une pince</translation>
+        </message>
+</context>
+    <context>
+        <name>OVisToolCloseDart</name>
+        <message>
+            <location filename="../../src/libs/vtools/visualization/line/operation/ovistoolclosedart.cpp" line="74"/>
+            <source>Closing angle = %1°, &lt;b&gt;Mouse click&lt;/b&gt; - select the Target point</source>
+            <translation>Angle de fermeture = %1°, &lt;b&gt;Clic&lt;/b&gt; - sélectionner le point cible</translation>
+        </message>
+    </context>
 </TS>

@@ -82,29 +82,6 @@
 
 using namespace Qt::Literals::StringLiterals;
 
-namespace
-{
-//---------------------------------------------------------------------------------------------------------------------
-// Put a formula field where the .ui left a placeholder: the placeholder is a spacer item of the dialog's vertical
-// layout, and the field takes its place.
-void InsertFormulaField(QWidget *placeholder, QWidget *field)
-{
-    if (placeholder == nullptr)
-    {
-        return;
-    }
-
-    auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
-    if (parentLayout == nullptr)
-    {
-        return;
-    }
-
-    parentLayout->insertWidget(parentLayout->indexOf(placeholder), field);
-    placeholder->deleteLater();
-}
-} // namespace
-
 //---------------------------------------------------------------------------------------------------------------------
 DialogRotation::DialogRotation(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent)
   : DialogOperationTool(data, doc, toolId, parent),

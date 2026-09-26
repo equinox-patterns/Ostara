@@ -80,6 +80,7 @@
 #include "../vtools/dialogs/tools/dialogpointofintersectioncircles.h"
 #include "../vtools/dialogs/tools/dialogpointofintersectioncurves.h"
 #include "../vtools/dialogs/tools/dialogrotation.h"
+#include "../vtools/dialogs/tools/odialogclosedart.h"
 #include "../vtools/dialogs/tools/dialogshoulderpoint.h"
 #include "../vtools/dialogs/tools/dialogspline.h"
 #include "../vtools/dialogs/tools/dialogsplinepath.h"
@@ -99,6 +100,7 @@
 // VTool headers (one per tool)
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
+#include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
@@ -665,6 +667,20 @@ void MainWindow::ToolRotation(bool checked)
 
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolCloseDart(bool checked)
+{
+    ToolSelectOperationObjects();
+    ToolSelectOperationLines();
+    const QString tooltip = tr("Select the <b>objects to turn</b>, <b>%1</b> - confirm selection")
+                                .arg(VModifierKey::EnterKey());
+    SetToolButtonWithApply<ODialogCloseDart>(checked, Tool::CloseDart, QStringLiteral("rotation_cursor.png"), tooltip,
+                                             &MainWindow::ClosedDrawDialogWithApply<OToolCloseDart>,
+                                             &MainWindow::ApplyDrawDialog<OToolCloseDart>);
+    LogPatternToolUsed(checked, QStringLiteral("Close dart tool"));
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolFlippingByLine(bool checked)
 {
     ToolSelectOperationObjects();
@@ -1056,7 +1072,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Check if need to extend.");
 
     switch (t)
     {
@@ -1071,6 +1087,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
             dialogTool->SetPiecesList(doc->GetActivePPPieces());
             break;
         case Tool::Rotation:
+        case Tool::CloseDart:
         case Tool::Move:
         case Tool::FlippingByAxis:
         case Tool::FlippingByLine:
@@ -1434,7 +1451,7 @@ void MainWindow::ApplyPieceDialog(VMainGraphicsScene *scene)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1614,6 +1631,9 @@ void MainWindow::CancelTool()
         case Tool::Rotation:
             ui->actionRotationTool->setChecked(false);
             break;
+        case Tool::CloseDart:
+            ui->actionCloseDartTool->setChecked(false);
+            break;
         case Tool::FlippingByLine:
             ui->actionFlippingByLineTool->setChecked(false);
             break;
@@ -1719,7 +1739,7 @@ void MainWindow::ArrowTool(bool checked)
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -1916,6 +1936,10 @@ void MainWindow::LastUsedTool()
         case Tool::Rotation:
             ui->actionRotationTool->setChecked(true);
             ToolRotation(true);
+            break;
+        case Tool::CloseDart:
+            ui->actionCloseDartTool->setChecked(true);
+            ToolCloseDart(true);
             break;
         case Tool::FlippingByLine:
             ui->actionFlippingByLineTool->setChecked(true);

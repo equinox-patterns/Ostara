@@ -40,6 +40,8 @@
 #include "../vgeometry/vsplinepath.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
+#include "../vtools/tools/drawTools/operation/oclosedartrule.h"
+#include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
@@ -392,6 +394,60 @@ void VPattern::ParseToolRotation(VMainGraphicsScene *scene, QDomElement &domElem
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseToolCloseDart(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse)
+{
+    SCASSERT(scene != nullptr)
+    Q_ASSERT_X(domElement.isNull() == false, Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        OToolCloseDartInitData initData;
+        initData.scene = scene;
+        initData.doc = this;
+        initData.data = data;
+        initData.parse = parse;
+        initData.typeCreation = Source::FromFile;
+
+        DrawToolsCommonAttributes(domElement, initData.id, initData.notes);
+        // The three points of the dart and how much of its opening is closed. No angle is read here: it is
+        // derived from the points, so a pattern never holds one.
+        initData.origin = GetParametrUInt(domElement, AttrCenter, NULL_ID_STR);
+        initData.moving = GetParametrUInt(domElement, AttrMovingPoint, NULL_ID_STR);
+        initData.target = GetParametrUInt(domElement, AttrTargetPoint, NULL_ID_STR);
+        initData.divisor = GetParametrString(domElement, AttrClosingDivisor,
+                                             OCloseDartRule::DefaultDivisorFormula());
+        const QString divisor = initData.divisor; // need for saving fixed formula;
+
+        // We no longer need to handle suffix attribute here. The code can be removed.
+        Q_STATIC_ASSERT(VPatternConverter::PatternMinVer < FormatVersion(1, 1, 1));
+        initData.suffix = GetParametrEmptyString(domElement, AttrSuffix);
+
+        VAbstractOperation::ExtractData(domElement, initData);
+
+        OToolCloseDart::Create(initData);
+        // Rewrite attribute formula. Need for situation when we have wrong formula.
+        if (divisor != initData.divisor)
+        {
+            SetAttribute(domElement, AttrClosingDivisor, initData.divisor);
+            modified = true;
+            haveLiteChange();
+        }
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating the operation that closes a dart"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+    catch (qmu::QmuParserError &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating the operation that closes a dart"), domElement);
+        excep.AddMoreInformation("Message:     "_L1 + e.GetMsg() + '\n'_L1 + "Expression:  "_L1 + e.GetExpr());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VPattern::ParseToolFlippingByLine(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse)
 {
     SCASSERT(scene != nullptr)
@@ -646,7 +702,8 @@ void VPattern::ParseOperationElement(VMainGraphicsScene *scene, QDomElement &dom
     const auto opers = QStringList() << VToolRotation::ToolType       /*0*/
                                      << VToolFlippingByLine::ToolType /*1*/
                                      << VToolFlippingByAxis::ToolType /*2*/
-                                     << VToolMove::ToolType;          /*3*/
+                                     << VToolMove::ToolType           /*3*/
+                                     << OToolCloseDart::ToolType;     /*4*/
 
     switch (opers.indexOf(type))
     {
@@ -661,6 +718,9 @@ void VPattern::ParseOperationElement(VMainGraphicsScene *scene, QDomElement &dom
             break;
         case 3: // VToolMove::ToolType
             ParseToolMove(scene, domElement, parse);
+            break;
+        case 4: // OToolCloseDart::ToolType
+            ParseToolCloseDart(scene, domElement, parse);
             break;
         default:
             throw VException(tr("Unknown operation type '%1'.").arg(type));

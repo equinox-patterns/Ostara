@@ -451,6 +451,16 @@ void VPE::VProperty::setCollapsible(bool collapsible)
     vproperty_d_ptr->Collapsible = collapsible;
 }
 
+auto VPE::VProperty::isSpanningRow() const -> bool
+{
+    return vproperty_d_ptr->SpanningRow;
+}
+
+void VPE::VProperty::setSpanningRow(bool spanning)
+{
+    vproperty_d_ptr->SpanningRow = spanning;
+}
+
 auto VPE::VProperty::isExpandedByDefault() const -> bool
 {
     return vproperty_d_ptr->ExpandedByDefault;

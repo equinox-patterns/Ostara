@@ -239,6 +239,7 @@ private slots:
     void ToolGroup(bool checked);
     void ToolAttach(bool checked);
     void ToolRotation(bool checked);
+    void ToolCloseDart(bool checked);
     void ToolFlippingByLine(bool checked);
     void ToolFlippingByAxis(bool checked);
     void ToolMove(bool checked);

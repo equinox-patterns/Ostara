@@ -2227,6 +2227,27 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
+  <action name="actionCloseDartTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="share/resources/toolicon.qrc">
+     <normaloff>:/toolicon/light/rotation.png</normaloff>:/toolicon/light/rotation.png</iconset>
+   </property>
+   <property name="text">
+    <string>Close dart</string>
+   </property>
+   <property name="toolTip">
+    <string>Close a dart: turn one leg onto the other</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
   <action name="actionMoveTool">
    <property name="checkable">
     <bool>true</bool>

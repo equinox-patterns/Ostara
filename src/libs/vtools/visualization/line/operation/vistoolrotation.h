@@ -62,6 +62,25 @@ public:
     auto PointImage(const QPointF &point) const -> QPointF override;
     auto IsFixedPoint(quint32 id) const -> bool override;
 
+protected:
+    /** @brief The point the rotation turns around, NULL_ID while it has not been chosen yet — a tool that
+     *  turns with an angle of its own has to know it to read that angle. */
+    auto OriginPointId() const -> quint32 { return m_originPointId; }
+
+    /** @brief The ghost of the rotated objects, and the two helpers that build it.
+     *
+     * Shared with the tool that closes a dart: its preview is the very same rotation, and only the angle
+     * differs — read from the pattern there, typed in a field here. Written once, so the two ghosts cannot
+     * drift apart. */
+    void SetRotationAngle(qreal angle) { m_angle = angle; }
+
+    auto AddRotatedPoint(qreal angle, quint32 id, int i) -> int;
+
+    template<class Item>
+    auto AddRotatedCurve(qreal angle, quint32 id, int i) -> int;
+
+    void CreateRotatedObjects(int &iPoint, int &iCurve, qreal angle);
+
 private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(VisToolRotation) // NOLINT
@@ -70,13 +89,6 @@ private:
     VCurvePathItem *m_angleArc{nullptr};
     VScaledLine    *m_xAxis{nullptr};
     quint32         m_originPointId{NULL_ID};
-
-    auto AddRotatedPoint(qreal angle, quint32 id, int i) -> int;
-
-    template<class Item>
-    auto AddRotatedCurve(qreal angle, quint32 id, int i) -> int;
-
-    void CreateRotatedObjects(int &iPoint, int &iCurve, qreal angle);
 };
 
 //---------------------------------------------------------------------------------------------------------------------

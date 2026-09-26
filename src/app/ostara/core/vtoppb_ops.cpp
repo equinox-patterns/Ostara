@@ -29,12 +29,14 @@
 
 #include "vtooloptionspropertybrowser.h"
 #include "vtoppb_templates.h"
+#include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vpatterndb/vformula.h"
 #include "vformulaproperty.h"
+#include "oformularowproperty.h"
 #include "../vpropertyexplorer/plugins/vlabelproperty.h"
 #include "../vpropertyexplorer/plugins/venumproperty.h"
 #include "../vpropertyexplorer/plugins/vtextproperty.h"
@@ -51,6 +53,7 @@ auto T(const char *s) -> QString
 
 // Forward declarations
 auto RotationProperties() -> std::vector<PropertyDesc>;
+auto CloseDartProperties() -> std::vector<PropertyDesc>;
 auto MoveProperties() -> std::vector<PropertyDesc>;
 auto FlippingByLineProperties() -> std::vector<PropertyDesc>;
 auto FlippingByAxisProperties() -> std::vector<PropertyDesc>;
@@ -175,6 +178,87 @@ auto RotationProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
          {
              if (auto *t = qgraphicsitem_cast<VToolRotation *>(b->currentItem()))
+                 prop->setValue(t->GetNotes());
+         }},
+    };
+}
+
+// --- OToolCloseDart ---
+auto CloseDartProperties() -> std::vector<PropertyDesc>
+{
+    return {
+        // The closing divisor, and nothing else. The angle belongs to the dart and the three points are the
+        // ones clicked in the pattern, so neither the angle nor a point name is shown here. The row is drawn
+        // inline — label, field and fx button on one line — so that its long label cannot widen the label
+        // column and push the Notes field of this same dock to the right.
+        {AttrClosingDivisor, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Closing divisor:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<OToolCloseDart *>(tool);
+             auto *prop = new OFormulaRowProperty(
+                 T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Closing divisor:")));
+             prop->SetFormula(t->GetFormulaDivisor());
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<OToolCloseDart *>(b->currentItem()))
+             {
+                 auto formula = prop->data(VPE::VProperty::DPC_Data, Qt::EditRole).value<VFormula>();
+                 if (formula != t->GetFormulaDivisor())
+                 {
+                     t->SetFormulaDivisor(formula);
+                     // A divisor that cannot divide is refused, and the dock must not go on showing it as if the
+                     // tool had taken it: same revert as every setter that is allowed to say no. An inline row
+                     // owns its field, so it takes the revert itself — the field has to give in even though the
+                     // user is still typing in it.
+                     if (t->GetFormulaDivisor() != formula)
+                     {
+                         if (auto *row = qobject_cast<OFormulaRowProperty *>(prop); row != nullptr)
+                         {
+                             row->RevertTo(t->GetFormulaDivisor());
+                         }
+                         else
+                         {
+                             QVariant v;
+                             v.setValue(t->GetFormulaDivisor());
+                             prop->setValue(v);
+                         }
+                     }
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<OToolCloseDart *>(b->currentItem()))
+             {
+                 QVariant v;
+                 v.setValue(t->GetFormulaDivisor());
+                 prop->setValue(v);
+             }
+         }},
+
+        // Notes
+        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<OToolCloseDart *>(tool);
+             auto *prop = new VPE::VTextProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")));
+             prop->setValue(t->GetNotes());
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<OToolCloseDart *>(b->currentItem()))
+             {
+                 QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                 if (text != t->GetNotes())
+                     t->SetNotes(text);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<OToolCloseDart *>(b->currentItem()))
                  prop->setValue(t->GetNotes());
          }},
     };

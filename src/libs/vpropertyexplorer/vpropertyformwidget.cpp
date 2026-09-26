@@ -372,6 +372,20 @@ void VPE::VPropertyFormWidget::buildEditor(VProperty *property, QFormLayout *for
         labelLayout->addStretch();
         formLayout->addRow(labelWidget, tmpEditor);
     }
+    else if (property->isSpanningRow())
+    {
+        // The label shares the line with the editor and stays out of the form's label column: the row is
+        // full width, flush with the left edge, and its label can never widen the column that pushes the
+        // field of every shorter row to the right.
+        auto *row = new QFrame(this);
+        row->setFrameStyle(QFrame::NoFrame);
+        auto *rowLayout = new QHBoxLayout(row);
+        rowLayout->setContentsMargins(0, 0, 0, 0);
+        rowLayout->setSpacing(8);
+        rowLayout->addWidget(new QLabel(property->getName(), row));
+        rowLayout->addWidget(tmpEditor, 1);
+        formLayout->addRow(row);
+    }
     else
     {
         formLayout->addRow(property->getName(), tmpEditor);

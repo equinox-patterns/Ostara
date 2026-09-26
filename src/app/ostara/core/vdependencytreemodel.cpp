@@ -77,7 +77,7 @@ auto GetObjectName(vidtype id, const VContainer &patternData, const QString &def
 //---------------------------------------------------------------------------------------------------------------------
 auto IsGeometricTool(Tool toolType) -> bool
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "List of tools changed.");
 
     switch (toolType)
     {
@@ -982,7 +982,7 @@ auto VDependencyTreeModel::GetToolName(vidtype id, const VContainer &patternData
 //---------------------------------------------------------------------------------------------------------------------
 auto VDependencyTreeModel::GetOperationToolName(Tool toolType, const QString &defaultName) const -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "List of tools changed.");
 
     switch (toolType)
     {
@@ -990,6 +990,8 @@ auto VDependencyTreeModel::GetOperationToolName(Tool toolType, const QString &de
             return tr("True darts", "operation");
         case Tool::Rotation:
             return tr("Rotation", "operation");
+        case Tool::CloseDart:
+            return tr("Close dart", "operation");
         case Tool::FlippingByLine:
             return tr("Flipping by line", "operation");
         case Tool::FlippingByAxis:
@@ -1008,7 +1010,7 @@ auto VDependencyTreeModel::GetToolToolTip(vidtype id) const -> QString
 {
     const VToolRecord tool = FindToolRecord(id);
 
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "List of tools changed.");
 
     switch (tool.GetToolType())
     {

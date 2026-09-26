@@ -240,6 +240,12 @@ public:
     auto isExpandedByDefault() const -> bool;
     void setExpandedByDefault(bool expanded);
 
+    //! Whether this row draws its label beside its editor, flush with the left edge, instead of sitting in
+    //! the form's label column. A spanning row never widens that column, so a long label cannot push the
+    //! field of the shorter rows to the right.
+    auto isSpanningRow() const -> bool;
+    void setSpanningRow(bool spanning);
+
     virtual void UpdateParent(const QVariant &value);
 public slots:
     virtual void ValueChildChanged(const QVariant &value, int typeForParent);

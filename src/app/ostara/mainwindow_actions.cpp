@@ -217,7 +217,7 @@ void MainWindow::SetEnableTool(bool enable)
     QT_WARNING_POP
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
 
     // Drawing Tools
     ui->actionEndLineTool->setEnabled(drawTools);
@@ -257,6 +257,7 @@ void MainWindow::SetEnableTool(bool enable)
     ui->actionGroupTool->setEnabled(drawTools);
     ui->actionAttachTool->setEnabled(drawTools);
     ui->actionRotationTool->setEnabled(drawTools);
+    ui->actionCloseDartTool->setEnabled(drawTools);
     ui->actionFlippingByLineTool->setEnabled(drawTools);
     ui->actionFlippingByAxisTool->setEnabled(drawTools);
     ui->actionMoveTool->setEnabled(drawTools);
@@ -593,7 +594,7 @@ void MainWindow::SetEnabledGUI(bool enabled)
 void MainWindow::InitToolButtons()
 {
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 69, "Check if all tools were connected.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Check if all tools were connected.");
 
     auto InitToolButton = [this](VShortcutAction type, QAction *action, void (MainWindow::*slotFunction)(bool))
     {
@@ -655,6 +656,7 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ToolGroup, ui->actionGroupTool, &MainWindow::ToolGroup);
     InitToolButton(VShortcutAction::ToolAttach, ui->actionAttachTool, &MainWindow::ToolAttach);
     InitToolButton(VShortcutAction::ToolRotation, ui->actionRotationTool, &MainWindow::ToolRotation);
+    InitToolButton(VShortcutAction::ToolCloseDart, ui->actionCloseDartTool, &MainWindow::ToolCloseDart);
     InitToolButton(VShortcutAction::ToolFlippingByLine, ui->actionFlippingByLineTool, &MainWindow::ToolFlippingByLine);
     InitToolButton(VShortcutAction::ToolFlippingByAxis, ui->actionFlippingByAxisTool, &MainWindow::ToolFlippingByAxis);
     InitToolButton(VShortcutAction::ToolMove, ui->actionMoveTool, &MainWindow::ToolMove);
