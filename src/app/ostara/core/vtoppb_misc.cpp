@@ -64,7 +64,7 @@ auto SegmentDotPixmap(VColorRole role) -> QPixmap
 template <typename Tool>
 auto MakePointGroup(const QString &title, const QString &nameLabel, const QString &showLabel) -> PropertyDesc
 {
-    return {QStringLiteral("point"), title, false,
+    return {QStringLiteral("point"), title,
             [title, nameLabel, showLabel](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *group = new VPE::VProperty(title);
@@ -107,7 +107,7 @@ auto MakePointGroup(const QString &title, const QString &nameLabel, const QStrin
 template <typename Tool, typename Getter>
 auto MakeParentPoint(const QString &attrId, const QString &label, Getter getter) -> PropertyDesc
 {
-    return {attrId, label, true,
+    return {attrId, label,
             [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
             {
                 auto *t = static_cast<Tool *>(tool);
@@ -126,7 +126,7 @@ auto MakeParentPoint(const QString &attrId, const QString &label, Getter getter)
 template <typename Tool>
 auto MakeNotes(const QString &label) -> PropertyDesc
 {
-    return {AttrNotes, label, false,
+    return {AttrNotes, label,
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
             {
                 auto *t = static_cast<Tool *>(tool);
@@ -152,7 +152,7 @@ auto MakeNotes(const QString &label) -> PropertyDesc
 template <typename Tool>
 auto MakeCrossPoint(const QString &label) -> PropertyDesc
 {
-    return {AttrCrossPoint, label, false,
+    return {AttrCrossPoint, label,
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
             {
                 auto *t = static_cast<Tool *>(tool);
@@ -182,7 +182,7 @@ auto MakeCrossPoint(const QString &label) -> PropertyDesc
 template <typename Tool>
 auto MakeVCrossPoint(const QString &label) -> PropertyDesc
 {
-    return {AttrVCrossPoint, label, false,
+    return {AttrVCrossPoint, label,
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
             {
                 auto *t = static_cast<Tool *>(tool);
@@ -212,7 +212,7 @@ auto MakeVCrossPoint(const QString &label) -> PropertyDesc
 template <typename Tool>
 auto MakeHCrossPoint(const QString &label) -> PropertyDesc
 {
-    return {AttrHCrossPoint, label, false,
+    return {AttrHCrossPoint, label,
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
             {
                 auto *t = static_cast<Tool *>(tool);
@@ -242,7 +242,7 @@ auto MakeHCrossPoint(const QString &label) -> PropertyDesc
 template <typename Tool>
 auto MakeObjectName(const QString &label) -> PropertyDesc
 {
-    return {AttrName, label, false,
+    return {AttrName, label,
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
             {
                 auto *t = static_cast<Tool *>(tool);
@@ -299,7 +299,7 @@ auto PointOfIntersectionCirclesProperties() -> std::vector<PropertyDesc>
 {
     return {
         // First circle radius (custom formula)
-        {AttrC1Radius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First circle radius:")), false,
+        {AttrC1Radius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First circle radius:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolPointOfIntersectionCircles *>(tool);
              auto *prop = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First circle radius:")));
@@ -318,7 +318,7 @@ auto PointOfIntersectionCirclesProperties() -> std::vector<PropertyDesc>
              }
          }},
         // Second circle radius (custom formula)
-        {AttrC2Radius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second circle radius:")), false,
+        {AttrC2Radius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second circle radius:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolPointOfIntersectionCircles *>(tool);
              auto *prop = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second circle radius:")));
@@ -366,7 +366,7 @@ auto PointFromCircleAndTangentProperties() -> std::vector<PropertyDesc>
 {
     return {
         // Circle radius (custom formula)
-        {AttrCRadius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Circle radius:")), false,
+        {AttrCRadius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Circle radius:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolPointFromCircleAndTangent *>(tool);
              auto *prop = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Circle radius:")));
@@ -405,7 +405,7 @@ auto BackgroundPixmapItemProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeObjectName<VBackgroundPixmapItem>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
-        {VtoppbConstants::AttrHold, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Hold:")), false,
+        {VtoppbConstants::AttrHold, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Hold:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VBackgroundPixmapItem *>(tool);
              auto *prop = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Hold:")));
@@ -422,7 +422,7 @@ auto BackgroundPixmapItemProperties() -> std::vector<PropertyDesc>
              if (auto *t = qgraphicsitem_cast<VBackgroundPixmapItem *>(b->currentItem()))
                  prop->setValue(t->IsHold());
          }},
-        {VtoppbConstants::AttrVisible, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Visible:")), false,
+        {VtoppbConstants::AttrVisible, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Visible:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VBackgroundPixmapItem *>(tool);
              auto *prop = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Visible:")));
@@ -439,7 +439,7 @@ auto BackgroundPixmapItemProperties() -> std::vector<PropertyDesc>
              if (auto *t = qgraphicsitem_cast<VBackgroundPixmapItem *>(b->currentItem()))
                  prop->setValue(t->IsVisible());
          }},
-        {VtoppbConstants::AttrOpacity, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Opacity:")), false,
+        {VtoppbConstants::AttrOpacity, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Opacity:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VBackgroundPixmapItem *>(tool);
              QMap<QString, QVariant> const settings{{QStringLiteral("Min"), 0}, {QStringLiteral("Max"), 100},
@@ -467,7 +467,7 @@ auto BackgroundSVGItemProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeObjectName<VBackgroundSVGItem>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
-        {VtoppbConstants::AttrHold, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Hold:")), false,
+        {VtoppbConstants::AttrHold, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Hold:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VBackgroundSVGItem *>(tool);
              auto *prop = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Hold:")));
@@ -484,7 +484,7 @@ auto BackgroundSVGItemProperties() -> std::vector<PropertyDesc>
              if (auto *t = qgraphicsitem_cast<VBackgroundSVGItem *>(b->currentItem()))
                  prop->setValue(t->IsHold());
          }},
-        {VtoppbConstants::AttrVisible, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Visible:")), false,
+        {VtoppbConstants::AttrVisible, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Visible:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VBackgroundSVGItem *>(tool);
              auto *prop = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Visible:")));
@@ -501,7 +501,7 @@ auto BackgroundSVGItemProperties() -> std::vector<PropertyDesc>
              if (auto *t = qgraphicsitem_cast<VBackgroundSVGItem *>(b->currentItem()))
                  prop->setValue(t->IsVisible());
          }},
-        {VtoppbConstants::AttrOpacity, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Opacity:")), false,
+        {VtoppbConstants::AttrOpacity, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Opacity:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VBackgroundSVGItem *>(tool);
              QMap<QString, QVariant> const settings{{QStringLiteral("Min"), 0}, {QStringLiteral("Max"), 100},

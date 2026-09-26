@@ -77,7 +77,7 @@ auto T(const char *s) -> QString { return VToolOptionsPropertyBrowser::tr(s); }
 template <typename Tool>
 auto MakePointGroup(const QString &title, const QString &nameLabel, const QString &showLabel) -> PropertyDesc
 {
-    return {QStringLiteral("point"), title, false,
+    return {QStringLiteral("point"), title,
             [title, nameLabel, showLabel](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *group = new VPE::VProperty(title);
@@ -128,7 +128,7 @@ template <typename Tool>
 auto MakePointGroup(const QString &title, const QString &nameLabel, const QString &showLabel,
                     const QVector<ParentPointDesc<Tool>> &parentPoints) -> PropertyDesc
 {
-    return {QStringLiteral("point"), title, false,
+    return {QStringLiteral("point"), title,
             [title, nameLabel, showLabel, parentPoints](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *group = new VPE::VProperty(title);
@@ -184,7 +184,7 @@ auto MakePointGroup(const QString &title, const QString &nameLabel, const QStrin
 template <typename Tool, typename Getter>
 auto MakeParentPoint(const QString &attrId, const QString &label, Getter getter) -> PropertyDesc
 {
-    return {attrId, label, true,
+    return {attrId, label,
             [getter, label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VLabelProperty(label);
@@ -199,7 +199,7 @@ auto MakeParentPoint(const QString &attrId, const QString &label, Getter getter)
 template <typename Tool>
 auto MakeNotes(const QString &label) -> PropertyDesc
 {
-    return {AttrNotes, label, false,
+    return {AttrNotes, label,
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VTextProperty(label);
@@ -220,7 +220,7 @@ auto MakeNotes(const QString &label) -> PropertyDesc
 template <typename Tool>
 auto MakeLineType(const QString &label) -> PropertyDesc
 {
-    return {AttrTypeLine, label, false,
+    return {AttrTypeLine, label,
             [label](VToolOptionsPropertyBrowser *b, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 QPalette const cp = b->ComboBoxPalette();
@@ -250,7 +250,7 @@ auto MakeLineType(const QString &label) -> PropertyDesc
 template <typename Tool>
 auto MakeLineColor(const QString &label) -> PropertyDesc
 {
-    return {AttrLineColor, label, false,
+    return {AttrLineColor, label,
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VLineColorProperty(label);
@@ -274,7 +274,7 @@ auto MakeLineColor(const QString &label) -> PropertyDesc
 template <typename Tool>
 auto MakeFormulaLength(const QString &label) -> PropertyDesc
 {
-    return {AttrLength, label, false,
+    return {AttrLength, label,
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VFormulaProperty(label);
@@ -297,7 +297,7 @@ auto MakeFormulaLength(const QString &label) -> PropertyDesc
 template <typename Tool>
 auto MakeFormulaAngle(const QString &label) -> PropertyDesc
 {
-    return {AttrAngle, label, false,
+    return {AttrAngle, label,
             [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VFormulaProperty(label);
@@ -365,7 +365,7 @@ auto CurvePointProperties() -> std::vector<PropertyDesc>
 auto SinglePointProperties() -> std::vector<PropertyDesc>
 {
     return {
-        {QStringLiteral("position"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Position:")), false,
+        {QStringLiteral("position"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Position:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolBasePoint *>(tool);
              auto *p = new VPE::VPointFProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Position:")));
@@ -442,7 +442,7 @@ auto BisectorProperties() -> std::vector<PropertyDesc>
 auto TrueDartsProperties() -> std::vector<PropertyDesc>
 {
     return {
-        {AttrName1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point 1 label:")), false,
+        {AttrName1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point 1 label:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolTrueDarts *>(tool);
              auto *p = new VPE::VStringProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point 1 label:")));
@@ -461,7 +461,7 @@ auto TrueDartsProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<VToolTrueDarts *>(b->currentItem())) prop->setValue(t->nameP1());
          }},
-        {AttrName2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point 2 label:")), false,
+        {AttrName2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point 2 label:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolTrueDarts *>(tool);
              auto *p = new VPE::VStringProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point 2 label:")));
@@ -538,7 +538,7 @@ auto NormalProperties() -> std::vector<PropertyDesc>
         &VToolNormal::GetLineRoleName, &VToolNormal::SetLineRoleName),
         MakeFormulaLength<VToolNormal>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
         // Custom: angle is a plain number entered as text (QLineEdit), not a formula nor a spinbox
-        {AttrAngle, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Additional angle degrees:")), false,
+        {AttrAngle, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Additional angle degrees:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolNormal *>(tool);
              auto *p = new VPE::VStringProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Additional angle degrees:")));
@@ -576,7 +576,7 @@ auto PointOfContactProperties() -> std::vector<PropertyDesc>
         MakeStringPropWithValidator<VToolPointOfContact>(QStringLiteral("lineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
         &VToolPointOfContact::GetLineRoleName, &VToolPointOfContact::SetLineRoleName),
         // Custom: arc radius formula (method is getArcRadius, not GetArcRadius)
-        {AttrRadius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius:")), false,
+        {AttrRadius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolPointOfContact *>(tool);
              auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius:")));

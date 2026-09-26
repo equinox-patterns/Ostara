@@ -70,7 +70,6 @@ struct PropertyDesc
 {
     QString attrId;
     QString label;
-    bool readOnly = false;
 
     // create:  called in ShowOptions — creates a VPE::VProperty* from the tool
     // apply:   called in ChangeData — applies user edit to the tool (nullptr = read-only)
@@ -185,7 +184,7 @@ auto MakeStringPropWithValidator(const QString &attrId, const QString &label, Ge
                                  const QPixmap &nameDecoration = QPixmap())
     -> PropertyDesc
 {
-    return {attrId, label, false,
+    return {attrId, label,
             [getter, label, nameDecoration](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 auto *p = new VPE::VStringProperty(label);

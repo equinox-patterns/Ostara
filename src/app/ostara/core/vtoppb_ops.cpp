@@ -60,7 +60,7 @@ auto RotationProperties() -> std::vector<PropertyDesc>
 {
     return {
         // Pivot point (read-only label)
-        {AttrCenter, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pivot point:")), true,
+        {AttrCenter, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pivot point:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolRotation *>(tool);
@@ -76,7 +76,7 @@ auto RotationProperties() -> std::vector<PropertyDesc>
          }},
 
         // Angle formula
-        {AttrAngle, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:")), false,
+        {AttrAngle, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolRotation *>(tool);
@@ -105,7 +105,7 @@ auto RotationProperties() -> std::vector<PropertyDesc>
 
         // Length, the same rotation read as the distance from the reference point to its image. It is not
         // stored: it is computed from the angle and the pivot (see Rotation.md).
-        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")), false,
+        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolRotation *>(tool);
@@ -155,7 +155,7 @@ auto RotationProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
-        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")), false,
+        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolRotation *>(tool);
@@ -185,7 +185,7 @@ auto MoveProperties() -> std::vector<PropertyDesc>
 {
     return {
         // Angle formula
-        {AttrAngle, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:")), false,
+        {AttrAngle, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolMove *>(tool);
@@ -213,7 +213,7 @@ auto MoveProperties() -> std::vector<PropertyDesc>
          }},
 
         // Length formula
-        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")), false,
+        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolMove *>(tool);
@@ -241,7 +241,7 @@ auto MoveProperties() -> std::vector<PropertyDesc>
          }},
 
         // Rotation angle formula
-        {AttrRotationAngle, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Rotation angle:")), false,
+        {AttrRotationAngle, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Rotation angle:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolMove *>(tool);
@@ -269,7 +269,7 @@ auto MoveProperties() -> std::vector<PropertyDesc>
          }},
 
         // Pivot point (read-only)
-        {AttrCenter, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pivot point:")), true,
+        {AttrCenter, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pivot point:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolMove *>(tool);
@@ -285,7 +285,7 @@ auto MoveProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
-        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")), false,
+        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolMove *>(tool);
@@ -315,7 +315,7 @@ auto FlippingByLineProperties() -> std::vector<PropertyDesc>
 {
     return {
         // First line point (read-only)
-        {AttrFirstPoint, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First line point:")), true,
+        {AttrFirstPoint, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First line point:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolFlippingByLine *>(tool);
@@ -331,7 +331,7 @@ auto FlippingByLineProperties() -> std::vector<PropertyDesc>
          }},
 
         // Second line point (read-only)
-        {AttrSecondPoint, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second line point:")), true,
+        {AttrSecondPoint, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second line point:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolFlippingByLine *>(tool);
@@ -347,7 +347,7 @@ auto FlippingByLineProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
-        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")), false,
+        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolFlippingByLine *>(tool);
@@ -377,7 +377,7 @@ auto FlippingByAxisProperties() -> std::vector<PropertyDesc>
 {
     return {
         // Axis type enum
-        {AttrAxisType, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Axis type:")), false,
+        {AttrAxisType, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Axis type:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolFlippingByAxis *>(tool);
@@ -415,7 +415,7 @@ auto FlippingByAxisProperties() -> std::vector<PropertyDesc>
          }},
 
         // Origin point (read-only)
-        {AttrCenter, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Origin point:")), true,
+        {AttrCenter, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Origin point:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolFlippingByAxis *>(tool);
@@ -431,7 +431,7 @@ auto FlippingByAxisProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
-        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")), false,
+        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
          {
              auto *t = static_cast<VToolFlippingByAxis *>(tool);
