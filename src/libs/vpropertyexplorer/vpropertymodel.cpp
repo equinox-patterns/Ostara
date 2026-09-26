@@ -79,6 +79,38 @@ auto VPE::VPropertyModel::addProperty(VProperty *property, const QString &id, co
 
 }
 
+//! Adds several root properties with a single rowsInserted
+auto VPE::VPropertyModel::addProperties(const QList<VProperty *> &properties, const QStringList &ids) -> bool
+{
+    if (properties.isEmpty())
+    {
+        return true;
+    }
+
+    if (properties.size() != ids.size())
+    {
+        // Nothing is logged here: in this application a warning is raised as a modal box, and a caller that
+        // forgets an id is a programming mistake, not something the user can act upon.
+        return false;
+    }
+
+    if (!vproperty_d_ptr->Properties) // If not existant, create property set
+    {
+        vproperty_d_ptr->Properties = new VPropertySet();
+    }
+
+    vpesizetype const firstRow = vproperty_d_ptr->Properties->getRootPropertyCount();
+    beginInsertRows(QModelIndex(), static_cast<int>(firstRow), static_cast<int>(firstRow + properties.size() - 1));
+
+    for (int i = 0; i < properties.size(); ++i)
+    {
+        vproperty_d_ptr->Properties->addProperty(properties.at(i), ids.at(i), QString());
+    }
+
+    endInsertRows();
+    return true;
+}
+
 //! Creates a property and adds it to the model
 auto VPE::VPropertyModel::createProperty(const QString &id, const QString &name, const QString &parentid,
                                          const QVariant &data) -> VPE::VProperty *

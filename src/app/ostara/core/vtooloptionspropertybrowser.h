@@ -96,7 +96,9 @@ private:
     QMap<VPE::VProperty *, QString> m_propertyToId{};
     QMap<QString, VPE::VProperty *> m_idToProperty{};
 
-    void AddProperty(VPE::VProperty *property, const QString &id);
+    /** @brief Add a whole set of rows to the dock in one insertion: the form view rebuilds every editor on
+     *  each insertion, so one by one they would cost n(n+1)/2 editor creations instead of n. */
+    void AddProperties(const QList<VPE::VProperty *> &properties, const QStringList &ids);
     void ShowItemOptions(QGraphicsItem *item);
 
     // --- Declarative property system ---

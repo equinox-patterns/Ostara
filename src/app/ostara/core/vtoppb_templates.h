@@ -85,11 +85,17 @@ QT_WARNING_DISABLE_CLANG("-Wheader-hygiene")
 using namespace Qt::Literals::StringLiterals;
 QT_WARNING_POP
 //---------------------------------------------------------------------------------------------------------------------
-inline void VToolOptionsPropertyBrowser::AddProperty(VPE::VProperty *property, const QString &id)
+inline void VToolOptionsPropertyBrowser::AddProperties(const QList<VPE::VProperty *> &properties,
+                                                       const QStringList &ids)
 {
-    m_propertyToId[property] = id;
-    m_idToProperty[id] = property;
-    m_PropertyModel->addProperty(property, id);
+    for (int i = 0; i < properties.size(); ++i)
+    {
+        m_propertyToId[properties.at(i)] = ids.at(i);
+        m_idToProperty[ids.at(i)] = properties.at(i);
+    }
+
+    // One insertion for the whole set: the form view rebuilds its editors once, instead of once per property.
+    m_PropertyModel->addProperties(properties, ids);
 }
 // ============================================================================
 // Declarative property system — generic template functions
@@ -106,6 +112,9 @@ void VToolOptionsPropertyBrowser::ShowToolOptions(QGraphicsItem *item, const QSt
     }
     m_formView->setTitle(title);
 
+    QList<VPE::VProperty *> properties;
+    QStringList ids;
+
     for (const auto &desc : descriptors)
     {
         if (desc.create)
@@ -113,10 +122,13 @@ void VToolOptionsPropertyBrowser::ShowToolOptions(QGraphicsItem *item, const QSt
             auto *prop = desc.create(this, static_cast<void *>(i));
             if (prop)
             {
-                AddProperty(prop, desc.attrId);
+                properties.append(prop);
+                ids.append(desc.attrId);
             }
         }
     }
+
+    AddProperties(properties, ids);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

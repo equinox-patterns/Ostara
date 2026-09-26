@@ -27,6 +27,7 @@
 #include <QModelIndex>
 #include <QObject>
 #include <QString>
+#include <QStringList>
 #include <QVariant>
 #include <QtGlobal>
 
@@ -75,6 +76,13 @@ public:
     //! so it has to be called from a subclass
     virtual auto addProperty(VProperty *property, const QString &id, const QString &parentid = QString(),
                              bool emitsignals = true) -> bool;
+
+    //! Adds several root properties at once, emitting a single rowsInserted for the whole range.
+    //!
+    //! Adding them one by one makes the form view rebuild all of its editors at every insertion, so n
+    //! properties cost n(n+1)/2 editor creations instead of n. Every property must be a root (no parent),
+    //! which is what the options dock builds.
+    virtual auto addProperties(const QList<VProperty *> &properties, const QStringList &ids) -> bool;
 
     //! Creates a property and adds it to the model
     virtual auto createProperty(const QString &id, const QString &name, const QString &parentid = QString(),

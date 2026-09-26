@@ -226,12 +226,14 @@ void VToolOptionsPropertyBrowser::ShowGroupOptions(const QString &groupName, qui
 
     auto *nameProperty = new VPE::VStringProperty(tr("Group name:"));
     nameProperty->setValue(groupName);
-    AddProperty(nameProperty, AttrAttachmentName);
 
     auto *detachButton = new QPushButton(tr("Detach all"), m_formView);
     connect(detachButton, &QPushButton::clicked, this,
             [this]() { emit DetachAllRequested(m_groupAttachmentId); });
-    AddProperty(new VPE::VWidgetProperty(QString(), detachButton), QStringLiteral("detachButton"));
+
+    // Both rows are added at once: the form view rebuilds its editors on each insertion.
+    AddProperties({nameProperty, new VPE::VWidgetProperty(QString(), detachButton)},
+                  {AttrAttachmentName, QStringLiteral("detachButton")});
 }
 
 //---------------------------------------------------------------------------------------------------------------------
