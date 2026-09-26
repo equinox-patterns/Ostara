@@ -338,8 +338,7 @@ auto VToolFlippingByLine::SyncDestination(const QVector<SourceItem> &source) -> 
         else
         {
             // Create destination item for newly added source
-            const QSharedPointer<VGObject> obj = getData()->GetGObject(srcItem.id);
-            newDestination.append(CreateDestinationObject(m_id, srcItem, obj->getType(), fPoint, sPoint, getData()));
+            newDestination.append(MakeDestination(fPoint, sPoint).CreateObject(m_id, srcItem, getData()));
         }
     }
 

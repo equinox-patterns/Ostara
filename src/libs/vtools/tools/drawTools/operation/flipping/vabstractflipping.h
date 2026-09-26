@@ -31,7 +31,27 @@
 
 #include <QtGlobal>
 
+#include <QLineF>
+#include <QPointF>
+
 #include "../vabstractoperation.h"
+#include "../ooperationdestination.h"
+
+/** @brief The transformation of a flip: every source object is mirrored across the axis given by two points.
+ *  Points and curves all answer to Flip(axis, name), so one template serves every shape. */
+class OFlippingTransform
+{
+public:
+    OFlippingTransform(const QPointF &first, const QPointF &second) : m_axis(first, second) {}
+
+    template <class Item> auto Image(const Item &item, const QString &name) const -> Item
+    {
+        return item.Flip(m_axis, name);
+    }
+
+private:
+    QLineF m_axis;
+};
 
 class VAbstractFlipping : public VAbstractOperation
 {
@@ -44,19 +64,12 @@ protected:
 
     static void CreateDestination(VAbstractOperationInitData &initData, const QPointF &fPoint, const QPointF &sPoint);
 
-    static auto CreateDestinationObject(quint32 id,
-                                        const SourceItem &object,
-                                        GOType type,
-                                        const QPointF &fPoint,
-                                        const QPointF &sPoint,
-                                        VContainer *data) -> DestinationItem;
+    /** @brief The images of a flip, across the axis its two points describe. */
+    static auto MakeDestination(const QPointF &fPoint, const QPointF &sPoint)
+        -> OOperationDestination<OFlippingTransform>;
 
 private:
     Q_DISABLE_COPY_MOVE(VAbstractFlipping) // NOLINT
-
-    static void CreateDestinationObjects(VAbstractOperationInitData &initData,
-                                         const QPointF &fPoint,
-                                         const QPointF &sPoint);
 };
 
 #endif // VABSTRACTFLIPPING_H
