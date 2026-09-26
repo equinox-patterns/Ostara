@@ -538,7 +538,7 @@ void DialogShoulderPoint::ShowDialog(bool click)
 
         const QSharedPointer<VPointF> p3 = data.GeometricObject<VPointF>(GetP3());
         QLineF const line(static_cast<QPointF>(*p3), scene->getScenePos());
-        SetFormula(QString::number(FromPixel(line.length(), *data.GetPatternUnit())));
+        SetFormula(QString::number(RoundForDisplay(FromPixel(line.length(), *data.GetPatternUnit()))));
     }
 
     FinishCreating();

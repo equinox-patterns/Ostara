@@ -640,7 +640,7 @@ auto NormalProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolNormal *>(tool);
              auto *p = new VPE::VStringProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Additional angle degrees:")));
-             p->setValue(QString::number(t->GetAngle()));
+             p->setValue(QString::number(RoundForDisplay(t->GetAngle())));
              return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -652,11 +652,11 @@ auto NormalProperties() -> std::vector<PropertyDesc>
                  if (ok && !VFuzzyComparePossibleNulls(v, t->GetAngle())) {
                      t->SetAngle(v);
                  }
-                 prop->setValue(QString::number(t->GetAngle())); // revert to canonical value (also on invalid input)
+                 prop->setValue(QString::number(RoundForDisplay(t->GetAngle()))); // revert to canonical value (also on invalid input)
              }
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolNormal *>(b->currentItem())) prop->setValue(QString::number(t->GetAngle()));
+             if (auto *t = qgraphicsitem_cast<VToolNormal *>(b->currentItem())) prop->setValue(QString::number(RoundForDisplay(t->GetAngle())));
          }},
         MakeLineType<VToolNormal>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:"))),
         MakeLineColor<VToolNormal>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:"))),

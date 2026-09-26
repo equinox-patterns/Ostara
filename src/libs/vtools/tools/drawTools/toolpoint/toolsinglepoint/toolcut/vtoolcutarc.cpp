@@ -403,7 +403,7 @@ auto VToolCutArc::MakeToolTip() const -> QString
                        u"<tr> <td><b>%6:</b> %7°</td> </tr>"
                        u"<tr> <td><b>%8:</b> %9°</td> </tr>"_s
                            .arg(arcStr + arcNumber + " "_L1 + lengthStr)                           // %1
-                           .arg(VAbstractValApplication::VApp()->fromPixel(arc.GetLength()))       // %2
+                           .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc.GetLength())))       // %2
                            .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), // %3
                                 arcStr + arcNumber + " "_L1 + radiusStr)                           // %4
                            .arg(arc.GetRadius())                                                   // %5
@@ -449,12 +449,12 @@ auto VToolCutArc::MakeToolTip() const -> QString
                        u"<tr> <td><b>%8:</b> %9°</td> </tr>"
                        u"<tr> <td><b>%10:</b> %11°</td> </tr>"_s
                            .arg(elArcStr + arcNumber + QChar(QChar::Space) + lengthStr)            // %1
-                           .arg(VAbstractValApplication::VApp()->fromPixel(arc.GetLength()))       // %2
+                           .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc.GetLength())))       // %2
                            .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), // %3
                                 elArcStr + arcNumber + QChar(QChar::Space) + radius1Str)           // %4
-                           .arg(VAbstractValApplication::VApp()->fromPixel(arc.GetRadius1()))      // %5
+                           .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc.GetRadius1())))      // %5
                            .arg(elArcStr + arcNumber + QChar(QChar::Space) + radius2Str)           // %6
-                           .arg(VAbstractValApplication::VApp()->fromPixel(arc.GetRadius2()))      // %7
+                           .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc.GetRadius2())))      // %7
                            .arg(elArcStr + arcNumber + QChar(QChar::Space) + startAngleStr)        // %8
                            .arg(arc.GetStartAngle())                                               // %9
                            .arg(elArcStr + arcNumber + QChar(QChar::Space) + endAngleStr)          // %10

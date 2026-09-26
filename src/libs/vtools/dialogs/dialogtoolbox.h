@@ -92,6 +92,7 @@ void DeployFormula(QDialog *dialog, QPlainTextEdit *formula, QPushButton *button
  */
 void InitFormulaGrowButton(QPushButton *button);
 auto FilterObject(QObject *object, QEvent *event) -> bool;
+auto ToInternalNotation(const QString &formula) -> QString;
 auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qreal;
 void ChangeColor(QWidget *widget, const QColor &color);
 auto OkColor(const QWidget *widget) -> QColor;

@@ -307,7 +307,7 @@ void DialogArc::ShowDialog(bool click)
                     return;
                 }
 
-                SetRadius(QString::number(VAbstractValApplication::VApp()->fromPixel(line.length())));
+                SetRadius(QString::number(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(line.length()))));
                 arcVis->RefreshGeometry();
                 arcVis->RefreshToolTip();
                 m_stageRadius = false;
@@ -315,14 +315,14 @@ void DialogArc::ShowDialog(bool click)
             }
             else if (m_stageF1)
             {
-                SetF1(QString::number(Angle()));
+                SetF1(QString::number(RoundForDisplay(Angle())));
                 arcVis->RefreshGeometry();
                 arcVis->RefreshToolTip();
                 m_stageF1 = false;
             }
             else
             {
-                SetF2(QString::number(arcVis->StickyEnd(Angle())));
+                SetF2(QString::number(RoundForDisplay(arcVis->StickyEnd(Angle()))));
 
                 FinishCreating();
             }

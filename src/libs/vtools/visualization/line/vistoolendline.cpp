@@ -97,7 +97,7 @@ void VisToolEndLine::VisualMode(quint32 id)
 //---------------------------------------------------------------------------------------------------------------------
 auto VisToolEndLine::Angle() const -> QString
 {
-    return QString::number(this->line().angle());
+    return QString::number(RoundForDisplay(this->line().angle()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ void VisToolEndLine::SetAngle(const QString &expression)
 //---------------------------------------------------------------------------------------------------------------------
 auto VisToolEndLine::Length() const -> QString
 {
-    return QString::number(VAbstractValApplication::VApp()->fromPixel(this->line().length()));
+    return QString::number(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(this->line().length())));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

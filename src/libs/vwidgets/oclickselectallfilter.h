@@ -58,16 +58,17 @@ protected:
     auto eventFilter(QObject *o, QEvent *e) -> bool override;
 
 private:
-    QPointer<QWidget> m_pendingWidget{}; // press waiting for its release decision
+    QPointer<QWidget> m_pendingWidget{}; // press whose drag selection is being built
+    QPoint m_pressPos{};
     QPoint m_pressGlobalPos{};
-    bool m_dragged{false};
 
     auto HandlePress(QObject *o, const QMouseEvent *e) -> bool;
-    auto HandleRelease(QObject *o, const QMouseEvent *e) -> bool;
-    void TrackDrag(const QMouseEvent *e);
+    void HandleMove(const QMouseEvent *e);
+    void HandleRelease(const QMouseEvent *e);
     void ForgetPending();
 
     static auto TargetWidget(QObject *o) -> QWidget *;
+    static void ExtendSelection(QWidget *w, const QPoint &from, const QPoint &to);
     static void SelectAll(QWidget *w);
     static void PlaceCursor(QWidget *w, const QPoint &pos);
     static auto CursorPosition(QObject *o, QWidget *w, const QMouseEvent *e) -> QPoint;

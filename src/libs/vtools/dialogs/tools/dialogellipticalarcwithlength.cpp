@@ -421,7 +421,7 @@ void DialogEllipticalArcWithLength::ShowDialog(bool click)
                 return;
             }
 
-            SetRadius1(QString::number(FromPixel(line.length(), *data.GetPatternUnit())));
+            SetRadius1(QString::number(RoundForDisplay(FromPixel(line.length(), *data.GetPatternUnit()))));
             vis->RefreshGeometry();
             ++m_stage;
             return;
@@ -439,7 +439,7 @@ void DialogEllipticalArcWithLength::ShowDialog(bool click)
                 return;
             }
 
-            SetRadius2(QString::number(FromPixel(line.length(), *data.GetPatternUnit())));
+            SetRadius2(QString::number(RoundForDisplay(FromPixel(line.length(), *data.GetPatternUnit()))));
             vis->RefreshGeometry();
             ++m_stage;
             return;
@@ -447,7 +447,7 @@ void DialogEllipticalArcWithLength::ShowDialog(bool click)
 
         if (m_stage == 2) // f1
         {
-            SetF1(QString::number(Angle()));
+            SetF1(QString::number(RoundForDisplay(Angle())));
             vis->RefreshGeometry();
             ++m_stage;
             return;
@@ -460,7 +460,7 @@ void DialogEllipticalArcWithLength::ShowDialog(bool click)
             const qreal angle1 = Visualization::FindValFromUser(m_formulaF1->formula(), data.DataVariables(), false);
             VEllipticalArc const arc(*center, r1, r2, angle1, line.angle(), 0);
 
-            SetLength(QString::number(VAbstractValApplication::VApp()->fromPixel(arc.GetLength())));
+            SetLength(QString::number(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc.GetLength()))));
             vis->RefreshGeometry();
             ++m_stage;
             return;
@@ -469,7 +469,7 @@ void DialogEllipticalArcWithLength::ShowDialog(bool click)
         auto *path = qobject_cast<VisToolEllipticalArcWithLength *>(vis);
         SCASSERT(path != nullptr)
 
-        SetRotationAngle(QString::number(Angle() - path->StartingRotationAngle()));
+        SetRotationAngle(QString::number(RoundForDisplay(Angle() - path->StartingRotationAngle())));
     }
 
     FinishCreating();

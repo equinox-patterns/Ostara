@@ -519,7 +519,7 @@ void DialogEllipticalArc::ShowDialog(bool click)
                 return;
             }
 
-            SetRadius1(QString::number(FromPixel(line.length(), *data.GetPatternUnit())));
+            SetRadius1(QString::number(RoundForDisplay(FromPixel(line.length(), *data.GetPatternUnit()))));
             vis->RefreshGeometry();
             ++m_stage;
             return;
@@ -537,7 +537,7 @@ void DialogEllipticalArc::ShowDialog(bool click)
                 return;
             }
 
-            SetRadius2(QString::number(FromPixel(line.length(), *data.GetPatternUnit())));
+            SetRadius2(QString::number(RoundForDisplay(FromPixel(line.length(), *data.GetPatternUnit()))));
             vis->RefreshGeometry();
             ++m_stage;
             return;
@@ -545,7 +545,7 @@ void DialogEllipticalArc::ShowDialog(bool click)
 
         if (m_stage == 2) // f1
         {
-            SetF1(QString::number(Angle()));
+            SetF1(QString::number(RoundForDisplay(Angle())));
             vis->RefreshGeometry();
             ++m_stage;
             return;
@@ -553,7 +553,7 @@ void DialogEllipticalArc::ShowDialog(bool click)
 
         if (m_stage == 3) // f2
         {
-            SetF2(QString::number(Angle()));
+            SetF2(QString::number(RoundForDisplay(Angle())));
             vis->RefreshGeometry();
             ++m_stage;
             return;
@@ -562,7 +562,7 @@ void DialogEllipticalArc::ShowDialog(bool click)
         auto *path = qobject_cast<VisToolEllipticalArc *>(vis);
         SCASSERT(path != nullptr)
 
-        SetRotationAngle(QString::number(Angle() - path->StartingRotationAngle()));
+        SetRotationAngle(QString::number(RoundForDisplay(Angle() - path->StartingRotationAngle())));
     }
 
     FinishCreating();

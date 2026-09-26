@@ -6591,6 +6591,26 @@ Cette action ne peut pas être annulée.</translation>
         <source>Invalid angle formula</source>
         <translation>La formule de l&apos;angle est non valide</translation>
     </message>
+    <message>
+        <source>Length:</source>
+        <translation>Longueur :</translation>
+    </message>
+    <message>
+        <source>Length %1 → %1&apos;:</source>
+        <translation>Longueur %1 → %1&apos; :</translation>
+    </message>
+    <message>
+        <source>Edit length</source>
+        <translation>Modifier la longueur</translation>
+    </message>
+    <message>
+        <source>Invalid length formula</source>
+        <translation>La formule de la longueur est non valide</translation>
+    </message>
+    <message>
+        <source>The length cannot exceed the circle diameter (%1%2).</source>
+        <translation>La longueur ne peut pas dépasser le diamètre du cercle (%1%2).</translation>
+    </message>
 </context>
 <context>
     <name>DialogSaveLAyout</name>
@@ -28411,6 +28431,10 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <location filename="../../src/libs/vtools/visualization/line/operation/vistoolrotation.cpp" line="116"/>
         <source>Rotating angle = %1°, &lt;b&gt;%2&lt;/b&gt; - sticking angle, &lt;b&gt;Mouse click&lt;/b&gt; - finish creation</source>
         <translation>Angle de rotation = %1°, &lt;b&gt;%2&lt;/b&gt; - angle magnétique, &lt;b&gt;Clic souris&lt;/b&gt; - finir la création</translation>
+    </message>
+    <message>
+        <source>Rotating angle = %1°, length = %2%3, &lt;b&gt;%4&lt;/b&gt; - sticking angle, &lt;b&gt;Mouse click&lt;/b&gt; - finish creation</source>
+        <translation>Angle de rotation = %1°, longueur = %2%3, &lt;b&gt;%4&lt;/b&gt; - angle magnétique, &lt;b&gt;Clic souris&lt;/b&gt; - finir la création</translation>
     </message>
 </context>
 <context>

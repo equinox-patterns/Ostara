@@ -425,6 +425,24 @@ auto FilterObject(QObject *object, QEvent *event) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Bring a formula typed in a field back to the internal notation.
+ *
+ * The global ODecimalSeparatorFilter already turns a typed decimal comma into a dot, so a field holds internal
+ * notation whatever the "decimal separator" setting says; a pasted comma is normalised here the same way. A
+ * comma is never legitimate in a formula — arguments are separated by ';' — so the substitution is safe.
+ *
+ * @param formula Text of the formula field, in the notation the user reads.
+ * @return The formula in internal notation, its variables and functions still in the user language.
+ */
+auto ToInternalNotation(const QString &formula) -> QString
+{
+    QString text = formula;
+    text.replace(QLatin1Char(','), QLatin1Char('.'));
+    return text;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qreal
 {
     SCASSERT(data.labelResult != nullptr)
@@ -453,9 +471,11 @@ auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qr
     {
         try
         {
-            // Translate to internal look.
+            // Translate to internal look. The field already holds internal numbers (see ToInternalNotation),
+            // so the internal separator is the one to parse with: with the OS separator the parser would
+            // refuse the very dot the global filter puts in.
             QString const formula = VAbstractApplication::VApp()->TrVars()->FormulaFromUser(
-                data.formula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+                ToInternalNotation(data.formula), false);
             QScopedPointer<Calculator> const cal(new Calculator());
             result = cal->EvalFormula(data.variables, formula);
 

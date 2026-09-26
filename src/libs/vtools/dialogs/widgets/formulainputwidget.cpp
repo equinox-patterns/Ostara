@@ -184,9 +184,9 @@ void FormulaInputWidget::setFormula(const QString &formula)
 //---------------------------------------------------------------------------------------------------------------------
 auto FormulaInputWidget::formula() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(
-        m_textEdit->toPlainText(),
-        VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    // The field holds internal numbers (the global filter writes dots), so parse them as internal: a stored
+    // formula must stay "2.5" whatever the "decimal separator" setting says.
+    return VTranslateVars::TryFormulaFromUser(ToInternalNotation(m_textEdit->toPlainText()), false);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

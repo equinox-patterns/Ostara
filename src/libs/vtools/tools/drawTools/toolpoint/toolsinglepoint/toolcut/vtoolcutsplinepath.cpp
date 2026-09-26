@@ -473,10 +473,10 @@ auto VToolCutSplinePath::MakeToolTip() const -> QString
                             u"<tr> <td><b>%8:</b> %9</td> </tr>"
                             u"<tr> <td><b>%4:</b> %5 %3</td> </tr>"
                             u"</table>"_s.arg(curveStr + " 1 "_L1 + lengthStr)
-                                .arg(VAbstractValApplication::VApp()->fromPixel(splPath1->GetLength()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(splPath1->GetLength())))
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true),
                                      curveStr + " 2 "_L1 + lengthStr)
-                                .arg(VAbstractValApplication::VApp()->fromPixel(splPath2->GetLength()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(splPath2->GetLength())))
                                 .arg(curveStr + " 1 "_L1 + QCoreApplication::translate("VToolCutSplinePath", "label"),
                                      splPath1->ObjectName(),
                                      curveStr + " 2 "_L1 + QCoreApplication::translate("VToolCutSplinePath", "label"),

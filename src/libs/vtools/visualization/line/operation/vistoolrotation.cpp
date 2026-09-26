@@ -117,9 +117,27 @@ void VisToolRotation::RefreshGeometry()
                        tempAngle);
         DrawPath(m_angleArc, arc.GetPath(), Qt::SolidLine, Qt::RoundCap);
 
-        SetToolTip(tr("Rotating angle = %1°, <b>%2</b> - sticking angle, "
-                      "<b>Mouse click</b> - finish creation")
-                       .arg(AngleToUser(tempAngle), VModifierKey::Shift()));
+        // The status bar reads the length out too: the chord of the reference point — the first source point
+        // — signed like the rotation it comes from, so what is read here can be typed in the dialog. No point
+        // among the sources means no reference, hence nothing to say about a length.
+        const quint32 referenceId = GetData()->FirstPointId(Objects());
+        if (referenceId != NULL_ID)
+        {
+            const QPointF reference = static_cast<QPointF>(*GetData()->GeometricObject<VPointF>(referenceId));
+            SetToolTip(tr("Rotating angle = %1°, length = %2%3, <b>%4</b> - sticking angle, "
+                          "<b>Mouse click</b> - finish creation")
+                           .arg(AngleToUser(tempAngle),
+                                LengthToUser(RotationChord(
+                                    QLineF(static_cast<QPointF>(*origin), reference).length(), tempAngle)),
+                                UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true),
+                                VModifierKey::Shift()));
+        }
+        else
+        {
+            SetToolTip(tr("Rotating angle = %1°, <b>%2</b> - sticking angle, "
+                          "<b>Mouse click</b> - finish creation")
+                           .arg(AngleToUser(tempAngle), VModifierKey::Shift()));
+        }
     }
 
     CreateRotatedObjects(iPoint, iCurve, tempAngle);
@@ -154,7 +172,7 @@ auto VisToolRotation::IsFixedPoint(quint32 id) const -> bool
 //---------------------------------------------------------------------------------------------------------------------
 auto VisToolRotation::Angle() const -> QString
 {
-    return QString::number(line().angle());
+    return QString::number(RoundForDisplay(line().angle()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

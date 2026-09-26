@@ -144,6 +144,14 @@ public:
 
     template <typename T> auto GeometricObject(const quint32 &id) const -> QSharedPointer<T>;
     auto GetGObject(quint32 id) const -> QSharedPointer<VGObject>;
+
+    /** @brief The first of @a ids that holds a point, NULL_ID when there is none.
+     *
+     * A rotation can be set by a length only for a point: that length is the chord of the image of this very
+     * point (see Modifications/Ostara/Tools/Draw/Operations/Rotation.md). Ids whose object is gone are
+     * skipped rather than reported. */
+    auto FirstPointId(const QVector<quint32> &ids) const -> quint32;
+
     static auto GetFakeGObject(quint32 id) -> QSharedPointer<VGObject>;
     auto GetPiece(quint32 id) const -> VPiece;
     auto GetPiecePath(quint32 id) const -> VPiecePath;

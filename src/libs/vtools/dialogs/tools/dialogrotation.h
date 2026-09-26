@@ -44,6 +44,8 @@ class DialogRotation;
 }
 
 class AngleFormulaWidget;
+class FormulaInputWidget;
+class QRadioButton;
 
 class DialogRotation final : public DialogOperationTool
 {
@@ -86,11 +88,41 @@ private:
     /** @brief m_formulaAngle angle field — auto-growing height, value display and 0/90/180/270° presets */
     AngleFormulaWidget *m_formulaAngle{nullptr};
 
+    /** @brief m_formulaLength length field — the chord of the reference point, another way to say the angle */
+    FormulaInputWidget *m_formulaLength{nullptr};
+
+    /** @brief the two ways to set a rotation: only the checked field is editable, the other one is derived */
+    QRadioButton *m_radioAngle{nullptr};
+    QRadioButton *m_radioLength{nullptr};
+
+    /** @brief m_referencePointId the source point the length refers to, NULL_ID when the sources hold none */
+    quint32 m_referencePointId{NULL_ID};
+
+    /** @brief m_lengthIsPossible false when the typed length passes the circle diameter */
+    bool m_lengthIsPossible{true};
+
     bool m_firstRelease{false};
 
     /** @brief UserAngle the angle in the user's own notation, which is what the visualization expects:
      *  VisToolRotation::SetAngle evaluates a user formula. */
     auto UserAngle() const -> QString;
+
+    /** @brief ReferenceRadius distance from the pivot to the reference point, in scene units; 0 when the
+     *  two are not both known. */
+    auto ReferenceRadius() const -> qreal;
+
+    /** @brief Derive the length from the angle, and the angle from the length: the two say the same rotation. */
+    void UpdateLengthFromAngle();
+    void UpdateAngleFromLength();
+
+    /** @brief Find the reference point again — the length holds for that one point only. */
+    void UpdateReferencePoint();
+
+    /** @brief Show a message in the status line, which the single-page dialog hides when all is well. */
+    void ShowError(const QString &message);
+
+    void AngleChanged(bool valid);
+    void LengthChanged(bool valid);
 };
 
 #endif // DIALOGROTATION_H

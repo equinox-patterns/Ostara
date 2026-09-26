@@ -327,14 +327,14 @@ auto VToolLineIntersect::MakeToolTip() const -> QString
                             u"<tr> <td><b>%6:</b> %7 %3</td> </tr>"
                             u"<tr> <td><b>%8:</b> %9 %3</td> </tr>"
                             u"</table>"_s.arg(u"%1->%2"_s.arg(p1L1->name(), current->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(p1L1ToCur.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(p1L1ToCur.length())))
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true),
                                      u"%1->%2"_s.arg(current->name(), p2L1->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(curToP2L1.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curToP2L1.length())))
                                 .arg(u"%1->%2"_s.arg(p1L2->name(), current->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(p1L2ToCur.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(p1L2ToCur.length())))
                                 .arg(u"%1->%2"_s.arg(current->name(), p2L2->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(curToP2L2.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curToP2L2.length())))
                                 .arg(tr("Point name"), current->name());
     return toolTip;
 }

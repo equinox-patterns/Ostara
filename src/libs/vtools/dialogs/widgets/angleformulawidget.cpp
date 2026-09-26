@@ -120,7 +120,7 @@ void AngleFormulaWidget::buildUi()
 //---------------------------------------------------------------------------------------------------------------------
 void AngleFormulaWidget::setPresetAngle(int angle)
 {
-    m_formulaInput->setFormula(QString::number(angle));
+    m_formulaInput->setFormula(QString::number(RoundForDisplay(angle)));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

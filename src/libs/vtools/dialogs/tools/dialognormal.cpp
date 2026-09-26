@@ -308,7 +308,7 @@ void DialogNormal::SetFirstPointId(quint32 value)
 void DialogNormal::SetAngle(qreal value)
 {
     m_angle = value;
-    ui->lineEditAngle->setText(QString::number(m_angle));
+    ui->lineEditAngle->setText(QString::number(RoundForDisplay(m_angle)));
 
     auto *line = qobject_cast<VisToolNormal *>(vis);
     SCASSERT(line != nullptr)

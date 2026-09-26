@@ -525,7 +525,7 @@ void ODetailsSeamAllowanceWidget::PopulateList(const VPiece &detail)
 
         bool valueOk = false;
         const qreal valuePx = groupValue.toDouble(&valueOk);
-        row->valueEdit()->setText(valueOk ? QString::number(valuePx) : QStringLiteral("0"));
+        row->valueEdit()->setText(valueOk ? QString::number(RoundForDisplay(valuePx)) : QStringLiteral("0"));
         row->valueEdit()->setValidator(new QRegularExpressionValidator(kDecimalRegex, this));
         // A stored index read from the XML is unbounded (unrestricted xs:int in the
         // schema); clamp it before setting the combo so a corrupt value cannot leave
@@ -578,7 +578,7 @@ void ODetailsSeamAllowanceWidget::PopulateList(const VPiece &detail)
             {
                 return;
             }
-            const QString valueStr = QString::number(value);
+            const QString valueStr = QString::number(RoundForDisplay(value));
             m_modifyPending([group, valueStr](VPiece &det)
             {
                 auto nodes = det.GetPath().GetNodes();
@@ -1004,7 +1004,7 @@ void ODetailsSeamAllowanceWidget::FinishSelection()
             return;
         }
 
-        const QString valueStr = QString::number(userValue);
+        const QString valueStr = QString::number(RoundForDisplay(userValue));
         const int colorIdx = colorCombo->currentIndex();
 
         m_modifyPending([sorted, valueStr, name, colorIdx](VPiece &det)

@@ -121,6 +121,20 @@ auto IsLineSegmentOnLineSegment(const QLineF &seg1, const QLineF &seg2, qreal ac
 auto IsPointOnLineSegment(const QPointF &t, const QPointF &p1, const QPointF &p2, qreal accuracy = accuracyPointOnLine)
     -> bool;
 
+/** @brief Chord of a rotation: the distance between a point and its image after a rotation of @a angle
+ *  degrees around the pivot, the point being at @a radius from it.
+ *
+ * The chord only knows the short way round — a rotation of 200° and one of -160° describe the same segment
+ * A→A' — so the angle is brought back into ]-180, 180]. The result carries the sign of the rotation, which
+ * is what lets a length say the direction (see Modifications/Ostara/Tools/Draw/Operations/Rotation.md).
+ */
+auto RotationChord(qreal radius, qreal angle) -> qreal;
+
+/** @brief The signed angle, in [-180, 180], whose chord is @a chord for a point at @a radius from the pivot.
+ *  Returns NaN when no such angle exists: a point cannot move further from itself than the diameter of its
+ *  circle. */
+auto RotationAngleForChord(qreal radius, qreal chord) -> qreal;
+
 //---------------------------------------------------------------------------------------------------------------------
 template<class T>
 inline auto IntersectionPoint(QPointF crosPoint, const T &l1p1, const T &l1p2, const T &l2p1, const T &l2p2) -> T

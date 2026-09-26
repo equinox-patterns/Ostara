@@ -63,14 +63,11 @@ auto OClickSelectAllFilter::eventFilter(QObject *o, QEvent *e) -> bool
             break;
 
         case QEvent::MouseMove:
-            TrackDrag(static_cast<const QMouseEvent *>(e));
+            HandleMove(static_cast<const QMouseEvent *>(e));
             break;
 
         case QEvent::MouseButtonRelease:
-            if (HandleRelease(o, static_cast<const QMouseEvent *>(e)))
-            {
-                return true;
-            }
+            HandleRelease(static_cast<const QMouseEvent *>(e));
             break;
 
         default:
@@ -81,8 +78,9 @@ auto OClickSelectAllFilter::eventFilter(QObject *o, QEvent *e) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-// The press is never consumed: the widget must receive it, otherwise it cannot
-// start a mouse drag selection. The select all is decided on release instead.
+// The select all happens here, on the press, and the press is consumed: once it is done, nothing left in the
+// chain can undo it. That is what makes the behaviour reliable — deciding it later, on the release, made it
+// depend on the pointer and on which widget the release reached, and it could silently never happen.
 auto OClickSelectAllFilter::HandlePress(QObject *o, const QMouseEvent *e) -> bool
 {
     if (e->button() != Qt::LeftButton)
@@ -106,48 +104,80 @@ auto OClickSelectAllFilter::HandlePress(QObject *o, const QMouseEvent *e) -> boo
         return e->type() == QEvent::MouseButtonDblClick; // consume: avoid the word selection
     }
 
-    // Not fully selected: remember the press and let the widget place the cursor
-    // and build the selection. A single click becomes a select all on release.
-    m_pendingWidget = widget;
-    m_pressGlobalPos = e->globalPosition().toPoint();
-    m_dragged = false;
-    return false;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OClickSelectAllFilter::HandleRelease(QObject *o, const QMouseEvent *e) -> bool
-{
-    if (m_pendingWidget.isNull() || e->button() != Qt::LeftButton)
-    {
-        return false;
-    }
-
-    QWidget *const widget = m_pendingWidget;
-    const bool wasDragged = m_dragged;
     ForgetPending();
+    m_pendingWidget = widget;
+    m_pressPos = e->position().toPoint();
+    m_pressGlobalPos = e->globalPosition().toPoint();
 
-    // The user dragged: what the widget selected is what was asked for.
-    if (wasDragged || TargetWidget(o) != widget)
-    {
-        return false;
-    }
-
+    widget->setFocus();
     SelectAll(widget);
+
+    // The widget never sees this press: it cannot collapse the selection on its own, and a drag is built by
+    // HandleMove instead, the way the widget would have built it.
     return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OClickSelectAllFilter::TrackDrag(const QMouseEvent *e)
+// A press on a field that was not fully selected has just selected everything. The moment the pointer drags
+// instead of clicking, the selection goes back to the dragged portion, and follows the pointer to the release.
+void OClickSelectAllFilter::HandleMove(const QMouseEvent *e)
 {
-    if (m_pendingWidget.isNull() || m_dragged)
+    if (m_pendingWidget.isNull() || (e->buttons() & Qt::LeftButton) == 0)
     {
-        return;
+        return; // no press to extend, or a plain hover move
     }
 
     const QPoint delta = e->globalPosition().toPoint() - m_pressGlobalPos;
-    if (delta.manhattanLength() >= QApplication::startDragDistance())
+    if (delta.manhattanLength() < QApplication::startDragDistance())
     {
-        m_dragged = true;
+        return; // still a click: the select all stands
+    }
+
+    ExtendSelection(m_pendingWidget, m_pressPos, e->position().toPoint());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OClickSelectAllFilter::HandleRelease(const QMouseEvent *e)
+{
+    if (e->button() == Qt::LeftButton)
+    {
+        ForgetPending(); // the click is over, whatever it became
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// The same drag selection for both text edit classes, which share the QTextCursor API.
+template <typename T> static void SelectTextRange(T *edit, const QPoint &from, const QPoint &to)
+{
+    const int anchor = edit->cursorForPosition(from).position();
+    const int cursor = edit->cursorForPosition(to).position();
+
+    QTextCursor selection = edit->textCursor();
+    selection.setPosition(anchor);
+    selection.setPosition(cursor, QTextCursor::KeepAnchor);
+    edit->setTextCursor(selection);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// The whole point of installing this filter on the application: build, from the press point to the current
+// point, the selection the widget itself would have built had it received the press.
+void OClickSelectAllFilter::ExtendSelection(QWidget *w, const QPoint &from, const QPoint &to)
+{
+    if (auto *lineEdit = qobject_cast<QLineEdit *>(w))
+    {
+        const int anchor = lineEdit->cursorPositionAt(from);
+        const int cursor = lineEdit->cursorPositionAt(to);
+        lineEdit->setSelection(qMin(anchor, cursor), qAbs(cursor - anchor));
+        return;
+    }
+    if (auto *textEdit = qobject_cast<QTextEdit *>(w))
+    {
+        SelectTextRange(textEdit, from, to);
+        return;
+    }
+    if (auto *plainTextEdit = qobject_cast<QPlainTextEdit *>(w))
+    {
+        SelectTextRange(plainTextEdit, from, to);
     }
 }
 
@@ -155,8 +185,6 @@ void OClickSelectAllFilter::TrackDrag(const QMouseEvent *e)
 void OClickSelectAllFilter::ForgetPending()
 {
     m_pendingWidget = nullptr;
-    m_pressGlobalPos = QPoint();
-    m_dragged = false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

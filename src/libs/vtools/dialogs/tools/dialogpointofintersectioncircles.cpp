@@ -273,14 +273,14 @@ void DialogPointOfIntersectionCircles::ShowDialog(bool click)
 
         if (m_stage == 1)
         {
-            SetFirstCircleRadius(QString::number(FromPixel(line.length(), *data.GetPatternUnit())));
+            SetFirstCircleRadius(QString::number(RoundForDisplay(FromPixel(line.length(), *data.GetPatternUnit()))));
             emit ToolTip(tr("Select second circle center"));
             ++m_stage;
             m_firstRelease = false;
         }
         else
         {
-            SetSecondCircleRadius(QString::number(FromPixel(line.length(), *data.GetPatternUnit())));
+            SetSecondCircleRadius(QString::number(RoundForDisplay(FromPixel(line.length(), *data.GetPatternUnit()))));
             ++m_stage;
         }
 

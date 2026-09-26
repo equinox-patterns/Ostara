@@ -33,6 +33,7 @@
 #include <QCoreApplication>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <qnumeric.h>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"
@@ -324,4 +325,41 @@ auto IsPointOnLineSegment(const QPointF &t, const QPointF &p1, const QPointF &p2
 
     return !(CrossProduct(sP1, sP2, t) < 0 || CrossProduct(sP2, sP3, t) < 0 || CrossProduct(sP3, sP4, t) < 0
              || CrossProduct(sP4, sP1, t) < 0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto RotationChord(qreal radius, qreal angle) -> qreal
+{
+    // The chord only knows the short way round: a rotation of 200° and one of -160° describe the same
+    // segment A→A'. The angle is brought back into ]-180, 180] so that the chord displayed can be typed back
+    // and give the very same rotation.
+    while (angle > 180.)
+    {
+        angle -= 360.;
+    }
+    while (angle <= -180.)
+    {
+        angle += 360.;
+    }
+
+    return 2. * radius * qSin(qDegreesToRadians(angle / 2.));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto RotationAngleForChord(qreal radius, qreal chord) -> qreal
+{
+    // |A A'| = 2 r sin(θ/2): no solution once the chord passes the diameter of the circle.
+    if (qFuzzyIsNull(radius))
+    {
+        return qQNaN();
+    }
+
+    constexpr qreal tolerance = 1e-9; // absorb the floating point error of the exact half-turn case
+    const qreal ratio = chord / (2. * radius);
+    if (qAbs(ratio) > 1. + tolerance)
+    {
+        return qQNaN();
+    }
+
+    return qRadiansToDegrees(2. * qAsin(qBound(-1., ratio, 1.)));
 }

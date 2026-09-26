@@ -1195,7 +1195,7 @@ auto VAbstractOperation::ComplexCurveToolTip(quint32 itemId) const -> QString
                             u"<tr> <td colspan=\"100%\"><hr/></td> </tr>"
                             u"%6"
                             u"</table>"_s.arg(tr("Label"), curve->ObjectName(), tr("Length"))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(curve->GetLength()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curve->GetLength())))
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), MakeToolTip());
     return toolTip;
 }

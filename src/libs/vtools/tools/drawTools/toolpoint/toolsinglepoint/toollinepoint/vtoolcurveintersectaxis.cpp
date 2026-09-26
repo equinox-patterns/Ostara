@@ -791,10 +791,10 @@ auto VToolCurveIntersectAxis::MakeToolTip() const -> QString
                             u"<tr> <td><b>%10:</b> %11</td> </tr>"
                             u"</table>"_s
                                 .arg(tr("Length"))                                              // 1
-                                .arg(VAbstractValApplication::VApp()->fromPixel(line.length())) // 2
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(line.length()))) // 2
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true),
                                      tr("Angle"))  // 3, 4
-                                .arg(line.angle()) // 5
+                                .arg(RoundForDisplay(line.angle())) // 5
                                 .arg(tr("Point name"),
                                      second->name(), /* 6, 7 */
                                      tr("Segment 1"),

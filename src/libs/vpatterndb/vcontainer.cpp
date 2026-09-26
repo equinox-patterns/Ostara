@@ -188,6 +188,27 @@ auto VContainer::GetGObject(quint32 id) const -> QSharedPointer<VGObject>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VContainer::FirstPointId(const QVector<quint32> &ids) const -> quint32
+{
+    for (const quint32 &id : ids)
+    {
+        try
+        {
+            if (GetGObject(id)->getType() == GOType::Point)
+            {
+                return id;
+            }
+        }
+        catch (const VExceptionBadId &)
+        {
+            continue; // the object is gone: it cannot be the reference of a length
+        }
+    }
+
+    return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VContainer::GetFakeGObject(quint32 id) -> QSharedPointer<VGObject>
 {
     auto *obj = new VGObject();

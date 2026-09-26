@@ -219,7 +219,7 @@ void DialogPointOfContact::ShowDialog(bool click)
 
         QLineF const line(static_cast<QPointF>(*center), scene->getScenePos());
 
-        SetRadius(QString::number(FromPixel(line.length(), *data.GetPatternUnit())));
+        SetRadius(QString::number(RoundForDisplay(FromPixel(line.length(), *data.GetPatternUnit()))));
     }
 
     FinishCreating();

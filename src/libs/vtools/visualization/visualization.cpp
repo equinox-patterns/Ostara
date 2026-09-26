@@ -47,6 +47,7 @@
 
 #include "../qmuparser/qmuparsererror.h"
 #include "themeDef.h"
+#include "../vmisc/def.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/vcontainer.h"
@@ -294,12 +295,14 @@ auto Visualization::GetCurveItem(QVector<VCurvePathItem *> &curves, quint32 i, V
 auto Visualization::LengthToUser(qreal value) -> QString
 {
     auto *app = VAbstractValApplication::VApp();
-    return app->TrVars()->FormulaToUser(QString::number(app->fromPixel(value)), app->Settings()->GetOsSeparator());
+    return app->TrVars()->FormulaToUser(QString::number(RoundForDisplay(app->fromPixel(value))),
+                                        app->Settings()->GetOsSeparator());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto Visualization::AngleToUser(qreal value) -> QString
 {
     auto *app = VAbstractApplication::VApp();
-    return app->TrVars()->FormulaToUser(QString::number(value), app->Settings()->GetOsSeparator());
+    return app->TrVars()->FormulaToUser(QString::number(RoundForDisplay(value)),
+                                        app->Settings()->GetOsSeparator());
 }

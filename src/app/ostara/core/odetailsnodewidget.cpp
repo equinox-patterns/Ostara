@@ -504,7 +504,7 @@ void ODetailsNodeWidget::FillValueField(FormulaField field, const QString &formu
     // No formula of its own: the field shows the value the engine would draw. Length and width are
     // lengths, shown in the pattern unit; the angle is a plain number of degrees and must not go
     // through the unit conversion.
-    edit->setText(QString::number(isLength ? VAbstractValApplication::VApp()->fromPixel(automatic) : automatic));
+    edit->setText(QString::number(RoundForDisplay(isLength ? VAbstractValApplication::VApp()->fromPixel(automatic) : automatic)));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

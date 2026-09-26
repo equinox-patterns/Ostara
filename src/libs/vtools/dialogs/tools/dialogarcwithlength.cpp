@@ -365,7 +365,7 @@ void DialogArcWithLength::ShowDialog(bool click)
                     return;
                 }
 
-                SetRadius(QString::number(VAbstractValApplication::VApp()->fromPixel(line.length())));
+                SetRadius(QString::number(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(line.length()))));
                 vis->RefreshGeometry();
 
                 m_stageRadius = false;
@@ -374,7 +374,7 @@ void DialogArcWithLength::ShowDialog(bool click)
             else if (m_stageF1)
             {
 
-                SetF1(QString::number(Angle()));
+                SetF1(QString::number(RoundForDisplay(Angle())));
                 vis->RefreshGeometry();
 
                 m_stageF1 = false;
@@ -385,7 +385,7 @@ void DialogArcWithLength::ShowDialog(bool click)
                 const qreal angle1 = Visualization::FindValFromUser(m_formula2->formula(), data.DataVariables(), false);
                 VArc const arc(*point, r, angle1, line.angle());
 
-                SetLength(QString::number(VAbstractValApplication::VApp()->fromPixel(arc.GetLength())));
+                SetLength(QString::number(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc.GetLength()))));
 
                 FinishCreating();
             }

@@ -44,6 +44,7 @@
 #include <QPointF>
 #include <QPointer>
 #include <QPushButton>
+#include <QRadioButton>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 #include <QSharedPointer>
@@ -51,13 +52,16 @@
 #include <QTabBar>
 #include <QToolButton>
 #include <QVBoxLayout>
+#include <qnumeric.h>
 
 #include "../../visualization/line/operation/vistoolrotation.h"
 #include "../../visualization/visualization.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../qmuparser/qmudef.h"
+#include "../vgeometry/vgeometrydef.h"
 #include "../vgeometry/vpointf.h"
 #include "vtheme.h"
+#include "../vmisc/def.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vvalentinasettings.h"
@@ -70,6 +74,7 @@
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vmaingraphicsview.h"
 #include "../widgets/angleformulawidget.h"
+#include "../widgets/formulainputwidget.h"
 #include "ui_dialogrotation.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -78,6 +83,58 @@
 
 using namespace Qt::Literals::StringLiterals;
 
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+// A derived value is meant to be read, and three decimals is already finer than anything a pattern can tell
+// apart: rounding there is what keeps "5.00001" from showing up where the user asked for 5 cm. Trailing zeros
+// go with it, so that a whole number is written "5" and not "5.000".
+auto FormatDerivedValue(qreal value) -> QString
+{
+    QString text = QString::number(value, 'f', 3);
+
+    if (text.contains(QLatin1Char('.')))
+    {
+        while (text.endsWith(QLatin1Char('0')))
+        {
+            text.chop(1);
+        }
+
+        if (text.endsWith(QLatin1Char('.')))
+        {
+            text.chop(1);
+        }
+    }
+
+    // A value rounded down to zero has no sign left to show, and "-0" reads like a mistake.
+    return text == QLatin1String("-0") ? QStringLiteral("0") : text;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// Replace a formula placeholder by a [radio][field] line: the radio tells which of the two fields sets the
+// rotation, so it belongs on the line of the field it commands.
+void InsertFormulaField(QWidget *placeholder, QRadioButton *radio, QWidget *field)
+{
+    if (placeholder == nullptr)
+    {
+        return;
+    }
+
+    auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+    if (parentLayout == nullptr)
+    {
+        return;
+    }
+
+    auto *row = new QHBoxLayout;
+    row->setContentsMargins(0, 0, 0, 0);
+    row->addWidget(radio);
+    row->addWidget(field);
+    parentLayout->insertLayout(parentLayout->indexOf(placeholder), row);
+    placeholder->deleteLater();
+}
+} // namespace
+
 //---------------------------------------------------------------------------------------------------------------------
 DialogRotation::DialogRotation(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent)
   : DialogOperationTool(data, doc, toolId, parent),
@@ -85,40 +142,47 @@ DialogRotation::DialogRotation(const VContainer *data, VAbstractPattern *doc, qu
 {
     ui->setupUi(this);
 
-    // The angle field is the shared composite: FormulaInputWidget computes its own height from the formula
-    // (fini le 28 px magique) and brings the fx button, AngleFormulaWidget adds the 0/90/180/270° presets.
-    // Same handling as EndLine — see Modifications/Ostara/Interface/Tools/dialog-modifs.md.
+    // A rotation is a circle drawn around the pivot, so it can be told either by an angle or by a length: two
+    // ways of saying the same thing. The length is the chord of the reference point, the first source point.
+    // Only the field of the checked radio is editable; the other one stays greyed but keeps showing the value
+    // it derives (see Modifications/Ostara/Tools/Draw/Operations/Rotation.md).
     m_formulaAngle = new AngleFormulaWidget(this);
     m_formulaAngle->setData(&this->data);
     m_formulaAngle->setToolId(toolId);
     m_formulaAngle->setLabelText(tr("Angle:"));
     m_formulaAngle->setPostfix(degreeSymbol);
     m_formulaAngle->setDialogTitle(tr("Edit angle"));
-    connect(m_formulaAngle, &AngleFormulaWidget::valueChanged, this,
-            [this](bool valid)
+    connect(m_formulaAngle, &AngleFormulaWidget::valueChanged, this, &DialogRotation::AngleChanged);
+
+    m_formulaLength = new FormulaInputWidget(this);
+    m_formulaLength->setData(&this->data);
+    m_formulaLength->setToolId(toolId);
+    m_formulaLength->setLabelText(tr("Length:"));
+    m_formulaLength->setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
+    m_formulaLength->setDialogTitle(tr("Edit length"));
+    connect(m_formulaLength, &FormulaInputWidget::valueChanged, this, &DialogRotation::LengthChanged);
+
+    m_radioAngle = new QRadioButton(this);
+    m_radioLength = new QRadioButton(this);
+    connect(m_radioAngle, &QRadioButton::toggled, this,
+            [this](bool checked)
             {
-                if (!valid)
-                {
-                    ui->labelStatus->setText(tr("Invalid angle formula"));
-                }
+                // One field drives, the other one follows: the radio is what makes the derivation unambiguous.
+                m_formulaAngle->setEnabled(checked);
+                m_formulaLength->setEnabled(!checked);
                 CheckState();
             });
-
-    // Replace the formula placeholder in the UI layout with the actual widget.
-    if (auto *placeholder = ui->formulaAnglePlaceholder)
-    {
-        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
-        if (parentLayout != nullptr)
-        {
-            const int idx = parentLayout->indexOf(placeholder);
-            parentLayout->insertWidget(idx, m_formulaAngle);
-            placeholder->deleteLater();
-        }
-    }
+    InsertFormulaField(ui->formulaAnglePlaceholder, m_radioAngle, m_formulaAngle);
+    InsertFormulaField(ui->formulaLengthPlaceholder, m_radioLength, m_formulaLength);
 
     MakeFilterableComboBox(ui->comboBoxNewObject);
 
     InitOkCancelApply(ui);
+
+    // Checking a radio emits toggled, which runs CheckState() — and CheckState() needs the OK button to exist.
+    // So the angle is only made the active mode once the buttons are in place, as is the reference lookup.
+    m_radioAngle->setChecked(true); // opening on the angle, as before
+    UpdateReferencePoint();
 
     FillComboBoxObjectTypes(ui->comboBoxObjectType);
 
@@ -221,11 +285,157 @@ auto DialogRotation::UserAngle() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto DialogRotation::ReferenceRadius() const -> qreal
+{
+    try
+    {
+        const QSharedPointer<VPointF> pivot = data.GeometricObject<VPointF>(GetOrigPointId());
+        const QSharedPointer<VPointF> reference = data.GeometricObject<VPointF>(m_referencePointId);
+        return QLineF(static_cast<QPointF>(*pivot), static_cast<QPointF>(*reference)).length();
+    }
+    catch (const VExceptionBadId &)
+    {
+        return 0.; // no pivot or no reference point: no radius, hence nothing to say about a length
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogRotation::UpdateLengthFromAngle()
+{
+    const qreal radius = ReferenceRadius();
+    if (qFuzzyIsNull(radius) || !m_formulaAngle->isValid())
+    {
+        return;
+    }
+
+    // The chord of the reference point, signed like the rotation it comes from: a chord knows only the short
+    // way round, so the sign is what says the direction (see RotationChord).
+    const qreal chord = RotationChord(radius, m_formulaAngle->value());
+    m_formulaLength->setFormula(FormatDerivedValue(FromPixel(chord, *data.GetPatternUnit())));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogRotation::UpdateAngleFromLength()
+{
+    if (!m_formulaLength->isValid())
+    {
+        return; // an empty or unreadable formula: the field itself says so, there is no length to convert
+    }
+
+    const qreal radius = ReferenceRadius();
+    const qreal chord = ToPixel(m_formulaLength->value(), *data.GetPatternUnit());
+    const qreal angle = RotationAngleForChord(radius, chord);
+
+    m_lengthIsPossible = !qIsNaN(angle);
+
+    if (!m_lengthIsPossible)
+    {
+        // A point cannot move further from itself than the diameter of the circle it draws around the pivot.
+        ShowError(tr("The length cannot exceed the circle diameter (%1%2).")
+                      .arg(FormatDerivedValue(FromPixel(2. * radius, *data.GetPatternUnit())),
+                           UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)));
+        return;
+    }
+
+    m_formulaAngle->setFormula(FormatDerivedValue(angle));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogRotation::UpdateReferencePoint()
+{
+    m_referencePointId = data.FirstPointId(SourceToObjects(SourceObjects()));
+
+    // The length holds for one point only, and that point needs a circle around the pivot: without one there
+    // is no length to speak of, so the whole field is left out rather than offered and refused.
+    const bool available = m_referencePointId != NULL_ID && !qFuzzyIsNull(ReferenceRadius());
+    m_radioLength->setVisible(available);
+    m_formulaLength->setVisible(available);
+
+    if (!available)
+    {
+        if (m_radioLength->isChecked())
+        {
+            m_radioAngle->setChecked(true);
+        }
+        return;
+    }
+
+    try
+    {
+        m_formulaLength->setLabelText(tr("Length %1 → %1':").arg(data.GetGObject(m_referencePointId)->name()));
+    }
+    catch (const VExceptionBadId &)
+    {
+        m_formulaLength->setLabelText(tr("Length:"));
+    }
+
+    // The reference may have changed: the length has to be told again.
+    if (m_radioAngle->isChecked())
+    {
+        UpdateLengthFromAngle();
+    }
+    else
+    {
+        UpdateAngleFromLength();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogRotation::ShowError(const QString &message)
+{
+    ui->labelStatus->setText(message);
+    ui->labelStatus->setVisible(true); // the single-page dialog hides the line while everything is fine
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogRotation::AngleChanged(bool valid)
+{
+    // Only the checked field is editable, so a change of the other one is necessarily the value derived just
+    // before: nothing to compute back, and no way to loop.
+    if (!m_radioAngle->isChecked())
+    {
+        return;
+    }
+
+    if (valid)
+    {
+        UpdateLengthFromAngle();
+    }
+    else
+    {
+        ShowError(tr("Invalid angle formula"));
+    }
+
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogRotation::LengthChanged(bool valid)
+{
+    if (!m_radioLength->isChecked())
+    {
+        return;
+    }
+
+    if (valid)
+    {
+        UpdateAngleFromLength();
+    }
+    else
+    {
+        ShowError(tr("Invalid length formula"));
+    }
+
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogRotation::SetAngle(const QString &value)
 {
     // value comes from the pattern, in internal notation. The field shows it to the user, and the
     // visualization evaluates a user formula — hence UserAngle(), exactly like DialogEndLine::SetAngle.
     m_formulaAngle->setFormula(value);
+    UpdateLengthFromAngle(); // the length tells the same rotation, as soon as the angle is evaluated
 
     if (auto *operation = qobject_cast<VisToolRotation *>(vis))
     {
@@ -386,6 +596,9 @@ void DialogRotation::ChosenObject(quint32 id, const SceneObject &type)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogRotation::OnSourceObjectsSet()
 {
+    // The length refers to the first source point: the sources decide whether it is offered at all.
+    UpdateReferencePoint();
+
     if (auto *operation = qobject_cast<VisToolRotation *>(vis))
     {
         operation->SetObjects(SourceToObjects(SourceObjects()));
@@ -464,7 +677,7 @@ void DialogRotation::PointChanged()
     {
         SetFlagError(false);
         color = errorColor;
-        ui->labelStatus->setText(tr("Invalid rotation point"));
+        ShowError(tr("Invalid rotation point"));
     }
     else
     {
@@ -472,17 +685,26 @@ void DialogRotation::PointChanged()
         color = OkColor(this);
     }
     ChangeColor(ui->labelOriginPoint, color);
+
+    // The radius is measured from the pivot: moving it changes the length the same angle means.
+    UpdateReferencePoint();
+
     CheckState();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogRotation::IsValid() const -> bool
 {
-    bool const ready = m_formulaAngle->isValid() && IsFlagName() && IsFlagError() && IsFlagGroupName();
+    // Only the field of the checked radio makes the rotation: the other one is derived, and never blocks OK.
+    const bool rotationIsValid = m_radioLength->isChecked() ? (m_formulaLength->isValid() && m_lengthIsPossible)
+                                                            : m_formulaAngle->isValid();
+
+    bool const ready = rotationIsValid && IsFlagName() && IsFlagError() && IsFlagGroupName();
 
     if (ready)
     {
         ui->labelStatus->setText(tr("Ready"));
+        ui->labelStatus->setVisible(false); // nothing to report: the single-page dialog keeps the line hidden
     }
 
     return ready;

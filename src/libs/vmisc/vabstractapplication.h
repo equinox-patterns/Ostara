@@ -40,6 +40,7 @@
 #include <QString>
 #include <QTranslator>
 #include <QtGlobal>
+#include <type_traits>
 
 #include "../vpatterndb/vtranslatevars.h"
 #include "def.h"
@@ -178,6 +179,14 @@ template <typename T> inline auto VAbstractApplication::LocaleToString(const T &
 {
     QLocale loc;
     VAbstractApplication::VApp()->Settings()->GetOsSeparator() ? loc = QLocale() : loc = QLocale::c();
+
+    // Every number shown to the user goes through here: cap it at the display precision, so that a computed value
+    // reads as what it means (2.49994 -> 2,5) instead of as the last bits of a floating point computation.
+    if constexpr (std::is_floating_point_v<T>)
+    {
+        return loc.toString(RoundForDisplay(value));
+    }
+
     return loc.toString(value);
 }
 

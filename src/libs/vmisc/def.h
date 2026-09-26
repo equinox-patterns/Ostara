@@ -612,6 +612,37 @@ constexpr auto FromPixel(double pix, const Unit &unit) -> double
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Round a value for display.
+ *
+ * Three decimals is already finer than anything a pattern can tell apart, so a displayed value never needs more.
+ * A value landing within one thousandth of a shorter number is shown as that shorter number, so that a computed
+ * value does not read as noise: 2.49994 -> 2.5, 2.001 -> 2.
+ *
+ * @param value Value expressed in the unit the user reads (pattern unit or degree).
+ * @return The value to hand over to a formatter such as QString::number() or QLocale::toString().
+ */
+inline auto RoundForDisplay(qreal value) -> qreal
+{
+    constexpr qreal kThousand = 1000.; // three decimals
+    const qreal rounded = static_cast<qreal>(qRound64(value * kThousand)) / kThousand;
+
+    // The decimals from the third one down, read as a three digit number (2.145 -> 145).
+    const int thousandths = static_cast<int>(qAbs(qRound64(rounded * kThousand)) % 1000);
+
+    if (thousandths < 10) // the first two decimals are zeros: 2.001 -> 2
+    {
+        return static_cast<qreal>(qRound64(value));
+    }
+    if (thousandths % 100 == 99) // the last two decimals are nines: 2.499 -> 2.5
+    {
+        return static_cast<qreal>(qRound64(value * 100.)) / 100.;
+    }
+
+    return rounded;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 template <typename T> constexpr auto Inch2ToPixel2(T val) -> T
 {
     return val * (PrintDPI * PrintDPI);

@@ -382,14 +382,14 @@ auto VToolPointOfContact::MakeToolTip() const -> QString
                             u"<tr> <td><b>%6:</b> %7 %3</td> </tr>"
                             u"<tr> <td><b>%8:</b> %9°</td> </tr>"
                             u"</table>"_s.arg(u"%1->%2"_s.arg(p1->name(), current->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(p1ToCur.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(p1ToCur.length())))
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true),
                                      u"%1->%2"_s.arg(p2->name(), current->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(p2ToCur.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(p2ToCur.length())))
                                 .arg(u"%1 %2->%3"_s.arg(tr("Length"), centerP->name(), current->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(centerToCur.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(centerToCur.length())))
                                 .arg(u"%1 %2->%3"_s.arg(tr("Angle"), centerP->name(), current->name()))
-                                .arg(centerToCur.angle())
+                                .arg(RoundForDisplay(centerToCur.angle()))
                                 .arg(tr("Point name"), current->name());
     return toolTip;
 }

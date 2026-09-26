@@ -366,8 +366,8 @@ void OExportTemplateEditor::RefreshFrameFields()
     // kept as such, and coming back to the dashes finds the last one that worked.
     const qreal dash = m_frame.dashes.size() > 0 ? m_frame.dashes.at(0) : 0.0;
     const qreal space = m_frame.dashes.size() > 1 ? m_frame.dashes.at(1) : 0.0;
-    m_dashEdit->setText(dash > 0.0 ? QString::number(dash) : QString());
-    m_spaceEdit->setText(space > 0.0 ? QString::number(space) : QString());
+    m_dashEdit->setText(dash > 0.0 ? QString::number(RoundForDisplay(dash)) : QString());
+    m_spaceEdit->setText(space > 0.0 ? QString::number(RoundForDisplay(space)) : QString());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

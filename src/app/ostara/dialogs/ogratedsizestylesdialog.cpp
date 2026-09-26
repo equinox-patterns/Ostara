@@ -26,6 +26,8 @@
 
 #include "ogratedsizestylesdialog.h"
 
+#include "vmisc/def.h" // RoundForDisplay
+
 #include <QDialogButtonBox>
 #include <QFrame>
 #include <QGuiApplication>
@@ -190,7 +192,7 @@ OGradedSizeStylesDialog::OGradedSizeStylesDialog(const QStringList &sizeValues,
             row.dash[k]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
             if (k < style.dashes.size())
             {
-                row.dash[k]->setText(QString::number(style.dashes.at(k)));
+                row.dash[k]->setText(QString::number(RoundForDisplay(style.dashes.at(k))));
             }
             columnLayout->addWidget(row.dash[k]);
 
