@@ -167,6 +167,12 @@ public:
     void Clear() override;
 
     static auto getTool(quint32 id) -> VDataTool *;
+
+    /** @brief Tool from the table, or nullptr when the id is unknown.
+     *  Unlike getTool(), which throws VExceptionBadId on an unknown id, this one can be used as a plain
+     *  predicate - for instance to know whether a tool has already been created. */
+    static auto FindTool(quint32 id) -> VDataTool *;
+
     static void AddTool(quint32 id, VDataTool *tool);
     static void RemoveTool(quint32 id);
 

@@ -73,6 +73,10 @@ public:
 
     auto BasePointName() const -> QString;
 
+    /** @brief Id of the point this tool draws its implicit line from. Used by the operation tools to
+     *  transform that line together with the point. */
+    auto BasePointId() const -> quint32 { return basePointId; }
+
     auto GetAngle() const -> qreal;
     void SetAngle(const qreal &value);
 

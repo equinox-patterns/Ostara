@@ -58,6 +58,10 @@ public:
 
     auto type() const -> int override {return Type;}
     enum {Type = UserType + static_cast<int>(Vis::ToolRotation)};
+
+    auto PointImage(const QPointF &point) const -> QPointF override;
+    auto IsFixedPoint(quint32 id) const -> bool override;
+
 private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(VisToolRotation) // NOLINT

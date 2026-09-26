@@ -579,6 +579,12 @@ auto VAbstractPattern::getTool(quint32 id) -> VDataTool *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::FindTool(quint32 id) -> VDataTool *
+{
+    return tools.contains(id) ? tools.value(id) : nullptr;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief AddTool add tool to list tools.
  * @param id tool id.

@@ -31,6 +31,8 @@
 
 #include <QtGlobal>
 
+#include <QPair>
+
 #include "../visline.h"
 #include "../vpatterndb/vcontainer.h"
 
@@ -43,6 +45,11 @@ public:
     ~VisOperation() override;
 
     void SetObjects(const QVector<quint32> &objects);
+
+    /** @brief Lines attached to the operation, as pairs of source endpoint ids. They are drawn like the
+     *  operated objects: highlighted on the source side, ghosted on the transformed side. */
+    void SetPreviewLines(const QVector<QPair<quint32, quint32>> &lines);
+
     void StartAction();
     void VisualMode(quint32 id) override;
 
@@ -58,6 +65,10 @@ protected:
 
     auto Objects() const -> const QVector<quint32> &;
 
+    /** @brief True when at least one line is attached to the operation. The operated-object list can be
+     *  empty while a line is already selected: an operation may be started from a line alone. */
+    auto HasPreviewLines() const -> bool { return !m_previewLines.isEmpty(); }
+
     auto ObjectSelected() const -> bool;
 
     auto AddOriginCurve(quint32 id, int &i) -> QGraphicsPathItem *;
@@ -65,14 +76,39 @@ protected:
 
     auto CreateOriginObjects(int &iPoint, int &iCurve) -> QVector<QGraphicsItem *>;
 
+    /** @brief Image of a point under the transformation of the tool. One line per operation tool: a
+     *  rotation, a translation, a reflection. The default keeps the point in place: an operation tool
+     *  that cannot select lines yet never calls this, and one that can must override it. */
+    virtual auto PointImage(const QPointF &point) const -> QPointF { Q_UNUSED(point) return point; }
+
+    /** @brief True when the transformation leaves the point in place (rotation centre, mirror axis
+     *  points). Such a point is its own image, so a line anchored on it can still be transformed. */
+    virtual auto IsFixedPoint(quint32 id) const -> bool
+    {
+        Q_UNUSED(id)
+        return false;
+    }
+
+    /** @brief Draw the attached lines: source side always, transformed side only when both endpoints
+     *  have an image and the transformation is known - so the preview never promises a line the operation
+     *  will not create. */
+    void RefreshPreviewLines(bool drawImages);
+
 private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(VisOperation) // NOLINT
+
+    auto GetLine(quint32 i, VColorRole role) -> VScaledLine *;
+
+    static auto PointPosition(const VContainer *data, quint32 id) -> QPointF;
 
     QVector<quint32> m_objects{};
 
     QVector<VScaledEllipse *> m_points{};
     QVector<VCurvePathItem *> m_curves{};
+    QVector<VScaledLine *> m_lines{};
+
+    QVector<QPair<quint32, quint32>> m_previewLines{};
 
     bool m_startAction{false};
 };

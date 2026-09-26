@@ -279,6 +279,16 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
             ShowToolOptions<VToolHeight>(item, tr("Perpendicular point along line"), HeightProperties());
             break;
         case VToolLine::Type:
+            // A line drawn by an operation is a child of that operation: it is part of its result, so the
+            // browser shows the operation, exactly like a destination point (see the child items above).
+            // A line drawn with the Line tool has no parent and keeps its own options.
+            if (QGraphicsItem *parent = item->parentItem(); parent != nullptr)
+            {
+                m_currentItem = parent;
+                m_currentObject = dynamic_cast<QObject *>(m_currentItem);
+                ShowItemOptions(m_currentItem);
+                break;
+            }
             ShowToolOptions<VToolLine>(item, tr("Line between points"), LineProperties());
             break;
         case VToolLineIntersect::Type:

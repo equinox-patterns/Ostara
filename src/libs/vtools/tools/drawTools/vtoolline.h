@@ -42,6 +42,7 @@
 #include "vdrawtool.h"
 
 template <class T> class QSharedPointer;
+class QGraphicsSceneMouseEvent;
 
 struct VToolLineInitData : VDrawToolInitData
 {
@@ -50,6 +51,11 @@ struct VToolLineInitData : VDrawToolInitData
     QString typeLine{TypeLineLine};
     QString lineColor{ColorBlack};
     QString lineRoleName{};
+
+    /** @brief derived true when an operation tool creates the line: the line belongs to the operation,
+     *  which persists its id and rebuilds it on parse. Such a line writes no element of its own and
+     *  pushes no undo command. */
+    bool derived{false};
 };
 
 /**
@@ -79,6 +85,13 @@ public:
     auto FirstPointName() const -> QString;
     auto SecondPointName() const -> QString;
 
+    auto FirstPointId() const -> quint32 { return firstPoint; }
+    auto SecondPointId() const -> quint32 { return secondPoint; }
+
+    /** @brief A line can be selected by an operation tool, so it must announce itself like any other
+     *  selectable object. */
+    void TriggerChoosed() override { emit ChoosedTool(m_id, SceneObject::Line); }
+
     auto GetLineRoleName() const -> QString;
     void SetLineRoleName(const QString &suffix);
 
@@ -92,6 +105,12 @@ public:
     void SetLineType(const QString &value) override;
     void GroupVisibility(quint32 object, bool visible) override;
 
+signals:
+    /** @brief DeleteRequested the user asked to delete this line. A derived line belongs to the operation
+     *  that draws it: the operation connects this request to its own deletion, exactly like a destination
+     *  point (see VAbstractOperation::InitOperatedObjects). */
+    void DeleteRequested();
+
 public slots:
     void FullUpdateFromFile() override;
     void Enable() override;
@@ -103,6 +122,8 @@ protected slots:
 
 protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void AddToFile() override;
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
@@ -129,6 +150,10 @@ private:
     QString lineColor;
 
     bool m_acceptHoverEvents;
+
+    /** @brief True when an operation tool created this line. Such a line has no element of its own in the
+     *  pattern: it is rebuilt from its operation, so it cannot be edited on its own. */
+    bool m_derived{false};
 
     explicit VToolLine(const VToolLineInitData &initData, QGraphicsItem *parent = nullptr);
 

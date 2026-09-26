@@ -70,6 +70,18 @@ void VToolFlippingByAxis::SetDialog()
     dialogTool->SetAxisType(m_axisType);
     dialogTool->SetNotes(m_notes);
     dialogTool->SetSourceObjects(m_source);
+
+    // Only the lines explicitly selected by the user come back into the dialog: the implicit ones
+    // follow their points.
+    QVector<quint32> lineSources;
+    for (const auto &line : Lines())
+    {
+        if (OOperationLines::IsExplicit(line))
+        {
+            lineSources.append(line.source);
+        }
+    }
+    dialogTool->SetLineSources(lineSources);
     dialogTool->SetDestinationObjects(m_destination);
 
     SetDialogVisibilityGroupData(dialogTool);
@@ -87,6 +99,7 @@ auto VToolFlippingByAxis::Create(const QPointer<DialogTool> &dialog, VMainGraphi
     initData.originPointId = dialogTool->GetOriginPointId();
     initData.axisType = dialogTool->GetAxisType();
     initData.source = dialogTool->GetSourceObjects();
+    initData.lines = OOperationLines::Collect(data, initData.source, dialogTool->GetLineSources());
     initData.hasLinkedVisibilityGroup = dialogTool->HasLinkedVisibilityGroup();
     initData.visibilityGroupName = dialogTool->GetVisibilityGroupName();
     initData.visibilityGroupTags = dialogTool->GetVisibilityGroupTags();
@@ -144,6 +157,10 @@ auto VToolFlippingByAxis::Create(VToolFlippingByAxisInitData initData) -> VToolF
         patternGraph->AddVertex(object.id, VNodeType::OBJECT, initData.doc->PatternBlockMapper()->GetActiveId());
         patternGraph->AddEdge(initData.id, object.id);
     }
+
+    // Rebuilt once the destination objects and their graph nodes exist. The point the axis is built from
+    // lies on the axis, so it is its own image.
+    CreateDestinationLines(initData, {initData.originPointId});
 
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
     {
@@ -224,6 +241,14 @@ void VToolFlippingByAxis::SetVisualization()
         SCASSERT(visual != nullptr)
 
         visual->SetObjects(SourceToObjects(m_source));
+
+        QVector<QPair<quint32, quint32>> previewLines;
+        previewLines.reserve(m_lines.size());
+        for (const auto &line : std::as_const(m_lines))
+        {
+            previewLines.append(qMakePair(line.point1, line.point2));
+        }
+        visual->SetPreviewLines(previewLines);
         visual->SetOriginPointId(m_originPointId);
         visual->SetAxisType(m_axisType);
         visual->SetMode(Mode::Show);
@@ -254,6 +279,10 @@ void VToolFlippingByAxis::SaveDialog(QDomElement &domElement)
 
     const QVector<SourceItem> source = dialogTool->GetSourceObjects();
     const QVector<DestinationItem> destination = SyncDestination(source);
+    // Persist the dialog line selection: a line added here must be created, a line dropped must go, and
+    // the transformed copies that already exist keep their id.
+    m_lines = OOperationLines::SyncLines(getData(), m_lines, source, dialogTool->GetLineSources());
+
     SaveSourceDestination(domElement, source, destination);
 
     // Save visibility data for later use

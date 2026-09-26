@@ -33,12 +33,26 @@
 #include "../vgeometry/vellipticalarc.h"
 #include "../vgeometry/vspline.h"
 #include "../vgeometry/vsplinepath.h"
+#include "../vgeometry/vpointf.h"
 
 //---------------------------------------------------------------------------------------------------------------------
 VisFlippingOperation::VisFlippingOperation(const VContainer *data, QGraphicsItem *parent)
   : VisOperation(data, parent)
 {
     SetColorRole(VColorRole::VisSupportColor2);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VisFlippingOperation::PointImage(const QPointF &point) const -> QPointF
+{
+    // The mirror axis is the line the tool draws on itself.
+    const QLineF axis = line();
+    if (axis.isNull())
+    {
+        return point;
+    }
+
+    return VPointF::FlipPF(axis, point);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

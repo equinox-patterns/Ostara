@@ -28,6 +28,9 @@
 
 #include "dialogoperationtool.h"
 
+#include "../../tools/drawTools/operation/ooperationlines.h"
+#include "../../tools/drawTools/vtoolline.h"
+
 #include <QAbstractButton>
 #include <QColor>
 #include <QComboBox>
@@ -137,6 +140,96 @@ void DialogOperationTool::SetDestinationObjects(const QVector<DestinationItem> &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto DialogOperationTool::GetLineSources() const -> QVector<quint32>
+{
+    return m_lineSources;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogOperationTool::SetLineSources(const QVector<quint32> &value)
+{
+    m_lineSources = value;
+
+    if (!m_lineBaselineCaptured)
+    {
+        m_baselineLineSources.clear();
+        m_baselineLineSources.reserve(value.size());
+        for (auto id : value)
+        {
+            m_baselineLineSources.insert(id);
+        }
+        m_lineBaselineCaptured = true;
+    }
+
+    FillSourceList();
+    OnSourceObjectsSet();
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogOperationTool::ToggleLineSource(quint32 id)
+{
+    if (id == NULL_ID)
+    {
+        return;
+    }
+
+    if (m_lineSources.contains(id))
+    {
+        m_lineSources.removeAll(id);
+    }
+    else
+    {
+        m_lineSources.append(id);
+    }
+
+    FillSourceList();
+    OnSourceObjectsSet();
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogOperationTool::PreviewLines() const -> QVector<QPair<quint32, quint32>>
+{
+    const QVector<OOperationLine> attached = OOperationLines::Collect(&data, m_sourceObjects, m_lineSources);
+
+    QVector<QPair<quint32, quint32>> lines;
+    lines.reserve(attached.size());
+    for (const auto &line : attached)
+    {
+        lines.append(qMakePair(line.point1, line.point2));
+    }
+    return lines;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogOperationTool::IsLineRow(int row) const -> bool
+{
+    const QListWidgetItem *item = Widgets().sourceList->item(row);
+    return item != nullptr && item->data(Qt::UserRole + 1).isValid();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogOperationTool::LineDisplayName(quint32 id) -> QString
+{
+    // Displaying a line must never fail, even if the line or one of its points is gone: fall back to a
+    // generic name rather than letting an exception escape.
+    try
+    {
+        if (auto *line = qobject_cast<VToolLine *>(VAbstractPattern::FindTool(id)); line != nullptr)
+        {
+            return tr("Line_%1_%2").arg(line->FirstPointName(), line->SecondPointName());
+        }
+    }
+    catch (const VException &e)
+    {
+        Q_UNUSED(e)
+    }
+
+    return tr("Line");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::CheckDependencyTreeComplete()
 {
     m_dependencyReady = m_doc->IsPatternGraphComplete();
@@ -159,6 +252,7 @@ auto DialogOperationTool::GetNotes() const -> QString
 void DialogOperationTool::ClearSourceObjects()
 {
     SetSourceObjects({});
+    SetLineSources({});
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -184,6 +278,16 @@ void DialogOperationTool::GroupNameChanged()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::ShowSourceDetails(int row)
 {
+    if (IsLineRow(row))
+    {
+        // A line carries no label, pen style nor colour of its own in this dialog: it is described by
+        // the two points it links.
+        Widgets().name->setDisabled(true);
+        Widgets().penStyle->setDisabled(true);
+        Widgets().color->setDisabled(true);
+        return;
+    }
+
     auto *combo = Widgets().color;
 
     Widgets().name->setDisabled(true);
@@ -264,6 +368,13 @@ void DialogOperationTool::ShowSourceDetails(int row)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::CurrentObjectChanged(int row) const
 {
+    if (IsLineRow(row))
+    {
+        // A line is never committed on its own: dropping it from the list is always safe.
+        Widgets().removeObject->setEnabled(true);
+        return;
+    }
+
     if (Widgets().sourceList->count() < 2)
     {
         Widgets().removeObject->setDisabled(true);
@@ -299,6 +410,11 @@ void DialogOperationTool::CurrentObjectChanged(int row) const
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::NameChanged(const QString &text)
 {
+    if (IsLineRow(Widgets().sourceList->currentRow()))
+    {
+        return;
+    }
+
     if (Widgets().sourceList->count() == 0)
     {
         return;
@@ -334,6 +450,11 @@ void DialogOperationTool::NameChanged(const QString &text)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::PenStyleChanged() const
 {
+    if (IsLineRow(Widgets().sourceList->currentRow()))
+    {
+        return;
+    }
+
     if (Widgets().sourceList->count() == 0)
     {
         return;
@@ -431,6 +552,11 @@ void DialogOperationTool::AddNewObject()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::ColorChanged() const
 {
+    if (IsLineRow(Widgets().sourceList->currentRow()))
+    {
+        return;
+    }
+
     if (Widgets().sourceList->count() == 0)
     {
         return;
@@ -458,6 +584,17 @@ void DialogOperationTool::BulkRename()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::RemoveObject()
 {
+    if (IsLineRow(Widgets().sourceList->currentRow()))
+    {
+        const QListWidgetItem *item = Widgets().sourceList->currentItem();
+        m_lineSources.removeAll(item->data(Qt::UserRole + 1).toUInt());
+        FillSourceList();
+        OnSourceObjectsSet();
+        CheckState();
+        Widgets().removeObject->setDisabled(true);
+        return;
+    }
+
     if (Widgets().sourceList->count() < 2)
     {
         Widgets().removeObject->setDisabled(true);
@@ -512,6 +649,16 @@ void DialogOperationTool::FillSourceList()
         Widgets().sourceList->insertItem(++row, item);
     }
 
+    // Lines come last: they are carried by the operation beside its objects, and the row flags them with
+    // the second data role so every handler can tell them apart.
+    for (auto id : std::as_const(m_lineSources))
+    {
+        auto *item = new QListWidgetItem(LineDisplayName(id));
+        item->setToolTip(item->text());
+        item->setData(Qt::UserRole + 1, id);
+        Widgets().sourceList->insertItem(++row, item);
+    }
+
     blocker.unblock();
 
     if (Widgets().sourceList->count() > 0)
@@ -530,6 +677,11 @@ auto DialogOperationTool::SaveSourceObjects() const -> QVector<SourceItem>
     {
         if (const QListWidgetItem *item = Widgets().sourceList->item(i))
         {
+            if (item->data(Qt::UserRole + 1).isValid())
+            {
+                continue; // A line row: not an operated object
+            }
+
             const auto sourceItem = qvariant_cast<SourceItem>(item->data(Qt::UserRole));
             objects.append(sourceItem);
         }
@@ -627,6 +779,24 @@ auto DialogOperationTool::SourceObjectsChanged() const -> bool
     {
         current.insert(item.recordId);
     }
+
+    if (m_lineBaselineCaptured)
+    {
+        // A line change needs the same full reparse as an object change: the transformed lines are
+        // rebuilt from the operation element.
+        QSet<quint32> currentLines;
+        currentLines.reserve(m_lineSources.size());
+        for (auto id : std::as_const(m_lineSources))
+        {
+            currentLines.insert(id);
+        }
+
+        if (currentLines != m_baselineLineSources)
+        {
+            return true;
+        }
+    }
+
     return current != m_baselineSourceRecords;
 }
 

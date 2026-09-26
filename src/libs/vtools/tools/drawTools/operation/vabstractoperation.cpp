@@ -39,6 +39,7 @@
 #include "../vgeometry/vpointf.h"
 #include "../vmisc/compatibility.h"
 #include "../vwidgets/vsimplepoint.h"
+#include "../vtoolline.h"
 #include "vtools/undocommands/renameobject.h"
 
 using namespace Qt::Literals::StringLiterals;
@@ -177,8 +178,20 @@ auto VAbstractOperation::IsRemovable() const -> RemoveStatus
     VPatternGraph const *patternGraph = doc->PatternGraph();
     SCASSERT(patternGraph != nullptr)
 
-    auto Filter = [](const auto &node) -> auto
-    { return node.type != VNodeType::MODELING_TOOL && node.type != VNodeType::MODELING_OBJECT; };
+    // The lines this operation produced depend on its destination points. They must not make the
+    // operation itself impossible to delete.
+    QVector<quint32> ownLines;
+    ownLines.reserve(m_lines.size());
+    for (const auto &line : std::as_const(m_lines))
+    {
+        ownLines.append(line.result);
+    }
+
+    auto Filter = [&ownLines](const auto &node) -> auto
+    {
+        return node.type != VNodeType::MODELING_TOOL && node.type != VNodeType::MODELING_OBJECT
+               && !ownLines.contains(node.id);
+    };
 
     for (const auto &item : m_destination)
     {
@@ -310,6 +323,7 @@ void VAbstractOperation::ExtractData(const QDomElement &domElement, VAbstractOpe
 {
     initData.source = ExtractSourceData(domElement);
     initData.destination = ExtractDestinationData(domElement);
+    initData.lines = OOperationLines::ExtractLines(domElement);
 
     if (initData.source.size() != initData.destination.size())
     {
@@ -685,7 +699,8 @@ VAbstractOperation::VAbstractOperation(const VAbstractOperationInitData &initDat
   : VDrawTool(initData.doc, initData.data, initData.id, initData.notes),
     QGraphicsLineItem(parent),
     m_source(initData.source),
-    m_destination(initData.destination)
+    m_destination(initData.destination),
+    m_lines(initData.lines)
 {
     connect(initData.doc,
             &VAbstractPattern::UpdateToolTip,
@@ -767,6 +782,21 @@ void VAbstractOperation::ApplyToolOptions(const QDomElement &oldDomElement, cons
     HandleVisibilityGroupChange(newGroup);
 
     VAbstractApplication::VApp()->getUndoStack()->push(newGroup);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::CreateDestinationLines(const VAbstractOperationInitData &initData,
+                                               const QVector<quint32> &fixedPoints)
+{
+    if (initData.lines.isEmpty() || initData.parse != Document::FullParse)
+    {
+        // A lite parse keeps the transformed lines already built: their endpoints are the destination
+        // objects, whose ids do not change.
+        return;
+    }
+
+    OOperationLines::CreateLines(initData.doc, initData.data, initData.scene, initData.lines, initData.source,
+                                 initData.destination, fixedPoints);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -926,6 +956,11 @@ void VAbstractOperation::SaveSourceDestination(QDomElement &tag,
         tagObjects.appendChild(item);
     }
     tag.appendChild(tagObjects);
+
+    // The transformed lines belong to the same element as the objects they are built from. Written here
+    // rather than in SaveOptions because SaveDialog calls this method too, and it drops every child of the
+    // element: writing them only in SaveOptions would lose them on any dialog edit.
+    OOperationLines::SaveLines(doc, tag, m_lines);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1114,6 +1149,20 @@ void VAbstractOperation::InitOperatedObjects()
         }
 
         QT_WARNING_POP
+    }
+
+    // A transformed line is a result of this operation, not an object of its own: it is drawn as a child
+    // of the operation item, exactly like a destination point. Clicking it therefore opens the operation's
+    // options and shows the whole result (see VToolOptionsPropertyBrowser::ShowItemOptions).
+    for (const auto &line : std::as_const(m_lines))
+    {
+        if (auto *lineItem = qobject_cast<VToolLine *>(VAbstractPattern::FindTool(line.result)))
+        {
+            lineItem->setParentItem(this);
+            // Asking to delete a result line means deleting this operation, exactly like a destination point
+            // (see DeleteFromLabel).
+            connect(lineItem, &VToolLine::DeleteRequested, this, &VAbstractOperation::DeleteFromLabel);
+        }
     }
 }
 

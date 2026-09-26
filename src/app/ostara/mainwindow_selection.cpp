@@ -303,6 +303,8 @@ void MainWindow::ToolSelectAllDrawObjects()
 void MainWindow::ToolSelectOperationObjects()
 {
     emit EnablePointSelection(false);
+    // Lines stay out of the shared selection for now: an operation tool only accepts them once its own
+    // dialog routes SceneObject::Line to the line list (see MainWindow::ToolRotation).
     emit EnableLineSelection(false);
     emit EnableArcSelection(false);
     emit EnableElArcSelection(false);
@@ -321,6 +323,17 @@ void MainWindow::ToolSelectOperationObjects()
     emit ItemsSelection(SelectionType::ByMouseRelease);
 
     ui->view->AllowCustomRubberBand(true);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectOperationLines()
+{
+    // Lines are not geometric objects, but an operation can transform them: their two endpoints decide
+    // whether the transformed line can exist (see OOperationLines). A line announces itself on click
+    // (VToolLine::mouseReleaseEvent), so it is deliberately kept out of the Qt selection: that would draw
+    // the native dotted frame instead of the preview highlight, which is what tells the user the line is
+    // part of the operation.
+    emit EnableLineHover(true);
 }
 
 

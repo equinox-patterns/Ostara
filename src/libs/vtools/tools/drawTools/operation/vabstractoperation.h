@@ -40,6 +40,7 @@
 #include "../../toolsdef.h"
 #include "../vdrawtool.h"
 #include "../vwidgets/vsimplecurve.h"
+#include "ooperationlines.h"
 
 class QUndoCommand;
 
@@ -50,6 +51,7 @@ struct VAbstractOperationInitData : VDrawToolInitData
     QString suffix{};
     QVector<SourceItem> source{};
     QVector<DestinationItem> destination{};
+    QVector<OOperationLine> lines{};
     QString visibilityGroupName{};
     QStringList visibilityGroupTags{};
     bool hasLinkedVisibilityGroup{false};
@@ -128,6 +130,10 @@ protected:
     QVector<SourceItem> m_source;
     QVector<DestinationItem> m_destination;
 
+    /** @brief Lines attached to the operation, each one with the id of the line it produced. A line is
+     *  not a geometric object: it is carried by two point ids and rebuilt on every parse. */
+    QVector<OOperationLine> m_lines{};
+
     QMap<quint32, VAbstractSimple *> operatedObjects{};
 
     bool m_hasLinkedGroup{false};
@@ -148,6 +154,15 @@ protected:
     void SaveSourceDestination(QDomElement &tag,
                                const QVector<SourceItem> &source,
                                const QVector<DestinationItem> &destination);
+
+    /** @brief Create the transformed copy of every attached line whose two endpoints have an image.
+     *  Called by each operation tool once its destination objects exist. @a fixedPoints lists the points
+     *  the transformation leaves in place (rotation centre, mirror axis points): they are their own
+     *  image. Static because the destination objects are built before the tool instance exists. */
+    static void CreateDestinationLines(const VAbstractOperationInitData &initData,
+                                       const QVector<quint32> &fixedPoints);
+
+    auto Lines() const -> const QVector<OOperationLine> & { return m_lines; }
 
     template <typename T> void ShowToolVisualization(bool show);
 

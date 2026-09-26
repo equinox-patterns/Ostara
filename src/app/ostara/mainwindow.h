@@ -1053,6 +1053,7 @@ private:
     void ToolSelectCurve();
     void ToolSelectAllDrawObjects();
     void ToolSelectOperationObjects();
+    void ToolSelectOperationLines();
     void ToolSelectGroupObjects();
     void ToolSelectDetail();
 

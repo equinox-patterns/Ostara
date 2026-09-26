@@ -66,7 +66,9 @@ VisToolRotation::VisToolRotation(const VContainer *data, QGraphicsItem *parent)
 //---------------------------------------------------------------------------------------------------------------------
 void VisToolRotation::RefreshGeometry()
 {
-    if (Objects().isEmpty())
+    // An operation can be started from a line alone: the operated-object list is empty then, but the
+    // attached line still has a source side to draw.
+    if (Objects().isEmpty() && !HasPreviewLines())
     {
         return;
     }
@@ -77,6 +79,8 @@ void VisToolRotation::RefreshGeometry()
     if (const QVector<QGraphicsItem *> originObjects = CreateOriginObjects(iPoint, iCurve);
         originObjects.isEmpty() || (GetMode() == Mode::Creation && !ObjectSelected()))
     {
+        // Stage 1: the transformation is not known yet, so only the source side of the lines is drawn.
+        RefreshPreviewLines(false);
         return;
     }
 
@@ -119,6 +123,32 @@ void VisToolRotation::RefreshGeometry()
     }
 
     CreateRotatedObjects(iPoint, iCurve, tempAngle);
+    RefreshPreviewLines(true);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VisToolRotation::PointImage(const QPointF &point) const -> QPointF
+{
+    if (m_originPointId == NULL_ID)
+    {
+        return point;
+    }
+
+    const QSharedPointer<VPointF> origin = GetData()->GeometricObject<VPointF>(m_originPointId);
+
+    // Same angle as the one shown in the status bar: the live one while the mouse drives it, the locked
+    // one once the angle is set.
+    const qreal angle = VFuzzyComparePossibleNulls(m_angle, INT_MIN)
+                            ? QLineF(static_cast<QPointF>(*origin), ScenePos()).angle()
+                            : m_angle;
+    return VPointF::RotatePF(static_cast<QPointF>(*origin), point, angle);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VisToolRotation::IsFixedPoint(quint32 id) const -> bool
+{
+    // The centre of rotation stays where it is: it is its own image.
+    return m_originPointId != NULL_ID && id == m_originPointId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

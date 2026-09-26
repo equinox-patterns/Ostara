@@ -52,6 +52,9 @@ public:
 
     void RefreshGeometry() override;
 
+    /** @brief Translate then rotate the point, exactly like the moved objects of this tool. */
+    auto PointImage(const QPointF &point) const -> QPointF override;
+
     auto Angle() const -> QString;
     void SetAngle(const QString &expression);
 
@@ -83,6 +86,13 @@ private:
     VScaledLine *m_rotationLine{nullptr};
     VScaledLine *m_xAxis{nullptr};
     quint32 m_rotationOriginId{NULL_ID};
+
+    /** @brief Values of the transformation as they are displayed right now. RefreshGeometry() computes
+     *  them for the ghost objects; the attached lines are drawn from the same values. */
+    qreal m_displayedLength{0};
+    qreal m_displayedAngle{0};
+    qreal m_displayedRotationAngle{0};
+    QPointF m_displayedRotationOrigin{};
 
     template <class Item>
     auto AddMovedRotatedCurve(qreal angle, qreal length, quint32 id, int i, qreal rotationAngle,

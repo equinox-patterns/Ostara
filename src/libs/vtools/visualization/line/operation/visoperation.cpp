@@ -29,6 +29,7 @@
 #include "visoperation.h"
 #include "../vgeometry/vgeometrydef.h"
 #include "../vgeometry/vgobject.h"
+#include "../vexception/vexception.h"
 #include "../vgeometry/vpointf.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -42,6 +43,7 @@ VisOperation::~VisOperation()
 {
     qDeleteAll(m_points);
     qDeleteAll(m_curves);
+    qDeleteAll(m_lines);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -54,6 +56,85 @@ void VisOperation::SetObjects(const QVector<quint32> &objects)
 
     m_points.clear();
     m_curves.clear();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VisOperation::SetPreviewLines(const QVector<QPair<quint32, quint32>> &lines)
+{
+    m_previewLines = lines;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VisOperation::GetLine(quint32 i, VColorRole role) -> VScaledLine *
+{
+    if (!m_lines.isEmpty() && static_cast<quint32>(m_lines.size() - 1) >= i)
+    {
+        return m_lines.at(static_cast<int>(i));
+    }
+
+    auto *line = InitItem<VScaledLine>(role, this);
+    line->SetShowArrows(false); // Arrows belong to the tool aids, not to a highlighted line
+    m_lines.append(line);
+    return line;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VisOperation::PointPosition(const VContainer *data, quint32 id) -> QPointF
+{
+    return static_cast<QPointF>(*data->GeometricObject<VPointF>(id));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VisOperation::RefreshPreviewLines(bool drawImages)
+{
+    int i = 0;
+
+    for (const auto &attached : m_previewLines)
+    {
+        QPointF firstPoint;
+        QPointF secondPoint;
+
+        // A preview must never be able to crash the application: an unexpected id simply drops the line.
+        try
+        {
+            firstPoint = PointPosition(GetData(), attached.first);
+            secondPoint = PointPosition(GetData(), attached.second);
+        }
+        catch (const VException &e)
+        {
+            qCWarning(vVis, "Attached line %u - %u is not drawable: %s", attached.first, attached.second,
+                      e.ErrorMessage().toUtf8().constData());
+            continue;
+        }
+
+        const bool firstHasImage = m_objects.contains(attached.first) || IsFixedPoint(attached.first);
+        const bool secondHasImage = m_objects.contains(attached.second) || IsFixedPoint(attached.second);
+
+        VScaledLine *source = GetLine(static_cast<quint32>(i), VColorRole::ActivePointColor);
+        ++i;
+        DrawLine(source, QLineF(firstPoint, secondPoint), Qt::SolidLine);
+
+        VScaledLine *image = GetLine(static_cast<quint32>(i), VColorRole::VisSupportColor);
+        ++i;
+
+        if (drawImages && firstHasImage && secondHasImage)
+        {
+            const QPointF first = PointImage(firstPoint);
+            const QPointF second = PointImage(secondPoint);
+            DrawLine(image, QLineF(first, second), Qt::SolidLine);
+        }
+        else
+        {
+            // One endpoint has no image: the operation will not create this line, so the preview must
+            // not show it either.
+            image->setVisible(false);
+        }
+    }
+
+    for (int j = i; j < m_lines.size(); ++j)
+    {
+        m_lines.at(j)->setVisible(false);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -94,7 +175,7 @@ auto VisOperation::AddOriginCurve(quint32 id, int &i) -> QGraphicsPathItem *
     const QSharedPointer<VAbstractCurve> curve = GetData()->template GeometricObject<VAbstractCurve>(id);
 
     ++i;
-    VCurvePathItem *path = GetCurve(static_cast<quint32>(i), VColorRole::VisSupportColor2);
+    VCurvePathItem *path = GetCurve(static_cast<quint32>(i), VColorRole::ActivePointColor);
     DrawPath(path, curve->GetPath(), curve->DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
 
     return path;
@@ -106,7 +187,7 @@ auto VisOperation::AddOriginPoint(quint32 id, int &i) -> VScaledEllipse *
     const QSharedPointer<VPointF> p = GetData()->GeometricObject<VPointF>(id);
 
     ++i;
-    VScaledEllipse *point = GetPoint(static_cast<quint32>(i), VColorRole::VisSupportColor2);
+    VScaledEllipse *point = GetPoint(static_cast<quint32>(i), VColorRole::ActivePointColor);
     DrawPoint(point, static_cast<QPointF>(*p));
 
     return point;

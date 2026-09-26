@@ -44,6 +44,9 @@ public:
         Type = UserType + static_cast<int>(Vis::FlippingOperation)
     };
 
+    /** @brief Mirror the point across the axis the tool draws. */
+    auto PointImage(const QPointF &point) const -> QPointF override;
+
 protected:
     void CreateFlippedObjects(
         int &iPoint, int &iCurve, quint32 originPointId, const QPointF &firstPoint, const QPointF &secondPoint);

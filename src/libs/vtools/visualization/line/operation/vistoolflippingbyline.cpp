@@ -38,9 +38,17 @@ VisToolFlippingByLine::VisToolFlippingByLine(const VContainer *data, QGraphicsIt
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VisToolFlippingByLine::IsFixedPoint(quint32 id) const -> bool
+{
+    return (m_lineP1Id != NULL_ID && id == m_lineP1Id) || (m_lineP2Id != NULL_ID && id == m_lineP2Id);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VisToolFlippingByLine::RefreshGeometry()
 {
-    if (Objects().isEmpty())
+    // An operation can be started from a line alone: the operated-object list is empty then, but the
+    // attached line still has a source side to draw.
+    if (Objects().isEmpty() && !HasPreviewLines())
     {
         return;
     }
@@ -51,6 +59,8 @@ void VisToolFlippingByLine::RefreshGeometry()
     if (const QVector<QGraphicsItem *> originObjects = CreateOriginObjects(iPoint, iCurve);
         originObjects.isEmpty() || (GetMode() == Mode::Creation && !ObjectSelected()))
     {
+        // Stage 1: the transformation is not known yet, so only the source side of the lines is drawn.
+        RefreshPreviewLines(false);
         return;
     }
 
@@ -76,4 +86,5 @@ void VisToolFlippingByLine::RefreshGeometry()
     }
 
     CreateFlippedObjects(iPoint, iCurve, m_lineP1Id, firstPoint, secondPoint);
+    RefreshPreviewLines(true);
 }

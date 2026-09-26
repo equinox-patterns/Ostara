@@ -303,6 +303,22 @@
                                 </xs:sequence>
                               </xs:complexType>
                             </xs:element>
+                            <xs:element name="lines" minOccurs="0" maxOccurs="1">
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                      <xs:attribute name="idSource" type="xs:unsignedInt"/>
+                                      <xs:attribute name="idPoint1" type="xs:unsignedInt"/>
+                                      <xs:attribute name="idPoint2" type="xs:unsignedInt"/>
+                                      <xs:attribute name="idResult" type="xs:unsignedInt"/>
+                                      <xs:attribute name="typeLine" type="linePenStyle"/>
+                                      <xs:attribute name="lineColor" type="colors"/>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
                           </xs:sequence>
                           <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
                           <xs:attribute name="center" type="xs:unsignedInt"/>

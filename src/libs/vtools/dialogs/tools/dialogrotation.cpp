@@ -28,6 +28,8 @@
 
 #include "dialogrotation.h"
 
+#include "../../tools/drawTools/operation/ooperationlines.h"
+
 #include <QAbstractButton>
 #include <QColor>
 #include <QComboBox>
@@ -292,11 +294,23 @@ void DialogRotation::ChosenObject(quint32 id, const SceneObject &type)
 {
     if (IsStage1())
     {
-        ToggleSourceObject(id);
+        if (type == SceneObject::Line)
+        {
+            // A line is not an operated object: it travels beside them, and its two endpoints decide
+            // whether it can be transformed at all.
+            ToggleLineSource(id);
+        }
+        else
+        {
+            ToggleSourceObject(id);
+        }
 
+        // Both cases must refresh the preview: a line used to return right here, so neither its highlight
+        // nor its ghost could ever appear.
         auto *operation = qobject_cast<VisToolRotation *>(vis);
         SCASSERT(operation != nullptr)
         operation->SetObjects(SourceToObjects(SourceObjects()));
+        operation->SetPreviewLines(PreviewLines());
         if (!VAbstractValApplication::VApp()->getCurrentScene()->items().contains(operation))
         {
             operation->VisualMode(NULL_ID);
@@ -322,6 +336,7 @@ void DialogRotation::ChosenObject(quint32 id, const SceneObject &type)
                 // To fix this issue we just silently remove it from the list.
                 SourceObjects().erase(obj);
                 operation->SetObjects(SourceToObjects(SourceObjects()));
+                operation->SetPreviewLines(PreviewLines());
             }
             else
             {
@@ -370,6 +385,9 @@ void DialogRotation::OnSourceObjectsSet()
     if (auto *operation = qobject_cast<VisToolRotation *>(vis))
     {
         operation->SetObjects(SourceToObjects(SourceObjects()));
+        operation->SetPreviewLines(PreviewLines());
+        // Adding a point can add the implicit line its own tool draws, so the preview lines follow.
+        operation->SetPreviewLines(PreviewLines());
         operation->RefreshGeometry();
     }
     else
@@ -396,6 +414,7 @@ void DialogRotation::SaveData()
         SCASSERT(operation != nullptr)
 
         operation->SetObjects(SourceToObjects(SourceObjects()));
+        operation->SetPreviewLines(PreviewLines());
         operation->SetOriginPointId(GetOrigPointId());
         operation->SetAngle(formulaAngle);
         operation->RefreshGeometry();

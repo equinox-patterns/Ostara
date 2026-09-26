@@ -82,7 +82,9 @@ VisToolMove::VisToolMove(const VContainer *data, QGraphicsItem *parent)
 //---------------------------------------------------------------------------------------------------------------------
 void VisToolMove::RefreshGeometry()
 {
-    if (Objects().isEmpty())
+    // An operation can be started from a line alone: the operated-object list is empty then, but the
+    // attached line still has a source side to draw.
+    if (Objects().isEmpty() && !HasPreviewLines())
     {
         return;
     }
@@ -95,11 +97,15 @@ void VisToolMove::RefreshGeometry()
     if (originObjects.isEmpty())
     {
         m_pointOrigin->setVisible(false);
+        // Stage 1 of an operation started from a line alone: no operated object, but a source line to draw.
+        RefreshPreviewLines(false);
         return;
     }
 
     if (GetMode() == Mode::Creation && !ObjectSelected())
     {
+        // Stage 1: the transformation is not known yet, so only the source side of the lines is drawn.
+        RefreshPreviewLines(false);
         return;
     }
 
@@ -200,7 +206,21 @@ void VisToolMove::RefreshGeometry()
         }
     }
 
+    // Keep the values used for the ghosts, so the attached lines follow the very same transformation.
+    m_displayedLength = tempLength;
+    m_displayedAngle = tempAngle;
+    m_displayedRotationAngle = tempRoationAngle;
+    m_displayedRotationOrigin = origin;
+
     CreateMovedRotatedObjects(iPoint, iCurve, tempLength, tempAngle, tempRoationAngle, origin);
+    RefreshPreviewLines(true);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VisToolMove::PointImage(const QPointF &point) const -> QPointF
+{
+    const QPointF moved = VPointF::MovePF(point, m_displayedLength, m_displayedAngle);
+    return VPointF::RotatePF(m_displayedRotationOrigin, moved, m_displayedRotationAngle);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

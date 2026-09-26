@@ -504,6 +504,18 @@ void VToolMove::SetDialog()
     dialogTool->SetRotationOrigPointId(m_origPointId);
     dialogTool->SetNotes(m_notes);
     dialogTool->SetSourceObjects(m_source);
+
+    // Only the lines explicitly selected by the user come back into the dialog: the implicit ones
+    // follow their points.
+    QVector<quint32> lineSources;
+    for (const auto &line : Lines())
+    {
+        if (OOperationLines::IsExplicit(line))
+        {
+            lineSources.append(line.source);
+        }
+    }
+    dialogTool->SetLineSources(lineSources);
     dialogTool->SetDestinationObjects(m_destination);
 
     SetDialogVisibilityGroupData(dialogTool);
@@ -523,6 +535,7 @@ auto VToolMove::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *s
     initData.formulaLength = dialogTool->GetLength();
     initData.rotationOrigin = dialogTool->GetRotationOrigPointId();
     initData.source = dialogTool->GetSourceObjects();
+    initData.lines = OOperationLines::Collect(data, initData.source, dialogTool->GetLineSources());
     initData.hasLinkedVisibilityGroup = dialogTool->HasLinkedVisibilityGroup();
     initData.visibilityGroupName = dialogTool->GetVisibilityGroupName();
     initData.visibilityGroupTags = dialogTool->GetVisibilityGroupTags();
@@ -594,6 +607,10 @@ auto VToolMove::Create(VToolMoveInitData &initData) -> VToolMove *
         patternGraph->AddVertex(object.id, VNodeType::OBJECT, initData.doc->PatternBlockMapper()->GetActiveId());
         patternGraph->AddEdge(initData.id, object.id);
     }
+
+    // Rebuilt once the destination objects and their graph nodes exist. A move has no fixed point: a line
+    // is transformed only when both of its endpoints are operated.
+    CreateDestinationLines(initData, {});
 
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
     {
@@ -735,6 +752,14 @@ void VToolMove::SetVisualization()
         const VTranslateVars *trVars = VAbstractApplication::VApp()->TrVars();
 
         visual->SetObjects(SourceToObjects(m_source));
+
+        QVector<QPair<quint32, quint32>> previewLines;
+        previewLines.reserve(m_lines.size());
+        for (const auto &line : std::as_const(m_lines))
+        {
+            previewLines.append(qMakePair(line.point1, line.point2));
+        }
+        visual->SetPreviewLines(previewLines);
         visual->SetAngle(trVars->FormulaToUser(m_formulaAngle, osSeparator));
         visual->SetRotationAngle(trVars->FormulaToUser(m_formulaRotationAngle, osSeparator));
         visual->SetLength(trVars->FormulaToUser(m_formulaLength, osSeparator));
@@ -778,6 +803,10 @@ void VToolMove::SaveDialog(QDomElement &domElement)
     doc->SetAttribute(domElement, AttrAngle, formulaAngle);
     doc->SetAttribute(domElement, AttrLength, formulaLength);
     doc->SetAttribute(domElement, AttrRotationAngle, formulaRotationAngle);
+
+    // Persist the dialog line selection: a line added here must be created, a line dropped must go, and
+    // the transformed copies that already exist keep their id.
+    m_lines = OOperationLines::SyncLines(getData(), m_lines, source, dialogTool->GetLineSources());
 
     SaveSourceDestination(domElement, source, destination);
 

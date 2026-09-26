@@ -404,11 +404,23 @@ void DialogMove::ChosenObject(quint32 id, const SceneObject &type)
 {
     if (IsStage1())
     {
-        ToggleSourceObject(id);
+        if (type == SceneObject::Line)
+        {
+            // A line is not an operated object: it travels beside them, and its two endpoints decide
+            // whether it can be transformed at all.
+            ToggleLineSource(id);
+        }
+        else
+        {
+            ToggleSourceObject(id);
+        }
 
+        // Both cases must refresh the preview: a line used to return right here, so neither its highlight
+        // nor its ghost could ever appear.
         auto *operation = qobject_cast<VisToolMove *>(vis);
         SCASSERT(operation != nullptr)
         operation->SetObjects(SourceToObjects(SourceObjects()));
+        operation->SetPreviewLines(PreviewLines());
         if (!VAbstractValApplication::VApp()->getCurrentScene()->items().contains(operation))
         {
             operation->VisualMode(NULL_ID);
@@ -498,6 +510,7 @@ void DialogMove::OnSourceObjectsSet()
     if (auto *operation = qobject_cast<VisToolMove *>(vis))
     {
         operation->SetObjects(SourceToObjects(SourceObjects()));
+        operation->SetPreviewLines(PreviewLines());
         operation->RefreshGeometry();
     }
     else
@@ -526,6 +539,8 @@ void DialogMove::SaveData()
         SCASSERT(operation != nullptr)
 
         operation->SetObjects(SourceToObjects(SourceObjects()));
+
+        operation->SetPreviewLines(PreviewLines());
         operation->SetAngle(formulaAngle);
         operation->SetLength(formulaLength);
         operation->SetRotationAngle(formulaRotationAngle);

@@ -78,17 +78,26 @@ VToolLine::VToolLine(const VToolLineInitData &initData, QGraphicsItem *parent)
     firstPoint(initData.firstPoint),
     secondPoint(initData.secondPoint),
     lineColor(initData.lineColor),
-    m_acceptHoverEvents(true)
+    m_acceptHoverEvents(true),
+    m_derived(initData.derived)
 {
     SetBoldLine(false);
     SetShowArrows(true);
     this->m_lineType = initData.typeLine;
     // Line
     RefreshGeometry();
+    // A derived line is part of its operation: it can not be deleted on its own, but it must still take the
+    // keyboard focus, otherwise the Delete key would never reach it. keyReleaseEvent then forwards the
+    // request to the operation instead of deleting the line itself.
     this->setFlag(QGraphicsItem::ItemIsFocusable, true); // For keyboard input focus
     this->setAcceptHoverEvents(m_acceptHoverEvents);
 
-    ToolCreation(initData.typeCreation);
+    // A derived line belongs to the operation tool that created it: the operation persists its id and
+    // rebuilds it on parse, so the line must not write an element of its own nor push an undo command.
+    if (!initData.derived)
+    {
+        ToolCreation(initData.typeCreation);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -188,7 +197,15 @@ auto VToolLine::Create(VToolLineInitData initData) -> VToolLine *
 
     if (initData.parse == Document::FullParse)
     {
-        VAbstractTool::AddRecord(initData.id, Tool::Line, initData.doc);
+        // A derived line must NOT enter the tool history. It has no element of its own, and the history is
+        // what lets a deletion find the tool that precedes it in the document: DelTool::undo() resolves that
+        // sibling through VDomDocument::NodeById(), which throws VExceptionBadId on an entry that has no
+        // element - the undo of a deletion then aborts. The history also drives the Dependencies dock,
+        // where a line that is only the result of an operation has nothing to do.
+        if (!initData.derived)
+        {
+            VAbstractTool::AddRecord(initData.id, Tool::Line, initData.doc);
+        }
         auto *line = new VToolLine(initData);
         initData.scene->addItem(line);
         InitDrawToolConnections(initData.scene, line);
@@ -294,7 +311,9 @@ void VToolLine::AllowHover(bool enabled)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolLine::AllowSelecting(bool enabled)
 {
-    setFlag(QGraphicsItem::ItemIsSelectable, enabled);
+    // A line created by an operation is part of that operation's result: it is never selected on its own.
+    // Clicking it opens the operation (see VToolOptionsPropertyBrowser::ShowItemOptions).
+    setFlag(QGraphicsItem::ItemIsSelectable, enabled && !m_derived);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -319,7 +338,51 @@ void VToolLine::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 i
  */
 void VToolLine::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
+    // A line created by an operation belongs to that operation: it is rebuilt from it at every parse, so
+    // editing it on its own would have no effect. Its operation carries its options.
+    if (m_derived)
+    {
+        return;
+    }
+
     ShowContextMenu(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    // A line is not selectable while an operation picks its source objects (MainWindow::ToolSelectOperationLines),
+    // and the default handler ignores the press of a not selectable item. The press must be accepted explicitly:
+    // otherwise the scene never hands the mouse to this item and the release — where the line announces itself —
+    // is never delivered. Same idiom as VToolAbstractCurve and VSimplePoint.
+    QGraphicsLineItem::mousePressEvent(event);
+
+    // Somehow clicking on a not selectable object does not clean previous selections.
+    if (not(flags() & ItemIsSelectable) && scene())
+    {
+        scene()->clearSelection();
+    }
+
+    // A derived line is not selectable, so nothing would give it the focus on a click: take it, otherwise
+    // the Delete key would never reach this item (see keyReleaseEvent).
+    if (m_derived)
+    {
+        setFocus(Qt::MouseFocusReason);
+    }
+
+    event->accept();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLine::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    // A line used to be silent on click: nothing announced it, so an operation tool could not select it.
+    // It reports itself here, exactly like a point or a curve does.
+    if (IsSelectedByReleaseEvent(this, event))
+    {
+        TriggerChoosed();
+    }
+    QGraphicsLineItem::mouseReleaseEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -407,6 +470,15 @@ void VToolLine::keyReleaseEvent(QKeyEvent *event)
     switch (event->key())
     {
         case Qt::Key_Delete:
+            if (m_derived)
+            {
+                // A derived line is part of the operation that draws it: asking to delete the line means
+                // deleting that operation, exactly like a destination point. It must never delete itself -
+                // it has no element of its own for DelTool to remove.
+                emit DeleteRequested();
+                return; // Leave this method immediately after call!!!
+            }
+
             try
             {
                 DeleteToolWithConfirm();

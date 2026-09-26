@@ -32,6 +32,7 @@
 #include "dialogtool.h"
 #include "../../tools/toolsdef.h"
 
+#include <QPair>
 #include <QSet>
 #include <QUuid>
 
@@ -82,6 +83,11 @@ public:
     auto GetSourceObjects() const -> QVector<SourceItem>;
     void SetSourceObjects(const QVector<SourceItem> &value);
 
+    /** @brief Ids of the Line tools the user selected. A line is not a geometric object, so it travels
+     *  beside the operated objects and never inside them. */
+    auto GetLineSources() const -> QVector<quint32>;
+    void SetLineSources(const QVector<quint32> &value);
+
     void SetDestinationObjects(const QVector<DestinationItem> &value);
 
     void CheckDependencyTreeComplete() override;
@@ -99,6 +105,7 @@ public slots:
     void ColorChanged() const;
     void BulkRename();
     void RemoveObject();
+    void ToggleLineSource(quint32 id);
 
 protected:
     explicit DialogOperationTool(const VContainer *data, VAbstractPattern *doc, quint32 toolId,
@@ -119,7 +126,16 @@ protected:
     void FillSourceList();
     auto SaveSourceObjects() const -> QVector<SourceItem>;
 
+    /** @brief The attached lines (selected Line tools plus the implicit line of every source point whose
+     *  own tool draws one) as pairs of endpoint ids, ready for the visualization. */
+    auto PreviewLines() const -> QVector<QPair<quint32, quint32>>;
+
     void ToggleSourceObject(quint32 id);
+
+    /** @brief True when the row shows a line rather than an operated object. */
+    auto IsLineRow(int row) const -> bool;
+
+    static auto LineDisplayName(quint32 id) -> QString;
 
     auto SourceObjects() -> QVector<SourceItem> & { return m_sourceObjects; }
     auto IsStage1() const -> bool { return stage1; }
@@ -133,11 +149,17 @@ protected:
 private:
     QVector<SourceItem> m_sourceObjects{};
     QVector<DestinationItem> m_destination{};
+    QVector<quint32> m_lineSources{};
 
     /** @brief m_baselineSourceRecords operated-object recordIds captured when the dialog was first
      * populated. Used to detect object-set changes (see SourceObjectsChanged). */
     QSet<QUuid> m_baselineSourceRecords{};
     bool m_sourceBaselineCaptured{false};
+
+    /** @brief Same baseline idea for the selected lines: any change of the line set needs a full
+     *  reparse to create or drop the transformed lines, exactly like an object-set change. */
+    QSet<quint32> m_baselineLineSources{};
+    bool m_lineBaselineCaptured{false};
 
     bool stage1{true};
     bool flagName{true};

@@ -654,6 +654,7 @@ void MainWindow::ToolAttach(bool checked)
 void MainWindow::ToolRotation(bool checked)
 {
     ToolSelectOperationObjects();
+    ToolSelectOperationLines();
     const QString tooltip = tr("Select one or more objects, <b>%1</b> - confirm selection")
                                 .arg(VModifierKey::EnterKey());
     SetToolButtonWithApply<DialogRotation>(checked, Tool::Rotation, QStringLiteral("rotation_cursor.png"), tooltip,
@@ -667,6 +668,7 @@ void MainWindow::ToolRotation(bool checked)
 void MainWindow::ToolFlippingByLine(bool checked)
 {
     ToolSelectOperationObjects();
+    ToolSelectOperationLines();
     const QString tooltip = tr("Select one or more objects, <b>%1</b> - confirm selection")
                                 .arg(VModifierKey::EnterKey());
     SetToolButtonWithApply<DialogFlippingByLine>(
@@ -680,6 +682,7 @@ void MainWindow::ToolFlippingByLine(bool checked)
 void MainWindow::ToolFlippingByAxis(bool checked)
 {
     ToolSelectOperationObjects();
+    ToolSelectOperationLines();
     const QString tooltip = tr("Select one or more objects, <b>%1</b> - confirm selection")
                                 .arg(VModifierKey::EnterKey());
     SetToolButtonWithApply<DialogFlippingByAxis>(
@@ -693,6 +696,7 @@ void MainWindow::ToolFlippingByAxis(bool checked)
 void MainWindow::ToolMove(bool checked)
 {
     ToolSelectOperationObjects();
+    ToolSelectOperationLines();
     const QString tooltip = tr("Select one or more objects, <b>%1</b> - confirm selection")
                                 .arg(VModifierKey::EnterKey());
     SetToolButtonWithApply<DialogMove>(checked, Tool::Move, QStringLiteral("move_cursor.png"), tooltip,

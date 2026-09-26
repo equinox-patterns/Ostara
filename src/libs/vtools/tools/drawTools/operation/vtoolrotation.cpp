@@ -421,6 +421,18 @@ void VToolRotation::SetDialog()
     dialogTool->SetSourceObjects(m_source);
     dialogTool->SetDestinationObjects(m_destination);
 
+    // Only the lines explicitly selected by the user come back into the dialog: the implicit ones follow
+    // their points.
+    QVector<quint32> lineSources;
+    for (const auto &line : Lines())
+    {
+        if (OOperationLines::IsExplicit(line))
+        {
+            lineSources.append(line.source);
+        }
+    }
+    dialogTool->SetLineSources(lineSources);
+
     SetDialogVisibilityGroupData(dialogTool);
 }
 
@@ -436,6 +448,7 @@ auto VToolRotation::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScen
     initData.origin = dialogTool->GetOrigPointId();
     initData.angle = dialogTool->GetAngle();
     initData.source = dialogTool->GetSourceObjects();
+    initData.lines = OOperationLines::Collect(data, initData.source, dialogTool->GetLineSources());
     initData.hasLinkedVisibilityGroup = dialogTool->HasLinkedVisibilityGroup();
     initData.visibilityGroupName = dialogTool->GetVisibilityGroupName();
     initData.visibilityGroupTags = dialogTool->GetVisibilityGroupTags();
@@ -462,6 +475,10 @@ auto VToolRotation::Create(VToolRotationInitData &initData) -> VToolRotation *
         initData.destination.clear(); // Try to avoid mistake, value must be empty
 
         initData.id = initData.data->getNextId(); // Just reserve id for tool
+
+        // The transformed lines are persisted with the operation, so their ids are reserved now, before
+        // the operation element is written.
+        OOperationLines::AllocateResultIds(initData.data, initData.lines);
     }
     else
     {
@@ -478,6 +495,14 @@ auto VToolRotation::Create(VToolRotationInitData &initData) -> VToolRotation *
 
     CreateDestination(initData);
 
+    // The centre of rotation is a fixed point of the transformation: it is its own image, so a line
+    // anchored on it still has a transformed copy although the centre is not an operated object.
+    QVector<quint32> fixedPoints;
+    if (initData.origin != NULL_ID)
+    {
+        fixedPoints.append(initData.origin);
+    }
+
     patternGraph->AddEdge(initData.origin, initData.id);
 
     for (const auto &object : std::as_const(initData.source))
@@ -490,6 +515,10 @@ auto VToolRotation::Create(VToolRotationInitData &initData) -> VToolRotation *
         patternGraph->AddVertex(object.id, VNodeType::OBJECT, initData.doc->PatternBlockMapper()->GetActiveId());
         patternGraph->AddEdge(initData.id, object.id);
     }
+
+    // Rebuilt once the destination objects and their graph nodes exist. A line whose endpoint has no image
+    // is not created.
+    CreateDestinationLines(initData, fixedPoints);
 
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
     {
@@ -577,6 +606,15 @@ void VToolRotation::SetVisualization()
         SCASSERT(visual != nullptr)
 
         visual->SetObjects(SourceToObjects(m_source));
+
+        QVector<QPair<quint32, quint32>> lines;
+        lines.reserve(m_lines.size());
+        for (const auto &line : std::as_const(m_lines))
+        {
+            lines.append(qMakePair(line.point1, line.point2));
+        }
+        visual->SetPreviewLines(lines);
+
         visual->SetOriginPointId(m_origPointId);
         visual->SetAngle(VAbstractApplication::VApp()->TrVars()->FormulaToUser(
             m_formulaAngle, VAbstractApplication::VApp()->Settings()->GetOsSeparator()));
@@ -611,6 +649,10 @@ void VToolRotation::SaveDialog(QDomElement &domElement)
     const QVector<DestinationItem> destination = SyncDestination(source, formulaAngle);
     // Sync destination may require a formula fix. Saving after synchronization
     doc->SetAttribute(domElement, AttrAngle, formulaAngle);
+
+    // Persist the dialog line selection: a line added here must be created, a line dropped must go, and
+    // the transformed copies that already exist keep their id.
+    m_lines = OOperationLines::SyncLines(getData(), m_lines, source, dialogTool->GetLineSources());
 
     SaveSourceDestination(domElement, source, destination);
 
