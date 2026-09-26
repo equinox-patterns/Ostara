@@ -56,6 +56,7 @@
 #include "../vgeometry/vspline.h"
 #include "../vgeometry/vsplinepath.h"
 #include "ooperationdestination.h"
+#include "orotationlength.h"
 #include "vexception.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
@@ -348,15 +349,15 @@ void VToolRotation::SetFormulaAngle(const VFormula &value)
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolRotation::ReferenceRadius() const -> qreal
 {
-    const quint32 reference = getData()->FirstPointId(SourceToObjects(m_source));
-    return getData()->PointsDistance(m_origPointId, reference);
+    const VContainer *container = getData();
+    const quint32 reference = ORotationLength::ReferencePoint(container, SourceToObjects(m_source));
+    return ORotationLength::Radius(container, m_origPointId, reference);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolRotation::HasReferencePoint() const -> bool
 {
-    const qreal radius = ReferenceRadius();
-    return qIsFinite(radius) && !qFuzzyIsNull(radius);
+    return ORotationLength::HasRadius(ReferenceRadius());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -365,10 +366,12 @@ auto VToolRotation::GetFormulaLength() const -> VFormula
     const qreal radius = ReferenceRadius();
     QString length = QStringLiteral("0"); // no reference point: no length to speak of, the dock shows a dash
 
-    if (qIsFinite(radius) && !qFuzzyIsNull(radius))
+    if (ORotationLength::HasRadius(radius))
     {
-        const qreal chord = RotationChord(radius, GetFormulaAngle().getDoubleValue());
-        length = FormatDisplayNumber(RoundForDisplay(FromPixel(chord, *getData()->GetPatternUnit())));
+        // The same rule as the dialog field: what an angle means as a length, in the unit the user reads.
+        length = FormatDisplayNumber(ORotationLength::LengthOfAngle(radius,
+                                                                   GetFormulaAngle().getDoubleValue(),
+                                                                   *getData()->GetPatternUnit()));
     }
 
     VFormula fLength(length, getData());
@@ -386,30 +389,17 @@ auto VToolRotation::SetFormulaLength(const VFormula &value) -> bool
         return false;
     }
 
-    const qreal radius = ReferenceRadius();
-    const qreal diameter = 2. * radius;
-    qreal chord = ToPixel(value.getDoubleValue(), *getData()->GetPatternUnit());
-
-    // The field shows three decimals, so a length typed as the diameter can pass it by up to half a step of
-    // that display once turned back into pixels: that is the field's own precision, not a length to refuse.
-    const qreal halfStep = ToPixel(0.0005, *getData()->GetPatternUnit());
-
-    if (qFuzzyIsNull(radius) || qAbs(chord) > diameter + halfStep)
+    // Same rule as the dialog field, so the two cannot refuse or accept the same length differently.
+    const qreal angle = ORotationLength::AngleOfLength(ReferenceRadius(), value.getDoubleValue(),
+                                                       *getData()->GetPatternUnit());
+    if (qIsNaN(angle))
     {
         return false; // further from the pivot than the diameter of the circle it draws around it
     }
 
-    chord = qBound(-diameter, chord, diameter);
-
-    const qreal angle = RotationAngleForChord(radius, chord);
-    if (qIsNaN(angle))
-    {
-        return false;
-    }
-
     // A rotation is stored as an angle, so a length entered here takes its place: the two say the same thing,
     // and the length is not something a pattern keeps (see Rotation.md).
-    m_formulaAngle = FormatDisplayNumber(RoundForDisplay(angle));
+    m_formulaAngle = FormatDisplayNumber(angle);
 
     QSharedPointer<VGObject> obj = VContainer::GetFakeGObject(m_id);
     SaveOption(obj);

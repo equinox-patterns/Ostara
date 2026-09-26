@@ -28,7 +28,7 @@
 
 #include "dialogrotation.h"
 
-#include "../../tools/drawTools/operation/ooperationlines.h"
+#include "../../tools/drawTools/operation/orotationlength.h"
 
 #include <QAbstractButton>
 #include <QColor>
@@ -84,12 +84,6 @@ using namespace Qt::Literals::StringLiterals;
 
 namespace
 {
-//---------------------------------------------------------------------------------------------------------------------
-// Half of the third decimal: a value a field already shows, to the precision it shows it, is the same value.
-// Comparing with that tolerance is what lets the two fields of the rotation talk to each other without
-// rewriting what the user is in the middle of typing.
-constexpr qreal kDisplayTolerance = 0.0005;
-
 //---------------------------------------------------------------------------------------------------------------------
 // Put a formula field where the .ui left a placeholder: the placeholder is a spacer item of the dialog's vertical
 // layout, and the field takes its place.
@@ -247,24 +241,22 @@ auto DialogRotation::UserAngle() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogRotation::ReferenceRadius() const -> qreal
 {
-    // The pivot and the reference point, both as points of the pattern: the shared Distance returns 0 as soon
-    // as one of them is missing, which is exactly what "no radius, hence no length" means here.
-    return data.PointsDistance(GetOrigPointId(), m_referencePointId);
+    return ORotationLength::Radius(&data, GetOrigPointId(), m_referencePointId);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogRotation::UpdateLengthFromAngle()
 {
     const qreal radius = ReferenceRadius();
-    if (qFuzzyIsNull(radius) || !m_formulaAngle->isValid())
+    if (!ORotationLength::HasRadius(radius) || !m_formulaAngle->isValid())
     {
         return;
     }
 
-    // The chord of the reference point, signed like the rotation it comes from: a chord knows only the short
-    // way round, so the sign is what says the direction (see RotationChord).
-    const qreal length = RoundForDisplay(FromPixel(RotationChord(radius, m_formulaAngle->value()),
-                                                   *data.GetPatternUnit()));
+    // The chord of the reference point, signed like the rotation it comes from: what an angle means as a
+    // length, in the unit the user reads (see ORotationLength).
+    const qreal length = ORotationLength::LengthOfAngle(radius, m_formulaAngle->value(),
+                                                        *data.GetPatternUnit());
 
     // A length derived from the angle is always on the circle, so nothing is left to refuse.
     m_lengthIsPossible = true;
@@ -276,7 +268,8 @@ void DialogRotation::UpdateLengthFromAngle()
 
     // A value the field already says, to the precision it shows, is left alone: writing it back would only
     // disturb the field being typed in — and the two fields would keep answering each other.
-    if (m_formulaLength->isValid() && qAbs(m_formulaLength->value() - length) <= kDisplayTolerance)
+    if (m_formulaLength->isValid()
+        && qAbs(m_formulaLength->value() - length) <= ORotationLength::DisplayTolerance)
     {
         return;
     }
@@ -296,62 +289,44 @@ void DialogRotation::UpdateAngleFromLength()
 
     // The field is showing a length this dialog derived: reading it back would answer the angle with the
     // rounding of its own display — and near a half-turn that rounding moves the angle by whole degrees.
-    if (m_formulaAngle->isValid() && m_derivedLengthSet && qAbs(typedLength - m_derivedLength) <= kDisplayTolerance)
+    if (m_formulaAngle->isValid() && m_derivedLengthSet
+        && qAbs(typedLength - m_derivedLength) <= ORotationLength::DisplayTolerance)
     {
         m_lengthIsPossible = true;
         return;
     }
 
     const qreal radius = ReferenceRadius();
-    const qreal diameter = 2. * radius;
-    qreal chord = ToPixel(typedLength, *data.GetPatternUnit());
-
-    // The field shows three decimals, so a length typed as the diameter can pass it by up to half a step of
-    // that display once turned back into pixels. That is the field's own precision, not something to refuse.
-    const qreal halfStep = ToPixel(kDisplayTolerance, *data.GetPatternUnit());
-
-    if (qFuzzyIsNull(radius) || qAbs(chord) > diameter + halfStep)
-    {
-        // A point cannot move further from itself than the diameter of the circle it draws around the pivot.
-        m_lengthIsPossible = false;
-        ShowError(tr("The length cannot exceed the circle diameter (%1%2).")
-                      .arg(FormatDisplayNumber(FromPixel(diameter, *data.GetPatternUnit())),
-                           UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)));
-        return;
-    }
-
-    chord = qBound(-diameter, chord, diameter);
-
-    const qreal angle = RotationAngleForChord(radius, chord);
+    const qreal angle = ORotationLength::AngleOfLength(radius, typedLength, *data.GetPatternUnit());
 
     m_lengthIsPossible = !qIsNaN(angle);
 
     if (!m_lengthIsPossible)
     {
+        // A point cannot move further from itself than the diameter of the circle it draws around the pivot.
         ShowError(tr("The length cannot exceed the circle diameter (%1%2).")
-                      .arg(FormatDisplayNumber(FromPixel(diameter, *data.GetPatternUnit())),
+                      .arg(ORotationLength::DiameterText(radius, *data.GetPatternUnit()),
                            UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)));
         return;
     }
 
-    const qreal rounded = RoundForDisplay(angle);
-
-    if (m_formulaAngle->isValid() && qAbs(m_formulaAngle->value() - rounded) <= kDisplayTolerance)
+    if (m_formulaAngle->isValid()
+        && qAbs(m_formulaAngle->value() - angle) <= ORotationLength::DisplayTolerance)
     {
         return; // the angle already says that: same guard as above, in the other direction
     }
 
-    m_formulaAngle->setFormula(FormatDisplayNumber(rounded));
+    m_formulaAngle->setFormula(FormatDisplayNumber(angle));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogRotation::UpdateReferencePoint()
 {
-    m_referencePointId = data.FirstPointId(SourceToObjects(SourceObjects()));
+    m_referencePointId = ORotationLength::ReferencePoint(&data, SourceToObjects(SourceObjects()));
 
     // The length holds for one point only, and that point needs a circle around the pivot: without one there
     // is no length to speak of, so the whole field is left out rather than offered and refused.
-    const bool available = m_referencePointId != NULL_ID && !qFuzzyIsNull(ReferenceRadius());
+    const bool available = m_referencePointId != NULL_ID && ORotationLength::HasRadius(ReferenceRadius());
     m_lengthAvailable = available;
     m_formulaLength->setVisible(available);
 
