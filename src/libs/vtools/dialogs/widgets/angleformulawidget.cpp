@@ -212,3 +212,9 @@ auto AngleFormulaWidget::isValid() const -> bool
 {
     return m_formulaInput->isValid();
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto AngleFormulaWidget::editor() const -> QWidget *
+{
+    return m_formulaInput->editor();
+}

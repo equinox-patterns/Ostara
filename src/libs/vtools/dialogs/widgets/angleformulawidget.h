@@ -81,6 +81,9 @@ public:
     /// Whether the last evaluation was successful.
     [[nodiscard]] auto isValid() const -> bool;
 
+    /// The inner editor of the angle field, for the dialog that owns it (tab order, accessibility).
+    [[nodiscard]] auto editor() const -> QWidget *;
+
 signals:
     /// Re-emitted from the inner FormulaInputWidget after each debounced evaluation.
     void valueChanged(bool valid);

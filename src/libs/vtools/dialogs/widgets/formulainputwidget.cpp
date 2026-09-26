@@ -95,6 +95,12 @@ void FormulaInputWidget::buildUi()
     m_resultLabel->setToolTip(tr("Value"));
 
     m_textEdit = new VPlainTextEdit(this);
+    // Tab leaves the field instead of inserting a tabulation: a formula has no use for one, and the dialog
+    // would otherwise trap the keyboard in its two formula fields.
+    m_textEdit->setTabChangesFocus(true);
+    // The label names the field for the accessibility layer (and would carry a mnemonic where the platform
+    // has them: not on macOS). The buddy is set before the text, which is when Qt builds the shortcut.
+    m_label->setBuddy(m_textEdit);
 
     QLineEdit reference;
     reference.setFont(m_textEdit->font());
@@ -199,6 +205,12 @@ auto FormulaInputWidget::value() const -> qreal
 auto FormulaInputWidget::isValid() const -> bool
 {
     return m_valid;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto FormulaInputWidget::editor() const -> QWidget *
+{
+    return m_textEdit;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

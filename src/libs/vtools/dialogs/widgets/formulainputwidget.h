@@ -84,6 +84,10 @@ public:
     /// Whether the last evaluation was successful.
     [[nodiscard]] auto isValid() const -> bool;
 
+    /// The inner editor. Exposed so the owning dialog can put it in the tab order and name it for the
+    /// accessibility layer: the widget owns the field, the dialog owns the dialog.
+    [[nodiscard]] auto editor() const -> QWidget *;
+
 signals:
     /// Emitted after each debounced evaluation completes.
     /// Connect to CheckState() in the parent dialog.

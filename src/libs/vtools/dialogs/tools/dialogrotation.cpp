@@ -143,6 +143,15 @@ DialogRotation::DialogRotation(const VContainer *data, VAbstractPattern *doc, qu
     InsertFormulaField(ui->formulaLengthPlaceholder, m_formulaLength);
     ui->formulaLengthPlaceholder = nullptr;
 
+    // Both fields are created here, after the .ui, so Qt appends them to the end of the window's focus chain:
+    // without this they come after the OK/Cancel buttons, although they sit above them. Notes → angle →
+    // length → buttons, which is the order the dialog reads in.
+    QWidget *const angleEditor = m_formulaAngle->editor();
+    QWidget *const lengthEditor = m_formulaLength->editor();
+    QWidget::setTabOrder(ui->plainTextEditToolNotes, angleEditor);
+    QWidget::setTabOrder(angleEditor, lengthEditor);
+    QWidget::setTabOrder(lengthEditor, ui->buttonBox);
+
     MakeFilterableComboBox(ui->comboBoxNewObject);
 
     InitOkCancelApply(ui);
