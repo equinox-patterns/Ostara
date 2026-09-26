@@ -57,6 +57,8 @@
 #include <QDebug>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QEvent>
+#include <QIcon>
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
@@ -264,6 +266,136 @@ void DeployFormula(QDialog *dialog, QPlainTextEdit *formula, QPushButton *button
 
     formula->setFocus();
     formula->setTextCursor(cursor);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+// Gray200 — the standard colour of the Dark icon set (Icons.md §2, palette.json).
+const QColor darkIconColor = QColor(0xE5, 0xE5, 0xE5);
+
+//---------------------------------------------------------------------------------------------------------------------
+// Repaint an icon in the Dark set colour, keeping its shape: the SVG icons are monochrome, so painting the
+// pixmap with CompositionMode_SourceIn gives exactly the dark variant of the icon, at any size.
+auto DarkIconVariant(const QIcon &icon, const QSize &size, qreal devicePixelRatio) -> QIcon
+{
+    QPixmap pixmap = icon.pixmap(size, devicePixelRatio);
+    if (pixmap.isNull())
+    {
+        return icon;
+    }
+
+    QPainter painter(&pixmap);
+    painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    painter.fillRect(pixmap.rect(), darkIconColor);
+    painter.end();
+
+    return QIcon(pixmap);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// The caret of a formula field must stay readable on the accent hover background (see InitFormulaGrowButton).
+// Resting icon and hover icon are both kept: the dialog may replace the resting one at any time (deploying or
+// collapsing the field), and the shape must follow.
+class FormulaGrowButtonFilter : public QObject
+{
+public:
+    explicit FormulaGrowButtonFilter(QPushButton *button)
+      : QObject(button),
+        m_button(button)
+    {
+    }
+
+protected:
+    auto eventFilter(QObject *object, QEvent *event) -> bool override
+    {
+        switch (event->type())
+        {
+            case QEvent::Enter:
+                Darken();
+                break;
+            case QEvent::Leave:
+            case QEvent::Hide: // hiding the dialog may skip the Leave event
+                Restore();
+                break;
+            case QEvent::MouseButtonRelease:
+                // A click deploys or collapses the field, so the dialog sets a new icon while the button is
+                // still hovered. Redo the swap once the button has finished handling the click.
+                QTimer::singleShot(0, m_button, [this]() { Refresh(); });
+                break;
+            default:
+                break;
+        }
+
+        return QObject::eventFilter(object, event);
+    }
+
+private:
+    void Darken()
+    {
+        if (m_hovered)
+        {
+            return;
+        }
+
+        m_hovered = true;
+        m_restIcon = m_button->icon();
+        m_darkIcon = DarkIconVariant(m_restIcon, m_button->iconSize(), m_button->devicePixelRatioF());
+        m_button->setIcon(m_darkIcon);
+    }
+
+    void Restore()
+    {
+        if (!m_hovered)
+        {
+            return;
+        }
+
+        m_hovered = false;
+        m_button->setIcon(m_restIcon);
+    }
+
+    void Refresh()
+    {
+        if (!m_hovered)
+        {
+            return;
+        }
+
+        if (m_button->icon().cacheKey() != m_darkIcon.cacheKey())
+        {
+            // The dialog replaced the icon (field deployed or collapsed): it becomes the new resting icon.
+            m_restIcon = m_button->icon();
+            m_darkIcon = DarkIconVariant(m_restIcon, m_button->iconSize(), m_button->devicePixelRatioF());
+        }
+
+        if (m_button->underMouse())
+        {
+            m_button->setIcon(m_darkIcon);
+        }
+        else
+        {
+            Restore();
+        }
+    }
+
+    QPushButton *m_button;
+    bool m_hovered{false};
+    QIcon m_restIcon;
+    QIcon m_darkIcon;
+};
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+void InitFormulaGrowButton(QPushButton *button)
+{
+    if (button == nullptr || button->property("formulaGrowHover").toBool())
+    {
+        return;
+    }
+
+    button->setProperty("formulaGrowHover", true);
+    button->installEventFilter(new FormulaGrowButtonFilter(button)); // owned by the button
 }
 
 //---------------------------------------------------------------------------------------------------------------------

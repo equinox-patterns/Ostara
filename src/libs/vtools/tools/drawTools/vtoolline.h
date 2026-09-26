@@ -111,6 +111,11 @@ signals:
      *  point (see VAbstractOperation::InitOperatedObjects). */
     void DeleteRequested();
 
+    /** @brief ContextMenuRequested a derived line asks its operation to show the context menu. A derived
+     *  line has no menu of its own (it is rebuilt from the operation at every parse), so the right click is
+     *  forwarded to the operation, exactly like a destination point (see VAbstractOperation::InitOperatedObjects). */
+    void ContextMenuRequested(QGraphicsSceneContextMenuEvent *event, quint32 id);
+
 public slots:
     void FullUpdateFromFile() override;
     void Enable() override;

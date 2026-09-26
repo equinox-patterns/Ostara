@@ -104,6 +104,7 @@ void FormulaInputWidget::buildUi()
     m_growButton->setFixedSize(16, 16);
     m_growButton->setFlat(true);
     updateExpandIcon();
+    InitFormulaGrowButton(m_growButton);
 
     // --- Layout ---
     auto *row1 = new QHBoxLayout;

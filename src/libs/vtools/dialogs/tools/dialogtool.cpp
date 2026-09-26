@@ -28,6 +28,8 @@
 
 #include "dialogtool.h"
 
+#include "../dialogtoolbox.h"
+
 #include <QBuffer>
 #include <QCloseEvent>
 #include <QComboBox>
@@ -151,6 +153,18 @@ void DialogTool::showEvent(QShowEvent *event)
     {
         notes->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         notes->setMaximumHeight(QWIDGETSIZE_MAX);
+    }
+
+    // The caret of every formula field keeps the icon of the active theme until the field is first deployed,
+    // and that icon is unreadable on the accent hover background. Install the hover swap on the whole dialog,
+    // by the name the .ui give these buttons, so it holds from the very first hover.
+    for (QPushButton *button : findChildren<QPushButton *>())
+    {
+        if (button->objectName().startsWith(QLatin1String("pushButtonGrow"))
+            || button->objectName().startsWith(QLatin1String("pushButtonShow")))
+        {
+            InitFormulaGrowButton(button);
+        }
     }
 
     // Open in the upper third of the screen so the dialog can grow downward and

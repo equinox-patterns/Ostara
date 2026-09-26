@@ -4194,8 +4194,8 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="753"/>
-        <source>Rotation origin point:</source>
-        <translation>Point d&apos;origine de la rotation :</translation>
+        <source>Pivot point:</source>
+        <translation>Point pivot :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="121"/>
@@ -6492,8 +6492,8 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="373"/>
-        <source>Origin Point:</source>
-        <translation>Point d&apos;origine :</translation>
+        <source>Pivot point:</source>
+        <translation>Point pivot :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="357"/>
@@ -6502,8 +6502,8 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="248"/>
-        <source>Select origin point</source>
-        <translation>Sélectionner le point d&apos;origine</translation>
+        <source>Select the pivot point</source>
+        <translation>Sélectionner le point pivot</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="325"/>
@@ -6512,8 +6512,8 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="328"/>
-        <source>This point cannot be origin point. Please, select another origin point</source>
-        <translation>Ce point ne peut pas être le point de départ. Sélectionnez-en un autre</translation>
+        <source>This point cannot be the pivot point. Please, select another point</source>
+        <translation>Ce point ne peut pas être le point pivot. Sélectionnez-en un autre</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="125"/>
@@ -25856,8 +25856,8 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="826"/>
-        <source>Rotation origin point</source>
-        <translation>Point d&apos;origine de la rotation</translation>
+        <source>Pivot point</source>
+        <translation>Point pivot</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="607"/>
@@ -26754,6 +26754,12 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="63"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="67"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="221"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="225"/>
+        <source>Pivot point:</source>
+        <translation>Point pivot :</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="367"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="371"/>
         <source>Origin point:</source>
@@ -26768,12 +26774,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="197"/>
         <source>Rotation angle:</source>
         <translation>Angle de rotation :</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="221"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="225"/>
-        <source>Rotation origin point:</source>
-        <translation>Point d&apos;origine de la rotation :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="329"/>
@@ -28356,8 +28356,8 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
     </message>
     <message>
         <location filename="../../src/libs/vtools/visualization/line/operation/vistoolmove.cpp" line="192"/>
-        <source>Length = %1%2, angle = %3°, rotation angle = %4°, &lt;b&gt;%5&lt;/b&gt; - sticking angle, &lt;b&gt;%6&lt;/b&gt; - change rotation origin point, &lt;b&gt;Mouse click&lt;/b&gt; - finish creating</source>
-        <translation>Longueur = %1%2, angle = %3°, angle de rotation = %4°, &lt;b&gt;%5&lt;/b&gt; - angle magnétique, &lt;b&gt;%6&lt;/b&gt; - modifier le point de rotation d&apos;origine, &lt;b&gt;Clic souris&lt;/b&gt; - finir création</translation>
+        <source>Length = %1%2, angle = %3°, rotation angle = %4°, &lt;b&gt;%5&lt;/b&gt; - sticking angle, &lt;b&gt;%6&lt;/b&gt; - change the pivot point, &lt;b&gt;Mouse click&lt;/b&gt; - finish creating</source>
+        <translation>Longueur = %1%2, angle = %3°, angle de rotation = %4°, &lt;b&gt;%5&lt;/b&gt; - angle magnétique, &lt;b&gt;%6&lt;/b&gt; - modifier le point pivot, &lt;b&gt;Clic souris&lt;/b&gt; - finir création</translation>
     </message>
 </context>
 <context>

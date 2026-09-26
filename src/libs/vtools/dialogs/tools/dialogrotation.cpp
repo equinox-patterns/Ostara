@@ -48,14 +48,14 @@
 #include <QRegularExpressionMatch>
 #include <QSharedPointer>
 #include <QStringList>
-#include <QTimer>
+#include <QTabBar>
 #include <QToolButton>
+#include <QVBoxLayout>
 
 #include "../../visualization/line/operation/vistoolrotation.h"
 #include "../../visualization/visualization.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../qmuparser/qmudef.h"
-#include "../support/dialogeditwrongformula.h"
 #include "../vgeometry/vpointf.h"
 #include "vtheme.h"
 #include "../vmisc/vabstractapplication.h"
@@ -69,6 +69,7 @@
 #include "../vwidgets/vlineedit.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vmaingraphicsview.h"
+#include "../widgets/angleformulawidget.h"
 #include "ui_dialogrotation.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -80,20 +81,42 @@ using namespace Qt::Literals::StringLiterals;
 //---------------------------------------------------------------------------------------------------------------------
 DialogRotation::DialogRotation(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent)
   : DialogOperationTool(data, doc, toolId, parent),
-    ui(new Ui::DialogRotation),
-    timerAngle(new QTimer(this))
+    ui(new Ui::DialogRotation)
 {
     ui->setupUi(this);
 
-    InitIcons();
+    // The angle field is the shared composite: FormulaInputWidget computes its own height from the formula
+    // (fini le 28 px magique) and brings the fx button, AngleFormulaWidget adds the 0/90/180/270° presets.
+    // Same handling as EndLine — see Modifications/Ostara/Interface/Tools/dialog-modifs.md.
+    m_formulaAngle = new AngleFormulaWidget(this);
+    m_formulaAngle->setData(&this->data);
+    m_formulaAngle->setToolId(toolId);
+    m_formulaAngle->setLabelText(tr("Angle:"));
+    m_formulaAngle->setPostfix(degreeSymbol);
+    m_formulaAngle->setDialogTitle(tr("Edit angle"));
+    connect(m_formulaAngle, &AngleFormulaWidget::valueChanged, this,
+            [this](bool valid)
+            {
+                if (!valid)
+                {
+                    ui->labelStatus->setText(tr("Invalid angle formula"));
+                }
+                CheckState();
+            });
+
+    // Replace the formula placeholder in the UI layout with the actual widget.
+    if (auto *placeholder = ui->formulaAnglePlaceholder)
+    {
+        auto *parentLayout = qobject_cast<QVBoxLayout *>(placeholder->parentWidget()->layout());
+        if (parentLayout != nullptr)
+        {
+            const int idx = parentLayout->indexOf(placeholder);
+            parentLayout->insertWidget(idx, m_formulaAngle);
+            placeholder->deleteLater();
+        }
+    }
 
     MakeFilterableComboBox(ui->comboBoxNewObject);
-
-    this->formulaBaseHeightAngle = ui->plainTextEditFormula->height();
-    ui->plainTextEditFormula->installEventFilter(this);
-
-    timerAngle->setSingleShot(true);
-    connect(timerAngle, &QTimer::timeout, this, &DialogRotation::EvalAngle);
 
     InitOkCancelApply(ui);
 
@@ -107,12 +130,6 @@ DialogRotation::DialogRotation(const VContainer *data, VAbstractPattern *doc, qu
     m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
 
     connect(ui->lineEditVisibilityGroup, &QLineEdit::textChanged, this, &DialogOperationTool::GroupNameChanged);
-    connect(ui->toolButtonExprAngle, &QPushButton::clicked, this, &DialogRotation::FXAngle);
-    connect(ui->plainTextEditFormula,
-            &QPlainTextEdit::textChanged,
-            this,
-            [this]() -> void { timerAngle->start(formulaTimerTimeout); });
-    connect(ui->pushButtonGrowLength, &QPushButton::clicked, this, &DialogRotation::DeployAngleTextEdit);
     connect(ui->comboBoxOriginPoint, &QComboBox::currentTextChanged, this, &DialogRotation::PointChanged);
 
     connect(ui->listWidget, &QListWidget::currentRowChanged, this, &DialogOperationTool::ShowSourceDetails);
@@ -139,6 +156,14 @@ DialogRotation::DialogRotation(const VContainer *data, VAbstractPattern *doc, qu
     vis = new VisToolRotation(&this->data);
 
     ui->tabWidget->setCurrentIndex(0);
+
+    // Creation/editing single page: only the angle, the layer and the notes are left (every other
+    // block is hidden in the .ui), so a one-tab bar would be pure noise.
+    if (ui->tabWidget->count() <= 1)
+    {
+        ui->tabWidget->tabBar()->hide(); // Single-page creation/editing window.
+    }
+
     SetTabStopDistance(ui->plainTextEditToolNotes);
 }
 
@@ -185,31 +210,31 @@ void DialogRotation::SetOrigPointId(quint32 value)
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogRotation::GetAngle() const -> QString
 {
-    return VTranslateVars::TryFormulaFromUser(formulaAngle, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    return m_formulaAngle->formula();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogRotation::UserAngle() const -> QString
+{
+    return VAbstractApplication::VApp()->TrVars()->FormulaToUser(
+        m_formulaAngle->formula(), VAbstractApplication::VApp()->Settings()->GetOsSeparator());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogRotation::SetAngle(const QString &value)
 {
-    formulaAngle = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-    // increase height if needed.
-    if (formulaAngle.length() > 80)
-    {
-        this->DeployAngleTextEdit();
-    }
-    ui->plainTextEditFormula->setPlainText(formulaAngle);
+    // value comes from the pattern, in internal notation. The field shows it to the user, and the
+    // visualization evaluates a user formula — hence UserAngle(), exactly like DialogEndLine::SetAngle.
+    m_formulaAngle->setFormula(value);
 
     if (auto *operation = qobject_cast<VisToolRotation *>(vis))
     {
-        operation->SetAngle(formulaAngle);
+        operation->SetAngle(UserAngle());
     }
     else
     {
         qCWarning(vDialog, "%s: visualization unavailable, skipping preview update.", Q_FUNC_INFO);
     }
-
-    MoveCursorToEnd(ui->plainTextEditFormula);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -247,7 +272,7 @@ void DialogRotation::ShowDialog(bool click)
         FillDefSourceNames(SourceObjects(), &data, "r"_L1);
         FillSourceList();
 
-        emit ToolTip(tr("Select origin point"));
+        emit ToolTip(tr("Select the pivot point"));
     }
     else if (not IsStage1() && prepare && click)
     {
@@ -284,7 +309,6 @@ void DialogRotation::ShowDialog(bool click)
         SetAngle(operation->Angle()); // Show in dialog angle that a user choose
         setModal(true);
         emit ToolTip(QString());
-        timerAngle->start();
         show();
     }
 }
@@ -340,7 +364,7 @@ void DialogRotation::ChosenObject(quint32 id, const SceneObject &type)
             }
             else
             {
-                emit ToolTip(tr("This point cannot be origin point. Please, select another origin point"));
+                emit ToolTip(tr("This point cannot be the pivot point. Please, select another point"));
                 return;
             }
         }
@@ -357,26 +381,6 @@ void DialogRotation::ChosenObject(quint32 id, const SceneObject &type)
             prepare = true;
         }
     }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogRotation::DeployAngleTextEdit()
-{
-    DeployFormula(this, ui->plainTextEditFormula, ui->pushButtonGrowLength, formulaBaseHeightAngle);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogRotation::FXAngle()
-{
-    auto *dialog = new DialogEditWrongFormula(&data, toolId, this);
-    dialog->setWindowTitle(tr("Edit angle"));
-    dialog->SetFormula(GetAngle());
-    dialog->setPostfix(degreeSymbol);
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        SetAngle(dialog->GetFormula());
-    }
-    delete dialog;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -405,7 +409,7 @@ void DialogRotation::ShowVisualization()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogRotation::SaveData()
 {
-    formulaAngle = ui->plainTextEditFormula->toPlainText();
+    const QString angleFormula = UserAngle();
     SourceObjects() = SaveSourceObjects();
 
     if (!vis.isNull())
@@ -416,7 +420,7 @@ void DialogRotation::SaveData()
         operation->SetObjects(SourceToObjects(SourceObjects()));
         operation->SetPreviewLines(PreviewLines());
         operation->SetOriginPointId(GetOrigPointId());
-        operation->SetAngle(formulaAngle);
+        operation->SetAngle(angleFormula);
         operation->RefreshGeometry();
     }
 
@@ -434,23 +438,13 @@ void DialogRotation::SaveData()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogRotation::closeEvent(QCloseEvent *event)
-{
-    ui->plainTextEditFormula->blockSignals(true);
-    DialogTool::closeEvent(event);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogRotation::changeEvent(QEvent *event)
 {
     if (event->type() == QEvent::LanguageChange)
     {
         ui->retranslateUi(this);
-    }
-
-    if (event->type() == QEvent::PaletteChange)
-    {
-        InitIcons();
+        // The angle label now lives inside the widget, out of retranslateUi's reach.
+        m_formulaAngle->setLabelText(tr("Angle:"));
     }
 
     // remember to call base class implementation
@@ -482,34 +476,9 @@ void DialogRotation::PointChanged()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogRotation::InitIcons()
-{
-    const auto resource = QStringLiteral("icon");
-
-    ui->toolButtonExprAngle->setIcon(VTheme::GetIconResource(resource, QStringLiteral("24x24/fx.png")));
-    ui->label_2->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/equal.png")));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogRotation::EvalAngle()
-{
-    Eval({.formula = ui->plainTextEditFormula->toPlainText(),
-          .variables = data.DataVariables(),
-          .labelEditFormula = ui->labelEditAngle,
-          .labelResult = ui->labelResultAngle,
-          .postfix = degreeSymbol},
-         flagAngle);
-
-    if (not flagAngle)
-    {
-        ui->labelStatus->setText(tr("Invalid angle formula"));
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto DialogRotation::IsValid() const -> bool
 {
-    bool const ready = flagAngle && IsFlagName() && IsFlagError() && IsFlagGroupName();
+    bool const ready = m_formulaAngle->isValid() && IsFlagName() && IsFlagError() && IsFlagGroupName();
 
     if (ready)
     {

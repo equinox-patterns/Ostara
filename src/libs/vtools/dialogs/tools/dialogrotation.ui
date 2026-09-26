@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>405</width>
-    <height>550</height>
+    <height>380</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,6 +38,9 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="visible">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>New:</string>
            </property>
@@ -51,6 +54,9 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="visible">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -61,10 +67,16 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="visible">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QToolButton" name="toolButtonNewObject">
+           <property name="visible">
+            <bool>false</bool>
+           </property>
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -80,6 +92,9 @@
        </item>
        <item>
         <widget class="QSplitter" name="splitter">
+         <property name="visible">
+          <bool>false</bool>
+         </property>
          <property name="orientation">
           <enum>Qt::Orientation::Horizontal</enum>
          </property>
@@ -187,179 +202,29 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item alignment="Qt::AlignmentFlag::AlignLeft">
-          <widget class="QLabel" name="labelEditAngle">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="palette">
-            <palette>
-             <active>
-              <colorrole role="WindowText">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>0</green>
-                 <blue>0</blue>
-                </color>
-               </brush>
-              </colorrole>
-             </active>
-             <inactive>
-              <colorrole role="WindowText">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>0</green>
-                 <blue>0</blue>
-                </color>
-               </brush>
-              </colorrole>
-             </inactive>
-             <disabled>
-              <colorrole role="WindowText">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>159</red>
-                 <green>158</green>
-                 <blue>158</blue>
-                </color>
-               </brush>
-              </colorrole>
-             </disabled>
-            </palette>
-           </property>
-           <property name="text">
-            <string>Angle:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item alignment="Qt::AlignmentFlag::AlignRight">
-          <widget class="QToolButton" name="toolButtonExprAngle">
-           <property name="toolTip">
-            <string>Formula wizard</string>
-           </property>
-           <property name="text">
-            <string notr="true"/>
-           </property>
-           <property name="icon">
-            <iconset resource="../../../vmisc/share/resources/icon.qrc">
-             <normaloff>:/icon/light/24x24/fx.png</normaloff>:/icon/light/24x24/fx.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>24</width>
-             <height>24</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignmentFlag::AlignRight">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap resource="../../../vmisc/share/resources/icon.qrc">:/icon/light/24x24/equal.png</pixmap>
-           </property>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignmentFlag::AlignRight">
-          <widget class="QLabel" name="labelResultAngle">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>87</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Value</string>
-           </property>
-           <property name="text">
-            <string notr="true">_</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QWidget" name="formulaAnglePlaceholder" native="true"/>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <layout class="QHBoxLayout" name="formulaSeparatorLayout">
+         <property name="leftMargin">
+          <number>33</number>
+         </property>
+         <property name="rightMargin">
+          <number>33</number>
+         </property>
          <item>
-          <widget class="VPlainTextEdit" name="plainTextEditFormula">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+          <widget class="QFrame" name="formulaSeparator">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>1</height>
+            </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>28</height>
+             <height>1</height>
             </size>
-           </property>
-           <property name="toolTip">
-            <string>Calculation</string>
-           </property>
-           <property name="tabChangesFocus">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButtonGrowLength">
-           <property name="maximumSize">
-            <size>
-             <width>18</width>
-             <height>18</height>
-            </size>
-           </property>
-           <property name="sizeIncrement">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string notr="true"/>
-           </property>
-           <property name="icon">
-            <iconset theme="go-down"/>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>16</width>
-             <height>16</height>
-            </size>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -369,13 +234,20 @@
         <layout class="QFormLayout" name="formLayout">
          <item row="0" column="0">
           <widget class="QLabel" name="labelOriginPoint">
+           <property name="visible">
+            <bool>false</bool>
+           </property>
            <property name="text">
-            <string>Origin Point:</string>
+            <string>Pivot point:</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QComboBox" name="comboBoxOriginPoint"/>
+          <widget class="QComboBox" name="comboBoxOriginPoint">
+           <property name="visible">
+            <bool>false</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -430,6 +302,9 @@
        </item>
        <item>
         <widget class="QLabel" name="labelStatus">
+         <property name="visible">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Ready</string>
          </property>
@@ -500,11 +375,6 @@
    <class>VCompleterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>../vwidgets/vlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>VPlainTextEdit</class>
-   <extends>QPlainTextEdit</extends>
-   <header>../vwidgets/vplaintextedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

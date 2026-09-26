@@ -339,9 +339,12 @@ void VToolLine::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 i
 void VToolLine::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
     // A line created by an operation belongs to that operation: it is rebuilt from it at every parse, so
-    // editing it on its own would have no effect. Its operation carries its options.
+    // editing it on its own would have no effect. Its operation carries its options, and the right click is
+    // forwarded to it — doing nothing here would swallow the event, since the scene accepts it before the
+    // item is asked (QGraphicsScene::contextMenuEvent) and the operation item below would never see it.
     if (m_derived)
     {
+        emit ContextMenuRequested(event, m_id);
         return;
     }
 

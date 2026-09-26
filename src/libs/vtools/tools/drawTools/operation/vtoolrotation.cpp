@@ -685,7 +685,7 @@ auto VToolRotation::MakeToolTip() const -> QString
     return QStringLiteral("<tr> <td><b>%1:</b> %2</td> </tr>"
                           "<tr> <td><b>%3:</b> %4°</td> </tr>"
                           "%5")
-        .arg(tr("Origin point"), OriginPointName(), tr("Rotation angle")) // 1, 2, 3
+        .arg(tr("Pivot point"), OriginPointName(), tr("Rotation angle"))  // 1, 2, 3
         .arg(GetFormulaAngle().getDoubleValue())                          // 4
         .arg(VisibilityGroupToolTip());                                   // 5
 }

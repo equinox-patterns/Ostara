@@ -196,7 +196,7 @@ void VisToolMove::RefreshGeometry()
         else
         {
             SetToolTip(tr("Length = %1%2, angle = %3°, rotation angle = %4°, <b>%5</b> - sticking angle, "
-                          "<b>%6</b> - change rotation origin point, <b>Mouse click</b> - finish creating")
+                          "<b>%6</b> - change the pivot point, <b>Mouse click</b> - finish creating")
                            .arg(LengthToUser(tempLength),
                                 prefix,
                                 AngleToUser(tempAngle),

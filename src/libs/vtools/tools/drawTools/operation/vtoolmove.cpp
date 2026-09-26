@@ -852,7 +852,7 @@ auto VToolMove::MakeToolTip() const -> QString
         .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), // 5
              tr("Rotation angle"))                                              // 6
         .arg(GetFormulaRotationAngle().getDoubleValue())                        // 7
-        .arg(tr("Rotation origin point"),                                       // 8
+        .arg(tr("Pivot point"),                                                 // 8
              OriginPointName(),                                                 // 9
              VisibilityGroupToolTip());                                         // 10
 }

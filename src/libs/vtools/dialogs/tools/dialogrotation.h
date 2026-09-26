@@ -43,6 +43,8 @@ namespace Ui
 class DialogRotation;
 }
 
+class AngleFormulaWidget;
+
 class DialogRotation final : public DialogOperationTool
 {
     Q_OBJECT // NOLINT
@@ -62,18 +64,11 @@ public:
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
 
-private slots:
-    /** @brief DeployAngleTextEdit grow or shrink formula input */
-    void DeployAngleTextEdit();
-    void FXAngle();
-    void EvalAngle();
-
 protected:
     void ShowVisualization() override;
 
     /** @brief SaveData Put dialog data in local variables */
     void SaveData() override;
-    void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
     auto IsValid() const -> bool override;
 
@@ -88,21 +83,14 @@ private:
     Q_DISABLE_COPY_MOVE(DialogRotation) // NOLINT
     Ui::DialogRotation *ui;
 
-    /** @brief timerAngle timer of check formula of angle */
-    QTimer *timerAngle;
-
-    /** @brief angle formula of angle */
-    QString formulaAngle{};
-
-    /** @brief formulaBaseHeightAngle base height defined by dialogui */
-    int formulaBaseHeightAngle{0};
+    /** @brief m_formulaAngle angle field — auto-growing height, value display and 0/90/180/270° presets */
+    AngleFormulaWidget *m_formulaAngle{nullptr};
 
     bool m_firstRelease{false};
 
-    /** @brief flagAngle true if value of angle is correct */
-    bool flagAngle{false};
-
-    void InitIcons();
+    /** @brief UserAngle the angle in the user's own notation, which is what the visualization expects:
+     *  VisToolRotation::SetAngle evaluates a user formula. */
+    auto UserAngle() const -> QString;
 };
 
 #endif // DIALOGROTATION_H

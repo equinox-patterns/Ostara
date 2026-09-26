@@ -82,6 +82,15 @@ auto RowNode(QListWidget *listWidget, int i) -> VPieceNode;
 auto NodeRowIndex(QListWidget *listWidget, quint32 id) -> int;
 void MoveCursorToEnd(QPlainTextEdit *plainTextEdit);
 void DeployFormula(QDialog *dialog, QPlainTextEdit *formula, QPushButton *buttonGrowLength, int formulaBaseHeight);
+
+/**
+ * @brief InitFormulaGrowButton keeps the icon of a formula expand/collapse button readable while the button
+ * is hovered. A hovered button gets the accent background, which is dark in both themes (#8C4560 light /
+ * #983E60 dark), where the icon of the active theme disappears — #2b2b2b on #8C4560 in light theme. The icon
+ * is therefore repainted in Gray200 #e5e5e5, the colour of the Dark set, as long as the cursor stays on the
+ * button, whatever icon the dialog set (Icons.md §2, "règle fond accent"). Safe to call more than once.
+ */
+void InitFormulaGrowButton(QPushButton *button);
 auto FilterObject(QObject *object, QEvent *event) -> bool;
 auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qreal;
 void ChangeColor(QWidget *widget, const QColor &color);

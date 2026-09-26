@@ -1162,6 +1162,13 @@ void VAbstractOperation::InitOperatedObjects()
             // Asking to delete a result line means deleting this operation, exactly like a destination point
             // (see DeleteFromLabel).
             connect(lineItem, &VToolLine::DeleteRequested, this, &VAbstractOperation::DeleteFromLabel);
+            // A result line has no context menu of its own: the right click opens this operation's menu,
+            // the same way a destination point does above.
+            connect(lineItem,
+                    &VToolLine::ContextMenuRequested,
+                    this,
+                    [this](QGraphicsSceneContextMenuEvent *event, quint32 id) -> void
+                    { ShowContextMenu(event, id); });
         }
     }
 }
