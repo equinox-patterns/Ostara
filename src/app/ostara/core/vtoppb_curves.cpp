@@ -133,29 +133,6 @@ auto MakeObjectNameReadOnly(const QString &label) -> PropertyDesc
                     prop->setValue(CurveDisplayName(t->name()));
             }};
 }
-
-template <typename Tool>
-auto MakeObjectName(const QString &label) -> PropertyDesc
-{
-    return {AttrName, label, false,
-            [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
-                auto *t = static_cast<Tool *>(tool);
-                auto *p = new VPE::VStringProperty(label);
-                p->setValue(t->name());
-                return p;
-            },
-            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
-                    QString const n = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                    if (n != t->name()) t->setName(n);
-                }
-            },
-            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
-                    prop->setValue(t->name());
-            }};
-}
-
 template <typename Tool>
 auto MakePointGroup(const QString &title, const QString &nameLabel, const QString &showLabel) -> PropertyDesc
 {

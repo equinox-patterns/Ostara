@@ -61,44 +61,6 @@ auto SegmentDotPixmap(VColorRole role) -> QPixmap
 }
 
 // --- Reusable helpers ---
-
-template <typename Tool>
-auto MakePointName(const QString &label) -> PropertyDesc
-{
-    return {AttrName, label, false,
-            [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
-            {
-                auto *t = static_cast<Tool *>(tool);
-                auto *prop = new VPE::VStringProperty(label);
-                prop->setValue(t->name());
-                return prop;
-            },
-            // apply: validated SetPointName logic
-            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-            {
-                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
-                {
-                    QString const name = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                    if (name == t->name()) return;
-
-                    if (QRegularExpression const rx(NameRegExp());
-                        name.isEmpty() || not VContainer::IsUnique(name, valentinaNamespace) || not rx.match(name).hasMatch())
-                    {
-                        prop->setValue(t->name());
-                    }
-                    else
-                    {
-                        t->setName(name);
-                    }
-                }
-            },
-            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-            {
-                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
-                    prop->setValue(t->name());
-            }};
-}
-
 template <typename Tool>
 auto MakePointGroup(const QString &title, const QString &nameLabel, const QString &showLabel) -> PropertyDesc
 {

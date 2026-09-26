@@ -798,12 +798,3 @@ void VToolOptionsPropertyBrowser::itemClicked(QGraphicsItem *item)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolOptionsPropertyBrowser::AddPropertyFormula(const QString &propertyName, const VFormula &formula,
-                                                     const QString &attrName)
-{
-    auto *itemLength = new VFormulaProperty(propertyName);
-    itemLength->SetFormula(formula);
-    AddProperty(itemLength, attrName);
-}
-
-//---------------------------------------------------------------------------------------------------------------------

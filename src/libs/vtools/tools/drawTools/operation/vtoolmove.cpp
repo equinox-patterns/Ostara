@@ -457,7 +457,11 @@ void UpdateDestinationObject(quint32 id,
 void UpdateDestinationObjects(
     VToolMoveInitData &initData, QPointF rotationOrigin, qreal calcAngle, qreal calcLength, qreal calcRotationAngle)
 {
-    for (int i = 0; i < initData.source.size(); ++i)
+    // The two lists are written together, but a file can hold more sources than destinations: indexing the
+    // shorter one would read out of bounds and end the application on a mere open (same guard as Rotation).
+    const qsizetype count = qMin(initData.source.size(), initData.destination.size());
+
+    for (int i = 0; i < count; ++i)
     {
         const SourceItem &object = initData.source.at(i);
         const QSharedPointer<VGObject> obj = initData.data->GetGObject(object.id);
