@@ -129,21 +129,7 @@ DialogFlippingByLine::~DialogFlippingByLine()
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogFlippingByLine::Widgets() const -> OperationWidgets
 {
-    return {.sourceList = ui->listWidget,
-            .name = ui->lineEditName,
-            .labelName = ui->labelName,
-            .labelStatus = ui->labelStatus,
-            .labelGroupName = ui->labelGroupName,
-            .penStyle = ui->comboBoxPenStyle,
-            .color = m_colorCombo,
-            .objectType = ui->comboBoxObjectType,
-            .newObject = ui->comboBoxNewObject,
-            .addObject = ui->toolButtonNewObject,
-            .removeObject = ui->toolButtonRemoveObject,
-            .notes = ui->plainTextEditToolNotes,
-            .groupTags = ui->lineEditGroupTags,
-            .visibilityGroupLine = ui->lineEditVisibilityGroup,
-            .visibilityGroup = ui->groupBoxVisibilityGroup};
+    return OperationWidgetsFrom(ui, m_colorCombo);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

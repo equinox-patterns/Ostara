@@ -773,6 +773,52 @@ void VAbstractOperation::ChangeLabelVisibility(quint32 id, bool visible)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::SaveCommonDialogData(QDomElement &domElement, const QString &notes) const
+{
+    doc->SetAttributeOrRemoveIf<QString>(domElement,
+                                         AttrNotes,
+                                         notes,
+                                         [](const QString &value) noexcept -> bool { return value.isEmpty(); });
+
+    // We no longer need to handle suffix attribute here. The code can be removed.
+    Q_STATIC_ASSERT(VPatternConverter::PatternMinVer < FormatVersion(1, 1, 1));
+    if (domElement.hasAttribute(AttrSuffix))
+    {
+        domElement.removeAttribute(AttrSuffix);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractOperation::SyncDestinationPreamble(const QVector<SourceItem> &source, bool &unchanged) const
+    -> QMap<QUuid, DestinationItem>
+{
+    // Build lookup of existing destination items by recordId
+    QMap<QUuid, DestinationItem> existingByRecord;
+    for (const auto &dest : std::as_const(m_destination))
+    {
+        if (!dest.recordId.isNull())
+        {
+            existingByRecord.insert(dest.recordId, dest);
+        }
+    }
+
+    // Check if source set changed (additions or removals)
+    const QSet<QUuid> oldRecords = ConvertToSet<QUuid>(existingByRecord.keys());
+    QSet<QUuid> newRecords;
+    for (const auto &item : std::as_const(source))
+    {
+        if (!item.recordId.isNull())
+        {
+            newRecords.insert(item.recordId);
+        }
+    }
+
+    unchanged = (oldRecords == newRecords);
+    return existingByRecord;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VAbstractOperation::ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement)
 {
     auto *newGroup = new QUndoCommand(); // an empty command

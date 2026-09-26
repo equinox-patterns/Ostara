@@ -169,4 +169,30 @@ private:
     bool m_dependencyReady{true};
 };
 
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The widgets of an operation dialog, read from its generated .ui.
+ *
+ * The four operations name these widgets the same way in their .ui, so the list is written once here rather
+ * than four times. A dialog that renames one of them gets a compile error, which is the point: the widget set
+ * is a contract between the base class and every operation dialog.
+ */
+template <class Ui> auto OperationWidgetsFrom(const Ui *ui, QComboBox *color) -> OperationWidgets
+{
+    return {.sourceList = ui->listWidget,
+            .name = ui->lineEditName,
+            .labelName = ui->labelName,
+            .labelStatus = ui->labelStatus,
+            .labelGroupName = ui->labelGroupName,
+            .penStyle = ui->comboBoxPenStyle,
+            .color = color,
+            .objectType = ui->comboBoxObjectType,
+            .newObject = ui->comboBoxNewObject,
+            .addObject = ui->toolButtonNewObject,
+            .removeObject = ui->toolButtonRemoveObject,
+            .notes = ui->plainTextEditToolNotes,
+            .groupTags = ui->lineEditGroupTags,
+            .visibilityGroupLine = ui->lineEditVisibilityGroup,
+            .visibilityGroup = ui->groupBoxVisibilityGroup};
+}
+
 #endif // DIALOGOPERATIONTOOL_H

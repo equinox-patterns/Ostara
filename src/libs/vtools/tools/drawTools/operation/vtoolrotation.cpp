@@ -363,28 +363,9 @@ VToolRotation::VToolRotation(const VToolRotationInitData &initData, QGraphicsIte
 auto VToolRotation::SyncDestination(const QVector<SourceItem> &source, QString &formulaAngle)
     -> QVector<DestinationItem>
 {
-    // Build lookup of existing destination items by recordId
-    QMap<QUuid, DestinationItem> existingByRecord;
-    for (const auto &dest : std::as_const(m_destination))
-    {
-        if (!dest.recordId.isNull())
-        {
-            existingByRecord.insert(dest.recordId, dest);
-        }
-    }
-
-    // Check if source set changed (additions or removals)
-    QSet<QUuid> const oldRecords = ConvertToSet<QUuid>(existingByRecord.keys());
-    QSet<QUuid> newRecords;
-    for (const auto &item : std::as_const(source))
-    {
-        if (!item.recordId.isNull())
-        {
-            newRecords.insert(item.recordId);
-        }
-    }
-
-    if (oldRecords == newRecords)
+    bool unchanged = false;
+    const QMap<QUuid, DestinationItem> existingByRecord = SyncDestinationPreamble(source, unchanged);
+    if (unchanged)
     {
         return m_destination;
     }
@@ -674,15 +655,7 @@ void VToolRotation::ShowVisualization(bool show)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolRotation::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id)
 {
-    try
-    {
-        ContextMenu<DialogRotation>(event, id);
-    }
-    catch (const VExceptionToolWasDeleted &e)
-    {
-        Q_UNUSED(e)
-        return; // Leave this method immediately!!!
-    }
+    ShowContextMenuOf<DialogRotation>(event, id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -714,24 +687,12 @@ void VToolRotation::SetVisualization()
 //---------------------------------------------------------------------------------------------------------------------
 void VToolRotation::SaveDialog(QDomElement &domElement)
 {
-    SCASSERT(not m_dialog.isNull())
-    const QPointer<DialogRotation> dialogTool = qobject_cast<DialogRotation *>(m_dialog);
-    SCASSERT(not dialogTool.isNull())
+    const QPointer<DialogRotation> dialogTool = DialogOf<DialogRotation>();
 
     QString formulaAngle = dialogTool->GetAngle();
 
     doc->SetAttribute(domElement, AttrCenter, QString().setNum(dialogTool->GetOrigPointId()));
-    doc->SetAttributeOrRemoveIf<QString>(domElement,
-                                         AttrNotes,
-                                         dialogTool->GetNotes(),
-                                         [](const QString &notes) noexcept -> bool { return notes.isEmpty(); });
-
-    // We no longer need to handle suffix attribute here. The code can be removed.
-    Q_STATIC_ASSERT(VPatternConverter::PatternMinVer < FormatVersion(1, 1, 1));
-    if (domElement.hasAttribute(AttrSuffix))
-    {
-        domElement.removeAttribute(AttrSuffix);
-    }
+    SaveCommonDialogData(domElement, dialogTool->GetNotes());
 
     const QVector<SourceItem> source = dialogTool->GetSourceObjects();
     const QVector<DestinationItem> destination = SyncDestination(source, formulaAngle);
@@ -781,9 +742,5 @@ auto VToolRotation::MakeToolTip() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 void VToolRotation::ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement)
 {
-    SCASSERT(not m_dialog.isNull())
-    const QPointer<DialogRotation> dialogTool = qobject_cast<DialogRotation *>(m_dialog);
-    SCASSERT(not dialogTool.isNull())
-
-    ProcessOperationToolOptions(oldDomElement, newDomElement, dialogTool->GetSourceObjects());
+    ApplyDialogOptions<DialogRotation>(oldDomElement, newDomElement);
 }

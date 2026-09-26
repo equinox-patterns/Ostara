@@ -188,6 +188,28 @@ protected:
                                      const QDomElement &newDomElement,
                                      const QVector<SourceItem> &newSource);
 
+    /** @brief The dialog of this operation, typed. Every operation keeps its options in a dialog of its own,
+     *  and the cast with its two assertions is written the same way in all of them. */
+    template <class Dialog> auto DialogOf() const -> QPointer<Dialog>;
+
+    /** @brief Show the tool options menu. Only the dialog it opens changes from one operation to the next. */
+    template <class Dialog> void ShowContextMenuOf(QGraphicsSceneContextMenuEvent *event, quint32 id);
+
+    /** @brief Write back what a dialog returned: the sources it holds are the ones to write. Same three
+     *  assertions in every operation, only the dialog type differs. */
+    template <class Dialog>
+    void ApplyDialogOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement);
+
+    /** @brief The destinations the operation already holds, by recordId, and whether the source set is
+     *  unchanged — in which case there is nothing to recompute and the caller returns early.
+     *  @a unchanged is set accordingly. */
+    auto SyncDestinationPreamble(const QVector<SourceItem> &source, bool &unchanged) const
+        -> QMap<QUuid, DestinationItem>;
+
+    /** @brief The part of a dialog save that every operation writes the same way: the notes, and the legacy
+     *  suffix attribute that must not come back into the file. */
+    void SaveCommonDialogData(QDomElement &domElement, const QString &notes) const;
+
 private:
     Q_DISABLE_COPY_MOVE(VAbstractOperation) // NOLINT
 
@@ -276,6 +298,35 @@ template <typename T> void VAbstractOperation::InitOperationToolConnections(VMai
 
     QObject::connect(scene, &VMainGraphicsScene::EnableElArcItemHover, tool, &T::AllowElArcHover);
     QObject::connect(scene, &VMainGraphicsScene::EnableElArcItemSelection, tool, &T::AllowElArcSelecting);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <class Dialog> auto VAbstractOperation::DialogOf() const -> QPointer<Dialog>
+{
+    SCASSERT(not m_dialog.isNull())
+    const QPointer<Dialog> dialogTool = qobject_cast<Dialog *>(m_dialog);
+    SCASSERT(not dialogTool.isNull())
+    return dialogTool;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <class Dialog> void VAbstractOperation::ShowContextMenuOf(QGraphicsSceneContextMenuEvent *event, quint32 id)
+{
+    try
+    {
+        ContextMenu<Dialog>(event, id);
+    }
+    catch (const VExceptionToolWasDeleted &)
+    {
+        return; // Leave this method immediately: the tool was deleted while its menu was open
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <class Dialog>
+void VAbstractOperation::ApplyDialogOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement)
+{
+    ProcessOperationToolOptions(oldDomElement, newDomElement, DialogOf<Dialog>()->GetSourceObjects());
 }
 
 #endif // VABSTRACTOPERATION_H
