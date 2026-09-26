@@ -267,13 +267,15 @@ void OOperationLines::CreateLines(VAbstractPattern *doc, VContainer *data, VMain
         }
         catch (const VException &e)
         {
-            qCWarning(vTool,
-                      "Transformed line %u between points %u and %u (source %u) could not be created: %s",
-                      line.result,
-                      first,
-                      second,
-                      line.source,
-                      e.ErrorMessage().toUtf8().constData());
+            // Reported and skipped, as announced above — but in the log only: this runs from the creation
+            // itself, and a warning would raise a modal box in the middle of it.
+            qCDebug(vTool,
+                    "Transformed line %u between points %u and %u (source %u) could not be created: %s",
+                    line.result,
+                    first,
+                    second,
+                    line.source,
+                    e.ErrorMessage().toUtf8().constData());
         }
     }
 }

@@ -612,7 +612,9 @@ auto DialogTool::SetObject(const quint32 &id, QComboBox *box, const QString &too
         return true;
     }
 
-    qWarning() << "Can't find object by id" << id;
+    // Reached whenever a click lands on an object the list does not offer, which is normal — and it must not
+    // warn: a warning becomes a modal box here (see VDrawTool::GetItemType and VApplication's message handler).
+    qCDebug(vDialog) << "Can't find object by id" << id;
 
     return false;
 }

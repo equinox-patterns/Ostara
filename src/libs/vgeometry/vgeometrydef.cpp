@@ -35,6 +35,8 @@
 #include <QJsonObject>
 #include <qnumeric.h>
 
+#include <cmath>
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"
 #endif
@@ -328,28 +330,46 @@ auto IsPointOnLineSegment(const QPointF &t, const QPointF &p1, const QPointF &p2
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto RotationChord(qreal radius, qreal angle) -> qreal
+auto NormalizeRotation(qreal angle) -> qreal
 {
-    // The chord only knows the short way round: a rotation of 200° and one of -160° describe the same
-    // segment A→A'. The angle is brought back into ]-180, 180] so that the chord displayed can be typed back
-    // and give the very same rotation.
-    while (angle > 180.)
+    // The chord only knows the short way round: a rotation of 200° and one of -160° describe the same segment
+    // A→A'. The angle is brought back into ]-180, 180] so that the chord displayed can be typed back and give
+    // the very same rotation.
+    //
+    // The reduction is done in one step. Subtracting 360° in a loop never ends on an infinite angle, and takes
+    // an eternity on the huge one a formula can produce: the angle comes from the user, so both are reachable.
+    if (!qIsFinite(angle))
     {
-        angle -= 360.;
+        return qQNaN(); // an infinite or undefined rotation has no angle to speak of
     }
-    while (angle <= -180.)
+
+    angle = std::fmod(angle + 180., 360.);
+    if (angle < 0.)
     {
         angle += 360.;
     }
+    angle -= 180.; // back into [-180, 180[
 
-    return 2. * radius * qSin(qDegreesToRadians(angle / 2.));
+    return angle <= -180. ? 180. : angle; // a half-turn has no direction: -180 and 180 draw the same segment
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto RotationChord(qreal radius, qreal angle) -> qreal
+{
+    const qreal normalized = NormalizeRotation(angle);
+    if (qIsNaN(normalized))
+    {
+        return qQNaN();
+    }
+
+    return 2. * radius * qSin(qDegreesToRadians(normalized / 2.));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto RotationAngleForChord(qreal radius, qreal chord) -> qreal
 {
     // |A A'| = 2 r sin(θ/2): no solution once the chord passes the diameter of the circle.
-    if (qFuzzyIsNull(radius))
+    if (!qIsFinite(radius) || !qIsFinite(chord) || qFuzzyIsNull(radius))
     {
         return qQNaN();
     }
@@ -361,5 +381,6 @@ auto RotationAngleForChord(qreal radius, qreal chord) -> qreal
         return qQNaN();
     }
 
-    return qRadiansToDegrees(2. * qAsin(qBound(-1., ratio, 1.)));
+    const qreal angle = qRadiansToDegrees(2. * qAsin(qBound(-1., ratio, 1.)));
+    return angle <= -180. ? 180. : angle; // same domain as RotationChord: a half-turn has no direction
 }

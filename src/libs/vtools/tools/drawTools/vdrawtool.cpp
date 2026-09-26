@@ -217,8 +217,15 @@ auto VDrawTool::GetItemType(quint32 itemId) const -> GOType
     }
     catch (const VExceptionBadId &e)
     {
-        // Possible case: Parent was deleted, but the node object still exists
-        qWarning() << qUtf8Printable(e.ErrorMessage());
+        // Possible cases: a parent was deleted and the node object still exists, or the id is a line carried by
+        // an operation — a Line tool, which is not an object of the container at all. Asking for its type is
+        // normal, and this method runs on every right click and every selection.
+        //
+        // It must not warn: the message handler turns every warning into a modal error box, and a box raised
+        // from inside the event stack re-enters the event loop there — one box per interaction leaves the
+        // application unusable (see the QPainter:: and QPen:: cases in noisyFailureMsgHandler). The trace
+        // stays available in the log.
+        qCDebug(vTool) << qUtf8Printable(e.ErrorMessage());
         return GOType::Unknown;
     }
 }

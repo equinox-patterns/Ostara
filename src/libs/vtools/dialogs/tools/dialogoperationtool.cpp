@@ -52,6 +52,24 @@
 
 using namespace Qt::Literals::StringLiterals;
 
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+// The pattern object behind a source id, or nullptr when the id is not a pattern object at all: an operation can
+// carry a line, which is a Line tool and not an object of the container. Reading a source must never throw.
+auto SourceObject(const VContainer &data, quint32 id) -> QSharedPointer<VGObject>
+{
+    try
+    {
+        return data.GetGObject(id);
+    }
+    catch (const VExceptionBadId &)
+    {
+        return {};
+    }
+}
+} // namespace
+
 //---------------------------------------------------------------------------------------------------------------------
 DialogOperationTool::DialogOperationTool(const VContainer *data, VAbstractPattern *doc, quint32 toolId,
                                          QWidget *parent)
@@ -68,7 +86,14 @@ auto DialogOperationTool::GetVisibilityGroupName() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::SetVisibilityGroupName(const QString &name) const
 {
-    Widgets().visibilityGroupLine->setText(name.isEmpty() ? tr("Rotation") : name);
+    if (name.isEmpty())
+    {
+        // Nothing to put in the field: it keeps the default name its own .ui gives it, which is the name of the
+        // operation and is translated for it. Writing one here would label every operation "Rotation".
+        return;
+    }
+
+    Widgets().visibilityGroupLine->setText(name);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -218,7 +243,12 @@ auto DialogOperationTool::LineDisplayName(quint32 id) -> QString
     {
         if (auto *line = qobject_cast<VToolLine *>(VAbstractPattern::FindTool(id)); line != nullptr)
         {
-            return tr("Line_%1_%2").arg(line->FirstPointName(), line->SecondPointName());
+            const QString first = line->FirstPointName();
+            const QString second = line->SecondPointName();
+            if (!first.isEmpty() && !second.isEmpty())
+            {
+                return tr("Line_%1_%2").arg(first, second);
+            }
         }
     }
     catch (const VException &e)
@@ -306,7 +336,8 @@ void DialogOperationTool::ShowSourceDetails(int row)
     }
 
     const auto sourceItem = qvariant_cast<SourceItem>(item->data(Qt::UserRole));
-    if (data.GetGObject(sourceItem.id)->getType() == GOType::Point)
+    const QSharedPointer<VGObject> sourceObject = SourceObject(data, sourceItem.id);
+    if (sourceObject != nullptr && sourceObject->getType() == GOType::Point)
     {
         const QSignalBlocker blockerPenStyle(Widgets().penStyle);
         const QSignalBlocker blockerColor(combo);
@@ -345,8 +376,11 @@ void DialogOperationTool::ShowSourceDetails(int row)
 
         if (sourceItem.color.isEmpty() || sourceItem.color == ColorDefault)
         {
-            const QSharedPointer<VAbstractCurve> curve = data.GeometricObject<VAbstractCurve>(sourceItem.id);
-            SetColorComboCurrentName(combo, curve->GetColor());
+            if (const QSharedPointer<VAbstractCurve> curve = qSharedPointerDynamicCast<VAbstractCurve>(sourceObject);
+                curve != nullptr)
+            {
+                SetColorComboCurrentName(combo, curve->GetColor());
+            }
         }
 
         Widgets().penStyle->setEnabled(true);
@@ -434,12 +468,13 @@ void DialogOperationTool::NameChanged(const QString &text)
             item->setData(Qt::UserRole, QVariant::fromValue(sourceItem));
         }
 
-        const QSharedPointer<VGObject> obj = data.GetGObject(sourceItem.id);
+        const QSharedPointer<VGObject> obj = SourceObject(data, sourceItem.id);
         ChangeColor(Widgets().labelName, valid ? OkColor(this) : errorColor);
 
         if (!valid)
         {
-            Widgets().labelStatus->setText(obj->getType() == GOType::Point ? tr("Invalid label") : tr("Invalid name"));
+            Widgets().labelStatus->setText(obj != nullptr && obj->getType() == GOType::Point ? tr("Invalid label")
+                                                                                            : tr("Invalid name"));
         }
 
         flagName = valid;
@@ -642,9 +677,12 @@ void DialogOperationTool::FillSourceList()
 
     for (const auto &sourceItem : std::as_const(m_sourceObjects))
     {
-        const QSharedPointer<VGObject> obj = data.GetGObject(sourceItem.id);
-        auto *item = new QListWidgetItem(obj->ObjectName());
-        item->setToolTip(obj->ObjectName());
+        // A source the container does not know — a line the operation carries, an object that is gone — must not
+        // blow the dialog up: the row stays, named after the line it is.
+        const QSharedPointer<VGObject> obj = SourceObject(data, sourceItem.id);
+        const QString name = obj != nullptr ? obj->ObjectName() : LineDisplayName(sourceItem.id);
+        auto *item = new QListWidgetItem(name);
+        item->setToolTip(name);
         item->setData(Qt::UserRole, QVariant::fromValue(sourceItem));
         Widgets().sourceList->insertItem(++row, item);
     }

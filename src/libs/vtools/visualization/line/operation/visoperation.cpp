@@ -102,8 +102,10 @@ void VisOperation::RefreshPreviewLines(bool drawImages)
         }
         catch (const VException &e)
         {
-            qCWarning(vVis, "Attached line %u - %u is not drawable: %s", attached.first, attached.second,
-                      e.ErrorMessage().toUtf8().constData());
+            // A line whose endpoint is gone is dropped, nothing more: warning here would raise a modal box on
+            // every mouse move, since this runs from RefreshGeometry (see VDrawTool::GetItemType).
+            qCDebug(vVis, "Attached line %u - %u is not drawable: %s", attached.first, attached.second,
+                    e.ErrorMessage().toUtf8().constData());
             continue;
         }
 
@@ -201,35 +203,47 @@ auto VisOperation::CreateOriginObjects(int &iPoint, int &iCurve) -> QVector<QGra
 
     for (auto id : Objects())
     {
-        const QSharedPointer<VGObject> obj = GetData()->GetGObject(id);
-
-        // This check helps to find missed objects in the switch
-        Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
-
-        QT_WARNING_PUSH
-        QT_WARNING_DISABLE_GCC("-Wswitch-default")
-        QT_WARNING_DISABLE_CLANG("-Wswitch-default")
-
-        switch (obj->getType())
+        // The ids come from the pattern, and one of them can be gone by the time the preview is drawn. An
+        // exception escaping here would end the application: this runs from the Qt event loop, on every mouse
+        // move (see VDrawTool::GetItemType). The object is simply left out of the preview.
+        try
         {
-            case GOType::Point:
-                originObjects.append(AddOriginPoint(id, iPoint));
-                break;
-            case GOType::Arc:
-            case GOType::EllipticalArc:
-            case GOType::Spline:
-            case GOType::SplinePath:
-            case GOType::CubicBezier:
-            case GOType::CubicBezierPath:
-                originObjects.append(AddOriginCurve(id, iCurve));
-                break;
-            case GOType::PlaceLabel:
-            case GOType::Unknown:
-                Q_UNREACHABLE();
-                break;
-        }
+            const QSharedPointer<VGObject> obj = GetData()->GetGObject(id);
 
-        QT_WARNING_POP
+            // This check helps to find missed objects in the switch
+            Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
+
+            QT_WARNING_PUSH
+            QT_WARNING_DISABLE_GCC("-Wswitch-default")
+            QT_WARNING_DISABLE_CLANG("-Wswitch-default")
+
+            switch (obj->getType())
+            {
+                case GOType::Point:
+                    originObjects.append(AddOriginPoint(id, iPoint));
+                    break;
+                case GOType::Arc:
+                case GOType::EllipticalArc:
+                case GOType::Spline:
+                case GOType::SplinePath:
+                case GOType::CubicBezier:
+                case GOType::CubicBezierPath:
+                    originObjects.append(AddOriginCurve(id, iCurve));
+                    break;
+                case GOType::PlaceLabel:
+                case GOType::Unknown:
+                    // Nothing to draw for either of them: a place label is not an operated object, and an
+                    // unknown type has no geometry to show.
+                    qCDebug(vVis, "Object %u has no origin to draw, skipped", id);
+                    break;
+            }
+
+            QT_WARNING_POP
+        }
+        catch (const VException &e)
+        {
+            qCDebug(vVis, "Skipping object %u in the preview: %s", id, e.ErrorMessage().toUtf8().constData());
+        }
     }
 
     return originObjects;

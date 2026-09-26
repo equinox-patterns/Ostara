@@ -28,16 +28,11 @@
 
 #include "vistoolrotation.h"
 
-#include <QGraphicsLineItem>
-#include <QGraphicsPathItem>
 #include <QGuiApplication>
 #include <QLineF>
-#include <QPainterPath>
 #include <QSharedPointer>
-#include <QtAlgorithms>
 #include <climits>
 
-#include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/varc.h"
 #include "../vgeometry/vcubicbezier.h"
 #include "../vgeometry/vcubicbezierpath.h"
@@ -49,8 +44,53 @@
 #include "../vgeometry/vsplinepath.h"
 #include "../vmisc/vmodifierkey.h"
 #include "../vpatterndb/vcontainer.h"
+#include "../vexception/vexception.h"
 #include "../vwidgets/global.h"
 #include "visoperation.h"
+
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+// A preview is built from ids read in the pattern, and one of them can be gone by the time it is drawn. Letting
+// VExceptionBadId out of here would end the application: an exception raised from the Qt event loop — and this
+// runs on every mouse move — is not handled, see VDrawTool::GetItemType. A missing object simply draws nothing.
+template <class T> auto FindObject(const VContainer *data, quint32 id) -> QSharedPointer<T>
+{
+    if (data == nullptr || id == NULL_ID)
+    {
+        return {};
+    }
+
+    try
+    {
+        return data->GeometricObject<T>(id);
+    }
+    catch (const VException &e)
+    {
+        qCDebug(vVis, "Skipping object %u in the rotation preview: %s", id, e.ErrorMessage().toUtf8().constData());
+        return {};
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto FindGObject(const VContainer *data, quint32 id) -> QSharedPointer<VGObject>
+{
+    if (data == nullptr || id == NULL_ID)
+    {
+        return {};
+    }
+
+    try
+    {
+        return data->GetGObject(id);
+    }
+    catch (const VException &e)
+    {
+        qCDebug(vVis, "Skipping object %u in the rotation preview: %s", id, e.ErrorMessage().toUtf8().constData());
+        return {};
+    }
+}
+} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 VisToolRotation::VisToolRotation(const VContainer *data, QGraphicsItem *parent)
@@ -59,8 +99,11 @@ VisToolRotation::VisToolRotation(const VContainer *data, QGraphicsItem *parent)
     SetColorRole(VColorRole::VisSupportColor2);
 
     m_point = InitPoint(VColorRole::VisSupportColor2, this);
-    m_angleArc = InitItem<VCurvePathItem>(VColorRole::VisSupportColor2, this);
-    m_xAxis = InitItem<VScaledLine>(VColorRole::VisSupportColor2, this);
+    // The aides of the rotation — the arc and the reference axis — take a colour of their own, so that the
+    // pivot is not painted like the circle it is turned around (same split as VisToolMove).
+    m_angleArc = InitItem<VCurvePathItem>(VColorRole::VisSupportColor3, this);
+    m_xAxis = InitItem<VScaledLine>(VColorRole::VisSupportColor3, this);
+    m_xAxis->SetShowArrows(false); // an axis of reference, not a direction
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -88,7 +131,12 @@ void VisToolRotation::RefreshGeometry()
 
     if (m_originPointId != NULL_ID)
     {
-        QSharedPointer<VPointF> origin = GetData()->GeometricObject<VPointF>(m_originPointId);
+        const QSharedPointer<VPointF> origin = FindObject<VPointF>(GetData(), m_originPointId);
+        if (origin.isNull())
+        {
+            return; // the pivot is gone: there is no circle left to draw the rotation around
+        }
+
         DrawPoint(m_point, static_cast<QPointF>(*origin));
 
         QLineF rLine;
@@ -110,12 +158,24 @@ void VisToolRotation::RefreshGeometry()
             tempAngle = m_angle;
         }
 
+        // Drawn and read the short way round, exactly like the length it goes with: a rotation of 270° is a
+        // rotation of -90°, and it is shown as such here as it is in the dialog.
+        const qreal sweep = NormalizeRotation(tempAngle);
+
         DrawLine(this, rLine, Qt::DashLine);
         DrawLine(m_xAxis, QLineF(static_cast<QPointF>(*origin), Ray(static_cast<QPointF>(*origin), 0)), Qt::DashLine);
 
-        VArc const arc(*origin, ScaledRadius(SceneScale(VAbstractValApplication::VApp()->getCurrentScene())) * 2, 0,
-                       tempAngle);
-        DrawPath(m_angleArc, arc.GetPath(), Qt::SolidLine, Qt::RoundCap);
+        if (qIsNaN(sweep) || qFuzzyIsNull(sweep))
+        {
+            // Nothing is turned: VArc reads an empty sweep as a whole circle, so the arc would lie.
+            m_angleArc->setVisible(false);
+        }
+        else
+        {
+            VArc const arc(*origin, ScaledRadius(SceneScale(VAbstractValApplication::VApp()->getCurrentScene())) * 2,
+                           0, sweep);
+            DrawPath(m_angleArc, arc.GetPath(), Qt::SolidLine, Qt::RoundCap);
+        }
 
         // The status bar reads the length out too: the chord of the reference point — the first source point
         // — signed like the rotation it comes from, so what is read here can be typed in the dialog. No point
@@ -123,12 +183,11 @@ void VisToolRotation::RefreshGeometry()
         const quint32 referenceId = GetData()->FirstPointId(Objects());
         if (referenceId != NULL_ID)
         {
-            const QPointF reference = static_cast<QPointF>(*GetData()->GeometricObject<VPointF>(referenceId));
             SetToolTip(tr("Rotating angle = %1°, length = %2%3, <b>%4</b> - sticking angle, "
                           "<b>Mouse click</b> - finish creation")
-                           .arg(AngleToUser(tempAngle),
-                                LengthToUser(RotationChord(
-                                    QLineF(static_cast<QPointF>(*origin), reference).length(), tempAngle)),
+                           .arg(AngleToUser(sweep),
+                                LengthToUser(RotationChord(GetData()->PointsDistance(m_originPointId, referenceId),
+                                                           sweep)),
                                 UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true),
                                 VModifierKey::Shift()));
         }
@@ -136,7 +195,7 @@ void VisToolRotation::RefreshGeometry()
         {
             SetToolTip(tr("Rotating angle = %1°, <b>%2</b> - sticking angle, "
                           "<b>Mouse click</b> - finish creation")
-                           .arg(AngleToUser(tempAngle), VModifierKey::Shift()));
+                           .arg(AngleToUser(sweep), VModifierKey::Shift()));
         }
     }
 
@@ -152,7 +211,11 @@ auto VisToolRotation::PointImage(const QPointF &point) const -> QPointF
         return point;
     }
 
-    const QSharedPointer<VPointF> origin = GetData()->GeometricObject<VPointF>(m_originPointId);
+    const QSharedPointer<VPointF> origin = FindObject<VPointF>(GetData(), m_originPointId);
+    if (origin.isNull())
+    {
+        return point; // no pivot left to turn around: the point is its own image
+    }
 
     // Same angle as the one shown in the status bar: the live one while the mouse drives it, the locked
     // one once the angle is set.
@@ -189,11 +252,15 @@ auto VisToolRotation::AddRotatedPoint(qreal angle, quint32 id, int i) -> int
         return i;
     }
 
-    const QSharedPointer<VPointF> p = GetData()->GeometricObject<VPointF>(id);
+    const QSharedPointer<VPointF> p = FindObject<VPointF>(GetData(), id);
+    const QSharedPointer<VPointF> origin = FindObject<VPointF>(GetData(), m_originPointId);
+    if (p.isNull() || origin.isNull())
+    {
+        return i; // one of the two is gone: the image of this point simply is not drawn
+    }
 
     ++i;
     VScaledEllipse *point = GetPoint(static_cast<quint32>(i), VColorRole::VisSupportColor);
-    const QSharedPointer<VPointF> origin = GetData()->GeometricObject<VPointF>(m_originPointId);
     DrawPoint(point, static_cast<QPointF>(p->Rotate(static_cast<QPointF>(*origin), angle)));
 
     return i;
@@ -204,7 +271,11 @@ void VisToolRotation::CreateRotatedObjects(int &iPoint, int &iCurve, qreal angle
 {
     for (auto id : Objects())
     {
-        const QSharedPointer<VGObject> obj = GetData()->GetGObject(id);
+        const QSharedPointer<VGObject> obj = FindGObject(GetData(), id);
+        if (obj.isNull())
+        {
+            continue; // the object is gone: it has no image to draw
+        }
 
         // This check helps to find missed objects in the switch
         Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects was handled.");
@@ -238,7 +309,9 @@ void VisToolRotation::CreateRotatedObjects(int &iPoint, int &iCurve, qreal angle
                 break;
             case GOType::PlaceLabel:
             case GOType::Unknown:
-                Q_UNREACHABLE();
+                // A place label cannot be operated on, and an unknown type has nothing to draw: the source
+                // list is read from the pattern, so neither is impossible in a hand-edited file.
+                qCDebug(vVis, "Object %u cannot be rotated, skipped", id);
                 break;
         }
 
@@ -255,11 +328,15 @@ auto VisToolRotation::AddRotatedCurve(qreal angle, quint32 id, int i) -> int
         return i;
     }
 
-    const QSharedPointer<Item> curve = GetData()->template GeometricObject<Item>(id);
+    const QSharedPointer<Item> curve = FindObject<Item>(GetData(), id);
+    const QSharedPointer<VPointF> origin = FindObject<VPointF>(GetData(), m_originPointId);
+    if (curve.isNull() || origin.isNull())
+    {
+        return i; // one of the two is gone: this curve has no image to draw
+    }
 
     ++i;
     VCurvePathItem *path = GetCurve(static_cast<quint32>(i), VColorRole::VisSupportColor);
-    const QSharedPointer<VPointF> origin = GetData()->GeometricObject<VPointF>(m_originPointId);
     const Item rotated = curve->Rotate(static_cast<QPointF>(*origin), angle);
     DrawPath(path, rotated.GetPath(), rotated.DirectionArrows(), Qt::SolidLine, Qt::RoundCap);
 

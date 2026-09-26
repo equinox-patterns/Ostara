@@ -81,7 +81,12 @@ auto VPE::VStringProperty::setEditorData(QWidget *editor) -> bool
     {
         if (not readOnly)
         {
-            tmpWidget->setText(vproperty_d_ptr->VariantValue.toString());
+            // Never write over a field the user is typing in: QLineEdit::setText() drops the selection, the
+            // cursor position and the undo history, and the options dock refreshes between two keystrokes.
+            if (not tmpWidget->hasFocus())
+            {
+                tmpWidget->setText(vproperty_d_ptr->VariantValue.toString());
+            }
         }
         return true;
     }

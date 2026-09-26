@@ -50,6 +50,30 @@ VCurvePathItem::VCurvePathItem(VColorRole role, QGraphicsItem *parent)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VCurvePathItem::DirectionArrowsPath() const -> QPainterPath
+{
+    return VAbstractCurve::ShowDirection(
+        m_directionArrows, ScaleWidth(VAbstractCurve::LengthCurveDirectionArrow(), SceneScale(scene())));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCurvePathItem::boundingRect() const -> QRectF
+{
+    QRectF rect = QGraphicsPathItem::boundingRect();
+
+    // The direction arrows are painted beside the path, not on it, and Qt only redraws what boundingRect()
+    // announces ("all painting must be restricted to inside an item's bounding rect"): leaving them out leaves
+    // ghost pixels behind as soon as the curve moves.
+    const QPainterPath arrowsPath = DirectionArrowsPath();
+    if (arrowsPath != QPainterPath())
+    {
+        rect = rect.united(ItemShapeFromPath(arrowsPath, pen()).boundingRect());
+    }
+
+    return rect;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VCurvePathItem::shape() const -> QPainterPath
 {
     QPainterPath itemPath;
@@ -67,8 +91,7 @@ auto VCurvePathItem::shape() const -> QPainterPath
         itemPath = path();
     }
 
-    const QPainterPath arrowsPath = VAbstractCurve::ShowDirection(
-        m_directionArrows, ScaleWidth(VAbstractCurve::LengthCurveDirectionArrow(), SceneScale(scene())));
+    const QPainterPath arrowsPath = DirectionArrowsPath();
 
     if (arrowsPath != QPainterPath())
     {
@@ -81,8 +104,7 @@ auto VCurvePathItem::shape() const -> QPainterPath
 //---------------------------------------------------------------------------------------------------------------------
 void VCurvePathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    const QPainterPath arrowsPath = VAbstractCurve::ShowDirection(
-        m_directionArrows, ScaleWidth(VAbstractCurve::LengthCurveDirectionArrow(), SceneScale(scene())));
+    const QPainterPath arrowsPath = DirectionArrowsPath();
 
     if (arrowsPath != QPainterPath())
     {
@@ -108,6 +130,8 @@ void VCurvePathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 //---------------------------------------------------------------------------------------------------------------------
 void VCurvePathItem::SetDirectionArrows(const QVector<QPair<QLineF, QLineF>> &arrows)
 {
+    // The arrows take room beside the path, so the bounds move with them.
+    prepareGeometryChange();
     m_directionArrows = arrows;
 }
 

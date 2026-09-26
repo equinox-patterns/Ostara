@@ -30,6 +30,7 @@
 
 #include <climits>
 #include <utility>
+#include <QLineF>
 #include <QLoggingCategory>
 #include <QUuid>
 #include <QVector>
@@ -206,6 +207,21 @@ auto VContainer::FirstPointId(const QVector<quint32> &ids) const -> quint32
     }
 
     return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::PointsDistance(quint32 first, quint32 second) const -> qreal
+{
+    try
+    {
+        const QSharedPointer<VPointF> one = GeometricObject<VPointF>(first);
+        const QSharedPointer<VPointF> other = GeometricObject<VPointF>(second);
+        return QLineF(static_cast<QPointF>(*one), static_cast<QPointF>(*other)).length();
+    }
+    catch (const VExceptionBadId &)
+    {
+        return 0.; // one of them is gone, or is not a point at all
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -6596,10 +6596,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Longueur :</translation>
     </message>
     <message>
-        <source>Length %1 → %1&apos;:</source>
-        <translation>Longueur %1 → %1&apos; :</translation>
-    </message>
-    <message>
         <source>Edit length</source>
         <translation>Modifier la longueur</translation>
     </message>
@@ -6610,6 +6606,16 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <source>The length cannot exceed the circle diameter (%1%2).</source>
         <translation>La longueur ne peut pas dépasser le diamètre du cercle (%1%2).</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="701"/>
+        <source>Invalid name</source>
+        <translation>Nom non valide</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="705"/>
+        <source>Invalid layer name</source>
+        <translation>Nom de calque invalide</translation>
     </message>
 </context>
 <context>
@@ -26916,9 +26922,10 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
 <context>
     <name>VToolRotation</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="646"/>
-        <source>Origin point</source>
-        <translation>Point d&apos;origine</translation>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="571"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="776"/>
+        <source>Pivot point</source>
+        <translation>Point pivot</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="646"/>

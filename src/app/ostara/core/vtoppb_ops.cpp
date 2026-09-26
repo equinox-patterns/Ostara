@@ -88,7 +88,7 @@ auto RotationProperties() -> std::vector<PropertyDesc>
          {
              if (auto *t = qgraphicsitem_cast<VToolRotation *>(b->currentItem()))
              {
-                 auto formula = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 auto formula = prop->data(VPE::VProperty::DPC_Data, Qt::EditRole).value<VFormula>();
                  if (formula != t->GetFormulaAngle())
                      t->SetFormulaAngle(formula);
              }
@@ -99,6 +99,57 @@ auto RotationProperties() -> std::vector<PropertyDesc>
              {
                  QVariant v;
                  v.setValue(t->GetFormulaAngle());
+                 prop->setValue(v);
+             }
+         }},
+
+        // Length, the same rotation read as the distance from the reference point to its image. It is not
+        // stored: it is computed from the angle and the pivot (see Rotation.md).
+        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")), false,
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<VToolRotation *>(tool);
+             if (!t->HasReferencePoint())
+             {
+                 // No point among the sources: there is no length to measure, and the row says so rather than
+                 // showing a zero that would read as a real value.
+                 auto *prop = new VPE::VLabelProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
+                 prop->setValue(QStringLiteral("—"));
+                 return prop;
+             }
+             auto *prop = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
+             prop->SetFormula(t->GetFormulaLength());
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolRotation *>(b->currentItem()))
+             {
+                 auto formula = prop->data(VPE::VProperty::DPC_Data, Qt::EditRole).value<VFormula>();
+                 if (formula != t->GetFormulaLength())
+                 {
+                     if (!t->SetFormulaLength(formula))
+                     {
+                         // The length is further than the circle the reference point draws: the tool kept its
+                         // rotation, so the field goes back to what it really says instead of showing a length
+                         // that was refused without a word (same revert as MakeStringPropWithValidator).
+                         QVariant v;
+                         v.setValue(t->GetFormulaLength());
+                         prop->setValue(v);
+                     }
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolRotation *>(b->currentItem()))
+             {
+                 if (!t->HasReferencePoint())
+                 {
+                     return; // the row is a plain label: there is nothing to refresh
+                 }
+                 QVariant v;
+                 v.setValue(t->GetFormulaLength());
                  prop->setValue(v);
              }
          }},

@@ -356,7 +356,10 @@ void VPattern::ParseToolRotation(VMainGraphicsScene *scene, QDomElement &domElem
 
         DrawToolsCommonAttributes(domElement, initData.id, initData.notes);
         initData.origin = GetParametrUInt(domElement, AttrCenter, NULL_ID_STR);
-        initData.angle = GetParametrString(domElement, AttrAngle, QStringLiteral("10"));
+        // The geometry below is built around this angle, and VToolRotation::ReadToolAttributes reads the same
+        // one back: one default for both, or a file without the attribute would open with points at one angle
+        // and the dialog showing another.
+        initData.angle = GetParametrString(domElement, AttrAngle, VToolRotation::DefaultAngle);
         const QString a = initData.angle; // need for saving fixed formula;
 
         // We no longer need to handle suffix attribute here. The code can be removed.

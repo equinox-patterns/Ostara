@@ -45,7 +45,6 @@ class DialogRotation;
 
 class AngleFormulaWidget;
 class FormulaInputWidget;
-class QRadioButton;
 
 class DialogRotation final : public DialogOperationTool
 {
@@ -91,15 +90,21 @@ private:
     /** @brief m_formulaLength length field — the chord of the reference point, another way to say the angle */
     FormulaInputWidget *m_formulaLength{nullptr};
 
-    /** @brief the two ways to set a rotation: only the checked field is editable, the other one is derived */
-    QRadioButton *m_radioAngle{nullptr};
-    QRadioButton *m_radioLength{nullptr};
-
     /** @brief m_referencePointId the source point the length refers to, NULL_ID when the sources hold none */
     quint32 m_referencePointId{NULL_ID};
 
     /** @brief m_lengthIsPossible false when the typed length passes the circle diameter */
     bool m_lengthIsPossible{true};
+
+    /** @brief m_lengthAvailable the rotation offers a length — an explicit flag, not the field's visibility,
+     *  which is false for every child widget until the dialog is shown. */
+    bool m_lengthAvailable{false};
+
+    /** @brief What the dialog itself last wrote in the length field. The fields evaluate on a timer, so a
+     *  derived value comes back through valueChanged a moment later: recognising it is what keeps a display
+     *  rounding from being read back as the user's own angle. */
+    bool m_derivedLengthSet{false};
+    qreal m_derivedLength{0.};
 
     bool m_firstRelease{false};
 

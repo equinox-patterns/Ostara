@@ -327,8 +327,10 @@ void VAbstractOperation::ExtractData(const QDomElement &domElement, VAbstractOpe
 
     if (initData.source.size() != initData.destination.size())
     {
-        qWarning() << "Source and destination object count mismatch:" << initData.source.size() << "vs"
-                   << initData.destination.size();
+        // The mismatch is handled below by ignoring the extra ones; it must not warn, or the message would be
+        // raised as a modal box from inside an undo/redo parse (see VDrawTool::GetItemType).
+        qCDebug(vTool) << "Source and destination object count mismatch:" << initData.source.size() << "vs"
+                       << initData.destination.size();
     }
 
     for (int i = 0; i < initData.source.size() && i < initData.destination.size(); ++i)
@@ -849,8 +851,10 @@ void VAbstractOperation::ReadToolAttributes(const QDomElement &domElement)
 
     if (m_source.size() != m_destination.size())
     {
-        qWarning() << "Source and destination object count mismatch:" << m_source.size() << "vs"
-                   << m_destination.size();
+        // Same as above: the extra objects are ignored, and a warning here would open a modal box in the middle
+        // of a parse.
+        qCDebug(vTool) << "Source and destination object count mismatch:" << m_source.size() << "vs"
+                       << m_destination.size();
     }
 
     for (int i = 0; i < m_source.size() && i < m_destination.size(); ++i)

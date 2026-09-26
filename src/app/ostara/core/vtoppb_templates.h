@@ -1053,7 +1053,9 @@ void VToolOptionsPropertyBrowser::ChangeToolData(VPE::VProperty *property,
                            [&id](const PropertyDesc &d) { return d.attrId == id; });
     if (it == descriptors.end())
     {
-        qWarning() << "Unknown property type. id =" << id;
+        // A property the dock knows nothing about is a programming mistake: it belongs in the log, not in a
+        // modal box raised from inside the property browser.
+        qDebug() << "Unknown property type. id =" << id;
         return;
     }
 

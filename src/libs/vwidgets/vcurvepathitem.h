@@ -47,6 +47,8 @@ public:
 
     auto shape() const -> QPainterPath override;
 
+    auto boundingRect() const -> QRectF override;
+
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
     auto type() const -> int override { return Type; }
@@ -73,6 +75,10 @@ private:
     QVector<QPair<QLineF, QLineF>> m_directionArrows{};
     QVector<QPointF> m_points{};
     qreal m_defaultWidth;
+
+    /** @brief The direction arrows as a path, at the scale of the scene. Read by shape(), boundingRect() and
+     *  paint(): the three must see the very same thing. */
+    auto DirectionArrowsPath() const -> QPainterPath;
     VColorRole m_role;
 };
 

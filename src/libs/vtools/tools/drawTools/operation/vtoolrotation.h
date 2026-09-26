@@ -64,6 +64,11 @@ public:
 
     static const QString ToolType;
 
+    /** @brief The angle a rotation is built with when the pattern does not give one. The parser that draws the
+     *  geometry and the tool that reads it back must agree on this value: two different defaults would open a
+     *  file with the points at one angle and the dialog showing another — and save it that way. */
+    static const QString DefaultAngle;
+
     auto type() const -> int override { return Type; }
     enum
     {
@@ -74,6 +79,22 @@ public:
 
     auto GetFormulaAngle() const -> VFormula;
     void SetFormulaAngle(const VFormula &value);
+
+    /** @brief The angle read as a length: the chord of the image of the reference point (see Rotation.md).
+     *
+     * The length is not stored, it is computed from the angle and the pivot, so the same rotation always reads
+     * the same way. A zero formula when there is no reference point to measure — the options dock shows a dash
+     * in that case rather than a zero that would read as a length. */
+    auto GetFormulaLength() const -> VFormula;
+
+    /** @brief Read the rotation as a length instead of an angle; it is stored as the angle it comes from.
+     *
+     * @return false when the length cannot belong to any rotation — further from the pivot than the circle
+     *  diameter — in which case the tool is left untouched. */
+    auto SetFormulaLength(const VFormula &value) -> bool;
+
+    /** @brief Is there a point to measure a length on? A rotation built only from curves has none. */
+    auto HasReferencePoint() const -> bool;
 
     void ShowVisualization(bool show) override;
 
@@ -94,6 +115,9 @@ private:
     QString m_formulaAngle;
 
     explicit VToolRotation(const VToolRotationInitData &initData, QGraphicsItem *parent = nullptr);
+
+    /** @brief Distance in pixels from the pivot to the point a length is measured on, 0 when there is none. */
+    auto ReferenceRadius() const -> qreal;
 
     auto SyncDestination(const QVector<SourceItem> &source, QString &formulaAngle) -> QVector<DestinationItem>;
 };

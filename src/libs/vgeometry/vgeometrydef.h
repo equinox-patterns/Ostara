@@ -121,6 +121,13 @@ auto IsLineSegmentOnLineSegment(const QLineF &seg1, const QLineF &seg2, qreal ac
 auto IsPointOnLineSegment(const QPointF &t, const QPointF &p1, const QPointF &p2, qreal accuracy = accuracyPointOnLine)
     -> bool;
 
+/** @brief The angle read the way a chord reads it: brought back into ]-180, 180], NaN when it is not finite.
+ *
+ * A rotation of 200° and one of -160° describe the same segment A→A', so this is the angle a length is measured
+ * against — and the one shown to the user, so that a rotation always reads the same way everywhere.
+ */
+auto NormalizeRotation(qreal angle) -> qreal;
+
 /** @brief Chord of a rotation: the distance between a point and its image after a rotation of @a angle
  *  degrees around the pivot, the point being at @a radius from it.
  *
@@ -130,7 +137,7 @@ auto IsPointOnLineSegment(const QPointF &t, const QPointF &p1, const QPointF &p2
  */
 auto RotationChord(qreal radius, qreal angle) -> qreal;
 
-/** @brief The signed angle, in [-180, 180], whose chord is @a chord for a point at @a radius from the pivot.
+/** @brief The signed angle, in ]-180, 180], whose chord is @a chord for a point at @a radius from the pivot.
  *  Returns NaN when no such angle exists: a point cannot move further from itself than the diameter of its
  *  circle. */
 auto RotationAngleForChord(qreal radius, qreal chord) -> qreal;

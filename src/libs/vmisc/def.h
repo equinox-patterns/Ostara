@@ -624,6 +624,11 @@ constexpr auto FromPixel(double pix, const Unit &unit) -> double
  */
 inline auto RoundForDisplay(qreal value) -> qreal
 {
+    if (!qIsFinite(value))
+    {
+        return value; // nothing to round — and turning NaN into an integer is undefined behaviour
+    }
+
     constexpr qreal kThousand = 1000.; // three decimals
     const qreal rounded = static_cast<qreal>(qRound64(value * kThousand)) / kThousand;
 
@@ -640,6 +645,38 @@ inline auto RoundForDisplay(qreal value) -> qreal
     }
 
     return rounded;
+}
+
+/**
+ * @brief Write a value out for the user to read: three decimals at most, trailing zeros dropped.
+ *
+ * Meant to be handed a value already rounded by RoundForDisplay(). Every place that shows the same number —
+ * a dialog field, a row of the options dock — has to go through here, or the same rotation reads differently
+ * depending on which one wrote it: QString::number() alone keeps six significant digits, which loses the third
+ * decimal past a thousand and turns to scientific notation past a million.
+ *
+ * @param value Value expressed in the unit the user reads (pattern unit or degree), already rounded.
+ * @return The text to show.
+ */
+inline auto FormatDisplayNumber(qreal value) -> QString
+{
+    QString text = QString::number(value, 'f', 3);
+
+    if (text.contains(QLatin1Char('.')))
+    {
+        while (text.endsWith(QLatin1Char('0')))
+        {
+            text.chop(1);
+        }
+
+        if (text.endsWith(QLatin1Char('.')))
+        {
+            text.chop(1);
+        }
+    }
+
+    // A value rounded down to zero has no sign left to show, and "-0" reads like a mistake.
+    return text == QLatin1String("-0") ? QStringLiteral("0") : text;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

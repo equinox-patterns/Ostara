@@ -50,6 +50,7 @@
 #include "../vgeometry/vcubicbezier.h"
 #include "../vgeometry/vcubicbezierpath.h"
 #include "../vgeometry/vellipticalarc.h"
+#include "../vgeometry/vgeometrydef.h"
 #include "../vgeometry/vgobject.h"
 #include "../vgeometry/vpointf.h"
 #include "../vgeometry/vspline.h"
@@ -70,6 +71,7 @@ class QWidget;
 template <class T> class QSharedPointer;
 
 const QString VToolRotation::ToolType = QStringLiteral("rotation");
+const QString VToolRotation::DefaultAngle = QStringLiteral("10");
 
 namespace
 {
@@ -309,7 +311,12 @@ void UpdateDestinationObject(quint32 id,
 //---------------------------------------------------------------------------------------------------------------------
 void UpdateDestinationObjects(VToolRotationInitData &initData, qreal calcAngle, const QPointF &oPoint)
 {
-    for (int i = 0; i < initData.source.size(); ++i)
+    // The two lists are written together, but a file can hold more sources than destinations: indexing the
+    // shorter one would read out of bounds and end the application on a mere open. The extras are dropped,
+    // and VAbstractOperation::ReadToolAttributes reports the mismatch.
+    const qsizetype count = qMin(initData.source.size(), initData.destination.size());
+
+    for (int i = 0; i < count; ++i)
     {
         const SourceItem object = initData.source.at(i);
         const QSharedPointer<VGObject> obj = initData.data->GetGObject(object.id);
@@ -552,7 +559,17 @@ auto VToolRotation::Create(VToolRotationInitData &initData) -> VToolRotation *
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolRotation::OriginPointName() const -> QString
 {
-    return VAbstractTool::data.GetGObject(m_origPointId)->name();
+    // The name is read by the tooltip and by the dock, both of which can be asked about a tool whose pivot is
+    // no longer in the pattern: letting the exception out would end the application (DialogTool::SetObject and
+    // the property browser are not the place to catch it). Same guard as VToolMove::OriginPointName.
+    try
+    {
+        return VAbstractTool::data.GetGObject(m_origPointId)->name();
+    }
+    catch (const VExceptionBadId &)
+    {
+        return tr("Pivot point");
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -575,6 +592,77 @@ void VToolRotation::SetFormulaAngle(const VFormula &value)
         QSharedPointer<VGObject> obj = VContainer::GetFakeGObject(m_id);
         SaveOption(obj);
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolRotation::ReferenceRadius() const -> qreal
+{
+    const quint32 reference = getData()->FirstPointId(SourceToObjects(m_source));
+    return getData()->PointsDistance(m_origPointId, reference);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolRotation::HasReferencePoint() const -> bool
+{
+    const qreal radius = ReferenceRadius();
+    return qIsFinite(radius) && !qFuzzyIsNull(radius);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolRotation::GetFormulaLength() const -> VFormula
+{
+    const qreal radius = ReferenceRadius();
+    QString length = QStringLiteral("0"); // no reference point: no length to speak of, the dock shows a dash
+
+    if (qIsFinite(radius) && !qFuzzyIsNull(radius))
+    {
+        const qreal chord = RotationChord(radius, GetFormulaAngle().getDoubleValue());
+        length = FormatDisplayNumber(RoundForDisplay(FromPixel(chord, *getData()->GetPatternUnit())));
+    }
+
+    VFormula fLength(length, getData());
+    fLength.setToolId(m_id);
+    fLength.setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
+    fLength.Eval();
+    return fLength;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolRotation::SetFormulaLength(const VFormula &value) -> bool
+{
+    if (value.error())
+    {
+        return false;
+    }
+
+    const qreal radius = ReferenceRadius();
+    const qreal diameter = 2. * radius;
+    qreal chord = ToPixel(value.getDoubleValue(), *getData()->GetPatternUnit());
+
+    // The field shows three decimals, so a length typed as the diameter can pass it by up to half a step of
+    // that display once turned back into pixels: that is the field's own precision, not a length to refuse.
+    const qreal halfStep = ToPixel(0.0005, *getData()->GetPatternUnit());
+
+    if (qFuzzyIsNull(radius) || qAbs(chord) > diameter + halfStep)
+    {
+        return false; // further from the pivot than the diameter of the circle it draws around it
+    }
+
+    chord = qBound(-diameter, chord, diameter);
+
+    const qreal angle = RotationAngleForChord(radius, chord);
+    if (qIsNaN(angle))
+    {
+        return false;
+    }
+
+    // A rotation is stored as an angle, so a length entered here takes its place: the two say the same thing,
+    // and the length is not something a pattern keeps (see Rotation.md).
+    m_formulaAngle = FormatDisplayNumber(RoundForDisplay(angle));
+
+    QSharedPointer<VGObject> obj = VContainer::GetFakeGObject(m_id);
+    SaveOption(obj);
+    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -666,7 +754,7 @@ void VToolRotation::ReadToolAttributes(const QDomElement &domElement)
     VAbstractOperation::ReadToolAttributes(domElement);
 
     m_origPointId = VAbstractPattern::GetParametrUInt(domElement, AttrCenter, NULL_ID_STR);
-    m_formulaAngle = VDomDocument::GetParametrString(domElement, AttrAngle, QChar('0'));
+    m_formulaAngle = VDomDocument::GetParametrString(domElement, AttrAngle, VToolRotation::DefaultAngle);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -686,7 +774,7 @@ auto VToolRotation::MakeToolTip() const -> QString
                           "<tr> <td><b>%3:</b> %4°</td> </tr>"
                           "%5")
         .arg(tr("Pivot point"), OriginPointName(), tr("Rotation angle"))  // 1, 2, 3
-        .arg(GetFormulaAngle().getDoubleValue())                          // 4
+        .arg(FormatDisplayNumber(RoundForDisplay(GetFormulaAngle().getDoubleValue()))) // 4: read, not raw
         .arg(VisibilityGroupToolTip());                                   // 5
 }
 

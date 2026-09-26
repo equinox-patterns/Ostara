@@ -241,15 +241,31 @@ void VToolLine::RefreshPen()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+// An endpoint that cannot be resolved — a line carried by an operation whose points are gone — must not throw:
+// these accessors are called on hover and on every refresh, and an exception there freezes the whole interface.
 auto VToolLine::FirstPointName() const -> QString
 {
-    return VAbstractTool::data.GetGObject(firstPoint)->name();
+    try
+    {
+        return VAbstractTool::data.GetGObject(firstPoint)->name();
+    }
+    catch (const VExceptionBadId &)
+    {
+        return {};
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolLine::SecondPointName() const -> QString
 {
-    return VAbstractTool::data.GetGObject(secondPoint)->name();
+    try
+    {
+        return VAbstractTool::data.GetGObject(secondPoint)->name();
+    }
+    catch (const VExceptionBadId &)
+    {
+        return {};
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -562,19 +578,28 @@ void VToolLine::SetVisualization()
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolLine::MakeToolTip() const -> QString
 {
-    const QSharedPointer<VPointF> first = VAbstractTool::data.GeometricObject<VPointF>(firstPoint);
-    const QSharedPointer<VPointF> second = VAbstractTool::data.GeometricObject<VPointF>(secondPoint);
+    // The tooltip is built on every hover: an endpoint that cannot be resolved must not throw here, or the
+    // event loop dies with it (no more hover, no more tool, no more mode).
+    try
+    {
+        const QSharedPointer<VPointF> first = VAbstractTool::data.GeometricObject<VPointF>(firstPoint);
+        const QSharedPointer<VPointF> second = VAbstractTool::data.GeometricObject<VPointF>(secondPoint);
 
-    const QLineF line(static_cast<QPointF>(*first), static_cast<QPointF>(*second));
+        const QLineF line(static_cast<QPointF>(*first), static_cast<QPointF>(*second));
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                            u"<tr> <td><b>%4:</b> %5°</td> </tr>"
-                            u"</table>"_s.arg(tr("Length"))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(line.length())))
-                                .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
-                                .arg(RoundForDisplay(line.angle()));
-    return toolTip;
+        const QString toolTip = u"<table>"
+                                u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
+                                u"<tr> <td><b>%4:</b> %5°</td> </tr>"
+                                u"</table>"_s.arg(tr("Length"))
+                                    .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(line.length())))
+                                    .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
+                                    .arg(RoundForDisplay(line.angle()));
+        return toolTip;
+    }
+    catch (const VExceptionBadId &)
+    {
+        return {};
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -701,7 +726,16 @@ void VToolLine::GroupVisibility(quint32 object, bool visible)
  */
 void VToolLine::RefreshGeometry()
 {
-    const QSharedPointer<VPointF> first = VAbstractTool::data.GeometricObject<VPointF>(firstPoint);
-    const QSharedPointer<VPointF> second = VAbstractTool::data.GeometricObject<VPointF>(secondPoint);
-    this->setLine(QLineF(static_cast<QPointF>(*first), static_cast<QPointF>(*second)));
+    // Called on every scene refresh: an endpoint that is gone leaves the line where it is rather than
+    // throwing into the event loop.
+    try
+    {
+        const QSharedPointer<VPointF> first = VAbstractTool::data.GeometricObject<VPointF>(firstPoint);
+        const QSharedPointer<VPointF> second = VAbstractTool::data.GeometricObject<VPointF>(secondPoint);
+        this->setLine(QLineF(static_cast<QPointF>(*first), static_cast<QPointF>(*second)));
+    }
+    catch (const VExceptionBadId &)
+    {
+        return;
+    }
 }

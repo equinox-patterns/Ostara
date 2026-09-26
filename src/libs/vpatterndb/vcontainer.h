@@ -152,6 +152,11 @@ public:
      * skipped rather than reported. */
     auto FirstPointId(const QVector<quint32> &ids) const -> quint32;
 
+    /** @brief Distance in pixels between two points of the pattern, 0 when one of them is not a point.
+     *
+     * A rotation set by a length turns around the pivot at that distance (see Rotation.md). */
+    auto PointsDistance(quint32 first, quint32 second) const -> qreal;
+
     static auto GetFakeGObject(quint32 id) -> QSharedPointer<VGObject>;
     auto GetPiece(quint32 id) const -> VPiece;
     auto GetPiecePath(quint32 id) const -> VPiecePath;
