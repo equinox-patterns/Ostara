@@ -41,12 +41,14 @@
 #include "../qmuparser/qmudef.h"
 #include "../vgeometry/vgobject.h"
 #include "../vgeometry/vpointf.h"
+#include "../vmisc/literals.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/variables/vcurvelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vformula.h"
 #include "../vtoolsinglepoint.h"
 #include "../vwidgets/vsegmentlabel.h"
+#include "../vwidgets/vsimplecurve.h"
 #include "xml/vpatterngraph.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -70,7 +72,8 @@ VToolCut::VToolCut(const VToolCutInitData &initData, QGraphicsItem *parent)
     m_segment1Mx(initData.segment1Mx),
     m_segment1My(initData.segment1My),
     m_segment2Mx(initData.segment2Mx),
-    m_segment2My(initData.segment2My)
+    m_segment2My(initData.segment2My),
+    m_showTwoSegments(initData.showTwoSegments)
 {
     Q_ASSERT_X(initData.baseCurveId != 0, Q_FUNC_INFO, "curveCutId == 0"); //-V654 //-V712
 
@@ -106,7 +109,35 @@ VToolCut::VToolCut(const VToolCutInitData &initData, QGraphicsItem *parent)
                                          &VToolCut::PointSelected,
                                          &VToolCut::Segment2LabelPositionChanged);
 
+    auto const CreateSegmentCurve = [this](quint32 segmentId) -> VSimpleCurve *
+    {
+        QSharedPointer<VAbstractCurve> const curve = VAbstractTool::data.GeometricObject<VAbstractCurve>(segmentId);
 
+        auto *item = new VSimpleCurve(segmentId, curve);
+        item->setParentItem(this);
+        // Behind the cut point, so the point stays clickable where the two segments meet.
+        item->setFlag(QGraphicsItem::ItemStacksBehindParent, true);
+        item->SetType(curve->getType());
+        item->RefreshGeometry(curve);
+        item->setPos(-pos().x(), -pos().y());
+        item->setVisible(false);
+
+        connect(item,
+                &VSimpleCurve::Choosed,
+                this,
+                [this, segmentId](quint32) -> void
+                {
+                    SegmentChoosed(segmentId,
+                                   VAbstractTool::data.GeometricObject<VAbstractCurve>(segmentId)->SceneObjectType());
+                });
+        connect(item, &VSimpleCurve::Selected, this, &VToolCut::PointSelected);
+        return item;
+    };
+
+    m_segment1Curve = CreateSegmentCurve(m_segment1Id);
+    m_segment2Curve = CreateSegmentCurve(m_segment2Id);
+
+    ApplySegmentsVisibility();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -123,6 +154,14 @@ void VToolCut::Enable()
     const bool enabled = m_indexActivePatternBlock == doc->PatternBlockMapper()->GetActiveId();
     m_segment1Label->SetEnabledState(enabled);
     m_segment2Label->SetEnabledState(enabled);
+
+    for (VSimpleCurve *item : {m_segment1Curve, m_segment2Curve})
+    {
+        if (item != nullptr)
+        {
+            item->setEnabled(enabled);
+        }
+    }
 
     VToolSinglePoint::Enable();
 }
@@ -141,6 +180,121 @@ void VToolCut::AllowSegmentHover(bool enabled)
 {
     m_segment1Label->AllowLabelHover(enabled);
     m_segment2Label->AllowLabelHover(enabled);
+
+    for (VSimpleCurve *item : {m_segment1Curve, m_segment2Curve})
+    {
+        if (item != nullptr)
+        {
+            item->setAcceptHoverEvents(enabled);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolCut::IsShowTwoSegments() const -> bool
+{
+    return m_showTwoSegments;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCut::SetShowTwoSegments(bool value)
+{
+    if (m_showTwoSegments == value)
+    {
+        return;
+    }
+
+    m_showTwoSegments = value;
+
+    QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
+    SaveOption(obj);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCut::SetSegmentReplaced(quint32 segmentId, bool replaced)
+{
+    if (segmentId == m_segment1Id)
+    {
+        m_segment1Replaced = replaced;
+    }
+    else if (segmentId == m_segment2Id)
+    {
+        m_segment2Replaced = replaced;
+    }
+    else
+    {
+        return;
+    }
+
+    ApplySegmentsVisibility();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolCut::BaseCurveItem() const -> VToolAbstractCurve *
+{
+    const QSharedPointer<VGObject> object = VAbstractTool::data.GetGObject(baseCurveId);
+    if (object.isNull())
+    {
+        return nullptr;
+    }
+
+    return qobject_cast<VToolAbstractCurve *>(VAbstractPattern::getTool(object->getIdTool()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolCut::BaseCurveCut() const -> VToolCut *
+{
+    const QSharedPointer<VGObject> object = VAbstractTool::data.GetGObject(baseCurveId);
+    if (object.isNull())
+    {
+        return nullptr;
+    }
+
+    return qobject_cast<VToolCut *>(VAbstractPattern::getTool(object->getIdTool()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCut::RefreshSegmentCurves()
+{
+    auto const Update = [this](quint32 segmentId, VSimpleCurve *item)
+    {
+        if (item == nullptr)
+        {
+            return;
+        }
+
+        QSharedPointer<VAbstractCurve> const curve = VAbstractTool::data.GeometricObject<VAbstractCurve>(segmentId);
+        item->RefreshGeometry(curve);
+        item->setPos(-pos().x(), -pos().y());
+    };
+
+    Update(m_segment1Id, m_segment1Curve);
+    Update(m_segment2Id, m_segment2Curve);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCut::ApplySegmentsVisibility()
+{
+    if (m_segment1Curve != nullptr)
+    {
+        m_segment1Curve->setVisible(m_showTwoSegments && !m_segment1Replaced);
+    }
+
+    if (m_segment2Curve != nullptr)
+    {
+        m_segment2Curve->setVisible(m_showTwoSegments && !m_segment2Replaced);
+    }
+
+    // The base curve leaves the canvas while the two sub-curves replace it. It is never deleted.
+    if (auto *baseCurve = BaseCurveItem())
+    {
+        baseCurve->SetReplacedBySegments(m_showTwoSegments);
+    }
+    else if (auto *parentCut = BaseCurveCut())
+    {
+        // The base curve is itself a sub-curve: ask its own cut tool to hide it.
+        parentCut->SetSegmentReplaced(baseCurveId, m_showTwoSegments);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -468,6 +622,9 @@ void VToolCut::RefreshGeometry()
 
     UpdateSegmentLabel(m_segment1Id, m_segment1Mx, m_segment1My, m_segment1Label);
     UpdateSegmentLabel(m_segment2Id, m_segment2Mx, m_segment2My, m_segment2Label);
+
+    RefreshSegmentCurves();
+    ApplySegmentsVisibility();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -487,6 +644,10 @@ void VToolCut::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
                                          [](const QString &suffix) noexcept -> bool { return suffix.isEmpty(); });
     doc->SetAttribute(tag, AttrSegment1Id, m_segment1Id);
     doc->SetAttribute(tag, AttrSegment2Id, m_segment2Id);
+    doc->SetAttributeOrRemoveIf<bool>(tag,
+                                      AttrShowTwoSegments,
+                                      m_showTwoSegments,
+                                      [](bool value) noexcept -> bool { return !value; });
 
     const VAbstractValApplication *app = VAbstractValApplication::VApp();
     doc->SetAttribute(tag, AttrSegment1Mx, app->fromPixel(m_segment1Mx));
@@ -506,6 +667,7 @@ void VToolCut::ReadToolAttributes(const QDomElement &domElement)
     m_aliasSuffix2 = VAbstractPattern::GetParametrEmptyString(domElement, AttrAlias2);
     m_segment1Id = VAbstractPattern::GetParametrId(domElement, AttrSegment1Id);
     m_segment2Id = VAbstractPattern::GetParametrId(domElement, AttrSegment2Id);
+    m_showTwoSegments = VAbstractPattern::GetParametrBool(domElement, AttrShowTwoSegments, falseStr);
 
     const VAbstractValApplication *app = VAbstractValApplication::VApp();
 

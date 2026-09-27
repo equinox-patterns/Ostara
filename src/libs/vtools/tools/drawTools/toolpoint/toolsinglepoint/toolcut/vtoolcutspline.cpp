@@ -114,6 +114,7 @@ void VToolCutSpline::SetDialog()
     dialogTool->SetAliasSuffix2(m_aliasSuffix2);
     dialogTool->SetName1(GetName1());
     dialogTool->SetName2(GetName2());
+    dialogTool->SetShowTwoSegments(IsShowTwoSegments());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -146,6 +147,7 @@ auto VToolCutSpline::Create(const QPointer<DialogTool> &dialog, VMainGraphicsSce
     initData.aliasSuffix2 = dialogTool->GetAliasSuffix2();
     initData.name1 = dialogTool->GetName1();
     initData.name2 = dialogTool->GetName2();
+    initData.showTwoSegments = dialogTool->GetShowTwoSegments();
 
     VToolCutSpline *point = Create(initData);
     if (point != nullptr)
@@ -190,6 +192,12 @@ auto VToolCutSpline::Create(VToolCutInitData &initData) -> VToolCutSpline *
 
     spline1->SetApproximationScale(spl->GetApproximationScale());
     spline2->SetApproximationScale(spl->GetApproximationScale());
+
+    // The two segments take over the base curve's look when they replace it on the canvas.
+    spline1->SetColor(spl->GetColor());
+    spline2->SetColor(spl->GetColor());
+    spline1->SetPenStyle(spl->GetPenStyle());
+    spline2->SetPenStyle(spl->GetPenStyle());
 
     spline1->SetAliasSuffix(initData.aliasSuffix1);
     spline2->SetAliasSuffix(initData.aliasSuffix2);
@@ -307,6 +315,10 @@ void VToolCutSpline::SaveDialog(QDomElement &domElement)
                                          AttrNotes,
                                          dialogTool->GetNotes(),
                                          [](const QString &notes) noexcept -> bool { return notes.isEmpty(); });
+    doc->SetAttributeOrRemoveIf<bool>(domElement,
+                                      AttrShowTwoSegments,
+                                      dialogTool->GetShowTwoSegments(),
+                                      [](bool value) noexcept -> bool { return !value; });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

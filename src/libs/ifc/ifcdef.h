@@ -199,6 +199,7 @@ extern const QString AttrCurveName1;
 extern const QString AttrCurveName2;
 extern const QString AttrSegment1Id;
 extern const QString AttrSegment2Id;
+extern const QString AttrShowTwoSegments;
 extern const QString AttrSegment3Id;
 extern const QString AttrSegment4Id;
 extern const QString AttrSegment1Mx;

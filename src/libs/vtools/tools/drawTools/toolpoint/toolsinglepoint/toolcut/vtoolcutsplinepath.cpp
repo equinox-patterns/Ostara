@@ -117,6 +117,7 @@ void VToolCutSplinePath::SetDialog()
     dialogTool->SetAliasSuffix2(m_aliasSuffix2);
     dialogTool->SetName1(GetName1());
     dialogTool->SetName2(GetName2());
+    dialogTool->SetShowTwoSegments(IsShowTwoSegments());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -149,6 +150,7 @@ auto VToolCutSplinePath::Create(const QPointer<DialogTool> &dialog, VMainGraphic
     initData.aliasSuffix2 = dialogTool->GetAliasSuffix2();
     initData.name1 = dialogTool->GetName1();
     initData.name2 = dialogTool->GetName2();
+    initData.showTwoSegments = dialogTool->GetShowTwoSegments();
 
     VToolCutSplinePath *point = Create(initData);
     if (point != nullptr)
@@ -194,6 +196,12 @@ auto VToolCutSplinePath::Create(VToolCutInitData &initData) -> VToolCutSplinePat
 
     path1->SetDerivative(true);
     path2->SetDerivative(true);
+
+    // The two segments take over the base curve's look when they replace it on the canvas.
+    path1->SetColor(splPath->GetColor());
+    path2->SetColor(splPath->GetColor());
+    path1->SetPenStyle(splPath->GetPenStyle());
+    path2->SetPenStyle(splPath->GetPenStyle());
 
     path1->SetAliasSuffix(initData.aliasSuffix1);
     path2->SetAliasSuffix(initData.aliasSuffix2);
@@ -395,6 +403,10 @@ void VToolCutSplinePath::SaveDialog(QDomElement &domElement)
                                          AttrNotes,
                                          notes,
                                          [](const QString &notes) noexcept -> bool { return notes.isEmpty(); });
+    doc->SetAttributeOrRemoveIf<bool>(domElement,
+                                      AttrShowTwoSegments,
+                                      dialogTool->GetShowTwoSegments(),
+                                      [](bool value) noexcept -> bool { return !value; });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -44,6 +44,7 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.h"
 #include "../vpropertyexplorer/plugins/vboolproperty.h"
+#include "ocheckboxrowproperty.h"
 #include "../vpropertyexplorer/plugins/vstringproperty.h"
 #include "../vpropertyexplorer/plugins/vtextproperty.h"
 #include "../vpropertyexplorer/plugins/vlabelproperty.h"
@@ -203,6 +204,30 @@ auto MakeSourceCurve(const QString &attrId, const QString &label, Getter getter)
             [getter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
                 if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
                     prop->setValue(CurveDisplayName((t->*getter)()));
+            }};
+}
+
+// A cut tool can replace the base curve by its two sub-curves on the canvas, so the sub-curves
+// become directly clickable. Purely a display switch: the geometry is never changed.
+template <typename Tool>
+auto MakeShowTwoSegments(const QString &label) -> PropertyDesc
+{
+    return {AttrShowTwoSegments, label,
+            [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new OCheckBoxRowProperty(label);
+                p->setValue(t->IsShowTwoSegments());
+                return p;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem())) {
+                    const bool value = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool();
+                    if (value != t->IsShowTwoSegments()) t->SetShowTwoSegments(value);
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                    prop->setValue(t->IsShowTwoSegments());
             }};
 }
 
@@ -744,6 +769,7 @@ auto CutArcProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
              }
          }},
+        MakeShowTwoSegments<VToolCutArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show the two segments instead of the curve"))),
         MakeNotes<VToolCutArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
         MakePointGroup<VToolCutArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
@@ -775,6 +801,7 @@ auto CutSplineProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
              }
          }},
+        MakeShowTwoSegments<VToolCutSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show the two segments instead of the curve"))),
         MakeNotes<VToolCutSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
         MakePointGroup<VToolCutSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
@@ -806,6 +833,7 @@ auto CutSplinePathProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
              }
          }},
+        MakeShowTwoSegments<VToolCutSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show the two segments instead of the curve"))),
         MakeNotes<VToolCutSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
         MakePointGroup<VToolCutSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };

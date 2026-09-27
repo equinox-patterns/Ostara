@@ -270,6 +270,7 @@
                           <xs:attribute name="segment3My" type="xs:double"/>
                           <xs:attribute name="segment4Mx" type="xs:double"/>
                           <xs:attribute name="segment4My" type="xs:double"/>
+                          <xs:attribute name="showTwoSegments" type="xs:boolean"/>
                         </xs:complexType>
                       </xs:element>
                       <xs:element name="line" minOccurs="0" maxOccurs="unbounded">

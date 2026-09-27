@@ -942,6 +942,7 @@ void VPattern::ParseToolCutSpline(VMainGraphicsScene *scene, QDomElement &domEle
         initData.aliasSuffix2 = GetParametrEmptyString(domElement, AttrAlias2);
         initData.segment1Id = GetParametrId(domElement, AttrSegment1Id);
         initData.segment2Id = GetParametrId(domElement, AttrSegment2Id);
+        initData.showTwoSegments = GetParametrBool(domElement, AttrShowTwoSegments, falseStr);
 
         const VAbstractValApplication *app = VAbstractValApplication::VApp();
 
@@ -1004,6 +1005,7 @@ void VPattern::ParseToolCutSplinePath(VMainGraphicsScene *scene, QDomElement &do
         initData.aliasSuffix2 = GetParametrEmptyString(domElement, AttrAlias2);
         initData.segment1Id = GetParametrId(domElement, AttrSegment1Id);
         initData.segment2Id = GetParametrId(domElement, AttrSegment2Id);
+        initData.showTwoSegments = GetParametrBool(domElement, AttrShowTwoSegments, falseStr);
 
         const VAbstractValApplication *app = VAbstractValApplication::VApp();
 
@@ -1066,6 +1068,7 @@ void VPattern::ParseToolCutArc(VMainGraphicsScene *scene, QDomElement &domElemen
         initData.aliasSuffix2 = GetParametrEmptyString(domElement, AttrAlias2);
         initData.segment1Id = GetParametrId(domElement, AttrSegment1Id);
         initData.segment2Id = GetParametrId(domElement, AttrSegment2Id);
+        initData.showTwoSegments = GetParametrBool(domElement, AttrShowTwoSegments, falseStr);
 
         const VAbstractValApplication *app = VAbstractValApplication::VApp();
 

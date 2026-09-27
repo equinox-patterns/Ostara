@@ -100,6 +100,10 @@ public:
 
     void GroupVisibility(quint32 object, bool visible) override;
 
+    /** @brief SetReplacedBySegments hides the curve when a cut tool shows its two sub-curves instead. */
+    void SetReplacedBySegments(bool replaced);
+    auto IsReplacedBySegments() const -> bool;
+
 public slots:
     void FullUpdateFromFile() override;
     void Enable() override;
@@ -153,6 +157,8 @@ private:
     bool m_isHovered{false};
     bool m_detailsMode{false};
     bool m_acceptHoverEvents{true};
+    bool m_groupVisible{true};
+    bool m_replacedBySegments{false};
     SceneObject sceneType{SceneObject::Unknown};
 
     void InitDefShape();
@@ -267,6 +273,12 @@ inline auto VToolAbstractCurve::GetSceneType() const -> SceneObject
 inline void VToolAbstractCurve::SetSceneType(SceneObject newSceneType)
 {
     sceneType = newSceneType;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+inline auto VToolAbstractCurve::IsReplacedBySegments() const -> bool
+{
+    return m_replacedBySegments;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

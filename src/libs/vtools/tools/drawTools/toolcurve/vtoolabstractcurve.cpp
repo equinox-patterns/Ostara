@@ -478,7 +478,20 @@ auto VToolAbstractCurve::GetAliasSuffix() const -> QString
 void VToolAbstractCurve::GroupVisibility(quint32 object, bool visible)
 {
     Q_UNUSED(object)
-    setVisible(visible);
+    m_groupVisible = visible;
+    setVisible(m_groupVisible && !m_replacedBySegments);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAbstractCurve::SetReplacedBySegments(bool replaced)
+{
+    if (m_replacedBySegments == replaced)
+    {
+        return;
+    }
+
+    m_replacedBySegments = replaced;
+    setVisible(m_groupVisible && !m_replacedBySegments);
 }
 
 // VToolAbstractArc

@@ -72,6 +72,7 @@ DialogCutSplinePath::DialogCutSplinePath(const VContainer *data, VAbstractPatter
     ui->setupUi(this);
     connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
             [this](bool checked) { SetShowLabel(checked); });
+    InitShowTwoSegmentsCheckBox(ui->verticalLayout, ui->plainTextEditToolNotes);
 
     InitIcons();
 

@@ -56,6 +56,7 @@
 #include <QSize>
 #include <QTextCursor>
 #include <QTimer>
+#include <QVBoxLayout>
 #include <QWidget>
 #include <QtDebug>
 #include <qiterator.h>
@@ -428,6 +429,41 @@ void DialogTool::NewNodeItem(QListWidget *listWidget, const VPieceNode &node, bo
         listWidget->addItem(item);
         listWidget->setCurrentRow(listWidget->count() - 1);
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogTool::SetShowTwoSegments(bool value)
+{
+    m_showTwoSegments = value;
+
+    if (m_showTwoSegmentsCheck != nullptr)
+    {
+        const QSignalBlocker blocker(m_showTwoSegmentsCheck);
+        m_showTwoSegmentsCheck->setChecked(m_showTwoSegments);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogTool::InitShowTwoSegmentsCheckBox(QVBoxLayout *layout, QWidget *before)
+{
+    SCASSERT(layout != nullptr)
+
+    m_showTwoSegmentsCheck = new QCheckBox(tr("Show the two segments instead of the curve"));
+
+    const int index = before != nullptr ? layout->indexOf(before) : -1;
+    if (index >= 0)
+    {
+        layout->insertWidget(index, m_showTwoSegmentsCheck);
+    }
+    else
+    {
+        layout->addWidget(m_showTwoSegmentsCheck);
+    }
+
+    connect(m_showTwoSegmentsCheck,
+            &QCheckBox::toggled,
+            this,
+            [this](bool checked) -> void { SetShowTwoSegments(checked); });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

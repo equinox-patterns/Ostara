@@ -113,6 +113,7 @@ void VToolCutArc::SetDialog()
     dialogTool->SetAliasSuffix2(m_aliasSuffix2);
     dialogTool->SetName1(GetName1());
     dialogTool->SetName2(GetName2());
+    dialogTool->SetShowTwoSegments(IsShowTwoSegments());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -145,6 +146,7 @@ auto VToolCutArc::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene 
     initData.aliasSuffix2 = dialogTool->GetAliasSuffix2();
     initData.name1 = dialogTool->GetName1();
     initData.name2 = dialogTool->GetName2();
+    initData.showTwoSegments = dialogTool->GetShowTwoSegments();
 
     VToolCutArc *point = Create(initData);
     if (point != nullptr)
@@ -196,6 +198,12 @@ auto VToolCutArc::Create(VToolCutInitData &initData) -> VToolCutArc *
 
     a1->SetDerivative(true);
     a2->SetDerivative(true);
+
+    // The two segments take over the base curve's look when they replace it on the canvas.
+    a1->SetColor(arc->GetColor());
+    a2->SetColor(arc->GetColor());
+    a1->SetPenStyle(arc->GetPenStyle());
+    a2->SetPenStyle(arc->GetPenStyle());
 
     a1->SetAliasSuffix(initData.aliasSuffix1);
     a2->SetAliasSuffix(initData.aliasSuffix2);
@@ -329,6 +337,10 @@ void VToolCutArc::SaveDialog(QDomElement &domElement)
                                          AttrNotes,
                                          notes,
                                          [](const QString &notes) noexcept -> bool { return notes.isEmpty(); });
+    doc->SetAttributeOrRemoveIf<bool>(domElement,
+                                      AttrShowTwoSegments,
+                                      dialogTool->GetShowTwoSegments(),
+                                      [](bool value) noexcept -> bool { return !value; });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -192,6 +192,7 @@ const QString AttrCurveName1 = QStringLiteral("curveName1");
 const QString AttrCurveName2 = QStringLiteral("curveName2");
 const QString AttrSegment1Id = QStringLiteral("segment1Id");
 const QString AttrSegment2Id = QStringLiteral("segment2Id");
+const QString AttrShowTwoSegments = QStringLiteral("showTwoSegments");
 const QString AttrSegment3Id = QStringLiteral("segment3Id");
 const QString AttrSegment4Id = QStringLiteral("segment4Id");
 const QString AttrSegment1Mx = QStringLiteral("segment1Mx");

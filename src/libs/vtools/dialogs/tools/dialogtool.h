@@ -66,6 +66,7 @@ Q_DECLARE_LOGGING_CATEGORY(vDialog)
 class QDoubleSpinBox;
 class QLabel;
 class QPlainTextEdit;
+class QVBoxLayout;
 class VAbstractTool;
 
 enum class FillComboBox : qint8
@@ -104,6 +105,10 @@ public:
     /** @brief "Show Point name" checkbox state at creation ("Label" = point name shown as exception). */
     auto GetShowLabel() const -> bool { return m_showLabel; }
     void SetShowLabel(bool value) { m_showLabel = value; }
+
+    /** @brief "Show the two segments instead of the curve" checkbox state (cut tools only). */
+    auto GetShowTwoSegments() const -> bool { return m_showTwoSegments; }
+    void SetShowTwoSegments(bool value);
 
     virtual void CheckDependencyTreeComplete() = 0;
 
@@ -251,10 +256,19 @@ protected:
 
     void InitNodeAngles(QComboBox *box);
 
+    /**
+     * @brief InitShowTwoSegmentsCheckBox adds the cut tools switching checkbox just above @a before.
+     * Shared by the three cut dialogs so the wording and the wiring stay in one place.
+     */
+    void InitShowTwoSegmentsCheckBox(QVBoxLayout *layout, QWidget *before);
+
 private:
     Q_DISABLE_COPY_MOVE(DialogTool) // NOLINT
 
     bool m_showLabel{false};
+
+    bool m_showTwoSegments{false};
+    QCheckBox *m_showTwoSegmentsCheck{nullptr};
 
     template <typename T> void PrepareList(QMap<QString, quint32> &list, quint32 id) const;
 

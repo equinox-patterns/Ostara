@@ -45,6 +45,7 @@
 
 class VFormula;
 class VSegmentLabel;
+class VSimpleCurve;
 
 struct VToolCutInitData : VToolSinglePointInitData
 {
@@ -58,6 +59,7 @@ struct VToolCutInitData : VToolSinglePointInitData
     QString name2{};              // NOLINT(misc-non-private-member-variables-in-classes)
     quint32 segment1Id{NULL_ID};  // NOLINT(misc-non-private-member-variables-in-classes)
     quint32 segment2Id{NULL_ID};  // NOLINT(misc-non-private-member-variables-in-classes)
+    bool showTwoSegments{false};  // NOLINT(misc-non-private-member-variables-in-classes)
     qreal segment1Mx{labelMX};    // NOLINT(misc-non-private-member-variables-in-classes)
     qreal segment1My{labelMY};    // NOLINT(misc-non-private-member-variables-in-classes)
     qreal segment2Mx{labelMX};    // NOLINT(misc-non-private-member-variables-in-classes)
@@ -103,6 +105,12 @@ public:
     auto CurveName() const -> QString;
 
     auto BaseCurveId() const -> quint32;
+
+    auto IsShowTwoSegments() const -> bool;
+    void SetShowTwoSegments(bool value);
+
+    /** @brief SetSegmentReplaced is called by a nested cut tool that replaces one of our sub-curves. */
+    void SetSegmentReplaced(quint32 segmentId, bool replaced);
 
     void ShowVisualization(bool show) override;
     void ChangeSegmentLabelPosition(SegmentLabel segment, const QPointF &pos) override;
@@ -196,6 +204,22 @@ private:
     Q_DISABLE_COPY_MOVE(VToolCut) // NOLINT
 
     bool m_hoverOwnsVisualization{false};
+
+    /** @brief m_showTwoSegments when true the two sub-curves replace the base curve on the canvas. */
+    bool m_showTwoSegments{false};
+
+    /** @brief Items drawing the two sub-curves on the canvas, so they can be clicked directly. */
+    VSimpleCurve *m_segment1Curve{nullptr};
+    VSimpleCurve *m_segment2Curve{nullptr};
+
+    /** @brief A nested cut tool may replace one of our sub-curves by its own two sub-curves. */
+    bool m_segment1Replaced{false};
+    bool m_segment2Replaced{false};
+
+    void RefreshSegmentCurves();
+    void ApplySegmentsVisibility();
+    auto BaseCurveItem() const -> VToolAbstractCurve *;
+    auto BaseCurveCut() const -> VToolCut *;
 
     void UpdateNameField(VToolCutNameField field, const QString &value);
     auto HasConflict(const QString &value, VToolCutNameField currentField) const -> bool;
