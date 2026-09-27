@@ -297,6 +297,7 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("flipping_line"),                ui->actionFlippingByLineTool},
         {QStringLiteral("rotation"),                     ui->actionRotationTool},
         {QStringLiteral("close_dart"),                   ui->actionCloseDartTool},
+        {QStringLiteral("dart_cap"),                     ui->actionDartCapTool},
         {QStringLiteral("move"),                         ui->actionMoveTool},
         {QStringLiteral("true_darts"),                   ui->actionTrueDartsTool},
         {QStringLiteral("new_detail"),                   ui->actionNewDetailTool},

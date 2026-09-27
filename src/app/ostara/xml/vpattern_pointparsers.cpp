@@ -60,6 +60,7 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolarcpoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolcurvepoint.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromarcandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromcircleandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.h"
@@ -124,7 +125,8 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
                                      OToolArcPoint::ToolTypeStart,               /*25*/
                                      OToolArcPoint::ToolTypeEnd,                 /*26*/
                                      OToolCurvePoint::ToolTypeStart,             /*27*/
-                                     OToolCurvePoint::ToolTypeEnd});             /*28*/
+                                     OToolCurvePoint::ToolTypeEnd,
+                                     OToolDartCap::ToolType});             /*28*/
     switch (points.indexOf(type))
     {
         case 0: // VToolBasePoint::ToolType
@@ -213,6 +215,9 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
             break;
         case 28: // OToolCurvePoint::ToolTypeEnd
             ParseToolCurvePoint(scene, domElement, parse, false);
+            break;
+        case 29: // OToolDartCap::ToolType
+            ParseToolDartCap(scene, domElement, parse);
             break;
         default:
             throw VException(tr("Unknown point type '%1'.").arg(type));
@@ -1551,6 +1556,45 @@ void VPattern::ParseToolTrueDarts(VMainGraphicsScene *scene, const QDomElement &
     {
         VExceptionObjectError excep(tr("Error creating or updating true darts"), domElement);
         excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseToolDartCap(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse)
+{
+    SCASSERT(scene != nullptr)
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        OToolDartCapInitData initData;
+        initData.scene = scene;
+        initData.doc = this;
+        initData.data = data;
+        initData.parse = parse;
+        initData.typeCreation = Source::FromFile;
+
+        PointsWithLineCommonAttributes(domElement, initData);
+
+        initData.apexId = GetParametrUInt(domElement, AttrApex, NULL_ID_STR);
+        initData.firstPointId = GetParametrUInt(domElement, AttrFirstPoint, NULL_ID_STR);
+        initData.secondPointId = GetParametrUInt(domElement, AttrSecondPoint, NULL_ID_STR);
+        initData.extendPointId = GetParametrUInt(domElement, AttrExtendPoint, NULL_ID_STR);
+        initData.drawCap = GetParametrBool(domElement, AttrDrawCap, trueStr);
+
+        OToolDartCap::Create(initData);
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating the cap of a dart"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+    catch (qmu::QmuParserError &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating the cap of a dart"), domElement);
+        excep.AddMoreInformation("Message:     "_L1 + e.GetMsg() + '\n'_L1 + "Expression:  "_L1 + e.GetExpr());
         throw excep;
     }
 }

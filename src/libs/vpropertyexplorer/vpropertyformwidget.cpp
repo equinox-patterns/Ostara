@@ -349,6 +349,9 @@ void VPE::VPropertyFormWidget::buildEditor(VProperty *property, QFormLayout *for
     // Set the editor data
     property->setEditorData(tmpEditor);
 
+    // A row another option greyed out is shown, but cannot be edited.
+    tmpEditor->setEnabled(not property->isEditorDisabled());
+
     // add new row
     if (type == Property::Complex)
     {

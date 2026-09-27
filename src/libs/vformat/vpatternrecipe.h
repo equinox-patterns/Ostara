@@ -102,6 +102,7 @@ private:
     auto EllipticalArc(const VToolRecord &record) -> QDomElement;
     auto Rotation(const VToolRecord &record, const VContainer &data) -> QDomElement;
     auto CloseDart(const VToolRecord &record, const VContainer &data) -> QDomElement;
+    auto DartCap(const VToolRecord &record) -> QDomElement;
     auto FlippingByLine(const VToolRecord &record, const VContainer &data) -> QDomElement;
     auto FlippingByAxis(const VToolRecord &record, const VContainer &data) -> QDomElement;
     auto Move(const VToolRecord &record, const VContainer &data) -> QDomElement;

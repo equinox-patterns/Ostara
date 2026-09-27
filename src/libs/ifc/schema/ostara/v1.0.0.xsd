@@ -195,6 +195,9 @@
                           <xs:attribute name="p1Line2" type="xs:unsignedInt"/>
                           <xs:attribute name="p2Line1" type="xs:unsignedInt"/>
                           <xs:attribute name="p2Line2" type="xs:unsignedInt"/>
+                          <xs:attribute name="apex" type="xs:unsignedInt"/>
+                          <xs:attribute name="extendPoint" type="xs:unsignedInt"/>
+                          <xs:attribute name="drawCap" type="xs:boolean"/>
                           <xs:attribute name="center" type="xs:unsignedInt"/>
                           <xs:attribute name="radius" type="xs:string"/>
                           <xs:attribute name="axisP1" type="xs:unsignedInt"/>

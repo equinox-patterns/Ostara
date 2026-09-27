@@ -246,6 +246,12 @@ public:
     auto isSpanningRow() const -> bool;
     void setSpanningRow(bool spanning);
 
+    //! Whether this row is greyed. A greyed row is shown but cannot be edited — what a row that only
+    //! means something when another option is on needs (Ostara: the two names of a dart cap, when the cap
+    //! is not drawn). Setting it reaches the editor already on screen.
+    auto isEditorDisabled() const -> bool;
+    void setEditorDisabled(bool disabled);
+
     virtual void UpdateParent(const QVariant &value);
 public slots:
     virtual void ValueChildChanged(const QVariant &value, int typeForParent);

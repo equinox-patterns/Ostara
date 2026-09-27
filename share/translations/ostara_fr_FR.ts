@@ -8557,6 +8557,10 @@ Cette action ne peut pas être annulée.</translation>
             <source>Close dart tool</source>
             <translation>Fermer une pince</translation>
         </message>
+        <message>
+            <source>Dart cap tool</source>
+            <translation>Chapeau de pince</translation>
+        </message>
     </context>
 <context>
     <name>FoldLine</name>
@@ -10896,6 +10900,14 @@ Cette action ne peut pas être annulée.</translation>
             <location filename="../../src/app/ostara/mainwindow.ui" line="2245"/>
             <source>Close a dart: turn one leg onto the other</source>
             <translation>Fermer une pince : ramener un bras sur l’autre</translation>
+        </message>
+        <message>
+            <source>Dart cap</source>
+            <translation>Chapeau de pince</translation>
+        </message>
+        <message>
+            <source>Select the dart point</source>
+            <translation>Sélectionner la pointe de la pince</translation>
         </message>
     </context>
 <context>
@@ -21393,6 +21405,10 @@ Voulez-vous continuer ?</translation>
             <source>Tool 'Close dart'</source>
             <translation>Outil 'Fermer une pince'</translation>
         </message>
+        <message>
+            <source>Tool 'Dart cap'</source>
+            <translation>Outil 'Chapeau de pince'</translation>
+        </message>
     </context>
 <context>
     <name>VAbstractTool</name>
@@ -22549,6 +22565,10 @@ Voulez-vous continuer ?</translation>
             <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="994"/>
             <source>Close dart</source>
             <translation>Fermer une pince</translation>
+        </message>
+        <message>
+            <source>Dart cap</source>
+            <translation>Chapeau de pince</translation>
         </message>
     </context>
 <context>
@@ -25066,6 +25086,10 @@ Voulez-vous continuer ?</translation>
             <source>Error creating or updating the operation that closes a dart</source>
             <translation>Erreur lors de la création ou de la mise à jour de l’opération qui ferme une pince</translation>
         </message>
+        <message>
+            <source>Error creating or updating the cap of a dart</source>
+            <translation>Erreur de création ou de mise à jour du chapeau de pince</translation>
+        </message>
     </context>
 <context>
     <name>VPatternConverter</name>
@@ -26841,6 +26865,18 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
             <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="191"/>
             <source>Closing divisor:</source>
             <translation>Diviseur de fermeture :</translation>
+        </message>
+        <message>
+            <source>Tool close dart</source>
+            <translation>Outil 'Fermer une pince'</translation>
+        </message>
+        <message>
+            <source>Tool dart cap</source>
+            <translation>Outil 'Chapeau de pince'</translation>
+        </message>
+        <message>
+            <source>Draw the cap</source>
+            <translation>Tracer le chapeau</translation>
         </message>
     </context>
 <context>
@@ -29136,6 +29172,72 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
             <location filename="../../src/libs/vtools/visualization/line/operation/ovistoolclosedart.cpp" line="74"/>
             <source>Closing angle = %1°, &lt;b&gt;Mouse click&lt;/b&gt; - select the Target point</source>
             <translation>Angle de fermeture = %1°, &lt;b&gt;Clic&lt;/b&gt; - sélectionner le point cible</translation>
+        </message>
+    </context>
+    <context>
+        <name>ODialogDartCap</name>
+        <message>
+            <source>Dart cap</source>
+            <translation>Chapeau de pince</translation>
+        </message>
+        <message>
+            <source>Tool</source>
+            <translation>Outil</translation>
+        </message>
+        <message>
+            <source>Point</source>
+            <translation>Point</translation>
+        </message>
+        <message>
+            <source>Draw the cap</source>
+            <translation>Tracer le chapeau</translation>
+        </message>
+        <message>
+            <source>Type of line:</source>
+            <translation>Type de tracé :</translation>
+        </message>
+        <message>
+            <source>Line color:</source>
+            <translation>Couleur du tracé :</translation>
+        </message>
+        <message>
+            <source>Point name:</source>
+            <translation>Nom du point :</translation>
+        </message>
+        <message>
+            <source>Line:</source>
+            <translation>Ligne :</translation>
+        </message>
+        <message>
+            <source>Select the first point of the dart</source>
+            <translation>Sélectionner le premier point de la pince</translation>
+        </message>
+        <message>
+            <source>Select the second point of the dart</source>
+            <translation>Sélectionner le second point de la pince</translation>
+        </message>
+        <message>
+            <source>Select a point of the line to extend</source>
+            <translation>Sélectionner un point de la ligne à prolonger</translation>
+        </message>
+        <message>
+            <source>The two points of the opening are two different points, and neither of them is the point of the dart.</source>
+            <translation>Les deux points de l'ouverture sont deux points différents, et aucun des deux n'est la pointe de la pince.</translation>
+        </message>
+        <message>
+            <source>The cap of this dart cannot be built from this point: the line it carries does not meet the axis of the dart. Choose another point of the line to extend.</source>
+            <translation>Le chapeau de cette pince ne peut pas être construit depuis ce point : la ligne qu'il porte ne rencontre pas l'axe de la pince. Choisissez un autre point de la ligne à prolonger.</translation>
+        </message>
+    </context>
+    <context>
+        <name>OToolDartCap</name>
+        <message>
+            <source>Error calculating point '%1'. The line of the pattern through %2 does not meet the axis of the dart %3-%4-%5</source>
+            <translation>Erreur de calcul du point '%1'. La ligne du patron passant par %2 ne rencontre pas l'axe de la pince %3-%4-%5</translation>
+        </message>
+        <message>
+            <source>Cap of the dart %1-%2-%3</source>
+            <translation>Chapeau de la pince %1-%2-%3</translation>
         </message>
     </context>
 </TS>

@@ -223,6 +223,7 @@ private:
     void ParseToolCutSplinePath(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolCutArc(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolLineIntersectAxis(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
+    void ParseToolDartCap(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolCurveIntersectAxis(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolPointOfIntersectionArcs(VMainGraphicsScene *scene, const QDomElement &domElement,
                                           const Document &parse);

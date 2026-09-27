@@ -87,7 +87,8 @@ auto IsDarkTheme() -> bool
 auto IsAppIconTool(const QString &id) -> bool
 {
     return id == QStringLiteral("detail_export") || id == QStringLiteral("export_templates")
-           || id == QStringLiteral("export_image") || id == QStringLiteral("close_dart");
+           || id == QStringLiteral("export_image") || id == QStringLiteral("close_dart")
+           || id == QStringLiteral("dart_cap");
 }
 
 auto FormatTooltip(const QString &toolName, const QAction *action) -> QString
@@ -485,6 +486,9 @@ void DrawToolBar::InitializeGroups()
             // No close_dart.svg exists yet, so this button is built by hand further down and borrows the icon
             // of the rotation it comes from. The tool waits here until it has artwork of its own.
             {QStringLiteral("close_dart"),               tr("Close dart tool"),                                 nullptr, nullptr},
+            // Same as close_dart: no dart_cap.svg exists yet, so the button is built by hand further down
+            // and borrows the icon of true darts.
+            {QStringLiteral("dart_cap"),                 tr("Dart cap tool"),                                   nullptr, nullptr},
         }, kModeDraw},
     };
     // clang-format on
@@ -537,6 +541,18 @@ void DrawToolBar::InitializeGroups()
     // The tool that closes a dart waits for its own artwork: with no close_dart.svg to load — and makeBtn()
     // would complain about it — its button borrows the icon of the rotation it comes from, from the
     // application rather than from :/tools/. Built by hand for the same reason as the export tool.
+    if (!m_buttonMap.contains(QStringLiteral("dart_cap")))
+    {
+        auto *btn = new QToolButton(m_root);
+        btn->setObjectName(QStringLiteral("drawToolBtn"));
+        btn->setAutoRaise(true);
+        btn->setCheckable(true);
+        btn->setFixedSize(kButtonSize, kButtonSize);
+        btn->setIconSize(QSize(24, 24));
+        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("true_darts.png")));
+        m_buttonMap.insert(QStringLiteral("dart_cap"), btn);
+    }
+
     if (!m_buttonMap.contains(QStringLiteral("close_dart")))
     {
         auto *btn = new QToolButton(m_root);

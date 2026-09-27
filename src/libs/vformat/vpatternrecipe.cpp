@@ -44,6 +44,7 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
@@ -364,7 +365,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -461,6 +462,8 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
                 return CurvePoint(tool);
             case Tool::TrueDarts:
                 return TrueDarts(tool);
+            case Tool::DartCap:
+                return DartCap(tool);
             case Tool::EllipticalArc:
                 return EllipticalArc(tool);
             case Tool::Rotation:
@@ -1156,6 +1159,24 @@ auto VPatternRecipe::Rotation(const VToolRecord &record, const VContainer &data)
     Formula(step, tool->GetFormulaAngle(), AttrAngle, AttrAngleValue);
 
     step.appendChild(GroupOperationSource(tool, record.GetId(), data));
+
+    return step;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPatternRecipe::DartCap(const VToolRecord &record) -> QDomElement
+{
+    auto *tool = GetPatternTool<OToolDartCap>(record.GetId());
+
+    QDomElement step = createElement(TagStep);
+
+    ToolAttributes(step, tool);
+    SetAttribute(step, AttrApex, tool->ApexName());
+    SetAttribute(step, AttrFirstPoint, tool->FirstPointName());
+    SetAttribute(step, AttrSecondPoint, tool->SecondPointName());
+    SetAttribute(step, AttrExtendPoint, tool->ExtendPointName());
+    SetAttribute(step, AttrDrawCap, tool->IsCapDrawn() ? trueStr : falseStr);
+    LineAttributes(step, tool);
 
     return step;
 }

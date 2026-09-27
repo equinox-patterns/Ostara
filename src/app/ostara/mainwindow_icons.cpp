@@ -37,7 +37,7 @@ void MainWindow::SetupDrawToolsIcons()
     const auto resource = QStringLiteral("toolicon");
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Not all tools were handled.");
 
     ui->actionLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("line.png")));
     ui->actionEndLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("segment.png")));
@@ -89,6 +89,9 @@ void MainWindow::SetupDrawToolsIcons()
     // The tool that closes a dart waits for its own artwork: it borrows the icon of the rotation it comes
     // from, and the button of the palette borrows the same one (see DrawToolBar).
     ui->actionCloseDartTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("rotation.png")));
+    // The cap of a dart waits for its own artwork too: it borrows the icon of the tool it is built beside,
+    // and the button of the palette borrows the same one (see DrawToolBar).
+    ui->actionDartCapTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("true_darts.png")));
     ui->actionMoveTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("move.png")));
     ui->actionTrueDartsTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("true_darts.png")));
     ui->actionNewDetailTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("new_detail.png")));

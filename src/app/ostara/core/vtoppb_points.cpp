@@ -50,6 +50,7 @@
 #include "../vpropertyexplorer/plugins/vcolorpropertyeditor.h"
 #include "../vtheme/vscenestylesheet.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolalongline.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.h"
@@ -338,6 +339,7 @@ auto PointOfIntersectionProperties() -> std::vector<PropertyDesc>;
 auto ShoulderPointProperties() -> std::vector<PropertyDesc>;
 auto TriangleProperties() -> std::vector<PropertyDesc>;
 auto LineIntersectAxisProperties() -> std::vector<PropertyDesc>;
+auto DartCapProperties() -> std::vector<PropertyDesc>;
 auto CurveIntersectAxisProperties() -> std::vector<PropertyDesc>;
 auto CurvePointProperties() -> std::vector<PropertyDesc>;
 
@@ -654,6 +656,84 @@ auto LineIntersectAxisProperties() -> std::vector<PropertyDesc>
                                                {{T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Axis point:")), &VToolLineIntersectAxis::BasePointName},
                                                 {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First line point:")), &VToolLineIntersectAxis::FirstLinePoint},
                                                 {T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second line point:")), &VToolLineIntersectAxis::SecondLinePoint}}),
+    };
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DartCapProperties() -> std::vector<PropertyDesc>
+{
+    return {
+        // Whether the cap is drawn at all: the point exists either way, the two tracés are what the box adds.
+        {QStringLiteral("drawCap"),
+         T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Draw the cap")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolDartCap *>(tool);
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Draw the cap")));
+             p->setValue(t->IsCapDrawn());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolDartCap *>(b->currentItem())) {
+                 t->SetCapDrawn(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+                 // The two names below only mean something when the cap is drawn: the rows go grey with it.
+                 b->UpdateOptions();
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolDartCap *>(b->currentItem())) prop->setValue(t->IsCapDrawn());
+         }},
+
+        // The two tracés of the cap, in the direction they read: C_P1 in green, C_P2 in red.
+        {QStringLiteral("lineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolDartCap *>(tool);
+             auto *p = new VPE::VStringProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")));
+             p->setNameDecoration(SegmentDotPixmap(VColorRole::VisSupportColor2));
+             p->setValue(t->GetLine1RoleName());
+             p->setEditorDisabled(not t->IsCapDrawn());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolDartCap *>(b->currentItem())) {
+                 const QString suffix = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                 if (suffix != t->GetLine1RoleName()) t->SetLine1RoleName(suffix);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolDartCap *>(b->currentItem())) {
+                 prop->setValue(t->GetLine1RoleName());
+                 prop->setEditorDisabled(not t->IsCapDrawn());
+             }
+         }},
+
+        {QStringLiteral("secondLineRoleName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolDartCap *>(tool);
+             auto *p = new VPE::VStringProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")));
+             p->setNameDecoration(SegmentDotPixmap(VColorRole::VisSupportColor4));
+             p->setValue(t->GetLine2RoleName());
+             p->setEditorDisabled(not t->IsCapDrawn());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolDartCap *>(b->currentItem())) {
+                 const QString suffix = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                 if (suffix != t->GetLine2RoleName()) t->SetLine2RoleName(suffix);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolDartCap *>(b->currentItem())) {
+                 prop->setValue(t->GetLine2RoleName());
+                 prop->setEditorDisabled(not t->IsCapDrawn());
+             }
+         }},
+
+        MakeLineType<OToolDartCap>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Type of line:"))),
+        MakeLineColor<OToolDartCap>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:"))),
+        MakeNotes<OToolDartCap>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        MakePointGroup<OToolDartCap>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")),
+                                     T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")),
+                                     T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 

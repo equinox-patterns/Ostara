@@ -461,6 +461,22 @@ void VPE::VProperty::setSpanningRow(bool spanning)
     vproperty_d_ptr->SpanningRow = spanning;
 }
 
+auto VPE::VProperty::isEditorDisabled() const -> bool
+{
+    return vproperty_d_ptr->EditorDisabled;
+}
+
+void VPE::VProperty::setEditorDisabled(bool disabled)
+{
+    vproperty_d_ptr->EditorDisabled = disabled;
+
+    // The editor may already be on screen: the row has to go grey without waiting for a rebuild.
+    if (vproperty_d_ptr->editor != nullptr)
+    {
+        vproperty_d_ptr->editor->setEnabled(not disabled);
+    }
+}
+
 auto VPE::VProperty::isExpandedByDefault() const -> bool
 {
     return vproperty_d_ptr->ExpandedByDefault;

@@ -84,6 +84,9 @@ public:
     //! Whether this row keeps its label beside its editor instead of taking part in the label column
     bool SpanningRow{false}; // NOLINT(misc-non-private-member-variables-in-classes)
 
+    //! Whether this row is greyed: shown, but not editable, because another row decided so
+    bool EditorDisabled{false}; // NOLINT(misc-non-private-member-variables-in-classes)
+
     //! List of child properties
     QList<VProperty*> Children{}; // NOLINT(misc-non-private-member-variables-in-classes)
 

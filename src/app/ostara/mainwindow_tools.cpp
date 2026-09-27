@@ -81,6 +81,7 @@
 #include "../vtools/dialogs/tools/dialogpointofintersectioncurves.h"
 #include "../vtools/dialogs/tools/dialogrotation.h"
 #include "../vtools/dialogs/tools/odialogclosedart.h"
+#include "../vtools/dialogs/tools/odialogdartcap.h"
 #include "../vtools/dialogs/tools/dialogshoulderpoint.h"
 #include "../vtools/dialogs/tools/dialogspline.h"
 #include "../vtools/dialogs/tools/dialogsplinepath.h"
@@ -101,6 +102,7 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
@@ -330,6 +332,16 @@ void MainWindow::ToolLineIntersect(bool checked)
         checked, Tool::LineIntersect, QStringLiteral("intersect_cursor.png"), tr("Select first point of first line"),
         &MainWindow::ClosedDrawDialogWithApply<VToolLineIntersect>, &MainWindow::ApplyDrawDialog<VToolLineIntersect>);
     LogPatternToolUsed(checked, QStringLiteral("Line intersect tool"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolDartCap(bool checked)
+{
+    ToolSelectPointByRelease();
+    SetToolButtonWithApply<ODialogDartCap>(
+        checked, Tool::DartCap, QStringLiteral("intersect_cursor.png"), tr("Select the dart point"),
+        &MainWindow::ClosedDrawDialogWithApply<OToolDartCap>, &MainWindow::ApplyDrawDialog<OToolDartCap>);
+    LogPatternToolUsed(checked, QStringLiteral("Dart cap tool"));
 }
 
 
@@ -1072,7 +1084,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Check if need to extend.");
 
     switch (t)
     {
@@ -1451,7 +1463,7 @@ void MainWindow::ApplyPieceDialog(VMainGraphicsScene *scene)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1634,6 +1646,9 @@ void MainWindow::CancelTool()
         case Tool::CloseDart:
             ui->actionCloseDartTool->setChecked(false);
             break;
+        case Tool::DartCap:
+            ui->actionDartCapTool->setChecked(false);
+            break;
         case Tool::FlippingByLine:
             ui->actionFlippingByLineTool->setChecked(false);
             break;
@@ -1739,7 +1754,7 @@ void MainWindow::ArrowTool(bool checked)
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 70, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -1940,6 +1955,10 @@ void MainWindow::LastUsedTool()
         case Tool::CloseDart:
             ui->actionCloseDartTool->setChecked(true);
             ToolCloseDart(true);
+            break;
+        case Tool::DartCap:
+            ui->actionDartCapTool->setChecked(true);
+            ToolDartCap(true);
             break;
         case Tool::FlippingByLine:
             ui->actionFlippingByLineTool->setChecked(true);

@@ -286,6 +286,7 @@ enum class Tool : ToolVisHolderType
     ArcPoint,
     CurvePoint,
     CloseDart,
+    DartCap,
     LAST_ONE_DO_NOT_USE // add new stuffs above this, this constant must be last and never used
 };
 
@@ -355,6 +356,7 @@ enum class Vis : ToolVisHolderType
     ToolInsertNode,
     ToolArmholeCurve,
     ToolCloseDart,
+    ToolDartCap,
     LAST_ONE_DO_NOT_USE // add new stuffs above this, this constant must be last and never used
 };
 
