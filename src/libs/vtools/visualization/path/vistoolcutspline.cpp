@@ -35,6 +35,7 @@
 #include <QSharedPointer>
 #include <new>
 
+#include "../../tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.h"
 #include "../vgeometry/vabstractcubicbezier.h"
 #include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/vpointf.h"
@@ -73,18 +74,16 @@ void VisToolCutSpline::RefreshGeometry()
 
         if (!qIsInf(m_length))
         {
-            QPointF spl1p2;
-            QPointF spl1p3;
-            QPointF spl2p2;
-            QPointF spl2p3;
-            const QPointF p = spl->CutSpline(m_length, spl1p2, spl1p3, spl2p2, spl2p3, QString());
+            const VToolCutSpline::SubCurves curves = VToolCutSpline::SplitCurve(m_length, spl);
 
-            auto sp1 = VSpline(spl->GetP1(), spl1p2, spl1p3, VPointF(p));
+            VSpline sp1;
+            VSpline sp2;
+            VToolCutSpline::BuildSubCurves(curves, spl, VPointF(curves.cutPoint), sp1, sp2);
+
             sp1.SetApproximationScale(spl->GetApproximationScale());
-            auto sp2 = VSpline(VPointF(p), spl2p2, spl2p3, spl->GetP4());
             sp2.SetApproximationScale(spl->GetApproximationScale());
 
-            DrawPoint(m_point, p);
+            DrawPoint(m_point, curves.cutPoint);
 
             DrawPath(m_spl1, sp1.GetPath(), sp1.DirectionArrows(), LineStyle(), Qt::RoundCap);
             DrawPath(m_spl2, sp2.GetPath(), sp2.DirectionArrows(), LineStyle(), Qt::RoundCap);

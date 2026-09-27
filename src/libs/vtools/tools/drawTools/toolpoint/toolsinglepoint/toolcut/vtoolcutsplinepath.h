@@ -82,6 +82,14 @@ private:
 
     explicit VToolCutSplinePath(const VToolCutInitData &initData, QGraphicsItem *parent = nullptr);
 
+    // Cut point outside the curve: prolongs the curve and returns the pieces.
+    static auto Prolonged(qreal cutLength,
+                          qreal fullLength,
+                          const QSharedPointer<VAbstractCubicBezierPath> &splPath,
+                          const QString &pName,
+                          VSplinePath **splPath1,
+                          VSplinePath **splPath2) -> VPointF *;
+
     auto GatherToolChanges() const -> ToolChanges;
 };
 

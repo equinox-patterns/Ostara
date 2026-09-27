@@ -41,19 +41,20 @@
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../ifc/xml/vpatternconverter.h"
 #include "../ifc/xml/vpatterngraph.h"
+#include "../vgeometry/obezierextension.h"
 #include "../vgeometry/vabstractcubicbezierpath.h"
 #include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/vpointf.h"
 #include "../vgeometry/vspline.h"
 #include "../vgeometry/vsplinepath.h"
 #include "../vgeometry/vsplinepoint.h"
-#include "vexception.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/variables/vcurvelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "vexception.h"
 #include "vtoolcut.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -118,6 +119,9 @@ void VToolCutSplinePath::SetDialog()
     dialogTool->SetName1(GetName1());
     dialogTool->SetName2(GetName2());
     dialogTool->SetShowTwoSegments(IsShowTwoSegments());
+    dialogTool->SetProlongationType(GetProlongationType());
+    dialogTool->SetProlongationColor(GetProlongationColor());
+    dialogTool->UpdateProlongation(baseCurveId, dialogTool->GetFormula());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -197,11 +201,32 @@ auto VToolCutSplinePath::Create(VToolCutInitData &initData) -> VToolCutSplinePat
     path1->SetDerivative(true);
     path2->SetDerivative(true);
 
-    // The two segments take over the base curve's look when they replace it on the canvas.
+    // The two segments take over the base curve's look when they replace it on the canvas. The piece
+    // prolonging the curve is not the curve itself: it is drawn with the look chosen for it.
     path1->SetColor(splPath->GetColor());
     path2->SetColor(splPath->GetColor());
     path1->SetPenStyle(splPath->GetPenStyle());
     path2->SetPenStyle(splPath->GetPenStyle());
+
+    const QString prolongationColor = initData.lineColor.isEmpty() ? ColorBlack : initData.lineColor;
+    const QString prolongationType = initData.lineType.isEmpty() ? TypeLineLine : initData.lineType;
+
+    const qreal fullLength = splPath->GetLength();
+    const qreal cutLength = OBezierExtension::Normalize(VAbstractValApplication::VApp()->toPixel(result), fullLength);
+
+    initData.prolongedSegment = 0;
+    if (cutLength > fullLength)
+    {
+        initData.prolongedSegment = 2;
+        path2->SetColor(prolongationColor);
+        path2->SetPenStyle(prolongationType);
+    }
+    else if (cutLength < 0.0)
+    {
+        initData.prolongedSegment = 1;
+        path1->SetColor(prolongationColor);
+        path1->SetPenStyle(prolongationType);
+    }
 
     path1->SetAliasSuffix(initData.aliasSuffix1);
     path2->SetAliasSuffix(initData.aliasSuffix2);
@@ -279,16 +304,101 @@ void VToolCutSplinePath::ShowVisualization(bool show)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+// Cut point outside the curve: the curve is prolonged along its own direction up to that point,
+// and the piece of prolongation becomes one of the two sub-curves. The curve itself is untouched.
+auto VToolCutSplinePath::Prolonged(qreal cutLength,
+                                   qreal fullLength,
+                                   const QSharedPointer<VAbstractCubicBezierPath> &splPath,
+                                   const QString &pName,
+                                   VSplinePath **splPath1,
+                                   VSplinePath **splPath2) -> VPointF *
+{
+    const bool beyondEnd = cutLength > fullLength;
+
+    const VSpline edge = beyondEnd ? splPath->GetSpline(splPath->CountSubSpl()) : splPath->GetSpline(1);
+
+    const QPointF p1 = static_cast<QPointF>(edge.GetP1());
+    const QPointF p2 = static_cast<QPointF>(edge.GetP2());
+    const QPointF p3 = static_cast<QPointF>(edge.GetP3());
+    const QPointF p4 = static_cast<QPointF>(edge.GetP4());
+
+    const OBezierExtension::Piece piece = beyondEnd ? OBezierExtension::After(p1, p2, p3, p4, cutLength - fullLength)
+                                                    : OBezierExtension::Before(p1, p2, p3, p4, -cutLength);
+
+    auto *p = new VPointF(beyondEnd ? piece.p4 : piece.p1);
+    p->setName(pName);
+
+    // The prolongation, as a one-segment spline path. Its far end is the cut point, its other end
+    // is the curve's own end so the piece is named after both.
+    VSpline extension;
+    if (beyondEnd)
+    {
+        extension = VSpline(splPath->LastPoint(), piece.p2, piece.p3, *p);
+    }
+    else
+    {
+        extension = VSpline(*p, piece.p2, piece.p3, splPath->FirstPoint());
+    }
+    extension.SetApproximationScale(splPath->GetApproximationScale());
+
+    auto *prolongation = new VSplinePath();
+    prolongation->SetApproximationScale(splPath->GetApproximationScale());
+
+    VSplinePoint start;
+    start.SetStrict(false);
+    start.SetP(extension.GetP1());
+    start.SetAngle2(extension.GetStartAngle(), extension.GetStartAngleFormula());
+    start.SetLength2(extension.GetC1Length(), extension.GetC1LengthFormula());
+
+    VSplinePoint end;
+    end.SetStrict(false);
+    end.SetP(extension.GetP4());
+    end.SetAngle1(extension.GetEndAngle(), extension.GetEndAngleFormula());
+    end.SetLength1(extension.GetC2Length(), extension.GetC2LengthFormula());
+
+    prolongation->append(start);
+    prolongation->append(end);
+
+    auto *curve = new VSplinePath(splPath->GetSplinePath());
+    curve->SetApproximationScale(splPath->GetApproximationScale());
+
+    if (beyondEnd)
+    {
+        *splPath1 = curve;
+        *splPath2 = prolongation;
+    }
+    else
+    {
+        *splPath1 = prolongation;
+        *splPath2 = curve;
+    }
+
+    return p;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VToolCutSplinePath::CutSplinePath(qreal length, const QSharedPointer<VAbstractCubicBezierPath> &splPath,
                                        const QString &pName, VSplinePath **splPath1, VSplinePath **splPath2)
     -> VPointF *
 {
     SCASSERT(splPath != nullptr)
 
-    QPointF spl1p2, spl1p3, spl2p2, spl2p3;
-    qint32 p1 = 0, p2 = 0;
+    const qreal fullLength = splPath->GetLength();
+    const qreal cutLength = OBezierExtension::Normalize(length, fullLength);
 
-    const QPointF point = splPath->CutSplinePath(length, p1, p2, spl1p2, spl1p3, spl2p2, spl2p3, pName);
+    if (splPath->CountSubSpl() >= 1 && (cutLength < 0.0 || cutLength > fullLength))
+    {
+        return Prolonged(cutLength, fullLength, splPath, pName, splPath1, splPath2);
+    }
+
+    QPointF spl1p2;
+    QPointF spl1p3;
+    QPointF spl2p2;
+    QPointF spl2p3;
+    qint32 p1 = 0;
+    qint32 p2 = 0;
+
+    const QPointF point = splPath->CutSplinePath(cutLength, p1, p2, spl1p2, spl1p3, spl2p2, spl2p3, pName);
     auto *p = new VPointF(point);
     p->setName(pName);
 
@@ -407,6 +517,19 @@ void VToolCutSplinePath::SaveDialog(QDomElement &domElement)
                                       AttrShowTwoSegments,
                                       dialogTool->GetShowTwoSegments(),
                                       [](bool value) noexcept -> bool { return !value; });
+
+    // Only a cut that goes past an end of the curve carries a look of its own for its prolongation.
+    const bool prolonged = dialogTool->IsProlonged();
+    doc->SetAttributeOrRemoveIf<QString>(domElement,
+                                         AttrTypeLine,
+                                         dialogTool->GetProlongationType(),
+                                         [prolonged](const QString &value) noexcept -> bool
+                                         { return !prolonged || value.isEmpty(); });
+    doc->SetAttributeOrRemoveIf<QString>(domElement,
+                                         AttrLineColor,
+                                         dialogTool->GetProlongationColor(),
+                                         [prolonged](const QString &value) noexcept -> bool
+                                         { return !prolonged || value.isEmpty(); });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

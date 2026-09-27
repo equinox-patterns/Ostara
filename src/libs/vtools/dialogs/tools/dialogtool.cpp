@@ -29,6 +29,7 @@
 #include "dialogtool.h"
 
 #include "../dialogtoolbox.h"
+#include "../vmisc/FactoryWidgets.h"
 
 #include <QBuffer>
 #include <QCloseEvent>
@@ -464,6 +465,146 @@ void DialogTool::InitShowTwoSegmentsCheckBox(QVBoxLayout *layout, QWidget *befor
             &QCheckBox::toggled,
             this,
             [this](bool checked) -> void { SetShowTwoSegments(checked); });
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogTool::SetProlongationType(const QString &value)
+{
+    m_prolongationType = value;
+
+    if (m_prolongationTypeCombo != nullptr)
+    {
+        const int index = m_prolongationTypeCombo->findData(m_prolongationType);
+        if (index >= 0)
+        {
+            const QSignalBlocker blocker(m_prolongationTypeCombo);
+            m_prolongationTypeCombo->setCurrentIndex(index);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogTool::SetProlongationColor(const QString &value)
+{
+    m_prolongationColor = value;
+
+    if (m_prolongationColorCombo != nullptr)
+    {
+        SetColorComboCurrentName(m_prolongationColorCombo, m_prolongationColor);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogTool::SetProlonged(bool prolonged, qreal amount)
+{
+    m_prolonged = prolonged;
+
+    if (m_prolongationLabel != nullptr)
+    {
+        m_prolongationLabel->setText(tr("The curve will be prolonged by %1%2.")
+                                         .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(amount)))
+                                         .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)));
+        m_prolongationLabel->setVisible(prolonged);
+    }
+
+    if (m_prolongationRow != nullptr)
+    {
+        m_prolongationRow->setVisible(prolonged);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogTool::UpdateProlongation(quint32 curveId, const QString &formula)
+{
+    const QSharedPointer<VAbstractCurve> curve = curveId == NULL_ID ? QSharedPointer<VAbstractCurve>()
+                                                                    : data.GeometricObject<VAbstractCurve>(curveId);
+    if (curve.isNull())
+    {
+        SetProlonged(false, 0.0);
+        return;
+    }
+
+    const qreal value = Visualization::FindValFromUser(formula, data.DataVariables());
+    if (qIsNaN(value) || qIsInf(value))
+    {
+        SetProlonged(false, 0.0);
+        return;
+    }
+
+    const qreal length = VAbstractValApplication::VApp()->toPixel(value);
+    const qreal fullLength = curve->GetLength();
+
+    // A negative length is measured from the end of the curve, exactly as the cut itself does.
+    const qreal cutLength = length < 0.0 ? fullLength + length : length;
+
+    qreal extra = 0.0;
+    if (cutLength > fullLength)
+    {
+        extra = cutLength - fullLength;
+    }
+    else if (cutLength < 0.0)
+    {
+        extra = -cutLength;
+    }
+
+    SetProlonged(extra > 0.0, extra);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogTool::InitProlongationWidgets(QVBoxLayout *layout, QWidget *before)
+{
+    SCASSERT(layout != nullptr)
+
+    // Left empty on purpose: the message carries the length, and is written once the curve is known.
+    m_prolongationLabel = new QLabel();
+    m_prolongationLabel->setWordWrap(true);
+    m_prolongationLabel->setVisible(false);
+
+    m_prolongationTypeCombo = MakeComboBox();
+    // Same sizing as the line tools: the combo only shows icons, so it needs the icon size and a
+    // minimum width, or Qt shrinks it to a thumbnail.
+    m_prolongationTypeCombo->setMinimumWidth(80);
+    m_prolongationTypeCombo->setMaximumWidth(110);
+    m_prolongationTypeCombo->setIconSize(QSize(80, 14));
+    FillComboBoxTypeLine(m_prolongationTypeCombo,
+                         LineStylesPics(m_prolongationTypeCombo->palette().color(QPalette::Base),
+                                        m_prolongationTypeCombo->palette().color(QPalette::Text)));
+    m_prolongationType = GetComboBoxCurrentData(m_prolongationTypeCombo, TypeLineLine);
+
+    m_prolongationColorCombo = MakeComboBox();
+    InitColorCombo(m_prolongationColorCombo);
+    m_prolongationColor = GetColorComboCurrentName(m_prolongationColorCombo);
+
+    auto *form = new QFormLayout();
+    form->addRow(tr("Type of line:"), m_prolongationTypeCombo);
+    form->addRow(tr("Line color:"), m_prolongationColorCombo);
+
+    m_prolongationRow = new QWidget();
+    m_prolongationRow->setLayout(form);
+    m_prolongationRow->setVisible(false);
+
+    const int index = before != nullptr ? layout->indexOf(before) : -1;
+    if (index >= 0)
+    {
+        layout->insertWidget(index, m_prolongationLabel);
+        layout->insertWidget(index + 1, m_prolongationRow);
+    }
+    else
+    {
+        layout->addWidget(m_prolongationLabel);
+        layout->addWidget(m_prolongationRow);
+    }
+
+    connect(m_prolongationTypeCombo,
+            &QComboBox::currentIndexChanged,
+            this,
+            [this](int) -> void
+            { m_prolongationType = GetComboBoxCurrentData(m_prolongationTypeCombo, TypeLineLine); });
+
+    connect(m_prolongationColorCombo,
+            &QComboBox::currentIndexChanged,
+            this,
+            [this](int) -> void { m_prolongationColor = GetColorComboCurrentName(m_prolongationColorCombo); });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

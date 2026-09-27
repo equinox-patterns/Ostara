@@ -137,6 +137,10 @@ VToolCut::VToolCut(const VToolCutInitData &initData, QGraphicsItem *parent)
     m_segment1Curve = CreateSegmentCurve(m_segment1Id);
     m_segment2Curve = CreateSegmentCurve(m_segment2Id);
 
+    m_prolongationType = initData.lineType;
+    m_prolongationColor = initData.lineColor;
+    m_prolongedSegment = initData.prolongedSegment;
+
     ApplySegmentsVisibility();
 }
 
@@ -254,6 +258,58 @@ auto VToolCut::BaseCurveCut() const -> VToolCut *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VToolCut::GetProlongationType() const -> QString
+{
+    return m_prolongationType;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCut::SetProlongationType(const QString &value)
+{
+    if (m_prolongationType == value)
+    {
+        return;
+    }
+
+    m_prolongationType = value;
+
+    QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
+    SaveOption(obj);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolCut::GetProlongationColor() const -> QString
+{
+    return m_prolongationColor;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCut::SetProlongationColor(const QString &value)
+{
+    if (m_prolongationColor == value)
+    {
+        return;
+    }
+
+    m_prolongationColor = value;
+
+    QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
+    SaveOption(obj);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolCut::ProlongedSegment() const -> quint8
+{
+    return m_prolongedSegment;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCut::SetProlongedSegment(quint8 segment)
+{
+    m_prolongedSegment = segment;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolCut::RefreshSegmentCurves()
 {
     auto const Update = [this](quint32 segmentId, VSimpleCurve *item)
@@ -275,14 +331,16 @@ void VToolCut::RefreshSegmentCurves()
 //---------------------------------------------------------------------------------------------------------------------
 void VToolCut::ApplySegmentsVisibility()
 {
+    // The prolongation stays on the canvas even when the two segments are hidden: without it the cut
+    // point would sit past the drawn curve, apparently floating on its own.
     if (m_segment1Curve != nullptr)
     {
-        m_segment1Curve->setVisible(m_showTwoSegments && !m_segment1Replaced);
+        m_segment1Curve->setVisible((m_showTwoSegments || m_prolongedSegment == 1) && !m_segment1Replaced);
     }
 
     if (m_segment2Curve != nullptr)
     {
-        m_segment2Curve->setVisible(m_showTwoSegments && !m_segment2Replaced);
+        m_segment2Curve->setVisible((m_showTwoSegments || m_prolongedSegment == 2) && !m_segment2Replaced);
     }
 
     // The base curve leaves the canvas while the two sub-curves replace it. It is never deleted.
@@ -649,6 +707,20 @@ void VToolCut::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
                                       m_showTwoSegments,
                                       [](bool value) noexcept -> bool { return !value; });
 
+    // The prolongation only exists when the cut goes past an end of the curve: only then does it
+    // carry a look of its own.
+    const bool prolonged = m_prolongedSegment != 0;
+    doc->SetAttributeOrRemoveIf<QString>(tag,
+                                         AttrTypeLine,
+                                         m_prolongationType,
+                                         [prolonged](const QString &value) noexcept -> bool
+                                         { return !prolonged || value.isEmpty(); });
+    doc->SetAttributeOrRemoveIf<QString>(tag,
+                                         AttrLineColor,
+                                         m_prolongationColor,
+                                         [prolonged](const QString &value) noexcept -> bool
+                                         { return !prolonged || value.isEmpty(); });
+
     const VAbstractValApplication *app = VAbstractValApplication::VApp();
     doc->SetAttribute(tag, AttrSegment1Mx, app->fromPixel(m_segment1Mx));
     doc->SetAttribute(tag, AttrSegment1My, app->fromPixel(m_segment1My));
@@ -668,6 +740,18 @@ void VToolCut::ReadToolAttributes(const QDomElement &domElement)
     m_segment1Id = VAbstractPattern::GetParametrId(domElement, AttrSegment1Id);
     m_segment2Id = VAbstractPattern::GetParametrId(domElement, AttrSegment2Id);
     m_showTwoSegments = VAbstractPattern::GetParametrBool(domElement, AttrShowTwoSegments, falseStr);
+
+    m_prolongationType = VAbstractPattern::GetParametrEmptyString(domElement, AttrTypeLine);
+    if (m_prolongationType.isEmpty())
+    {
+        m_prolongationType = TypeLineLine;
+    }
+
+    m_prolongationColor = VAbstractPattern::GetParametrEmptyString(domElement, AttrLineColor);
+    if (m_prolongationColor.isEmpty())
+    {
+        m_prolongationColor = ColorBlack;
+    }
 
     const VAbstractValApplication *app = VAbstractValApplication::VApp();
 

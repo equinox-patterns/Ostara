@@ -40,17 +40,18 @@
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../ifc/xml/vpatternconverter.h"
 #include "../ifc/xml/vpatterngraph.h"
+#include "../vgeometry/obezierextension.h"
 #include "../vgeometry/vabstractcubicbezier.h"
 #include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/vpointf.h"
 #include "../vgeometry/vspline.h"
-#include "vexception.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/variables/vcurvelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "vexception.h"
 #include "vtoolcut.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -115,6 +116,9 @@ void VToolCutSpline::SetDialog()
     dialogTool->SetName1(GetName1());
     dialogTool->SetName2(GetName2());
     dialogTool->SetShowTwoSegments(IsShowTwoSegments());
+    dialogTool->SetProlongationType(GetProlongationType());
+    dialogTool->SetProlongationColor(GetProlongationColor());
+    dialogTool->UpdateProlongation(baseCurveId, dialogTool->GetFormula());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -158,6 +162,95 @@ auto VToolCutSpline::Create(const QPointer<DialogTool> &dialog, VMainGraphicsSce
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VToolCutSpline::SplitCurve(qreal length, const QSharedPointer<VAbstractCubicBezier> &spl) -> SubCurves
+{
+    SCASSERT(spl != nullptr)
+
+    SubCurves curves;
+
+    const qreal fullLength = spl->GetLength();
+    const qreal cutLength = OBezierExtension::Normalize(length, fullLength);
+
+    if (cutLength >= 0.0 && cutLength <= fullLength)
+    {
+        curves.cutPoint = spl->CutSpline(cutLength, curves.firstP2, curves.firstP3, curves.secondP2, curves.secondP3);
+        curves.firstP1 = static_cast<QPointF>(spl->GetP1());
+        curves.firstP4 = curves.cutPoint;
+        curves.secondP1 = curves.cutPoint;
+        curves.secondP4 = static_cast<QPointF>(spl->GetP4());
+        curves.side = CutSide::Inside;
+        return curves;
+    }
+
+    const QPointF p1 = static_cast<QPointF>(spl->GetP1());
+    const QPointF p2 = static_cast<QPointF>(spl->GetP2());
+    const QPointF p3 = static_cast<QPointF>(spl->GetP3());
+    const QPointF p4 = static_cast<QPointF>(spl->GetP4());
+
+    if (cutLength > fullLength)
+    {
+        // The curve itself stays whole; the prolongation is the second sub-curve.
+        const OBezierExtension::Piece trailing = OBezierExtension::After(p1, p2, p3, p4, cutLength - fullLength);
+
+        curves.firstP1 = p1;
+        curves.firstP2 = p2;
+        curves.firstP3 = p3;
+        curves.firstP4 = p4;
+        curves.secondP1 = trailing.p1;
+        curves.secondP2 = trailing.p2;
+        curves.secondP3 = trailing.p3;
+        curves.secondP4 = trailing.p4;
+        curves.cutPoint = trailing.p4;
+        curves.side = CutSide::BeyondEnd;
+        return curves;
+    }
+
+    // Same on the other side: the prolongation comes first, then the curve itself.
+    const OBezierExtension::Piece leading = OBezierExtension::Before(p1, p2, p3, p4, -cutLength);
+
+    curves.firstP1 = leading.p1;
+    curves.firstP2 = leading.p2;
+    curves.firstP3 = leading.p3;
+    curves.firstP4 = leading.p4;
+    curves.secondP1 = p1;
+    curves.secondP2 = p2;
+    curves.secondP3 = p3;
+    curves.secondP4 = p4;
+    curves.cutPoint = leading.p1;
+    curves.side = CutSide::BeforeStart;
+    return curves;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCutSpline::BuildSubCurves(const SubCurves &curves,
+                                    const QSharedPointer<VAbstractCubicBezier> &spl,
+                                    const VPointF &cutPoint,
+                                    VSpline &first,
+                                    VSpline &second)
+{
+    SCASSERT(spl != nullptr)
+
+    const VPointF &start = spl->GetP1();
+    const VPointF &end = spl->GetP4();
+
+    switch (curves.side)
+    {
+        case CutSide::Inside:
+            first = VSpline(start, curves.firstP2, curves.firstP3, cutPoint);
+            second = VSpline(cutPoint, curves.secondP2, curves.secondP3, end);
+            break;
+        case CutSide::BeyondEnd:
+            first = VSpline(start, curves.firstP2, curves.firstP3, end);
+            second = VSpline(end, curves.secondP2, curves.secondP3, cutPoint);
+            break;
+        case CutSide::BeforeStart:
+            first = VSpline(cutPoint, curves.firstP2, curves.firstP3, start);
+            second = VSpline(start, curves.secondP2, curves.secondP3, end);
+            break;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief Create help create tool.
  * @param initData init data.
@@ -174,18 +267,17 @@ auto VToolCutSpline::Create(VToolCutInitData &initData) -> VToolCutSpline *
 
     const qreal result = CheckFormula(initData.id, initData.formula, initData.data);
 
-    QPointF spl1p2;
-    QPointF spl1p3;
-    QPointF spl2p2;
-    QPointF spl2p3;
-    QPointF const point =
-        spl->CutSpline(VAbstractValApplication::VApp()->toPixel(result), spl1p2, spl1p3, spl2p2, spl2p3, initData.name);
+    const SubCurves curves = SplitCurve(VAbstractValApplication::VApp()->toPixel(result), spl);
 
-    auto *p = new VPointF(point, initData.name, initData.mx, initData.my);
+    auto *p = new VPointF(curves.cutPoint, initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
-    auto spline1 = QSharedPointer<VAbstractCubicBezier>(new VSpline(spl->GetP1(), spl1p2, spl1p3, *p));
-    auto spline2 = QSharedPointer<VAbstractCubicBezier>(new VSpline(*p, spl2p2, spl2p3, spl->GetP4()));
+    VSpline first;
+    VSpline second;
+    BuildSubCurves(curves, spl, *p, first, second);
+
+    auto spline1 = QSharedPointer<VAbstractCubicBezier>(new VSpline(first));
+    auto spline2 = QSharedPointer<VAbstractCubicBezier>(new VSpline(second));
 
     spline1->SetDerivative(true);
     spline2->SetDerivative(true);
@@ -193,11 +285,29 @@ auto VToolCutSpline::Create(VToolCutInitData &initData) -> VToolCutSpline *
     spline1->SetApproximationScale(spl->GetApproximationScale());
     spline2->SetApproximationScale(spl->GetApproximationScale());
 
-    // The two segments take over the base curve's look when they replace it on the canvas.
+    // The two segments take over the base curve's look when they replace it on the canvas. The piece
+    // prolonging the curve is not the curve itself: it is drawn with the look chosen for it.
     spline1->SetColor(spl->GetColor());
     spline2->SetColor(spl->GetColor());
     spline1->SetPenStyle(spl->GetPenStyle());
     spline2->SetPenStyle(spl->GetPenStyle());
+
+    const QString prolongationColor = initData.lineColor.isEmpty() ? ColorBlack : initData.lineColor;
+    const QString prolongationType = initData.lineType.isEmpty() ? TypeLineLine : initData.lineType;
+
+    initData.prolongedSegment = 0;
+    if (curves.side == CutSide::BeyondEnd)
+    {
+        initData.prolongedSegment = 2;
+        spline2->SetColor(prolongationColor);
+        spline2->SetPenStyle(prolongationType);
+    }
+    else if (curves.side == CutSide::BeforeStart)
+    {
+        initData.prolongedSegment = 1;
+        spline1->SetColor(prolongationColor);
+        spline1->SetPenStyle(prolongationType);
+    }
 
     spline1->SetAliasSuffix(initData.aliasSuffix1);
     spline2->SetAliasSuffix(initData.aliasSuffix2);
@@ -319,6 +429,19 @@ void VToolCutSpline::SaveDialog(QDomElement &domElement)
                                       AttrShowTwoSegments,
                                       dialogTool->GetShowTwoSegments(),
                                       [](bool value) noexcept -> bool { return !value; });
+
+    // Only a cut that goes past an end of the curve carries a look of its own for its prolongation.
+    const bool prolonged = dialogTool->IsProlonged();
+    doc->SetAttributeOrRemoveIf<QString>(domElement,
+                                         AttrTypeLine,
+                                         dialogTool->GetProlongationType(),
+                                         [prolonged](const QString &value) noexcept -> bool
+                                         { return !prolonged || value.isEmpty(); });
+    doc->SetAttributeOrRemoveIf<QString>(domElement,
+                                         AttrLineColor,
+                                         dialogTool->GetProlongationColor(),
+                                         [prolonged](const QString &value) noexcept -> bool
+                                         { return !prolonged || value.isEmpty(); });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -368,20 +491,15 @@ auto VToolCutSpline::MakeToolTip() const -> QString
         formula, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
     const qreal length = Visualization::FindValFromUser(expression, VAbstractTool::data.DataVariables());
 
-    const QSharedPointer<VPointF> p = VAbstractTool::data.GeometricObject<VPointF>(m_id);
+    const SubCurves curves = SplitCurve(VAbstractValApplication::VApp()->toPixel(length), spl);
 
-    QPointF spl1p2;
-    QPointF spl1p3;
-    QPointF spl2p2;
-    QPointF spl2p3;
-    QPointF const point =
-        spl->CutSpline(VAbstractValApplication::VApp()->toPixel(length), spl1p2, spl1p3, spl2p2, spl2p3, p->name());
+    VSpline spline1;
+    VSpline spline2;
+    BuildSubCurves(curves, spl, VPointF(curves.cutPoint), spline1, spline2);
 
-    auto spline1 = VSpline(spl->GetP1(), spl1p2, spl1p3, VPointF(point));
     spline1.SetNameSuffix(m_name1);
     spline1.SetAliasSuffix(m_aliasSuffix1);
 
-    auto spline2 = VSpline(VPointF(point), spl2p2, spl2p3, spl->GetP4());
     spline2.SetNameSuffix(m_name2);
     spline2.SetAliasSuffix(m_aliasSuffix2);
 

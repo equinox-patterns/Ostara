@@ -943,6 +943,8 @@ void VPattern::ParseToolCutSpline(VMainGraphicsScene *scene, QDomElement &domEle
         initData.segment1Id = GetParametrId(domElement, AttrSegment1Id);
         initData.segment2Id = GetParametrId(domElement, AttrSegment2Id);
         initData.showTwoSegments = GetParametrBool(domElement, AttrShowTwoSegments, falseStr);
+        initData.lineType = GetParametrString(domElement, AttrTypeLine, TypeLineLine);
+        initData.lineColor = GetParametrString(domElement, AttrLineColor, ColorBlack);
 
         const VAbstractValApplication *app = VAbstractValApplication::VApp();
 
@@ -1006,6 +1008,8 @@ void VPattern::ParseToolCutSplinePath(VMainGraphicsScene *scene, QDomElement &do
         initData.segment1Id = GetParametrId(domElement, AttrSegment1Id);
         initData.segment2Id = GetParametrId(domElement, AttrSegment2Id);
         initData.showTwoSegments = GetParametrBool(domElement, AttrShowTwoSegments, falseStr);
+        initData.lineType = GetParametrString(domElement, AttrTypeLine, TypeLineLine);
+        initData.lineColor = GetParametrString(domElement, AttrLineColor, ColorBlack);
 
         const VAbstractValApplication *app = VAbstractValApplication::VApp();
 
@@ -1069,6 +1073,8 @@ void VPattern::ParseToolCutArc(VMainGraphicsScene *scene, QDomElement &domElemen
         initData.segment1Id = GetParametrId(domElement, AttrSegment1Id);
         initData.segment2Id = GetParametrId(domElement, AttrSegment2Id);
         initData.showTwoSegments = GetParametrBool(domElement, AttrShowTwoSegments, falseStr);
+        initData.lineType = GetParametrString(domElement, AttrTypeLine, TypeLineLine);
+        initData.lineColor = GetParametrString(domElement, AttrLineColor, ColorBlack);
 
         const VAbstractValApplication *app = VAbstractValApplication::VApp();
 

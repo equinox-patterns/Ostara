@@ -34,6 +34,7 @@
 #include <QGraphicsItem>
 #include <QMetaObject>
 #include <QObject>
+#include <QPointF>
 #include <QString>
 #include <QtGlobal>
 
@@ -41,6 +42,9 @@
 #include "../vmisc/def.h"
 #include "vtoolcut.h"
 
+class VAbstractCubicBezier;
+class VPointF;
+class VSpline;
 template <class T> class QSharedPointer;
 
 /**
@@ -50,6 +54,42 @@ class VToolCutSpline : public VToolCut
 {
     Q_OBJECT // NOLINT
 public:
+    // Where the cut point lands, once the length has been measured along the curve.
+    enum class CutSide
+    {
+        Inside,     // on the curve: the point ends the first sub-curve and starts the second
+        BeyondEnd,  // past the end: the curve is prolonged, and the point ends the second sub-curve
+        BeforeStart // before the start: the curve is prolonged, and the point starts the first sub-curve
+    };
+
+    // The two sub-curves a cut produces, as control points. When the cut point falls outside the
+    // curve, one of the sub-curves is the piece prolonging the curve up to that point.
+    struct SubCurves
+    {
+        QPointF firstP1{};
+        QPointF firstP2{};
+        QPointF firstP3{};
+        QPointF firstP4{};
+        QPointF secondP1{};
+        QPointF secondP2{};
+        QPointF secondP3{};
+        QPointF secondP4{};
+        QPointF cutPoint{};
+        CutSide side{CutSide::Inside};
+    };
+
+    // Splits a curve at a length measured from its start. A negative length is measured from its
+    // end. Either way, a length falling outside the curve places the cut point on the curve's
+    // prolongation, which becomes one of the two sub-curves.
+    static auto SplitCurve(qreal length, const QSharedPointer<VAbstractCubicBezier> &spl) -> SubCurves;
+
+    // Builds the two sub-curves, giving their shared endpoint the final cut point (name, label).
+    static void BuildSubCurves(const SubCurves &curves,
+                               const QSharedPointer<VAbstractCubicBezier> &spl,
+                               const VPointF &cutPoint,
+                               VSpline &first,
+                               VSpline &second);
+
     ~VToolCutSpline() override =default;
     void SetDialog() override;
     static auto Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *scene, VAbstractPattern *doc,

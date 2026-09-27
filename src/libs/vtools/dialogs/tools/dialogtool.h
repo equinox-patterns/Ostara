@@ -110,6 +110,18 @@ public:
     auto GetShowTwoSegments() const -> bool { return m_showTwoSegments; }
     void SetShowTwoSegments(bool value);
 
+    /** @brief Look of the piece prolonging the curve, when the cut goes past an end (cut tools only). */
+    auto GetProlongationType() const -> QString { return m_prolongationType; }
+    void SetProlongationType(const QString &value);
+    auto GetProlongationColor() const -> QString { return m_prolongationColor; }
+    void SetProlongationColor(const QString &value);
+
+    /** @brief True when the entered length takes the cut point past an end of the curve. */
+    auto IsProlonged() const -> bool { return m_prolonged; }
+
+    /** @brief Recomputes the prolongation from the entered formula and the base curve, and says so. */
+    void UpdateProlongation(quint32 curveId, const QString &formula);
+
     virtual void CheckDependencyTreeComplete() = 0;
 
     virtual void SetGroupCategories(const QStringList &categories);
@@ -262,6 +274,15 @@ protected:
      */
     void InitShowTwoSegmentsCheckBox(QVBoxLayout *layout, QWidget *before);
 
+    /**
+     * @brief InitProlongationWidgets adds the prolongation message and its line style controls just above
+     * @a before. Both stay hidden until the entered length takes the cut point outside the curve.
+     */
+    void InitProlongationWidgets(QVBoxLayout *layout, QWidget *before);
+
+    /** @brief Shows or hides the prolongation message and controls, and states the length. */
+    void SetProlonged(bool prolonged, qreal amount);
+
 private:
     Q_DISABLE_COPY_MOVE(DialogTool) // NOLINT
 
@@ -269,6 +290,15 @@ private:
 
     bool m_showTwoSegments{false};
     QCheckBox *m_showTwoSegmentsCheck{nullptr};
+
+    /** @brief Prolongation of the curve: the look of the piece, and whether there is one at all. */
+    QString m_prolongationType{};
+    QString m_prolongationColor{};
+    bool m_prolonged{false};
+    QLabel *m_prolongationLabel{nullptr};
+    QWidget *m_prolongationRow{nullptr};
+    QComboBox *m_prolongationTypeCombo{nullptr};
+    QComboBox *m_prolongationColorCombo{nullptr};
 
     template <typename T> void PrepareList(QMap<QString, quint32> &list, quint32 id) const;
 

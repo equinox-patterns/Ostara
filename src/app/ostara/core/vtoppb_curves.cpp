@@ -209,6 +209,82 @@ auto MakeSourceCurve(const QString &attrId, const QString &label, Getter getter)
 
 // A cut tool can replace the base curve by its two sub-curves on the canvas, so the sub-curves
 // become directly clickable. Purely a display switch: the geometry is never changed.
+template<typename Tool>
+auto MakeProlongationType(const QString &label) -> PropertyDesc
+{
+    return {AttrTypeLine,
+            label,
+            [label](VToolOptionsPropertyBrowser *b, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<Tool *>(tool);
+                QPalette const cp = b->ComboBoxPalette();
+                auto styles = LineStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+                if (t->ProlongedSegment() == 0)
+                {
+                    return nullptr; // No prolongation on this cut: the setting would have nothing to draw.
+                }
+                auto *p = new VPE::VLineTypeProperty(label);
+                p->setStyles(styles);
+                auto idx = VPE::VLineTypeProperty::IndexOfStyle(styles, t->GetProlongationType());
+                p->setValue(idx >= 0 ? idx : 0);
+                return p;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    QString const s = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                    if (s != t->GetProlongationType())
+                        t->SetProlongationType(s);
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    QPalette const cp = b->ComboBoxPalette();
+                    auto styles = LineStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+                    auto idx = VPE::VLineTypeProperty::IndexOfStyle(styles, t->GetProlongationType());
+                    prop->setValue(idx >= 0 ? idx : 0);
+                }
+            }};
+}
+
+template<typename Tool>
+auto MakeProlongationColor(const QString &label) -> PropertyDesc
+{
+    return {AttrLineColor,
+            label,
+            [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<Tool *>(tool);
+                if (t->ProlongedSegment() == 0)
+                {
+                    return nullptr; // No prolongation on this cut: the setting would have nothing to draw.
+                }
+                auto *p = new VPE::VLineColorProperty(label);
+                p->SetDefaultColors(VAbstractTool::ColorsList());
+                p->SetCustomColors(VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
+                p->SetUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+                p->setValue(t->GetProlongationColor());
+                return p;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    QString const c = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                    if (c != t->GetProlongationColor())
+                        t->SetProlongationColor(c);
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                    prop->setValue(t->GetProlongationColor());
+            }};
+}
+
 template <typename Tool>
 auto MakeShowTwoSegments(const QString &label) -> PropertyDesc
 {
@@ -746,32 +822,55 @@ auto ArcWithLengthProperties() -> std::vector<PropertyDesc>
 auto CutArcProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeSourceCurve<VToolCutArc>(AttrArc, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolCutArc::CurveName),
+        MakeSourceCurve<VToolCutArc>(AttrArc,
+                                     T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")),
+                                     &VToolCutArc::CurveName),
         // Name1/Name2 stay auto-generated in the backend, they are just not shown any more.
-        MakeStringPropWithValidator<VToolCutArc>(AttrAlias1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolCutArc::GetAliasSuffix1, &VToolCutArc::SetAliasSuffix1,
-                                             SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolCutArc>(AttrAlias2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolCutArc::GetAliasSuffix2, &VToolCutArc::SetAliasSuffix2,
-                                             SegmentDotPixmap(VColorRole::VisSupportColor4)),
-        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")),
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+        MakeStringPropWithValidator<VToolCutArc>(AttrAlias1,
+                                                 T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")),
+                                                 &VToolCutArc::GetAliasSuffix1,
+                                                 &VToolCutArc::SetAliasSuffix1,
+                                                 SegmentDotPixmap(VColorRole::VisSupportColor2)),
+        MakeStringPropWithValidator<VToolCutArc>(AttrAlias2,
+                                                 T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")),
+                                                 &VToolCutArc::GetAliasSuffix2,
+                                                 &VToolCutArc::SetAliasSuffix2,
+                                                 SegmentDotPixmap(VColorRole::VisSupportColor4)),
+        {AttrLength,
+         T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
              auto *t = static_cast<VToolCutArc *>(tool);
              auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
-             p->SetFormula(t->GetFormulaLength()); return p;
+             p->SetFormula(t->GetFormulaLength());
+             return p;
          },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCutArc *>(b->currentItem())) {
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolCutArc *>(b->currentItem()))
+             {
                  auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
-                 if (f != t->GetFormulaLength()) t->SetFormulaLength(f);
+                 if (f != t->GetFormulaLength())
+                     t->SetFormulaLength(f);
              }
          },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCutArc *>(b->currentItem())) {
-                 QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolCutArc *>(b->currentItem()))
+             {
+                 QVariant v;
+                 v.setValue(t->GetFormulaLength());
+                 prop->setValue(v);
              }
          }},
-        MakeShowTwoSegments<VToolCutArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show the two segments instead of the curve"))),
+        MakeShowTwoSegments<VToolCutArc>(
+            T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show the two segments instead of the curve"))),
+        MakeProlongationType<VToolCutArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Type of line"))),
+        MakeProlongationColor<VToolCutArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color"))),
         MakeNotes<VToolCutArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
-        MakePointGroup<VToolCutArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
+        MakePointGroup<VToolCutArc>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")),
+                                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")),
+                                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -780,30 +879,51 @@ auto CutSplineProperties() -> std::vector<PropertyDesc>
 {
     return {
         // Name1/Name2 stay auto-generated in the backend, they are just not shown any more.
-        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCutSpline::GetAliasSuffix1, &VToolCutSpline::SetAliasSuffix1,
-                                                SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCutSpline::GetAliasSuffix2, &VToolCutSpline::SetAliasSuffix2,
-                                                SegmentDotPixmap(VColorRole::VisSupportColor4)),
-        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")),
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias1,
+                                                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")),
+                                                    &VToolCutSpline::GetAliasSuffix1,
+                                                    &VToolCutSpline::SetAliasSuffix1,
+                                                    SegmentDotPixmap(VColorRole::VisSupportColor2)),
+        MakeStringPropWithValidator<VToolCutSpline>(AttrAlias2,
+                                                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")),
+                                                    &VToolCutSpline::GetAliasSuffix2,
+                                                    &VToolCutSpline::SetAliasSuffix2,
+                                                    SegmentDotPixmap(VColorRole::VisSupportColor4)),
+        {AttrLength,
+         T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
              auto *t = static_cast<VToolCutSpline *>(tool);
              auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
-             p->SetFormula(t->GetFormulaLength()); return p;
+             p->SetFormula(t->GetFormulaLength());
+             return p;
          },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCutSpline *>(b->currentItem())) {
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolCutSpline *>(b->currentItem()))
+             {
                  auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
-                 if (f != t->GetFormulaLength()) t->SetFormulaLength(f);
+                 if (f != t->GetFormulaLength())
+                     t->SetFormulaLength(f);
              }
          },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCutSpline *>(b->currentItem())) {
-                 QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolCutSpline *>(b->currentItem()))
+             {
+                 QVariant v;
+                 v.setValue(t->GetFormulaLength());
+                 prop->setValue(v);
              }
          }},
-        MakeShowTwoSegments<VToolCutSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show the two segments instead of the curve"))),
+        MakeShowTwoSegments<VToolCutSpline>(
+            T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show the two segments instead of the curve"))),
+        MakeProlongationType<VToolCutSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Type of line"))),
+        MakeProlongationColor<VToolCutSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color"))),
         MakeNotes<VToolCutSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
-        MakePointGroup<VToolCutSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
+        MakePointGroup<VToolCutSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")),
+                                       T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")),
+                                       T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 
@@ -812,30 +932,51 @@ auto CutSplinePathProperties() -> std::vector<PropertyDesc>
 {
     return {
         // Name1/Name2 stay auto-generated in the backend, they are just not shown any more.
-        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias1, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCutSplinePath::GetAliasSuffix1, &VToolCutSplinePath::SetAliasSuffix1,
-                                                   SegmentDotPixmap(VColorRole::VisSupportColor2)),
-        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias2, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCutSplinePath::GetAliasSuffix2, &VToolCutSplinePath::SetAliasSuffix2,
-                                                   SegmentDotPixmap(VColorRole::VisSupportColor4)),
-        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")),
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias1,
+                                                        T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")),
+                                                        &VToolCutSplinePath::GetAliasSuffix1,
+                                                        &VToolCutSplinePath::SetAliasSuffix1,
+                                                        SegmentDotPixmap(VColorRole::VisSupportColor2)),
+        MakeStringPropWithValidator<VToolCutSplinePath>(AttrAlias2,
+                                                        T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")),
+                                                        &VToolCutSplinePath::GetAliasSuffix2,
+                                                        &VToolCutSplinePath::SetAliasSuffix2,
+                                                        SegmentDotPixmap(VColorRole::VisSupportColor4)),
+        {AttrLength,
+         T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
              auto *t = static_cast<VToolCutSplinePath *>(tool);
              auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
-             p->SetFormula(t->GetFormulaLength()); return p;
+             p->SetFormula(t->GetFormulaLength());
+             return p;
          },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCutSplinePath *>(b->currentItem())) {
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolCutSplinePath *>(b->currentItem()))
+             {
                  auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
-                 if (f != t->GetFormulaLength()) t->SetFormulaLength(f);
+                 if (f != t->GetFormulaLength())
+                     t->SetFormulaLength(f);
              }
          },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolCutSplinePath *>(b->currentItem())) {
-                 QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<VToolCutSplinePath *>(b->currentItem()))
+             {
+                 QVariant v;
+                 v.setValue(t->GetFormulaLength());
+                 prop->setValue(v);
              }
          }},
-        MakeShowTwoSegments<VToolCutSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show the two segments instead of the curve"))),
+        MakeShowTwoSegments<VToolCutSplinePath>(
+            T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show the two segments instead of the curve"))),
+        MakeProlongationType<VToolCutSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Type of line"))),
+        MakeProlongationColor<VToolCutSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color"))),
         MakeNotes<VToolCutSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
-        MakePointGroup<VToolCutSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
+        MakePointGroup<VToolCutSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")),
+                                           T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")),
+                                           T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
     };
 }
 

@@ -73,6 +73,7 @@ DialogCutSplinePath::DialogCutSplinePath(const VContainer *data, VAbstractPatter
     connect(AddShowPointNameCheckbox(ui->formLayoutPoint), &QCheckBox::toggled, this,
             [this](bool checked) { SetShowLabel(checked); });
     InitShowTwoSegmentsCheckBox(ui->verticalLayout, ui->plainTextEditToolNotes);
+    InitProlongationWidgets(ui->verticalLayout, ui->plainTextEditToolNotes);
 
     InitIcons();
 
@@ -92,7 +93,14 @@ DialogCutSplinePath::DialogCutSplinePath(const VContainer *data, VAbstractPatter
         m_formula->setLabelText(tr("Length:"));
         m_formula->setPostfix(postfix);
         m_formula->setDialogTitle(tr("Edit length"));
-        connect(m_formula, &FormulaInputWidget::valueChanged, this, [this]() { CheckState(); });
+        connect(m_formula,
+                &FormulaInputWidget::valueChanged,
+                this,
+                [this]()
+                {
+                    CheckState();
+                    UpdateProlongation(getSplinePathId(), m_formula->formula());
+                });
 
         if (auto *placeholder = ui->formulaPlaceholder)
         {
@@ -272,6 +280,8 @@ void DialogCutSplinePath::ChosenObject(quint32 id, const SceneObject &type)
 
         SetName1(GenerateDefLeftSubName());
         SetName2(GenerateDefRightSubName());
+
+        UpdateProlongation(getSplinePathId(), m_formula->formula());
 
         auto *window = qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
         SCASSERT(window != nullptr)

@@ -60,6 +60,9 @@ struct VToolCutInitData : VToolSinglePointInitData
     quint32 segment1Id{NULL_ID};  // NOLINT(misc-non-private-member-variables-in-classes)
     quint32 segment2Id{NULL_ID};  // NOLINT(misc-non-private-member-variables-in-classes)
     bool showTwoSegments{false};  // NOLINT(misc-non-private-member-variables-in-classes)
+    QString lineType{};           // NOLINT(misc-non-private-member-variables-in-classes)
+    QString lineColor{};          // NOLINT(misc-non-private-member-variables-in-classes)
+    quint8 prolongedSegment{0};   // NOLINT(misc-non-private-member-variables-in-classes)
     qreal segment1Mx{labelMX};    // NOLINT(misc-non-private-member-variables-in-classes)
     qreal segment1My{labelMY};    // NOLINT(misc-non-private-member-variables-in-classes)
     qreal segment2Mx{labelMX};    // NOLINT(misc-non-private-member-variables-in-classes)
@@ -108,6 +111,16 @@ public:
 
     auto IsShowTwoSegments() const -> bool;
     void SetShowTwoSegments(bool value);
+
+    /** @brief Look of the piece prolonging the curve, used only when the cut goes past an end. */
+    auto GetProlongationType() const -> QString;
+    void SetProlongationType(const QString &value);
+    auto GetProlongationColor() const -> QString;
+    void SetProlongationColor(const QString &value);
+
+    /** @brief Which sub-curve prolongs the curve: 0 none, 1 the first, 2 the second. */
+    auto ProlongedSegment() const -> quint8;
+    void SetProlongedSegment(quint8 segment);
 
     /** @brief SetSegmentReplaced is called by a nested cut tool that replaces one of our sub-curves. */
     void SetSegmentReplaced(quint32 segmentId, bool replaced);
@@ -207,6 +220,13 @@ private:
 
     /** @brief m_showTwoSegments when true the two sub-curves replace the base curve on the canvas. */
     bool m_showTwoSegments{false};
+
+    /** @brief Look of the prolongation piece; meaningless while the cut stays on the curve. */
+    QString m_prolongationType{};
+    QString m_prolongationColor{};
+
+    /** @brief Sub-curve prolonging the curve (0 none, 1 first, 2 second). Derived, never stored. */
+    quint8 m_prolongedSegment{0};
 
     /** @brief Items drawing the two sub-curves on the canvas, so they can be clicked directly. */
     VSimpleCurve *m_segment1Curve{nullptr};

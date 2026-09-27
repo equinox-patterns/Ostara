@@ -1146,6 +1146,15 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         dialogTool->SetLineColor(settings->GetGlobalToolColor());
     }
 
+    // The cut tools take the same two defaults for the piece prolonging the curve, but never open on a
+    // plain solid line: a prolongation is not the curve, and has to be told apart from it.
+    if constexpr (std::is_same_v<Dialog, DialogCutSpline> || std::is_same_v<Dialog, DialogCutSplinePath>)
+    {
+        const QString penStyle = settings->GetGlobalPenStyle();
+        dialogTool->SetProlongationType(penStyle.isEmpty() ? TypeLineDashLine : penStyle);
+        dialogTool->SetProlongationColor(settings->GetGlobalToolColor());
+    }
+
     if constexpr (std::is_same_v<Dialog,DialogArc> || std::is_same_v<Dialog,DialogArcWithLength> ||
                   std::is_same_v<Dialog,DialogEllipticalArc> ||
                   std::is_same_v<Dialog,DialogEllipticalArcWithLength> ||
