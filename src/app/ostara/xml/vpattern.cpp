@@ -69,6 +69,7 @@
 #include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolspline.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolsplinepath.h"
+#include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/vtooltruedarts.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.h"
@@ -1189,7 +1190,7 @@ void VPattern::DrawToolsCommonAttributes(const QDomElement &domElement, quint32 
 auto VPattern::ActiveDrawBoundingRect() const -> QRectF
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Not all tools were used.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Not all tools were used.");
 
     QRectF rec;
 
@@ -1266,6 +1267,7 @@ auto VPattern::ActiveDrawBoundingRect() const -> QRectF
                 rec = ToolBoundingRect<VToolAbstractCurve>(rec, tool.GetId());
                 break;
             case Tool::TrueDarts:
+            case Tool::Rectangle:
                 rec = ToolBoundingRect<VToolDoublePoint>(rec, tool.GetId());
                 break;
             case Tool::Rotation:

@@ -61,6 +61,7 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolarcpoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolcurvepoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
+#include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromarcandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromcircleandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.h"
@@ -126,7 +127,8 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
                                      OToolArcPoint::ToolTypeEnd,                 /*26*/
                                      OToolCurvePoint::ToolTypeStart,             /*27*/
                                      OToolCurvePoint::ToolTypeEnd,
-                                     OToolDartCap::ToolType});             /*28*/
+                                     OToolDartCap::ToolType,               /*28*/
+                                     OToolRectangle::ToolType});           /*29*/
     switch (points.indexOf(type))
     {
         case 0: // VToolBasePoint::ToolType
@@ -218,6 +220,9 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
             break;
         case 29: // OToolDartCap::ToolType
             ParseToolDartCap(scene, domElement, parse);
+            break;
+        case 30: // OToolRectangle::ToolType
+            ParseToolRectangle(scene, domElement, parse);
             break;
         default:
             throw VException(tr("Unknown point type '%1'.").arg(type));
@@ -1594,6 +1599,69 @@ void VPattern::ParseToolDartCap(VMainGraphicsScene *scene, QDomElement &domEleme
     catch (qmu::QmuParserError &e)
     {
         VExceptionObjectError excep(tr("Error creating or updating the cap of a dart"), domElement);
+        excep.AddMoreInformation("Message:     "_L1 + e.GetMsg() + '\n'_L1 + "Expression:  "_L1 + e.GetExpr());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseToolRectangle(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse)
+{
+    SCASSERT(scene != nullptr)
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        OToolRectangleInitData initData;
+        initData.scene = scene;
+        initData.doc = this;
+        initData.data = data;
+        initData.parse = parse;
+        initData.typeCreation = Source::FromFile;
+
+        DrawToolsCommonAttributes(domElement, initData.id, initData.notes);
+
+        initData.basePointId = GetParametrUInt(domElement, AttrBasePoint, NULL_ID_STR);
+        initData.formulaWidth = GetParametrString(domElement, AttrWidth);
+        initData.formulaHeight = GetParametrString(domElement, AttrHeight);
+        initData.typeLine = GetParametrString(domElement, AttrTypeLine, TypeLineLine);
+        initData.lineColor = GetParametrString(domElement, AttrLineColor, ColorBlack);
+
+        initData.p2id = GetParametrUInt(domElement, AttrPoint1, NULL_ID_STR);
+        initData.p3id = GetParametrUInt(domElement, AttrPoint2, NULL_ID_STR);
+        initData.p4id = GetParametrUInt(domElement, AttrPoint4, NULL_ID_STR);
+
+        const VAbstractValApplication *app = VAbstractValApplication::VApp();
+
+        const QString labelMXStr = QString::number(app->fromPixel(labelMX));
+        const QString labelMYStr = QString::number(app->fromPixel(labelMY));
+
+        initData.name2 = GetParametrString(domElement, AttrName1, QChar('B'));
+        initData.mx2 = app->toPixel(GetParametrDouble(domElement, AttrMx1, labelMXStr));
+        initData.my2 = app->toPixel(GetParametrDouble(domElement, AttrMy1, labelMYStr));
+        initData.showLabel2 = GetParametrBool(domElement, AttrShowLabel1, falseStr);
+
+        initData.name3 = GetParametrString(domElement, AttrName2, QChar('C'));
+        initData.mx3 = app->toPixel(GetParametrDouble(domElement, AttrMx2, labelMXStr));
+        initData.my3 = app->toPixel(GetParametrDouble(domElement, AttrMy2, labelMYStr));
+        initData.showLabel3 = GetParametrBool(domElement, AttrShowLabel2, falseStr);
+
+        initData.name4 = GetParametrString(domElement, AttrName3, QChar('D'));
+        initData.mx4 = app->toPixel(GetParametrDouble(domElement, AttrMx3, labelMXStr));
+        initData.my4 = app->toPixel(GetParametrDouble(domElement, AttrMy3, labelMYStr));
+        initData.showLabel4 = GetParametrBool(domElement, AttrShowLabel3, falseStr);
+
+        OToolRectangle::Create(initData);
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating a rectangle"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+    catch (qmu::QmuParserError &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating a rectangle"), domElement);
         excep.AddMoreInformation("Message:     "_L1 + e.GetMsg() + '\n'_L1 + "Expression:  "_L1 + e.GetExpr());
         throw excep;
     }

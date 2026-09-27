@@ -108,7 +108,7 @@ auto VAbstractShortcutManager::GetShortcutsList() const -> QList<VAbstractShortc
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 96, "Convert all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 97, "Convert all actions.");
 
     switch (type)
     {
@@ -266,6 +266,8 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "toolclosedart"_L1;
         case VShortcutAction::ToolDartCap:
             return "tooldartcap"_L1;
+        case VShortcutAction::ToolRectangle:
+            return "toolrectangle"_L1;
         case VShortcutAction::ToolFlippingByLine:
             return "toolflippingbyline"_L1;
         case VShortcutAction::ToolFlippingByAxis:
@@ -316,7 +318,7 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 96, "Translate all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 97, "Translate all actions.");
 
     switch (type)
     {
@@ -474,6 +476,8 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Tool 'Close dart'", "shortcut for action");
         case VShortcutAction::ToolDartCap:
             return tr("Tool 'Dart cap'", "shortcut for action");
+        case VShortcutAction::ToolRectangle:
+            return tr("Tool 'Rectangle'", "shortcut for action");
         case VShortcutAction::ToolFlippingByLine:
             return tr("Tool 'Flipping objects by line'", "shortcut for action");
         case VShortcutAction::ToolFlippingByAxis:

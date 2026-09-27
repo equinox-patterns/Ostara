@@ -55,6 +55,7 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/vtooltruedarts.h"
+#include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vpropertyexplorer/plugins/vstringproperty.h"
 #include "../vpropertyexplorer/plugins/vpointfproperty.h"
 #include "../vpropertyexplorer/plugins/vtextproperty.h"
@@ -734,6 +735,176 @@ auto DartCapProperties() -> std::vector<PropertyDesc>
         MakePointGroup<OToolDartCap>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")),
                                      T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")),
                                      T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),
+    };
+}
+
+// --- OToolRectangle ---
+
+/** @brief Paint the child of a name row, and the child of a box, when a tool is shown or refreshed. */
+auto SetRectanglePointsFromTool(VPE::VProperty *group, const OToolRectangle *t) -> void
+{
+    const auto children = group->getChildren();
+    if (children.size() < 6)
+    {
+        return;
+    }
+    children[0]->setValue(t->nameP1());
+    children[1]->setValue(t->nameP2());
+    children[2]->setValue(t->nameP4());
+    children[3]->setValue(t->IsLabelVisible(t->GetP1Id()));
+    children[4]->setValue(t->IsLabelVisible(t->GetP2Id()));
+    children[5]->setValue(t->IsLabelVisible(t->GetP4Id()));
+}
+
+/** @brief Write back the three names and the three boxes of the points one rectangle creates.
+ *
+ * The three of them live in ONE collapsible group, the same "point" group every tool of the family has: the
+ * dock opens and closes a single toggle, exactly as it does for the EndLine tool and its own point.
+ */
+auto RectanglePointsGroup() -> PropertyDesc
+{
+    return {QStringLiteral("point"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")),
+            [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+                auto *t = static_cast<OToolRectangle *>(tool);
+                auto *group = new VPE::VProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")));
+                group->setCollapsible(true);
+                group->addChild(new VPE::VStringProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point B:"))));
+                group->addChild(new VPE::VStringProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point C:"))));
+                group->addChild(new VPE::VStringProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point D:"))));
+                group->addChild(new VPE::VBoolProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))));
+                group->addChild(new VPE::VBoolProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))));
+                group->addChild(new VPE::VBoolProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))));
+                SetRectanglePointsFromTool(group, t);
+                return group;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                auto *t = qgraphicsitem_cast<OToolRectangle *>(b->currentItem());
+                if (t == nullptr)
+                {
+                    return;
+                }
+                const auto children = prop->getChildren();
+                if (children.size() < 6)
+                {
+                    return;
+                }
+
+                // A name is only written when it is both well shaped and free; an invalid one is put back.
+                auto ApplyName = [&](int index, const QString &current, void (OToolRectangle::*setter)(const QString &))
+                {
+                    const QString name = children[index]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                    if (name == current)
+                    {
+                        return;
+                    }
+                    if (QRegularExpression const rx(NameRegExp());
+                        name.isEmpty() || not rx.match(name).hasMatch()
+                        || not VContainer::IsUnique(name, valentinaNamespace))
+                    {
+                        children[index]->setValue(current);
+                    }
+                    else
+                    {
+                        (t->*setter)(name);
+                    }
+                };
+
+                ApplyName(0, t->nameP1(), &VToolDoublePoint::setNameP1);
+                ApplyName(1, t->nameP2(), &VToolDoublePoint::setNameP2);
+                ApplyName(2, t->nameP4(), &OToolRectangle::setNameP4);
+
+                auto ApplyShow = [&](int index, quint32 id)
+                {
+                    const bool visible = children[index]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool();
+                    if (visible != t->IsLabelVisible(id))
+                    {
+                        t->SetLabelVisible(id, visible);
+                    }
+                };
+                ApplyShow(3, t->GetP1Id());
+                ApplyShow(4, t->GetP2Id());
+                ApplyShow(5, t->GetP4Id());
+
+                // One repaint for the six rows, not six.
+                t->FullUpdateFromFile();
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                if (auto *t = qgraphicsitem_cast<OToolRectangle *>(b->currentItem()))
+                {
+                    SetRectanglePointsFromTool(prop, t);
+                }
+            }};
+}
+
+auto RectangleProperties() -> std::vector<PropertyDesc>
+{
+    return {
+        // The width and the height are editable, like every other value of a pattern: changing one moves the
+        // three points the rectangle is made of. VFormulaProperty is what gives the row its fx button.
+        {AttrWidth, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Width:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolRectangle *>(tool);
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Width:")));
+             p->SetFormula(t->GetFormulaWidthF());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolRectangle *>(b->currentItem()))
+             {
+                 t->SetFormulaWidth(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolRectangle *>(b->currentItem()))
+             {
+                 prop->setValue(QVariant::fromValue(t->GetFormulaWidthF()));
+             }
+         }},
+        {AttrHeight, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Height:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolRectangle *>(tool);
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Height:")));
+             p->SetFormula(t->GetFormulaHeightF());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolRectangle *>(b->currentItem()))
+             {
+                 t->SetFormulaHeight(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolRectangle *>(b->currentItem()))
+             {
+                 prop->setValue(QVariant::fromValue(t->GetFormulaHeightF()));
+             }
+         }},
+
+        // The two lengths can be named, and a named length is a variable the pattern can read. Each row
+        // carries the pastille of the side it names — the same pair of colours the window and the preview use.
+        MakeStringPropWithValidator<OToolRectangle>(QStringLiteral("widthLineRoleName"),
+                                                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
+                                                    &OToolRectangle::GetWidthLineRoleName,
+                                                    &OToolRectangle::SetWidthLineRoleName,
+                                                    SegmentDotPixmap(VColorRole::VisSupportColor2)),
+        MakeStringPropWithValidator<OToolRectangle>(QStringLiteral("heightLineRoleName"),
+                                                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line:")),
+                                                    &OToolRectangle::GetHeightLineRoleName,
+                                                    &OToolRectangle::SetHeightLineRoleName,
+                                                    SegmentDotPixmap(VColorRole::VisSupportColor4)),
+
+        MakeLineType<OToolRectangle>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Type of line:"))),
+        MakeLineColor<OToolRectangle>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:"))),
+        MakeNotes<OToolRectangle>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+
+        // The three points the rectangle creates, in ONE toggle — the "Point" group of the family.
+        RectanglePointsGroup(),
     };
 }
 

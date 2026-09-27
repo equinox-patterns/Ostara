@@ -1374,7 +1374,11 @@ void FillComboBoxTypeLine(QComboBox *box, const QMap<QString, QIcon> &stylesPics
         ++i;
     }
 
-    const int index = box->findData(QVariant(def));
+    // A style that cannot be found falls back to the solid line, never to the first item of the combo. The
+    // items are added in the alphabetical order of a QMap, so their first is 'dashDotLine' — a default that
+    // fell through to it silently opened a line tool on a dash-dot pen instead of a plain one.
+    const QString wanted = def.isEmpty() ? TypeLineLine : def;
+    const int index = box->findData(QVariant(wanted));
     if (index != -1)
     {
         box->setCurrentIndex(index);

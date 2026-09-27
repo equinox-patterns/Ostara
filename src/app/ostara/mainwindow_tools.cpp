@@ -82,6 +82,7 @@
 #include "../vtools/dialogs/tools/dialogrotation.h"
 #include "../vtools/dialogs/tools/odialogclosedart.h"
 #include "../vtools/dialogs/tools/odialogdartcap.h"
+#include "../vtools/dialogs/tools/odialogrectangle.h"
 #include "../vtools/dialogs/tools/dialogshoulderpoint.h"
 #include "../vtools/dialogs/tools/dialogspline.h"
 #include "../vtools/dialogs/tools/dialogsplinepath.h"
@@ -103,6 +104,7 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
+#include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
@@ -342,6 +344,16 @@ void MainWindow::ToolDartCap(bool checked)
         checked, Tool::DartCap, QStringLiteral("intersect_cursor.png"), tr("Select the dart point"),
         &MainWindow::ClosedDrawDialogWithApply<OToolDartCap>, &MainWindow::ApplyDrawDialog<OToolDartCap>);
     LogPatternToolUsed(checked, QStringLiteral("Dart cap tool"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolRectangle(bool checked)
+{
+    ToolSelectPointByRelease();
+    SetToolButtonWithApply<ODialogRectangle>(
+        checked, Tool::Rectangle, QStringLiteral("shoulder_cursor.png"), tr("Select the base point of the rectangle"),
+        &MainWindow::ClosedDrawDialogWithApply<OToolRectangle>, &MainWindow::ApplyDrawDialog<OToolRectangle>);
+    LogPatternToolUsed(checked, QStringLiteral("Rectangle tool"));
 }
 
 
@@ -1084,7 +1096,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Check if need to extend.");
 
     switch (t)
     {
@@ -1120,6 +1132,15 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
                   std::is_same_v<Dialog,DialogHeight> || std::is_same_v<Dialog,DialogLine> ||
                   std::is_same_v<Dialog,DialogLineIntersectAxis> || std::is_same_v<Dialog,DialogNormal> ||
                   std::is_same_v<Dialog,DialogShoulderPoint>)
+    {
+        dialogTool->SetTypeLine(settings->GetGlobalPenStyle());
+        dialogTool->SetLineColor(settings->GetGlobalToolColor());
+    }
+
+    // The tools whose window offers a type and a colour of its own take the same two defaults. The place
+    // where they are set was removed from the preferences, but the choice itself is still stored and still
+    // what every other line tool opens with — a tool that ignored it would be the only one opening on black.
+    if constexpr (std::is_same_v<Dialog,ODialogDartCap> || std::is_same_v<Dialog,ODialogRectangle>)
     {
         dialogTool->SetTypeLine(settings->GetGlobalPenStyle());
         dialogTool->SetLineColor(settings->GetGlobalToolColor());
@@ -1463,7 +1484,7 @@ void MainWindow::ApplyPieceDialog(VMainGraphicsScene *scene)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1649,6 +1670,9 @@ void MainWindow::CancelTool()
         case Tool::DartCap:
             ui->actionDartCapTool->setChecked(false);
             break;
+        case Tool::Rectangle:
+            ui->actionRectangleTool->setChecked(false);
+            break;
         case Tool::FlippingByLine:
             ui->actionFlippingByLineTool->setChecked(false);
             break;
@@ -1754,7 +1778,7 @@ void MainWindow::ArrowTool(bool checked)
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -1959,6 +1983,10 @@ void MainWindow::LastUsedTool()
         case Tool::DartCap:
             ui->actionDartCapTool->setChecked(true);
             ToolDartCap(true);
+            break;
+        case Tool::Rectangle:
+            ui->actionRectangleTool->setChecked(true);
+            ToolRectangle(true);
             break;
         case Tool::FlippingByLine:
             ui->actionFlippingByLineTool->setChecked(true);

@@ -64,6 +64,7 @@ using namespace VtoppbConstants;
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
+#include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolarcpoint.h"
@@ -126,6 +127,7 @@ using namespace Qt::Literals::StringLiterals;
 auto RotationProperties() -> std::vector<PropertyDesc>;
 auto CloseDartProperties() -> std::vector<PropertyDesc>;
 auto DartCapProperties() -> std::vector<PropertyDesc>;
+auto RectangleProperties() -> std::vector<PropertyDesc>;
 auto MoveProperties() -> std::vector<PropertyDesc>;
 auto FlippingByLineProperties() -> std::vector<PropertyDesc>;
 auto FlippingByAxisProperties() -> std::vector<PropertyDesc>;
@@ -244,7 +246,7 @@ void VToolOptionsPropertyBrowser::ShowGroupOptions(const QString &groupName, qui
 void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Not all tools were used in switch.");
 
     switch (item->type())
     {
@@ -374,6 +376,9 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
         case OToolDartCap::Type:
             ShowToolOptions<OToolDartCap>(item, tr("Tool dart cap"), DartCapProperties());
             break;
+        case OToolRectangle::Type:
+            ShowToolOptions<OToolRectangle>(item, tr("Tool rectangle"), RectangleProperties());
+            break;
         case VToolFlippingByLine::Type:
             ShowToolOptions<VToolFlippingByLine>(item, tr("Tool flipping by line"), FlippingByLineProperties());
             break;
@@ -415,7 +420,7 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
@@ -529,6 +534,9 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
         case OToolDartCap::Type:
             UpdateToolOptions<OToolDartCap>(DartCapProperties());
             break;
+        case OToolRectangle::Type:
+            UpdateToolOptions<OToolRectangle>(RectangleProperties());
+            break;
         case VToolFlippingByLine::Type:
             UpdateToolOptions<VToolFlippingByLine>(FlippingByLineProperties());
             break;
@@ -621,7 +629,7 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
@@ -730,6 +738,9 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
             break;
         case OToolDartCap::Type:
             ChangeToolData<OToolDartCap>(prop, DartCapProperties());
+            break;
+        case OToolRectangle::Type:
+            ChangeToolData<OToolRectangle>(prop, RectangleProperties());
             break;
         case VToolFlippingByLine::Type:
             ChangeToolData<VToolFlippingByLine>(prop, FlippingByLineProperties());

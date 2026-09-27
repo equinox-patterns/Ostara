@@ -45,6 +45,7 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
+#include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
@@ -365,7 +366,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 71, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -464,6 +465,8 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
                 return TrueDarts(tool);
             case Tool::DartCap:
                 return DartCap(tool);
+            case Tool::Rectangle:
+                return Rectangle(tool);
             case Tool::EllipticalArc:
                 return EllipticalArc(tool);
             case Tool::Rotation:
@@ -1176,6 +1179,25 @@ auto VPatternRecipe::DartCap(const VToolRecord &record) -> QDomElement
     SetAttribute(step, AttrSecondPoint, tool->SecondPointName());
     SetAttribute(step, AttrExtendPoint, tool->ExtendPointName());
     SetAttribute(step, AttrDrawCap, tool->IsCapDrawn() ? trueStr : falseStr);
+    LineAttributes(step, tool);
+
+    return step;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPatternRecipe::Rectangle(const VToolRecord &record) -> QDomElement
+{
+    auto *tool = GetPatternTool<OToolRectangle>(record.GetId());
+
+    QDomElement step = createElement(TagStep);
+
+    ToolAttributes(step, tool);
+    SetAttribute(step, AttrBasePoint, tool->BasePointName());
+    SetAttribute(step, AttrWidth, tool->GetFormulaWidth());
+    SetAttribute(step, AttrHeight, tool->GetFormulaHeight());
+    SetAttribute(step, AttrPoint1, tool->nameP1());
+    SetAttribute(step, AttrPoint2, tool->nameP2());
+    SetAttribute(step, AttrPoint4, tool->nameP4());
     LineAttributes(step, tool);
 
     return step;

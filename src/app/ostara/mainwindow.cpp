@@ -298,6 +298,7 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("rotation"),                     ui->actionRotationTool},
         {QStringLiteral("close_dart"),                   ui->actionCloseDartTool},
         {QStringLiteral("dart_cap"),                     ui->actionDartCapTool},
+        {QStringLiteral("rectangle"),                    ui->actionRectangleTool},
         {QStringLiteral("move"),                         ui->actionMoveTool},
         {QStringLiteral("true_darts"),                   ui->actionTrueDartsTool},
         {QStringLiteral("new_detail"),                   ui->actionNewDetailTool},

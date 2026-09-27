@@ -88,7 +88,7 @@ auto IsAppIconTool(const QString &id) -> bool
 {
     return id == QStringLiteral("detail_export") || id == QStringLiteral("export_templates")
            || id == QStringLiteral("export_image") || id == QStringLiteral("close_dart")
-           || id == QStringLiteral("dart_cap");
+           || id == QStringLiteral("dart_cap") || id == QStringLiteral("rectangle");
 }
 
 auto FormatTooltip(const QString &toolName, const QAction *action) -> QString
@@ -489,6 +489,9 @@ void DrawToolBar::InitializeGroups()
             // Same as close_dart: no dart_cap.svg exists yet, so the button is built by hand further down
             // and borrows the icon of true darts.
             {QStringLiteral("dart_cap"),                 tr("Dart cap tool"),                                   nullptr, nullptr},
+            // Same again: the rectangle waits for artwork of its own and borrows the icon of the shoulder
+            // point, which is where its dialog takes its cursor from too.
+            {QStringLiteral("rectangle"),                tr("Rectangle tool"),                                  nullptr, nullptr},
         }, kModeDraw},
     };
     // clang-format on
@@ -563,6 +566,20 @@ void DrawToolBar::InitializeGroups()
         btn->setIconSize(QSize(24, 24));
         btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("rotation.png")));
         m_buttonMap.insert(QStringLiteral("close_dart"), btn);
+    }
+
+    // The rectangle waits for artwork of its own: with no rectangle.svg to load, its button borrows the icon
+    // of the shoulder point — the same one its action and its cursor come from. By hand, like the two above.
+    if (!m_buttonMap.contains(QStringLiteral("rectangle")))
+    {
+        auto *btn = new QToolButton(m_root);
+        btn->setObjectName(QStringLiteral("drawToolBtn"));
+        btn->setAutoRaise(true);
+        btn->setCheckable(true);
+        btn->setFixedSize(kButtonSize, kButtonSize);
+        btn->setIconSize(QSize(24, 24));
+        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("shoulder.png")));
+        m_buttonMap.insert(QStringLiteral("rectangle"), btn);
     }
 
     // Update the button pointer in the ToolItem
