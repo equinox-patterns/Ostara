@@ -29,6 +29,10 @@
 
 #include "mainwindow.h"
 
+#include <QSet>
+
+#include "core/ocornertrace.h"
+#include "core/ogroupsuperpose.h"
 #include "core/ogradedsizeranges.h"
 #include "core/ogratedsizestyles.h"
 #include "mainwindow_helpers.h"
@@ -321,9 +325,15 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
             break;
         }
 
+        // The very rule the canvas applies, on the pieces themselves (OGroupSuperpose).
+        OGroupSuperpose::Snap(details, pieces, pattern);
+
+
         const int layerPos = idx - minIdx;
         const int z = layerCount - layerPos;
         const bool isReference = (layerPos == 0);
+
+        QVector<QGraphicsItem *> itemsOfSize;
 
         for (int k = 0; k < pieces.size() && k < details.size(); ++k)
         {
@@ -353,7 +363,49 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
             }
             scene.addItem(item);
             itemsByPiece[pieceId].append(item);
+            itemsOfSize.append(item);
         }
+
+        // The very rule the canvas applies: the members of a group leave their dash pattern from the
+        // places they have in common — the corners of the trace and every construction point they
+        // share — so a size is drawn the same way on screen and here (OCornerTrace).
+        {
+            QSet<QGraphicsItem *> shared;
+            const auto *groups = pattern->DataPieceGroups();
+            if (groups != nullptr)
+            {
+                for (auto group = groups->cbegin(); group != groups->cend(); ++group)
+                {
+                    QVector<QGraphicsPathItem *> members;
+                    for (const quint32 pieceId : group.value().pieceIds)
+                    {
+                        for (QGraphicsItem *candidate : itemsOfSize)
+                        {
+                            if (GradedPieceId(candidate) == pieceId)
+                            {
+                                if (auto *path = dynamic_cast<QGraphicsPathItem *>(candidate); path != nullptr)
+                                {
+                                    members.append(path);
+                                    shared.insert(candidate);
+                                }
+                            }
+                        }
+                    }
+                    if (members.size() > 1)
+                    {
+                        OCornerTrace::RestartAtSharedStretches(members);
+                    }
+                }
+            }
+            for (QGraphicsItem *candidate : itemsOfSize)
+            {
+                if (!shared.contains(candidate))
+                {
+                    OCornerTrace::RestartAtCorners(dynamic_cast<QGraphicsPathItem *>(candidate));
+                }
+            }
+        }
+
 
         if (ok)
         {

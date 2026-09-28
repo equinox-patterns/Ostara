@@ -26,11 +26,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QSet>
+
 #include "mainwindow_helpers.h"
 #include "mainwindowsnogui.h"
 #include "dialogs/owaitdialog.h"
 #include "mainwindow_graded_helpers.h"
 #include "ogradedgeometry.h"
+#include "core/ocornertrace.h"
+#include "core/ogroupsuperpose.h"
 #include "core/osizetable.h"
 #include "xml/vpattern.h"
 #include "../ifc/xml/vabstractpattern.h"
@@ -349,10 +353,16 @@ void MainWindow::BuildGradedScene()
             break;
         }
 
+        // The stretch a group's members share is brought onto ONE line before anything is drawn: what
+        // is left of the doubling is a matter of geometry, not of dashes (OGroupSuperpose).
+        OGroupSuperpose::Snap(details, pieces, pattern);
+
         // One real piece render per (piece × size); z = N − layer → reference (min size) on
         // top. Render the piece the same way Val Fork's graded scene does (piece.GetItem):
         // main path + seam allowance + internal paths + passmarks + place labels + grainline
         // + fold line — NOT an invented silhouette.
+        QVector<QGraphicsItem *> itemsOfSize;
+
         const int layerPos = idx - minIdx;
         const int z = layerCount - layerPos;
         const bool isReference = (layerPos == 0);
@@ -360,6 +370,7 @@ void MainWindow::BuildGradedScene()
         for (int k = 0; k < pieces.size() && k < details.size(); ++k)
         {
             const quint32 pieceId = details.at(k).id;
+
             // Frozen base: captured the first time the piece enters a graded build. A plain
             // Details move afterwards must NOT relocate the graded canvas, even across captures.
             const QPointF livePos(pieces.at(k).GetMx(), pieces.at(k).GetMy());
@@ -391,6 +402,47 @@ void MainWindow::BuildGradedScene()
                 item->setData(kGradedAlignPointXRole, alignPointX);
             }
             m_sceneGraded->addItem(item);
+            itemsOfSize.append(item);
+        }
+
+        // The dash pattern leaves from the places the group's members have in common — the corners of
+        // the trace, and every construction point two members share — so both members' patterns leave
+        // from the very same places (OCornerTrace).
+        {
+            QSet<QGraphicsItem *> shared;
+            const auto *groups = pattern->DataPieceGroups();
+            if (groups != nullptr)
+            {
+                for (auto group = groups->cbegin(); group != groups->cend(); ++group)
+                {
+                    QVector<QGraphicsPathItem *> members;
+                    for (const quint32 pieceId : group.value().pieceIds)
+                    {
+                        for (QGraphicsItem *candidate : itemsOfSize)
+                        {
+                            if (GradedPieceId(candidate) == pieceId)
+                            {
+                                if (auto *path = dynamic_cast<QGraphicsPathItem *>(candidate); path != nullptr)
+                                {
+                                    members.append(path);
+                                    shared.insert(candidate);
+                                }
+                            }
+                        }
+                    }
+                    if (members.size() > 1)
+                    {
+                        OCornerTrace::RestartAtSharedStretches(members);
+                    }
+                }
+            }
+            for (QGraphicsItem *candidate : itemsOfSize)
+            {
+                if (!shared.contains(candidate))
+                {
+                    OCornerTrace::RestartAtCorners(dynamic_cast<QGraphicsPathItem *>(candidate));
+                }
+            }
         }
 
         // Let a long build surface its wait dialog between sizes (never mid-parse).
@@ -565,3 +617,4 @@ void RecolorGradedItemPens(QGraphicsItem *root)
     const QColor color = VSceneStylesheet::PatternPieceStyle().PieceColor();
     RecolorGradedLayoutSubtree(root, color);
 }
+
