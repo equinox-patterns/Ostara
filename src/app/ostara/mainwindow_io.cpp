@@ -956,6 +956,17 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         StripForbidFlippingAttributes(doc);
         StripFollowGrainlineAttributes(doc);
 
+        // Give every object of every piece a layer. Deliberately OUTSIDE the block above, for the same
+        // reason: a .val arrives without layers, and an .ostara written before this rule carries objects
+        // that belong to none. Such an object is visible by default and unreachable from the Layers dock,
+        // so each piece gets an "Unnamed" layer holding exactly what no layer references. Silent by
+        // design, see the function.
+        NormalizeUnlayeredObjects(doc);
+
+        // Then pick the layer the canvas will draw into. Same place, same reasoning — and it runs after the pass
+        // above so that a freshly created "Unnamed" layer can be the one chosen.
+        NormalizeActiveLayer(doc);
+
         if (!customMeasureFile.isEmpty())
         {
             doc->SetMPath(RelativeMPath(fileName, customMeasureFile));

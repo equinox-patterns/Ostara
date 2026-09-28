@@ -55,8 +55,11 @@ VScaledLine::VScaledLine(const QLineF &line, VColorRole role, QGraphicsItem *par
 //---------------------------------------------------------------------------------------------------------------------
 auto VScaledLine::ScaledPenWidth() const -> qreal
 {
-    const qreal width = ScaleWidth(m_isBoldLine ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
-                                                : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
+    // "Bold" also while marked for a layer. Read from the flag rather than written into m_isBoldLine, so that
+    // dropping the mark gives back exactly the weight the line had before.
+    const bool bold = m_isBoldLine || m_layerSelected || m_inLayer;
+    const qreal width = ScaleWidth(bold ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
+                                        : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
                                    SceneScale(scene()));
     return qRound(width * 100.) / 100.;
 }
@@ -108,13 +111,69 @@ void VScaledLine::RefreshPen()
 {
     QPen lPen = pen();
 
-    if (m_role != VColorRole::CustomColor)
+    if (m_layerSelected || m_inLayer)
+    {
+        // Selected: orange, the colour that says what Enter will act on. Otherwise the layer's content: magenta,
+        // the colour of a transient multi-selection. A line can be both, and the selection is what has to be
+        // readable then, so it is tested first.
+        const VColorRole markRole = m_layerSelected ? VColorRole::ActivePointColor : VColorRole::VisSupportColor;
+        lPen.setColor(VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::Color(markRole)));
+    }
+    else if (m_role != VColorRole::CustomColor)
     {
         lPen.setColor(VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::Color(m_role)));
+    }
+    else if (m_colorBeforeLayer.isValid())
+    {
+        // A CustomColor line carries its own colour — the one of the object that draws through it — so there is
+        // no role to fall back on. Without this the orange would stay in the pen for good.
+        lPen.setColor(m_colorBeforeLayer);
+        m_colorBeforeLayer = QColor();
     }
 
     lPen.setWidthF(ScaledPenWidth());
     setPen(lPen);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::SetLayerSelected(bool selected)
+{
+    if (m_layerSelected == selected)
+    {
+        return;
+    }
+
+    m_layerSelected = selected;
+    ApplyLayerMark();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::SetInLayer(bool inLayer)
+{
+    if (m_inLayer == inLayer)
+    {
+        return;
+    }
+
+    m_inLayer = inLayer;
+    ApplyLayerMark();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::ApplyLayerMark()
+{
+    prepareGeometryChange();
+
+    // A CustomColor line carries its own colour — the one of the object that draws through it — so there is no
+    // role to fall back on once both marks are gone. Save it, and only on the way in: reading pen() again while
+    // already marked would save the mark itself. RefreshPen() hands it back and drops it on the way out.
+    if ((m_layerSelected || m_inLayer) && m_role == VColorRole::CustomColor && not m_colorBeforeLayer.isValid())
+    {
+        m_colorBeforeLayer = pen().color();
+    }
+
+    RefreshPen();
+    update();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -224,6 +283,28 @@ void VScaledLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
     QGraphicsLineItem::mousePressEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    // The right-click counterpart of mousePressEvent above, and it was missing: a line a tool draws for itself —
+    // the main line of a line point, the second tracé of a dart cap, a side of a rectangle — is a child of that
+    // tool and not an object of its own, so the menu belongs to the tool (Options, add to layer, remove from
+    // layer, Delete). Doing nothing here does not hand the event back down to the tool either: the scene accepts
+    // it before asking the item (QGraphicsScene::contextMenuEvent), so the right click simply died on the line.
+    // VToolLine, a tool in its own right, overrides this and keeps its own menu.
+    //
+    // The event goes through the scene: QGraphicsItem::contextMenuEvent is protected, so a sibling item cannot
+    // be asked directly, and QGraphicsScene::sendEvent is the public door to that handler — measured, not
+    // assumed (a handler reached this way really does run).
+    if (QGraphicsItem *owner = parentItem(); owner != nullptr && scene() != nullptr)
+    {
+        scene()->sendEvent(owner, event);
+        return;
+    }
+
+    QGraphicsLineItem::contextMenuEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

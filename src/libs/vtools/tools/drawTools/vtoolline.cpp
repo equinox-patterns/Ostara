@@ -235,7 +235,22 @@ void VToolLine::RefreshPen()
     VScaledLine::RefreshPen();
 
     QPen lPen = pen();
-    lPen.setColor(VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::CorrectToolColorForDarkTheme(lineColor)));
+    // The line owns its colour — this override is what replaces the base's — so it is also the one that has to
+    // answer for the layer marks, both of them: selected (orange, what Enter will act on) and in the layer
+    // (magenta, the layer's content). The selection is tested first, since a line can be both at once.
+    if (IsLayerSelected())
+    {
+        lPen.setColor(VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::Color(VColorRole::ActivePointColor)));
+    }
+    else if (IsInLayer())
+    {
+        lPen.setColor(VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::Color(VColorRole::VisSupportColor)));
+    }
+    else
+    {
+        lPen.setColor(
+            VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::CorrectToolColorForDarkTheme(lineColor)));
+    }
     lPen.setStyle(LineStyleToPenStyle(m_lineType));
     setPen(lPen);
 }

@@ -38,6 +38,8 @@
 #include "core/vapplication.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "dialogs/vwidgetdependencies.h"
+#include "dialogs/vwidgetgroups.h"
+#include "../vtools/tools/vabstracttool.h"
 #include "dialogs/vwidgetdetails.h"
 #include "vtheme.h"
 #include "widgets/BreadcrumbBar.h"
@@ -49,6 +51,7 @@
 #include "../vmisc/vvalentinasettings.h"
 #include "../vtools/dialogs/dialogtoolbox.h"
 #include "../vtools/dialogs/tools/dialogtool.h"
+#include "../vtools/tools/drawTools/operation/vabstractoperation.h"
 #include "../vtools/tools/nodeDetails/vnodepoint.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vwidgets/vmaingraphicsscene.h"
@@ -167,6 +170,14 @@ void MainWindow::changeEvent(QEvent *event)
         // Re-resolve the color of every canvas item from the freshly loaded theme tables.
         RefreshSceneItemPens(m_sceneDraw);
         RefreshSceneItemPens(m_sceneDetails);
+
+        // The active-layer rule carries a palette colour of its own, which ResetThemeSettings has just wiped.
+        UpdateActiveLayerIndicator();
+        // The Layers dock tints its active row from the palette too — same reason.
+        if (m_dockManager->groupsWidget() != nullptr)
+        {
+            m_dockManager->groupsWidget()->UpdateActiveRowStyle();
+        }
 
         // The graded silhouettes are layout items (not VToolSeamAllowance) → re-tint them with the
         // freshly loaded piece color so Graded follows Light/Dark like Draw/Details do. This is also
@@ -385,6 +396,47 @@ void MainWindow::HandleItemClicked(QGraphicsItem *item)
     // custom seam allowance, a foldline, a group link — and reset its state before the scene re-reads it,
     // which would select the clicked node and drop the Details dock tab the user is working in.
     m_pickingClick = IsNodePickingActive();
+
+    // Layers dock — adding objects to a layer: every click toggles the object under the cursor. Deliberately
+    // before the options-dock routing below, and without the Qt selection: a plain click there replaces the
+    // selection, which is why the old tool needed a modifier. Here the dock owns the list, so a plain click
+    // both picks and unpicks.
+    if (item != nullptr && m_dockManager->groupsWidget() != nullptr
+        && m_dockManager->groupsWidget()->IsSelectingObjects())
+    {
+        // Which tool the click speaks for. The item under the cursor is a renderer — a point, a curve, a line —
+        // and the tool is the one that owns it, one level up. Except inside an operation: everything an
+        // operation produces belongs to its result, and the layer takes that result as a whole. A transformed
+        // line is a tool of its own, so the plain climb would stop on it and hand back that single line while
+        // the operation's points and curves answered for the operation — a half-marked result. The nearest
+        // operation ancestor therefore wins, which is also how the options browser routes a result line
+        // (VToolOptionsPropertyBrowser::ShowItemOptions).
+        auto *tool = dynamic_cast<VAbstractTool *>(item);
+        if (tool == nullptr)
+        {
+            tool = dynamic_cast<VAbstractTool *>(item->parentItem());
+        }
+
+        for (QGraphicsItem *ancestor = item; ancestor != nullptr; ancestor = ancestor->parentItem())
+        {
+            if (auto *operation = dynamic_cast<VAbstractOperation *>(ancestor); operation != nullptr)
+            {
+                tool = operation;
+                break;
+            }
+        }
+
+        if (tool != nullptr)
+        {
+            const quint32 toolId = tool->getId();
+            if (const QDomElement element = doc->FindElementById(toolId, tool->getTagName()); not element.isNull())
+            {
+                m_dockManager->groupsWidget()->ToggleLayerObjects(
+                    VAbstractPattern::LayerableObjectsOfTool(element, toolId));
+            }
+        }
+        return;
+    }
 
     // Group Link — step 1: route piece clicks to the pieces dock.
     if (item != nullptr && m_dockManager->detailsWidget() != nullptr && m_dockManager->detailsWidget()->IsSelectingLinkPieces())
@@ -652,6 +704,25 @@ auto MainWindow::CancelGroupThumbnailEdit() -> bool
  */
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    // The Layers dock is collecting objects: Enter writes them into the layer, Escape drops the selection.
+    if (m_dockManager->groupsWidget() != nullptr && m_dockManager->groupsWidget()->IsSelectingObjects())
+    {
+        switch (event->key())
+        {
+            case Qt::Key_Return:
+            case Qt::Key_Enter:
+                m_dockManager->groupsWidget()->ValidateObjectSelection();
+                event->accept();
+                return;
+            case Qt::Key_Escape:
+                m_dockManager->groupsWidget()->CancelObjectSelection();
+                event->accept();
+                return;
+            default:
+                break;
+        }
+    }
+
     switch (event->key())
     {
         case Qt::Key_Escape:

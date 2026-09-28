@@ -55,6 +55,16 @@ public:
     void SetBoldLine(bool bold);
     void SetHighlighted(bool on);
 
+    /// Marks the line as picked for the layer-add/remove workflow: drawn orange and bold, like the active point
+    /// in Details mode. A state of its own, so the hover highlight cannot clear it.
+    void SetLayerSelected(bool selected);
+    auto IsLayerSelected() const -> bool { return m_layerSelected; }
+
+    /// Marks the line as clicked for removal from a layer: magenta and bold, on top of SetLayerSelected. While
+    /// removing, the whole layer stays orange and only the lines the user clicks turn magenta.
+    void SetInLayer(bool picked);
+    auto IsInLayer() const -> bool { return m_inLayer; }
+
     auto IsShowArrows() const -> bool;
     void SetShowArrows(bool show);
 
@@ -67,16 +77,25 @@ protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
     auto itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant override;
 
 private:
     auto ScaledPenWidth() const -> qreal;
     auto ArrowsPath() const -> QPainterPath;
 
+    /// Repaint after either layer mark changed. Shared, because the two marks write the same pen: the magenta of
+    /// the removal pick, the orange of the layer pick, and the colour to give back once both are gone.
+    void ApplyLayerMark();
+
     Q_DISABLE_COPY_MOVE(VScaledLine) // NOLINT
 
     bool m_isBoldLine{true};
     bool m_showArrows{false};
+    bool m_layerSelected{false};
+    bool m_inLayer{false};
+    /// Colour to restore for a CustomColor line, which has no role to recompute from. Invalid when none is saved.
+    QColor m_colorBeforeLayer{};
     VColorRole m_role;
 };
 

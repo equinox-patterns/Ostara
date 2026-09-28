@@ -347,40 +347,14 @@ void DialogOperationTool::ShowSourceDetails(int row)
     }
     else
     {
-        auto SetValue = [](QComboBox *box, const QString &value, const QString &def) -> void
+        // The objects this operation is about to create belong to the active layer, so the window offers that
+        // layer's pen — it wins over whatever the source objects carry. Whatever the user then picks here still
+        // wins over the layer: this is only the opening value.
+        if (m_doc != nullptr)
         {
-            const QSignalBlocker blocker(box);
-
-            if (const int index = box->findData(value); index != -1)
-            {
-                box->setCurrentIndex(index);
-            }
-            else
-            {
-                box->setCurrentIndex(box->findData(def));
-            }
-        };
-
-        SetValue(Widgets().penStyle, sourceItem.penStyle, TypeLineDefault);
-
-        if (sourceItem.penStyle.isEmpty() || sourceItem.penStyle == TypeLineDefault)
-        {
-            int const index = Widgets().penStyle->currentIndex();
-            Widgets().penStyle->setItemText(index, '<' + tr("Default") + '>');
-        }
-
-        QSignalBlocker blockerColor(combo);
-        const QColor sourceColor(sourceItem.color);
-        SetColorComboCurrentName(combo, sourceColor.isValid() ? sourceColor.name() : ColorDefault);
-        blockerColor.unblock();
-
-        if (sourceItem.color.isEmpty() || sourceItem.color == ColorDefault)
-        {
-            if (const QSharedPointer<VAbstractCurve> curve = qSharedPointerDynamicCast<VAbstractCurve>(sourceObject);
-                curve != nullptr)
-            {
-                SetColorComboCurrentName(combo, curve->GetColor());
-            }
+            ChangeCurrentData(Widgets().penStyle, m_doc->GetActiveGroupPenStyle());
+            QSignalBlocker blockerColor(combo);
+            SetColorComboCurrentName(combo, m_doc->GetActiveGroupColor());
         }
 
         Widgets().penStyle->setEnabled(true);

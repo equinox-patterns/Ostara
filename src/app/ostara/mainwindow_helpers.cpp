@@ -34,12 +34,17 @@
 #include <QDomElement>
 #include <QDomNodeList>
 #include <QFileInfo>
+#include <QPair>
 #include <QPointer>
 #include <QRegularExpression>
 #include <QSet>
 #include <QUuid>
+#include <QVector>
 
 #include "vtheme.h"
+#include "../ifc/ifcdef.h"
+#include "../ifc/xml/vabstractpattern.h"
+#include "../vmisc/typedef.h"
 #include "../vmisc/literals.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vexception/vexception.h"
@@ -56,6 +61,7 @@
 #include "../vwidgets/vscenepoint.h"
 #include "../vtools/tools/vabstracttool.h"
 #include "../vtools/tools/vtoolseamallowance.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolabstractcurve.h"
 #include "mainwindowsnogui.h"
 
 #include <QtDebug>
@@ -653,6 +659,88 @@ auto ConvertRemovedFoldLineTypes(QDomDocument *doc) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+// One branch per renderer: a point, a line and a curve are three unrelated families (a spline tool is not a
+// VCurvePathItem, a line is not a VScenePoint), and each one owns its pen. `inLayer` selects which of the two
+// layer marks is written: the magenta of "this layer already holds it" or the orange of "selected, Enter will
+// act on it".
+void ApplyLayerObjectMark(QGraphicsItem *item, bool inLayer, bool on)
+{
+    if (item == nullptr)
+    {
+        return;
+    }
+
+    if (auto *point = dynamic_cast<VScenePoint *>(item); point != nullptr)
+    {
+        if (inLayer)
+        {
+            point->SetInLayer(on);
+        }
+        else
+        {
+            point->SetLayerSelected(on);
+        }
+    }
+    else if (auto *line = dynamic_cast<VScaledLine *>(item); line != nullptr)
+    {
+        if (inLayer)
+        {
+            line->SetInLayer(on);
+        }
+        else
+        {
+            line->SetLayerSelected(on);
+        }
+    }
+    else if (auto *curve = dynamic_cast<VToolAbstractCurve *>(item); curve != nullptr)
+    {
+        if (inLayer)
+        {
+            curve->SetInLayer(on);
+        }
+        else
+        {
+            curve->SetLayerSelected(on);
+        }
+    }
+    else if (auto *simple = dynamic_cast<VSimpleCurve *>(item); simple != nullptr)
+    {
+        // The fourth family, and its own: VSimpleCurve descends from VCurvePathItem, not from VToolAbstractCurve.
+        // It is what draws the curve results of an operation, so a marked operation stayed half-marked without it.
+        if (inLayer)
+        {
+            simple->SetInLayer(on);
+        }
+        else
+        {
+            simple->SetLayerSelected(on);
+        }
+    }
+
+    // A tool draws through child items — the two points of a double point, the line of a point tool. They carry
+    // the mark too, or half the object would turn orange.
+    for (QGraphicsItem *child : item->childItems())
+    {
+        ApplyLayerObjectMark(child, inLayer, on);
+    }
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+void SetLayerObjectsSelected(QGraphicsItem *item, bool selected)
+{
+    ApplyLayerObjectMark(item, /*inLayer=*/false, selected);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void SetLayerObjectsInLayer(QGraphicsItem *item, bool inLayer)
+{
+    ApplyLayerObjectMark(item, /*inLayer=*/true, inLayer);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void RefreshSceneItemPens(const VMainGraphicsScene *scene)
 {
     // Scale- and theme-dependent item state must be refreshed here, not inside paint(). Since Qt 6
@@ -689,4 +777,238 @@ void RefreshSceneItemPens(const VMainGraphicsScene *scene)
             point->RefreshScale();
         }
     }
+}
+
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+// The (toolId, objectId) pairs the layers of this <draw> already reference. The `object` attribute is
+// omitted when it equals `tool` (see VAbstractPattern::CreateGroup), so both forms read the same way.
+auto CollectLayeredPairs(const QDomElement &draw) -> QMap<quint32, QSet<quint32>>
+{
+    QMap<quint32, QSet<quint32>> layered;
+    const QDomElement groups = draw.firstChildElement(VAbstractPattern::TagGroups);
+
+    for (QDomElement group = groups.firstChildElement(VAbstractPattern::TagGroup); !group.isNull();
+         group = group.nextSiblingElement(VAbstractPattern::TagGroup))
+    {
+        for (QDomElement item = group.firstChildElement(VAbstractPattern::TagGroupItem); !item.isNull();
+             item = item.nextSiblingElement(VAbstractPattern::TagGroupItem))
+        {
+            const quint32 toolId = item.attribute(VAbstractPattern::AttrTool).toUInt();
+            const quint32 objectId = item.hasAttribute(VAbstractPattern::AttrObject)
+                                         ? item.attribute(VAbstractPattern::AttrObject).toUInt()
+                                         : toolId;
+            layered[toolId].insert(objectId);
+        }
+    }
+
+    return layered;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// Every object of one piece that a layer can actually hold, as an (objectId, toolId) pair. The reading itself lives
+// on the model — VAbstractPattern::LayerableObjectsOfTool — because the tool creation path needs the very same rule.
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto NormalizeUnlayeredObjects(VAbstractPattern *doc) -> bool
+{
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    const QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    // A name, not an identity: it is what the dock shows, and the user may rename it. Reusing the layer
+    // a previous load created keeps a second "Unnamed" from piling up.
+    const QString layerName = QObject::tr("Unnamed");
+    quint32 nextId = doc->MaxRecordedId() + 1;
+    bool changed = false;
+
+    for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); !draw.isNull();
+         draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
+    {
+        const QDomElement calculation = draw.firstChildElement(VAbstractPattern::TagCalculation);
+        if (calculation.isNull())
+        {
+            continue;
+        }
+
+        // Every object of the piece a layer could hold, as (objectId, toolId). The reading lives on the model, so
+        // the same rule serves here and when a tool creates an object.
+        QVector<QPair<quint32, quint32>> objects;
+        for (QDomElement element = calculation.firstChildElement(); !element.isNull();
+             element = element.nextSiblingElement())
+        {
+            bool ok = false;
+            const quint32 toolId = element.attribute(VDomDocument::AttrId).toUInt(&ok);
+            if (not ok || toolId == NULL_ID)
+            {
+                continue;
+            }
+            objects += VAbstractPattern::LayerableObjectsOfTool(element, toolId);
+        }
+
+        if (objects.isEmpty())
+        {
+            continue;
+        }
+
+        const QMap<quint32, QSet<quint32>> layered = CollectLayeredPairs(draw);
+
+        QMap<quint32, quint32> orphans; // object id -> tool id, the shape CreateGroup expects
+        for (const auto &[objectId, toolId] : objects)
+        {
+            if (not layered.value(toolId).contains(objectId))
+            {
+                orphans.insert(objectId, toolId);
+            }
+        }
+
+        if (orphans.isEmpty())
+        {
+            continue;
+        }
+
+        QDomElement groups = draw.firstChildElement(VAbstractPattern::TagGroups);
+        if (groups.isNull())
+        {
+            groups = doc->createElement(VAbstractPattern::TagGroups);
+            // <draw> is an xs:sequence: calculation, modeling, details, groups, attachments. Appending
+            // would place <groups> after <attachments>, and the pattern could no longer be saved.
+            if (const QDomElement attachments = draw.firstChildElement(VAbstractPattern::TagAttachments);
+                not attachments.isNull())
+            {
+                draw.insertBefore(groups, attachments);
+            }
+            else
+            {
+                draw.appendChild(groups);
+            }
+        }
+
+        QDomElement unnamed = groups.firstChildElement(VAbstractPattern::TagGroup);
+        while (not unnamed.isNull() && unnamed.attribute(VAbstractPattern::AttrName) != layerName)
+        {
+            unnamed = unnamed.nextSiblingElement(VAbstractPattern::TagGroup);
+        }
+
+        if (unnamed.isNull())
+        {
+            unnamed = doc->CreateGroup(nextId++, layerName, {}, orphans);
+            if (unnamed.isNull())
+            {
+                continue;
+            }
+            groups.appendChild(unnamed);
+        }
+        else
+        {
+            // Only what this layer is missing: an item is added once, never duplicated.
+            for (auto it = orphans.constBegin(); it != orphans.constEnd(); ++it)
+            {
+                QDomElement item = doc->createElement(VAbstractPattern::TagGroupItem);
+                item.setAttribute(VAbstractPattern::AttrTool, it.value());
+                if (it.key() != it.value()) // `object` is omitted when it equals `tool`
+                {
+                    item.setAttribute(VAbstractPattern::AttrObject, it.key());
+                }
+                unnamed.appendChild(item);
+            }
+        }
+
+        changed = true;
+    }
+
+    return changed;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto NormalizeActiveLayer(VAbstractPattern *doc) -> bool
+{
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    const QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    const QString unnamedName = QObject::tr("Unnamed");
+    bool changed = false;
+
+    for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); !draw.isNull();
+         draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
+    {
+        const QDomElement groups = draw.firstChildElement(VAbstractPattern::TagGroups);
+        if (groups.isNull())
+        {
+            continue;
+        }
+
+        QDomElement saved;   // the layer the file remembers as active
+        QDomElement unnamed; // the layer the orphans went into
+        QDomElement first;   // the last resort: the first layer of the piece
+        for (QDomElement group = groups.firstChildElement(VAbstractPattern::TagGroup); !group.isNull();
+             group = group.nextSiblingElement(VAbstractPattern::TagGroup))
+        {
+            if (first.isNull())
+            {
+                first = group;
+            }
+            if (unnamed.isNull() && group.attribute(VAbstractPattern::AttrName) == unnamedName)
+            {
+                unnamed = group;
+            }
+            if (saved.isNull() && group.attribute(VAbstractPattern::AttrActive) == trueStr)
+            {
+                saved = group;
+            }
+        }
+
+        if (first.isNull())
+        {
+            continue; // a piece with no layer at all — there is nothing to activate yet
+        }
+
+        const QDomElement target = not saved.isNull() ? saved : (not unnamed.isNull() ? unnamed : first);
+
+        // Exactly one active layer: the flag is a marker, so it is removed from all the others. This also repairs
+        // a hand-edited file carrying it twice.
+        for (QDomElement group = groups.firstChildElement(VAbstractPattern::TagGroup); !group.isNull();
+             group = group.nextSiblingElement(VAbstractPattern::TagGroup))
+        {
+            const bool isTarget = group == target;
+            if (isTarget && group.attribute(VAbstractPattern::AttrActive) != trueStr)
+            {
+                group.setAttribute(VAbstractPattern::AttrActive, trueStr);
+                changed = true;
+            }
+            else if (not isTarget && group.hasAttribute(VAbstractPattern::AttrActive))
+            {
+                group.removeAttribute(VAbstractPattern::AttrActive);
+                changed = true;
+            }
+
+            // The active layer is always shown — otherwise the first object created would land in a hidden layer
+            // and never be seen. Same rule as SetActiveGroup, applied here because this pass decides the active
+            // layer when the file brings none.
+            if (isTarget && group.attribute(VAbstractPattern::AttrVisible) != trueStr)
+            {
+                group.setAttribute(VAbstractPattern::AttrVisible, trueStr);
+                changed = true;
+            }
+        }
+    }
+
+    return changed;
 }

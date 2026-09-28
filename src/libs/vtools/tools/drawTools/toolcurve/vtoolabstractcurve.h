@@ -100,6 +100,14 @@ public:
 
     void GroupVisibility(quint32 object, bool visible) override;
 
+    /// Marks the curve as picked for the layer-add/remove workflow: drawn orange and bold, like the active point
+    /// in Details mode. A state of its own rather than a reuse of the hover flag, which the mouse would clear.
+    void SetLayerSelected(bool selected);
+
+    /// Marks the curve as clicked for removal from a layer: magenta and bold, on top of SetLayerSelected. While
+    /// removing, the whole layer stays orange and only the curves the user clicks turn magenta.
+    void SetInLayer(bool picked);
+
     /** @brief SetReplacedBySegments hides the curve when a cut tool shows its two sub-curves instead. */
     void SetReplacedBySegments(bool replaced);
     auto IsReplacedBySegments() const -> bool;
@@ -155,6 +163,8 @@ private:
     Q_DISABLE_COPY_MOVE(VToolAbstractCurve) // NOLINT
 
     bool m_isHovered{false};
+    bool m_layerSelected{false};
+    bool m_inLayer{false};
     bool m_detailsMode{false};
     bool m_acceptHoverEvents{true};
     bool m_groupVisible{true};

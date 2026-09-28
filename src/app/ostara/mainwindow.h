@@ -123,6 +123,10 @@ public slots:
     void ShowToolTip(const QString &toolTip) override;
     void UpdateVisibilityGroups() override;
     void UpdateDetailsList() override;
+    /// Repaint the canvas chrome that tells which layer the next object will join: the rule along the top edge,
+    /// in the layer's colour, and its name in the corner. Hidden outside the Draw mode, which is the only one
+    /// with layers.
+    void UpdateActiveLayerIndicator();
     void ZoomFitBestCurrent() override;
     void SetToolOptionsDialogVisible(bool visible) override;
     void PlaceBackgroundImage(const QPointF &pos, const QString &fileName);
@@ -636,6 +640,10 @@ private:
     DrawToolBar *m_drawToolBar{nullptr};
     TopBar      *m_topBar{nullptr};
     BreadcrumbBar *m_breadcrumb{nullptr};
+
+    /// The active layer, shown on the canvas: a one-pixel rule along its top edge and the layer's name drawn in
+    /// the top-left corner of the view. Both are driven by UpdateActiveLayerIndicator.
+    QFrame *m_activeLayerRule{nullptr};
 
     QStackedWidget *m_stackedWidget{nullptr};
     WelcomeScreen  *m_welcomeScreen{nullptr};

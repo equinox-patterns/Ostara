@@ -31,10 +31,16 @@
 
 #include "../vmisc/typedef.h"
 
+#include <QIcon>
+#include <QMap>
+#include <QPair>
+#include <QVector>
 #include <QWidget>
 
+class QPushButton;
 class QTableWidgetItem;
 class VAbstractPattern;
+class VContainer;
 struct VGroupData;
 
 namespace Ui
@@ -47,7 +53,7 @@ class VWidgetGroups : public QWidget
     Q_OBJECT // NOLINT
 
 public:
-    explicit VWidgetGroups(VAbstractPattern *doc, QWidget *parent = nullptr);
+    explicit VWidgetGroups(VContainer *pattern, VAbstractPattern *doc, QWidget *parent = nullptr);
     /// @brief Retraduit le panneau au changement de langue.
     ///
     /// Doc Qt, « Prepare for Dynamic Language Changes » : `LanguageChange` parcourt tout l'arbre des
@@ -62,16 +68,74 @@ public:
 public slots:
     void UpdateGroups();
 
+    /// Tint the row of the active layer: the accent at low opacity, on the table's own stylesheet. A slot because
+    /// the theme event reaches MainWindow, which re-applies it — the widget stylesheet is not rebuilt by itself.
+    void UpdateActiveRowStyle();
+
+    /// True while the canvas is picking objects for a layer — adding them or removing them: every click toggles
+    /// one, Enter confirms.
+    auto IsSelectingObjects() const -> bool { return m_objectSelection != ObjectSelection::Idle; }
+    /// Toggle a whole tool's objects (an (objectId, toolId) pair per object) in the current selection.
+    void ToggleLayerObjects(const QVector<QPair<quint32, quint32>> &objects);
+    /// Write the picked objects into the layer — or take them out of it — as one undoable step.
+    void ValidateObjectSelection();
+    void CancelObjectSelection();
+
+signals:
+    /// The canvas must start (or stop) routing its clicks to this dock.
+    void ObjectSelectionStarted();
+    void ObjectSelectionFinished();
+    /// One object entered or left the layer's content: the canvas paints it magenta (or gives it back its own
+    /// colour). The content is marked the same way in both directions — it is what the layer holds.
+    void ObjectInLayerChanged(quint32 objectId, quint32 toolId, bool inLayer);
+    /// One object entered or left the selection: the canvas paints it orange (or back to magenta). Orange is always
+    /// what Enter is about to do — add the object, or take it out.
+    void ObjectSelectedChanged(quint32 objectId, quint32 toolId, bool selected);
+    void ShowStatusTip(const QString &text);
+
 private slots:
-    void GroupVisibilityChanged(int row, int column);
+    void OnCellClicked(int row, int column);
     void RenameGroup(int row, int column);
     void CtxMenu(const QPoint &pos);
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(VWidgetGroups) // NOLINT
+
+    /// Picking the objects a layer should hold. The canvas does the clicking: MainWindow routes each click here,
+    /// which is why this state lives with the dock and not in a dialog.
+    enum class ObjectSelection
+    {
+        Idle,
+        Adding,
+        Removing
+    };
+
     Ui::VWidgetGroups *ui;
     VAbstractPattern *m_doc;
+    VContainer *m_pattern;
+    QPushButton *m_addButton;
+
+    ObjectSelection m_objectSelection{ObjectSelection::Idle};
+    quint32 m_selectionLayerId{NULL_ID};
+    QMap<quint32, quint32> m_selectedObjects; // objectId -> toolId, the shape the pattern expects
+    /// What the layer already holds, marked magenta in both directions. Adding skips it — a layer holds an object
+    /// once — and removing starts from it: what cannot leave is still part of the content.
+    QMap<quint32, quint32> m_layerObjects;
+    /// Of that content, the objects another layer also holds — the only ones a removal may take out. Filled when a
+    /// removal starts, empty while adding.
+    QMap<quint32, quint32> m_candidateObjects;
+
+    // Button icon: the current-theme variant at rest, always the dark variant on hover
+    // (the hovered button background is an accent, dark in both themes).
+    QIcon m_addNormalIcon;
+    QIcon m_addHoverIcon;
+
+    void BuildAddButton();
+    void UpdateAddButtonIcon();
 
     void FillTable(QMap<quint32, VGroupData> groups);
     void SetGroupVisibility(vidtype id, bool visible) const;
@@ -81,9 +145,30 @@ private:
 
     auto GroupRow(vidtype id) const -> int;
 
-    void ActionPreferences(quint32 id);
+    void ActionAddLayer();
+    void ActionEditLayer(quint32 id);
+    void ActionDeleteLayer(quint32 id);
     void ActionHideAll();
     void ActionShowAll();
+
+    /// Arm the canvas picking for one layer, in one of the two directions. Cancels whatever was being picked.
+    void StartObjectSelection(quint32 layerId, ObjectSelection mode);
+    /// The objects a layer holds, in the (objectId, toolId) shape the pattern and the canvas both use.
+    auto LayerItems(quint32 layerId) -> QVector<QPair<quint32, quint32>>;
+    /// Of those, the ones another layer also holds. An object always belongs to at least one layer, so these are
+    /// the only ones a removal may take out — the others would be left belonging to nothing.
+    auto RemovableObjects(const QVector<QPair<quint32, quint32>> &items) -> QMap<quint32, quint32>;
+    /// Restate the workflow in the status bar: what is selected, what the colours mean, and what Enter will do.
+    void UpdateSelectionTip();
+    /// Say why a click did nothing: the object is not in the layer, or it is and nothing else holds it.
+    void ExplainRemovalRefusal(const QPair<quint32, quint32> &object);
+    /// Say why an added click did nothing: the layer already holds it, so it is shown magenta and left alone.
+    void ExplainAddRefusal();
+
+    /// The layer the canvas draws into. A single click on the name is what sets it.
+    void SetActiveLayer(quint32 id);
+    /// Put the highlight back on the active layer — the row actions must not move it.
+    void SelectActiveRow();
 };
 
 #endif // VWIDGETGROUPS_H

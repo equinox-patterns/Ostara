@@ -156,6 +156,10 @@ public:
     auto IsLabelVisible(quint32 id) const -> bool override;
     void SetLabelVisible(quint32 id, bool visible) override;
 
+    /** @brief D is a fourth point the base class does not carry, and hiding the layer that holds it must hide
+     *  it as well: without this override a hidden layer would take B and C away and leave D alone on the canvas. */
+    void GroupVisibility(quint32 object, bool visible) override;
+
     /** @brief The two lengths can be given a name of their own, and that name becomes a variable the rest of
      *  the pattern can use — `Line_<name>`. The width is the top side (base point → B), the height is the
      *  right one (B → C): the very two sides the pastilles of the window name. */

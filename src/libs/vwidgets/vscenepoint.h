@@ -78,6 +78,20 @@ public:
      */
     void SetTemporarySelected(bool selected);
 
+    /** @brief Set the layer-picking state (an object clicked while adding it to a layer, or removing it).
+     *
+     *  Rendered orange and bold, like the active point. A state of its own: SetActivePoint is driven by the
+     *  property browser, which would clear the mark every time the current item changes.
+     */
+    void SetLayerSelected(bool selected);
+
+    /** @brief Set the "picked for removal" state — an object the user has clicked to take out of a layer.
+     *
+     *  Rendered magenta and bold, on top of SetLayerSelected: while removing, every candidate stays orange and
+     *  the ones clicked turn magenta, so the user sees what the coming Enter will take away.
+     */
+    void SetInLayer(bool picked);
+
     /** @brief Toggle whether the point disc is filled at rest.
      *
      *  Details-mode piece points (VNodePoint) are outline-only when idle; hover/active
@@ -96,6 +110,8 @@ protected:
     bool m_isHovered{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_selected{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_temporarySelected{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+    bool m_layerSelected{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+    bool m_inLayer{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_alwaysHovered{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_fillPoints{true}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_showLabel{false};  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)

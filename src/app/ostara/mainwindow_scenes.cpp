@@ -265,6 +265,9 @@ auto MainWindow::switchScene(Draw mode, const QVector<DetailForLayout> &details)
                                                : VAbstractApplication::VApp()->getUndoStack());
     UpdateUndoRedoActions(m_guiEnabled);
 
+    // The active layer belongs to the Draw mode: entering or leaving it shows or hides the rule and the name.
+    UpdateActiveLayerIndicator();
+
     return true;
 }
 

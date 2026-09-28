@@ -428,11 +428,41 @@ void VAbstractTool::ToolCreation(const Source &typeCreation)
     if (typeCreation == Source::FromGui)
     {
         AddToFile();
+        // An object created from the interface belongs to the active layer of its piece. This is what makes "no
+        // object sits outside a layer" hold for the objects still to come — the ones already in the file are
+        // handled once, at load, by NormalizeUnlayeredObjects.
+        AttachToActiveLayer();
     }
     else
     {
         RefreshDataInFile();
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractTool::AttachToActiveLayer()
+{
+    if (doc == nullptr)
+    {
+        return;
+    }
+
+    const quint32 active = doc->GetActiveGroup();
+    if (active == NULL_ID)
+    {
+        return; // the piece has no layer at all — nothing to draw into yet
+    }
+
+    // AddToFile() has just written the element, and its undo command runs synchronously, so the DOM already holds
+    // it. The pairs are read from that element: a double point or an operation owns objects that have no id of
+    // their own in the file.
+    const QDomElement element = doc->FindElementById(m_id, getTagName());
+    if (element.isNull())
+    {
+        return;
+    }
+
+    doc->AddItemsToGroup(VAbstractPattern::LayerableObjectsOfTool(element, m_id), active);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

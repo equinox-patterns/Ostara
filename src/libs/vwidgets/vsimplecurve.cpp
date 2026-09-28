@@ -195,15 +195,58 @@ void VSimpleCurve::keyReleaseEvent(QKeyEvent *event)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VSimpleCurve::SetLayerSelected(bool selected)
+{
+    if (m_layerSelected == selected)
+    {
+        return;
+    }
+
+    m_layerSelected = selected;
+    ScalePenWidth();
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VSimpleCurve::SetInLayer(bool inLayer)
+{
+    if (m_inLayer == inLayer)
+    {
+        return;
+    }
+
+    m_inLayer = inLayer;
+    ScalePenWidth();
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VSimpleCurve::ScalePenWidth()
 {
-    qreal width = m_isHovered ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
-                              : VAbstractApplication::VApp()->Settings()->WidthHairLine();
+    // The layer marks are read here rather than written into the pen, so that dropping them gives back exactly the
+    // width and the colour the curve had before.
+    const bool marked = m_layerSelected || m_inLayer;
+
+    qreal width = (m_isHovered || marked) ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
+                                          : VAbstractApplication::VApp()->Settings()->WidthHairLine();
     width = ScaleWidth(width, SceneScale(scene()));
 
     QPen curvePen = pen();
-    curvePen.setColor(
-        VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::CorrectToolColorForDarkTheme(m_curve->GetColor())));
+    if (m_layerSelected)
+    {
+        // Selected: orange, the colour that says what Enter will act on.
+        curvePen.setColor(VSceneStylesheet::Color(VColorRole::ActivePointColor));
+    }
+    else if (m_inLayer)
+    {
+        // The layer's content: magenta, the colour of a transient multi-selection.
+        curvePen.setColor(VSceneStylesheet::Color(VColorRole::VisSupportColor));
+    }
+    else
+    {
+        curvePen.setColor(VSceneStylesheet::CorrectToolColor(
+            this, VSceneStylesheet::CorrectToolColorForDarkTheme(m_curve->GetColor())));
+    }
     curvePen.setWidthF(width);
     curvePen.setStyle(LineStyleToPenStyle(m_curve->GetPenStyle()));
     setPen(curvePen);

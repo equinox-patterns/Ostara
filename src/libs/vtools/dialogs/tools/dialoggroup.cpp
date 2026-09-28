@@ -28,9 +28,13 @@
 
 #include "dialoggroup.h"
 
+#include <QComboBox>
 #include <QCompleter>
 #include <QLineEdit>
 
+#include "../dialogtoolbox.h"
+#include "../ifc/ifcdef.h"
+#include "../vmisc/FactoryWidgets.h"
 #include "ui_dialoggroup.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -42,6 +46,17 @@ DialogGroup::DialogGroup(const VContainer *data, VAbstractPattern *doc, quint32 
 {
     ui->setupUi(this);
     InitOkCancel(ui);
+
+    // The layer's pen: the very values its objects will be offered as a default. A plain combo, not the
+    // QtColorPicker + replacement pair the older dialogs use — the replaced picker is left unmanaged by
+    // QLayout::replaceWidget and stays visible in a corner of the dialog.
+    FillComboBoxTypeLine(ui->comboBoxPenStyle,
+                         LineStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
+                                        ui->comboBoxPenStyle->palette().color(QPalette::Text)));
+    // This one comes from the .ui, so the macOS popup fix has to be applied by hand — FillComboBoxTypeLine does
+    // it for the pen style, MakeComboBox does it for combos built in code.
+    ApplyComboBoxView(ui->comboBoxColor);
+    InitColorCombo(ui->comboBoxColor);
 
     connect(ui->lineEditName, &QLineEdit::textChanged, this, &DialogGroup::NameChanged);
 }
@@ -80,6 +95,30 @@ auto DialogGroup::GetTags() const -> QStringList
 void DialogGroup::SetGroupCategories(const QStringList &categories)
 {
     ui->lineEditTags->SetCompletion(categories);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogGroup::SetPenStyle(const QString &penStyle)
+{
+    ChangeCurrentData(ui->comboBoxPenStyle, penStyle);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogGroup::GetPenStyle() const -> QString
+{
+    return GetComboBoxCurrentData(ui->comboBoxPenStyle, TypeLineLine);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogGroup::SetColor(const QString &color)
+{
+    SetColorComboCurrentName(ui->comboBoxColor, color);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogGroup::GetColor() const -> QString
+{
+    return GetColorComboCurrentName(ui->comboBoxColor);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

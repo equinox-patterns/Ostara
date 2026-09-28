@@ -100,6 +100,7 @@
 #include "dialogs/vwidgetbackgroundimages.h"
 #include "dialogs/vwidgetdetails.h"
 #include "dialogs/vwidgetdependencies.h"
+#include "dialogs/vwidgetgroups.h"
 #include "vabstractapplication.h"
 #include "vabstractshortcutmanager.h"
 #include "../ifc/xml/vpatternblockmapper.h"
@@ -350,6 +351,17 @@ MainWindow::MainWindow(QWidget *parent)
     editorLayout->setContentsMargins(0, 0, 0, 0);
     editorLayout->setSpacing(0);
     editorLayout->addWidget(m_breadcrumb);
+
+    // The layer the canvas draws into announces itself: a one-pixel rule along the top edge of the canvas, in
+    // that layer's own colour. It takes its place in the layout — a scene item would scroll with the drawing.
+    m_activeLayerRule = new QFrame(this);
+    m_activeLayerRule->setObjectName(QStringLiteral("activeLayerRule"));
+    m_activeLayerRule->setFrameShape(QFrame::NoFrame);
+    m_activeLayerRule->setFixedHeight(1);
+    m_activeLayerRule->setAutoFillBackground(true);
+    m_activeLayerRule->hide();
+    editorLayout->addWidget(m_activeLayerRule);
+
     editorLayout->addWidget(oldCentral);
 
     m_stackedWidget->addWidget(editorContainer);  // index 0 — editor (wraps ui->view)
@@ -1292,6 +1304,24 @@ void MainWindow::InitDocksContain()
             Qt::QueuedConnection);
 
     connect(doc, &VAbstractPattern::UpdateGroups, this, &MainWindow::UpdateVisibilityGroups);
+
+    // Layer object marking: the dock holds the list, the canvas paints it and shows the hint. Magenta is what the
+    // layer already holds — shown the same way whether the user is adding or removing — and orange is what Enter
+    // will act on.
+    connect(m_dockManager->groupsWidget(), &VWidgetGroups::ObjectInLayerChanged, this,
+            [this](quint32 objectId, quint32 toolId, bool inLayer)
+    {
+        Q_UNUSED(objectId)
+        SetLayerObjectsInLayer(dynamic_cast<QGraphicsItem *>(doc->getTool(toolId)), inLayer);
+    });
+    connect(m_dockManager->groupsWidget(), &VWidgetGroups::ObjectSelectedChanged, this,
+            [this](quint32 objectId, quint32 toolId, bool selected)
+    {
+        Q_UNUSED(objectId)
+        SetLayerObjectsSelected(dynamic_cast<QGraphicsItem *>(doc->getTool(toolId)), selected);
+    });
+    connect(m_dockManager->groupsWidget(), &VWidgetGroups::ShowStatusTip, this,
+            [this](const QString &text) { m_statusLabel->setText(text); });
 
     connect(doc, &VPattern::FullUpdateFromFile, m_dockManager->detailsWidget(), &VWidgetDetails::UpdateList);
     connect(doc, &VPattern::UpdateInLayoutList, m_dockManager->detailsWidget(), &VWidgetDetails::UpdateList);

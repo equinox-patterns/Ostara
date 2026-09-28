@@ -44,6 +44,7 @@
 #include "../vmisc/def.h"
 
 class VContainer;
+class VAbstractPattern;
 
 class QGraphicsItem;
 class QDomDocument;
@@ -101,7 +102,30 @@ auto StripBuiltInSeamAllowanceAttributes(QDomDocument *doc) -> bool;
 // Returns true if at least one value was converted.
 auto ConvertRemovedFoldLineTypes(QDomDocument *doc) -> bool;
 
+// Give every object of every piece a layer. An object outside every layer is visible by default and
+// unreachable from the Layers dock, so a pattern written before layers existed (a .val, or an .ostara
+// carrying objects no layer references) is given one "Unnamed" layer per piece, holding exactly the
+// objects that belong to none yet. Silent by design — it runs once, on load, for both formats.
+// Returns true if at least one layer was created or completed.
+auto NormalizeUnlayeredObjects(VAbstractPattern *doc) -> bool;
+
+// Make sure every piece has exactly one active layer — the one the canvas draws into. The layer the file saved as
+// active wins; failing that the "Unnamed" layer, and failing that the first layer of the piece. Without this a
+// pattern written before layers had an active one would leave the canvas with no target to draw into.
+// Returns true if a flag was set or cleared.
+auto NormalizeActiveLayer(VAbstractPattern *doc) -> bool;
+
 // Refresh scale- and theme-dependent item state (labels, pens) for a whole scene.
 void RefreshSceneItemPens(const VMainGraphicsScene *scene);
+
+// Mark (or unmark) an item and everything below it as part of a layer's content: points, lines and curves drawn
+// magenta and bold. The state lives on each renderer — Qt's own selection only draws a dashed frame, which is not
+// what the layer workflow shows.
+void SetLayerObjectsInLayer(QGraphicsItem *item, bool inLayer);
+
+// Mark (or unmark) an item and everything below it as SELECTED for the layer workflow: orange and bold, the colour
+// that says what Enter is about to do — add it, or take it out. Orange wins over magenta, because an object can be
+// both at once: in the layer being emptied, and picked to leave it.
+void SetLayerObjectsSelected(QGraphicsItem *item, bool selected);
 
 #endif // MAINWINDOW_HELPERS_H

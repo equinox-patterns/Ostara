@@ -80,7 +80,7 @@ class ChangeGroupOptions : public VUndoCommand
 
 public:
     ChangeGroupOptions(VAbstractPattern *doc, quint32 id, const QString &name, const QStringList &tags,
-                       QUndoCommand *parent = nullptr);
+                       const QString &color, const QString &penStyle, QUndoCommand *parent = nullptr);
     ~ChangeGroupOptions() override = default;
     void undo() override;
     void redo() override;
@@ -93,6 +93,10 @@ private:
     QString oldName{};
     QStringList newTags;
     QStringList oldTags{};
+    QString newColor;
+    QString oldColor{};
+    QString newPenStyle;
+    QString oldPenStyle{};
 };
 
 class AddItemToGroup : public VUndoCommand
@@ -196,6 +200,27 @@ signals:
 private:
     Q_DISABLE_COPY_MOVE(DelGroup) // NOLINT
     int m_indexPatternBlock{-1};
+};
+
+/// Move the "active layer" flag — the layer the canvas draws into — from one layer to another.
+class ChangeActiveGroup : public VUndoCommand
+{
+    Q_OBJECT // NOLINT
+
+public:
+    ChangeActiveGroup(VAbstractPattern *doc, quint32 newId, quint32 oldId, QUndoCommand *parent = nullptr);
+    ~ChangeActiveGroup() override = default;
+    void undo() override;
+    void redo() override;
+signals:
+    void UpdateGroups();
+
+private:
+    Q_DISABLE_COPY_MOVE(ChangeActiveGroup) // NOLINT
+    quint32 m_newId{NULL_ID};
+    quint32 m_oldId{NULL_ID};
+    /// Activating a layer shows it. Undoing has to put it back the way the user had it.
+    bool m_newWasVisible{true};
 };
 
 #endif // UNDOGROUP_H

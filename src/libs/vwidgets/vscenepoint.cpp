@@ -231,6 +231,30 @@ void VScenePoint::SetTemporarySelected(bool selected)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VScenePoint::SetLayerSelected(bool selected)
+{
+    if (m_layerSelected == selected)
+    {
+        return;
+    }
+
+    m_layerSelected = selected;
+    RefreshHoverPen();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScenePoint::SetInLayer(bool inLayer)
+{
+    if (m_inLayer == inLayer)
+    {
+        return;
+    }
+
+    m_inLayer = inLayer;
+    RefreshHoverPen();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VScenePoint::RefreshLine()
 {
     if (m_onlyPoint)
@@ -309,7 +333,7 @@ void VScenePoint::SetLabelTextHoverColorRole(VColorRole role)
 void VScenePoint::ScaleMainPenWidth(qreal scale)
 {
     // An active point (property browser open) keeps its highlighted look even when not hovered.
-    const bool hovered = m_isHovered || m_selected || m_temporarySelected;
+    const bool hovered = m_isHovered || m_selected || m_temporarySelected || m_layerSelected || m_inLayer;
 
     const qreal width = ScaleWidth(hovered ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
                                            : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
@@ -318,12 +342,26 @@ void VScenePoint::ScaleMainPenWidth(qreal scale)
     QPen pointPen = pen();
     if (m_role != VColorRole::CustomColor)
     {
-        // Priority: transient multi-selection (magenta) > persistent active (orange) > hover (magenta).
+        // Priority: selected (orange) > in the layer (magenta) > transient multi-selection (magenta) >
+        // persistent active (orange) > hover (magenta). The two layer states come first on purpose: a hover would
+        // otherwise paint magenta over the mark the user has just set by clicking. Between them the selection
+        // wins, because an object can be both — it is in the layer being emptied AND picked to leave it — and
+        // what Enter will act on is the one that has to be readable.
+        const bool layerSelected = m_layerSelected && not m_alwaysHovered;
+        const bool inLayer = m_inLayer && not m_alwaysHovered;
         const bool active = m_selected && not m_alwaysHovered;
         const bool transient = m_temporarySelected && not m_alwaysHovered;
         const bool hoverColorActive = hovered && not m_alwaysHovered;
         VColorRole colorRole = m_role;
-        if (transient)
+        if (layerSelected)
+        {
+            colorRole = VColorRole::ActivePointColor;
+        }
+        else if (inLayer)
+        {
+            colorRole = VColorRole::VisSupportColor;
+        }
+        else if (transient)
         {
             colorRole = VColorRole::VisSupportColor;
         }

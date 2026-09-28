@@ -40,8 +40,10 @@
 #include <QMessageBox>
 #include <QMetaObject>
 #include <QObject>
+#include <QPair>
 #include <QString>
 #include <QtGlobal>
+#include <QVector>
 
 #include <functional>
 
@@ -130,6 +132,11 @@ private:
     Q_DISABLE_COPY_MOVE(VDrawTool) // NOLINT
 
     auto GetItemType(quint32 itemId) const -> GOType;
+
+    /// Every object a layer can hold for this tool, in the (objectId, toolId) shape the pattern expects: the whole
+    /// figure, never one of its parts. A rectangle is its three points, an operation is everything it produced.
+    /// The menu's add/remove entries work on this list, exactly like the Layers dock does.
+    auto GroupObjects(quint32 itemId) const -> QVector<QPair<quint32, quint32>>;
 
     auto CreateAddToGroupMenu(QMenu &menu, quint32 itemId) -> QActionGroup *;
     auto CreateRemoveFromGroupMenu(QMenu &menu, quint32 itemId) -> QActionGroup *;

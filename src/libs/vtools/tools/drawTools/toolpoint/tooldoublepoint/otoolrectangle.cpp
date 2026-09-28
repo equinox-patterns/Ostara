@@ -520,6 +520,32 @@ void OToolRectangle::SetLabelVisible(quint32 id, bool visible)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OToolRectangle::GroupVisibility(quint32 object, bool visible)
+{
+    // A rectangle is one figure: the three points it creates — B, C, D — and the four sides that join them. The
+    // sides are drawn by this tool and are not objects of their own, so no layer could ever reach them: hiding
+    // the points alone left the four sides on the canvas, a rectangle that refuses to disappear. Whichever of
+    // the three points a layer changes, the whole figure follows it.
+    if (object != p1id && object != p2id && object != m_p4id)
+    {
+        // Not one of ours: the base knows about the two points a double point already had.
+        VToolDoublePoint::GroupVisibility(object, visible);
+        return;
+    }
+
+    firstPoint->setVisible(visible);
+    secondPoint->setVisible(visible);
+    m_fourthPoint->setVisible(visible);
+
+    for (VScaledLine *side : {m_lineAB, m_lineBC, m_lineCD, m_lineDA})
+    {
+        // A side whose two points coincide is not drawn at all — MakeSide decides that once, and showing the
+        // figure again must not bring that empty line back.
+        side->setVisible(visible && not side->line().isNull());
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OToolRectangle::WidthPairKey() const -> QString
 {
     return BasePointName() + '_' + VAbstractTool::data.GetGObject(p1id)->name();

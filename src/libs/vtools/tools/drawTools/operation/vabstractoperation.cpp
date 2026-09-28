@@ -1116,7 +1116,11 @@ void VAbstractOperation::HandleVisibilityGroupChange(QUndoCommand *parent)
     {
         if (group != null_id)
         {
-            const auto *groupOptions = new ChangeGroupOptions(doc, group, m_groupName, m_groupTags, parent);
+            // The layer's pen is edited from the Layers dock, not here: the values are read back so that this
+            // command leaves them untouched.
+            const auto *groupOptions = new ChangeGroupOptions(doc, group, m_groupName, m_groupTags,
+                                                              doc->GetGroupColor(group), doc->GetGroupPenStyle(group),
+                                                              parent);
             connect(groupOptions, &ChangeGroupOptions::UpdateGroups, doc, &VAbstractPattern::UpdateVisiblityGroups);
         }
         else

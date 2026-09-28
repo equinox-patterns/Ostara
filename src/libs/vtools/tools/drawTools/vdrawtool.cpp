@@ -512,7 +512,7 @@ void VDrawTool::HandleRemoveAction()
 void VDrawTool::HandleAddToGroup(const QAction *selectedAction, quint32 itemId)
 {
     quint32 const groupId = selectedAction->data().toUInt();
-    QDomElement const item = doc->AddItemToGroup(this->getId(), itemId, groupId);
+    const QVector<QPair<quint32, quint32>> objects = GroupObjects(itemId);
 
     auto *scene = qobject_cast<VMainGraphicsScene *>(VAbstractValApplication::VApp()->getCurrentScene());
     SCASSERT(scene != nullptr)
@@ -521,9 +521,23 @@ void VDrawTool::HandleAddToGroup(const QAction *selectedAction, quint32 itemId)
     auto *window = qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
     SCASSERT(window != nullptr)
 
-    auto *addItemToGroup = new AddItemToGroup(item, doc, groupId);
-    connect(addItemToGroup, &AddItemToGroup::UpdateGroups, window, &VAbstractMainWindow::UpdateVisibilityGroups);
-    VAbstractApplication::VApp()->getUndoStack()->push(addItemToGroup);
+    // One command per object, under a single macro: the whole figure goes in as one step, and one Ctrl+Z takes
+    // it all out again. Same list, same shape, as the Layers dock.
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+    undoStack->beginMacro(tr("add objects to a layer"));
+
+    for (const auto &[objectId, toolId] : objects)
+    {
+        if (const QDomElement item = doc->AddItemToGroup(toolId, objectId, groupId); not item.isNull())
+        {
+            auto *addItemToGroup = new AddItemToGroup(item, doc, groupId);
+            connect(addItemToGroup, &AddItemToGroup::UpdateGroups, window,
+                    &VAbstractMainWindow::UpdateVisibilityGroups);
+            undoStack->push(addItemToGroup);
+        }
+    }
+
+    undoStack->endMacro();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -536,17 +550,48 @@ void VDrawTool::HandleAddToGroup(const QAction *selectedAction, quint32 itemId)
 void VDrawTool::HandleRemoveFromGroup(const QAction *selectedAction, quint32 itemId)
 {
     quint32 const groupId = selectedAction->data().toUInt();
-    QDomElement const item = doc->RemoveItemFromGroup(this->getId(), itemId, groupId);
+    const QVector<QPair<quint32, quint32>> objects = GroupObjects(itemId);
 
     auto *window = qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
     SCASSERT(window != nullptr)
 
-    auto *removeItemFromGroup = new RemoveItemFromGroup(item, doc, groupId);
-    connect(removeItemFromGroup,
-            &RemoveItemFromGroup::UpdateGroups,
-            window,
-            &VAbstractMainWindow::UpdateVisibilityGroups);
-    VAbstractApplication::VApp()->getUndoStack()->push(removeItemFromGroup);
+    // Symmetric with adding: the whole figure leaves the layer, in one undoable step.
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+    undoStack->beginMacro(tr("remove objects from a layer"));
+
+    for (const auto &[objectId, toolId] : objects)
+    {
+        if (const QDomElement item = doc->RemoveItemFromGroup(toolId, objectId, groupId); not item.isNull())
+        {
+            auto *removeItemFromGroup = new RemoveItemFromGroup(item, doc, groupId);
+            connect(removeItemFromGroup,
+                    &RemoveItemFromGroup::UpdateGroups,
+                    window,
+                    &VAbstractMainWindow::UpdateVisibilityGroups);
+            undoStack->push(removeItemFromGroup);
+        }
+    }
+
+    undoStack->endMacro();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDrawTool::GroupObjects(quint32 itemId) const -> QVector<QPair<quint32, quint32>>
+{
+    // The objects a layer holds for this tool: the whole figure, so a rectangle or an operation goes in and out
+    // as one and is never half in a layer. A tool the pattern cannot enumerate — a piece, a node — falls back to
+    // the object the menu was opened on, which is what this path has always written.
+    if (const QDomElement element = doc->FindElementById(getId(), getTagName()); not element.isNull())
+    {
+        if (const QVector<QPair<quint32, quint32>> objects = VAbstractPattern::LayerableObjectsOfTool(element,
+                                                                                                      getId());
+            not objects.isEmpty())
+        {
+            return objects;
+        }
+    }
+
+    return {QPair<quint32, quint32>(itemId, getId())};
 }
 
 //---------------------------------------------------------------------------------------------------------------------

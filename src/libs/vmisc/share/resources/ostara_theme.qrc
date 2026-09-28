@@ -98,6 +98,9 @@
         <file alias="plus_light.svg">../../../../../share/themes/icons/light/plus_light.svg</file>
         <file alias="grid-four-fill_light.svg">../../../../../share/themes/icons/light/grid-four-fill_light.svg</file>
         <file alias="file-image-fill_light.svg">../../../../../share/themes/icons/light/file-image-fill_light.svg</file>
+        <file alias="eye_light.svg">../../../../../share/themes/icons/light/eye_light.svg</file>
+        <file alias="eye-closed_light.svg">../../../../../share/themes/icons/light/eye-closed_light.svg</file>
+        <file alias="minus_light.svg">../../../../../share/themes/icons/light/minus_light.svg</file>
     </qresource>
     <qresource prefix="/icons/dark">
         <file alias="square_accent.svg">../../../../../share/themes/icons/dark/square_accent.svg</file>
@@ -194,5 +197,8 @@
         <file alias="plus_dark.svg">../../../../../share/themes/icons/dark/plus_dark.svg</file>
         <file alias="grid-four-fill_dark.svg">../../../../../share/themes/icons/dark/grid-four-fill_dark.svg</file>
         <file alias="file-image-fill_dark.svg">../../../../../share/themes/icons/dark/file-image-fill_dark.svg</file>
+        <file alias="eye_dark.svg">../../../../../share/themes/icons/dark/eye_dark.svg</file>
+        <file alias="eye-closed_dark.svg">../../../../../share/themes/icons/dark/eye-closed_dark.svg</file>
+        <file alias="minus_dark.svg">../../../../../share/themes/icons/dark/minus_dark.svg</file>
     </qresource>
 </RCC>

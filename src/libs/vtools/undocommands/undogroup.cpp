@@ -150,15 +150,20 @@ void RenameGroup::redo()
 
 //ChangeGroupOptions
 //---------------------------------------------------------------------------------------------------------------------
-ChangeGroupOptions::ChangeGroupOptions(
-    VAbstractPattern *doc, quint32 id, const QString &name, const QStringList &tags, QUndoCommand *parent)
+ChangeGroupOptions::ChangeGroupOptions(VAbstractPattern *doc, quint32 id, const QString &name,
+                                       const QStringList &tags, const QString &color, const QString &penStyle,
+                                       QUndoCommand *parent)
   : VUndoCommand(doc, id, parent),
     newName(name),
-    newTags(tags)
+    newTags(tags),
+    newColor(color),
+    newPenStyle(penStyle)
 {
-    setText(tr("rename group"));
+    setText(tr("edit layer"));
     oldName = doc->GetGroupName(id);
     oldTags = doc->GetGroupTags(id);
+    oldColor = doc->GetGroupColor(id);
+    oldPenStyle = doc->GetGroupPenStyle(id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -167,6 +172,7 @@ void ChangeGroupOptions::undo()
     qCDebug(vUndo, "Undo.");
     Doc()->SetGroupName(ElementId(), oldName);
     Doc()->SetGroupTags(ElementId(), oldTags);
+    Doc()->SetGroupPen(ElementId(), oldColor, oldPenStyle);
     emit UpdateGroups();
     emit Doc()->UpdateToolTip();
 }
@@ -177,6 +183,7 @@ void ChangeGroupOptions::redo()
     qCDebug(vUndo, "Redo.");
     Doc()->SetGroupName(ElementId(), newName);
     Doc()->SetGroupTags(ElementId(), newTags);
+    Doc()->SetGroupPen(ElementId(), newColor, newPenStyle);
     emit UpdateGroups();
     emit Doc()->UpdateToolTip();
 }
@@ -601,4 +608,39 @@ void DelGroup::redo()
 
     VMainGraphicsView::NewSceneRect(VAbstractValApplication::VApp()->getCurrentScene(),
                                     VAbstractValApplication::VApp()->getSceneView());
+}
+
+//ChangeActiveGroup
+//---------------------------------------------------------------------------------------------------------------------
+ChangeActiveGroup::ChangeActiveGroup(VAbstractPattern *doc, quint32 newId, quint32 oldId, QUndoCommand *parent)
+  : VUndoCommand(doc, newId, parent),
+    m_newId(newId),
+    m_oldId(oldId),
+    m_newWasVisible(doc->GetGroupVisibility(newId))
+{
+    setText(tr("change active layer"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ChangeActiveGroup::undo()
+{
+    qCDebug(vUndo, "Undo.");
+
+    // The activation may have shown the layer — undoing hides it again if that is how the user had it.
+    if (not m_newWasVisible)
+    {
+        Doc()->SetGroupVisibility(m_newId, false);
+    }
+
+    Doc()->SetActiveGroup(m_oldId);
+    emit UpdateGroups();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ChangeActiveGroup::redo()
+{
+    qCDebug(vUndo, "Redo.");
+
+    Doc()->SetActiveGroup(m_newId);
+    emit UpdateGroups();
 }

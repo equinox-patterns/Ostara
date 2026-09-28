@@ -169,6 +169,9 @@ protected:
 
     virtual void SetVisualization() = 0;
     virtual void ToolCreation(const Source &typeCreation);
+    /// Put the objects this tool has just written into the active layer of their pattern piece. Called from
+    /// ToolCreation, for interface-created objects only — never when a file is read back.
+    void AttachToActiveLayer();
 
     static auto AddSANode(VAbstractPattern *doc, const QString &tagName, const VPieceNode &node) -> QDomElement;
     static void AddNode(VAbstractPattern *doc, QDomElement &domElement, const VPieceNode &node);

@@ -62,6 +62,16 @@ public:
     void TriggerChoosed() override;
 
     void RefreshGeometry(const QSharedPointer<VAbstractCurve> &curve);
+
+    /// Marks the curve as picked for the layer-add workflow: drawn orange and bold, like the active point in
+    /// Details mode. This renderer is what draws the curve results of an operation — an arc, a spline, an
+    /// ellipse — so without it a marked operation showed its points and its lines turning, and left its curves
+    /// in their own colour.
+    void SetLayerSelected(bool selected);
+
+    /// Marks the curve as clicked for removal from a layer: magenta and bold, on top of SetLayerSelected.
+    void SetInLayer(bool picked);
+
 signals:
     /**
      * @brief Choosed send id when clicked.
@@ -89,6 +99,8 @@ private:
 
     QSharedPointer<VAbstractCurve> m_curve;
     bool m_isHovered;
+    bool m_layerSelected{false};
+    bool m_inLayer{false};
 };
 
 #endif // VSIMPLECURVE_H

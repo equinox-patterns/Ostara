@@ -39,7 +39,10 @@
 #include <QCursor>
 #include <QDateTime>
 #include <QFormLayout>
+#include <QFrame>
 #include <QGuiApplication>
+#include <QLabel>
+#include <QPalette>
 #include <QProgressBar>
 #include <QSignalBlocker>
 #include <QtGlobal>
@@ -51,6 +54,8 @@
 #include "dialogs/vwidgetdetails.h"
 #include "dialogs/vwidgetdependencies.h"
 #include "dialogs/vwidgetgroups.h"
+#include "vtheme.h"
+#include "../ifc/ifcdef.h"
 #include "../ifc/exception/vexceptionbadid.h"
 #include "../ifc/exception/vexceptionconversionerror.h"
 #include "../ifc/exception/vexceptionemptyparameter.h"
@@ -76,6 +81,36 @@
 void MainWindow::UpdateVisibilityGroups()
 {
     m_dockManager->groupsWidget()->UpdateGroups();
+    UpdateActiveLayerIndicator();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::UpdateActiveLayerIndicator()
+{
+    if (m_activeLayerRule == nullptr)
+    {
+        return;
+    }
+
+    // Layers belong to the Draw mode — every other mode shows neither the rule nor the name.
+    const quint32 active = VAbstractValApplication::VApp()->GetDrawMode() == Draw::Calculation ? doc->GetActiveGroup()
+                                                                                               : NULL_ID;
+    if (active == NULL_ID)
+    {
+        m_activeLayerRule->hide();
+        ui->view->SetCornerLabel(QString());
+        return;
+    }
+
+    // VTheme::ResetThemeSettings puts a fresh palette on every widget, so the colour is re-applied here rather
+    // than set once — this function runs again after a theme change.
+    const bool dark = VTheme::ColorSheme() == VColorSheme::Dark;
+    QPalette palette = m_activeLayerRule->palette();
+    palette.setColor(QPalette::Window, ColorNameToQColorForTheme(doc->GetGroupColor(active), dark));
+    m_activeLayerRule->setPalette(palette);
+    m_activeLayerRule->show();
+
+    ui->view->SetCornerLabel(doc->GetGroupName(active));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -227,6 +262,7 @@ void MainWindow::ChangePP(int index, bool zoomBestFit)
         }
         m_dockManager->toolOptions()->itemClicked(nullptr); // hide options for tool in previous pattern piece
         m_dockManager->groupsWidget()->UpdateGroups();
+        UpdateActiveLayerIndicator(); // each piece has its own active layer
         m_dockManager->dependenciesWidget()->UpdateDependencies();
     }
 }

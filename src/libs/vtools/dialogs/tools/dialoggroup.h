@@ -56,6 +56,14 @@ public:
     void SetTags(const QStringList &tags);
     auto GetTags() const -> QStringList;
 
+    /// The layer's own pen, edited next to its name. It is what the objects created in the layer are offered as a
+    /// default — the layer never repaints what is already drawn.
+    void SetPenStyle(const QString &penStyle);
+    auto GetPenStyle() const -> QString;
+
+    void SetColor(const QString &color);
+    auto GetColor() const -> QString;
+
     void SetGroupCategories(const QStringList &categories) override;
 
     auto GetGroup() const -> QMap<quint32, quint32>;

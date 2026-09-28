@@ -68,7 +68,7 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
     m_detailsOptionsBrowser = new ODetailsPropertyBrowser(m_ui->dockWidgetOptions);
     buildOptionsDock();
 
-    m_groupsContent = new VWidgetGroups(doc, m_host);
+    m_groupsContent = new VWidgetGroups(pattern, doc, m_host);
     m_detailsContent = new VWidgetDetails(pattern, doc, m_host);
     buildGroupsDock();
 

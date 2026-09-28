@@ -179,6 +179,13 @@ public slots:
     void ZoomOriginal();
     void ZoomFitBest();
 
+    /// Show @p text in the top-left corner of the view, over the drawing. An empty string clears it.
+    ///
+    /// Drawn by drawForeground in screen coordinates rather than put in a child widget: the view replaces its
+    /// own viewport with a QOpenGLWidget when OpenGL rendering is on, and a widget parented to the old one is
+    /// destroyed with it.
+    void SetCornerLabel(const QString &text);
+
     /// @brief ZoomFitBest, framed with @p marginRatio of the content left clear on each side.
     ///
     /// A true fit runs the content against all four edges of the viewport, because the scale
@@ -213,6 +220,9 @@ private:
     bool m_rubberBanding{false};
     QPoint m_rubberBandOrigin{};
     QPoint m_rubberBandCurrent{};
+    /// A short text drawn in the top-left corner of the view, in screen coordinates — it stays put while the
+    /// drawing scrolls and zooms. Empty means nothing is drawn.
+    QString m_cornerLabel{};
     QPoint m_ptStartPos{};
     QCursor m_oldCursor{};
     Qt::CursorShape m_currentCursor{Qt::ArrowCursor};

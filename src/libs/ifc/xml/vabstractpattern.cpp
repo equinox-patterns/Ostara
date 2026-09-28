@@ -163,6 +163,7 @@ const QString VAbstractPattern::AttrPassmarkAngle = QStringLiteral("passmarkAngl
 const QString VAbstractPattern::AttrPassmarkVisibility = QStringLiteral("passmarkVisibilityFormula");
 const QString VAbstractPattern::AttrOpacity = QStringLiteral("opacity");
 const QString VAbstractPattern::AttrTags = QStringLiteral("tags");
+const QString VAbstractPattern::AttrActive = QStringLiteral("active");
 const QString VAbstractPattern::AttrTransform = QStringLiteral("transform");
 const QString VAbstractPattern::AttrHold = QStringLiteral("hold");
 const QString VAbstractPattern::AttrZValue = QStringLiteral("zValue");
@@ -2426,7 +2427,9 @@ auto VAbstractPattern::CreateGroup(quint32 id,
                                    const QString &name,
                                    const QStringList &tags,
                                    const QMap<quint32, quint32> &groupData,
-                                   vidtype tool) -> QDomElement
+                                   vidtype tool,
+                                   const QString &color,
+                                   const QString &penStyle) -> QDomElement
 {
     if (id == NULL_ID)
     {
@@ -2439,6 +2442,9 @@ auto VAbstractPattern::CreateGroup(quint32 id,
     SetAttribute(group, AttrId, id);
     SetAttribute(group, AttrName, name);
     SetAttribute(group, AttrVisible, true);
+    // The layer's own pen, written from the start: it is what the tool dialogs will open on.
+    SetAttribute(group, AttrColor, color);
+    SetAttribute(group, AttrPenStyle, penStyle);
     SetAttributeOrRemoveIf<vidtype>(group, AttrTool, tool, [](vidtype tool) noexcept { return tool == null_id; });
     SetAttributeOrRemoveIf<QString>(group,
                                     AttrTags,
@@ -2502,6 +2508,128 @@ void VAbstractPattern::SetGroupName(quint32 id, const QString &name)
         modified = true;
         emit patternChanged(false);
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetGroupColor(quint32 id) -> QString
+{
+    QString color = ColorBlack;
+    if (QDomElement const group = FindElementById(id, TagGroup); group.isElement())
+    {
+        color = GetParametrString(group, AttrColor, ColorBlack);
+    }
+
+    return color;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetGroupPenStyle(quint32 id) -> QString
+{
+    QString penStyle = TypeLineLine;
+    if (QDomElement const group = FindElementById(id, TagGroup); group.isElement())
+    {
+        penStyle = GetParametrString(group, AttrPenStyle, TypeLineLine);
+    }
+
+    return penStyle;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetGroupPen(quint32 id, const QString &color, const QString &penStyle)
+{
+    if (QDomElement group = FindElementById(id, TagGroup); group.isElement())
+    {
+        SetAttribute(group, AttrColor, color);
+        SetAttribute(group, AttrPenStyle, penStyle);
+        modified = true;
+        emit patternChanged(false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetGroupVisibility(quint32 id, bool visible)
+{
+    QDomElement group = FindElementById(id, TagGroup);
+    if (group.isNull())
+    {
+        return;
+    }
+
+    SetAttribute(group, AttrVisible, visible);
+    modified = true;
+    emit patternChanged(false);
+
+    if (QDomElement const groups = CreateGroups(); not groups.isNull())
+    {
+        ParseGroups(groups); // the drawing follows the layer
+    }
+
+    emit UpdateGroups();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetActiveGroup(const QString &patternPieceName) -> quint32
+{
+    const QMap<quint32, VGroupData> groups = GetGroups(patternPieceName);
+    for (auto it = groups.constBegin(); it != groups.constEnd(); ++it)
+    {
+        if (it.value().active)
+        {
+            return it.key();
+        }
+    }
+
+    return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetActiveGroup(quint32 id, const QString &patternPieceName)
+{
+    const QDomElement groups = CreateGroups(patternPieceName);
+    if (groups.isNull())
+    {
+        return;
+    }
+
+    // The flag is a marker, not a value: only the active layer carries it. Removing the attribute from the other
+    // layers is what keeps exactly one of them active — and a deleted layer takes its own flag with it.
+    bool found = false;
+    bool shown = false;
+    for (QDomElement group = groups.firstChildElement(TagGroup); !group.isNull();
+         group = group.nextSiblingElement(TagGroup))
+    {
+        if (GetParametrUInt(group, AttrId, NULL_ID_STR) == id)
+        {
+            SetAttribute(group, AttrActive, true);
+            // The layer the canvas draws into is shown: an active but hidden layer would take every new object
+            // and show none of them, which reads as a broken application.
+            if (not GetParametrBool(group, AttrVisible, trueStr))
+            {
+                SetAttribute(group, AttrVisible, true);
+                shown = true;
+            }
+            found = true;
+        }
+        else
+        {
+            group.removeAttribute(AttrActive);
+        }
+    }
+
+    if (not found)
+    {
+        return;
+    }
+
+    modified = true;
+    emit patternChanged(false);
+
+    if (shown)
+    {
+        ParseGroups(groups); // the drawing has to follow the layer being shown
+    }
+
+    emit UpdateGroups();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2673,7 +2801,12 @@ auto VAbstractPattern::GetGroups(const QString &patternPieceName) -> QMap<quint3
                                      .visible = GetParametrBool(group, AttrVisible, trueStr),
                                      .tags = FilterGroupTags(GetParametrEmptyString(group, AttrTags)),
                                      .tool = GetParametrUInt(group, AttrTool, NULL_ID_STR),
-                                     .items = items});
+                                     .items = items,
+                                     // A file written before layers carried a pen reads as the default one:
+                                     // solid black. Nothing is written back until the document is saved.
+                                     .color = GetParametrString(group, AttrColor, ColorBlack),
+                                     .penStyle = GetParametrString(group, AttrPenStyle, TypeLineLine),
+                                     .active = GetParametrBool(group, AttrActive, falseStr)});
                     }
                 }
                 domNode = domNode.nextSibling();
@@ -2902,6 +3035,15 @@ auto VAbstractPattern::AddItemToGroup(quint32 toolId, quint32 objectId, quint32 
             objectId = toolId;
         }
 
+        // A layer holds an object once. Both callers add a whole figure at a time (a rectangle is three points,
+        // an operation everything it produced), so part of what they bring is often already there — and writing
+        // the same <item> twice is not harmless: the removal workflow counts a layer's content literally, and a
+        // duplicate would read as "another layer holds it", making an object removable that is not.
+        if (GroupHasItem(group, toolId, objectId))
+        {
+            return QDomElement();
+        }
+
         QDomElement item = createElement(TagGroupItem);
         item.setAttribute(AttrTool, toolId);
         SetAttributeOrRemoveIf<vidtype>(item,
@@ -2928,6 +3070,129 @@ auto VAbstractPattern::AddItemToGroup(quint32 toolId, quint32 objectId, quint32 
 
     qDebug() << "The group of id " << groupId << " doesn't exist";
     return QDomElement();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::AddItemsToGroup(const QVector<QPair<quint32, quint32>> &items, quint32 groupId) -> bool
+{
+    QDomElement group = FindElementById(groupId, TagGroup);
+    if (group.isNull() || items.isEmpty())
+    {
+        return false;
+    }
+
+    for (const auto &[objectId, toolId] : items)
+    {
+        // Same invariant as AddItemToGroup: a layer holds an object once. A batch that runs twice — a creation
+        // replayed from the undo stack, a tool attached again — must not leave the same <item> in the layer
+        // twice, or the removal workflow would count it as held by two layers.
+        if (GroupHasItem(group, toolId, objectId))
+        {
+            continue;
+        }
+
+        QDomElement item = createElement(TagGroupItem);
+        item.setAttribute(AttrTool, toolId);
+        SetAttributeOrRemoveIf<vidtype>(item,
+                                        AttrObject,
+                                        objectId,
+                                        [toolId](vidtype object) noexcept -> bool { return object == toolId; });
+        group.appendChild(item);
+    }
+
+    // Once for the whole batch: a tool can create many objects, and refreshing per object would re-parse every
+    // layer of the piece as many times.
+    modified = true;
+    emit patternChanged(false);
+    emit UpdateGroups();
+
+    if (QDomElement const groups = CreateGroups(); not groups.isNull())
+    {
+        ParseGroups(groups);
+    }
+
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, quint32 toolId)
+    -> QVector<QPair<quint32, quint32>>
+{
+    QVector<QPair<quint32, quint32>> objects;
+    if (toolElement.isNull() || toolId == NULL_ID)
+    {
+        return objects;
+    }
+
+    const QString tag = toolElement.tagName();
+    if (tag == TagPoint)
+    {
+        if (not(toolElement.hasAttribute(AttrPoint1) && toolElement.hasAttribute(AttrPoint2)))
+        {
+            objects.append({toolId, toolId});
+            return objects;
+        }
+
+        // A double point — trueDarts, rectangle. Its points live as attributes of the same <point>, and the base
+        // class answers to those two ids only. The <spline> family writes point1/point4 too, but on its own tag,
+        // which is why the tag is read before the attributes.
+        for (const QString &attribute : {AttrPoint1, AttrPoint2, AttrPoint4})
+        {
+            if (not toolElement.hasAttribute(attribute))
+            {
+                continue;
+            }
+            if (const quint32 pointId = toolElement.attribute(attribute).toUInt(); pointId != NULL_ID)
+            {
+                objects.append({pointId, toolId});
+            }
+        }
+    }
+    else if (tag == TagLine || tag == TagArc || tag == TagElArc || tag == TagSpline)
+    {
+        objects.append({toolId, toolId});
+    }
+    else if (tag == TagOperation)
+    {
+        // The tags below live on VAbstractOperation and OOperationLines; written verbatim because libs/ifc does
+        // not depend on libs/vtools. <source> holds the inputs — the objects CREATED are the destinations.
+        const QDomElement destination = toolElement.firstChildElement(QStringLiteral("destination"));
+        for (QDomElement item = destination.firstChildElement(QStringLiteral("item")); !item.isNull();
+             item = item.nextSiblingElement(QStringLiteral("item")))
+        {
+            if (const quint32 objectId = item.attribute(AttrIdObject).toUInt(); objectId != NULL_ID)
+            {
+                objects.append({objectId, toolId});
+            }
+        }
+
+        const QDomElement lines = toolElement.firstChildElement(QStringLiteral("lines"));
+        for (QDomElement item = lines.firstChildElement(QStringLiteral("item")); !item.isNull();
+             item = item.nextSiblingElement(QStringLiteral("item")))
+        {
+            if (const quint32 resultId = item.attribute(QStringLiteral("idResult")).toUInt();
+                resultId != NULL_ID)
+            {
+                objects.append({resultId, resultId});
+            }
+        }
+    }
+
+    return objects;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetActiveGroupColor() -> QString
+{
+    const quint32 id = GetActiveGroup();
+    return id == NULL_ID ? ColorBlack : GetGroupColor(id);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetActiveGroupPenStyle() -> QString
+{
+    const quint32 id = GetActiveGroup();
+    return id == NULL_ID ? TypeLineLine : GetGroupPenStyle(id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

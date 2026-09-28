@@ -987,6 +987,18 @@ void VMainGraphicsView::dropEvent(QDropEvent *event)
 void VMainGraphicsView::drawForeground(QPainter *painter, const QRectF &rect)
 {
     QGraphicsView::drawForeground(painter, rect);
+
+    if (not m_cornerLabel.isEmpty())
+    {
+        // Screen coordinates: the label belongs to the view, not to the drawing, so neither the zoom nor the
+        // scroll position may move it.
+        QPainterStateGuard const guard(painter);
+        painter->resetTransform();
+        painter->setPen(palette().color(QPalette::WindowText));
+        const QFontMetrics metrics(painter->font());
+        painter->drawText(QPoint(8, 6 + metrics.ascent()), m_cornerLabel);
+    }
+
     if (m_rubberBanding)
     {
         QPainterStateGuard const guard(painter);
@@ -1000,6 +1012,18 @@ void VMainGraphicsView::drawForeground(QPainter *painter, const QRectF &rect)
         option.opaque = false;
         viewport()->style()->drawControl(QStyle::CE_RubberBand, &option, painter, viewport());
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsView::SetCornerLabel(const QString &text)
+{
+    if (m_cornerLabel == text)
+    {
+        return;
+    }
+
+    m_cornerLabel = text;
+    viewport()->update();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

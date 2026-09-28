@@ -113,13 +113,28 @@ auto VToolAbstractCurve::shape() const -> QPainterPath
 //---------------------------------------------------------------------------------------------------------------------
 void VToolAbstractCurve::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    const qreal width = ScaleWidth(m_isHovered ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
-                                               : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
+    const qreal width = ScaleWidth((m_isHovered || m_layerSelected || m_inLayer)
+                                       ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
+                                       : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
                                    SceneScale(scene()));
 
     const QSharedPointer<VAbstractCurve> curve = VAbstractTool::data.GeometricObject<VAbstractCurve>(m_id);
-    QColor const penColor =
-        VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::CorrectToolColorForDarkTheme(curve->GetColor()));
+    // Selected: orange, the colour that says what Enter will act on. Otherwise the layer's content: magenta, the
+    // colour of a transient multi-selection.
+    QColor penColor;
+    if (m_layerSelected)
+    {
+        penColor = VSceneStylesheet::Color(VColorRole::ActivePointColor);
+    }
+    else if (m_inLayer)
+    {
+        penColor = VSceneStylesheet::Color(VColorRole::VisSupportColor);
+    }
+    else
+    {
+        penColor = VSceneStylesheet::CorrectToolColor(this,
+                                                      VSceneStylesheet::CorrectToolColorForDarkTheme(curve->GetColor()));
+    }
     setPen(QPen(penColor, width, LineStyleToPenStyle(curve->GetPenStyle()), Qt::RoundCap));
 
     auto PaintSpline = [this, curve](QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) -> void
@@ -143,6 +158,30 @@ void VToolAbstractCurve::paint(QPainter *painter, const QStyleOptionGraphicsItem
     };
 
     PaintSpline(painter, option, widget);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAbstractCurve::SetLayerSelected(bool selected)
+{
+    if (m_layerSelected == selected)
+    {
+        return;
+    }
+
+    m_layerSelected = selected;
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAbstractCurve::SetInLayer(bool inLayer)
+{
+    if (m_inLayer == inLayer)
+    {
+        return;
+    }
+
+    m_inLayer = inLayer;
+    update();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

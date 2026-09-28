@@ -755,13 +755,29 @@ void MainWindow::ClosedDialogGroup(int result)
         const QPointer<DialogGroup> dialog = qobject_cast<DialogGroup *>(m_dialogTool);
         SCASSERT(not dialog.isNull())
 
-        if (const QDomElement group =
-                doc->CreateGroup(pattern->getNextId(), dialog->GetName(), dialog->GetTags(), dialog->GetGroup());
-                !group.isNull())
+        const quint32 newId = pattern->getNextId();
+        if (const QDomElement group = doc->CreateGroup(newId, dialog->GetName(), dialog->GetTags(),
+                                                       dialog->GetGroup(), null_id, dialog->GetColor(),
+                                                       dialog->GetPenStyle());
+            !group.isNull())
         {
+            const quint32 previous = doc->GetActiveGroup();
+
+            // Same rule as the Layers dock: a layer is created to be drawn into, so it becomes the active one —
+            // and both writes share a single undo step.
+            QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+            undoStack->beginMacro(tr("add a layer"));
+
             auto *addGroup = new AddGroup(group, doc);
             connect(addGroup, &AddGroup::UpdateGroups, m_dockManager->groupsWidget(), &VWidgetGroups::UpdateGroups);
-            VAbstractApplication::VApp()->getUndoStack()->push(addGroup);
+            undoStack->push(addGroup);
+
+            auto *changeActive = new ChangeActiveGroup(doc, newId, previous);
+            connect(changeActive, &ChangeActiveGroup::UpdateGroups, m_dockManager->groupsWidget(),
+                    &VWidgetGroups::UpdateGroups);
+            undoStack->push(changeActive);
+
+            undoStack->endMacro();
         }
     }
     ArrowTool(true);
@@ -1125,7 +1141,15 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
             break;
     }
 
+    // The pen every tool dialog opens on is the one of the layer the canvas draws into — the layer the object
+    // about to be created will join. A piece with no layer yet keeps the global default the dialogs used before
+    // layers carried a pen at all. Either way this is only a default: whatever the user picks in the dialog wins.
     VValentinaSettings  const*settings = VApplication::VApp()->ValentinaSettings();
+    const quint32 activeLayer = doc->GetActiveGroup();
+    const QString defaultPenStyle = activeLayer == NULL_ID ? settings->GetGlobalPenStyle()
+                                                           : doc->GetGroupPenStyle(activeLayer);
+    const QString defaultColor = activeLayer == NULL_ID ? settings->GetGlobalToolColor()
+                                                        : doc->GetGroupColor(activeLayer);
 
     if constexpr (std::is_same_v<Dialog,DialogEndLine> || std::is_same_v<Dialog,DialogAlongLine> ||
                   std::is_same_v<Dialog,DialogBisector> || std::is_same_v<Dialog,DialogCurveIntersectAxis> ||
@@ -1133,26 +1157,22 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
                   std::is_same_v<Dialog,DialogLineIntersectAxis> || std::is_same_v<Dialog,DialogNormal> ||
                   std::is_same_v<Dialog,DialogShoulderPoint>)
     {
-        dialogTool->SetTypeLine(settings->GetGlobalPenStyle());
-        dialogTool->SetLineColor(settings->GetGlobalToolColor());
+        dialogTool->SetTypeLine(defaultPenStyle);
+        dialogTool->SetLineColor(defaultColor);
     }
 
-    // The tools whose window offers a type and a colour of its own take the same two defaults. The place
-    // where they are set was removed from the preferences, but the choice itself is still stored and still
-    // what every other line tool opens with — a tool that ignored it would be the only one opening on black.
     if constexpr (std::is_same_v<Dialog,ODialogDartCap> || std::is_same_v<Dialog,ODialogRectangle>)
     {
-        dialogTool->SetTypeLine(settings->GetGlobalPenStyle());
-        dialogTool->SetLineColor(settings->GetGlobalToolColor());
+        dialogTool->SetTypeLine(defaultPenStyle);
+        dialogTool->SetLineColor(defaultColor);
     }
 
     // The cut tools take the same two defaults for the piece prolonging the curve, but never open on a
     // plain solid line: a prolongation is not the curve, and has to be told apart from it.
     if constexpr (std::is_same_v<Dialog, DialogCutSpline> || std::is_same_v<Dialog, DialogCutSplinePath>)
     {
-        const QString penStyle = settings->GetGlobalPenStyle();
-        dialogTool->SetProlongationType(penStyle.isEmpty() ? TypeLineDashLine : penStyle);
-        dialogTool->SetProlongationColor(settings->GetGlobalToolColor());
+        dialogTool->SetProlongationType(defaultPenStyle.isEmpty() ? TypeLineDashLine : defaultPenStyle);
+        dialogTool->SetProlongationColor(defaultColor);
     }
 
     if constexpr (std::is_same_v<Dialog,DialogArc> || std::is_same_v<Dialog,DialogArcWithLength> ||
@@ -1160,15 +1180,15 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
                   std::is_same_v<Dialog,DialogEllipticalArcWithLength> ||
                   std::is_same_v<Dialog,DialogParallelCurve> || std::is_same_v<Dialog,DialogGraduatedCurve>)
     {
-        dialogTool->SetPenStyle(settings->GetGlobalPenStyle());
-        dialogTool->SetColor(settings->GetGlobalToolColor());
+        dialogTool->SetPenStyle(defaultPenStyle);
+        dialogTool->SetColor(defaultColor);
     }
 
     if constexpr (std::is_same_v<Dialog,OToolArmholeCurveCollector> || std::is_same_v<Dialog,DialogCubicBezier> || std::is_same_v<Dialog,DialogCubicBezierPath> ||
                   std::is_same_v<Dialog,DialogSpline> || std::is_same_v<Dialog,DialogSplinePath>)
     {
-        dialogTool->SetDefPenStyle(settings->GetGlobalPenStyle());
-        dialogTool->SetDefColor(settings->GetGlobalToolColor());
+        dialogTool->SetDefPenStyle(defaultPenStyle);
+        dialogTool->SetDefColor(defaultColor);
     }
 
     auto *scene = qobject_cast<VMainGraphicsScene *>(currentScene);
@@ -1353,6 +1373,11 @@ void MainWindow::ClosedCurveDialog(int result)
             const auto path = curveDialog->GetPath();
             auto *spl = new VSpline(path.GetSpline(1));
 
+            // These two dialogs build their geometry by hand and have no colour of their own to offer: the curve
+            // is created with the pen of the layer it joins.
+            spl->SetColor(doc->GetActiveGroupColor());
+            spl->SetPenStyle(doc->GetActiveGroupPenStyle());
+
             tool = VToolSpline::Create(initData, spl);
         }
         else
@@ -1366,6 +1391,8 @@ void MainWindow::ClosedCurveDialog(int result)
             initData.points = pointIds;
 
             auto *path = new VSplinePath(curveDialog->GetPath());
+            path->SetColor(doc->GetActiveGroupColor());
+            path->SetPenStyle(doc->GetActiveGroupPenStyle());
 
             tool = VToolSplinePath::Create(initData, path);
         }
@@ -1402,6 +1429,8 @@ void MainWindow::ClosedArmholeCurveDialog(int result)
         initData.parse = Document::FullParse;
         initData.typeCreation = Source::FromGui;
         initData.path = new VCubicBezierPath(collector->GetPath());
+        initData.path->SetColor(doc->GetActiveGroupColor());
+        initData.path->SetPenStyle(doc->GetActiveGroupPenStyle());
 
         tool = OToolArmholeCurve::Create(initData);
     }

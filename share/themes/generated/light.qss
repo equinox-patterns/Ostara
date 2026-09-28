@@ -591,6 +591,10 @@ QAbstractItemView::item:selected {
     color: #e5e5e5;
 }
 
+/* Layers dock: the row of the active layer is toned down in the widget's own stylesheet, not here — see
+   VWidgetGroups::UpdateActiveRowStyle. A widget's own stylesheet beats the application's whatever the selector
+   specificity (fiche 02), and an ID-scoped rule here was silently ignored. */
+
 /* Internal path dock list (ODetailsInternalPathWidget): the item-view base is
    #f9f9f9 (pane color), which paints the empty area below the rows as a panel
    against the #f4f4f4 tab page. Make the base match the tab page. */

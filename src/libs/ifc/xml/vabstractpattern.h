@@ -124,6 +124,12 @@ struct VGroupData
     QStringList tags{};
     vidtype tool{NULL_ID};
     QVector<QPair<vidtype, vidtype>> items{};
+    /// The layer's own pen. It is what the objects created inside it are offered as a default — the layer never
+    /// repaints what is already drawn, and a user's change in the tool dialog wins over it.
+    QString color{ColorBlack};
+    QString penStyle{TypeLineLine};
+    /// The layer the canvas draws into. Exactly one per pattern piece (see NormalizeActiveLayer).
+    bool active{false};
 };
 
 // Attachment = association of objects in a named group (type Illustrator), purely visual.
@@ -318,11 +324,17 @@ public:
                      const QString &name,
                      const QStringList &tags,
                      const QMap<quint32, quint32> &groupData,
-                     vidtype tool = null_id) -> QDomElement;
+                     vidtype tool = null_id,
+                     const QString &color = ColorBlack,
+                     const QString &penStyle = TypeLineLine) -> QDomElement;
     auto GroupLinkedToTool(vidtype toolId) const -> vidtype;
 
     auto GetGroupName(quint32 id) -> QString;
     void SetGroupName(quint32 id, const QString &name);
+
+    auto GetGroupColor(quint32 id) -> QString;
+    auto GetGroupPenStyle(quint32 id) -> QString;
+    void SetGroupPen(quint32 id, const QString &color, const QString &penStyle);
 
     auto GetGroupTags(vidtype id) -> QStringList;
     void SetGroupTags(quint32 id, const QStringList &tags);
@@ -341,8 +353,33 @@ public:
     auto GetGroups(const QString &patternPieceName = QString()) -> QMap<quint32, VGroupData>;
     auto GetGroupsContainingItem(quint32 toolId, quint32 objectId, bool containItem) -> QMap<quint32, QString>;
     auto AddItemToGroup(quint32 toolId, quint32 objectId, quint32 groupId) -> QDomElement;
+    /// Add several (objectId, toolId) pairs in one go, then refresh the drawing once. Used when a tool is created:
+    /// an operation can produce many objects and a per-object refresh would re-parse the layers once per object.
+    auto AddItemsToGroup(const QVector<QPair<quint32, quint32>> &items, quint32 groupId) -> bool;
     auto RemoveItemFromGroup(quint32 toolId, quint32 objectId, quint32 groupId) -> QDomElement;
     auto GetGroupVisibility(quint32 id) -> bool;
+    void SetGroupVisibility(quint32 id, bool visible);
+
+    /// The (objectId, toolId) pairs a layer can really hold for one tool element, read from the DOM.
+    ///
+    /// The pair is not decorative: GroupVisibility receives the object id and each tool decides from its own C++
+    /// class what it hides. A single point, a line and a curve answer to their own id; a double point
+    /// (trueDarts, rectangle) only answers to the two ids it keeps as `point1`/`point2` attributes — it has no
+    /// element of its own for them; an operation hides the objects its `<destination>` declares, never its
+    /// `<source>`. Pieces, unions and nodes answer to nothing at all and are deliberately left out, rather than
+    /// parked in a layer that could never hide them.
+    static auto LayerableObjectsOfTool(const QDomElement &toolElement, quint32 toolId)
+        -> QVector<QPair<quint32, quint32>>;
+
+    /// The pen of the active layer — what the objects drawn into it are offered as a default.
+    auto GetActiveGroupColor() -> QString;
+    auto GetActiveGroupPenStyle() -> QString;
+
+    /// The layer the canvas draws into, for one pattern piece. NULL_ID when the piece has no layer at all — it is
+    /// never NULL_ID once the piece owns at least one, because NormalizeActiveLayer picks one at load.
+    auto GetActiveGroup(const QString &patternPieceName = QString()) -> quint32;
+    /// Make one layer the active one: the attribute is set on it and removed from every other layer of the piece.
+    void SetActiveGroup(quint32 id, const QString &patternPieceName = QString());
 
     static auto FilterGroupTags(const QString &tags) -> QStringList;
 
@@ -472,6 +509,9 @@ public:
     static const QString AttrPassmarkVisibility;
     static const QString AttrOpacity;
     static const QString AttrTags;
+    /// Marks the layer the canvas draws into. Absent means "not active", so only the active one carries it —
+    /// which also makes it self-healing: deleting the layer deletes its flag with it.
+    static const QString AttrActive;
     static const QString AttrTransform;
     static const QString AttrHold;
     static const QString AttrZValue;
