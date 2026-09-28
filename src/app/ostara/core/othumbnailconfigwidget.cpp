@@ -268,6 +268,15 @@ auto OThumbnailConfigWidget::WidthsFor(quint32 pieceId, const VContainer *data) 
         return {};
     }
 
+    // **A group outlives its members, and the panel still asks for them.** The group's own record
+    // names pieces; a piece that is no longer in the container throws on the read below. A piece we
+    // cannot read has no widths to show — that is a blank panel, never a dead application.
+    const auto *pieces = data->DataPieces();
+    if (pieces == nullptr || !pieces->contains(pieceId))
+    {
+        return {};
+    }
+
     // **The piece's own answer, never a second reading of its nodes.** The panel and the drawing
     // both ask the piece; two readings is how they would come to disagree about which margins it is
     // made of. No seam allowance at all answers with nothing, and the panel has nothing to show.

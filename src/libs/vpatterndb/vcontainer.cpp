@@ -435,6 +435,8 @@ void VContainer::Clear()
     d->pieces->clear();
     d->piecePaths->clear();
     d->sizeRanges->clear(); // graded ranges belong to one pattern — never leak across files
+    d->pieceGroups->clear(); // nor does a piece group: keeping one whose members are gone leaves a
+                             // ghost group behind — a holder nothing can click without aborting
     ClearVariables();
     ClearGObjects();
     ClearUniqueNames();
@@ -448,6 +450,8 @@ void VContainer::ClearForFullParse()
     d->pieces->clear();
     d->piecePaths->clear();
     d->sizeRanges->clear(); // graded ranges belong to one pattern — never leak across files
+    d->pieceGroups->clear(); // nor does a piece group: keeping one whose members are gone leaves a
+                             // ghost group behind — a holder nothing can click without aborting
     Q_STATIC_ASSERT_X(static_cast<int>(VarType::Unknown) == 12, "Check that you used all types");
     ClearVariables(QVector<VarType>{VarType::Increment, VarType::IncrementSeparator, VarType::LineAngle,
                                     VarType::LineLength, VarType::CurveLength, VarType::CurveCLength,
