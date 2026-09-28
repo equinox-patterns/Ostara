@@ -1448,6 +1448,33 @@ void MainWindow::RefreshGroupHolders()
         return;
     }
 
+    // **A link or an unlink moves the members' own geometry, and the graded canvas freezes each
+    // piece's base the first time it enters a build.** A frozen base outliving the link would place
+    // the members where they stood *before* it, so the group could never reform there — the very
+    // defect that reopening the file repairs, since the load empties that cache. Re-freeze the
+    // pieces the group set gained or lost. A piece no group ever touched keeps its base, so a plain
+    // Details move still never relocates the graded canvas.
+    QSet<quint32> groupedPieceIds;
+    for (auto git = groups->cbegin(); git != groups->cend(); ++git)
+    {
+        for (const quint32 pieceId : git.value().pieceIds)
+        {
+            groupedPieceIds.insert(pieceId);
+        }
+    }
+    if (groupedPieceIds != m_lastGroupedPieceIds)
+    {
+        for (const quint32 pieceId : groupedPieceIds)
+        {
+            m_gradedFrozenBases.remove(pieceId);
+        }
+        for (const quint32 pieceId : m_lastGroupedPieceIds)
+        {
+            m_gradedFrozenBases.remove(pieceId);
+        }
+        m_lastGroupedPieceIds = groupedPieceIds;
+    }
+
     // Remove holders for deleted groups.
     for (auto it = m_groupHolders.cbegin(); it != m_groupHolders.cend();)
     {

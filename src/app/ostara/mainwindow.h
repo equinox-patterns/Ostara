@@ -48,6 +48,7 @@
 #include <QPointer>
 #include <QPoint>
 #include <QPointF>
+#include <QSet>
 #include <QStringList>
 #include <QUndoGroup>
 
@@ -603,6 +604,9 @@ private:
     /// Frozen Details base (mx/my) per piece, captured when the piece first enters a graded
     /// build. Details moves afterwards never relocate the graded canvas.
     QHash<quint32, QPointF> m_gradedFrozenBases{};
+    /// Pieces that belonged to a group at the last holder refresh. A link or an unlink moves its
+    /// members' mx/my, so their frozen base has to be re-frozen — see RefreshGroupHolders.
+    QSet<quint32> m_lastGroupedPieceIds{};
     /// When true, the next BuildGradedScene always re-captures (entry from another mode), so
     /// ANY piece-shape change in Details is picked up — not only the structural ones.
     bool m_gradedForceCapture{false};

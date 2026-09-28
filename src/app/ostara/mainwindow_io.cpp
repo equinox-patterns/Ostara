@@ -553,6 +553,7 @@ void MainWindow::Clear()
     m_gradedBasePositions.clear();
     m_gradedSceneSignature.clear();
     m_gradedFrozenBases.clear();
+    m_lastGroupedPieceIds.clear();
     m_gradedForceCapture = false;
     ArrowTool(true);
     {
