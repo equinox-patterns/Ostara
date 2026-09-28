@@ -47,6 +47,7 @@
 #include <QtDebug>
 #include <QtMath>
 
+#include "../ifc/exception/vexceptionbadid.h"
 #include "../vformat/vsinglelineoutlinechar.h"
 #include "../vgeometry/vgobject.h"
 #include "../vgeometry/vlayoutplacelabel.h"
@@ -118,16 +119,27 @@ auto ConvertPlaceLabels(const VPiece &piece, const VContainer *pattern) -> QVect
     labels.reserve(placeLabels.size());
     for (const auto &placeLabel : placeLabels)
     {
-        const auto label = pattern->GeometricObject<VPlaceLabelItem>(placeLabel);
-        if (label->IsVisible())
+        try
         {
-            QT_WARNING_PUSH
-            QT_WARNING_DISABLE_GCC("-Wnoexcept")
-            // noexcept-expression evaluates to 'false' because of a call to 'constexpr QPointF::QPointF()'
+            const auto label = pattern->GeometricObject<VPlaceLabelItem>(placeLabel);
+            if (label->IsVisible())
+            {
+                QT_WARNING_PUSH
+                QT_WARNING_DISABLE_GCC("-Wnoexcept")
+                // noexcept-expression evaluates to 'false' because of a call to 'constexpr QPointF::QPointF()'
 
-            labels.append(VLayoutPlaceLabel(*label));
+                labels.append(VLayoutPlaceLabel(*label));
 
-            QT_WARNING_POP
+                QT_WARNING_POP
+            }
+        }
+        catch (const VExceptionBadId &e)
+        {
+            // The piece lists a mark the container does not hold yet: during an undo/redo the parse
+            // that recreates it is deferred, and the piece is laid out before that parse runs. Skip
+            // it here — the following parse brings it back. Expected and self-healing, so keep it out
+            // of the user's face (a qWarning pops a modal box, see VApplication's message handler).
+            qDebug() << e.ErrorMessage();
         }
     }
     return labels;

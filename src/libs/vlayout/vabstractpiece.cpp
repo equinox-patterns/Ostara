@@ -1,4 +1,4 @@
-﻿/************************************************************************
+/************************************************************************
  **
  **  @file
  **  @author Roman Telezhynskyi <dismine(at)gmail.com>
@@ -2215,7 +2215,9 @@ auto VAbstractPiece::PlaceLabelShape(const VLayoutPlaceLabel &label) -> PlaceLab
 
     auto TshapedShape = [pos, &box, &LayoutPoint]()
     {
-        QPointF const center2(pos.x(), pos.y() + box.height() / 2.0);
+        // The entered height is the length of the stem: the mark starts on the point and the bar
+        // sits a full height below it.
+        QPointF const center2(pos.x(), pos.y() + box.height());
 
         QVector<VLayoutPoint> const shape1{LayoutPoint(QPointF(pos.x(), pos.y()), true), LayoutPoint(center2, true)};
 
@@ -2239,10 +2241,12 @@ auto VAbstractPiece::PlaceLabelShape(const VLayoutPlaceLabel &label) -> PlaceLab
 
     auto CornerShape = [pos, &box, &LayoutPoint]()
     {
+        // The entered width and height are the lengths of the two arms: the corner sits on the
+        // point, and each arm runs a full dimension away from it.
         QVector<VLayoutPoint> const shape1{LayoutPoint(QPointF(pos.x(), pos.y()), true),
-                                           LayoutPoint(QPointF(pos.x(), pos.y() + box.height() / 2.0), true)};
+                                           LayoutPoint(QPointF(pos.x(), pos.y() + box.height()), true)};
 
-        QVector<VLayoutPoint> const shape2{LayoutPoint(QPointF(pos.x() - box.width() / 2.0, pos.y()), true),
+        QVector<VLayoutPoint> const shape2{LayoutPoint(QPointF(pos.x() - box.width(), pos.y()), true),
                                            LayoutPoint(QPointF(pos.x(), pos.y()), true)};
 
         return PlaceLabelImg{shape1, shape2};
@@ -2250,11 +2254,16 @@ auto VAbstractPiece::PlaceLabelShape(const VLayoutPlaceLabel &label) -> PlaceLab
 
     auto TriangleShape = [pos, &box, &LayoutPoint]()
     {
-        QRectF const rect(QPointF(pos.x() - box.width() / 2.0, pos.y() - box.height() / 2.0),
-                          QPointF(pos.x() + box.width() / 2.0, pos.y() + box.height() / 2.0));
+        // Isosceles whatever the two dimensions: the base is centred on the point and lies on a line
+        // through it, the apex stands a full height above the base. The rotation pivots on the point —
+        // the middle of the base — so the base stays on that line at any angle and the two sides stay
+        // equal, instead of the right triangle the three corners of the box used to give.
+        const QPointF baseLeft(pos.x() - box.width() / 2.0, pos.y());
+        const QPointF baseRight(pos.x() + box.width() / 2.0, pos.y());
+        const QPointF apex(pos.x(), pos.y() - box.height());
 
-        QVector<VLayoutPoint> const shape{LayoutPoint(rect.topLeft(), true), LayoutPoint(rect.topRight(), true),
-                                          LayoutPoint(rect.bottomRight(), true), LayoutPoint(rect.topLeft(), true)};
+        QVector<VLayoutPoint> const shape{LayoutPoint(baseLeft, true), LayoutPoint(apex, true),
+                                          LayoutPoint(baseRight, true), LayoutPoint(baseLeft, true)};
 
         return PlaceLabelImg{shape};
     };
@@ -2275,17 +2284,18 @@ auto VAbstractPiece::PlaceLabelShape(const VLayoutPlaceLabel &label) -> PlaceLab
         return PlaceLabelImg{shape1, shape2, shape3};
     };
 
-    auto ButtonShape = [pos, &box, &LayoutPoint]()
+    // An ellipse inscribed in the box: both entered dimensions are honoured, neither is reduced.
+    // The reference arc is built on the largest semi-axis so the point density stays the same as
+    // before, then every point is scaled on each axis.
+    auto EllipsePoints = [](const QPointF &center, qreal radiusX, qreal radiusY)
     {
-        const qreal radius = qMin(box.width() / 2.0, box.height() / 2.0);
-        QVector<VLayoutPoint> const shape1{LayoutPoint(QPointF(pos.x(), pos.y() - radius), true),
-                                           LayoutPoint(QPointF(pos.x(), pos.y() + radius), true)};
+        const qreal baseRadius = qMax(radiusX, radiusY);
+        if (qFuzzyIsNull(baseRadius))
+        {
+            return QVector<QPointF>{center};
+        }
 
-        QVector<VLayoutPoint> const shape2{LayoutPoint(QPointF(pos.x() - radius, pos.y()), true),
-                                           LayoutPoint(QPointF(pos.x() + radius, pos.y()), true)};
-
-        const qreal circleSize = 0.85;
-        VArc arc(VPointF(pos), radius * circleSize, 0, 360);
+        VArc arc(VPointF(center), baseRadius, 0, 360);
         arc.SetApproximationScale(10);
 
         QVector<QPointF> points = arc.GetPoints();
@@ -2293,6 +2303,31 @@ auto VAbstractPiece::PlaceLabelShape(const VLayoutPlaceLabel &label) -> PlaceLab
         {
             points.append(points.constFirst());
         }
+
+        const qreal scaleX = radiusX / baseRadius;
+        const qreal scaleY = radiusY / baseRadius;
+        for (QPointF &point : points)
+        {
+            point.setX(center.x() + (point.x() - center.x()) * scaleX);
+            point.setY(center.y() + (point.y() - center.y()) * scaleY);
+        }
+
+        return points;
+    };
+
+    auto ButtonShape = [pos, &box, &LayoutPoint, &EllipsePoints]()
+    {
+        const qreal halfWidth = box.width() / 2.0;
+        const qreal halfHeight = box.height() / 2.0;
+
+        QVector<VLayoutPoint> const shape1{LayoutPoint(QPointF(pos.x(), pos.y() - halfHeight), true),
+                                           LayoutPoint(QPointF(pos.x(), pos.y() + halfHeight), true)};
+
+        QVector<VLayoutPoint> const shape2{LayoutPoint(QPointF(pos.x() - halfWidth, pos.y()), true),
+                                           LayoutPoint(QPointF(pos.x() + halfWidth, pos.y()), true)};
+
+        const qreal circleSize = 0.85;
+        const QVector<QPointF> points = EllipsePoints(pos, halfWidth * circleSize, halfHeight * circleSize);
 
         QVector<VLayoutPoint> shape3;
         shape3.reserve(points.size());
@@ -2309,17 +2344,9 @@ auto VAbstractPiece::PlaceLabelShape(const VLayoutPlaceLabel &label) -> PlaceLab
         return PlaceLabelImg{shape1, shape2, shape3};
     };
 
-    auto CircleShape = [pos, &box, &LayoutPoint]()
+    auto CircleShape = [pos, &box, &LayoutPoint, &EllipsePoints]()
     {
-        const qreal radius = qMin(box.width() / 2.0, box.height() / 2.0);
-        VArc arc(VPointF(pos), radius, 0, 360);
-        arc.SetApproximationScale(10);
-
-        QVector<QPointF> points = arc.GetPoints();
-        if (not points.isEmpty() && points.constFirst() != points.constLast())
-        {
-            points.append(points.constFirst());
-        }
+        const QVector<QPointF> points = EllipsePoints(pos, box.width() / 2.0, box.height() / 2.0);
 
         QVector<VLayoutPoint> circle;
         circle.reserve(points.size());

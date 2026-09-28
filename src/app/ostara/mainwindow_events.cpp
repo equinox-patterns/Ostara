@@ -53,6 +53,7 @@
 #include "../vtools/dialogs/tools/dialogtool.h"
 #include "../vtools/tools/drawTools/operation/vabstractoperation.h"
 #include "../vtools/tools/nodeDetails/vnodepoint.h"
+#include "../vtools/tools/nodeDetails/onodeplacelabel.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 
@@ -526,6 +527,19 @@ void MainWindow::HandleItemClicked(QGraphicsItem *item)
         if (node != nullptr)
         {
             m_dockManager->detailsOptions()->OnNodeSelectedForPassmark(node->getId());
+            return;
+        }
+
+        // Internal marks are collected by the same mode: their handle — and its name text — select
+        // the mark, exactly like a passmark point.
+        QGraphicsItem *labelProbe = item;
+        while (labelProbe != nullptr && qgraphicsitem_cast<ONodePlaceLabel *>(labelProbe) == nullptr)
+        {
+            labelProbe = labelProbe->parentItem();
+        }
+        if (auto *placeLabel = qgraphicsitem_cast<ONodePlaceLabel *>(labelProbe); placeLabel != nullptr)
+        {
+            m_dockManager->detailsOptions()->OnPlaceLabelSelectedForPassmark(placeLabel->getId());
             return;
         }
     }

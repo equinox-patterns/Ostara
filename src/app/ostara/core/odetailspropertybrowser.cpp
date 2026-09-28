@@ -308,6 +308,12 @@ void ODetailsPropertyBrowser::OnNodeSelectedForPassmark(quint32 nodeId)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODetailsPropertyBrowser::OnPlaceLabelSelectedForPassmark(quint32 labelId)
+{
+    m_pieceWidget->OnPlaceLabelSelectedForPassmark(labelId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODetailsPropertyBrowser::FinishPassmarkSelection()
 {
     m_pieceWidget->FinishPassmarkSelection();

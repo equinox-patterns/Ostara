@@ -31,12 +31,14 @@
 #include <QIcon>
 #include <QMenu>
 #include <QVariant>
+#include <QVector>
 
 #include "../vgeometry/vplacelabelitem.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vtheme/vtheme.h"
 #include "../vtoolseamallowance.h"
 #include "../vwidgets/vgraphicssimpletextitem.h"
+#include "../vexception/vexception.h"
 
 //---------------------------------------------------------------------------------------------------------------------
 ONodePlaceLabel::ONodePlaceLabel(QGraphicsItem *parent)
@@ -148,6 +150,18 @@ void ONodePlaceLabel::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         action->setData(static_cast<int>(entry.type));
     }
 
+    // Same layout as a piece node's menu (see VNodePoint::InitContextMenu): the action list, then a
+    // separator, then Delete with the trash glyph.
+    auto *separatorAct = new QAction(&menu);
+    separatorAct->setSeparator(true);
+    menu.addAction(separatorAct);
+
+    QAction *deleteAction = menu.addAction(QCoreApplication::translate("ODetailsPlaceLabelWidget", "Delete"));
+    const QIcon trash = themeIcon(QStringLiteral("trash"));
+    deleteAction->setIcon(trash);
+    deleteAction->setProperty("restIcon", QVariant::fromValue(trash));
+    deleteAction->setProperty("hoverIcon", QVariant::fromValue(darkIcon(QStringLiteral("trash"))));
+
     // Swap the glyph to its dark variant while its row is highlighted; restore on move/hide.
     QAction *hoveredAction = nullptr;
     const auto applyHover = [&hoveredAction](QAction *action)
@@ -178,13 +192,32 @@ void ONodePlaceLabel::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     QObject::connect(&menu, &QMenu::aboutToHide, [&applyHover]() { applyHover(nullptr); });
 
     selectedAction = menu.exec(event->screenPos());
-    if (selectedAction != nullptr)
-    {
-        const auto type = static_cast<PlaceLabelType>(selectedAction->data().toInt());
-        if (type != current)
-        {
-            piece->ChangePlaceLabelType(m_id, static_cast<int>(type));
-        }
-    }
     event->accept();
+
+    if (selectedAction == nullptr)
+    {
+        return;
+    }
+
+    if (selectedAction == deleteAction)
+    {
+        // A real deletion: the mark leaves the piece's list and its <point> record is removed, which
+        // triggers a full parse — this scene, this handle included, dies inside the call. So leave at
+        // once; VExceptionToolWasDeleted is the same contract VNodePoint relies on.
+        try
+        {
+            piece->DeletePlaceLabels(QVector<quint32>{m_id});
+        }
+        catch (const VExceptionToolWasDeleted &e)
+        {
+            Q_UNUSED(e);
+        }
+        return;
+    }
+
+    const auto type = static_cast<PlaceLabelType>(selectedAction->data().toInt());
+    if (type != current)
+    {
+        piece->ChangePlaceLabelType(m_id, static_cast<int>(type));
+    }
 }

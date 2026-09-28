@@ -51,6 +51,7 @@
 #include "../vtools/undocommands/deltool.h"
 #include "../vtools/undocommands/savepieceoptions.h"
 #include "../vtools/undocommands/savepiecepathoptions.h"
+#include "../vexception/vexception.h"
 #include "../vtheme/vtheme.h"
 #include "otranslation.h"
 
@@ -333,7 +334,8 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         m_addPassmarksBtn = new QPushButton(tr("+ Add passmarks"));
         passmarkRow->addWidget(m_addPassmarksBtn);
 
-        m_removePassmarksBtn = new QPushButton(tr("- Remove passmarks"));
+        // One Remove mode for every mark of the piece: passmarks and internal marks alike.
+        m_removePassmarksBtn = new QPushButton(tr("- Remove marks"));
         passmarkRow->addWidget(m_removePassmarksBtn);
         layout->addLayout(passmarkRow);
 
@@ -497,8 +499,9 @@ void ODetailsPieceWidget::RetranslateUI()
     m_manageMainPathBtn->setText(tr("Manage main path"));
     m_addPassmarksBtn->setText(m_passmarkSelectState == PassmarkSelectState::Adding ? tr("Cancel")
                                                                                      : tr("+ Add passmarks"));
-    m_removePassmarksBtn->setText(m_passmarkSelectState == PassmarkSelectState::Removing ? tr("Cancel")
-                                                                                         : tr("- Remove passmarks"));
+    m_removePassmarksBtn->setText(m_passmarkSelectState == PassmarkSelectState::Removing
+                                      ? tr("Cancel")
+                                      : tr("- Remove marks"));
     if (m_forceFlippingCheck)
     {
         m_forceFlippingCheck->setText(tr("Force flipping"));
@@ -863,6 +866,7 @@ void ODetailsPieceWidget::Clear()
     m_pendingDet = VPiece{};
     m_passmarkSelectState = PassmarkSelectState::Idle;
     m_selectedPassmarkNodeIds.clear();
+    m_selectedPlaceLabelIds.clear();
     m_pieceInfoWidget->Clear();
     m_grainlineWidget->Clear();
     m_foldlineWidget->Clear();
@@ -1083,6 +1087,7 @@ void ODetailsPieceWidget::OnAddPassmarks()
 
     m_passmarkSelectState = PassmarkSelectState::Adding;
     m_selectedPassmarkNodeIds.clear();
+    m_selectedPlaceLabelIds.clear();
     m_addPassmarksBtn->setText(tr("Cancel"));
 
     // Highlight existing passmarks in orange.
@@ -1116,6 +1121,7 @@ void ODetailsPieceWidget::OnRemovePassmarks()
 
     m_passmarkSelectState = PassmarkSelectState::Removing;
     m_selectedPassmarkNodeIds.clear();
+    m_selectedPlaceLabelIds.clear();
     m_removePassmarksBtn->setText(tr("Cancel"));
 
     // Highlight existing passmarks in orange.
@@ -1130,7 +1136,13 @@ void ODetailsPieceWidget::OnRemovePassmarks()
         }
     }
 
-    emit ShowStatusTip(tr("Click passmark points to remove — Enter to confirm, Esc to cancel"));
+    // The internal marks of the piece are removable in the same gesture — highlight them too.
+    for (quint32 labelId : piece.GetPlaceLabels())
+    {
+        emit HighlightNode(labelId, true, QColor(255, 165, 0)); // orange
+    }
+
+    emit ShowStatusTip(tr("Click passmark points and internal marks to remove — Enter to confirm, Esc to cancel"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1138,10 +1150,41 @@ void ODetailsPieceWidget::CancelPassmarkSelection()
 {
     m_passmarkSelectState = PassmarkSelectState::Idle;
     m_selectedPassmarkNodeIds.clear();
+    m_selectedPlaceLabelIds.clear();
     m_addPassmarksBtn->setText(tr("+ Add passmarks"));
-    m_removePassmarksBtn->setText(tr("- Remove passmarks"));
+    m_removePassmarksBtn->setText(tr("- Remove marks"));
     emit ClearHighlight();
     emit ShowStatusTip(QString());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsPieceWidget::OnPlaceLabelSelectedForPassmark(quint32 labelId)
+{
+    if (m_passmarkSelectState != PassmarkSelectState::Removing || !m_currentTool)
+    {
+        return;
+    }
+
+    // In Remove mode only the marks this piece actually owns may be selected.
+    const VPiece piece = m_currentTool->getData()->GetPiece(m_currentTool->getId());
+    if (not piece.GetPlaceLabels().contains(labelId))
+    {
+        return;
+    }
+
+    if (m_selectedPlaceLabelIds.contains(labelId))
+    {
+        m_selectedPlaceLabelIds.remove(labelId);
+        emit HighlightTemporaryNode(labelId, false);
+    }
+    else
+    {
+        m_selectedPlaceLabelIds.insert(labelId);
+        emit HighlightTemporaryNode(labelId, true);
+    }
+
+    const auto count = m_selectedPassmarkNodeIds.size() + m_selectedPlaceLabelIds.size();
+    emit ShowStatusTip(tr("%1 mark(s) selected — Enter to confirm, Esc to cancel").arg(count));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1460,8 +1503,8 @@ void ODetailsPieceWidget::OnNodeSelectedForPassmark(quint32 nodeId)
         emit HighlightTemporaryNode(nodeId, true);
     }
 
-    const auto count = m_selectedPassmarkNodeIds.size();
-    emit ShowStatusTip(tr("%1 point(s) selected — Enter to confirm, Esc to cancel").arg(count));
+    const auto count = m_selectedPassmarkNodeIds.size() + m_selectedPlaceLabelIds.size();
+    emit ShowStatusTip(tr("%1 mark(s) selected — Enter to confirm, Esc to cancel").arg(count));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1472,7 +1515,7 @@ void ODetailsPieceWidget::FinishPassmarkSelection()
         return;
     }
 
-    if (m_selectedPassmarkNodeIds.isEmpty())
+    if (m_selectedPassmarkNodeIds.isEmpty() && m_selectedPlaceLabelIds.isEmpty())
     {
         CancelPassmarkSelection();
         return;
@@ -1551,7 +1594,9 @@ void ODetailsPieceWidget::FinishPassmarkSelection()
         }
     }
 
-    // Commit immediately — passmark operations are independent of Apply.
+    // Commit immediately — passmark operations are independent of Apply. When the gesture only
+    // collected internal marks, the piece itself is unchanged: no empty undo step is pushed.
+    if (m_passmarkSelectState == PassmarkSelectState::Adding || not m_selectedPassmarkNodeIds.isEmpty())
     {
         const auto *data = m_currentTool->getData();
         const VPiece oldDet = data->GetPiece(m_currentTool->getId());
@@ -1560,6 +1605,29 @@ void ODetailsPieceWidget::FinishPassmarkSelection()
                                  VAbstractValApplication::VApp()->getCurrentDocument(),
                                  m_currentTool->getId()));
         m_pendingDet = data->GetPiece(m_currentTool->getId());
+    }
+
+    // Internal marks are real objects, not node flags: they go through a real deletion (piece list +
+    // <point> record), in the same gesture and the same undo step. That deletion tears the scene down,
+    // so it comes last and leaves this method through VExceptionToolWasDeleted.
+    if (m_passmarkSelectState == PassmarkSelectState::Removing && not m_selectedPlaceLabelIds.isEmpty())
+    {
+        const QVector<quint32> labelIds(m_selectedPlaceLabelIds.cbegin(), m_selectedPlaceLabelIds.cend());
+
+        // The gesture is over: drop the mode (and its orange highlights) before the deletion. Leaving
+        // the dock in Remove mode with a selection pointing at deleted marks served no purpose.
+        CancelPassmarkSelection();
+
+        try
+        {
+            m_currentTool->DeletePlaceLabels(labelIds);
+        }
+        catch (const VExceptionToolWasDeleted &e)
+        {
+            Q_UNUSED(e);
+            return; // the full parse rebuilt the scene: nothing left to do here
+        }
+        return;
     }
 
     CancelPassmarkSelection();

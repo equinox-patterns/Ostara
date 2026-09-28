@@ -87,6 +87,8 @@ public:
 
     auto IsSelectingPassmarkPoints() const -> bool;
     void OnNodeSelectedForPassmark(quint32 nodeId);
+    // Internal marks (place labels) are marks as well: the same Remove mode selects and removes them.
+    void OnPlaceLabelSelectedForPassmark(quint32 labelId);
     void FinishPassmarkSelection();
     void CancelPassmarkSelection();
 
@@ -219,6 +221,9 @@ private:
     QSet<quint32> m_selectedPassmarkNodeIds;
     void OnAddPassmarks();
     void OnRemovePassmarks();
+
+    // Internal marks collected by the same Remove mode (see OnPlaceLabelSelectedForPassmark).
+    QSet<quint32> m_selectedPlaceLabelIds;
 
     QTabWidget *m_tabWidget{nullptr};
     QTabWidget *m_infoSubTabs{nullptr}; // Information tab placeholder (content to be defined)

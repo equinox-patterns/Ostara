@@ -36,12 +36,14 @@
 #include "../dialogs/tools/piece/dialogduplicatedetail.h"
 #include "../dialogs/tools/piece/dialogseamallowance.h"
 #include "../ifc/exception/vexceptionwrongid.h"
+#include "../vexception/vexception.h"
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../ifc/xml/vpatternconverter.h"
 #include "../ifc/xml/vpatterngraph.h"
 #include "../qmuparser/qmutokenparser.h"
 #include "../undocommands/addpiece.h"
 #include "../undocommands/deletepiece.h"
+#include "../undocommands/deltool.h"
 #include "../undocommands/movepiece.h"
 #include "../undocommands/savepieceoptions.h"
 #include "../undocommands/saveplacelabeloptions.h"
@@ -609,7 +611,13 @@ void VToolSeamAllowance::AddPieceDependencies(quint32 id,
 
     for (auto point : piece.GetPlaceLabels())
     {
-        patternGraph->AddEdge(point, id);
+        // Same deferred-parse window as the internal paths above: during an undo/redo
+        // SavePieceOptions may run while the mark's vertex is not in the graph yet. The graph is
+        // rebuilt by the following parse anyway, so skip a vertex that does not exist.
+        if (patternGraph->HasVertex(point))
+        {
+            patternGraph->AddEdge(point, id);
+        }
     }
 }
 
@@ -2066,6 +2074,41 @@ void VToolSeamAllowance::ChangePlaceLabelType(quint32 labelId, int type)
     updated.SetLabelType(newType);
 
     VAbstractApplication::VApp()->getUndoStack()->push(new SavePlaceLabelOptions(m_id, *current, updated, doc, labelId));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::DeletePlaceLabels(const QVector<quint32> &labelIds)
+{
+    if (labelIds.isEmpty())
+    {
+        return;
+    }
+
+    const VPiece oldDet = VAbstractTool::data.GetPiece(m_id);
+    VPiece newDet = oldDet;
+    for (quint32 labelId : labelIds)
+    {
+        newDet.GetPlaceLabels().removeAll(labelId); // detach the mark from the piece's <placeLabels>
+    }
+
+    // Captured before the first push: the full parse below rebuilds the scene and destroys this tool,
+    // so nothing owned by it may be touched once the undo commands run (same contract as
+    // VInteractiveTool::Delete, which throws right after pushing its DelTool).
+    auto *const document = doc;
+    const quint32 pieceId = m_id;
+
+    QUndoStack *stack = VAbstractApplication::VApp()->getUndoStack();
+    stack->beginMacro(QCoreApplication::translate("VToolSeamAllowance", "Delete place labels"));
+    stack->push(new SavePieceOptions(oldDet, newDet, document, pieceId));
+    for (quint32 labelId : labelIds)
+    {
+        auto *delTool = new DelTool(document, labelId);
+        connect(delTool, &DelTool::NeedFullParsing, document, &VAbstractPattern::NeedFullParsing);
+        stack->push(delTool);
+    }
+    stack->endMacro();
+
+    throw VExceptionToolWasDeleted(QStringLiteral("Place label was deleted."));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

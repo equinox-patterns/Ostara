@@ -543,7 +543,11 @@ auto VPiece::PlaceLabelPath(const VContainer *data) const -> QPainterPath
         }
         catch (const VExceptionBadId &e)
         {
-            qWarning() << e.ErrorMessage();
+            // The piece may list a mark the container does not hold yet: during an undo/redo the parse
+            // that recreates it is deferred, and the piece is drawn before that parse runs. Expected
+            // and self-healing — kept out of the user's face, since a qWarning pops a modal box
+            // (see VApplication's message handler).
+            qDebug() << e.ErrorMessage();
         }
     }
     path.setFillRule(Qt::WindingFill);

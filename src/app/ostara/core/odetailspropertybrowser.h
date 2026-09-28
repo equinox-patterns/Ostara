@@ -76,6 +76,7 @@ public:
 
     auto IsSelectingPassmarkPoints() const -> bool;
     void OnNodeSelectedForPassmark(quint32 nodeId);
+    void OnPlaceLabelSelectedForPassmark(quint32 labelId);
     void FinishPassmarkSelection();
     void CancelPassmarkSelection();
 

@@ -181,6 +181,14 @@ public:
     /** @brief Sets a place label's Type through an undo command (canvas context menu).
      *  @a type is the PlaceLabelType enum value passed as int to keep the enum out of this header. */
     void ChangePlaceLabelType(quint32 labelId, int type);
+    /** @brief Detaches the given internal marks from this piece and deletes their <point> records.
+     *
+     *  One undo step: the labels leave the piece's <placeLabels> list first, then every place-label
+     *  tool is really deleted (DelTool + full parse) — nothing stays masked or orphaned.
+     *
+     *  The full parse tears the scene down, this tool included, so the method raises
+     *  VExceptionToolWasDeleted and callers must leave immediately. */
+    void DeletePlaceLabels(const QVector<quint32> &labelIds);
 
     // Two-phase refresh for batch updates. PrepareRefreshGeometry() computes the geometry off the
     // GUI thread (safe to call concurrently for different pieces); ApplyBatchGeometry() applies the

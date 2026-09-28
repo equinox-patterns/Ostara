@@ -1053,6 +1053,15 @@ void MainWindow::InitDocksContain()
         }
         if (probe != nullptr)
         {
+            // While the Remove-marks mode is collecting marks, a click on a label belongs to that
+            // selection: it must not steal the dock page (the label is still toggled, see
+            // MainWindow::HandleItemClicked).
+            if (m_dockManager->detailsOptions() != nullptr
+                && m_dockManager->detailsOptions()->IsSelectingPassmarkPoints())
+            {
+                return;
+            }
+
             QGraphicsItem *owner = probe->parentItem();
             while (owner != nullptr && qgraphicsitem_cast<VToolSeamAllowance *>(owner) == nullptr)
             {
@@ -1165,6 +1174,13 @@ void MainWindow::InitDocksContain()
                     nodePoint->SetActivePoint(highlight);
                     return;
                 }
+                // Internal marks highlight the same way: they are marks of the piece too.
+                auto *placeLabel = qgraphicsitem_cast<ONodePlaceLabel *>(child);
+                if (placeLabel != nullptr && placeLabel->getId() == nodeId)
+                {
+                    placeLabel->SetActivePoint(highlight);
+                    return;
+                }
             }
         }
     });
@@ -1196,6 +1212,12 @@ void MainWindow::InitDocksContain()
                     nodePoint->SetTemporarySelected(selected);
                     return;
                 }
+                auto *placeLabel = qgraphicsitem_cast<ONodePlaceLabel *>(child);
+                if (placeLabel != nullptr && placeLabel->getId() == nodeId)
+                {
+                    placeLabel->SetTemporarySelected(selected);
+                    return;
+                }
             }
         }
     });
@@ -1225,6 +1247,12 @@ void MainWindow::InitDocksContain()
                     nodePoint->SetActivePoint(false);
                     nodePoint->SetTemporarySelected(false);
                     nodePoint->RefreshScale();
+                }
+                else if (auto *placeLabel = qgraphicsitem_cast<ONodePlaceLabel *>(item))
+                {
+                    placeLabel->SetActivePoint(false);
+                    placeLabel->SetTemporarySelected(false);
+                    placeLabel->RefreshScale();
                 }
                 else if (auto *pathTool = qgraphicsitem_cast<VToolPiecePath *>(item))
                 {
