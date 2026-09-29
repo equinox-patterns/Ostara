@@ -32,6 +32,7 @@
 #include <utility>
 #include <QLineF>
 #include <QLoggingCategory>
+#include <QRegularExpression>
 #include <QUuid>
 #include <QVector>
 #include <QtDebug>
@@ -69,6 +70,10 @@ QT_WARNING_POP
 QMap<QString, quint32> VContainer::_id = QMap<QString, quint32>();
 QMap<QString, QSet<QString>> VContainer::uniqueNames = QMap<QString, QSet<QString>>();
 QMap<QString, quint32> VContainer::copyCounter = QMap<QString, quint32>();
+bool VContainer::deferredFormulaMode = false;
+int VContainer::deferredFormulas = 0;
+QSet<QString> VContainer::deferredFormulaNames = QSet<QString>();
+bool VContainer::parseInProgress = false;
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -486,19 +491,19 @@ void VContainer::ClearVariables(const VarType &type)
 //---------------------------------------------------------------------------------------------------------------------
 void VContainer::ClearVariables(const QVector<VarType> &types)
 {
-    if (not d->variables.isEmpty()) //-V807
+    if (not d->variables->isEmpty()) //-V807
     {
         if (types.isEmpty() || types.contains(VarType::Unknown))
         {
-            d->variables.clear();
+            d->variables->clear();
         }
         else
         {
-            for (auto i = d->variables.begin(); i != d->variables.end();)
+            for (auto i = d->variables->begin(); i != d->variables->end();)
             {
                 if (types.contains(i.value()->GetType()))
                 {
-                    i = d->variables.erase(i);
+                    i = d->variables->erase(i);
                 }
                 else
                 {
@@ -507,6 +512,121 @@ void VContainer::ClearVariables(const QVector<VarType> &types)
             }
         }
     }
+
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::SetDeferredFormulaMode(bool value)
+{
+    // Only the flag: the count is what the caller reads to decide whether a second pass is needed, so it must
+    // survive turning the mode off (see VPattern::Parse).
+    deferredFormulaMode = value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::IsDeferredFormulaMode() -> bool
+{
+    return deferredFormulaMode;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::DeferFormula(const QString &formula)
+{
+    ++deferredFormulas;
+
+    // Which names the formula was waiting for is asked of the formula itself: the parser error is not reliable
+    // here - it carries the offending token for some errors and nothing for others.
+    static const QRegularExpression namePattern(QStringLiteral(R"([\p{L}_#][\p{L}\p{N}_'#]*)"));
+    auto matches = namePattern.globalMatch(formula);
+    while (matches.hasNext())
+    {
+        deferredFormulaNames.insert(matches.next().captured());
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::DeferredFormulas() -> int
+{
+    return deferredFormulas;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::DeferredFormulaNames() -> QStringList
+{
+    QStringList names = deferredFormulaNames.values();
+    names.sort();
+    return names;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::SetParseInProgress(bool value)
+{
+    parseInProgress = value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::IsParseInProgress() -> bool
+{
+    return parseInProgress;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::ResetDeferredFormulas()
+{
+    deferredFormulas = 0;
+    deferredFormulaNames.clear();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::PrepareSecondParsePass(VContainer *data)
+{
+    if (data == nullptr)
+    {
+        return;
+    }
+
+    // Same list as a LiteParse: the variables recomputed from geometry. They are cleared so the second pass
+    // registers them once, under their own names, instead of colliding with the first pass and being suffixed.
+    Q_STATIC_ASSERT_X(static_cast<int>(VarType::Unknown) == 12, "Check that you used all types");
+    const QVector<VarType> types{VarType::LineAngle,         VarType::LineLength,       VarType::CurveLength,
+                                 VarType::CurveCLength,      VarType::ArcRadius,        VarType::CurveAngle,
+                                 VarType::PieceExternalArea, VarType::PieceSeamLineArea};
+
+    // The variables a deferred formula was waiting for are the exception: they belong to a block read after it,
+    // so clearing them would put the second pass back where the first one was. Keep them from the first pass,
+    // where every block had been read and their value is final.
+    QHash<QString, QSharedPointer<VInternalVariable>> kept;
+    const auto *vars = data->DataVariables();
+    if (vars != nullptr)
+    {
+        for (const QString &name : std::as_const(deferredFormulaNames))
+        {
+            if (auto it = vars->constFind(name); it != vars->constEnd())
+            {
+                kept.insert(name, it.value());
+            }
+        }
+    }
+
+    data->ClearVariables(types);
+
+    for (auto it = kept.constBegin(); it != kept.constEnd(); ++it)
+    {
+        data->d->variables->insert(it.key(), it.value());
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::DetachVariables()
+{
+    if (d->variables.isNull())
+    {
+        return;
+    }
+
+    // The values are shared pointers to variables, as in any copy of the hash; only the table itself is
+    // duplicated, so the caller can erase from it without touching anyone else's.
+    d->variables = QSharedPointer<QHash<QString, QSharedPointer<VInternalVariable>>>::create(*d->variables);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -646,7 +766,7 @@ void VContainer::AddCurveWithSegments(const QSharedPointer<VAbstractCubicBezierP
             QString baseKey = simplifiedPrefix + ptSuffix;
             QString key = baseKey;
             int n = 1;
-            while (d->variables.contains(key))
+            while (d->variables->contains(key))
             {
                 key = baseKey + '_' + QString::number(n++);
             }
@@ -676,7 +796,7 @@ void VContainer::AddCurveWithSegments(const QSharedPointer<VAbstractCubicBezierP
 //---------------------------------------------------------------------------------------------------------------------
 void VContainer::RemoveVariable(const QString &name)
 {
-    d->variables.remove(name);
+    d->variables->remove(name);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -822,8 +942,8 @@ void VContainer::UpdatePiecePath(quint32 id, const VPiecePath &path)
  */
 void VContainer::RemoveIncrement(const QString &name)
 {
-    d->variables[name].clear();
-    d->variables.remove(name);
+    (*d->variables)[name].clear();
+    d->variables->remove(name);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -934,7 +1054,7 @@ auto VContainer::DataDependencyVariables() const -> QHash<QString, QList<quint32
 
     QHash<QString, QList<quint32>> varData;
 
-    for (const auto &var : d->variables)
+    for (const auto &var : *d->variables)
     {
         if (types.contains(var->GetType()))
         {
@@ -1004,7 +1124,7 @@ template <typename T> auto VContainer::DataVar(const VarType &type) const -> QMa
 {
     QMap<QString, QSharedPointer<T>> map;
     // Sorting QHash by id
-    for (auto i = d->variables.constBegin(); i != d->variables.constEnd(); ++i)
+    for (auto i = d->variables->constBegin(); i != d->variables->constEnd(); ++i)
     {
         if (i.value()->GetType() == type)
         {
@@ -1163,7 +1283,7 @@ auto VContainer::GetEffectivePieceCount() const -> int
 //---------------------------------------------------------------------------------------------------------------------
 auto VContainer::DataVariables() const -> const QHash<QString, QSharedPointer<VInternalVariable>> *
 {
-    return &d->variables;
+    return d->variables.data();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

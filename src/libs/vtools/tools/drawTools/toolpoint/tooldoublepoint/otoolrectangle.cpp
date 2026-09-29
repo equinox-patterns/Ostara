@@ -216,13 +216,19 @@ auto OToolRectangle::Create(OToolRectangleInitData initData) -> OToolRectangle *
     const ORectangleRule::Corners corners =
         ORectangleRule::Build(a, ToPixel(width, appUnit), ToPixel(height, appUnit));
 
-    auto *pB = new VPointF(corners.b, initData.name2, initData.mx2, initData.my2, initData.id);
+    // See VToolCurveIntersectAxis::Create: a container that already knows the id updates the object in place
+    // and does not adopt the pointer it is handed, so the corners must not be read through raw pointers —
+    // their names are used below, once the container has been given them.
+    QSharedPointer<VPointF> pB
+        = QSharedPointer<VPointF>::create(corners.b, initData.name2, initData.mx2, initData.my2, initData.id);
     pB->SetShowLabel(initData.showLabel2);
 
-    auto *pC = new VPointF(corners.c, initData.name3, initData.mx3, initData.my3, initData.id);
+    QSharedPointer<VPointF> pC
+        = QSharedPointer<VPointF>::create(corners.c, initData.name3, initData.mx3, initData.my3, initData.id);
     pC->SetShowLabel(initData.showLabel3);
 
-    auto *pD = new VPointF(corners.d, initData.name4, initData.mx4, initData.my4, initData.id);
+    QSharedPointer<VPointF> pD
+        = QSharedPointer<VPointF>::create(corners.d, initData.name4, initData.mx4, initData.my4, initData.id);
     pD->SetShowLabel(initData.showLabel4);
 
     if (initData.typeCreation == Source::FromGui)

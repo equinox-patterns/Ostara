@@ -253,6 +253,23 @@ auto VAbstractTool::CheckFormula(const quint32 &toolId, QString &formula, const 
     }
     catch (qmu::QmuParserError &e)
     {
+        if (VContainer::IsParseInProgress())
+        {
+            if (VContainer::IsDeferredFormulaMode())
+            {
+                // The first pass of a parse may not know a variable yet: a block is free to name one that a
+                // block further down the file defines, and the file is read in order. Record it and answer 0
+                // for now - the second pass, once every block has been read, produces the real value.
+                VContainer::DeferFormula(formula);
+                return 0;
+            }
+
+            // Nothing left to wait for: the name really is unknown, or the formula is wrong. Throw, so the
+            // parse reports it once - never a modal dialog opened from inside the parse (see
+            // VContainer::SetParseInProgress: it loops forever through the queued reparse).
+            throw;
+        }
+
         qDebug() << "\nMath parser error:\n"
                  << "--------------------------------------\n"
                  << "Message:     " << e.GetMsg() << "\n"

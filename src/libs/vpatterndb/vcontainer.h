@@ -89,7 +89,8 @@ public:
      * @brief variables container for measurements, increments, lines lengths, lines angles, arcs lengths, curve lengths
      */
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
-    QHash<QString, QSharedPointer<VInternalVariable>> variables{};
+    QSharedPointer<QHash<QString, QSharedPointer<VInternalVariable>>> variables{
+        QSharedPointer<QHash<QString, QSharedPointer<VInternalVariable>>>::create()};
 
     /**
      * @brief lineRoleNames role-name suffix for lines, keyed by "P1_P2" (ordered pair of point names).
@@ -212,6 +213,35 @@ public:
     void ClearCalculationGObjects();
     void ClearVariables(const VarType &type = VarType::Unknown);
     void ClearVariables(const QVector<VarType> &types);
+
+    /** @brief Give this container its own variable table. Every copy of a container shares one table, so a
+     *  copy that means to trim it — an increment keeps a snapshot of the pattern with no internal variable —
+     *  must detach it first, or the trim reaches the live pattern. */
+    void DetachVariables();
+
+    /** @brief Tolerant formula reading, used by the first pass of a parse: a formula may name a variable that
+     *  a block further down the file defines, so an unknown symbol is recorded instead of stopping the parse.
+     *  The pattern then reads itself a second time, strictly, once every variable exists.
+     *
+     *  Static on purpose: these belong to the parse in progress, not to a container. Tool snapshots copy the
+     *  container, and a copied "tolerant" flag would follow a tool into a dialog long after the parse. */
+    static void SetDeferredFormulaMode(bool value);
+    static auto IsDeferredFormulaMode() -> bool;
+    static void DeferFormula(const QString &missingName);
+    static auto DeferredFormulas() -> int;
+    static auto DeferredFormulaNames() -> QStringList;
+    static void ResetDeferredFormulas();
+
+    /** @brief True while a pattern is being read. A formula that fails there must not open the "edit the
+     *  formula" dialog: that dialog runs its own event loop, the queued parse runs again inside it, fails
+     *  again and opens another dialog - the nesting only ends with the process. The parse reports instead. */
+    static void SetParseInProgress(bool value);
+    static auto IsParseInProgress() -> bool;
+
+    /** @brief Prepare the second pass of a parse. The value variables a reparse recomputes are cleared - so
+     *  they are registered once and not suffixed into duplicates - except the ones the deferred formulas were
+     *  waiting for: those come from the first pass, where every block had already been read. */
+    static void PrepareSecondParsePass(VContainer *data);
     void ClearUniqueNames() const;
     void ClearUniqueIncrementNames() const;
     void ClearExceptUniqueIncrementNames() const;
@@ -263,6 +293,12 @@ private:
     static QMap<QString, quint32> _id;
     static QMap<QString, QSet<QString>> uniqueNames;
     static QMap<QString, quint32> copyCounter;
+
+    /** @brief See SetDeferredFormulaMode: state of the parse in progress, shared by every container. */
+    static bool deferredFormulaMode;
+    static int deferredFormulas;
+    static QSet<QString> deferredFormulaNames;
+    static bool parseInProgress;
 
     QSharedDataPointer<VContainerData> d;
 
@@ -331,11 +367,11 @@ template <typename T> auto VContainer::GeometricObject(const quint32 &id) const 
 template <typename T> auto VContainer::GetVariable(const QString &name) const -> QSharedPointer<T>
 {
     SCASSERT(name.isEmpty() == false)
-    if (d->variables.contains(name))
+    if (d->variables->contains(name))
     {
         try
         {
-            QSharedPointer<VInternalVariable> const gVar = d->variables.value(name);
+            QSharedPointer<VInternalVariable> const gVar = d->variables->value(name);
             QSharedPointer<T> value = qSharedPointerDynamicCast<T>(gVar);
             if (value.isNull())
             {
@@ -372,7 +408,7 @@ template <typename T> void VContainer::AddUniqueVariable(const QSharedPointer<T>
 {
     AddVariable(var);
 
-    if (d->variables.contains(var->GetName()))
+    if (d->variables->contains(var->GetName()))
     {
         uniqueNames[d->nspace].insert(var->GetName());
     }
@@ -418,16 +454,17 @@ void VContainer::AddVariable(const QSharedPointer<T> &var, const QString &name)
         return;
     }
 
-    if (d->variables.contains(name))
+
+    if (d->variables->contains(name))
     {
-        if (d->variables.value(name)->GetType() == var->GetType())
+        if (d->variables->value(name)->GetType() == var->GetType())
         {
-            QSharedPointer<T> v = qSharedPointerDynamicCast<T>(d->variables.value(name));
+            QSharedPointer<T> v = qSharedPointerDynamicCast<T>(d->variables->value(name));
             if (v.isNull())
             {
                 throw VExceptionBadId(tr("Can't cast object. Name = '%1', type = %2.")
                                           .arg(name)
-                                          .arg(static_cast<int>(d->variables.value(name)->GetType())),
+                                          .arg(static_cast<int>(d->variables->value(name)->GetType())),
                                       name);
             }
 
@@ -438,14 +475,14 @@ void VContainer::AddVariable(const QSharedPointer<T> &var, const QString &name)
             throw VExceptionBadId(tr("Can't find object. Type mismatch. Name = '%1', existing type = %2, "
                                      "incoming type = %3.")
                                       .arg(name)
-                                      .arg(static_cast<int>(d->variables.value(name)->GetType()))
+                                      .arg(static_cast<int>(d->variables->value(name)->GetType()))
                                       .arg(static_cast<int>(var->GetType())),
                                   name);
         }
     }
     else
     {
-        d->variables.insert(name, var);
+        d->variables->insert(name, var);
     }
 }
 

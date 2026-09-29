@@ -623,7 +623,9 @@ auto VToolPointOfIntersectionCurves::Create(VToolPointOfIntersectionCurvesInitDa
             : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
     }
 
-    auto *p = new VPointF(fPoint, initData.name, initData.mx, initData.my);
+    // See VToolCurveIntersectAxis::Create: a container that already knows the id updates the object in place
+    // and does not adopt the pointer it is handed, so the two SegmentDetails below must not read a raw one.
+    QSharedPointer<VPointF> p = QSharedPointer<VPointF>::create(fPoint, initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
     if (initData.typeCreation == Source::FromGui)

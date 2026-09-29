@@ -103,22 +103,27 @@ auto VToolCubicBezier::Create(const QPointer<DialogTool> &dialog, VMainGraphicsS
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolCubicBezier::Create(VToolCubicBezierInitData initData) -> VToolCubicBezier *
 {
-    const bool curveUnique = initData.data->IsUnique(initData.spline->name());
+    // A container that already knows the id updates that object in place and does NOT adopt the pointer it is
+    // handed: a reparse would free initData.spline here and every read below would hit freed memory. Holding a
+    // share keeps the curve alive whichever branch runs, and the container shares it instead of copying it.
+    const QSharedPointer<VCubicBezier> spline(initData.spline);
+
+    const bool curveUnique = initData.data->IsUnique(spline->name());
 
     if (initData.typeCreation == Source::FromGui)
     {
-        initData.id = initData.data->AddGObject(initData.spline);
+        initData.id = initData.data->AddGObject(spline);
     }
     else
     {
-        initData.data->UpdateGObject(initData.id, initData.spline);
+        initData.data->UpdateGObject(initData.id, spline);
     }
 
     // Re-parsing recreates the same objects with the same names, so a duplicate here is a false positive.
     if (!curveUnique && (initData.typeCreation != Source::FromFile || initData.parse == Document::FullParse))
     {
         const QString errorMsg
-            = QObject::tr("Curve '%1' with id %2 has not unique name.").arg(initData.spline->name()).arg(initData.id);
+            = QObject::tr("Curve '%1' with id %2 has not unique name.").arg(spline->name()).arg(initData.id);
         VAbstractApplication::VApp()->IsPedantic()
             ? throw VException(errorMsg)
             : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
@@ -131,10 +136,10 @@ auto VToolCubicBezier::Create(VToolCubicBezierInitData initData) -> VToolCubicBe
 
     initData.data->AddSpline(initData.data->GeometricObject<VAbstractBezier>(initData.id), initData.id);
 
-    patternGraph->AddEdge(initData.spline->GetP1().id(), initData.id);
-    patternGraph->AddEdge(initData.spline->GetP2().id(), initData.id);
-    patternGraph->AddEdge(initData.spline->GetP3().id(), initData.id);
-    patternGraph->AddEdge(initData.spline->GetP4().id(), initData.id);
+    patternGraph->AddEdge(spline->GetP1().id(), initData.id);
+    patternGraph->AddEdge(spline->GetP2().id(), initData.id);
+    patternGraph->AddEdge(spline->GetP3().id(), initData.id);
+    patternGraph->AddEdge(spline->GetP4().id(), initData.id);
 
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
     {

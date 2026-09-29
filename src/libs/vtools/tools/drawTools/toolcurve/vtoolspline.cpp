@@ -176,6 +176,9 @@ auto VToolSpline::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene 
 auto VToolSpline::Create(VToolSplineInitData &initData, VSpline *spline) -> VToolSpline *
 {
     const bool curveUnique = initData.data->IsUnique(spline->name());
+    // A container that already knows the id updates that object in place and does not adopt the pointer it is
+    // handed: reading the name after the hand-over below would read freed memory. Keep it now.
+    const QString curveName = spline->name();
 
     if (initData.typeCreation == Source::FromGui)
     {
@@ -190,7 +193,7 @@ auto VToolSpline::Create(VToolSplineInitData &initData, VSpline *spline) -> VToo
     if (!curveUnique && (initData.typeCreation != Source::FromFile || initData.parse == Document::FullParse))
     {
         const QString errorMsg
-            = QObject::tr("Curve '%1' with id %2 has not unique name.").arg(spline->name()).arg(initData.id);
+            = QObject::tr("Curve '%1' with id %2 has not unique name.").arg(curveName).arg(initData.id);
         VAbstractApplication::VApp()->IsPedantic()
             ? throw VException(errorMsg)
             : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;

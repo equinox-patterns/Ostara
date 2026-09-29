@@ -67,6 +67,9 @@ inline VIncrementData::VIncrementData(VContainer *data, IncrementType incrType)
 {
     // When we create an increment in the dialog it will get neccesary data. Such data must be removed because will
     // confuse a user. Increment should not know nothing about internal variables.
+    // The snapshot shares the pattern's variable table with every other copy of the container, so it takes its
+    // own before trimming: erasing here would otherwise empty the live pattern.
+    this->data->DetachVariables();
     Q_STATIC_ASSERT_X(static_cast<int>(VarType::Unknown) == 12, "Check that you used all types");
     this->data->ClearVariables(QVector<VarType>{
         VarType::LineAngle, VarType::LineLength, VarType::CurveLength, VarType::CurveCLength, VarType::ArcRadius,

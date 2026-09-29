@@ -423,7 +423,11 @@ auto VToolCurveIntersectAxis::Create(VToolCurveIntersectAxisInitData &initData) 
 
     const qreal segLength = curve->GetLengthByPoint(fPoint);
 
-    auto *p = new VPointF(fPoint, initData.name, initData.mx, initData.my);
+    // A container that already knows the id updates that object in place and does NOT adopt the pointer it
+    // is handed: a raw one would be freed by UpdateGObject's temporary and the copies below - SegmentDetails
+    // keeps the point by value - would read freed memory. Holding a shared pointer keeps it alive in both
+    // branches, and the container shares it instead of copying its state.
+    QSharedPointer<VPointF> p = QSharedPointer<VPointF>::create(fPoint, initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
     if (initData.typeCreation == Source::FromGui)

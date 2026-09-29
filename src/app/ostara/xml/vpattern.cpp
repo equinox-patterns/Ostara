@@ -210,11 +210,51 @@ void VPattern::Parse(const Document &parse)
         });
 
     m_fileParsingCompleted = false;
-    QDomNode domNode = documentElement().firstChild();
-    while (not domNode.isNull())
+
+    // A formula that fails while the pattern is being read must not open the "edit the formula" dialog: that
+    // dialog runs its own event loop, the queued reparse runs inside it, fails again and opens another dialog,
+    // without end (see VContainer::SetParseInProgress).
+    VContainer::SetParseInProgress(true);
+    auto parseGuard = qScopeGuard(
+        []()
+        {
+            VContainer::SetParseInProgress(false);
+            VContainer::SetDeferredFormulaMode(false);
+        });
+
+    // First pass, tolerant: a formula may name a variable that a block further down the file defines, and the
+    // file is read in order. Such a formula is recorded and answered 0 instead of stopping the parse (see
+    // VContainer::SetDeferredFormulaMode). This holds for every kind of parse: a size change reparses values
+    // only, but it clears the same value variables and reads the same blocks in the same order.
+    VContainer::ResetDeferredFormulas();
+    VContainer::SetDeferredFormulaMode(true);
+    ParseRoot(parse);
+
+    if (VContainer::DeferredFormulas() > 0)
     {
-        ParseRootElement(parse, domNode);
-        domNode = domNode.nextSibling();
+        // Every block has now been read: the variables the first pass could not see exist. Clear the value
+        // variables (so the second pass registers them once, under their own names) keeping the ones the
+        // waiting formulas asked for, then read the file again. Always a LiteParse - the tools and their scene
+        // items come from the first pass, a full parse would create a second set of them.
+        VContainer::PrepareSecondParsePass(data);
+
+        // The dependency graph was built by the first pass, which read every block - including the tools whose
+        // formulas were waiting. The second pass only recomputes values, so it leaves the graph alone, exactly
+        // as a FullLiteParse does: rebuilding it there would add every vertex a second time (one warning per
+        // tool) and, the vertices being added in file order, would report the edges of tools whose vertex it
+        // has not reached yet.
+        PatternGraph()->SetGraphRebuildEnabled(false);
+        auto graphGuard = qScopeGuard([this]() { PatternGraph()->SetGraphRebuildEnabled(true); });
+
+        VContainer::ResetDeferredFormulas();
+        ParseRoot(Document::LiteParse);
+
+        if (VContainer::DeferredFormulas() > 0)
+        {
+            // Still waiting after a full read with every variable in place: the name really does not exist.
+            throw VExceptionObjectError(tr("The formula uses a name the pattern does not define: %1.")
+                                            .arg(VContainer::DeferredFormulaNames().join(QStringLiteral(", "))));
+        }
     }
 
     m_fileParsingCompleted = true;
@@ -801,6 +841,18 @@ void VPattern::customEvent(QEvent *event)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseRoot(const Document &parse)
+{
+    QDomNode domNode = documentElement().firstChild();
+    while (not domNode.isNull())
+    {
+        ParseRootElement(parse, domNode);
+        domNode = domNode.nextSibling();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VPattern::ParseRootElement(const Document &parse, const QDomNode &node)
 {
     static const QStringList tags(
@@ -1011,7 +1063,6 @@ void VPattern::ParseDrawElement(const QDomNode &node, const Document &parse)
         switch (tags.indexOf(domElement.tagName()))
         {
             case 0: // TagCalculation
-                data->ClearCalculationGObjects();
                 ParseDrawMode(domElement, parse, Draw::Calculation);
                 break;
             case 1: // TagModeling

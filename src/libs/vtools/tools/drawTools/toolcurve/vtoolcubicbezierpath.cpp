@@ -103,22 +103,27 @@ auto VToolCubicBezierPath::Create(const QPointer<DialogTool> &dialog, VMainGraph
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolCubicBezierPath::Create(VToolCubicBezierPathInitData initData) -> VToolCubicBezierPath *
 {
-    const bool curveUnique = initData.data->IsUnique(initData.path->name());
+    // A container that already knows the id updates that object in place and does NOT adopt the pointer it is
+    // handed: a reparse would free initData.path here and every read below would hit freed memory. Holding a
+    // share keeps the curve alive whichever branch runs, and the container shares it instead of copying it.
+    const QSharedPointer<VCubicBezierPath> path(initData.path);
+
+    const bool curveUnique = initData.data->IsUnique(path->name());
 
     if (initData.typeCreation == Source::FromGui)
     {
-        initData.id = initData.data->AddGObject(initData.path);
+        initData.id = initData.data->AddGObject(path);
     }
     else
     {
-        initData.data->UpdateGObject(initData.id, initData.path);
+        initData.data->UpdateGObject(initData.id, path);
     }
 
     // Re-parsing recreates the same objects with the same names, so a duplicate here is a false positive.
     if (!curveUnique && (initData.typeCreation != Source::FromFile || initData.parse == Document::FullParse))
     {
         const QString errorMsg
-            = QObject::tr("Curve '%1' with id %2 has not unique name.").arg(initData.path->name()).arg(initData.id);
+            = QObject::tr("Curve '%1' with id %2 has not unique name.").arg(path->name()).arg(initData.id);
         VAbstractApplication::VApp()->IsPedantic()
             ? throw VException(errorMsg)
             : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
@@ -132,9 +137,9 @@ auto VToolCubicBezierPath::Create(VToolCubicBezierPathInitData initData) -> VToo
     initData.data->AddCurveWithSegments(initData.data->GeometricObject<VAbstractCubicBezierPath>(initData.id),
                                         initData.id);
 
-    for (qint32 i = 0; i < initData.path->CountPoints(); ++i)
+    for (qint32 i = 0; i < path->CountPoints(); ++i)
     {
-        patternGraph->AddEdge((*initData.path)[i].id(), initData.id);
+        patternGraph->AddEdge((*path)[i].id(), initData.id);
     }
 
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)

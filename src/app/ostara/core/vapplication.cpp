@@ -193,6 +193,16 @@ inline void LogMessageDetails(QtMsgType type, const QMessageLogContext &context,
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief One noisy box at a time, and no nesting.
+ *
+ * Showing the box runs its own event loop, which processes the messages queued before it - and each of those
+ * used to schedule its own box, opened from inside the first. The nesting has no end: the process dies at 255
+ * levels with "Too many nested CFRunLoopRuns". Messages logged while a box is planned or on screen are counted
+ * and reported with that box instead. */
+static bool noisyBoxPending = false;
+static int noisyBoxSuppressed = 0;
+
+//---------------------------------------------------------------------------------------------------------------------
 inline void ShowNoisyMessageBox(QtMsgType type, const QString &logMsg, bool isPatternMessage)
 {
     // fixme: trying to make sure there are no save/load dialogs are opened, because error message
@@ -376,24 +386,49 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
     {
         if ((type == QtWarningMsg || type == QtCriticalMsg || type == QtFatalMsg) && VApplication::IsGUIMode())
         {
-            auto ShowMessageBox = [type, logMsg, isPatternMessage]()
-            { ShowNoisyMessageBox(type, logMsg, isPatternMessage); };
-
-            if (type == QtFatalMsg)
+            if (noisyBoxPending)
             {
-                // A fatal message aborts right below. The dialog must be shown synchronously here or it
-                // will never appear.
-                ShowMessageBox();
+                // Already planned or on screen: a second box would run its event loop from inside the first,
+                // and the messages waiting behind it would open one more each. See noisyBoxPending.
+                ++noisyBoxSuppressed;
             }
             else
             {
-                // Never pop a modal dialog synchronously from whatever call stack logged the message (e.g. in
-                // the middle of a QGraphicsItem geometry rebuild or a tool dialog's Apply handler): the nested
-                // event loop from QMessageBox::exec() then pumps events over not-yet-consistent state, which
-                // has repeatedly caused crashes in this codebase (see e.g. commits 714cd5d89, 06f755ed6).
-                // Defer to the next event loop iteration, where the stack that logged the message has fully
-                // unwound.
-                QTimer::singleShot(0, qApp, ShowMessageBox);
+                auto ShowMessageBox = [type, logMsg, isPatternMessage]()
+                {
+                    const int extra = noisyBoxSuppressed;
+                    noisyBoxSuppressed = 0;
+                    ShowNoisyMessageBox(type,
+                                        extra > 0 ? QCoreApplication::translate("vNoisyHandler",
+                                                                               "%1\n\n(%2 further messages "
+                                                                               "were logged.)")
+                                                        .arg(logMsg)
+                                                        .arg(extra)
+                                                  : logMsg,
+                                        isPatternMessage);
+                    // Cleared once the box is closed, not before: a message logged while it is on screen
+                    // belongs to this burst, not to a new box nested inside it.
+                    noisyBoxPending = false;
+                };
+
+                noisyBoxPending = true;
+
+                if (type == QtFatalMsg)
+                {
+                    // A fatal message aborts right below. The dialog must be shown synchronously here or it
+                    // will never appear.
+                    ShowMessageBox();
+                }
+                else
+                {
+                    // Never pop a modal dialog synchronously from whatever call stack logged the message (e.g. in
+                    // the middle of a QGraphicsItem geometry rebuild or a tool dialog's Apply handler): the nested
+                    // event loop from QMessageBox::exec() then pumps events over not-yet-consistent state, which
+                    // has repeatedly caused crashes in this codebase (see e.g. commits 714cd5d89, 06f755ed6).
+                    // Defer to the next event loop iteration, where the stack that logged the message has fully
+                    // unwound.
+                    QTimer::singleShot(0, qApp, ShowMessageBox);
+                }
             }
         }
 

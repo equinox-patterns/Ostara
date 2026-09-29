@@ -163,6 +163,9 @@ private:
     static auto ParseDetailNode(const QDomElement &domElement) -> VNodeDetail;
 
     void ParseRootElement(const Document &parse, const QDomNode &node);
+    /** @brief Read every top-level node of the document once, in file order. Called twice when the first,
+     *  tolerant pass met a formula naming a variable a later block defines. */
+    void ParseRoot(const Document &parse);
     void ParseDrawElement(const QDomNode &node, const Document &parse);
     void ParseDrawMode(const QDomNode &node, const Document &parse, const Draw &mode);
     void ParseDrawModeElement(QDomElement &domElement, const Document &parse, const Draw &mode);

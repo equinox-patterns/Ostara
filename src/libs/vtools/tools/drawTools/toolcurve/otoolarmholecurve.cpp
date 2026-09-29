@@ -64,22 +64,27 @@ OToolArmholeCurve::OToolArmholeCurve(const OToolArmholeCurveInitData &initData, 
 //---------------------------------------------------------------------------------------------------------------------
 auto OToolArmholeCurve::Create(OToolArmholeCurveInitData initData) -> OToolArmholeCurve *
 {
-    const bool curveUnique = initData.data->IsUnique(initData.path->name());
+    // A container that already knows the id updates that object in place and does NOT adopt the pointer it is
+    // handed: a reparse would free initData.path here and every read below would hit freed memory. Holding a
+    // share keeps the curve alive whichever branch runs, and the container shares it instead of copying it.
+    const QSharedPointer<VCubicBezierPath> curve(initData.path);
+
+    const bool curveUnique = initData.data->IsUnique(curve->name());
 
     if (initData.typeCreation == Source::FromGui)
     {
-        initData.id = initData.data->AddGObject(initData.path);
+        initData.id = initData.data->AddGObject(curve);
     }
     else
     {
-        initData.data->UpdateGObject(initData.id, initData.path);
+        initData.data->UpdateGObject(initData.id, curve);
     }
 
     // Re-parsing recreates the same objects with the same names, so a duplicate here is a false positive.
     if (!curveUnique && (initData.typeCreation != Source::FromFile || initData.parse == Document::FullParse))
     {
         const QString errorMsg
-            = QObject::tr("Curve '%1' with id %2 has not unique name.").arg(initData.path->name()).arg(initData.id);
+            = QObject::tr("Curve '%1' with id %2 has not unique name.").arg(curve->name()).arg(initData.id);
         VAbstractApplication::VApp()->IsPedantic()
             ? throw VException(errorMsg)
             : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;

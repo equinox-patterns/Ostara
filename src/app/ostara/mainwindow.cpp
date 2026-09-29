@@ -482,7 +482,6 @@ void MainWindow::AddPP(const QString &PPName, const QString &layerName, const QS
     QSignalBlocker blocker(m_comboBoxDraws);
     m_comboBoxDraws->addItem(PPName);
 
-    pattern->ClearCalculationGObjects();
     // Create single point
     emit ui->view->itemClicked(nullptr); // hide options previous tool
     const QString label = doc->GenerateLabel(LabelType::NewPatternPiece);
