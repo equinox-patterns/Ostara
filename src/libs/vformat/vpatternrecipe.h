@@ -107,6 +107,7 @@ private:
     auto FlippingByLine(const VToolRecord &record, const VContainer &data) -> QDomElement;
     auto FlippingByAxis(const VToolRecord &record, const VContainer &data) -> QDomElement;
     auto Move(const VToolRecord &record, const VContainer &data) -> QDomElement;
+    auto Transfert(const VToolRecord &record, const VContainer &data) -> QDomElement;
     auto EllipticalArcWithLength(const VToolRecord &record) -> QDomElement;
     auto ParallelCurve(const VToolRecord &record) -> QDomElement;
     auto GraduatedCurve(const VToolRecord &record) -> QDomElement;

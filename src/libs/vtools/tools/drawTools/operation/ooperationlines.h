@@ -31,6 +31,7 @@
 #define OOPERATIONLINES_H
 
 #include <QDomElement>
+#include <QHash>
 #include <QString>
 #include <QVector>
 #include <QtGlobal>
@@ -93,15 +94,22 @@ public:
     static auto IsExplicit(const OOperationLine &line) -> bool;
 
     /** @brief Image of a line endpoint: the destination object of that source point, or the point
-     *  itself when it is a fixed point of the transformation, or NULL_ID when it has no image. */
+     *  itself when it is a fixed point of the transformation, or NULL_ID when it has no image.
+     *
+     *  @a referencedPoints holds the source points an operation references instead of copying — the merge
+     *  point of a transfer, whose image is the merge point of the host part. It is read first: such a point
+     *  is in the source list but has no destination object of its own, so the positional lookup below would
+     *  answer NULL_ID for it. Empty for every operation that copies all of its sources. */
     static auto PointImage(quint32 pointId, const QVector<SourceItem> &source,
-                           const QVector<DestinationItem> &destination, const QVector<quint32> &fixedPoints) -> quint32;
+                           const QVector<DestinationItem> &destination, const QVector<quint32> &fixedPoints,
+                           const QHash<quint32, quint32> &referencedPoints = {}) -> quint32;
 
     /** @brief Create the transformed line of every descriptor whose two endpoints have an image.
      *  Idempotent: a line whose id already exists in the pattern is left untouched. */
     static void CreateLines(VAbstractPattern *doc, VContainer *data, VMainGraphicsScene *scene,
                             const QVector<OOperationLine> &lines, const QVector<SourceItem> &source,
-                            const QVector<DestinationItem> &destination, const QVector<quint32> &fixedPoints);
+                            const QVector<DestinationItem> &destination, const QVector<quint32> &fixedPoints,
+                            const QHash<quint32, quint32> &referencedPoints = {});
 
     static void SaveLines(VAbstractPattern *doc, QDomElement &tag, const QVector<OOperationLine> &lines);
     static auto ExtractLines(const QDomElement &domElement) -> QVector<OOperationLine>;

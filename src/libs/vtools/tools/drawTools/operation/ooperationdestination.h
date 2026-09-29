@@ -69,14 +69,24 @@ public:
     explicit OOperationDestination(Transform transform) : m_transform(std::move(transform)) {}
 
     /** @brief Create the image of every source object, in source order: destination[i] is the image of
-     *  source[i]. Used when the operation is created from the GUI. */
+     *  source[i]. Used when the operation is created from the GUI.
+     *
+     *  @a referencedSources lists the sources the operation references instead of copying. Their entry keeps
+     *  its place — the two lists are read positionally everywhere else — but holds no object: a transfer
+     *  anchors its portion on a point of the host part, it does not duplicate it. */
     void Create(quint32 idTool, const QVector<SourceItem> &source, VContainer *data,
-                QVector<DestinationItem> &destination) const
+                QVector<DestinationItem> &destination, const QVector<quint32> &referencedSources = {}) const
     {
         destination.reserve(source.size());
 
         for (const auto &object : std::as_const(source))
         {
+            if (referencedSources.contains(object.id))
+            {
+                destination.append({.recordId = object.recordId});
+                continue;
+            }
+
             destination.append(CreateObject(idTool, object, data));
         }
     }
@@ -85,12 +95,18 @@ public:
      *  read back from a pattern. The two lists are written together, but a file can hold more sources
      *  than destinations: indexing the shorter one would read out of bounds on a mere open. */
     void Update(quint32 idTool, const QVector<SourceItem> &source, VContainer *data,
-                const QVector<DestinationItem> &destination) const
+                const QVector<DestinationItem> &destination,
+                const QVector<quint32> &referencedSources = {}) const
     {
         const qsizetype count = qMin(source.size(), destination.size());
 
         for (int i = 0; i < count; ++i)
         {
+            if (referencedSources.contains(source.at(i).id))
+            {
+                continue; // Referenced, not copied: there is no image of its own to rewrite.
+            }
+
             UpdateObject(idTool, source.at(i), data, destination.at(i));
         }
     }

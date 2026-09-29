@@ -109,6 +109,10 @@ extern const QString AttrAngle2;
 extern const QString AttrMovingPoint;
 extern const QString AttrTargetPoint;
 extern const QString AttrClosingDivisor;
+// The two merge points of a transfer: the point of the source part the portion is anchored on, and the
+// point of the host part it lands on.
+extern const QString AttrOrigin;
+extern const QString AttrTarget;
 extern const QString AttrApex;
 extern const QString AttrExtendPoint;
 extern const QString AttrDrawCap;

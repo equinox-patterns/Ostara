@@ -114,6 +114,7 @@ enum class VShortcutAction : quint8
     ToolCloseDart,
     ToolDartCap,
     ToolRectangle,
+    ToolTransfert,
     ToolFlippingByLine,
     ToolFlippingByAxis,
     ToolMove,

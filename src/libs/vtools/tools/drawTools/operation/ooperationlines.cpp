@@ -198,11 +198,20 @@ auto OOperationLines::IsExplicit(const OOperationLine &line) -> bool
 //---------------------------------------------------------------------------------------------------------------------
 auto OOperationLines::PointImage(quint32 pointId, const QVector<SourceItem> &source,
                                  const QVector<DestinationItem> &destination,
-                                 const QVector<quint32> &fixedPoints) -> quint32
+                                 const QVector<quint32> &fixedPoints,
+                                 const QHash<quint32, quint32> &referencedPoints) -> quint32
 {
     if (pointId == NULL_ID)
     {
         return NULL_ID;
+    }
+
+    // A referenced point has no copy of its own: its image is the point it was anchored on — the merge
+    // point of the host part. Read before the positional lookup, which knows the point as a source but has
+    // no destination object to answer with.
+    if (const auto referenced = referencedPoints.constFind(pointId); referenced != referencedPoints.cend())
+    {
+        return referenced.value();
     }
 
     const qsizetype count = std::min(source.size(), destination.size());
@@ -227,12 +236,13 @@ auto OOperationLines::PointImage(quint32 pointId, const QVector<SourceItem> &sou
 //---------------------------------------------------------------------------------------------------------------------
 void OOperationLines::CreateLines(VAbstractPattern *doc, VContainer *data, VMainGraphicsScene *scene,
                                  const QVector<OOperationLine> &lines, const QVector<SourceItem> &source,
-                                 const QVector<DestinationItem> &destination, const QVector<quint32> &fixedPoints)
+                                 const QVector<DestinationItem> &destination, const QVector<quint32> &fixedPoints,
+                                 const QHash<quint32, quint32> &referencedPoints)
 {
     for (const auto &line : lines)
     {
-        const quint32 first = PointImage(line.point1, source, destination, fixedPoints);
-        const quint32 second = PointImage(line.point2, source, destination, fixedPoints);
+        const quint32 first = PointImage(line.point1, source, destination, fixedPoints, referencedPoints);
+        const quint32 second = PointImage(line.point2, source, destination, fixedPoints, referencedPoints);
 
         // No image for one endpoint: the line cannot exist, and nothing is created. The preview shows
         // the same thing, so what is displayed is what will be built.

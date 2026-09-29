@@ -288,6 +288,7 @@ enum class Tool : ToolVisHolderType
     CloseDart,
     DartCap,
     Rectangle,
+    Transfert,
     LAST_ONE_DO_NOT_USE // add new stuffs above this, this constant must be last and never used
 };
 
@@ -359,6 +360,7 @@ enum class Vis : ToolVisHolderType
     ToolCloseDart,
     ToolDartCap,
     ToolRectangle,
+    ToolTransfert,
     LAST_ONE_DO_NOT_USE // add new stuffs above this, this constant must be last and never used
 };
 

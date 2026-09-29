@@ -42,6 +42,7 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/oclosedartrule.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
+#include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
@@ -448,6 +449,43 @@ void VPattern::ParseToolCloseDart(VMainGraphicsScene *scene, QDomElement &domEle
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseToolTransfert(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse)
+{
+    SCASSERT(scene != nullptr)
+    Q_ASSERT_X(domElement.isNull() == false, Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        OToolTransfertInitData initData;
+        initData.scene = scene;
+        initData.doc = this;
+        initData.data = data;
+        initData.parse = parse;
+        initData.typeCreation = Source::FromFile;
+
+        DrawToolsCommonAttributes(domElement, initData.id, initData.notes);
+        // The two merge points, and nothing else: the portion is the source list, and the copies are recomputed
+        // from it at every parse.
+        initData.origin = GetParametrUInt(domElement, AttrOrigin, NULL_ID_STR);
+        initData.target = GetParametrUInt(domElement, AttrTarget, NULL_ID_STR);
+
+        // We no longer need to handle suffix attribute here. The code can be removed.
+        Q_STATIC_ASSERT(VPatternConverter::PatternMinVer < FormatVersion(1, 1, 1));
+        initData.suffix = GetParametrEmptyString(domElement, AttrSuffix);
+
+        VAbstractOperation::ExtractData(domElement, initData);
+
+        OToolTransfert::Create(initData);
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating the operation of transfer"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VPattern::ParseToolFlippingByLine(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse)
 {
     SCASSERT(scene != nullptr)
@@ -703,7 +741,8 @@ void VPattern::ParseOperationElement(VMainGraphicsScene *scene, QDomElement &dom
                                      << VToolFlippingByLine::ToolType /*1*/
                                      << VToolFlippingByAxis::ToolType /*2*/
                                      << VToolMove::ToolType           /*3*/
-                                     << OToolCloseDart::ToolType;     /*4*/
+                                     << OToolCloseDart::ToolType      /*4*/
+                                     << OToolTransfert::ToolType;     /*5*/
 
     switch (opers.indexOf(type))
     {
@@ -721,6 +760,9 @@ void VPattern::ParseOperationElement(VMainGraphicsScene *scene, QDomElement &dom
             break;
         case 4: // OToolCloseDart::ToolType
             ParseToolCloseDart(scene, domElement, parse);
+            break;
+        case 5: // OToolTransfert::ToolType
+            ParseToolTransfert(scene, domElement, parse);
             break;
         default:
             throw VException(tr("Unknown operation type '%1'.").arg(type));

@@ -300,6 +300,7 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("dart_cap"),                     ui->actionDartCapTool},
         {QStringLiteral("rectangle"),                    ui->actionRectangleTool},
         {QStringLiteral("move"),                         ui->actionMoveTool},
+        {QStringLiteral("transfert"),                    ui->actionTransfertTool},
         {QStringLiteral("true_darts"),                   ui->actionTrueDartsTool},
         {QStringLiteral("new_detail"),                   ui->actionNewDetailTool},
         {QStringLiteral("path"),                         ui->actionInternalPathTool},

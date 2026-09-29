@@ -158,9 +158,12 @@ protected:
     /** @brief Create the transformed copy of every attached line whose two endpoints have an image.
      *  Called by each operation tool once its destination objects exist. @a fixedPoints lists the points
      *  the transformation leaves in place (rotation centre, mirror axis points): they are their own
-     *  image. Static because the destination objects are built before the tool instance exists. */
+     *  image. @a referencedPoints lists the points an operation references instead of copying — the merge
+     *  point of a transfer, whose image is the merge point of the host part. Static because the
+     *  destination objects are built before the tool instance exists. */
     static void CreateDestinationLines(const VAbstractOperationInitData &initData,
-                                       const QVector<quint32> &fixedPoints);
+                                       const QVector<quint32> &fixedPoints,
+                                       const QHash<quint32, quint32> &referencedPoints = {});
 
     auto Lines() const -> const QVector<OOperationLine> & { return m_lines; }
 

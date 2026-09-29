@@ -341,6 +341,11 @@
                           <xs:attribute name="movingPoint" type="xs:unsignedInt"/>
                           <xs:attribute name="targetPoint" type="xs:unsignedInt"/>
                           <xs:attribute name="closingDivisor" type="xs:string"/>
+                          <!-- The transfer keeps the two merge points: the point of the source part the
+                               portion is anchored on, and the point of the host part it lands on. The
+                               copies themselves are not stored, they are recomputed from their sources. -->
+                          <xs:attribute name="origin" type="xs:unsignedInt"/>
+                          <xs:attribute name="target" type="xs:unsignedInt"/>
                           <xs:attribute name="length" type="xs:string"/>
                           <xs:attribute name="suffix" type="nameSuffix"/>
                           <xs:attribute name="type" type="xs:string" use="required"/>

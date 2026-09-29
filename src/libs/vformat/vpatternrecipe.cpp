@@ -46,6 +46,7 @@
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
+#include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
@@ -366,7 +367,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -479,6 +480,8 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
                 return FlippingByAxis(tool, data);
             case Tool::Move:
                 return Move(tool, data);
+            case Tool::Transfert:
+                return Transfert(tool, data);
             case Tool::EllipticalArcWithLength:
                 return EllipticalArcWithLength(tool);
             case Tool::ParallelCurve:
@@ -1265,6 +1268,24 @@ auto VPatternRecipe::Move(const VToolRecord &record, const VContainer &data) -> 
     Formula(step, tool->GetFormulaRotationAngle(), AttrRotationAngle, AttrRotationAngleValue);
     Formula(step, tool->GetFormulaLength(), AttrLength, AttrLengthValue);
     SetAttribute(step, AttrCenter, tool->OriginPointName());
+
+    step.appendChild(GroupOperationSource(tool, record.GetId(), data));
+
+    return step;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPatternRecipe::Transfert(const VToolRecord &record, const VContainer &data) -> QDomElement
+{
+    auto *tool = GetPatternTool<OToolTransfert>(record.GetId());
+
+    QDomElement step = createElement(TagStep);
+
+    SetAttribute(step, AttrType, OToolTransfert::ToolType);
+    // The two merge points by name: the recipe describes a transfer by what it is anchored on, since the
+    // copies themselves are recomputed, never stored.
+    SetAttribute(step, AttrOrigin, tool->OriginPointName());
+    SetAttribute(step, AttrTarget, tool->TargetPointName());
 
     step.appendChild(GroupOperationSource(tool, record.GetId(), data));
 

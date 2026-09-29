@@ -272,6 +272,7 @@ private:
     void ParseToolFlippingByAxis(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolMove(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolCloseDart(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
+    void ParseToolTransfert(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
 
     auto EvalFormula(VContainer *data, const QString &formula, bool *ok) const -> qreal;
 

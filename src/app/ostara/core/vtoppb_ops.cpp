@@ -31,6 +31,7 @@
 #include "vtoppb_templates.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
+#include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
@@ -55,6 +56,7 @@ auto T(const char *s) -> QString
 auto RotationProperties() -> std::vector<PropertyDesc>;
 auto CloseDartProperties() -> std::vector<PropertyDesc>;
 auto MoveProperties() -> std::vector<PropertyDesc>;
+auto TransfertProperties() -> std::vector<PropertyDesc>;
 auto FlippingByLineProperties() -> std::vector<PropertyDesc>;
 auto FlippingByAxisProperties() -> std::vector<PropertyDesc>;
 
@@ -535,6 +537,37 @@ auto FlippingByAxisProperties() -> std::vector<PropertyDesc>
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
          {
              if (auto *t = qgraphicsitem_cast<VToolFlippingByAxis *>(b->currentItem()))
+                 prop->setValue(t->GetNotes());
+         }},
+    };
+}
+
+// --- OToolTransfert ---
+auto TransfertProperties() -> std::vector<PropertyDesc>
+{
+    // Notes, and nothing else: the two merge points are read in the pattern, and neither the portion nor the
+    // layer it landed in is edited after the tool is created.
+    return {
+        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+         {
+             auto *t = static_cast<OToolTransfert *>(tool);
+             auto *prop = new VPE::VTextProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")));
+             prop->setValue(t->GetNotes());
+             return prop;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<OToolTransfert *>(b->currentItem()))
+             {
+                 QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                 if (text != t->GetNotes())
+                     t->SetNotes(text);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+         {
+             if (auto *t = qgraphicsitem_cast<OToolTransfert *>(b->currentItem()))
                  prop->setValue(t->GetNotes());
          }},
     };

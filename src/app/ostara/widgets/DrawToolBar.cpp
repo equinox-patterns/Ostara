@@ -28,6 +28,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QGridLayout>
+#include <QHash>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMainWindow>
@@ -88,7 +89,8 @@ auto IsAppIconTool(const QString &id) -> bool
 {
     return id == QStringLiteral("detail_export") || id == QStringLiteral("export_templates")
            || id == QStringLiteral("export_image") || id == QStringLiteral("close_dart")
-           || id == QStringLiteral("dart_cap") || id == QStringLiteral("rectangle");
+           || id == QStringLiteral("dart_cap") || id == QStringLiteral("rectangle")
+           || id == QStringLiteral("transfert");
 }
 
 auto FormatTooltip(const QString &toolName, const QAction *action) -> QString
@@ -252,6 +254,18 @@ void DrawToolBar::ReloadIcons()
                 QIcon(QStringLiteral(":/icons/%1/file-image-fill_%1.svg").arg(theme)));
             continue;
         }
+        // Tools that wait for artwork of their own borrow the icon of the tool they come from: looking for a
+        // <id>.svg that does not exist would blank them on every theme switch.
+        static const QHash<QString, QString> borrowed{{QStringLiteral("close_dart"), QStringLiteral("rotation.png")},
+                                                      {QStringLiteral("dart_cap"), QStringLiteral("true_darts.png")},
+                                                      {QStringLiteral("rectangle"), QStringLiteral("shoulder.png")},
+                                                      {QStringLiteral("transfert"), QStringLiteral("move.png")}};
+        if (const auto icon = borrowed.constFind(it.key()); icon != borrowed.cend())
+        {
+            it.value()->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), icon.value()));
+            continue;
+        }
+
         const auto path = QStringLiteral(":/tools/%1/%2.svg").arg(theme, it.key());
         it.value()->setIcon(QIcon(path));
     }
@@ -490,6 +504,9 @@ void DrawToolBar::InitializeGroups()
             // Same again: the rectangle waits for artwork of its own and borrows the icon of the shoulder
             // point, which is where its dialog takes its cursor from too.
             {QStringLiteral("rectangle"),                tr("Rectangle tool"),                                  nullptr, nullptr},
+            // Same again: no transfert.svg yet, so the button is built by hand below and borrows the icon of
+            // the move it translates — the one its action uses too.
+            {QStringLiteral("transfert"),                tr("Transfert tool"),                                  nullptr, nullptr},
         }, kModeDraw},
     };
     // clang-format on
@@ -578,6 +595,20 @@ void DrawToolBar::InitializeGroups()
         btn->setIconSize(QSize(24, 24));
         btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("shoulder.png")));
         m_buttonMap.insert(QStringLiteral("rectangle"), btn);
+    }
+
+    // The transfer waits for artwork of its own too, and borrows the icon of the move — same one its action
+    // carries. By hand, like the three above.
+    if (!m_buttonMap.contains(QStringLiteral("transfert")))
+    {
+        auto *btn = new QToolButton(m_root);
+        btn->setObjectName(QStringLiteral("drawToolBtn"));
+        btn->setAutoRaise(true);
+        btn->setCheckable(true);
+        btn->setFixedSize(kButtonSize, kButtonSize);
+        btn->setIconSize(QSize(24, 24));
+        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("move.png")));
+        m_buttonMap.insert(QStringLiteral("transfert"), btn);
     }
 
     // Update the button pointer in the ToolItem

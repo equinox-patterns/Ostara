@@ -79,6 +79,7 @@
 #include "../vtools/dialogs/tools/dialogpointofintersectioncurves.h"
 #include "../vtools/dialogs/tools/dialogrotation.h"
 #include "../vtools/dialogs/tools/odialogclosedart.h"
+#include "../vtools/dialogs/tools/odialogtransfert.h"
 #include "../vtools/dialogs/tools/odialogdartcap.h"
 #include "../vtools/dialogs/tools/odialogrectangle.h"
 #include "../vtools/dialogs/tools/dialogshoulderpoint.h"
@@ -101,6 +102,7 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
+#include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
@@ -719,6 +721,21 @@ void MainWindow::ToolMove(bool checked)
 
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolTransfert(bool checked)
+{
+    ToolSelectOperationObjects();
+    ToolSelectOperationLines();
+    const QString tooltip = tr("Select the objects of the portion, <b>%1</b> - confirm selection")
+                                .arg(VModifierKey::EnterKey());
+    // No artwork for the cursor of this one: it asks for the ordinary pointer.
+    SetToolButtonWithApply<ODialogTransfert>(checked, Tool::Transfert, QString(), tooltip,
+                                             &MainWindow::ClosedDrawDialogWithApply<OToolTransfert>,
+                                             &MainWindow::ApplyDrawDialog<OToolTransfert>);
+    LogPatternToolUsed(checked, QStringLiteral("Transfert tool"));
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ClosedDialogPiecePath(int result)
 {
     SCASSERT(m_dialogTool != nullptr);
@@ -1013,10 +1030,19 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     if (const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
         settings->GetPointerMode() == VToolPointerMode::ToolIcon)
     {
-        const auto resource = QStringLiteral("toolcursor");
-        QPixmap const pixmap(ResolveToolCursorResource(resource, cursor));
-        QCursor const cur(pixmap, 2, 2);
-        ui->view->viewport()->setCursor(cur);
+        if (cursor.isEmpty())
+        {
+            // The tool asks for the ordinary pointer: no artwork goes with it, and a cursor built from a null
+            // pixmap would be invisible rather than an arrow.
+            ui->view->viewport()->setCursor(Qt::ArrowCursor);
+        }
+        else
+        {
+            const auto resource = QStringLiteral("toolcursor");
+            QPixmap const pixmap(ResolveToolCursorResource(resource, cursor));
+            QCursor const cur(pixmap, 2, 2);
+            ui->view->viewport()->setCursor(cur);
+        }
         ui->view->setCurrentCursorShape(); // Hack to fix problem with a cursor
     }
 
@@ -1025,7 +1051,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "Check if need to extend.");
 
     switch (t)
     {
@@ -1045,6 +1071,20 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         case Tool::FlippingByAxis:
         case Tool::FlippingByLine:
             dialogTool->SetGroupCategories(doc->GetGroupCategories());
+            break;
+        case Tool::Transfert:
+            // The one tool that changes pattern piece in the middle of its own creation. It asks for it, and
+            // the window does it: the part combo has to follow, and the canvas has to show the part that
+            // receives the portion — the previous one stays where it was framed.
+            if (auto *transfert = qobject_cast<ODialogTransfert *>(dialogTool))
+            {
+                connect(transfert, &ODialogTransfert::HostPartSelected, this,
+                        [this](const QString &part)
+                        {
+                            GlobalChangePP(part);
+                            ZoomFitBestCurrent();
+                        });
+            }
             break;
         case Tool::Piece:
             dialogTool->SetPatternDoc(doc);
@@ -1430,7 +1470,7 @@ void MainWindow::ApplyPieceDialog(VMainGraphicsScene *scene)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1628,6 +1668,9 @@ void MainWindow::CancelTool()
         case Tool::Move:
             ui->actionMoveTool->setChecked(false);
             break;
+        case Tool::Transfert:
+            ui->actionTransfertTool->setChecked(false);
+            break;
         case Tool::EllipticalArc:
             ui->actionEllipticalArcTool->setChecked(false);
             break;
@@ -1724,7 +1767,7 @@ void MainWindow::ArrowTool(bool checked)
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -1941,6 +1984,10 @@ void MainWindow::LastUsedTool()
         case Tool::Move:
             ui->actionMoveTool->setChecked(true);
             ToolMove(true);
+            break;
+        case Tool::Transfert:
+            ui->actionTransfertTool->setChecked(true);
+            ToolTransfert(true);
             break;
         case Tool::EllipticalArc:
             ui->actionEllipticalArcTool->setChecked(true);

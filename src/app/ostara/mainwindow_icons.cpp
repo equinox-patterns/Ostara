@@ -37,7 +37,7 @@ void MainWindow::SetupDrawToolsIcons()
     const auto resource = QStringLiteral("toolicon");
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 72, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "Not all tools were handled.");
 
     ui->actionLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("line.png")));
     ui->actionEndLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("segment.png")));
@@ -93,6 +93,9 @@ void MainWindow::SetupDrawToolsIcons()
     ui->actionDartCapTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("true_darts.png")));
     ui->actionRectangleTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("shoulder.png")));
     ui->actionMoveTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("move.png")));
+    // The transfer waits for its own artwork: it borrows the icon of the move it translates, and the button of
+    // the palette borrows the same one (see DrawToolBar).
+    ui->actionTransfertTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("move.png")));
     ui->actionTrueDartsTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("true_darts.png")));
     ui->actionNewDetailTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("new_detail.png")));
     ui->actionUnionDetailsTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("union.png")));

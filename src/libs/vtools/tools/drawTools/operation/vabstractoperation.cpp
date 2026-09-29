@@ -834,7 +834,8 @@ void VAbstractOperation::ApplyToolOptions(const QDomElement &oldDomElement, cons
 
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractOperation::CreateDestinationLines(const VAbstractOperationInitData &initData,
-                                               const QVector<quint32> &fixedPoints)
+                                               const QVector<quint32> &fixedPoints,
+                                               const QHash<quint32, quint32> &referencedPoints)
 {
     if (initData.lines.isEmpty() || initData.parse != Document::FullParse)
     {
@@ -844,7 +845,7 @@ void VAbstractOperation::CreateDestinationLines(const VAbstractOperationInitData
     }
 
     OOperationLines::CreateLines(initData.doc, initData.data, initData.scene, initData.lines, initData.source,
-                                 initData.destination, fixedPoints);
+                                 initData.destination, fixedPoints, referencedPoints);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -977,6 +978,15 @@ void VAbstractOperation::SaveSourceDestination(QDomElement &tag,
     {
         QDomElement item = doc->createElement(TagItem);
         doc->SetAttribute(item, AttrIdObject, dItem.id);
+
+        if (dItem.id == NULL_ID)
+        {
+            // The source is referenced, not copied — the merge point of a transfer. The entry is written all
+            // the same, with no object: the two lists are read positionally, so dropping it would pair every
+            // following source with the wrong image on the next open. It carries no label either.
+            tagObjects.appendChild(item);
+            continue;
+        }
 
         VAbstractSimple const *obj = operatedObjects.value(dItem.id, nullptr);
 
@@ -1149,6 +1159,13 @@ void VAbstractOperation::InitOperatedObjects()
 {
     for (const auto &object : std::as_const(m_destination))
     {
+        if (object.id == NULL_ID)
+        {
+            // A source the operation references instead of copying — the merge point of a transfer — has no
+            // image of its own: there is nothing to show, select or move for it.
+            continue;
+        }
+
         const QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(object.id);
 
         // This check helps to find missed objects in the switch
