@@ -389,7 +389,7 @@ auto VToolAlongLine::Create(VToolAlongLineInitData &initData) -> VToolAlongLine 
     line.setLength(
         VAbstractValApplication::VApp()->toPixel(CheckFormula(initData.id, initData.formula, initData.data)));
 
-    auto *p = new VPointF(line.p2(), initData.name, initData.mx, initData.my);
+    QSharedPointer<VPointF> p = QSharedPointer<VPointF>::create(line.p2(), initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
     if (initData.typeCreation == Source::FromGui)

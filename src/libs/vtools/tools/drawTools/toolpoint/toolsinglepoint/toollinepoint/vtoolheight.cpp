@@ -150,7 +150,7 @@ auto VToolHeight::Create(VToolHeightInitData initData) -> VToolHeight *
     QPointF const pHeight = FindPoint(QLineF(static_cast<QPointF>(*p1Line), static_cast<QPointF>(*p2Line)),
                                       static_cast<QPointF>(*basePoint));
 
-    auto *p = new VPointF(pHeight, initData.name, initData.mx, initData.my);
+    QSharedPointer<VPointF> p = QSharedPointer<VPointF>::create(pHeight, initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
     if (initData.typeCreation == Source::FromGui)

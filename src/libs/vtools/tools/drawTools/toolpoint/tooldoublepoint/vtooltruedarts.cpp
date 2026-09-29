@@ -170,10 +170,12 @@ auto VToolTrueDarts::Create(VToolTrueDartsInitData initData) -> VToolTrueDarts *
                               static_cast<QPointF>(*dartP1), static_cast<QPointF>(*dartP2),
                               static_cast<QPointF>(*dartP3), fPoint1, fPoint2);
 
-    auto *p1 = new VPointF(fPoint1, initData.name1, initData.mx1, initData.my1, initData.id);
+    const QSharedPointer<VPointF> p1
+        = QSharedPointer<VPointF>::create(fPoint1, initData.name1, initData.mx1, initData.my1, initData.id);
     p1->SetShowLabel(initData.showLabel1);
 
-    auto *p2 = new VPointF(fPoint2, initData.name2, initData.mx2, initData.my2, initData.id);
+    const QSharedPointer<VPointF> p2
+        = QSharedPointer<VPointF>::create(fPoint2, initData.name2, initData.mx2, initData.my2, initData.id);
     p2->SetShowLabel(initData.showLabel2);
 
     if (initData.typeCreation == Source::FromGui)

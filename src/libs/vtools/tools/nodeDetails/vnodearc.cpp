@@ -68,7 +68,7 @@ void VNodeArc::Create(const VAbstractNodeInitData &initData)
 
     try
     {
-        auto *arc = new VArc(*initData.data->GeometricObject<VArc>(initData.idObject));
+        QSharedPointer<VArc> arc = QSharedPointer<VArc>::create(*initData.data->GeometricObject<VArc>(initData.idObject));
         arc->setIdObject(initData.idObject);
         arc->setMode(Draw::Modeling);
         initData.data->UpdateGObject(initData.id, arc);

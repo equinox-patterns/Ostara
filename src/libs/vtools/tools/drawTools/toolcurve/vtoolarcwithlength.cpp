@@ -152,7 +152,8 @@ auto VToolArcWithLength::Create(VToolArcWithLengthInitData &initData) -> VToolAr
     qreal const calcF1 = CheckFormula(initData.id, initData.f1, initData.data);
 
     const VPointF c = *initData.data->GeometricObject<VPointF>(initData.center);
-    auto *arc = new VArc(calcLength, initData.length, c, calcRadius, initData.radius, calcF1, initData.f1);
+    const QSharedPointer<VArc> arc
+        = QSharedPointer<VArc>::create(calcLength, initData.length, c, calcRadius, initData.radius, calcF1, initData.f1);
     arc->SetColor(initData.color);
     arc->SetPenStyle(initData.penStyle);
     arc->SetApproximationScale(initData.approximationScale);

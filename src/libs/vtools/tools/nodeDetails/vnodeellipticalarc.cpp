@@ -51,7 +51,7 @@ void VNodeEllipticalArc::Create(const VAbstractNodeInitData &initData)
 
     try
     {
-        auto *arc = new VEllipticalArc(*initData.data->GeometricObject<VEllipticalArc>(initData.idObject));
+        QSharedPointer<VEllipticalArc> arc = QSharedPointer<VEllipticalArc>::create(*initData.data->GeometricObject<VEllipticalArc>(initData.idObject));
         arc->setIdObject(initData.idObject);
         arc->setMode(Draw::Modeling);
         initData.data->UpdateGObject(initData.id, arc);

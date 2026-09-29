@@ -231,7 +231,7 @@ auto VToolPointOfContact::Create(VToolPointOfContactInitData &initData) -> VTool
             : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
     }
 
-    auto *p = new VPointF(fPoint, initData.name, initData.mx, initData.my);
+    QSharedPointer<VPointF> p = QSharedPointer<VPointF>::create(fPoint, initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
     if (initData.typeCreation == Source::FromGui)

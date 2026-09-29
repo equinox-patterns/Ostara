@@ -72,14 +72,14 @@ void VNodeSpline::Create(const VAbstractNodeInitData &initData)
         const auto obj = initData.data->GetGObject(initData.idObject);
         if (obj->getType() == GOType::Spline)
         {
-            auto *spl = new VSpline(*initData.data->GeometricObject<VSpline>(initData.idObject));
+            QSharedPointer<VSpline> spl = QSharedPointer<VSpline>::create(*initData.data->GeometricObject<VSpline>(initData.idObject));
             spl->setIdObject(initData.idObject);
             spl->setMode(Draw::Modeling);
             initData.data->UpdateGObject(initData.id, spl);
         }
         else
         {
-            auto *spl = new VCubicBezier(*initData.data->GeometricObject<VCubicBezier>(initData.idObject));
+            QSharedPointer<VCubicBezier> spl = QSharedPointer<VCubicBezier>::create(*initData.data->GeometricObject<VCubicBezier>(initData.idObject));
             spl->setIdObject(initData.idObject);
             spl->setMode(Draw::Modeling);
             initData.data->UpdateGObject(initData.id, spl);

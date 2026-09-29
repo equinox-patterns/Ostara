@@ -158,7 +158,8 @@ auto VToolEllipticalArcWithLength::Create(VToolEllipticalArcWithLengthInitData &
     qreal const calcRotationAngle = CheckFormula(initData.id, initData.rotationAngle, initData.data);
 
     const VPointF c = *initData.data->GeometricObject<VPointF>(initData.center);
-    auto *arc = new VEllipticalArc(calcLength,
+    const QSharedPointer<VEllipticalArc> arc = QSharedPointer<VEllipticalArc>::create(
+                                   calcLength,
                                    initData.length,
                                    c,
                                    calcRadius1,

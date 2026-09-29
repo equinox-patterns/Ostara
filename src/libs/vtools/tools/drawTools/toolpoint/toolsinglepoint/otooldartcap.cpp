@@ -166,7 +166,8 @@ auto OToolDartCap::Create(OToolDartCapInitData initData) -> OToolDartCap *
         capPoint = QPointF();
     }
 
-    auto *p = new VPointF(capPoint, initData.name, initData.mx, initData.my);
+    const QSharedPointer<VPointF> p
+        = QSharedPointer<VPointF>::create(capPoint, initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
     if (initData.typeCreation == Source::FromGui)

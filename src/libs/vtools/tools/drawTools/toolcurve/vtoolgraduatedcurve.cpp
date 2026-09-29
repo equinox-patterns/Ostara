@@ -137,7 +137,7 @@ auto VToolGraduatedCurve::Create(VToolGraduatedCurveInitData &initData) -> VTool
     }
     else
     {
-        initData.data->UpdateGObject(initData.id, new VSplinePath(splPath));
+        initData.data->UpdateGObject(initData.id, QSharedPointer<VSplinePath>::create(splPath));
     }
 
     VPatternGraph *patternGraph = initData.doc->PatternGraph();

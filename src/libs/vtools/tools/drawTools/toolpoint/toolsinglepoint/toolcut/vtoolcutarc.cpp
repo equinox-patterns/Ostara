@@ -226,7 +226,8 @@ auto VToolCutArc::Create(VToolCutInitData &initData) -> VToolCutArc *
     a1->SetNameSuffix(initData.name1);
     a2->SetNameSuffix(initData.name2);
 
-    auto *p = new VPointF(cutPoint, initData.name, initData.mx, initData.my);
+    const QSharedPointer<VPointF> p
+        = QSharedPointer<VPointF>::create(cutPoint, initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
     if (initData.typeCreation == Source::FromGui)

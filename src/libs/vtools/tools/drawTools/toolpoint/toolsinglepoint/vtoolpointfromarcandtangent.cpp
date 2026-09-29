@@ -137,7 +137,7 @@ auto VToolPointFromArcAndTangent::Create(VToolPointFromArcAndTangentInitData ini
             : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
     }
 
-    auto *p = new VPointF(point, initData.name, initData.mx, initData.my);
+    QSharedPointer<VPointF> p = QSharedPointer<VPointF>::create(point, initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
     if (initData.typeCreation == Source::FromGui)

@@ -147,7 +147,7 @@ auto VToolNormal::Create(VToolNormalInitData &initData) -> VToolNormal *
     QPointF const fPoint = VToolNormal::FindPoint(static_cast<QPointF>(*firstPoint), static_cast<QPointF>(*secondPoint),
                                                   VAbstractValApplication::VApp()->toPixel(result), initData.angle);
 
-    auto *p = new VPointF(fPoint, initData.name, initData.mx, initData.my);
+    QSharedPointer<VPointF> p = QSharedPointer<VPointF>::create(fPoint, initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
     if (initData.typeCreation == Source::FromGui)

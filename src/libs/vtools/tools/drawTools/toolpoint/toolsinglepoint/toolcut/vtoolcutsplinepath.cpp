@@ -184,8 +184,11 @@ auto VToolCutSplinePath::Create(VToolCutInitData &initData) -> VToolCutSplinePat
 
     VSplinePath *splPath1 = nullptr;
     VSplinePath *splPath2 = nullptr;
-    VPointF *p = VToolCutSplinePath::CutSplinePath(VAbstractValApplication::VApp()->toPixel(result), splPath,
-                                                   initData.name, &splPath1, &splPath2);
+    // The helper hands a fresh point back; held here from the start, it stays alive for the hand-over below
+    // (the container updates the object it already holds instead of adopting what it is given).
+    const QSharedPointer<VPointF> p(VToolCutSplinePath::CutSplinePath(VAbstractValApplication::VApp()->toPixel(result),
+                                                                      splPath, initData.name, &splPath1,
+                                                                      &splPath2));
 
     SCASSERT(splPath1 != nullptr)
     SCASSERT(splPath2 != nullptr)

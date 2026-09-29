@@ -61,7 +61,8 @@ auto OToolCurvePoint::Create(OToolCurvePointInitData initData) -> OToolCurvePoin
         initData.data->GeometricObject<VAbstractCubicBezierPath>(initData.splineId);
     const VPointF point = (initData.position == CurvePointPosition::Start) ? curve->FirstPoint() : curve->LastPoint();
 
-    auto *p = new VPointF(point.toQPointF(), initData.name, initData.mx, initData.my);
+    const QSharedPointer<VPointF> p
+        = QSharedPointer<VPointF>::create(point.toQPointF(), initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
     if (initData.typeCreation == Source::FromGui)

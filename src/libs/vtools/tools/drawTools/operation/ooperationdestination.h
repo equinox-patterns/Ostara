@@ -268,7 +268,7 @@ private:
         image.setMy(item.my);
         image.SetShowLabel(item.showLabel);
 
-        data->UpdateGObject(item.id, new VPointF(image));
+        data->UpdateGObject(item.id, QSharedPointer<VPointF>::create(image));
     }
 
     template <class Item>
@@ -288,7 +288,7 @@ private:
             image.SetColor(sItem.color);
         }
 
-        data->UpdateGObject(id, new Item(image));
+        data->UpdateGObject(id, QSharedPointer<Item>::create(image));
     }
 
     template <class Item>

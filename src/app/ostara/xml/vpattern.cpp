@@ -255,6 +255,19 @@ void VPattern::Parse(const Document &parse)
             throw VExceptionObjectError(tr("The formula uses a name the pattern does not define: %1.")
                                             .arg(VContainer::DeferredFormulaNames().join(QStringLiteral(", "))));
         }
+
+        // The tools whose formulas were waiting were built by the first pass with the placeholder value 0: the
+        // second pass has just corrected the container, but their scene items still stand where that value put
+        // them — a point whose length was unknown sits on its base point, and reads as gone. Each tool is
+        // therefore asked to read its own geometry back from the container, the same refresh the options dock
+        // applies after a change. Only on this path: a parse with no deferred formula is already consistent.
+        for (auto *tool : std::as_const(tools))
+        {
+            if (auto *drawTool = dynamic_cast<VAbstractTool *>(tool); drawTool != nullptr)
+            {
+                drawTool->FullUpdateFromFile();
+            }
+        }
     }
 
     m_fileParsingCompleted = true;

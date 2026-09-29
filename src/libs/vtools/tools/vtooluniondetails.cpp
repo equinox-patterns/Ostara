@@ -598,7 +598,7 @@ auto AddNodeSpline(const VPieceNode &node, const VToolUnionDetailsInitData &init
         BiasRotatePoint(p4.data(), dx, dy, p, angle);
     }
 
-    auto *spl = new VSpline(*p1, static_cast<QPointF>(p2), static_cast<QPointF>(p3), *p4, 0, Draw::Modeling);
+    QSharedPointer<VSpline> spl = QSharedPointer<VSpline>::create(*p1, static_cast<QPointF>(p2), static_cast<QPointF>(p3), *p4, 0, Draw::Modeling);
 
     // Preserve the source spline's name when it was explicitly set (e.g., after flip/rotate/move operations),
     // because those operations store endpoint VPointF objects with temporary names ("X1", "X4") that would
@@ -937,7 +937,7 @@ void UpdateNodePoint(VContainer *data, const VPieceNode &node, QVector<quint32> 
     {
         BiasRotatePoint(point.get(), dx, dy, static_cast<QPointF>(*data->GeometricObject<VPointF>(pRotate)), angle);
     }
-    data->UpdateGObject(TakeNextId(children), point.release());
+    data->UpdateGObject(TakeNextId(children), QSharedPointer<VPointF>(point.release()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -977,7 +977,7 @@ void UpdateNodeArc(VContainer *data, const VPieceNode &node, QVector<quint32> &c
         }
     }
 
-    data->UpdateGObject(TakeNextId(children), arc1.release());
+    data->UpdateGObject(TakeNextId(children), QSharedPointer<VArc>(arc1.release()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1018,7 +1018,7 @@ void UpdateNodeElArc(VContainer *data, const VPieceNode &node, QVector<quint32> 
         }
     }
 
-    data->UpdateGObject(TakeNextId(children), arc1.release());
+    data->UpdateGObject(TakeNextId(children), QSharedPointer<VEllipticalArc>(arc1.release()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1059,7 +1059,7 @@ void UpdateNodeSpline(VContainer *data, const VPieceNode &node, QVector<quint32>
         }
     }
 
-    data->UpdateGObject(TakeNextId(children), spl.release());
+    data->UpdateGObject(TakeNextId(children), QSharedPointer<VSpline>(spl.release()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1130,7 +1130,7 @@ void UpdateNodeSplinePath(VContainer *data, const VPieceNode &node, QVector<quin
         }
     }
 
-    data->UpdateGObject(TakeNextId(children), path.release());
+    data->UpdateGObject(TakeNextId(children), QSharedPointer<VSplinePath>(path.release()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1634,7 +1634,7 @@ void UpdateUnitedDetailPlaceLabels(const VToolUnionDetailsInitData &initData, qr
         label->setMy(parentLabel->my());
 
         label->SetCorrectionAngle(parentLabel->GetCorrectionAngle() + angle);
-        initData.data->UpdateGObject(TakeNextId(children), label.release());
+        initData.data->UpdateGObject(TakeNextId(children), QSharedPointer<VPlaceLabelItem>(label.release()));
     }
 }
 

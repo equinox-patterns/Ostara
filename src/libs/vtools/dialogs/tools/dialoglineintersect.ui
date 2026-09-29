@@ -33,6 +33,9 @@
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QGroupBox" name="groupBox">
+         <property name="visible">
+          <bool>false</bool>
+         </property>
          <property name="title">
           <string>First line</string>
          </property>
@@ -41,6 +44,9 @@
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
              <widget class="QLabel" name="labelP1Line1">
+<property name="visible">
+              <bool>false</bool>
+              </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -53,17 +59,28 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBoxP1Line1"/>
+             <widget class="QComboBox" name="comboBoxP1Line1">
+<property name="visible">
+              <bool>false</bool>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QLabel" name="labelP2Line1">
+<property name="visible">
+              <bool>false</bool>
+              </property>
               <property name="text">
                <string>Second point:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBoxP2Line1"/>
+             <widget class="QComboBox" name="comboBoxP2Line1">
+<property name="visible">
+              <bool>false</bool>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -72,6 +89,9 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox_2">
+         <property name="visible">
+          <bool>false</bool>
+         </property>
          <property name="title">
           <string>Second line</string>
          </property>
@@ -80,6 +100,9 @@
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
              <widget class="QLabel" name="labelP1Line2">
+<property name="visible">
+              <bool>false</bool>
+              </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -92,17 +115,28 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBoxP1Line2"/>
+             <widget class="QComboBox" name="comboBoxP1Line2">
+<property name="visible">
+              <bool>false</bool>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QLabel" name="labelP2Line2">
+<property name="visible">
+              <bool>false</bool>
+              </property>
               <property name="text">
                <string>Second point:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBoxP2Line2"/>
+             <widget class="QComboBox" name="comboBoxP2Line2">
+<property name="visible">
+              <bool>false</bool>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>

@@ -201,7 +201,13 @@ public:
      *  dissolves. */
     void TransferGroupOffsetToMembers(quint32 groupId);
 
-    template <class T> void UpdateGObject(quint32 id, T *obj);
+    /** @brief Update an object of the container, holding it by a QSharedPointer.
+     *
+     * There is deliberately no overload taking a raw pointer. The container keeps the object it already holds
+     * when the id is known — it copies the new value into it — so a raw pointer wrapped in a temporary
+     * QSharedPointer would be freed at the end of the call, leaving the caller's object dangling: the
+     * use-after-free that crashed every tool edit until ten call sites were fixed. Making the caller declare
+     * the QSharedPointer is what lets the compiler refuse that shape. */
     template <class T> void UpdateGObject(quint32 id, const QSharedPointer<T> &obj);
     void UpdatePiece(quint32 id, const VPiece &detail);
     void UpdatePieceGroup(quint32 id, const OPieceGroup &group);
@@ -500,15 +506,8 @@ template <class T> auto VContainer::qHash(const QSharedPointer<T> &p, size_t see
 /**
  * @brief UpdateGObject update GObject by id
  * @param id id of existing GObject
- * @param obj object
+ * @param obj object, held by the caller for as long as it is used
  */
-template <class T> void VContainer::UpdateGObject(quint32 id, T *obj)
-{
-    SCASSERT(obj != nullptr)
-    UpdateGObject(id, QSharedPointer<T>(obj));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 template <class T> void VContainer::UpdateGObject(quint32 id, const QSharedPointer<T> &obj)
 {
     SCASSERT(not obj.isNull())

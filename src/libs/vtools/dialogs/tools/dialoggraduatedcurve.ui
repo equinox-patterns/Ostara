@@ -397,6 +397,9 @@
          </property>
          <item row="0" column="0">
           <widget class="QLabel" name="label_7">
+<property name="visible">
+           <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -409,7 +412,11 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QComboBox" name="comboBoxCurve"/>
+          <widget class="QComboBox" name="comboBoxCurve">
+<property name="visible">
+           <bool>false</bool>
+           </property>
+          </widget>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label">

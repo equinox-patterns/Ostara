@@ -269,7 +269,8 @@ auto VToolCutSpline::Create(VToolCutInitData &initData) -> VToolCutSpline *
 
     const SubCurves curves = SplitCurve(VAbstractValApplication::VApp()->toPixel(result), spl);
 
-    auto *p = new VPointF(curves.cutPoint, initData.name, initData.mx, initData.my);
+    const QSharedPointer<VPointF> p
+        = QSharedPointer<VPointF>::create(curves.cutPoint, initData.name, initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
     VSpline first;

@@ -175,18 +175,21 @@ auto VToolSpline::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene 
  */
 auto VToolSpline::Create(VToolSplineInitData &initData, VSpline *spline) -> VToolSpline *
 {
-    const bool curveUnique = initData.data->IsUnique(spline->name());
-    // A container that already knows the id updates that object in place and does not adopt the pointer it is
-    // handed: reading the name after the hand-over below would read freed memory. Keep it now.
-    const QString curveName = spline->name();
+    SCASSERT(spline != nullptr)
+    // The curve is handed over to the container, which updates the object it already holds when the id is known
+    // instead of adopting what it is given: held here from the first line, it stays alive for the name and for
+    // everything read below.
+    const QSharedPointer<VSpline> curve(spline);
+    const bool curveUnique = initData.data->IsUnique(curve->name());
+    const QString curveName = curve->name();
 
     if (initData.typeCreation == Source::FromGui)
     {
-        initData.id = initData.data->AddGObject(spline);
+        initData.id = initData.data->AddGObject(curve);
     }
     else
     {
-        initData.data->UpdateGObject(initData.id, spline);
+        initData.data->UpdateGObject(initData.id, curve);
     }
 
     // Re-parsing recreates the same objects with the same names, so a duplicate here is a false positive.

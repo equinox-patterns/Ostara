@@ -880,13 +880,13 @@ void AbstractTest::SplineFromJson(const QJsonObject &itemObject, QSharedPointer<
 
     VPointF p1;
     ReadPointValue(itemObject, QStringLiteral("p1"), p1);
-    data->UpdateGObject(p1.id(), new VPointF(p1));
+    data->UpdateGObject(p1.id(), QSharedPointer<VPointF>::create(p1));
 
     VPointF p4;
     ReadPointValue(itemObject, QStringLiteral("p4"), p4);
-    data->UpdateGObject(p4.id(), new VPointF(p4));
+    data->UpdateGObject(p4.id(), QSharedPointer<VPointF>::create(p4));
 
-    auto *spl = new VSpline(p1, p4, angle1, angle1Formula, angle2, angle2Formula, c1Length, c1LengthFormula, c2Length,
+    QSharedPointer<VSpline> spl = QSharedPointer<VSpline>::create(p1, p4, angle1, angle1Formula, angle2, angle2Formula, c1Length, c1LengthFormula, c2Length,
                             c2LengthFormula);
     spl->SetApproximationScale(aScale);
     data->UpdateGObject(id, spl);
@@ -908,10 +908,10 @@ void AbstractTest::SplinePathFromJson(const QJsonObject &itemObject, QSharedPoin
     AbstractTest::ReadSplinePointValues(itemObject, QStringLiteral("nodes"), points);
     for (const auto &point : std::as_const(points))
     {
-        data->UpdateGObject(point.P().id(), new VPointF(point.P()));
+        data->UpdateGObject(point.P().id(), QSharedPointer<VPointF>::create(point.P()));
     }
 
-    auto *path = new VSplinePath(points);
+    QSharedPointer<VSplinePath> path = QSharedPointer<VSplinePath>::create(points);
     path->SetApproximationScale(aScale);
     path->SetMainNameForHistory(mainName);
     data->UpdateGObject(id, path);
@@ -937,7 +937,7 @@ void AbstractTest::DBFromJson(const QJsonObject &dbObject, QSharedPointer<VConta
                 {
                     VPointF point;
                     ItemFromJson(itemObject, point);
-                    data->UpdateGObject(point.id(), new VPointF(point));
+                    data->UpdateGObject(point.id(), QSharedPointer<VPointF>::create(point));
                     break;
                 }
                 case GOType::Spline:

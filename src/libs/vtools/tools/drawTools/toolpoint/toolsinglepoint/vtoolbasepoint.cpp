@@ -117,7 +117,7 @@ void VToolBasePoint::SetDialog()
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolBasePoint::Create(VToolBasePointInitData initData) -> VToolBasePoint *
 {
-    auto *point = new VPointF(initData.x, initData.y, initData.name, initData.mx, initData.my);
+    QSharedPointer<VPointF> point = QSharedPointer<VPointF>::create(initData.x, initData.y, initData.name, initData.mx, initData.my);
     point->SetShowLabel(initData.showLabel);
 
     if (initData.typeCreation == Source::FromGui)

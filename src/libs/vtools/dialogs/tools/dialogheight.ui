@@ -36,6 +36,9 @@
        </property>
        <item row="0" column="0">
         <widget class="QLabel" name="labelFirstLinePoint">
+<property name="visible">
+         <bool>false</bool>
+         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -48,10 +51,17 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QComboBox" name="comboBoxP1Line"/>
+        <widget class="QComboBox" name="comboBoxP1Line">
+<property name="visible">
+         <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="labelSecondLinePoint">
+<property name="visible">
+         <bool>false</bool>
+         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -64,7 +74,11 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QComboBox" name="comboBoxP2Line"/>
+        <widget class="QComboBox" name="comboBoxP2Line">
+<property name="visible">
+         <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_7">
