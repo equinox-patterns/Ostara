@@ -293,8 +293,6 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("el_arc_with_length"),           ui->actionEllipticalArcWithLengthTool},
         {QStringLiteral("parallel_curve"),               ui->actionParallelCurveTool},
         {QStringLiteral("graduated_curve_offseting"),    ui->actionGraduatedCurveTool},
-        {QStringLiteral("group_plus"),                   ui->actionGroupTool},
-        {QStringLiteral("attach"),                       ui->actionAttachTool},
         {QStringLiteral("flipping_axis"),                ui->actionFlippingByAxisTool},
         {QStringLiteral("flipping_line"),                ui->actionFlippingByLineTool},
         {QStringLiteral("rotation"),                     ui->actionRotationTool},

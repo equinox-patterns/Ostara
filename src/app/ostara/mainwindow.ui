@@ -2308,42 +2308,6 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionGroupTool">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="share/resources/toolicon.qrc">
-     <normaloff>:/toolicon/light/group_plus.png</normaloff>:/toolicon/light/group_plus.png</iconset>
-   </property>
-   <property name="text">
-    <string>Layer</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionAttachTool">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="share/resources/toolicon.qrc">
-     <normaloff>:/toolicon/light/group_plus.png</normaloff>:/toolicon/light/group_plus.png</iconset>
-   </property>
-   <property name="text">
-    <string>Group</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
   <action name="actionTrueDartsTool">
    <property name="checkable">
     <bool>true</bool>

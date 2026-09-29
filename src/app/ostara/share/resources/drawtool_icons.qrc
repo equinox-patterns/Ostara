@@ -9,7 +9,6 @@
         <file alias="arc_start.svg">../../../../../share/icons/tools/light/arc_start.svg</file>
         <file alias="arc_with_length.svg">../../../../../share/icons/tools/light/arc_with_length.svg</file>
         <file alias="arrow_cursor.svg">../../../../../share/icons/tools/light/arrow_cursor.svg</file>
-        <file alias="attach.svg">../../../../../share/icons/tools/light/group_plus.svg</file>
         <file alias="bisector.svg">../../../../../share/icons/tools/light/bisector.svg</file>
         <file alias="cubic_bezier.svg">../../../../../share/icons/tools/light/cubic_bezier.svg</file>
         <file alias="cubic_bezier_path.svg">../../../../../share/icons/tools/light/cubic_bezier_path.svg</file>
@@ -20,7 +19,6 @@
         <file alias="flipping_axis.svg">../../../../../share/icons/tools/light/flipping_axis.svg</file>
         <file alias="flipping_line.svg">../../../../../share/icons/tools/light/flipping_line.svg</file>
         <file alias="graduated_curve_offseting.svg">../../../../../share/icons/tools/light/graduated_curve_offseting.svg</file>
-        <file alias="group_plus.svg">../../../../../share/icons/tools/light/group_plus.svg</file>
         <file alias="height.svg">../../../../../share/icons/tools/light/height.svg</file>
         <file alias="insert_node.svg">../../../../../share/icons/tools/light/insert_node.svg</file>
         <file alias="intersect.svg">../../../../../share/icons/tools/light/intersect.svg</file>
@@ -63,7 +61,6 @@
         <file alias="arc_start.svg">../../../../../share/icons/tools/dark/arc_start.svg</file>
         <file alias="arc_with_length.svg">../../../../../share/icons/tools/dark/arc_with_length.svg</file>
         <file alias="arrow_cursor.svg">../../../../../share/icons/tools/dark/arrow_cursor.svg</file>
-        <file alias="attach.svg">../../../../../share/icons/tools/dark/group_plus.svg</file>
         <file alias="bisector.svg">../../../../../share/icons/tools/dark/bisector.svg</file>
         <file alias="cubic_bezier.svg">../../../../../share/icons/tools/dark/cubic_bezier.svg</file>
         <file alias="cubic_bezier_path.svg">../../../../../share/icons/tools/dark/cubic_bezier_path.svg</file>
@@ -74,7 +71,6 @@
         <file alias="flipping_axis.svg">../../../../../share/icons/tools/dark/flipping_axis.svg</file>
         <file alias="flipping_line.svg">../../../../../share/icons/tools/dark/flipping_line.svg</file>
         <file alias="graduated_curve_offseting.svg">../../../../../share/icons/tools/dark/graduated_curve_offseting.svg</file>
-        <file alias="group_plus.svg">../../../../../share/icons/tools/dark/group_plus.svg</file>
         <file alias="height.svg">../../../../../share/icons/tools/dark/height.svg</file>
         <file alias="insert_node.svg">../../../../../share/icons/tools/dark/insert_node.svg</file>
         <file alias="intersect.svg">../../../../../share/icons/tools/dark/intersect.svg</file>

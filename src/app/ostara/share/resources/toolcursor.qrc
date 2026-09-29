@@ -62,8 +62,6 @@
         <file>toolcursor/light/cubic_bezier_cursor@2x.png</file>
         <file>toolcursor/light/cubic_bezier_path_cursor.png</file>
         <file>toolcursor/light/cubic_bezier_path_cursor@2x.png</file>
-        <file>toolcursor/light/group_plus_cursor.png</file>
-        <file>toolcursor/light/group_plus_cursor@2x.png</file>
         <file>toolcursor/light/rotation_cursor.png</file>
         <file>toolcursor/light/rotation_cursor@2x.png</file>
         <file>toolcursor/light/midpoint_cursor.png</file>
@@ -144,8 +142,6 @@
         <file>toolcursor/dark/insert_node_cursor@2x.png</file>
         <file>toolcursor/dark/height_cursor.png</file>
         <file>toolcursor/dark/height_cursor@2x.png</file>
-        <file>toolcursor/dark/group_plus_cursor.png</file>
-        <file>toolcursor/dark/group_plus_cursor@2x.png</file>
         <file>toolcursor/dark/flipping_line_cursor.png</file>
         <file>toolcursor/dark/flipping_line_cursor@2x.png</file>
         <file>toolcursor/dark/flipping_axis_cursor.png</file>

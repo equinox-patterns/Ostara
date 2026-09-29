@@ -62,8 +62,6 @@
         <file>toolicon/light/cubic_bezier@2x.png</file>
         <file>toolicon/light/cubic_bezier_path.png</file>
         <file>toolicon/light/cubic_bezier_path@2x.png</file>
-        <file>toolicon/light/group_plus.png</file>
-        <file>toolicon/light/group_plus@2x.png</file>
         <file>toolicon/light/rotation.png</file>
         <file>toolicon/light/rotation@2x.png</file>
         <file>toolicon/light/midpoint.png</file>
@@ -136,8 +134,6 @@
         <file>toolicon/dark/insert_node@2x.png</file>
         <file>toolicon/dark/height.png</file>
         <file>toolicon/dark/height@2x.png</file>
-        <file>toolicon/dark/group_plus.png</file>
-        <file>toolicon/dark/group_plus@2x.png</file>
         <file>toolicon/dark/flipping_line.png</file>
         <file>toolicon/dark/flipping_line@2x.png</file>
         <file>toolicon/dark/flipping_axis.png</file>

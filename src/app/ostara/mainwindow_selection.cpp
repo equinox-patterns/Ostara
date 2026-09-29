@@ -338,33 +338,6 @@ void MainWindow::ToolSelectOperationLines()
 
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolSelectGroupObjects()
-{
-    // Only true for rubber band selection
-    emit EnablePointSelection(true);
-    emit EnableLineSelection(true);
-    emit EnableArcSelection(true);
-    emit EnableElArcSelection(true);
-    emit EnableSplineSelection(true);
-    emit EnableSplinePathSelection(true);
-    emit EnableBackgroundImageSelection(false);
-
-    // Hovering
-    emit EnablePointHover(true);
-    emit EnableLineHover(true);
-    emit EnableArcHover(true);
-    emit EnableElArcHover(true);
-    emit EnableSplineHover(true);
-    emit EnableSplinePathHover(true);
-    emit EnableImageBackgroundHover(false);
-
-    emit ItemsSelection(SelectionType::ByMouseRelease);
-
-    ui->view->AllowRubberBand(true);
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolSelectDetail()
 {
     // Only true for rubber band selection

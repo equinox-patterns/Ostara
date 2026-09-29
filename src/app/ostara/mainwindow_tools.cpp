@@ -64,8 +64,6 @@
 #include "../vtools/dialogs/tools/dialogendline.h"
 #include "../vtools/dialogs/tools/dialogflippingbyaxis.h"
 #include "../vtools/dialogs/tools/dialogflippingbyline.h"
-#include "../vtools/dialogs/tools/dialoggroup.h"
-#include "../vtools/dialogs/tools/dialogattach.h"
 #include "../vtools/dialogs/tools/dialogheight.h"
 #include "../vtools/dialogs/tools/dialogline.h"
 #include "../vtools/dialogs/tools/dialoglineintersect.h"
@@ -651,32 +649,6 @@ void MainWindow::ClosedDialogDuplicateDetail(int result)
 
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolGroup(bool checked)
-{
-    ToolSelectGroupObjects();
-    const QString tooltip = tr("Select one or more objects, hold <b>%1</b> - for multiple selection, "
-                               "<b>%2</b> - finish creation")
-                                .arg(VModifierKey::Control(), VModifierKey::EnterKey());
-    SetToolButton<DialogGroup>(checked, Tool::Group, QStringLiteral("group_plus_cursor.png"), tooltip,
-                               &MainWindow::ClosedDialogGroup);
-    LogPatternToolUsed(checked, QStringLiteral("Group tool"));
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ToolAttach(bool checked)
-{
-    ToolSelectGroupObjects();
-    const QString tooltip = tr("Select one or more objects, hold <b>%1</b> - for multiple selection, "
-                               "<b>%2</b> - finish creation")
-                                .arg(VModifierKey::Control(), VModifierKey::EnterKey());
-    SetToolButton<DialogAttach>(checked, Tool::Attach, QStringLiteral("group_plus_cursor.png"), tooltip,
-                                &MainWindow::ClosedDialogAttach);
-    LogPatternToolUsed(checked, QStringLiteral("Attach tool"));
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolRotation(bool checked)
 {
     ToolSelectOperationObjects();
@@ -743,65 +715,6 @@ void MainWindow::ToolMove(bool checked)
                                        &MainWindow::ClosedDrawDialogWithApply<VToolMove>,
                                        &MainWindow::ApplyDrawDialog<VToolMove>);
     LogPatternToolUsed(checked, QStringLiteral("Move tool"));
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ClosedDialogGroup(int result)
-{
-    SCASSERT(m_dialogTool != nullptr)
-    if (result == QDialog::Accepted)
-    {
-        const QPointer<DialogGroup> dialog = qobject_cast<DialogGroup *>(m_dialogTool);
-        SCASSERT(not dialog.isNull())
-
-        const quint32 newId = pattern->getNextId();
-        if (const QDomElement group = doc->CreateGroup(newId, dialog->GetName(), dialog->GetTags(),
-                                                       dialog->GetGroup(), null_id, dialog->GetColor(),
-                                                       dialog->GetPenStyle());
-            !group.isNull())
-        {
-            const quint32 previous = doc->GetActiveGroup();
-
-            // Same rule as the Layers dock: a layer is created to be drawn into, so it becomes the active one —
-            // and both writes share a single undo step.
-            QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
-            undoStack->beginMacro(tr("add a layer"));
-
-            auto *addGroup = new AddGroup(group, doc);
-            connect(addGroup, &AddGroup::UpdateGroups, m_dockManager->groupsWidget(), &VWidgetGroups::UpdateGroups);
-            undoStack->push(addGroup);
-
-            auto *changeActive = new ChangeActiveGroup(doc, newId, previous);
-            connect(changeActive, &ChangeActiveGroup::UpdateGroups, m_dockManager->groupsWidget(),
-                    &VWidgetGroups::UpdateGroups);
-            undoStack->push(changeActive);
-
-            undoStack->endMacro();
-        }
-    }
-    ArrowTool(true);
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ClosedDialogAttach(int result)
-{
-    SCASSERT(m_dialogTool != nullptr)
-    if (result == QDialog::Accepted)
-    {
-        const QPointer<DialogAttach> dialog = qobject_cast<DialogAttach *>(m_dialogTool);
-        SCASSERT(not dialog.isNull())
-
-        if (const QDomElement attachment =
-                doc->CreateAttachment(pattern->getNextId(), dialog->GetName(), dialog->GetGroup());
-                !attachment.isNull())
-        {
-            auto *addAttachment = new AddAttachment(attachment, doc);
-            VAbstractApplication::VApp()->getUndoStack()->push(addAttachment);
-        }
-    }
-    ArrowTool(true);
 }
 
 
@@ -1131,7 +1044,6 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         case Tool::Move:
         case Tool::FlippingByAxis:
         case Tool::FlippingByLine:
-        case Tool::Group:
             dialogTool->SetGroupCategories(doc->GetGroupCategories());
             break;
         case Tool::Piece:
@@ -1211,10 +1123,6 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
                 }
                 dialogTool->ChosenObject(id, type);
             });
-    if (t == Tool::Group || t == Tool::Attach)
-    {
-        connect(scene, &VMainGraphicsScene::SelectedObject, m_dialogTool.data(), &DialogTool::SelectedObject);
-    }
     connect(m_dialogTool.data(), &DialogTool::DialogClosed, this, closeDialogSlot);
     connect(m_dialogTool.data(), &DialogTool::ToolTip, this, &MainWindow::ShowToolTip);
     connect(m_dialogTool.data(), &DialogTool::destroyed, this, [this] () -> void { ShowToolTip(QString()); });
@@ -1693,11 +1601,11 @@ void MainWindow::CancelTool()
         case Tool::TrueDarts:
             ui->actionTrueDartsTool->setChecked(false);
             break;
+        // The two values stay in the `Tool` enum — they carry QGraphicsItem type ids, see def.h — but their
+        // tools are gone: the Layers dock is the only way to a layer now. The labels stay so the switch keeps
+        // handling every value it knows (it has no default).
         case Tool::Group:
-            ui->actionGroupTool->setChecked(false);
-            break;
         case Tool::Attach:
-            ui->actionAttachTool->setChecked(false);
             break;
         case Tool::Rotation:
             ui->actionRotationTool->setChecked(false);
@@ -2002,13 +1910,9 @@ void MainWindow::LastUsedTool()
             ui->actionTrueDartsTool->setChecked(true);
             ToolTrueDarts(true);
             break;
+        // No tool left to come back to: both entry points were removed, and the enum values stay for the ids.
         case Tool::Group:
-            ui->actionGroupTool->setChecked(true);
-            ToolGroup(true);
-            break;
         case Tool::Attach:
-            ui->actionAttachTool->setChecked(true);
-            ToolAttach(true);
             break;
         case Tool::Rotation:
             ui->actionRotationTool->setChecked(true);

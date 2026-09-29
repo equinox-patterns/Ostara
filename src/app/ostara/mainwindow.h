@@ -241,8 +241,6 @@ private slots:
     void ToolPointOfIntersection(bool checked);
     void ToolUnionDetails(bool checked);
     void ToolDuplicateDetail(bool checked);
-    void ToolGroup(bool checked);
-    void ToolAttach(bool checked);
     void ToolRotation(bool checked);
     void ToolCloseDart(bool checked);
     void ToolDartCap(bool checked);
@@ -457,8 +455,6 @@ private slots:
 
     void ClosedDialogUnionDetails(int result);
     void ClosedDialogDuplicateDetail(int result);
-    void ClosedDialogGroup(int result);
-    void ClosedDialogAttach(int result);
     void ClosedDialogPiecePath(int result);
     void ClosedDialogInsertNode(int result);
     void ClosedDialogPlaceLabel(int result);
@@ -1080,7 +1076,6 @@ private:
     void ToolSelectAllDrawObjects();
     void ToolSelectOperationObjects();
     void ToolSelectOperationLines();
-    void ToolSelectGroupObjects();
     void ToolSelectDetail();
 
     void PrintPatternMessage(QEvent *event);

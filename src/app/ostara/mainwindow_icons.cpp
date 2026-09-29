@@ -82,7 +82,6 @@ void MainWindow::SetupDrawToolsIcons()
     ui->actionArcTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("arc.png")));
     ui->actionArcWithLengthTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("arc_with_length.png")));
     ui->actionEllipticalArcTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("el_arc.png")));
-    ui->actionGroupTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("group_plus.png")));
     ui->actionFlippingByAxisTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("flipping_axis.png")));
     ui->actionFlippingByLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("flipping_line.png")));
     ui->actionRotationTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("rotation.png")));

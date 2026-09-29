@@ -254,8 +254,6 @@ void MainWindow::SetEnableTool(bool enable)
     ui->actionPointFromArcAndTangentTool->setEnabled(drawTools);
     ui->actionArcWithLengthTool->setEnabled(drawTools);
     ui->actionTrueDartsTool->setEnabled(drawTools);
-    ui->actionGroupTool->setEnabled(drawTools);
-    ui->actionAttachTool->setEnabled(drawTools);
     ui->actionRotationTool->setEnabled(drawTools);
     ui->actionCloseDartTool->setEnabled(drawTools);
     ui->actionDartCapTool->setEnabled(drawTools);
@@ -655,8 +653,6 @@ void MainWindow::InitToolButtons()
                    &MainWindow::ToolPointFromArcAndTangent);
     InitToolButton(VShortcutAction::ToolArcWithLength, ui->actionArcWithLengthTool, &MainWindow::ToolArcWithLength);
     InitToolButton(VShortcutAction::ToolTrueDarts, ui->actionTrueDartsTool, &MainWindow::ToolTrueDarts);
-    InitToolButton(VShortcutAction::ToolGroup, ui->actionGroupTool, &MainWindow::ToolGroup);
-    InitToolButton(VShortcutAction::ToolAttach, ui->actionAttachTool, &MainWindow::ToolAttach);
     InitToolButton(VShortcutAction::ToolRotation, ui->actionRotationTool, &MainWindow::ToolRotation);
     InitToolButton(VShortcutAction::ToolCloseDart, ui->actionCloseDartTool, &MainWindow::ToolCloseDart);
     InitToolButton(VShortcutAction::ToolDartCap, ui->actionDartCapTool, &MainWindow::ToolDartCap);

@@ -34,25 +34,6 @@
 
 #include "vundocommand.h"
 
-class AddAttachment : public VUndoCommand
-{
-    Q_OBJECT // NOLINT
-
-public:
-    AddAttachment(const QDomElement &xml, VAbstractPattern *doc, QUndoCommand *parent = nullptr);
-    ~AddAttachment() override = default;
-
-    void undo() override;
-    void redo() override;
-
-signals:
-    void UpdateAttachments();
-
-private:
-    Q_DISABLE_COPY_MOVE(AddAttachment) // NOLINT
-    int m_indexPatternBlock{-1};
-};
-
 class RenameAttachment : public VUndoCommand
 {
     Q_OBJECT // NOLINT

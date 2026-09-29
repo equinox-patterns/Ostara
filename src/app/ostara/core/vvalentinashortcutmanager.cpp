@@ -39,7 +39,7 @@
 VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
   : VAbstractShortcutManager{parent}
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 97, "Check if all actions were used.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 95, "Check if all actions were used.");
 
     AddShortcut({VShortcutAction::ZoomIn, KeyBindingsToStringList(QKeySequence::ZoomIn), {}});
     AddShortcut({VShortcutAction::ZoomOut, KeyBindingsToStringList(QKeySequence::ZoomOut), {}});
@@ -151,8 +151,6 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
     AddShortcut({VShortcutAction::ToolPointFromArcAndTangent, {}, {}});
     AddShortcut({VShortcutAction::ToolArcWithLength, {}, {}});
     AddShortcut({VShortcutAction::ToolTrueDarts, {}, {}});
-    AddShortcut({VShortcutAction::ToolGroup, {}, {}});
-    AddShortcut({VShortcutAction::ToolAttach, {}, {}});
     AddShortcut({VShortcutAction::ToolRotation, {}, {}});
     AddShortcut({VShortcutAction::ToolCloseDart, {}, {}});
     AddShortcut({VShortcutAction::ToolDartCap, {}, {}});

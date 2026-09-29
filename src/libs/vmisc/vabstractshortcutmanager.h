@@ -110,8 +110,6 @@ enum class VShortcutAction : quint8
     ToolPointFromArcAndTangent,
     ToolArcWithLength,
     ToolTrueDarts,
-    ToolGroup,
-    ToolAttach,
     ToolRotation,
     ToolCloseDart,
     ToolDartCap,
