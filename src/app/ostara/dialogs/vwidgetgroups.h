@@ -38,6 +38,7 @@
 #include <QWidget>
 
 class QPushButton;
+class QCheckBox;
 class QTableWidgetItem;
 class VAbstractPattern;
 class VContainer;
@@ -72,8 +73,8 @@ public slots:
     /// the theme event reaches MainWindow, which re-applies it — the widget stylesheet is not rebuilt by itself.
     void UpdateActiveRowStyle();
 
-    /// True while the canvas is picking objects for a layer — adding them or removing them: every click toggles
-    /// one, Enter confirms.
+    /// True while the canvas is picking objects for a layer — adding, removing or transferring them: every click
+    /// toggles one, and Enter carries the direction out — for a transfer, by asking where the objects move to.
     auto IsSelectingObjects() const -> bool { return m_objectSelection != ObjectSelection::Idle; }
     /// Toggle a whole tool's objects (an (objectId, toolId) pair per object) in the current selection.
     void ToggleLayerObjects(const QVector<QPair<quint32, quint32>> &objects);
@@ -92,6 +93,9 @@ signals:
     /// what Enter is about to do — add the object, or take it out.
     void ObjectSelectedChanged(quint32 objectId, quint32 toolId, bool selected);
     void ShowStatusTip(const QString &text);
+    /// The rule and the name over the canvas follow this switch. MainWindow persists it, because the
+    /// setting is software-level and the chrome it drives is not this dock's.
+    void ShowActiveLayerOnCanvasChanged(bool on);
 
 private slots:
     void OnCellClicked(int row, int column);
@@ -110,14 +114,16 @@ private:
     enum class ObjectSelection
     {
         Idle,
-        Adding,
-        Removing
+        Adding,       ///< The layer takes objects it does not hold yet.
+        Removing,     ///< The layer gives up objects another layer holds too.
+        Transferring  ///< The layer gives up any of its own objects, straight into the layer chosen next.
     };
 
     Ui::VWidgetGroups *ui;
     VAbstractPattern *m_doc;
     VContainer *m_pattern;
     QPushButton *m_addButton;
+    QCheckBox *m_showActiveLayer{nullptr};
 
     ObjectSelection m_objectSelection{ObjectSelection::Idle};
     quint32 m_selectionLayerId{NULL_ID};
@@ -125,8 +131,9 @@ private:
     /// What the layer already holds, marked magenta in both directions. Adding skips it — a layer holds an object
     /// once — and removing starts from it: what cannot leave is still part of the content.
     QMap<quint32, quint32> m_layerObjects;
-    /// Of that content, the objects another layer also holds — the only ones a removal may take out. Filled when a
-    /// removal starts, empty while adding.
+    /// Of that content, the objects the current direction may act on. Adding has none — there the click itself
+    /// decides, and everything the layer does not hold yet is fair game. A removal keeps what another layer holds
+    /// too; a transfer keeps everything of the layer that can be drawn. Filled when the picking starts.
     QMap<quint32, quint32> m_candidateObjects;
 
     // Button icon: the current-theme variant at rest, always the dark variant on hover
@@ -136,6 +143,7 @@ private:
 
     void BuildAddButton();
     void UpdateAddButtonIcon();
+    void BuildShowActiveLayerCheckBox();
 
     void FillTable(QMap<quint32, VGroupData> groups);
     void SetGroupVisibility(vidtype id, bool visible) const;
@@ -158,12 +166,24 @@ private:
     /// Of those, the ones another layer also holds. An object always belongs to at least one layer, so these are
     /// the only ones a removal may take out — the others would be left belonging to nothing.
     auto RemovableObjects(const QVector<QPair<quint32, quint32>> &items) -> QMap<quint32, quint32>;
+    /// Everything of the layer that can be drawn, and so clicked. Wider than a removal on purpose: a transfer
+    /// writes the object into another layer before taking it out of this one, so even an object this layer alone
+    /// holds may move, and the invariant holds at every moment.
+    auto TransferableObjects(const QVector<QPair<quint32, quint32>> &items) -> QMap<quint32, quint32>;
     /// Restate the workflow in the status bar: what is selected, what the colours mean, and what Enter will do.
     void UpdateSelectionTip();
-    /// Say why a click did nothing: the object is not in the layer, or it is and nothing else holds it.
-    void ExplainRemovalRefusal(const QPair<quint32, quint32> &object);
+    /// Say why a click did nothing: the object is not in the layer, or it is and nothing else holds it. A transfer
+    /// only ever refuses the first — it moves an object without ever taking its last layer away.
+    void ExplainRefusal(const QPair<quint32, quint32> &object);
     /// Say why an added click did nothing: the layer already holds it, so it is shown magenta and left alone.
     void ExplainAddRefusal();
+
+    /// The layer the picked objects move to, asked in a dialog. NULL_ID when the user closed it — the selection
+    /// is then left exactly as it was, so Enter can ask again.
+    auto AskTargetLayer(quint32 sourceId) -> quint32;
+    /// Move the picked objects out of one layer and into the chosen one. The target is written first, the source
+    /// second, so no object is ever left belonging to nothing, and the whole move is one undoable step.
+    void TransferSelectedObjects(quint32 sourceId);
 
     /// The layer the canvas draws into. A single click on the name is what sets it.
     void SetActiveLayer(quint32 id);

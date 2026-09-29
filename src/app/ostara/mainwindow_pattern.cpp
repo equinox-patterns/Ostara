@@ -51,6 +51,7 @@
 #include "core/vapplication.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "core/odetailspropertybrowser.h"
+#include "dialogs/dialognewpattern.h"
 #include "dialogs/vwidgetdetails.h"
 #include "dialogs/vwidgetdependencies.h"
 #include "dialogs/vwidgetgroups.h"
@@ -92,9 +93,13 @@ void MainWindow::UpdateActiveLayerIndicator()
         return;
     }
 
-    // Layers belong to the Draw mode — every other mode shows neither the rule nor the name.
-    const quint32 active = VAbstractValApplication::VApp()->GetDrawMode() == Draw::Calculation ? doc->GetActiveGroup()
-                                                                                               : NULL_ID;
+    // Layers belong to the Draw mode — every other mode shows neither the rule nor the name — and the Layers
+    // dock can switch the whole chrome off: it is a reading aid, and a user who wants the drawing alone takes it
+    // away. Both conditions answer NULL_ID, and NULL_ID is what hides everything below.
+    const bool drawing = VAbstractValApplication::VApp()->GetDrawMode() == Draw::Calculation;
+    const bool chromeWanted = VAbstractApplication::VApp()->Settings()->GetShowActiveLayerOnCanvas();
+    const quint32 active = (drawing && chromeWanted) ? doc->GetActiveGroup() : NULL_ID;
+
     if (active == NULL_ID)
     {
         m_activeLayerRule->hide();
@@ -111,6 +116,18 @@ void MainWindow::UpdateActiveLayerIndicator()
     m_activeLayerRule->show();
 
     ui->view->SetCornerLabel(doc->GetGroupName(active));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ShowActiveLayerOnCanvas(bool on)
+{
+    if (auto *settings = VAbstractApplication::VApp()->Settings(); settings != nullptr)
+    {
+        settings->SetShowActiveLayerOnCanvas(on);
+    }
+
+    // The rule and the name are this function's only readers: re-running it is what shows or hides them.
+    UpdateActiveLayerIndicator();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -496,14 +513,26 @@ void MainWindow::ActionNewDraw_triggered()
     qCDebug(vMainWindow, "Generated PP name: %s", qUtf8Printable(patternPieceName));
 
     qCDebug(vMainWindow, "PP count %d", m_comboBoxDraws->count());
-    bool const ok = PatternPieceName(patternPieceName);
-    qCDebug(vMainWindow, "PP name: %s", qUtf8Printable(patternPieceName));
-    if (not ok)
+
+    // The same dialog as the first piece, minus the unit — the unit belongs to the pattern, not to the
+    // piece — and with the layer the piece starts in. A piece name is unique among the pieces of its
+    // pattern, and the list of taken names is what lets the dialog refuse a duplicate before accepting.
+    DialogNewPattern dialog(pattern, patternPieceName, DialogNewPattern::Creation::Piece, this);
+    QStringList taken;
+    taken.reserve(m_comboBoxDraws->count());
+    for (int i = 0; i < m_comboBoxDraws->count(); ++i)
+    {
+        taken.append(m_comboBoxDraws->itemText(i));
+    }
+    dialog.SetTakenNames(taken);
+
+    if (dialog.exec() != QDialog::Accepted)
     {
         return;
     }
+    qCDebug(vMainWindow, "PP name: %s", qUtf8Printable(dialog.name()));
 
-    AddPP(patternPieceName);
+    AddPP(dialog.name(), dialog.LayerName(), dialog.LayerColor(), dialog.LayerPenStyle());
 }
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ActionShowMainPath_triggered(bool checked)

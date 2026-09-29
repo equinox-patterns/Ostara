@@ -1414,6 +1414,12 @@ QFrame#formulaSeparator {
     background-color: #333333;
 }
 
+/* New pattern / new piece dialog — the rule between the piece's name and its first layer. 80 % of the
+   width, from the stretch factors of its row rather than from a fixed width, so it follows the dialog. */
+QFrame#newPatternLayerSeparator {
+    background-color: #333333;
+}
+
 /* =========================================================================
    StyleGuide / Features window (dev-only)
    ========================================================================= */

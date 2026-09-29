@@ -833,7 +833,15 @@ private:
     void FileClosedCorrect();
     static auto GetUnlokedRestoreFileList() -> QStringList;
 
-    void AddPP(const QString &PPName);
+    /// A new pattern piece AND the layer it starts in: the two are born together, because no object may
+    /// ever live outside a layer — and a fresh piece already holds one (its base point). One undo macro
+    /// around the whole thing, so a single Ctrl+Z takes the piece and its layer away.
+    void AddPP(const QString &PPName, const QString &layerName, const QString &layerColor,
+               const QString &layerPenStyle);
+    /// Write that first layer, put the piece's base point in it and make it the active one. Called from
+    /// AddPP, inside its macro; every write is a command so the macro has something to undo.
+    void CreateFirstLayer(const QString &layerName, const QString &layerColor, const QString &layerPenStyle,
+                          quint32 basePointId);
     auto StartPositionNewPP() const -> QPointF;
 
     void InitScenes();
@@ -958,6 +966,9 @@ private:
 
     /// Persist the global "Show in canvas" gate and re-apply on the scene.
     void ShowGradedSizeStylesInCanvas(bool on);
+
+    /// Persist the Layers dock's switch and redraw the active layer's rule and name — or take them off.
+    void ShowActiveLayerOnCanvas(bool on);
 
     /// Resolve the (canonical path, size axis, axis values, in-library) context the
     /// Size Styles dock, its dialog and the style pass run against. False when there

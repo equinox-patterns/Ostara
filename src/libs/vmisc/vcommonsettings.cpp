@@ -120,6 +120,8 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingExportFavorites, ("export/favori
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedSizeStyles, ("graded/sizeStyles"_L1))                   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedSizeStylesShowInCanvas,
                           ("graded/showSizeStylesInCanvas"_L1))                                                // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingShowActiveLayerOnCanvas,
+                          ("draw/showActiveLayerOnCanvas"_L1))                                                 // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationOsSeparator, ("configuration/osSeparator"_L1)) // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationAutosaveState, ("configuration/autosave/state"_L1))
@@ -946,6 +948,21 @@ void VCommonSettings::SetGradedSizeStylesShowInCanvas(const bool &value) const
 {
     QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
     settings.setValue(*settingGradedSizeStylesShowInCanvas, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetShowActiveLayerOnCanvas() const -> bool
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingShowActiveLayerOnCanvas, true).toBool();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetShowActiveLayerOnCanvas(const bool &value) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingShowActiveLayerOnCanvas, value);
     settings.sync();
 }
 

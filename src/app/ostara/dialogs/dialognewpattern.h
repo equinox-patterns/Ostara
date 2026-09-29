@@ -30,9 +30,12 @@
 #define DIALOGINDIVIDUALMEASUREMENTS_H
 
 #include <QDialog>
+#include <QStringList>
 
 #include "../vmisc/def.h"
 
+class QComboBox;
+class QLineEdit;
 class VContainer;
 
 namespace Ui
@@ -44,10 +47,29 @@ class DialogNewPattern : public QDialog
 {
     Q_OBJECT // NOLINT
 public:
-    DialogNewPattern(VContainer *data, const QString &patternPieceName, QWidget *parent = nullptr);
+    /// Which creation this dialog is answering. The unit belongs to the pattern, so it is only part of the
+    /// question when the pattern itself is being born; a piece added to an existing pattern inherits it.
+    enum class Creation
+    {
+        Pattern, ///< The first piece, and with it the pattern.
+        Piece    ///< One more piece inside a pattern that already exists.
+    };
+
+    DialogNewPattern(VContainer *data, const QString &patternPieceName, Creation creation,
+                     QWidget *parent = nullptr);
     ~DialogNewPattern() override;
     auto name() const -> QString;
     auto PatternUnit() const -> Unit;
+
+    /// The piece names this pattern already uses. A piece cannot share its name with another one, and the
+    /// dialog says so by keeping OK down rather than by asking the question again after the fact.
+    void SetTakenNames(const QStringList &names);
+
+    /// The layer the piece starts in — the two are born together, since no object may live outside a layer.
+    auto LayerName() const -> QString;
+    auto LayerColor() const -> QString;
+    auto LayerPenStyle() const -> QString;
+
 protected:
     void showEvent(QShowEvent *event) override;
 private slots:
@@ -55,9 +77,19 @@ private slots:
 private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(DialogNewPattern) // NOLINT
+
+    /// The rule and the first layer's three fields, as extra rows of the .ui's form. Built here because the
+    /// pen combos are code-built — MakeComboBox — and because a piece added to an existing pattern must not
+    /// show the unit row that sits above them.
+    void BuildLayerFields();
+
     Ui::DialogNewPattern *ui;
     VContainer *m_data;
     bool m_isInitialized{false};
+    QStringList m_takenNames;
+    QLineEdit *m_layerName{nullptr};
+    QComboBox *m_layerPenStyle{nullptr};
+    QComboBox *m_layerColor{nullptr};
     void InitUnits();
 };
 

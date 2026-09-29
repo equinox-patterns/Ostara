@@ -635,7 +635,8 @@ void MainWindow::on_actionNew_triggered()
         qCDebug(vMainWindow, "Generated PP name: %s", qUtf8Printable(patternPieceName));
 
         qCDebug(vMainWindow, "First PP");
-        if (DialogNewPattern newPattern(pattern, patternPieceName, this); newPattern.exec() == QDialog::Accepted)
+        DialogNewPattern newPattern(pattern, patternPieceName, DialogNewPattern::Creation::Pattern, this);
+        if (newPattern.exec() == QDialog::Accepted)
         {
             patternPieceName = newPattern.name();
             VAbstractValApplication::VApp()->SetPatternUnits(newPattern.PatternUnit());
@@ -652,7 +653,8 @@ void MainWindow::on_actionNew_triggered()
         VMainGraphicsView::NewSceneRect(m_sceneDraw, ui->view);
         VMainGraphicsView::NewSceneRect(m_sceneDetails, ui->view);
 
-        AddPP(patternPieceName);
+        // The piece and the layer it starts in, in one gesture — see AddPP.
+        AddPP(patternPieceName, newPattern.LayerName(), newPattern.LayerColor(), newPattern.LayerPenStyle());
 
         // Normalize to Draw mode (mirrors LoadPattern) so the Details dock/content
         // cannot leak into a freshly created pattern.

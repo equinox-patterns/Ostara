@@ -179,6 +179,12 @@ public:
     auto GetGradedSizeStylesShowInCanvas() const -> bool;
     void SetGradedSizeStylesShowInCanvas(const bool &value) const;
 
+    /// Show the active layer's rule and name over the canvas — the reading aid the Layers dock can
+    /// switch off when the drawing is all the user wants to see. Software-level, like the graded
+    /// size styles' canvas gate, and on by default.
+    auto GetShowActiveLayerOnCanvas() const -> bool;
+    void SetShowActiveLayerOnCanvas(const bool &value) const;
+
     auto GetOsSeparator() const -> bool;
     void SetOsSeparator(const bool &value);
 

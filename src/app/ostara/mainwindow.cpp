@@ -83,6 +83,7 @@
 #include "../vtools/tools/oinfoblockitem.h"
 #include "../vtools/tools/othumbnailitem.h"
 #include "../vtools/tools/vtoolseamallowance.h"
+#include "../vtools/undocommands/undogroup.h"
 #include "../vtools/undocommands/undoattachment.h"
 #include "../vtools/undocommands/unlinkpiecegroup.h"
 #include "../vwidgets/vgrainlineitem.h"
@@ -465,7 +466,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::AddPP(const QString &PPName)
+void MainWindow::AddPP(const QString &PPName, const QString &layerName, const QString &layerColor,
+                       const QString &layerPenStyle)
 {
     VPatternBlockMapper *blocks = doc->PatternBlockMapper();
     if (int const id = blocks->GetId(PPName); !blocks->SetActiveById(id))
@@ -473,6 +475,11 @@ void MainWindow::AddPP(const QString &PPName)
         qCDebug(vMainWindow, "Error creating pattern block with the name %s.", qUtf8Printable(PPName));
         return;
     }
+
+    // The piece and its first layer are one gesture: the macro holds the draw block (pushed by
+    // VToolBasePoint::Create) and the layer written right after it, so one Ctrl+Z takes both away.
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+    undoStack->beginMacro(tr("add a pattern piece"));
 
     QSignalBlocker blocker(m_comboBoxDraws);
     m_comboBoxDraws->addItem(PPName);
@@ -495,6 +502,10 @@ void MainWindow::AddPP(const QString &PPName)
 
     auto *spoint = VToolBasePoint::Create(initData);
     emit ui->view->itemClicked(spoint);
+
+    // The piece exists in the document from here on (the undo command ran synchronously), so its first
+    // layer can be written into it — and the base point, the only object a fresh piece holds, goes in.
+    CreateFirstLayer(layerName, layerColor, layerPenStyle, spoint->getId());
 
     SetEnableTool(true);
     SetEnableWidgets(true);
@@ -520,6 +531,38 @@ void MainWindow::AddPP(const QString &PPName)
 
     ui->actionNewDraw->setEnabled(true);
     m_statusLabel->setText(QString());
+
+    undoStack->endMacro();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::CreateFirstLayer(const QString &layerName, const QString &layerColor,
+                                  const QString &layerPenStyle, quint32 basePointId)
+{
+    const quint32 newId = pattern->getNextId();
+    const QDomElement group = doc->CreateGroup(newId, layerName, {}, {}, null_id, layerColor, layerPenStyle);
+    if (group.isNull())
+    {
+        return;
+    }
+
+    // Read before the group exists: the piece being born is already the active block, and it holds no layer,
+    // so this answers NULL_ID — which is exactly what ChangeActiveGroup will restore on undo.
+    const quint32 previous = doc->GetActiveGroup();
+
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+
+    // The layer into the tree first, then the base point into the layer, then the layer as the active one:
+    // each of the three is a command, and the macro opened by AddPP makes them one step with the piece.
+    undoStack->push(new AddGroup(group, doc));
+
+    // A simple point is its own object — (T, T) — which is how LayerableObjectsOfTool reads it back too.
+    if (const QDomElement item = doc->AddItemToGroup(basePointId, basePointId, newId); not item.isNull())
+    {
+        undoStack->push(new ::AddItemToGroup(item, doc, newId));
+    }
+
+    undoStack->push(new ChangeActiveGroup(doc, newId, previous));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1350,6 +1393,10 @@ void MainWindow::InitDocksContain()
     });
     connect(m_dockManager->groupsWidget(), &VWidgetGroups::ShowStatusTip, this,
             [this](const QString &text) { m_statusLabel->setText(text); });
+    // The dock's own switch for the active layer's chrome: the setting is software-level, so MainWindow writes it
+    // and redraws — the same split the Size Styles dock uses for its "Show in canvas" gate.
+    connect(m_dockManager->groupsWidget(), &VWidgetGroups::ShowActiveLayerOnCanvasChanged, this,
+            &MainWindow::ShowActiveLayerOnCanvas);
 
     connect(doc, &VPattern::FullUpdateFromFile, m_dockManager->detailsWidget(), &VWidgetDetails::UpdateList);
     connect(doc, &VPattern::UpdateInLayoutList, m_dockManager->detailsWidget(), &VWidgetDetails::UpdateList);

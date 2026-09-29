@@ -101,6 +101,7 @@
         <file alias="eye_light.svg">../../../../../share/themes/icons/light/eye_light.svg</file>
         <file alias="eye-closed_light.svg">../../../../../share/themes/icons/light/eye-closed_light.svg</file>
         <file alias="minus_light.svg">../../../../../share/themes/icons/light/minus_light.svg</file>
+        <file alias="arrow-bend-up-right_light.svg">../../../../../share/themes/icons/light/arrow-bend-up-right_light.svg</file>
     </qresource>
     <qresource prefix="/icons/dark">
         <file alias="square_accent.svg">../../../../../share/themes/icons/dark/square_accent.svg</file>
@@ -200,5 +201,6 @@
         <file alias="eye_dark.svg">../../../../../share/themes/icons/dark/eye_dark.svg</file>
         <file alias="eye-closed_dark.svg">../../../../../share/themes/icons/dark/eye-closed_dark.svg</file>
         <file alias="minus_dark.svg">../../../../../share/themes/icons/dark/minus_dark.svg</file>
+        <file alias="arrow-bend-up-right_dark.svg">../../../../../share/themes/icons/dark/arrow-bend-up-right_dark.svg</file>
     </qresource>
 </RCC>

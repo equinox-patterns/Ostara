@@ -33,8 +33,10 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vtools/dialogs/tools/dialoggroup.h"
 #include "../vtools/undocommands/undogroup.h"
+#include "ochooselayerdialog.h"
 #include "ui_vwidgetgroups.h"
 
+#include <QCheckBox>
 #include <QCompleter>
 #include <QDomElement>
 #include <QHeaderView>
@@ -58,10 +60,13 @@ constexpr int kColor = 1;
 constexpr int kName = 2;
 constexpr int kEdit = 3;
 constexpr int kAdd = 4;
-constexpr int kRemove = 5;
-constexpr int kDelete = 6;
+// Between the two directions: adding and removing already say where an object stands, moving it is the
+// third thing one can do with it, so it reads between them.
+constexpr int kTransfer = 5;
+constexpr int kRemove = 6;
+constexpr int kDelete = 7;
 
-constexpr int kColumns = 7;
+constexpr int kColumns = 8;
 
 //---------------------------------------------------------------------------------------------------------------------
 auto IconResPath(const QString &baseName, bool dark) -> QString
@@ -165,6 +170,7 @@ VWidgetGroups::VWidgetGroups(VContainer *pattern, VAbstractPattern *doc, QWidget
     SCASSERT(pattern != nullptr)
 
     BuildAddButton();
+    BuildShowActiveLayerCheckBox();
 
     QTableWidget *table = ui->tableWidget;
     // A name of its own, so the table says what it holds rather than `tableWidget`.
@@ -187,12 +193,13 @@ VWidgetGroups::VWidgetGroups(VContainer *pattern, VAbstractPattern *doc, QWidget
     table->setColumnWidth(kColor, 36);
     table->setColumnWidth(kEdit, 44);
     table->setColumnWidth(kAdd, 44);
+    table->setColumnWidth(kTransfer, 44);
     table->setColumnWidth(kRemove, 44);
     table->setColumnWidth(kDelete, 44);
     // Compact fixed-height rows — the list never stretches rows vertically.
     table->verticalHeader()->setDefaultSectionSize(36);
     table->setIconSize(QSize(kIconSize, kIconSize));
-    for (int col : {kVisible, kColor, kEdit, kAdd, kRemove, kDelete})
+    for (int col : {kVisible, kColor, kEdit, kAdd, kTransfer, kRemove, kDelete})
     {
         table->setItemDelegateForColumn(col, new IconDelegate(table));
     }
@@ -276,6 +283,23 @@ void VWidgetGroups::UpdateAddButtonIcon()
     m_addNormalIcon = QIcon(IconResPath(QStringLiteral("stack-plus-fill"), dark));
     m_addHoverIcon = QIcon(IconResPath(QStringLiteral("stack-plus-fill"), true));
     m_addButton->setIcon(m_addNormalIcon);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::BuildShowActiveLayerCheckBox()
+{
+    // The switch belongs to the dock that names the active layer: it is the same list the user reads, and the
+    // canvas chrome is that list's answer drawn over the drawing. Off, it exists to read the drawing alone.
+    m_showActiveLayer = new QCheckBox(tr("Show the active layer on the canvas"), this);
+    m_showActiveLayer->setObjectName(QStringLiteral("showActiveLayerOnCanvas"));
+    // Set BEFORE connecting, so `toggled` only ever carries a real user change — MainWindow persists on it.
+    m_showActiveLayer->setChecked(VAbstractApplication::VApp()->Settings()->GetShowActiveLayerOnCanvas());
+    connect(m_showActiveLayer, &QCheckBox::toggled, this, &VWidgetGroups::ShowActiveLayerOnCanvasChanged);
+
+    // Straight into the dock's layout, and never into a QWidget wrapper of its own: the viewport of a dock
+    // carries `.QWidget { background: $DockTitle }` (DockWrapper, subtilité §13), which only matches bare
+    // QWidget instances — a QCheckBox is left transparent, a wrapper would get a band behind it.
+    ui->verticalLayout->insertWidget(2, m_showActiveLayer, 0, Qt::AlignHCenter);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -575,6 +599,10 @@ void VWidgetGroups::OnCellClicked(int row, int column)
             // Picking objects for this layer: the canvas does the clicking from now on, Enter confirms.
             StartObjectSelection(id, ObjectSelection::Adding);
             break;
+        case kTransfer:
+            // The same gesture again, but it ends on a question: which layer the picked objects move to.
+            StartObjectSelection(id, ObjectSelection::Transferring);
+            break;
         case kRemove:
             // The other direction, and the same gesture. What a removal may take out is narrowed to the objects
             // another layer also holds — see RemovableObjects.
@@ -595,11 +623,22 @@ void VWidgetGroups::StartObjectSelection(quint32 layerId, ObjectSelection mode)
 
     const QVector<QPair<quint32, quint32>> layerItems = LayerItems(layerId);
 
-    // An empty layer has nothing to give up, and arming a removal over it would be a dead end: no click could ever
-    // land on an object, and only Escape would get the user out.
-    if (mode == ObjectSelection::Removing && layerItems.isEmpty())
+    // A transfer needs somewhere to go, and where that is is known before anything is picked: a piece that holds a
+    // single layer would arm a picking no dialog could ever answer.
+    if (mode == ObjectSelection::Transferring && m_doc->GetGroups().size() < 2)
     {
-        emit ShowStatusTip(tr("This layer holds no object — there is nothing to remove."));
+        emit ShowStatusTip(tr("This is the only layer of this piece — there is no other layer to transfer to."));
+        SelectActiveRow();
+        return;
+    }
+
+    // An empty layer has nothing to give up, and arming a removal or a transfer over it would be a dead end: no
+    // click could ever land on an object, and only Escape would get the user out.
+    if (mode != ObjectSelection::Adding && layerItems.isEmpty())
+    {
+        emit ShowStatusTip(mode == ObjectSelection::Transferring
+                               ? tr("This layer holds no object — there is nothing to transfer.")
+                               : tr("This layer holds no object — there is nothing to remove."));
         SelectActiveRow();
         return;
     }
@@ -623,6 +662,10 @@ void VWidgetGroups::StartObjectSelection(quint32 layerId, ObjectSelection mode)
     {
         m_candidateObjects = RemovableObjects(layerItems);
     }
+    else if (mode == ObjectSelection::Transferring)
+    {
+        m_candidateObjects = TransferableObjects(layerItems);
+    }
 
     emit ObjectSelectionStarted();
     UpdateSelectionTip();
@@ -637,16 +680,17 @@ void VWidgetGroups::ToggleLayerObjects(const QVector<QPair<quint32, quint32>> &o
         return;
     }
 
-    const bool removing = m_objectSelection == ObjectSelection::Removing;
+    // Adding is the one direction where the click itself decides what may be picked — everything the layer does
+    // not hold yet. The other two start from the layer's own content: a removal keeps what another layer holds
+    // too, a transfer keeps every object of it that can be drawn.
+    const bool adding = m_objectSelection == ObjectSelection::Adding;
 
-    // What the layer can still take, or can still give up. Everything else stays out of the toggle, and a click
-    // that reached nothing says why instead of silently doing nothing.
     QVector<QPair<quint32, quint32>> toggled;
     toggled.reserve(objects.size());
     for (const auto &object : objects)
     {
-        const bool pickable = removing ? m_candidateObjects.value(object.first, NULL_ID) == object.second
-                                       : m_layerObjects.value(object.first, NULL_ID) != object.second;
+        const bool pickable = adding ? m_layerObjects.value(object.first, NULL_ID) != object.second
+                                     : m_candidateObjects.value(object.first, NULL_ID) == object.second;
         if (pickable)
         {
             toggled.append(object);
@@ -655,13 +699,13 @@ void VWidgetGroups::ToggleLayerObjects(const QVector<QPair<quint32, quint32>> &o
 
     if (toggled.isEmpty())
     {
-        if (removing)
+        if (adding)
         {
-            ExplainRemovalRefusal(objects.constFirst());
+            ExplainAddRefusal();
         }
         else
         {
-            ExplainAddRefusal();
+            ExplainRefusal(objects.constFirst());
         }
         return;
     }
@@ -705,8 +749,6 @@ auto VWidgetGroups::LayerItems(quint32 layerId) -> QVector<QPair<quint32, quint3
 //---------------------------------------------------------------------------------------------------------------------
 auto VWidgetGroups::RemovableObjects(const QVector<QPair<quint32, quint32>> &items) -> QMap<quint32, quint32>
 {
-    QMap<quint32, quint32> removable;
-
     // How many layers of this piece hold each object. Counted over the whole piece, not just the layer: the
     // question is precisely whether something ELSE holds it. A layer the tag filter hides counts like any other
     // — it is a real layer, and it really does hold the object.
@@ -720,14 +762,28 @@ auto VWidgetGroups::RemovableObjects(const QVector<QPair<quint32, quint32>> &ite
         }
     }
 
+    // Drawn first, shared second: what cannot be drawn cannot be clicked, whatever the count says.
+    QMap<quint32, quint32> removable;
+    const QMap<quint32, quint32> drawable = TransferableObjects(items);
+    for (auto it = drawable.constBegin(); it != drawable.constEnd(); ++it)
+    {
+        if (holders.value(QPair<quint32, quint32>(it.key(), it.value())) >= 2)
+        {
+            removable.insert(it.key(), it.value());
+        }
+    }
+
+    return removable;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VWidgetGroups::TransferableObjects(const QVector<QPair<quint32, quint32>> &items) -> QMap<quint32, quint32>
+{
+    QMap<quint32, quint32> transferable;
+
     for (const auto &item : items)
     {
-        if (holders.value(item) < 2)
-        {
-            continue;
-        }
-
-        // The tool has to be there. getTool() throws on an id it does not know, and the removal would then reach
+        // The tool has to be there. getTool() throws on an id it does not know, and the marking would then reach
         // it — the context menu writes items whose tool the document may no longer hold (an object an operation
         // keys by its own id, a stale entry). Those cannot be drawn, so they cannot be clicked either.
         if (VAbstractPattern::FindTool(item.second) == nullptr)
@@ -735,10 +791,10 @@ auto VWidgetGroups::RemovableObjects(const QVector<QPair<quint32, quint32>> &ite
             continue;
         }
 
-        removable.insert(item.first, item.second);
+        transferable.insert(item.first, item.second);
     }
 
-    return removable;
+    return transferable;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -747,7 +803,27 @@ void VWidgetGroups::UpdateSelectionTip()
     const int count = static_cast<int>(m_selectedObjects.size());
     if (count > 0)
     {
-        emit ShowStatusTip(tr("%n object(s) selected — Enter to confirm, Escape cancels.", "", count));
+        // A transfer has one more question to ask, and "confirm" there would promise a move the dialog can still
+        // call off.
+        emit ShowStatusTip(m_objectSelection == ObjectSelection::Transferring
+                               ? tr("%n object(s) selected — Enter to choose the layer they move to, Escape cancels.",
+                                    "", count)
+                               : tr("%n object(s) selected — Enter to confirm, Escape cancels.", "", count));
+        return;
+    }
+
+    if (m_objectSelection == ObjectSelection::Transferring)
+    {
+        if (m_candidateObjects.isEmpty())
+        {
+            emit ShowStatusTip(tr("No object of this layer can be drawn — there is nothing to transfer."));
+            return;
+        }
+
+        // Nothing to say here about the invariant that holds for a removal: a transfer writes into the target
+        // before it takes out of the source, so every object the layer holds may leave it.
+        emit ShowStatusTip(tr("Select the objects to transfer, then press Enter to choose the layer they move to — "
+                              "Escape cancels. Magenta is this layer's content, and every object of it can move."));
         return;
     }
 
@@ -772,8 +848,16 @@ void VWidgetGroups::UpdateSelectionTip()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VWidgetGroups::ExplainRemovalRefusal(const QPair<quint32, quint32> &object)
+void VWidgetGroups::ExplainRefusal(const QPair<quint32, quint32> &object)
 {
+    // A transfer puts the object into the target before it takes it out of the source, so nothing of the layer is
+    // refused for the invariant: the only refusal left is a click that landed outside the layer.
+    if (m_objectSelection == ObjectSelection::Transferring)
+    {
+        emit ShowStatusTip(tr("This object is not in this layer."));
+        return;
+    }
+
     // Two different refusals, and saying the wrong one would send the user looking for a layer that is not there.
     const QMap<quint32, QString> holders = m_doc->GetGroupsContainingItem(object.second, object.first, true);
     if (holders.contains(m_selectionLayerId))
@@ -802,6 +886,15 @@ void VWidgetGroups::ValidateObjectSelection()
     }
 
     const quint32 layerId = m_selectionLayerId;
+
+    // A transfer asks its question before anything is written, and a dismissed dialog writes nothing: the picking
+    // stays armed so Enter can ask again, and Escape is still there to let go of it.
+    if (m_objectSelection == ObjectSelection::Transferring)
+    {
+        TransferSelectedObjects(layerId);
+        return;
+    }
+
     const bool removing = m_objectSelection == ObjectSelection::Removing;
 
     if (not m_selectedObjects.isEmpty())
@@ -830,6 +923,86 @@ void VWidgetGroups::ValidateObjectSelection()
 
         undoStack->endMacro();
     }
+
+    CancelObjectSelection();
+    UpdateGroups();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VWidgetGroups::AskTargetLayer(quint32 sourceId) -> quint32
+{
+    const QMap<quint32, VGroupData> groups = m_doc->GetGroups();
+    const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
+
+    OChooseLayerDialog::Config config;
+    config.acceptText = tr("Transfer");
+    // The source layer is named: the dock keeps the highlight on the ACTIVE layer, which is not necessarily this
+    // one, so "this layer" would not say which layer the objects are leaving.
+    config.intro = tr("%n object(s) will leave \"%1\". Choose the layer they move to:", "",
+                      static_cast<int>(m_selectedObjects.size()))
+                       .arg(groups.value(sourceId).name);
+
+    for (auto group = groups.constBegin(); group != groups.constEnd(); ++group)
+    {
+        // Every layer but the source, hidden ones included: the tag filter only hides rows from this dock, and a
+        // removal already counts a filtered-out layer as a real holder for exactly the same reason.
+        if (group.key() == sourceId)
+        {
+            continue;
+        }
+
+        config.choices.append({group.key(), group.value().name, MakeColorDot(group.value().color, dark)});
+    }
+    config.preselected = m_doc->GetActiveGroup();
+
+    OChooseLayerDialog dialog(config, this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        return NULL_ID;
+    }
+
+    return dialog.ChosenLayerId();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::TransferSelectedObjects(quint32 sourceId)
+{
+    if (m_selectedObjects.isEmpty())
+    {
+        // Enter with nothing picked leaves the picking, exactly as it does in the two other directions.
+        CancelObjectSelection();
+        UpdateGroups();
+        return;
+    }
+
+    const quint32 targetId = AskTargetLayer(sourceId);
+    if (targetId == NULL_ID)
+    {
+        return; // the dialog was dismissed: the picking is left exactly as it was
+    }
+
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+    undoStack->beginMacro(tr("transfer objects to another layer"));
+
+    for (auto it = m_selectedObjects.constBegin(); it != m_selectedObjects.constEnd(); ++it)
+    {
+        // The target first, the source second: at no moment does the object belong to no layer. One command per
+        // write, and both are the single writers the rest of the layers work already goes through.
+        if (const QDomElement added = m_doc->AddItemToGroup(it.value(), it.key(), targetId); not added.isNull())
+        {
+            undoStack->push(new ::AddItemToGroup(added, m_doc, targetId));
+        }
+
+        // An object the target already holds writes nothing on the way in — the writer refuses a double — so all
+        // that is left to do for it is to take it out of the source.
+        if (const QDomElement removed = m_doc->RemoveItemFromGroup(it.value(), it.key(), sourceId);
+            not removed.isNull())
+        {
+            undoStack->push(new ::RemoveItemFromGroup(removed, m_doc, sourceId));
+        }
+    }
+
+    undoStack->endMacro();
 
     CancelObjectSelection();
     UpdateGroups();
@@ -984,10 +1157,11 @@ void VWidgetGroups::RetranslateUI()
 {
     ui->retranslateUi(this);
 
-    // ⚠️ Le bouton et l'infobulle de catégories sont écrits en code, et `ui->retranslateUi` ne les
+    // ⚠️ Le bouton, la case et l'infobulle de catégories sont écrits en code, et `ui->retranslateUi` ne les
     // voit pas. `UpdateGroups` réécrit l'infobulle sans reconstruire le widget : aucune connexion
     // n'est rejouée, contrairement à un appel du constructeur.
     m_addButton->setText(tr("Add a layer"));
+    m_showActiveLayer->setText(tr("Show the active layer on the canvas"));
     UpdateGroups();
 }
 
@@ -1054,6 +1228,9 @@ void VWidgetGroups::FillTable(QMap<quint32, VGroupData> groups)
 
         MakeActionItem(kEdit, MakeCellIcon(QStringLiteral("gear-six"), dark), QString());
         MakeActionItem(kAdd, MakeCellIcon(QStringLiteral("plus"), dark), QString());
+        // The bend arrow: an object changes layer without ever leaving every layer — the icon the library draws,
+        // not one this dock invented.
+        MakeActionItem(kTransfer, MakeCellIcon(QStringLiteral("arrow-bend-up-right"), dark), QString());
         MakeActionItem(kRemove, MakeCellIcon(QStringLiteral("minus"), dark), QString());
         // The trash stays fully visible and clickable even on a layer holding objects: the refusal
         // is explained by a dialog (ActionDeleteLayer), not by a dimmed icon the reader cannot read.
