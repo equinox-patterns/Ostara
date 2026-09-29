@@ -31,6 +31,7 @@
 #include <QComboBox>
 #include <QCompleter>
 #include <QLineEdit>
+#include <QScreen>
 
 #include "../dialogtoolbox.h"
 #include "../ifc/ifcdef.h"
@@ -65,6 +66,34 @@ DialogGroup::DialogGroup(const VContainer *data, VAbstractPattern *doc, quint32 
 DialogGroup::~DialogGroup()
 {
     delete ui;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogGroup::PlaceDialog()
+{
+    // Centred, and on the frame rather than on the client size: `move()` places the frame, title bar
+    // included, so centring the client area would leave the dialog half a title bar too low. Same idiom as
+    // DialogNewPattern and OExportTemplateWindow, and called from showEvent — before the window is painted,
+    // so it never appears anywhere else first.
+    if (const QScreen *screen = this->screen())
+    {
+        const QRect available = screen->availableGeometry();
+        QRect frame = frameGeometry();
+        frame.moveCenter(available.center());
+
+        // Larger than the screen, it cannot be centred on it: pinned to the top and the left, so what it
+        // loses is the far edge rather than both.
+        if (frame.height() > available.height())
+        {
+            frame.moveTop(available.top());
+        }
+        if (frame.width() > available.width())
+        {
+            frame.moveLeft(available.left());
+        }
+
+        move(frame.topLeft());
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

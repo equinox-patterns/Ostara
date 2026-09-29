@@ -54,6 +54,12 @@ namespace
 
 constexpr int kIconSize = 20;
 
+// An action column holds one 20 px icon and nothing else, and the item delegate centres it in the whole
+// cell — so 28 px is the icon plus 4 px of air on either side. Every pixel spared here goes to the name
+// column, which is the one thing in this table that has to be read rather than aimed at. The header is
+// hidden (.ui), so no column title ever asks for more room than the icon.
+constexpr int kIconColumnWidth = 28;
+
 // Row layout: visibility + colour dot + name on the left, one action icon per column on the right.
 constexpr int kVisible = 0;
 constexpr int kColor = 1;
@@ -189,20 +195,16 @@ VWidgetGroups::VWidgetGroups(VContainer *pattern, VAbstractPattern *doc, QWidget
     table->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
     table->horizontalHeader()->setStretchLastSection(false);
     table->horizontalHeader()->setSectionResizeMode(kName, QHeaderView::Stretch);
-    table->setColumnWidth(kVisible, 36);
-    table->setColumnWidth(kColor, 36);
-    table->setColumnWidth(kEdit, 44);
-    table->setColumnWidth(kAdd, 44);
-    table->setColumnWidth(kTransfer, 44);
-    table->setColumnWidth(kRemove, 44);
-    table->setColumnWidth(kDelete, 44);
+    // The seven icon columns get the same width, the name column stretches over all that is left:
+    // the dock is narrow, and widening it is not what is wanted — the icons give back what they take.
+    for (int col : {kVisible, kColor, kEdit, kAdd, kTransfer, kRemove, kDelete})
+    {
+        table->setColumnWidth(col, kIconColumnWidth);
+        table->setItemDelegateForColumn(col, new IconDelegate(table));
+    }
     // Compact fixed-height rows — the list never stretches rows vertically.
     table->verticalHeader()->setDefaultSectionSize(36);
     table->setIconSize(QSize(kIconSize, kIconSize));
-    for (int col : {kVisible, kColor, kEdit, kAdd, kTransfer, kRemove, kDelete})
-    {
-        table->setItemDelegateForColumn(col, new IconDelegate(table));
-    }
 
     FillTable(doc->GetGroups());
     UpdateActiveRowStyle();

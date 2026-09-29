@@ -79,6 +79,10 @@ protected:
     auto IsValid() const -> bool override;
     auto UsesVisualization() const -> bool override { return false; }
 
+    /// Few fields that never grow, unlike a tool dialog whose formula field can be deployed: this one is
+    /// centred on the screen instead of opened high, which is what DialogTool does by default.
+    void PlaceDialog() override;
+
 private slots:
     void NameChanged();
 

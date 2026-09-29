@@ -56,7 +56,6 @@
 #include <QShowEvent>
 #include <QSize>
 #include <QTextCursor>
-#include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QtDebug>
@@ -169,17 +168,25 @@ void DialogTool::showEvent(QShowEvent *event)
         }
     }
 
-    // Open in the upper third of the screen so the dialog can grow downward and
-    // still keep its OK/Cancel/Apply buttons visible.
-    QTimer::singleShot(0, this, [this]() {
-        if (auto *screen = this->screen())
-        {
-            const QRect available = screen->availableGeometry();
-            const int x = available.x() + (available.width() - frameGeometry().width()) / 2;
-            const int y = available.y() + (available.height() - frameGeometry().height()) * 15 / 100;
-            move(x, y);
-        }
-    });
+    PlaceDialog();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief PlaceDialog open the dialog in the upper third of the screen so it can grow downward and still keep
+ * its OK/Cancel/Apply buttons visible. Called from showEvent, where frameGeometry() is settled but the window
+ * has not been painted yet: a QTimer::singleShot(0) used to do this one event-loop turn later, which showed
+ * the dialog at the position the platform had picked for it and moved it afterwards — the flicker.
+ */
+void DialogTool::PlaceDialog()
+{
+    if (const QScreen *screen = this->screen())
+    {
+        const QRect available = screen->availableGeometry();
+        const int x = available.x() + (available.width() - frameGeometry().width()) / 2;
+        const int y = available.y() + (available.height() - frameGeometry().height()) * 15 / 100;
+        move(x, y);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

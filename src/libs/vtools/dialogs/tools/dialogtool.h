@@ -245,6 +245,15 @@ protected:
     virtual void ShowVisualization() {}
 
     /**
+     * @brief PlaceDialog where the dialog opens, called once from showEvent — synchronously, so the window
+     * is never painted anywhere else first. The default puts it in the upper third of the screen, because a
+     * formula field can be deployed and make the dialog grow downwards: opening high leaves it the room it
+     * needs without pushing OK/Cancel off the bottom. A dialog whose size never changes (DialogGroup) has no
+     * such need and overrides this to centre itself, which is where the eye already is.
+     */
+    virtual void PlaceDialog();
+
+    /**
      * @brief RestoreTransientVariables re-inject dialog-local formula variables (e.g. "CurrentLength")
      * that live only in this dialog's own container copy. SetAssociatedTool() replaces that copy
      * wholesale from the associated tool's data, which never permanently holds such variables, so
