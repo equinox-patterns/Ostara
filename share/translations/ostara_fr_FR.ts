@@ -358,6 +358,11 @@
         <translation>Deuxième angle :</translation>
     </message>
     <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="37"/>
+        <source>Radius = perimeter / (2 * _pi), e.g. 25 / (2 * _pi) for a 25 cm perimeter.</source>
+        <translation>Rayon = périmètre / (2 * _pi), par ex. 25 / (2 * _pi) pour un périmètre de 25 cm.</translation>
+    </message>
+    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="46"/>
         <source>Create start point</source>
         <translation>Créer le point de départ</translation>
@@ -457,6 +462,11 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="91"/>
         <source>Length:</source>
         <translation>Longueur :</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="34"/>
+        <source>Radius = perimeter / (2 * _pi), e.g. 25 / (2 * _pi) for a 25 cm perimeter.</source>
+        <translation>Rayon = périmètre / (2 * _pi), par ex. 25 / (2 * _pi) pour un périmètre de 25 cm.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="43"/>
