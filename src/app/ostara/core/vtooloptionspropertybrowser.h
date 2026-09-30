@@ -63,13 +63,7 @@ public:
     QGraphicsItem *currentItem() const { return m_currentItem; }
     auto ComboBoxPalette() const -> QPalette;
 
-    void ShowGroupOptions(const QString &groupName, quint32 attachmentId);
-
     void RetranslateUI();
-
-signals:
-    void DetachAllRequested(quint32 attachmentId);
-    void RenameRequested(quint32 attachmentId, const QString &name);
 
 public slots:
     void itemClicked(QGraphicsItem *item);
@@ -88,8 +82,6 @@ private:
     QScrollArea *m_scroll{nullptr};
     QStackedWidget *m_stack{nullptr};
     OPatternPropertiesWidget *m_patternWidget{nullptr};
-
-    quint32 m_groupAttachmentId{};
 
     QGraphicsItem *m_currentItem{nullptr};
     QPointer<QObject> m_currentObject{};

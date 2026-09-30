@@ -30,7 +30,6 @@
 // Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
 
 #include "mainwindow.h"
-#include "widgets/BreadcrumbBar.h"
 #include "widgets/ODockManager.h"
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
@@ -153,7 +152,6 @@
 // Undo commands used by tool callbacks
 #include "../vtools/undocommands/renamepp.h"
 #include "../vtools/undocommands/undogroup.h"
-#include "../vtools/undocommands/undoattachment.h"
 
 // Other needed headers
 #include "../vmisc/def.h"
@@ -1019,11 +1017,6 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     }
 
     CancelTool();
-    doc->ClearIsolation();
-    if (m_breadcrumb != nullptr)
-    {
-        m_breadcrumb->hide();
-    }
     emit EnableItemMove(false);
     m_currentTool = m_lastUsedTool = t;
 

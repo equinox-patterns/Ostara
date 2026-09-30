@@ -140,9 +140,6 @@ private:
 
     auto CreateAddToGroupMenu(QMenu &menu, quint32 itemId) -> QActionGroup *;
     auto CreateRemoveFromGroupMenu(QMenu &menu, quint32 itemId) -> QActionGroup *;
-    auto CreateAddToAttachmentMenu(QMenu &menu, quint32 itemId) -> QActionGroup *;
-    auto CreateRemoveFromAttachmentMenu(QMenu &menu, quint32 itemId) -> QActionGroup *;
-    auto CreateDetachAllAction(QMenu &menu, quint32 itemId) -> QAction *;
     auto CreateShowLabelAction(QMenu &menu, GOType itemType, quint32 itemId) -> QAction *;
     auto CreateRemoveAction(QMenu &menu) -> QAction *;
 
@@ -153,9 +150,6 @@ private:
         QAction *showLabel{nullptr};
         QActionGroup *addToGroup{nullptr};
         QActionGroup *removeFromGroup{nullptr};
-        QActionGroup *addToAttachment{nullptr};
-        QActionGroup *removeFromAttachment{nullptr};
-        QAction *detachAll{nullptr};
     };
 
     /// Builds the tool context menu, runs it and dispatches the selection. The "Options" entry is
@@ -172,9 +166,6 @@ private:
     void HandleRemoveAction();
     void HandleAddToGroup(QAction const *selectedAction, quint32 itemId);
     void HandleRemoveFromGroup(QAction const *selectedAction, quint32 itemId);
-    void HandleAddToAttachment(QAction const *selectedAction, quint32 itemId);
-    void HandleRemoveFromAttachment(QAction const *selectedAction, quint32 itemId);
-    void HandleDetachAll(quint32 itemId);
 };
 
 template<class Dialog>

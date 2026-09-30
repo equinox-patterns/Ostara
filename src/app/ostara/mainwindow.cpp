@@ -35,7 +35,6 @@
 #include "widgets/owidgetsizeranges.h"
 #include "widgets/owidgetsizestyles.h"
 #include "widgets/TopBar.h"
-#include "widgets/BreadcrumbBar.h"
 
 #include <QAction>
 #include <QComboBox>
@@ -84,7 +83,6 @@
 #include "../vtools/tools/othumbnailitem.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/undocommands/undogroup.h"
-#include "../vtools/undocommands/undoattachment.h"
 #include "../vtools/undocommands/unlinkpiecegroup.h"
 #include "../vwidgets/vgrainlineitem.h"
 #include "../vwidgets/vmaingraphicsscene.h"
@@ -240,7 +238,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->view->viewport()->setContentsMargins(0, 0, 0, 0);
 
     // Created before InitDocksContain() — the breadcrumb signal connections live there.
-    m_breadcrumb = new BreadcrumbBar(this);
 
     // Owns dock content, title bars, toggle actions and per-mode dock state.
     m_dockManager = new ODockManager(ui, this, this);
@@ -345,12 +342,11 @@ MainWindow::MainWindow(QWidget *parent)
         oldLayout->setSpacing(0);
     }
 
-    // Wrap the editor in a vertical layout with the attachment breadcrumb above the canvas.
+    // Wrap the editor in a vertical layout so the active-layer rule can sit above the canvas.
     auto *editorContainer = new QWidget(this);
     auto *editorLayout = new QVBoxLayout(editorContainer);
     editorLayout->setContentsMargins(0, 0, 0, 0);
     editorLayout->setSpacing(0);
-    editorLayout->addWidget(m_breadcrumb);
 
     // The layer the canvas draws into announces itself: a one-pixel rule along the top edge of the canvas, in
     // that layer's own colour. It takes its place in the layout — a scene item would scroll with the drawing.
@@ -1324,51 +1320,6 @@ void MainWindow::InitDocksContain()
 
     connect(ui->view, &VMainGraphicsView::itemClicked, this, &MainWindow::HandleItemClicked);
     connect(ui->view, &VMainGraphicsView::itemHovered, this, &MainWindow::HandleItemHovered);
-    connect(ui->view, &VMainGraphicsView::itemDoubleClicked, this, &MainWindow::ItemDoubleClicked);
-    connect(m_breadcrumb, &BreadcrumbBar::canvasClicked, this, [this]()
-            {
-                doc->ClearIsolation();
-                m_breadcrumb->hide();
-                m_dockManager->toolOptions()->itemClicked(nullptr);
-            });
-    connect(m_breadcrumb, &BreadcrumbBar::groupClicked, this, [this]()
-            {
-                const quint32 attachmentId = doc->GetIsolatedAttachment();
-                doc->SetIsolatedAttachment(attachmentId);
-                const QString groupName = doc->GetAttachmentName(attachmentId);
-                m_dockManager->toolOptions()->ShowGroupOptions(groupName, attachmentId);
-                m_breadcrumb->Update(groupName, QString());
-            });
-    connect(m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::DetachAllRequested, this, [this](quint32 attachmentId)
-            {
-                auto *delAttachment = new DelAttachment(doc, attachmentId);
-                VAbstractApplication::VApp()->getUndoStack()->push(delAttachment);
-                doc->ClearIsolation();
-                m_breadcrumb->hide();
-                m_dockManager->toolOptions()->itemClicked(nullptr);
-            });
-    connect(m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::RenameRequested, this,
-            [this](quint32 attachmentId, const QString &name)
-            {
-                if (doc->GetAttachmentName(attachmentId) == name)
-                {
-                    return;
-                }
-                auto *renameAttachment = new RenameAttachment(doc, attachmentId, name);
-                VAbstractApplication::VApp()->getUndoStack()->push(renameAttachment);
-
-                // Reflect the new name in the breadcrumb (keep the drilled-down object, if any).
-                QString objectName;
-                const quint32 objectId = doc->GetIsolatedObject();
-                if (objectId != NULL_ID && pattern != nullptr)
-                {
-                    if (const auto gobject = pattern->GetGObject(objectId); not gobject.isNull())
-                    {
-                        objectName = gobject->ObjectName();
-                    }
-                }
-                m_breadcrumb->Update(name, objectName);
-            });
     connect(doc, &VPattern::FullUpdateFromFile, m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::UpdateOptions,
             Qt::QueuedConnection);
 

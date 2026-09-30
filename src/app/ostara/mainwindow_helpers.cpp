@@ -969,17 +969,9 @@ auto NormalizeUnlayeredObjects(VAbstractPattern *doc) -> bool
         if (groups.isNull())
         {
             groups = doc->createElement(VAbstractPattern::TagGroups);
-            // <draw> is an xs:sequence: calculation, modeling, details, groups, attachments. Appending
-            // would place <groups> after <attachments>, and the pattern could no longer be saved.
-            if (const QDomElement attachments = draw.firstChildElement(VAbstractPattern::TagAttachments);
-                not attachments.isNull())
-            {
-                draw.insertBefore(groups, attachments);
-            }
-            else
-            {
-                draw.appendChild(groups);
-            }
+            // <draw> is an xs:sequence and <groups> is its last element, so appending it keeps the order the
+            // schema demands.
+            draw.appendChild(groups);
         }
 
         QDomElement unnamed = groups.firstChildElement(VAbstractPattern::TagGroup);

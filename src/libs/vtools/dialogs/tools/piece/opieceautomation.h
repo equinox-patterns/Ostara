@@ -73,8 +73,7 @@ public:
     void ShowSenseMessage();
 
     // ---- C. Click orchestration (the whole click handling) ----
-    void HandleObjectChosen(quint32 id, const SceneObject &type,
-                            const QVector<QPair<quint32, quint32>> &attachmentItems);
+    void HandleObjectChosen(quint32 id, const SceneObject &type);
 
     // ---- D. Main-path storage (source of truth during collection) ----
     auto Nodes() const -> const QVector<VPieceNode> &;

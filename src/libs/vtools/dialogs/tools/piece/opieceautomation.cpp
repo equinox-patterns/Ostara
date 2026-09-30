@@ -72,38 +72,7 @@ inline auto IsCurveNode(const VPieceNode &node) -> bool
     }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-// Maps a SceneObject to its piece-node tool type; LAST_ONE_DO_NOT_USE means "not a piece object".
-auto NodeToolForSceneObject(const SceneObject &type) -> Tool
-{
-    switch (type)
-    {
-        case SceneObject::Arc: return Tool::NodeArc;
-        case SceneObject::ElArc: return Tool::NodeElArc;
-        case SceneObject::Point: return Tool::NodePoint;
-        case SceneObject::Spline: return Tool::NodeSpline;
-        case SceneObject::SplinePath: return Tool::NodeSplinePath;
-        default: return Tool::LAST_ONE_DO_NOT_USE;
-    }
-}
 
-//---------------------------------------------------------------------------------------------------------------------
-// Resolves the SceneObject type of a drawing object from its tool id.
-auto SceneTypeForTool(vidtype toolId) -> SceneObject
-{
-    if (VDataTool *tool = VAbstractPattern::getTool(toolId); tool != nullptr)
-    {
-        if (auto *curve = qobject_cast<VToolAbstractCurve *>(tool))
-        {
-            return curve->GetSceneType();
-        }
-        if (qobject_cast<VAbstractPoint *>(tool))
-        {
-            return SceneObject::Point;
-        }
-    }
-    return SceneObject::Unknown;
-}
 
 } // namespace
 
@@ -479,8 +448,7 @@ void OPieceAutomation::ShowSenseMessage()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OPieceAutomation::HandleObjectChosen(quint32 id, const SceneObject &type,
-                                          const QVector<QPair<quint32, quint32>> &attachmentItems)
+void OPieceAutomation::HandleObjectChosen(quint32 id, const SceneObject &type)
 {
     // A prematurely auto-added closing curve: a new object either cuts it (a cut
     // point on the closing portion — keep it and split it), or continues the
@@ -500,71 +468,45 @@ void OPieceAutomation::HandleObjectChosen(quint32 id, const SceneObject &type,
 
     if (id != LastId())
     {
-        if (attachmentItems.isEmpty())
+        switch (type)
         {
-            switch (type)
-            {
-                case SceneObject::Arc:
-                    AddCurveNode(id, Tool::NodeArc);
-                    break;
-                case SceneObject::ElArc:
-                    AddCurveNode(id, Tool::NodeElArc);
-                    break;
-                case SceneObject::Point:
-                    AutoExtendCurve(id);
-                    AppendNode(VPieceNode(id, Tool::NodePoint));
-                    ResolvePendingReverseFromExit(id);
-                    if (cuttingPremature)
-                    {
-                        // The point cuts the premature closing curve: split it by
-                        // adding a continuation curve node (same traversal sense).
-                        bool rev = false;
-                        LastCurveReverse(prematureCurve.GetId(), rev);
-                        AppendNode(VPieceNode(prematureCurve.GetId(), prematureCurve.GetTypeTool(), rev));
-                        emit ListChanged();
-                        m_hasPrematureClosingCurve = true;
-                    }
-                    else
-                    {
-                        m_hasPrematureClosingCurve = CompleteClosingCurve(true);
-                    }
-                    break;
-                case SceneObject::Spline:
-                    AddCurveNode(id, Tool::NodeSpline);
-                    break;
-                case SceneObject::SplinePath:
-                    AddCurveNode(id, Tool::NodeSplinePath);
-                    break;
-                case SceneObject::Line:
-                case SceneObject::Detail:
-                case SceneObject::Unknown:
-                default:
-                    qDebug() << "Got wrong scene object. Ignore.";
-                    break;
-            }
-        }
-        else
-        {
-            // The clicked object belongs to an attachment: add every member as a piece node.
-            for (const auto &item : attachmentItems)
-            {
-                const Tool nodeTool = NodeToolForSceneObject(SceneTypeForTool(item.second));
-                if (nodeTool == Tool::LAST_ONE_DO_NOT_USE)
+            case SceneObject::Arc:
+                AddCurveNode(id, Tool::NodeArc);
+                break;
+            case SceneObject::ElArc:
+                AddCurveNode(id, Tool::NodeElArc);
+                break;
+            case SceneObject::Point:
+                AutoExtendCurve(id);
+                AppendNode(VPieceNode(id, Tool::NodePoint));
+                ResolvePendingReverseFromExit(id);
+                if (cuttingPremature)
                 {
-                    continue;
-                }
-                if (nodeTool == Tool::NodePoint)
-                {
-                    AutoExtendCurve(item.first);
-                    AppendNode(VPieceNode(item.first, nodeTool));
-                    ResolvePendingReverseFromExit(item.first);
+                    // The point cuts the premature closing curve: split it by
+                    // adding a continuation curve node (same traversal sense).
+                    bool rev = false;
+                    LastCurveReverse(prematureCurve.GetId(), rev);
+                    AppendNode(VPieceNode(prematureCurve.GetId(), prematureCurve.GetTypeTool(), rev));
+                    emit ListChanged();
+                    m_hasPrematureClosingCurve = true;
                 }
                 else
                 {
-                    AddCurveNode(item.first, nodeTool);
+                    m_hasPrematureClosingCurve = CompleteClosingCurve(true);
                 }
-            }
-            m_hasPrematureClosingCurve = CompleteClosingCurve(true);
+                break;
+            case SceneObject::Spline:
+                AddCurveNode(id, Tool::NodeSpline);
+                break;
+            case SceneObject::SplinePath:
+                AddCurveNode(id, Tool::NodeSplinePath);
+                break;
+            case SceneObject::Line:
+            case SceneObject::Detail:
+            case SceneObject::Unknown:
+            default:
+                qDebug() << "Got wrong scene object. Ignore.";
+                break;
         }
     }
     else

@@ -78,7 +78,6 @@ class VBackgroundImageItem;
 class VBackgroundImageControls;
 class DrawToolBar;
 class TopBar;
-class BreadcrumbBar;
 class QGraphicsItem;
 class QMenu;
 class WelcomeScreen;
@@ -196,7 +195,6 @@ private slots:
     void ScaleChanged(qreal scale);
     void HandleItemClicked(QGraphicsItem *item);
     void HandleItemHovered(QGraphicsItem *item);
-    void ItemDoubleClicked(QGraphicsItem *item);
     void MouseMove(const QPointF &scenePos);
     void Clear();
     void PatternChangesWereSaved(bool saved);
@@ -640,7 +638,6 @@ private:
 
     DrawToolBar *m_drawToolBar{nullptr};
     TopBar      *m_topBar{nullptr};
-    BreadcrumbBar *m_breadcrumb{nullptr};
 
     /// The active layer, shown on the canvas: a one-pixel rule along its top edge and the layer's name drawn in
     /// the top-left corner of the view. Both are driven by UpdateActiveLayerIndicator.

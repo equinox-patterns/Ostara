@@ -42,7 +42,6 @@
 #include "../vtools/tools/vabstracttool.h"
 #include "dialogs/vwidgetdetails.h"
 #include "vtheme.h"
-#include "widgets/BreadcrumbBar.h"
 #include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
 
@@ -580,33 +579,14 @@ void MainWindow::HandleItemClicked(QGraphicsItem *item)
         }
     }
 
-    if (doc == nullptr || m_breadcrumb == nullptr)
+    if (doc == nullptr)
     {
         m_dockManager->toolOptions()->itemClicked(item);
         return;
     }
 
-    const vidtype id = VWidgetDependencies::ItemToId(item);
-
-    // Clicking a member of an attachment enters the group level.
-    if (id != NULL_ID && not doc->GetAttachmentItemsForObject(id).isEmpty())
-    {
-        const QMap<quint32, QString> attachments = doc->GetAttachmentsContainingItem(id, id, true);
-        if (not attachments.isEmpty())
-        {
-            const quint32 attachmentId = attachments.firstKey();
-            const QString groupName = attachments.first();
-            doc->SetIsolatedAttachment(attachmentId);
-            m_dockManager->toolOptions()->ShowGroupOptions(groupName, attachmentId);
-            m_breadcrumb->Update(groupName, QString());
-            return;
-        }
-    }
-
-    // Otherwise: normal object selection, back to the canvas level.
-    doc->ClearIsolation();
+    // Normal object selection, at the canvas level.
     m_dockManager->toolOptions()->itemClicked(item);
-    m_breadcrumb->hide();
 
     // Empty canvas click → deselect the current piece (Details mode).
     if (item == nullptr)
@@ -642,39 +622,6 @@ void MainWindow::HandleItemHovered(QGraphicsItem *item)
     m_dockManager->detailsOptions()->OnNodeHoveredForSA(node != nullptr ? node->getId() : 0);
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ItemDoubleClicked(QGraphicsItem *item)
-{
-    if (doc == nullptr || m_breadcrumb == nullptr)
-    {
-        return;
-    }
-
-    const vidtype id = VWidgetDependencies::ItemToId(item);
-    if (id == NULL_ID || doc->GetAttachmentItemsForObject(id).isEmpty())
-    {
-        return;
-    }
-
-    const QMap<quint32, QString> attachments = doc->GetAttachmentsContainingItem(id, id, true);
-    const quint32 attachmentId = attachments.isEmpty() ? NULL_ID : attachments.firstKey();
-    const QString groupName = attachments.isEmpty() ? tr("Group") : attachments.first();
-
-    doc->SetIsolatedAttachment(attachmentId);
-    doc->SetIsolatedObject(id);
-
-    m_dockManager->toolOptions()->itemClicked(item);
-
-    QString objectName = tr("Object");
-    if (pattern != nullptr)
-    {
-        if (const auto gobject = pattern->GetGObject(id); not gobject.isNull())
-        {
-            objectName = gobject->ObjectName();
-        }
-    }
-    m_breadcrumb->Update(groupName, objectName);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -870,11 +817,6 @@ void MainWindow::RetranslateAll()
     // infobulles construites depuis le texte de leur action. Appelé après `retranslateUi`, qui écrase
     // justement ces dernières.
     RetranslateActions();
-    if (m_breadcrumb != nullptr)
-    {
-        m_breadcrumb->RetranslateUI();
-    }
-
     m_dockManager->retranslate();
 
     UpdateMeasurementState();

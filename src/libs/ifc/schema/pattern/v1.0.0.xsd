@@ -851,26 +851,6 @@
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element name="attachments" minOccurs="0" maxOccurs="1">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="attachment" minOccurs="0" maxOccurs="unbounded">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                              <xs:attribute name="object" type="xs:unsignedInt"/>
-                              <xs:attribute name="tool" type="xs:unsignedInt" use="required"/>
-                            </xs:complexType>
-                          </xs:element>
-                        </xs:sequence>
-                        <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
-                        <xs:attribute name="name" type="xs:string"/>
-                      </xs:complexType>
-                    </xs:element>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
             </xs:sequence>
             <xs:attribute name="name" type="xs:string"/>
           </xs:complexType>

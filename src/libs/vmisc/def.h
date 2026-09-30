@@ -260,6 +260,10 @@ enum class Tool : ToolVisHolderType
     PointFromArcAndTangent,
     TrueDarts,
     UnionDetails,
+    // Group and Attach have no tool any more: the Layers dock replaced Group (29-09-2026) and the Attach feature
+    // — a purely visual Illustrator-style group, which nothing could create any more — was removed outright with
+    // its data, its schema element and its UI (30-09-2026). The VALUES stay: they carry QGraphicsItem type ids
+    // (UserType + int(Tool::X)), and the Q_STATIC_ASSERT_X that pin LAST_ONE_DO_NOT_USE would all shift.
     Group,
     Attach,
     Rotation,

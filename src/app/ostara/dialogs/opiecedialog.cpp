@@ -92,10 +92,7 @@ void OPieceDialog::ChosenObject(quint32 id, const SceneObject &type)
         return;
     }
 
-    const QVector<QPair<quint32, quint32>> attachmentItems =
-        m_doc->IsIsolated() ? QVector<QPair<quint32, quint32>>{} : m_doc->GetAttachmentItemsForObject(id);
-
-    m_automation.HandleObjectChosen(id, type, attachmentItems);
+    m_automation.HandleObjectChosen(id, type);
     BuildPreviewPiece();
 }
 

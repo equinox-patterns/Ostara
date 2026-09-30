@@ -705,24 +705,8 @@ auto DialogOperationTool::SaveSourceObjects() const -> QVector<SourceItem>
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::ToggleSourceObject(quint32 id)
 {
-    // When isolating a single object, do not expand to the whole attachment.
-    // Otherwise, if the clicked object belongs to an attachment, toggle the whole group.
-    const auto attachmentItems = m_doc->IsIsolated() ? QVector<QPair<quint32, quint32>>{}
-                                                     : m_doc->GetAttachmentItemsForObject(id);
-
-    QVector<quint32> group;
-    if (attachmentItems.isEmpty())
-    {
-        group.append(id);
-    }
-    else
-    {
-        group.reserve(attachmentItems.size());
-        for (const auto &item : attachmentItems)
-        {
-            group.append(item.first); // object id
-        }
-    }
+    // One object, and only that one: the click toggles the object it landed on.
+    const QVector<quint32> group{id};
 
     // Any member already present in the source list => the group is being removed, not added.
     bool present = false;

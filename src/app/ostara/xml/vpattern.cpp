@@ -1056,7 +1056,7 @@ void VPattern::ParsePieceGroups(const QDomElement &domElement)
  */
 void VPattern::ParseDrawElement(const QDomNode &node, const Document &parse)
 {
-    QStringList const tags{TagCalculation, TagModeling, TagDetails, TagGroups, TagAttachments};
+    QStringList const tags{TagCalculation, TagModeling, TagDetails, TagGroups};
     QDomNode domNode = node.firstChild();
     while (not domNode.isNull())
     {
@@ -1086,9 +1086,6 @@ void VPattern::ParseDrawElement(const QDomNode &node, const Document &parse)
                 break;
             case 3: // TagGroups
                 ParseGroups(domElement);
-                break;
-            case 4: // TagAttachments
-                ParseAttachments(domElement);
                 break;
             default:
                 throw VException(tr("Wrong tag name '%1'.").arg(domElement.tagName()));

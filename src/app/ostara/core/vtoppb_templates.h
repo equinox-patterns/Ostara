@@ -62,7 +62,6 @@ inline const QString AttrHold(QStringLiteral("hold"));
 inline const QString AttrVisible(QStringLiteral("visible"));
 inline const QString AttrOpacity(QStringLiteral("opacity"));
 inline const QString AttrSubName(QStringLiteral("subName"));
-inline const QString AttrAttachmentName(QStringLiteral("attachmentName"));
 } // namespace VtoppbConstants
 
 

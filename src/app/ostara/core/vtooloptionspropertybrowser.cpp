@@ -225,24 +225,6 @@ void VToolOptionsPropertyBrowser::ClearPropertyBrowser()
     m_patternWidget->Refresh();
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void VToolOptionsPropertyBrowser::ShowGroupOptions(const QString &groupName, quint32 attachmentId)
-{
-    ClearPropertyBrowser();
-    m_groupAttachmentId = attachmentId;
-    m_formView->setTitle(tr("Group"));
-
-    auto *nameProperty = new VPE::VStringProperty(tr("Group name:"));
-    nameProperty->setValue(groupName);
-
-    auto *detachButton = new QPushButton(tr("Detach all"), m_formView);
-    connect(detachButton, &QPushButton::clicked, this,
-            [this]() { emit DetachAllRequested(m_groupAttachmentId); });
-
-    // Both rows are added at once: the form view rebuilds its editors on each insertion.
-    AddProperties({nameProperty, new VPE::VWidgetProperty(QString(), detachButton)},
-                  {AttrAttachmentName, QStringLiteral("detachButton")});
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
@@ -391,7 +373,7 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
             ShowToolOptions<VToolMove>(item, tr("Tool move"), MoveProperties());
             break;
         case OToolTransfert::Type:
-            ShowToolOptions<OToolTransfert>(item, tr("Tool transfert"), TransfertProperties());
+            ShowToolOptions<OToolTransfert>(item, tr("Tool transfer"), TransfertProperties());
             break;
         case VToolEllipticalArc::Type:
             ShowToolOptions<VToolEllipticalArc>(item, tr("Elliptical arc"), EllipticalArcProperties());
@@ -620,14 +602,6 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
 
     if (prop == nullptr)
     {
-        return;
-    }
-
-    // Attachment group name edit — no tool item is selected while navigating a group.
-    if (m_propertyToId.value(prop) == AttrAttachmentName)
-    {
-        const QString newName = prop->data(VPE::VProperty::DPC_Data, Qt::EditRole).toString();
-        emit RenameRequested(m_groupAttachmentId, newName);
         return;
     }
 

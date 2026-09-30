@@ -861,7 +861,7 @@ void VMainGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 
     if (event->button() == Qt::LeftButton)
     {
-        // Hit-test the double-clicked item and forward it (used for attachment isolation).
+        // Hit-test the double-clicked item and forward it.
         const QList<QGraphicsItem *> list = PrioritizeItems(items(event->pos()), mapToScene(event->pos()));
         for (auto *item : list)
         {
