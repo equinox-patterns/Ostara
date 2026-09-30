@@ -32,6 +32,7 @@
 #include "mainwindow_helpers.h"
 #include "vtheme.h"
 #include "widgets/TopBar.h"
+#include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
 #include "vmisc/FactoryWidgets.h"
 #include "../vpropertyexplorer/qtcolorpicker.h"
@@ -454,7 +455,14 @@ void MainWindow::ToolBarStyles()
 {
     MainWindow::ToolBarStyle(ui->topBar);
     ui->topBar->setMovable(false);
+
+    // Both bars are permanent chrome and are never user-closable, so their toggle
+    // entries have no meaning. Qt lists every QToolBar and every QDockWidget in the
+    // right-click menu (QMainWindow::createPopupMenu()) and disables the entry of a
+    // non-closable dock, which is why the left draw toolbar showed up as a checked
+    // but greyed-out "Tools" line. Remove both entries.
     ui->topBar->toggleViewAction()->setVisible(false);
+    m_drawToolBar->toggleViewAction()->setVisible(false);
 }
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolboxIconSize()

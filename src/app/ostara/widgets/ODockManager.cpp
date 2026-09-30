@@ -285,18 +285,21 @@ void ODockManager::syncVisibilityFromDocks()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+QList<QDockWidget *> ODockManager::allDocks() const
+{
+    return {m_ui->dockWidgetOptions,       m_ui->dockWidgetLayoutPages,       m_ui->dockWidgetGroups,
+            m_ui->dockWidgetMessages,      m_ui->dockWidgetBackgroundImages,  m_ui->dockWidgetDependencies,
+            m_ui->dockWidgetSizeRanges,    m_ui->dockWidgetSizeStyles,        m_ui->dockWidgetOutputs,
+            m_ui->dockWidgetCoverPage};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODockManager::hideAllDocks()
 {
-    m_ui->dockWidgetOptions->setVisible(false);
-    m_ui->dockWidgetLayoutPages->setVisible(false);
-    m_ui->dockWidgetGroups->setVisible(false);
-    m_ui->dockWidgetMessages->setVisible(false);
-    m_ui->dockWidgetBackgroundImages->setVisible(false);
-    m_ui->dockWidgetDependencies->setVisible(false);
-    m_ui->dockWidgetSizeRanges->setVisible(false);
-    m_ui->dockWidgetSizeStyles->setVisible(false);
-    m_ui->dockWidgetOutputs->setVisible(false);
-    m_ui->dockWidgetCoverPage->setVisible(false);
+    for (QDockWidget *dock : allDocks())
+    {
+        dock->setVisible(false);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -573,6 +576,21 @@ void ODockManager::enforceModeDockExclusions(Draw mode)
     for (QDockWidget *dock : excluded)
     {
         dock->setVisible(false);
+    }
+
+    // The same exclusion list drives what the docks advertise in the Window menu
+    // and in the right-click menu. QMainWindow::createPopupMenu() adds one entry
+    // per dock whatever its state, so a dock left in the list comes back as a
+    // greyed-out entry announcing a dock the mode never shows. Hiding the toggle
+    // action drops the entry from both menus — Qt skips invisible actions when it
+    // lays a menu out — and leaves the dock itself untouched.
+    for (QDockWidget *dock : allDocks())
+    {
+        // A dock built non-closable has no usable entry at all: Qt disables its
+        // toggle action (see QDockWidget::setFeatures), so the line could only be
+        // a dead grey one. It gets no entry, whatever the mode.
+        const bool hasMenuEntry = dock->features().testFlag(QDockWidget::DockWidgetClosable);
+        dock->toggleViewAction()->setVisible(hasMenuEntry && not excluded.contains(dock));
     }
 }
 

@@ -30,6 +30,7 @@
 #define ODOCKMANAGER_H
 
 #include <QByteArray>
+#include <QList>
 #include <QObject>
 
 #include "def.h"
@@ -150,10 +151,15 @@ private:
     void buildOptionsDock();
     void buildGroupsDock();
 
-    /** @brief Force-hide the docks that can never appear in the given mode. Called
-     *         after restoreState(), which would otherwise re-show them from the
-     *         mode's saved layout. The mode's own docks stay user-arrangeable. */
+    /** @brief Force-hide the docks that can never appear in the given mode, and
+     *         hide their toggle action so they do not show up in the Window menu
+     *         or in the right-click menu either. Called after restoreState(),
+     *         which would otherwise re-show them from the mode's saved layout.
+     *         The mode's own docks stay user-arrangeable. */
     void enforceModeDockExclusions(Draw mode);
+
+    /** @brief Every dock the manager orchestrates. */
+    QList<QDockWidget *> allDocks() const;
 
     Ui::MainWindow *m_ui{nullptr};
     QMainWindow *m_host{nullptr};
