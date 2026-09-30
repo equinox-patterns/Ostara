@@ -157,6 +157,11 @@ void MeasurementWindow::SetTableName(const QString &name)
     m_workspace->SetTableName(name);
 }
 
+auto MeasurementWindow::ImportStructure(const QString &filePath) -> int
+{
+    return m_workspace->ImportStructure(filePath);
+}
+
 bool MeasurementWindow::LoadFile(const QString &filePath)
 {
     // Check file type

@@ -75,6 +75,12 @@ void MainWindow::WelcomeNewMeasurement()
     connect(mw, &MeasurementWindow::measurementsSaved, this, &MainWindow::AddRecentMeasurementAndRefresh);
     mw->NewDocument(dlg.MeasurementsType(), dlg.Unit());
     mw->SetTableName(dlg.TableName());
+    if (dlg.UseTemplate())
+    {
+        // The template only lends its measurement names — no values, no increments, no axes. Without this
+        // call the chosen template was silently ignored and the new table came out empty.
+        mw->ImportStructure(dlg.TemplatePath());
+    }
     mw->show();
 }
 

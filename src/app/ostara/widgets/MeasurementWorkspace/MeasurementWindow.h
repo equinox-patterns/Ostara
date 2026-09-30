@@ -54,6 +54,10 @@ public:
     /// Set the table name on the workspace panels.
     void SetTableName(const QString &name);
 
+    /// Import the measurement definitions of an existing table (the template chosen at creation). Returns the
+    /// number of measurements imported.
+    auto ImportStructure(const QString &filePath) -> int;
+
     /// Load a document from a file path (.omt, .otu, .vst, .vit).
     /// Returns true on success, false on failure.
     bool LoadFile(const QString &filePath);

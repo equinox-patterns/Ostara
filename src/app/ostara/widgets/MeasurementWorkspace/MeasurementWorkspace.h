@@ -83,6 +83,11 @@ public:
     /// Set the table name on the currently active panel.
     void SetTableName(const QString &name);
 
+    /// Import the measurement definitions of an existing table — names, full names, descriptions — into the
+    /// measurement table. This is the template chosen when creating a table: nothing else is copied, no values,
+    /// no increments, no axes. Returns the number of measurements imported.
+    auto ImportStructure(const QString &filePath) -> int;
+
     /// Get the current document type.
     auto DocumentType() const -> MeasurementsType;
 

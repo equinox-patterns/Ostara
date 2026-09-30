@@ -84,6 +84,13 @@ public:
     /// Get all measurement records.
     auto GetRecords() const -> QVector<MeasurementRecord>;
 
+    /// Import the measurement definitions of an existing table — name, full name, description and the
+    /// separator/collapsed flags — and nothing else: values, increments and axes stay behind. Rows whose name
+    /// is already in the table are skipped. Returns the number of rows imported; @a skipped, when given,
+    /// receives the number of rows skipped. One import path, shared by the "Import from table" button and by
+    /// the template chosen when creating a table.
+    auto ImportStructure(const QString &filePath, int *skipped = nullptr) -> int;
+
     /// Toggle group collapsed state and update row visibility.
     void SetGroupCollapsed(int row, bool collapsed);
 

@@ -536,6 +536,14 @@ void MeasurementWorkspace::SetTableName(const QString &name)
     }
 }
 
+auto MeasurementWorkspace::ImportStructure(const QString &filePath) -> int
+{
+    // The rows land in Step 2's table, and the caller decides when the user sees them: for an individual
+    // table Step 2 is already on screen, for a multi-size one the rows wait until the size grid is validated.
+    // They are already in the model when that happens, which is why OnNextStep keeps them.
+    return m_step2Container->ImportStructure(filePath);
+}
+
 auto MeasurementWorkspace::DocumentType() const -> MeasurementsType
 {
     return m_measurementType;

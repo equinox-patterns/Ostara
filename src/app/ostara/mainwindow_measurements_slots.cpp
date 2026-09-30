@@ -187,6 +187,11 @@ void MainWindow::OnNewMeasurements()
     mw->SetModeless(true);
     mw->NewDocument(dlg.MeasurementsType(), dlg.Unit());
     mw->SetTableName(dlg.TableName());
+    if (dlg.UseTemplate())
+    {
+        // Same rule as from the welcome screen: the template lends its measurement names, nothing else.
+        mw->ImportStructure(dlg.TemplatePath());
+    }
 
     connect(mw, &MeasurementWindow::measurementsSaved, this,
             [this](const QString &savedPath) {

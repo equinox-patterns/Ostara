@@ -540,33 +540,22 @@ void Step2Container::OnAddGroup()
     emit MeasurementsChanged();
 }
 
-void Step2Container::OnImportStructure()
+auto Step2Container::ImportStructure(const QString &filePath, int *skipped) -> int
 {
-    const QString libPath = VAbstractApplication::VApp()->Settings()->GetPathMeasurementLibrary();
-    QStringList favs = VAbstractApplication::VApp()->Settings()->GetMeasurementFavorites();
-    const QList<LibraryFileEntry> entries = MeasurementLibraryScanner::ScanLibrary(libPath, favs);
-
-    DialogImportStructure dlg(entries, favs, this);
-    if (dlg.exec() != QDialog::Accepted)
+    if (skipped != nullptr)
     {
-        return;
+        *skipped = 0;
     }
 
-    const QString selectedPath = dlg.selectedFilePath();
-    if (selectedPath.isEmpty())
+    if (filePath.isEmpty())
     {
-        return;
+        return 0;
     }
 
-    // Update favorites
-    VAbstractApplication::VApp()->Settings()->SetMeasurementFavorites(dlg.favorites());
-
-    // Extract structure from source file
-    const QVector<MeasurementRecord> sourceRecords = MeasurementLibraryScanner::ExtractStructure(
-        selectedPath);
+    const QVector<MeasurementRecord> sourceRecords = MeasurementLibraryScanner::ExtractStructure(filePath);
     if (sourceRecords.isEmpty())
     {
-        return;
+        return 0;
     }
 
     auto *model = m_tablePanel->GetModel();
@@ -607,6 +596,38 @@ void Step2Container::OnImportStructure()
     m_tablePanel->RefreshVisibility();
     UpdateButtonStates();
     emit MeasurementsChanged();
+
+    if (skipped != nullptr)
+    {
+        *skipped = skippedCount;
+    }
+
+    return importedCount;
+}
+
+void Step2Container::OnImportStructure()
+{
+    const QString libPath = VAbstractApplication::VApp()->Settings()->GetPathMeasurementLibrary();
+    QStringList favs = VAbstractApplication::VApp()->Settings()->GetMeasurementFavorites();
+    const QList<LibraryFileEntry> entries = MeasurementLibraryScanner::ScanLibrary(libPath, favs);
+
+    DialogImportStructure dlg(entries, favs, this);
+    if (dlg.exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    const QString selectedPath = dlg.selectedFilePath();
+    if (selectedPath.isEmpty())
+    {
+        return;
+    }
+
+    // Update favorites
+    VAbstractApplication::VApp()->Settings()->SetMeasurementFavorites(dlg.favorites());
+
+    int skippedCount = 0;
+    const int importedCount = ImportStructure(selectedPath, &skippedCount);
 
     if (skippedCount > 0)
     {
