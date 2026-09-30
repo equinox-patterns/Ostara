@@ -30,6 +30,7 @@
 #define SCALESCENEITEMS_H
 
 #include <QGraphicsLineItem>
+#include <functional>
 
 #include "../vmisc/def.h"
 #include "themeDef.h"
@@ -68,6 +69,13 @@ public:
     auto IsShowArrows() const -> bool;
     void SetShowArrows(bool show);
 
+    /// Gives the line the click a tool wants to hear about: it then stands for one of the segments that tool
+    /// draws — a side of a rectangle, a tracé of a dart cap, the main line of a line point — and a click has to
+    /// pick that segment for the operation being created. The callback carries what the owner needs (its own id
+    /// and the two endpoints); this item is not a QObject and emits nothing, and a line left without a handler
+    /// keeps its old meaning: the click is whatever its parent does with it.
+    void SetSegmentClickHandler(std::function<void()> handler);
+
     auto GetColorRole() const -> VColorRole;
     void SetColorRole(VColorRole role);
 
@@ -77,6 +85,7 @@ protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
     auto itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant override;
 
@@ -92,6 +101,8 @@ private:
 
     bool m_isBoldLine{true};
     bool m_showArrows{false};
+    /// Set when the line stands for a segment its owning tool draws; empty for every other line.
+    std::function<void()> m_segmentClickHandler{};
     bool m_layerSelected{false};
     bool m_inLayer{false};
     /// Colour to restore for a CustomColor line, which has no role to recompute from. Invalid when none is saved.

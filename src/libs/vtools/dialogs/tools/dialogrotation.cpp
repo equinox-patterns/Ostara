@@ -123,44 +123,18 @@ DialogRotation::DialogRotation(const VContainer *data, VAbstractPattern *doc, qu
     QWidget::setTabOrder(angleEditor, lengthEditor);
     QWidget::setTabOrder(lengthEditor, ui->buttonBox);
 
-    MakeFilterableComboBox(ui->comboBoxNewObject);
 
     InitOkCancelApply(ui);
 
     UpdateReferencePoint();
 
-    FillComboBoxObjectTypes(ui->comboBoxObjectType);
 
     FillComboBoxPoints(ui->comboBoxOriginPoint);
-    FillComboBoxTypeLine(ui->comboBoxPenStyle,
-                         OperationLineStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
-                                                 ui->comboBoxPenStyle->palette().color(QPalette::Text)),
-                         TypeLineDefault);
-    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
 
     connect(ui->lineEditVisibilityGroup, &QLineEdit::textChanged, this, &DialogOperationTool::GroupNameChanged);
     connect(ui->comboBoxOriginPoint, &QComboBox::currentTextChanged, this, &DialogRotation::PointChanged);
 
-    connect(ui->listWidget, &QListWidget::currentRowChanged, this, &DialogOperationTool::ShowSourceDetails);
-    connect(ui->listWidget, &QListWidget::currentRowChanged, this, &DialogOperationTool::CurrentObjectChanged);
-    connect(ui->lineEditName, &QLineEdit::textEdited, this, &DialogOperationTool::NameChanged);
-    connect(ui->comboBoxPenStyle, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            &DialogOperationTool::PenStyleChanged);
-    connect(m_colorCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &DialogOperationTool::ColorChanged);
-    connect(ui->toolButtonBulkRename, &QToolButton::clicked, this, &DialogOperationTool::BulkRename);
 
-    connect(ui->comboBoxObjectType,
-            QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this,
-            &DialogOperationTool::ObjectTypeChanged);
-    connect(ui->comboBoxNewObject,
-            QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this,
-            &DialogOperationTool::NewObjectChanged);
-    connect(ui->toolButtonNewObject, &QPushButton::clicked, this, &DialogOperationTool::AddNewObject);
-    connect(ui->toolButtonRemoveObject, &QPushButton::clicked, this, &DialogOperationTool::RemoveObject);
-
-    ObjectTypeChanged(ui->comboBoxObjectType->currentIndex());
 
     vis = new VisToolRotation(&this->data);
 
@@ -184,7 +158,7 @@ DialogRotation::~DialogRotation()
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogRotation::Widgets() const -> OperationWidgets
 {
-    return OperationWidgetsFrom(ui, m_colorCombo);
+    return OperationWidgetsFrom(ui);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -409,7 +383,6 @@ void DialogRotation::ShowDialog(bool click)
         VAbstractValApplication::VApp()->getSceneView()->AllowRubberBand(false);
 
         FillDefSourceNames(SourceObjects(), &data, "r"_L1);
-        FillSourceList();
 
         emit ToolTip(tr("Select the pivot point"));
     }
@@ -551,7 +524,6 @@ void DialogRotation::ShowVisualization()
 void DialogRotation::SaveData()
 {
     const QString angleFormula = UserAngle();
-    SourceObjects() = SaveSourceObjects();
 
     if (!vis.isNull())
     {
@@ -629,7 +601,7 @@ auto DialogRotation::IsValid() const -> bool
     const bool lengthOk = !m_lengthAvailable || (m_formulaLength->isValid() && m_lengthIsPossible);
     const bool rotationIsValid = m_formulaAngle->isValid() && lengthOk;
 
-    bool const ready = rotationIsValid && IsFlagName() && IsFlagError() && IsFlagGroupName();
+    bool const ready = rotationIsValid && IsFlagError() && IsFlagGroupName();
 
     if (ready)
     {
@@ -644,10 +616,6 @@ auto DialogRotation::IsValid() const -> bool
         if (!IsFlagError())
         {
             reason = tr("Invalid rotation point");
-        }
-        else if (!IsFlagName())
-        {
-            reason = tr("Invalid name");
         }
         else if (!IsFlagGroupName())
         {

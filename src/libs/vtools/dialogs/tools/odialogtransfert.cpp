@@ -90,12 +90,6 @@ ODialogTransfert::ODialogTransfert(const VContainer *data, VAbstractPattern *doc
     // layers, or the same layer would be offered twice.
     ui->comboBoxLayer->setInsertPolicy(QComboBox::NoInsert);
 
-    ApplyComboBoxView(ui->comboBoxPenStyle);
-    FillComboBoxTypeLine(ui->comboBoxPenStyle,
-                         OperationLineStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
-                                                 ui->comboBoxPenStyle->palette().color(QPalette::Text)),
-                         TypeLineDefault);
-    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
 
     // The properties of a source object are not this tool's business, and the portion is displayed, not
     // edited: the whole list of the template — its contents, its rename button and its removal button — stays
@@ -138,7 +132,7 @@ ODialogTransfert::~ODialogTransfert()
 //---------------------------------------------------------------------------------------------------------------------
 auto ODialogTransfert::Widgets() const -> OperationWidgets
 {
-    return OperationWidgetsFrom(ui, m_colorCombo);
+    return OperationWidgetsFrom(ui);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -304,7 +298,6 @@ void ODialogTransfert::ShowDialog(bool click)
         // The copies are named after their sources: naming them here, while the source part is the active one,
         // is what lets the host part tell them apart.
         FillDefSourceNames(SourceObjects(), &data, "t"_L1);
-        FillSourceList();
         RefreshPreview();
 
         Say(tr("Click the merge point of the part to transfer"));
@@ -332,7 +325,6 @@ void ODialogTransfert::ChosenObject(quint32 id, const SceneObject &type)
             {
                 ToggleSourceObject(id);
             }
-            FillSourceList();
             RefreshPreview(); // the picked objects light up as they are picked
             break;
 
@@ -442,7 +434,6 @@ void ODialogTransfert::SaveData()
 {
     // The list is the source of truth for the transferred objects: the canvas wrote into it, and this dialog
     // only ever removes from it.
-    SourceObjects() = SaveSourceObjects();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

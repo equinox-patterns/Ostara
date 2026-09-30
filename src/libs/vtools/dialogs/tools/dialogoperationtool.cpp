@@ -30,20 +30,18 @@
 
 #include "../../tools/drawTools/operation/ooperationlines.h"
 #include "../../tools/drawTools/vtoolline.h"
+#include "../../tools/vabstracttool.h"
 
-#include <QAbstractButton>
 #include <QColor>
 #include <QComboBox>
 #include <QDialog>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
-#include <QListWidget>
 #include <QPlainTextEdit>
 #include <QSharedPointer>
 #include <QStringList>
 
-#include "../support/dialogbulkrename.h"
 #include "vlineedit.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -55,19 +53,29 @@ using namespace Qt::Literals::StringLiterals;
 namespace
 {
 //---------------------------------------------------------------------------------------------------------------------
-// The pattern object behind a source id, or nullptr when the id is not a pattern object at all: an operation can
-// carry a line, which is a Line tool and not an object of the container. Reading a source must never throw.
-auto SourceObject(const VContainer &data, quint32 id) -> QSharedPointer<VGObject>
+// Two line selections are the same when they name the same lines, whatever the order they were picked in. A line
+// is named by the tool that carries it and the pair of its endpoints: its transformed copy's id has no say here.
+auto SameLines(const QVector<OOperationLine> &first, const QVector<OOperationLine> &second) -> bool
 {
-    try
+    if (first.size() != second.size())
     {
-        return data.GetGObject(id);
+        return false;
     }
-    catch (const VExceptionBadId &)
-    {
-        return {};
-    }
+
+    return std::all_of(first.cbegin(),
+                       first.cend(),
+                       [&second](const OOperationLine &line) -> bool
+                       {
+                           return std::any_of(second.cbegin(),
+                                              second.cend(),
+                                              [&line](const OOperationLine &other) -> bool
+                                              {
+                                                  return line.source == other.source && line.point1 == other.point1
+                                                         && line.point2 == other.point2;
+                                              });
+                       });
 }
+
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -152,41 +160,28 @@ void DialogOperationTool::SetSourceObjects(const QVector<SourceItem> &value)
         m_sourceBaselineCaptured = true;
     }
 
-    FillSourceList();
     OnSourceObjectsSet();
     CheckState(); // adding/removing objects toggles the Apply button (see CheckState)
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::SetDestinationObjects(const QVector<DestinationItem> &value)
-{
-    m_destination = value;
-    CurrentObjectChanged(Widgets().sourceList->currentRow());
-}
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogOperationTool::GetLineSources() const -> QVector<quint32>
+auto DialogOperationTool::GetLineSources() const -> const QVector<OOperationLine> &
 {
     return m_lineSources;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::SetLineSources(const QVector<quint32> &value)
+void DialogOperationTool::SetLineSources(const QVector<OOperationLine> &value)
 {
     m_lineSources = value;
 
     if (!m_lineBaselineCaptured)
     {
-        m_baselineLineSources.clear();
-        m_baselineLineSources.reserve(value.size());
-        for (auto id : value)
-        {
-            m_baselineLineSources.insert(id);
-        }
+        m_baselineLineSources = value;
         m_lineBaselineCaptured = true;
     }
 
-    FillSourceList();
     OnSourceObjectsSet();
     CheckState();
 }
@@ -199,24 +194,81 @@ void DialogOperationTool::ToggleLineSource(quint32 id)
         return;
     }
 
-    if (m_lineSources.contains(id))
+    // A Line tool describes its own line: the descriptor is read from it, so what the operation records is the
+    // pair of endpoints, exactly as for a line no tool draws.
+    ToggleDrawnSegment(OOperationLines::LineDescriptor(qobject_cast<VToolLine *>(VAbstractPattern::FindTool(id))));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogOperationTool::ToggleDrawnSegment(const OOperationLine &segment)
+{
+    if (segment.point1 == NULL_ID || segment.point2 == NULL_ID || segment.point1 == segment.point2)
     {
-        m_lineSources.removeAll(id);
+        return;
+    }
+
+    // The identity of a line is its carrier and the pair of its endpoints: one tool draws several segments under
+    // its own id — four sides of a rectangle, two tracés of a dart cap — and the pair is what tells them apart.
+    const auto sameSegment = [&segment](const OOperationLine &line) -> bool
+    {
+        return line.source == segment.source && line.point1 == segment.point1 && line.point2 == segment.point2;
+    };
+
+    if (const auto it = std::find_if(m_lineSources.begin(), m_lineSources.end(), sameSegment); it != m_lineSources.end())
+    {
+        // A line already taken goes on a second click, whatever became of its endpoints since.
+        m_lineSources.erase(it);
     }
     else
     {
-        m_lineSources.append(id);
+        // A line is a segment drawn between the images of its two points: one endpoint without an image leaves
+        // nothing to build, and showing the line in the preview would promise a copy that can never come. The
+        // click is refused, and said — the same thing a point tool says when a point cannot be a pivot.
+        if (!LineCanBeBuilt(segment))
+        {
+            emit ToolTip(tr("Take both points of this line first"));
+            return;
+        }
+
+        m_lineSources.append(segment);
     }
 
-    FillSourceList();
+    emit ToolTip(QString());
     OnSourceObjectsSet();
     CheckState();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void DialogOperationTool::ChosenSegment(quint32 id, quint32 point1, quint32 point2)
+{
+    OOperationLine segment;
+    segment.source = id;
+    segment.point1 = point1;
+    segment.point2 = point2;
+
+    // Pen and colour are read back from the tool: the scene carries the two endpoints and nothing else. A pair the
+    // tool does not declare keeps the defaults — better a line with the default pen than no line at all.
+    if (auto *tool = qobject_cast<VAbstractTool *>(VAbstractPattern::FindTool(id)); tool != nullptr)
+    {
+        const QVector<VDrawnSegment> drawn = tool->DrawnSegments();
+        const auto it = std::find_if(drawn.cbegin(),
+                                     drawn.cend(),
+                                     [point1, point2](const VDrawnSegment &candidate) -> bool
+                                     { return candidate.point1 == point1 && candidate.point2 == point2; });
+        if (it != drawn.cend())
+        {
+            segment.typeLine = it->typeLine;
+            segment.lineColor = it->lineColor;
+        }
+    }
+
+    ToggleDrawnSegment(segment);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto DialogOperationTool::PreviewLines() const -> QVector<QPair<quint32, quint32>>
 {
-    const QVector<OOperationLine> attached = OOperationLines::Collect(&data, m_sourceObjects, m_lineSources);
+    const QVector<OOperationLine> attached = OOperationLines::Collect(m_lineSources);
 
     QVector<QPair<quint32, quint32>> lines;
     lines.reserve(attached.size());
@@ -228,42 +280,41 @@ auto DialogOperationTool::PreviewLines() const -> QVector<QPair<quint32, quint32
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogOperationTool::IsLineRow(int row) const -> bool
+auto DialogOperationTool::HasImage(quint32 pointId) const -> bool
 {
-    const QListWidgetItem *item = Widgets().sourceList->item(row);
-    return item != nullptr && item->data(Qt::UserRole + 1).isValid();
+    if (pointId == NULL_ID)
+    {
+        return false;
+    }
+
+    return std::any_of(m_sourceObjects.cbegin(),
+                       m_sourceObjects.cend(),
+                       [pointId](const SourceItem &item) -> bool { return item.id == pointId; });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogOperationTool::LineDisplayName(quint32 id) -> QString
+auto DialogOperationTool::LineCanBeBuilt(const OOperationLine &line) const -> bool
 {
-    // Displaying a line must never fail, even if the line or one of its points is gone: fall back to a
-    // generic name rather than letting an exception escape.
-    try
-    {
-        if (auto *line = qobject_cast<VToolLine *>(VAbstractPattern::FindTool(id)); line != nullptr)
-        {
-            const QString first = line->FirstPointName();
-            const QString second = line->SecondPointName();
-            if (!first.isEmpty() && !second.isEmpty())
-            {
-                return tr("Line_%1_%2").arg(first, second);
-            }
-        }
-    }
-    catch (const VException &e)
-    {
-        Q_UNUSED(e)
-    }
-
-    return tr("Line");
+    return HasImage(line.point1) && HasImage(line.point2);
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogOperationTool::DropUnbuildableLines()
+{
+    const auto first = std::remove_if(m_lineSources.begin(),
+                                      m_lineSources.end(),
+                                      [this](const OOperationLine &line) -> bool { return !LineCanBeBuilt(line); });
+    m_lineSources.erase(first, m_lineSources.end());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::CheckDependencyTreeComplete()
 {
-    m_dependencyReady = m_doc->IsPatternGraphComplete();
-    Widgets().name->setEnabled(m_dependencyReady);
+    // Nothing is gated on the dependency graph any more: the operated objects are picked on the canvas, one
+    // click each, and the dialog no longer edits their names. The virtual stays — every operation tool calls
+    // it, and DialogTool keeps it pure.
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -306,401 +357,6 @@ void DialogOperationTool::GroupNameChanged()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::ShowSourceDetails(int row)
-{
-    if (IsLineRow(row))
-    {
-        // A line carries no label, pen style nor colour of its own in this dialog: it is described by
-        // the two points it links.
-        Widgets().name->setDisabled(true);
-        Widgets().penStyle->setDisabled(true);
-        Widgets().color->setDisabled(true);
-        return;
-    }
-
-    auto *combo = Widgets().color;
-
-    Widgets().name->setDisabled(true);
-    Widgets().penStyle->setDisabled(true);
-    combo->setDisabled(true);
-
-    if (Widgets().sourceList->count() == 0)
-    {
-        return;
-    }
-
-    const auto *item = Widgets().sourceList->item(row);
-    if (item == nullptr)
-    {
-        return;
-    }
-
-    const auto sourceItem = qvariant_cast<SourceItem>(item->data(Qt::UserRole));
-    const QSharedPointer<VGObject> sourceObject = SourceObject(data, sourceItem.id);
-    if (sourceObject != nullptr && sourceObject->getType() == GOType::Point)
-    {
-        const QSignalBlocker blockerPenStyle(Widgets().penStyle);
-        const QSignalBlocker blockerColor(combo);
-
-        Widgets().penStyle->setCurrentIndex(-1);
-        combo->setCurrentIndex(-1);
-    }
-    else
-    {
-        // The objects this operation is about to create belong to the active layer, so the window offers that
-        // layer's pen — it wins over whatever the source objects carry. Whatever the user then picks here still
-        // wins over the layer: this is only the opening value.
-        if (m_doc != nullptr)
-        {
-            ChangeCurrentData(Widgets().penStyle, m_doc->GetActiveGroupPenStyle());
-            QSignalBlocker blockerColor(combo);
-            SetColorComboCurrentName(combo, m_doc->GetActiveGroupColor());
-        }
-
-        Widgets().penStyle->setEnabled(true);
-        combo->setEnabled(true);
-    }
-
-    const QSignalBlocker blockerName(Widgets().name);
-    Widgets().name->setText(sourceItem.name);
-    Widgets().name->setEnabled(m_dependencyReady);
-
-    const QVector<SourceItem> sourceObjects = SaveSourceObjects();
-    const QSet<QString> freeNames = FindFreeNames(m_sourceObjects, sourceObjects);
-    const bool nameValid = IsValidSourceName(sourceItem.name, sourceItem.id, m_sourceObjects, &data, freeNames);
-    ChangeColor(Widgets().labelName, nameValid ? OkColor(this) : errorColor);
-    flagName = nameValid;
-    CheckState();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::CurrentObjectChanged(int row) const
-{
-    if (IsLineRow(row))
-    {
-        // A line is never committed on its own: dropping it from the list is always safe.
-        Widgets().removeObject->setEnabled(true);
-        return;
-    }
-
-    if (Widgets().sourceList->count() < 2)
-    {
-        Widgets().removeObject->setDisabled(true);
-        return;
-    }
-
-    const auto *item = Widgets().sourceList->item(row);
-    if (item == nullptr)
-    {
-        Widgets().removeObject->setDisabled(true);
-        return;
-    }
-
-    const auto target = qvariant_cast<SourceItem>(item->data(Qt::UserRole));
-    const QUuid recordId = target.recordId;
-
-    const auto it = std::find_if(m_destination.cbegin(),
-                                 m_destination.cend(),
-                                 [recordId](const DestinationItem &item) -> bool { return item.recordId == recordId; });
-
-    // A source object that is not yet present in the destination list has not been committed to the
-    // pattern, so no other tool can depend on it - it is always safe to remove. Only check safety for
-    // objects that already exist in the pattern.
-    if (it != m_destination.cend() && !IsSafeToRemoveGroupObject(it->id, m_doc))
-    {
-        Widgets().removeObject->setDisabled(true);
-        return;
-    }
-
-    Widgets().removeObject->setEnabled(true);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::NameChanged(const QString &text)
-{
-    if (IsLineRow(Widgets().sourceList->currentRow()))
-    {
-        return;
-    }
-
-    if (Widgets().sourceList->count() == 0)
-    {
-        return;
-    }
-
-    if (auto *item = Widgets().sourceList->currentItem())
-    {
-        auto sourceItem = qvariant_cast<SourceItem>(item->data(Qt::UserRole));
-
-        const QVector<SourceItem> objects = SaveSourceObjects();
-        const QSet<QString> freeNames = FindFreeNames(m_sourceObjects, objects);
-        const bool valid = IsValidSourceName(text, sourceItem.id, objects, &data, freeNames);
-
-        if (valid)
-        {
-            sourceItem.name = text;
-            item->setData(Qt::UserRole, QVariant::fromValue(sourceItem));
-        }
-
-        const QSharedPointer<VGObject> obj = SourceObject(data, sourceItem.id);
-        ChangeColor(Widgets().labelName, valid ? OkColor(this) : errorColor);
-
-        if (!valid)
-        {
-            Widgets().labelStatus->setText(obj != nullptr && obj->getType() == GOType::Point ? tr("Invalid label")
-                                                                                            : tr("Invalid name"));
-        }
-
-        flagName = valid;
-        CheckState();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::PenStyleChanged() const
-{
-    if (IsLineRow(Widgets().sourceList->currentRow()))
-    {
-        return;
-    }
-
-    if (Widgets().sourceList->count() == 0)
-    {
-        return;
-    }
-
-    if (auto *item = Widgets().sourceList->currentItem())
-    {
-        auto sourceItem = qvariant_cast<SourceItem>(item->data(Qt::UserRole));
-        sourceItem.penStyle = GetComboBoxCurrentData(Widgets().penStyle, TypeLineDefault);
-        item->setData(Qt::UserRole, QVariant::fromValue(sourceItem));
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::ObjectTypeChanged(int index) const
-{
-    Widgets().addObject->setDisabled(true);
-
-    const QSignalBlocker blocker(Widgets().newObject);
-    Widgets().newObject->clear();
-
-    if (index == -1)
-    {
-        return;
-    }
-
-    auto const type = Widgets().objectType->itemData(index).value<GOType>();
-
-    switch (type)
-    {
-        case GOType::Point:
-            FillComboBoxPoints(Widgets().newObject);
-            break;
-        case GOType::Arc:
-            FillComboBoxArcs(Widgets().newObject);
-            break;
-        case GOType::EllipticalArc:
-            FillComboBoxEllipticalArcs(Widgets().newObject);
-            break;
-        case GOType::Spline:
-        case GOType::CubicBezier:
-            FillComboBoxSplines(Widgets().newObject);
-            break;
-        case GOType::SplinePath:
-        case GOType::CubicBezierPath:
-            FillComboBoxSplinesPath(Widgets().newObject);
-            break;
-        case GOType::PlaceLabel:
-        case GOType::Unknown:
-        default:
-            return;
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::NewObjectChanged() const
-{
-    quint32 const id = getCurrentObjectId(Widgets().newObject);
-    if (id == NULL_ID)
-    {
-        return;
-    }
-
-    const QVector<SourceItem> sourceObjects = SaveSourceObjects();
-    const auto it = std::find_if(sourceObjects.cbegin(),
-                                 sourceObjects.cend(),
-                                 [id](const SourceItem &item) -> bool { return item.id == id; });
-    Widgets().addObject->setDisabled(it != sourceObjects.cend());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::AddNewObject()
-{
-    quint32 const id = getCurrentObjectId(Widgets().newObject);
-    if (id == NULL_ID)
-    {
-        return;
-    }
-
-    QVector<SourceItem> sourceObjects = SaveSourceObjects();
-    QSet<QString> occupiedNames;
-    for (const auto &sourceItem : std::as_const(sourceObjects))
-    {
-        if (!sourceItem.name.isEmpty())
-        {
-            occupiedNames.insert(sourceItem.name);
-        }
-    }
-
-    sourceObjects.append({.id = id, .name = GetDefSourceName(id, &data, "m"_L1, occupiedNames)});
-    SetSourceObjects(sourceObjects);
-    Widgets().addObject->setDisabled(true);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::ColorChanged() const
-{
-    if (IsLineRow(Widgets().sourceList->currentRow()))
-    {
-        return;
-    }
-
-    if (Widgets().sourceList->count() == 0)
-    {
-        return;
-    }
-
-    if (auto *item = Widgets().sourceList->currentItem())
-    {
-        auto sourceItem = qvariant_cast<SourceItem>(item->data(Qt::UserRole));
-        const QString colorName = GetColorComboCurrentName(Widgets().color);
-        const QColor color(colorName);
-        sourceItem.color = color.isValid() ? color.name() : ColorDefault;
-        item->setData(Qt::UserRole, QVariant::fromValue(sourceItem));
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::BulkRename()
-{
-    if (DialogBulkRename dlg(SaveSourceObjects(), data, this); dlg.exec() == QDialog::Accepted && dlg.HasChanges())
-    {
-        SetSourceObjects(dlg.RenamedItems());
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::RemoveObject()
-{
-    if (IsLineRow(Widgets().sourceList->currentRow()))
-    {
-        const QListWidgetItem *item = Widgets().sourceList->currentItem();
-        m_lineSources.removeAll(item->data(Qt::UserRole + 1).toUInt());
-        FillSourceList();
-        OnSourceObjectsSet();
-        CheckState();
-        Widgets().removeObject->setDisabled(true);
-        return;
-    }
-
-    if (Widgets().sourceList->count() < 2)
-    {
-        Widgets().removeObject->setDisabled(true);
-        return;
-    }
-
-    const QListWidgetItem *item = Widgets().sourceList->currentItem();
-    if (item == nullptr)
-    {
-        return;
-    }
-
-    const auto target = qvariant_cast<SourceItem>(item->data(Qt::UserRole));
-    const QUuid recordId = target.recordId;
-
-    const auto it = std::find_if(m_destination.cbegin(),
-                                 m_destination.cend(),
-                                 [recordId](const DestinationItem &item) -> bool { return item.recordId == recordId; });
-
-    // A source object that is not yet present in the destination list has not been committed to the
-    // pattern, so no other tool can depend on it - it is always safe to remove. Only check safety for
-    // objects that already exist in the pattern.
-    if (it != m_destination.cend() && !IsSafeToRemoveGroupObject(it->id, m_doc))
-    {
-        Widgets().removeObject->setDisabled(true);
-        return;
-    }
-
-    const int currentRow = Widgets().sourceList->row(item);
-    delete Widgets().sourceList->takeItem(currentRow);
-
-    SetSourceObjects(SaveSourceObjects());
-
-    Widgets().removeObject->setDisabled(true);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::FillSourceList()
-{
-    QSignalBlocker blocker(Widgets().sourceList);
-
-    Widgets().sourceList->clear();
-
-    int row = -1;
-
-    for (const auto &sourceItem : std::as_const(m_sourceObjects))
-    {
-        // A source the container does not know — a line the operation carries, an object that is gone — must not
-        // blow the dialog up: the row stays, named after the line it is.
-        const QSharedPointer<VGObject> obj = SourceObject(data, sourceItem.id);
-        const QString name = obj != nullptr ? obj->ObjectName() : LineDisplayName(sourceItem.id);
-        auto *item = new QListWidgetItem(name);
-        item->setToolTip(name);
-        item->setData(Qt::UserRole, QVariant::fromValue(sourceItem));
-        Widgets().sourceList->insertItem(++row, item);
-    }
-
-    // Lines come last: they are carried by the operation beside its objects, and the row flags them with
-    // the second data role so every handler can tell them apart.
-    for (auto id : std::as_const(m_lineSources))
-    {
-        auto *item = new QListWidgetItem(LineDisplayName(id));
-        item->setToolTip(item->text());
-        item->setData(Qt::UserRole + 1, id);
-        Widgets().sourceList->insertItem(++row, item);
-    }
-
-    blocker.unblock();
-
-    if (Widgets().sourceList->count() > 0)
-    {
-        Widgets().sourceList->setCurrentRow(0);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto DialogOperationTool::SaveSourceObjects() const -> QVector<SourceItem>
-{
-    QVector<SourceItem> objects;
-    objects.reserve(Widgets().sourceList->count());
-
-    for (int i = 0; i < Widgets().sourceList->count(); ++i)
-    {
-        if (const QListWidgetItem *item = Widgets().sourceList->item(i))
-        {
-            if (item->data(Qt::UserRole + 1).isValid())
-            {
-                continue; // A line row: not an operated object
-            }
-
-            const auto sourceItem = qvariant_cast<SourceItem>(item->data(Qt::UserRole));
-            objects.append(sourceItem);
-        }
-    }
-
-    return objects;
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::ToggleSourceObject(quint32 id)
@@ -739,6 +395,10 @@ void DialogOperationTool::ToggleSourceObject(quint32 id)
                 }
             }
         }
+
+        // The lines this object carried have lost an endpoint: they cannot be built any more, and a preview that
+        // kept them would show a copy that never comes.
+        DropUnbuildableLines();
     }
     else
     {
@@ -776,21 +436,11 @@ auto DialogOperationTool::SourceObjectsChanged() const -> bool
         current.insert(item.recordId);
     }
 
-    if (m_lineBaselineCaptured)
+    if (m_lineBaselineCaptured && !SameLines(m_lineSources, m_baselineLineSources))
     {
         // A line change needs the same full reparse as an object change: the transformed lines are
         // rebuilt from the operation element.
-        QSet<quint32> currentLines;
-        currentLines.reserve(m_lineSources.size());
-        for (auto id : std::as_const(m_lineSources))
-        {
-            currentLines.insert(id);
-        }
-
-        if (currentLines != m_baselineLineSources)
-        {
-            return true;
-        }
+        return true;
     }
 
     return current != m_baselineSourceRecords;

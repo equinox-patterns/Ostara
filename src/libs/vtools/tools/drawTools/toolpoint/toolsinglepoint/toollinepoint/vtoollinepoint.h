@@ -84,6 +84,9 @@ public:
         return {{basePointId, getId(), getLineType(), GetLineColor()}};
     }
 
+    /** @brief The item that draws that one segment, in the same order: a click on it picks the segment. */
+    auto DrawnSegmentItems() const -> QVector<VScaledLine *> override { return {mainLine}; }
+
     auto GetAngle() const -> qreal;
     void SetAngle(const qreal &value);
 

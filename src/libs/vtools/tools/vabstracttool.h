@@ -46,6 +46,7 @@
 
 class VGraphicsSimpleTextItem;
 class VAbstractNode;
+class VScaledLine;
 
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_GCC("-Weffc++")
@@ -128,6 +129,13 @@ public slots:
      *  Empty by default: a tool whose only segment is the one above must not override this. */
     virtual auto DrawnSegments() const -> QVector<VDrawnSegment> { return {}; }
 
+    /** @brief The scene items this tool draws for its segments, in the very order of DrawnSegments().
+     *
+     *  A drawn segment has no tool of its own — the tool that draws it carries several, all under its own id —
+     *  so a click can only be heard on the item drawn for that segment. Empty by default, exactly like
+     *  DrawnSegments(): a tool whose segments are not clickable declares nothing here. */
+    virtual auto DrawnSegmentItems() const -> QVector<VScaledLine *> { return {}; }
+
     /**
      * @brief PrepareNodes convert scene objects of a piece path into piece nodes.
      * Public so the app can build a piece from the new creation dialog (OPieceDialog).
@@ -146,6 +154,16 @@ signals:
      */
     void ChoosedTool(quint32 id, SceneObject type);
     /**
+     * @brief ChoosedSegment emit when one of the segments the tool itself draws was clicked.
+     *
+     * A line is not an object of the pattern: the tool id alone cannot name it — a rectangle draws four sides
+     * under one id — so the two endpoints travel with it, and they are what the operation records.
+     * @param id id of the tool that draws the segment.
+     * @param point1 first endpoint of the segment.
+     * @param point2 second endpoint of the segment.
+     */
+    void ChoosedSegment(quint32 id, quint32 point1, quint32 point2);
+    /**
      * @brief FullUpdateTree emit if need reparse pattern file.
      */
     void LiteUpdateTree(const Document &parse);
@@ -153,9 +171,17 @@ signals:
     void ToolTip(const QString &toolTip);
 
 protected:
+    /** @brief Wire every drawn segment item to this tool, so a click on one of them is announced as a picked
+     *  segment carrying the two endpoints that tell it from the tool's other segments. Called at the end of the
+     *  construction, once the items and the points they join exist.
+     *
+     *  DrawnSegments() and DrawnSegmentItems() are read in the same order: the i-th item stands for the i-th
+     *  segment. A tool that declares more items than segments — or the other way round — gives its extra items no
+     *  handler, which is what a tool that draws something it does not offer has to get. */
+    void InitDrawnSegmentConnections();
+
     /** @brief doc dom document container */
     VAbstractPattern *doc;
-
     /** @brief id object id. */
     const quint32 m_id;
 

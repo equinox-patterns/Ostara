@@ -286,6 +286,28 @@ void VScaledLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::SetSegmentClickHandler(std::function<void()> handler)
+{
+    m_segmentClickHandler = std::move(handler);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    // A drawn segment answers its own click: the tool that draws it is told, and picks that segment. The test is
+    // the one every other pick uses — left button, no double click, release inside the line — so a drag that ends
+    // away from the line is not a pick. A line with no handler keeps its old course.
+    if (m_segmentClickHandler && IsSelectedByReleaseEvent(this, event))
+    {
+        m_segmentClickHandler();
+        event->accept();
+        return;
+    }
+
+    QGraphicsLineItem::mouseReleaseEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VScaledLine::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
     // The right-click counterpart of mousePressEvent above, and it was missing: a line a tool draws for itself —

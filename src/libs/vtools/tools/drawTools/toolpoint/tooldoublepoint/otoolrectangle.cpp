@@ -126,6 +126,10 @@ OToolRectangle::OToolRectangle(const OToolRectangleInitData &initData, QGraphics
 
     ApplyPenToSides();
 
+    // The four sides are the segments an operation may take from the rectangle: each of them is clicked on its
+    // own, and the pair of points is what tells the one clicked from the other three.
+    InitDrawnSegmentConnections();
+
     ToolCreation(initData.typeCreation);
 }
 

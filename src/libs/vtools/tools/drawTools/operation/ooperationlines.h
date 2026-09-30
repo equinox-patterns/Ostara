@@ -41,6 +41,7 @@
 class VAbstractPattern;
 class VContainer;
 class VMainGraphicsScene;
+class VToolLine;
 
 /** @brief The parse that is running, as VAbstractPattern::Parse receives it. Declared here to keep the
  *  parse type readable in the signatures below without pulling the whole pattern document in. */
@@ -50,9 +51,9 @@ enum class Document : qint8;
  * @brief The OOperationLine struct describes one line attached to an operation.
  *
  * A line exists only through its two endpoints. @a source identifies what carries the line in
- * the pattern: the id of a VToolLine for an explicit line, or the id of the source point for the
- * implicit line drawn by that point's own tool. @a result is the id of the line created by the
- * operation, NULL_ID until it is allocated.
+ * the pattern: the id of the tool that draws it — a Line tool, a rectangle carrying four sides, a dart cap
+ * carrying two tracés — and the pair of its endpoints, which is what tells two lines of the same tool apart.
+ * @a result is the id of the line created by the operation, NULL_ID until it is allocated.
  */
 struct OOperationLine
 {
@@ -79,10 +80,15 @@ public:
     static const QString AttrIdPoint2;
     static const QString AttrIdResult;
 
-    /** @brief Collect the lines attached to an operation: the explicitly selected Line tools, then the
-     *  implicit line drawn by each source point whose own tool draws one. */
-    static auto Collect(const VContainer *data, const QVector<SourceItem> &source,
-                        const QVector<quint32> &explicitLines) -> QVector<OOperationLine>;
+    /** @brief Describes a line the user clicked: the Line tool that carries it, its two endpoints, its pen and
+     *  its colour. Empty — NULL_ID endpoints — when the id names no line tool. */
+    static auto LineDescriptor(VToolLine *line) -> OOperationLine;
+
+    /** @brief The lines an operation carries, from the selection the dialog hands over: one descriptor per line
+     *  the user picked, whatever draws it. A descriptor whose endpoints do not describe a line is dropped here,
+     *  the single place every caller goes through, and the result ids are cleared — the operation allocates them,
+     *  the selection never carries them. */
+    static auto Collect(const QVector<OOperationLine> &selected) -> QVector<OOperationLine>;
 
     /** @brief Give a new id to every line result that has none yet (creation from the GUI). */
     static void AllocateResultIds(VContainer *data, QVector<OOperationLine> &lines);
@@ -90,12 +96,8 @@ public:
     /** @brief Reconcile the lines a dialog is about to persist with the ones the operation already holds:
      *  a line that is still selected keeps the id of its transformed copy, a new one gets a fresh id, a
      *  line that was dropped simply disappears from the list. */
-    static auto SyncLines(VContainer *data, const QVector<OOperationLine> &oldLines, const QVector<SourceItem> &source,
-                          const QVector<quint32> &explicitLines) -> QVector<OOperationLine>;
-
-    /** @brief True when the descriptor comes from a Line tool the user selected, false when it is the
-     *  implicit line of a source point. */
-    static auto IsExplicit(const OOperationLine &line) -> bool;
+    static auto SyncLines(VContainer *data, const QVector<OOperationLine> &oldLines,
+                          const QVector<OOperationLine> &selected) -> QVector<OOperationLine>;
 
     /** @brief Image of a line endpoint: the destination object of that source point, or the point
      *  itself when it is a fixed point of the transformation, or NULL_ID when it has no image.

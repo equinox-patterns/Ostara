@@ -76,6 +76,10 @@ OToolDartCap::OToolDartCap(const OToolDartCapInitData &initData, QGraphicsItem *
     m_secondLine->setFlag(QGraphicsItem::ItemStacksBehindParent, true);
     m_secondLine->setZValue(-0.5);
 
+    // The two tracés are the segments an operation may take from the cap: each of them is clicked on its own.
+    // This runs after the base class wired the main line, and replaces that first wiring with the cap's two.
+    InitDrawnSegmentConnections();
+
     ToolCreation(initData.typeCreation);
 
     // The two tracés are hidden right away when the cap is not drawn: nothing waits for the first refresh.

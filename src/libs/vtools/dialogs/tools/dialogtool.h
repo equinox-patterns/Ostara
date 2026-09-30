@@ -147,6 +147,10 @@ signals:
     void ToolTip(const QString &toolTip);
 public slots:
     virtual void ChosenObject(quint32 id, const SceneObject &type);
+    /** @brief A drawn segment — a side of a rectangle, a tracé of a dart cap, the main line of a line point —
+     *  was clicked. A line is not an object, and one tool can draw several: the two endpoints are what names it.
+     *  Ignored by every dialog that does not operate on lines. */
+    virtual void ChosenSegment(quint32 id, quint32 point1, quint32 point2);
     virtual void SelectedObject(bool selected, quint32 object, quint32 tool);
     virtual void ClearSourceObjects() {}
     virtual void DialogAccepted();

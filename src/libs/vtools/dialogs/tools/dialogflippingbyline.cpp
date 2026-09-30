@@ -59,6 +59,8 @@
 #include "../vpropertyexplorer/qtcolorpicker.h"
 #include "ui_dialogflippingbyline.h"
 
+#include <QTabBar>
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"
 #endif
@@ -77,47 +79,25 @@ DialogFlippingByLine::DialogFlippingByLine(const VContainer *data,
 
     InitOkCancelApply(ui);
 
-    FillComboBoxObjectTypes(ui->comboBoxObjectType);
 
-    MakeFilterableComboBox(ui->comboBoxNewObject);
 
     FillComboBoxPoints(ui->comboBoxFirstLinePoint);
     FillComboBoxPoints(ui->comboBoxSecondLinePoint);
-    FillComboBoxTypeLine(ui->comboBoxPenStyle,
-                         OperationLineStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
-                                                 ui->comboBoxPenStyle->palette().color(QPalette::Text)),
-                         TypeLineDefault);
-    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
 
     connect(ui->lineEditVisibilityGroup, &QLineEdit::textChanged, this,
             &DialogOperationTool::GroupNameChanged);
     connect(ui->comboBoxFirstLinePoint, &QComboBox::currentTextChanged, this, &DialogFlippingByLine::PointChanged);
     connect(ui->comboBoxSecondLinePoint, &QComboBox::currentTextChanged, this, &DialogFlippingByLine::PointChanged);
 
-    connect(ui->listWidget, &QListWidget::currentRowChanged, this, &DialogOperationTool::ShowSourceDetails);
-    connect(ui->listWidget, &QListWidget::currentRowChanged, this, &DialogOperationTool::CurrentObjectChanged);
-    connect(ui->lineEditName, &QLineEdit::textEdited, this, &DialogOperationTool::NameChanged);
-    connect(ui->comboBoxPenStyle, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            &DialogOperationTool::PenStyleChanged);
-    connect(m_colorCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &DialogOperationTool::ColorChanged);
-    connect(ui->toolButtonBulkRename, &QToolButton::clicked, this, &DialogOperationTool::BulkRename);
 
-    connect(ui->comboBoxObjectType,
-            QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this,
-            &DialogOperationTool::ObjectTypeChanged);
-    connect(ui->comboBoxNewObject,
-            QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this,
-            &DialogOperationTool::NewObjectChanged);
-    connect(ui->toolButtonNewObject, &QPushButton::clicked, this, &DialogOperationTool::AddNewObject);
-    connect(ui->toolButtonRemoveObject, &QPushButton::clicked, this, &DialogOperationTool::RemoveObject);
-
-    ObjectTypeChanged(ui->comboBoxObjectType->currentIndex());
 
     vis = new VisToolFlippingByLine(&this->data);
 
     ui->tabWidget->setCurrentIndex(0);
+    if (ui->tabWidget->count() <= 1)
+    {
+        ui->tabWidget->tabBar()->hide(); // Single-page creation/editing window.
+    }
     SetTabStopDistance(ui->plainTextEditToolNotes);
 }
 
@@ -129,7 +109,7 @@ DialogFlippingByLine::~DialogFlippingByLine()
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogFlippingByLine::Widgets() const -> OperationWidgets
 {
-    return OperationWidgetsFrom(ui, m_colorCombo);
+    return OperationWidgetsFrom(ui);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -205,7 +185,6 @@ void DialogFlippingByLine::ShowDialog(bool click)
         VAbstractValApplication::VApp()->getSceneView()->AllowRubberBand(false);
 
         FillDefSourceNames(SourceObjects(), &data, "fl"_L1);
-        FillSourceList();
 
         emit ToolTip(tr("Select first line point"));
     }
@@ -324,7 +303,6 @@ void DialogFlippingByLine::ShowVisualization()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogFlippingByLine::SaveData()
 {
-    SourceObjects() = SaveSourceObjects();
 
     if (!vis.isNull())
     {
@@ -399,7 +377,7 @@ void DialogFlippingByLine::PointChanged()
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogFlippingByLine::IsValid() const -> bool
 {
-    bool const ready = IsFlagError() && IsFlagName() && IsFlagGroupName();
+    bool const ready = IsFlagError() && IsFlagGroupName();
 
     if (ready)
     {

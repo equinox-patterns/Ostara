@@ -71,18 +71,9 @@ void VToolFlippingByAxis::SetDialog()
     dialogTool->SetNotes(m_notes);
     dialogTool->SetSourceObjects(m_source);
 
-    // Only the lines explicitly selected by the user come back into the dialog: the implicit ones
-    // follow their points.
-    QVector<quint32> lineSources;
-    for (const auto &line : Lines())
-    {
-        if (OOperationLines::IsExplicit(line))
-        {
-            lineSources.append(line.source);
-        }
-    }
-    dialogTool->SetLineSources(lineSources);
-    dialogTool->SetDestinationObjects(m_destination);
+    // Every line the operation carries comes back into the dialog: each one was picked by the user, one click
+    // per line, and there is no longer a line that follows its points on its own.
+    dialogTool->SetLineSources(Lines());
 
     SetDialogVisibilityGroupData(dialogTool);
 }
@@ -99,7 +90,7 @@ auto VToolFlippingByAxis::Create(const QPointer<DialogTool> &dialog, VMainGraphi
     initData.originPointId = dialogTool->GetOriginPointId();
     initData.axisType = dialogTool->GetAxisType();
     initData.source = dialogTool->GetSourceObjects();
-    initData.lines = OOperationLines::Collect(data, initData.source, dialogTool->GetLineSources());
+    initData.lines = OOperationLines::Collect(dialogTool->GetLineSources());
     initData.hasLinkedVisibilityGroup = dialogTool->HasLinkedVisibilityGroup();
     initData.visibilityGroupName = dialogTool->GetVisibilityGroupName();
     initData.visibilityGroupTags = dialogTool->GetVisibilityGroupTags();
@@ -132,6 +123,10 @@ auto VToolFlippingByAxis::Create(VToolFlippingByAxisInitData initData) -> VToolF
         initData.destination.clear(); // Try to avoid mistake, value must be empty
 
         initData.id = initData.data->getNextId(); // Just reserve id for tool
+
+        // The transformed lines are persisted with the operation, so their ids are reserved now, before
+        // the operation element is written.
+        OOperationLines::AllocateResultIds(initData.data, initData.lines);
     }
     else
     {
@@ -246,7 +241,7 @@ void VToolFlippingByAxis::SaveDialog(QDomElement &domElement)
     const QVector<DestinationItem> destination = SyncDestination(source);
     // Persist the dialog line selection: a line added here must be created, a line dropped must go, and
     // the transformed copies that already exist keep their id.
-    m_lines = OOperationLines::SyncLines(getData(), m_lines, source, dialogTool->GetLineSources());
+    m_lines = OOperationLines::SyncLines(getData(), m_lines, dialogTool->GetLineSources());
 
     SaveSourceDestination(domElement, source, destination);
 

@@ -69,6 +69,10 @@ public:
 
 public slots:
     void          ChoosedItem(quint32 id, const SceneObject &type);
+    /// One of the segments a tool draws itself — a side of a rectangle, a tracé of a dart cap, the main line of a
+    /// line point — was clicked. A line is not an object: what identifies it is the pair of its endpoints, which
+    /// is why this travels beside ChoosedItem rather than through it.
+    void          ChoosedSegmentItem(quint32 id, quint32 point1, quint32 point2);
     void          SelectedItem(bool selected, quint32 object, quint32 tool);
     void          EnableItemMove(bool move);
     void          EnableDetailsMode(bool mode);
@@ -135,6 +139,9 @@ signals:
      * @param type object scene type.
      */
     void          ChoosedObject(quint32 id, SceneObject type);
+    /// @brief ChoosedSegmentObject announces a drawn segment the user clicked: the id of the tool that draws it
+    /// and the ids of its two endpoints, the only thing that tells it from the other segments of the same tool.
+    void          ChoosedSegmentObject(quint32 id, quint32 point1, quint32 point2);
     void          SelectedObject(bool selected, quint32 object, quint32 tool);
     void EnableItem();
     void          EnableToolMove(bool move);

@@ -112,6 +112,9 @@ public:
                 {getId(), m_secondPointId, getLineType(), GetLineColor()}};
     }
 
+    /** @brief The two items that draw those tracés, in the same order: the inherited main line first. */
+    auto DrawnSegmentItems() const -> QVector<VScaledLine *> override { return {mainLine, m_secondLine}; }
+
 protected slots:
     void ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id = NULL_ID) override;
 

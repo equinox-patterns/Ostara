@@ -202,7 +202,7 @@ auto OToolTransfert::Create(const QPointer<DialogTool> &dialog, VMainGraphicsSce
     initData.layer = dialogTool->GetHostLayerId();
     initData.layerName = dialogTool->GetHostLayerName();
     initData.source = dialogTool->GetSourceObjects();
-    initData.lines = OOperationLines::Collect(data, initData.source, dialogTool->GetLineSources());
+    initData.lines = OOperationLines::Collect(dialogTool->GetLineSources());
     // Same three fields as the other operations: without them the group asked for in the dialog was never read,
     // so it could not be created either.
     initData.hasLinkedVisibilityGroup = dialogTool->HasLinkedVisibilityGroup();
@@ -376,23 +376,14 @@ void OToolTransfert::SetDialog()
     dialogTool->SetTargetPointId(m_targetPointId);
     dialogTool->SetNotes(m_notes);
     dialogTool->SetSourceObjects(m_source);
-    dialogTool->SetDestinationObjects(m_destination);
 
     // The part the operation lives in is the active one — a tool is disabled in any other — and that is what the
     // dialog shows as the host part.
     dialogTool->SetHostPartName(doc->PatternBlockMapper()->GetActive());
 
-    // Only the lines explicitly selected by the user come back into the dialog: the implicit ones follow their
-    // points.
-    QVector<quint32> lineSources;
-    for (const auto &line : Lines())
-    {
-        if (OOperationLines::IsExplicit(line))
-        {
-            lineSources.append(line.source);
-        }
-    }
-    dialogTool->SetLineSources(lineSources);
+    // Every line the operation carries comes back into the dialog: each one was picked by the user, one click
+    // per line, and there is no longer a line that follows its points on its own.
+    dialogTool->SetLineSources(Lines());
 
     SetDialogVisibilityGroupData(dialogTool);
 }
@@ -447,7 +438,7 @@ void OToolTransfert::SaveDialog(QDomElement &domElement)
     const QVector<SourceItem> source = dialogTool->GetSourceObjects();
     const QVector<DestinationItem> destination = SyncDestination(source);
 
-    m_lines = OOperationLines::SyncLines(getData(), m_lines, source, dialogTool->GetLineSources());
+    m_lines = OOperationLines::SyncLines(getData(), m_lines, dialogTool->GetLineSources());
 
     SaveSourceDestination(domElement, source, destination);
 

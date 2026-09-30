@@ -30,6 +30,7 @@
 #define DIALOGOPERATIONTOOL_H
 
 #include "dialogtool.h"
+#include "../../tools/drawTools/operation/ooperationlines.h"
 #include "../../tools/toolsdef.h"
 
 #include <QPair>
@@ -37,7 +38,6 @@
 #include <QUuid>
 #include <QVBoxLayout>
 
-class QAbstractButton;
 class QGroupBox;
 class QLabel;
 class QPlainTextEdit;
@@ -45,17 +45,8 @@ class VCompleterLineEdit;
 
 struct OperationWidgets
 {
-    QListWidget *sourceList{nullptr};
-    QLineEdit *name{nullptr};
-    QLabel *labelName{nullptr};
     QLabel *labelStatus{nullptr};
     QLabel *labelGroupName{nullptr};
-    QComboBox *penStyle{nullptr};
-    QComboBox *color{nullptr};
-    QComboBox *objectType{nullptr};
-    QComboBox *newObject{nullptr};
-    QAbstractButton *addObject{nullptr};
-    QAbstractButton *removeObject{nullptr};
     QPlainTextEdit *notes{nullptr};
     VCompleterLineEdit *groupTags{nullptr};
     QLineEdit *visibilityGroupLine{nullptr};
@@ -84,29 +75,24 @@ public:
     auto GetSourceObjects() const -> QVector<SourceItem>;
     void SetSourceObjects(const QVector<SourceItem> &value);
 
-    /** @brief Ids of the Line tools the user selected. A line is not a geometric object, so it travels
-     *  beside the operated objects and never inside them. */
-    auto GetLineSources() const -> QVector<quint32>;
-    void SetLineSources(const QVector<quint32> &value);
+    /** @brief The lines the user selected, one descriptor each. A line is not a geometric object, so it travels
+     *  beside the operated objects and never inside them; and it is not named by a tool id either — a rectangle
+     *  draws four sides under one id — so what travels is the pair of its endpoints, with the tool that draws it. */
+    auto GetLineSources() const -> const QVector<OOperationLine> &;
+    void SetLineSources(const QVector<OOperationLine> &value);
 
-    void SetDestinationObjects(const QVector<DestinationItem> &value);
 
     void CheckDependencyTreeComplete() override;
 
 public slots:
     void ClearSourceObjects() override;
+    void ChosenSegment(quint32 id, quint32 point1, quint32 point2) override;
     void GroupNameChanged();
-    void ShowSourceDetails(int row);
-    void CurrentObjectChanged(int row) const;
-    void NameChanged(const QString &text);
-    void PenStyleChanged() const;
-    void ObjectTypeChanged(int index) const;
-    void NewObjectChanged() const;
-    void AddNewObject();
-    void ColorChanged() const;
-    void BulkRename();
-    void RemoveObject();
+    /** @brief Pick or unpick one of the lines a Line tool draws. */
     void ToggleLineSource(quint32 id);
+    /** @brief Pick or unpick one of the segments a tool draws itself — a side of a rectangle, a tracé of a dart
+     *  cap, the main line of a line point. What identifies it is the pair of its endpoints, never a tool id. */
+    void ToggleDrawnSegment(const OOperationLine &segment);
 
 protected:
     explicit DialogOperationTool(const VContainer *data, VAbstractPattern *doc, quint32 toolId,
@@ -124,24 +110,31 @@ protected:
     // Apply is disabled for it.
     auto SourceObjectsChanged() const -> bool;
 
-    void FillSourceList();
-    auto SaveSourceObjects() const -> QVector<SourceItem>;
+    /** @brief True when the transformation gives this point an image: it is one of the operated objects.
+     *
+     *  Deliberately stricter than what the operation will do — a rotation leaves its pivot in place, a mirror
+     *  leaves the points of its axis in place, a transfer refers the source merge point to the merge point of
+     *  the host — because the rule the user has to hold in mind is one rule and not five: a line is taken when
+     *  its two points are taken, and never before. */
+    auto HasImage(quint32 pointId) const -> bool;
 
-    /** @brief The attached lines (selected Line tools plus the implicit line of every source point whose
-     *  own tool draws one) as pairs of endpoint ids, ready for the visualization. */
+    /** @brief True when the line can be transformed: both of its endpoints have an image. A line is a segment
+     *  drawn between the images of its two points, so one endpoint without an image leaves nothing to build. */
+    auto LineCanBeBuilt(const OOperationLine &line) const -> bool;
+
+    /** @brief Drop the taken lines that lost an endpoint, so the preview never promises a line that cannot be
+     *  built any more. Called after an operated object is removed. */
+    void DropUnbuildableLines();
+
+    /** @brief The lines the operation carries: the ones the user picked, as pairs of endpoint ids, ready for the
+     *  visualization. */
     auto PreviewLines() const -> QVector<QPair<quint32, quint32>>;
 
     void ToggleSourceObject(quint32 id);
 
-    /** @brief True when the row shows a line rather than an operated object. */
-    auto IsLineRow(int row) const -> bool;
-
-    static auto LineDisplayName(quint32 id) -> QString;
-
     auto SourceObjects() -> QVector<SourceItem> & { return m_sourceObjects; }
     auto IsStage1() const -> bool { return stage1; }
     void SetStage1(bool value) { stage1 = value; }
-    auto IsFlagName() const -> bool { return flagName; }
     auto IsFlagGroupName() const -> bool { return flagGroupName; }
     auto IsFlagError() const -> bool { return flagError; }
     void SetFlagError(bool value) { flagError = value; }
@@ -149,8 +142,7 @@ protected:
 
 private:
     QVector<SourceItem> m_sourceObjects{};
-    QVector<DestinationItem> m_destination{};
-    QVector<quint32> m_lineSources{};
+    QVector<OOperationLine> m_lineSources{};
 
     /** @brief m_baselineSourceRecords operated-object recordIds captured when the dialog was first
      * populated. Used to detect object-set changes (see SourceObjectsChanged). */
@@ -159,37 +151,29 @@ private:
 
     /** @brief Same baseline idea for the selected lines: any change of the line set needs a full
      *  reparse to create or drop the transformed lines, exactly like an object-set change. */
-    QSet<quint32> m_baselineLineSources{};
+    QVector<OOperationLine> m_baselineLineSources{};
     bool m_lineBaselineCaptured{false};
 
     bool stage1{true};
-    bool flagName{true};
     bool flagGroupName{true};
     bool flagError{false};
     QStringList m_groupTags{};
-    bool m_dependencyReady{true};
 };
 
 //---------------------------------------------------------------------------------------------------------------------
-/** @brief The widgets of an operation dialog, read from its generated .ui.
+/** @brief The widgets every operation dialog offers, read from its generated .ui.
  *
- * The four operations name these widgets the same way in their .ui, so the list is written once here rather
- * than four times. A dialog that renames one of them gets a compile error, which is the point: the widget set
- * is a contract between the base class and every operation dialog.
+ * The six operations name these widgets the same way in their .ui, so the list is written once here rather than
+ * six times. A dialog that renames one of them gets a compile error, which is the point: the widget set is a
+ * contract between the base class and every operation dialog.
+ *
+ * The source-object list and its combos are NOT here: what an operation operates is chosen on the canvas, one
+ * click per object, and a dialog no longer edits that set.
  */
-template <class Ui> auto OperationWidgetsFrom(const Ui *ui, QComboBox *color) -> OperationWidgets
+template <class Ui> auto OperationWidgetsFrom(const Ui *ui) -> OperationWidgets
 {
-    return {.sourceList = ui->listWidget,
-            .name = ui->lineEditName,
-            .labelName = ui->labelName,
-            .labelStatus = ui->labelStatus,
+    return {.labelStatus = ui->labelStatus,
             .labelGroupName = ui->labelGroupName,
-            .penStyle = ui->comboBoxPenStyle,
-            .color = color,
-            .objectType = ui->comboBoxObjectType,
-            .newObject = ui->comboBoxNewObject,
-            .addObject = ui->toolButtonNewObject,
-            .removeObject = ui->toolButtonRemoveObject,
             .notes = ui->plainTextEditToolNotes,
             .groupTags = ui->lineEditGroupTags,
             .visibilityGroupLine = ui->lineEditVisibilityGroup,

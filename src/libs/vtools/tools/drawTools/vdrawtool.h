@@ -261,6 +261,7 @@ template <class T> void VDrawTool::InitDrawToolConnections(VMainGraphicsScene *s
     SCASSERT(tool != nullptr)
 
     QObject::connect(tool, &T::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
+    QObject::connect(tool, &T::ChoosedSegment, scene, &VMainGraphicsScene::ChoosedSegmentItem);
     QObject::connect(tool, &T::ChangedToolSelection, scene, &VMainGraphicsScene::SelectedItem);
     QObject::connect(scene, &VMainGraphicsScene::EnableItem, tool, &T::Enable);
     QObject::connect(scene, &VMainGraphicsScene::EnableToolMove, tool, &T::EnableToolMove);

@@ -1105,6 +1105,17 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
                 }
                 dialogTool->ChosenObject(id, type);
             });
+    // The same, for a segment a tool drew itself: it has no item that announces a line, so the pair of its
+    // endpoints travels on a channel of its own.
+    connect(scene, &VMainGraphicsScene::ChoosedSegmentObject, dialogTool,
+            [dialogTool](quint32 id, quint32 point1, quint32 point2)
+            {
+                if (dialogTool->VisualizationBroken())
+                {
+                    return;
+                }
+                dialogTool->ChosenSegment(id, point1, point2);
+            });
     connect(m_dialogTool.data(), &DialogTool::DialogClosed, this, closeDialogSlot);
     connect(m_dialogTool.data(), &DialogTool::ToolTip, this, &MainWindow::ShowToolTip);
     connect(m_dialogTool.data(), &DialogTool::destroyed, this, [this] () -> void { ShowToolTip(QString()); });

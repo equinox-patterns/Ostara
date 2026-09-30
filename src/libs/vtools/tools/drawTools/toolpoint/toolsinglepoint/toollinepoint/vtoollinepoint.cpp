@@ -97,6 +97,10 @@ VToolLinePoint::VToolLinePoint(VAbstractPattern *doc, VContainer *data, const qu
     mainLine->setVisible(not line.isNull());
 
     RefreshMainLinePen();
+
+    // The main line of a line point is one of the segments an operation may take, so its click is heard here.
+    // A tool that draws more — the dart cap — calls this again once its other tracé exists, and its own list wins.
+    InitDrawnSegmentConnections();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

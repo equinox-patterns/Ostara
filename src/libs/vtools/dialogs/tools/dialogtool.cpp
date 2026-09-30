@@ -845,6 +845,21 @@ void DialogTool::ChosenObject(quint32 id, const SceneObject &type)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ChosenSegment gets the id and the two endpoints of a segment a tool drew itself. Does nothing here: only
+ * the operation dialogs take lines.
+ * @param id id of the tool that draws the segment
+ * @param point1 first endpoint of the segment
+ * @param point2 second endpoint of the segment
+ */
+void DialogTool::ChosenSegment(quint32 id, quint32 point1, quint32 point2)
+{
+    Q_UNUSED(id)
+    Q_UNUSED(point1)
+    Q_UNUSED(point2)
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogTool::SelectedObject(bool selected, quint32 object, quint32 tool)
 {
     Q_UNUSED(selected)

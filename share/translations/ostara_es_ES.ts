@@ -614,62 +614,51 @@
 <context>
     <name>DialogBulkRename</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogbulkrename.ui" line="14"/>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogbulkrename.ui" line="24"/>
         <source>Rename…</source>
-        <translation>Renombrar…</translation>
+        <translation type="vanished">Renombrar…</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogbulkrename.ui" line="43"/>
         <source>Base name</source>
-        <translation>Nombre base</translation>
+        <translation type="vanished">Nombre base</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogbulkrename.ui" line="48"/>
         <source>New name</source>
-        <translation>Nuevo nombre</translation>
+        <translation type="vanished">Nuevo nombre</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogbulkrename.ui" line="58"/>
         <source>Text:</source>
-        <translation>Texto:</translation>
+        <translation type="vanished">Texto:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogbulkrename.ui" line="65"/>
         <source>Use %n, %0n, %00n, %000n for counting</source>
-        <translation>Use %n, %0n, %00n, %000n para contar</translation>
+        <translation type="vanished">Use %n, %0n, %00n, %000n para contar</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogbulkrename.ui" line="72"/>
         <source>Position:</source>
-        <translation>Posición:</translation>
+        <translation type="vanished">Posición:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogbulkrename.ui" line="81"/>
         <source>Append</source>
-        <translation>Añadir al final</translation>
+        <translation type="vanished">Añadir al final</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogbulkrename.ui" line="94"/>
         <source>Prepend</source>
-        <translation>Añadir al inicio</translation>
+        <translation type="vanished">Añadir al inicio</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogbulkrename.ui" line="104"/>
         <source>Replace</source>
-        <translation>Reemplazar</translation>
+        <translation type="vanished">Reemplazar</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogbulkrename.cpp" line="182"/>
         <source>Enable renaming for this item</source>
-        <translation>Activar renombrado para este elemento</translation>
+        <translation type="vanished">Activar renombrado para este elemento</translation>
     </message>
 </context>
 <context>
     <name>DialogCloseDart</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="14"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="279"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="106"/>
         <source>Close dart</source>
         <translation type="unfinished"></translation>
     </message>
@@ -679,63 +668,59 @@
         <translation type="unfinished">Herramienta</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="45"/>
         <source>New:</source>
-        <translation type="unfinished">Nuevo:</translation>
+        <translation type="obsolete">Nuevo:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="140"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="286"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="113"/>
         <source>Name:</source>
         <translation type="unfinished">Nombre:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="154"/>
         <source>Pen style:</source>
-        <translation type="unfinished">Estilo lápiz:</translation>
+        <translation type="obsolete">Estilo lápiz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="189"/>
         <source>Color:</source>
-        <translation type="unfinished">Color:</translation>
+        <translation type="obsolete">Color:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="241"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="68"/>
         <source>Pivot point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="257"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="84"/>
         <source>Enable to create a layer from original objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="260"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="87"/>
         <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="272"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="99"/>
         <source>Tags:</source>
         <translation type="unfinished">Etiquetas:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="293"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="120"/>
         <source>Separate each tag with comma.</source>
         <translation type="unfinished">Separar cada etiqueta con coma.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="296"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="123"/>
         <source>Add tags</source>
         <translation type="unfinished">Agregar etiquetas</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="309"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="136"/>
         <source>Ready</source>
         <translation type="unfinished">Listo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="342"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="169"/>
         <source>You can add a note here…</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2014,59 +1999,58 @@
 <context>
     <name>DialogFlippingByAxis</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="212"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="39"/>
         <source>Origin point:</source>
         <translation>Punto de origen:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="226"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="53"/>
         <source>Axis type:</source>
         <translation>Tipo de eje:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="216"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="195"/>
         <source>Select origin point</source>
         <translation>Seleccionar punto de origen</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="265"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="244"/>
         <source>Select origin point that is not part of the list of objects</source>
         <translation>Seleccionar el punto de origen que no es parte de la lista de objetos</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="361"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="339"/>
         <source>Vertical axis</source>
         <translation>Eje vertical</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="362"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="340"/>
         <source>Horizontal axis</source>
         <translation>Eje horizontal</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="14"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="260"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="87"/>
         <source>Flipping by axis</source>
         <translation>Volteando por ejes</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="140"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="253"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="80"/>
         <source>Name:</source>
         <translation>Nombre:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="267"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="94"/>
         <source>Tags:</source>
         <translation>Etiquetas:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="274"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="101"/>
         <source>Separate each tag with comma.</source>
         <translation>Separar cada etiqueta con coma.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="277"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="104"/>
         <source>Add tags</source>
         <translation>Agregar etiquetas</translation>
     </message>
@@ -2076,38 +2060,35 @@
         <translation>Herramienta</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="45"/>
         <source>New:</source>
-        <translation>Nuevo:</translation>
+        <translation type="vanished">Nuevo:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="154"/>
         <source>Pen style:</source>
-        <translation>Estilo lápiz:</translation>
+        <translation type="vanished">Estilo lápiz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="189"/>
         <source>Color:</source>
-        <translation>Color:</translation>
+        <translation type="vanished">Color:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="238"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="65"/>
         <source>Enable to create a layer from original objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="241"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="68"/>
         <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="287"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="372"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="114"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="350"/>
         <source>Ready</source>
         <translation>Listo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="320"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="147"/>
         <source>You can add a note here…</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2116,7 +2097,7 @@
         <translation type="vanished">Notas</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="344"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="322"/>
         <source>Invalid point</source>
         <translation>Punto invalido</translation>
     </message>
@@ -2124,59 +2105,58 @@
 <context>
     <name>DialogFlippingByLine</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="212"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="39"/>
         <source>First line point:</source>
         <translation>Primer punto de línea:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="229"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="56"/>
         <source>Second line point:</source>
         <translation>Segundo punto de línea:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="210"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="189"/>
         <source>Select first line point</source>
         <translation>Seleccionar primer punto de línea</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="268"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="247"/>
         <source>Select first line point that is not part of the list of objects</source>
         <translation>Seleccionar el primer punto de línea que no es parte de la lista de objetos</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="272"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="251"/>
         <source>Select second line point</source>
         <translation>Seleccionar segundo punto de línea</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="285"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="264"/>
         <source>Select second line point that is not part of the list of objects</source>
         <translation>Seleccionar el segundo punto de línea que no es parte de una lista de objetos</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="14"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="267"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="94"/>
         <source>Flipping by line</source>
         <translation>Volteando por linea</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="140"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="260"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="87"/>
         <source>Name:</source>
         <translation>Nombre:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="274"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="101"/>
         <source>Tags:</source>
         <translation>Etiquetas:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="281"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="108"/>
         <source>Separate each tag with comma.</source>
         <translation>Separar cada etiqueta con coma.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="284"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="111"/>
         <source>Add tags</source>
         <translation>Agregar etiquetas</translation>
     </message>
@@ -2186,38 +2166,35 @@
         <translation>Herramienta</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="45"/>
         <source>New:</source>
-        <translation>Nuevo:</translation>
+        <translation type="vanished">Nuevo:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="154"/>
         <source>Pen style:</source>
-        <translation>Estilo lápiz:</translation>
+        <translation type="vanished">Estilo lápiz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="189"/>
         <source>Color:</source>
-        <translation>Color:</translation>
+        <translation type="vanished">Color:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="245"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="72"/>
         <source>Enable to create a layer from original objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="248"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="75"/>
         <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="294"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="406"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="121"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="384"/>
         <source>Ready</source>
         <translation>Listo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="327"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="154"/>
         <source>You can add a note here…</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2226,17 +2203,17 @@
         <translation type="vanished">Notas</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="379"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="357"/>
         <source>Invalid line points</source>
         <translation>Puntos de línea no válidos</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="386"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="364"/>
         <source>Invalid first line point</source>
         <translation>El primer punto de la línea no es válido</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="393"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="371"/>
         <source>Invalid second line point</source>
         <translation>El segundo punto de la línea no es válido</translation>
     </message>
@@ -4102,66 +4079,66 @@ This action cannot be undone.</source>
 <context>
     <name>DialogMove</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="271"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="82"/>
         <source>Angle:</source>
         <translation>Ángulo:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="291"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="470"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="649"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="102"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="281"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="460"/>
         <source>Formula wizard</source>
         <translation>Asistente de formula</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="333"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="512"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="691"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="144"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="323"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="502"/>
         <source>Value</source>
         <translation>Valor</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="381"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="560"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="739"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="192"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="371"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="550"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mostrar el cálculo completo en la caja de mensaje&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="450"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="261"/>
         <source>Length:</source>
         <translation>Longitud:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="455"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="434"/>
         <source>Edit angle</source>
         <translation>Editar ángulo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="483"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="462"/>
         <source>Edit length</source>
         <translation>Editar longitud</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="359"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="538"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="717"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="170"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="349"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="528"/>
         <source>Calculation</source>
         <translation>Cálculo</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="17"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="809"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="620"/>
         <source>Move</source>
         <translation>Mover</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="629"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="440"/>
         <source>Rotation angle:</source>
         <translation>Ángulo de rotación:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="469"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="448"/>
         <source>Edit rotation angle</source>
         <translation>Editar ángulo de rotación</translation>
     </message>
@@ -4170,28 +4147,27 @@ This action cannot be undone.</source>
         <translation type="vanished">Punto de origen de rotación:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="121"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="116"/>
         <source>Center point</source>
         <translation>Punto central</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="153"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="802"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="613"/>
         <source>Name:</source>
         <translation>Nombre:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="816"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="627"/>
         <source>Tags:</source>
         <translation>Etiquetas:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="823"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="634"/>
         <source>Separate each tag with comma.</source>
         <translation>Separar cada etiqueta con coma.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="826"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="637"/>
         <source>Add tags</source>
         <translation>Agregar etiquetas</translation>
     </message>
@@ -4201,53 +4177,48 @@ This action cannot be undone.</source>
         <translation>Herramienta</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="48"/>
         <source>New:</source>
-        <translation>Nuevo:</translation>
+        <translation type="vanished">Nuevo:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="115"/>
         <source>Bulk rename</source>
-        <translation>Renombrar en bloque</translation>
+        <translation type="vanished">Renombrar en bloque</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="134"/>
         <source>Remove object</source>
-        <translation>Eliminar objeto</translation>
+        <translation type="vanished">Eliminar objeto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="167"/>
         <source>Pen style:</source>
-        <translation>Estilo lápiz:</translation>
+        <translation type="vanished">Estilo lápiz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="208"/>
         <source>Color:</source>
-        <translation>Color:</translation>
+        <translation type="vanished">Color:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="771"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="582"/>
         <source>Pivot point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="787"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="598"/>
         <source>Enable to create a layer from original objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="790"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="601"/>
         <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="836"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="630"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="647"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="608"/>
         <source>Ready</source>
         <translation>Listo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="869"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="680"/>
         <source>You can add a note here…</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4256,17 +4227,17 @@ This action cannot be undone.</source>
         <translation type="vanished">Notas</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="571"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="549"/>
         <source>Invalid angle formula</source>
         <translation>Fórmula angular inválida</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="587"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="565"/>
         <source>Invalid rotation angle formula</source>
         <translation>Fórmula de ángulo de rotación inválida</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="603"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="581"/>
         <source>Invalid length formula</source>
         <translation>Fórmula de longitud inválida</translation>
     </message>
@@ -4583,17 +4554,20 @@ This action cannot be undone.</source>
         <translation type="vanished">Rotación</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="250"/>
         <source>Line_%1_%2</source>
-        <translation type="unfinished">Línea_%1_%2</translation>
+        <translation type="obsolete">Línea_%1_%2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="259"/>
         <source>Line</source>
-        <translation type="unfinished">Línea</translation>
+        <translation type="obsolete">Línea</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="297"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="229"/>
+        <source>Take both points of this line first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="348"/>
         <source>Invalid layer name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4602,17 +4576,15 @@ This action cannot be undone.</source>
         <translation type="vanished">Predeterminado</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="450"/>
         <source>Invalid label</source>
-        <translation>Etiqueta no válida</translation>
+        <translation type="vanished">Etiqueta no válida</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="451"/>
         <source>Invalid name</source>
-        <translation>Nombre no válido</translation>
+        <translation type="vanished">Nombre no válido</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="816"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="466"/>
         <source>Adding or removing objects can&apos;t be applied while the dialog stays open. Use OK to confirm.</source>
         <translation>Agregar o quitar objetos no se puede aplicar mientras el cuadro de diálogo permanece abierto. Use Aceptar para confirmar.</translation>
     </message>
@@ -6480,19 +6452,19 @@ This action cannot be undone.</source>
     <name>DialogRotation</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="14"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="285"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="109"/>
         <source>Rotation</source>
         <translation>Rotación</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="99"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="588"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="560"/>
         <source>Angle:</source>
         <translation>Ángulo:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="107"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="589"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="561"/>
         <source>Length:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6502,32 +6474,31 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="284"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="258"/>
         <source>The length cannot exceed the circle diameter (%1%2).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="355"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="329"/>
         <source>Invalid length formula</source>
         <translation type="unfinished">Fórmula de longitud inválida</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="414"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="387"/>
         <source>Select the pivot point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="506"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="479"/>
         <source>This point cannot be the pivot point. Please, select another point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="650"/>
         <source>Invalid name</source>
-        <translation type="unfinished">Nombre no válido</translation>
+        <translation type="obsolete">Nombre no válido</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="654"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="622"/>
         <source>Invalid layer name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6565,23 +6536,22 @@ This action cannot be undone.</source>
         <translation type="vanished">Este punto no puede ser punto de origen. Por favor, seleccione otro punto de origen</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="143"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="292"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="116"/>
         <source>Name:</source>
         <translation>Nombre:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="278"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="102"/>
         <source>Tags:</source>
         <translation>Etiquetas:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="299"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="123"/>
         <source>Separate each tag with comma.</source>
         <translation>Separar cada etiqueta con coma.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="302"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="126"/>
         <source>Add tags</source>
         <translation>Agregar etiquetas</translation>
     </message>
@@ -6591,43 +6561,40 @@ This action cannot be undone.</source>
         <translation>Herramienta</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="45"/>
         <source>New:</source>
-        <translation>Nuevo:</translation>
+        <translation type="vanished">Nuevo:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="157"/>
         <source>Pen style:</source>
-        <translation>Estilo lápiz:</translation>
+        <translation type="vanished">Estilo lápiz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="192"/>
         <source>Color:</source>
-        <translation>Color:</translation>
+        <translation type="vanished">Color:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="247"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="71"/>
         <source>Pivot point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="263"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="87"/>
         <source>Enable to create a layer from original objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="266"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="90"/>
         <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="315"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="636"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="139"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="608"/>
         <source>Ready</source>
         <translation>Listo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="348"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="172"/>
         <source>You can add a note here…</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6636,13 +6603,13 @@ This action cannot be undone.</source>
         <translation type="vanished">Notas</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="609"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="646"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="581"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="618"/>
         <source>Invalid rotation point</source>
         <translation>Punto de rotación no válido</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="340"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="314"/>
         <source>Invalid angle formula</source>
         <translation>fórmula angular inválida</translation>
     </message>
@@ -8058,7 +8025,7 @@ This action cannot be undone.</source>
     <name>DialogTransfert</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="14"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="263"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="87"/>
         <source>Transfer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8068,73 +8035,69 @@ This action cannot be undone.</source>
         <translation type="unfinished">Herramienta</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="45"/>
         <source>New:</source>
-        <translation type="unfinished">Nuevo:</translation>
+        <translation type="obsolete">Nuevo:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="143"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="270"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="94"/>
         <source>Name:</source>
         <translation type="unfinished">Nombre:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="157"/>
         <source>Pen style:</source>
-        <translation type="unfinished">Estilo lápiz:</translation>
+        <translation type="obsolete">Estilo lápiz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="192"/>
         <source>Color:</source>
-        <translation type="unfinished">Color:</translation>
+        <translation type="obsolete">Color:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="212"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="36"/>
         <source>Host part:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="222"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="46"/>
         <source>Layer:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="229"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="53"/>
         <source>Pick a layer of the host part, or type the name of a new one</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="241"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="65"/>
         <source>Enable to create a layer from original objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="244"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="68"/>
         <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="256"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="80"/>
         <source>Tags:</source>
         <translation type="unfinished">Etiquetas:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="277"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="101"/>
         <source>Separate each tag with comma.</source>
         <translation type="unfinished">Separar cada etiqueta con coma.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="280"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="104"/>
         <source>Add tags</source>
         <translation type="unfinished">Agregar etiquetas</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="293"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="117"/>
         <source>Ready</source>
         <translation type="unfinished">Listo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="326"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="150"/>
         <source>You can add a note here…</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13178,7 +13141,7 @@ This action cannot be undone.</source>
     <name>ODialogCloseDart</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="81"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="517"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="492"/>
         <source>Closing divisor:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13188,67 +13151,66 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="265"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="241"/>
         <source>Select the pivot point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="368"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="344"/>
         <source>This point cannot be the pivot point. Please, select another point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="391"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="367"/>
         <source>Select the Moving point: the one that will close onto the other one</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="399"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="375"/>
         <source>The Moving point must be another point than the pivot point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="412"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="388"/>
         <source>Select the Target point: the one the Moving point lands on</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="420"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="396"/>
         <source>The Target point must be a third point, different from the pivot and the Moving point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="428"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="404"/>
         <source>The Target point does not move, so it cannot be one of the objects to rotate either. Remove it from the selection, or choose another point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="452"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="428"/>
         <source>Close dart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="555"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="530"/>
         <source>Ready</source>
         <translation type="unfinished">Listo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="565"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="540"/>
         <source>The pivot, the Moving point and the Target point must be three different points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="569"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="544"/>
         <source>The closing divisor cannot be zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="573"/>
         <source>Invalid name</source>
-        <translation type="unfinished">Nombre no válido</translation>
+        <translation type="obsolete">Nombre no válido</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="577"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="548"/>
         <source>Invalid layer name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13413,51 +13375,51 @@ This action cannot be undone.</source>
 <context>
     <name>ODialogTransfert</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="292"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="286"/>
         <source>Select the objects to transfer first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="310"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="311"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="303"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="304"/>
         <source>Click the merge point of the part to transfer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="342"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="334"/>
         <source>Click a point of the part: it is the point the portion is anchored on</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="354"/>
-        <source>Create the part that will receive the portion first: a transfer goes to a part built after this one.</source>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="345"/>
+        <source>This pattern has no part that could receive the portion.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="360"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="350"/>
         <source>Choose the part that receives the portion, and its layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="374"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="399"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="438"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="439"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="364"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="389"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="428"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="429"/>
         <source>Click the point of the host part that receives the merge point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="408"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="398"/>
         <source>Choose the part that receives the portion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="418"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="408"/>
         <source>The part %1 could not be activated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="525"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="516"/>
         <source>Transfer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -16930,27 +16892,27 @@ Save it before leaving it?</source>
 <context>
     <name>OToolCloseDart</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="317"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="308"/>
         <source>close a dart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="366"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="357"/>
         <source>Pivot point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="372"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="363"/>
         <source>Moving point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="378"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="369"/>
         <source>Target point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="478"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="469"/>
         <source>Closing divisor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -16971,12 +16933,12 @@ Save it before leaving it?</source>
 <context>
     <name>OToolDartCap</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.cpp" line="159"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.cpp" line="163"/>
         <source>Error calculating point &apos;%1&apos;. The line of the pattern through %2 does not meet the axis of the dart %3-%4-%5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.cpp" line="446"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.cpp" line="450"/>
         <source>Cap of the dart %1-%2-%3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -16984,12 +16946,12 @@ Save it before leaving it?</source>
 <context>
     <name>OToolRectangle</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="816"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="820"/>
         <source>save tool options</source>
         <translation type="unfinished">guardar opciones de herramienta</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="887"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="891"/>
         <source>Label</source>
         <translation type="unfinished">Etiqueta</translation>
     </message>
@@ -16997,23 +16959,28 @@ Save it before leaving it?</source>
 <context>
     <name>OToolTransfert</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="275"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="233"/>
+        <source>The portion could not be read: its objects are not in the pattern any more.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="313"/>
         <source>transfer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="312"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="325"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="350"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="363"/>
         <source>Merge point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="444"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="473"/>
         <source>From</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="446"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="475"/>
         <source>To</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18674,29 +18641,24 @@ Esta opción surtirá efecto después de reiniciar.</translation>
         <translation>Error en análisis: %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1488"/>
         <source>Point</source>
-        <translation>Punto</translation>
+        <translation type="vanished">Punto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1489"/>
         <source>Spline</source>
-        <translation>Spline</translation>
+        <translation type="vanished">Spline</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1490"/>
         <source>Spline path</source>
-        <translation>Ruta de spline</translation>
+        <translation type="vanished">Ruta de spline</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1491"/>
         <source>Arc</source>
-        <translation>Arco</translation>
+        <translation type="vanished">Arco</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1492"/>
         <source>Elliptical arc</source>
-        <translation>Arco elíptico</translation>
+        <translation type="vanished">Arco elíptico</translation>
     </message>
     <message>
         <location filename="../../src/libs/vlayout/vbank.cpp" line="418"/>
@@ -18705,7 +18667,7 @@ Esta opción surtirá efecto después de reiniciar.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="449"/>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3080"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3073"/>
         <source>Piece &apos;%1&apos;. Seam allowance is not valid.</source>
         <translation>Pieza &apos;%1&apos;. El margen de costura no es válido.</translation>
     </message>
@@ -18852,12 +18814,12 @@ Esta opción surtirá efecto después de reiniciar.</translation>
         <translation>No se puede calcular la posición central de la línea de doblez para la pieza &apos;%1&apos;. Razón: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1594"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1587"/>
         <source>Piece &apos;%1&apos;. Grainline is not valid.</source>
         <translation>Pieza &apos;%1&apos;. Hilo de la tela no es valido.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3930"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3923"/>
         <source>Piece &apos;%1&apos;. Fold line is not valid.</source>
         <translation>Pieza &apos;%1&apos;. La línea de doblez no es válida.</translation>
     </message>
@@ -18934,12 +18896,12 @@ Esta opción surtirá efecto después de reiniciar.</translation>
         <translation>Todos los archivos</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/toolsdef.cpp" line="101"/>
+        <location filename="../../src/libs/vtools/tools/toolsdef.cpp" line="94"/>
         <source>Confirm deletion</source>
         <translation>Confirmar borrado</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/toolsdef.cpp" line="102"/>
+        <location filename="../../src/libs/vtools/tools/toolsdef.cpp" line="95"/>
         <source>Do you really want to delete?</source>
         <translation>Realmente quiere borrarlo?</translation>
     </message>
@@ -20866,18 +20828,18 @@ Do you want to continue?</source>
 <context>
     <name>VAbstractOperation</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1266"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1279"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1268"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1281"/>
         <source>Label</source>
         <translation>Etiqueta</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1279"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1281"/>
         <source>Length</source>
         <translation>Longitud</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1292"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1294"/>
         <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20887,13 +20849,13 @@ Do you want to continue?</source>
         <translation>por defecto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="871"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="873"/>
         <source>delete operation</source>
         <translation>borrar operacion</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="836"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1379"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1381"/>
         <source>save tool options</source>
         <translation>guardar opciones de herramienta</translation>
     </message>
@@ -21543,57 +21505,57 @@ Do you want to continue?</source>
 <context>
     <name>VAbstractTool</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="379"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="381"/>
         <source>black</source>
         <translation>negro</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="372"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="374"/>
         <source>dark green</source>
         <translation>verde oscuro</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="354"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="356"/>
         <source>dark blue</source>
         <translation>azul oscuro</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="351"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="353"/>
         <source>light blue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="357"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="359"/>
         <source>pink</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="360"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="362"/>
         <source>purple</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="363"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="365"/>
         <source>yellow</source>
         <translation>amarillo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="369"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="371"/>
         <source>light green</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="375"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="377"/>
         <source>brown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="366"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="368"/>
         <source>orange</source>
         <translation>naranja</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="293"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="295"/>
         <source>Edit wrong formula</source>
         <translation>Editar formula incorrecta</translation>
     </message>
@@ -22423,48 +22385,48 @@ Do you want to continue?</source>
     <name>VContainer</name>
     <message>
         <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="193"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="249"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="261"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="356"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="370"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="419"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="255"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="267"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="368"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="382"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="431"/>
         <source>Can&apos;t find object</source>
         <translation>No se encuentra objeto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="376"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="388"/>
         <source>Can&apos;t cast object to the requested type. Object id = %1, actual type = %2.</source>
         <translation>No se puede convertir el objeto al tipo solicitado. ID del objeto = %1, tipo real = %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="404"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="416"/>
         <source>Can&apos;t cast object to the requested type. Name = &apos;%1&apos;, type = %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="414"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="581"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="628"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="426"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="593"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="640"/>
         <source>Can&apos;t cast object</source>
         <translation>No se puede convertir el objeto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="488"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="500"/>
         <source>Can&apos;t cast object. Name = &apos;%1&apos;, type = %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="498"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="510"/>
         <source>Can&apos;t find object. Type mismatch. Name = &apos;%1&apos;, existing type = %2, incoming type = %3.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="411"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="417"/>
         <source>Number of free id exhausted.</source>
         <translation>Número de ID gratuita agotado.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="749"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="757"/>
         <source>Can&apos;t create a curve with type &apos;%1&apos;</source>
         <translation>No puede crear una curva con el tipo &apos;%1&apos;</translation>
     </message>
@@ -24858,44 +24820,44 @@ Do you want to continue?</source>
 <context>
     <name>VPattern</name>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="261"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="271"/>
         <source>The formula uses a name the pattern does not define: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="785"/>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="829"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="795"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="839"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="90"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="118"/>
         <source>Error parsing file.</source>
         <translation>Error analizando archivo.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="796"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="806"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="97"/>
         <source>Error can&apos;t convert value.</source>
         <translation>Error no se puede convertir valor.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="807"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="817"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="104"/>
         <source>Error empty parameter.</source>
         <translation>Error parámetro vacío.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="818"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="828"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="111"/>
         <source>Error wrong id.</source>
         <translation>Error en la identificación.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="840"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="850"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="125"/>
         <source>Error parsing file (std::bad_alloc).</source>
         <translation>Error analizando archivo (std::bad_alloc).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="859"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="869"/>
         <source>Error updating scene after parsing.</source>
         <translation>Error al actualizar la escena después del análisis.</translation>
     </message>
@@ -24905,37 +24867,37 @@ Do you want to continue?</source>
         <translation>Error creando o actualizando detalle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="437"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="442"/>
         <source>Error creating or updating single point</source>
         <translation>Error creando o actualizando punto sencillo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="482"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="488"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="487"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="493"/>
         <source>Error creating or updating point of end line</source>
         <translation>Error creando o actualizando punto de final de línea</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="532"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="538"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="537"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="543"/>
         <source>Error creating or updating point along line</source>
         <translation>Error al crear o actualizar el punto largo de la línea</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="577"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="583"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="582"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="588"/>
         <source>Error creating or updating point of shoulder</source>
         <translation>Error al crear o actualizar punto del hombro</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="622"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="628"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="627"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="633"/>
         <source>Error creating or updating point of normal</source>
         <translation>Error al crear o actualizar punto de normal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="667"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="673"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="672"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="678"/>
         <source>Error creating or updating point of bisector</source>
         <translation>Error al crear o actualizar punto del bisector</translation>
     </message>
@@ -24945,70 +24907,70 @@ Do you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="743"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="749"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="748"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="754"/>
         <source>Error creating or updating point of contact</source>
         <translation>Error creando o actualizando punto de contacto</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="779"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="784"/>
         <source>Error creating or updating modeling point</source>
         <translation>Error creando o actualizando punto de modelado</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="887"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="892"/>
         <source>Error creating or updating height</source>
         <translation>Error creando o actualizando altura</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="918"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="923"/>
         <source>Error creating or updating triangle</source>
         <translation>Error creando o actualizando triángulo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="948"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="953"/>
         <source>Error creating or updating point of intersection</source>
         <translation>Error creando o actualizando punto de intersección</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1007"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1013"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1012"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1018"/>
         <source>Error creating or updating cut spline point</source>
         <translation>Error creando o actualizando punto de corte de spline</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1072"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1078"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1077"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1083"/>
         <source>Error creating or updating cut spline path point</source>
         <translation>Error creando o actualizando punto de corte de spline de corte</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1137"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1143"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1142"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1148"/>
         <source>Error creating or updating cut arc point</source>
         <translation>Error creando o actualizando punto de corte de arco</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1184"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1190"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1189"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1195"/>
         <source>Error creating or updating point of intersection line and axis</source>
         <translation>Error creando o actualizando punto de intersección de línea y eje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1251"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1257"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1256"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1262"/>
         <source>Error creating or updating point of intersection curve and axis</source>
         <translation>Error creando o actualizando punto de intersección de curva y eje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1636"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1642"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1641"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1647"/>
         <source>Error creating or updating the cap of a dart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1699"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1705"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1704"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1710"/>
         <source>Error creating or updating a rectangle</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25057,83 +25019,88 @@ Do you want to continue?</source>
         <translation>Error creando o actualizando el modelado de trazado curvo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="105"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="111"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="334"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="340"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="107"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="113"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="336"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="342"/>
         <source>Error creating or updating simple arc</source>
         <translation>Error creando o actualizando arco simple</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="254"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="260"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="256"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="262"/>
         <source>Error creating or updating elliptical arc with length</source>
         <translation>Error al crear o actualizar el arco elíptico con longitud</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="287"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="289"/>
         <source>Error creating or updating modeling arc</source>
         <translation>Error al crear o actualizar arco de modelado</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="440"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="446"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="442"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="448"/>
         <source>Error creating or updating the operation that closes a dart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="479"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="481"/>
         <source>A transfer without both of its merge points was ignored.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="493"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="513"/>
         <source>Error creating or updating the operation of transfer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="733"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="578"/>
+        <source>A transfer refers to objects the pattern does not define, and was ignored.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="817"/>
         <source>Error creating or updating union details</source>
         <translation>Error creando o actualizando detalle de la unión</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1314"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1319"/>
         <source>Error creating or updating point of intersection arcs</source>
         <translation>Error creando o actualizando punto de intersección de arcos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1357"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1362"/>
         <source>Error creating or updating point of intersection circles</source>
         <translation>Error creando o actualizando punto de intersección de circulos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1461"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1466"/>
         <source>Error creating or updating point from circle and tangent</source>
         <translation>Error al crear o actualizar punto desde un círculo y tangente</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1492"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1497"/>
         <source>Error creating or updating point from arc and tangent</source>
         <translation>Error al crear o actualizar punto desde un arco y tangente</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1522"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1527"/>
         <source>Error creating or updating arc point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1552"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1557"/>
         <source>Error creating or updating curve point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1603"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1608"/>
         <source>Error creating or updating true darts</source>
         <translation>Error creando o actualizando pinzas verdaderas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1123"/>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1192"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1133"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1202"/>
         <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="108"/>
         <source>Wrong tag name &apos;%1&apos;.</source>
         <translation>Nombre de etiqueta incorrecto &apos;%1&apos;.</translation>
@@ -25149,22 +25116,22 @@ Do you want to continue?</source>
         <translation>Tipo de spline desconocido &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="655"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="739"/>
         <source>Unknown arc type &apos;%1&apos;.</source>
         <translation>Tipo de arco desconocido &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="739"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="823"/>
         <source>Unknown tools type &apos;%1&apos;.</source>
         <translation>Tipo de herramienta desconocido &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="698"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="708"/>
         <source>Error not unique id.</source>
         <translation>Error identificador no único.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1421"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1426"/>
         <source>Error creating or updating point of intersection curves</source>
         <translation>Error al crear o actualizar punto de curvas de intersección</translation>
     </message>
@@ -25189,50 +25156,50 @@ Do you want to continue?</source>
         <translation>Error al crear o actualizar camino de curva bezier cúbica</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="386"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="392"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="388"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="394"/>
         <source>Error creating or updating operation of rotation</source>
         <translation>Error al crear o actualizar operación de rotación</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="779"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="863"/>
         <source>Unknown operation type &apos;%1&apos;.</source>
         <translation>Tipo de operación desconocida &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="528"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="612"/>
         <source>Error creating or updating operation of flipping by line</source>
         <translation>Error al crear o actualizar la operación de voltear por línea</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="563"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="647"/>
         <source>Error creating or updating operation of flipping by axis</source>
         <translation>Error al crear o actualizar la operación de voltear por eje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="612"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="618"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="696"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="702"/>
         <source>Error creating or updating operation of moving</source>
         <translation>Error al crear o actualizar la oparación de mover</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="704"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="709"/>
         <source>Error creating or updating point of line intersection</source>
         <translation>Error al crear o actualizar intersección de punto de línea</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="165"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="171"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="167"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="173"/>
         <source>Error creating or updating simple elliptical arc</source>
         <translation>Error al crear o actualizar el arco elíptico simple</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="692"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="776"/>
         <source>Unknown elliptical arc type &apos;%1&apos;.</source>
         <translation>Tipo de arco elíptico &apos;%1&apos; desconocido.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="198"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="200"/>
         <source>Error creating or updating modeling elliptical arc</source>
         <translation>Error al crear o actualizar el modelado del arco elíptico</translation>
     </message>
@@ -25242,13 +25209,13 @@ Do you want to continue?</source>
         <translation>Detalle</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="813"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="897"/>
         <source>Unnamed path</source>
         <translation>Ruta sin nombre</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="806"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="829"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="890"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="913"/>
         <source>Error creating or updating a piece path</source>
         <translation>Error creando o actualizando la ruta de la pieza</translation>
     </message>
@@ -25257,13 +25224,13 @@ Do you want to continue?</source>
         <translation type="vanished">Error creando o actualizando punto anclaje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="807"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="891"/>
         <source>Piece path doesn&apos;t contain nodes</source>
         <translation>La ruta de acceso de la pieza no contiene nodos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="850"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="856"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="855"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="861"/>
         <source>Error creating or updating place label</source>
         <translation>Error al crear o actualizar la etiqueta de posición</translation>
     </message>
@@ -25948,12 +25915,12 @@ Error de compatibilidad de formato de diseño de piezas RAW: actualFileVersion =
 <context>
     <name>VToolFlippingByAxis</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.cpp" line="281"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.cpp" line="276"/>
         <source>Origin point</source>
         <translation>Punto origen</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.cpp" line="173"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.cpp" line="168"/>
         <source>Flipping by axis</source>
         <translation>Volteando por ejes</translation>
     </message>
@@ -25961,17 +25928,17 @@ Error de compatibilidad de formato de diseño de piezas RAW: actualFileVersion =
 <context>
     <name>VToolFlippingByLine</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.cpp" line="274"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.cpp" line="269"/>
         <source>First line point</source>
         <translation>Punto de primer linea</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.cpp" line="276"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.cpp" line="271"/>
         <source>Second line point</source>
         <translation>Punto segunda linea</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.cpp" line="174"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.cpp" line="169"/>
         <source>flipping by line</source>
         <translation>voltear por linea</translation>
     </message>
@@ -26010,17 +25977,17 @@ Error de compatibilidad de formato de diseño de piezas RAW: actualFileVersion =
 <context>
     <name>VToolLine</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="614"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="617"/>
         <source>Length</source>
         <translation>Longitud</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="616"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="619"/>
         <source>Angle</source>
         <translation>Angulo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="647"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="650"/>
         <source>save tool options</source>
         <translation>guardar opciones de herramienta</translation>
     </message>
@@ -26074,22 +26041,22 @@ Error de compatibilidad de formato de diseño de piezas RAW: actualFileVersion =
 <context>
     <name>VToolLinePoint</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="174"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="178"/>
         <source>Length</source>
         <translation>Longitud</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="176"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="180"/>
         <source>Angle</source>
         <translation>Angulo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="178"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="182"/>
         <source>Point name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="265"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="269"/>
         <source>save tool options</source>
         <translation>guardar opciones de herramienta</translation>
     </message>
@@ -26097,27 +26064,27 @@ Error de compatibilidad de formato de diseño de piezas RAW: actualFileVersion =
 <context>
     <name>VToolMove</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="491"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="486"/>
         <source>Rotation angle</source>
         <translation>Angulo de rotación</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="488"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="483"/>
         <source>Length</source>
         <translation>Longitud</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="377"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="372"/>
         <source>Center point</source>
         <translation>Punto central</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="486"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="481"/>
         <source>Angle</source>
         <translation>Ángulo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="493"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="488"/>
         <source>Pivot point</source>
         <translation type="unfinished"></translation>
     </message>
@@ -26126,7 +26093,7 @@ Error de compatibilidad de formato de diseño de piezas RAW: actualFileVersion =
         <translation type="vanished">Punto de origen de rotación</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="296"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="291"/>
         <source>move</source>
         <translation>mover</translation>
     </message>
@@ -27236,18 +27203,18 @@ Error de compatibilidad de formato de diseño de piezas RAW: actualFileVersion =
         <translation type="vanished">Punto origen</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="289"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="463"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="280"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="454"/>
         <source>Pivot point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="463"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="454"/>
         <source>Rotation angle</source>
         <translation>Angulo de rotación</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="271"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="262"/>
         <source>rotate</source>
         <translation>rotar</translation>
     </message>
@@ -27261,62 +27228,62 @@ Error de compatibilidad de formato de diseño de piezas RAW: actualFileVersion =
         <translation>Margen de costura actual</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1627"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1620"/>
         <source>move grainline</source>
         <translation>mover línea hilo de tela</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1640"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1633"/>
         <source>resize grainline</source>
         <translation>redimensionar línea hilo de tela</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1652"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1645"/>
         <source>rotate grainline</source>
         <translation>rotar línea hilo de tela</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1731"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1724"/>
         <source>move information block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1761"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1754"/>
         <source>resize information block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1952"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1945"/>
         <source>move thumbnail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2101"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2094"/>
         <source>Delete place labels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2156"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2149"/>
         <source>move annotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2177"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2170"/>
         <source>move seam allowance value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2191"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2184"/>
         <source>move seam allowance legend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2240"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2233"/>
         <source>resize annotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2429"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2422"/>
         <source>Move piece group</source>
         <translation type="unfinished"></translation>
     </message>
@@ -27325,32 +27292,32 @@ Error de compatibilidad de formato de diseño de piezas RAW: actualFileVersion =
         <translation type="vanished">Opciones</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2625"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2618"/>
         <source>In layout</source>
         <translation>En diseño</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2626"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2619"/>
         <source>Hide main path</source>
         <translation>Ocultar ruta principal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2629"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2622"/>
         <source>Show full piece</source>
         <translation>Mostrar la pieza completa</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2646"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2639"/>
         <source>Delete</source>
         <translation>Borrar</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2340"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2333"/>
         <source>apply save detail options</source>
         <translation>aplicar guardar opciones de detalle</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2731"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2724"/>
         <source>multi deletion</source>
         <translation>borrado multiple</translation>
     </message>
@@ -27359,22 +27326,22 @@ Error de compatibilidad de formato de diseño de piezas RAW: actualFileVersion =
         <translation type="vanished">Prohibir girar</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2627"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2620"/>
         <source>Force flipping</source>
         <translation>Forzar voltear</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2349"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2342"/>
         <source>This id (%1) is not unique.</source>
         <translation>Este id (%1) no es único.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2839"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2832"/>
         <source>Press Escape to leave the thumbnail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3575"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3568"/>
         <source>Tool was used after deleting.</source>
         <translation>La herramienta se utilizo después de eliminar.</translation>
     </message>

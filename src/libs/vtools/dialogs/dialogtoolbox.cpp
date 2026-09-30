@@ -1480,53 +1480,7 @@ auto GenerateUniqueCurveName(const VContainer *data,
     return name;
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void FillComboBoxObjectTypes(QComboBox *box)
-{
-    SCASSERT(box != nullptr)
-    box->clear();
-    box->addItem(QObject::tr("Point"), QVariant::fromValue(GOType::Point));
-    box->addItem(QObject::tr("Spline"), QVariant::fromValue(GOType::Spline));
-    box->addItem(QObject::tr("Spline path"), QVariant::fromValue(GOType::SplinePath));
-    box->addItem(QObject::tr("Arc"), QVariant::fromValue(GOType::Arc));
-    box->addItem(QObject::tr("Elliptical arc"), QVariant::fromValue(GOType::EllipticalArc));
-}
 
-//---------------------------------------------------------------------------------------------------------------------
-auto IsSafeToRemoveGroupObject(quint32 targetId, const VAbstractPattern *doc) -> bool
-{
-    SCASSERT(doc != nullptr)
-
-    if (targetId == NULL_ID)
-    {
-        return false;
-    }
-
-    if (!doc->IsPatternGraphComplete())
-    {
-        return false; // Data not ready yet
-    }
-
-    VPatternGraph const *patternGraph = doc->PatternGraph();
-    SCASSERT(patternGraph != nullptr)
-
-    auto Filter = [](const auto &node) -> auto
-    { return node.type != VNodeType::MODELING_TOOL && node.type != VNodeType::MODELING_OBJECT; };
-
-    auto const dependecies = patternGraph->TryGetDependentNodes(targetId, 1000, Filter);
-
-    if (!dependecies)
-    {
-        return false; // Lock timeout
-    }
-
-    if (!dependecies->isEmpty())
-    {
-        return false; // has dependencies
-    }
-
-    return true;
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MakeFilterableComboBox(QComboBox *combo, Qt::CaseSensitivity cs)

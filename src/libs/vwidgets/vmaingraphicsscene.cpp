@@ -289,6 +289,12 @@ void VMainGraphicsScene::ChoosedItem(quint32 id, const SceneObject &type)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ChoosedSegmentItem(quint32 id, quint32 point1, quint32 point2)
+{
+    emit ChoosedSegmentObject(id, point1, point2);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VMainGraphicsScene::SelectedItem(bool selected, quint32 object, quint32 tool)
 {
     emit SelectedObject(selected, object, tool);

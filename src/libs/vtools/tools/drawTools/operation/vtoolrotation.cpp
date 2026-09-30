@@ -160,19 +160,10 @@ void VToolRotation::SetDialog()
     dialogTool->SetAngle(m_formulaAngle);
     dialogTool->SetNotes(m_notes);
     dialogTool->SetSourceObjects(m_source);
-    dialogTool->SetDestinationObjects(m_destination);
 
-    // Only the lines explicitly selected by the user come back into the dialog: the implicit ones follow
-    // their points.
-    QVector<quint32> lineSources;
-    for (const auto &line : Lines())
-    {
-        if (OOperationLines::IsExplicit(line))
-        {
-            lineSources.append(line.source);
-        }
-    }
-    dialogTool->SetLineSources(lineSources);
+    // Every line the operation carries comes back into the dialog: each one was picked by the user, one click
+    // per line, and there is no longer a line that follows its points on its own.
+    dialogTool->SetLineSources(Lines());
 
     SetDialogVisibilityGroupData(dialogTool);
 }
@@ -189,7 +180,7 @@ auto VToolRotation::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScen
     initData.origin = dialogTool->GetOrigPointId();
     initData.angle = dialogTool->GetAngle();
     initData.source = dialogTool->GetSourceObjects();
-    initData.lines = OOperationLines::Collect(data, initData.source, dialogTool->GetLineSources());
+    initData.lines = OOperationLines::Collect(dialogTool->GetLineSources());
     initData.hasLinkedVisibilityGroup = dialogTool->HasLinkedVisibilityGroup();
     initData.visibilityGroupName = dialogTool->GetVisibilityGroupName();
     initData.visibilityGroupTags = dialogTool->GetVisibilityGroupTags();
@@ -427,7 +418,7 @@ void VToolRotation::SaveDialog(QDomElement &domElement)
 
     // Persist the dialog line selection: a line added here must be created, a line dropped must go, and
     // the transformed copies that already exist keep their id.
-    m_lines = OOperationLines::SyncLines(getData(), m_lines, source, dialogTool->GetLineSources());
+    m_lines = OOperationLines::SyncLines(getData(), m_lines, dialogTool->GetLineSources());
 
     SaveSourceDestination(domElement, source, destination);
 

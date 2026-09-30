@@ -102,40 +102,17 @@ ODialogCloseDart::ODialogCloseDart(const VContainer *data, VAbstractPattern *doc
     m_comboMovingPoint->setVisible(false);
     m_comboTargetPoint->setVisible(false);
 
-    MakeFilterableComboBox(ui->comboBoxNewObject);
 
     InitOkCancelApply(ui);
 
-    FillComboBoxObjectTypes(ui->comboBoxObjectType);
 
     FillComboBoxPoints(ui->comboBoxOriginPoint);
     FillComboBoxPoints(m_comboMovingPoint);
     FillComboBoxPoints(m_comboTargetPoint);
-    FillComboBoxTypeLine(ui->comboBoxPenStyle,
-                         OperationLineStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
-                                                 ui->comboBoxPenStyle->palette().color(QPalette::Text)),
-                         TypeLineDefault);
-    m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
 
     connect(ui->lineEditVisibilityGroup, &QLineEdit::textChanged, this, &DialogOperationTool::GroupNameChanged);
 
-    connect(ui->listWidget, &QListWidget::currentRowChanged, this, &DialogOperationTool::ShowSourceDetails);
-    connect(ui->listWidget, &QListWidget::currentRowChanged, this, &DialogOperationTool::CurrentObjectChanged);
-    connect(ui->lineEditName, &QLineEdit::textEdited, this, &DialogOperationTool::NameChanged);
-    connect(ui->comboBoxPenStyle, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            &DialogOperationTool::PenStyleChanged);
-    connect(m_colorCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            &DialogOperationTool::ColorChanged);
-    connect(ui->toolButtonBulkRename, &QToolButton::clicked, this, &DialogOperationTool::BulkRename);
 
-    connect(ui->comboBoxObjectType, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            &DialogOperationTool::ObjectTypeChanged);
-    connect(ui->comboBoxNewObject, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            &DialogOperationTool::NewObjectChanged);
-    connect(ui->toolButtonNewObject, &QPushButton::clicked, this, &DialogOperationTool::AddNewObject);
-    connect(ui->toolButtonRemoveObject, &QPushButton::clicked, this, &DialogOperationTool::RemoveObject);
-
-    ObjectTypeChanged(ui->comboBoxObjectType->currentIndex());
 
     vis = new OVisToolCloseDart(&this->data);
 
@@ -160,7 +137,7 @@ ODialogCloseDart::~ODialogCloseDart()
 //---------------------------------------------------------------------------------------------------------------------
 auto ODialogCloseDart::Widgets() const -> OperationWidgets
 {
-    return OperationWidgetsFrom(ui, m_colorCombo);
+    return OperationWidgetsFrom(ui);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -259,7 +236,6 @@ void ODialogCloseDart::ShowDialog(bool click)
         VAbstractValApplication::VApp()->getSceneView()->AllowRubberBand(false);
 
         FillDefSourceNames(SourceObjects(), &data, "c"_L1);
-        FillSourceList();
 
         m_step = Step::Pivot;
         emit ToolTip(tr("Select the pivot point"));
@@ -490,7 +466,6 @@ void ODialogCloseDart::ShowVisualization()
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogCloseDart::SaveData()
 {
-    SourceObjects() = SaveSourceObjects();
 
     RefreshPreview();
 
@@ -548,7 +523,7 @@ auto ODialogCloseDart::IsValid() const -> bool
     const bool divisorOk = m_formulaDivisor->isValid()
                            && OCloseDartRule::IsDivisorUsable(m_formulaDivisor->value());
 
-    const bool ready = pointsOk && divisorOk && IsFlagName() && IsFlagGroupName();
+    const bool ready = pointsOk && divisorOk && IsFlagGroupName();
 
     if (ready)
     {
@@ -567,10 +542,6 @@ auto ODialogCloseDart::IsValid() const -> bool
         else if (!divisorOk)
         {
             reason = tr("The closing divisor cannot be zero");
-        }
-        else if (!IsFlagName())
-        {
-            reason = tr("Invalid name");
         }
         else if (!IsFlagGroupName())
         {

@@ -81,13 +81,6 @@ auto SourceToObjects(const QVector<SourceItem> &source) -> QVector<quint32>
     return ids;
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto OperationLineStylesPics(QColor backgroundColor, QColor textColor) -> QMap<QString, QIcon>
-{
-    QMap<QString, QIcon> map = LineStylesPics(backgroundColor, textColor);
-    map.insert(TypeLineDefault, QIcon());
-    return map;
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto ConfirmDeletion() -> int
@@ -198,66 +191,6 @@ void FillDefSourceNames(QVector<SourceItem> &source, const VContainer *data, con
     // If no common suffix found after maxTries, names remain empty
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto IsValidSourceName(const QString &newName,
-                       quint32 id,
-                       const QVector<SourceItem> &source,
-                       const VContainer *data,
-                       const QSet<QString> &freeNames) -> bool
-{
-    if (id == NULL_ID || newName.isEmpty())
-    {
-        return false;
-    }
-
-    SCASSERT(data != nullptr)
-
-    auto item = std::find_if(source.begin(),
-                             source.end(),
-                             [id](const SourceItem &sItem) -> bool { return sItem.id == id; });
-    if (item == source.end())
-    {
-        return false;
-    }
-
-    const QString name = GetSourceItemName(newName, id, data);
-
-    if (name.isEmpty())
-    {
-        return false;
-    }
-
-    // Check if name matches regex
-    if (QRegularExpression const rx(NameRegExp()); !rx.match(name).hasMatch())
-    {
-        return false;
-    }
-
-    // Check if name is unique in data
-    if (!freeNames.contains(newName) && newName != item->name && !data->IsUnique(name))
-    {
-        return false;
-    }
-
-    // Check uniqueness among all names in source
-    return std::ranges::all_of(source,
-                               [id, name, data](const SourceItem &sourceItem) -> bool
-                               {
-                                   if (sourceItem.id == NULL_ID || sourceItem.id == id)
-                                   {
-                                       return true;
-                                   }
-
-                                   // Check against other item's name
-                                   if (!sourceItem.name.isEmpty()
-                                       && name == GetSourceItemName(sourceItem.name, sourceItem.id, data))
-                                   {
-                                       return false;
-                                   }
-
-                                   return true;
-                               });
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto GetSourceItemName(const QString &name, quint32 id, const VContainer *data) -> QString
@@ -319,23 +252,6 @@ auto GetDefSourceName(quint32 id, const VContainer *data, const QString &suffix,
     return {};
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto FindFreeNames(const QVector<SourceItem> &oldSource, const QVector<SourceItem> &newSource) -> QSet<QString>
-{
-    QSet<QString> oldNames;
-    for (const auto &item : oldSource)
-    {
-        oldNames.insert(item.name);
-    }
-
-    QSet<QString> newNames;
-    for (const auto &item : newSource)
-    {
-        newNames.insert(item.name);
-    }
-
-    return oldNames - newNames;
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto NodesToObjects(const QVector<VPieceNode> &nodes) -> QVector<quint32>

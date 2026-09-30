@@ -158,6 +158,12 @@ public:
                 {m_p4id, m_basePointId, getLineType(), GetLineColor()}};
     }
 
+    /** @brief The four items that draw those sides, in the same order: a click on one picks that side alone. */
+    auto DrawnSegmentItems() const -> QVector<VScaledLine *> override
+    {
+        return {m_lineAB, m_lineBC, m_lineCD, m_lineDA};
+    }
+
     /** @brief The three created points, reachable by the dock, which names them one by one. */
     auto GetP1Id() const -> quint32 { return p1id; }
     auto GetP2Id() const -> quint32 { return p2id; }

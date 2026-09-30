@@ -28,6 +28,8 @@
 
 #include "vabstracttool.h"
 
+#include "../vwidgets/scalesceneitems.h"
+
 #include <QBrush>
 #include <QCache>
 #include <QDialog>
@@ -404,6 +406,29 @@ auto VAbstractTool::PointsList() const -> QMap<QString, quint32>
         }
     }
     return list;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractTool::InitDrawnSegmentConnections()
+{
+    const QVector<VDrawnSegment> segments = DrawnSegments();
+    const QVector<VScaledLine *> items = DrawnSegmentItems();
+    const qsizetype count = qMin(segments.size(), items.size());
+
+    for (qsizetype i = 0; i < count; ++i)
+    {
+        VScaledLine *item = items.at(i);
+        if (item == nullptr)
+        {
+            continue;
+        }
+
+        // The endpoints are copied out of the descriptor: the handler may run long after the vector it came
+        // from is gone, and it must not read freed memory to say which segment was clicked.
+        const quint32 point1 = segments.at(i).point1;
+        const quint32 point2 = segments.at(i).point2;
+        item->SetSegmentClickHandler([this, point1, point2]() -> void { emit ChoosedSegment(m_id, point1, point2); });
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

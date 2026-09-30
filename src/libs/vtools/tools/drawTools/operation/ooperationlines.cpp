@@ -46,14 +46,8 @@ const QString OOperationLines::AttrIdPoint1 = QStringLiteral("idPoint1");
 const QString OOperationLines::AttrIdPoint2 = QStringLiteral("idPoint2");
 const QString OOperationLines::AttrIdResult = QStringLiteral("idResult");
 
-namespace
-{
-/**
- * @brief ExplicitLine describes a line created by the Line tool.
- * @param line line tool.
- * @return descriptor, or a descriptor with NULL_ID endpoints when the line is unknown.
- */
-auto ExplicitLine(VToolLine *line) -> OOperationLine
+//---------------------------------------------------------------------------------------------------------------------
+auto OOperationLines::LineDescriptor(VToolLine *line) -> OOperationLine
 {
     OOperationLine descriptor;
     if (line == nullptr)
@@ -69,95 +63,27 @@ auto ExplicitLine(VToolLine *line) -> OOperationLine
     return descriptor;
 }
 
-/**
- * @brief DrawnLine describes one segment a tool draws, exactly as that tool registered it.
- * @param source id of the tool that draws the segment.
- * @param segment the segment itself.
- * @return descriptor, or a descriptor with NULL_ID endpoints when the segment is degenerate.
- */
-auto DrawnLine(quint32 source, const VDrawnSegment &segment) -> OOperationLine
-{
-    OOperationLine descriptor;
-
-    if (segment.point1 == NULL_ID || segment.point2 == NULL_ID || segment.point1 == segment.point2)
-    {
-        return descriptor;
-    }
-
-    descriptor.source = source;
-    descriptor.point1 = segment.point1;
-    descriptor.point2 = segment.point2;
-    descriptor.typeLine = segment.typeLine;
-    descriptor.lineColor = segment.lineColor;
-    return descriptor;
-}
-} // namespace
-
 //---------------------------------------------------------------------------------------------------------------------
-auto OOperationLines::Collect(const VContainer *data, const QVector<SourceItem> &source,
-                              const QVector<quint32> &explicitLines) -> QVector<OOperationLine>
+auto OOperationLines::Collect(const QVector<OOperationLine> &selected) -> QVector<OOperationLine>
 {
     QVector<OOperationLine> lines;
-    lines.reserve(explicitLines.size() + source.size());
+    lines.reserve(selected.size());
 
-    for (auto id : explicitLines)
+    for (const OOperationLine &line : selected)
     {
-        const OOperationLine descriptor = ExplicitLine(qobject_cast<VToolLine *>(VAbstractPattern::FindTool(id)));
-        if (descriptor.point1 != NULL_ID && descriptor.point2 != NULL_ID)
+        // A line exists through its two endpoints and nothing else: a descriptor missing one of them, or naming
+        // the same point twice, describes no line at all. Dropped here, so no caller has to check again.
+        if (line.point1 == NULL_ID || line.point2 == NULL_ID || line.point1 == line.point2)
         {
-            lines.append(descriptor);
-        }
-    }
-
-    for (const auto &sItem : source)
-    {
-        try
-        {
-            const QSharedPointer<VGObject> obj = data->GetGObject(sItem.id);
-            if (obj->getType() != GOType::Point)
-            {
-                continue;
-            }
-
-            VAbstractTool *tool = qobject_cast<VAbstractTool *>(VAbstractPattern::FindTool(obj->getIdTool()));
-            if (tool == nullptr)
-            {
-                continue;
-            }
-
-            // Every segment the tool draws: the one towards its base point for a line point, the four sides of
-            // a rectangle, the two tracés of a dart cap. They are all carried by that same tool, so the pair of
-            // points is what tells them apart (see SyncLines). A segment a click has already taken stays the
-            // line the user chose; the two descriptors would be the very same line twice.
-            for (const VDrawnSegment &segment : tool->DrawnSegments())
-            {
-                const OOperationLine descriptor = DrawnLine(tool->getId(), segment);
-                if (descriptor.point1 == NULL_ID || descriptor.point2 == NULL_ID)
-                {
-                    continue;
-                }
-
-                const bool alreadyTaken = std::any_of(
-                    lines.cbegin(),
-                    lines.cend(),
-                    [&descriptor](const OOperationLine &line) -> bool
-                    {
-                        return (line.point1 == descriptor.point1 && line.point2 == descriptor.point2)
-                               || (line.point1 == descriptor.point2 && line.point2 == descriptor.point1);
-                    });
-                if (alreadyTaken)
-                {
-                    continue;
-                }
-
-                lines.append(descriptor);
-            }
-        }
-        catch (const VExceptionBadId &e)
-        {
-            Q_UNUSED(e)
             continue;
         }
+
+        // The result id belongs to the operation that builds the line, never to the selection: it is allocated
+        // when the tool is created (AllocateResultIds) or taken over from the operation being reconciled
+        // (SyncLines). A selection restored from a file still carries the ids of an earlier operation.
+        OOperationLine descriptor = line;
+        descriptor.result = NULL_ID;
+        lines.append(descriptor);
     }
 
     return lines;
@@ -177,10 +103,9 @@ void OOperationLines::AllocateResultIds(VContainer *data, QVector<OOperationLine
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OOperationLines::SyncLines(VContainer *data, const QVector<OOperationLine> &oldLines,
-                                const QVector<SourceItem> &source,
-                                const QVector<quint32> &explicitLines) -> QVector<OOperationLine>
+                                const QVector<OOperationLine> &selected) -> QVector<OOperationLine>
 {
-    QVector<OOperationLine> lines = Collect(data, source, explicitLines);
+    QVector<OOperationLine> lines = Collect(selected);
 
     // A line still attached keeps the id of the transformed copy that already exists. The carrying tool alone
     // cannot tell two lines apart: a tool that draws several segments — the four sides of a rectangle, the two
@@ -231,12 +156,6 @@ auto OOperationLines::SyncLines(VContainer *data, const QVector<OOperationLine> 
 
     AllocateResultIds(data, lines);
     return lines;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OOperationLines::IsExplicit(const OOperationLine &line) -> bool
-{
-    return qobject_cast<VToolLine *>(VAbstractPattern::FindTool(line.source)) != nullptr;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

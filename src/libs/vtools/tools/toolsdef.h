@@ -108,14 +108,7 @@ auto GetDefSourceName(quint32 id, const VContainer *data, const QString &suffix,
     -> QString;
 
 auto GetSourceItemName(const QString &name, quint32 id, const VContainer *data) -> QString;
-auto FindFreeNames(const QVector<SourceItem> &oldSource, const QVector<SourceItem> &newSource) -> QSet<QString>;
-auto IsValidSourceName(const QString &newName,
-                       quint32 id,
-                       const QVector<SourceItem> &source,
-                       const VContainer *data,
-                       const QSet<QString> &freeNames) -> bool;
 
-auto OperationLineStylesPics(QColor backgroundColor, QColor textColor) -> QMap<QString, QIcon>;
 
 auto ConfirmDeletion() -> int;
 
