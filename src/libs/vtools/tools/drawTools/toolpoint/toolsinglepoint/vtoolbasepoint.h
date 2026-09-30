@@ -59,7 +59,6 @@ class VToolBasePoint : public VToolSinglePoint
 
 public:
     ~VToolBasePoint() override = default;
-    void SetDialog() override;
     static auto Create(VToolBasePointInitData initData) -> VToolBasePoint *;
     static const QString ToolType;
     auto type() const -> int override { return Type; }
@@ -73,6 +72,13 @@ public:
 
     auto GetBasePointPos() const -> QPointF;
     void SetBasePointPos(const QPointF &pos);
+
+    /** @brief PatternPieceName name of the pattern piece (the draw) this base point belongs to.
+     *
+     * The piece is renamed from the options dock, the same way the "Config pattern piece" menu entry does
+     * it: the base point is the piece's own root object, so its options are where the piece is named. */
+    auto PatternPieceName() const -> QString;
+
 public slots:
     void FullUpdateFromFile() override;
     void EnableToolMove(bool move) override;
@@ -88,7 +94,6 @@ protected:
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
     void SetVisualization() override {}
     auto MakeToolTip() const -> QString override;
-    void ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement) override;
 
 private slots:
     void ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id = NULL_ID) override;
@@ -99,8 +104,6 @@ private:
     int m_indexPatternBlock{-1};
 
     explicit VToolBasePoint(const VToolBasePointInitData &initData, QGraphicsItem *parent = nullptr);
-
-    auto GatherToolChanges() const -> ToolChanges;
 };
 
 #endif // VTOOLBASEPOINT_H

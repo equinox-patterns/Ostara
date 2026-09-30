@@ -40,7 +40,6 @@
 #include "tools/dialognormal.h"
 #include "tools/dialogpointofcontact.h"
 #include "tools/dialogshoulderpoint.h"
-#include "tools/dialogsinglepoint.h"
 #include "tools/dialogspline.h"
 #include "tools/dialogcubicbezier.h"
 #include "tools/dialogsplinepath.h"

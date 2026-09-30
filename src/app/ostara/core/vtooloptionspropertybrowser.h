@@ -70,6 +70,14 @@ public slots:
     void UpdateOptions();
     void RefreshOptions();
 
+signals:
+    /** @brief PatternPieceRenameRequested the user typed a new name for the pattern piece in the options dock.
+     *
+     * The browser only knows the tools; renaming the piece is the window's business (undo command + top bar
+     * combo), so the request is handed over and the window answers by actually renaming — or by refusing an
+     * empty or already used name. */
+    void PatternPieceRenameRequested(const QString &name);
+
 private slots:
     void userChangedData(VPE::VProperty *property);
 

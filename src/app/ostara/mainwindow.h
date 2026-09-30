@@ -806,6 +806,10 @@ private:
     void CreateActions();
     void InitAutoSave();
     auto PatternPieceName(QString &name) -> bool;
+    /// Rename the pattern piece (the draw) after the options dock asked for it: empty and already used names
+    /// are refused, exactly like the "Config pattern piece" menu entry, and the undo command keeps the top bar
+    /// combo in step.
+    void RenameActivePatternPiece(const QString &name);
     auto CheckPathToMeasurements(const QString &patternPath, const QString &path) -> QString;
     void ChangePP(int index, bool zoomBestFit = true);
     /**

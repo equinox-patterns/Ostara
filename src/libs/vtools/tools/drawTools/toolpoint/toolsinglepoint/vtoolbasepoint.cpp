@@ -43,8 +43,6 @@
 #include <QRectF>
 #include <QSharedPointer>
 
-#include "../../../../dialogs/tools/dialogsinglepoint.h"
-#include "../../../../dialogs/tools/dialogtool.h"
 #include "../../../../undocommands/addpatternpiece.h"
 #include "../../../../undocommands/deletepatternpiece.h"
 #include "../../../../undocommands/movespoint.h"
@@ -87,31 +85,6 @@ VToolBasePoint::VToolBasePoint(const VToolBasePointInitData &initData, QGraphics
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     m_namePoint->setBrush(Qt::black);
     ToolCreation(initData.typeCreation);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VToolBasePoint::GatherToolChanges() const -> VAbstractPoint::ToolChanges
-{
-    SCASSERT(not m_dialog.isNull())
-    const QPointer<DialogSinglePoint> dialogTool = qobject_cast<DialogSinglePoint *>(m_dialog);
-    SCASSERT(not dialogTool.isNull())
-
-    return {.pointId = m_id, .oldLabel = name(), .newLabel = dialogTool->GetPointName()};
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief setDialog set dialog when user want change tool option.
- */
-void VToolBasePoint::SetDialog()
-{
-    SCASSERT(not m_dialog.isNull())
-    const QPointer<DialogSinglePoint> dialogTool = qobject_cast<DialogSinglePoint *>(m_dialog);
-    SCASSERT(not dialogTool.isNull())
-    const QSharedPointer<VPointF> p = VAbstractTool::data.GeometricObject<VPointF>(m_id);
-    dialogTool->CheckDependencyTreeComplete();
-    dialogTool->SetData(p->name(), static_cast<QPointF>(*p));
-    dialogTool->SetNotes(m_notes);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -285,6 +258,17 @@ void VToolBasePoint::SetBasePointPos(const QPointF &pos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VToolBasePoint::PatternPieceName() const -> QString
+{
+    if (doc == nullptr)
+    {
+        return {};
+    }
+
+    return doc->PatternBlockMapper()->GetActive();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolBasePoint::DeleteToolWithConfirm(bool ask)
 {
     if (IsRemovable() != RemoveStatus::Removable)
@@ -315,22 +299,22 @@ void VToolBasePoint::DeleteToolWithConfirm(bool ask)
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief SaveDialog save options into file after change in dialog.
+ * @brief SaveDialog describe the tool as it stands, for the options dock.
+ *
+ * The base point has no options dialog any more: its name, its notes and its label are edited from the dock,
+ * and its position by dragging it on the canvas. The hook stays because VDrawTool declares it pure virtual,
+ * so it must be able to describe the tool without any dialog.
  */
 void VToolBasePoint::SaveDialog(QDomElement &domElement)
 {
-    SCASSERT(not m_dialog.isNull())
-    const QPointer<DialogSinglePoint> dialogTool = qobject_cast<DialogSinglePoint *>(m_dialog);
-    SCASSERT(not dialogTool.isNull())
+    const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(m_id);
 
-    const QPointF p = dialogTool->GetPoint();
-    const QString name = dialogTool->GetPointName();
-    doc->SetAttribute(domElement, AttrName, name);
-    doc->SetAttribute(domElement, AttrX, QString().setNum(VAbstractValApplication::VApp()->fromPixel(p.x())));
-    doc->SetAttribute(domElement, AttrY, QString().setNum(VAbstractValApplication::VApp()->fromPixel(p.y())));
+    doc->SetAttribute(domElement, AttrName, point->name());
+    doc->SetAttribute(domElement, AttrX, QString().setNum(VAbstractValApplication::VApp()->fromPixel(point->x())));
+    doc->SetAttribute(domElement, AttrY, QString().setNum(VAbstractValApplication::VApp()->fromPixel(point->y())));
     doc->SetAttributeOrRemoveIf<QString>(domElement,
                                          AttrNotes,
-                                         dialogTool->GetNotes(),
+                                         GetNotes(),
                                          [](const QString &notes) noexcept -> bool { return notes.isEmpty(); });
 }
 
@@ -393,12 +377,6 @@ auto VToolBasePoint::MakeToolTip() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolBasePoint::ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement)
-{
-    ProcessPointToolOptions(oldDomElement, newDomElement, GatherToolChanges());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VToolBasePoint::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id)
 {
     qCDebug(vTool, "Context menu base point");
@@ -409,7 +387,10 @@ void VToolBasePoint::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quin
 
     try
     {
-        ContextMenu<DialogSinglePoint>(event, id);
+        // No "Options" entry: the base point has no dialog any more. Its name, its notes and its label live in
+        // the options dock, and its position moves by drag and drop on the canvas — the technical X/Y pair has
+        // no place in front of a non-developer user, and duplicates the canvas.
+        ContextMenuWithoutOptions(event, id);
     }
     catch (const VExceptionToolWasDeleted &e)
     {

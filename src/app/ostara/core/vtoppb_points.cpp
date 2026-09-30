@@ -368,20 +368,41 @@ auto CurvePointProperties() -> std::vector<PropertyDesc>
 auto SinglePointProperties() -> std::vector<PropertyDesc>
 {
     return {
-        {QStringLiteral("position"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Position:")),
+        // The piece's own name, edited where the piece is selected. Same rule as the "Config pattern piece"
+        // menu entry: an empty or already used name is refused and the field falls back to the current one.
+        // The rename itself is done by the window (undo command + top bar combo), hence the signal.
+        {QStringLiteral("patternPieceName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pattern piece:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolBasePoint *>(tool);
-             auto *p = new VPE::VPointFProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Position:")));
-             p->setValue(t->GetBasePointPos());
+             auto *p = new VPE::VStringProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pattern piece:")));
+             p->setValue(t->PatternPieceName());
              return p;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
-             if (auto *t = qgraphicsitem_cast<VToolBasePoint *>(b->currentItem()))
-                 t->SetBasePointPos(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toPointF());
+             auto *t = qgraphicsitem_cast<VToolBasePoint *>(b->currentItem());
+             if (t == nullptr)
+             {
+                 return;
+             }
+
+             const QString newName = prop->data(VPE::VProperty::DPC_Data, Qt::EditRole).toString();
+             if (newName == t->PatternPieceName())
+             {
+                 return; // no change
+             }
+
+             emit b->PatternPieceRenameRequested(newName);
+             // The window may have refused the name (empty or already used): show what the piece really bears.
+             if (t->PatternPieceName() != newName)
+             {
+                 prop->setValue(t->PatternPieceName());
+             }
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<VToolBasePoint *>(b->currentItem()))
-                 prop->setValue(t->GetBasePointPos());
+             {
+                 prop->setValue(t->PatternPieceName());
+             }
          }},
         MakeNotes<VToolBasePoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
         MakePointGroup<VToolBasePoint>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name"))),

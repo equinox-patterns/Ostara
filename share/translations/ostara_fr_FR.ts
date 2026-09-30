@@ -26619,6 +26619,12 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
 <context>
     <name>VToolOptionsPropertyBrowser</name>
     <message>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="374"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="377"/>
+        <source>Pattern piece:</source>
+        <translation>Élément de patron :</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="238"/>
         <source>Base point</source>
         <translation>Point de départ</translation>

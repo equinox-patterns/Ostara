@@ -32,6 +32,7 @@
 #include "mainwindow_helpers.h"
 #include "vtheme.h"
 #include "widgets/TopBar.h"
+#include "widgets/ODockManager.h"
 #include "vmisc/FactoryWidgets.h"
 #include "../vpropertyexplorer/qtcolorpicker.h"
 #include "../vmisc/vabstractvalapplication.h"
@@ -45,6 +46,7 @@
 #include "../vwidgets/vmaingraphicsview.h"
 #include "../vwidgets/vwidgetpopup.h"
 #include "core/vapplication.h"
+#include "core/vtooloptionspropertybrowser.h"
 #include <QAction>
 #include <QComboBox>
 #include <QDoubleSpinBox>
@@ -153,11 +155,38 @@ void MainWindow::ToolBarDraws()
                 {
                     return;
                 }
-                VAbstractApplication::VApp()->getUndoStack()->push(new RenamePP(doc, draw, m_comboBoxDraws));
+                RenameActivePatternPiece(draw);
+                // The base point's options show the piece name: keep it in step without waiting for a new
+                // selection. Safe here — the request does not come from inside a property editor.
+                m_dockManager->toolOptions()->UpdateOptions();
             });
+
+    // The base point's options offer the piece name: the browser only asks for it, the rename itself (undo
+    // command + top bar combo) is done here, so both entry points share one single rule.
+    connect(m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::PatternPieceRenameRequested, this,
+            &MainWindow::RenameActivePatternPiece);
 
     m_topBar->SetPatternPieceWidgets(m_patternPieceLabel, m_comboBoxDraws, ui->actionNewDraw);
     ui->actionNewDraw->setToolTip(FormatActionToolTip(ui->actionNewDraw));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RenameActivePatternPiece(const QString &name)
+{
+    if (doc == nullptr || m_comboBoxDraws == nullptr)
+    {
+        return;
+    }
+
+    // Exactly the rule of PatternPieceName(): no empty name, no name already borne by another piece. The
+    // caller keeps the field as it was, so a refused name leaves the piece untouched.
+    const QString current = doc->PatternBlockMapper()->GetActive();
+    if (name.isEmpty() || name == current || m_comboBoxDraws->findText(name) != -1)
+    {
+        return;
+    }
+
+    VAbstractApplication::VApp()->getUndoStack()->push(new RenamePP(doc, name, m_comboBoxDraws));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
