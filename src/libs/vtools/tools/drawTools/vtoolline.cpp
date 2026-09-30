@@ -185,7 +185,10 @@ auto VToolLine::Create(VToolLineInitData initData) -> VToolLine *
         initData.data->SetLineRoleName(firstPointName + '_' + secondPointName, initData.lineRoleName);
     }
 
-    initData.data->AddLine(initData.firstPoint, initData.secondPoint, initData.id);
+    // A transformed line has no name of its own — nothing names it, it is built by the operation — and the
+    // pair of its transformed endpoints can carry the very names of the pair it comes from. The role name of
+    // that pair belongs to the line the user named: taking it would make Line_<name> designate the copy.
+    initData.data->AddLine(initData.firstPoint, initData.secondPoint, initData.id, !initData.derived);
 
     patternGraph->AddEdge(initData.firstPoint, initData.id);
     patternGraph->AddEdge(initData.secondPoint, initData.id);

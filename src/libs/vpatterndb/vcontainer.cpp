@@ -652,8 +652,10 @@ void VContainer::DetachVariables()
  * @brief AddLine add line to container
  * @param firstPointId id of first point of line
  * @param secondPointId id of second point of line
+ * @param mainReference tool the line belongs to
+ * @param takeRoleName false for a transformed line built by an operation — see the declaration
  */
-void VContainer::AddLine(quint32 firstPointId, quint32 secondPointId, quint32 mainReference)
+void VContainer::AddLine(quint32 firstPointId, quint32 secondPointId, quint32 mainReference, bool takeRoleName)
 {
     const QSharedPointer<VPointF> first = GeometricObject<VPointF>(firstPointId);
     const QSharedPointer<VPointF> second = GeometricObject<VPointF>(secondPointId);
@@ -663,7 +665,7 @@ void VContainer::AddLine(quint32 firstPointId, quint32 secondPointId, quint32 ma
     auto *angleVar = new VLineAngle(first.data(), firstPointId, second.data(), secondPointId, mainReference);
 
     const QString pairKey = first->name() + '_' + second->name();
-    if (d->lineRoleNames.contains(pairKey))
+    if (takeRoleName && d->lineRoleNames.contains(pairKey))
     {
         const QString &suffix = d->lineRoleNames[pairKey];
         // Register the derived aliases in uniqueNames so that IsUnique() can detect

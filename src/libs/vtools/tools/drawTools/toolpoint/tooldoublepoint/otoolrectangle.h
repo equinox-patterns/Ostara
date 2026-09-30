@@ -146,6 +146,18 @@ public:
     void setNameP4(const QString &name);
     auto GetP4Id() const -> quint32 { return m_p4id; }
 
+    /** @brief The four sides of the rectangle, base point → B → C → D → base point: the very pairs the tool
+     *  registers in the container, so the same order the Line_ and AngleLine_ variables are named in. They are
+     *  drawn by this tool alone — there is no line tool behind them — and without this declaration no operation
+     *  could transform them. */
+    auto DrawnSegments() const -> QVector<VDrawnSegment> override
+    {
+        return {{m_basePointId, p1id, getLineType(), GetLineColor()},
+                {p1id, p2id, getLineType(), GetLineColor()},
+                {p2id, m_p4id, getLineType(), GetLineColor()},
+                {m_p4id, m_basePointId, getLineType(), GetLineColor()}};
+    }
+
     /** @brief The three created points, reachable by the dock, which names them one by one. */
     auto GetP1Id() const -> quint32 { return p1id; }
     auto GetP2Id() const -> quint32 { return p2id; }

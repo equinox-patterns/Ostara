@@ -73,7 +73,36 @@ auto VPatternGraph::AddVertex(const VNode &node) -> bool
     m_idToVertex.insert(node.id, vertexId);
     m_vertexToId.insert(vertexId, node.id);
 
+    // Edges recorded before this vertex existed can be completed now (see AddEdge).
+    FlushPendingEdgesLocked(node.id);
+
     return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPatternGraph::FlushPendingEdgesLocked(vidtype id)
+{
+    for (auto i = m_pendingEdges.begin(); i != m_pendingEdges.end();)
+    {
+        if (i->fromId != id && i->toId != id)
+        {
+            ++i;
+            continue;
+        }
+
+        // The other end can itself still be missing — it is what the edge was waiting for first. The edge
+        // keeps waiting for it: this vertex will not be announced a second time.
+        if (!m_idToVertex.contains(i->fromId) || !m_idToVertex.contains(i->toId))
+        {
+            ++i;
+            continue;
+        }
+
+        const vidtype fromId = i->fromId;
+        const vidtype toId = i->toId;
+        i = m_pendingEdges.erase(i);
+        AddEdgeLocked(fromId, toId);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -94,13 +123,23 @@ auto VPatternGraph::AddEdge(vidtype fromId, vidtype toId) -> bool
 
     if (!m_idToVertex.contains(fromId) || !m_idToVertex.contains(toId))
     {
-        qWarning() << "VPatternGraph::AddEdge: one or both vertices not found. fromId=" << fromId
-                   << "toId=" << toId
-                   << "fromExists=" << m_idToVertex.contains(fromId)
-                   << "toExists=" << m_idToVertex.contains(toId);
+        // The objects are read in file order, and a tool can depend on one the file defines further down —
+        // another pattern block, in particular. The edge is not lost: it waits for the missing vertex, which
+        // AddVertex adds and flushes as soon as the object is read. Dropping it would leave the dependents of
+        // that object unknown — nothing would refresh them when it moves, the delete checks would call a used
+        // object removable, the Dependencies dock would not show them and the garbage collector would delete
+        // a used object. What is genuinely missing is reported by Clear, once the build is over: at this
+        // point the object may still be on its way.
+        m_pendingEdges.append({fromId, toId, m_build});
         return false;
     }
 
+    return AddEdgeLocked(fromId, toId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPatternGraph::AddEdgeLocked(vidtype fromId, vidtype toId) -> bool
+{
     auto const fromVertex = m_idToVertex.value(fromId);
     auto const toVertex = m_idToVertex.value(toId);
 
@@ -475,6 +514,26 @@ auto VPatternGraph::RemoveIncomingEdges(vidtype id) -> size_t
 void VPatternGraph::Clear()
 {
     QWriteLocker const locker(&m_lock);
+
+    // An edge recorded during an earlier build and still waiting has had a whole parse to find its missing
+    // endpoint: the object it names is not in the pattern. Say so, then let it go. An edge recorded during
+    // the build that is ending is kept for the next one: the graph was cleared while a formula-dependency
+    // worker was still walking the tools, and that build is where its vertex will appear.
+    QVector<PendingEdge> stillWaiting;
+    for (const PendingEdge &edge : m_pendingEdges)
+    {
+        if (edge.build < m_build)
+        {
+            qWarning() << "VPatternGraph: an object depends on one the pattern does not define. fromId="
+                       << edge.fromId << "toId=" << edge.toId;
+            continue;
+        }
+        stillWaiting.append(edge);
+    }
+    m_pendingEdges = stillWaiting;
+
+    ++m_build;
+
     m_graph = Graph{};
     m_idToVertex.clear();
     m_vertexToId.clear();

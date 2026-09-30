@@ -103,6 +103,15 @@ public:
 
     void ShowVisualization(bool show) override;
 
+    /** @brief Both tracés of the cap, cap point first, in the order they are registered and named — the one
+     *  the base class draws towards P1, and the second line towards P2. The second one is drawn by this tool
+     *  alone, and without this declaration no operation could transform it. */
+    auto DrawnSegments() const -> QVector<VDrawnSegment> override
+    {
+        return {{getId(), m_firstPointId, getLineType(), GetLineColor()},
+                {getId(), m_secondPointId, getLineType(), GetLineColor()}};
+    }
+
 protected slots:
     void ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id = NULL_ID) override;
 

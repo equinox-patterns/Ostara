@@ -848,15 +848,17 @@ void VAbstractOperation::CreateDestinationLines(const VAbstractOperationInitData
                                                const QVector<quint32> &fixedPoints,
                                                const QHash<quint32, quint32> &referencedPoints)
 {
-    if (initData.lines.isEmpty() || initData.parse != Document::FullParse)
+    if (initData.lines.isEmpty())
     {
-        // A lite parse keeps the transformed lines already built: their endpoints are the destination
-        // objects, whose ids do not change.
         return;
     }
 
+    // Every parse, not only the full one. A transformed line has no <line> element, so the parse never
+    // re-reads it: without this call the Line_ and AngleLine_ variables it owns — which every parse clears —
+    // would stay missing until the file is reopened. CreateLines builds it on the full parse and refreshes
+    // it on the others, the same two cases a normal line goes through (see VToolLine::Create).
     OOperationLines::CreateLines(initData.doc, initData.data, initData.scene, initData.lines, initData.source,
-                                 initData.destination, fixedPoints, referencedPoints);
+                                 initData.destination, fixedPoints, initData.parse, referencedPoints);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -42,6 +42,10 @@ class VAbstractPattern;
 class VContainer;
 class VMainGraphicsScene;
 
+/** @brief The parse that is running, as VAbstractPattern::Parse receives it. Declared here to keep the
+ *  parse type readable in the signatures below without pulling the whole pattern document in. */
+enum class Document : qint8;
+
 /**
  * @brief The OOperationLine struct describes one line attached to an operation.
  *
@@ -104,12 +108,19 @@ public:
                            const QVector<DestinationItem> &destination, const QVector<quint32> &fixedPoints,
                            const QHash<quint32, quint32> &referencedPoints = {}) -> quint32;
 
-    /** @brief Create the transformed line of every descriptor whose two endpoints have an image.
-     *  Idempotent: a line whose id already exists in the pattern is left untouched. */
+    /** @brief Create or refresh the transformed line of every descriptor whose two endpoints have an image.
+     *
+     *  A line that does not exist yet is built by @a parse == Document::FullParse, and by that parse only:
+     *  creating a scene item anywhere else would give the pattern a second set of tools. A line that does
+     *  exist is left untouched by the full parse (it was built by it) and refreshed by every other one — a
+     *  transformed line has no element of its own, so this call is the only thing that re-reads it, exactly
+     *  as the parser re-reads a normal line from its <line> element. Without it the Line_ and AngleLine_
+     *  variables of the transformed line, which every parse clears, would stay missing until the file is
+     *  reopened. */
     static void CreateLines(VAbstractPattern *doc, VContainer *data, VMainGraphicsScene *scene,
                             const QVector<OOperationLine> &lines, const QVector<SourceItem> &source,
                             const QVector<DestinationItem> &destination, const QVector<quint32> &fixedPoints,
-                            const QHash<quint32, quint32> &referencedPoints = {});
+                            const Document &parse, const QHash<quint32, quint32> &referencedPoints = {});
 
     static void SaveLines(VAbstractPattern *doc, QDomElement &tag, const QVector<OOperationLine> &lines);
     static auto ExtractLines(const QDomElement &domElement) -> QVector<OOperationLine>;

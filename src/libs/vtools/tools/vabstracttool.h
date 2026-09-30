@@ -117,6 +117,17 @@ public slots:
     virtual void AllowSelecting(bool enabled) = 0;
     virtual void ToolSelectionType(const SelectionType &selectionType);
 
+    /** @brief The straight segments this tool draws, as the point pairs it registered in the container.
+     *
+     *  A line of the pattern is such a pair, and an operation transforms the lines of the objects it copies.
+     *  Most tools draw one segment — the line tool its own, a line point the one towards its base point — and
+     *  that one is known from the tool type. A tool that draws more (the four sides of a rectangle, the two
+     *  tracés of a dart cap) declares them here: without it those segments exist as drawing and as variables,
+     *  and no operation can take them.
+     *
+     *  Empty by default: a tool whose only segment is the one above must not override this. */
+    virtual auto DrawnSegments() const -> QVector<VDrawnSegment> { return {}; }
+
     /**
      * @brief PrepareNodes convert scene objects of a piece path into piece nodes.
      * Public so the app can build a piece from the new creation dialog (OPieceDialog).

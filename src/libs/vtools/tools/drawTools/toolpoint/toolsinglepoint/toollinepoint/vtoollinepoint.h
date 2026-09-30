@@ -77,6 +77,13 @@ public:
      *  transform that line together with the point. */
     auto BasePointId() const -> quint32 { return basePointId; }
 
+    /** @brief The one segment a line point draws: towards its base point, in the order it was registered —
+     *  the order the Line_ and AngleLine_ variables of the tool are named in. */
+    auto DrawnSegments() const -> QVector<VDrawnSegment> override
+    {
+        return {{basePointId, getId(), getLineType(), GetLineColor()}};
+    }
+
     auto GetAngle() const -> qreal;
     void SetAngle(const qreal &value);
 

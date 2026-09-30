@@ -30,9 +30,11 @@
 
 #include <optional>
 #include <QHash>
+#include <QPair>
 #include <QReadWriteLock>
 #include <QScopeGuard>
 #include <QSet>
+#include <QVector>
 #include <QtGlobal>
 
 #include "../graaflib/algorithm/graph_traversal/breadth_first_search.h"
@@ -139,12 +141,36 @@ public:
 private:
     Q_DISABLE_COPY_MOVE(VPatternGraph)
 
+    /** @brief An edge recorded before one of its two vertices existed — see AddEdge.
+     *
+     *  @a build is the graph build it was recorded in. An edge still waiting when Clear() starts the next
+     *  build has had a whole parse to find its missing endpoint: the object it names is not in the pattern,
+     *  which Clear() reports. An edge recorded while the graph was being rebuilt is kept for that build
+     *  instead — a formula dependency is computed on a worker thread and can land after the parse that
+     *  asked for it. */
+    struct PendingEdge
+    {
+        vidtype fromId{NULL_ID};
+        vidtype toId{NULL_ID};
+        quint64 build{0};
+    };
+
+    /// @note Both expect m_lock to be held by the caller.
+    auto AddEdgeLocked(vidtype fromId, vidtype toId) -> bool;
+    void FlushPendingEdgesLocked(vidtype id);
+
     Graph m_graph{};
     mutable QReadWriteLock m_lock{}; // mutable for const methods with locks
 
     // Fast bidirectional mapping between node IDs and internal vertex IDs
     QHash<vidtype, vertex_id_t> m_idToVertex{}; // node ID -> vertex_id_t
     QHash<vertex_id_t, vidtype> m_vertexToId{}; // vertex_id_t -> node ID
+
+    // Edges waiting for a vertex the parse has not read yet: the objects are read in file order, so a tool
+    // can depend on one the file defines further down, in a later pattern block in particular. The edge is
+    // recorded here rather than dropped (see AddEdge) and is completed by AddVertex when the object is read.
+    QVector<PendingEdge> m_pendingEdges{};
+    quint64 m_build{1}; // build the graph currently holds; incremented by Clear
 
     // When false, AddVertex/AddEdge are no-ops and FindFormulaDependencies is skipped. Set to false
     // during a reparse that cannot change the graph topology (FullLiteParse - a values-only change such

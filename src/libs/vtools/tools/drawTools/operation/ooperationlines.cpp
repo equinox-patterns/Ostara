@@ -33,7 +33,6 @@
 #include "../ifc/exception/vexceptionbadid.h"
 #include "../ifc/ifcdef.h"
 #include "../ifc/xml/vabstractpattern.h"
-#include "../toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.h"
 #include "../vgeometry/vgobject.h"
 #include "../vtoolline.h"
 #include "../vpatterndb/vcontainer.h"
@@ -71,42 +70,25 @@ auto ExplicitLine(VToolLine *line) -> OOperationLine
 }
 
 /**
- * @brief ImplicitLine describes the line a point tool draws towards its base point.
- * @param pointId id of the source point.
- * @param obj geometric object of that point.
- * @param data container with variables.
- * @return descriptor, or a descriptor with NULL_ID endpoints when the point tool draws no line, or when
- *         its base is not a point (the intersect-axis tools draw towards a curve or a line).
+ * @brief DrawnLine describes one segment a tool draws, exactly as that tool registered it.
+ * @param source id of the tool that draws the segment.
+ * @param segment the segment itself.
+ * @return descriptor, or a descriptor with NULL_ID endpoints when the segment is degenerate.
  */
-auto ImplicitLine(quint32 pointId, const QSharedPointer<VGObject> &obj, const VContainer *data)
-    -> OOperationLine
+auto DrawnLine(quint32 source, const VDrawnSegment &segment) -> OOperationLine
 {
     OOperationLine descriptor;
 
-    auto *linePoint = qobject_cast<VToolLinePoint *>(VAbstractPattern::FindTool(obj->getIdTool()));
-    if (linePoint == nullptr || linePoint->BasePointId() == NULL_ID)
+    if (segment.point1 == NULL_ID || segment.point2 == NULL_ID || segment.point1 == segment.point2)
     {
         return descriptor;
     }
 
-    try
-    {
-        if (data->GetGObject(linePoint->BasePointId())->getType() != GOType::Point)
-        {
-            return descriptor;
-        }
-    }
-    catch (const VExceptionBadId &e)
-    {
-        Q_UNUSED(e)
-        return descriptor;
-    }
-
-    descriptor.source = pointId;
-    descriptor.point1 = pointId;
-    descriptor.point2 = linePoint->BasePointId();
-    descriptor.typeLine = linePoint->getLineType();
-    descriptor.lineColor = linePoint->GetLineColor();
+    descriptor.source = source;
+    descriptor.point1 = segment.point1;
+    descriptor.point2 = segment.point2;
+    descriptor.typeLine = segment.typeLine;
+    descriptor.lineColor = segment.lineColor;
     return descriptor;
 }
 } // namespace
@@ -137,9 +119,37 @@ auto OOperationLines::Collect(const VContainer *data, const QVector<SourceItem> 
                 continue;
             }
 
-            const OOperationLine descriptor = ImplicitLine(sItem.id, obj, data);
-            if (descriptor.point1 != NULL_ID && descriptor.point2 != NULL_ID)
+            VAbstractTool *tool = qobject_cast<VAbstractTool *>(VAbstractPattern::FindTool(obj->getIdTool()));
+            if (tool == nullptr)
             {
+                continue;
+            }
+
+            // Every segment the tool draws: the one towards its base point for a line point, the four sides of
+            // a rectangle, the two tracés of a dart cap. They are all carried by that same tool, so the pair of
+            // points is what tells them apart (see SyncLines). A segment a click has already taken stays the
+            // line the user chose; the two descriptors would be the very same line twice.
+            for (const VDrawnSegment &segment : tool->DrawnSegments())
+            {
+                const OOperationLine descriptor = DrawnLine(tool->getId(), segment);
+                if (descriptor.point1 == NULL_ID || descriptor.point2 == NULL_ID)
+                {
+                    continue;
+                }
+
+                const bool alreadyTaken = std::any_of(
+                    lines.cbegin(),
+                    lines.cend(),
+                    [&descriptor](const OOperationLine &line) -> bool
+                    {
+                        return (line.point1 == descriptor.point1 && line.point2 == descriptor.point2)
+                               || (line.point1 == descriptor.point2 && line.point2 == descriptor.point1);
+                    });
+                if (alreadyTaken)
+                {
+                    continue;
+                }
+
                 lines.append(descriptor);
             }
         }
@@ -172,16 +182,50 @@ auto OOperationLines::SyncLines(VContainer *data, const QVector<OOperationLine> 
 {
     QVector<OOperationLine> lines = Collect(data, source, explicitLines);
 
+    // A line still attached keeps the id of the transformed copy that already exists. The carrying tool alone
+    // cannot tell two lines apart: a tool that draws several segments — the four sides of a rectangle, the two
+    // tracés of a dart cap — carries them all under its own id, and matching on that id alone would give every
+    // one of them the same result id, so only the first would ever be built. The two endpoints come first.
     for (auto &line : lines)
     {
-        // A line still attached keeps the id of the transformed copy that already exists.
-        const auto old = std::find_if(oldLines.cbegin(),
-                                      oldLines.cend(),
-                                      [&line](const OOperationLine &oldLine) -> bool
-                                      { return oldLine.source == line.source; });
-        if (old != oldLines.cend())
+        const auto sameSegment = [&line](const OOperationLine &oldLine) -> bool
+        {
+            return oldLine.source == line.source && oldLine.point1 == line.point1 && oldLine.point2 == line.point2;
+        };
+
+        if (const auto old = std::find_if(oldLines.cbegin(), oldLines.cend(), sameSegment); old != oldLines.cend())
         {
             line.result = old->result;
+        }
+    }
+
+    // What is left has no exact counterpart: a segment whose endpoints moved — the base point of a point tool,
+    // or of a rectangle, was re-pointed — is still the same line, and takes the next free id of the tool that
+    // carries it, in the order both lists give them. Taking it over rather than allocating a new one is what
+    // keeps the transformed line it describes from being left behind as a second line nobody owns.
+    for (auto &line : lines)
+    {
+        if (line.result != NULL_ID)
+        {
+            continue;
+        }
+
+        for (const auto &old : oldLines)
+        {
+            if (old.source != line.source || old.result == NULL_ID)
+            {
+                continue;
+            }
+
+            const bool taken = std::any_of(lines.cbegin(),
+                                           lines.cend(),
+                                           [&old](const OOperationLine &other) -> bool
+                                           { return other.result == old.result; });
+            if (!taken)
+            {
+                line.result = old.result;
+                break;
+            }
         }
     }
 
@@ -237,8 +281,11 @@ auto OOperationLines::PointImage(quint32 pointId, const QVector<SourceItem> &sou
 void OOperationLines::CreateLines(VAbstractPattern *doc, VContainer *data, VMainGraphicsScene *scene,
                                  const QVector<OOperationLine> &lines, const QVector<SourceItem> &source,
                                  const QVector<DestinationItem> &destination, const QVector<quint32> &fixedPoints,
-                                 const QHash<quint32, quint32> &referencedPoints)
+                                 const Document &parse, const QHash<quint32, quint32> &referencedPoints)
 {
+    // The full parse is the one that builds a line; every other parse refreshes the ones already built.
+    const bool build = parse == Document::FullParse;
+
     for (const auto &line : lines)
     {
         const quint32 first = PointImage(line.point1, source, destination, fixedPoints, referencedPoints);
@@ -251,9 +298,12 @@ void OOperationLines::CreateLines(VAbstractPattern *doc, VContainer *data, VMain
             continue;
         }
 
-        if (VAbstractPattern::FindTool(line.result) != nullptr)
+        // Built by the full parse — including a second call on the same data — or missing outside of it:
+        // both are left alone. VToolLine::Create only ever adds a scene item under a full parse, so calling
+        // it for a line that does not exist elsewhere would refresh nothing at all.
+        if ((VAbstractPattern::FindTool(line.result) != nullptr) == build)
         {
-            continue; // Already created (lite parse, or a second call on the same data)
+            continue;
         }
 
         VToolLineInitData initData;
@@ -265,7 +315,7 @@ void OOperationLines::CreateLines(VAbstractPattern *doc, VContainer *data, VMain
         initData.scene = scene;
         initData.doc = doc;
         initData.data = data;
-        initData.parse = Document::FullParse;
+        initData.parse = parse;
         initData.typeCreation = Source::FromFile;
         initData.derived = true;
 

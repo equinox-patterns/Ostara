@@ -69,6 +69,24 @@ struct DestinationItem
 Q_DECLARE_METATYPE(DestinationItem)
 Q_DECLARE_TYPEINFO(DestinationItem, Q_MOVABLE_TYPE); // NOLINT
 
+/**
+ * @brief A straight segment a tool draws, described as the pair of points it registered in the container.
+ *
+ * @a point1 and @a point2 are given in the order the tool registered them through VContainer::AddLine — the
+ * order the Line_ and AngleLine_ variables of the pattern are keyed on. The pen is carried per segment even
+ * though every tool met so far uses one pen for all of its segments: a tool that draws two of them
+ * differently must not have to change this interface.
+ */
+struct VDrawnSegment
+{
+    quint32 point1{NULL_ID};
+    quint32 point2{NULL_ID};
+    QString typeLine{TypeLineDefault};
+    QString lineColor{ColorDefault};
+};
+
+Q_DECLARE_TYPEINFO(VDrawnSegment, Q_MOVABLE_TYPE); // NOLINT
+
 enum class SegmentLabel : quint8
 {
     Segment1,

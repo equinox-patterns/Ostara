@@ -600,24 +600,17 @@ void VToolSeamAllowance::AddPieceDependencies(quint32 id,
     const QVector<quint32> paths = piece.GetInternalPaths();
     for (auto iPath : paths)
     {
-        // During an undo/redo the full parse that recreates the path vertex is deferred (queued):
-        // SavePieceOptions::undo() may run while the path's vertex is not in the graph yet. The
-        // graph is rebuilt by the following parse anyway, so skip a vertex that does not exist.
-        if (patternGraph->HasVertex(iPath))
-        {
-            patternGraph->AddEdge(iPath, id);
-        }
+        // An internal path or a place mark can be read after the piece it belongs to: the full parse an
+        // undo/redo defers recreates their vertices later, and a piece of a later pattern block — one that
+        // receives a portion, for instance — comes later in the file. AddEdge holds the edge until the vertex
+        // exists instead of dropping it (see VPatternGraph), so there is nothing to guard here; an object
+        // that really is missing is reported by the graph.
+        patternGraph->AddEdge(iPath, id);
     }
 
     for (auto point : piece.GetPlaceLabels())
     {
-        // Same deferred-parse window as the internal paths above: during an undo/redo
-        // SavePieceOptions may run while the mark's vertex is not in the graph yet. The graph is
-        // rebuilt by the following parse anyway, so skip a vertex that does not exist.
-        if (patternGraph->HasVertex(point))
-        {
-            patternGraph->AddEdge(point, id);
-        }
+        patternGraph->AddEdge(point, id);
     }
 }
 

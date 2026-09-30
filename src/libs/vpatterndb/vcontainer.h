@@ -182,7 +182,14 @@ public:
     auto AddPiece(const VPiece &detail) -> quint32;
     auto AddPieceGroup(const OPieceGroup &group) -> quint32;
     auto AddPiecePath(const VPiecePath &path) -> quint32;
-    void AddLine(quint32 firstPointId, quint32 secondPointId, quint32 mainReference = NULL_ID);
+    /** @brief Register a line of the pattern: the pair of points, as a length and an angle variable.
+     *
+     *  @a takeRoleName false for a line the pattern does not name — the transformed line an operation builds.
+     *  Its endpoints are copies whose names can be exactly the ones of the pair it comes from, and the role
+     *  name of that pair belongs to the line the user named: taking it would make `Line_<name>` designate the
+     *  copy. */
+    void AddLine(quint32 firstPointId, quint32 secondPointId, quint32 mainReference = NULL_ID,
+                 bool takeRoleName = true);
     void SetLineRoleName(const QString &pairKey, const QString &suffix);
     void RemoveLineRoleName(const QString &pairKey);
     void ClearLineRoleNames();
