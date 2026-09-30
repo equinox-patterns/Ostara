@@ -31,6 +31,8 @@
 
 #include <QObject>
 
+class QWidget;
+
 // Converts a typed decimal comma into a period at the key-press level, but only
 // when the comma is in a numeric context (it directly follows a digit), i.e. in
 // numeric/formula fields. A ',' typed in plain text (names, notes…) is preserved.
@@ -48,6 +50,13 @@ public:
     ~ODecimalSeparatorFilter() override = default;
 
     static void InstallOnApplication();
+
+    /** @brief MarkCommaAsSeparator declare that @a widget holds a comma-separated list, not a number.
+     *
+     * Fields like a size axis' values ("152,158,164") or a group's tags ("avant, après") are lists: there a
+     * comma is a separator and must survive as it was typed. Everywhere else the comma stays a decimal
+     * separator and is rewritten to a period. Does nothing when @a widget is null. */
+    static void MarkCommaAsSeparator(QWidget *widget);
 
 protected:
     auto eventFilter(QObject *o, QEvent *e) -> bool override;

@@ -34,9 +34,18 @@
 #include <QPlainTextEdit>
 #include <QTextCursor>
 #include <QTextEdit>
+#include <QWidget>
 
 namespace
 {
+// A widget that holds a comma-separated list says so once, through MarkCommaAsSeparator().
+constexpr auto kCommaIsSeparator = "ostaraCommaIsSeparator";
+
+[[nodiscard]] auto CommasAreSeparators(const QObject *o) -> bool
+{
+    return o != nullptr && o->property(kCommaIsSeparator).toBool();
+}
+
 // A ',' is only a decimal separator when it directly follows a digit (or an already inserted '.'),
 // i.e. inside a number token. A ',' typed in plain text (names, notes…) is left untouched.
 [[nodiscard]] auto IsDecimalCommaContext(const QString &text, int caret) -> bool
@@ -63,10 +72,25 @@ void ODecimalSeparatorFilter::InstallOnApplication()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODecimalSeparatorFilter::MarkCommaAsSeparator(QWidget *widget)
+{
+    if (widget != nullptr)
+    {
+        widget->setProperty(kCommaIsSeparator, true);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto ODecimalSeparatorFilter::eventFilter(QObject *o, QEvent *e) -> bool
 {
     if (e->type() == QEvent::KeyPress)
     {
+        // A list field keeps its commas: they separate values, they don't open a decimal part.
+        if (CommasAreSeparators(o))
+        {
+            return false;
+        }
+
         const auto *keyEvent = static_cast<const QKeyEvent *>(e);
         const bool plainComma = !keyEvent->text().isEmpty() && keyEvent->text().at(0) == QLatin1Char(',') &&
                                 (keyEvent->modifiers() & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier)) ==

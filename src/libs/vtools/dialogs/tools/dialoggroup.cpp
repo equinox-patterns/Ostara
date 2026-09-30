@@ -36,6 +36,7 @@
 #include "../dialogtoolbox.h"
 #include "../ifc/ifcdef.h"
 #include "../vmisc/FactoryWidgets.h"
+#include "../vwidgets/odecimalseparatorfilter.h"
 #include "ui_dialoggroup.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -60,6 +61,10 @@ DialogGroup::DialogGroup(const VContainer *data, VAbstractPattern *doc, quint32 
     InitColorCombo(ui->comboBoxColor);
 
     connect(ui->lineEditName, &QLineEdit::textChanged, this, &DialogGroup::NameChanged);
+
+    // Tags are a comma-separated list ("avant, après"): its commas are separators, so the application-wide
+    // decimal filter must leave them alone — otherwise a tag ending in a digit would swallow the comma.
+    ODecimalSeparatorFilter::MarkCommaAsSeparator(ui->lineEditTags);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

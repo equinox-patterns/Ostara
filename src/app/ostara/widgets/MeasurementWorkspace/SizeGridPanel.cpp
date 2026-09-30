@@ -27,6 +27,7 @@
 #include "SizeGridPanel.h"
 
 #include "core/otranslation.h"
+#include "odecimalseparatorfilter.h"
 
 #include <QComboBox>
 #include <QFormLayout>
@@ -141,6 +142,9 @@ void SizeGridPanel::SetupColumn(int index, const char *source)
         break;
     case 2: OTranslation::SetPlaceholderText(this, col.valuesEdit, QT_TRANSLATE_NOOP("SizeGridPanel", "e.g., A, B, C")); break;
     }
+    // The field holds a list: here a comma separates values ("152,158,164"), it never opens a decimal part.
+    // A decimal size is written with a dot ("36.5"), which keeps the field unambiguous.
+    ODecimalSeparatorFilter::MarkCommaAsSeparator(col.valuesEdit);
     connect(col.valuesEdit, &QLineEdit::textChanged, this, &SizeGridPanel::OnGroupDataChanged);
     auto *colValuesLabel = new QLabel();
     OTranslation::SetText(this, colValuesLabel, QT_TRANSLATE_NOOP("SizeGridPanel", "Values:"));
