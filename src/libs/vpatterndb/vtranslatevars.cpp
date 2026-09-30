@@ -53,6 +53,7 @@ VTranslateVars::VTranslateVars()
 {
     InitVariables();
     InitFunctions();
+    InitConstants();
 
     PrepareFunctionTranslations();
 }
@@ -298,6 +299,30 @@ void VTranslateVars::InitFunctions()
     functionsDescriptions.insert(warning_F,
                                  translate("VTranslateVars", "Show a warning in calculations", "function warning"));
     functionsArguments.insert(warning_F, twoArguments);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief InitConstants fill the formula constants offered to the user.
+ *
+ * The list is the counterpart of QmuParser::InitConst(), which holds the values: only the descriptions are
+ * translatable here, the token itself is the parser's name and must reach the user untouched — the whole point of
+ * the constants page is to show how to write them in a formula. Ordered as declared in the parser: pi, e, phi.
+ */
+void VTranslateVars::InitConstants()
+{
+    constants.clear();
+
+    constants.append(VFormulaConstant{
+        QStringLiteral("_pi"),
+        translate("VTranslateVars", "pi = 3.14159... - the ratio of a circle's circumference to its diameter",
+                  "constant _pi")});
+    constants.append(VFormulaConstant{
+        QStringLiteral("_e"),
+        translate("VTranslateVars", "e = 2.71828... - the base of the natural logarithm", "constant _e")});
+    constants.append(VFormulaConstant{
+        QStringLiteral("_phi"),
+        translate("VTranslateVars", "phi = 1.61803... - the golden ratio", "constant _phi")});
 }
 
 #undef translate
@@ -864,6 +889,7 @@ void VTranslateVars::Retranslate()
 
     InitVariables();
     InitFunctions();
+    InitConstants();
 
     PrepareFunctionTranslations();
 }
@@ -890,4 +916,10 @@ auto VTranslateVars::GetFunctionsDescriptions() const -> QMap<QString, qmu::QmuT
 auto VTranslateVars::GetFunctionsArguments() const -> QMap<QString, QString>
 {
     return functionsArguments;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VTranslateVars::GetConstants() const -> QList<VFormulaConstant>
+{
+    return constants;
 }

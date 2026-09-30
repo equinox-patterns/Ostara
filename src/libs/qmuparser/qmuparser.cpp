@@ -26,6 +26,7 @@
 #include <QtDebug>
 #include <QtGlobal>
 #include <QtMath>
+#include <cmath>
 #include <sstream>
 #include <string>
 
@@ -509,13 +510,16 @@ void QmuParser::InitFun()
 /**
  * @brief Initialize constants.
  *
- * By default the QmuParser recognizes two constants. Pi ("pi") and the eulerian
- * number ("_e").
+ * By default the QmuParser recognizes three constants: Pi ("_pi"), the eulerian
+ * number ("_e") and the golden ratio ("_phi").
  */
 void QmuParser::InitConst()
 {
     DefineConst(QStringLiteral("_pi"), M_PI);
     DefineConst(QStringLiteral("_e"), M_E);
+    // Golden ratio, the positive root of x^2 - x - 1 = 0. Written as its closed form so the value stays exact
+    // instead of being a rounded decimal literal.
+    DefineConst(QStringLiteral("_phi"), (1.0 + std::sqrt(5.0)) / 2.0);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

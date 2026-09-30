@@ -1514,6 +1514,11 @@
         <translation>Fonctions</translation>
     </message>
     <message>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="341"/>
+        <source>Constants</source>
+        <translation>Constantes</translation>
+    </message>
+    <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="308"/>
         <source>Lengths to control points</source>
         <translation>Distance des points de contrôle</translation>
@@ -28629,6 +28634,24 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <source>Radius_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Rayon_</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="318"/>
+        <source>pi = 3.14159... - the ratio of a circle&apos;s circumference to its diameter</source>
+        <comment>constant _pi</comment>
+        <translation>π = 3,14159… — rapport de la circonférence d&apos;un cercle à son diamètre</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="322"/>
+        <source>e = 2.71828... - the base of the natural logarithm</source>
+        <comment>constant _e</comment>
+        <translation>e = 2,71828… — base du logarithme népérien</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="325"/>
+        <source>phi = 1.61803... - the golden ratio</source>
+        <comment>constant _phi</comment>
+        <translation>φ = 1,61803… — le nombre d&apos;or</translation>
     </message>
 </context>
 <context>

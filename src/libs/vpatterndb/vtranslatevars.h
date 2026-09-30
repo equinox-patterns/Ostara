@@ -29,11 +29,22 @@
 #ifndef VTRANSLATEVARS_H
 #define VTRANSLATEVARS_H
 
+#include <QList>
 #include <QMap>
 #include <QtGlobal>
 
 #include "../qmuparser/qmutranslation.h"
 #include "../vmisc/defglobal.h"
+
+/**
+ * @brief One formula constant as offered to the user, for the formula help dialog: the token exactly as it has to be
+ *        typed in a formula (never translated, it is the parser's name), and what it means.
+ */
+struct VFormulaConstant
+{
+    QString token{};
+    qmu::QmuTranslation description{};
+};
 
 class VTranslateVars
 {
@@ -62,6 +73,9 @@ public:
     auto GetFunctionsDescriptions() const -> QMap<QString, qmu::QmuTranslation>;
     auto GetFunctionsArguments() const -> QMap<QString, QString>;
 
+    /** @brief The formula constants, in the order they must be shown (_pi, _e, _phi). */
+    auto GetConstants() const -> QList<VFormulaConstant>;
+
     static void BiasTokens(vsizetype position, vsizetype bias, QMap<vsizetype, QString> &tokens);
 
 private:
@@ -73,9 +87,11 @@ private:
     QMap<QString, QString> functionsArguments{};
     QMap<QString, qmu::QmuTranslation> stDescriptions{};
     QMap<QString, QString> translatedFunctions{};
+    QList<VFormulaConstant> constants{};
 
     void InitVariables();
     void InitFunctions();
+    void InitConstants();
 
     auto VariablesFromUser(QString &newFormula, vsizetype position, const QString &token, vsizetype &bias) const
         -> bool;

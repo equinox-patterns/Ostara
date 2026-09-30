@@ -243,7 +243,7 @@ void DialogEditWrongFormula::ValChanged(int row)
         {
             SetPieceAreaDescription(item, name);
         }
-        else if (ui->radioButtonFunctions->isChecked())
+        else if (ui->radioButtonFunctions->isChecked() || ui->radioButtonConstants->isChecked())
         {
             ui->labelDescription->setText(item->toolTip());
         }
@@ -387,6 +387,16 @@ void DialogEditWrongFormula::Functions()
 {
     ui->checkBoxHideEmpty->setEnabled(false);
     ShowFunctions();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Constants show in list formula constants
+ */
+void DialogEditWrongFormula::Constants()
+{
+    ui->checkBoxHideEmpty->setEnabled(false);
+    ShowConstants();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -574,6 +584,9 @@ void DialogEditWrongFormula::InitVariables()
 
     connect(ui->radioButtonFunctions, &QRadioButton::clicked, this, &DialogEditWrongFormula::Functions);
     connect(ui->radioButtonFunctions, &QRadioButton::clicked, this, ClearFilterFormulaInputs);
+
+    connect(ui->radioButtonConstants, &QRadioButton::clicked, this, &DialogEditWrongFormula::Constants);
+    connect(ui->radioButtonConstants, &QRadioButton::clicked, this, ClearFilterFormulaInputs);
 
     connect(ui->checkBoxHideEmpty, CHECKBOX_STATE_CHANGED, this, &DialogEditWrongFormula::Measurements);
 }
@@ -765,6 +778,49 @@ void DialogEditWrongFormula::ShowFunctions()
             item->setToolTip(i.value().getMdisambiguation());
         }
         ++i;
+    }
+
+    blocker.unblock();
+    ui->tableWidget->selectRow(0);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ShowConstants show the formula constants in list
+ *
+ * Unlike a function name, a constant token is never translated and never carries parentheses: it is shown exactly as
+ * it has to be typed in the formula, and a double click puts it there as it is (see PutVal()).
+ */
+void DialogEditWrongFormula::ShowConstants()
+{
+    QSignalBlocker blocker(ui->tableWidget);
+    ui->tableWidget->clearContents();
+    ui->tableWidget->setRowCount(0);
+    ui->tableWidget->setColumnHidden(ColumnFullName, false);
+    ui->labelDescription->setText(QString());
+
+    VCommonSettings const *settings = VAbstractApplication::VApp()->Settings();
+    const QList<VFormulaConstant> constants = VAbstractApplication::VApp()->TrVars()->GetConstants();
+    for (const auto &constant : constants)
+    {
+        ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
+
+        auto *item = new QTableWidgetItem(constant.token);
+        QFont font = item->font();
+        font.setBold(true);
+        item->setFont(font);
+
+        // The description is documentation, so it is always localized — the container names setting that switches
+        // formulas between internal and translated notation has nothing to say about it.
+        const QString description = constant.description.translate(settings->GetLocale());
+        item->setToolTip(description);
+
+        auto *itemDescription = new QTableWidgetItem(description);
+        itemDescription->setToolTip(description);
+
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, ColumnName, item);
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, ColumnFullName, itemDescription);
     }
 
     blocker.unblock();

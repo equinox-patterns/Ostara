@@ -92,6 +92,7 @@ public slots:
     void PreviewCalculations();
     void PieceArea();
     void Functions();
+    void Constants();
 
 signals:
     /**
@@ -139,6 +140,7 @@ private:
     template <class T> void ShowVariable(const QList<T> &vars);
     void ShowMeasurements(const QList<QSharedPointer<VMeasurement>> &vars);
     void ShowFunctions();
+    void ShowConstants();
     void ShowIncrementsInPreviewCalculation(bool show);
 
     void SetMeasurementDescription(QTableWidgetItem *item, const QString &name);
