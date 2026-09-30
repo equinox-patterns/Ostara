@@ -29,12 +29,12 @@
 
 #include <QDialog>
 
-class QCheckBox;
 class QLineEdit;
 class QPushButton;
 
-/// Save dialog replacing Enregistrer/Enregistrer sous with a single modal
-/// offering library and/or custom location destinations.
+/// Name dialog for saving a measurement table. The destination is no longer a choice: every table is saved
+/// into the Ostara library, which is the single home of measurement tables — a table kept elsewhere never
+/// appears in the My Tables list and never remembers its size axis.
 class DialogSaveMeasurements : public QDialog
 {
     Q_OBJECT
@@ -42,7 +42,8 @@ class DialogSaveMeasurements : public QDialog
 public:
     /// @param extension   File extension including dot (".omt" or ".otu").
     /// @param defaultName Suggested file name (from table name, already sanitized).
-    /// @param currentPath Current file path (empty for new documents).
+    /// @param currentPath Current file path (empty for new documents). A table opened outside the library
+    ///                    keeps its own name here, so its library copy bears the same one.
     /// @param parent      Parent widget.
     explicit DialogSaveMeasurements(const QString &extension,
                                     const QString &defaultName,
@@ -53,20 +54,8 @@ public:
     /// Full file name including extension (e.g. "32_à_58.omt").
     auto fileName() const -> QString;
 
-    /// Whether the user wants to save to the library folder.
-    auto saveToLibrary() const -> bool;
-
-    /// Whether the user wants to save to a custom location.
-    auto saveToCustom() const -> bool;
-
-    /// Custom path selected by the user (only valid if saveToCustom()).
-    auto customPath() const -> QString;
-
 private slots:
     void OnNameChanged();
-    void OnLibraryToggled(bool checked);
-    void OnCustomToggled(bool checked);
-    void OnBrowse();
     void UpdateSaveButton();
 
 private:
@@ -75,10 +64,6 @@ private:
     QString m_extension; // ".omt" or ".otu"
 
     QLineEdit *m_nameEdit{nullptr};
-    QCheckBox *m_libraryCheck{nullptr};
-    QCheckBox *m_customCheck{nullptr};
-    QLineEdit *m_customPathEdit{nullptr};
-    QPushButton *m_browseBtn{nullptr};
     QPushButton *m_saveBtn{nullptr};
 };
 

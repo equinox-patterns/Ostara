@@ -101,7 +101,6 @@ signals:
 
 public slots:
     void OnSave();
-    void OnSaveAs();
 
 private slots:
     void OnNextStep();
@@ -115,6 +114,11 @@ private:
     void UpdateTitle();
     void SyncDocumentFromPanels();
     void SyncPanelsFromDocument();
+    /// Name the table (or keep its name) and write it into the Ostara library. This is the only write path a
+    /// user can reach: a table lives in the library, and nowhere else.
+    void SaveToLibrary();
+    /// The one folder measurement tables are written to (@c paths/measurementLibrary).
+    static auto LibraryPath() -> QString;
     void DoSave(const QString &filePath);
     bool ConfirmOverwrite(const QString &filePath) const;
 
@@ -129,7 +133,6 @@ private:
 
     // Toolbar
     QToolButton *m_saveBtn{nullptr};
-    QToolButton *m_saveAsBtn{nullptr};
     QToolButton *m_closeBtn{nullptr};
 
     // Title

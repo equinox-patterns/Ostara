@@ -7064,6 +7064,11 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Enregistrer le tableau</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="77"/>
+        <source>Save your table to the Ostara library to easily find it in the My Tables list.</source>
+        <translation>Enregistrez votre tableau dans la bibliothèque Ostara pour le retrouver facilement dans la liste Mes tableaux.</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="94"/>
         <source>Save your table to the Ostara library to easily find it in the My Tables list. You can also save it to another location on your computer.</source>
         <translation>Enregistrez votre tableau dans la bibliothèque Ostara pour le retrouver facilement dans la liste Mes tableaux. Vous pouvez aussi l&apos;enregistrer à un autre emplacement sur votre ordinateur.</translation>

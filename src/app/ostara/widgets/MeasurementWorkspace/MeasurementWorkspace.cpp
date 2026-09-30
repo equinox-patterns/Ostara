@@ -27,6 +27,7 @@
 #include "MeasurementWorkspace.h"
 #include "SizeGridPanel.h"
 #include "Step2Container.h"
+#include "MeasurementLibraryScanner.h"
 #include "dialogues/DialogSaveMeasurements.h"
 #include "xml/oomtdocument.h"
 #include "xml/ootudocument.h"
@@ -146,10 +147,8 @@ void MeasurementWorkspace::SetupUI()
     connect(m_saveBtn, &QToolButton::clicked, this, &MeasurementWorkspace::OnSave);
     titleBar->addWidget(m_saveBtn);
 
-    m_saveAsBtn = makeToolBtn(QStringLiteral("file-arrow-up"), tr("Save As…"));
-    OTranslation::SetToolTip(this, m_saveAsBtn, QT_TRANSLATE_NOOP("MeasurementWorkspace", "Save As…"));
-    connect(m_saveAsBtn, &QToolButton::clicked, this, &MeasurementWorkspace::OnSaveAs);
-    titleBar->addWidget(m_saveAsBtn);
+    // No "Save As" button: a measurement table is saved into the Ostara library, and only there. Naming the
+    // table is still asked for the first save — that is what Save does.
 
     // Son infobulle dépend de l'origine (« Home » ou « Close ») : c'est `SetOrigin()` qui la pose,
     // et `RetranslateUI()` le rappelle.
@@ -237,7 +236,6 @@ void MeasurementWorkspace::UpdateStepIndicator()
 
     bool isStep1 = (m_currentStep == 1);
     m_saveBtn->setVisible(isStep1);
-    m_saveAsBtn->setVisible(isStep1);
     m_nextBtn->setVisible(!isStep1);
 }
 
@@ -322,18 +320,19 @@ void MeasurementWorkspace::OnSave()
 {
     SyncDocumentFromPanels();
 
-    // If the file already has a path, save directly — no dialog, no overwrite prompt.
-    if (!m_currentFilePath.isEmpty())
+    // A table that already lives in the library is overwritten in place, silently — that is what "Save"
+    // means. Any other case goes through SaveToLibrary: the table is named (or keeps its name) and the
+    // library gets a copy, while the file it was opened from stays untouched where it is.
+    if (!m_currentFilePath.isEmpty() && MeasurementLibraryScanner::IsInLibrary(LibraryPath(), m_currentFilePath))
     {
         DoSave(m_currentFilePath);
         return;
     }
 
-    // New document with no path yet — delegate to Save As.
-    OnSaveAs();
+    SaveToLibrary();
 }
 
-void MeasurementWorkspace::OnSaveAs()
+void MeasurementWorkspace::SaveToLibrary()
 {
     SyncDocumentFromPanels();
 
@@ -365,30 +364,20 @@ void MeasurementWorkspace::OnSaveAs()
         return;
     }
 
-    // Save to library
-    if (dlg.saveToLibrary())
+    const QString libPath =
+        QDir::cleanPath(LibraryPath() + QDir::separator() + dlg.fileName());
+    QDir().mkpath(QFileInfo(libPath).absolutePath());
+    if (!ConfirmOverwrite(libPath))
     {
-        QString libPath = QDir::cleanPath(VAbstractApplication::VApp()->Settings()->GetPathMeasurementLibrary()
-                                          + QDir::separator()
-                                          + dlg.fileName());
-        QDir().mkpath(QFileInfo(libPath).absolutePath());
-        if (ConfirmOverwrite(libPath))
-        {
-            DoSave(libPath);
-            m_currentFilePath = libPath;
-        }
+        return; // the existing library table is kept, and the current file path does not move
     }
 
-    // Save to custom location
-    if (dlg.saveToCustom())
-    {
-        const QString customPath = dlg.customPath();
-        if (ConfirmOverwrite(customPath))
-        {
-            DoSave(customPath);
-            m_currentFilePath = customPath;
-        }
-    }
+    DoSave(libPath); // sets m_currentFilePath to the library copy on success
+}
+
+auto MeasurementWorkspace::LibraryPath() -> QString
+{
+    return VAbstractApplication::VApp()->Settings()->GetPathMeasurementLibrary();
 }
 
 void MeasurementWorkspace::SetOrigin(Origin origin)
@@ -415,8 +404,8 @@ void MeasurementWorkspace::OnClose()
 
 void MeasurementWorkspace::DoSave(const QString &filePath)
 {
-    // Overwrite check is handled by the caller (OnSaveAs) when appropriate.
-    // OnSave skips it — that's the point of "Save" vs "Save As".
+    // OnSave overwrites a table that already lives in the library without asking: that is the point of
+    // "Save". SaveToLibrary asks first, because there the name may be a new one.
 
     QString error;
     bool ok = false;

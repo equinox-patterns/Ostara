@@ -27,10 +27,7 @@
 #include "DialogSaveMeasurements.h"
 #include "vcommonsettings.h"
 
-#include <QCheckBox>
 #include <QDialogButtonBox>
-#include <QDir>
-#include <QFileDialog>
 #include <QFileInfo>
 #include <QFrame>
 #include <QHBoxLayout>
@@ -48,7 +45,7 @@ DialogSaveMeasurements::DialogSaveMeasurements(const QString &extension,
 {
     setWindowTitle(tr("Save table"));
     setMinimumWidth(480);
-    resize(480, 420);
+    resize(480, 260);
 
     SetupUI();
 
@@ -67,20 +64,6 @@ DialogSaveMeasurements::DialogSaveMeasurements(const QString &extension,
         m_nameEdit->setText(defaultName);
     }
 
-    // Pre-fill custom path from current file
-    if (!currentPath.isEmpty())
-    {
-        QString dir = QFileInfo(currentPath).absolutePath();
-        if (!dir.isEmpty())
-        {
-            m_customPathEdit->setText(dir);
-        }
-    }
-    else
-    {
-        m_customPathEdit->setText(QDir::homePath());
-    }
-
     UpdateSaveButton();
 }
 
@@ -92,8 +75,7 @@ void DialogSaveMeasurements::SetupUI()
     // --- Explanatory text ---
     auto *explainLabel = new QLabel(
         tr("Save your table to the Ostara library to easily find it "
-           "in the My Tables list. You can also save it "
-           "to another location on your computer."));
+           "in the My Tables list."));
     explainLabel->setWordWrap(true);
     mainLayout->addWidget(explainLabel);
 
@@ -123,43 +105,14 @@ void DialogSaveMeasurements::SetupUI()
     nameLayout->addWidget(nameFrame, 1);
     mainLayout->addLayout(nameLayout);
 
-    // --- Library checkbox ---
-    m_libraryCheck = new QCheckBox(tr("Save to your Ostara library"));
-    m_libraryCheck->setChecked(true);
-    connect(m_libraryCheck, &QCheckBox::toggled, this, &DialogSaveMeasurements::OnLibraryToggled);
-    mainLayout->addWidget(m_libraryCheck);
-
+    // --- Library hint ---
+    // Kept as it was: the folder will be settable from Settings later, and this label already announces it.
     auto *libHint = new QLabel(
         tr("→ Find this table in the My Tables list, without searching your disk. "
            "Folder managed from Preferences."));
     libHint->setWordWrap(true);
     libHint->setObjectName(QStringLiteral("saveHint"));
     mainLayout->addWidget(libHint);
-
-    mainLayout->addSpacing(4);
-
-    // --- Custom location checkbox ---
-    m_customCheck = new QCheckBox(tr("Also save to another location"));
-    connect(m_customCheck, &QCheckBox::toggled, this, &DialogSaveMeasurements::OnCustomToggled);
-    mainLayout->addWidget(m_customCheck);
-
-    auto *customPathLayout = new QHBoxLayout();
-    customPathLayout->setSpacing(6);
-
-    m_customPathEdit = new QLineEdit();
-    m_customPathEdit->setPlaceholderText(QDir::homePath());
-    m_customPathEdit->setVisible(false);
-    connect(m_customPathEdit, &QLineEdit::textChanged, this, &DialogSaveMeasurements::UpdateSaveButton);
-    customPathLayout->addWidget(m_customPathEdit, 1);
-
-    m_browseBtn = new QPushButton(QStringLiteral("…"));
-    m_browseBtn->setFixedWidth(36);
-    m_browseBtn->setVisible(false);
-    m_browseBtn->setToolTip(tr("Browse…"));
-    connect(m_browseBtn, &QPushButton::clicked, this, &DialogSaveMeasurements::OnBrowse);
-    customPathLayout->addWidget(m_browseBtn);
-
-    mainLayout->addLayout(customPathLayout);
 
     mainLayout->addSpacing(8);
 
@@ -185,57 +138,11 @@ auto DialogSaveMeasurements::fileName() const -> QString
     return base + m_extension;
 }
 
-auto DialogSaveMeasurements::saveToLibrary() const -> bool
-{
-    return m_libraryCheck->isChecked();
-}
-
-auto DialogSaveMeasurements::saveToCustom() const -> bool
-{
-    return m_customCheck->isChecked() && !m_customPathEdit->text().trimmed().isEmpty();
-}
-
-auto DialogSaveMeasurements::customPath() const -> QString
-{
-    QString dir = m_customPathEdit->text().trimmed();
-    QString name = fileName();
-    if (dir.isEmpty() || name.isEmpty())
-    {
-        return {};
-    }
-    return QDir::cleanPath(dir + QDir::separator() + name);
-}
-
 // --- Slots ---
 
 void DialogSaveMeasurements::OnNameChanged()
 {
     UpdateSaveButton();
-}
-
-void DialogSaveMeasurements::OnLibraryToggled(bool checked)
-{
-    Q_UNUSED(checked)
-    UpdateSaveButton();
-}
-
-void DialogSaveMeasurements::OnCustomToggled(bool checked)
-{
-    m_customPathEdit->setVisible(checked);
-    m_browseBtn->setVisible(checked);
-    UpdateSaveButton();
-}
-
-void DialogSaveMeasurements::OnBrowse()
-{
-    QString dir = QFileDialog::getExistingDirectory(this,
-        tr("Choose a location"),
-        m_customPathEdit->text().isEmpty() ? QDir::homePath() : m_customPathEdit->text());
-
-    if (!dir.isEmpty())
-    {
-        m_customPathEdit->setText(dir);
-    }
 }
 
 void DialogSaveMeasurements::UpdateSaveButton()
@@ -245,9 +152,6 @@ void DialogSaveMeasurements::UpdateSaveButton()
         return;
     }
 
-    bool hasName = !m_nameEdit->text().trimmed().isEmpty();
-    bool hasLibrary = m_libraryCheck->isChecked();
-    bool hasCustom = m_customCheck->isChecked() && !m_customPathEdit->text().trimmed().isEmpty();
-
-    m_saveBtn->setEnabled(hasName && (hasLibrary || hasCustom));
+    // The name is the only thing left to decide: the destination is the library.
+    m_saveBtn->setEnabled(!m_nameEdit->text().trimmed().isEmpty());
 }
