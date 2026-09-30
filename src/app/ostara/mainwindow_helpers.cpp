@@ -809,7 +809,107 @@ auto CollectLayeredPairs(const QDomElement &draw) -> QMap<quint32, QSet<quint32>
 //---------------------------------------------------------------------------------------------------------------------
 // Every object of one piece that a layer can actually hold, as an (objectId, toolId) pair. The reading itself lives
 // on the model — VAbstractPattern::LayerableObjectsOfTool — because the tool creation path needs the very same rule.
+//---------------------------------------------------------------------------------------------------------------------
+auto ContainerObjects(const QDomElement &container) -> QVector<QPair<quint32, quint32>>
+{
+    QVector<QPair<quint32, quint32>> objects;
+
+    for (QDomElement element = container.firstChildElement(); !element.isNull();
+         element = element.nextSiblingElement())
+    {
+        bool ok = false;
+        const quint32 toolId = element.attribute(VDomDocument::AttrId).toUInt(&ok);
+        if (not ok || toolId == NULL_ID)
+        {
+            continue;
+        }
+        objects += VAbstractPattern::LayerableObjectsOfTool(element, toolId);
+    }
+
+    return objects;
+}
 } // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto CleanStaleLayerItems(VAbstractPattern *doc) -> bool
+{
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    const QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    bool changed = false;
+
+    for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); !draw.isNull();
+         draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
+    {
+        const QDomElement groups = draw.firstChildElement(VAbstractPattern::TagGroups);
+        if (groups.isNull())
+        {
+            continue;
+        }
+
+        // What the tools of this piece can actually hold. A layer may reference an OBJECT its tool does not define
+        // — a pair left behind by an earlier state of that element — and such a pair is far from inert: a single
+        // point ignores the object id it is handed (VToolSinglePoint::GroupVisibility), and ParseGroups applies the
+        // pairs in ascending key order, so a stale key with a HIGHER id decides that point's visibility in place
+        // of its own. Measured on a real file: three stale keys (735, 736 and 737, all on tool 733) sitting in a
+        // VISIBLE layer held a point of a HIDDEN layer on screen. A pair no tool can produce cannot be meant.
+        QMap<quint32, QSet<quint32>> drawable;
+        for (const QDomElement &container : {draw.firstChildElement(VAbstractPattern::TagCalculation),
+                                             draw.firstChildElement(VAbstractPattern::TagModeling)})
+        {
+            for (const auto &[objectId, toolId] : ContainerObjects(container))
+            {
+                drawable[toolId].insert(objectId);
+            }
+        }
+        // Pieces are tools too, and a group holding one is not something this pass has to understand: it is
+        // tolerated rather than removed, so nothing is thrown away that the pattern can still mean.
+        for (QDomElement detail = draw.firstChildElement(VAbstractPattern::TagDetails).firstChildElement();
+             !detail.isNull(); detail = detail.nextSiblingElement())
+        {
+            const quint32 detailId = detail.attribute(VDomDocument::AttrId).toUInt();
+            if (detailId != NULL_ID)
+            {
+                drawable[detailId].insert(detailId);
+            }
+        }
+
+        for (QDomElement group = groups.firstChildElement(VAbstractPattern::TagGroup); !group.isNull();
+             group = group.nextSiblingElement(VAbstractPattern::TagGroup))
+        {
+            // Collected before removing: the siblings cannot be walked while the node under the cursor goes away.
+            QVector<QDomElement> stale;
+            for (QDomElement item = group.firstChildElement(VAbstractPattern::TagGroupItem); !item.isNull();
+                 item = item.nextSiblingElement(VAbstractPattern::TagGroupItem))
+            {
+                const quint32 toolId = item.attribute(VAbstractPattern::AttrTool).toUInt();
+                const quint32 objectId = item.hasAttribute(VAbstractPattern::AttrObject)
+                                             ? item.attribute(VAbstractPattern::AttrObject).toUInt()
+                                             : toolId; // `object` is omitted when it equals `tool`
+                if (not drawable.value(toolId).contains(objectId))
+                {
+                    stale.append(item);
+                }
+            }
+
+            for (const QDomElement &item : stale)
+            {
+                group.removeChild(item);
+                changed = true;
+            }
+        }
+    }
+
+    return changed;
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto NormalizeUnlayeredObjects(VAbstractPattern *doc) -> bool
@@ -825,8 +925,9 @@ auto NormalizeUnlayeredObjects(VAbstractPattern *doc) -> bool
         return false;
     }
 
-    // A name, not an identity: it is what the dock shows, and the user may rename it. Reusing the layer
-    // a previous load created keeps a second "Unnamed" from piling up.
+    // The NAME is only what the dock shows — it is translated, and the user may rename it. What identifies the
+    // layer is its MARKER (AttrAuto). Recognising it by its name is what used to make a second one appear: a
+    // French run looking for "Unnamed" created "Sans nom" beside the English layer already holding the objects.
     const QString layerName = QObject::tr("Unnamed");
     quint32 nextId = doc->MaxRecordedId() + 1;
     bool changed = false;
@@ -840,20 +941,8 @@ auto NormalizeUnlayeredObjects(VAbstractPattern *doc) -> bool
             continue;
         }
 
-        // Every object of the piece a layer could hold, as (objectId, toolId). The reading lives on the model, so
-        // the same rule serves here and when a tool creates an object.
-        QVector<QPair<quint32, quint32>> objects;
-        for (QDomElement element = calculation.firstChildElement(); !element.isNull();
-             element = element.nextSiblingElement())
-        {
-            bool ok = false;
-            const quint32 toolId = element.attribute(VDomDocument::AttrId).toUInt(&ok);
-            if (not ok || toolId == NULL_ID)
-            {
-                continue;
-            }
-            objects += VAbstractPattern::LayerableObjectsOfTool(element, toolId);
-        }
+        // Every object of the piece a layer could hold, as (objectId, toolId).
+        const QVector<QPair<quint32, quint32>> objects = ContainerObjects(calculation);
 
         if (objects.isEmpty())
         {
@@ -894,14 +983,14 @@ auto NormalizeUnlayeredObjects(VAbstractPattern *doc) -> bool
         }
 
         QDomElement unnamed = groups.firstChildElement(VAbstractPattern::TagGroup);
-        while (not unnamed.isNull() && unnamed.attribute(VAbstractPattern::AttrName) != layerName)
+        while (not unnamed.isNull() && unnamed.attribute(VAbstractPattern::AttrAuto) != trueStr)
         {
             unnamed = unnamed.nextSiblingElement(VAbstractPattern::TagGroup);
         }
 
         if (unnamed.isNull())
         {
-            unnamed = doc->CreateGroup(nextId++, layerName, {}, orphans);
+            unnamed = doc->CreateAutomaticGroup(nextId++, layerName, orphans);
             if (unnamed.isNull())
             {
                 continue;
@@ -943,7 +1032,6 @@ auto NormalizeActiveLayer(VAbstractPattern *doc) -> bool
         return false;
     }
 
-    const QString unnamedName = QObject::tr("Unnamed");
     bool changed = false;
 
     for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); !draw.isNull();
@@ -956,7 +1044,7 @@ auto NormalizeActiveLayer(VAbstractPattern *doc) -> bool
         }
 
         QDomElement saved;   // the layer the file remembers as active
-        QDomElement unnamed; // the layer the orphans went into
+        QDomElement unnamed; // the layer the orphans went into — recognised by its marker, never by its name
         QDomElement first;   // the last resort: the first layer of the piece
         for (QDomElement group = groups.firstChildElement(VAbstractPattern::TagGroup); !group.isNull();
              group = group.nextSiblingElement(VAbstractPattern::TagGroup))
@@ -965,7 +1053,7 @@ auto NormalizeActiveLayer(VAbstractPattern *doc) -> bool
             {
                 first = group;
             }
-            if (unnamed.isNull() && group.attribute(VAbstractPattern::AttrName) == unnamedName)
+            if (unnamed.isNull() && group.attribute(VAbstractPattern::AttrAuto) == trueStr)
             {
                 unnamed = group;
             }
@@ -1000,9 +1088,12 @@ auto NormalizeActiveLayer(VAbstractPattern *doc) -> bool
             }
 
             // The active layer is always shown — otherwise the first object created would land in a hidden layer
-            // and never be seen. Same rule as SetActiveGroup, applied here because this pass decides the active
-            // layer when the file brings none.
-            if (isTarget && group.attribute(VAbstractPattern::AttrVisible) != trueStr)
+            // and never be seen. Same rule as SetActiveGroup. But ONLY when this pass is the one choosing the
+            // active layer: a file that names its own active layer has its visibility respected as written,
+            // because hiding the active layer is a deliberate gesture and it has to survive a save. Forcing it
+            // here made the eye flip back to visible on every open (measured: a file saved with its active layer
+            // hidden came back shown, while its other hidden layers stayed hidden).
+            if (isTarget && saved.isNull() && group.attribute(VAbstractPattern::AttrVisible) != trueStr)
             {
                 group.setAttribute(VAbstractPattern::AttrVisible, trueStr);
                 changed = true;

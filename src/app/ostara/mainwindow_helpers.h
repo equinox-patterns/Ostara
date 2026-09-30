@@ -102,15 +102,24 @@ auto StripBuiltInSeamAllowanceAttributes(QDomDocument *doc) -> bool;
 // Returns true if at least one value was converted.
 auto ConvertRemovedFoldLineTypes(QDomDocument *doc) -> bool;
 
+// Drop the layer items no tool of the piece can produce: a pair whose tool the file no longer holds, and a pair
+// whose OBJECT the tool does not define — the second being anything but inert, since a single point ignores the
+// object id it is handed and the pairs are applied in ascending key order, so a stale key outvotes the real one.
+// Silent by design, run once on load, BEFORE the layers are normalised so the orphans are counted on clean data.
+// Returns true if at least one item was dropped.
+auto CleanStaleLayerItems(VAbstractPattern *doc) -> bool;
+
 // Give every object of every piece a layer. An object outside every layer is visible by default and
 // unreachable from the Layers dock, so a pattern written before layers existed (a .val, or an .ostara
-// carrying objects no layer references) is given one "Unnamed" layer per piece, holding exactly the
-// objects that belong to none yet. Silent by design — it runs once, on load, for both formats.
+// carrying objects no layer references) is given ONE automatic layer per piece — the one the dock shows as
+// "Unnamed" / "Sans nom" — holding exactly the objects that belong to none yet. It is recognised by its
+// marker (VAbstractPattern::AttrAuto), never by its name, which is translated and which the user may change.
+// Silent by design — it runs once, on load, for both formats.
 // Returns true if at least one layer was created or completed.
 auto NormalizeUnlayeredObjects(VAbstractPattern *doc) -> bool;
 
 // Make sure every piece has exactly one active layer — the one the canvas draws into. The layer the file saved as
-// active wins; failing that the "Unnamed" layer, and failing that the first layer of the piece. Without this a
+// active wins; failing that the automatic layer, and failing that the first layer of the piece. Without this a
 // pattern written before layers had an active one would leave the canvas with no target to draw into.
 // Returns true if a flag was set or cleared.
 auto NormalizeActiveLayer(VAbstractPattern *doc) -> bool;

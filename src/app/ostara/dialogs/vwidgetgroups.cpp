@@ -617,6 +617,15 @@ void VWidgetGroups::OnCellClicked(int row, int column)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::RefuseSelection(const QString &reason)
+{
+    // Nothing is armed, so this sentence is the whole outcome — and the only trace of it. Remembering that it is
+    // OURS is what lets Escape take it away without wiping a message another dock put in the same status label.
+    m_tipToClear = true;
+    emit ShowStatusTip(reason);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VWidgetGroups::StartObjectSelection(quint32 layerId, ObjectSelection mode)
 {
     // Whatever was being picked is dropped first: the marks live on the canvas, and the new pass knows nothing
@@ -629,7 +638,7 @@ void VWidgetGroups::StartObjectSelection(quint32 layerId, ObjectSelection mode)
     // single layer would arm a picking no dialog could ever answer.
     if (mode == ObjectSelection::Transferring && m_doc->GetGroups().size() < 2)
     {
-        emit ShowStatusTip(tr("This is the only layer of this piece — there is no other layer to transfer to."));
+        RefuseSelection(tr("This is the only layer of this piece — there is no other layer to transfer to."));
         SelectActiveRow();
         return;
     }
@@ -638,9 +647,9 @@ void VWidgetGroups::StartObjectSelection(quint32 layerId, ObjectSelection mode)
     // click could ever land on an object, and only Escape would get the user out.
     if (mode != ObjectSelection::Adding && layerItems.isEmpty())
     {
-        emit ShowStatusTip(mode == ObjectSelection::Transferring
-                               ? tr("This layer holds no object — there is nothing to transfer.")
-                               : tr("This layer holds no object — there is nothing to remove."));
+        RefuseSelection(mode == ObjectSelection::Transferring
+                            ? tr("This layer holds no object — there is nothing to transfer.")
+                            : tr("This layer holds no object — there is nothing to remove."));
         SelectActiveRow();
         return;
     }
@@ -745,7 +754,29 @@ auto VWidgetGroups::LayerItems(quint32 layerId) -> QVector<QPair<quint32, quint3
 {
     const QMap<quint32, VGroupData> groups = m_doc->GetGroups();
     const auto layer = groups.constFind(layerId);
-    return layer == groups.constEnd() ? QVector<QPair<quint32, quint32>>() : layer.value().items;
+    if (layer == groups.constEnd())
+    {
+        return {};
+    }
+
+    // What the layer holds AND what the document can still show. The two are not the same: an `<item>` may name
+    // a tool the file no longer has, and real files carry such entries — a group written by Valentina whose tool
+    // was deleted without its entry being cleaned (measured: `<item object="75" tool="75"/>` in a pattern holding
+    // no element of that id anywhere). This is the ONE place that settles what a layer's content is, because a
+    // kept entry is not merely undrawable: `getTool()` THROWS VExceptionBadId on an id the document does not know
+    // (vabstractpattern.cpp, ToolExists), and the marking emits from inside a Qt signal — where an exception that
+    // escapes aborts the whole application. That was a real crash, from a layer holding exactly one such entry.
+    QVector<QPair<quint32, quint32>> items;
+    items.reserve(layer.value().items.size());
+    for (const auto &item : layer.value().items)
+    {
+        if (VAbstractPattern::FindTool(item.second) != nullptr)
+        {
+            items.append(item);
+        }
+    }
+
+    return items;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -781,18 +812,13 @@ auto VWidgetGroups::RemovableObjects(const QVector<QPair<quint32, quint32>> &ite
 //---------------------------------------------------------------------------------------------------------------------
 auto VWidgetGroups::TransferableObjects(const QVector<QPair<quint32, quint32>> &items) -> QMap<quint32, quint32>
 {
+    // Every object the layer holds may leave it — unlike a removal, a transfer writes into the target BEFORE it
+    // takes out of the source, so the invariant never bites here. Which objects a layer holds at all, and which
+    // of them the document can still draw, is settled once in LayerItems; this only names the rule.
     QMap<quint32, quint32> transferable;
 
     for (const auto &item : items)
     {
-        // The tool has to be there. getTool() throws on an id it does not know, and the marking would then reach
-        // it — the context menu writes items whose tool the document may no longer hold (an object an operation
-        // keys by its own id, a stale entry). Those cannot be drawn, so they cannot be clicked either.
-        if (VAbstractPattern::FindTool(item.second) == nullptr)
-        {
-            continue;
-        }
-
         transferable.insert(item.first, item.second);
     }
 
@@ -1036,6 +1062,21 @@ void VWidgetGroups::CancelObjectSelection()
     m_selectionLayerId = NULL_ID;
     m_objectSelection = ObjectSelection::Idle;
     emit ObjectSelectionFinished();
+    m_tipToClear = false; // the sentence goes with the picking it described
+    emit ShowStatusTip(QString());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::ClearStatusTip()
+{
+    // Escape, with no picking armed: a refusal left a sentence behind and there is nothing else to cancel. Guarded
+    // by m_tipToClear so Escape can never empty a label another dock is using.
+    if (not m_tipToClear)
+    {
+        return;
+    }
+
+    m_tipToClear = false;
     emit ShowStatusTip(QString());
 }
 

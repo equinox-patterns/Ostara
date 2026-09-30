@@ -718,22 +718,33 @@ auto MainWindow::CancelGroupThumbnailEdit() -> bool
  */
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    // The Layers dock is collecting objects: Enter writes them into the layer, Escape drops the selection.
-    if (m_dockManager->groupsWidget() != nullptr && m_dockManager->groupsWidget()->IsSelectingObjects())
+    // The Layers dock is collecting objects: Enter writes them into the layer, Escape drops the selection. A
+    // refusal is the other case — it arms nothing, so there is no picking to drop, but it does leave its sentence
+    // in the status bar and that sentence is then the only thing Escape can answer for. The dock is the one that
+    // knows the sentence is its own (ClearStatusTip clears nothing else), and this does not return: the rest of
+    // the Escape handling below still belongs to whoever else is waiting for it.
+    if (m_dockManager->groupsWidget() != nullptr)
     {
-        switch (event->key())
+        if (m_dockManager->groupsWidget()->IsSelectingObjects())
         {
-            case Qt::Key_Return:
-            case Qt::Key_Enter:
-                m_dockManager->groupsWidget()->ValidateObjectSelection();
-                event->accept();
-                return;
-            case Qt::Key_Escape:
-                m_dockManager->groupsWidget()->CancelObjectSelection();
-                event->accept();
-                return;
-            default:
-                break;
+            switch (event->key())
+            {
+                case Qt::Key_Return:
+                case Qt::Key_Enter:
+                    m_dockManager->groupsWidget()->ValidateObjectSelection();
+                    event->accept();
+                    return;
+                case Qt::Key_Escape:
+                    m_dockManager->groupsWidget()->CancelObjectSelection();
+                    event->accept();
+                    return;
+                default:
+                    break;
+            }
+        }
+        else if (event->key() == Qt::Key_Escape)
+        {
+            m_dockManager->groupsWidget()->ClearStatusTip();
         }
     }
 

@@ -130,6 +130,9 @@ struct VGroupData
     QString penStyle{TypeLineLine};
     /// The layer the canvas draws into. Exactly one per pattern piece (see NormalizeActiveLayer).
     bool active{false};
+    /// The layer the application itself maintains for the objects no layer references (see AttrAuto). Its name is
+    /// translated and may be changed by the user, which is precisely why the role is carried by this flag.
+    bool automatic{false};
 };
 
 // Attachment = association of objects in a named group (type Illustrator), purely visual.
@@ -327,6 +330,11 @@ public:
                      vidtype tool = null_id,
                      const QString &color = ColorBlack,
                      const QString &penStyle = TypeLineLine) -> QDomElement;
+    /// The layer the application maintains itself: the one holding the objects no layer references. Its NAME is
+    /// translated ("Unnamed" / "Sans nom") and the user may change it, so what identifies it is the marker this
+    /// writes (AttrAuto) — recognising it by its name made a second one appear in another language.
+    auto CreateAutomaticGroup(quint32 id, const QString &name, const QMap<quint32, quint32> &groupData)
+        -> QDomElement;
     auto GroupLinkedToTool(vidtype toolId) const -> vidtype;
 
     auto GetGroupName(quint32 id) -> QString;
@@ -512,6 +520,10 @@ public:
     /// Marks the layer the canvas draws into. Absent means "not active", so only the active one carries it —
     /// which also makes it self-healing: deleting the layer deletes its flag with it.
     static const QString AttrActive;
+    /// Marks the layer the application keeps for the objects no layer references — the one the dock shows as
+    /// "Unnamed" ("Sans nom"). An IDENTITY, never a name: the name is translated and the user may rename the
+    /// layer, so recognising it by that would make a second one appear in another language or after a rename.
+    static const QString AttrAuto;
     static const QString AttrTransform;
     static const QString AttrHold;
     static const QString AttrZValue;

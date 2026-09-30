@@ -164,6 +164,7 @@ const QString VAbstractPattern::AttrPassmarkVisibility = QStringLiteral("passmar
 const QString VAbstractPattern::AttrOpacity = QStringLiteral("opacity");
 const QString VAbstractPattern::AttrTags = QStringLiteral("tags");
 const QString VAbstractPattern::AttrActive = QStringLiteral("active");
+const QString VAbstractPattern::AttrAuto = QStringLiteral("auto");
 const QString VAbstractPattern::AttrTransform = QStringLiteral("transform");
 const QString VAbstractPattern::AttrHold = QStringLiteral("hold");
 const QString VAbstractPattern::AttrZValue = QStringLiteral("zValue");
@@ -2466,6 +2467,21 @@ auto VAbstractPattern::CreateGroup(quint32 id,
 
     return group;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::CreateAutomaticGroup(quint32 id, const QString &name,
+                                            const QMap<quint32, quint32> &groupData) -> QDomElement
+{
+    QDomElement group = CreateGroup(id, name, {}, groupData);
+    if (not group.isNull())
+    {
+        // The role, not the name: this is what makes the layer recognisable on the next load, whatever the
+        // translation gave it and whatever the user renamed it to.
+        SetAttribute(group, AttrAuto, true);
+    }
+    return group;
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GroupLinkedToTool(vidtype toolId) const -> vidtype
 {
@@ -2806,7 +2822,8 @@ auto VAbstractPattern::GetGroups(const QString &patternPieceName) -> QMap<quint3
                                      // solid black. Nothing is written back until the document is saved.
                                      .color = GetParametrString(group, AttrColor, ColorBlack),
                                      .penStyle = GetParametrString(group, AttrPenStyle, TypeLineLine),
-                                     .active = GetParametrBool(group, AttrActive, falseStr)});
+                                     .active = GetParametrBool(group, AttrActive, falseStr),
+                                     .automatic = GetParametrBool(group, AttrAuto, falseStr)});
                     }
                 }
                 domNode = domNode.nextSibling();

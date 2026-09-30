@@ -1378,16 +1378,21 @@ void MainWindow::InitDocksContain()
     // layer already holds — shown the same way whether the user is adding or removing — and orange is what Enter
     // will act on.
     connect(m_dockManager->groupsWidget(), &VWidgetGroups::ObjectInLayerChanged, this,
-            [this](quint32 objectId, quint32 toolId, bool inLayer)
+            [](quint32 objectId, quint32 toolId, bool inLayer)
     {
         Q_UNUSED(objectId)
-        SetLayerObjectsInLayer(dynamic_cast<QGraphicsItem *>(doc->getTool(toolId)), inLayer);
+        // FindTool, not getTool, and this is not a style choice: getTool() THROWS VExceptionBadId on an id the
+        // document does not hold, and an exception thrown from a slot has no handler above it — the application
+        // aborts. A layer entry can name such a tool (VWidgetGroups::LayerItems drops them, this is the second
+        // line of defence). SetLayerObjectsInLayer tolerates a null item.
+        SetLayerObjectsInLayer(dynamic_cast<QGraphicsItem *>(VAbstractPattern::FindTool(toolId)), inLayer);
     });
     connect(m_dockManager->groupsWidget(), &VWidgetGroups::ObjectSelectedChanged, this,
-            [this](quint32 objectId, quint32 toolId, bool selected)
+            [](quint32 objectId, quint32 toolId, bool selected)
     {
         Q_UNUSED(objectId)
-        SetLayerObjectsSelected(dynamic_cast<QGraphicsItem *>(doc->getTool(toolId)), selected);
+        // Same reason as above.
+        SetLayerObjectsSelected(dynamic_cast<QGraphicsItem *>(VAbstractPattern::FindTool(toolId)), selected);
     });
     connect(m_dockManager->groupsWidget(), &VWidgetGroups::ShowStatusTip, this,
             [this](const QString &text) { m_statusLabel->setText(text); });

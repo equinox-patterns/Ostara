@@ -1023,6 +1023,9 @@
                         <xs:attribute name="color" type="colors"/>
                         <xs:attribute name="penStyle" type="linePenStyle"/>
                         <xs:attribute name="active" type="xs:boolean"/>
+                        <!-- The layer the application maintains itself, holding the objects no layer references.
+                             An identity, not a name: the name is translated and the user may change it. -->
+                        <xs:attribute name="auto" type="xs:boolean"/>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>

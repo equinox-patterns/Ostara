@@ -154,8 +154,21 @@ void DelTool::UpdateGroups(const QMap<quint32, VGroupData> &groups) const
             groupMap.insert(first, second);
         }
 
-        QDomElement group = Doc()->CreateGroup(i.key(), i.value().name, i.value().tags, groupMap, i.value().tool);
+        QDomElement group = Doc()->CreateGroup(i.key(), i.value().name, i.value().tags, groupMap, i.value().tool,
+                                               i.value().color, i.value().penStyle);
         Doc()->SetAttribute(group, VAbstractPattern::AttrVisible, i.value().visible);
+        // The rebuild has to carry EVERY field a layer holds. It used to copy only the visible flag, so deleting a
+        // single object reset every layer's pen to the default and dropped the active flag — leaving the canvas
+        // with no layer to draw into until the next load. The role marker goes with them, or the automatic layer
+        // would lose its identity the same way (and a second one be created).
+        if (i.value().active)
+        {
+            Doc()->SetAttribute(group, VAbstractPattern::AttrActive, true);
+        }
+        if (i.value().automatic)
+        {
+            Doc()->SetAttribute(group, VAbstractPattern::AttrAuto, true);
+        }
         groupsTag.appendChild(group);
 
         ++i;

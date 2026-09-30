@@ -233,8 +233,14 @@ void AddItemToGroup::performUndoRedo(bool isUndo)
                                                                        QStringLiteral("object"),
                                                                        NULL_ID_STR);
             quint32 const toolId = VAbstractPattern::GetParametrUInt(GetElement(), QStringLiteral("tool"), NULL_ID_STR);
-            VDataTool* tool = VAbstractPattern::getTool(toolId);
-            tool->GroupVisibility(objectId,true);
+            // FindTool, not getTool: the element being restored may name a tool the document no longer holds — a
+            // group entry inherited from an older file, or an operation's result line that was never created (see
+            // VWidgetGroups::LayerItems). getTool() THROWS VExceptionBadId on such an id, and an exception escaping
+            // an undo command aborts the whole application.
+            if (VDataTool *tool = VAbstractPattern::FindTool(toolId); tool != nullptr)
+            {
+                tool->GroupVisibility(objectId, true);
+            }
         }
         else // is redo
         {
@@ -331,8 +337,14 @@ void RemoveItemFromGroup::performUndoRedo(bool isUndo)
                                                                        QStringLiteral("object"),
                                                                        NULL_ID_STR);
             quint32 const toolId = VAbstractPattern::GetParametrUInt(GetElement(), QStringLiteral("tool"), NULL_ID_STR);
-            VDataTool* tool = VAbstractPattern::getTool(toolId);
-            tool->GroupVisibility(objectId,true);
+            // FindTool, not getTool: the element being restored may name a tool the document no longer holds — a
+            // group entry inherited from an older file, or an operation's result line that was never created (see
+            // VWidgetGroups::LayerItems). getTool() THROWS VExceptionBadId on such an id, and an exception escaping
+            // an undo command aborts the whole application.
+            if (VDataTool *tool = VAbstractPattern::FindTool(toolId); tool != nullptr)
+            {
+                tool->GroupVisibility(objectId, true);
+            }
         }
 
         Doc()->SetModified(true);

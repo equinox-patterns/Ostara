@@ -959,6 +959,12 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         StripForbidFlippingAttributes(doc);
         StripFollowGrainlineAttributes(doc);
 
+        // First take out the layer items that no tool of the piece can produce — a pair naming a tool the file no
+        // longer holds, or an object its tool does not define. Both are acted on when a layer is hidden, and the
+        // second one can pin an object of a hidden layer on screen. Silent by design, and it runs BEFORE the two
+        // passes below so they count the orphans on what is left.
+        CleanStaleLayerItems(doc);
+
         // Give every object of every piece a layer. Deliberately OUTSIDE the block above, for the same
         // reason: a .val arrives without layers, and an .ostara written before this rule carries objects
         // that belong to none. Such an object is visible by default and unreachable from the Layers dock,

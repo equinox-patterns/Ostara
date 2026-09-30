@@ -409,12 +409,34 @@ auto VDrawTool::CreateRemoveFromGroupMenu(QMenu &menu, quint32 itemId) -> QActio
     auto list = QStringList(groupsContainingItem.values());
     list.sort(Qt::CaseInsensitive);
 
+    // An object must always belong to at least one layer, and taking it out of the layer that holds it ALONE would
+    // leave it belonging to none — the very state the layer system exists to prevent. The Layers dock refuses that
+    // removal (VWidgetGroups::RemovableObjects); the canvas had no such guard, and this menu was a way to strand an
+    // object (the next load would silently re-home it in "Unnamed"). Removing here takes the WHOLE figure out of
+    // the layer — HandleRemoveFromGroup walks every object GroupObjects() returns — so a layer may only be offered
+    // when each object of the figure it holds is also held by another layer. What is refused stays VISIBLE, greyed:
+    // the layer's name is then the one thing the entry still tells the user, namely where the object is.
+    const QVector<QPair<quint32, quint32>> figure = GroupObjects(itemId);
+    const auto mayLeave = [this, &figure](quint32 groupId) -> bool
+    {
+        for (const auto &[objectId, toolId] : figure)
+        {
+            const QMap<quint32, QString> holders = doc->GetGroupsContainingItem(toolId, objectId, true);
+            if (holders.contains(groupId) && holders.size() < 2)
+            {
+                return false;
+            }
+        }
+        return true;
+    };
+
     for (const auto &name : list)
     {
         QAction *actionRemoveFromGroup = menuRemoveFromGroup->addAction(name);
         actionsRemoveFromGroup->addAction(actionRemoveFromGroup);
         const quint32 groupId = groupsContainingItem.key(name);
         actionRemoveFromGroup->setData(groupId);
+        actionRemoveFromGroup->setEnabled(mayLeave(groupId));
 
         // Remove the processed group to handle duplicate names correctly
         groupsContainingItem.remove(groupId);
