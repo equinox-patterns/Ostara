@@ -81,10 +81,6 @@ public slots:
     /// Write the picked objects into the layer — or take them out of it — as one undoable step.
     void ValidateObjectSelection();
     void CancelObjectSelection();
-    /// Take away the sentence a refusal left in the status bar. A refusal arms nothing, so Escape has no picking to
-    /// drop — but it does leave that sentence standing, and Escape is the gesture one reaches for to remove it.
-    /// Only ever clears the dock's OWN sentence: a message another dock put in the same label is left alone.
-    void ClearStatusTip();
 
 signals:
     /// The canvas must start (or stop) routing its clicks to this dock.
@@ -140,11 +136,6 @@ private:
     /// too; a transfer keeps everything of the layer that can be drawn. Filled when the picking starts.
     QMap<quint32, quint32> m_candidateObjects;
 
-    /// Set by a refusal, whose sentence is the only trace it leaves: nothing is armed, so nothing else would ever
-    /// take that sentence away. Cleared as soon as the dock drops it, so Escape can never wipe a message another
-    /// dock put in the same status label.
-    bool m_tipToClear{false};
-
     // Button icon: the current-theme variant at rest, always the dark variant on hover
     // (the hovered button background is an accent, dark in both themes).
     QIcon m_addNormalIcon;
@@ -170,9 +161,10 @@ private:
 
     /// Arm the canvas picking for one layer, in one of the two directions. Cancels whatever was being picked.
     void StartObjectSelection(quint32 layerId, ObjectSelection mode);
-    /// Refuse to arm a picking, saying why in the status bar. Nothing is armed afterwards: the sentence is all
-    /// there is, and m_tipToClear is what remembers it is the dock's own.
-    void RefuseSelection(const QString &reason);
+    /// Why this picking can lead nowhere — the only layer of the piece, or a layer holding no object. Empty when
+    /// the picking can be carried out. Such a picking is ARMED anyway (see StartObjectSelection): the sentence is
+    /// said, and Enter says it again instead of writing anything.
+    auto RefusalReason(quint32 layerId, ObjectSelection mode) -> QString;
     /// The objects a layer holds, in the (objectId, toolId) shape the pattern and the canvas both use.
     auto LayerItems(quint32 layerId) -> QVector<QPair<quint32, quint32>>;
     /// Of those, the ones another layer also holds. An object always belongs to at least one layer, so these are

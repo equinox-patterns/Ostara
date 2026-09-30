@@ -617,12 +617,21 @@ void VWidgetGroups::OnCellClicked(int row, int column)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VWidgetGroups::RefuseSelection(const QString &reason)
+auto VWidgetGroups::RefusalReason(quint32 layerId, ObjectSelection mode) -> QString
 {
-    // Nothing is armed, so this sentence is the whole outcome — and the only trace of it. Remembering that it is
-    // OURS is what lets Escape take it away without wiping a message another dock put in the same status label.
-    m_tipToClear = true;
-    emit ShowStatusTip(reason);
+    if (mode == ObjectSelection::Transferring && m_doc->GetGroups().size() < 2)
+    {
+        return tr("This is the only layer of this piece — there is no other layer to transfer to.");
+    }
+
+    if (mode != ObjectSelection::Adding && LayerItems(layerId).isEmpty())
+    {
+        return mode == ObjectSelection::Transferring
+                   ? tr("This layer holds no object — there is nothing to transfer.")
+                   : tr("This layer holds no object — there is nothing to remove.");
+    }
+
+    return {};
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -634,39 +643,12 @@ void VWidgetGroups::StartObjectSelection(quint32 layerId, ObjectSelection mode)
 
     const QVector<QPair<quint32, quint32>> layerItems = LayerItems(layerId);
 
-    // A transfer needs somewhere to go, and where that is is known before anything is picked: a piece that holds a
-    // single layer would arm a picking no dialog could ever answer.
-    if (mode == ObjectSelection::Transferring && m_doc->GetGroups().size() < 2)
-    {
-        RefuseSelection(tr("This is the only layer of this piece — there is no other layer to transfer to."));
-        SelectActiveRow();
-        return;
-    }
-
-    // An empty layer has nothing to give up, and arming a removal or a transfer over it would be a dead end: no
-    // click could ever land on an object, and only Escape would get the user out.
-    if (mode != ObjectSelection::Adding && layerItems.isEmpty())
-    {
-        RefuseSelection(mode == ObjectSelection::Transferring
-                            ? tr("This layer holds no object — there is nothing to transfer.")
-                            : tr("This layer holds no object — there is nothing to remove."));
-        SelectActiveRow();
-        return;
-    }
-
     m_selectionLayerId = layerId;
     m_objectSelection = mode;
 
     for (const auto &[objectId, toolId] : layerItems)
     {
         m_layerObjects.insert(objectId, toolId);
-    }
-
-    // The layer's content, magenta in both directions: it is what the layer holds, whether the user is adding to
-    // it or emptying it. The clicks then turn the chosen ones orange — what Enter will act on.
-    for (auto it = m_layerObjects.constBegin(); it != m_layerObjects.constEnd(); ++it)
-    {
-        emit ObjectInLayerChanged(it.key(), it.value(), true);
     }
 
     if (mode == ObjectSelection::Removing)
@@ -678,8 +660,27 @@ void VWidgetGroups::StartObjectSelection(quint32 layerId, ObjectSelection mode)
         m_candidateObjects = TransferableObjects(layerItems);
     }
 
+    // The layer's content, magenta in both directions: it is what the layer holds, whether the user is adding to
+    // it or emptying it. The clicks then turn the chosen ones orange — what Enter will act on.
+    for (auto it = m_layerObjects.constBegin(); it != m_layerObjects.constEnd(); ++it)
+    {
+        emit ObjectInLayerChanged(it.key(), it.value(), true);
+    }
+
     emit ObjectSelectionStarted();
-    UpdateSelectionTip();
+
+    // A picking that can lead nowhere is ARMED all the same, and that is the whole point of it: armed, the dock
+    // owns every click on an object — the canvas never falls back on its ordinary selection, so nothing lights up
+    // that the layer cannot act on. The sentence says why nothing will come of it, and Escape lets go of it.
+    if (const QString reason = RefusalReason(layerId, mode); not reason.isEmpty())
+    {
+        emit ShowStatusTip(reason);
+    }
+    else
+    {
+        UpdateSelectionTip();
+    }
+
     SelectActiveRow();
 }
 
@@ -828,6 +829,14 @@ auto VWidgetGroups::TransferableObjects(const QVector<QPair<quint32, quint32>> &
 //---------------------------------------------------------------------------------------------------------------------
 void VWidgetGroups::UpdateSelectionTip()
 {
+    // A picking the layer cannot answer says why, whatever gets picked in the meantime: Enter will refuse it, and
+    // promising "Enter to choose the layer they move to" on the only layer of a piece would be a lie.
+    if (const QString reason = RefusalReason(m_selectionLayerId, m_objectSelection); not reason.isEmpty())
+    {
+        emit ShowStatusTip(reason);
+        return;
+    }
+
     const int count = static_cast<int>(m_selectedObjects.size());
     if (count > 0)
     {
@@ -842,12 +851,6 @@ void VWidgetGroups::UpdateSelectionTip()
 
     if (m_objectSelection == ObjectSelection::Transferring)
     {
-        if (m_candidateObjects.isEmpty())
-        {
-            emit ShowStatusTip(tr("No object of this layer can be drawn — there is nothing to transfer."));
-            return;
-        }
-
         // Nothing to say here about the invariant that holds for a removal: a transfer writes into the target
         // before it takes out of the source, so every object the layer holds may leave it.
         emit ShowStatusTip(tr("Select the objects to transfer, then press Enter to choose the layer they move to — "
@@ -914,6 +917,22 @@ void VWidgetGroups::ValidateObjectSelection()
     }
 
     const quint32 layerId = m_selectionLayerId;
+
+    // Nothing to carry out: say again why, and write nothing. Enter on a picking the layer cannot answer must not
+    // open a dialog, nor close a macro on nothing.
+    if (const QString reason = RefusalReason(layerId, m_objectSelection); not reason.isEmpty())
+    {
+        emit ShowStatusTip(reason);
+        return;
+    }
+
+    // Armed, but nothing picked yet: Enter has nothing to carry out whatever the direction, and asking where to
+    // move nothing would be a dialog for nothing.
+    if (m_selectedObjects.isEmpty())
+    {
+        UpdateSelectionTip();
+        return;
+    }
 
     // A transfer asks its question before anything is written, and a dismissed dialog writes nothing: the picking
     // stays armed so Enter can ask again, and Escape is still there to let go of it.
@@ -1062,21 +1081,8 @@ void VWidgetGroups::CancelObjectSelection()
     m_selectionLayerId = NULL_ID;
     m_objectSelection = ObjectSelection::Idle;
     emit ObjectSelectionFinished();
-    m_tipToClear = false; // the sentence goes with the picking it described
-    emit ShowStatusTip(QString());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VWidgetGroups::ClearStatusTip()
-{
-    // Escape, with no picking armed: a refusal left a sentence behind and there is nothing else to cancel. Guarded
-    // by m_tipToClear so Escape can never empty a label another dock is using.
-    if (not m_tipToClear)
-    {
-        return;
-    }
-
-    m_tipToClear = false;
+    // The sentence goes with the picking it described — including the one a refusal left: a refusal armed the
+    // picking rather than being a state of its own, so letting go of it takes the sentence away as well.
     emit ShowStatusTip(QString());
 }
 
