@@ -8060,6 +8060,7 @@ This action cannot be undone.</source>
     <name>DialogTransfert</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="14"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="263"/>
         <source>Transfer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8118,11 +8119,6 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="256"/>
         <source>Tags:</source>
         <translation type="unfinished">Теги:</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="263"/>
-        <source>Close dart</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="277"/>
@@ -17010,23 +17006,23 @@ Save it before leaving it?</source>
 <context>
     <name>OToolTransfert</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="270"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="275"/>
         <source>transfer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="299"/>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="312"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="325"/>
         <source>Merge point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="431"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="444"/>
         <source>From</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="433"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="446"/>
         <source>To</source>
         <translation type="unfinished"></translation>
     </message>
@@ -24871,44 +24867,44 @@ Do you want to continue?</source>
 <context>
     <name>VPattern</name>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="255"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="261"/>
         <source>The formula uses a name the pattern does not define: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="767"/>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="811"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="785"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="829"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="90"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="118"/>
         <source>Error parsing file.</source>
         <translation>Помилка парсингу файла.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="778"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="796"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="97"/>
         <source>Error can&apos;t convert value.</source>
         <translation>Помилка, не можу конвертувати значення.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="789"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="807"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="104"/>
         <source>Error empty parameter.</source>
         <translation>Помилка, порожній параметр.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="800"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="818"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="111"/>
         <source>Error wrong id.</source>
         <translation>Помикла, неправильний id.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="822"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="840"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="125"/>
         <source>Error parsing file (std::bad_alloc).</source>
         <translation>Помилка парсингу файлу (std::bad_alloc).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="841"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="859"/>
         <source>Error updating scene after parsing.</source>
         <translation>Помилка під час оновлення сцени після парсингу.</translation>
     </message>
@@ -24918,115 +24914,115 @@ Do you want to continue?</source>
         <translation>Помилка створення чи оновлення деталі</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="405"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="437"/>
         <source>Error creating or updating single point</source>
         <translation>Помилка створення чи оновлення простої точки</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="450"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="456"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="482"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="488"/>
         <source>Error creating or updating point of end line</source>
         <translation>Помилка створення чи оновлення точки кінця відрізку</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="500"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="506"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="532"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="538"/>
         <source>Error creating or updating point along line</source>
         <translation>Помилка створення чи оновлення точки вздовж лінії</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="545"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="551"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="577"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="583"/>
         <source>Error creating or updating point of shoulder</source>
         <translation>Помилка створення чи оновлення точки плеча</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="590"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="596"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="622"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="628"/>
         <source>Error creating or updating point of normal</source>
         <translation>Помилка створення чи оновлення точки нормалі</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="635"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="641"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="667"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="673"/>
         <source>Error creating or updating point of bisector</source>
         <translation>Помилка створення чи оновлення точки бісектриси</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="293"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="294"/>
         <source>Duplicate line role name &apos;%1&apos; in &lt;lineNames&gt;; second occurrence ignored.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="711"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="717"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="743"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="749"/>
         <source>Error creating or updating point of contact</source>
         <translation>Помилка створення чи оновлення точки дотику</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="747"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="779"/>
         <source>Error creating or updating modeling point</source>
         <translation>Помилка створення чи оновлення модельної точки</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="855"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="887"/>
         <source>Error creating or updating height</source>
         <translation>Помилка створення чи оновлення висоти</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="886"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="918"/>
         <source>Error creating or updating triangle</source>
         <translation>Помилка створення чи оновлення трикутника</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="916"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="948"/>
         <source>Error creating or updating point of intersection</source>
         <translation>Помилка створення чи оновлення точки перетину</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="975"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="981"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1007"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1013"/>
         <source>Error creating or updating cut spline point</source>
         <translation>Помилка створення чи оновлення точки розрізання кривої</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1040"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1046"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1072"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1078"/>
         <source>Error creating or updating cut spline path point</source>
         <translation>Помилка створення чи оновлення точки розрізаня складної кривої</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1105"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1111"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1137"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1143"/>
         <source>Error creating or updating cut arc point</source>
         <translation>Помилка створення чи оновлення точки розрізання дуги</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1152"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1158"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1184"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1190"/>
         <source>Error creating or updating point of intersection line and axis</source>
         <translation>Помилка створення чи оновлення точки перетину лінії і осі</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1219"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1225"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1251"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1257"/>
         <source>Error creating or updating point of intersection curve and axis</source>
         <translation>Помилка створення чи оновлення точки перетину кривої і осі</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1604"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1610"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1636"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1642"/>
         <source>Error creating or updating the cap of a dart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1667"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1673"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1699"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1705"/>
         <source>Error creating or updating a rectangle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="261"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="262"/>
         <source>Error creating or updating line</source>
         <translation>Помилка створення чи оновлення лінії</translation>
     </message>
@@ -25110,49 +25106,49 @@ Do you want to continue?</source>
         <translation>Помилка створення чи оновлення об&apos;єднання деталей</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1282"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1314"/>
         <source>Error creating or updating point of intersection arcs</source>
         <translation>Помилка створення чи оновлення точки перетину дуг</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1325"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1357"/>
         <source>Error creating or updating point of intersection circles</source>
         <translation>Помилка створення чи оновлення точки перетину кіл</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1429"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1461"/>
         <source>Error creating or updating point from circle and tangent</source>
         <translation>Помилка створення чи оновлення точки кола та дотичної</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1460"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1492"/>
         <source>Error creating or updating point from arc and tangent</source>
         <translation>Помилка створення чи оновлення точки дуги та дотичної</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1490"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1522"/>
         <source>Error creating or updating arc point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1520"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1552"/>
         <source>Error creating or updating curve point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1571"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1603"/>
         <source>Error creating or updating true darts</source>
         <translation>Помилка створення чи оновлення виточок</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1105"/>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1174"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1123"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1192"/>
         <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="108"/>
         <source>Wrong tag name &apos;%1&apos;.</source>
         <translation>Неправильна назва тегу &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="228"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="229"/>
         <source>Unknown point type &apos;%1&apos;.</source>
         <translation>Невідомий тип точки &apos;%1&apos;.</translation>
     </message>
@@ -25172,12 +25168,12 @@ Do you want to continue?</source>
         <translation>Невідомий тип інструмента &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="691"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="698"/>
         <source>Error not unique id.</source>
         <translation>Помилка, не унікальний id.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1389"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1421"/>
         <source>Error creating or updating point of intersection curves</source>
         <translation>Помилка створення чи оновлення точки перетину кривих</translation>
     </message>
@@ -25229,7 +25225,7 @@ Do you want to continue?</source>
         <translation>Помилка створення чи оновлення операції переміщення</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="672"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="704"/>
         <source>Error creating or updating point of line intersection</source>
         <translation>Помилка створення чи оновлення точки перетину ліній</translation>
     </message>
@@ -25275,8 +25271,8 @@ Do you want to continue?</source>
         <translation>Контур деталі не містить вузлів</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="818"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="824"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="850"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="856"/>
         <source>Error creating or updating place label</source>
         <translation>Помилка створення або оновлення мітки місця</translation>
     </message>

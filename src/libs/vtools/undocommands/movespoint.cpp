@@ -127,6 +127,11 @@ void MoveSPoint::Do(double x, double y)
         Doc()->SetAttribute(domElement, AttrX, QString().setNum(VAbstractValApplication::VApp()->fromPixel(x)));
         Doc()->SetAttribute(domElement, AttrY, QString().setNum(VAbstractValApplication::VApp()->fromPixel(y)));
 
+        // The active block alone, because this runs on every mouse move of the drag: re-reading the whole file
+        // here costs ~180 ms a step on a five-piece pattern (measured), which no gesture can afford. What the
+        // active block does not cover — a tool of ANOTHER piece reading this one, a transfer's copies or a
+        // formula in a later piece — is caught up by VPattern::RefreshCrossBlockDependents once the gesture has
+        // settled.
         emit NeedLiteParsing(Document::LitePPParse);
     }
     else

@@ -32,6 +32,7 @@
 #include <QHash>
 #include <QReadWriteLock>
 #include <QScopeGuard>
+#include <QSet>
 #include <QtGlobal>
 
 #include "../graaflib/algorithm/graph_traversal/breadth_first_search.h"
@@ -91,6 +92,14 @@ public:
     auto GetPredecessors(vidtype id) const -> QVector<vidtype>;
     auto GetVerticesByType(VNodeType type) const -> QVector<vidtype>;
 
+    /** @brief The blocks, other than @p indexPatternBlock, that hold at least one object transitively built on
+     *  an object of that block — everything a reparse of that block alone would leave behind.
+     *
+     *  @param indexPatternBlock the block whose dependents are looked for
+     *  @param timeout lock timeout
+     *  @return the set of blocks, or nullopt when the read lock could not be taken in time */
+    auto TryGetDependentBlocks(int indexPatternBlock, int timeout = 1000) const -> std::optional<QSet<int>>;
+
     auto GetDegree(vidtype id) const -> std::size_t;
     auto GetInDegree(vidtype id) const -> std::size_t;
     auto GetOutDegree(vidtype id) const -> std::size_t;
@@ -138,9 +147,9 @@ private:
     QHash<vertex_id_t, vidtype> m_vertexToId{}; // vertex_id_t -> node ID
 
     // When false, AddVertex/AddEdge are no-ops and FindFormulaDependencies is skipped. Set to false
-    // during reparses that cannot change the graph topology (LitePPParse and FullLiteParse - i.e.
-    // values-only changes such as a size switch or measurement sync). NOT disabled for LiteParse,
-    // which follows a tool edit whose changed formula may alter dependencies.
+    // during a reparse that cannot change the graph topology (FullLiteParse - a values-only change such
+    // as a size switch or a measurement sync). NOT disabled for LiteParse, which follows a tool edit
+    // whose changed formula may alter dependencies.
     bool m_graphRebuildEnabled{true};
 };
 

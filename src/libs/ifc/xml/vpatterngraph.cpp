@@ -31,6 +31,8 @@
 #include "../vmisc/defglobal.h"
 
 #include <QDebug>
+#include <QQueue>
+#include <QSet>
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -529,4 +531,68 @@ auto VPatternGraph::GetNodeId(vertex_id_t vertexId) const -> std::optional<vidty
     }
 
     return m_vertexToId.value(vertexId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPatternGraph::TryGetDependentBlocks(int indexPatternBlock, int timeout) const -> std::optional<QSet<int>>
+{
+    if (!m_lock.tryLockForRead(timeout))
+    {
+        return std::nullopt;
+    }
+
+    auto Unlock = qScopeGuard([this]() -> auto { m_lock.unlock(); });
+
+    // Every node of the block is a starting point: a tool of another block can read any one of them. One walk
+    // from all of them together, not one walk each — this runs while a piece is being dragged.
+    QSet<vidtype> seen;
+    QQueue<vidtype> queue;
+    for (auto it = m_idToVertex.constBegin(); it != m_idToVertex.constEnd(); ++it)
+    {
+        if (m_graph.has_vertex(it.value()) && m_graph.get_vertex(it.value()).indexPatternBlock == indexPatternBlock)
+        {
+            seen.insert(it.key());
+            queue.enqueue(it.key());
+        }
+    }
+
+    QSet<int> blocks;
+    while (!queue.isEmpty())
+    {
+        const vidtype id = queue.dequeue();
+        if (!m_idToVertex.contains(id))
+        {
+            continue;
+        }
+
+        const auto vertexId = m_idToVertex.value(id);
+        if (!m_graph.has_vertex(vertexId))
+        {
+            continue;
+        }
+
+        for (const auto &neighbor : m_graph.get_neighbors(vertexId))
+        {
+            if (!m_vertexToId.contains(neighbor))
+            {
+                continue;
+            }
+
+            const vidtype neighborId = m_vertexToId.value(neighbor);
+            if (seen.contains(neighborId))
+            {
+                continue;
+            }
+            seen.insert(neighborId);
+
+            const VNode &node = m_graph.get_vertex(neighbor);
+            if (node.indexPatternBlock != indexPatternBlock)
+            {
+                blocks.insert(node.indexPatternBlock);
+            }
+            queue.enqueue(neighborId);
+        }
+    }
+
+    return blocks;
 }

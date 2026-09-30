@@ -146,6 +146,11 @@ public:
     template <typename T> auto GeometricObject(const quint32 &id) const -> QSharedPointer<T>;
     auto GetGObject(quint32 id) const -> QSharedPointer<VGObject>;
 
+    /** @brief Whether an object is held under @a id, in either draw mode. The question a caller has to ask
+     *  before resolving an id it read from a file: @a GeometricObject throws, and there are cases where not
+     *  knowing yet is not an error. */
+    auto HasObject(quint32 id) const -> bool;
+
     /** @brief The first of @a ids that holds a point, NULL_ID when there is none.
      *
      * A rotation can be set by a length only for a point: that length is the chord of the image of this very

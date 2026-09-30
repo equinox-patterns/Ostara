@@ -132,9 +132,10 @@ private:
     /** @brief Say which step is expected, in the status line of the dialog. */
     void Say(const QString &step);
 
-    /** @brief Offer the parts that come after @a afterBlockId in the file, and only those: a transfer reads
-     *  its portion from a part that has already been read, so the host part must be built later. */
-    void FillHostParts(int afterBlockId);
+    /** @brief Offer every part of the pattern, in file order. The part receiving the portion can be built
+     *  before the one it copies from: such a transfer is kept aside and built once the whole file has been
+     *  read, so nothing here depends on the order any more. */
+    void FillHostParts();
 
     void FillHostLayers(const QString &partName);
 

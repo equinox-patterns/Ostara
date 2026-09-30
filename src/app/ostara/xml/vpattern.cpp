@@ -141,7 +141,8 @@ VPattern::VPattern(VContainer *data, VMainGraphicsScene *sceneDraw, VMainGraphic
     data(data),
     sceneDraw(sceneDraw),
     sceneDetail(sceneDetail),
-    m_refreshGeometryTimer(new QTimer(this))
+    m_refreshGeometryTimer(new QTimer(this)),
+    m_crossBlockParseTimer(new QTimer(this))
 {
     SCASSERT(sceneDraw != nullptr)
     SCASSERT(sceneDetail != nullptr)
@@ -150,6 +151,11 @@ VPattern::VPattern(VContainer *data, VMainGraphicsScene *sceneDraw, VMainGraphic
     m_refreshGeometryTimer->setTimerType(Qt::CoarseTimer);
     m_refreshGeometryTimer->setInterval(250ms);
     connect(m_refreshGeometryTimer, &QTimer::timeout, this, &VPattern::RefreshPieceGeometry);
+
+    m_crossBlockParseTimer->setSingleShot(true);
+    m_crossBlockParseTimer->setTimerType(Qt::CoarseTimer);
+    m_crossBlockParseTimer->setInterval(250ms);
+    connect(m_crossBlockParseTimer, &QTimer::timeout, this, &VPattern::RefreshCrossBlockDependents);
 
     connect(this, &VAbstractPattern::PatternDependencyGraphCompleted, this, &VPattern::CollectGarbage);
 }
@@ -228,9 +234,19 @@ void VPattern::Parse(const Document &parse)
     // only, but it clears the same value variables and reads the same blocks in the same order.
     VContainer::ResetDeferredFormulas();
     VContainer::SetDeferredFormulaMode(true);
+    m_deferredTransfers.clear();
     ParseRoot(parse);
 
-    if (VContainer::DeferredFormulas() > 0)
+    // A transfer reads its portion from another piece, and that piece can be built BEFORE the one receiving it:
+    // nothing forbids it. Its block was read first, without those objects, so it was kept aside — this is the
+    // moment every block has been read.
+    const bool lateTransfers = !m_deferredTransfers.isEmpty();
+    if (lateTransfers)
+    {
+        ReplayDeferredTransfers();
+    }
+
+    if (VContainer::DeferredFormulas() > 0 || lateTransfers)
     {
         // Every block has now been read: the variables the first pass could not see exist. Clear the value
         // variables (so the second pass registers them once, under their own names) keeping the ones the
@@ -472,6 +488,7 @@ void VPattern::Clear()
     updatePieces.clear();
 
     m_refreshGeometryTimer->stop(); // Drop any pending refresh; it would run against a cleared document.
+    m_crossBlockParseTimer->stop(); // Same for the cross-block catch-up.
 
     m_pieceGeometryDirty = true;
 
@@ -742,6 +759,17 @@ void VPattern::LiteParseTree(const Document &parse)
                 PatternGraph()->SetGraphRebuildEnabled(false);
                 ParseCurrentPP();
                 PatternGraph()->SetGraphRebuildEnabled(true);
+                // The active block alone, because this is a drag. What it cannot cover — a tool of another
+                // piece reading this one, a transfer's copies or a formula in a later piece — is caught up
+                // once the gesture has settled.
+                if (VApplication::IsGUIMode())
+                {
+                    m_crossBlockParseTimer->start();
+                }
+                else
+                {
+                    RefreshCrossBlockDependents();
+                }
                 break;
             case Document::FullLiteParse:
             case Document::LiteParse:

@@ -59,6 +59,12 @@ struct OToolTransfertInitData : VAbstractOperationInitData
     QString layerName{};
 };
 
+/** @brief Whether every object a transfer reads — its two merge points and its whole source list — is in that
+ *  container. False is not an error: the piece the portion comes from can be built LATER in the file than the
+ *  one receiving it, and the caller then has either to wait for the rest of the file or to ask for a container
+ *  that holds the whole pattern. */
+auto TransfertInputsAreThere(const VContainer *data, const OToolTransfertInitData &initData) -> bool;
+
 class OToolTransfert : public VAbstractOperation
 {
     Q_OBJECT // NOLINT

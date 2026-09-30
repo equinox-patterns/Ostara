@@ -160,6 +160,25 @@ void PrepareHostLayer(OToolTransfertInitData &initData)
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
+auto TransfertInputsAreThere(const VContainer *data, const OToolTransfertInitData &initData) -> bool
+{
+    if (!data->HasObject(initData.origin) || !data->HasObject(initData.target))
+    {
+        return false;
+    }
+
+    for (const SourceItem &item : initData.source)
+    {
+        if (!data->HasObject(item.id))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 OToolTransfert::OToolTransfert(const OToolTransfertInitData &initData, QGraphicsItem *parent)
   : VAbstractOperation(initData, parent),
     m_origPointId(initData.origin),
@@ -184,12 +203,36 @@ auto OToolTransfert::Create(const QPointer<DialogTool> &dialog, VMainGraphicsSce
     initData.layerName = dialogTool->GetHostLayerName();
     initData.source = dialogTool->GetSourceObjects();
     initData.lines = OOperationLines::Collect(data, initData.source, dialogTool->GetLineSources());
+    // Same three fields as the other operations: without them the group asked for in the dialog was never read,
+    // so it could not be created either.
+    initData.hasLinkedVisibilityGroup = dialogTool->HasLinkedVisibilityGroup();
+    initData.visibilityGroupName = dialogTool->GetVisibilityGroupName();
+    initData.visibilityGroupTags = dialogTool->GetVisibilityGroupTags();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;
     initData.parse = Document::FullParse;
     initData.typeCreation = Source::FromGui;
     initData.notes = dialogTool->GetNotes();
+
+    // A transfer can send its portion to a piece built BEFORE the one it copies — nothing forbids it. The
+    // living container is a prefix of the file, and with the host active it does not hold that piece's objects
+    // yet. The whole pattern is adopted for this one gesture, so that the copies written below are the
+    // pattern's own; the next parse or piece switch truncates the container back to the active block's prefix,
+    // exactly as it always does.
+    if (!TransfertInputsAreThere(data, initData))
+    {
+        *data = doc->GetCompleteData();
+    }
+
+    // Last resort: without the objects it reads, the creation below could only throw, and a throw from here
+    // leaves through VApplication::notify, which ends the process. Said out loud instead.
+    if (!TransfertInputsAreThere(data, initData))
+    {
+        qWarning() << VAbstractValApplication::warningMessageSignature
+                   << tr("The portion could not be read: its objects are not in the pattern any more.");
+        return nullptr;
+    }
 
     OToolTransfert *operation = Create(initData);
     if (operation != nullptr)
@@ -276,6 +319,14 @@ auto OToolTransfert::Create(OToolTransfertInitData &initData) -> OToolTransfert 
         initData.scene->addItem(tool);
         InitOperationToolConnections(initData.scene, tool);
         VAbstractPattern::AddTool(initData.id, tool);
+
+        // The visibility group, when the dialog asked for one, and only once the tool exists and is registered —
+        // the order and the condition of AddToolToScene, which the five other operations go through. Its absence
+        // here is why a group requested at creation never came into being before the options were re-applied.
+        if (fromGui && initData.hasLinkedVisibilityGroup)
+        {
+            VAbstractOperation::CreateVisibilityGroup(initData);
+        }
 
         if (fromGui)
         {

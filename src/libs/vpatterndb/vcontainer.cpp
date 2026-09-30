@@ -194,6 +194,12 @@ auto VContainer::GetGObject(quint32 id) const -> QSharedPointer<VGObject>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VContainer::HasObject(quint32 id) const -> bool
+{
+    return d->calculationObjects.contains(id) || d->modelingObjects->contains(id);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VContainer::FirstPointId(const QVector<quint32> &ids) const -> quint32
 {
     for (const quint32 &id : ids)

@@ -32,6 +32,8 @@
 #include "../core/vapplication.h"
 #include "../ifc/exception/vexceptionbadid.h"
 #include "../ifc/exception/vexceptionobjecterror.h"
+#include "../ifc/xml/vpatternblockmapper.h"
+#include "../ifc/xml/vpatterngraph.h"
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
@@ -486,6 +488,24 @@ void VPattern::ParseToolTransfert(VMainGraphicsScene *scene, QDomElement &domEle
 
         VAbstractOperation::ExtractData(domElement, initData);
 
+        // The portion is read from another piece, and a piece can be built BEFORE the one that receives it:
+        // nothing forbids it. The container of this moment is a prefix of the file and does not hold those
+        // objects yet. The transfer is kept aside and built at the end of the first pass, when every block has
+        // been read — throwing here would take the whole pattern down for a file that is merely in an order the
+        // code did not expect.
+        // Two reasons to wait: the objects are not in the container yet, or the graph has no vertex for them
+        // yet. The second one is quieter and just as wrong — AddEdge wants both ends and drops the edge in
+        // silence when one is missing, so the transfer would exist without its dependencies: no protection from
+        // a delete, and nothing in the Dependencies dock.
+        if (!TransfertInputsAreThere(data, initData) || !TransfertSourcesAreGraphVertices(initData))
+        {
+            m_deferredTransfers.append({.element = domElement,
+                                        .id = initData.id,
+                                        .parse = parse,
+                                        .blockIndex = PatternBlockMapper()->GetActiveId()});
+            return;
+        }
+
         OToolTransfert::Create(initData);
     }
     catch (const VExceptionBadId &e)
@@ -493,6 +513,70 @@ void VPattern::ParseToolTransfert(VMainGraphicsScene *scene, QDomElement &domEle
         VExceptionObjectError excep(tr("Error creating or updating the operation of transfer"), domElement);
         excep.AddMoreInformation(e.ErrorMessage());
         throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPattern::TransfertSourcesAreGraphVertices(const OToolTransfertInitData &initData) -> bool
+{
+    VPatternGraph *graph = PatternGraph();
+    if (graph == nullptr || !graph->IsGraphRebuildEnabled())
+    {
+        // A values-only reparse keeps the graph of the last full one: every vertex is already there.
+        return true;
+    }
+
+    if (!graph->HasVertex(initData.origin))
+    {
+        return false;
+    }
+
+    for (const SourceItem &item : initData.source)
+    {
+        if (!graph->HasVertex(item.id))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::ReplayDeferredTransfers()
+{
+    // The list is emptied first: a transfer that still cannot be built here has a genuinely dangling reference,
+    // and deferring it again would only postpone the answer to the next pass.
+    QVector<DeferredTransfert> pending;
+    pending.swap(m_deferredTransfers);
+    const QString active = PatternBlockMapper()->GetActive();
+
+    for (const DeferredTransfert &entry : pending)
+    {
+        // The record and the graph node both take the block of the tool from the mapper: the block the transfer
+        // belongs to has to be the active one while it is built — at the end of the pass, that is the last block
+        // of the file.
+        PatternBlockMapper()->SetActiveById(entry.blockIndex);
+
+        // The first time through, the tool does not exist yet, and only a FullParse instantiates it and its
+        // scene item. Afterwards, the parse of the run is what re-reads it. FindTool, not getTool: the question
+        // here is precisely whether it exists, and getTool answers it with a throw.
+        const Document replayParse = VAbstractPattern::FindTool(entry.id) == nullptr ? Document::FullParse
+                                                                                    : entry.parse;
+
+        QDomElement element = entry.element;
+        ParseToolTransfert(sceneDraw, element, replayParse);
+    }
+
+    PatternBlockMapper()->SetActive(active);
+
+    if (!m_deferredTransfers.isEmpty())
+    {
+        // Still not resolvable with every block read: the reference is genuinely dangling. Said out loud, and
+        // the operations are dropped rather than taking the file down.
+        qWarning() << VAbstractValApplication::warningMessageSignature
+                   << tr("A transfer refers to objects the pattern does not define, and was ignored.");
+        m_deferredTransfers.clear();
     }
 }
 

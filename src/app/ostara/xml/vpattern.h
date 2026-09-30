@@ -37,6 +37,7 @@ class VMainGraphicsScene;
 class VNodeDetail;
 struct VToolSinglePointInitData;
 struct VToolLinePointInitData;
+struct OToolTransfertInitData;
 class VToolSeamAllowance;
 class OInfoBlockData;
 class OAnnotationData;
@@ -133,6 +134,11 @@ public slots:
 
     void RefreshPieceGeometry();
 
+    /** @brief Re-read the whole file when a tool of another piece is built on what the active block holds.
+     *  Armed by the cheap per-move parse of a base-point drag, and only does anything when the dependency
+     *  graph finds such a tool. */
+    void RefreshCrossBlockDependents();
+
 protected:
     void customEvent(QEvent *event) override;
 
@@ -150,10 +156,31 @@ private:
     VMainGraphicsScene *sceneDetail;
     QList<vidtype> updatePieces{};
 
+    /** @brief A transfer whose inputs were not in the container yet when its block was read: the piece it
+     *  copies from is built LATER in the file. Built at the end of the first pass instead, when every block
+     *  has been read, and the block it belongs to is put back as the active one — the record and the graph
+     *  node both take their block from the mapper. */
+    struct DeferredTransfert
+    {
+        QDomElement element;
+        quint32 id{NULL_ID};
+        Document parse{Document::FullParse};
+        int blockIndex{-1};
+    };
+
+    /** @brief The transfers kept aside by ParseToolTransfert. Emptied at the start of every parse and
+     *  replayed at the end of its first pass. */
+    QVector<DeferredTransfert> m_deferredTransfers{};
+
     /** @brief Debounce timer that coalesces piece geometry refreshes after a burst of parses
      * (file open, interactive tool edits, measurement sync). A single restartable timer replaces
      * the previous per-parse QTimer::singleShot so rapid parses collapse into one refresh. */
     QTimer *m_refreshGeometryTimer;
+
+    /** @brief Debounce timer for the whole-file re-read a base-point drag owes the other pieces. The drag
+     * itself re-reads the active block only, on every mouse move; this one waits for the gesture to settle
+     * before catching the rest up, because that re-read costs ~180 ms on a five-piece pattern. */
+    QTimer *m_crossBlockParseTimer;
 
     bool m_pieceGeometryDirty{true};
 
@@ -273,6 +300,15 @@ private:
     void ParseToolMove(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolCloseDart(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolTransfert(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
+
+    /** @brief Builds the transfers kept aside by ParseToolTransfert, and reports the ones that still cannot
+     *  be built once every block has been read. */
+    void ReplayDeferredTransfers();
+
+    /** @brief Whether the graph already holds a vertex for every object a transfer reads. The graph is rebuilt
+     *  in file order on every parse but a values-only one, so a transfer whose sources are in a LATER block
+     *  would have its edges dropped in silence — AddEdge wants both ends. */
+    auto TransfertSourcesAreGraphVertices(const OToolTransfertInitData &initData) -> bool;
 
     auto EvalFormula(VContainer *data, const QString &formula, bool *ok) const -> qreal;
 

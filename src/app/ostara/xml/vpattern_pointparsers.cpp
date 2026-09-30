@@ -35,6 +35,7 @@
 #include "../vmisc/def.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../ifc/xml/vpatternblockmapper.h"
+#include "../ifc/xml/vpatterngraph.h"
 #include "../qmuparser/qmuparsererror.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
@@ -364,6 +365,11 @@ void VPattern::SyncLineNamesToDom()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ParseCurrentPP re-reads the active pattern block alone, against the living container. Cheap enough to
+ * run on every mouse move of a base-point drag, which is the whole point of it — and the reason the rest of the
+ * file is caught up later, see VPattern::RefreshCrossBlockDependents.
+ */
 void VPattern::ParseCurrentPP()
 {
     QDomElement const domElement = PatternBlockMapper()->GetActiveElement();
@@ -374,6 +380,37 @@ void VPattern::ParseCurrentPP()
 
     ParseDrawElement(domElement, Document::LiteParse);
     emit CheckLayout();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief RefreshCrossBlockDependents re-reads the whole file when a tool of another piece is built on what the
+ * active block holds.
+ *
+ * The cheap parse above covers the active block only, and a base-point drag runs it on every mouse move. A
+ * transfer copies a portion of another piece, a formula in a later piece can name a variable of this one: for
+ * those, the block that was just re-read is only half the story, and nothing said so — the copies simply stayed
+ * where they were. The whole file is re-read here, once, after the gesture has settled. Not the blocks the graph
+ * names: reading one of them needs every block before it in the file back in the container, and the walk is what
+ * puts it there.
+ */
+void VPattern::RefreshCrossBlockDependents()
+{
+    m_crossBlockParseTimer->stop();
+
+    const std::optional<QSet<int>> blocks = PatternGraph()->TryGetDependentBlocks(PatternBlockMapper()->GetActiveId());
+    const bool dependentsOutside = blocks.has_value() && !blocks->isEmpty();
+
+    // A transfer the cheap parse could not build is a reason of its own: its sources are in a piece read LATER,
+    // so nothing outside the active block depends on it and the graph alone would not ask for the whole file —
+    // while the block's own copies stay where they were. The deferred list says it happened.
+    if (!dependentsOutside && m_deferredTransfers.isEmpty())
+    {
+        // Nothing outside this block reads it: the cheap parse was the whole story.
+        return;
+    }
+
+    LiteParseTree(Document::LiteParse);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -344,15 +344,13 @@ void ODialogTransfert::ChosenObject(quint32 id, const SceneObject &type)
             }
 
             m_originId = id;
-            FillHostParts(m_doc->PatternBlockMapper()->GetActiveId());
+            FillHostParts();
 
             if (ui->comboBoxPiece->count() == 0)
             {
-                // Nothing to offer: a transfer reads its portion from a part that has already been read, so the
-                // host part can only be one built after this one. Say it now rather than open a dialog with an
-                // empty list the user cannot answer.
-                Refuse(tr("Create the part that will receive the portion first: a transfer goes to a part built "
-                          "after this one."));
+                // No part at all: there is nowhere to put the portion. Say it now rather than open a dialog with
+                // an empty list the user cannot answer.
+                Refuse(tr("This pattern has no part that could receive the portion."));
                 return;
             }
 
@@ -455,19 +453,21 @@ void ODialogTransfert::HostPartChanged(int index)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODialogTransfert::FillHostParts(int afterBlockId)
+void ODialogTransfert::FillHostParts()
 {
     ui->comboBoxPiece->clear();
 
-    // File order, not the mapper's: the part that receives the portion must be built after the one it comes
-    // from, or its own parse would read the operation before the objects it copies exist.
+    // Every part of the pattern, in file order. It used to be the parts built AFTER the source only, because
+    // the operation was read while its own block was parsed and the piece the portion comes from could not have
+    // been read yet. A transfer whose host comes first is now kept aside and built once the whole file has been
+    // read, so the order decides nothing any more — and file order is the one the parse follows.
     const QDomElement root = m_doc->documentElement();
     for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); not draw.isNull();
          draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
     {
         const QString part = VDomDocument::GetParametrString(draw, AttrName);
         const int id = m_doc->PatternBlockMapper()->FindId(part);
-        if (id != -1 && id > afterBlockId)
+        if (id != -1)
         {
             ui->comboBoxPiece->addItem(part, id);
         }
