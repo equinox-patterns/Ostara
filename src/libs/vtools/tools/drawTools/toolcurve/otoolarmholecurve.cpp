@@ -64,10 +64,10 @@ OToolArmholeCurve::OToolArmholeCurve(const OToolArmholeCurveInitData &initData, 
 //---------------------------------------------------------------------------------------------------------------------
 auto OToolArmholeCurve::Create(OToolArmholeCurveInitData initData) -> OToolArmholeCurve *
 {
-    // A container that already knows the id updates that object in place and does NOT adopt the pointer it is
-    // handed: a reparse would free initData.path here and every read below would hit freed memory. Holding a
-    // share keeps the curve alive whichever branch runs, and the container shares it instead of copying it.
-    const QSharedPointer<VCubicBezierPath> curve(initData.path);
+    // The container updates the object it already holds when the id is known, and does not adopt what it is
+    // given: the share the init data carries keeps the curve alive on that branch too, so nothing read below
+    // can hit freed memory.
+    const QSharedPointer<VCubicBezierPath> curve = initData.path;
 
     const bool curveUnique = initData.data->IsUnique(curve->name());
 

@@ -60,6 +60,36 @@ auto TransfertProperties() -> std::vector<PropertyDesc>;
 auto FlippingByLineProperties() -> std::vector<PropertyDesc>;
 auto FlippingByAxisProperties() -> std::vector<PropertyDesc>;
 
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The "Notes:" descriptor every tool of this file ends its list with.
+ *
+ *  The three callbacks only differ by the concrete tool type, which is the one thing the caller knows. */
+template <class Tool> auto NotesProperty() -> PropertyDesc
+{
+    return {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
+            [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<Tool *>(tool);
+                auto *prop = new VPE::VTextProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")));
+                prop->setValue(t->GetNotes());
+                return prop;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                    if (text != t->GetNotes())
+                        t->SetNotes(text);
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                    prop->setValue(t->GetNotes());
+            }};
+}
+
 // --- VToolRotation ---
 auto RotationProperties() -> std::vector<PropertyDesc>
 {
@@ -160,28 +190,7 @@ auto RotationProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
-        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
-         {
-             auto *t = static_cast<VToolRotation *>(tool);
-             auto *prop = new VPE::VTextProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")));
-             prop->setValue(t->GetNotes());
-             return prop;
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-         {
-             if (auto *t = qgraphicsitem_cast<VToolRotation *>(b->currentItem()))
-             {
-                 QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                 if (text != t->GetNotes())
-                     t->SetNotes(text);
-             }
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-         {
-             if (auto *t = qgraphicsitem_cast<VToolRotation *>(b->currentItem()))
-                 prop->setValue(t->GetNotes());
-         }},
+        NotesProperty<VToolRotation>(),
     };
 }
 
@@ -241,28 +250,7 @@ auto CloseDartProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
-        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
-         {
-             auto *t = static_cast<OToolCloseDart *>(tool);
-             auto *prop = new VPE::VTextProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")));
-             prop->setValue(t->GetNotes());
-             return prop;
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-         {
-             if (auto *t = qgraphicsitem_cast<OToolCloseDart *>(b->currentItem()))
-             {
-                 QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                 if (text != t->GetNotes())
-                     t->SetNotes(text);
-             }
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-         {
-             if (auto *t = qgraphicsitem_cast<OToolCloseDart *>(b->currentItem()))
-                 prop->setValue(t->GetNotes());
-         }},
+        NotesProperty<OToolCloseDart>(),
     };
 }
 
@@ -371,28 +359,7 @@ auto MoveProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
-        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
-         {
-             auto *t = static_cast<VToolMove *>(tool);
-             auto *prop = new VPE::VTextProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")));
-             prop->setValue(t->GetNotes());
-             return prop;
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-         {
-             if (auto *t = qgraphicsitem_cast<VToolMove *>(b->currentItem()))
-             {
-                 QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                 if (text != t->GetNotes())
-                     t->SetNotes(text);
-             }
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-         {
-             if (auto *t = qgraphicsitem_cast<VToolMove *>(b->currentItem()))
-                 prop->setValue(t->GetNotes());
-         }},
+        NotesProperty<VToolMove>(),
     };
 }
 
@@ -433,28 +400,7 @@ auto FlippingByLineProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
-        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
-         {
-             auto *t = static_cast<VToolFlippingByLine *>(tool);
-             auto *prop = new VPE::VTextProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")));
-             prop->setValue(t->GetNotes());
-             return prop;
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-         {
-             if (auto *t = qgraphicsitem_cast<VToolFlippingByLine *>(b->currentItem()))
-             {
-                 QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                 if (text != t->GetNotes())
-                     t->SetNotes(text);
-             }
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-         {
-             if (auto *t = qgraphicsitem_cast<VToolFlippingByLine *>(b->currentItem()))
-                 prop->setValue(t->GetNotes());
-         }},
+        NotesProperty<VToolFlippingByLine>(),
     };
 }
 
@@ -517,28 +463,7 @@ auto FlippingByAxisProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
-        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
-         {
-             auto *t = static_cast<VToolFlippingByAxis *>(tool);
-             auto *prop = new VPE::VTextProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")));
-             prop->setValue(t->GetNotes());
-             return prop;
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-         {
-             if (auto *t = qgraphicsitem_cast<VToolFlippingByAxis *>(b->currentItem()))
-             {
-                 QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                 if (text != t->GetNotes())
-                     t->SetNotes(text);
-             }
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-         {
-             if (auto *t = qgraphicsitem_cast<VToolFlippingByAxis *>(b->currentItem()))
-                 prop->setValue(t->GetNotes());
-         }},
+        NotesProperty<VToolFlippingByAxis>(),
     };
 }
 
@@ -548,27 +473,6 @@ auto TransfertProperties() -> std::vector<PropertyDesc>
     // Notes, and nothing else: the two merge points are read in the pattern, and neither the portion nor the
     // layer it landed in is edited after the tool is created.
     return {
-        {AttrNotes, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")),
-         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
-         {
-             auto *t = static_cast<OToolTransfert *>(tool);
-             auto *prop = new VPE::VTextProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:")));
-             prop->setValue(t->GetNotes());
-             return prop;
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-         {
-             if (auto *t = qgraphicsitem_cast<OToolTransfert *>(b->currentItem()))
-             {
-                 QString const text = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
-                 if (text != t->GetNotes())
-                     t->SetNotes(text);
-             }
-         },
-         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
-         {
-             if (auto *t = qgraphicsitem_cast<OToolTransfert *>(b->currentItem()))
-                 prop->setValue(t->GetNotes());
-         }},
+        NotesProperty<OToolTransfert>(),
     };
 }

@@ -39,6 +39,7 @@
 
 #include "../../toolsdef.h"
 #include "../vdrawtool.h"
+#include "../vmisc/vabstractapplication.h"
 #include "../vwidgets/vsimplecurve.h"
 #include "ooperationlines.h"
 
@@ -176,6 +177,19 @@ protected:
     void InitCurve(quint32 id, VContainer *data, GOType curveType, SceneObject sceneType);
 
     template <typename T> static void InitOperationToolConnections(VMainGraphicsScene *scene, T *tool);
+
+    /** @brief The tail every operation shares: record the tool, build it, put it in the scene, register it — and
+     *  create its visibility group in the same undo macro as its creation when the dialog asked for one.
+     *
+     *  Extracted because six operations had copied the same dozen lines, order included, and the order is the
+     *  part that matters: the macro is opened before the tool is built, since building it is what pushes the
+     *  command the gesture has to undo; and the group is created after the tool is registered, so undoing the
+     *  macro takes both away. @a makeTool builds the tool — the constructors are private, so only the operation
+     *  itself can — and is called at the one moment that matters, inside the macro. A transfer has its own tail
+     *  — what it does inside the macro runs before the record is written — and says so where it stands. */
+    template <class ToolClass, class InitData, class Factory>
+    static auto AddToolToScene(InitData &initData, Tool toolType, const QString &macroName, Factory makeTool)
+        -> ToolClass *;
 
     void InitOperatedObjects();
 
@@ -330,6 +344,34 @@ template <class Dialog>
 void VAbstractOperation::ApplyDialogOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement)
 {
     ProcessOperationToolOptions(oldDomElement, newDomElement, DialogOf<Dialog>()->GetSourceObjects());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <class ToolClass, class InitData, class Factory>
+auto VAbstractOperation::AddToolToScene(InitData &initData, Tool toolType, const QString &macroName, Factory makeTool)
+    -> ToolClass *
+{
+    const bool linkedGroup = initData.typeCreation == Source::FromGui && initData.hasLinkedVisibilityGroup;
+
+    if (linkedGroup)
+    {
+        VAbstractApplication::VApp()->getUndoStack()->beginMacro(macroName);
+    }
+
+    VAbstractTool::AddRecord(initData.id, toolType, initData.doc);
+
+    auto *tool = makeTool();
+    initData.scene->addItem(tool);
+    InitOperationToolConnections(initData.scene, tool);
+    VAbstractPattern::AddTool(initData.id, tool);
+
+    if (linkedGroup)
+    {
+        CreateVisibilityGroup(initData);
+        VAbstractApplication::VApp()->getUndoStack()->endMacro();
+    }
+
+    return tool;
 }
 
 #endif // VABSTRACTOPERATION_H

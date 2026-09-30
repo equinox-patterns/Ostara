@@ -169,8 +169,8 @@ public:
     void UpdateId(quint32 newId) const;
     static void UpdateId(quint32 newId, const QString &nspace);
 
-    void RegisterUniqueName(VGObject *obj) const;
     void RegisterUniqueName(const QSharedPointer<VGObject> &obj) const;
+    void RegisterUniqueName(const QString &name, const QString &alias) const;
 
     auto AddGObject(VGObject *obj) -> quint32;
     auto AddGObject(const QSharedPointer<VGObject> &obj) -> quint32;
@@ -209,6 +209,13 @@ public:
      * use-after-free that crashed every tool edit until ten call sites were fixed. Making the caller declare
      * the QSharedPointer is what lets the compiler refuse that shape. */
     template <class T> void UpdateGObject(quint32 id, const QSharedPointer<T> &obj);
+
+    /** @brief Update an object of the container from the value itself.
+     *
+     * Same as the overload above for the callers that hold a value and not a handle: nothing has to be allocated
+     * just to hand an object over. The container copies what it is given and writes only its own copy. */
+    template <class T> void UpdateGObject(quint32 id, const T &value);
+
     void UpdatePiece(quint32 id, const VPiece &detail);
     void UpdatePieceGroup(quint32 id, const OPieceGroup &group);
     void UpdatePiecePath(quint32 id, const VPiecePath &path);
@@ -216,7 +223,6 @@ public:
     void Clear();
     void ClearForFullParse();
     void ClearGObjects();
-    void ClearCalculationGObjects();
     void ClearVariables(const VarType &type = VarType::Unknown);
     void ClearVariables(const QVector<VarType> &types);
 
@@ -300,7 +306,14 @@ private:
     static QMap<QString, QSet<QString>> uniqueNames;
     static QMap<QString, quint32> copyCounter;
 
-    /** @brief See SetDeferredFormulaMode: state of the parse in progress, shared by every container. */
+    /** @brief See SetDeferredFormulaMode: state of the parse in progress, shared by every container.
+     *
+     *  Static on purpose: the live container and every copy made while a pattern is read have to see the same
+     *  state — a tool defers while it is built, and VPattern::Parse reads the count to decide whether a second
+     *  pass is needed. It is therefore shared by all containers and all snapshots, and it is written and read
+     *  only during a parse: VPattern::Parse brackets every pass with SetParseInProgress, and the only caller of
+     *  DeferFormula (VAbstractTool::CheckFormula) is guarded by it. A parse that ever ran on two threads at once
+     *  would need this carried explicitly through the parse instead of living here; nothing does today. */
     static bool deferredFormulaMode;
     static int deferredFormulas;
     static QSet<QString> deferredFormulaNames;
@@ -319,6 +332,10 @@ private:
 #endif
 
     template <typename T> void UpdateObject(const quint32 &id, const QSharedPointer<T> &point);
+    template <typename T> void UpdateObject(const quint32 &id, const T &value);
+
+    /** @brief The table of this container that holds the objects of @a mode, or nullptr for Layout. */
+    auto ObjectsFor(Draw mode) -> QHash<quint32, QSharedPointer<VGObject>> *;
 
     template <typename T> auto DataVar(const VarType &type) const -> QMap<QString, QSharedPointer<T>>;
 
@@ -517,46 +534,109 @@ template <class T> void VContainer::UpdateGObject(quint32 id, const QSharedPoint
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief UpdateObject update object in container
+ * @brief UpdateGObject update GObject by id, from the value itself
+ * @param id id of existing GObject
+ * @param value object; the container copies it, and the caller keeps it
+ */
+template <class T> void VContainer::UpdateGObject(quint32 id, const T &value)
+{
+    UpdateObject(id, value);
+    RegisterUniqueName(value.name(), value.GetAlias());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief UpdateObject update an object the container holds, from a handle the caller keeps
+ *
+ * When the id is already known the value is copied into the object the container holds, and its key is stamped
+ * back on that copy: the object handed in is only read, and never comes back modified. Only when the container
+ * has nothing under that id does it adopt what it is given — and then it is the one stored, so it is the one
+ * that has to carry its id.
+ *
  * @param id id of existing object
  * @param point object
  */
 template <typename T> void VContainer::UpdateObject(const quint32 &id, const QSharedPointer<T> &point)
 {
-    Q_ASSERT_X(id != NULL_ID, Q_FUNC_INFO, "id == 0"); //-V654 //-V712
-    SCASSERT(point.isNull() == false)
-    point->setId(id);
+    if (id == NULL_ID)
+    {
+        // An object keyed 0 would be a ghost the container hands back through GeometricObject(0). Refused where
+        // the id is known to be wrong, instead of inserted and found later.
+        qWarning("Can't update an object whose id is 0.");
+        return;
+    }
 
-    if (d->calculationObjects.contains(id) && point->getMode() == Draw::Calculation)
-    {
-        QSharedPointer<T> obj = qSharedPointerDynamicCast<T>(d->calculationObjects.value(id));
-        if (obj.isNull())
-        {
-            throw VExceptionBadId(tr("Can't cast object"), id);
-        }
-        *obj = *point;
-    }
-    else if (d->modelingObjects->contains(id) && point->getMode() == Draw::Modeling)
-    {
-        QSharedPointer<T> obj = qSharedPointerDynamicCast<T>(d->modelingObjects->value(id));
-        if (obj.isNull())
-        {
-            throw VExceptionBadId(tr("Can't cast object"), id);
-        }
-        *obj = *point;
-    }
-    else if (point->getMode() == Draw::Calculation)
-    {
-        d->calculationObjects.insert(id, point);
-    }
-    else if (point->getMode() == Draw::Modeling)
-    {
-        d->modelingObjects->insert(id, point);
-    }
-    else
+    QHash<quint32, QSharedPointer<VGObject>> *objects = ObjectsFor(point->getMode());
+    if (objects == nullptr)
     {
         qWarning("Can't update an object with mode 'Layout'");
         return;
+    }
+
+    if (objects->contains(id))
+    {
+        QSharedPointer<T> obj = qSharedPointerDynamicCast<T>(objects->value(id));
+        if (obj.isNull())
+        {
+            throw VExceptionBadId(tr("Can't cast object"), id);
+        }
+        *obj = *point;
+        obj->setId(id);
+    }
+    else
+    {
+        point->setId(id);
+        objects->insert(id, point);
+    }
+
+    UpdateId(id);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief UpdateObject update an object the container holds, from the value itself
+ *
+ * Same as the overload above for the callers that hold a value and not a handle. Nothing of the caller's is
+ * modified, and nothing of the container's is shared with it: an object that came back changed, or that both
+ * sides owned, is the trap that already cost a use-after-free here.
+ *
+ * @param id id of existing object
+ * @param value object
+ */
+template <typename T> void VContainer::UpdateObject(const quint32 &id, const T &value)
+{
+    if (id == NULL_ID)
+    {
+        // Same refusal as the overload above, and the same reason: a Debug build must not abort where the
+        // pointer version warns, or the two halves of one hardening would answer differently.
+        qWarning("Can't update an object whose id is 0.");
+        return;
+    }
+
+    QHash<quint32, QSharedPointer<VGObject>> *objects = ObjectsFor(value.getMode());
+    if (objects == nullptr)
+    {
+        qWarning("Can't update an object with mode 'Layout'");
+        return;
+    }
+
+    if (objects->contains(id))
+    {
+        QSharedPointer<T> obj = qSharedPointerDynamicCast<T>(objects->value(id));
+        if (obj.isNull())
+        {
+            throw VExceptionBadId(tr("Can't cast object"), id);
+        }
+        *obj = value;
+        obj->setId(id);
+    }
+    else
+    {
+        // The value may well be a local or a member of the caller's: the container takes its own copy rather
+        // than a pointer to it.
+        const QSharedPointer<T> stored = QSharedPointer<T>::create(value);
+        stored->setId(id);
+        objects->insert(id, stored);
     }
 
     UpdateId(id);

@@ -2302,10 +2302,10 @@
      <normaloff>:/toolicon/light/move.png</normaloff>:/toolicon/light/move.png</iconset>
    </property>
    <property name="text">
-    <string>Transfert</string>
+    <string>Transfer</string>
    </property>
    <property name="toolTip">
-    <string>Transfert: graft a portion of one part onto another</string>
+    <string>Transfer: graft a portion of one part onto another</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

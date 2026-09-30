@@ -321,7 +321,13 @@ void VToolLine::SetLineRoleName(const QString &suffix)
  */
 void VToolLine::FullUpdateFromFile()
 {
-    ReadAttributes();
+    if (!m_derived)
+    {
+        // A derived line belongs to the operation that created it and has no element of its own — see
+        // ToolCreation: looking for one would find nothing and say so on every refresh, which is the normal
+        // state of a transformed line, not a surprise.
+        ReadAttributes();
+    }
     RefreshGeometry();
     SetVisualization();
 }

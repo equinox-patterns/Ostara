@@ -32,6 +32,7 @@
 #include <QGraphicsItem>
 #include <QMetaObject>
 #include <QObject>
+#include <QSharedPointer>
 #include <QString>
 #include <QtGlobal>
 
@@ -56,7 +57,7 @@ struct ArmholeHandles
 
 struct OToolArmholeCurveInitData : VDrawToolInitData
 {
-    VCubicBezierPath *path{nullptr}; // NOLINT(misc-non-private-member-variables-in-classes)
+    QSharedPointer<VCubicBezierPath> path{}; // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
 QT_WARNING_POP

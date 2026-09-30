@@ -1626,15 +1626,12 @@ void UpdateUnitedDetailPlaceLabels(const VToolUnionDetailsInitData &initData, qr
             BiasRotatePoint(parentLabel.data(), dx, dy,
                             static_cast<QPointF>(*initData.data->GeometricObject<VPointF>(pRotate)), angle);
         }
-        auto label = std::make_unique<VPlaceLabelItem>();
-        label->setName(parentLabel->name());
-        label->setX(parentLabel->x());
-        label->setY(parentLabel->y());
-        label->setMx(parentLabel->mx());
-        label->setMy(parentLabel->my());
-
-        label->SetCorrectionAngle(parentLabel->GetCorrectionAngle() + angle);
-        initData.data->UpdateGObject(TakeNextId(children), QSharedPointer<VPlaceLabelItem>(label.release()));
+        // The label is copied whole — formulas, visibility trigger and type included. Building the new one field
+        // by field silently dropped everything the copy did not name, so a united detail could lose the size and
+        // the visibility rule of the label it came from.
+        auto label = std::make_unique<VPlaceLabelItem>(*parentLabel);
+        label->SetCorrectionAngle(label->GetCorrectionAngle() + angle);
+        initData.data->UpdateGObject(TakeNextId(children), *label);
     }
 }
 

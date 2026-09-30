@@ -33,6 +33,7 @@
 #include "../ifc/exception/vexceptionbadid.h"
 #include "../ifc/exception/vexceptionobjecterror.h"
 #include "../vmisc/def.h"
+#include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../qmuparser/qmuparsererror.h"
 #include "../vgeometry/varc.h"
@@ -468,6 +469,16 @@ void VPattern::ParseToolTransfert(VMainGraphicsScene *scene, QDomElement &domEle
         // from it at every parse.
         initData.origin = GetParametrUInt(domElement, AttrOrigin, NULL_ID_STR);
         initData.target = GetParametrUInt(domElement, AttrTarget, NULL_ID_STR);
+
+        // Both merge points are what this operation is made of. Without one of them it cannot be built, and
+        // reading it throws — which would take the whole pattern down with it. Skipped and said out loud, the
+        // rest of the file still opens.
+        if (initData.origin == NULL_ID || initData.target == NULL_ID)
+        {
+            qWarning() << VAbstractValApplication::warningMessageSignature
+                       << tr("A transfer without both of its merge points was ignored.");
+            return;
+        }
 
         // We no longer need to handle suffix attribute here. The code can be removed.
         Q_STATIC_ASSERT(VPatternConverter::PatternMinVer < FormatVersion(1, 1, 1));

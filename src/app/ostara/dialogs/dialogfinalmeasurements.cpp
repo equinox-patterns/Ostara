@@ -62,6 +62,9 @@ DialogFinalMeasurements::DialogFinalMeasurements(VPattern *doc, QWidget *parent)
 
     InitIcons();
 
+    // Own table first: the areas add a variable per piece, and the early returns of GetCompleteData hand back a
+    // copy of the live container — whose table would be written to otherwise.
+    m_data.DetachVariables();
     m_data.FillPiecesAreas(VAbstractValApplication::VApp()->patternUnits());
 
 
@@ -491,6 +494,9 @@ void DialogFinalMeasurements::Fx()
 void DialogFinalMeasurements::FullUpdateFromFile()
 {
     m_data = m_doc->GetCompleteData();
+    // Own table first: FillPiecesAreas adds a variable per piece, and those belong to this dialog's working
+    // copy — not to the live pattern, whose table this copy shares.
+    m_data.DetachVariables();
     m_data.FillPiecesAreas(VAbstractValApplication::VApp()->patternUnits());
     m_measurements = m_doc->GetFinalMeasurements();
 

@@ -74,7 +74,7 @@ void SavePlaceLabelOptions::undo()
     Doc()->FindFormulaDependencies(m_oldLabel.GetAngleFormula(), ElementId(), varData);
     Doc()->FindFormulaDependencies(m_oldLabel.GetVisibilityTrigger(), ElementId(), varData);
 
-    labelTool->getData()->UpdateGObject(ElementId(), QSharedPointer<VPlaceLabelItem>::create(m_oldLabel));
+    labelTool->getData()->UpdateGObject(ElementId(), m_oldLabel);
 
     if (m_pieceId != NULL_ID)
     {
@@ -113,7 +113,7 @@ void SavePlaceLabelOptions::redo()
     Doc()->FindFormulaDependencies(m_newLabel.GetAngleFormula(), ElementId(), varData);
     Doc()->FindFormulaDependencies(m_newLabel.GetVisibilityTrigger(), ElementId(), varData);
 
-    labelTool->getData()->UpdateGObject(ElementId(), QSharedPointer<VPlaceLabelItem>::create(m_newLabel));
+    labelTool->getData()->UpdateGObject(ElementId(), m_newLabel);
 
     if (m_pieceId != NULL_ID)
     {

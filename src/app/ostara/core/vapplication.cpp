@@ -199,11 +199,16 @@ inline void LogMessageDetails(QtMsgType type, const QMessageLogContext &context,
  * used to schedule its own box, opened from inside the first. The nesting has no end: the process dies at 255
  * levels with "Too many nested CFRunLoopRuns". Messages logged while a box is planned or on screen are counted
  * and reported with that box instead. */
+// Both are touched from the GUI thread only: a message logged from another thread is dispatched to the GUI
+// thread just above, and returns there. They need no protection for that reason.
 static bool noisyBoxPending = false;
 static int noisyBoxSuppressed = 0;
 
 //---------------------------------------------------------------------------------------------------------------------
-inline void ShowNoisyMessageBox(QtMsgType type, const QString &logMsg, bool isPatternMessage)
+/// @return true when the box was really shown. Nothing is displayed while a file dialog is up, or for a warning
+///         about the pattern itself, and the caller has to know: the messages counted behind this one are then
+///         still unreported.
+inline auto ShowNoisyMessageBox(QtMsgType type, const QString &logMsg, bool isPatternMessage) -> bool
 {
     // fixme: trying to make sure there are no save/load dialogs are opened, because error message
     //  during them will lead to crash
@@ -247,7 +252,10 @@ inline void ShowNoisyMessageBox(QtMsgType type, const QString &logMsg, bool isPa
 #ifndef QT_NO_CURSOR
         QGuiApplication::restoreOverrideCursor();
 #endif
+        return true;
     }
+
+    return false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -397,15 +405,22 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
                 auto ShowMessageBox = [type, logMsg, isPatternMessage]()
                 {
                     const int extra = noisyBoxSuppressed;
-                    noisyBoxSuppressed = 0;
-                    ShowNoisyMessageBox(type,
-                                        extra > 0 ? QCoreApplication::translate("vNoisyHandler",
-                                                                               "%1\n\n(%2 further messages "
-                                                                               "were logged.)")
-                                                        .arg(logMsg)
-                                                        .arg(extra)
-                                                  : logMsg,
-                                        isPatternMessage);
+                    const bool shown
+                        = ShowNoisyMessageBox(type,
+                                              extra > 0 ? QCoreApplication::translate("vNoisyHandler",
+                                                                                      "%1\n\n(%2 further messages "
+                                                                                      "were logged.)")
+                                                              .arg(logMsg)
+                                                              .arg(extra)
+                                                        : logMsg,
+                                              isPatternMessage);
+                    // Only what this box has just reported is spent. A message logged while it was on screen —
+                    // or while a file dialog is up, when nothing is shown at all — is still unreported, and the
+                    // next box has to count it.
+                    if (shown)
+                    {
+                        noisyBoxSuppressed -= extra;
+                    }
                     // Cleared once the box is closed, not before: a message logged while it is on screen
                     // belongs to this burst, not to a new box nested inside it.
                     noisyBoxPending = false;

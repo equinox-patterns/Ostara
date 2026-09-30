@@ -170,24 +170,9 @@ auto VToolFlippingByLine::Create(VToolFlippingByLineInitData initData) -> VToolF
 
     if (initData.parse == Document::FullParse)
     {
-        if (initData.typeCreation == Source::FromGui && initData.hasLinkedVisibilityGroup)
-        {
-            VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("flipping by line"));
-        }
-
-        VAbstractTool::AddRecord(initData.id, Tool::FlippingByLine, initData.doc);
-        auto *tool = new VToolFlippingByLine(initData);
-        initData.scene->addItem(tool);
-        InitOperationToolConnections(initData.scene, tool);
-        VAbstractPattern::AddTool(initData.id, tool);
-
-        if (initData.typeCreation == Source::FromGui && initData.hasLinkedVisibilityGroup)
-        {
-            VAbstractOperation::CreateVisibilityGroup(initData);
-            VAbstractApplication::VApp()->getUndoStack()->endMacro();
-        }
-
-        return tool;
+        return AddToolToScene<VToolFlippingByLine>(
+            initData, Tool::FlippingByLine, tr("flipping by line"),
+            [&initData]() { return new VToolFlippingByLine(initData); });
     }
     return nullptr;
 }

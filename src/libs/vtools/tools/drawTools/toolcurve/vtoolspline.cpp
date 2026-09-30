@@ -157,7 +157,7 @@ auto VToolSpline::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene 
     initData.point1 = spline.GetP1().id();
     initData.point4 = spline.GetP4().id();
 
-    auto *spl = Create(initData, new VSpline(spline));
+    auto *spl = Create(initData, QSharedPointer<VSpline>::create(spline));
 
     if (spl != nullptr)
     {
@@ -173,13 +173,13 @@ auto VToolSpline::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene 
  * @param spline spline.
  * @return the created tool
  */
-auto VToolSpline::Create(VToolSplineInitData &initData, VSpline *spline) -> VToolSpline *
+auto VToolSpline::Create(VToolSplineInitData &initData, const QSharedPointer<VSpline> &spline) -> VToolSpline *
 {
-    SCASSERT(spline != nullptr)
-    // The curve is handed over to the container, which updates the object it already holds when the id is known
-    // instead of adopting what it is given: held here from the first line, it stays alive for the name and for
-    // everything read below.
-    const QSharedPointer<VSpline> curve(spline);
+    SCASSERT(not spline.isNull())
+    // The container updates the object it already holds when the id is known, and does not adopt what it is
+    // given. The caller's share — the one handed in here — is what keeps the curve alive on that branch, so the
+    // signature says it: pass a QSharedPointer, never a bare new.
+    const QSharedPointer<VSpline> curve = spline;
     const bool curveUnique = initData.data->IsUnique(curve->name());
     const QString curveName = curve->name();
 
@@ -249,8 +249,8 @@ auto VToolSpline::Create(VToolSplineInitData &initData) -> VToolSpline *
     auto p1 = initData.data->GeometricObject<VPointF>(initData.point1);
     auto p4 = initData.data->GeometricObject<VPointF>(initData.point4);
 
-    auto *spline = new VSpline(*p1, *p4, calcAngle1, initData.a1, calcAngle2, initData.a2, calcLength1, initData.l1,
-                               calcLength2, initData.l2);
+    auto spline = QSharedPointer<VSpline>::create(*p1, *p4, calcAngle1, initData.a1, calcAngle2, initData.a2,
+                                                  calcLength1, initData.l1, calcLength2, initData.l2);
     if (initData.duplicate > 0)
     {
         spline->SetDuplicate(initData.duplicate);

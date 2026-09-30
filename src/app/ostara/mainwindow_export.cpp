@@ -665,19 +665,6 @@ void MainWindow::ProcessCMD()
             }
         }
 
-        if (cmd->IsTestModeEnabled() && doc != nullptr)
-        {
-            // TEMPORARY verification bench (to remove before delivery): an edit in the GUI re-parses the
-            // pattern while the objects are still in the container - the path where UpdateGObject updates an
-            // object in place instead of adopting it. Exercising it here catches the use-after-free it hides
-            // without going through the GUI.
-            qDebug() << "TEST-LITEPARSE-START";
-            doc->LiteParseTree(Document::LiteParse);
-            qDebug() << "TEST-FULLLITE-START";
-            doc->LiteParseTree(Document::FullLiteParse);
-            qDebug() << "TEST-LITEPARSE-END";
-        }
-
         QCoreApplication::exit(V_EX_OK); // close program after processing in console mode
     }
 }

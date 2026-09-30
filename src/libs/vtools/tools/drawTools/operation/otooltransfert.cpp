@@ -62,14 +62,17 @@
 
 class QGraphicsSceneContextMenuEvent;
 
-const QString OToolTransfert::ToolType = QStringLiteral("transfert");
+const QString OToolTransfert::ToolType = QStringLiteral("transfer");
 
 namespace
 {
 //---------------------------------------------------------------------------------------------------------------------
-auto MakeDestination(const QPointF &origin, const QPointF &target) -> OOperationDestination<OTransfertTransform>
+auto MakeDestination(const QPointF &origin, const QPointF &target, quint32 originId)
+    -> OOperationDestination<OTransfertTransform>
 {
-    return OOperationDestination<OTransfertTransform>(OTransfertTransform(origin, target));
+    // X is referenced, not copied: the portion is anchored on it, and its image is A. Said once here, so that
+    // Create, Update and SyncDestination all answer the question the same way.
+    return OOperationDestination<OTransfertTransform>(OTransfertTransform(origin, target), {originId});
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -96,17 +99,16 @@ void CreateDestination(OToolTransfertInitData &initData)
     const QSharedPointer<VPointF> origin = initData.data->GeometricObject<VPointF>(initData.origin);
     const QSharedPointer<VPointF> target = initData.data->GeometricObject<VPointF>(initData.target);
 
-    const QVector<quint32> referenced{initData.origin};
     const OOperationDestination<OTransfertTransform> destination
-        = MakeDestination(static_cast<QPointF>(*origin), static_cast<QPointF>(*target));
+        = MakeDestination(static_cast<QPointF>(*origin), static_cast<QPointF>(*target), initData.origin);
 
     if (initData.typeCreation == Source::FromGui)
     {
-        destination.Create(initData.id, initData.source, initData.data, initData.destination, referenced);
+        destination.Create(initData.id, initData.source, initData.data, initData.destination);
     }
     else
     {
-        destination.Update(initData.id, initData.source, initData.data, initData.destination, referenced);
+        destination.Update(initData.id, initData.source, initData.data, initData.destination);
     }
 }
 
@@ -127,11 +129,20 @@ void PrepareHostLayer(OToolTransfertInitData &initData)
     VAbstractPattern *doc = initData.doc;
     quint32 groupId = initData.layer;
 
+    // Read before the group below exists, and before any activation: making a layer active is a command like
+    // the others, so Ctrl+Z hands the part back the layer it had. Without this the layer created here would
+    // leave with its own active flag, and the one that was active would never get its flag back.
+    const quint32 previous = doc->GetActiveGroup(doc->PatternBlockMapper()->GetActive());
+
     if (groupId == NULL_ID)
     {
         groupId = initData.data->getNextId();
+        // Created without linking it to this tool: a layer of the host part belongs to that part, not to the
+        // transfer that happens to have filled it. Linked, it would be deleted with the operation and — worse —
+        // detached from its objects at every validation of the dialog, since the dialog never has a visibility
+        // group to show for it.
         const QDomElement group
-            = doc->CreateGroup(groupId, initData.layerName, {}, {}, initData.id);
+            = doc->CreateGroup(groupId, initData.layerName, {}, {}, null_id);
         if (group.isNull())
         {
             return;
@@ -142,7 +153,9 @@ void PrepareHostLayer(OToolTransfertInitData &initData)
         VAbstractApplication::VApp()->getUndoStack()->push(addGroup);
     }
 
-    doc->SetActiveGroup(groupId, doc->PatternBlockMapper()->GetActive());
+    // Pushed after the layer above, so that activating it finds it in the document, and in the same macro as
+    // the operation: one Ctrl+Z takes the copies, the layer and the activation back together.
+    VAbstractApplication::VApp()->getUndoStack()->push(new ChangeActiveGroup(doc, groupId, previous));
 }
 } // namespace
 
@@ -441,14 +454,14 @@ auto OToolTransfert::SyncDestination(const QVector<SourceItem> &source) -> QVect
     const QSharedPointer<VPointF> origin = getData()->GeometricObject<VPointF>(m_origPointId);
     const QSharedPointer<VPointF> target = getData()->GeometricObject<VPointF>(m_targetPointId);
     const OOperationDestination<OTransfertTransform> destination
-        = MakeDestination(static_cast<QPointF>(*origin), static_cast<QPointF>(*target));
+        = MakeDestination(static_cast<QPointF>(*origin), static_cast<QPointF>(*target), m_origPointId);
 
     QVector<DestinationItem> newDestination;
     newDestination.reserve(source.size());
 
     for (const auto &srcItem : std::as_const(source))
     {
-        if (srcItem.id == m_origPointId)
+        if (destination.IsReferenced(srcItem.id))
         {
             // The merge point is referenced, not copied: it keeps its place with no object of its own.
             newDestination.append({.recordId = srcItem.recordId});

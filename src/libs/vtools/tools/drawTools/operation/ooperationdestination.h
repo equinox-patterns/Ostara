@@ -4,11 +4,11 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   26/09/2026
  **
- **  @brief  Images of the source objects of an operation. Four tools (rotation, move and the two
- **          flippings) used to carry the same factory: the same switch over GOType, the same five
- **          helpers per shape, the same loops. Only the transformation differed — one line per tool.
- **          The factory is written once here and takes that transformation as a parameter, so adding
- **          an operation is a new transform class, not a fifth copy of this file.
+ **  @brief  Images of the source objects of an operation. The operation tools — the two flippings, move,
+ **          rotation, close dart and the transfer — used to carry the same factory: the same switch over
+ **          GOType, the same five helpers per shape, the same loops. Only the transformation differed:
+ **          one line per tool. The factory is written once here and takes that transformation as a
+ **          parameter, so adding an operation is a new transform class, not one more copy of this file.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -61,27 +61,35 @@
  * which points, arcs, splines and the three curve-with-segments types all answer to, since they all
  * declare Rotate, Move and Flip with the same signature. One method therefore serves every shape.
  *
- * No state: the operation keeps its own destination list, as before.
+ * Almost no state: the operation still keeps its own destination list, and this class only remembers which
+ * sources are referenced rather than copied — the ids a transfer anchors its portion on.
  */
 template <class Transform> class OOperationDestination
 {
 public:
-    explicit OOperationDestination(Transform transform) : m_transform(std::move(transform)) {}
+    explicit OOperationDestination(Transform transform, QVector<quint32> referencedSources = {})
+      : m_transform(std::move(transform)),
+        m_referencedSources(std::move(referencedSources))
+    {
+    }
+
+    /** @brief True for a source the operation references instead of copying: its entry keeps its place in the
+     *  positional pairing with the images, but holds no object of its own — a transfer anchors its portion on a
+     *  point of the host part, it does not duplicate it. One question, one answer: Create, Update and the tools
+     *  that rebuild their destination by hand all ask it here. */
+    auto IsReferenced(quint32 sourceId) const -> bool { return m_referencedSources.contains(sourceId); }
 
     /** @brief Create the image of every source object, in source order: destination[i] is the image of
-     *  source[i]. Used when the operation is created from the GUI.
-     *
-     *  @a referencedSources lists the sources the operation references instead of copying. Their entry keeps
-     *  its place — the two lists are read positionally everywhere else — but holds no object: a transfer
-     *  anchors its portion on a point of the host part, it does not duplicate it. */
+     *  source[i]. Used when the operation is created from the GUI. The sources the operation references —
+     *  IsReferenced — keep their place and get no image of their own. */
     void Create(quint32 idTool, const QVector<SourceItem> &source, VContainer *data,
-                QVector<DestinationItem> &destination, const QVector<quint32> &referencedSources = {}) const
+                QVector<DestinationItem> &destination) const
     {
         destination.reserve(source.size());
 
         for (const auto &object : std::as_const(source))
         {
-            if (referencedSources.contains(object.id))
+            if (IsReferenced(object.id))
             {
                 destination.append({.recordId = object.recordId});
                 continue;
@@ -95,14 +103,13 @@ public:
      *  read back from a pattern. The two lists are written together, but a file can hold more sources
      *  than destinations: indexing the shorter one would read out of bounds on a mere open. */
     void Update(quint32 idTool, const QVector<SourceItem> &source, VContainer *data,
-                const QVector<DestinationItem> &destination,
-                const QVector<quint32> &referencedSources = {}) const
+                const QVector<DestinationItem> &destination) const
     {
         const qsizetype count = qMin(source.size(), destination.size());
 
         for (int i = 0; i < count; ++i)
         {
-            if (referencedSources.contains(source.at(i).id))
+            if (IsReferenced(source.at(i).id))
             {
                 continue; // Referenced, not copied: there is no image of its own to rewrite.
             }
@@ -202,6 +209,9 @@ private:
 
     Transform m_transform;
 
+    /** @brief The sources referenced rather than copied, decided once by the tool that owns the operation. */
+    QVector<quint32> m_referencedSources;
+
     auto CreatePoint(const SourceItem &sItem, quint32 idTool, VContainer *data) const -> DestinationItem
     {
         const QSharedPointer<VPointF> point = data->GeometricObject<VPointF>(sItem.id);
@@ -268,7 +278,7 @@ private:
         image.setMy(item.my);
         image.SetShowLabel(item.showLabel);
 
-        data->UpdateGObject(item.id, QSharedPointer<VPointF>::create(image));
+        data->UpdateGObject(item.id, image);
     }
 
     template <class Item>
@@ -288,7 +298,7 @@ private:
             image.SetColor(sItem.color);
         }
 
-        data->UpdateGObject(id, QSharedPointer<Item>::create(image));
+        data->UpdateGObject(id, image);
     }
 
     template <class Item>

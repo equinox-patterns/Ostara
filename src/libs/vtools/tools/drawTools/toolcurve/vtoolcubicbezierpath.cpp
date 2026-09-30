@@ -90,7 +90,7 @@ auto VToolCubicBezierPath::Create(const QPointer<DialogTool> &dialog, VMainGraph
     initData.parse = Document::FullParse;
     initData.typeCreation = Source::FromGui;
     initData.notes = dialogTool->GetNotes();
-    initData.path = new VCubicBezierPath(dialogTool->GetPath());
+    initData.path = QSharedPointer<VCubicBezierPath>::create(dialogTool->GetPath());
 
     VToolCubicBezierPath *spl = Create(initData);
     if (spl != nullptr)
@@ -103,10 +103,10 @@ auto VToolCubicBezierPath::Create(const QPointer<DialogTool> &dialog, VMainGraph
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolCubicBezierPath::Create(VToolCubicBezierPathInitData initData) -> VToolCubicBezierPath *
 {
-    // A container that already knows the id updates that object in place and does NOT adopt the pointer it is
-    // handed: a reparse would free initData.path here and every read below would hit freed memory. Holding a
-    // share keeps the curve alive whichever branch runs, and the container shares it instead of copying it.
-    const QSharedPointer<VCubicBezierPath> path(initData.path);
+    // The container updates the object it already holds when the id is known, and does not adopt what it is
+    // given: the share the init data carries keeps the curve alive on that branch too, so nothing read below
+    // can hit freed memory.
+    const QSharedPointer<VCubicBezierPath> path = initData.path;
 
     const bool curveUnique = initData.data->IsUnique(path->name());
 

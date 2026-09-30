@@ -57,6 +57,9 @@ VPieceArea::VPieceArea(PieceAreaType type, quint32 pieceId, const VPiece &piece,
     QString const shortName = PieceShortName(piece);
 
     VContainer tempData = *data;
+    // Own table first: the copy shares the live pattern's variables, and the seam allowance added just below is
+    // a working value of this area computation, not a variable of the pattern.
+    tempData.DetachVariables();
     auto *currentSA = new VIncrement(&tempData, currentSeamAllowance);
     currentSA->SetFormula(piece.GetSAWidth(), QString().setNum(piece.GetSAWidth()), true);
 

@@ -67,7 +67,8 @@ public:
     void SetDialog() override;
     static auto Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *scene, VAbstractPattern *doc,
                        VContainer *data) -> VToolSplinePath *;
-    static auto Create(VToolSplinePathInitData &initData, VSplinePath *path) -> VToolSplinePath *;
+    static auto Create(VToolSplinePathInitData &initData, const QSharedPointer<VSplinePath> &path)
+        -> VToolSplinePath *;
     static auto Create(VToolSplinePathInitData &initData) -> VToolSplinePath *;
     static const QString ToolType;
     static const QString OldToolType;

@@ -130,7 +130,7 @@ auto VToolSplinePath::Create(const QPointer<DialogTool> &dialog, VMainGraphicsSc
     initData.typeCreation = Source::FromGui;
     initData.notes = dialogTool->GetNotes();
 
-    auto *path = new VSplinePath(dialogTool->GetPath());
+    auto path = QSharedPointer<VSplinePath>::create(dialogTool->GetPath());
 
     initData.points.reserve(path->CountPoints());
     for (qint32 i = 0; i < path->CountPoints(); ++i)
@@ -153,13 +153,14 @@ auto VToolSplinePath::Create(const QPointer<DialogTool> &dialog, VMainGraphicsSc
  * @param initData init data.
  * @param path spline path.
  */
-auto VToolSplinePath::Create(VToolSplinePathInitData &initData, VSplinePath *path) -> VToolSplinePath *
+auto VToolSplinePath::Create(VToolSplinePathInitData &initData, const QSharedPointer<VSplinePath> &path)
+    -> VToolSplinePath *
 {
-    SCASSERT(path != nullptr)
-    // The path is handed over to the container, which updates the object it already holds when the id is known
-    // instead of adopting what it is given: held here from the first line, it stays alive for the name and for
-    // everything read below.
-    const QSharedPointer<VSplinePath> curve(path);
+    SCASSERT(not path.isNull())
+    // The container updates the object it already holds when the id is known, and does not adopt what it is
+    // given. The caller's share — the one handed in here — is what keeps the path alive on that branch, so the
+    // signature says it: pass a QSharedPointer, never a bare new.
+    const QSharedPointer<VSplinePath> curve = path;
     const bool curveUnique = initData.data->IsUnique(curve->name());
     const QString curveName = curve->name();
 
@@ -225,7 +226,7 @@ auto VToolSplinePath::Create(VToolSplinePathInitData &initData, VSplinePath *pat
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolSplinePath::Create(VToolSplinePathInitData &initData) -> VToolSplinePath *
 {
-    auto *path = new VSplinePath();
+    auto path = QSharedPointer<VSplinePath>::create();
 
     if (initData.duplicate > 0)
     {

@@ -104,7 +104,10 @@ auto VToolGraduatedCurve::Create(VToolGraduatedCurveInitData &initData) -> VTool
     QVector<qreal> widths;
     widths.reserve(initData.offsets.size());
     {
+        // Own table first: the offsets below are scratch variables, and this copy shares the living pattern's
+        // table — left attached, each one would be registered in the pattern itself.
         VContainer localData = *initData.data;
+        localData.DetachVariables();
 
         for (auto &offset : initData.offsets)
         {
@@ -137,7 +140,7 @@ auto VToolGraduatedCurve::Create(VToolGraduatedCurveInitData &initData) -> VTool
     }
     else
     {
-        initData.data->UpdateGObject(initData.id, QSharedPointer<VSplinePath>::create(splPath));
+        initData.data->UpdateGObject(initData.id, splPath);
     }
 
     VPatternGraph *patternGraph = initData.doc->PatternGraph();

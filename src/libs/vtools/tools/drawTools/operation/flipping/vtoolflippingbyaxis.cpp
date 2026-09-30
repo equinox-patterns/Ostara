@@ -169,24 +169,9 @@ auto VToolFlippingByAxis::Create(VToolFlippingByAxisInitData initData) -> VToolF
 
     if (initData.parse == Document::FullParse)
     {
-        if (initData.typeCreation == Source::FromGui && initData.hasLinkedVisibilityGroup)
-        {
-            VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("Flipping by axis"));
-        }
-
-        VAbstractTool::AddRecord(initData.id, Tool::FlippingByAxis, initData.doc);
-        auto *tool = new VToolFlippingByAxis(initData);
-        initData.scene->addItem(tool);
-        InitOperationToolConnections(initData.scene, tool);
-        VAbstractPattern::AddTool(initData.id, tool);
-
-        if (initData.typeCreation == Source::FromGui && initData.hasLinkedVisibilityGroup)
-        {
-            VAbstractOperation::CreateVisibilityGroup(initData);
-            VAbstractApplication::VApp()->getUndoStack()->endMacro();
-        }
-
-        return tool;
+        return AddToolToScene<VToolFlippingByAxis>(
+            initData, Tool::FlippingByAxis, tr("Flipping by axis"),
+            [&initData]() { return new VToolFlippingByAxis(initData); });
     }
     return nullptr;
 }

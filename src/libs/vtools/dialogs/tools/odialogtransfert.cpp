@@ -41,7 +41,6 @@
 #include <QSharedPointer>
 #include <QStringList>
 #include <QTabBar>
-#include <QToolButton>
 #include <QVariant>
 #include <QtAlgorithms>
 
@@ -74,14 +73,24 @@ ODialogTransfert::ODialogTransfert(const VContainer *data, VAbstractPattern *doc
 {
     ui->setupUi(this);
 
+    // Remember where the gesture started. The active part moves to the host part in the middle of the creation,
+    // and that move is the window's, not this dialog's — so the way back has to be known here, where the step
+    // that made the move is.
+    if (not IsEditing())
+    {
+        m_sourcePart = m_doc->PatternBlockMapper()->GetActive();
+    }
+
     // The objects of a transfer are the ones picked on the canvas, and nothing else: there is no combo to add
-    // one, and none to remove it once the tool exists (the .ui keeps them hidden).
+    // one, and no list to remove one from (the .ui keeps it hidden).
     ApplyComboBoxView(ui->comboBoxPiece);
+    ApplyComboBoxView(ui->comboBoxLayer);
     MakeFilterableComboBox(ui->comboBoxLayer);
     // A layer is typed only to create one: typing a name must not append a row to the list of the existing
     // layers, or the same layer would be offered twice.
     ui->comboBoxLayer->setInsertPolicy(QComboBox::NoInsert);
 
+    ApplyComboBoxView(ui->comboBoxPenStyle);
     FillComboBoxTypeLine(ui->comboBoxPenStyle,
                          OperationLineStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                                  ui->comboBoxPenStyle->palette().color(QPalette::Text)),
@@ -89,11 +98,8 @@ ODialogTransfert::ODialogTransfert(const VContainer *data, VAbstractPattern *doc
     m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonColor);
 
     // The properties of a source object are not this tool's business, and the portion is displayed, not
-    // edited: the list is left with its own removal button only, so a click that picked the wrong object can
-    // be undone without going back to the canvas.
-    ui->toolButtonBulkRename->setVisible(false);
-
-    connect(ui->toolButtonRemoveObject, &QToolButton::clicked, this, &DialogOperationTool::RemoveObject);
+    // edited: the whole list of the template — its contents, its rename button and its removal button — stays
+    // hidden in the .ui, and nothing here brings it back. What is picked is shown on the canvas.
     connect(ui->comboBoxPiece, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             &ODialogTransfert::HostPartChanged);
 
@@ -103,7 +109,6 @@ ODialogTransfert::ODialogTransfert(const VContainer *data, VAbstractPattern *doc
     {
         ui->comboBoxPiece->setEnabled(false);
         ui->comboBoxLayer->setEnabled(false);
-        ui->toolButtonRemoveObject->setEnabled(false);
     }
 
     InitOkCancel(ui);
@@ -178,6 +183,12 @@ void ODialogTransfert::Say(const QString &step)
 auto ODialogTransfert::IsEditing() const -> bool
 {
     return GetToolId() != NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogTransfert::SourcePart() const -> QString
+{
+    return m_sourcePart;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -511,5 +522,5 @@ void ODialogTransfert::Refuse(const QString &message)
 
     // Over the main window, not over this dialog: the merge points are picked while the dialog is not on
     // screen. One button, and the step is still the one to answer — there is nothing to choose.
-    QMessageBox::information(VAbstractValApplication::VApp()->getMainWindow(), tr("Transfert"), message);
+    QMessageBox::information(VAbstractValApplication::VApp()->getMainWindow(), tr("Transfer"), message);
 }

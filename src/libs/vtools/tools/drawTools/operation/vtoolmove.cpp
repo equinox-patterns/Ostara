@@ -293,24 +293,8 @@ auto VToolMove::Create(VToolMoveInitData &initData) -> VToolMove *
 
     if (initData.parse == Document::FullParse)
     {
-        if (initData.typeCreation == Source::FromGui && initData.hasLinkedVisibilityGroup)
-        {
-            VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("move"));
-        }
-
-        VAbstractTool::AddRecord(initData.id, Tool::Move, initData.doc);
-        auto *tool = new VToolMove(initData);
-        initData.scene->addItem(tool);
-        InitOperationToolConnections(initData.scene, tool);
-        VAbstractPattern::AddTool(initData.id, tool);
-
-        if (initData.typeCreation == Source::FromGui && initData.hasLinkedVisibilityGroup)
-        {
-            VAbstractOperation::CreateVisibilityGroup(initData);
-            VAbstractApplication::VApp()->getUndoStack()->endMacro();
-        }
-
-        return tool;
+        return AddToolToScene<VToolMove>(initData, Tool::Move, tr("move"),
+                                         [&initData]() { return new VToolMove(initData); });
     }
     return nullptr;
 }

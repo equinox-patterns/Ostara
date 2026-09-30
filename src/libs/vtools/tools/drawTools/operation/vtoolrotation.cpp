@@ -268,24 +268,8 @@ auto VToolRotation::Create(VToolRotationInitData &initData) -> VToolRotation *
 
     if (initData.parse == Document::FullParse)
     {
-        if (initData.typeCreation == Source::FromGui && initData.hasLinkedVisibilityGroup)
-        {
-            VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("rotate"));
-        }
-
-        VAbstractTool::AddRecord(initData.id, Tool::Rotation, initData.doc);
-        auto *tool = new VToolRotation(initData);
-        initData.scene->addItem(tool);
-        InitOperationToolConnections(initData.scene, tool);
-        VAbstractPattern::AddTool(initData.id, tool);
-
-        if (initData.typeCreation == Source::FromGui && initData.hasLinkedVisibilityGroup)
-        {
-            VAbstractOperation::CreateVisibilityGroup(initData);
-            VAbstractApplication::VApp()->getUndoStack()->endMacro();
-        }
-
-        return tool;
+        return AddToolToScene<VToolRotation>(initData, Tool::Rotation, tr("rotate"),
+                                            [&initData]() { return new VToolRotation(initData); });
     }
     return nullptr;
 }

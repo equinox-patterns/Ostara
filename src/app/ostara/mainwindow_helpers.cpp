@@ -83,14 +83,6 @@ Q_LOGGING_CATEGORY(vMainWindow, "v.mainwindow") // NOLINT
 QT_WARNING_POP
 
 //---------------------------------------------------------------------------------------------------------------------
-void LogPatternToolUsed(bool checked, const QString &toolName)
-{
-    // VGAnalyticsLib removed — no tracking
-    Q_UNUSED(checked)
-    Q_UNUSED(toolName)
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto SortDetailsForLayout(const QHash<quint32, VPiece> *allDetails, const VContainer *data,
                           const QString &nameRegex) -> QVector<DetailForLayout>
 {

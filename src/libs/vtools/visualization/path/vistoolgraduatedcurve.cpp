@@ -119,6 +119,9 @@ void VisToolGraduatedCurve::SetOffsets(const QVector<VRawGraduatedCurveOffset> &
     m_offsets.reserve(offsets.size());
 
     VContainer localData = *GetData();
+    // Own table first: the copy shares the live pattern's variables, and the offsets added below are working
+    // values of this visualization.
+    localData.DetachVariables();
 
     for (const auto &offset : offsets)
     {

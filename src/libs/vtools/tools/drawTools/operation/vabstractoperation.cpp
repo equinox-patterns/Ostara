@@ -195,7 +195,18 @@ auto VAbstractOperation::IsRemovable() const -> RemoveStatus
 
     for (const auto &item : m_destination)
     {
-        auto const dependecies = patternGraph->TryGetDependentNodes(item.id, 100, Filter);
+        if (item.id == NULL_ID)
+        {
+            // The merge point the operation references instead of copying: it keeps its place in the list with
+            // no object of its own, so it has no dependents to ask about. Asking anyway cost the whole answer:
+            // a single failed attempt on this entry — the first one, and the one that means nothing — turned
+            // the status into "still collecting", and the Delete action stayed greyed out with "(Pending)" on
+            // a pattern whose dependencies had long settled.
+            continue;
+        }
+
+        // 500 ms, like the other tools that ask the same question.
+        auto const dependecies = patternGraph->TryGetDependentNodes(item.id, 500, Filter);
 
         if (!dependecies)
         {
@@ -1011,7 +1022,7 @@ void VAbstractOperation::SaveSourceDestination(QDomElement &tag,
         doc->SetAttributeOrRemoveIf<bool>(item,
                                           AttrShowLabel,
                                           dItem.showLabel,
-                                          [](bool showLabel) noexcept -> bool { return showLabel; });
+                                          [](bool showLabel) noexcept -> bool { return not showLabel; });
 
         tagObjects.appendChild(item);
     }

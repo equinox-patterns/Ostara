@@ -121,7 +121,7 @@ auto VToolParallelCurve::Create(VToolParallelCurveInitData &initData) -> VToolPa
     }
     else
     {
-        initData.data->UpdateGObject(initData.id, QSharedPointer<VSplinePath>::create(splPath));
+        initData.data->UpdateGObject(initData.id, splPath);
     }
 
     VPatternGraph *patternGraph = initData.doc->PatternGraph();

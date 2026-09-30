@@ -314,24 +314,8 @@ auto OToolCloseDart::Create(OToolCloseDartInitData &initData) -> OToolCloseDart 
 
     if (initData.parse == Document::FullParse)
     {
-        if (initData.typeCreation == Source::FromGui && initData.hasLinkedVisibilityGroup)
-        {
-            VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("close a dart"));
-        }
-
-        VAbstractTool::AddRecord(initData.id, Tool::CloseDart, initData.doc);
-        auto *tool = new OToolCloseDart(initData);
-        initData.scene->addItem(tool);
-        InitOperationToolConnections(initData.scene, tool);
-        VAbstractPattern::AddTool(initData.id, tool);
-
-        if (initData.typeCreation == Source::FromGui && initData.hasLinkedVisibilityGroup)
-        {
-            VAbstractOperation::CreateVisibilityGroup(initData);
-            VAbstractApplication::VApp()->getUndoStack()->endMacro();
-        }
-
-        return tool;
+        return AddToolToScene<OToolCloseDart>(initData, Tool::CloseDart, tr("close a dart"),
+                                             [&initData]() { return new OToolCloseDart(initData); });
     }
     return nullptr;
 }

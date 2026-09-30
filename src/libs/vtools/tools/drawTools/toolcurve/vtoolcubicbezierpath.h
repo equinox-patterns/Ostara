@@ -32,6 +32,7 @@
 #include <QGraphicsItem>
 #include <QMetaObject>
 #include <QObject>
+#include <QSharedPointer>
 #include <QString>
 #include <QtGlobal>
 
@@ -47,7 +48,7 @@ QT_WARNING_DISABLE_GCC("-Weffc++")
 
 struct VToolCubicBezierPathInitData : VDrawToolInitData
 {
-    VCubicBezierPath *path{nullptr}; // NOLINT(misc-non-private-member-variables-in-classes)
+    QSharedPointer<VCubicBezierPath> path{}; // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
 QT_WARNING_POP

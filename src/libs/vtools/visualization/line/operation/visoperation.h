@@ -81,8 +81,9 @@ protected:
      *  that cannot select lines yet never calls this, and one that can must override it. */
     virtual auto PointImage(const QPointF &point) const -> QPointF { Q_UNUSED(point) return point; }
 
-    /** @brief True when the transformation leaves the point in place (rotation centre, mirror axis
-     *  points). Such a point is its own image, so a line anchored on it can still be transformed. */
+    /** @brief True when the point has an image without being in the object list: either the transformation
+     *  leaves it in place (rotation centre, mirror axis points), or it maps it onto another point (the merge
+     *  point of a transfer, whose image is the anchor). Either way a line anchored on it is transformed. */
     virtual auto IsFixedPoint(quint32 id) const -> bool
     {
         Q_UNUSED(id)

@@ -57,6 +57,11 @@ public:
     /** @brief Translate the point by X → A, exactly like the copied objects of this tool. */
     auto PointImage(const QPointF &point) const -> QPointF override;
 
+    /** @brief True for the merge point of the source part: it is not in the object list — the transfer references
+     *  it instead of copying it — yet it does have an image, the anchor it lands on. A line anchored on it is
+     *  therefore transferred like any other, and its ghost can be drawn. */
+    auto IsFixedPoint(quint32 id) const -> bool override;
+
     auto type() const -> int override { return Type; }
     enum
     {

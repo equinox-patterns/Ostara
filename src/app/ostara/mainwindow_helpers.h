@@ -57,7 +57,6 @@ Q_DECLARE_LOGGING_CATEGORY(vMainWindow)
 
 using TriggerFn = std::function<void()>;
 
-void LogPatternToolUsed(bool checked, const QString &toolName);
 auto SortDetailsForLayout(const QHash<quint32, VPiece> *allDetails, const VContainer *data,
                           const QString &nameRegex = {}) -> QVector<DetailForLayout>;
 void WarningNotUniquePieceName(const QHash<quint32, VPiece> *allDetails);

@@ -90,7 +90,7 @@ void VPattern::ParseOldToolSpline(VMainGraphicsScene *scene, QDomElement &domEle
         const auto p1 = data->GeometricObject<VPointF>(initData.point1);
         const auto p4 = data->GeometricObject<VPointF>(initData.point4);
 
-        auto *spline = new VSpline(*p1, *p4, angle1, angle2, kAsm1, kAsm2, kCurve);
+        auto spline = QSharedPointer<VSpline>::create(*p1, *p4, angle1, angle2, kAsm1, kAsm2, kCurve);
         if (duplicate > 0)
         {
             spline->SetDuplicate(duplicate);
@@ -212,13 +212,12 @@ void VPattern::ParseToolCubicBezier(VMainGraphicsScene *scene, const QDomElement
         auto p3 = data->GeometricObject<VPointF>(point3);
         auto p4 = data->GeometricObject<VPointF>(point4);
 
-        initData.spline = new VCubicBezier(*p1, *p2, *p3, *p4);
+        initData.spline = QSharedPointer<VCubicBezier>::create(*p1, *p2, *p3, *p4);
         if (duplicate > 0)
         {
             initData.spline->SetDuplicate(duplicate);
         }
         initData.spline->SetColor(color);
-        initData.spline->SetPenStyle(penStyle);
         initData.spline->SetPenStyle(penStyle);
         initData.spline->SetApproximationScale(approximationScale);
         initData.spline->SetAliasSuffix(alias);
@@ -272,7 +271,8 @@ void VPattern::ParseToolArmholeCurve(VMainGraphicsScene *scene, const QDomElemen
         // Single factory shared with the creation collector: it recomputes the control handles
         // (derived from the 4 user points, not container GObjects — no graph vertices, so their ids
         // stay stable across delete/undo cycles) and resolves the skipped perpendicular.
-        initData.path = new VCubicBezierPath(OToolArmholeCurve::BuildPath(*p1, *pCarrure, *pPerp, *pEpaule));
+        initData.path
+            = QSharedPointer<VCubicBezierPath>::create(OToolArmholeCurve::BuildPath(*p1, *pCarrure, *pPerp, *pEpaule));
         if (duplicate > 0)
         {
             initData.path->SetDuplicate(duplicate);
@@ -339,7 +339,7 @@ void VPattern::ParseOldToolSplinePath(VMainGraphicsScene *scene, QDomElement &do
             }
         }
 
-        auto *path = new VSplinePath(points, kCurve);
+        auto path = QSharedPointer<VSplinePath>::create(points, kCurve);
         if (duplicate > 0)
         {
             path->SetDuplicate(duplicate);
@@ -615,7 +615,7 @@ void VPattern::ParseToolCubicBezierPath(VMainGraphicsScene *scene, const QDomEle
             }
         }
 
-        initData.path = new VCubicBezierPath(points);
+        initData.path = QSharedPointer<VCubicBezierPath>::create(points);
         if (duplicate > 0)
         {
             initData.path->SetDuplicate(duplicate);

@@ -69,6 +69,10 @@ public:
     auto GetHostLayerId() const -> quint32;
     auto GetHostLayerName() const -> QString;
 
+    /** @brief The part the dialog was opened on — the one the portion comes from. Empty when an existing
+     *  transfer is edited: there is no part to go back to, the copies are already written. */
+    auto SourcePart() const -> QString;
+
     void ShowDialog(bool click) override;
     void ChosenObject(quint32 id, const SceneObject &type) override;
     void DialogAccepted() override;
@@ -110,6 +114,10 @@ private:
     Step m_step{Step::Selecting};
     quint32 m_originId{NULL_ID};
     quint32 m_targetId{NULL_ID};
+
+    /** @brief The active part when the creation started. Choosing the host part hands the window over to it,
+     *  and only a created operation makes that permanent: an abandoned creation has to come back here. */
+    QString m_sourcePart;
 
     auto IsEditing() const -> bool;
 

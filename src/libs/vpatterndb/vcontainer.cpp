@@ -285,23 +285,35 @@ auto VContainer::GetPieceForPiecePath(quint32 id) const -> quint32
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VContainer::RegisterUniqueName(VGObject *obj) const
-{
-    SCASSERT(obj != nullptr)
-    QSharedPointer<VGObject> const pointer(obj);
-    RegisterUniqueName(pointer);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VContainer::RegisterUniqueName(const QSharedPointer<VGObject> &obj) const
 {
     SCASSERT(not obj.isNull())
+    RegisterUniqueName(obj->name(), obj->GetAlias());
+}
 
-    uniqueNames[d->nspace].insert(obj->name());
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::RegisterUniqueName(const QString &name, const QString &alias) const
+{
+    uniqueNames[d->nspace].insert(name);
 
-    if (not obj->GetAlias().isEmpty())
+    if (not alias.isEmpty())
     {
-        uniqueNames[d->nspace].insert(obj->GetAlias());
+        uniqueNames[d->nspace].insert(alias);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::ObjectsFor(Draw mode) -> QHash<quint32, QSharedPointer<VGObject>> *
+{
+    switch (mode)
+    {
+        case Draw::Calculation:
+            return &d->calculationObjects;
+        case Draw::Modeling:
+            return d->modelingObjects.data();
+        case Draw::Layout:
+        default:
+            return nullptr;
     }
 }
 
@@ -477,12 +489,6 @@ void VContainer::ClearGObjects()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VContainer::ClearCalculationGObjects()
-{
-    d->calculationObjects.clear();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VContainer::ClearVariables(const VarType &type)
 {
     ClearVariables(QVector<VarType>({type}));
@@ -595,6 +601,12 @@ void VContainer::PrepareSecondParsePass(VContainer *data)
     // The variables a deferred formula was waiting for are the exception: they belong to a block read after it,
     // so clearing them would put the second pass back where the first one was. Keep them from the first pass,
     // where every block had been read and their value is final.
+    //
+    // Kept for the second pass only: when that pass reaches the block that defines them, it inserts its own
+    // instance over this one. What would not be corrected is a name kept here that the second pass never defines
+    // again — the names come from a regular expression over the formula, so they include function names and
+    // constants — and that name happened to be a variable of a type the pass recomputes. Re-reading the value
+    // from the container rather than trusting this table is what keeps the rest honest.
     QHash<QString, QSharedPointer<VInternalVariable>> kept;
     const auto *vars = data->DataVariables();
     if (vars != nullptr)

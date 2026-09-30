@@ -78,19 +78,37 @@ auto IsDarkTheme() -> bool
     return VTheme::ColorSheme() == VColorSheme::Dark;
 }
 
+/// Whether @p id is one of the export buttons: they read their icon from :/icons/ or from a PNG, never from
+/// :/tools/ — there is no <id>.svg for them.
+auto IsExportIconTool(const QString &id) -> bool
+{
+    return id == QStringLiteral("detail_export") || id == QStringLiteral("export_templates")
+           || id == QStringLiteral("export_image");
+}
+
+/// The icons the tools that wait for artwork of their own borrow, from the tool they come from: looking for a
+/// <id>.svg that does not exist would blank them on every theme switch. Read by IsAppIconTool, and kept in step
+/// with the install blocks by hand — a borrowed icon has to be added here too.
+auto BorrowedToolIcons() -> const QHash<QString, QString> &
+{
+    static const QHash<QString, QString> borrowed{{QStringLiteral("close_dart"), QStringLiteral("rotation.png")},
+                                                  {QStringLiteral("dart_cap"), QStringLiteral("true_darts.png")},
+                                                  {QStringLiteral("rectangle"), QStringLiteral("shoulder.png")},
+                                                  {QStringLiteral("transfert"), QStringLiteral("move.png")}};
+    return borrowed;
+}
+
 /// Whether @p id carries an icon the APPLICATION sets, rather than one of the tool icons of
 /// :/tools/ — a PNG that has no theme, or an SVG of :/icons/ that has two.
 ///
-/// One list, because three places ask the same question and they must not answer it
-/// differently: makeBtn would look for a file that does not exist, ReloadIcons must not
-/// overwrite what was set, and the flyout must not either. An id added to one of them and
-/// forgotten in another leaves a button with a blank icon, and nothing says so.
+/// Three places ask this same question and must not answer it differently: makeBtn would look for a file that
+/// does not exist, ReloadIcons must not overwrite what was set, and the flyout must not either. The two helpers
+/// below are the agreed list — but the install blocks and the ReloadIcons branches are written by hand and do
+/// not read them, so an id added there has to be added here too, or the button keeps a blank icon and nothing
+/// says so.
 auto IsAppIconTool(const QString &id) -> bool
 {
-    return id == QStringLiteral("detail_export") || id == QStringLiteral("export_templates")
-           || id == QStringLiteral("export_image") || id == QStringLiteral("close_dart")
-           || id == QStringLiteral("dart_cap") || id == QStringLiteral("rectangle")
-           || id == QStringLiteral("transfert");
+    return IsExportIconTool(id) || BorrowedToolIcons().contains(id);
 }
 
 auto FormatTooltip(const QString &toolName, const QAction *action) -> QString
@@ -256,10 +274,7 @@ void DrawToolBar::ReloadIcons()
         }
         // Tools that wait for artwork of their own borrow the icon of the tool they come from: looking for a
         // <id>.svg that does not exist would blank them on every theme switch.
-        static const QHash<QString, QString> borrowed{{QStringLiteral("close_dart"), QStringLiteral("rotation.png")},
-                                                      {QStringLiteral("dart_cap"), QStringLiteral("true_darts.png")},
-                                                      {QStringLiteral("rectangle"), QStringLiteral("shoulder.png")},
-                                                      {QStringLiteral("transfert"), QStringLiteral("move.png")}};
+        const QHash<QString, QString> &borrowed = BorrowedToolIcons();
         if (const auto icon = borrowed.constFind(it.key()); icon != borrowed.cend())
         {
             it.value()->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), icon.value()));
@@ -506,7 +521,7 @@ void DrawToolBar::InitializeGroups()
             {QStringLiteral("rectangle"),                tr("Rectangle tool"),                                  nullptr, nullptr},
             // Same again: no transfert.svg yet, so the button is built by hand below and borrows the icon of
             // the move it translates — the one its action uses too.
-            {QStringLiteral("transfert"),                tr("Transfert tool"),                                  nullptr, nullptr},
+            {QStringLiteral("transfert"),                tr("Transfer tool"),                                   nullptr, nullptr},
         }, kModeDraw},
     };
     // clang-format on

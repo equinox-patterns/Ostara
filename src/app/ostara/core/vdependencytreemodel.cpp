@@ -1004,7 +1004,7 @@ auto VDependencyTreeModel::GetOperationToolName(Tool toolType, const QString &de
         case Tool::Move:
             return tr("Move", "operation");
         case Tool::Transfert:
-            return tr("Transfert", "operation");
+            return tr("Transfer", "operation");
         case Tool::UnionDetails:
             return tr("Union details", "operation");
         default:
@@ -1036,7 +1036,7 @@ auto VDependencyTreeModel::GetToolToolTip(vidtype id) const -> QString
         case Tool::Rectangle:
             return tr("Rectangle");
         case Tool::Transfert:
-            return tr("Transfert");
+            return tr("Transfer");
         case Tool::LineIntersect:
             return tr("Point at line intersection");
         case Tool::Spline:

@@ -473,7 +473,7 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
         case VShortcutAction::ToolRectangle:
             return tr("Tool 'Rectangle'", "shortcut for action");
         case VShortcutAction::ToolTransfert:
-            return tr("Tool 'Transfert'", "shortcut for action");
+            return tr("Tool 'Transfer'", "shortcut for action");
         case VShortcutAction::ToolFlippingByLine:
             return tr("Tool 'Flipping objects by line'", "shortcut for action");
         case VShortcutAction::ToolFlippingByAxis:

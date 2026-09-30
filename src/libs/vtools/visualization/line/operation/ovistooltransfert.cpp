@@ -74,6 +74,15 @@ auto OVisToolTransfert::PointImage(const QPointF &point) const -> QPointF
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OVisToolTransfert::IsFixedPoint(quint32 id) const -> bool
+{
+    // The merge point of the source part: no object of its own — the transfer references it instead of copying
+    // it — but it does land on the anchor, so a line anchored on it is transferred and its ghost belongs on the
+    // screen. PointImage translates it by X → A like everything else.
+    return id != NULL_ID && id == m_originId;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OVisToolTransfert::RefreshGeometry()
 {
     // A transfer can be made of lines alone: the object list is empty then, but the attached lines still have a

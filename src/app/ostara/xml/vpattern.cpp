@@ -261,6 +261,12 @@ void VPattern::Parse(const Document &parse)
         // them — a point whose length was unknown sits on its base point, and reads as gone. Each tool is
         // therefore asked to read its own geometry back from the container, the same refresh the options dock
         // applies after a change. Only on this path: a parse with no deferred formula is already consistent.
+        //
+        // Deliberately every tool, and not only the ones that deferred: a tool can read a variable that was
+        // itself computed from a deferred one without deferring anything of its own, and it is just as wrong on
+        // screen. Narrowing this list to the deferred tools would bring back the invisible point this fixes; the
+        // price — one DOM lookup and one geometry rebuild per tool, and only when a second pass happened — is
+        // what correctness costs here.
         for (auto *tool : std::as_const(tools))
         {
             if (auto *drawTool = dynamic_cast<VAbstractTool *>(tool); drawTool != nullptr)
@@ -517,6 +523,10 @@ void VPattern::setCurrentData()
 
     const VDataTool *vTool = tools.value(id);
     *data = vTool->GetDataCopy();
+    // Every copy of the pattern shares one table of variables — that is what makes a variable of one block
+    // readable in the others. Trimming this copy would therefore trim the live pattern too, so it takes its own
+    // table before the first write.
+    data->DetachVariables();
     // Delete special variables if exist
     data->RemoveVariable(currentLength);
     data->RemoveVariable(currentSeamAllowance);
@@ -572,6 +582,8 @@ auto VPattern::GetCompleteData() const -> VContainer
     const VDataTool *vTool = tools.value(id);
     SCASSERT(vTool != nullptr)
     VContainer lastData = vTool->GetDataCopy();
+    // Own table first: the copy shares the live pattern's variables, and this trimming is meant to be local.
+    lastData.DetachVariables();
     // Delete special variables if exist
     lastData.RemoveVariable(currentLength);
     lastData.RemoveVariable(currentSeamAllowance);
@@ -607,6 +619,8 @@ auto VPattern::GetCompletePPData(const QString &name) const -> VContainer
     const VDataTool *vTool = tools.value(id);
     SCASSERT(vTool != nullptr)
     VContainer lastData = vTool->GetDataCopy();
+    // Own table first: the copy shares the live pattern's variables, and this trimming is meant to be local.
+    lastData.DetachVariables();
     // Delete special variables if exist
     lastData.RemoveVariable(currentLength);
     lastData.RemoveVariable(currentSeamAllowance);
