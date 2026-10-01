@@ -83,6 +83,30 @@ public:
 
     auto SourceItems() const -> QVector<SourceItem>;
 
+    /** @brief The pen and the colour an operation gives ONE of its own copies.
+     *
+     * A copy has no element of its own, so what it carries as its own pen is kept where the operation already
+     * keeps it: a copied curve on the `<source>` item it comes from, a copied line on its `<lines>` entry. Both
+     * are empty for a copied point — a point carries no pen — and @a exists is false for an object this
+     * operation did not produce. @a isLine says which of the two lists answered, so a caller offers the line
+     * styles rather than the curve pen styles. */
+    struct CopyStyle
+    {
+        QString penStyle{};
+        QString color{};
+        /// The kind of the copy, so a caller can say WHAT it is styling — "Style de la courbe", "de l'arc" —
+        /// rather than printing a technical name. Unknown for a copied line, which is named by `isLine`.
+        GOType type{GOType::Unknown};
+        bool isLine{false};
+        bool exists{false};
+    };
+
+    auto CopyStyleOf(quint32 objectId) const -> CopyStyle;
+
+    /** @brief Write that pen back where the file keeps it, as one undoable step, the way every tool option is
+     *  saved. Does nothing for an object this operation did not produce. */
+    void SetCopyStyle(quint32 objectId, const QString &penStyle, const QString &color);
+
     void GroupVisibility(quint32 object, bool visible) override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void ChangeLabelPosition(quint32 id, const QPointF &pos) override;

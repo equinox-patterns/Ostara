@@ -36,6 +36,7 @@
 #include "../vpropertyexplorer/vproperty.h"
 #include "../vpropertyexplorer/vpropertyformview.h"
 #include "../vpropertyexplorer/vpropertymodel.h"
+#include "../vmisc/typedef.h"
 
 class QDockWidget;
 class QGraphicsItem;
@@ -61,6 +62,15 @@ public:
 
     void ClearPropertyBrowser();
     QGraphicsItem *currentItem() const { return m_currentItem; }
+
+    /** @brief The object the last click landed on, as the container knows it.
+     *
+     * Kept beside the resolved item because the browser shows the options of the TOOL — the operation — while the
+     * click was on ONE of its copies. The copy's own pen and colour are edited in the operation's element, and
+     * this is the id that tells which copy: `VAbstractSimple::GetId()` on the item, its tool's id for a line.
+     * NULL_ID when the click carried none (a piece, the background). */
+    auto ClickedObjectId() const -> quint32 { return m_clickedObjectId; }
+
     auto ComboBoxPalette() const -> QPalette;
 
     void RetranslateUI();
@@ -93,6 +103,7 @@ private:
 
     QGraphicsItem *m_currentItem{nullptr};
     QPointer<QObject> m_currentObject{};
+    quint32 m_clickedObjectId{NULL_ID};
     QMap<VPE::VProperty *, QString> m_propertyToId{};
     QMap<QString, VPE::VProperty *> m_idToProperty{};
 

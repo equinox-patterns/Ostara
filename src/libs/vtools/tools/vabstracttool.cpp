@@ -29,6 +29,7 @@
 #include "vabstracttool.h"
 
 #include "../vwidgets/scalesceneitems.h"
+#include "../vwidgets/vabstractsimple.h"
 
 #include <QBrush>
 #include <QCache>
@@ -336,6 +337,25 @@ auto VAbstractTool::Colors() -> QStringList
 {
     return QStringList{ColorBlack,  ColorLightBlue, ColorDarkBlue, ColorPink, ColorPurple,
                        ColorYellow, ColorOrange,    ColorLightGreen, ColorDarkGreen, ColorBrown};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractTool::ObjectIdOfItem(const QGraphicsItem *item) -> quint32
+{
+    for (const QGraphicsItem *probe = item; probe != nullptr; probe = probe->parentItem())
+    {
+        if (const auto *simple = dynamic_cast<const VAbstractSimple *>(probe); simple != nullptr)
+        {
+            return simple->GetId();
+        }
+
+        if (const auto *tool = dynamic_cast<const VAbstractTool *>(probe); tool != nullptr)
+        {
+            return tool->getId();
+        }
+    }
+
+    return NULL_ID;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

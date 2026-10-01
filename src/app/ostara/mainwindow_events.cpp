@@ -406,11 +406,10 @@ void MainWindow::HandleItemClicked(QGraphicsItem *item)
     {
         // Which tool the click speaks for. The item under the cursor is a renderer — a point, a curve, a line —
         // and the tool is the one that owns it, one level up. Except inside an operation: everything an
-        // operation produces belongs to its result, and the layer takes that result as a whole. A transformed
-        // line is a tool of its own, so the plain climb would stop on it and hand back that single line while
-        // the operation's points and curves answered for the operation — a half-marked result. The nearest
-        // operation ancestor therefore wins, which is also how the options browser routes a result line
-        // (VToolOptionsPropertyBrowser::ShowItemOptions).
+        // operation produces belongs to its result, so the nearest operation ancestor wins over the renderer
+        // itself — a transformed line is a tool of its own, and stopping on it would hand back that single line
+        // while the operation's points and curves answered for the operation. The options browser routes a result
+        // line the same way (VToolOptionsPropertyBrowser::ShowItemOptions).
         auto *tool = dynamic_cast<VAbstractTool *>(item);
         if (tool == nullptr)
         {
@@ -426,14 +425,13 @@ void MainWindow::HandleItemClicked(QGraphicsItem *item)
             }
         }
 
-        if (tool != nullptr)
+        // Which objects that click picks: asked of the tool, so a copy of an operation is picked alone while the
+        // parts of one indivisible figure (a rectangle, a dart cap) still travel together. The canvas context
+        // menu asks the very same question (VDrawTool::GroupObjects).
+        if (auto *drawTool = dynamic_cast<VDrawTool *>(tool); drawTool != nullptr)
         {
-            const quint32 toolId = tool->getId();
-            if (const QDomElement element = doc->FindElementById(toolId, tool->getTagName()); not element.isNull())
-            {
-                m_dockManager->groupsWidget()->ToggleLayerObjects(
-                    VAbstractPattern::LayerableObjectsOfTool(element, toolId));
-            }
+            m_dockManager->groupsWidget()->ToggleLayerObjects(
+                drawTool->GroupObjects(VAbstractTool::ObjectIdOfItem(item)));
         }
         return;
     }

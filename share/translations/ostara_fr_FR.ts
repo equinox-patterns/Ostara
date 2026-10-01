@@ -27184,6 +27184,26 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Hauteur :</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="115"/>
+        <source>Line style</source>
+        <translation>Style de la ligne</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="121"/>
+        <source>Arc style</source>
+        <translation>Style de l'arc</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="123"/>
+        <source>Elliptical arc style</source>
+        <translation>Style de l'arc elliptique</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="125"/>
+        <source>Curve style</source>
+        <translation>Style de la courbe</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="371"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="375"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="527"/>

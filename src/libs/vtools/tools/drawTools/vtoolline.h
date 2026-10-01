@@ -105,6 +105,15 @@ public:
     void SetLineType(const QString &value) override;
     void GroupVisibility(quint32 object, bool visible) override;
 
+    /** @brief Take the type and the colour a parse has just read, without writing anything.
+     *
+     * A transformed line has no element of its own — the operation that produced it keeps both — so there is
+     * nothing to save here, only a pen to put on. Called for every line that already exists by
+     * OOperationLines::CreateLines, the one place that re-reads what the operation holds: without it a lite parse
+     * left the line with the pen it was built with, and an edit to that pen was invisible until the file was
+     * reopened. */
+    void RefreshPenFromParse(const QString &typeLine, const QString &lineColor);
+
 signals:
     /** @brief DeleteRequested the user asked to delete this line. A derived line belongs to the operation
      *  that draws it: the operation connects this request to its own deletion, exactly like a destination

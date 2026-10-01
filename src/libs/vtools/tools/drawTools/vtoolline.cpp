@@ -729,6 +729,19 @@ void VToolLine::SetLineColor(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolLine::RefreshPenFromParse(const QString &typeLine, const QString &lineColor)
+{
+    if (m_lineType == typeLine && this->lineColor == lineColor)
+    {
+        return;
+    }
+
+    m_lineType = typeLine;
+    this->lineColor = lineColor;
+    RefreshPen();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolLine::SetNotes(const QString &notes)
 {
     m_notes = notes;

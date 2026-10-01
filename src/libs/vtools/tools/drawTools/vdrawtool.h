@@ -79,6 +79,16 @@ public:
     auto GetNotes() const -> QString;
     virtual void SetNotes(const QString &notes);
 
+    /** @brief The layer entries a click on ONE object works on, in the (objectId, toolId) shape the pattern
+     *  expects.
+     *
+     *  The whole figure for a tool that draws one indivisible figure — a rectangle is its points, a dart cap its
+     *  tracés — and the single object the click landed on when the tool produced a SET of copies: an operation.
+     *  Its layer holds the sources that were picked and never all of them, so the copies are filed one by one, and
+     *  both the context menu of the canvas and the picking of the Layers dock ask HERE: the two cannot write two
+     *  different contents into the same XML. */
+    auto GroupObjects(quint32 itemId) const -> QVector<QPair<quint32, quint32>>;
+
 signals:
     void ChangedToolSelection(bool selected, quint32 object, quint32 tool);
 
@@ -133,10 +143,9 @@ private:
 
     auto GetItemType(quint32 itemId) const -> GOType;
 
-    /// Every object a layer can hold for this tool, in the (objectId, toolId) shape the pattern expects: the whole
-    /// figure, never one of its parts. A rectangle is its three points, an operation is everything it produced.
-    /// The menu's add/remove entries work on this list, exactly like the Layers dock does.
-    auto GroupObjects(quint32 itemId) const -> QVector<QPair<quint32, quint32>>;
+    /// The pair the layer entries of the context menu speak about — the one the action will write. See the
+    /// definition for why it is not simply (this tool, clicked object).
+    auto LayerMenuPair(quint32 itemId) const -> QPair<quint32, quint32>;
 
     auto CreateAddToGroupMenu(QMenu &menu, quint32 itemId) -> QActionGroup *;
     auto CreateRemoveFromGroupMenu(QMenu &menu, quint32 itemId) -> QActionGroup *;

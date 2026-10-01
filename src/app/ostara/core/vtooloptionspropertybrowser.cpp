@@ -812,6 +812,7 @@ void VToolOptionsPropertyBrowser::itemClicked(QGraphicsItem *item)
 
     m_currentItem = item;
     m_currentObject = dynamic_cast<QObject *>(m_currentItem);
+    m_clickedObjectId = VAbstractTool::ObjectIdOfItem(m_currentItem);
     if (m_currentItem == nullptr)
     {
         m_stack->setCurrentWidget(m_patternWidget);

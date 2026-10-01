@@ -44,6 +44,7 @@
 #include "toolsdef.h"
 #include "vdatatool.h"
 
+class QGraphicsItem;
 class VGraphicsSimpleTextItem;
 class VAbstractNode;
 class VScaledLine;
@@ -91,6 +92,15 @@ public:
 
     static auto Colors() -> QStringList;
     static auto ColorsList() -> QMap<QString, QString>;
+
+    /** @brief The object a click landed on, read from the scene item itself.
+     *
+     * A copy produced by an operation carries its own id on the scene item, a line carries its tool's id, and a
+     * label or a control point answers for the object it belongs to — walking up is what covers all of them.
+     * Written once because two places need the very same answer: the layers dock, when a click picks the objects
+     * a layer will receive, and the options browser, when a click styles one copy inside an operation's figure.
+     * NULL_ID when the click carried none (a piece, the background). */
+    static auto ObjectIdOfItem(const QGraphicsItem *item) -> quint32;
 
     static auto GetRecord(quint32 id, const Tool &toolType, VAbstractPattern *doc) -> VToolRecord;
     static void AddRecord(const VToolRecord &record, VAbstractPattern *doc);

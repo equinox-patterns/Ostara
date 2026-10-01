@@ -90,6 +90,146 @@ template <class Tool> auto NotesProperty() -> PropertyDesc
             }};
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The pen and the colour of ONE copy — the object the click landed on inside the operation's figure.
+ *
+ *  The operation's options describe the whole set; a copy has no options of its own, but it does carry its own
+ *  pen. A copied curve keeps it on the `<source>` item it comes from, a copied line on its `<lines>` entry, and
+ *  `VAbstractOperation::CopyStyleOf` is the one place that says which — and whether there is one at all. The
+ *  group is therefore built only when the click landed on such a copy: a copied point carries no pen. Nothing is
+ *  offered to rename it either, its name belonging to the operation that produced it.
+ *
+ *  Its title is the copy's own name, so the group answers the question the whole panel leaves open: which of the
+ *  overlapping objects of a figure is being styled. */
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief What the group of one copy is called: its KIND, never its name.
+ *
+ *  Ostara is worked without the objects' names on screen, and a copy's name is a technical one anyway
+ *  ("Spl_A_B__r1"): printing it would say nothing. "Style de la courbe", "de l'arc", "de la ligne" says what is
+ *  being styled, which is the only thing this group is about. One string per kind rather than a composed one,
+ *  so a translator keeps the French article and elision right ("de la courbe", "de l'arc"). */
+auto CopyStyleTitle(const VAbstractOperation::CopyStyle &style) -> QString
+{
+    if (style.isLine)
+    {
+        return T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line style"));
+    }
+
+    switch (style.type)
+    {
+        case GOType::Arc:
+            return T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc style"));
+        case GOType::EllipticalArc:
+            return T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Elliptical arc style"));
+        default:
+            return T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve style"));
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The row of a style list the given style stands on — never the first one by accident.
+ *
+ *  A value no picture stands for — `default` on a copy that inherits the pen of the object it comes from, a value
+ *  read back from an older file — must not be shown as the first entry of the list: that is a lie about what is on
+ *  screen, and Sophie hit exactly that (01-10-2026). The entry that matches the pen the object is DRAWN with is
+ *  the honest answer, and the pen is what the drawing asks for anyway (LineStyleToPenStyle). */
+auto StyleIndex(const QMap<QString, QIcon> &styles, const QString &penStyle) -> vpesizetype
+{
+    const vpesizetype index = VPE::VLineTypeProperty::IndexOfStyle(styles, penStyle);
+    if (index >= 0)
+    {
+        return index;
+    }
+
+    const vpesizetype drawn = VPE::VLineTypeProperty::IndexOfStyle(
+        styles, PenStyleToLineStyle(LineStyleToPenStyle(penStyle)));
+    return drawn >= 0 ? drawn : 0;
+}
+
+template <class Tool> auto CopyStyleGroup() -> PropertyDesc
+{
+    return {QStringLiteral("copyStyle"), QString(),
+            [](VToolOptionsPropertyBrowser *b, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<Tool *>(tool);
+                const quint32 object = b->ClickedObjectId();
+                const VAbstractOperation::CopyStyle style = t->CopyStyleOf(object);
+                if (!style.exists)
+                {
+                    return nullptr;
+                }
+
+                QPalette const cp = b->ComboBoxPalette();
+                auto styles = style.isLine ? LineStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text))
+                                           : CurvePenStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+
+                auto *group = new VPE::VProperty(CopyStyleTitle(style));
+                group->setCollapsible(true);
+                group->setExpandedByDefault(true);
+
+                auto *pen = new VPE::VLineTypeProperty(
+                    style.isLine ? T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:"))
+                                 : T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:")));
+                pen->setStyles(styles);
+                pen->setValue(StyleIndex(styles, style.penStyle));
+
+                auto *color
+                    = new VPE::VLineColorProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:")));
+                color->SetDefaultColors(VAbstractTool::ColorsList());
+                color->SetCustomColors(VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
+                color->SetUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+                color->setValue(style.color.isEmpty() || style.color == ColorDefault ? ColorBlack : style.color);
+
+                group->addChild(pen);
+                group->addChild(color);
+                return group;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                // The change of a child is dispatched to the group — a child has no entry of its own in the
+                // browser's maps — so both values are read from the group and written together.
+                auto *t = qgraphicsitem_cast<Tool *>(b->currentItem());
+                if (t == nullptr || prop->getRowCount() < 2)
+                {
+                    return;
+                }
+
+                const quint32 object = b->ClickedObjectId();
+                const QString penStyle
+                    = prop->getChild(0)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                const QString color = prop->getChild(1)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+
+                const VAbstractOperation::CopyStyle style = t->CopyStyleOf(object);
+                if (!style.exists || (style.penStyle == penStyle && style.color == color))
+                {
+                    return;
+                }
+
+                t->SetCopyStyle(object, penStyle, color);
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                auto *t = qgraphicsitem_cast<Tool *>(b->currentItem());
+                if (t == nullptr || prop->getRowCount() < 2)
+                {
+                    return;
+                }
+
+                const VAbstractOperation::CopyStyle style = t->CopyStyleOf(b->ClickedObjectId());
+                if (!style.exists)
+                {
+                    return;
+                }
+
+                QPalette const cp = b->ComboBoxPalette();
+                auto styles = style.isLine ? LineStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text))
+                                           : CurvePenStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+                prop->getChild(0)->setValue(StyleIndex(styles, style.penStyle));
+                prop->getChild(1)->setValue(style.color.isEmpty() || style.color == ColorDefault ? ColorBlack
+                                                                                                  : style.color);
+            }};
+}
+
 // --- VToolRotation ---
 auto RotationProperties() -> std::vector<PropertyDesc>
 {
@@ -190,6 +330,7 @@ auto RotationProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
+        CopyStyleGroup<VToolRotation>(),
         NotesProperty<VToolRotation>(),
     };
 }
@@ -250,6 +391,7 @@ auto CloseDartProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
+        CopyStyleGroup<OToolCloseDart>(),
         NotesProperty<OToolCloseDart>(),
     };
 }
@@ -359,6 +501,7 @@ auto MoveProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
+        CopyStyleGroup<VToolMove>(),
         NotesProperty<VToolMove>(),
     };
 }
@@ -400,6 +543,7 @@ auto FlippingByLineProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
+        CopyStyleGroup<VToolFlippingByLine>(),
         NotesProperty<VToolFlippingByLine>(),
     };
 }
@@ -463,6 +607,7 @@ auto FlippingByAxisProperties() -> std::vector<PropertyDesc>
          }},
 
         // Notes
+        CopyStyleGroup<VToolFlippingByAxis>(),
         NotesProperty<VToolFlippingByAxis>(),
     };
 }
@@ -473,6 +618,7 @@ auto TransfertProperties() -> std::vector<PropertyDesc>
     // Notes, and nothing else: the two merge points are read in the pattern, and neither the portion nor the
     // layer it landed in is edited after the tool is created.
     return {
+        CopyStyleGroup<OToolTransfert>(),
         NotesProperty<OToolTransfert>(),
     };
 }

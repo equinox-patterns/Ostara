@@ -52,11 +52,21 @@ namespace
 {
 /**
  * @brief VisibilityGroupDataFromSource converts source list to visibility group list.
+ *
+ * A layer may only hold pairs (object, tool) the model can ADDRESS: the pair a tool enumerates for that object,
+ * or — when the tool cannot name that object alone — what the tool does enumerate. A cut point is the case that
+ * matters: its two segments are not addressable (`VToolSinglePoint::GroupVisibility` ignores the object it is
+ * handed, a cut hides as a whole), and writing the pair anyway is far from harmless — the loading pass judges it
+ * stale (`CleanStaleLayerItems`) and deletes it from the file at the next open, in silence. Measured: a rotation
+ * built on one segment of a cut put `(14, 13)` in its layer, and the entry was gone after a re-open.
+ *
+ * @param doc pattern document
  * @param data container with pattern data
  * @param source list with source objects
  * @return visibility group data
  */
-auto VisibilityGroupDataFromSource(const VContainer *data, const QVector<SourceItem> &source) -> QMap<quint32, quint32>
+auto VisibilityGroupDataFromSource(VAbstractPattern *doc, const VContainer *data, const QVector<SourceItem> &source)
+    -> QMap<quint32, quint32>
 {
     QMap<quint32, quint32> groupData;
 
@@ -64,7 +74,21 @@ auto VisibilityGroupDataFromSource(const VContainer *data, const QVector<SourceI
     {
         try
         {
-            groupData.insert(sItem.id, data->GetGObject(sItem.id)->getIdTool());
+            const quint32 toolId = data->GetGObject(sItem.id)->getIdTool();
+            const QVector<QPair<quint32, quint32>> addressable = doc->LayerableObjectsOfTool(toolId);
+
+            if (addressable.contains({sItem.id, toolId}))
+            {
+                groupData.insert(sItem.id, toolId);
+                continue;
+            }
+
+            // The object itself cannot be named in a layer: what goes in is the tool that carries it, exactly
+            // as the tool creation path writes it.
+            for (const auto &[objectId, objectTool] : addressable)
+            {
+                groupData.insert(objectId, objectTool);
+            }
         }
         catch (const VExceptionBadId &) // NOLINT(bugprone-empty-catch)
         {
@@ -316,6 +340,116 @@ void VAbstractOperation::SetNotes(const QString &notes)
 auto VAbstractOperation::SourceItems() const -> QVector<SourceItem>
 {
     return m_source;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractOperation::CopyStyleOf(quint32 objectId) const -> CopyStyle
+{
+    if (objectId == NULL_ID)
+    {
+        return {};
+    }
+
+    // A copied curve: the pen it is DRAWN with, read on the object the container holds — a copy inherits the pen
+    // of the object it comes from, so the raw attributes of its `<source>` item say `default` where the user sees
+    // a style and a colour. This is also where the "Pen style:" property of a normal curve reads it, so the two
+    // cannot answer differently. The two lists are read positionally — destination[i] is the image of source[i].
+    for (int i = 0; i < m_destination.size() && i < m_source.size(); ++i)
+    {
+        if (m_destination.at(i).id != objectId)
+        {
+            continue;
+        }
+
+        GOType type = GOType::Unknown;
+        try
+        {
+            type = VAbstractTool::data.GetGObject(objectId)->getType();
+        }
+        catch (const VExceptionBadId &)
+        {
+            return {};
+        }
+
+        // A copied point carries no pen at all (`CreatePoint` and `UpdatePoint` have nothing to give one to), so
+        // nothing is offered for it: an entry that would be written and never read is worse than none.
+        if (type == GOType::Point)
+        {
+            return {};
+        }
+
+        try
+        {
+            const QSharedPointer<VAbstractCurve> curve =
+                VAbstractTool::data.GeometricObject<VAbstractCurve>(objectId);
+
+            return {.penStyle = curve->GetPenStyle(),
+                    .color = curve->GetColor(),
+                    .type = type,
+                    .isLine = false,
+                    .exists = true};
+        }
+        catch (const VExceptionBadId &)
+        {
+            return {};
+        }
+    }
+
+    // A copied line: a tool of its own, whose type and colour the operation keeps beside its id.
+    for (const auto &line : m_lines)
+    {
+        if (line.result != objectId)
+        {
+            continue;
+        }
+
+        return {.penStyle = line.typeLine, .color = line.lineColor, .isLine = true, .exists = true};
+    }
+
+    // A copied point carries no pen, and an object this operation did not produce is none of its business.
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::SetCopyStyle(quint32 objectId, const QString &penStyle, const QString &color)
+{
+    // The very question the reader answers — does this operation keep a pen for that object, and on which list?
+    // Asked here too, so a value nobody would ever read is never written.
+    const CopyStyle current = CopyStyleOf(objectId);
+    if (!current.exists || (current.penStyle == penStyle && current.color == color))
+    {
+        return;
+    }
+
+    if (current.isLine)
+    {
+        for (auto &line : m_lines)
+        {
+            if (line.result == objectId)
+            {
+                line.typeLine = penStyle;
+                line.lineColor = color;
+                break;
+            }
+        }
+    }
+    else
+    {
+        for (int i = 0; i < m_destination.size() && i < m_source.size(); ++i)
+        {
+            if (m_destination.at(i).id == objectId)
+            {
+                m_source[i].penStyle = penStyle;
+                m_source[i].color = color;
+                break;
+            }
+        }
+    }
+
+    // Saved the way every tool option is: the element is cloned, the write is a command of its own, and the line
+    // parse that follows rebuilds the copies from what the element now says.
+    QSharedPointer<VGObject> obj = VContainer::GetFakeGObject(m_id);
+    SaveOption(obj);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1393,7 +1527,7 @@ void VAbstractOperation::CreateVisibilityGroup(const VAbstractOperationInitData 
         return;
     }
 
-    QMap<quint32, quint32> groupData = VisibilityGroupDataFromSource(initData.data, initData.source);
+    QMap<quint32, quint32> groupData = VisibilityGroupDataFromSource(initData.doc, initData.data, initData.source);
     AddLineCarriersToGroupData(initData.doc, initData.lines, groupData);
 
     vidtype const groupId = initData.data->getNextId();

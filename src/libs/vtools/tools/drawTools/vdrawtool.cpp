@@ -343,7 +343,9 @@ void VDrawTool::DispatchMenuSelection(const QAction *selectedAction, const MenuA
  */
 auto VDrawTool::CreateAddToGroupMenu(QMenu &menu, quint32 itemId) -> QActionGroup *
 {
-    QMap<quint32, QString> groupsNotContainingItem = doc->GetGroupsContainingItem(this->getId(), itemId, false);
+    const QPair<quint32, quint32> target = LayerMenuPair(itemId);
+    QMap<quint32, QString> groupsNotContainingItem
+        = doc->GetGroupsContainingItem(target.second, target.first, false);
 
     auto *actionsAddToGroup = new QActionGroup(this);
 
@@ -374,7 +376,8 @@ auto VDrawTool::CreateAddToGroupMenu(QMenu &menu, quint32 itemId) -> QActionGrou
 //---------------------------------------------------------------------------------------------------------------------
 auto VDrawTool::CreateRemoveFromGroupMenu(QMenu &menu, quint32 itemId) -> QActionGroup *
 {
-    QMap<quint32, QString> groupsContainingItem = doc->GetGroupsContainingItem(this->getId(), itemId, true);
+    const QPair<quint32, quint32> target = LayerMenuPair(itemId);
+    QMap<quint32, QString> groupsContainingItem = doc->GetGroupsContainingItem(target.second, target.first, true);
 
     auto *actionsRemoveFromGroup = new QActionGroup(this);
 
@@ -522,8 +525,9 @@ void VDrawTool::HandleAddToGroup(const QAction *selectedAction, quint32 itemId)
     auto *window = qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
     SCASSERT(window != nullptr)
 
-    // One command per object, under a single macro: the whole figure goes in as one step, and one Ctrl+Z takes
-    // it all out again. Same list, same shape, as the Layers dock.
+    // One command per object, under a single macro: one Ctrl+Z takes the whole write out again. The list is the
+    // one GroupObjects settles — the clicked copy alone for an operation, the whole figure for a tool that draws
+    // one indivisible figure — so the canvas and the Layers dock write the same thing.
     QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
     undoStack->beginMacro(tr("add objects to a layer"));
 
@@ -556,7 +560,7 @@ void VDrawTool::HandleRemoveFromGroup(const QAction *selectedAction, quint32 ite
     auto *window = qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
     SCASSERT(window != nullptr)
 
-    // Symmetric with adding: the whole figure leaves the layer, in one undoable step.
+    // Symmetric with adding: the same list leaves the layer, in one undoable step.
     QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
     undoStack->beginMacro(tr("remove objects from a layer"));
 
@@ -577,17 +581,52 @@ void VDrawTool::HandleRemoveFromGroup(const QAction *selectedAction, quint32 ite
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The (object, tool) pair the "add to layer" and "remove from layer" entries speak about.
+ *
+ *  The one the action will write, so a menu can never offer a layer on one pair and write another. For an
+ *  operation that is the copy the click landed on — and for a produced line the pair is (line, line), not
+ *  (operation, line), which is exactly why this asks the working set instead of building the pair from this
+ *  tool's own id. A tool that draws one indivisible figure keeps the pair of the object that was clicked: its
+ *  figure goes in and out as one, and the entries list it where the click landed.
+ */
+auto VDrawTool::LayerMenuPair(quint32 itemId) const -> QPair<quint32, quint32>
+{
+    if (const QVector<QPair<quint32, quint32>> working = GroupObjects(itemId); working.size() == 1)
+    {
+        return working.first();
+    }
+
+    return {itemId, getId()};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VDrawTool::GroupObjects(quint32 itemId) const -> QVector<QPair<quint32, quint32>>
 {
-    // The objects a layer holds for this tool: the whole figure, so a rectangle or an operation goes in and out
-    // as one and is never half in a layer. A tool the pattern cannot enumerate — a piece, a node — falls back to
-    // the object the menu was opened on, which is what this path has always written.
+    // The objects a layer holds for one click. A tool the pattern cannot enumerate — a piece, a node — falls back
+    // to the object the menu was opened on, which is what this path has always written.
     if (const QDomElement element = doc->FindElementById(getId(), getTagName()); not element.isNull())
     {
-        if (const QVector<QPair<quint32, quint32>> objects = VAbstractPattern::LayerableObjectsOfTool(element,
-                                                                                                      getId());
-            not objects.isEmpty())
+        const QVector<QPair<quint32, quint32>> objects = VAbstractPattern::LayerableObjectsOfTool(element, getId());
+        if (not objects.isEmpty())
         {
+            // An operation produces a SET of copies, each an object of its own, and a click works on the one it
+            // landed on — never on the whole set. That is also what the layer of an operation already does: it
+            // holds the sources that were picked, never all of them, so the copies can be hidden and filed one by
+            // one (asked for by Sophie, 01-10-2026: "je ne peux pas ajouter la courbe spécifiquement dans un
+            // calque"). Every other tool draws ONE figure whose parts travel together — a rectangle, a double
+            // point, a dart cap — and the whole figure is what goes in or out (§5quinquies).
+            if (element.tagName() == VAbstractPattern::TagOperation)
+            {
+                for (const auto &object : objects)
+                {
+                    if (object.first == itemId)
+                    {
+                        return {object};
+                    }
+                }
+            }
+
             return objects;
         }
     }
