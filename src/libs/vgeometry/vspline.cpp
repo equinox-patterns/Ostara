@@ -621,6 +621,17 @@ auto VSpline::operator=(const VSpline &spline) -> VSpline &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VSpline::Assign(const VGObject &other)
+{
+    if (const auto *spline = dynamic_cast<const VSpline *>(&other))
+    {
+        *this = *spline;
+        return;
+    }
+    VAbstractCubicBezier::Assign(other);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 VSpline::VSpline(VSpline &&spline) noexcept
   : VAbstractCubicBezier(std::move(spline)),
     // cppcheck-suppress accessMoved

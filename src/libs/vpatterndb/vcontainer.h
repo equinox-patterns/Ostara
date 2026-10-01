@@ -601,7 +601,11 @@ template <typename T> void VContainer::UpdateObject(const quint32 &id, const QSh
         {
             throw VExceptionBadId(tr("Can't cast object"), id);
         }
-        *obj = *point;
+        // Assign, and not `*obj = *point`: an assignment resolves on the STATIC type of the handle the caller
+        // gave, and the two cut segments of a curve are handed over as `QSharedPointer<VAbstractCubicBezier>`
+        // — `*obj = *point` would then copy the base part only and leave the geometry of the spline where it
+        // was, so a rotation built on that segment would never follow. See VGObject::Assign.
+        obj->Assign(*point);
         obj->setId(id);
     }
     else
@@ -648,7 +652,8 @@ template <typename T> void VContainer::UpdateObject(const quint32 &id, const T &
         {
             throw VExceptionBadId(tr("Can't cast object"), id);
         }
-        *obj = value;
+        // Same reason as the handle overload above: the copy goes through the real type of the object.
+        obj->Assign(value);
         obj->setId(id);
     }
     else

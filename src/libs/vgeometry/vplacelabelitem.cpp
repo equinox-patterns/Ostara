@@ -236,6 +236,17 @@ auto VPlaceLabelItem::operator=(const VPlaceLabelItem &item) -> VPlaceLabelItem 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPlaceLabelItem::Assign(const VGObject &other)
+{
+    if (const auto *item = dynamic_cast<const VPlaceLabelItem *>(&other))
+    {
+        *this = *item;
+        return;
+    }
+    VPointF::Assign(other);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 VPlaceLabelItem::VPlaceLabelItem(VPlaceLabelItem &&item) noexcept
   : VPointF(std::move(item)),
     d(std::move(item.d)) // NOLINT(bugprone-use-after-move)

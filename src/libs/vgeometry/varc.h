@@ -66,6 +66,7 @@ public:
     auto Move(qreal length, qreal angle, const QString &name = QString()) const -> VArc;
 
     auto operator=(const VArc &arc) -> VArc &;
+    void Assign(const VGObject &other) override;
 
     VArc(VArc &&arc) noexcept;
     auto operator=(VArc &&arc) noexcept -> VArc &;

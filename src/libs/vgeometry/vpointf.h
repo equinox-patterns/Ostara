@@ -68,6 +68,7 @@ public:
     ~VPointF() override;
 
     auto operator=(const VPointF &point) -> VPointF &;
+    void Assign(const VGObject &other) override;
 
     VPointF(VPointF &&point) noexcept;
     auto operator=(VPointF &&point) noexcept -> VPointF &;

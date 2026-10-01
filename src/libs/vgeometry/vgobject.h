@@ -64,6 +64,17 @@ public:
 
     auto operator=(const VGObject &obj) -> VGObject &;
 
+    /**
+     * @brief Assign copy another object into this one, geometry included.
+     *
+     * `*this = other` through a base reference copies the base part only: the geometry of a curve lives in
+     * the data pointer of its own class, which the base assignment never reaches. A caller that holds its
+     * object as a `QSharedPointer` of a base type would then update the name and the colour and leave the
+     * shape behind. This is the entry point the container uses: it dispatches on the real type, so the copy
+     * is complete whatever handle the caller gave, and a source of another type falls back to the base copy.
+     */
+    virtual void Assign(const VGObject &other);
+
     VGObject(VGObject &&obj) noexcept;
     auto operator=(VGObject &&obj) noexcept -> VGObject &;
 

@@ -795,6 +795,17 @@ auto VSplinePath::operator=(const VSplinePath &path) -> VSplinePath &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VSplinePath::Assign(const VGObject &other)
+{
+    if (const auto *path = dynamic_cast<const VSplinePath *>(&other))
+    {
+        *this = *path;
+        return;
+    }
+    VAbstractCubicBezierPath::Assign(other);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 VSplinePath::VSplinePath(VSplinePath &&splPath) noexcept
   : VAbstractCubicBezierPath(std::move(splPath)),
     d(std::move(splPath.d)) // NOLINT(bugprone-use-after-move)

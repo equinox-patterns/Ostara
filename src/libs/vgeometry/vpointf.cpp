@@ -112,6 +112,17 @@ auto VPointF::operator=(const VPointF &point) -> VPointF &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPointF::Assign(const VGObject &other)
+{
+    if (const auto *point = dynamic_cast<const VPointF *>(&other))
+    {
+        *this = *point;
+        return;
+    }
+    VGObject::Assign(other);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 VPointF::VPointF(VPointF &&point) noexcept
   : VGObject(std::move(point)),
     d(std::move(point.d)) // NOLINT(bugprone-use-after-move)

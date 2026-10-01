@@ -59,6 +59,7 @@ public:
     auto Outline(const QVector<qreal> &distances, const QString &name = QString()) const -> VSplinePath override;
 
     auto operator=(const VCubicBezierPath &curve) -> VCubicBezierPath &;
+    void Assign(const VGObject &other) override;
 
     VCubicBezierPath(VCubicBezierPath &&curve) noexcept;
     auto operator=(VCubicBezierPath &&curve) noexcept -> VCubicBezierPath &;

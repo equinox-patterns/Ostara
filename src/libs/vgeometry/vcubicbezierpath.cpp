@@ -76,6 +76,17 @@ auto VCubicBezierPath::operator=(const VCubicBezierPath &curve) -> VCubicBezierP
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VCubicBezierPath::Assign(const VGObject &other)
+{
+    if (const auto *curve = dynamic_cast<const VCubicBezierPath *>(&other))
+    {
+        *this = *curve;
+        return;
+    }
+    VAbstractCubicBezierPath::Assign(other);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 VCubicBezierPath::VCubicBezierPath(VCubicBezierPath &&curve) noexcept
   : VAbstractCubicBezierPath(std::move(curve)),
     d(std::move(curve.d)) // NOLINT(bugprone-use-after-move)

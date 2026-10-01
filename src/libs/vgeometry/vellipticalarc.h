@@ -68,6 +68,7 @@ public:
     auto Move(qreal length, qreal angle, const QString &name = QString()) const -> VEllipticalArc;
 
     auto operator=(const VEllipticalArc &arc) -> VEllipticalArc &;
+    void Assign(const VGObject &other) override;
 
     VEllipticalArc(VEllipticalArc &&arc) noexcept;
     auto operator=(VEllipticalArc &&arc) noexcept -> VEllipticalArc &;

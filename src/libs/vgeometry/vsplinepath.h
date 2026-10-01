@@ -70,6 +70,7 @@ public:
 
     auto operator[](vsizetype indx) -> VSplinePoint &;
     auto operator=(const VSplinePath &path) -> VSplinePath &;
+    void Assign(const VGObject &other) override;
 
     VSplinePath(VSplinePath &&splPath) noexcept;
     auto operator=(VSplinePath &&path) noexcept -> VSplinePath &;

@@ -133,6 +133,17 @@ auto VEllipticalArc::operator=(const VEllipticalArc &arc) -> VEllipticalArc &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VEllipticalArc::Assign(const VGObject &other)
+{
+    if (const auto *arc = dynamic_cast<const VEllipticalArc *>(&other))
+    {
+        *this = *arc;
+        return;
+    }
+    VAbstractArc::Assign(other);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 VEllipticalArc::VEllipticalArc(VEllipticalArc &&arc) noexcept
   : VAbstractArc(std::move(arc)),
     d(std::move(arc.d)) // NOLINT(bugprone-use-after-move)

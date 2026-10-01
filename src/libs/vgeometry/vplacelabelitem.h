@@ -47,6 +47,7 @@ public:
     ~VPlaceLabelItem() override;
 
     auto operator=(const VPlaceLabelItem &item) -> VPlaceLabelItem &;
+    void Assign(const VGObject &other) override;
 
     VPlaceLabelItem(VPlaceLabelItem &&item) noexcept;
     auto operator=(VPlaceLabelItem &&item) noexcept -> VPlaceLabelItem &;

@@ -84,6 +84,14 @@ auto VGObject::operator=(const VGObject &obj) -> VGObject &
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VGObject::Assign(const VGObject &other)
+{
+    // The base part, and nothing else: a class with a data pointer of its own overrides this. Kept as the
+    // fallback for a source of another type, which is what this assignment did before it had an entry point.
+    *this = other;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 VGObject::VGObject(VGObject &&obj) noexcept
   : d(std::move(obj.d))
 {

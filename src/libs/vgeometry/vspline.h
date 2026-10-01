@@ -72,6 +72,7 @@ public:
     auto OutlinePath(const QVector<qreal> &distances) const -> QVector<VSpline>;
 
     auto operator=(const VSpline &spline) -> VSpline &;
+    void Assign(const VGObject &other) override;
 
     VSpline(VSpline &&spline) noexcept;
     auto operator=(VSpline &&spline) noexcept -> VSpline &;
