@@ -514,6 +514,29 @@ auto VToolAbstractCurve::GetAliasSuffix() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractCurve::FindPointId(bool isStart) const -> quint32
+{
+    const auto position = isStart ? CurvePointPosition::Start : CurvePointPosition::End;
+
+    const QVector<VNode> deps = doc->PatternGraph()->GetDependentNodes(m_id, [](const VNode &node) {
+        return node.type == VNodeType::TOOL;
+    });
+
+    for (const auto &node : deps)
+    {
+        if (auto *point = qobject_cast<OToolCurvePoint *>(VAbstractPattern::getTool(node.id)))
+        {
+            if (point->GetPosition() == position)
+            {
+                return node.id;
+            }
+        }
+    }
+
+    return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolAbstractCurve::GroupVisibility(quint32 object, bool visible)
 {
     Q_UNUSED(object)
@@ -868,29 +891,6 @@ auto VToolAbstractOffsetCurve::HasConflict(const QString &value, VToolAbstractOf
         // Alias cannot conflict with name
         return value == currentName;
     }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VToolAbstractOffsetCurve::FindPointId(bool isStart) const -> quint32
-{
-    const auto position = isStart ? CurvePointPosition::Start : CurvePointPosition::End;
-
-    const QVector<VNode> deps = doc->PatternGraph()->GetDependentNodes(m_id, [](const VNode &node) {
-        return node.type == VNodeType::TOOL;
-    });
-
-    for (const auto &node : deps)
-    {
-        if (auto *point = qobject_cast<OToolCurvePoint *>(VAbstractPattern::getTool(node.id)))
-        {
-            if (point->GetPosition() == position)
-            {
-                return node.id;
-            }
-        }
-    }
-
-    return NULL_ID;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

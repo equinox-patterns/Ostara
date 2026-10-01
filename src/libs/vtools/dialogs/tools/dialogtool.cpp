@@ -384,15 +384,7 @@ auto DialogTool::eventFilter(QObject *object, QEvent *event) -> bool
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogTool::DNumber(const QString &baseName) const -> quint32
 {
-    quint32 num = 0;
-    QString name;
-    do
-    {
-        ++num;
-        name = baseName + u"_%1"_s.arg(num);
-    } while (not data.IsUnique(name));
-
-    return num;
+    return data.UniqueDuplicate(baseName);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

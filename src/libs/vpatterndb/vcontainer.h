@@ -304,6 +304,15 @@ public:
     auto IsUnique(const QString &name) const -> bool;
     static auto IsUnique(const QString &name, const QString &nspace) -> bool;
 
+    /**
+     * @brief First free number for a name already taken: 1 for @c base_1, 2 when that one is taken too.
+     *
+     * Every tool that names an object after something already in the pattern — a path after its two ends, a
+     * rectangle after its two corners — asks the same question, and the number is what keeps its name usable
+     * in a formula. It lives here because uniqueness is what this container knows about.
+     */
+    auto UniqueDuplicate(const QString &baseName) const -> quint32;
+
     auto AllUniqueNames() const -> QStringList;
     static auto AllUniqueNames(const QString &nspace) -> QStringList;
 

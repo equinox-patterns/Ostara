@@ -23,6 +23,8 @@ VLib {
         "vabstractarc.cpp",
         "vabstractbezier.cpp",
         "vplacelabelitem.cpp",
+        "oc2chain.cpp",
+        "ospiral.cpp",
         "vgobject.h",
         "vgobject_p.h",
         "vabstractcurve.h",
@@ -51,7 +53,9 @@ VLib {
         "vabstractarc_p.h",
         "vabstractbezier.h",
         "vplacelabelitem.h",
-        "vplacelabelitem_p.h"
+        "vplacelabelitem_p.h",
+        "oc2chain.h",
+        "ospiral.h"
     ]
 
     Export {

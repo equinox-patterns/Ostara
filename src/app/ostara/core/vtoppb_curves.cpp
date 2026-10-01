@@ -38,6 +38,7 @@
 #include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolparallelcurve.h"
+#include "../vtools/tools/drawTools/toolcurve/otoolspiral.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolspline.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolsplinepath.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.h"
@@ -621,6 +622,7 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>;
 auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>;
 auto ParallelCurveProperties() -> std::vector<PropertyDesc>;
 auto GraduatedCurveProperties() -> std::vector<PropertyDesc>;
+auto SpiralProperties() -> std::vector<PropertyDesc>;
 
 // ====== Tool descriptors ======
 
@@ -1402,6 +1404,87 @@ auto ParallelCurveProperties() -> std::vector<PropertyDesc>
          }},
         MakeLineColor<VToolParallelCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
         MakeNotes<VToolParallelCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+    };
+}
+
+// --- OToolSpiral ---
+auto SpiralProperties() -> std::vector<PropertyDesc>
+{
+    return {
+        MakeObjectNameReadOnly<OToolSpiral>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        MakeStringPropWithValidator<OToolSpiral>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &OToolSpiral::GetAliasSuffix, &OToolSpiral::SetAliasSuffix),
+        {AttrRadius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolSpiral *>(tool);
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius:")));
+             p->SetFormula(t->GetFormulaRadius()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolSpiral *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaRadius()) t->SetFormulaRadius(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolSpiral *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaRadius()); prop->setValue(v);
+             }
+         }},
+        {AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolSpiral *>(tool);
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
+             p->SetFormula(t->GetFormulaLength()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolSpiral *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaLength()) t->SetFormulaLength(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolSpiral *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
+             }
+         }},
+        {AttrAngle, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolSpiral *>(tool);
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:")));
+             p->SetFormula(t->GetFormulaAngle()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolSpiral *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaAngle()) t->SetFormulaAngle(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolSpiral *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaAngle()); prop->setValue(v);
+             }
+         }},
+        MakeLineColor<OToolSpiral>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
+        MakeNotes<OToolSpiral>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
+        // The point is always there: this only says whether its name is drawn, hence the last position, after
+        // the notes, where nothing else depends on it.
+        {QStringLiteral("showPointName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolSpiral *>(tool);
+             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")));
+             p->setValue(t->EndPointLabelVisible());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolSpiral *>(b->currentItem())) {
+                 t->SetEndPointLabelVisible(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolSpiral *>(b->currentItem())) {
+                 prop->setValue(t->EndPointLabelVisible());
+             }
+         }},
     };
 }
 

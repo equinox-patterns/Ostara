@@ -266,6 +266,7 @@ private slots:
     void ToolParallelCurve(bool checked);
     void ToolGraduatedCurve(bool checked);
     void ToolArmholeCurve(bool checked);
+    void ToolSpiral(bool checked);
 
     void ActionDraw(bool checked);
     void ActionDetails(bool checked);

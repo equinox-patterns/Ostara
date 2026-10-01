@@ -271,7 +271,7 @@ auto VHistoryManager::RootTools() const -> QVector<vidtype>
     for (const auto &record : history)
     {
         // This check helps to find missed tools in the switch
-        Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "List of tools changed.");
+        Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "List of tools changed.");
 
         switch (record.GetToolType())
         {
@@ -324,6 +324,7 @@ auto VHistoryManager::RootTools() const -> QVector<vidtype>
             case Tool::ArcWithLength:
             case Tool::ParallelCurve:
             case Tool::GraduatedCurve:
+            case Tool::Spiral:
             case Tool::SplinePath:
             case Tool::CubicBezierPath:
             case Tool::PointOfContact:

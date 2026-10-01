@@ -73,6 +73,7 @@ using namespace VtoppbConstants;
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
 #include "../vtools/tools/drawTools/toolcurve/otoolarmholecurve.h"
+#include "../vtools/tools/drawTools/toolcurve/otoolspiral.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarc.h"
@@ -171,6 +172,7 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>;
 auto EllipticalArcWithLengthProperties() -> std::vector<PropertyDesc>;
 auto ParallelCurveProperties() -> std::vector<PropertyDesc>;
 auto GraduatedCurveProperties() -> std::vector<PropertyDesc>;
+auto SpiralProperties() -> std::vector<PropertyDesc>;
 
 //---------------------------------------------------------------------------------------------------------------------
 VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QWidget *parent)
@@ -230,7 +232,7 @@ void VToolOptionsPropertyBrowser::ClearPropertyBrowser()
 void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "Not all tools were used in switch.");
 
     switch (item->type())
     {
@@ -393,6 +395,9 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
         case VToolGraduatedCurve::Type:
             ShowToolOptions<VToolGraduatedCurve>(item, tr("Tool graduated curve"), GraduatedCurveProperties());
             break;
+        case OToolSpiral::Type:
+            ShowToolOptions<OToolSpiral>(item, tr("Spiral"), SpiralProperties());
+            break;
         default:
             break;
     }
@@ -407,7 +412,7 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
@@ -554,6 +559,9 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
         case VToolGraduatedCurve::Type:
             UpdateToolOptions<VToolGraduatedCurve>(GraduatedCurveProperties());
             break;
+        case OToolSpiral::Type:
+            UpdateToolOptions<OToolSpiral>(SpiralProperties());
+            break;
         default:
             break;
     }
@@ -611,7 +619,7 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
@@ -753,6 +761,9 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
             break;
         case VToolGraduatedCurve::Type:
             ChangeToolData<VToolGraduatedCurve>(prop, GraduatedCurveProperties());
+            break;
+        case OToolSpiral::Type:
+            ChangeToolData<OToolSpiral>(prop, SpiralProperties());
             break;
         default:
             break;

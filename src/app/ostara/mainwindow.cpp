@@ -298,6 +298,7 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("rectangle"),                    ui->actionRectangleTool},
         {QStringLiteral("move"),                         ui->actionMoveTool},
         {QStringLiteral("transfert"),                    ui->actionTransfertTool},
+        {QStringLiteral("spiral"),                       ui->actionSpiralTool},
         {QStringLiteral("true_darts"),                   ui->actionTrueDartsTool},
         {QStringLiteral("new_detail"),                   ui->actionNewDetailTool},
         {QStringLiteral("path"),                         ui->actionInternalPathTool},

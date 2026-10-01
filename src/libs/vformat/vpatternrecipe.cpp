@@ -57,6 +57,7 @@
 #include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolparallelcurve.h"
+#include "../vtools/tools/drawTools/toolcurve/otoolspiral.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolspline.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolsplinepath.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/vtooltruedarts.h"
@@ -367,7 +368,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -488,6 +489,8 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
                 return ParallelCurve(tool);
             case Tool::GraduatedCurve:
                 return GraduatedCurve(tool);
+            case Tool::Spiral:
+                return Spiral(tool);
             // Because "history" not only show history of pattern, but help restore current data for each pattern's
             // piece, we need add record about details and nodes, but don't show them.
             case Tool::Piece:
@@ -1361,6 +1364,24 @@ auto VPatternRecipe::GraduatedCurve(const VToolRecord &record) -> QDomElement
     }
 
     step.appendChild(offsetsTag);
+
+    CurveAttributes(step, tool);
+
+    return step;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPatternRecipe::Spiral(const VToolRecord &record) -> QDomElement
+{
+    auto *tool = GetPatternTool<OToolSpiral>(record.GetId());
+
+    QDomElement step = createElement(TagStep);
+
+    ToolAttributes(step, tool);
+    SetAttribute(step, AttrBasePoint, tool->StartPointName());
+    Formula(step, tool->GetFormulaRadius(), AttrRadius, AttrRadiusValue);
+    Formula(step, tool->GetFormulaLength(), AttrLength, AttrLengthValue);
+    Formula(step, tool->GetFormulaAngle(), AttrAngle, AttrAngleValue);
 
     CurveAttributes(step, tool);
 

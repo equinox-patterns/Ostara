@@ -443,7 +443,10 @@
                           <xs:attribute name="width" type="xs:string"/>
                           <xs:attribute name="suffix" type="xs:string"/>
                           <xs:attribute name="curve" type="xs:unsignedInt"/>
-                          <xs:attribute name="name" type="xs:string"/> 
+                          <xs:attribute name="name" type="xs:string"/>
+                          <xs:attribute name="radius" type="xs:string"/>
+                          <xs:attribute name="length" type="xs:string"/>
+                          <xs:attribute name="angle" type="xs:string"/> 
                         </xs:complexType>
                       </xs:element>
                     </xs:choice>

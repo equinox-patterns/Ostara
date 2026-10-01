@@ -149,6 +149,11 @@ protected:
 
     void SetSceneType(SceneObject newSceneType);
 
+    /// Id of the tool materializing one end of this curve, NULL_ID when there is none. A curve does not own its
+    /// end points: they are tools of their own, hung under it in the pattern graph, and this is how it finds
+    /// them back — to show or hide their name, or to delete one.
+    auto FindPointId(bool isStart) const -> quint32;
+
     static auto CorrectedSpline(const VSpline &spline, const SplinePointPosition &position, const QPointF &pos)
         -> VSpline;
 
@@ -451,7 +456,6 @@ private:
 
     void UpdateNameField(VToolAbstractOffsetCurveField field, const QString &value);
     auto HasConflict(const QString &value, VToolAbstractOffsetCurveField currentField) const -> bool;
-    auto FindPointId(bool isStart) const -> quint32;
 };
 
 //---------------------------------------------------------------------------------------------------------------------

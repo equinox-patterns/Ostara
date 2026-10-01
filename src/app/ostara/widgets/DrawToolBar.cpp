@@ -94,7 +94,8 @@ auto BorrowedToolIcons() -> const QHash<QString, QString> &
     static const QHash<QString, QString> borrowed{{QStringLiteral("close_dart"), QStringLiteral("rotation.png")},
                                                   {QStringLiteral("dart_cap"), QStringLiteral("true_darts.png")},
                                                   {QStringLiteral("rectangle"), QStringLiteral("shoulder.png")},
-                                                  {QStringLiteral("transfert"), QStringLiteral("move.png")}};
+                                                  {QStringLiteral("transfert"), QStringLiteral("move.png")},
+                                                  {QStringLiteral("spiral"), QStringLiteral("parallel_curve.png")}};
     return borrowed;
 }
 
@@ -522,6 +523,9 @@ void DrawToolBar::InitializeGroups()
             // Same again: no transfert.svg yet, so the button is built by hand below and borrows the icon of
             // the move it translates — the one its action uses too.
             {QStringLiteral("transfert"),                tr("Transfer tool"),                                   nullptr, nullptr},
+            // Same again: the spiral waits for artwork of its own and borrows the icon of the parallel curve,
+            // which is where its action takes it from too.
+            {QStringLiteral("spiral"),                   tr("Spiral tool"),                                     nullptr, nullptr},
         }, kModeDraw},
     };
     // clang-format on
@@ -624,6 +628,20 @@ void DrawToolBar::InitializeGroups()
         btn->setIconSize(QSize(24, 24));
         btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("move.png")));
         m_buttonMap.insert(QStringLiteral("transfert"), btn);
+    }
+
+    // The spiral waits for artwork of its own too, and borrows the icon of the parallel curve — the same one
+    // its action carries. By hand, like the four above.
+    if (!m_buttonMap.contains(QStringLiteral("spiral")))
+    {
+        auto *btn = new QToolButton(m_root);
+        btn->setObjectName(QStringLiteral("drawToolBtn"));
+        btn->setAutoRaise(true);
+        btn->setCheckable(true);
+        btn->setFixedSize(kButtonSize, kButtonSize);
+        btn->setIconSize(QSize(24, 24));
+        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("parallel_curve.png")));
+        m_buttonMap.insert(QStringLiteral("spiral"), btn);
     }
 
     // Update the button pointer in the ToolItem

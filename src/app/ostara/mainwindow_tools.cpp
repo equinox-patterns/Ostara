@@ -92,6 +92,7 @@
 #include "../vtools/dialogs/tools/dialoguniondetails.h"
 #include "../vtools/dialogs/tools/dialoggraduatedcurve.h"
 #include "../vtools/dialogs/tools/dialogparallelcurve.h"
+#include "../vtools/dialogs/tools/odialogspiral.h"
 #include "../vtools/dialogs/tools/piece/dialogduplicatedetail.h"
 #include "../vtools/dialogs/tools/piece/dialoginsertnode.h"
 #include "../vtools/dialogs/tools/piece/dialogpiecepath.h"
@@ -116,6 +117,7 @@
 #include "../vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolparallelcurve.h"
+#include "../vtools/tools/drawTools/toolcurve/otoolspiral.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolspline.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolsplinepath.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/vtooltruedarts.h"
@@ -952,6 +954,17 @@ void MainWindow::ToolArmholeCurve(bool checked)
 }
 
 
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSpiral(bool checked)
+{
+    ToolSelectPointByRelease();
+    SetToolButtonWithApply<ODialogSpiral>(
+        checked, Tool::Spiral, QString(),
+        tr("Select the point the spiral starts at"), &MainWindow::ClosedDrawDialogWithApply<OToolSpiral>,
+        &MainWindow::ApplyDrawDialog<OToolSpiral>);
+}
+
+
 template <typename Dialog, typename Func>
 void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, const QString &toolTip,
                                Func closeDialogSlot)
@@ -993,7 +1006,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "Check if need to extend.");
 
     switch (t)
     {
@@ -1423,7 +1436,7 @@ void MainWindow::ApplyPieceDialog(VMainGraphicsScene *scene)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1541,6 +1554,9 @@ void MainWindow::CancelTool()
             break;
         case Tool::ArmholeCurve:
             ui->actionArmholeCurveTool->setChecked(false);
+            break;
+        case Tool::Spiral:
+            ui->actionSpiralTool->setChecked(false);
             break;
         case Tool::Arc:
             ui->actionArcTool->setChecked(false);
@@ -1743,7 +1759,7 @@ void MainWindow::ArrowTool(bool checked)
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -1828,6 +1844,10 @@ void MainWindow::LastUsedTool()
         case Tool::ArmholeCurve:
             ui->actionArmholeCurveTool->setChecked(true);
             ToolArmholeCurve(true);
+            break;
+        case Tool::Spiral:
+            ui->actionSpiralTool->setChecked(true);
+            ToolSpiral(true);
             break;
         case Tool::Arc:
             ui->actionArcTool->setChecked(true);

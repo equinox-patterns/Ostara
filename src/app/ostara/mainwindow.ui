@@ -2311,6 +2311,27 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
+  <action name="actionSpiralTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="share/resources/toolicon.qrc">
+     <normaloff>:/toolicon/light/parallel_curve.png</normaloff>:/toolicon/light/parallel_curve.png</iconset>
+   </property>
+   <property name="text">
+    <string>Spiral</string>
+   </property>
+   <property name="toolTip">
+    <string>Spiral: a golden spiral of the length you ask for, drawn from an existing point</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
   <action name="actionMoveTool">
    <property name="checkable">
     <bool>true</bool>

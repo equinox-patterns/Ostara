@@ -38,6 +38,8 @@
 #include "../qmuparser/qmuparsererror.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/otoolarmholecurve.h"
+#include "../vtools/tools/drawTools/toolcurve/otoolspiral.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolcurvepoint.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezier.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolspline.h"
@@ -636,6 +638,92 @@ void VPattern::ParseToolCubicBezierPath(VMainGraphicsScene *scene, const QDomEle
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseToolSpiral(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse)
+{
+    SCASSERT(scene != nullptr)
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        OToolSpiralInitData initData;
+        initData.scene = scene;
+        initData.doc = this;
+        initData.data = data;
+        initData.parse = parse;
+        initData.typeCreation = Source::FromFile;
+
+        DrawToolsCommonAttributes(domElement, initData.id, initData.notes);
+        initData.startPointId = GetParametrUInt(domElement, AttrPoint1, NULL_ID_STR);
+        initData.formulaRadius = GetParametrString(domElement, AttrRadius, QChar('0'));
+        initData.formulaLength = GetParametrString(domElement, AttrLength, QChar('0'));
+        initData.formulaAngle = GetParametrString(domElement, AttrAngle, QChar('0'));
+        initData.color = GetParametrString(domElement, AttrColor, ColorBlack);
+        initData.penStyle = GetParametrString(domElement, AttrPenStyle, TypeLineLine);
+        initData.approximationScale = GetParametrDouble(domElement, AttrAScale, QChar('0'));
+        initData.aliasSuffix = GetParametrEmptyString(domElement, AttrAlias);
+        initData.endPointName = ArrivalPointName(initData.id);
+        initData.duplicate = GetParametrUInt(domElement, AttrDuplicate, QChar('0'));
+
+        const QString fRadius = initData.formulaRadius; // need for saving fixed formula;
+        const QString fLength = initData.formulaLength;
+        const QString fAngle = initData.formulaAngle;
+
+        OToolSpiral::Create(initData);
+
+        // Rewrite attribute formula. Need for situation when we have wrong formula.
+        if (fRadius != initData.formulaRadius || fLength != initData.formulaLength || fAngle != initData.formulaAngle)
+        {
+            SetAttribute(domElement, AttrRadius, initData.formulaRadius);
+            SetAttribute(domElement, AttrLength, initData.formulaLength);
+            SetAttribute(domElement, AttrAngle, initData.formulaAngle);
+            modified = true;
+            haveLiteChange();
+        }
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating a spiral"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+    catch (qmu::QmuParserError &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating a spiral"), domElement);
+        excep.AddMoreInformation("Message:     "_L1 + e.GetMsg() + '\n'_L1 + "Expression:  "_L1 + e.GetExpr());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Name of the point a spiral arrives at, read from the file.
+ *
+ * That point is a tool of its own, written next to the curve, and its name is the truth: the last knot of the
+ * spiral carries it because the two ends are what name the curve, and the point can be renamed from the property
+ * browser without telling the curve. Reading it here, rather than keeping a copy in the curve's attributes, is
+ * what keeps the two in step.
+ */
+auto VPattern::ArrivalPointName(quint32 spiralId) const -> QString
+{
+    const QDomNodeList nodes = elementsByTagName(TagPoint);
+    for (int i = 0; i < nodes.size(); ++i)
+    {
+        const QDomElement point = nodes.at(i).toElement();
+        if (point.isNull() || GetParametrString(point, AttrType) != OToolCurvePoint::ToolTypeEnd)
+        {
+            continue;
+        }
+
+        if (GetParametrUInt(point, AttrSpline, NULL_ID_STR) == spiralId)
+        {
+            return GetParametrString(point, AttrName);
+        }
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VPattern::ParseNodeSpline(const QDomElement &domElement, const Document &parse)
 {
     Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
@@ -710,7 +798,8 @@ void VPattern::ParseSplineElement(VMainGraphicsScene *scene, QDomElement &domEle
                                       VToolCubicBezierPath::ToolType,  /*7*/
                                       VToolParallelCurve::ToolType,    /*8*/
                                       VToolGraduatedCurve::ToolType,   /*9*/
-                                      OToolArmholeCurve::ToolType});   /*10*/
+                                      OToolArmholeCurve::ToolType,      /*10*/
+                                      OToolSpiral::ToolType});          /*11*/
     switch (splines.indexOf(type))
     {
         case 0: // VToolSpline::OldToolType
@@ -750,6 +839,9 @@ void VPattern::ParseSplineElement(VMainGraphicsScene *scene, QDomElement &domEle
             break;
         case 10: // OToolArmholeCurve::ToolType
             ParseToolArmholeCurve(scene, domElement, parse);
+            break;
+        case 11: // OToolSpiral::ToolType
+            ParseToolSpiral(scene, domElement, parse);
             break;
         default:
             throw VException(tr("Unknown spline type '%1'.").arg(type));

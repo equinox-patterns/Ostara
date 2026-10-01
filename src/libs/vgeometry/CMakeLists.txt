@@ -19,6 +19,8 @@ set(VGEOMETRY_SOURCES
     vabstractbezier.cpp
     vplacelabelitem.cpp
     obezierextension.cpp
+    oc2chain.cpp
+    ospiral.cpp
     # Headers
     vgobject.h
     vgobject_p.h
@@ -50,6 +52,8 @@ set(VGEOMETRY_SOURCES
     vplacelabelitem.h
     vplacelabelitem_p.h
     obezierextension.h
+    oc2chain.h
+    ospiral.h
     stable.h
 )
 

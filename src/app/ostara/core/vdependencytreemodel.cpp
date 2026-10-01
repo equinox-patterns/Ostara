@@ -77,7 +77,7 @@ auto GetObjectName(vidtype id, const VContainer &patternData, const QString &def
 //---------------------------------------------------------------------------------------------------------------------
 auto IsGeometricTool(Tool toolType) -> bool
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "List of tools changed.");
 
     switch (toolType)
     {
@@ -95,6 +95,7 @@ auto IsGeometricTool(Tool toolType) -> bool
         case Tool::ArcWithLength:
         case Tool::ParallelCurve:
         case Tool::GraduatedCurve:
+        case Tool::Spiral:
         case Tool::SplinePath:
         case Tool::CubicBezierPath:
         case Tool::PointOfContact:
@@ -983,7 +984,7 @@ auto VDependencyTreeModel::GetToolName(vidtype id, const VContainer &patternData
 //---------------------------------------------------------------------------------------------------------------------
 auto VDependencyTreeModel::GetOperationToolName(Tool toolType, const QString &defaultName) const -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "List of tools changed.");
 
     switch (toolType)
     {
@@ -1017,7 +1018,7 @@ auto VDependencyTreeModel::GetToolToolTip(vidtype id) const -> QString
 {
     const VToolRecord tool = FindToolRecord(id);
 
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 73, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "List of tools changed.");
 
     switch (tool.GetToolType())
     {
@@ -1051,6 +1052,8 @@ auto VDependencyTreeModel::GetToolToolTip(vidtype id) const -> QString
             return tr("Parallel curve");
         case Tool::GraduatedCurve:
             return tr("Graduated curve");
+        case Tool::Spiral:
+            return tr("Spiral");
         case Tool::SplinePath:
         case Tool::CubicBezierPath:
             return tr("Spline path");

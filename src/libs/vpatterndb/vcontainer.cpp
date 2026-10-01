@@ -1109,6 +1109,20 @@ auto VContainer::IsUnique(const QString &name, const QString &nspace) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VContainer::UniqueDuplicate(const QString &baseName) const -> quint32
+{
+    quint32 number = 0;
+    QString name;
+    do
+    {
+        ++number;
+        name = baseName + QLatin1Char('_') + QString::number(number);
+    } while (not IsUnique(name));
+
+    return number;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VContainer::AllUniqueNames() const -> QStringList
 {
     return AllUniqueNames(d->nspace);
