@@ -815,6 +815,11 @@
         <translation>Créer un calque à partir des objets d&apos;origine</translation>
     </message>
     <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="130"/>
+        <source>The original objects move into this layer and leave their other layers.</source>
+        <translation>Les objets d&apos;origine entrent dans ce calque et quittent leurs autres calques.</translation>
+    </message>
+    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="87"/>
         <source>Layer</source>
         <translation>Calque</translation>
@@ -2202,6 +2207,11 @@
         <translation>Activer pour créer un calque à partir des objets d&apos;origine</translation>
     </message>
     <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="111"/>
+        <source>The original objects move into this layer and leave their other layers.</source>
+        <translation>Les objets d&apos;origine entrent dans ce calque et quittent leurs autres calques.</translation>
+    </message>
+    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="68"/>
         <source>Layer</source>
         <translation>Calque</translation>
@@ -2306,6 +2316,11 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="72"/>
         <source>Enable to create a layer from original objects</source>
         <translation>Activer pour créer un calque à partir des objets d&apos;origine</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="118"/>
+        <source>The original objects move into this layer and leave their other layers.</source>
+        <translation>Les objets d&apos;origine entrent dans ce calque et quittent leurs autres calques.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="75"/>
@@ -4330,6 +4345,11 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="598"/>
         <source>Enable to create a layer from original objects</source>
         <translation>Activer pour créer un calque à partir des objets d&apos;origine</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="644"/>
+        <source>The original objects move into this layer and leave their other layers.</source>
+        <translation>Les objets d&apos;origine entrent dans ce calque et quittent leurs autres calques.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="601"/>
@@ -6662,6 +6682,11 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Activer pour créer un calque à partir des objets d&apos;origine</translation>
     </message>
     <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="133"/>
+        <source>The original objects move into this layer and leave their other layers.</source>
+        <translation>Les objets d&apos;origine entrent dans ce calque et quittent leurs autres calques.</translation>
+    </message>
+    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="90"/>
         <source>Layer</source>
         <translation>Calque</translation>
@@ -8168,6 +8193,11 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="65"/>
         <source>Enable to create a layer from original objects</source>
         <translation>Créer un calque à partir des objets d&apos;origine</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="111"/>
+        <source>The original objects move into this layer and leave their other layers.</source>
+        <translation>Les objets d&apos;origine entrent dans ce calque et quittent leurs autres calques.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="68"/>
@@ -29166,6 +29196,16 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
             <numerusform>Le calque « %1 » contient encore %n objet. Retirez-le du calque avant de supprimer celui-ci.</numerusform>
             <numerusform>Le calque « %1 » contient encore %n objets. Retirez-les du calque avant de supprimer celui-ci.</numerusform>
         </translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="520"/>
+        <source>Last layer</source>
+        <translation>Dernier calque</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="521"/>
+        <source>The layer &quot;%1&quot; is the only one of this piece. An object must always belong to a layer, so a piece keeps at least one — add another layer first, then delete this one.</source>
+        <translation>Le calque « %1 » est le seul de cet élément de patron. Un objet doit toujours appartenir à un calque, donc un élément de patron en garde au moins un — ajoutez un autre calque, puis supprimez celui-ci.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="624"/>

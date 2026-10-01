@@ -76,6 +76,87 @@ auto VisibilityGroupDataFromSource(const VContainer *data, const QVector<SourceI
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief AddLineCarriersToGroupData adds the objects the lines of an operation bring into its layer.
+ *
+ * A line has no object of its own: it is carried by two point ids and rebuilt on every parse, so the source list
+ * never holds it — it travels in initData.lines. The layer still has to hold it: that is what makes the eye of a
+ * layer hide a line, and what the Layers dock counts. VAbstractPattern::LayerableObjectsOfTool is the one place
+ * that knows how the tool carrying a line is named in a layer — by id, since the line an earlier operation
+ * produced has no element of its own to read.
+ *
+ * @param doc pattern document
+ * @param lines the lines attached to the operation
+ * @param groupData visibility group data, completed in place
+ */
+void AddLineCarriersToGroupData(VAbstractPattern *doc, const QVector<OOperationLine> &lines,
+                                QMap<quint32, quint32> &groupData)
+{
+    for (const auto &line : lines)
+    {
+        if (line.source == NULL_ID)
+        {
+            continue;
+        }
+
+        const QVector<QPair<quint32, quint32>> objects = doc->LayerableObjectsOfTool(line.source);
+
+        for (const auto &[objectId, toolId] : objects)
+        {
+            groupData.insert(objectId, toolId);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief RemoveOriginalsFromOtherLayers takes every object this layer is built from out of the layers that held it.
+ *
+ * The layer an operation creates is meant to be the only layer its originals are in: the user asked for one layer
+ * holding them, not for a copy of them in each. Written after the layer exists — AddGroup has already put it in
+ * the document — so that at no moment does an object belong to no layer, the order the Layers dock's transfer uses.
+ *
+ * @param initData operation data
+ * @param groupData the objects the new layer holds, by object id, with the tool that carries them
+ * @param groupId the layer just created
+ * @param parent the command the removals belong to, nullptr when each of them goes on the undo stack
+ */
+void RemoveOriginalsFromOtherLayers(const VAbstractOperationInitData &initData,
+                                    const QMap<quint32, quint32> &groupData, vidtype groupId, QUndoCommand *parent)
+{
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+
+    for (auto item = groupData.constBegin(); item != groupData.constEnd(); ++item)
+    {
+        // Every layer of the piece that holds the object, the new one included: it is the one skipped below,
+        // since what is asked here is where the object used to be.
+        const QMap<quint32, QString> holders = initData.doc->GetGroupsContainingItem(item.value(), item.key(), true);
+
+        for (auto holder = holders.constBegin(); holder != holders.constEnd(); ++holder)
+        {
+            if (holder.key() == groupId)
+            {
+                continue;
+            }
+
+            if (const QDomElement removed = initData.doc->RemoveItemFromGroup(item.value(), item.key(), holder.key());
+                not removed.isNull())
+            {
+                auto *removeItemFromGroup = new RemoveItemFromGroup(removed, initData.doc, holder.key(), parent);
+                QObject::connect(removeItemFromGroup,
+                                 &RemoveItemFromGroup::UpdateGroups,
+                                 initData.doc,
+                                 &VAbstractPattern::UpdateVisiblityGroups);
+                if (parent == nullptr)
+                {
+                    undoStack->push(removeItemFromGroup);
+                }
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto BuildNameMap(const QVector<SourceItem> &items) -> QMap<quint32, QString>
 {
     QMap<quint32, QString> names;
@@ -872,10 +953,14 @@ void VAbstractOperation::PerformDelete()
     {
         VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("delete operation"));
 
-        qCDebug(vTool, "Deleting the linked group.");
-        auto *delGroup = new DelGroup(doc, group);
-        connect(delGroup, &DelGroup::UpdateGroups, doc, &VAbstractPattern::UpdateVisiblityGroups);
-        VAbstractApplication::VApp()->getUndoStack()->push(delGroup);
+        // The layer the operation created is let go, not deleted: it holds the objects the operation was built
+        // from, which existed before the tool and outlive it. Deleting them with the tool would leave them in no
+        // layer at all — the state the layers exist to prevent. Only the link goes, so the layer becomes an
+        // ordinary layer of its piece, holding what the user put in it.
+        qCDebug(vTool, "Unlinking the group of the operation.");
+        auto *changeGroupTool = new ChangeGroupTool(doc, group, null_id);
+        connect(changeGroupTool, &ChangeGroupTool::UpdateGroups, doc, &VAbstractPattern::UpdateVisiblityGroups);
+        VAbstractApplication::VApp()->getUndoStack()->push(changeGroupTool);
     }
 
     qCDebug(vTool, "Deleting the tool.");
@@ -1156,14 +1241,17 @@ void VAbstractOperation::HandleVisibilityGroupChange(QUndoCommand *parent)
             initData.data = &(VDataTool::data);
             initData.doc = doc;
             initData.source = m_source;
+            initData.lines = m_lines;
 
             VAbstractOperation::CreateVisibilityGroup(initData, parent);
         }
     }
     else
     {
-        const auto *delGroup = new DelGroup(doc, group, parent);
-        connect(delGroup, &DelGroup::UpdateGroups, doc, &VAbstractPattern::UpdateVisiblityGroups);
+        // The layer is let go, not deleted: it holds the objects the operation was built from, which existed
+        // before the tool and outlive it. Deleting them with the layer would leave them in no layer at all.
+        const auto *changeGroupTool = new ChangeGroupTool(doc, group, null_id, parent);
+        connect(changeGroupTool, &ChangeGroupTool::UpdateGroups, doc, &VAbstractPattern::UpdateVisiblityGroups);
     }
 }
 
@@ -1305,7 +1393,9 @@ void VAbstractOperation::CreateVisibilityGroup(const VAbstractOperationInitData 
         return;
     }
 
-    const QMap<quint32, quint32> groupData = VisibilityGroupDataFromSource(initData.data, initData.source);
+    QMap<quint32, quint32> groupData = VisibilityGroupDataFromSource(initData.data, initData.source);
+    AddLineCarriersToGroupData(initData.doc, initData.lines, groupData);
+
     vidtype const groupId = initData.data->getNextId();
 
     if (const QDomElement group = initData.doc->CreateGroup(groupId, initData.visibilityGroupName,
@@ -1318,6 +1408,8 @@ void VAbstractOperation::CreateVisibilityGroup(const VAbstractOperationInitData 
         {
             VAbstractApplication::VApp()->getUndoStack()->push(addGroup);
         }
+
+        RemoveOriginalsFromOtherLayers(initData, groupData, groupId, parent);
     }
 }
 

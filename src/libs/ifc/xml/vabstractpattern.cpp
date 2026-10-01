@@ -2608,14 +2608,34 @@ void VAbstractPattern::SetActiveGroup(quint32 id, const QString &patternPieceNam
         return;
     }
 
-    // The flag is a marker, not a value: only the active layer carries it. Removing the attribute from the other
-    // layers is what keeps exactly one of them active — and a deleted layer takes its own flag with it.
-    bool found = false;
-    bool shown = false;
+    // The layer to activate is looked up FIRST, and the call does nothing when the piece does not have it.
+    // Clearing the flag from the others before knowing that would be a way to leave the piece with no active
+    // layer at all — and every object drawn next would belong to no layer, which is the invariant the layers
+    // exist for. Measured path: an undo that names a layer of ANOTHER piece, or a NULL_ID, used to strip the
+    // flag from every layer of the piece being shown.
+    QDomElement target;
     for (QDomElement group = groups.firstChildElement(TagGroup); !group.isNull();
          group = group.nextSiblingElement(TagGroup))
     {
         if (GetParametrUInt(group, AttrId, NULL_ID_STR) == id)
+        {
+            target = group;
+            break;
+        }
+    }
+
+    if (target.isNull())
+    {
+        return;
+    }
+
+    // The flag is a marker, not a value: only the active layer carries it. Removing the attribute from the other
+    // layers is what keeps exactly one of them active — and a deleted layer takes its own flag with it.
+    bool shown = false;
+    for (QDomElement group = groups.firstChildElement(TagGroup); !group.isNull();
+         group = group.nextSiblingElement(TagGroup))
+    {
+        if (group == target)
         {
             SetAttribute(group, AttrActive, true);
             // The layer the canvas draws into is shown: an active but hidden layer would take every new object
@@ -2625,17 +2645,11 @@ void VAbstractPattern::SetActiveGroup(quint32 id, const QString &patternPieceNam
                 SetAttribute(group, AttrVisible, true);
                 shown = true;
             }
-            found = true;
         }
         else
         {
             group.removeAttribute(AttrActive);
         }
-    }
-
-    if (not found)
-    {
-        return;
     }
 
     modified = true;
@@ -3197,6 +3211,31 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
     }
 
     return objects;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::LayerableObjectsOfTool(quint32 toolId) -> QVector<QPair<quint32, quint32>>
+{
+    if (toolId == NULL_ID)
+    {
+        return {};
+    }
+
+    if (const QDomElement element = FindElementById(toolId); not element.isNull())
+    {
+        return LayerableObjectsOfTool(element, toolId);
+    }
+
+    // No element of its own: only a line an operation produced is in that state. The tool exists — VToolLine was
+    // registered by the parse — but the document has nothing to read, and the line is a line all the same: named
+    // in a layer by (its id, its id), the answer the enumerator above gives for a <line> element. A tool the
+    // document does not know at all has no such answer: nothing a layer could hold.
+    if (FindTool(toolId) == nullptr)
+    {
+        return {};
+    }
+
+    return {{toolId, toolId}};
 }
 
 //---------------------------------------------------------------------------------------------------------------------

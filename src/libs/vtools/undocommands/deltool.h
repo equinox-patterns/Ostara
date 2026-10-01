@@ -32,7 +32,9 @@
 #include <QDomNode>
 #include <QMetaObject>
 #include <QObject>
+#include <QPair>
 #include <QString>
+#include <QVector>
 #include <QtGlobal>
 
 #include "vundocommand.h"
@@ -53,10 +55,12 @@ private:
     QDomNode parentNode{};
     quint32 siblingId{NULL_ID};
     const QString nameActivDraw;
-    QMap<quint32, VGroupData> m_groupsBefore{};
-    QMap<quint32, VGroupData> m_groupsAfter{};
+    /// Exactly the layer entries this deletion takes out, one by one: (groupId, item), the item being the
+    /// (objectId, toolId) pair the layers are written with. Kept entry by entry on purpose — see the constructor.
+    QVector<QPair<quint32, QPair<vidtype, vidtype>>> m_removed;
 
-    void UpdateGroups(const QMap<quint32, VGroupData> &groups) const;
+    /// Take those entries out of their layers, or put them back. Nothing else in a layer is touched.
+    void SetRemovedItemsInLayers(bool present) const;
 };
 
 #endif // DELTOOL_H

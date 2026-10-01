@@ -29,27 +29,12 @@
 #include "deltool.h"
 
 #include <QDomElement>
+#include <QSet>
 
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "vundocommand.h"
 #include "../ifc/xml/vpatternblockmapper.h"
-
-namespace
-{
-//---------------------------------------------------------------------------------------------------------------------
-auto FixGroups(QMap<quint32, VGroupData> groups, const QMap<quint32, VGroupData> &fix) -> QMap<quint32, VGroupData>
-{
-    auto i = fix.constBegin();
-    while (i != fix.constEnd())
-    {
-        groups.insert(i.key(), i.value());
-        ++i;
-    }
-
-    return groups;
-}
-} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 DelTool::DelTool(VAbstractPattern *doc, quint32 id, QUndoCommand *parent)
@@ -61,36 +46,36 @@ DelTool::DelTool(VAbstractPattern *doc, quint32 id, QUndoCommand *parent)
     setText(tr("delete tool"));
     SetElement(doc->CloneNodeById(id));
 
-    QVector<QPair<vidtype, vidtype>> cleanItems;
-    QMap<quint32, VGroupData> const groups = doc->GetGroups(nameActivDraw);
-    auto i = groups.constBegin();
-    while (i != groups.constEnd())
+    // The layers are cleaned of everything the deleted element PRODUCED, and not only of the pairs that name it.
+    // An operation owns objects of its own: the transformed lines it writes (`<lines><item idResult="24"/>`) are
+    // registered in the layers under THEIR ids, so the pair `{24, 24}` no longer names the operation once it is
+    // gone. Cleaning `item.second == id` alone left that pair behind for good — measured on a real file: the layer
+    // then held an object the document could not draw, the dock refused to delete it because of that entry, and
+    // the transfer offered nothing to take out: a layer nobody could get rid of.
+    QSet<vidtype> produced{id};
+    if (const QDomElement element = doc->FindElementById(id); not element.isNull())
     {
-        VGroupData groupData = i.value();
-        auto itemRecord = std::find_if(groupData.items.begin(),
-                                       groupData.items.end(),
-                                       [id](const QPair<vidtype, vidtype> &item) -> bool { return item.second == id; });
-
-        if (itemRecord != groupData.items.end())
+        for (const auto &object : VAbstractPattern::LayerableObjectsOfTool(element, id))
         {
-            m_groupsBefore.insert(i.key(), groupData);
-
-            cleanItems.clear();
-            cleanItems.reserve(groupData.items.size());
-
-            for (auto item : std::as_const(groupData.items))
-            {
-                if (item.second != id)
-                {
-                    cleanItems.append(item);
-                }
-            }
-
-            VGroupData cleanGroupData = groupData;
-            cleanGroupData.items = cleanItems;
-            m_groupsAfter.insert(i.key(), cleanGroupData);
+            produced.insert(object.second);
         }
-        ++i;
+    }
+
+    // What leaves the layers is remembered ENTRY BY ENTRY — (groupId, item) — and not as a copy of the layers
+    // themselves. Undo and redo used to rebuild a whole layer from a snapshot taken here, which also wiped
+    // everything that layer had gained since: an object created between the deletion and its Undo came back
+    // belonging to NO layer at all. Measured on a real file, where six objects of the piece were in none — the
+    // layers had simply been rolled back to the moment of the deletion.
+    const QMap<quint32, VGroupData> groups = doc->GetGroups(nameActivDraw);
+    for (auto i = groups.constBegin(); i != groups.constEnd(); ++i)
+    {
+        for (const auto &item : i.value().items)
+        {
+            if (produced.contains(item.second))
+            {
+                m_removed.append({i.key(), item});
+            }
+        }
     }
 }
 
@@ -101,10 +86,9 @@ void DelTool::undo()
 
     UndoDeleteAfterSibling(parentNode, siblingId);
 
-    if (not m_groupsBefore.isEmpty())
-    {
-        UpdateGroups(FixGroups(Doc()->GetGroups(nameActivDraw), m_groupsBefore));
-    }
+    // The layers take back exactly the entries this deletion took out — whatever else they gained since stays,
+    // which is what keeps the objects created in between inside a layer.
+    SetRemovedItemsInLayers(true);
 
     emit NeedFullParsing();
 
@@ -126,51 +110,58 @@ void DelTool::redo()
     QDomElement const domElement = Doc()->NodeById(ElementId());
     parentNode.removeChild(domElement);
 
-    if (not m_groupsAfter.isEmpty())
-    {
-        UpdateGroups(FixGroups(Doc()->GetGroups(nameActivDraw), m_groupsAfter));
-    }
+    SetRemovedItemsInLayers(false);
 
     emit NeedFullParsing();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DelTool::UpdateGroups(const QMap<quint32, VGroupData> &groups) const
+void DelTool::SetRemovedItemsInLayers(bool present) const
 {
-    QDomElement groupsTag = Doc()->CreateGroups(nameActivDraw);
-    if (groupsTag.isNull())
+    for (const auto &entry : std::as_const(m_removed))
     {
-        return;
-    }
+        const QPair<vidtype, vidtype> &item = entry.second;
 
-    VAbstractPattern::RemoveAllChildren(groupsTag);
-
-    auto i = groups.constBegin();
-    while (i != groups.constEnd())
-    {
-        QMap<vidtype, vidtype> groupMap;
-        for (auto [first, second] : i.value().items)
+        QDomElement group = Doc()->FindElementById(entry.first, VAbstractPattern::TagGroup);
+        if (group.isNull())
         {
-            groupMap.insert(first, second);
+            continue; // the layer itself is gone: its own command owns that
         }
 
-        QDomElement group = Doc()->CreateGroup(i.key(), i.value().name, i.value().tags, groupMap, i.value().tool,
-                                               i.value().color, i.value().penStyle);
-        Doc()->SetAttribute(group, VAbstractPattern::AttrVisible, i.value().visible);
-        // The rebuild has to carry EVERY field a layer holds. It used to copy only the visible flag, so deleting a
-        // single object reset every layer's pen to the default and dropped the active flag — leaving the canvas
-        // with no layer to draw into until the next load. The role marker goes with them, or the automatic layer
-        // would lose its identity the same way (and a second one be created).
-        if (i.value().active)
+        // The entry as the layers write it: `object` is left out when it equals `tool`.
+        const auto IsThisItem = [&item](const QDomElement &candidate) -> bool
         {
-            Doc()->SetAttribute(group, VAbstractPattern::AttrActive, true);
-        }
-        if (i.value().automatic)
-        {
-            Doc()->SetAttribute(group, VAbstractPattern::AttrAuto, true);
-        }
-        groupsTag.appendChild(group);
+            const vidtype tool = candidate.attribute(VAbstractPattern::AttrTool).toUInt();
+            const vidtype object = candidate.hasAttribute(VAbstractPattern::AttrObject)
+                                       ? candidate.attribute(VAbstractPattern::AttrObject).toUInt()
+                                       : tool;
+            return tool == item.second && object == item.first;
+        };
 
-        ++i;
+        QDomElement found;
+        for (QDomElement candidate = group.firstChildElement(VAbstractPattern::TagGroupItem); !candidate.isNull();
+             candidate = candidate.nextSiblingElement(VAbstractPattern::TagGroupItem))
+        {
+            if (IsThisItem(candidate))
+            {
+                found = candidate;
+                break;
+            }
+        }
+
+        if (present && found.isNull())
+        {
+            QDomElement element = Doc()->createElement(VAbstractPattern::TagGroupItem);
+            element.setAttribute(VAbstractPattern::AttrTool, item.second);
+            if (item.first != item.second) // `object` is omitted when it equals `tool`
+            {
+                element.setAttribute(VAbstractPattern::AttrObject, item.first);
+            }
+            group.appendChild(element);
+        }
+        else if (not present && not found.isNull())
+        {
+            group.removeChild(found);
+        }
     }
 }

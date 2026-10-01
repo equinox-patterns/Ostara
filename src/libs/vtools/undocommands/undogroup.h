@@ -99,6 +99,34 @@ private:
     QString oldPenStyle{};
 };
 
+/// Give a layer a tool, or take the tool away from it — the link that makes a layer follow the operation which
+/// created it (its dialog reopens on it, and editing the dialog edits it).
+///
+/// Taken away rather than the layer deleted when the tool goes: the layer the operation created holds the objects
+/// the operation was built from, objects that existed before the tool and outlive it. Deleting them with the tool
+/// would leave them in no layer at all, the very state the layers exist to prevent.
+class ChangeGroupTool : public VUndoCommand
+{
+    Q_OBJECT // NOLINT
+
+public:
+    ChangeGroupTool(VAbstractPattern *doc, vidtype id, vidtype tool, QUndoCommand *parent = nullptr);
+    ~ChangeGroupTool() override = default;
+    void undo() override;
+    void redo() override;
+signals:
+    void UpdateGroups();
+
+private:
+    Q_DISABLE_COPY_MOVE(ChangeGroupTool) // NOLINT
+
+    vidtype m_newTool{null_id};
+    vidtype m_oldTool{null_id};
+    int m_indexPatternBlock{-1};
+
+    void Do(vidtype tool);
+};
+
 class AddItemToGroup : public VUndoCommand
 {
     Q_OBJECT // NOLINT
@@ -200,6 +228,15 @@ signals:
 private:
     Q_DISABLE_COPY_MOVE(DelGroup) // NOLINT
     int m_indexPatternBlock{-1};
+    /// The piece the layers belong to: the layers are per piece, and `CreateGroups()` without a name would resolve
+    /// the one being shown at the moment the undo runs — not necessarily the one this command was built on.
+    QString m_pieceName;
+    /// The layer the active flag goes to when the deleted one carried it: the automatic layer when the piece has
+    /// one, the first of the piece otherwise (the rule the loading pass uses). NULL_ID when the deleted layer was
+    /// not the active one, or was the last of its piece.
+    vidtype m_newActiveId{NULL_ID};
+    /// Whether that layer was visible before this command showed it by activating it.
+    bool m_newActiveWasVisible{true};
 };
 
 /// Move the "active layer" flag — the layer the canvas draws into — from one layer to another.
@@ -221,6 +258,10 @@ private:
     quint32 m_oldId{NULL_ID};
     /// Activating a layer shows it. Undoing has to put it back the way the user had it.
     bool m_newWasVisible{true};
+    /// The piece the change belongs to. It is what the undo has to name: the layers are per piece, the undo stack
+    /// survives a piece switch, and `SetActiveGroup` falls back on the piece being SHOWN — so an undo replayed
+    /// after switching pieces used to look for a layer of the other one.
+    QString m_pieceName;
 };
 
 #endif // UNDOGROUP_H

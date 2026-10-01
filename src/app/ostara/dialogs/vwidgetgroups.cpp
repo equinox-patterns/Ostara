@@ -494,16 +494,33 @@ void VWidgetGroups::ActionDeleteLayer(quint32 id)
 {
     // A layer holding objects is not deletable — it must be emptied first. The icon stays clickable
     // so the refusal can be explained: a dimmed icon says "no" without telling why.
-    const QMap<quint32, VGroupData> groups = m_doc->GetGroups();
-    const auto group = groups.constFind(id);
-    if (group != groups.constEnd() && not group.value().items.isEmpty())
+    //
+    // What counts as content is settled in ONE place, LayerItems: an `<item>` naming a tool the document no
+    // longer has is not content, and it is not offered by "+", "−" or "↗" either — all three are fed by
+    // LayerItems. Counting the raw entries here made the dock contradict itself: a layer whose only entry was
+    // a leftover was refused the deletion ("still contains 1 object") while the transfer answered "there is
+    // nothing to transfer". A dead end with no way out — measured on a real file.
+    const QVector<QPair<quint32, quint32>> content = LayerItems(id);
+    if (not content.isEmpty())
     {
-        const int count = static_cast<int>(group.value().items.size());
+        const int count = static_cast<int>(content.size());
         QMessageBox::information(this, tr("Layer not empty"),
                                  tr("The layer \"%1\" still contains %n object(s). Remove them from the layer "
                                     "first, then delete it.",
                                     "", count)
-                                     .arg(group.value().name));
+                                     .arg(m_doc->GetGroupName(id)));
+        return;
+    }
+
+    // A piece always keeps an active layer, and so at least one layer. With none, the flag would have nowhere to
+    // go and every object drawn after that would belong to no layer — the invariant the layers exist for. Said
+    // rather than done silently: a layer appearing on its own after a deletion would look like a failed deletion.
+    if (m_doc->GetGroups().size() < 2)
+    {
+        QMessageBox::information(this, tr("Last layer"),
+                                 tr("The layer \"%1\" is the only one of this piece. An object must always belong "
+                                    "to a layer, so a piece keeps at least one — add another layer first, then "
+                                    "delete this one.").arg(m_doc->GetGroupName(id)));
         return;
     }
 
@@ -660,19 +677,29 @@ void VWidgetGroups::StartObjectSelection(quint32 layerId, ObjectSelection mode)
         m_candidateObjects = TransferableObjects(layerItems);
     }
 
-    // The layer's content, magenta in both directions: it is what the layer holds, whether the user is adding to
-    // it or emptying it. The clicks then turn the chosen ones orange — what Enter will act on.
-    for (auto it = m_layerObjects.constBegin(); it != m_layerObjects.constEnd(); ++it)
+    // A picking that can lead nowhere is ARMED all the same, and that is the whole point of it: armed, the dock
+    // owns every click on an object — the canvas never falls back on its ordinary selection, so nothing lights up
+    // that the layer cannot act on. The sentence says why nothing will come of it, and Escape lets go of it.
+    const QString reason = RefusalReason(layerId, mode);
+
+    // Magenta says what a click may pick, and nothing else. For an addition that is the layer's CONTENT — the
+    // objects already in it, which cannot be added a second time. For the two other directions it is the
+    // CANDIDATE set: an object no other layer also holds cannot be removed, so marking it would promise a click
+    // the invariant refuses; and a picking with nowhere to go — the only layer of the piece — can pick nothing
+    // at all, so it marks nothing. What is marked is remembered, and given back as it was (see CancelObjectSelection).
+    m_markedObjects.clear();
+    if (reason.isEmpty())
     {
-        emit ObjectInLayerChanged(it.key(), it.value(), true);
+        m_markedObjects = mode == ObjectSelection::Adding ? m_layerObjects : m_candidateObjects;
+        for (auto it = m_markedObjects.constBegin(); it != m_markedObjects.constEnd(); ++it)
+        {
+            emit ObjectInLayerChanged(it.key(), it.value(), true);
+        }
     }
 
     emit ObjectSelectionStarted();
 
-    // A picking that can lead nowhere is ARMED all the same, and that is the whole point of it: armed, the dock
-    // owns every click on an object — the canvas never falls back on its ordinary selection, so nothing lights up
-    // that the layer cannot act on. The sentence says why nothing will come of it, and Escape lets go of it.
-    if (const QString reason = RefusalReason(layerId, mode); not reason.isEmpty())
+    if (not reason.isEmpty())
     {
         emit ShowStatusTip(reason);
     }
@@ -751,6 +778,49 @@ void VWidgetGroups::ToggleLayerObjects(const QVector<QPair<quint32, quint32>> &o
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VWidgetGroups::RealItems(const VGroupData &layer) -> QVector<QPair<quint32, quint32>>
+{
+    // What the layer holds AND what the document can still show. The two are not the same: an `<item>` may name
+    // a tool the file no longer has, and real files carry such entries — a group written by Valentina whose tool
+    // was deleted without its entry being cleaned (measured: `<item object="75" tool="75"/>` in a pattern holding
+    // no element of that id anywhere). This is the ONE place that settles what a layer's content is, because a
+    // kept entry is not merely undrawable: `getTool()` THROWS VExceptionBadId on an id the document does not know
+    // (vabstractpattern.cpp, ToolExists), and the marking emits from inside a Qt signal — where an exception that
+    // escapes aborts the whole application. That was a real crash, from a layer holding exactly one such entry.
+    //
+    // The OBJECT is checked too, and not only its tool: re-editing an operation's options replaces its element
+    // (SaveToolOptions), and a source that goes away takes its destination's id with it — the layer then keeps a
+    // pair naming an object nobody draws. The loading pass removes those from the file (CleanStaleLayerItems, on
+    // the same model rule); here is where the dock stops counting, showing and offering them.
+    QVector<QPair<quint32, quint32>> items;
+    items.reserve(layer.items.size());
+    for (const auto &item : layer.items)
+    {
+        if (VAbstractPattern::FindTool(item.second) == nullptr)
+        {
+            continue;
+        }
+
+        // Asked by id and not from the element, because the element is not always there: the line an operation
+        // produces has none — the operation keeps its id and the parse rebuilds it — and it is a line all the
+        // same. VAbstractPattern::LayerableObjectsOfTool answers for it, which is exactly what the loading pass
+        // assumes when it keeps the entry in the file.
+        //
+        // A tool the model cannot enumerate — a pattern piece — keeps its entry rather than being thrown away:
+        // that is what the loading pass does with it, and the dock has no business saying otherwise.
+        const QVector<QPair<quint32, quint32>> produced = m_doc->LayerableObjectsOfTool(item.second);
+        if (not produced.isEmpty() && not produced.contains(item))
+        {
+            continue;
+        }
+
+        items.append(item);
+    }
+
+    return items;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VWidgetGroups::LayerItems(quint32 layerId) -> QVector<QPair<quint32, quint32>>
 {
     const QMap<quint32, VGroupData> groups = m_doc->GetGroups();
@@ -760,24 +830,7 @@ auto VWidgetGroups::LayerItems(quint32 layerId) -> QVector<QPair<quint32, quint3
         return {};
     }
 
-    // What the layer holds AND what the document can still show. The two are not the same: an `<item>` may name
-    // a tool the file no longer has, and real files carry such entries — a group written by Valentina whose tool
-    // was deleted without its entry being cleaned (measured: `<item object="75" tool="75"/>` in a pattern holding
-    // no element of that id anywhere). This is the ONE place that settles what a layer's content is, because a
-    // kept entry is not merely undrawable: `getTool()` THROWS VExceptionBadId on an id the document does not know
-    // (vabstractpattern.cpp, ToolExists), and the marking emits from inside a Qt signal — where an exception that
-    // escapes aborts the whole application. That was a real crash, from a layer holding exactly one such entry.
-    QVector<QPair<quint32, quint32>> items;
-    items.reserve(layer.value().items.size());
-    for (const auto &item : layer.value().items)
-    {
-        if (VAbstractPattern::FindTool(item.second) != nullptr)
-        {
-            items.append(item);
-        }
-    }
-
-    return items;
+    return RealItems(layer.value());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -785,12 +838,14 @@ auto VWidgetGroups::RemovableObjects(const QVector<QPair<quint32, quint32>> &ite
 {
     // How many layers of this piece hold each object. Counted over the whole piece, not just the layer: the
     // question is precisely whether something ELSE holds it. A layer the tag filter hides counts like any other
-    // — it is a real layer, and it really does hold the object.
+    // — it is a real layer, and it really does hold the object. A LEFTOVER entry does not: counting one as a
+    // holder would let a removal take an object out of its last real layer, which is the very thing this test
+    // exists to prevent.
     QMap<QPair<quint32, quint32>, int> holders;
     const QMap<quint32, VGroupData> groups = m_doc->GetGroups();
     for (auto group = groups.constBegin(); group != groups.constEnd(); ++group)
     {
-        for (const auto &item : group.value().items)
+        for (const auto &item : RealItems(group.value()))
         {
             ++holders[item];
         }
@@ -869,7 +924,7 @@ void VWidgetGroups::UpdateSelectionTip()
         }
 
         emit ShowStatusTip(tr("Select the objects to remove, then press Enter to confirm — Escape cancels. Magenta "
-                              "is this layer's content; an object must always stay in one layer, so only what "
+                              "is what can be removed: an object must always stay in one layer, so only what "
                               "another layer holds can go."));
         return;
     }
@@ -1063,14 +1118,16 @@ void VWidgetGroups::CancelObjectSelection()
         return;
     }
 
-    // The selection first — in a removal the selected objects are also the layer's content, so they have to go back
-    // to magenta before the content itself is given back its own colour.
+    // The selection first — in a removal the selected objects are also part of the magenta set, so they have to go
+    // back to magenta before that set is given back its own colour.
     for (auto it = m_selectedObjects.constBegin(); it != m_selectedObjects.constEnd(); ++it)
     {
         emit ObjectSelectedChanged(it.key(), it.value(), false);
     }
 
-    for (auto it = m_layerObjects.constBegin(); it != m_layerObjects.constEnd(); ++it)
+    // Exactly what was marked, and not the layer's content recomputed: the two are not the same in a removal,
+    // where only the candidates wear magenta, and not even the same shape when the picking could lead nowhere.
+    for (auto it = m_markedObjects.constBegin(); it != m_markedObjects.constEnd(); ++it)
     {
         emit ObjectInLayerChanged(it.key(), it.value(), false);
     }
@@ -1078,6 +1135,7 @@ void VWidgetGroups::CancelObjectSelection()
     m_selectedObjects.clear();
     m_layerObjects.clear();
     m_candidateObjects.clear();
+    m_markedObjects.clear();
     m_selectionLayerId = NULL_ID;
     m_objectSelection = ObjectSelection::Idle;
     emit ObjectSelectionFinished();

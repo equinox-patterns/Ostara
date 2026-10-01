@@ -128,13 +128,18 @@ private:
     ObjectSelection m_objectSelection{ObjectSelection::Idle};
     quint32 m_selectionLayerId{NULL_ID};
     QMap<quint32, quint32> m_selectedObjects; // objectId -> toolId, the shape the pattern expects
-    /// What the layer already holds, marked magenta in both directions. Adding skips it — a layer holds an object
-    /// once — and removing starts from it: what cannot leave is still part of the content.
+    /// What the layer already holds. Adding skips it — a layer holds an object once — and a removal starts from
+    /// it: what cannot leave is still part of the content.
     QMap<quint32, quint32> m_layerObjects;
     /// Of that content, the objects the current direction may act on. Adding has none — there the click itself
     /// decides, and everything the layer does not hold yet is fair game. A removal keeps what another layer holds
     /// too; a transfer keeps everything of the layer that can be drawn. Filled when the picking starts.
     QMap<quint32, quint32> m_candidateObjects;
+    /// The objects wearing magenta on the canvas right now — the exact set this picking has to give back. For an
+    /// addition it is the layer's content, for the two other directions the candidates, and nothing at all when
+    /// the picking can lead nowhere. Remembered rather than recomputed: the colour must go back to exactly what
+    /// it took, and a second computation is a second rule that can drift from the first.
+    QMap<quint32, quint32> m_markedObjects;
 
     // Button icon: the current-theme variant at rest, always the dark variant on hover
     // (the hovered button background is an accent, dark in both themes).
@@ -165,6 +170,12 @@ private:
     /// the picking can be carried out. Such a picking is ARMED anyway (see StartObjectSelection): the sentence is
     /// said, and Enter says it again instead of writing anything.
     auto RefusalReason(quint32 layerId, ObjectSelection mode) -> QString;
+    /// What one layer's entries really are: the tool still exists AND the object is one that tool produces.
+    /// The two are not the same — re-editing an operation's options replaces its element, and an id that
+    /// disappears leaves its `<item>` behind, naming an object nobody draws any more. A tool the model cannot
+    /// enumerate (a pattern piece) keeps its entry, as the loading pass tolerates it. The ONE rule the dock
+    /// reads a layer with: content, holders, and what `+`, `−` and `↗` may offer.
+    auto RealItems(const VGroupData &layer) -> QVector<QPair<quint32, quint32>>;
     /// The objects a layer holds, in the (objectId, toolId) shape the pattern and the canvas both use.
     auto LayerItems(quint32 layerId) -> QVector<QPair<quint32, quint32>>;
     /// Of those, the ones another layer also holds. An object always belongs to at least one layer, so these are

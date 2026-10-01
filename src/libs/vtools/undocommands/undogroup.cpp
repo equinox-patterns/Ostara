@@ -188,6 +188,62 @@ void ChangeGroupOptions::redo()
     emit Doc()->UpdateToolTip();
 }
 
+//ChangeGroupTool
+//---------------------------------------------------------------------------------------------------------------------
+ChangeGroupTool::ChangeGroupTool(VAbstractPattern *doc, vidtype id, vidtype tool, QUndoCommand *parent)
+  : VUndoCommand(doc, id, parent),
+    m_newTool(tool),
+    m_indexPatternBlock(doc->PatternBlockMapper()->GetActiveId())
+{
+    setText(tr("change the layer of the tool"));
+
+    if (QDomElement const group = doc->FindElementById(id, VAbstractPattern::TagGroup); group.isElement())
+    {
+        m_oldTool = VDomDocument::GetParametrUInt(group, VAbstractPattern::AttrTool, NULL_ID_STR);
+    }
+    else
+    {
+        qDebug("Can't get group by id = %u.", id);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ChangeGroupTool::undo()
+{
+    qCDebug(vUndo, "Undo.");
+
+    Do(m_oldTool);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ChangeGroupTool::redo()
+{
+    qCDebug(vUndo, "Redo.");
+
+    Do(m_newTool);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ChangeGroupTool::Do(vidtype tool)
+{
+    Doc()->PatternBlockMapper()->SetActiveById(m_indexPatternBlock); //Without this user will not see this change
+
+    if (QDomElement group = Doc()->FindElementById(ElementId(), VAbstractPattern::TagGroup); group.isElement())
+    {
+        Doc()->SetAttributeOrRemoveIf<vidtype>(group,
+                                               VAbstractPattern::AttrTool,
+                                               tool,
+                                               [](vidtype value) noexcept -> bool { return value == null_id; });
+
+        emit UpdateGroups();
+        emit Doc()->UpdateToolTip();
+    }
+    else
+    {
+        qDebug("Can't get group by id = %u.", ElementId());
+    }
+}
+
 //AddItemToGroup
 //---------------------------------------------------------------------------------------------------------------------
 AddItemToGroup::AddItemToGroup(const QDomElement &xml, VAbstractPattern *doc, quint32 groupId, QUndoCommand *parent)
@@ -543,10 +599,44 @@ void ChangeMultipleGroupsVisibility::redo()
 //---------------------------------------------------------------------------------------------------------------------
 DelGroup::DelGroup(VAbstractPattern *doc, quint32 id, QUndoCommand *parent)
   : VUndoCommand(doc, id, parent),
-    m_indexPatternBlock(doc->PatternBlockMapper()->GetActiveId())
+    m_indexPatternBlock(doc->PatternBlockMapper()->GetActiveId()),
+    m_pieceName(doc->PatternBlockMapper()->GetActive())
 {
     setText(tr("delete group"));
     SetElement(doc->CloneNodeById(id));
+
+    // A piece always keeps ONE active layer — the one the canvas draws into. Deleting the layer that carries the
+    // flag would leave the piece with none, and every object drawn after that would belong to no layer at all,
+    // which is the very invariant the layers exist for (measured: a piece whose active layer was deleted went on
+    // creating unlayered objects until the file was reopened). The replacement follows the rule the loading pass
+    // uses (NormalizeActiveLayer): the automatic layer when the piece has one, the first of the piece otherwise.
+    const QMap<quint32, VGroupData> groups = doc->GetGroups();
+    if (groups.value(id).active)
+    {
+        for (auto it = groups.constBegin(); it != groups.constEnd(); ++it)
+        {
+            if (it.key() == id)
+            {
+                continue;
+            }
+
+            if (it.value().automatic)
+            {
+                m_newActiveId = it.key();
+                break;
+            }
+
+            if (m_newActiveId == NULL_ID)
+            {
+                m_newActiveId = it.key();
+            }
+        }
+
+        if (m_newActiveId != NULL_ID)
+        {
+            m_newActiveWasVisible = groups.value(m_newActiveId).visible;
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -560,8 +650,25 @@ void DelGroup::undo()
         emit Doc()->ShowPatternBlock(Doc()->PatternBlockMapper()->FindName(m_indexPatternBlock));
     }
 
-    if (QDomElement groups = Doc()->CreateGroups(); not groups.isNull())
+    if (QDomElement groups = Doc()->CreateGroups(m_pieceName); not groups.isNull())
     {
+        // The restored layer takes its flag back — it is the one that carried it before. The layer this command
+        // activated gives it back first, and with its own visibility when this command had shown it by activating
+        // it. Done before the append: the restored element is not in the tree yet, so nothing here can touch it.
+        if (m_newActiveId != NULL_ID)
+        {
+            if (QDomElement replacement = Doc()->FindElementById(m_newActiveId, VAbstractPattern::TagGroup);
+                replacement.isElement())
+            {
+                replacement.removeAttribute(VAbstractPattern::AttrActive);
+            }
+
+            if (not m_newActiveWasVisible)
+            {
+                Doc()->SetGroupVisibility(m_newActiveId, false);
+            }
+        }
+
         groups.appendChild(GetElement());
         Doc()->ParseGroups(groups);
         emit UpdateGroups();
@@ -587,7 +694,7 @@ void DelGroup::redo()
         emit Doc()->ShowPatternBlock(Doc()->PatternBlockMapper()->FindName(m_indexPatternBlock));
     }
 
-    if (QDomElement groups = Doc()->CreateGroups(); not groups.isNull())
+    if (QDomElement groups = Doc()->CreateGroups(m_pieceName); not groups.isNull())
     {
         if (QDomElement group = Doc()->FindElementById(ElementId(), VAbstractPattern::TagGroup); group.isElement())
         {
@@ -598,6 +705,15 @@ void DelGroup::redo()
                 qCDebug(vUndo, "Can't delete group.");
                 return;
             }
+
+            // The flag goes to the layer that takes over, so the piece keeps an active layer — and activating a
+            // layer shows it: an active but hidden layer would take the next object and show none of them. The
+            // piece is named, not left to the one being shown: the command was built on a given piece.
+            if (m_newActiveId != NULL_ID)
+            {
+                Doc()->SetActiveGroup(m_newActiveId, m_pieceName);
+            }
+
             emit UpdateGroups();
 
             if (groups.childNodes().isEmpty())
@@ -628,7 +744,8 @@ ChangeActiveGroup::ChangeActiveGroup(VAbstractPattern *doc, quint32 newId, quint
   : VUndoCommand(doc, newId, parent),
     m_newId(newId),
     m_oldId(oldId),
-    m_newWasVisible(doc->GetGroupVisibility(newId))
+    m_newWasVisible(doc->GetGroupVisibility(newId)),
+    m_pieceName(doc->PatternBlockMapper()->GetActive())
 {
     setText(tr("change active layer"));
 }
@@ -644,7 +761,7 @@ void ChangeActiveGroup::undo()
         Doc()->SetGroupVisibility(m_newId, false);
     }
 
-    Doc()->SetActiveGroup(m_oldId);
+    Doc()->SetActiveGroup(m_oldId, m_pieceName);
     emit UpdateGroups();
 }
 
@@ -653,6 +770,6 @@ void ChangeActiveGroup::redo()
 {
     qCDebug(vUndo, "Redo.");
 
-    Doc()->SetActiveGroup(m_newId);
+    Doc()->SetActiveGroup(m_newId, m_pieceName);
     emit UpdateGroups();
 }
