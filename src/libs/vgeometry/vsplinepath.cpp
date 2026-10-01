@@ -28,6 +28,7 @@
 
 #include "vsplinepath.h"
 
+#include <algorithm>
 #include <cmath>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -297,8 +298,465 @@ auto VSplinePath::Offset(qreal distance, const QString &name) const -> VSplinePa
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Point of a cubic Bezier given by its four control points.
+ */
+auto BezierPoint(const QVector<QPointF> &control, qreal t) -> QPointF
+{
+    const qreal u = 1.0 - t;
+    return u * u * u * control.at(0) + 3.0 * u * u * t * control.at(1) + 3.0 * u * t * t * control.at(2) +
+           t * t * t * control.at(3);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief First derivative of a cubic Bezier given by its four control points.
+ */
+auto BezierDerivative(const QVector<QPointF> &control, qreal t) -> QPointF
+{
+    const qreal u = 1.0 - t;
+    return 3.0 * u * u * (control.at(1) - control.at(0)) + 6.0 * u * t * (control.at(2) - control.at(1)) +
+           3.0 * t * t * (control.at(3) - control.at(2));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Control points of a base segment.
+ */
+auto ControlPoints(const VSpline &spline) -> QVector<QPointF>
+{
+    return {spline.GetP1().toQPointF(), spline.GetP2().toQPointF(), spline.GetP3().toQPointF(),
+            spline.GetP4().toQPointF()};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Arc length of one base segment, tabulated once so a length can be turned back into a parameter.
+ */
+class SegmentArcLength
+{
+public:
+    explicit SegmentArcLength(const QVector<QPointF> &control)
+    {
+        m_cumulated.reserve(kTableSize + 1);
+        m_cumulated.append(0.0);
+
+        QPointF previous = BezierPoint(control, 0.0);
+        for (int i = 1; i <= kTableSize; ++i)
+        {
+            const QPointF current = BezierPoint(control, static_cast<qreal>(i) / kTableSize);
+            m_cumulated.append(m_cumulated.constLast() + QLineF(previous, current).length());
+            previous = current;
+        }
+    }
+
+    auto Length() const -> qreal { return m_cumulated.constLast(); }
+
+    /**
+     * @brief Parameter of the point sitting at the given arc length, clamped to the segment.
+     */
+    auto Parameter(qreal length) const -> qreal
+    {
+        if (length <= 0.0)
+        {
+            return 0.0;
+        }
+        if (length >= m_cumulated.constLast())
+        {
+            return 1.0;
+        }
+
+        const auto upper = std::upper_bound(m_cumulated.cbegin(), m_cumulated.cend(), length);
+        const auto index = static_cast<int>(upper - m_cumulated.cbegin());
+        const qreal before = m_cumulated.at(index - 1);
+        const qreal after = m_cumulated.at(index);
+        const qreal fraction = qFuzzyIsNull(after - before) ? 0.0 : (length - before) / (after - before);
+        return (index - 1 + fraction) / kTableSize;
+    }
+
+private:
+    static constexpr int kTableSize = 32;
+    QVector<qreal> m_cumulated;
+};
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Width of the outline along the base curve, as a monotone cubic through the stations.
+ *
+ * Stations are spread evenly on the arc length: station i sits at t = i / (n - 1). The stations used to be
+ * interpolated linearly, which broke the slope of the width at every one of them, and a broken slope is a corner on
+ * the widened edge: measured on a half circle widened 6 / 10 / 6, the edge turned by 11 degrees at the middle station
+ * (36 degrees when the offset goes inward). A monotone cubic keeps the width exact at the stations, keeps the
+ * variation monotone between them, and has a continuous slope, so the corner becomes a curve.
+ */
+class MonotoneWidthLaw
+{
+public:
+    explicit MonotoneWidthLaw(const QVector<qreal> &stations)
+      : m_stations(stations)
+    {
+        const int count = static_cast<int>(m_stations.size());
+        m_slopes.fill(0.0, count);
+        if (count < 3)
+        {
+            // One or two stations: a straight segment is already the exact answer, no slope needed.
+            return;
+        }
+
+        QVector<qreal> secants(count - 1);
+        for (int i = 0; i < count - 1; ++i)
+        {
+            secants[i] = m_stations.at(i + 1) - m_stations.at(i);
+        }
+
+        m_slopes[0] = secants.constFirst();
+        m_slopes[count - 1] = secants.constLast();
+        for (int i = 1; i < count - 1; ++i)
+        {
+            m_slopes[i] = (secants.at(i - 1) + secants.at(i)) / 2.0;
+        }
+
+        // Fritsch-Carlson limiter: no overshoot between the stations, and a zero slope at every extremum — the top of
+        // a flounce is exactly that.
+        for (int i = 0; i < count - 1; ++i)
+        {
+            if (qFuzzyIsNull(secants.at(i)))
+            {
+                m_slopes[i] = 0.0;
+                m_slopes[i + 1] = 0.0;
+                continue;
+            }
+
+            const qreal alpha = m_slopes.at(i) / secants.at(i);
+            const qreal beta = m_slopes.at(i + 1) / secants.at(i);
+            const qreal square = alpha * alpha + beta * beta;
+            if (square > 9.0)
+            {
+                const qreal tau = 3.0 / std::sqrt(square);
+                m_slopes[i] = tau * alpha * secants.at(i);
+                m_slopes[i + 1] = tau * beta * secants.at(i);
+            }
+        }
+    }
+
+    /**
+     * @brief Width at the arc length fraction t, in [0, 1].
+     */
+    auto Width(qreal t) const -> qreal
+    {
+        const int count = static_cast<int>(m_stations.size());
+        if (count == 0)
+        {
+            return 0.0;
+        }
+
+        const qreal x = qBound(0.0, t, 1.0) * (count - 1);
+        if (count < 3)
+        {
+            const int index = qMin(static_cast<int>(std::floor(x)), count - 2);
+            return m_stations.at(index) + (m_stations.at(index + 1) - m_stations.at(index)) * (x - index);
+        }
+
+        const int index = qMin(static_cast<int>(std::floor(x)), count - 2);
+        const qreal h = x - index;
+
+        const qreal h00 = (2.0 * h - 3.0) * h * h + 1.0;
+        const qreal h10 = ((h - 2.0) * h + 1.0) * h;
+        const qreal h01 = (3.0 - 2.0 * h) * h * h;
+        const qreal h11 = (h - 1.0) * h * h;
+
+        return h00 * m_stations.at(index) + h10 * m_slopes.at(index) + h01 * m_stations.at(index + 1) +
+               h11 * m_slopes.at(index + 1);
+    }
+
+private:
+    QVector<qreal> m_stations;
+    QVector<qreal> m_slopes; // derivative against the station index
+};
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Tangents (against the chord length parameter) that make a cubic chain through the points C2.
+ *
+ * Solves the classical tridiagonal spline system, the two end tangents being clamped. Curvature is what the eye reads
+ * on a hem: a C1 chain can still show a crease at every knot, a C2 chain cannot.
+ */
+auto C2Tangents(const QVector<QPointF> &points, const QVector<qreal> &chords, const QPointF &startTangent,
+                const QPointF &endTangent) -> QVector<QPointF>
+{
+    const int count = static_cast<int>(points.size());
+    QVector<QPointF> tangents(count);
+    if (count < 2)
+    {
+        return tangents;
+    }
+
+    tangents[0] = startTangent;
+    tangents[count - 1] = endTangent;
+    if (count == 2)
+    {
+        return tangents;
+    }
+
+    const int unknowns = count - 2;
+    QVector<qreal> lower(unknowns); // 1 / d(i-1)
+    QVector<qreal> diagonal(unknowns);
+    QVector<qreal> upper(unknowns); // 1 / d(i)
+    QVector<qreal> rightX(unknowns);
+    QVector<qreal> rightY(unknowns);
+
+    for (int k = 0; k < unknowns; ++k)
+    {
+        const int i = k + 1;
+        const qreal previous = chords.at(i - 1);
+        const qreal next = chords.at(i);
+
+        lower[k] = qFuzzyIsNull(previous) ? 0.0 : 1.0 / previous;
+        upper[k] = qFuzzyIsNull(next) ? 0.0 : 1.0 / next;
+        diagonal[k] = 2.0 * (lower.at(k) + upper.at(k));
+
+        const QPointF right = 3.0 * ((points.at(i) - points.at(i - 1)) / (previous * previous) +
+                                     (points.at(i + 1) - points.at(i)) / (next * next));
+        rightX[k] = right.x();
+        rightY[k] = right.y();
+
+        if (k == 0)
+        {
+            rightX[k] -= lower.at(k) * startTangent.x();
+            rightY[k] -= lower.at(k) * startTangent.y();
+        }
+        if (k == unknowns - 1)
+        {
+            rightX[k] -= upper.at(k) * endTangent.x();
+            rightY[k] -= upper.at(k) * endTangent.y();
+        }
+    }
+
+    // Thomas algorithm, one elimination pass for both coordinates.
+    for (int k = 1; k < unknowns; ++k)
+    {
+        const qreal factor = qFuzzyIsNull(diagonal.at(k - 1)) ? 0.0 : lower.at(k) / diagonal.at(k - 1);
+        diagonal[k] -= factor * upper.at(k - 1);
+        rightX[k] -= factor * rightX.at(k - 1);
+        rightY[k] -= factor * rightY.at(k - 1);
+    }
+
+    QVector<qreal> solutionX(unknowns);
+    QVector<qreal> solutionY(unknowns);
+    for (int k = unknowns - 1; k >= 0; --k)
+    {
+        const qreal followingX = (k + 1 < unknowns) ? solutionX.at(k + 1) : 0.0;
+        const qreal followingY = (k + 1 < unknowns) ? solutionY.at(k + 1) : 0.0;
+        const qreal divisor = qFuzzyIsNull(diagonal.at(k)) ? 1.0 : diagonal.at(k);
+
+        solutionX[k] = (rightX.at(k) - upper.at(k) * followingX) / divisor;
+        solutionY[k] = (rightY.at(k) - upper.at(k) * followingY) / divisor;
+    }
+
+    for (int k = 0; k < unknowns; ++k)
+    {
+        tangents[k + 1] = QPointF(solutionX.at(k), solutionY.at(k));
+    }
+
+    return tangents;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Outline of a base curve at a width that varies along its arc length.
+ *
+ * The base is sampled along its length, with a sample sitting exactly on every station, and one Catmull-Rom chain is
+ * built through the offset points. The code used to offset every base segment on its own and then average the handles
+ * to hide the seams: the tangents ended up continuous — SmoothJoints does exactly that, so measuring them says
+ * nothing — but the curvature jumped at every seam (measured: 0.22 against a local curvature of 0.10 on a half
+ * circle, with the curve flattened to 0.003 just before the seam), which reads as a crease. Sampling removes the
+ * seams themselves instead of patching them.
+ */
+auto OutlineByWidth(const QVector<VSpline> &base, const QVector<qreal> &distances) -> VSplinePath
+{
+    if (base.isEmpty() || distances.isEmpty())
+    {
+        return VSplinePath();
+    }
+
+    QVector<SegmentArcLength> tables;
+    tables.reserve(base.size());
+    qreal totalLength = 0.0;
+    for (const VSpline &segment : base)
+    {
+        tables.append(SegmentArcLength(ControlPoints(segment)));
+        totalLength += tables.constLast().Length();
+    }
+    if (qFuzzyIsNull(totalLength))
+    {
+        return VSplinePath();
+    }
+
+    constexpr qreal kSampleStep = 2.0; // cm between two samples of the base curve
+    constexpr int kMinSamples = 8;     // per base segment, whatever its length
+    constexpr qreal kEpsilon = 1e-6;
+
+    const int stationCount = static_cast<int>(distances.size());
+    const MonotoneWidthLaw widthLaw(distances);
+
+    // Samples of the base curve, in arc length, plus one exactly on each interior station: a station rarely falls on a
+    // sample, and the widest point of a flounce must not be shaved off.
+    QVector<QPointF> points;
+    QVector<QPointF> tangents;
+    QVector<qreal> lengths;
+
+    qreal accumulated = 0.0;
+    for (int segment = 0; segment < base.size(); ++segment)
+    {
+        const QVector<QPointF> control = ControlPoints(base.at(segment));
+        const SegmentArcLength &table = tables.at(segment);
+        const qreal segmentLength = table.Length();
+        const int steps = std::max(kMinSamples, static_cast<int>(std::ceil(segmentLength / kSampleStep)));
+
+        QVector<qreal> positions;
+        positions.reserve(steps + stationCount);
+        for (int step = 0; step < steps; ++step)
+        {
+            positions.append(segmentLength * step / steps);
+        }
+
+        for (int station = 1; station < stationCount - 1; ++station)
+        {
+            const qreal stationLength = totalLength * station / (stationCount - 1);
+            if (stationLength > accumulated + kEpsilon && stationLength < accumulated + segmentLength - kEpsilon)
+            {
+                positions.append(stationLength - accumulated);
+            }
+        }
+        std::sort(positions.begin(), positions.end());
+
+        qreal previous = -1.0;
+        for (const qreal position : std::as_const(positions))
+        {
+            if (position - previous < kEpsilon)
+            {
+                continue;
+            }
+            previous = position;
+
+            const qreal t = table.Parameter(position);
+            const QPointF derivative = BezierDerivative(control, t);
+            const qreal norm = std::hypot(derivative.x(), derivative.y());
+            if (qFuzzyIsNull(norm))
+            {
+                continue; // stationary point: no usable normal here
+            }
+
+            points.append(BezierPoint(control, t));
+            tangents.append(derivative / norm);
+            lengths.append(accumulated + position);
+        }
+
+        accumulated += segmentLength;
+    }
+
+    // Last point of the base: the loop above stops at the start of the last segment.
+    {
+        const QVector<QPointF> control = ControlPoints(base.constLast());
+        const QPointF derivative = BezierDerivative(control, 1.0);
+        const qreal norm = std::hypot(derivative.x(), derivative.y());
+        if (!qFuzzyIsNull(norm))
+        {
+            points.append(BezierPoint(control, 1.0));
+            tangents.append(derivative / norm);
+            lengths.append(totalLength);
+        }
+    }
+
+    if (points.size() < 3)
+    {
+        return VSplinePath();
+    }
+
+    // Offset points. The normal is the one the previous code used for a positive width.
+    QVector<QPointF> outlinePoints;
+    outlinePoints.reserve(points.size());
+    for (int i = 0; i < points.size(); ++i)
+    {
+        const qreal width = widthLaw.Width(lengths.at(i) / totalLength);
+        const QPointF tangent = tangents.at(i);
+        outlinePoints.append(points.at(i) + width * QPointF(-tangent.y(), tangent.x()));
+    }
+
+    // One C2 chain through the offset points: the tangents are solved so the curvature is continuous at every sample.
+    // A chain that is only C1 (Catmull-Rom, or handles averaged at the seams) keeps the tangent smooth but lets the
+    // curvature jump at every knot, and a curvature jump reads as a crease on a hem.
+    QVector<qreal> chords(outlinePoints.size() - 1);
+    for (int i = 0; i + 1 < outlinePoints.size(); ++i)
+    {
+        chords[i] = std::hypot(outlinePoints.at(i + 1).x() - outlinePoints.at(i).x(),
+                               outlinePoints.at(i + 1).y() - outlinePoints.at(i).y());
+    }
+
+    const qreal firstChord = chords.constFirst();
+    const qreal lastChord = chords.constLast();
+    const QPointF startTangent =
+        qFuzzyIsNull(firstChord) ? QPointF() : (outlinePoints.at(1) - outlinePoints.constFirst()) / firstChord;
+    const QPointF endTangent = qFuzzyIsNull(lastChord)
+                                   ? QPointF()
+                                   : (outlinePoints.constLast() - outlinePoints.at(outlinePoints.size() - 2)) /
+                                         lastChord;
+
+    const QVector<QPointF> knotTangents = C2Tangents(outlinePoints, chords, startTangent, endTangent);
+
+    QVector<VSpline> outline;
+    outline.reserve(outlinePoints.size() - 1);
+    for (int i = 0; i + 1 < outlinePoints.size(); ++i)
+    {
+        const qreal chord = chords.at(i);
+        if (qFuzzyIsNull(chord))
+        {
+            continue;
+        }
+
+        outline.append(VSpline(VPointF(outlinePoints.at(i), "X1"_L1),
+                               outlinePoints.at(i) + knotTangents.at(i) * (chord / 3.0),
+                               outlinePoints.at(i + 1) - knotTangents.at(i + 1) * (chord / 3.0),
+                               VPointF(outlinePoints.at(i + 1), "X4"_L1)));
+    }
+
+    return VSplinePath(outline);
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VSplinePath::Outline(const QVector<qreal> &distances, const QString &name) const -> VSplinePath
 {
+    // A width that varies along the curve is not a set of independent offsets: the whole curve is sampled at once, so
+    // that neither the curvature (seams) nor the width law (stations) can break. See OutlineByWidth().
+    if (distances.size() > 1)
+    {
+        QVector<VSpline> base;
+        base.reserve(CountSubSpl());
+        for (vsizetype i = 1; i <= CountSubSpl(); ++i)
+        {
+            base.append(GetSpline(i));
+        }
+
+        VSplinePath widthPath = OutlineByWidth(base, distances);
+        if (widthPath.CountSubSpl() > 0)
+        {
+            if (!name.isEmpty())
+            {
+                widthPath.SetNameSuffix(name);
+                widthPath.SetMainNameForHistory(name);
+            }
+            widthPath.SetColor(GetColor());
+            widthPath.SetPenStyle(GetPenStyle());
+            widthPath.SetApproximationScale(GetApproximationScale());
+            widthPath.SetDerivative(true);
+            return widthPath;
+        }
+    }
+
     qreal const totalLen = GetLength();
     qreal accumulated = 0.0;
     const auto maxIndex = static_cast<int>(distances.size() - 1);

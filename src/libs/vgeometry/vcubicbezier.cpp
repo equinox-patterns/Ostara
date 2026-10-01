@@ -184,6 +184,21 @@ auto VCubicBezier::Outline(const QVector<qreal> &distances, const QString &name)
     VSpline spl(GetP1(), GetP2().toQPointF(), GetP3().toQPointF(), GetP4());
     spl.SetApproximationScale(GetApproximationScale());
 
+    if (distances.size() > 1)
+    {
+        // A varying width is sampled as a whole (see VSplinePath::Outline), and a spline path needs two segments:
+        // split the cubic into two exact halves and go through the same code as arcs and spline paths.
+        VSpline left;
+        VSpline right;
+        spl.CutSplineAtParam(0.5, left, right, "X"_L1);
+
+        VSplinePath basePath({left, right});
+        basePath.SetColor(GetColor());
+        basePath.SetPenStyle(GetPenStyle());
+        basePath.SetApproximationScale(GetApproximationScale());
+        return basePath.Outline(distances, name);
+    }
+
     QVector<VSpline> subSplines = spl.OutlinePath(distances);
 
     if (subSplines.size() == 1)
