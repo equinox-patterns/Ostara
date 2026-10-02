@@ -71,7 +71,7 @@ public:
 
     void RefreshLine();
 
-    void SetActivePoint(bool active);
+    virtual void SetActivePoint(bool active);
 
     /** @brief Set the transient multi-selection state (e.g. passmark points clicked while
      *  adding/removing). Rendered magenta, distinct from the persistent active (orange).

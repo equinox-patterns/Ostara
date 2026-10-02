@@ -93,6 +93,9 @@ public:
     auto GetLineColor() const -> QString;
     void SetLineColor(const QString &value);
 
+    /** @brief The point holds the click (property browser): show the line it comes from, as on hover. */
+    void SetActivePoint(bool active) override;
+
 public slots:
     void Enable() override;
 
@@ -114,6 +117,7 @@ protected:
 
     void RefreshGeometry() override;
     void RefreshMainLinePen();
+    void UpdateMainLineHighlight();
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;

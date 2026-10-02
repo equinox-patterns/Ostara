@@ -69,6 +69,12 @@ public:
     auto IsShowArrows() const -> bool;
     void SetShowArrows(bool show);
 
+    /// Style the owner asked for (the "typeLine" of the tool). Kept here rather than only in the pen, because
+    /// the pen is rewritten on every refresh: a "none" line has to be drawn while it is emphasized, and to go
+    /// back to invisible afterwards without the owner having to say it again.
+    void SetAuthoredLineStyle(Qt::PenStyle style);
+    auto AuthoredLineStyle() const -> Qt::PenStyle { return m_authoredStyle; }
+
     /// Gives the line the click a tool wants to hear about: it then stands for one of the segments that tool
     /// draws — a side of a rectangle, a tracé of a dart cap, the main line of a line point — and a click has to
     /// pick that segment for the operation being created. The callback carries what the owner needs (its own id
@@ -101,6 +107,9 @@ private:
 
     bool m_isBoldLine{true};
     bool m_showArrows{false};
+    /// Style the tool asked for. It lives outside the pen because the pen is rebuilt from itself on every
+    /// refresh: what the line must finally look like has to survive that rebuild.
+    Qt::PenStyle m_authoredStyle{Qt::SolidLine};
     /// Set when the line stands for a segment its owning tool draws; empty for every other line.
     std::function<void()> m_segmentClickHandler{};
     bool m_layerSelected{false};

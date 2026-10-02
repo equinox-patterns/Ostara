@@ -107,6 +107,22 @@ auto VScaledLine::ArrowsPath() const -> QPainterPath
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::SetAuthoredLineStyle(Qt::PenStyle style)
+{
+    if (m_authoredStyle != style)
+    {
+        prepareGeometryChange(); // the style drives shape() and boundingRect()
+        m_authoredStyle = style;
+    }
+
+    // Always converge the pen, even when the remembered style did not change: the owner has just written the
+    // style it asked for (VToolLinePoint::RefreshMainLinePen does), and a "none" line has to be shown instead
+    // while it is emphasized — the emphasis may well have been set before this call, and skipping the refresh
+    // here is what left the line invisible after a click.
+    RefreshPen();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VScaledLine::RefreshPen()
 {
     QPen lPen = pen();
@@ -129,6 +145,23 @@ void VScaledLine::RefreshPen()
         // no role to fall back on. Without this the orange would stay in the pen for good.
         lPen.setColor(m_colorBeforeLayer);
         m_colorBeforeLayer = QColor();
+    }
+
+    // A "none" line is invisible, but it has to show while it is emphasized: the point it comes from is
+    // hovered or picked, and the line is what says where that point comes from. Same intent as
+    // Visualization::LineStyle(), which draws "none" solid while a tool is being created. Writing a visible
+    // style into the pen is also what keeps the item honest — QGraphicsLineItem::boundingRect() derives from
+    // the virtual shape(), which is empty while the style is "none", and an empty rect makes the scene clip
+    // the painting to the arrows. The authored style gives the invisibility back once the emphasis is gone.
+    if (m_authoredStyle == Qt::NoPen)
+    {
+        const bool emphasized = m_isBoldLine || m_layerSelected || m_inLayer;
+        const Qt::PenStyle style = emphasized ? Qt::SolidLine : Qt::NoPen;
+        if (lPen.style() != style)
+        {
+            prepareGeometryChange(); // the style drives shape() and boundingRect()
+            lPen.setStyle(style);
+        }
     }
 
     lPen.setWidthF(ScaledPenWidth());

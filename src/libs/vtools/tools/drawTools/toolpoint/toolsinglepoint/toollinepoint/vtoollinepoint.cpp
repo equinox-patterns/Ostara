@@ -131,6 +131,9 @@ void VToolLinePoint::RefreshMainLinePen()
     mPen.setColor(VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::CorrectToolColorForDarkTheme(lineColor)));
     mPen.setStyle(LineStyleToPenStyle(m_lineType));
     mainLine->setPen(mPen);
+    // The line keeps the style the tool asked for, so that a "none" line can be shown while it is emphasized
+    // (its point hovered or picked) and become invisible again by itself afterwards.
+    mainLine->SetAuthoredLineStyle(LineStyleToPenStyle(m_lineType));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -146,21 +149,43 @@ void VToolLinePoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::SetActivePoint(bool active)
+{
+    // The point this line belongs to is the one the user clicked: it is the only moment where the line it comes
+    // from can be wanted on screen, and it is what the point's own colour already answers to.
+    VToolSinglePoint::SetActivePoint(active);
+    UpdateMainLineHighlight();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::UpdateMainLineHighlight()
+{
+    // The line is shown while its point is hovered or holds the click: that is the only way to see which base
+    // point it comes from, since a "none" line is invisible the rest of the time. The colour tells the two
+    // states apart — the click wears the colour of the active point, the one its point already wears then, so
+    // that line and point read as one object; a mere hover keeps the line's own colour, the one its pen asks
+    // for. Never done from paint(): Qt 6 does not support mutating item state while painting.
+    const bool clicked = not m_suppressContextMenu && m_selected;
+    const bool shown = not m_suppressContextMenu && (m_isHovered || m_selected);
+
+    mainLine->SetColorRole(clicked ? VColorRole::ActivePointColor : VColorRole::CustomColor);
+    RefreshMainLinePen(); // gives the line back its own colour and style
+    mainLine->SetHighlighted(shown);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolLinePoint::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     // Line highlight on hover is a Select-mode behavior only.
-    if (not m_suppressContextMenu)
-    {
-        mainLine->SetHighlighted(true);
-    }
-    VToolSinglePoint::hoverEnterEvent(event);
+    VToolSinglePoint::hoverEnterEvent(event); // sets m_isHovered before the line pen is refreshed
+    UpdateMainLineHighlight();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolLinePoint::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    mainLine->SetHighlighted(false);
     VToolSinglePoint::hoverLeaveEvent(event);
+    UpdateMainLineHighlight();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
