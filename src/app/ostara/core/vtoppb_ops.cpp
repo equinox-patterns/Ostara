@@ -30,6 +30,7 @@
 #include "vtooloptionspropertybrowser.h"
 #include "vtoppb_templates.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
+#include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
@@ -41,8 +42,11 @@
 #include "../vpropertyexplorer/plugins/vlabelproperty.h"
 #include "../vpropertyexplorer/plugins/venumproperty.h"
 #include "../vpropertyexplorer/plugins/vtextproperty.h"
+#include "../vpropertyexplorer/plugins/vwidgetproperty.h"
 #include "ifcdef.h"
 #include "../vmisc/def.h"
+
+#include <QPushButton>
 
 namespace
 {
@@ -620,5 +624,38 @@ auto TransfertProperties() -> std::vector<PropertyDesc>
     return {
         CopyStyleGroup<OToolTransfert>(),
         NotesProperty<OToolTransfert>(),
+    };
+}
+
+// --- OToolSpread ---
+auto SpreadProperties() -> std::vector<PropertyDesc>
+{
+    // The rotations are a list, and the dock has no editor for one: a button opens the dialog that holds it.
+    // It comes before the pen of the active copy, which is the usual tail of an operation
+    // (see SlashAndSpread.md).
+    return {
+        {QStringLiteral("editRotations"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Edit rotations")),
+         [](VToolOptionsPropertyBrowser *browser, void *tool) -> VPE::VProperty *
+         {
+             Q_UNUSED(tool)
+             auto *button = new QPushButton(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Edit rotations")));
+             QObject::connect(button,
+                              &QPushButton::clicked,
+                              browser,
+                              [browser]()
+                              {
+                                  if (auto *spread = qgraphicsitem_cast<OToolSpread *>(browser->currentItem()))
+                                  {
+                                      spread->OpenOptionsDialog();
+                                  }
+                              });
+             return new VPE::VWidgetProperty(
+                 T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Edit rotations")), button);
+         },
+         nullptr,
+         nullptr},
+
+        CopyStyleGroup<OToolSpread>(),
+        NotesProperty<OToolSpread>(),
     };
 }

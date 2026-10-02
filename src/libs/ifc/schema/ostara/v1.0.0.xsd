@@ -331,6 +331,23 @@
                                 </xs:sequence>
                               </xs:complexType>
                             </xs:element>
+                            <!-- The slash-and-spread: one rotation per cut line. The start and pivot are points of
+                                 the source list, the angle the formula the rotation is stored as. The name is a
+                                 display label the user can edit ("Rotation 1"), hence a free string. -->
+                            <xs:element name="rotations" minOccurs="0" maxOccurs="1">
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                      <xs:attribute name="start" type="xs:unsignedInt"/>
+                                      <xs:attribute name="pivot" type="xs:unsignedInt"/>
+                                      <xs:attribute name="angle" type="xs:string"/>
+                                      <xs:attribute name="name" type="xs:string"/>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
                           </xs:sequence>
                           <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
                           <xs:attribute name="center" type="xs:unsignedInt"/>

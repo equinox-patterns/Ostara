@@ -138,6 +138,13 @@ protected:
 
     template <class T> static void InitDrawToolConnections(VMainGraphicsScene *scene, T *tool);
 
+    /** @brief Build and show this tool's options dialog, the way the context menu's "Options" entry does.
+     *
+     *  Protected rather than private: a tool that offers the entry from somewhere else (a button in the
+     *  options dock) exposes it through a method of its own, so the dialog type stays with the tool. */
+    template<class Dialog>
+    void ShowOptionsDialog();
+
 private:
     Q_DISABLE_COPY_MOVE(VDrawTool) // NOLINT
 
@@ -168,9 +175,6 @@ private:
                         const std::function<void()> &onOptionsSelected);
 
     void DispatchMenuSelection(QAction const *selectedAction, const MenuActions &actions, quint32 itemId);
-
-    template<class Dialog>
-    void ShowOptionsDialog();
 
     void HandleRemoveAction();
     void HandleAddToGroup(QAction const *selectedAction, quint32 itemId);

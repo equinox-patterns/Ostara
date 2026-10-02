@@ -217,7 +217,7 @@ void MainWindow::SetEnableTool(bool enable)
     QT_WARNING_POP
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 75, "Not all tools were handled.");
 
     // Drawing Tools
     ui->actionEndLineTool->setEnabled(drawTools);
@@ -263,6 +263,7 @@ void MainWindow::SetEnableTool(bool enable)
     ui->actionMoveTool->setEnabled(drawTools);
     ui->actionTransfertTool->setEnabled(drawTools);
     ui->actionSpiralTool->setEnabled(drawTools);
+    ui->actionSpreadTool->setEnabled(drawTools);
     ui->actionMidpointTool->setEnabled(drawTools);
     ui->actionEllipticalArcTool->setEnabled(drawTools);
     ui->actionInsertNodeTool->setEnabled(drawTools);
@@ -596,7 +597,7 @@ void MainWindow::SetEnabledGUI(bool enabled)
 void MainWindow::InitToolButtons()
 {
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "Check if all tools were connected.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 75, "Check if all tools were connected.");
 
     auto InitToolButton = [this](VShortcutAction type, QAction *action, void (MainWindow::*slotFunction)(bool))
     {
@@ -678,6 +679,7 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ToolGraduatedCurve, ui->actionGraduatedCurveTool, &MainWindow::ToolGraduatedCurve);
     InitToolButton(VShortcutAction::ToolArmholeCurve, ui->actionArmholeCurveTool, &MainWindow::ToolArmholeCurve);
     InitToolButton(VShortcutAction::ToolSpiral, ui->actionSpiralTool, &MainWindow::ToolSpiral);
+    InitToolButton(VShortcutAction::ToolSpread, ui->actionSpreadTool, &MainWindow::ToolSpread);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

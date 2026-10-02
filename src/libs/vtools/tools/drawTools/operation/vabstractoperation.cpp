@@ -1587,17 +1587,32 @@ void VAbstractOperation::ProcessOperationToolOptions(const QDomElement &oldDomEl
     const QMap<quint32, QString> oldNames = BuildNameMap(m_source);
     const QMap<quint32, QString> newNames = BuildNameMap(newSource);
 
+    // Detect additions or removals of sources by comparing id sets.
+    const QSet<quint32> oldIds = ConvertToSet<quint32>(oldNames.keys());
+    const QSet<quint32> newIds = ConvertToSet<quint32>(newNames.keys());
+    const bool sourceSetChanged = (oldIds != newIds);
+
+    // Detect additions or removals of destinations the same way: a slash-and-spread toggling its copies keeps
+    // the same sources and names, yet its destination objects must be created or deleted — which only a full
+    // parse does. The id set says it even when the names do not change.
+    const auto destinationIds = [](const QDomElement &element) -> QSet<quint32>
+    {
+        QSet<quint32> ids;
+        for (const auto &item : VAbstractOperation::ExtractDestinationData(element))
+        {
+            ids.insert(item.id);
+        }
+        return ids;
+    };
+    const bool destinationSetChanged = (destinationIds(oldDomElement) != destinationIds(newDomElement));
+    const bool needsFullParse = sourceSetChanged || destinationSetChanged;
+
     // Check if there are any name changes
-    if (oldNames == newNames)
+    if (oldNames == newNames && !destinationSetChanged)
     {
         VAbstractOperation::ApplyToolOptions(oldDomElement, newDomElement);
         return;
     }
-
-    // Detect additions or removals by comparing id sets
-    const QSet<quint32> oldIds = ConvertToSet<quint32>(oldNames.keys());
-    const QSet<quint32> newIds = ConvertToSet<quint32>(newNames.keys());
-    const bool sourceSetChanged = (oldIds != newIds);
 
     const QMap<QUuid, quint32> destIdByRecord = BuildDestIdByRecord(m_destination);
     const auto renames = CollectRenames(newSource, oldNames, destIdByRecord);
@@ -1608,7 +1623,7 @@ void VAbstractOperation::ProcessOperationToolOptions(const QDomElement &oldDomEl
 
     auto *saveOptions = new SaveToolOptions(oldDomElement, newDomElement, doc, m_id, newGroup);
     saveOptions->SetInGroup(!renames.isEmpty());
-    SetupRenameCommand(saveOptions, sourceSetChanged, /*isLast=*/true, doc);
+    SetupRenameCommand(saveOptions, needsFullParse, /*isLast=*/true, doc);
 
     HandleVisibilityGroupChange(newGroup);
 
@@ -1620,13 +1635,13 @@ void VAbstractOperation::ProcessOperationToolOptions(const QDomElement &oldDomEl
 
         if (const QSharedPointer<VGObject> obj = VDataTool::data.GetGObject(sourceId); obj->getType() == GOType::Point)
         {
-            SetupRenameCommand(new RenameLabel(oldName, newName, doc, destId, newGroup), sourceSetChanged, isLast, doc);
+            SetupRenameCommand(new RenameLabel(oldName, newName, doc, destId, newGroup), needsFullParse, isLast, doc);
         }
         else
         {
             const CurveAliasType type = RenameAlias::CurveType(obj->getType());
             SetupRenameCommand(new RenameAlias(type, oldName, newName, doc, destId, newGroup),
-                               sourceSetChanged,
+                               needsFullParse,
                                isLast,
                                doc);
         }

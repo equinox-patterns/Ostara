@@ -116,6 +116,9 @@ extern const QString AttrTarget;
 extern const QString AttrApex;
 extern const QString AttrExtendPoint;
 extern const QString AttrDrawCap;
+// Legacy only: a file written while the slash-and-spread had a "show copies" checkbox still carries this
+// attribute. It is no longer written, and OToolSpread removes it when it saves (the copies are always built).
+extern const QString AttrShowCopies;
 extern const QString AttrRotationAngle;
 extern const QString AttrLength1;
 extern const QString AttrLength2;

@@ -1293,7 +1293,7 @@ void VPattern::DrawToolsCommonAttributes(const QDomElement &domElement, quint32 
 auto VPattern::ActiveDrawBoundingRect() const -> QRectF
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "Not all tools were used.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 75, "Not all tools were used.");
 
     QRectF rec;
 
@@ -1380,6 +1380,7 @@ auto VPattern::ActiveDrawBoundingRect() const -> QRectF
             case Tool::FlippingByAxis:
             case Tool::Move:
             case Tool::Transfert:
+            case Tool::Spread:
                 rec = ToolBoundingRect<VAbstractOperation>(rec, tool.GetId());
                 break;
             // These tools are not accesseble in Draw mode, but still 'history' contains them.

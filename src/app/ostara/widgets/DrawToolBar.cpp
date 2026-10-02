@@ -95,7 +95,8 @@ auto BorrowedToolIcons() -> const QHash<QString, QString> &
                                                   {QStringLiteral("dart_cap"), QStringLiteral("true_darts.png")},
                                                   {QStringLiteral("rectangle"), QStringLiteral("shoulder.png")},
                                                   {QStringLiteral("transfert"), QStringLiteral("move.png")},
-                                                  {QStringLiteral("spiral"), QStringLiteral("parallel_curve.png")}};
+                                                  {QStringLiteral("spiral"), QStringLiteral("parallel_curve.png")},
+                                                  {QStringLiteral("spread"), QStringLiteral("arc_with_length.png")}};
     return borrowed;
 }
 
@@ -526,6 +527,8 @@ void DrawToolBar::InitializeGroups()
             // Same again: the spiral waits for artwork of its own and borrows the icon of the parallel curve,
             // which is where its action takes it from too.
             {QStringLiteral("spiral"),                   tr("Spiral tool"),                                     nullptr, nullptr},
+            // Same again: the slash-and-spread borrows the icon of the arc of given length.
+            {QStringLiteral("spread"),                   tr("Slash and spread tool"),                           nullptr, nullptr},
         }, kModeDraw},
     };
     // clang-format on
@@ -642,6 +645,19 @@ void DrawToolBar::InitializeGroups()
         btn->setIconSize(QSize(24, 24));
         btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("parallel_curve.png")));
         m_buttonMap.insert(QStringLiteral("spiral"), btn);
+    }
+
+    // The slash-and-spread borrows the icon of the arc of given length — the same one its action carries.
+    if (!m_buttonMap.contains(QStringLiteral("spread")))
+    {
+        auto *btn = new QToolButton(m_root);
+        btn->setObjectName(QStringLiteral("drawToolBtn"));
+        btn->setAutoRaise(true);
+        btn->setCheckable(true);
+        btn->setFixedSize(kButtonSize, kButtonSize);
+        btn->setIconSize(QSize(24, 24));
+        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("arc_with_length.png")));
+        m_buttonMap.insert(QStringLiteral("spread"), btn);
     }
 
     // Update the button pointer in the ToolItem

@@ -105,6 +105,7 @@ const QString AttrTarget = QStringLiteral("target");
 const QString AttrApex = QStringLiteral("apex");
 const QString AttrExtendPoint = QStringLiteral("extendPoint");
 const QString AttrDrawCap = QStringLiteral("drawCap");
+const QString AttrShowCopies = QStringLiteral("showCopies");
 const QString AttrLength1 = QStringLiteral("length1");
 const QString AttrLength2 = QStringLiteral("length2");
 const QString AttrP1Line = QStringLiteral("p1Line");

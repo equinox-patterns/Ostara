@@ -45,6 +45,7 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/oclosedartrule.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
+#include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
@@ -517,6 +518,46 @@ void VPattern::ParseToolTransfert(VMainGraphicsScene *scene, QDomElement &domEle
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseToolSpread(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse)
+{
+    SCASSERT(scene != nullptr)
+    Q_ASSERT_X(domElement.isNull() == false, Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        OToolSpreadInitData initData;
+        initData.scene = scene;
+        initData.doc = this;
+        initData.data = data;
+        initData.parse = parse;
+        initData.typeCreation = Source::FromFile;
+
+        DrawToolsCommonAttributes(domElement, initData.id, initData.notes);
+
+        // We no longer need to handle suffix attribute here. The code can be removed.
+        Q_STATIC_ASSERT(VPatternConverter::PatternMinVer < FormatVersion(1, 1, 1));
+        initData.suffix = GetParametrEmptyString(domElement, AttrSuffix);
+
+        VAbstractOperation::ExtractData(domElement, initData);
+        initData.rotations = OToolSpread::ExtractRotations(domElement);
+
+        OToolSpread::Create(initData);
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating the slash and spread operation"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+    catch (qmu::QmuParserError &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating the slash and spread operation"), domElement);
+        excep.AddMoreInformation("Message:     "_L1 + e.GetMsg() + '\n'_L1 + "Expression:  "_L1 + e.GetExpr());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VPattern::TransfertSourcesAreGraphVertices(const OToolTransfertInitData &initData) -> bool
 {
     VPatternGraph *graph = PatternGraph();
@@ -837,7 +878,8 @@ void VPattern::ParseOperationElement(VMainGraphicsScene *scene, QDomElement &dom
                                      << VToolFlippingByAxis::ToolType /*2*/
                                      << VToolMove::ToolType           /*3*/
                                      << OToolCloseDart::ToolType      /*4*/
-                                     << OToolTransfert::ToolType;     /*5*/
+                                     << OToolTransfert::ToolType      /*5*/
+                                     << OToolSpread::ToolType;        /*6*/
 
     switch (opers.indexOf(type))
     {
@@ -858,6 +900,9 @@ void VPattern::ParseOperationElement(VMainGraphicsScene *scene, QDomElement &dom
             break;
         case 5: // OToolTransfert::ToolType
             ParseToolTransfert(scene, domElement, parse);
+            break;
+        case 6: // OToolSpread::ToolType
+            ParseToolSpread(scene, domElement, parse);
             break;
         default:
             throw VException(tr("Unknown operation type '%1'.").arg(type));

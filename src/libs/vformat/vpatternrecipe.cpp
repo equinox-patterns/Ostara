@@ -46,6 +46,7 @@
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
+#include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
@@ -368,7 +369,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 75, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -483,6 +484,8 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
                 return Move(tool, data);
             case Tool::Transfert:
                 return Transfert(tool, data);
+            case Tool::Spread:
+                return Spread(tool, data);
             case Tool::EllipticalArcWithLength:
                 return EllipticalArcWithLength(tool);
             case Tool::ParallelCurve:
@@ -1289,6 +1292,33 @@ auto VPatternRecipe::Transfert(const VToolRecord &record, const VContainer &data
     // copies themselves are recomputed, never stored.
     SetAttribute(step, AttrOrigin, tool->OriginPointName());
     SetAttribute(step, AttrTarget, tool->TargetPointName());
+
+    step.appendChild(GroupOperationSource(tool, record.GetId(), data));
+
+    return step;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPatternRecipe::Spread(const VToolRecord &record, const VContainer &data) -> QDomElement
+{
+    auto *tool = GetPatternTool<OToolSpread>(record.GetId());
+
+    QDomElement step = createElement(TagStep);
+
+    SetAttribute(step, AttrType, OToolSpread::ToolType);
+
+    // The chain the copies are recomputed from: one rotation per cut line.
+    QDomElement rotations = createElement(OToolSpread::TagRotations);
+    for (const auto &rotation : tool->Rotations())
+    {
+        QDomElement item = createElement(QStringLiteral("item"));
+        SetAttribute(item, OToolSpread::AttrStart, QString::number(rotation.startId));
+        SetAttribute(item, OToolSpread::AttrPivot, QString::number(rotation.pivotId));
+        SetAttribute(item, AttrAngle, rotation.angle);
+        SetAttribute(item, AttrName, rotation.name);
+        rotations.appendChild(item);
+    }
+    step.appendChild(rotations);
 
     step.appendChild(GroupOperationSource(tool, record.GetId(), data));
 

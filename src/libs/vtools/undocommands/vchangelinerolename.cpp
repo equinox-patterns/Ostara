@@ -153,7 +153,7 @@ void VChangeLineRoleName::ReplaceTokensInFormulas(const QString &oldSuffix, cons
     const QString newAngleToken = angleLine_ + newSuffix; // e.g. "AngleLine_MaLigne"
 
     // Check if all tags handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 74);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 75);
 
     const QStringList validTags = {VAbstractPattern::TagPoint,
                                    VAbstractPattern::TagOperation,

@@ -135,6 +135,7 @@ enum class VShortcutAction : quint8
     ToolCurve,
     ToolCutCurve,
     ToolSpiral,
+    ToolSpread,
     LAST_ONE_DO_NOT_USE
 };
 

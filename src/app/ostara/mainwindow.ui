@@ -2672,6 +2672,27 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
+   <action name="actionSpreadTool">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="icon">
+     <iconset resource="share/resources/toolicon.qrc">
+      <normaloff>:/toolicon/light/arc_with_length.png</normaloff>:/toolicon/light/arc_with_length.png</iconset>
+    </property>
+    <property name="text">
+     <string>Slash and spread</string>
+    </property>
+    <property name="toolTip">
+     <string>Slash and spread: open a piece along cut lines by rotating its parts</string>
+    </property>
+    <property name="menuRole">
+     <enum>QAction::MenuRole::NoRole</enum>
+    </property>
+   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
