@@ -217,28 +217,28 @@ void OOperationLines::CreateLines(VAbstractPattern *doc, VContainer *data, VMain
             continue;
         }
 
-        // Built by the full parse — including a second call on the same data — or missing outside of it:
-        // both are left alone. VToolLine::Create only ever adds a scene item under a full parse, so calling
-        // it for a line that does not exist elsewhere would refresh nothing at all.
+        // A line that is already in the scene is never rebuilt — VToolLine::Create only ever adds a scene item
+        // under a full parse — so it is left alone, and its pen is taken from the operation here, because
+        // nothing else does. A transformed line has no element of its own: a lite parse, the one every option
+        // edit triggers, never re-reads it, and its type and colour would otherwise stay those of the gesture
+        // that produced it until the file is reopened.
         VDataTool *const existing = VAbstractPattern::FindTool(line.result);
 
-        if ((existing != nullptr) == build)
+        if (existing != nullptr)
         {
-            if (existing == nullptr)
-            {
-                continue;
-            }
-
-            // The line is there and this is not the parse that built it: its pen is taken from the operation
-            // here, because nothing else does. A transformed line has no element of its own, so a lite parse —
-            // the one every option edit triggers — never recreates it, and its type and colour would otherwise
-            // stay those of the gesture that produced it.
             if (auto *lineTool = qobject_cast<VToolLine *>(existing); lineTool != nullptr)
             {
                 lineTool->RefreshPenFromParse(line.typeLine.isEmpty() ? VToolLineInitData{}.typeLine : line.typeLine,
                                               line.lineColor.isEmpty() ? VToolLineInitData{}.lineColor
                                                                        : line.lineColor);
             }
+            continue;
+        }
+
+        // Missing outside of the full parse: nothing builds a scene item but the full parse, so a lite parse
+        // has nothing to do here — and calling Create for a line that does not exist would refresh nothing.
+        if (!build)
+        {
             continue;
         }
 
