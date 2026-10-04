@@ -300,6 +300,7 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("transfert"),                    ui->actionTransfertTool},
         {QStringLiteral("spiral"),                       ui->actionSpiralTool},
         {QStringLiteral("spread"),                       ui->actionSpreadTool},
+        {QStringLiteral("move_batch"),                   ui->actionMoveBatchTool},
         {QStringLiteral("true_darts"),                   ui->actionTrueDartsTool},
         {QStringLiteral("new_detail"),                   ui->actionNewDetailTool},
         {QStringLiteral("path"),                         ui->actionInternalPathTool},

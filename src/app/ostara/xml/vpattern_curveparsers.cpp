@@ -45,6 +45,7 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/oclosedartrule.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
+#include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
@@ -558,6 +559,46 @@ void VPattern::ParseToolSpread(VMainGraphicsScene *scene, QDomElement &domElemen
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseToolMoveBatch(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse)
+{
+    SCASSERT(scene != nullptr)
+    Q_ASSERT_X(domElement.isNull() == false, Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        OToolMoveBatchInitData initData;
+        initData.scene = scene;
+        initData.doc = this;
+        initData.data = data;
+        initData.parse = parse;
+        initData.typeCreation = Source::FromFile;
+
+        DrawToolsCommonAttributes(domElement, initData.id, initData.notes);
+
+        // We no longer need to handle suffix attribute here. The code can be removed.
+        Q_STATIC_ASSERT(VPatternConverter::PatternMinVer < FormatVersion(1, 1, 1));
+        initData.suffix = GetParametrEmptyString(domElement, AttrSuffix);
+
+        VAbstractOperation::ExtractData(domElement, initData);
+        initData.moves = OToolMoveBatch::ExtractMoves(domElement);
+
+        OToolMoveBatch::Create(initData);
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating the move by batch operation"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+    catch (qmu::QmuParserError &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating the move by batch operation"), domElement);
+        excep.AddMoreInformation("Message:     "_L1 + e.GetMsg() + '\n'_L1 + "Expression:  "_L1 + e.GetExpr());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VPattern::TransfertSourcesAreGraphVertices(const OToolTransfertInitData &initData) -> bool
 {
     VPatternGraph *graph = PatternGraph();
@@ -879,7 +920,8 @@ void VPattern::ParseOperationElement(VMainGraphicsScene *scene, QDomElement &dom
                                      << VToolMove::ToolType           /*3*/
                                      << OToolCloseDart::ToolType      /*4*/
                                      << OToolTransfert::ToolType      /*5*/
-                                     << OToolSpread::ToolType;        /*6*/
+                                     << OToolSpread::ToolType         /*6*/
+                                     << OToolMoveBatch::ToolType;     /*7*/
 
     switch (opers.indexOf(type))
     {
@@ -903,6 +945,9 @@ void VPattern::ParseOperationElement(VMainGraphicsScene *scene, QDomElement &dom
             break;
         case 6: // OToolSpread::ToolType
             ParseToolSpread(scene, domElement, parse);
+            break;
+        case 7: // OToolMoveBatch::ToolType
+            ParseToolMoveBatch(scene, domElement, parse);
             break;
         default:
             throw VException(tr("Unknown operation type '%1'.").arg(type));

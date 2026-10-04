@@ -46,6 +46,7 @@
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
+#include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
@@ -369,7 +370,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 75, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 76, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -486,6 +487,8 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
                 return Transfert(tool, data);
             case Tool::Spread:
                 return Spread(tool, data);
+            case Tool::MoveBatch:
+                return MoveBatch(tool, data);
             case Tool::EllipticalArcWithLength:
                 return EllipticalArcWithLength(tool);
             case Tool::ParallelCurve:
@@ -1319,6 +1322,35 @@ auto VPatternRecipe::Spread(const VToolRecord &record, const VContainer &data) -
         rotations.appendChild(item);
     }
     step.appendChild(rotations);
+
+    step.appendChild(GroupOperationSource(tool, record.GetId(), data));
+
+    return step;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPatternRecipe::MoveBatch(const VToolRecord &record, const VContainer &data) -> QDomElement
+{
+    auto *tool = GetPatternTool<OToolMoveBatch>(record.GetId());
+
+    QDomElement step = createElement(TagStep);
+
+    SetAttribute(step, AttrType, OToolMoveBatch::ToolType);
+
+    // The chain the copies are recomputed from: one move per cut line.
+    QDomElement moves = createElement(OToolMoveBatch::TagMoves);
+    for (const auto &move : tool->Moves())
+    {
+        QDomElement item = createElement(QStringLiteral("item"));
+        SetAttribute(item, OToolMoveBatch::AttrStart, QString::number(move.startId));
+        SetAttribute(item, OToolMoveBatch::AttrPivot, QString::number(move.pivotId));
+        SetAttribute(item, AttrName, move.name);
+        SetAttribute(item, AttrLength, move.length);
+        SetAttribute(item, AttrAngle, move.angle);
+        SetAttribute(item, AttrRotationAngle, move.rotationAngle);
+        moves.appendChild(item);
+    }
+    step.appendChild(moves);
 
     step.appendChild(GroupOperationSource(tool, record.GetId(), data));
 

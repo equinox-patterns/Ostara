@@ -96,7 +96,8 @@ auto BorrowedToolIcons() -> const QHash<QString, QString> &
                                                   {QStringLiteral("rectangle"), QStringLiteral("shoulder.png")},
                                                   {QStringLiteral("transfert"), QStringLiteral("move.png")},
                                                   {QStringLiteral("spiral"), QStringLiteral("parallel_curve.png")},
-                                                  {QStringLiteral("spread"), QStringLiteral("arc_with_length.png")}};
+                                                  {QStringLiteral("spread"), QStringLiteral("arc_with_length.png")},
+                                                  {QStringLiteral("move_batch"), QStringLiteral("el_arc.png")}};
     return borrowed;
 }
 
@@ -529,6 +530,8 @@ void DrawToolBar::InitializeGroups()
             {QStringLiteral("spiral"),                   tr("Spiral tool"),                                     nullptr, nullptr},
             // Same again: the slash-and-spread borrows the icon of the arc of given length.
             {QStringLiteral("spread"),                   tr("Slash and spread tool"),                           nullptr, nullptr},
+            // Same again: the move-by-batch borrows the icon of the elliptical arc.
+            {QStringLiteral("move_batch"),               tr("Move by batch tool"),                              nullptr, nullptr},
         }, kModeDraw},
     };
     // clang-format on
@@ -658,6 +661,19 @@ void DrawToolBar::InitializeGroups()
         btn->setIconSize(QSize(24, 24));
         btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("arc_with_length.png")));
         m_buttonMap.insert(QStringLiteral("spread"), btn);
+    }
+
+    // The move-by-batch borrows the icon of the elliptical arc — the same one its action carries.
+    if (!m_buttonMap.contains(QStringLiteral("move_batch")))
+    {
+        auto *btn = new QToolButton(m_root);
+        btn->setObjectName(QStringLiteral("drawToolBtn"));
+        btn->setAutoRaise(true);
+        btn->setCheckable(true);
+        btn->setFixedSize(kButtonSize, kButtonSize);
+        btn->setIconSize(QSize(24, 24));
+        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("el_arc.png")));
+        m_buttonMap.insert(QStringLiteral("move_batch"), btn);
     }
 
     // Update the button pointer in the ToolItem

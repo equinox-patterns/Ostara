@@ -2693,6 +2693,27 @@
      <enum>QAction::MenuRole::NoRole</enum>
     </property>
    </action>
+   <action name="actionMoveBatchTool">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="icon">
+     <iconset resource="share/resources/toolicon.qrc">
+      <normaloff>:/toolicon/light/el_arc.png</normaloff>:/toolicon/light/el_arc.png</iconset>
+    </property>
+    <property name="text">
+     <string>Move by batch</string>
+    </property>
+    <property name="toolTip">
+     <string>Move by batch: move the parts of a piece along cut lines</string>
+    </property>
+    <property name="menuRole">
+     <enum>QAction::MenuRole::NoRole</enum>
+    </property>
+   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

@@ -30,6 +30,7 @@
 #include "vtooloptionspropertybrowser.h"
 #include "vtoppb_templates.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
+#include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
@@ -657,5 +658,38 @@ auto SpreadProperties() -> std::vector<PropertyDesc>
 
         CopyStyleGroup<OToolSpread>(),
         NotesProperty<OToolSpread>(),
+    };
+}
+
+// --- OToolMoveBatch ---
+auto MoveBatchProperties() -> std::vector<PropertyDesc>
+{
+    // The moves are a list, and the dock has no editor for one: a button opens the dialog that holds it.
+    // It comes before the pen of the active copy, which is the usual tail of an operation
+    // (see MoveBatch.md).
+    return {
+        {QStringLiteral("editMoves"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Edit moves")),
+         [](VToolOptionsPropertyBrowser *browser, void *tool) -> VPE::VProperty *
+         {
+             Q_UNUSED(tool)
+             auto *button = new QPushButton(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Edit moves")));
+             QObject::connect(button,
+                              &QPushButton::clicked,
+                              browser,
+                              [browser]()
+                              {
+                                  if (auto *moveBatch = qgraphicsitem_cast<OToolMoveBatch *>(browser->currentItem()))
+                                  {
+                                      moveBatch->OpenOptionsDialog();
+                                  }
+                              });
+             return new VPE::VWidgetProperty(
+                 T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Edit moves")), button);
+         },
+         nullptr,
+         nullptr},
+
+        CopyStyleGroup<OToolMoveBatch>(),
+        NotesProperty<OToolMoveBatch>(),
     };
 }

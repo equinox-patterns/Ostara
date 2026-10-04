@@ -65,6 +65,7 @@ using namespace VtoppbConstants;
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
+#include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
@@ -134,6 +135,7 @@ auto RectangleProperties() -> std::vector<PropertyDesc>;
 auto MoveProperties() -> std::vector<PropertyDesc>;
 auto TransfertProperties() -> std::vector<PropertyDesc>;
 auto SpreadProperties() -> std::vector<PropertyDesc>;
+auto MoveBatchProperties() -> std::vector<PropertyDesc>;
 auto FlippingByLineProperties() -> std::vector<PropertyDesc>;
 auto FlippingByAxisProperties() -> std::vector<PropertyDesc>;
 auto PointOfIntersectionArcsProperties() -> std::vector<PropertyDesc>;
@@ -234,7 +236,7 @@ void VToolOptionsPropertyBrowser::ClearPropertyBrowser()
 void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 75, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 76, "Not all tools were used in switch.");
 
     switch (item->type())
     {
@@ -382,6 +384,9 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
         case OToolSpread::Type:
             ShowToolOptions<OToolSpread>(item, tr("Tool slash and spread"), SpreadProperties());
             break;
+        case OToolMoveBatch::Type:
+            ShowToolOptions<OToolMoveBatch>(item, tr("Tool move by batch"), MoveBatchProperties());
+            break;
         case VToolEllipticalArc::Type:
             ShowToolOptions<VToolEllipticalArc>(item, tr("Elliptical arc"), EllipticalArcProperties());
             break;
@@ -417,7 +422,7 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 75, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 76, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
@@ -549,6 +554,9 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
         case OToolSpread::Type:
             UpdateToolOptions<OToolSpread>(SpreadProperties());
             break;
+        case OToolMoveBatch::Type:
+            UpdateToolOptions<OToolMoveBatch>(MoveBatchProperties());
+            break;
         case VToolEllipticalArc::Type:
             UpdateToolOptions<VToolEllipticalArc>(EllipticalArcProperties());
             break;
@@ -627,7 +635,7 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 75, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 76, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
@@ -754,6 +762,9 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
             break;
         case OToolSpread::Type:
             ChangeToolData<OToolSpread>(prop, SpreadProperties());
+            break;
+        case OToolMoveBatch::Type:
+            ChangeToolData<OToolMoveBatch>(prop, MoveBatchProperties());
             break;
         case VToolEllipticalArc::Type:
             ChangeToolData<VToolEllipticalArc>(prop, EllipticalArcProperties());

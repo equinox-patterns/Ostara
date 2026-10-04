@@ -79,6 +79,7 @@
 #include "../vtools/dialogs/tools/dialogpointofintersectioncurves.h"
 #include "../vtools/dialogs/tools/dialogrotation.h"
 #include "../vtools/dialogs/tools/odialogclosedart.h"
+#include "../vtools/dialogs/tools/odialogmovebatch.h"
 #include "../vtools/dialogs/tools/odialogspread.h"
 #include "../vtools/dialogs/tools/odialogtransfert.h"
 #include "../vtools/dialogs/tools/odialogdartcap.h"
@@ -104,6 +105,7 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
+#include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
@@ -718,6 +720,20 @@ void MainWindow::ToolSpread(bool checked)
                                           &MainWindow::ApplyDrawDialog<OToolSpread>);
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolMoveBatch(bool checked)
+{
+    ToolSelectOperationObjects();
+    ToolSelectOperationLines();
+    const QString tooltip =
+        tr("Select the objects of the contour <b>in order</b>: all clockwise or all anticlockwise, "
+           "never mixing the two. Then <b>%1</b> to confirm")
+            .arg(VModifierKey::EnterKey());
+    SetToolButtonWithApply<ODialogMoveBatch>(checked, Tool::MoveBatch, QString(), tooltip,
+                                             &MainWindow::ClosedDrawDialogWithApply<OToolMoveBatch>,
+                                             &MainWindow::ApplyDrawDialog<OToolMoveBatch>);
+}
+
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ClosedDialogPiecePath(int result)
@@ -1023,7 +1039,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 75, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 76, "Check if need to extend.");
 
     switch (t)
     {
@@ -1043,6 +1059,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         case Tool::FlippingByAxis:
         case Tool::FlippingByLine:
         case Tool::Spread:
+        case Tool::MoveBatch:
             dialogTool->SetGroupCategories(doc->GetGroupCategories());
             break;
         case Tool::Transfert:
@@ -1454,7 +1471,7 @@ void MainWindow::ApplyPieceDialog(VMainGraphicsScene *scene)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 75, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 76, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1684,6 +1701,9 @@ void MainWindow::CancelTool()
         case Tool::Spread:
             ui->actionSpreadTool->setChecked(false);
             break;
+        case Tool::MoveBatch:
+            ui->actionMoveBatchTool->setChecked(false);
+            break;
         case Tool::EllipticalArc:
             ui->actionEllipticalArcTool->setChecked(false);
             break;
@@ -1780,7 +1800,7 @@ void MainWindow::ArrowTool(bool checked)
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 75, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 76, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -2009,6 +2029,10 @@ void MainWindow::LastUsedTool()
         case Tool::Spread:
             ui->actionSpreadTool->setChecked(true);
             ToolSpread(true);
+            break;
+        case Tool::MoveBatch:
+            ui->actionMoveBatchTool->setChecked(true);
+            ToolMoveBatch(true);
             break;
         case Tool::EllipticalArc:
             ui->actionEllipticalArcTool->setChecked(true);
