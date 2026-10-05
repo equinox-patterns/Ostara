@@ -864,7 +864,7 @@ void CurrentCurveLength(vidtype curveId, VContainer *data)
     SCASSERT(length != nullptr)
     length->SetName(currentLength);
 
-    data->AddVariable(length);
+    data->SetTransientVariable(length);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

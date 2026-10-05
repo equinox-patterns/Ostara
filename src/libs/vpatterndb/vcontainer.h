@@ -204,6 +204,13 @@ public:
     template <typename T> void AddUniqueVariable(const QSharedPointer<T> &var);
     template <typename T> void AddVariable(T *var);
     template <typename T> void AddVariable(const QSharedPointer<T> &var);
+
+    /** @brief Store a variable that belongs to the tool currently shown, not to the pattern. Such a variable
+     *  changes class with the tool that owns it — "CurrentLength" is a VCurveLength while a curve cut is edited
+     *  and a VLengthLine while a point along a line is — and AddVariable reads that class difference as a data
+     *  error. A transient variable is superseded by the new holder instead. */
+    template <typename T> void SetTransientVariable(T *var);
+
     void RemoveVariable(const QString &name);
     void RemovePiece(quint32 id);
     void RemovePieceGroup(quint32 id);
@@ -487,6 +494,24 @@ template <typename T> void VContainer::AddVariable(const QSharedPointer<T> &var)
             AddVariable(var, simplifiedAlias);
         }
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <typename T> void VContainer::SetTransientVariable(T *var)
+{
+    SCASSERT(var != nullptr)
+
+    // The tool that made the previous holder is gone by the time the new one arrives, so a class difference is
+    // not a data error: the new holder supersedes it. Same class — the owning tool simply refreshed — goes
+    // straight to AddVariable, which updates the object in place and so keeps alive the pointers a VFormula
+    // already holds.
+    const QSharedPointer<VInternalVariable> existing = d->variables->value(var->GetName());
+    if (not existing.isNull() && existing->GetType() != var->GetType())
+    {
+        RemoveVariable(var->GetName());
+    }
+
+    AddVariable(var);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

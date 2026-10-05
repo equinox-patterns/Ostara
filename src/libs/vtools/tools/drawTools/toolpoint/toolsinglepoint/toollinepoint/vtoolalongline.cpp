@@ -384,7 +384,7 @@ auto VToolAlongLine::Create(VToolAlongLineInitData &initData) -> VToolAlongLine 
     auto *length = new VLengthLine(firstPoint.data(), initData.firstPointId, secondPoint.data(), initData.secondPointId,
                                    *initData.data->GetPatternUnit());
     length->SetName(currentLength);
-    initData.data->AddVariable(length);
+    initData.data->SetTransientVariable(length);
 
     line.setLength(
         VAbstractValApplication::VApp()->toPixel(CheckFormula(initData.id, initData.formula, initData.data)));
@@ -523,7 +523,7 @@ auto VToolAlongLine::GetFormulaLength() const -> VFormula
     auto *length = new VLengthLine(firstPoint.data(), basePointId, secondPoint.data(), m_secondPointId,
                                    *container->GetPatternUnit());
     length->SetName(currentLength);
-    container->AddVariable(length);
+    container->SetTransientVariable(length);
 
     VFormula val(formulaLength, container);
     val.setToolId(m_id);

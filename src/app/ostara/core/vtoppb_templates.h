@@ -117,7 +117,19 @@ void VToolOptionsPropertyBrowser::ShowToolOptions(QGraphicsItem *item, const QSt
     {
         if (desc.create)
         {
-            auto *prop = desc.create(this, static_cast<void *>(i));
+            VPE::VProperty *prop = nullptr;
+            try
+            {
+                prop = desc.create(this, static_cast<void *>(i));
+            }
+            catch (const VException &e)
+            {
+                // One property that cannot read its value — a stale id, a formula variable that no longer fits —
+                // must cost that property alone. The dock keeps working and the failure reaches the log.
+                qWarning() << "Property" << desc.attrId << "could not be built:" << e.ErrorMessage();
+                continue;
+            }
+
             if (prop)
             {
                 properties.append(prop);
@@ -150,7 +162,15 @@ void VToolOptionsPropertyBrowser::ChangeToolData(VPE::VProperty *property,
 
     if (it->apply)
     {
-        it->apply(this, property);
+        try
+        {
+            it->apply(this, property);
+        }
+        catch (const VException &e)
+        {
+            // Report the failed edit and keep the dock — and the pattern — alive.
+            qWarning() << "Property" << id << "could not be applied:" << e.ErrorMessage();
+        }
     }
 }
 
@@ -165,7 +185,15 @@ void VToolOptionsPropertyBrowser::UpdateToolOptions(const std::vector<PropertyDe
             auto *prop = m_idToProperty.value(desc.attrId);
             if (prop)
             {
-                desc.refresh(this, prop);
+                try
+                {
+                    desc.refresh(this, prop);
+                }
+                catch (const VException &e)
+                {
+                    // A property that cannot refresh keeps its last shown value; the dock is not torn down.
+                    qWarning() << "Property" << desc.attrId << "could not be refreshed:" << e.ErrorMessage();
+                }
             }
         }
     }

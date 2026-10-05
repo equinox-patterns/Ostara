@@ -178,7 +178,7 @@ auto VToolCutSplinePath::Create(VToolCutInitData &initData) -> VToolCutSplinePat
     auto *length =
         new VCurveLength(initData.baseCurveId, initData.baseCurveId, splPath.data(), *initData.data->GetPatternUnit());
     length->SetName(currentLength);
-    initData.data->AddVariable(length);
+    initData.data->SetTransientVariable(length);
 
     const qreal result = CheckFormula(initData.id, initData.formula, initData.data);
 

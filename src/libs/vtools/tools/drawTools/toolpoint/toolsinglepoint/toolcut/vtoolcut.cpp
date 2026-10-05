@@ -489,7 +489,7 @@ auto VToolCut::GetFormulaLength() const -> VFormula
     const QSharedPointer<VAbstractCurve> curve = container->GeometricObject<VAbstractCurve>(baseCurveId);
     auto *length = new VCurveLength(baseCurveId, baseCurveId, curve.data(), *container->GetPatternUnit());
     length->SetName(currentLength);
-    container->AddVariable(length);
+    container->SetTransientVariable(length);
 
     VFormula val(formula, container);
     val.setToolId(m_id);

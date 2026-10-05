@@ -295,7 +295,7 @@ void DialogAlongLine::SetCurrentLength()
     length->SetName(currentLength);
 
     auto *locData = const_cast<VContainer *>(&data);
-    locData->AddVariable(length);
+    locData->SetTransientVariable(length);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
