@@ -124,10 +124,24 @@ public:
                             const QVector<DestinationItem> &destination, const QVector<quint32> &fixedPoints,
                             const Document &parse, const QHash<quint32, quint32> &referencedPoints = {});
 
+    /** @brief Create or refresh one line from two endpoints the caller has already resolved.
+     *
+     *  The visual representation of an operation joins objects the transformation does not carry: the apex of a
+     *  mark is the copy of a pivot, its base the third vertex of the mark, and the start point of the first
+     *  rotation is a source object, which PointImage would answer with the copy of. Such a caller resolves its
+     *  own endpoints and comes here; everything else about the line is the same. */
+    static void CreateLine(VAbstractPattern *doc, VContainer *data, VMainGraphicsScene *scene,
+                           const OOperationLine &line, quint32 first, quint32 second, const Document &parse);
+
     static void SaveLines(VAbstractPattern *doc, QDomElement &tag, const QVector<OOperationLine> &lines);
     static auto ExtractLines(const QDomElement &domElement) -> QVector<OOperationLine>;
 
 private:
+    /** @brief Build the scene item of one line whose two endpoints are known: the part CreateLines and
+     *  CreateLine share, so a line is built one way whatever resolved its ends. */
+    static void BuildLine(VAbstractPattern *doc, VContainer *data, VMainGraphicsScene *scene,
+                          const OOperationLine &line, quint32 first, quint32 second, const Document &parse);
+
     Q_DISABLE_COPY_MOVE(OOperationLines) // NOLINT
     OOperationLines() = default;
 };

@@ -29,6 +29,8 @@
 #include "../../tools/drawTools/operation/orotationlength.h"
 
 #include <QColor>
+#include <QComboBox>
+#include <QFormLayout>
 #include <QHeaderView>
 #include <QLineEdit>
 #include <QPlainTextEdit>
@@ -41,9 +43,11 @@
 #include "../../visualization/line/operation/ovistoolspread.h"
 #include "../../visualization/visualization.h"
 #include "../ifc/exception/vexceptionbadid.h"
+#include "../ifc/ifcdef.h"
 #include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/vgeometrydef.h"
 #include "../vgeometry/vgobject.h"
+#include "../vmisc/FactoryWidgets.h"
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
@@ -55,12 +59,18 @@
 #include "../vwidgets/vmaingraphicsview.h"
 #include "../widgets/angleformulawidget.h"
 #include "../widgets/formulainputwidget.h"
+#include "../dialogtoolbox.h"
 #include "ui_odialogspread.h"
 
 using namespace Qt::Literals::StringLiterals;
 
 namespace
 {
+// A pen combo is wide enough to show its dash pattern, a colour combo only holds a swatch.
+constexpr int kPenIconWidth = 80;
+constexpr int kPenIconHeight = 14;
+constexpr int kColorIconSize = 20;
+
 //---------------------------------------------------------------------------------------------------------------------
 auto AddCell(QTableWidget *table, const QString &text, int row, int column) -> QTableWidgetItem *
 {
@@ -110,6 +120,30 @@ ODialogSpread::ODialogSpread(const VContainer *data, VAbstractPattern *doc, quin
     connect(ui->lineEditName, &QLineEdit::textEdited, this, &ODialogSpread::SaveRotationName);
     connect(ui->lineEditVisibilityGroup, &QLineEdit::textChanged, this, &DialogOperationTool::GroupNameChanged);
 
+    // The pen of the display's lines, and their colour: one style for every line of every rotation. The combos
+    // start on what the layer the display goes into draws with, its own pen and colour, so a mark looks like
+    // the rest of the layer until the user says otherwise.
+    const QString layerPen = m_doc->GetActiveGroupPenStyle();
+
+    m_displayTypeLine = MakeComboBox(this);
+    m_displayTypeLine->setMinimumWidth(kPenIconWidth);
+    m_displayTypeLine->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+    m_displayTypeLine->setIconSize(QSize(kPenIconWidth, kPenIconHeight));
+    FillComboBoxTypeLine(m_displayTypeLine,
+                         LineStylesPics(m_displayTypeLine->palette().color(QPalette::Base),
+                                        m_displayTypeLine->palette().color(QPalette::Text)),
+                         StylesList().contains(layerPen) ? layerPen : TypeLineLine);
+
+    m_displayColor = MakeComboBox(this);
+    m_displayColor->setMinimumWidth(kPenIconWidth);
+    m_displayColor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+    m_displayColor->setIconSize(QSize(kColorIconSize, kColorIconSize));
+    InitColorCombo(m_displayColor);
+    SetColorComboCurrentName(m_displayColor, m_doc->GetActiveGroupColor());
+
+    ui->formLayoutDisplay->addRow(tr("Line type:"), m_displayTypeLine);
+    ui->formLayoutDisplay->addRow(tr("Line color:"), m_displayColor);
+
     InitOkCancelApply(ui);
 
     ui->tabWidget->setCurrentIndex(0);
@@ -142,9 +176,24 @@ void ODialogSpread::SetRotations(const QVector<OSpreadRotation> &rotations)
 {
     m_rotations = rotations;
     FillRotations();
-    // The selectRow(0) inside FillRotations is signal-blocked: load the first rotation into the editor here, so
-    // the dialog does not open on an empty Name/Angle/Length row.
-    ShowRotationDetails();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogSpread::GetDisplay() const -> OSpreadDisplay
+{
+    OSpreadDisplay display;
+    display.show = ui->groupBoxDisplay->isChecked();
+    display.typeLine = GetComboBoxCurrentData(m_displayTypeLine, TypeLineLine);
+    display.lineColor = GetColorComboCurrentName(m_displayColor);
+    return display;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogSpread::SetDisplay(const OSpreadDisplay &display)
+{
+    ui->groupBoxDisplay->setChecked(display.show);
+    ChangeCurrentData(m_displayTypeLine, display.typeLine);
+    SetColorComboCurrentName(m_displayColor, display.lineColor);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -236,7 +285,6 @@ void ODialogSpread::ShowDialog(bool click)
 
         m_step = Step::Editing;
         FillRotations();
-        ShowRotationDetails(); // load the first rotation, so the editor does not open empty
         setModal(true);
         emit ToolTip(QString());
         show();
@@ -556,6 +604,12 @@ void ODialogSpread::FillRotations()
     {
         ui->tableWidget->selectRow(0);
     }
+
+    // The editor describes the row the table has just selected. The selection signal is blocked while the table is
+    // rebuilt, so nothing else loads it, and an editor left empty writes that emptiness into the row at the first
+    // selection move (see ShowRotationDetails): the name of the first rotation would go away on its own. Loaded
+    // here, so no caller has to remember it.
+    ShowRotationDetails();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

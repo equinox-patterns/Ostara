@@ -59,9 +59,11 @@ auto OSpreadRule::IndexOf(const QVector<SourceItem> &source, quint32 id) -> int
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OSpreadRule::Compose(const QVector<SourceItem> &source, const QVector<OSpreadRotation> &rotations,
-                          const QVector<qreal> &anglesDeg, const VContainer *data) -> QVector<QVector<OSpreadStep>>
+                          const QVector<qreal> &anglesDeg, const VContainer *data) -> OSpreadPlan
 {
-    QVector<QVector<OSpreadStep>> steps(source.size());
+    OSpreadPlan plan;
+    plan.steps = QVector<QVector<OSpreadStep>>(source.size());
+    plan.cuts = QVector<OSpreadCut>(rotations.size());
 
     // One resolved rotation: its region as positions in the source list, its pivot position (already carried by
     // the earlier rotations), and its angle.
@@ -98,16 +100,25 @@ auto OSpreadRule::Compose(const QVector<SourceItem> &source, const QVector<OSpre
             continue; // The pivot is gone: this rotation has no centre left.
         }
 
+        // The same two readings, in one pass over the rotations already resolved: the position the pivot is
+        // turned from, and the steps the start point has been through when this rotation begins.
+        OSpreadCut cut{.startId = rotation.startId};
         for (const Resolved &earlier : std::as_const(resolved))
         {
             if (earlier.startIndex <= pivotIndex && pivotIndex < earlier.pivotIndex)
             {
                 pivot = VPointF::RotatePF(earlier.pivot, pivot, earlier.angle);
             }
+
+            if (earlier.startIndex <= startIndex && startIndex < earlier.pivotIndex)
+            {
+                cut.carried.append({.pivot = earlier.pivot, .angle = earlier.angle});
+            }
         }
 
         const qreal angle = (k < anglesDeg.size()) ? anglesDeg.at(k) : 0.;
         resolved.append({.startIndex = startIndex, .pivotIndex = pivotIndex, .pivot = pivot, .angle = angle});
+        plan.cuts[k] = cut;
     }
 
     for (int i = 0; i < source.size(); ++i)
@@ -116,10 +127,10 @@ auto OSpreadRule::Compose(const QVector<SourceItem> &source, const QVector<OSpre
         {
             if (rotation.startIndex <= i && i < rotation.pivotIndex)
             {
-                steps[i].append({.pivot = rotation.pivot, .angle = rotation.angle});
+                plan.steps[i].append({.pivot = rotation.pivot, .angle = rotation.angle});
             }
         }
     }
 
-    return steps;
+    return plan;
 }

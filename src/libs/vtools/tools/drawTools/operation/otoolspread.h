@@ -39,6 +39,7 @@
 
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vmisc/def.h"
+#include "ospreaddisplay.h"
 #include "ospreadrule.h"
 #include "vabstractoperation.h"
 
@@ -49,6 +50,7 @@ class QGraphicsSceneContextMenuEvent;
 struct OToolSpreadInitData : VAbstractOperationInitData
 {
     QVector<OSpreadRotation> rotations{};
+    OSpreadDisplay display{};
 };
 
 class OToolSpread : public VAbstractOperation
@@ -79,6 +81,20 @@ public:
     auto Rotations() const -> const QVector<OSpreadRotation> &;
     void SetRotations(const QVector<OSpreadRotation> &rotations);
 
+    /** @brief The visual representation of the rotations, as the operation holds it: whether it is drawn, the
+     *  pen of its lines, and the id of every object it created. */
+    auto Display() const -> const OSpreadDisplay &;
+    void SetDisplay(const OSpreadDisplay &display);
+
+    auto IsDisplayShown() const -> bool { return m_display.show; }
+    void SetDisplayShown(bool show);
+
+    auto DisplayTypeLine() const -> QString { return m_display.typeLine; }
+    void SetDisplayTypeLine(const QString &typeLine);
+
+    auto DisplayColor() const -> QString { return m_display.lineColor; }
+    void SetDisplayColor(const QString &color);
+
     void ShowVisualization(bool show) override;
 
     /** @brief Open the options dialog, exactly as the context menu's "Options" entry does. The options dock
@@ -96,17 +112,30 @@ protected:
     void SaveDialog(QDomElement &domElement) override;
     void ReadToolAttributes(const QDomElement &domElement) override;
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
+    void RefreshDataInFile() override;
     auto MakeToolTip() const -> QString override;
     void ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement) override;
+
+    auto ExtraPointIds() const -> QVector<quint32> override;
+    auto ExtraLineIds() const -> QVector<quint32> override;
 
 private:
     Q_DISABLE_COPY_MOVE(OToolSpread) // NOLINT
 
     QVector<OSpreadRotation> m_rotations{};
+    OSpreadDisplay m_display{};
 
     explicit OToolSpread(const OToolSpreadInitData &initData, QGraphicsItem *parent = nullptr);
 
     auto SyncDestination(const QVector<SourceItem> &source) -> QVector<DestinationItem>;
+
+    /** @brief Give the display the ids its marks still miss, and drop them when the representation is off: a
+     *  mark is only ever created with an id the file carries. */
+    void SyncDisplay(const QVector<SourceItem> &source);
+
+    /** @brief Write this tool's element as an option change does, and ask for the full parse the change of a
+     *  created object set needs. */
+    void SaveOptionsAndReparse();
 };
 
 #endif // OTOOLSPREAD_H

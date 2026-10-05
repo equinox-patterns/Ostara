@@ -217,6 +217,24 @@ protected:
 
     void InitOperatedObjects();
 
+    /** @brief The points an operation draws besides the copies of its sources.
+     *
+     *  A slash-and-spread draws a display of its own, which the base class knows nothing about: it answers with
+     *  the ids of its marks here, and the scene items are built exactly as the copies' are: same wiring, same
+     *  tooltip, same place in \a operatedObjects, so the layer that hides a copy hides them too. Empty for every
+     *  other operation. Called from InitOperatedObjects, on the instance a constructor is building. */
+    virtual auto ExtraPointIds() const -> QVector<quint32> { return {}; }
+
+    /** @brief The lines an operation draws besides the ones its sources carry, wired exactly like them: they
+     *  are parented to the operation, so they go with it. Empty for every operation but the slash-and-spread. */
+    virtual auto ExtraLineIds() const -> QVector<quint32> { return {}; }
+
+    /** @brief Build the scene item of one object this operation draws, reading its shape from the container. */
+    void InitOperatedObject(quint32 id);
+
+    /** @brief Parent one line this operation produced to the operation item, and wire its two requests. */
+    void InitOperatedLine(quint32 id);
+
     auto ComplexPointToolTip(quint32 itemId) const -> QString;
     auto ComplexCurveToolTip(quint32 itemId) const -> QString;
     auto VisibilityGroupToolTip() const -> QString;

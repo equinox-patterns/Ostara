@@ -75,6 +75,33 @@ struct OSpreadStep
 };
 
 /**
+ * @brief One cut of a slash-and-spread, as the rule resolves it: the point the spread opens at, and the steps
+ * that point has already been through when the rotation starts.
+ *
+ * The carried steps are what the visual representation of a rotation needs: they place the third vertex of its
+ * mark, the position the start point comes from. Empty means the start point is still where the user drew it,
+ * and there the third vertex IS that source object, so nothing is created for it. @a startId is NULL_ID for a
+ * rotation the rule skips: its pair describes no region, so it draws nothing.
+ */
+struct OSpreadCut
+{
+    quint32 startId{NULL_ID};
+    QVector<OSpreadStep> carried{};
+};
+
+/**
+ * @brief What a slash-and-spread does: the steps that carry each source object, and the cut of each rotation.
+ *
+ * @a steps is indexed like @a source; @a cuts is indexed like @a rotations, so a reader finds the cut of the
+ * K-th rotation at the K-th place whether the rule accepted it or not.
+ */
+struct OSpreadPlan
+{
+    QVector<QVector<OSpreadStep>> steps{};
+    QVector<OSpreadCut> cuts{};
+};
+
+/**
  * @brief The rule of a slash-and-spread.
  *
  * No state: every method is a reading or a computation, and none of them touches the pattern.
@@ -91,14 +118,14 @@ public:
     /** @brief Position of @a id in the ordered source list, -1 when it is not there. */
     static auto IndexOf(const QVector<SourceItem> &source, quint32 id) -> int;
 
-    /** @brief The rotation steps every source object goes through, in source order: result[i] is the ordered
-     *  list of steps for source[i], empty for an object no rotation touches.
+    /** @brief The plan of a slash-and-spread: the rotation steps every source object goes through, in source
+     *  order, and the resolved cut of every rotation, in rotation order.
      *
      *  @a anglesDeg is aligned with @a rotations: the evaluated angle of each, in degrees. A rotation whose
      *  start or pivot is not in the source list, or whose pivot is gone from the container, is skipped: its
-     *  two points describe no region to turn. */
+     *  two points describe no region to turn, and its cut is left empty. */
     static auto Compose(const QVector<SourceItem> &source, const QVector<OSpreadRotation> &rotations,
-                        const QVector<qreal> &anglesDeg, const VContainer *data) -> QVector<QVector<OSpreadStep>>;
+                        const QVector<qreal> &anglesDeg, const VContainer *data) -> OSpreadPlan;
 
 private:
     Q_DISABLE_COPY_MOVE(OSpreadRule) // NOLINT

@@ -1401,60 +1401,7 @@ void VAbstractOperation::InitOperatedObjects()
             continue;
         }
 
-        const QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(object.id);
-
-        // This check helps to find missed objects in the switch
-        Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
-
-        QT_WARNING_PUSH
-        QT_WARNING_DISABLE_GCC("-Wswitch-default")
-        QT_WARNING_DISABLE_CLANG("-Wswitch-default")
-
-        switch (obj->getType())
-        {
-            case GOType::Point:
-            {
-                auto *point = new VSimplePoint(object.id, VColorRole::PatternColor);
-                point->setParentItem(this);
-                point->SetType(GOType::Point);
-                point->setToolTip(ComplexPointToolTip(object.id));
-                connect(point,
-                        &VSimplePoint::Choosed,
-                        this,
-                        [this](quint32 id) -> void { emit ChoosedTool(id, SceneObject::Point); });
-                connect(point, &VSimplePoint::Selected, this, &VAbstractOperation::ObjectSelected);
-                connect(point,
-                        &VSimplePoint::ShowContextMenu,
-                        this,
-                        [this](QGraphicsSceneContextMenuEvent *event, quint32 id) -> void
-                        { ShowContextMenu(event, id); });
-                connect(point, &VSimplePoint::Delete, this, &VAbstractOperation::DeleteFromLabel);
-                connect(point, &VSimplePoint::NameChangedPosition, this, &VAbstractOperation::LabelChangePosition);
-                point->RefreshPointGeometry(*VAbstractTool::data.GeometricObject<VPointF>(object.id));
-                operatedObjects.insert(object.id, point);
-                break;
-            }
-            case GOType::Arc:
-                InitCurve(object.id, &(VAbstractTool::data), obj->getType(), SceneObject::Arc);
-                break;
-            case GOType::EllipticalArc:
-                InitCurve(object.id, &(VAbstractTool::data), obj->getType(), SceneObject::ElArc);
-                break;
-            case GOType::Spline:
-            case GOType::CubicBezier:
-                InitCurve(object.id, &(VAbstractTool::data), obj->getType(), SceneObject::Spline);
-                break;
-            case GOType::SplinePath:
-            case GOType::CubicBezierPath:
-                InitCurve(object.id, &(VAbstractTool::data), obj->getType(), SceneObject::SplinePath);
-                break;
-            case GOType::PlaceLabel:
-            case GOType::Unknown:
-                Q_UNREACHABLE();
-                break;
-        }
-
-        QT_WARNING_POP
+        InitOperatedObject(object.id);
     }
 
     // A transformed line is a result of this operation, not an object of its own: it is drawn as a child
@@ -1462,20 +1409,97 @@ void VAbstractOperation::InitOperatedObjects()
     // options and shows the whole result (see VToolOptionsPropertyBrowser::ShowItemOptions).
     for (const auto &line : std::as_const(m_lines))
     {
-        if (auto *lineItem = qobject_cast<VToolLine *>(VAbstractPattern::FindTool(line.result)))
+        InitOperatedLine(line.result);
+    }
+
+    // What the operation draws besides all that: the display of a slash-and-spread. The shape of a scene item is
+    // read from the container, so the base class can build these too: it only has to be told which objects they
+    // are, and the operation that invented them is the one that knows.
+    for (const quint32 id : ExtraPointIds())
+    {
+        InitOperatedObject(id);
+    }
+
+    for (const quint32 id : ExtraLineIds())
+    {
+        InitOperatedLine(id);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::InitOperatedObject(quint32 id)
+{
+    const QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(id);
+
+    // This check helps to find missed objects in the switch
+    Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");
+
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_GCC("-Wswitch-default")
+    QT_WARNING_DISABLE_CLANG("-Wswitch-default")
+
+    switch (obj->getType())
+    {
+        case GOType::Point:
         {
-            lineItem->setParentItem(this);
-            // Asking to delete a result line means deleting this operation, exactly like a destination point
-            // (see DeleteFromLabel).
-            connect(lineItem, &VToolLine::DeleteRequested, this, &VAbstractOperation::DeleteFromLabel);
-            // A result line has no context menu of its own: the right click opens this operation's menu,
-            // the same way a destination point does above.
-            connect(lineItem,
-                    &VToolLine::ContextMenuRequested,
+            auto *point = new VSimplePoint(id, VColorRole::PatternColor);
+            point->setParentItem(this);
+            point->SetType(GOType::Point);
+            point->setToolTip(ComplexPointToolTip(id));
+            connect(point,
+                    &VSimplePoint::Choosed,
+                    this,
+                    [this](quint32 id) -> void { emit ChoosedTool(id, SceneObject::Point); });
+            connect(point, &VSimplePoint::Selected, this, &VAbstractOperation::ObjectSelected);
+            connect(point,
+                    &VSimplePoint::ShowContextMenu,
                     this,
                     [this](QGraphicsSceneContextMenuEvent *event, quint32 id) -> void
                     { ShowContextMenu(event, id); });
+            connect(point, &VSimplePoint::Delete, this, &VAbstractOperation::DeleteFromLabel);
+            connect(point, &VSimplePoint::NameChangedPosition, this, &VAbstractOperation::LabelChangePosition);
+            point->RefreshPointGeometry(*VAbstractTool::data.GeometricObject<VPointF>(id));
+            operatedObjects.insert(id, point);
+            break;
         }
+        case GOType::Arc:
+            InitCurve(id, &(VAbstractTool::data), obj->getType(), SceneObject::Arc);
+            break;
+        case GOType::EllipticalArc:
+            InitCurve(id, &(VAbstractTool::data), obj->getType(), SceneObject::ElArc);
+            break;
+        case GOType::Spline:
+        case GOType::CubicBezier:
+            InitCurve(id, &(VAbstractTool::data), obj->getType(), SceneObject::Spline);
+            break;
+        case GOType::SplinePath:
+        case GOType::CubicBezierPath:
+            InitCurve(id, &(VAbstractTool::data), obj->getType(), SceneObject::SplinePath);
+            break;
+        case GOType::PlaceLabel:
+        case GOType::Unknown:
+            Q_UNREACHABLE();
+            break;
+    }
+
+    QT_WARNING_POP
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::InitOperatedLine(quint32 id)
+{
+    if (auto *lineItem = qobject_cast<VToolLine *>(VAbstractPattern::FindTool(id)))
+    {
+        lineItem->setParentItem(this);
+        // Asking to delete a result line means deleting this operation, exactly like a destination point
+        // (see DeleteFromLabel).
+        connect(lineItem, &VToolLine::DeleteRequested, this, &VAbstractOperation::DeleteFromLabel);
+        // A result line has no context menu of its own: the right click opens this operation's menu,
+        // the same way a destination point does above.
+        connect(lineItem,
+                &VToolLine::ContextMenuRequested,
+                this,
+                [this](QGraphicsSceneContextMenuEvent *event, quint32 id) -> void { ShowContextMenu(event, id); });
     }
 }
 
@@ -1592,23 +1616,40 @@ void VAbstractOperation::ProcessOperationToolOptions(const QDomElement &oldDomEl
     const QSet<quint32> newIds = ConvertToSet<quint32>(newNames.keys());
     const bool sourceSetChanged = (oldIds != newIds);
 
-    // Detect additions or removals of destinations the same way: a slash-and-spread toggling its copies keeps
-    // the same sources and names, yet its destination objects must be created or deleted — which only a full
-    // parse does. The id set says it even when the names do not change.
-    const auto destinationIds = [](const QDomElement &element) -> QSet<quint32>
+    // Detect additions or removals of the objects an operation creates the same way: a slash-and-spread
+    // toggling its copies, or the display of its rotations, keeps the same sources and names, yet those objects
+    // must be created or deleted, which only a full parse does. The id set says it even when the names do not
+    // change.
+    const auto createdObjectIds = [](const QDomElement &element) -> QSet<quint32>
     {
         QSet<quint32> ids;
         for (const auto &item : VAbstractOperation::ExtractDestinationData(element))
         {
             ids.insert(item.id);
         }
+
+        // The display a slash-and-spread draws lists its own objects in an element of its own, written verbatim
+        // because the operation that reads it is in another layer of the project.
+        const QDomElement display = element.firstChildElement(QStringLiteral("rotationDisplay"));
+        for (QDomElement item = display.firstChildElement(VAbstractOperation::TagItem); not item.isNull();
+             item = item.nextSiblingElement(VAbstractOperation::TagItem))
+        {
+            for (const QString &attribute : {QStringLiteral("point"), QStringLiteral("line1"),
+                                             QStringLiteral("line2")})
+            {
+                if (const quint32 id = item.attribute(attribute).toUInt(); id != NULL_ID)
+                {
+                    ids.insert(id);
+                }
+            }
+        }
         return ids;
     };
-    const bool destinationSetChanged = (destinationIds(oldDomElement) != destinationIds(newDomElement));
-    const bool needsFullParse = sourceSetChanged || destinationSetChanged;
+    const bool createdObjectsChanged = (createdObjectIds(oldDomElement) != createdObjectIds(newDomElement));
+    const bool needsFullParse = sourceSetChanged || createdObjectsChanged;
 
     // Check if there are any name changes
-    if (oldNames == newNames && !destinationSetChanged)
+    if (oldNames == newNames && !createdObjectsChanged)
     {
         VAbstractOperation::ApplyToolOptions(oldDomElement, newDomElement);
         return;

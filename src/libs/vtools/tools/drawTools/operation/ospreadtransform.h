@@ -54,7 +54,8 @@ public:
     OSpreadTransform(const QVector<SourceItem> &source, const QVector<OSpreadRotation> &rotations,
                      const QVector<qreal> &anglesDeg, const VContainer *data)
     {
-        const QVector<QVector<OSpreadStep>> steps = OSpreadRule::Compose(source, rotations, anglesDeg, data);
+        const OSpreadPlan plan = OSpreadRule::Compose(source, rotations, anglesDeg, data);
+        const QVector<QVector<OSpreadStep>> &steps = plan.steps;
         m_stepsById.reserve(source.size());
         for (int i = 0; i < source.size(); ++i)
         {

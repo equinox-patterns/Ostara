@@ -348,6 +348,28 @@
                                 </xs:sequence>
                               </xs:complexType>
                             </xs:element>
+                            <!-- The visual representation of the rotations of a slash-and-spread. It is a
+                                 display, not part of the transformation, and the user can turn it off; what it
+                                 creates are objects all the same, so their ids are kept here, in rotation
+                                 order. A rotation that draws nothing holds an empty item: the two lists are
+                                 read side by side, so every rotation keeps its rank. -->
+                            <xs:element name="rotationDisplay" minOccurs="0" maxOccurs="1">
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                      <xs:attribute name="point" type="xs:unsignedInt"/>
+                                      <xs:attribute name="name" type="xs:string"/>
+                                      <xs:attribute name="line1" type="xs:unsignedInt"/>
+                                      <xs:attribute name="line2" type="xs:unsignedInt"/>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="show" type="xs:boolean"/>
+                                <xs:attribute name="typeLine" type="operationPenStyle"/>
+                                <xs:attribute name="lineColor" type="operationColors"/>
+                              </xs:complexType>
+                            </xs:element>
                             <!-- The move by batch: one move per cut line. The start and pivot are points of the
                                  source list; they delimit the objects that travel, and the pivot is also the
                                  centre the part turns around. The three values are the formulas the move is

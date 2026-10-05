@@ -3208,6 +3208,26 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
                 objects.append({resultId, resultId});
             }
         }
+
+        // The display a slash-and-spread draws holds objects too. Its points are carried by the operation, exactly
+        // like the copies above; its lines answer to their own id, exactly like the transformed lines.
+        const QDomElement display = toolElement.firstChildElement(QStringLiteral("rotationDisplay"));
+        for (QDomElement item = display.firstChildElement(QStringLiteral("item")); !item.isNull();
+             item = item.nextSiblingElement(QStringLiteral("item")))
+        {
+            if (const quint32 pointId = item.attribute(QStringLiteral("point")).toUInt(); pointId != NULL_ID)
+            {
+                objects.append({pointId, toolId});
+            }
+
+            for (const QString &attribute : {QStringLiteral("line1"), QStringLiteral("line2")})
+            {
+                if (const quint32 lineId = item.attribute(attribute).toUInt(); lineId != NULL_ID)
+                {
+                    objects.append({lineId, lineId});
+                }
+            }
+        }
     }
 
     return objects;

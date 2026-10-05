@@ -161,6 +161,23 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="groupBoxDisplay">
+         <property name="toolTip">
+          <string>Draw the mark of every rotation: the pivot, the two positions of the start point, and the two lines between them.</string>
+         </property>
+         <property name="title">
+          <string>Rotation display</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <layout class="QFormLayout" name="formLayoutDisplay"/>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="labelStatus">
          <property name="visible">
           <bool>false</bool>

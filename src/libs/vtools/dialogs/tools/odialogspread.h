@@ -33,6 +33,7 @@
 #include <QVector>
 #include <QtGlobal>
 
+#include "../../tools/drawTools/operation/ospreaddisplay.h"
 #include "../../tools/drawTools/operation/ospreadrule.h"
 #include "dialogoperationtool.h"
 
@@ -43,6 +44,7 @@ class DialogSpread;
 
 class AngleFormulaWidget;
 class FormulaInputWidget;
+class QComboBox;
 
 class ODialogSpread final : public DialogOperationTool
 {
@@ -55,6 +57,12 @@ public:
     /** @brief The rotations, with the name and angle the user last typed. */
     auto GetRotations() const -> QVector<OSpreadRotation>;
     void SetRotations(const QVector<OSpreadRotation> &rotations);
+
+    /** @brief The visual representation of the rotations, as the editor holds it: whether it is drawn, and the
+     *  pen of its lines. The objects themselves belong to the operation, which keeps their ids: the editor has
+     *  no business with them. */
+    auto GetDisplay() const -> OSpreadDisplay;
+    void SetDisplay(const OSpreadDisplay &display);
 
     void ShowDialog(bool click) override;
     void ChosenObject(quint32 id, const SceneObject &type) override;
@@ -80,6 +88,11 @@ private:
 
     AngleFormulaWidget *m_formulaAngle{nullptr};
     FormulaInputWidget *m_formulaLength{nullptr};
+
+    /** @brief The pen of the display's lines, built here rather than in the .ui: a pen and a colour combo are
+     *  built by MakeComboBox, which is what gives them the application's own popup view. */
+    QComboBox *m_displayTypeLine{nullptr};
+    QComboBox *m_displayColor{nullptr};
 
     /** @brief Where the gesture stands. Objects are picked first, then one pair (start, pivot) per rotation,
      *  then the dialog opens to edit the angles. */

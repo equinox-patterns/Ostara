@@ -235,6 +235,90 @@ template <class Tool> auto CopyStyleGroup() -> PropertyDesc
             }};
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The visual representation of the rotations of a slash-and-spread.
+ *
+ *  Three rows in one group, and one setting: the two combos only mean something while the representation is
+ *  drawn, so they go grey with the box. `setEditorDisabled` is how the dock says that: the same mechanism the
+ *  dart cap uses for its two names. The group is what the browser dispatches a change to, a child having no entry
+ *  of its own in its maps (see CopyStyleGroup), so the three values are read and written together.
+ *
+ *  Turning the box on or off creates or drops pattern objects, which is a full parse: the tool's own setter takes
+ *  care of it, and is idempotent, so writing the three values here is also what keeps one change from writing
+ *  twice. */
+template <class Tool> auto RotationDisplayGroup() -> PropertyDesc
+{
+    return {QStringLiteral("rotationDisplay"), QString(),
+            [](VToolOptionsPropertyBrowser *b, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<Tool *>(tool);
+
+                auto *group = new VPE::VProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Rotation display")));
+                group->setCollapsible(true);
+                group->setExpandedByDefault(true);
+
+                auto *show = new VPE::VBoolProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show the rotation display")));
+                show->setValue(t->IsDisplayShown());
+
+                const QPalette cp = b->ComboBoxPalette();
+                const auto styles = LineStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+
+                auto *pen = new VPE::VLineTypeProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:")));
+                pen->setStyles(styles);
+                pen->setValue(StyleIndex(styles, t->DisplayTypeLine()));
+                pen->setEditorDisabled(not t->IsDisplayShown());
+
+                auto *color = new VPE::VLineColorProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:")));
+                color->SetDefaultColors(VAbstractTool::ColorsList());
+                color->SetCustomColors(VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
+                color->SetUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+                color->setValue(t->DisplayColor());
+                color->setEditorDisabled(not t->IsDisplayShown());
+
+                group->addChild(show);
+                group->addChild(pen);
+                group->addChild(color);
+                return group;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                auto *t = qgraphicsitem_cast<Tool *>(b->currentItem());
+                if (t == nullptr || prop->getRowCount() < 3)
+                {
+                    return;
+                }
+
+                t->SetDisplayShown(prop->getChild(0)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+                t->SetDisplayTypeLine(prop->getChild(1)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString());
+                t->SetDisplayColor(prop->getChild(2)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString());
+
+                // The two combos below follow the box: the page is refreshed, which is also the only thing that
+                // runs the refresh callbacks again.
+                b->UpdateOptions();
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                auto *t = qgraphicsitem_cast<Tool *>(b->currentItem());
+                if (t == nullptr || prop->getRowCount() < 3)
+                {
+                    return;
+                }
+
+                const QPalette cp = b->ComboBoxPalette();
+                const auto styles = LineStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+
+                prop->getChild(0)->setValue(t->IsDisplayShown());
+                prop->getChild(1)->setValue(StyleIndex(styles, t->DisplayTypeLine()));
+                prop->getChild(1)->setEditorDisabled(not t->IsDisplayShown());
+                prop->getChild(2)->setValue(t->DisplayColor());
+                prop->getChild(2)->setEditorDisabled(not t->IsDisplayShown());
+            }};
+}
+
 // --- VToolRotation ---
 auto RotationProperties() -> std::vector<PropertyDesc>
 {
@@ -655,6 +739,8 @@ auto SpreadProperties() -> std::vector<PropertyDesc>
          },
          nullptr,
          nullptr},
+
+        RotationDisplayGroup<OToolSpread>(),
 
         CopyStyleGroup<OToolSpread>(),
         NotesProperty<OToolSpread>(),

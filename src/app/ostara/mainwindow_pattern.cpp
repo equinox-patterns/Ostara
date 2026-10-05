@@ -155,6 +155,11 @@ void MainWindow::FullParseFile()
         }
     }
 
+    // What the dock is showing, read while the tool it belongs to is still alive: a full parse destroys every
+    // tool, and without this the panel would close under the user's hands — a change that only a full parse can
+    // make, the objects an operation creates, would take the page away with it.
+    const quint32 shownToolId = VAbstractTool::ObjectIdOfItem(m_dockManager->toolOptions()->currentItem());
+
     m_dockManager->toolOptions()->ClearPropertyBrowser();
 
     // The full reparse below clears and rebuilds the details scene (PrepareForParse →
@@ -218,6 +223,17 @@ void MainWindow::FullParseFile()
 
     VMainGraphicsView::NewSceneRect(m_sceneDraw, VAbstractValApplication::VApp()->getSceneView());
     VMainGraphicsView::NewSceneRect(m_sceneDetails, VAbstractValApplication::VApp()->getSceneView());
+
+    // A full parse recreated the tools, and the dock was emptied above: put it back on the tool it was showing, if
+    // that tool is still there. It is exactly what a click on the tool does, so the page comes back as the user
+    // left it, and a tool a deletion took away leaves the dock empty, as before.
+    if (shownToolId != NULL_ID)
+    {
+        if (auto *tool = dynamic_cast<QGraphicsItem *>(VAbstractPattern::FindTool(shownToolId)); tool != nullptr)
+        {
+            m_dockManager->toolOptions()->itemClicked(tool);
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

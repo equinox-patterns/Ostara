@@ -8113,12 +8113,22 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="166"/>
+        <source>Draw the mark of every rotation: the pivot, the two positions of the start point, and the two lines between them.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="169"/>
+        <source>Rotation display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="186"/>
         <source>Ready</source>
         <translation type="unfinished">Pronto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="202"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="219"/>
         <source>You can add a note here…</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9467,7 +9477,7 @@ This action cannot be undone.</source>
         <translation>Salvar como</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1299"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1305"/>
         <source>Could not save file</source>
         <translation>Não foi possível salvar o arquivo</translation>
     </message>
@@ -9539,19 +9549,19 @@ This action cannot be undone.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="811"/>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1131"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1137"/>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="92"/>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="610"/>
         <source>File error.</source>
         <translation>Erro de arquivo.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1256"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1262"/>
         <source>Valentina didn&apos;t shut down correctly. Do you want reopen files (%1) you had open?</source>
         <translation>Valentina não fechou corretamente. Deseja abrir novamente os arquivos (%1) que estavam abertos?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1258"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1264"/>
         <source>Reopen files.</source>
         <translation>Reabrir arquivos.</translation>
     </message>
@@ -9796,7 +9806,7 @@ This action cannot be undone.</source>
         <translation>Falha ao bloquear. Este arquivo já foi aberto em outra janela.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1341"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1347"/>
         <source>Failed to lock. This file already opened in another window. Expect collissions when run 2 copies of the program.</source>
         <translation>Falha ao bloquear. Este arquivo já foi aberto em outra janela. Expectativa de colisão ao executar 2 cópias do programa.</translation>
     </message>
@@ -9816,8 +9826,8 @@ This action cannot be undone.</source>
         <translation>Não foi possível atualizar as medidas.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="999"/>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1016"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1005"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1022"/>
         <source>The measurements file &apos;%1&apos; could not be found.</source>
         <translation>O arquivo de medidas &apos;%1&apos; não foi encontrado.</translation>
     </message>
@@ -10019,12 +10029,12 @@ This action cannot be undone.</source>
         <translation>Não foi possível salvar o arquivo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1370"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1376"/>
         <source>untitled.ostara</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1412"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1418"/>
         <source>read only</source>
         <translation>somente leitura</translation>
     </message>
@@ -10222,7 +10232,7 @@ This action cannot be undone.</source>
         <translation type="vanished">Selecione o ponto central da etiqueta de posição</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1107"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1113"/>
         <source>The measurements file &apos;%1&apos; could not be found or provides not enough information.</source>
         <translation>O arquivo de medidas &apos;%1&apos; não foi localizado ou não fornece informações suficientes.</translation>
     </message>
@@ -10782,12 +10792,12 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1036"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1042"/>
         <source>Legacy measurement file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1037"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1043"/>
         <source>The pattern is linked to a legacy Tape file:
 
 %1
@@ -10796,12 +10806,12 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1040"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1046"/>
         <source>Convert this file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1041"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1047"/>
         <source>Replace with existing .%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13791,71 +13801,81 @@ This action cannot be undone.</source>
 <context>
     <name>ODialogSpread</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="91"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="374"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="101"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="426"/>
         <source>Angle:</source>
         <translation type="unfinished">Ângulo:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="93"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="103"/>
         <source>Edit angle</source>
         <translation type="unfinished">Editar ângulo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="99"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="375"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="109"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="427"/>
         <source>Length:</source>
         <translation type="unfinished">Comprimento:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="101"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="111"/>
         <source>Edit length</source>
         <translation type="unfinished">Editar comprimento</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="203"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="315"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="144"/>
+        <source>Line type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="145"/>
+        <source>Line color:</source>
+        <translation type="unfinished">Cor do traço:</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="255"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="367"/>
         <source>Rotation %1: click the &lt;b&gt;start point&lt;/b&gt; of the cut (the hem), or &lt;b&gt;%2&lt;/b&gt; to finish</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="215"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="233"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="267"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="285"/>
         <source>Pick at least one cut first: a start point, then a pivot point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="286"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="338"/>
         <source>This point is not one of the selected objects, pick a point of the contour</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="297"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="349"/>
         <source>Rotation %1: click its &lt;b&gt;pivot point&lt;/b&gt; (the apex the part turns around)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="390"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="442"/>
         <source>Ready</source>
         <translation type="unfinished">Pronto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="395"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="447"/>
         <source>Invalid layer name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="462"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="514"/>
         <source>Invalid angle formula</source>
         <translation type="unfinished">Fórmula de ângulo inválido</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="477"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="529"/>
         <source>Invalid length formula</source>
         <translation type="unfinished">A fórmula de comprimento é inválida</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="639"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="691"/>
         <source>The length cannot exceed the circle diameter (%1%2).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17447,12 +17467,12 @@ Save it before leaving it?</source>
 <context>
     <name>OToolRectangle</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="820"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="844"/>
         <source>save tool options</source>
         <translation type="unfinished">salvar opções de ferramenta</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="891"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="915"/>
         <source>Label</source>
         <translation type="unfinished">Rótulo</translation>
     </message>
@@ -17468,12 +17488,22 @@ Save it before leaving it?</source>
 <context>
     <name>OToolSpread</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="246"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="357"/>
         <source>slash and spread</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="413"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="481"/>
+        <source>show the rotation display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="481"/>
+        <source>hide the rotation display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="668"/>
         <source>Rotations</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19266,7 +19296,7 @@ Esta opção terá efeito após reinicialização.</translation>
         <translation>Nome da peça &apos;%1&apos; não é único.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_helpers.cpp" line="923"/>
+        <location filename="../../src/app/ostara/mainwindow_helpers.cpp" line="959"/>
         <source>Unnamed</source>
         <translation type="unfinished">Sem nome</translation>
     </message>
@@ -21351,34 +21381,34 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
 <context>
     <name>VAbstractOperation</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1490"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1503"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1574"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1587"/>
         <source>Label</source>
         <translation>Rótulo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1503"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1587"/>
         <source>Length</source>
         <translation>Comprimento</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1516"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1600"/>
         <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="641"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="656"/>
         <source>default</source>
         <translation>padrão</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1088"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1089"/>
         <source>delete operation</source>
         <translation>apagar operação</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1051"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1622"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1052"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1723"/>
         <source>save tool options</source>
         <translation>salvar opções de ferramenta</translation>
     </message>
@@ -22928,36 +22958,36 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="193"/>
         <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="255"/>
         <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="267"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="377"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="391"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="440"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="384"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="398"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="447"/>
         <source>Can&apos;t find object</source>
         <translation>Não foi possível encontrar o objeto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="397"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="404"/>
         <source>Can&apos;t cast object to the requested type. Object id = %1, actual type = %2.</source>
         <translation>Não é possível converter o objeto para o tipo solicitado. ID do objeto = %1, tipo real = %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="425"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="432"/>
         <source>Can&apos;t cast object to the requested type. Name = &apos;%1&apos;, type = %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="435"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="602"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="653"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="442"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="627"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="678"/>
         <source>Can&apos;t cast object</source>
         <translation>Não foi possível converter o objeto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="509"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="534"/>
         <source>Can&apos;t cast object. Name = &apos;%1&apos;, type = %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="519"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="544"/>
         <source>Can&apos;t find object. Type mismatch. Name = &apos;%1&apos;, existing type = %2, incoming type = %3.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -23348,47 +23378,47 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
 <context>
     <name>VDrawTool</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="264"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="277"/>
         <source>Options</source>
         <translation>Opções</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="470"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="483"/>
         <source>Delete</source>
         <translation>Excluir</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="476"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="489"/>
         <source>Pending</source>
         <translation>Pendente</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="501"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="514"/>
         <source>Cannot Delete Object</source>
         <translation>Não Foi Possível Excluir Objeto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="502"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="515"/>
         <source>This object cannot be deleted because it is being used by other items.</source>
         <translation>Este objeto não pode ser excluído porque está sendo usado por outros itens.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="503"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="516"/>
         <source>Please resolve the dependencies before attempting to delete this object.</source>
         <translation>Por favor, resolva as dependências antes de tentar excluir este objeto.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="532"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="545"/>
         <source>add objects to a layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="565"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="578"/>
         <source>remove objects from a layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="653"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="666"/>
         <source>This id (%1) is not unique.</source>
         <translation>Esta id (%1) não é única.</translation>
     </message>
@@ -23397,17 +23427,17 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation type="vanished">Adicionar ao grupo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="357"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="370"/>
         <source>Add to layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="389"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="402"/>
         <source>Remove from layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="441"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="454"/>
         <source>Show Point name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25628,24 +25658,24 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="549"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="555"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="550"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="556"/>
         <source>Error creating or updating the slash and spread operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="589"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="595"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="590"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="596"/>
         <source>Error creating or updating the move by batch operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="660"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="661"/>
         <source>A transfer refers to objects the pattern does not define, and was ignored.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="899"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="900"/>
         <source>Error creating or updating union details</source>
         <translation>Erro ao criar ou atualizar união de moldes</translation>
     </message>
@@ -25702,12 +25732,12 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation>Tipo de curva desconhecido &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="821"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="822"/>
         <source>Unknown arc type &apos;%1&apos;.</source>
         <translation>Tipo de arco desconhecido &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="905"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="906"/>
         <source>Unknown tools type &apos;%1&apos;.</source>
         <translation>Tipo de ferramentas desconhecidos &apos;%1&apos;.</translation>
     </message>
@@ -25748,23 +25778,23 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation>Erro ao criar ou atualizar a operação de rotação</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="953"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="954"/>
         <source>Unknown operation type &apos;%1&apos;.</source>
         <translation>Tipo de operação desconhecida &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="694"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="695"/>
         <source>Error creating or updating operation of flipping by line</source>
         <translation>Erro ao criar ou atualizar operação de espelhar através de linha</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="729"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="730"/>
         <source>Error creating or updating operation of flipping by axis</source>
         <translation>Erro ao criar ou atualizar operação de espelhar através de eixo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="778"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="784"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="779"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="785"/>
         <source>Error creating or updating operation of moving</source>
         <translation>Erro ao criar ou atualizar operação de mover</translation>
     </message>
@@ -25780,7 +25810,7 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation>Erro ao criar ou atualizar arco elíptico simples</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="858"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="859"/>
         <source>Unknown elliptical arc type &apos;%1&apos;.</source>
         <translation>Tipo de arco elíptico desconhecido &apos;%1&apos;.</translation>
     </message>
@@ -25795,13 +25825,13 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation>Molde</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="987"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="988"/>
         <source>Unnamed path</source>
         <translation>Caminho sem nome</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="980"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1003"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="981"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1004"/>
         <source>Error creating or updating a piece path</source>
         <translation>Erro ao criar ou atualizar o caminho da peça</translation>
     </message>
@@ -25810,7 +25840,7 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation type="vanished">Erro ao criar ou atualizar ponto de pino</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="981"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="982"/>
         <source>Piece path doesn&apos;t contain nodes</source>
         <translation>O caminho da peça não contém nós</translation>
     </message>
@@ -26299,27 +26329,27 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
         <translation>Erro calculando ponto &apos;%1&apos;. Não há interseção com a curva &apos;%2&apos; e eixo através do ponto &apos;%3&apos; com ângulo %4°</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="797"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="799"/>
         <source>Length</source>
         <translation>Comprimento</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="800"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="802"/>
         <source>Angle</source>
         <translation>Ângulo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="802"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="804"/>
         <source>Point name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="804"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="806"/>
         <source>Segment 1</source>
         <translation>Segmento 1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="806"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="808"/>
         <source>Segment 2</source>
         <translation>Segmento 2</translation>
     </message>
@@ -26563,17 +26593,17 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
 <context>
     <name>VToolLine</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="617"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="644"/>
         <source>Length</source>
         <translation>Comprimento</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="619"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="646"/>
         <source>Angle</source>
         <translation>Ângulo</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="650"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="677"/>
         <source>save tool options</source>
         <translation>salvar opções de ferramenta</translation>
     </message>
@@ -26930,11 +26960,11 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1311"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1433"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1436"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="288"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="296"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="300"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="437"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="441"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="372"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="380"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="384"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="521"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="525"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="418"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="438"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="454"/>
@@ -26948,10 +26978,10 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="509"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1450"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1453"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="259"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="263"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="409"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="413"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="343"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="347"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="493"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="497"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="419"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="673"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="943"/>
@@ -26960,6 +26990,7 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="176"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="269"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="420"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="439"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="455"/>
@@ -26979,6 +27010,7 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
         <translation type="unfinished">Peça de modelagem:</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="275"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="421"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="440"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="456"/>
@@ -27114,46 +27146,56 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="243"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="247"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="493"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="497"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="257"/>
+        <source>Rotation display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="262"/>
+        <source>Show the rotation display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="327"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="331"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="577"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="581"/>
         <source>Pivot point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="351"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="356"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="435"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="440"/>
         <source>Closing divisor:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="519"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="523"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="603"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="607"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="527"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="679"/>
         <source>First line point:</source>
         <translation type="unfinished">Primeiro ponto da linha:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="535"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="539"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="619"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="623"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="528"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="680"/>
         <source>Second line point:</source>
         <translation type="unfinished">Segundo ponto da linha:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="638"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="642"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="654"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="722"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="726"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="738"/>
         <source>Edit rotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="671"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="675"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="687"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="757"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="761"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="773"/>
         <source>Edit moves</source>
         <translation type="unfinished"></translation>
     </message>
@@ -27264,12 +27306,12 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
         <translation>Ferramenta rotação</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="566"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="650"/>
         <source>Vertical axis</source>
         <translation>Eixo vertical</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="567"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="651"/>
         <source>Horizontal axis</source>
         <translation>Eixo horizontal</translation>
     </message>
@@ -27717,8 +27759,8 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
         <translation type="unfinished">Opacidade:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="599"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="603"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="683"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="687"/>
         <source>Origin point:</source>
         <translation type="unfinished">Ponto de origem:</translation>
     </message>
@@ -27727,14 +27769,14 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1197"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1325"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1328"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="465"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="469"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="549"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="553"/>
         <source>Rotation angle:</source>
         <translation type="unfinished">Ângulo de rotação:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="561"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="565"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="645"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="649"/>
         <source>Axis type:</source>
         <translation type="unfinished">Tipo de eixo:</translation>
     </message>
@@ -27825,27 +27867,27 @@ Erro de compatibilidade de formato: actualFileVersion = %1 and fileVersion = %2<
         <translation>Erro calculando ponto &apos;%1&apos;. Curvas &apos;%2&apos; and &apos;%3&apos; não tem ponto de interseção</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1412"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1416"/>
         <source>Point name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1414"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1418"/>
         <source>Curve 1 segment 1</source>
         <translation>Curva 1 segmento 1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1416"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1420"/>
         <source>Curve 1 segment 2</source>
         <translation>Curva 1 segmento 2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1418"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1422"/>
         <source>Curve 2 segment 1</source>
         <translation>Curva 2 segmento 1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1420"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1424"/>
         <source>Curve 2 segment 2</source>
         <translation>Curva 2 segmento 2</translation>
     </message>

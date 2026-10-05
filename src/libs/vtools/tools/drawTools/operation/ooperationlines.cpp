@@ -202,9 +202,6 @@ void OOperationLines::CreateLines(VAbstractPattern *doc, VContainer *data, VMain
                                  const QVector<DestinationItem> &destination, const QVector<quint32> &fixedPoints,
                                  const Document &parse, const QHash<quint32, quint32> &referencedPoints)
 {
-    // The full parse is the one that builds a line; every other parse refreshes the ones already built.
-    const bool build = parse == Document::FullParse;
-
     for (const auto &line : lines)
     {
         const quint32 first = PointImage(line.point1, source, destination, fixedPoints, referencedPoints);
@@ -217,62 +214,85 @@ void OOperationLines::CreateLines(VAbstractPattern *doc, VContainer *data, VMain
             continue;
         }
 
-        // A line that is already in the scene is never rebuilt — VToolLine::Create only ever adds a scene item
-        // under a full parse — so it is left alone, and its pen is taken from the operation here, because
-        // nothing else does. A transformed line has no element of its own: a lite parse, the one every option
-        // edit triggers, never re-reads it, and its type and colour would otherwise stay those of the gesture
-        // that produced it until the file is reopened.
-        VDataTool *const existing = VAbstractPattern::FindTool(line.result);
+        BuildLine(doc, data, scene, line, first, second, parse);
+    }
+}
 
-        if (existing != nullptr)
-        {
-            if (auto *lineTool = qobject_cast<VToolLine *>(existing); lineTool != nullptr)
-            {
-                lineTool->RefreshPenFromParse(line.typeLine.isEmpty() ? VToolLineInitData{}.typeLine : line.typeLine,
-                                              line.lineColor.isEmpty() ? VToolLineInitData{}.lineColor
-                                                                       : line.lineColor);
-            }
-            continue;
-        }
+//---------------------------------------------------------------------------------------------------------------------
+void OOperationLines::CreateLine(VAbstractPattern *doc, VContainer *data, VMainGraphicsScene *scene,
+                                 const OOperationLine &line, quint32 first, quint32 second, const Document &parse)
+{
+    // Same refusal as above: two endpoints that name no object, or the same one twice, describe no line.
+    if (first == NULL_ID || second == NULL_ID || first == second)
+    {
+        return;
+    }
 
-        // Missing outside of the full parse: nothing builds a scene item but the full parse, so a lite parse
-        // has nothing to do here — and calling Create for a line that does not exist would refresh nothing.
-        if (!build)
-        {
-            continue;
-        }
+    BuildLine(doc, data, scene, line, first, second, parse);
+}
 
-        VToolLineInitData initData;
-        initData.id = line.result;
-        initData.firstPoint = first;
-        initData.secondPoint = second;
-        initData.typeLine = line.typeLine.isEmpty() ? VToolLineInitData{}.typeLine : line.typeLine;
-        initData.lineColor = line.lineColor.isEmpty() ? VToolLineInitData{}.lineColor : line.lineColor;
-        initData.scene = scene;
-        initData.doc = doc;
-        initData.data = data;
-        initData.parse = parse;
-        initData.typeCreation = Source::FromFile;
-        initData.derived = true;
+//---------------------------------------------------------------------------------------------------------------------
+void OOperationLines::BuildLine(VAbstractPattern *doc, VContainer *data, VMainGraphicsScene *scene,
+                                const OOperationLine &line, quint32 first, quint32 second, const Document &parse)
+{
+    // The full parse is the one that builds a line; every other parse only refreshes the ones already built.
+    const bool build = parse == Document::FullParse;
 
-        // A transformed line must never make the operation creation fail: if one cannot be built, it is
-        // reported and skipped, the operation itself is still created.
-        try
+    // A line that is already in the scene is never rebuilt — VToolLine::Create only ever adds a scene item
+    // under a full parse — so it is left alone, and its pen is taken from the operation here, because
+    // nothing else does. A transformed line has no element of its own: a lite parse, the one every option
+    // edit triggers, never re-reads it, and its type and colour would otherwise stay those of the gesture
+    // that produced it until the file is reopened.
+    VDataTool *const existing = VAbstractPattern::FindTool(line.result);
+
+    if (existing != nullptr)
+    {
+        if (auto *lineTool = qobject_cast<VToolLine *>(existing); lineTool != nullptr)
         {
-            VToolLine::Create(initData);
+            lineTool->RefreshPenFromParse(line.typeLine.isEmpty() ? VToolLineInitData{}.typeLine : line.typeLine,
+                                          line.lineColor.isEmpty() ? VToolLineInitData{}.lineColor
+                                                                   : line.lineColor);
         }
-        catch (const VException &e)
-        {
-            // Reported and skipped, as announced above — but in the log only: this runs from the creation
-            // itself, and a warning would raise a modal box in the middle of it.
-            qCDebug(vTool,
-                    "Transformed line %u between points %u and %u (source %u) could not be created: %s",
-                    line.result,
-                    first,
-                    second,
-                    line.source,
-                    e.ErrorMessage().toUtf8().constData());
-        }
+        return;
+    }
+
+    // Missing outside of the full parse: nothing builds a scene item but the full parse, so a lite parse
+    // has nothing to do here — and calling Create for a line that does not exist would refresh nothing.
+    if (!build)
+    {
+        return;
+    }
+
+    VToolLineInitData initData;
+    initData.id = line.result;
+    initData.firstPoint = first;
+    initData.secondPoint = second;
+    initData.typeLine = line.typeLine.isEmpty() ? VToolLineInitData{}.typeLine : line.typeLine;
+    initData.lineColor = line.lineColor.isEmpty() ? VToolLineInitData{}.lineColor : line.lineColor;
+    initData.scene = scene;
+    initData.doc = doc;
+    initData.data = data;
+    initData.parse = parse;
+    initData.typeCreation = Source::FromFile;
+    initData.derived = true;
+
+    // A transformed line must never make the operation creation fail: if one cannot be built, it is
+    // reported and skipped, the operation itself is still created.
+    try
+    {
+        VToolLine::Create(initData);
+    }
+    catch (const VException &e)
+    {
+        // Reported and skipped, as announced above — but in the log only: this runs from the creation
+        // itself, and a warning would raise a modal box in the middle of it.
+        qCDebug(vTool,
+                "Transformed line %u between points %u and %u (source %u) could not be created: %s",
+                line.result,
+                first,
+                second,
+                line.source,
+                e.ErrorMessage().toUtf8().constData());
     }
 }
 //---------------------------------------------------------------------------------------------------------------------
