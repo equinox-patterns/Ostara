@@ -323,9 +323,6 @@ void OToolSpread::SaveDialog(QDomElement &domElement)
 
     SaveSourceDestination(domElement, source, destination);
 
-    // A file written before the "show copies" checkbox existed still carries the attribute: it is dropped
-    // here, so the element matches the schema once more.
-    domElement.removeAttribute(AttrShowCopies);
     SaveRotations(doc, domElement, m_rotations);
 
     SaveVisibilityGroupData(dialogTool);
@@ -345,7 +342,6 @@ void OToolSpread::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
     VAbstractOperation::SaveOptions(tag, obj);
 
     doc->SetAttribute(tag, AttrType, ToolType);
-    tag.removeAttribute(AttrShowCopies); // legacy attribute, see SaveDialog
     SaveRotations(doc, tag, m_rotations);
 }
 

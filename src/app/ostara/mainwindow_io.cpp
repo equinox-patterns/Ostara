@@ -959,6 +959,12 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         StripForbidFlippingAttributes(doc);
         StripFollowGrainlineAttributes(doc);
 
+        // Drop the "show copies" attribute the slash-and-spread used to write. Same reasoning again, and the reason
+        // it cannot be left to the tool: the attribute is only removed when the operation's options dialog is
+        // applied, while a save serialises the element as it came from the file — so an element an older Ostara build
+        // wrote would block the pattern's save for good. Silent by design, see the function.
+        StripShowCopiesAttributes(doc);
+
         // First take out the layer items that no tool of the piece can produce — a pair naming a tool the file no
         // longer holds, or an object its tool does not define. Both are acted on when a layer is hidden, and the
         // second one can pin an object of a hidden layer on screen. Silent by design, and it runs BEFORE the two

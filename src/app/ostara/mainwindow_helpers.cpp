@@ -651,6 +651,42 @@ auto ConvertRemovedFoldLineTypes(QDomDocument *doc) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto StripShowCopiesAttributes(QDomDocument *doc) -> bool
+{
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    // "show copies" was a checkbox of the slash-and-spread. Ostara dropped the option, and the schema dropped the
+    // attribute with it, so an <operation> carrying it cannot be saved any more — and nothing else would ever clean
+    // it: a plain save serialises the element exactly as it came from the file, and the tool only rewrites it when
+    // its own options dialog is applied, which is precisely what a locked pattern cannot do.
+    // Silent by design: the attribute had no effect the user could observe.
+    bool found = false;
+    const QDomNodeList operations = root.elementsByTagName(QStringLiteral("operation"));
+    for (int i = 0; i < operations.size(); ++i)
+    {
+        QDomElement operation = operations.at(i).toElement();
+        if (operation.isNull() || not operation.hasAttribute(AttrShowCopies))
+        {
+            continue;
+        }
+
+        found = true;
+        operation.removeAttribute(AttrShowCopies);
+    }
+
+    return found;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 namespace
 {
 // One branch per renderer: a point, a line and a curve are three unrelated families (a spline tool is not a
