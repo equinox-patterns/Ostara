@@ -96,7 +96,10 @@ VToolLinePoint::VToolLinePoint(VAbstractPattern *doc, VContainer *data, const qu
     mainLine->setZValue(-0.5); // Child line below parent point (Z=0.5 effective vs Z=1)
     mainLine->setVisible(not line.isNull());
 
-    RefreshMainLinePen();
+    // The line's colour comes from the tool, and only from it: its role is CustomColor, so RefreshPen has no
+    // role to recompute a colour from. The tool answers for it — see RefreshAuthoredPen.
+    AttachAuthoredColor(mainLine);
+    RefreshAuthoredPen(mainLine);
 
     // The main line of a line point is one of the segments an operation may take, so its click is heard here.
     // A tool that draws more — the dart cap — calls this again once its other tracé exists, and its own list wins.
@@ -121,19 +124,44 @@ void VToolLinePoint::RefreshGeometry()
     QLineF const line(basePoint - point, QPointF());
     mainLine->setLine(line);
     mainLine->setVisible(not line.isNull());
-    RefreshMainLinePen();
+    RefreshAuthoredPen(mainLine);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolLinePoint::RefreshMainLinePen()
+void VToolLinePoint::RefreshAuthoredPen(VScaledLine *line)
 {
-    QPen mPen = mainLine->pen();
+    if (line == nullptr)
+    {
+        return;
+    }
+
+    QPen mPen = line->pen();
     mPen.setColor(VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::CorrectToolColorForDarkTheme(lineColor)));
     mPen.setStyle(LineStyleToPenStyle(m_lineType));
-    mainLine->setPen(mPen);
+    line->setPen(mPen);
     // The line keeps the style the tool asked for, so that a "none" line can be shown while it is emphasized
     // (its point hovered or picked) and become invisible again by itself afterwards.
-    mainLine->SetAuthoredLineStyle(LineStyleToPenStyle(m_lineType));
+    line->SetAuthoredLineStyle(LineStyleToPenStyle(m_lineType));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::AttachAuthoredColor(VScaledLine *line)
+{
+    if (line == nullptr)
+    {
+        return;
+    }
+
+    // The tool answers for the colour of every line it draws. Their role is CustomColor, so there is no role
+    // for RefreshPen to recompute a colour from: without this answer, a colour written for a moment — the
+    // orange a line wears while its point holds the click, the magenta of a removal pick — had nothing to
+    // replace it once that state was gone, and stayed in the pen. The tool is the item asked for the
+    // disabled colour too, so that every line of a disabled tool greys out together.
+    line->SetAuthoredColorProvider([this]() -> QColor
+                                   {
+                                       return VSceneStylesheet::CorrectToolColor(
+                                           this, VSceneStylesheet::CorrectToolColorForDarkTheme(lineColor));
+                                   });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -154,23 +182,35 @@ void VToolLinePoint::SetActivePoint(bool active)
     // The point this line belongs to is the one the user clicked: it is the only moment where the line it comes
     // from can be wanted on screen, and it is what the point's own colour already answers to.
     VToolSinglePoint::SetActivePoint(active);
-    UpdateMainLineHighlight();
+    UpdateLinesHighlight();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolLinePoint::UpdateMainLineHighlight()
+void VToolLinePoint::UpdateLinesHighlight()
 {
-    // The line is shown while its point is hovered or holds the click: that is the only way to see which base
-    // point it comes from, since a "none" line is invisible the rest of the time. The colour tells the two
-    // states apart — the click wears the colour of the active point, the one its point already wears then, so
-    // that line and point read as one object; a mere hover keeps the line's own colour, the one its pen asks
+    // The lines are shown while their point is hovered or holds the click: that is the only way to see which base
+    // point they come from, since a "none" line is invisible the rest of the time. The colour tells the two
+    // states apart — the click wears the colour of the active point, the one the point already wears then, so
+    // that line and point read as one object; a mere hover keeps the lines' own colour, the one their pen asks
     // for. Never done from paint(): Qt 6 does not support mutating item state while painting.
+    //
+    // Every line the tool draws is written in the same pass, and its colour is rewritten from the tool before
+    // the emphasis: a cap is one object, and one of its two tracés may not light up alone — nor keep a colour
+    // that only the emphasis was asking for.
     const bool clicked = not m_suppressContextMenu && m_selected;
     const bool shown = not m_suppressContextMenu && (m_isHovered || m_selected);
 
-    mainLine->SetColorRole(clicked ? VColorRole::ActivePointColor : VColorRole::CustomColor);
-    RefreshMainLinePen(); // gives the line back its own colour and style
-    mainLine->SetHighlighted(shown);
+    for (VScaledLine *line : DrawnSegmentItems())
+    {
+        if (line == nullptr)
+        {
+            continue;
+        }
+
+        line->SetColorRole(clicked ? VColorRole::ActivePointColor : VColorRole::CustomColor);
+        RefreshAuthoredPen(line); // gives the line back its own colour and style
+        line->SetHighlighted(shown);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -178,14 +218,14 @@ void VToolLinePoint::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     // Line highlight on hover is a Select-mode behavior only.
     VToolSinglePoint::hoverEnterEvent(event); // sets m_isHovered before the line pen is refreshed
-    UpdateMainLineHighlight();
+    UpdateLinesHighlight();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolLinePoint::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     VToolSinglePoint::hoverLeaveEvent(event);
-    UpdateMainLineHighlight();
+    UpdateLinesHighlight();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -213,7 +253,7 @@ void VToolLinePoint::Enable()
 {
     VToolSinglePoint::Enable();
     mainLine->setEnabled(isEnabled());
-    RefreshMainLinePen();
+    RefreshAuthoredPen(mainLine);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -121,6 +121,12 @@ protected:
     virtual auto MakeToolTip() const -> QString;
     virtual void UpdateNamePosition(quint32 id, const QPointF &pos);
 
+    /** @brief Write a label position into the pattern file, in pattern units. The caller has already moved the
+     *  scene item and updated the model; the file has to follow. A position that lives in memory alone is lost at
+     *  the next parse — and every object creation, every undo, every redo parses the pattern, then reapplies each
+     *  label from the stored value (see VScenePoint::RefreshPointGeometry). */
+    void WriteLabelPosition(const QString &attrMx, const QString &attrMy, const QPointF &pos);
+
     void ReadAttributes();
     virtual void ReadToolAttributes(const QDomElement &domElement);
     virtual void ChangeLabelVisibility(quint32 id, bool visible);

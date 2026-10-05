@@ -176,6 +176,20 @@ protected:
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
 
     void UpdateNamePosition(quint32 id, const QPointF &pos) override;
+
+    /** @brief The file entry that carries one destination object: the <item> of <destination> whose idObject is
+     *  @a id. Null when the operation has no such entry. */
+    auto DestinationItemElement(quint32 id) const -> QDomElement;
+
+    /** @brief Write one destination object's label position into the pattern file. The destination list is
+     *  rebuilt whole when the operation is saved (SaveSourceDestination), so the entry is found here by the object
+     *  id it already carries. Without this write the position lives in memory alone, and the next parse — an
+     *  object creation, an undo, a redo — reapplies the stored value. */
+    void WriteDestinationLabelPosition(quint32 id, const QPointF &pos);
+
+    /** @brief Same for the "show the name" flag of a destination object: the toggle has to reach the file too, or
+     *  the next parse brings the hidden name back. */
+    void WriteDestinationLabelVisibility(quint32 id, bool visible);
     void SaveSourceDestination(QDomElement &tag,
                                const QVector<SourceItem> &source,
                                const QVector<DestinationItem> &destination);

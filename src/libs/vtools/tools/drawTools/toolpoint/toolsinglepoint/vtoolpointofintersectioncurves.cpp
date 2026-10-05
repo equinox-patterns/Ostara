@@ -1008,21 +1008,25 @@ void VToolPointOfIntersectionCurves::ChangeSegmentLabelPosition(SegmentLabel seg
             m_curve1Segment1Mx = pos.x();
             m_curve1Segment1My = pos.y();
             m_curve1Segment1Label->SetLabelPosition(pos);
+            WriteLabelPosition(AttrSegment1Mx, AttrSegment1My, pos);
             break;
         case SegmentLabel::Segment2:
             m_curve1Segment2Mx = pos.x();
             m_curve1Segment2My = pos.y();
             m_curve1Segment2Label->SetLabelPosition(pos);
+            WriteLabelPosition(AttrSegment2Mx, AttrSegment2My, pos);
             break;
         case SegmentLabel::Segment3:
             m_curve2Segment1Mx = pos.x();
             m_curve2Segment1My = pos.y();
             m_curve2Segment1Label->SetLabelPosition(pos);
+            WriteLabelPosition(AttrSegment3Mx, AttrSegment3My, pos);
             break;
         case SegmentLabel::Segment4:
             m_curve2Segment2Mx = pos.x();
             m_curve2Segment2My = pos.y();
             m_curve2Segment2Label->SetLabelPosition(pos);
+            WriteLabelPosition(AttrSegment4Mx, AttrSegment4My, pos);
             break;
         default:
             break;
@@ -1501,23 +1505,23 @@ void VToolPointOfIntersectionCurves::SegmentChoosed(quint32 id, SceneObject type
 //---------------------------------------------------------------------------------------------------------------------
 void VToolPointOfIntersectionCurves::Curve1Segment1LabelPositionChanged(const QPointF &pos)
 {
-    Q_UNUSED(pos)
+    ChangeSegmentLabelPosition(SegmentLabel::Segment1, pos);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolPointOfIntersectionCurves::Curve1Segment2LabelPositionChanged(const QPointF &pos)
 {
-    Q_UNUSED(pos)
+    ChangeSegmentLabelPosition(SegmentLabel::Segment2, pos);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolPointOfIntersectionCurves::Curve2Segment1LabelPositionChanged(const QPointF &pos)
 {
-    Q_UNUSED(pos)
+    ChangeSegmentLabelPosition(SegmentLabel::Segment3, pos);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolPointOfIntersectionCurves::Curve2Segment2LabelPositionChanged(const QPointF &pos)
 {
-    Q_UNUSED(pos)
+    ChangeSegmentLabelPosition(SegmentLabel::Segment4, pos);
 }

@@ -503,6 +503,8 @@ void VAbstractOperation::ChangeLabelPosition(quint32 id, const QPointF &pos)
         {
             VMainGraphicsView::NewSceneRect(sc, VAbstractValApplication::VApp()->getSceneView(), item);
         }
+
+        WriteDestinationLabelPosition(id, pos);
     }
 }
 
@@ -541,6 +543,19 @@ void VAbstractOperation::SetLabelVisible(quint32 id, bool visible)
         {
             VMainGraphicsView::NewSceneRect(sc, VAbstractValApplication::VApp()->getSceneView(), item);
         }
+
+        // The operation carries the flag twice: in its destination record, which is what the file writes, and in
+        // the container object, which is what the scene draws. Both, and the file, are kept here — the toggle is
+        // also reached from the property browser, which calls this method directly.
+        if (auto dItem = std::find_if(m_destination.begin(),
+                                      m_destination.end(),
+                                      [id](const DestinationItem &dItem) -> bool { return dItem.id == id; });
+            dItem != m_destination.end())
+        {
+            dItem->showLabel = visible;
+        }
+
+        WriteDestinationLabelVisibility(id, visible);
     }
 }
 
@@ -980,22 +995,8 @@ void VAbstractOperation::RefreshDataInFile()
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractOperation::ChangeLabelVisibility(quint32 id, bool visible)
 {
-    if (!operatedObjects.contains(id))
-    {
-        return;
-    }
-
-    if (const VAbstractSimple *obj = operatedObjects.value(id); (obj != nullptr) && obj->GetType() == GOType::Point)
-    {
-        if (auto dItem = std::find_if(m_destination.begin(),
-                                      m_destination.end(),
-                                      [id](const DestinationItem &dItem) -> bool { return dItem.id == id; });
-            dItem != m_destination.end())
-        {
-            dItem->showLabel = visible;
-        }
-        SetLabelVisible(id, visible);
-    }
+    // SetLabelVisible keeps the destination record, the model, the scene and the file together.
+    SetLabelVisible(id, visible);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1175,7 +1176,66 @@ void VAbstractOperation::UpdateNamePosition(quint32 id, const QPointF &pos)
             dItem->mx = pos.x();
             dItem->my = pos.y();
         }
+
+        // The operation carries the label position twice: in its destination record, which is what the file
+        // writes, and in the container object, which is what the scene draws. ChangeLabelPosition keeps both
+        // and writes the file, so a drag reaches the pattern instead of dying with the session.
+        ChangeLabelPosition(id, pos);
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractOperation::DestinationItemElement(quint32 id) const -> QDomElement
+{
+    const QDomElement operation = doc->FindElementById(m_id, getTagName());
+    if (not operation.isElement())
+    {
+        return {};
+    }
+
+    for (QDomElement destination = operation.firstChildElement(TagDestination); not destination.isNull();
+         destination = destination.nextSiblingElement(TagDestination))
+    {
+        for (QDomElement item = destination.firstChildElement(TagItem); not item.isNull();
+             item = item.nextSiblingElement(TagItem))
+        {
+            if (VDomDocument::GetParametrUInt(item, AttrIdObject, NULL_ID_STR) == id)
+            {
+                return item;
+            }
+        }
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::WriteDestinationLabelPosition(quint32 id, const QPointF &pos)
+{
+    QDomElement item = DestinationItemElement(id);
+    if (item.isNull())
+    {
+        return;
+    }
+
+    doc->SetAttribute(item, AttrMx, VAbstractValApplication::VApp()->fromPixel(pos.x()));
+    doc->SetAttribute(item, AttrMy, VAbstractValApplication::VApp()->fromPixel(pos.y()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::WriteDestinationLabelVisibility(quint32 id, bool visible)
+{
+    QDomElement item = DestinationItemElement(id);
+    if (item.isNull())
+    {
+        return;
+    }
+
+    // Hidden means "no attribute", exactly as SaveSourceDestination writes it.
+    doc->SetAttributeOrRemoveIf<bool>(item,
+                                      AttrShowLabel,
+                                      visible,
+                                      [](bool showLabel) noexcept -> bool { return not showLabel; });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

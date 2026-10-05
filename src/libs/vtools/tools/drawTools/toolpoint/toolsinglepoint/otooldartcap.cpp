@@ -67,14 +67,18 @@ OToolDartCap::OToolDartCap(const OToolDartCapInitData &initData, QGraphicsItem *
     m_drawCap(initData.drawCap)
 {
     // The second tracé of the cap, C→P2. The first one, C→P1, is the mainLine every line point already has,
-    // built on the base point (P1) by VToolLinePoint. One pen for both: RefreshCapGeometry copies the pen of
-    // the main line onto this one, so the two can never drift apart.
+    // built on the base point (P1) by VToolLinePoint. One pen for both, but neither copies the other's: each
+    // line is written from the tool — its one colour, its one style — so a state worn for a moment (the orange
+    // of the active point) can never be taken for a colour and stay on a line.
     m_secondLine = new VScaledLine(QLineF(), VColorRole::CustomColor, this);
     m_secondLine->SetBoldLine(false);
     m_secondLine->SetShowArrows(true);
     m_secondLine->setAcceptHoverEvents(true);
     m_secondLine->setFlag(QGraphicsItem::ItemStacksBehindParent, true);
     m_secondLine->setZValue(-0.5);
+
+    // The 2nd tracé has no colour role of its own: the cap answers for its colour, as it does for the main line.
+    AttachAuthoredColor(m_secondLine);
 
     // The two tracés are the segments an operation may take from the cap: each of them is clicked on its own.
     // This runs after the base class wired the main line, and replaces that first wiring with the cap's two.
@@ -438,7 +442,11 @@ void OToolDartCap::RefreshCapGeometry()
     const QLineF line(secondPoint - capPoint, QPointF());
 
     m_secondLine->setLine(line);
-    m_secondLine->setPen(mainLine->pen()); // one style, one colour: decided once, on the main line
+    // The 2nd tracé owns its pen: it is written from the tool's own colour and style, never copied from the main
+    // line's live pen. That one can carry a state — the orange it wears while the point holds the click — and a
+    // copy of it could not be undone: the 2nd tracé has no colour role of its own to recompute a colour from, so
+    // the orange stayed on it until the pattern was read again.
+    RefreshAuthoredPen(m_secondLine);
 
     mainLine->setVisible(m_drawCap && not mainLine->line().isNull());
     m_secondLine->setVisible(m_drawCap && not line.isNull());

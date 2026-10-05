@@ -608,12 +608,14 @@ void VToolCut::ChangeSegmentLabelPosition(SegmentLabel segment, const QPointF &p
         m_segment1Mx = pos.x();
         m_segment1My = pos.y();
         m_segment1Label->SetLabelPosition(pos);
+        WriteLabelPosition(AttrSegment1Mx, AttrSegment1My, pos);
     }
     else if (segment == SegmentLabel::Segment2)
     {
         m_segment2Mx = pos.x();
         m_segment2My = pos.y();
         m_segment2Label->SetLabelPosition(pos);
+        WriteLabelPosition(AttrSegment2Mx, AttrSegment2My, pos);
     }
 }
 
@@ -773,13 +775,13 @@ void VToolCut::SegmentChoosed(quint32 id, SceneObject type)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolCut::Segment1LabelPositionChanged(const QPointF &pos)
 {
-    Q_UNUSED(pos)
+    ChangeSegmentLabelPosition(SegmentLabel::Segment1, pos);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolCut::Segment2LabelPositionChanged(const QPointF &pos)
 {
-    Q_UNUSED(pos)
+    ChangeSegmentLabelPosition(SegmentLabel::Segment2, pos);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

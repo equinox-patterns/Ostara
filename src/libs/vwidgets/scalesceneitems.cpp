@@ -116,10 +116,16 @@ void VScaledLine::SetAuthoredLineStyle(Qt::PenStyle style)
     }
 
     // Always converge the pen, even when the remembered style did not change: the owner has just written the
-    // style it asked for (VToolLinePoint::RefreshMainLinePen does), and a "none" line has to be shown instead
+    // style it asked for (VToolLinePoint::RefreshAuthoredPen does), and a "none" line has to be shown instead
     // while it is emphasized — the emphasis may well have been set before this call, and skipping the refresh
     // here is what left the line invisible after a click.
     RefreshPen();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::SetAuthoredColorProvider(std::function<QColor()> provider)
+{
+    m_authoredColorProvider = std::move(provider);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -145,6 +151,13 @@ void VScaledLine::RefreshPen()
         // no role to fall back on. Without this the orange would stay in the pen for good.
         lPen.setColor(m_colorBeforeLayer);
         m_colorBeforeLayer = QColor();
+    }
+    else if (m_authoredColorProvider)
+    {
+        // No mark, no role, nothing saved: the only one who knows what this line is supposed to look like is the
+        // object that draws through it. Asking it is what gives the pen a colour it can trust after a mark has
+        // been dropped — the mark's colour used to stay in the pen, and nothing could recompute it.
+        lPen.setColor(m_authoredColorProvider());
     }
 
     // A "none" line is invisible, but it has to show while it is emphasized: the point it comes from is
@@ -247,6 +260,12 @@ auto VScaledLine::shape() const -> QPainterPath
         return {};
     }
 
+    return LineHitPath();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VScaledLine::LineHitPath() const -> QPainterPath
+{
     QPainterPath itemPath;
     itemPath.moveTo(line().p1());
     itemPath.lineTo(line().p2());

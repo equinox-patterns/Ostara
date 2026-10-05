@@ -75,6 +75,13 @@ public:
     void SetAuthoredLineStyle(Qt::PenStyle style);
     auto AuthoredLineStyle() const -> Qt::PenStyle { return m_authoredStyle; }
 
+    /// The colour the line wears when nothing overrides it: no layer mark, no active point. A line whose role is
+    /// CustomColor has no colour of its own to recompute from — the owner answers here, with the "lineColor" the
+    /// tool was given. Without that answer there was nothing to replace a colour written for a moment (the orange
+    /// of the active point, the magenta of a removal pick) once the state was gone: it stayed in the pen, and no
+    /// refresh could take it out. A line left without a provider keeps its old behaviour: its pen is untouched.
+    void SetAuthoredColorProvider(std::function<QColor()> provider);
+
     /// Gives the line the click a tool wants to hear about: it then stands for one of the segments that tool
     /// draws — a side of a rectangle, a tracé of a dart cap, the main line of a line point — and a click has to
     /// pick that segment for the operation being created. The callback carries what the owner needs (its own id
@@ -88,6 +95,14 @@ public:
     virtual void RefreshPen();
 
 protected:
+    /// The path a click has to hit: the line itself, widened to a comfortable number of screen pixels.
+    ///
+    /// Kept apart from shape() because the two answers differ by owner. This class answers nothing at all for an
+    /// invisible line — the line a point tool draws through its point must never steal that point's clicks — while
+    /// a line the user drew with the Line tool is an object of its own and has to stay reachable even when nothing
+    /// is drawn (see VToolLine::shape()).
+    auto LineHitPath() const -> QPainterPath;
+
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -116,6 +131,8 @@ private:
     bool m_inLayer{false};
     /// Colour to restore for a CustomColor line, which has no role to recompute from. Invalid when none is saved.
     QColor m_colorBeforeLayer{};
+    /// Answers the colour to wear when neither mark nor role says anything — see SetAuthoredColorProvider.
+    std::function<QColor()> m_authoredColorProvider{};
     VColorRole m_role;
 };
 

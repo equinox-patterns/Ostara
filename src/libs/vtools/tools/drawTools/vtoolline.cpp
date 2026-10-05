@@ -233,6 +233,25 @@ void VToolLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VToolLine::shape() const -> QPainterPath
+{
+    if (m_derived)
+    {
+        // A derived line belongs to the operation that draws it and is rebuilt by it at every parse: it is not an
+        // object of its own, it has no element to delete, and the operation is what a click has to reach. It keeps
+        // the base's answer, empty while nothing is drawn.
+        return VScaledLine::shape();
+    }
+
+    // A line drawn with the Line tool IS an object of its own, and its hit area must not depend on what it looks
+    // like: with the style "none" the base answers an empty path, so the line could be neither hovered, nor
+    // clicked, nor right-clicked, nor framed by the Dependencies dock — while it still counted as a user of its
+    // two endpoints and blocked their deletion. Measured on Sophie's BustedeBase: C4 could not be deleted because
+    // of a "none" line C4–C2 that nothing on the canvas allowed to pick. Its own geometry answers instead.
+    return LineHitPath();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolLine::RefreshPen()
 {
     VScaledLine::RefreshPen();
@@ -254,7 +273,15 @@ void VToolLine::RefreshPen()
         lPen.setColor(
             VSceneStylesheet::CorrectToolColor(this, VSceneStylesheet::CorrectToolColorForDarkTheme(lineColor)));
     }
-    lPen.setStyle(LineStyleToPenStyle(m_lineType));
+
+    // The style the tool asked for, except that a "none" line has to show itself while it is emphasized — hovered,
+    // picked for a layer, or in the layer being worked on. It is the same rule the base applies to the line a point
+    // draws through it (VScaledLine::RefreshPen), read here because this override is what writes the pen. Without
+    // it a "none" line stays invisible for good, and being invisible is not being absent: it still blocks the
+    // deletion of its endpoints.
+    const Qt::PenStyle authored = LineStyleToPenStyle(m_lineType);
+    const bool emphasized = IsBoldLine() || IsLayerSelected() || IsInLayer() || isSelected();
+    lPen.setStyle(authored == Qt::NoPen && emphasized ? Qt::SolidLine : authored);
     setPen(lPen);
 }
 

@@ -86,7 +86,7 @@ OToolRectangle::OToolRectangle(const OToolRectangleInitData &initData, QGraphics
     connect(m_fourthPoint, &VSimplePoint::ShowContextMenu, this, &OToolRectangle::ShowContextMenu);
     connect(m_fourthPoint, &VSimplePoint::Delete, this, &OToolRectangle::DeleteFromLabel);
     connect(m_fourthPoint, &VSimplePoint::NameChangedPosition, this,
-            [this](const QPointF &pos, quint32) { UpdateNamePosition(m_p4id, pos); });
+            [this](const QPointF &pos, quint32) { UpdateNamePosition(m_p4id, pos - m_fourthPoint->pos()); });
     m_fourthPoint->RefreshPointGeometry(*VAbstractTool::data.GeometricObject<VPointF>(m_p4id));
 
     // The base class gives B and C a generic tooltip: the rectangle names its own sides.
@@ -527,6 +527,30 @@ void OToolRectangle::SetLabelVisible(quint32 id, bool visible)
     }
 
     VToolDoublePoint::SetLabelVisible(id, visible);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OToolRectangle::ChangeLabelPosition(quint32 id, const QPointF &pos)
+{
+    // D is the fourth point, which the base class does not carry: without this branch the drag of D's name would
+    // write nothing at all — neither the model nor the file — and the next parse would put the label back where
+    // it was. The position arrives relative to the point, like the ones B and C receive.
+    if (m_p4id == id)
+    {
+        const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(m_p4id);
+        point->setMx(pos.x());
+        point->setMy(pos.y());
+        m_fourthPoint->RefreshPointGeometry(*point);
+        WriteLabelPosition(AttrMx3, AttrMy3, pos);
+
+        if (QGraphicsScene *sc = m_fourthPoint->scene())
+        {
+            VMainGraphicsView::NewSceneRect(sc, VAbstractValApplication::VApp()->getSceneView(), m_fourthPoint);
+        }
+        return;
+    }
+
+    VToolDoublePoint::ChangeLabelPosition(id, pos);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

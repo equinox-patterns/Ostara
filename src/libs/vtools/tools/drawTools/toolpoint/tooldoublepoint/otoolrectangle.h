@@ -174,6 +174,12 @@ public:
     auto IsLabelVisible(quint32 id) const -> bool override;
     void SetLabelVisible(quint32 id, bool visible) override;
 
+    /** @brief D carries a name of its own, and that name is moved like any other. The base class remembers only
+     *  p1id and p2id, so without this override the drag of D's name writes nothing at all — neither the model nor
+     *  the file — and the label comes back at the next parse. The attribute pair is the one SaveOptions already
+     *  uses for D: mx3/my3. */
+    void ChangeLabelPosition(quint32 id, const QPointF &pos) override;
+
     /** @brief D is a fourth point the base class does not carry, and hiding the layer that holds it must hide
      *  it as well: without this override a hidden layer would take B and C away and leave D alone on the canvas. */
     void GroupVisibility(quint32 object, bool visible) override;

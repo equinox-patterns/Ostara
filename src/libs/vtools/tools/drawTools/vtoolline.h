@@ -81,6 +81,7 @@ public:
     auto getTagName() const -> QString override;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+    auto shape() const -> QPainterPath override;
 
     auto FirstPointName() const -> QString;
     auto SecondPointName() const -> QString;

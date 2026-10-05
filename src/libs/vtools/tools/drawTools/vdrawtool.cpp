@@ -156,6 +156,19 @@ void VDrawTool::UpdateNamePosition(quint32 id, const QPointF &pos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VDrawTool::WriteLabelPosition(const QString &attrMx, const QString &attrMy, const QPointF &pos)
+{
+    QDomElement element = doc->FindElementById(m_id, getTagName());
+    if (not element.isElement())
+    {
+        return;
+    }
+
+    doc->SetAttribute(element, attrMx, VAbstractValApplication::VApp()->fromPixel(pos.x()));
+    doc->SetAttribute(element, attrMy, VAbstractValApplication::VApp()->fromPixel(pos.y()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VDrawTool::ReadAttributes()
 {
     const QDomElement domElement = doc->FindElementById(m_id, getTagName());

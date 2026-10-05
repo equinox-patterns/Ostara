@@ -116,8 +116,21 @@ protected:
     QString lineColor;
 
     void RefreshGeometry() override;
-    void RefreshMainLinePen();
-    void UpdateMainLineHighlight();
+
+    /** @brief Writes the pen the tool asks for — its one colour, its one style — on one of the lines it draws,
+     *  then converges the pen so that the emphasis of a hover or of a click still reads on top of it. Used for
+     *  the inherited main line and, by a tool that draws more than one line, for each of the others.
+     *  @param line a line the tool draws. nullptr is ignored. */
+    void RefreshAuthoredPen(VScaledLine *line);
+
+    /** @brief Tells a line the tool draws to ask this tool for its colour — see
+     *  VScaledLine::SetAuthoredColorProvider. Called for every line whose pen the tool owns. */
+    void AttachAuthoredColor(VScaledLine *line);
+
+    /** @brief Writes the emphasis of a hover or of a click on every line the tool draws, at once. The colour of
+     *  each line is rewritten from the tool first: the item that answers for a colour is the tool, never a
+     *  neighbouring line. */
+    void UpdateLinesHighlight();
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
