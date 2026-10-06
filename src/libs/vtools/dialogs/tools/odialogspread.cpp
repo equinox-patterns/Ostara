@@ -305,7 +305,7 @@ void ODialogSpread::ChosenObject(quint32 id, const SceneObject &type)
             ToggleSourceObject(id);
         }
 
-        if (auto *operation = qobject_cast<OVisToolSpread *>(vis))
+        if (auto *operation = ConfiguredVis())
         {
             operation->SetObjects(SourceToObjects(SourceObjects()));
             operation->SetPreviewLines(PreviewLines());
@@ -368,9 +368,20 @@ void ODialogSpread::ChosenObject(quint32 id, const SceneObject &type)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto ODialogSpread::ConfiguredVis() -> OVisToolSpread *
+{
+    auto *operation = qobject_cast<OVisToolSpread *>(vis);
+    if (operation != nullptr)
+    {
+        operation->SetInPattern(this->toolId != NULL_ID);
+    }
+    return operation;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODialogSpread::OnSourceObjectsSet()
 {
-    if (auto *operation = qobject_cast<OVisToolSpread *>(vis))
+    if (auto *operation = ConfiguredVis())
     {
         operation->SetObjects(SourceToObjects(SourceObjects()));
         operation->SetPreviewLines(PreviewLines());
@@ -392,7 +403,7 @@ void ODialogSpread::SaveData()
     UpdateAngleFromLength();
     CommitCurrentAngle();
 
-    if (auto *operation = qobject_cast<OVisToolSpread *>(vis))
+    if (auto *operation = ConfiguredVis())
     {
         operation->SetObjects(SourceToObjects(SourceObjects()));
         operation->SetPreviewLines(PreviewLines());

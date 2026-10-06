@@ -52,6 +52,13 @@ public:
      *  chain the tool will. */
     void SetRotations(const QVector<quint32> &sourceIds, const QVector<OSpreadRotation> &rotations);
 
+    /** @brief Tell the preview that the spread is already in the pattern.
+     *
+     *  The pattern then draws the objects the operation spread, where they stand, and the trace of their origin laid
+     *  over that drawing says nothing more. The images stay: they are what shows what the spread does while its dialog
+     *  is open, and a spread being built has nothing in the pattern for them to duplicate. */
+    void SetInPattern(bool inPattern);
+
     auto type() const -> int override { return Type; }
     enum
     {
@@ -64,7 +71,15 @@ private:
     QVector<quint32> m_sourceIds{};
     QVector<OSpreadRotation> m_rotations{};
 
+    /** True when the spread is in the pattern: the preview then keeps the images of the operated objects and hides
+     *  their origin, which the pattern draws itself (see SetInPattern). */
+    bool m_inPattern{false};
+
     void CreateTransformedObjects(int &iPoint, int &iCurve, const OSpreadTransform &transform);
+
+    /** @brief Draw the lines attached to the spread as they are — their two ends are the reference the user picked —
+     *  and keep them out of sight where the pattern draws those lines itself. */
+    void DrawAttachedLines();
 
     template <class Item> auto AddTransformedCurve(quint32 id, int i, const OSpreadTransform &transform) -> int;
 };

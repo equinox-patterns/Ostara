@@ -72,6 +72,15 @@ public:
      *  apart — green for the first, red for the second — and never which line it is; the light is what says that. */
     void SetPleat(const QVector<OPleatDeparture> &departures, const OPleatEnd &pending, bool foldLine, int active);
 
+    /** @brief Tell the preview that the pleat is already in the pattern.
+     *
+     *  The pattern then draws everything the pleat produced — the objects its folds carried, the lines of its figure,
+     *  their points — and the preview must not draw them a second time: the trace of the origin in orange and its
+     *  image in magenta, laid over that drawing, are what buries the fold lines the dialog is read from. A pleat being
+     *  built still has nothing in the pattern, and there the two traces are the only thing that shows what the folds
+     *  will do: they stay. */
+    void SetInPattern(bool inPattern);
+
     auto type() const -> int override { return Type; }
     enum
     {
@@ -85,6 +94,10 @@ private:
     OPleatEnd m_pending{};
     bool m_foldLine{true};
     int m_active{-1};
+
+    /** True when the pleat is in the pattern: the preview then keeps the figure and the ends of the gesture, and hides
+     *  what the pattern draws itself (see SetInPattern). */
+    bool m_inPattern{false};
 
     /** The rule, run once per refresh: what each departure line is carried by, where its places are, and the mark
      *  of each cap. A pleat the rule refused leaves an empty plan, which moves nothing and draws no figure. */
@@ -121,6 +134,11 @@ private:
     void DrawFigure();
 
     void DrawDeparturePoints();
+
+    /** @brief What the preview shows when there is no plan to draw: the lines attached to the pleat as they are, and
+     *  the dots of the gesture. The single path both refreshes that give up on the plan go through, so what the pattern
+     *  already draws is hidden once for the two of them. */
+    void DrawWithoutAPlan();
 
     template <class Item> auto AddTransformedCurve(quint32 id, int i, const OPleatTransform &transform) -> int;
 };

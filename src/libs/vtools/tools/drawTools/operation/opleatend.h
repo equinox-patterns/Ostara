@@ -47,6 +47,10 @@
  * @a showCap and @a secondSense are what the user asked for that end: whether the cap is drawn at all, and
  * which of the two edges it follows. They are kept per end, because the two ends are independent.
  *
+ * @a showNotch asks for the notch of that end as well: the mark the fitter reads on the piece's edge, a value
+ * away from the line the fold is measured on, on the side the sense sends it to (see OPleatNotch). There is no
+ * notch where there is no cap: a pleat whose edge is not followed has nothing to mark.
+ *
  * @a edgePoint is the point the user designated to carry the edge when the tool could not read one by itself: the
  * line from the end of the departure line to it is then the edge, and it wins over anything the tool would have
  * deduced. It is NULL_ID when the edge is read from the point's own tool — see OPleatSupport — or when it could
@@ -60,6 +64,7 @@ struct OPleatEnd
     quint32 edgePointId{NULL_ID};
     bool showCap{true};
     bool secondSense{false};
+    bool showNotch{false};
 };
 
 #endif // OPLEATEND_H

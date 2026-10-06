@@ -29,10 +29,13 @@
 #include <QLineF>
 #include <QSharedPointer>
 
+#include "../../vgeometry/vabstractcurve.h"
 #include "../../vgeometry/vgobject.h"
 #include "../../vgeometry/vpointf.h"
 #include "../../vpatterndb/vcontainer.h"
 #include "../toolpoint/toolsinglepoint/odartcaprule.h"
+#include "oedgereader.h"
+#include "opleatnotch.h"
 
 namespace
 {
@@ -248,6 +251,20 @@ auto OPleatPlan::Mark(int pleat, int end) const -> const OPleatMark *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OPleatPlan::Notch(int pleat, int end) const -> const OPleatNotch *
+{
+    for (const OPleatNotch &notch : notches)
+    {
+        if (notch.pleat == pleat && notch.end == end)
+        {
+            return &notch;
+        }
+    }
+
+    return nullptr;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OPleatPlan::Place(const OPleatEnd &prise, int departure, int line) const -> QPointF
 {
     const OPleatPlace place = places.value(departure, OPleatPlace{});
@@ -456,6 +473,91 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
 
                 mark.point = cap;
                 plan.marks.append(mark);
+            }
+        }
+    }
+
+    // The notch of every end that asks for one: the mark a fitter reads on the piece's edge, a value away from the
+    // line the sense measures the fold on, walked **along the edge** and never along the move. It comes last
+    // because it needs the cap: a pleat whose edge could not be followed above has already been refused, and there
+    // is then no edge to mark.
+    for (int departure = 0; departure < departures.size(); ++departure)
+    {
+        const OPleatDeparture &line = departures.at(departure);
+        const OPleatPlace &place = plan.places.at(departure);
+
+        for (int rank = 0; rank < place.pleats; ++rank)
+        {
+            for (int end = 0; end < 2; ++end)
+            {
+                const OPleatEnd &edge = (end == 0) ? line.first : line.second;
+                if (not edge.showCap || not edge.showNotch)
+                {
+                    continue; // no cap, no edge to mark; and the end asks for no notch
+                }
+
+                // The sense decides which line the value is counted from: the pleat's own departure line when it
+                // follows the edge as drawn, its copy when it follows the edge the move carries — and the second
+                // pleat of a double is the first one reversed, which is the whole difference between the two.
+                const bool secondSense = edge.secondSense != (rank == 1);
+                const QPointF from = plan.Place(edge, departure, secondSense ? rank + 1 : rank);
+
+                // The side the notch leaves the fold by: the fabric lies on the normal side of the line, so a
+                // notch counted from the departure line goes against it, and one counted from the copy goes with.
+                const QPointF side = secondSense ? place.normal : -place.normal;
+
+                OPleatNotch notch;
+                notch.departure = departure;
+                notch.pleat = place.firstPleat + rank;
+                notch.end = end;
+
+                // Where the edge is, on that side. A point the user designated to carry the edge describes a line
+                // and no object, so nothing is asked of the pattern then.
+                const OEdgeCarrier carrier
+                    = (edge.edgePointId == NULL_ID) ? OEdgeReader::Carrier(edge.pointId, side, data)
+                                                    : OEdgeCarrier{};
+                const QSharedPointer<VAbstractCurve> curve
+                    = (carrier.objectId != NULL_ID && data != nullptr && data->HasObject(carrier.objectId))
+                          ? qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(carrier.objectId))
+                          : QSharedPointer<VAbstractCurve>{};
+
+                if (not curve.isNull())
+                {
+                    // A curve carries the edge: the notch is walked along it, from the end the point is, and it
+                    // is that curve the figure will cut in two.
+                    const OPleatNotchPlacement placement
+                        = OPleatNotchRule::Place(curve, edge.position, values.at(departure));
+                    if (placement.length < 0.)
+                    {
+                        plan.failure = OPleatFailure::NotchOffEdge;
+                        return plan;
+                    }
+
+                    notch.edgeId = carrier.objectId;
+                    notch.length = placement.length;
+                    notch.point = from + (placement.point - edge.position);
+                }
+                else
+                {
+                    QPointF inward = carrier.inward;
+                    if (inward.isNull())
+                    {
+                        const qreal length = QLineF(QPointF(), edge.edgeDirection).length();
+                        if (length <= kDirectionTolerance)
+                        {
+                            plan.failure = OPleatFailure::UnresolvedEdge;
+                            return plan;
+                        }
+
+                        const QPointF unit = edge.edgeDirection / length;
+                        inward = (Dot(unit, side) > 0.) ? unit : -unit;
+                    }
+
+                    // A line carries it: the notch is a point on that line, and there is nothing to cut.
+                    notch.point = from + inward * values.at(departure);
+                }
+
+                plan.notches.append(notch);
             }
         }
     }

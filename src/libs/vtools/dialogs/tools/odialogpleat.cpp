@@ -181,6 +181,8 @@ ODialogPleat::ODialogPleat(const VContainer *data, VAbstractPattern *doc, quint3
     connect(ui->checkBoxCap2, &QCheckBox::toggled, this, &ODialogPleat::FigureOptionChanged);
     connect(ui->checkBoxCap1Sense, &QCheckBox::toggled, this, &ODialogPleat::FigureOptionChanged);
     connect(ui->checkBoxCap2Sense, &QCheckBox::toggled, this, &ODialogPleat::FigureOptionChanged);
+    connect(ui->checkBoxNotch1, &QCheckBox::toggled, this, &ODialogPleat::FigureOptionChanged);
+    connect(ui->checkBoxNotch2, &QCheckBox::toggled, this, &ODialogPleat::FigureOptionChanged);
     connect(ui->checkBoxFoldLine, &QCheckBox::toggled, this, &ODialogPleat::FigureOptionChanged);
     connect(m_kind, &QComboBox::currentIndexChanged, this, &ODialogPleat::FigureOptionChanged);
     connect(ui->lineEditVisibilityGroup, &QLineEdit::textChanged, this, &DialogOperationTool::GroupNameChanged);
@@ -244,6 +246,8 @@ auto ODialogPleat::ShownDepartures() const -> QVector<OPleatDeparture>
         departure.first.secondSense = ui->checkBoxCap1Sense->isChecked();
         departure.second.showCap = ui->checkBoxCap2->isChecked();
         departure.second.secondSense = ui->checkBoxCap2Sense->isChecked();
+        departure.first.showNotch = ui->checkBoxNotch1->isChecked();
+        departure.second.showNotch = ui->checkBoxNotch2->isChecked();
     }
 
     return departures;
@@ -303,11 +307,92 @@ void ODialogPleat::SetPleat(const QVector<OPleatDeparture> &departures, bool fol
 void ODialogPleat::SetDisplay(const OPleatDisplay &display)
 {
     m_display = display;
+    m_figureLines = HeldLines(display); // what the operation draws: the state of the window is compared to it
 
     ChangeCurrentData(m_lineType, display.lineTypeLine);
     SetColorComboCurrentName(m_lineColor, display.lineColor);
     ChangeCurrentData(m_foldType, display.foldTypeLine);
     SetColorComboCurrentName(m_foldColor, display.foldColor);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogPleat::HeldLines(const OPleatDisplay &display) -> FigureLines
+{
+    FigureLines lines;
+    lines.places = static_cast<int>(display.lines.size());
+    lines.foldLines = static_cast<int>(display.foldLines.size());
+
+    for (const OPleatMarkDisplay &mark : display.marks)
+    {
+        if (mark.side1 != NULL_ID)
+        {
+            lines.markSides += 2; // both sides of the V, or neither of them
+        }
+    }
+
+    return lines;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogPleat::CurrentLines(const QVector<OPleatDeparture> &departures, bool foldLine) const -> FigureLines
+{
+    FigureLines lines;
+    if (departures.isEmpty())
+    {
+        return lines;
+    }
+
+    const OPleatPlan plan = MakePlan(false);
+    if (plan.failure != OPleatFailure::None)
+    {
+        return lines; // the rule refused the pleats: no figure is drawn, and nothing is held
+    }
+
+    lines.places = OPleatDisplay::LineCount(departures);
+    lines.foldLines = foldLine ? plan.PleatCount() : 0;
+
+    for (const OPleatMark &mark : plan.marks)
+    {
+        if (not mark.flat)
+        {
+            lines.markSides += 2; // an edge running along the move has no V to draw, and so no side
+        }
+    }
+
+    return lines;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogPleat::LinesChanged() const -> bool
+{
+    if (this->toolId == NULL_ID)
+    {
+        return false; // a pleat being created: nothing of it is in the pattern yet, and OK builds the whole of it
+    }
+
+    const FigureLines shown = CurrentLines(ShownDepartures(), ui->checkBoxFoldLine->isChecked());
+    return shown.places != m_figureLines.places || shown.foldLines != m_figureLines.foldLines
+           || shown.markSides != m_figureLines.markSides;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::CheckState()
+{
+    DialogOperationTool::CheckState();
+
+    if (bApply == nullptr || not bApply->isEnabled() || not LinesChanged())
+    {
+        return;
+    }
+
+    // A cap turned off or on, the fold lines, a pleat added: the figure would draw one line more or one less, and
+    // only a full parse builds a line — the very parse that would rebuild the operation and reject this dialog. The
+    // change therefore waits for OK, as every structural change of an operation does. What the figure only draws as
+    // points and curves — the notch of an end, and the two halves it cuts its edge into — is applied in place: the
+    // tool gives those objects their item on the parse the change asks for.
+    bApply->setEnabled(false);
+    bApply->setToolTip(tr("Adding or removing objects can't be applied while the dialog stays open. "
+                          "Use OK to confirm."));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -367,6 +452,8 @@ auto ODialogPleat::FailureText(const OPleatPlan &plan) const -> QString
             return tr("The edge was not recognized at one end of a departure line.");
         case OPleatFailure::EdgeAlongFold:
             return tr("This edge is parallel to the fold line: no cap is possible here.");
+        case OPleatFailure::NotchOffEdge:
+            return tr("The notch of a pleat falls past the end of the edge it should mark.");
     }
 
     return {};
@@ -382,6 +469,17 @@ void ODialogPleat::RefreshFoldLineState()
                                  [](const OPleatDeparture &departure)
                                  { return departure.first.showCap && departure.second.showCap; });
     ui->checkBoxFoldLine->setEnabled(any);
+    RefreshNotchState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::RefreshNotchState()
+{
+    // A notch marks the edge the cap follows: with no cap at that end there is no edge to follow, and the box has
+    // nothing to mean. It keeps its state, exactly as the box of the fold line does, so ticking the cap back brings
+    // the notch back with it.
+    ui->checkBoxNotch1->setEnabled(ui->checkBoxCap1->isEnabled() && ui->checkBoxCap1->isChecked());
+    ui->checkBoxNotch2->setEnabled(ui->checkBoxCap2->isEnabled() && ui->checkBoxCap2->isChecked());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -401,6 +499,10 @@ void ODialogPleat::RefreshFigure()
         return;
     }
 
+    // A pleat the dialog did not create yet has nothing in the pattern: the preview is then the only thing that shows
+    // what the folds will do. As soon as the operation exists — the dialog reopened on it, or its own Apply having
+    // built it — the pattern draws all of that, and the preview keeps the figure (see OVisToolPleat::SetInPattern).
+    operation->SetInPattern(this->toolId != NULL_ID);
     operation->SetObjects(SourceToObjects(GetSourceObjects()));
     operation->SetPreviewLines(PreviewLines());
     operation->SetPleat(ShownDepartures(), m_pending, ui->checkBoxFoldLine->isChecked(), m_editorRow);
@@ -427,6 +529,8 @@ void ODialogPleat::FigureOptionChanged()
         m_departures[row].first.secondSense = ui->checkBoxCap1Sense->isChecked();
         m_departures[row].second.showCap = ui->checkBoxCap2->isChecked();
         m_departures[row].second.secondSense = ui->checkBoxCap2Sense->isChecked();
+        m_departures[row].first.showNotch = ui->checkBoxNotch1->isChecked();
+        m_departures[row].second.showNotch = ui->checkBoxNotch2->isChecked();
         RefreshRow(row);
     }
 
@@ -729,6 +833,8 @@ void ODialogPleat::ShowDepartureDetails(int row)
     const QSignalBlocker blockCap1Sense(ui->checkBoxCap1Sense);
     const QSignalBlocker blockCap2(ui->checkBoxCap2);
     const QSignalBlocker blockCap2Sense(ui->checkBoxCap2Sense);
+    const QSignalBlocker blockNotch1(ui->checkBoxNotch1);
+    const QSignalBlocker blockNotch2(ui->checkBoxNotch2);
 
     m_formulaValue->setFormula(departure.value);
     ChangeCurrentData(m_kind, static_cast<int>(departure.kind));
@@ -736,6 +842,10 @@ void ODialogPleat::ShowDepartureDetails(int row)
     ui->checkBoxCap1Sense->setChecked(departure.first.secondSense);
     ui->checkBoxCap2->setChecked(departure.second.showCap);
     ui->checkBoxCap2Sense->setChecked(departure.second.secondSense);
+    ui->checkBoxNotch1->setChecked(departure.first.showNotch);
+    ui->checkBoxNotch2->setChecked(departure.second.showNotch);
+
+    RefreshNotchState();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -748,6 +858,8 @@ void ODialogPleat::EnableDetails(bool enabled)
     ui->checkBoxCap2->setEnabled(enabled);
     ui->checkBoxCap2Sense->setEnabled(enabled);
     m_remove->setEnabled(enabled && m_departures.size() > 1);
+
+    RefreshNotchState();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -131,8 +131,7 @@ void OVisToolPleat::RefreshGeometry()
     const QVector<QGraphicsItem *> originObjects = CreateOriginObjects(iPoint, iCurve);
     if (originObjects.isEmpty() || m_departures.isEmpty())
     {
-        RefreshPreviewLines(false);
-        DrawDeparturePoints();
+        DrawWithoutAPlan();
         return;
     }
 
@@ -141,8 +140,7 @@ void OVisToolPleat::RefreshGeometry()
     {
         // A pleat the rule refuses is no pleat: the objects that travel are shown as they are, and only the gesture
         // keeps its dots. The dialog never opens on such a plan, so this is a state the canvas alone can show.
-        RefreshPreviewLines(false);
-        DrawDeparturePoints();
+        DrawWithoutAPlan();
         return;
     }
 
@@ -155,8 +153,39 @@ void OVisToolPleat::RefreshGeometry()
     // ends are the line's image, exactly as the operation will build it.
     RefreshPreviewLines(true);
 
+    // The pleat is in the pattern: every object it carries and every line of its figure is drawn there already, and
+    // the second drawing this preview lays over it — the trace of the origin in orange, the image in magenta — buries
+    // the folds the dialog is read from. Only the figure is kept (see SetInPattern).
+    if (m_inPattern)
+    {
+        HideOperatedObjects();
+        HideAttachedLines();
+    }
+
     // Last, because RefreshPreviewLines hides every line it does not use of the pool it shares with this call.
     DrawFigure();
+    DrawDeparturePoints();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OVisToolPleat::SetInPattern(bool inPattern)
+{
+    m_inPattern = inPattern;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OVisToolPleat::DrawWithoutAPlan()
+{
+    RefreshPreviewLines(false);
+
+    // This path drew the source side of every line attached to the pleat; where the pattern draws those lines itself,
+    // that drawing goes away with the objects of the origin (see SetInPattern).
+    if (m_inPattern)
+    {
+        HideOperatedObjects();
+        HideAttachedLines();
+    }
+
     DrawDeparturePoints();
 }
 
@@ -357,6 +386,14 @@ void OVisToolPleat::DrawFigure()
 
         segment(mark.point, origin, VColorRole::VisSupportColor3, Qt::SolidLine, Light(mark.departure));
         segment(mark.point, copy, VColorRole::VisSupportColor3, Qt::SolidLine, Light(mark.departure));
+    }
+
+    // Each notch: the mark the fitter reads on the piece's edge, drawn with the rest of the figure. The halves of
+    // the edge it cuts are objects the operation owns, and the preview has nothing to cut: what the notch is, and
+    // where it stands, is what tells the two senses and the two depths apart on the canvas.
+    for (const OPleatNotch &notch : std::as_const(m_plan.notches))
+    {
+        dot(notch.point, Light(notch.departure));
     }
 
     hideLeftovers();

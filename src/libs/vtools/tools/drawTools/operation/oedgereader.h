@@ -30,7 +30,23 @@
 #include <QPointF>
 #include <QtGlobal>
 
+#include "../../toolsdef.h"
+
 class VContainer;
+
+/**
+ * @brief The edge of the piece at one point, as the object that carries it and the way it runs from the point.
+ *
+ * @a objectId is the curve that ends at the point — the object a notch has to be cut into — or NULL_ID when only a
+ * line carries the edge there, the contour of a piece included. @a inward is a vector running from the point into
+ * that edge: a cap reads a line and no more, but a notch is walked along the edge, so it is the *way* that
+ * matters, and it is the reason this answer is not the one @a Direction gives.
+ */
+struct OEdgeCarrier
+{
+    quint32 objectId{NULL_ID};
+    QPointF inward{};
+};
 
 /**
  * @brief Which way the piece's edge runs at one point of the pattern.
@@ -69,6 +85,16 @@ public:
      *
      *  The answer is never normalized, and its orientation carries no meaning: the caller reads a line. */
     static auto Direction(quint32 pointId, const VContainer *data) -> QPointF;
+
+    /** @brief The edge at @a pointId, taken on the side @a side points to.
+     *
+     *  Where @a Direction answers a line, this answers *which* object carries it and which of the two ways along
+     *  that line leaves the point — a notch is walked from the point, and at a cut the two halves both end there
+     *  and leave it in opposite directions, so the side is what chooses between them. The answer falls back on a
+     *  plain direction — no object — when the edge is a line, a filler of the contour, or a segment a tool drew:
+     *  the contour is read first, exactly as @a Direction reads it, so a curve that merely passes through the
+     *  point is never taken for the edge. */
+    static auto Carrier(quint32 pointId, const QPointF &side, const VContainer *data) -> OEdgeCarrier;
 
     /** @brief The position of a point of the container, or the origin when the id names no point. */
     static auto Position(quint32 pointId, const VContainer *data) -> QPointF;

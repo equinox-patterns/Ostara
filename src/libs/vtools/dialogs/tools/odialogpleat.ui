@@ -81,6 +81,16 @@
                </widget>
               </item>
               <item>
+               <widget class="QCheckBox" name="checkBoxNotch1">
+                <property name="toolTip">
+                 <string>Mark the notch of this end on the piece's edge</string>
+                </property>
+                <property name="text">
+                 <string>Notch</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <spacer name="horizontalSpacerCap1">
                 <property name="orientation">
                  <enum>Qt::Orientation::Horizontal</enum>
@@ -133,6 +143,16 @@
                <widget class="QCheckBox" name="checkBoxCap2Sense">
                 <property name="text">
                  <string>Reverse the sense</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="checkBoxNotch2">
+                <property name="toolTip">
+                 <string>Mark the notch of this end on the piece's edge</string>
+                </property>
+                <property name="text">
+                 <string>Notch</string>
                 </property>
                </widget>
               </item>

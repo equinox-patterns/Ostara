@@ -45,6 +45,7 @@ class DialogSpread;
 class AngleFormulaWidget;
 class FormulaInputWidget;
 class QComboBox;
+class OVisToolSpread;
 
 class ODialogSpread final : public DialogOperationTool
 {
@@ -120,6 +121,11 @@ private:
 
     /** @brief The rotation whose details are shown in the editor, -1 when none. */
     auto CurrentRow() const -> int;
+
+    /** @brief The preview of this dialog, told whether the spread is already in the pattern — that is, whether the
+     *  pattern draws the objects it spread and the preview keeps the images only (see OVisToolSpread::SetInPattern).
+     *  Null when the dialog has no preview to configure. */
+    auto ConfiguredVis() -> OVisToolSpread *;
 
     /** @brief Distance pivot -> start of one rotation, in pixels; 0 when the pair is incomplete. */
     auto RadiusFor(const OSpreadRotation &rotation) const -> qreal;

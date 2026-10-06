@@ -27,9 +27,14 @@
 
 #include "opleatdisplay.h"
 
+#include <QPair>
 #include <QPointF>
 #include <QSharedPointer>
 
+#include "../../vgeometry/vabstractarc.h"
+#include "../../vgeometry/vabstractbezier.h"
+#include "../../vgeometry/vabstractcubicbezier.h"
+#include "../../vgeometry/vabstractcubicbezierpath.h"
 #include "../../vgeometry/vgeometrydef.h"
 #include "../../vgeometry/vgobject.h"
 #include "../../vgeometry/vpointf.h"
@@ -38,6 +43,7 @@
 #include "../ifc/ifcdef.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "ooperationlines.h"
+#include "opleatnotch.h"
 #include "vabstractoperation.h"
 
 using namespace Qt::Literals::StringLiterals;
@@ -57,6 +63,9 @@ const QString OPleatDisplay::AttrEnd = QStringLiteral("end");
 const QString OPleatDisplay::AttrPoint = QStringLiteral("point");
 const QString OPleatDisplay::AttrSide1 = QStringLiteral("side1");
 const QString OPleatDisplay::AttrSide2 = QStringLiteral("side2");
+const QString OPleatDisplay::AttrNotch = QStringLiteral("notch");
+const QString OPleatDisplay::AttrCurve1 = QStringLiteral("curve1");
+const QString OPleatDisplay::AttrCurve2 = QStringLiteral("curve2");
 
 namespace
 {
@@ -126,6 +135,109 @@ auto EndOf(const QVector<OPleatDeparture> &departures, int departure, int end) -
 {
     const OPleatDeparture line = departures.value(departure, OPleatDeparture{});
     return (end == 0) ? line.first : line.second;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Register a curve the figure owns, so that the pattern reads its length, its angles and its handles
+ *  exactly as it reads those of any other curve of the pattern. */
+void RegisterCurve(VContainer *data, const QSharedPointer<VAbstractCurve> &curve, quint32 id)
+{
+    if (const auto bezier = qSharedPointerDynamicCast<VAbstractBezier>(curve); not bezier.isNull())
+    {
+        data->AddSpline(bezier, id);
+    }
+    else
+    {
+        data->AddArc(curve, id);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Where an object of the selection stands once the pleats have carried it.
+ *
+ *  The operation copies everything it takes, the objects it does not move included, so an object of the selection
+ *  always has an image of its own — and that image is where the figure draws the edge. An object outside the
+ *  selection is its own place: no pleat took it, and nothing was drawn of it. */
+auto CarriedId(quint32 objectId, const QVector<SourceItem> &source, const QVector<DestinationItem> &destination)
+    -> quint32
+{
+    for (int index = 0; index < source.size() && index < destination.size(); ++index)
+    {
+        if (source.at(index).id == objectId)
+        {
+            const quint32 image = destination.at(index).id;
+            return (image == NULL_ID) ? objectId : image;
+        }
+    }
+
+    return objectId;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The two places a curve of the pattern runs between, whichever kind it is.
+ *
+ *  A spline and a spline path hold their ends as points of the pattern; an arc is read from its centre and its two
+ *  angles, and the places its ends stand at are the two positions those angles give. Either way the ends are places,
+ *  which is all the caller needs to find the point that stands there. */
+auto EndPositions(const QSharedPointer<VAbstractCurve> &curve) -> QPair<QPointF, QPointF>
+{
+    if (curve.isNull())
+    {
+        return {};
+    }
+
+    if (const auto bezier = qSharedPointerDynamicCast<VAbstractCubicBezier>(curve); not bezier.isNull())
+    {
+        return {bezier->GetP1().toQPointF(), bezier->GetP4().toQPointF()};
+    }
+
+    if (const auto path = qSharedPointerDynamicCast<VAbstractCubicBezierPath>(curve); not path.isNull())
+    {
+        return {path->FirstPoint().toQPointF(), path->LastPoint().toQPointF()};
+    }
+
+    if (const auto arc = qSharedPointerDynamicCast<VAbstractArc>(curve); not arc.isNull())
+    {
+        return {arc->GetP1(), arc->GetP2()};
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The name the pattern shows for the point of the selection that stands at @a position, once carried.
+ *
+ *  The end of a carried edge is a place, and the point the operation copied there is the one the pattern shows: it is
+ *  found by that place, because the edge itself cannot name it — the ends of a moved spline are control points the
+ *  geometry renames `X1` and `X4`, and an arc carries no point at all. Empty when no point of the selection stands
+ *  there, or when the operation did not carry the one that does: the end is then its own place, and its own name would
+ *  name a point the edge does not end at. */
+auto CarriedNameAt(const QPointF &position, const QVector<SourceItem> &source,
+                   const QVector<DestinationItem> &destination, const VContainer *data) -> QString
+{
+    if (data == nullptr)
+    {
+        return {};
+    }
+
+    for (const SourceItem &item : source)
+    {
+        const QSharedPointer<VPointF> point = PointOf(item.id, data);
+        if (point.isNull() || not VFuzzyComparePoints(position, static_cast<QPointF>(*point)))
+        {
+            continue;
+        }
+
+        const quint32 carried = CarriedId(item.id, source, destination);
+        if (carried == item.id || not data->HasObject(carried))
+        {
+            return {};
+        }
+
+        return data->GetGObject(carried)->name();
+    }
+
+    return {};
 }
 
 /** @brief Where the endpoint of one place comes from.
@@ -244,6 +356,7 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDepart
         display.foldLines.clear();
         display.copies.clear();
         display.marks.clear();
+        display.notches.clear();
         return;
     }
 
@@ -371,11 +484,61 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDepart
             mark.side2 = data->getNextId();
         }
     }
+
+    // The notches, in the order of the plan, exactly like the marks: the plan says which end asks for one, and
+    // the figure only says where it stands and what it cuts there.
+    display.notches.resize(plan.notches.size());
+
+    for (int i = 0; i < display.notches.size() && i < plan.notches.size(); ++i)
+    {
+        OPleatNotchDisplay &notch = display.notches[i];
+        const OPleatNotch &resolved = plan.notches.at(i);
+        const OPleatEnd prise = EndOf(departures, resolved.departure, resolved.end);
+
+        if (notch.pleat != resolved.pleat || notch.end != resolved.end)
+        {
+            // The notch describes another end than it did: its name described that other end too.
+            notch.name.clear();
+            notch.pleat = resolved.pleat;
+            notch.end = resolved.end;
+        }
+
+        if (notch.point == NULL_ID)
+        {
+            notch.point = data->getNextId();
+        }
+
+        if (notch.name.isEmpty())
+        {
+            const QString suffix = (plan.PleatCount() == 1) ? "__cran"_L1
+                                                           : "__cran"_L1 + QString::number(resolved.pleat + 1);
+            notch.name = UniqueName(PriseName(prise.pointId, data) + suffix, data);
+        }
+
+        if (resolved.edgeId == NULL_ID)
+        {
+            // A line carries the edge: there is nothing to cut, and the ids of the halves a previous state had
+            // must go, or the file would name curves that will never exist.
+            notch.curve1 = NULL_ID;
+            notch.curve2 = NULL_ID;
+            continue;
+        }
+
+        if (notch.curve1 == NULL_ID)
+        {
+            notch.curve1 = data->getNextId();
+        }
+        if (notch.curve2 == NULL_ID)
+        {
+            notch.curve2 = data->getNextId();
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatPlan &plan,
-                           const QVector<OPleatDeparture> &departures, VContainer *data)
+                           const QVector<OPleatDeparture> &departures, const QVector<SourceItem> &source,
+                           const QVector<DestinationItem> &destination, VContainer *data)
 {
     if (not display.show || plan.failure != OPleatFailure::None)
     {
@@ -395,9 +558,9 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
                 }
 
                 const OPleatEnd prise = EndOf(departures, departure, end);
-                const QSharedPointer<VPointF> source = PointOf(prise.pointId, data);
-                const QPointF offset = source.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
-                                                       : QPointF(source->mx(), source->my());
+                const QSharedPointer<VPointF> prisePoint = PointOf(prise.pointId, data);
+                const QPointF offset = prisePoint.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
+                                                           : QPointF(prisePoint->mx(), prisePoint->my());
                 PlacePoint(copy.point, plan.Place(prise, departure, line), copy.name, offset, idTool, data);
             }
         }
@@ -414,10 +577,73 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
             continue;
         }
 
-        const QSharedPointer<VPointF> source = PointOf(prise.pointId, data);
-        const QPointF offset = source.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
-                                               : QPointF(source->mx(), source->my());
+        const QSharedPointer<VPointF> prisePoint = PointOf(prise.pointId, data);
+        const QPointF offset = prisePoint.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
+                                                   : QPointF(prisePoint->mx(), prisePoint->my());
         PlacePoint(mark.point, resolved.point, mark.name, offset, idTool, data);
+    }
+
+    // The notches: the mark itself, and, where a curve carries the edge, the two halves that curve is cut into.
+    // The cut is what makes the notch a point OF the edge — the piece the user builds later is traced through it —
+    // and it is made on the edge as the fold meets it, that is on the image the operation drew of that curve.
+    for (int i = 0; i < display.notches.size() && i < plan.notches.size(); ++i)
+    {
+        const OPleatNotchDisplay &notch = display.notches.at(i);
+        const OPleatNotch &resolved = plan.notches.at(i);
+        const OPleatEnd prise = EndOf(departures, resolved.departure, resolved.end);
+
+        const QSharedPointer<VPointF> prisePoint = PointOf(prise.pointId, data);
+        const QPointF offset = prisePoint.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
+                                                   : QPointF(prisePoint->mx(), prisePoint->my());
+
+        if (notch.point != NULL_ID)
+        {
+            PlacePoint(notch.point, resolved.point, notch.name, offset, idTool, data);
+        }
+
+        if (notch.curve1 == NULL_ID || notch.curve2 == NULL_ID || resolved.edgeId == NULL_ID || data == nullptr)
+        {
+            continue; // a line carries the edge: the notch is the point alone, and there is nothing to cut
+        }
+
+        const quint32 carried = CarriedId(resolved.edgeId, source, destination);
+        if (not data->HasObject(carried))
+        {
+            continue; // the edge is gone: the plan would have refused, and nothing is left to cut here
+        }
+
+        const QSharedPointer<VAbstractCurve> curve
+            = qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(carried));
+
+        // The two ends the halves run between are named after the points the pattern shows there: the copies the
+        // operation made of the points of the selection that stand at those places, which is where the cut stands. The
+        // carried curve cannot say them — its ends are the control points a moved spline renames X1 and X4 — so they
+        // are read from the edge as the pattern drew it, the one the notch was read on (see OPleatNotchRule::Cut).
+        const QPair<QPointF, QPointF> ends
+            = EndPositions(data->HasObject(resolved.edgeId)
+                               ? qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(resolved.edgeId))
+                               : QSharedPointer<VAbstractCurve>{});
+
+        const OPleatNotchHalves halves
+            = OPleatNotchRule::Cut(curve, resolved.length, notch.name,
+                                   CarriedNameAt(ends.first, source, destination, data),
+                                   CarriedNameAt(ends.second, source, destination, data));
+        if (halves.first.isNull() || halves.second.isNull())
+        {
+            continue;
+        }
+
+        // The halves carry the names their ends give them — the start of the edge to the notch, and the notch to
+        // its end — and belong to the operation exactly as the curves it copies do.
+        halves.first->SetNameSuffix(UniqueName(halves.firstName, data));
+        halves.second->SetNameSuffix(UniqueName(halves.secondName, data));
+        halves.first->setIdObject(idTool);
+        halves.second->setIdObject(idTool);
+
+        data->UpdateGObject(notch.curve1, halves.first);
+        data->UpdateGObject(notch.curve2, halves.second);
+        RegisterCurve(data, halves.first, notch.curve1);
+        RegisterCurve(data, halves.second, notch.curve2);
     }
 }
 
@@ -425,7 +651,7 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
 auto OPleatDisplay::PointImages(const OPleatDisplay &display, const VContainer *data) -> QVector<quint32>
 {
     QVector<quint32> ids;
-    ids.reserve(display.copies.size() + display.marks.size());
+    ids.reserve(display.copies.size() + display.marks.size() + display.notches.size());
 
     for (const OPleatCopy &copy : std::as_const(display.copies))
     {
@@ -442,6 +668,57 @@ auto OPleatDisplay::PointImages(const OPleatDisplay &display, const VContainer *
         if (mark.point != NULL_ID && data->HasObject(mark.point))
         {
             ids.append(mark.point);
+        }
+    }
+
+    for (const OPleatNotchDisplay &notch : std::as_const(display.notches))
+    {
+        if (notch.point != NULL_ID && data->HasObject(notch.point))
+        {
+            ids.append(notch.point);
+        }
+    }
+
+    return ids;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPleatDisplay::CurveImages(const OPleatDisplay &display, const VContainer *data) -> QVector<quint32>
+{
+    QVector<quint32> ids;
+    ids.reserve(display.notches.size() * 2);
+
+    for (const OPleatNotchDisplay &notch : std::as_const(display.notches))
+    {
+        // The same rule as for the points: an id the container does not know names an object that was never cut,
+        // and there is nothing to own there.
+        for (const quint32 id : {notch.curve1, notch.curve2})
+        {
+            if (id != NULL_ID && data->HasObject(id))
+            {
+                ids.append(id);
+            }
+        }
+    }
+
+    return ids;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPleatDisplay::LineIds(const QDomElement &element) -> QSet<quint32>
+{
+    QSet<quint32> ids;
+    const QDomElement display = element.firstChildElement(TagDisplay);
+
+    for (QDomElement item = display.firstChildElement(VAbstractOperation::TagItem); not item.isNull();
+         item = item.nextSiblingElement(VAbstractOperation::TagItem))
+    {
+        for (const QString &attribute : {AttrLine, AttrFoldLine, AttrSide1, AttrSide2})
+        {
+            if (const quint32 id = item.attribute(attribute).toUInt(); id != NULL_ID)
+            {
+                ids.insert(id);
+            }
         }
     }
 
@@ -524,6 +801,28 @@ void OPleatDisplay::Save(VAbstractPattern *doc, QDomElement &tag, const OPleatDi
         element.appendChild(item);
     }
 
+    for (const OPleatNotchDisplay &notch : std::as_const(display.notches))
+    {
+        QDomElement item = doc->createElement(VAbstractOperation::TagItem);
+        if (notch.point != NULL_ID)
+        {
+            doc->SetAttribute(item, AttrNotch, notch.point);
+            if (not notch.name.isEmpty())
+            {
+                doc->SetAttribute(item, AttrName, notch.name);
+            }
+        }
+        if (notch.curve1 != NULL_ID)
+        {
+            doc->SetAttribute(item, AttrCurve1, notch.curve1);
+        }
+        if (notch.curve2 != NULL_ID)
+        {
+            doc->SetAttribute(item, AttrCurve2, notch.curve2);
+        }
+        element.appendChild(item);
+    }
+
     tag.appendChild(element);
 }
 
@@ -551,7 +850,16 @@ auto OPleatDisplay::Extract(const QDomElement &domElement) -> OPleatDisplay
         for (QDomElement item = element.firstChildElement(VAbstractOperation::TagItem); not item.isNull();
              item = item.nextSiblingElement(VAbstractOperation::TagItem))
         {
-            if (item.hasAttribute(AttrPoint))
+            if (item.hasAttribute(AttrNotch))
+            {
+                OPleatNotchDisplay notch;
+                notch.point = VAbstractPattern::GetParametrUInt(item, AttrNotch, NULL_ID_STR);
+                notch.curve1 = VAbstractPattern::GetParametrUInt(item, AttrCurve1, NULL_ID_STR);
+                notch.curve2 = VAbstractPattern::GetParametrUInt(item, AttrCurve2, NULL_ID_STR);
+                notch.name = VDomDocument::GetParametrEmptyString(item, AttrName);
+                display.notches.append(notch);
+            }
+            else if (item.hasAttribute(AttrPoint))
             {
                 OPleatMarkDisplay mark;
                 mark.point = VAbstractPattern::GetParametrUInt(item, AttrPoint, NULL_ID_STR);

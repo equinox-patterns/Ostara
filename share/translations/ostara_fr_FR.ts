@@ -30892,6 +30892,18 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Inverser le sens</translation>
     </message>
     <message>
+        <source>Notch</source>
+        <translation>Cran</translation>
+    </message>
+    <message>
+        <source>Mark the notch of this end on the piece&apos;s edge</source>
+        <translation>Marquer le cran de cette extrémité sur le bord de la pièce</translation>
+    </message>
+    <message>
+        <source>The notch of a pleat falls past the end of the edge it should mark.</source>
+        <translation>Le cran d&apos;un pli tombe au-delà du bord qu&apos;il doit marquer.</translation>
+    </message>
+    <message>
         <source>Draw the fold line, from one cap to the other</source>
         <translation>Tracer la ligne de pli, d&apos;un chapeau à l&apos;autre</translation>
     </message>

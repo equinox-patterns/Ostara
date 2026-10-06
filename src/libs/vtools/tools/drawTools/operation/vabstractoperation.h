@@ -248,9 +248,35 @@ protected:
      *  other operation. Called from InitOperatedObjects, on the instance a constructor is building. */
     virtual auto ExtraPointIds() const -> QVector<quint32> { return {}; }
 
+    /** @brief The curves an operation draws besides the copies of its sources.
+     *
+     *  The figure of a pleat cuts the edge its notch sits on, and the two halves are objects of its own. A curve is
+     *  drawn from the container exactly as a point is, by InitOperatedObject, so the base class only has to be told
+     *  which ones they are — and a layer names them like any other curve, by their own id. Empty for every other
+     *  operation. Called from InitOperatedObjects, on the instance a constructor is building. */
+    virtual auto ExtraCurveIds() const -> QVector<quint32> { return {}; }
+
     /** @brief The lines an operation draws besides the ones its sources carry, wired exactly like them: they
      *  are parented to the operation, so they go with it. Empty for every operation but the slash-and-spread. */
     virtual auto ExtraLineIds() const -> QVector<quint32> { return {}; }
+
+    /** @brief Whether the objects this operation draws of its own can be given their item without a full parse.
+     *
+     *  A full parse tears every tool and the container down, and an options dialog open at that moment is rejected
+     *  before it runs (see MainWindow::FullParseFile): an operation that can rebuild its own figure answers here,
+     *  and a change of that figure is then applied in place, the dialog still up. What it may claim is narrow —
+     *  the objects it parents itself, which nothing else registers and which no parse but a full one deletes. The
+     *  pleat answers for the points and the curves of its notches; the lines it draws answer no, since a line is a
+     *  tool of the pattern and only a full parse builds one. Empty answer for every other operation.
+     *
+     *  @a oldElement is the operation as the file holds it, @a newElement as it is about to hold it: reading the
+     *  two is how an operation tells what the change adds and what it takes away. */
+    virtual auto FigureFollowsLiteParse(const QDomElement &oldElement, const QDomElement &newElement) const -> bool
+    {
+        Q_UNUSED(oldElement)
+        Q_UNUSED(newElement)
+        return false;
+    }
 
     /** @brief The ids of the objects an operation draws besides its copies, read from ITS OWN element: the display
      *  of a slash-and-spread, the figure of a pleat. Only the operation knows which element carries them.

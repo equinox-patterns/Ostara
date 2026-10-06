@@ -248,3 +248,26 @@ auto VisOperation::CreateOriginObjects(int &iPoint, int &iCurve) -> QVector<QGra
 
     return originObjects;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+void VisOperation::HideOperatedObjects()
+{
+    for (int i = 0; i < m_points.size(); ++i)
+    {
+        m_points.at(i)->setVisible(false);
+    }
+
+    for (int i = 0; i < m_curves.size(); ++i)
+    {
+        m_curves.at(i)->setVisible(false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VisOperation::HideAttachedLines()
+{
+    for (int i = 0; i < m_lines.size(); ++i)
+    {
+        m_lines.at(i)->setVisible(false);
+    }
+}

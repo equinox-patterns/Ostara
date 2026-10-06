@@ -1507,10 +1507,15 @@ void VAbstractOperation::InitOperatedObjects()
         InitOperatedLine(line.result);
     }
 
-    // What the operation draws besides all that: the display of a slash-and-spread. The shape of a scene item is
-    // read from the container, so the base class can build these too: it only has to be told which objects they
-    // are, and the operation that invented them is the one that knows.
+    // What the operation draws besides all that: the display of a slash-and-spread, the notches of a pleat. The
+    // shape of a scene item is read from the container, so the base class can build these too: it only has to be
+    // told which objects they are, and the operation that invented them is the one that knows.
     for (const quint32 id : ExtraPointIds())
+    {
+        InitOperatedObject(id);
+    }
+
+    for (const quint32 id : ExtraCurveIds())
     {
         InitOperatedObject(id);
     }
@@ -1741,10 +1746,14 @@ void VAbstractOperation::ProcessOperationToolOptions(const QDomElement &oldDomEl
         return ids;
     };
     const bool createdObjectsChanged = (createdObjectIds(oldDomElement) != createdObjectIds(newDomElement));
-    const bool needsFullParse = sourceSetChanged || createdObjectsChanged;
+
+    // An operation that can give its own objects their item says so, and a change of that figure is then carried by
+    // a lite parse: a full one would take the options dialog the user is working in with it.
+    const bool liteCarriesFigure = createdObjectsChanged && FigureFollowsLiteParse(oldDomElement, newDomElement);
+    const bool needsFullParse = sourceSetChanged || (createdObjectsChanged && !liteCarriesFigure);
 
     // Check if there are any name changes
-    if (oldNames == newNames && !createdObjectsChanged)
+    if (oldNames == newNames && (!createdObjectsChanged || liteCarriesFigure))
     {
         VAbstractOperation::ApplyToolOptions(oldDomElement, newDomElement);
         return;

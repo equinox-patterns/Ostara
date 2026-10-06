@@ -29,6 +29,7 @@
 #define OPLEATDISPLAY_H
 
 #include <QDomElement>
+#include <QSet>
 #include <QString>
 #include <QVector>
 #include <QtGlobal>
@@ -78,6 +79,26 @@ struct OPleatCopy
 };
 
 /**
+ * @brief The notch of one end of one pleat: the point that marks it, and the two halves the edge is cut into.
+ *
+ * @a pleat is the index of the pleat among all the pleats of the operation, and @a end 0 for the first point of
+ * its departure line, 1 for the other: the plan numbers its notches the same way.
+ *
+ * @a point is the mark itself, carried by the operation. @a curve1 and @a curve2 are the two halves of the edge
+ * the notch cuts — the first the piece from that edge's start to the notch, the second the piece from the notch to
+ * its end — and both are NULL_ID when a line carries the edge, the notch being then a point and nothing else.
+ */
+struct OPleatNotchDisplay
+{
+    int pleat{0};
+    int end{0};
+    quint32 point{NULL_ID};
+    quint32 curve1{NULL_ID};
+    quint32 curve2{NULL_ID};
+    QString name{};
+};
+
+/**
  * @brief The figure of the pleats, as the operation and the file carry it.
  *
  * The lines are read by place — one per departure line, and one per pleat that line is taken on — and the marks
@@ -101,6 +122,9 @@ struct OPleatDisplay
     static const QString AttrPoint;
     static const QString AttrSide1;
     static const QString AttrSide2;
+    static const QString AttrNotch;
+    static const QString AttrCurve1;
+    static const QString AttrCurve2;
 
     bool show{true};
 
@@ -126,6 +150,10 @@ struct OPleatDisplay
 
     /** @brief One entry per cap the pleats draw, in the order of the plan. Empty for a disabled cap. */
     QVector<OPleatMarkDisplay> marks{};
+
+    /** @brief One entry per notch the pleats ask for, in the order of the plan. Empty for an end that asks for
+     *  none. */
+    QVector<OPleatNotchDisplay> notches{};
 
     /** @brief How many pleats one departure line is taken on: one, or two side by side. */
     static auto PleatCount(const OPleatDeparture &departure) -> int;
@@ -168,15 +196,28 @@ struct OPleatDisplay
     /** @brief Place the points of the figure: the copies of the departure lines, and the apex or the middle of
      *  every cap. The lines are built by the operation, which is the only one that can put an item in the scene. */
     static void Create(quint32 idTool, OPleatDisplay &display, const OPleatPlan &plan,
-                       const QVector<OPleatDeparture> &departures, VContainer *data);
+                       const QVector<OPleatDeparture> &departures, const QVector<SourceItem> &source,
+                       const QVector<DestinationItem> &destination, VContainer *data);
 
     /** @brief The ids of the points the display created, the ones the operation has to own: every copy it placed
      *  and every mark. A point of a departure line is not one of them, and neither is a copy the operation made
      *  by itself. */
     static auto PointImages(const OPleatDisplay &display, const VContainer *data) -> QVector<quint32>;
 
+    /** @brief The ids of the curves the display cut for its notches: the two halves of every edge a notch was
+     *  placed on. The operation owns them exactly as it owns the points of its figure, and a curve answers to its
+     *  own id in a layer. */
+    static auto CurveImages(const OPleatDisplay &display, const VContainer *data) -> QVector<quint32>;
+
     static void Save(VAbstractPattern *doc, QDomElement &tag, const OPleatDisplay &display);
     static auto Extract(const QDomElement &domElement) -> OPleatDisplay;
+
+    /** @brief The ids of the lines the figure an element holds is made of: the places of the departure lines, the
+     *  fold lines, and the two sides of every cap.
+     *
+     *  A line is a tool of the pattern, and only a full parse builds one — so this is what tells a change of the
+     *  figure a lite parse can carry from one it cannot (see VAbstractOperation::FigureFollowsLiteParse). */
+    static auto LineIds(const QDomElement &element) -> QSet<quint32>;
 };
 
 #endif // OPLEATDISPLAY_H

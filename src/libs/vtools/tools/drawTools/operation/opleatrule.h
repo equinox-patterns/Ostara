@@ -97,7 +97,8 @@ enum class OPleatFailure : int
     DegenerateValue, ///< a value is null or negative: there is no fabric to fold
     NoSide,          ///< nothing tells which side of a line is folded: all of it, or both of its sides
     UnresolvedEdge,  ///< an end has a cap but no edge to follow: the user has to designate one
-    EdgeAlongFold    ///< an edge runs along the fold line: it never meets it, so no cap can be built there
+    EdgeAlongFold,   ///< an edge runs along the fold line: it never meets it, so no cap can be built there
+    NotchOffEdge     ///< a notch falls past the end of the edge it should mark: the edge is shorter than the value
 };
 
 /** @brief One departure line of the operation: the pair of points the fold is taken on, the value it shows once
@@ -151,6 +152,34 @@ struct OPleatMark
 };
 
 /**
+ * @brief The notch of one end of one pleat: the mark the fitter reads on the piece's edge.
+ *
+ * Once the fabric is folded and laid down, the edge the fold was taken on comes back onto the piece's outline a
+ * value away from the line the pleat is measured on. That point is what a notch marks, so that the pleat can be
+ * laid the right way round and its depth checked — and it is the reason it is read per **sense**: the two senses
+ * send the folded edge to two different places, and each place has its own mark.
+ *
+ * The line the value is counted from is the one the sense designates — the pleat's own departure line when it
+ * follows the edge as drawn, its copy when it follows the edge the move carries. The value is then walked **along
+ * the piece's edge**, never along the move, and on the side the fold leaves free.
+ *
+ * @a point is where the notch stands in the pattern. @a edgeId is the curve the notch cuts when a curve carries
+ * the edge there — the cut is what makes the notch a point *of* that curve, and what lets the piece be built
+ * through it later — and NULL_ID when a plain segment carries it, the notch being then a point and nothing else.
+ * @a length is where the cut falls on that curve, measured from its start the way the cut tools measure it: a
+ * notch placed on an edge that runs towards the point is at its total length less the value.
+ */
+struct OPleatNotch
+{
+    int departure{0};
+    int pleat{0};
+    int end{0};
+    QPointF point{};
+    quint32 edgeId{NULL_ID};
+    qreal length{0.};
+};
+
+/**
  * @brief What the pleats do, as the rule resolves them.
  *
  * @a places holds one entry per departure line, **in the order the user gave them**, and @a marks the resolved
@@ -175,11 +204,18 @@ struct OPleatPlan
 
     QVector<OPleatMark> marks{};
 
+    /** @brief One entry per notch the pleats ask for, pleat after pleat and, in each pleat, first end then
+     *  second: a pleat the user left without a notch holds none. */
+    QVector<OPleatNotch> notches{};
+
     /** @brief What one object of the selection travels, or a null vector when no pleat takes it. */
     auto Move(quint32 objectId) const -> QPointF;
 
     /** @brief The mark of one end of one pleat, or nullptr when the plan holds none. */
     auto Mark(int pleat, int end) const -> const OPleatMark *;
+
+    /** @brief The notch of one end of one pleat, or nullptr when that end asks for none. */
+    auto Notch(int pleat, int end) const -> const OPleatNotch *;
 
     /** @brief Where one end of a departure line is, at one of the places that line is drawn at.
      *

@@ -559,6 +559,9 @@ void OToolSpread::SetVisualization()
         auto *visual = qobject_cast<OVisToolSpread *>(vis);
         SCASSERT(visual != nullptr)
 
+        // The spread is in the pattern: the objects it spread are drawn by the pattern itself, and the preview keeps
+        // their images only (see OVisToolSpread::SetInPattern).
+        visual->SetInPattern(true);
         visual->SetObjects(SourceToObjects(m_source));
 
         QVector<QPair<quint32, quint32>> lines;

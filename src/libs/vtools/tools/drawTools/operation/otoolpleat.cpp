@@ -48,6 +48,7 @@
 #include "../vmisc/literals.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vformula.h"
+#include "../vtoolline.h"
 #include "ooperationdestination.h"
 #include "ooperationlines.h"
 #include "opleatsupport.h"
@@ -72,6 +73,8 @@ const QString OToolPleat::AttrCap1Sense = QStringLiteral("cap1Sense");
 const QString OToolPleat::AttrCap2Sense = QStringLiteral("cap2Sense");
 const QString OToolPleat::AttrCap1Ref = QStringLiteral("cap1Ref");
 const QString OToolPleat::AttrCap2Ref = QStringLiteral("cap2Ref");
+const QString OToolPleat::AttrNotch1 = QStringLiteral("notch1");
+const QString OToolPleat::AttrNotch2 = QStringLiteral("notch2");
 const QString OToolPleat::AttrFoldLine = QStringLiteral("foldLine");
 
 namespace
@@ -157,6 +160,9 @@ auto DepartureOf(const QDomElement &item) -> OPleatDeparture
     departure.first.edgePointId = VAbstractPattern::GetParametrUInt(item, OToolPleat::AttrCap1Ref, NULL_ID_STR);
     departure.second.edgePointId = VAbstractPattern::GetParametrUInt(item, OToolPleat::AttrCap2Ref, NULL_ID_STR);
 
+    departure.first.showNotch = VAbstractPattern::GetParametrBool(item, OToolPleat::AttrNotch1, falseStr);
+    departure.second.showNotch = VAbstractPattern::GetParametrBool(item, OToolPleat::AttrNotch2, falseStr);
+
     return departure;
 }
 
@@ -169,7 +175,8 @@ void CreateDisplayObjects(OToolPleatInitData &initData, const OPleatPlan &plan)
 {
     OPleatDisplay::EnsureIds(initData.display, initData.departures, initData.foldLine, plan, initData.source,
                              initData.destination, initData.data);
-    OPleatDisplay::Create(initData.id, initData.display, plan, initData.departures, initData.data);
+    OPleatDisplay::Create(initData.id, initData.display, plan, initData.departures, initData.source,
+                          initData.destination, initData.data);
 
     if (plan.failure != OPleatFailure::None || not initData.display.show)
     {
@@ -259,7 +266,7 @@ auto SameDisplay(const OPleatDisplay &left, const OPleatDisplay &right) -> bool
     if (left.show != right.show || left.lineTypeLine != right.lineTypeLine || left.lineColor != right.lineColor
         || left.foldTypeLine != right.foldTypeLine || left.foldColor != right.foldColor
         || left.lines != right.lines || left.foldLines != right.foldLines || left.copies.size() != right.copies.size()
-        || left.marks.size() != right.marks.size())
+        || left.marks.size() != right.marks.size() || left.notches.size() != right.notches.size())
     {
         return false;
     }
@@ -280,6 +287,17 @@ auto SameDisplay(const OPleatDisplay &left, const OPleatDisplay &right) -> bool
         const OPleatMarkDisplay &one = left.marks.at(i);
         const OPleatMarkDisplay &other = right.marks.at(i);
         if (one.point != other.point || one.side1 != other.side1 || one.side2 != other.side2 || one.name != other.name)
+        {
+            return false;
+        }
+    }
+
+    for (int i = 0; i < left.notches.size(); ++i)
+    {
+        const OPleatNotchDisplay &one = left.notches.at(i);
+        const OPleatNotchDisplay &other = right.notches.at(i);
+        if (one.point != other.point || one.curve1 != other.curve1 || one.curve2 != other.curve2
+            || one.name != other.name)
         {
             return false;
         }
@@ -328,6 +346,7 @@ OToolPleat::OToolPleat(const OToolPleatInitData &initData, QGraphicsItem *parent
     m_display(initData.display)
 {
     InitOperatedObjects();
+    HideNotchHalves(); // the two halves a notch cuts exist for the piece to be built through, and stay unseen
     ToolCreation(initData.typeCreation);
 }
 
@@ -515,8 +534,15 @@ auto OToolPleat::Create(OToolPleatInitData &initData) -> OToolPleat *
     }
 
     // The points of the figure belong to the operation exactly as its copies do, and the graph is what makes them go
-    // with it: deleting the operation deletes what hangs from it, and nothing else names them.
+    // with it: deleting the operation deletes what hangs from it, and nothing else names them. The curves it cut for
+    // its notches answer the same way — they exist only through the figure, and have no element of their own.
     for (const quint32 id : OPleatDisplay::PointImages(initData.display, initData.data))
+    {
+        patternGraph->AddVertex(id, VNodeType::OBJECT, initData.doc->PatternBlockMapper()->GetActiveId());
+        patternGraph->AddEdge(initData.id, id);
+    }
+
+    for (const quint32 id : OPleatDisplay::CurveImages(initData.display, initData.data))
     {
         patternGraph->AddVertex(id, VNodeType::OBJECT, initData.doc->PatternBlockMapper()->GetActiveId());
         patternGraph->AddEdge(initData.id, id);
@@ -644,9 +670,53 @@ void OToolPleat::AttachFigureToLayer()
     }
 
     QVector<QPair<quint32, quint32>> objects;
-    for (const quint32 id : ExtraPointIds())
+
+    // What the operation creates besides its own figure: the copy of every object that travels. The same pair the
+    // base reads from <destination>, kept here for the copies a change has just made.
+    for (const DestinationItem &object : std::as_const(m_destination))
     {
-        objects.append(qMakePair(id, m_id));
+        if (object.id != NULL_ID)
+        {
+            objects.append(qMakePair(object.id, m_id));
+        }
+    }
+
+    // The ids are read of the figure itself, and never of the container: a pair is an id, exactly as a line's is,
+    // and a layer must already hold what a parse creates a moment later. Asking the container here is what used to
+    // leave a cap point or a notch outside every layer — the objects do not exist yet when the change is written.
+    for (const OPleatCopy &copy : std::as_const(m_display.copies))
+    {
+        if (copy.point != NULL_ID)
+        {
+            objects.append(qMakePair(copy.point, m_id));
+        }
+    }
+    for (const OPleatMarkDisplay &mark : std::as_const(m_display.marks))
+    {
+        if (mark.point != NULL_ID)
+        {
+            objects.append(qMakePair(mark.point, m_id));
+        }
+    }
+    for (const OPleatNotchDisplay &notch : std::as_const(m_display.notches))
+    {
+        if (notch.point != NULL_ID)
+        {
+            objects.append(qMakePair(notch.point, m_id));
+        }
+    }
+
+    for (const OPleatNotchDisplay &notch : std::as_const(m_display.notches))
+    {
+        // A curve answers to its own id, exactly as a line does: a layer hides it as a whole, and the tool that
+        // produced it is what makes it go away.
+        for (const quint32 id : {notch.curve1, notch.curve2})
+        {
+            if (id != NULL_ID)
+            {
+                objects.append(qMakePair(id, id));
+            }
+        }
     }
     for (const quint32 id : ExtraLineIds())
     {
@@ -654,6 +724,132 @@ void OToolPleat::AttachFigureToLayer()
     }
 
     doc->AddItemsToGroup(objects, active);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolPleat::SyncFigureItems() -> bool
+{
+    QSet<quint32> wanted; // the points and the curves the operation draws now
+    for (const DestinationItem &object : std::as_const(m_destination))
+    {
+        if (object.id != NULL_ID)
+        {
+            wanted.insert(object.id);
+        }
+    }
+    for (const quint32 id : ExtraPointIds())
+    {
+        wanted.insert(id);
+    }
+    for (const quint32 id : ExtraCurveIds())
+    {
+        wanted.insert(id);
+    }
+
+    for (auto it = operatedObjects.begin(); it != operatedObjects.end();)
+    {
+        if (qobject_cast<VToolLine *>(it.value()) != nullptr || wanted.contains(it.key()))
+        {
+            ++it; // a line is a tool of the pattern: only a full parse builds one, and only a full parse takes one
+            continue;
+        }
+
+        // The figure no longer holds it. The base has just refreshed it from the container, which still carries the
+        // object — a lite parse never empties it — so nothing but this call takes it off the canvas.
+        delete it.value();
+        it = operatedObjects.erase(it);
+    }
+
+    bool built = false;
+    const auto build = [this, &built](quint32 id)
+    {
+        if (id != NULL_ID && not operatedObjects.contains(id) && getData() != nullptr && getData()->HasObject(id))
+        {
+            InitOperatedObject(id);
+            built = true;
+        }
+    };
+
+    for (const DestinationItem &object : std::as_const(m_destination))
+    {
+        build(object.id);
+    }
+    for (const quint32 id : ExtraPointIds())
+    {
+        build(id);
+    }
+    for (const quint32 id : ExtraCurveIds())
+    {
+        build(id);
+    }
+
+    return built;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OToolPleat::FullUpdateFromFile()
+{
+    VAbstractOperation::FullUpdateFromFile();
+
+    // The figure the parse has made: an object the operation parents itself has no element of its own, so nothing
+    // but this call gives it an item — the constructor does it once, on the full parse, and a lite one goes here.
+    // The layer is only asked when an object was born: attaching what is already there would mark the pattern
+    // changed on every parse, an open of it included.
+    if (SyncFigureItems())
+    {
+        AttachFigureToLayer();
+    }
+
+    HideNotchHalves(); // the halves are there to be used, not to be seen: the edge still draws itself whole
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OToolPleat::HideNotchHalves()
+{
+    // The two halves of the edge a notch cuts are objects of the pattern — a piece is built through the notch, so
+    // they have to exist — and they are not what the pattern shows: the edge draws itself, whole, exactly as a cut
+    // leaves its parent curve alone while its two segments are turned off. Nothing else would take them off the
+    // canvas: a curve answers the layer as a whole (see VAbstractPattern::ParseGroups), and the eye of the layer
+    // the operation is in cannot reach an object that is no tool of its own.
+    for (const OPleatNotchDisplay &notch : std::as_const(m_display.notches))
+    {
+        for (const quint32 id : {notch.curve1, notch.curve2})
+        {
+            if (auto *item = qobject_cast<VSimpleCurve *>(operatedObjects.value(id, nullptr)); item != nullptr)
+            {
+                item->setVisible(false);
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolPleat::FigureFollowsLiteParse(const QDomElement &oldElement, const QDomElement &newElement) const -> bool
+{
+    // The lines of the figure — the places of the departure lines, the fold lines and the sides of the caps — are
+    // tools of the pattern: a full parse alone registers one, and the registry is rebuilt by every parse, so a line
+    // born on a lite one would be gone at the next. A change of them is therefore not the tool's to carry.
+    if (OPleatDisplay::LineIds(oldElement) != OPleatDisplay::LineIds(newElement))
+    {
+        return false;
+    }
+
+    // The copies of the objects that travel are the operation itself moving, and a change of them goes with a
+    // change of the objects that travel — the rest of the tool asks a full parse for that, and so does this.
+    const auto destinationIds = [](const QDomElement &element) -> QSet<quint32>
+    {
+        QSet<quint32> ids;
+        for (const DestinationItem &item : VAbstractOperation::ExtractDestinationData(element))
+        {
+            if (item.id != NULL_ID)
+            {
+                ids.insert(item.id);
+            }
+        }
+        return ids;
+    };
+
+    return destinationIds(oldElement) == destinationIds(newElement);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -699,6 +895,12 @@ void OToolPleat::SaveOptionsAndReparse(bool fullParse, const QString &commandTex
 auto OToolPleat::ExtraPointIds() const -> QVector<quint32>
 {
     return OPleatDisplay::PointImages(m_display, getData());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolPleat::ExtraCurveIds() const -> QVector<quint32>
+{
+    return OPleatDisplay::CurveImages(m_display, getData());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -751,7 +953,8 @@ auto OToolPleat::DisplayObjectIds(const QDomElement &domElement) const -> QSet<q
     {
         for (const QString &attribute :
              {OPleatDisplay::AttrLine, OPleatDisplay::AttrFoldLine, OPleatDisplay::AttrCopy, OPleatDisplay::AttrPoint,
-              OPleatDisplay::AttrSide1, OPleatDisplay::AttrSide2})
+              OPleatDisplay::AttrSide1, OPleatDisplay::AttrSide2, OPleatDisplay::AttrNotch,
+              OPleatDisplay::AttrCurve1, OPleatDisplay::AttrCurve2})
         {
             if (const quint32 id = item.attribute(attribute).toUInt(); id != NULL_ID)
             {
@@ -788,6 +991,9 @@ void OToolPleat::SetVisualization()
         auto *visual = qobject_cast<OVisToolPleat *>(vis);
         SCASSERT(visual != nullptr)
 
+        // The pleat is in the pattern: what its folds carried and what its figure is made of are drawn by the pattern
+        // itself, and the preview keeps the figure only (see OVisToolPleat::SetInPattern).
+        visual->SetInPattern(true);
         visual->SetObjects(SourceToObjects(m_source));
 
         QVector<QPair<quint32, quint32>> lines;
@@ -909,6 +1115,11 @@ void OToolPleat::SaveDepartures(VAbstractPattern *doc, QDomElement &tag,
         doc->SetAttribute(item, AttrCap2, departure.second.showCap);
         doc->SetAttribute(item, AttrCap1Sense, departure.first.secondSense ? 2 : 1);
         doc->SetAttribute(item, AttrCap2Sense, departure.second.secondSense ? 2 : 1);
+
+        // The notch of an end is what the fitter reads on the edge, and it is asked for per end: one may want the
+        // mark of the green point and not the red one.
+        doc->SetAttribute(item, AttrNotch1, departure.first.showNotch);
+        doc->SetAttribute(item, AttrNotch2, departure.second.showNotch);
 
         if (departure.first.edgePointId != NULL_ID)
         {

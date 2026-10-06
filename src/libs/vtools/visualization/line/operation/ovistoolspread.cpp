@@ -56,6 +56,12 @@ void OVisToolSpread::SetRotations(const QVector<quint32> &sourceIds, const QVect
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OVisToolSpread::SetInPattern(bool inPattern)
+{
+    m_inPattern = inPattern;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OVisToolSpread::RefreshGeometry()
 {
     if (Objects().isEmpty() && !HasPreviewLines())
@@ -67,16 +73,20 @@ void OVisToolSpread::RefreshGeometry()
     int iCurve = -1;
 
     const QVector<QGraphicsItem *> originObjects = CreateOriginObjects(iPoint, iCurve);
-    if (originObjects.isEmpty())
+
+    // The spread is in the pattern: the objects it spread stand there, drawn by the pattern, and the trace of their
+    // origin laid over them says nothing it does not already say (see SetInPattern). The images are drawn after this
+    // point and stay: they are what shows what the spread does while its dialog is open.
+    if (m_inPattern)
     {
-        RefreshPreviewLines(false);
-        return;
+        HideOperatedObjects();
     }
 
-    if (m_rotations.isEmpty())
+    if (originObjects.isEmpty() || m_rotations.isEmpty())
     {
-        // The chain is not picked yet: only the source side is drawn.
-        RefreshPreviewLines(false);
+        // Nothing to spread: the objects resolve to nothing, or the chain of rotations is not picked yet. Only the
+        // source side of the attached lines is drawn.
+        DrawAttachedLines();
         return;
     }
 
@@ -98,7 +108,20 @@ void OVisToolSpread::RefreshGeometry()
     CreateTransformedObjects(iPoint, iCurve, transform);
 
     // The spread images of the line endpoints are already drawn as points; the source lines stay as reference.
+    DrawAttachedLines();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OVisToolSpread::DrawAttachedLines()
+{
     RefreshPreviewLines(false);
+
+    // This draws the source side of every line attached to the spread, which is the trace of the origin of those lines
+    // too: where the pattern draws them itself, it goes away with the objects of the origin (see SetInPattern).
+    if (m_inPattern)
+    {
+        HideAttachedLines();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

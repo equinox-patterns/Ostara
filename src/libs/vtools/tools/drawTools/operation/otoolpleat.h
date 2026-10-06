@@ -103,6 +103,8 @@ public:
     static const QString AttrCap2Sense;
     static const QString AttrCap1Ref;
     static const QString AttrCap2Ref;
+    static const QString AttrNotch1;
+    static const QString AttrNotch2;
     static const QString AttrFoldLine;
 
     auto type() const -> int override { return Type; }
@@ -165,7 +167,18 @@ protected:
     void ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement) override;
 
     auto ExtraPointIds() const -> QVector<quint32> override;
+    auto ExtraCurveIds() const -> QVector<quint32> override;
     auto ExtraLineIds() const -> QVector<quint32> override;
+
+    auto FigureFollowsLiteParse(const QDomElement &oldElement, const QDomElement &newElement) const -> bool override;
+
+    /** @brief Give the figure the items of the objects the parse has just created, and take away those of the
+     *  objects it no longer holds.
+     *
+     *  A lite parse creates the objects of the figure in the container and never removes one — only a full parse
+     *  empties it — so the scene follows the *figure*, never what the container happens to hold: what the file no
+     *  longer names loses its item, and what it names gains one. */
+    void FullUpdateFromFile() override;
 
     auto DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32> override;
 
@@ -194,6 +207,23 @@ private:
      *  would belong to no layer at all, and the eye of every layer would leave it on the canvas. The ids are read
      *  from the figure itself, so the call does not depend on the file having been written yet. */
     void AttachFigureToLayer();
+
+    /** @brief Drop the items of the objects the figure no longer holds, and give one to the objects it holds now.
+     *
+     *  The two are one question — what the operation draws, read of its own figure — and the answer is what lets a
+     *  change of that figure be applied without a full parse (see FigureFollowsLiteParse). A line is never dropped
+     *  here: it is a tool of the pattern, which only a full parse builds and only a full parse takes away.
+     *
+     *  @return true when an object was given its item, false when the scene already showed the whole figure. */
+    auto SyncFigureItems() -> bool;
+
+    /** @brief Keep the two halves of every notch off the canvas.
+     *
+     *  They are objects of the pattern — a piece is built through the notch, so the edge has to be cut in two there —
+     *  and they are not what the pattern shows: the edge draws itself whole, exactly as a cut leaves its parent
+     *  curve alone while its segments are turned off. A curve answers the layer as a whole, so the eye of a layer
+     *  can never take them away: the operation takes them away itself, on every parse. */
+    void HideNotchHalves();
 
     /** @brief Write this tool's element as an option change does, and ask for the parse the change needs.
      *

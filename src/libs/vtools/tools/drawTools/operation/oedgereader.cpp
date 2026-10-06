@@ -140,6 +140,13 @@ auto TangentAtPath(const VAbstractCubicBezierPath &path, const QPointF &point) -
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief The dot product of two vectors: positive when they leave the same way, which is how a side is answered. */
+auto Dot(const QPointF &left, const QPointF &right) -> qreal
+{
+    return left.x() * right.x() + left.y() * right.y();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /** @brief The tangent of a curve at one of its two ends, or a null vector when @a point is not one of them.
  *
  *  A bezier curve stores the direction of each end as the handle leaving it, so the tangent is read exactly — and
@@ -287,6 +294,74 @@ auto DirectionFromCurves(const QPointF &position, const VContainer *data, quint3
     }
 
     return AgreedDirection(directions);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The tangent of a curve at one of its ends, oriented from the point **into** the curve.
+ *
+ *  @a TangentAt answers along the curve's travel, so at the start of a curve it points into it and at its end out of
+ *  it — and which of the two this point is would take, per type, the very casts the reader means to keep in one
+ *  place. The middle of the curve says it without any of that: a tangent turned towards a point further along the
+ *  curve is the one that goes into it. */
+auto InwardTangent(const QSharedPointer<VAbstractCurve> &curve, const QPointF &point) -> QPointF
+{
+    const QPointF tangent = TangentAt(curve, point);
+    if (tangent.isNull())
+    {
+        return {};
+    }
+
+    const QPointF middle = static_cast<QPointF>(curve->GetMidpoint());
+    return (Dot(tangent, middle - point) < 0.) ? -tangent : tangent;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The curves of the pattern that end at a point, each with the way that runs from the point into it.
+ *
+ *  With @a toolId, only what that very tool produced is read — the two halves a cut made of its parent, which is
+ *  what a notch has to cut in its turn. Without it, every curve is read, and only the position links one to the
+ *  point: a curve names nobody. */
+void CandidatesFromCurves(const QPointF &position, const VContainer *data, quint32 toolId,
+                          QVector<OEdgeCarrier> *candidates)
+{
+    const auto *objects = data->CalculationGObjects();
+    if (objects == nullptr)
+    {
+        return;
+    }
+
+    for (auto it = objects->constBegin(); it != objects->constEnd(); ++it)
+    {
+        const QSharedPointer<VGObject> &object = it.value();
+        if (object.isNull() || (toolId != NULL_ID && object->getIdObject() != toolId))
+        {
+            continue;
+        }
+
+        const QPointF inward = InwardTangent(qSharedPointerDynamicCast<VAbstractCurve>(object), position);
+        if (QLineF(QPointF(), inward).length() > kDirectionTolerance)
+        {
+            candidates->append({it.key(), inward});
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The candidate that leaves the point the way @a side points, or none.
+ *
+ *  At a cut both halves end at the point and leave it in opposite directions: the side is the only thing that tells
+ *  which of the two the notch is cut into. */
+auto ChosenCarrier(const QVector<OEdgeCarrier> &candidates, const QPointF &side) -> OEdgeCarrier
+{
+    for (const OEdgeCarrier &candidate : candidates)
+    {
+        if (Dot(candidate.inward, side) > 0.)
+        {
+            return candidate;
+        }
+    }
+
+    return {};
 }
 
 /** One block of the outline of a piece: a single point, or the samples of a curve. */
@@ -469,6 +544,77 @@ auto OEdgeReader::Direction(quint32 pointId, const VContainer *data) -> QPointF
     {
         // A point whose edge cannot be read is a point the user designates by hand — never an exception thrown
         // into a parse, which would refuse the whole pattern for a cap the pleat can do without.
+        return {};
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OEdgeReader::Carrier(quint32 pointId, const QPointF &side, const VContainer *data) -> OEdgeCarrier
+{
+    if (data == nullptr || not data->HasObject(pointId) || side.isNull())
+    {
+        return {};
+    }
+
+    try
+    {
+        const QSharedPointer<VGObject> object = data->GetGObject(pointId);
+        const QSharedPointer<VPointF> point = qSharedPointerDynamicCast<VPointF>(object);
+        if (point.isNull())
+        {
+            return {};
+        }
+
+        const quint32 sourceId = (object->getIdObject() != NULL_ID) ? object->getIdObject() : pointId;
+        const QPointF position = static_cast<QPointF>(*point);
+
+        // The contour of the piece, first, exactly as Direction reads it: it is the truth about the edge, and a
+        // curve that merely passes through the point must not be taken for the one the fold follows.
+        const QPointF contour = DirectionFromContour(position, data);
+
+        QVector<OEdgeCarrier> candidates;
+        CandidatesFromCurves(position, data, sourceId, &candidates);
+        if (candidates.isEmpty())
+        {
+            CandidatesFromCurves(position, data, NULL_ID, &candidates);
+        }
+
+        if (not contour.isNull())
+        {
+            // Only the curves that carry the very edge the contour describes: the others cross it or belong to
+            // another construction, and cutting one of them would mark a piece the fold never reaches.
+            QVector<OEdgeCarrier> carried;
+            for (const OEdgeCarrier &candidate : candidates)
+            {
+                if (SameLine(candidate.inward, contour))
+                {
+                    carried.append(candidate);
+                }
+            }
+            candidates = carried;        }
+
+        if (const OEdgeCarrier chosen = ChosenCarrier(candidates, side); chosen.objectId != NULL_ID)
+        {
+            return chosen;
+        }
+
+        // No curve carries that edge: what is left is a line — the contour of the piece, the straight filler that
+        // joins two of its nodes, or the segment the point's own tool draws through it. Only the way matters then,
+        // and the side is what fixes it.
+        const QPointF line = contour.isNull() ? DirectionFromSegments(sourceId, data) : contour;
+        const qreal length = QLineF(QPointF(), line).length();
+        if (length <= kDirectionTolerance)
+        {
+            return {};
+        }
+
+        const QPointF unit = line / length;
+        return {NULL_ID, (Dot(unit, side) > 0.) ? unit : -unit};
+    }
+    catch (const VException &) // NOLINT(bugprone-empty-catch)
+    {
+        // A point whose edge cannot be read is a point the user designates by hand — never an exception thrown
+        // into a parse, which would refuse the whole pattern for a notch the pleat can do without.
         return {};
     }
 }

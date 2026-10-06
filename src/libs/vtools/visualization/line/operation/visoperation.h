@@ -76,6 +76,17 @@ protected:
 
     auto CreateOriginObjects(int &iPoint, int &iCurve) -> QVector<QGraphicsItem *>;
 
+    /** @brief Hide every item the preview drew for the operated objects: each one where it stands, and, when they were
+     *  drawn, their images — nothing of what the operation carries is kept.
+     *
+     *  An operation the pattern already draws asks for it: the same objects shown a second time, in the two colours of
+     *  the preview, bury the drawing the user is reading. */
+    void HideOperatedObjects();
+
+    /** @brief Hide every item the preview drew for the attached lines, both sides of them. Same reason as
+     *  HideOperatedObjects(). */
+    void HideAttachedLines();
+
     /** @brief Image of a point under the transformation of the tool. One line per operation tool: a
      *  rotation, a translation, a reflection. The default keeps the point in place: an operation tool
      *  that cannot select lines yet never calls this, and one that can must override it. */

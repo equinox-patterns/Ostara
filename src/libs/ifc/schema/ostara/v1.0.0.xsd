@@ -412,16 +412,23 @@
                                       <xs:attribute name="cap2Sense" type="senseType"/>
                                       <xs:attribute name="cap1Ref" type="xs:unsignedInt"/>
                                       <xs:attribute name="cap2Ref" type="xs:unsignedInt"/>
+                                      <!-- The notch of an end: the mark the fitter reads on the piece's edge,
+                                           a value away from the line the sense measures the fold on. It is asked
+                                           for per end, and the place it falls on — and the two halves the edge
+                                           is cut into there — are recomputed on every parse. -->
+                                      <xs:attribute name="notch1" type="xs:boolean"/>
+                                      <xs:attribute name="notch2" type="xs:boolean"/>
                                     </xs:complexType>
                                   </xs:element>
                                 </xs:sequence>
                               </xs:complexType>
                             </xs:element>
                             <!-- The figure the pleats draw: the departure lines and the places the folds carried
-                                 them to, the fold lines, the copies the display places, and the caps. Every item
-                                 is read back by what it names: a line, a fold line, a copy — with the departure
-                                 line, the place and the end it belongs to, since a figure may hold several
-                                 departure lines — or a cap. -->
+                                 them to, the fold lines, the copies the display places, the caps, and the notches
+                                 with the two halves of the edge each one cuts. Every item is read back by what it
+                                 names: a line, a fold line, a copy — with the departure line, the place and the end
+                                 it belongs to, since a figure may hold several departure lines — a cap, or a
+                                 notch. -->
                             <xs:element name="pleatDisplay" minOccurs="0" maxOccurs="1">
                               <xs:complexType>
                                 <xs:sequence>
@@ -436,6 +443,11 @@
                                       <xs:attribute name="point" type="xs:unsignedInt"/>
                                       <xs:attribute name="side1" type="xs:unsignedInt"/>
                                       <xs:attribute name="side2" type="xs:unsignedInt"/>
+                                      <!-- A notch: the point that marks it, and the two halves the edge it sits
+                                           on is cut into. A notch a line carries has no halves. -->
+                                      <xs:attribute name="notch" type="xs:unsignedInt"/>
+                                      <xs:attribute name="curve1" type="xs:unsignedInt"/>
+                                      <xs:attribute name="curve2" type="xs:unsignedInt"/>
                                       <xs:attribute name="name" type="xs:string"/>
                                     </xs:complexType>
                                   </xs:element>
