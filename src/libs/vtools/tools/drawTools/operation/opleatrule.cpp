@@ -78,10 +78,51 @@ auto NormalOf(const OPleatDeparture &departure, OPleatSide side) -> QPointF
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/** @brief What the objects that travel are, around one departure line: how many lie beyond it, and how many behind.
+/** @brief Where one point of a departure line stands in the ordered selection, or -1 when it is not one of the
+ *  objects that travel: a file edited by hand is the only thing that can hold such a line. */
+auto IndexOf(const QVector<SourceItem> &source, quint32 pointId) -> int
+{
+    for (int index = 0; index < source.size(); ++index)
+    {
+        if (source.at(index).id == pointId)
+        {
+            return index;
+        }
+    }
+
+    return -1;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The run of the ordered selection a pleat takes: what lies between the two points of its departure line,
+ *  both included. An empty run is an empty vector, and the pleat then moves nothing. */
+auto RegionOf(const QVector<SourceItem> &source, const OPleatDeparture &departure) -> QVector<SourceItem>
+{
+    const int first = IndexOf(source, departure.first.pointId);
+    const int second = IndexOf(source, departure.second.pointId);
+    if (first < 0 || second < 0)
+    {
+        return {};
+    }
+
+    const int start = qMin(first, second);
+    const int last = qMax(first, second);
+
+    QVector<SourceItem> region;
+    region.reserve(last - start + 1);
+    for (int index = start; index <= last; ++index)
+    {
+        region.append(source.at(index));
+    }
+
+    return region;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief What the objects that travel are, around one line: how many lie beyond it, and how many behind.
  *
  *  The two sides are those of the line's own direction, exactly as SideOf reads them: @a beyond is the side of
- *  `(-u.y, u.x)`. A count on both sides says the selection straddles the line. */
+ *  `(-u.y, u.x)`. A count on both sides says the fabric straddles the line. */
 struct OPleatSides
 {
     int beyond{0};
@@ -89,7 +130,7 @@ struct OPleatSides
 };
 
 //---------------------------------------------------------------------------------------------------------------------
-auto SidesOf(quint32 firstId, quint32 secondId, const QVector<SourceItem> &source, const VContainer *data)
+auto SidesOf(const QVector<SourceItem> &region, quint32 firstId, quint32 secondId, const VContainer *data)
     -> OPleatSides
 {
     OPleatSides sides;
@@ -118,7 +159,7 @@ auto SidesOf(quint32 firstId, quint32 secondId, const QVector<SourceItem> &sourc
     const QPointF normal(-u.y(), u.x());
     const qreal tolerance = kDirectionTolerance * priseLength;
 
-    for (const SourceItem &item : source)
+    for (const SourceItem &item : region)
     {
         // The two points of the line lie on it: they carry no side, and they are not asked for one.
         if (item.id == firstId || item.id == secondId || !data->HasObject(item.id))
@@ -150,19 +191,12 @@ auto SidesOf(quint32 firstId, quint32 secondId, const QVector<SourceItem> &sourc
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto SidesOf(const OPleatDeparture &departure, const QVector<SourceItem> &source, const VContainer *data)
-    -> OPleatSides
-{
-    return SidesOf(departure.first.pointId, departure.second.pointId, source, data);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 /** @brief The answer the sides make: which way the fabric goes, or nothing when the line cannot tell. */
 auto AnswerOf(const OPleatSides &sides) -> OPleatSide
 {
     if (sides.beyond > 0 && sides.behind > 0)
     {
-        return OPleatSide::Undetermined; // the selection straddles the line: the pleat has no side
+        return OPleatSide::Undetermined; // the fabric straddles the line: the pleat has no side
     }
     if (sides.beyond > 0)
     {
@@ -177,45 +211,27 @@ auto AnswerOf(const OPleatSides &sides) -> OPleatSide
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/** @brief The direction the fabric goes, read of every departure line that can answer for it.
- *
- *  A line says which way the fabric goes when the objects that travel all lie on one side of it. A line the
- *  selection straddles — one with travelling fabric on both of its sides, which a line lying between two pleats
- *  always has — says nothing, and is passed over.
- *
- *  Several lines may answer, and they do not all answer the same way: a line the fabric has gone beyond asks for
- *  the fabric to travel further, while a line the travelling objects lie *behind* — the inner line of two folds
- *  taken on the same band of fabric — asks for the opposite. The line the objects have gone the furthest beyond is
- *  the one that answers: it is the outermost line, the one the fabric leaves, and the pleats then all fold the same
- *  way, whether the fabric that travels goes past one line or past both.
- *
- *  A null vector means no line could answer, and the tool then refuses rather than folding a pleat the wrong way. */
-auto ReferenceNormal(const QVector<OPleatDeparture> &departures, const QVector<SourceItem> &source,
-                     const VContainer *data) -> QPointF
+/** @brief Which way the fabric of a region goes, read of that region, and of the whole selection when the region
+ *  cannot answer for itself — an empty region, or one whose objects all lie on the line. */
+auto SideOfRegion(const QVector<SourceItem> &region, const QVector<SourceItem> &source,
+                  const OPleatDeparture &departure, const VContainer *data) -> OPleatSide
 {
-    QPointF found{};
-    int best = -1;
-
-    for (const OPleatDeparture &departure : departures)
+    const OPleatSide answer =
+        AnswerOf(SidesOf(region, departure.first.pointId, departure.second.pointId, data));
+    if (answer != OPleatSide::Undetermined)
     {
-        const OPleatSides sides = SidesOf(departure, source, data);
-        const OPleatSide side = AnswerOf(sides);
-        if (side == OPleatSide::Undetermined)
-        {
-            continue;
-        }
-
-        const int beyond = qMax(sides.beyond, sides.behind);
-        if (beyond > best)
-        {
-            best = beyond;
-            found = NormalOf(departure, side);
-        }
+        return answer;
     }
 
-    return found;
+    return AnswerOf(SidesOf(source, departure.first.pointId, departure.second.pointId, data));
 }
 } // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPleatPlan::Move(quint32 objectId) const -> QPointF
+{
+    return moves.value(objectId, QPointF());
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OPleatPlan::Mark(int pleat, int end) const -> const OPleatMark *
@@ -232,28 +248,19 @@ auto OPleatPlan::Mark(int pleat, int end) const -> const OPleatMark *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPleatPlan::Move(const QPointF &point) const -> QPointF
-{
-    QPointF move{};
-
-    for (const OPleatPlace &place : places)
-    {
-        // On the line, or beyond it: the fabric the fold takes is the one that travels, and the line itself
-        // belongs to it — folding carries the departure line onto its own copy.
-        if (Dot(point - place.origin, place.normal) >= -place.tolerance)
-        {
-            move += place.step * place.pleats;
-        }
-    }
-
-    return move;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OPleatPlan::Place(const QPointF &prisePoint, int departure, int line) const -> QPointF
+auto OPleatPlan::Place(const OPleatEnd &prise, int departure, int line) const -> QPointF
 {
     const OPleatPlace place = places.value(departure, OPleatPlace{});
-    return prisePoint + place.carry + place.step * line;
+
+    // What the pleats took this point with: its own pleat is the line itself, and is added place by place.
+    QPointF carried = moves.value(prise.pointId, QPointF());
+    const int index = static_cast<int>(sources.indexOf(prise.pointId));
+    if (place.start >= 0 && index >= place.start && index <= place.last)
+    {
+        carried -= place.step * place.pleats;
+    }
+
+    return prise.position + carried + place.step * line;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -269,10 +276,10 @@ auto OPleatPlan::PleatCount() const -> int
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPleatRule::SideOf(const QVector<SourceItem> &source, quint32 firstId, quint32 secondId,
+auto OPleatRule::SideOf(const QVector<SourceItem> &region, quint32 firstId, quint32 secondId,
                         const VContainer *data) -> OPleatSide
 {
-    return AnswerOf(SidesOf(firstId, secondId, source, data));
+    return AnswerOf(SidesOf(region, firstId, secondId, data));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -308,57 +315,38 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
         }
     }
 
-    // Which way the fabric goes, read of the departure lines that can answer for it. Every line then keeps its own
-    // direction — a pleat takes the fabric beyond its own line and moves it along its own normal — and the reference
-    // is what turns each of them towards the half-plane the operation folds into.
-    const QPointF reference = ReferenceNormal(departures, source, data);
-    if (reference.isNull())
+    plan.sources.reserve(source.size());
+    for (const SourceItem &item : source)
     {
-        plan.failure = OPleatFailure::NoSide;
-        return plan;
+        plan.sources.append(item.id);
     }
 
-    // What each line is worth, and how it is folded: one pass, since a line's carry depends on the others' steps.
+    // The region of each departure line, and the side its fabric is on: what the pleat takes is the run of the
+    // ordered selection between the two points of its line, never a stretch of geometry.
     plan.places.resize(departures.size());
     for (int index = 0; index < departures.size(); ++index)
     {
         const OPleatDeparture &departure = departures.at(index);
         OPleatPlace &place = plan.places[index];
 
-        const QPointF first = NormalOf(departure, OPleatSide::First);
-        const OPleatSide side = (Dot(first, reference) > 0.) ? OPleatSide::First : OPleatSide::Second;
+        const QVector<SourceItem> region = RegionOf(source, departure);
+        place.start = region.isEmpty() ? -1 : IndexOf(source, region.constFirst().id);
+        place.last = region.isEmpty() ? -1 : place.start + static_cast<int>(region.size()) - 1;
 
-        place.origin = departure.first.position;
+        const OPleatSide side = SideOfRegion(region, source, departure, data);
+        if (side == OPleatSide::Undetermined)
+        {
+            plan.failure = OPleatFailure::NoSide;
+            return plan;
+        }
+
         place.normal = NormalOf(departure, side);
         place.step = place.normal * (2. * values.at(index)); // one pleat takes twice the value it shows
         place.pleats = (departure.kind == OPleatKind::Double) ? 2 : 1;
-        place.tolerance = kDirectionTolerance * QLineF(departure.first.position, departure.second.position).length();
-    }
-
-    // How far each departure line has been carried: by every other pleat whose line it lies beyond, wherever that
-    // line runs. A pleat takes the fabric beyond its line, so a line lying beyond another one travels with it — the
-    // answer is read from the geometry, never from the order the user clicked the lines in.
-    for (int index = 0; index < departures.size(); ++index)
-    {
-        const QPointF origin = departures.at(index).first.position;
-
-        for (int other = 0; other < departures.size(); ++other)
-        {
-            if (other == index)
-            {
-                continue; // a line does not carry itself, and two lines drawn on top of each other carry nothing
-            }
-
-            const OPleatPlace &carrier = plan.places.at(other);
-            if (Dot(origin - carrier.origin, carrier.normal) > carrier.tolerance)
-            {
-                plan.places[index].carry += carrier.step * carrier.pleats;
-            }
-        }
     }
 
     // The pleats are numbered in the order the user gave their lines, which is the order the figure holds them
-    // in: how they are folded is another question, and the carries above are the only place it is answered.
+    // in: which objects they take is another question, and the regions above are the only place it is answered.
     int pleat = 0;
     for (OPleatPlace &place : plan.places)
     {
@@ -366,18 +354,35 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
         pleat += place.pleats;
     }
 
+    // What each object of the selection travels: the sum of the pleats whose region holds it, and nothing when
+    // no region does. Every object answers for itself, so the two portions of a cut curve each travel with the
+    // pleats that took them — which is what "respecting the portions" means.
+    for (int index = 0; index < source.size(); ++index)
+    {
+        QPointF move;
+
+        for (const OPleatPlace &place : std::as_const(plan.places))
+        {
+            if (place.start >= 0 && index >= place.start && index <= place.last)
+            {
+                move += place.step * place.pleats;
+            }
+        }
+
+        plan.moves.insert(source.at(index).id, move);
+    }
+
     for (int departure = 0; departure < departures.size(); ++departure)
     {
         const OPleatDeparture &line = departures.at(departure);
         const OPleatPlace &place = plan.places.at(departure);
-
         const QPointF u = DirectionOf(line);
 
         for (int rank = 0; rank < place.pleats; ++rank)
         {
-            const QPointF shift = place.carry + place.step * rank; // where this pleat starts, in the fabric
-            const QPointF centre0 = line.first.position + shift + place.step / 2.;
-            const QPointF centre1 = line.second.position + shift + place.step / 2.;
+            const QPointF shift = place.step / 2.; // the fold line, half a step beyond the place it belongs to
+            const QPointF centre0 = plan.Place(line.first, departure, rank) + shift;
+            const QPointF centre1 = plan.Place(line.second, departure, rank) + shift;
             // The cap rule builds its axis from a point of the fold line and the middle of the opening; the
             // middle of the fold line itself is the point that is never confounded with either end.
             const QPointF apex = (centre0 + centre1) / 2.;
@@ -396,8 +401,8 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                 mark.end = end;
                 mark.point = (end == 0) ? centre0 : centre1;
 
-                const QPointF origin = edge.position + shift; // the line, for this pleat
-                const QPointF copy = origin + place.step;     // and its copy, where the fabric arrives
+                const QPointF origin = plan.Place(edge, departure, rank); // the line, for this pleat
+                const QPointF copy = origin + place.step;                 // and its copy, where the fabric arrives
 
                 const qreal directionLength = QLineF(QPointF(), edge.edgeDirection).length();
                 if (directionLength < kDirectionTolerance)

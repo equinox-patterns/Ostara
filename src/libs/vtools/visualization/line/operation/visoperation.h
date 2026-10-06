@@ -81,6 +81,17 @@ protected:
      *  that cannot select lines yet never calls this, and one that can must override it. */
     virtual auto PointImage(const QPointF &point) const -> QPointF { Q_UNUSED(point) return point; }
 
+    /** @brief Image of a point under the transformation of the tool, asked by the object it is.
+     *
+     *  An operation that moves whole objects — a pleat, which takes the objects a region holds — cannot answer
+     *  from a place: two objects of the same place do not travel the same distance. The default hands the place
+     *  over to PointImage, which is what every operation that reads a place answers. */
+    virtual auto PointImage(quint32 id, const QPointF &point) const -> QPointF
+    {
+        Q_UNUSED(id)
+        return PointImage(point);
+    }
+
     /** @brief True when the point has an image without being in the object list: either the transformation
      *  leaves it in place (rotation centre, mirror axis points), or it maps it onto another point (the merge
      *  point of a transfer, whose image is the anchor). Either way a line anchored on it is transformed. */

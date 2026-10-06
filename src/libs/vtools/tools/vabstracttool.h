@@ -220,6 +220,27 @@ protected:
     /// ToolCreation, for interface-created objects only — never when a file is read back.
     void AttachToActiveLayer();
 
+    /** @brief The objects of the tool's own element a layer must leave where they are.
+     *
+     *  A tool may be built ON some of the objects it was given — the departure line of a first pleat is the fold the
+     *  whole pleat is taken on — and hiding those with the originals would take away what the tool draws with. The
+     *  tool that knows says it here; the answer travels with the creation of the layer, whenever that happens. */
+    virtual auto KeptInPlace() const -> QSet<quint32> { return {}; }
+
+    /** @brief The objects the tool owns that its own element does not name — the figure an operation draws, which
+     *  is written in an element of its own, and whose ids only the tool knows.
+     *
+     *  A layer names its objects by id, and what a tool produces is read from its element when it is created
+     *  (see AttachToActiveLayer). The base cannot know which element a figure of a given operation is written in,
+     *  so it asks the tool. The pairs follow the same contract as everywhere: a point answers to the tool that owns
+     *  it, a line and a curve to their own id. */
+    virtual auto ExtraLayerableObjects(const QDomElement &toolElement) const
+        -> QVector<QPair<quint32, quint32>>
+    {
+        Q_UNUSED(toolElement)
+        return {};
+    }
+
     static auto AddSANode(VAbstractPattern *doc, const QString &tagName, const VPieceNode &node) -> QDomElement;
     static void AddNode(VAbstractPattern *doc, QDomElement &domElement, const VPieceNode &node);
 

@@ -148,6 +148,10 @@ public:
      *  for it: the departure lines are pairs of points, and the dock has no editor for one. */
     void OpenOptionsDialog();
 
+    /** @brief The departure line of the first pleat is the fold the whole operation is taken on: a layer must leave
+     *  its two points where they are, whenever the layer is created. */
+    auto KeptInPlace() const -> QSet<quint32> override;
+
 protected slots:
     void ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id = NULL_ID) override;
 
@@ -182,6 +186,14 @@ private:
 
     /** @brief Give the display the ids its objects still miss: its points, its lines and its caps. */
     void SyncDisplay(const QVector<SourceItem> &source);
+
+    /** @brief Put the objects of the figure in the active layer.
+     *
+     *  A layer names its objects by id, and what a tool produces is attached to one when it is created — but a
+     *  figure the operation draws *afterwards* (a pleat added, a fold line turned on, a cap that became oblique)
+     *  would belong to no layer at all, and the eye of every layer would leave it on the canvas. The ids are read
+     *  from the figure itself, so the call does not depend on the file having been written yet. */
+    void AttachFigureToLayer();
 
     /** @brief Write this tool's element as an option change does, and ask for the parse the change needs.
      *

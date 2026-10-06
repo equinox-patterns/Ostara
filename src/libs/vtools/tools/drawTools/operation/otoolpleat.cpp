@@ -390,6 +390,17 @@ auto OToolPleat::SyncDestination(const QVector<SourceItem> &source) -> QVector<D
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OToolPleat::KeptInPlace() const -> QSet<quint32>
+{
+    if (m_departures.isEmpty())
+    {
+        return {};
+    }
+
+    return {m_departures.constFirst().first.pointId, m_departures.constFirst().second.pointId};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OToolPleat::SetDialog()
 {
     SCASSERT(not m_dialog.isNull())
@@ -457,6 +468,8 @@ auto OToolPleat::Create(OToolPleatInitData &initData) -> OToolPleat *
     // The departure line of the first pleat is the fold the whole operation is taken on: it is part of what the tool
     // builds, and the layer must leave the two points where they are. The other lines are given flat, and the fabric
     // they belong to travels: they go with the objects that do.
+    // The departure line of the first pleat is the fold the whole operation is taken on: the layer must leave its
+    // two points where they are (see KeptInPlace, which answers the same for a layer made after the tool exists).
     if (initData.typeCreation == Source::FromGui && not initData.departures.isEmpty())
     {
         initData.keptInPlace.insert(initData.departures.constFirst().first.pointId);
@@ -617,6 +630,33 @@ void OToolPleat::SyncDisplay(const QVector<SourceItem> &source)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OToolPleat::AttachFigureToLayer()
+{
+    if (doc == nullptr)
+    {
+        return;
+    }
+
+    const quint32 active = doc->GetActiveGroup();
+    if (active == NULL_ID)
+    {
+        return; // the piece has no layer at all: nothing to draw into yet
+    }
+
+    QVector<QPair<quint32, quint32>> objects;
+    for (const quint32 id : ExtraPointIds())
+    {
+        objects.append(qMakePair(id, m_id));
+    }
+    for (const quint32 id : ExtraLineIds())
+    {
+        objects.append(qMakePair(id, id));
+    }
+
+    doc->AddItemsToGroup(objects, active);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OToolPleat::SaveOptionsAndReparse(bool fullParse, const QString &commandText)
 {
     QDomElement const oldDomElement = doc->FindElementById(m_id, getTagName());
@@ -628,6 +668,7 @@ void OToolPleat::SaveOptionsAndReparse(bool fullParse, const QString &commandTex
     // The figure follows the options, so its objects have to be given their ids before the file is written: the parse
     // that rebuilds them reads the ids from here.
     SyncDisplay(m_source);
+    AttachFigureToLayer(); // the objects the change has just created belong to the active layer, like every object
 
     QSharedPointer<VGObject> obj = VContainer::GetFakeGObject(m_id);
     QDomElement newDomElement = oldDomElement.cloneNode().toElement();
@@ -791,6 +832,8 @@ void OToolPleat::SaveDialog(QDomElement &domElement)
     m_lines = OOperationLines::SyncLines(getData(), m_lines, dialogTool->GetLineSources());
 
     SaveSourceDestination(domElement, source, destination);
+
+    AttachFigureToLayer(); // a pleat added, a cap that became oblique: what the figure now holds enters the layer
 
     SavePleat(domElement);
 

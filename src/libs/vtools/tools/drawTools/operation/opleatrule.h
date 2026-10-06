@@ -7,20 +7,23 @@
  **  @brief  The rule of a pleat: how much fabric each fold takes, where its fold line runs, and where the
  **          piece's edge has to be cut for the fold to close.
  **
- **          A pleat is fabric folded back on itself. The user gives the departure lines — the lines the pleats
- **          are taken on, each of them a pair of points — the value each one shows once folded, and the objects
- **          that travel. The rule derives the rest:
+ **          A pleat is fabric folded back on itself. The user gives the objects that travel, in the order of the
+ **          contour, then the departure lines — the lines the pleats are taken on, each of them a pair of points
+ **          of that selection — each with the value it shows once folded. The rule derives the rest:
  **
- **          - the move: twice each value, perpendicular to the departure lines, on the side the objects that
- **            travel are on. It is never typed by the user, and that is the whole point: a move that is not
+ **          - the region of a pleat: the run of the ordered selection that lies **between the two points of its
+ **            departure line**, both included. That is what the pleat takes, exactly as a slash-and-spread takes
+ **            the run between the start and the pivot of a cut, and it is why the order of the clicks is the
+ **            contract: an object lies in a region or it does not.
+ **          - the move: twice the value, perpendicular to the departure line, on the side the fabric of that
+ **            region is on. It is never typed by the user, and that is the whole point: a move that is not
  **            perpendicular to the departure line does not send that line back onto its own copy, and the fold
- **            then closes on a mismatch measured in tenths of a millimetre. This rule exists to make that
- **            impossible.
- **          - how far each departure line has been carried: a pleat takes the fabric beyond its line and moves
- **            it, so a second line lying beyond the first one travels with it. The carry is read from the
- **            geometry — where the lines lie along the normal — and never from the order of the clicks.
- **          - the fold line of each pleat: its departure line, carried and translated by half a step, which is
- **            also the perpendicular bisector of every point of that line and its copy.
+ **            then closes on a mismatch measured in tenths of a millimetre.
+ **          - where each departure line has been carried: its two points are objects of the selection like any
+ **            other, so they travel with the pleats whose region holds them, and the line is then folded where it
+ **            arrived. Nothing is deduced from the geometry — only from the regions.
+ **          - the fold line of each pleat: its departure line, carried, translated by half a step, which is also
+ **            the perpendicular bisector of every point of that line and its copy.
  **          - the centre of each end: the middle of the point and its copy. It lies on the piece's edge when
  **            that edge is parallel to the move, and it is then the whole mark.
  **          - the cap of each end: the V whose apex is where the piece's edge crosses the fold line, drawn
@@ -56,6 +59,7 @@
 #ifndef OPLEATRULE_H
 #define OPLEATRULE_H
 
+#include <QHash>
 #include <QPointF>
 #include <QString>
 #include <QVector>
@@ -73,7 +77,7 @@ enum class OPleatKind : int
     Double = 2
 };
 
-/** @brief The side of the departure line a pleat is built on: the side the objects that travel are on.
+/** @brief The side of the departure line a pleat is built on: the side the fabric of its region is on.
  *
  *  The two values are the two orientations of the departure line's normal: @a First is the side of the vector
  *  `(-u.y, u.x)`, built on that line's own direction `u`. @a SideOf answers in those terms, and @a Compose
@@ -91,7 +95,7 @@ enum class OPleatFailure : int
     None = 0,
     DegeneratePrise, ///< a departure line is degenerate: its two points are the same point
     DegenerateValue, ///< a value is null or negative: there is no fabric to fold
-    NoSide,          ///< nothing tells which side of the lines is folded: all of it, or both of its sides
+    NoSide,          ///< nothing tells which side of a line is folded: all of it, or both of its sides
     UnresolvedEdge,  ///< an end has a cap but no edge to follow: the user has to designate one
     EdgeAlongFold    ///< an edge runs along the fold line: it never meets it, so no cap can be built there
 };
@@ -99,8 +103,9 @@ enum class OPleatFailure : int
 /** @brief One departure line of the operation: the pair of points the fold is taken on, the value it shows once
  *  folded, and whether it is one fold or two side by side.
  *
- *  The line is given **flat**, as the user drew it, and its points are the ones the edge of the piece is read
- *  at: what the pleats before it do to that line is the rule's business, never the user's (see OPleatPlace). */
+ *  The two points are **of the ordered selection**, and they are the bounds of the pleat's region: what the rule
+ *  takes is the run of objects that lies between them. The line itself is given as the user drew it, and it is
+ *  then carried by the pleats whose region holds its points (see OPleatPlace). */
 struct OPleatDeparture
 {
     OPleatEnd first{};
@@ -111,27 +116,21 @@ struct OPleatDeparture
 
 /** @brief Where one departure line is folded, and what one of its pleats takes.
  *
- *  Every distance is a vector, and every line keeps its own direction: a pleat takes the fabric beyond **its** line
- *  and moves it along **its** normal, and two translations compose whatever their directions — the departure lines
- *  of one operation therefore have no reason to be parallel, and a modéliste may take two pleats along two different
- *  axes. What a line has in common with the others is only the half-plane the fabric goes to, which is what orients
- *  its normal (see @a normal).
+ *  @a start and @a last are the bounds of the **region**: the run of the ordered selection this pleat takes, the
+ *  two points of the departure line included. An empty region — a line whose points are not in the selection,
+ *  which only a file edited by hand can hold — is marked by a negative @a start, and the pleat then moves nothing.
  *
- *  @a carry is what the pleats taken on the OTHER lines did to this one before its own fold: a line lying beyond
- *  another one travels with it, and it is then folded where it arrived. @a step is one pleat of this line, twice its
- *  value, along @a normal. @a tolerance is how close to the line a point still counts as lying on it.
- *
- *  @a firstPleat is the index of the departure's first pleat among all the pleats of the operation, which is what
- *  the marks and the fold lines are numbered by. */
+ *  @a normal is the unit normal of the departure line, oriented towards the fabric of that region, and @a step is
+ *  one pleat of the line: twice its value, along @a normal. @a firstPleat is the index of its first pleat among
+ *  all the pleats of the operation, which is what the marks and the fold lines are numbered by. */
 struct OPleatPlace
 {
-    QPointF origin{};
     QPointF normal{};
-    QPointF carry{};
     QPointF step{};
     int pleats{1};
     int firstPleat{0};
-    qreal tolerance{0.};
+    int start{-1};
+    int last{-1};
 };
 
 /**
@@ -156,32 +155,38 @@ struct OPleatMark
  *
  * @a places holds one entry per departure line, **in the order the user gave them**, and @a marks the resolved
  * ends, pleat after pleat and, in each pleat, first end then second: the fold line of a pleat joins its two
- * marks. Every distance is a vector, and a move is read by asking the plan (see Move).
+ * marks.
+ *
+ * @a moves is what every object of the selection travels: the sum of the steps of the pleats whose region holds
+ * it, keyed by the object's own id. An object in no region — outside every pair — does not travel at all. Two
+ * pleats taken on two different lines compose as any two translations do, and the order of the departure lines
+ * changes nothing.
  */
 struct OPleatPlan
 {
     OPleatFailure failure{OPleatFailure::None};
     QVector<OPleatPlace> places{};
+
+    /** The ordered selection the rule read, which is what tells where a region begins and ends. */
+    QVector<quint32> sources{};
+
+    /** What each object of the selection travels, by its own id. */
+    QHash<quint32, QPointF> moves{};
+
     QVector<OPleatMark> marks{};
+
+    /** @brief What one object of the selection travels, or a null vector when no pleat takes it. */
+    auto Move(quint32 objectId) const -> QPointF;
 
     /** @brief The mark of one end of one pleat, or nullptr when the plan holds none. */
     auto Mark(int pleat, int end) const -> const OPleatMark *;
 
-    /** @brief Where a point of the pattern lands: the sum of the pleats that point lies on or beyond.
+    /** @brief Where one end of a departure line is, at one of the places that line is drawn at.
      *
-     *  A point on a departure line belongs to the fabric that travels — the fold carries the line itself onto
-     *  its own copy — so it is carried by that pleat as well, and the edge of the tolerance is what says a
-     *  point drawn on the line is on it.
-     *
-     *  The steps are vectors, so the sum is a vector: two pleats taken along two different axes compose as any two
-     *  translations do, and the order they were given in changes nothing. */
-    auto Move(const QPointF &point) const -> QPointF;
-
-    /** @brief Where one end of a departure line is, once the pleats before it have carried it.
-     *
-     *  @a line is 0 for the line as the user drew it, 1 for its first copy, and so on: a pleat of that
-     *  departure is laid between two consecutive places. */
-    auto Place(const QPointF &prisePoint, int departure, int line) const -> QPointF;
+     *  @a line is 0 for the line once the pleats before it have carried it, 1 for its first copy, and so on: a
+     *  pleat of that departure is laid between two consecutive places. The answer is the carried point of the
+     *  line — what the other pleats did to it — plus its own step, one place at a time. */
+    auto Place(const OPleatEnd &prise, int departure, int line) const -> QPointF;
 
     /** @brief How many pleats the operation holds: one per simple departure, two per double one. */
     auto PleatCount() const -> int;
@@ -195,20 +200,22 @@ struct OPleatPlan
 class OPleatRule
 {
 public:
-    /** @brief The side of a departure line the objects that travel are on.
+    /** @brief The side of a departure line the fabric of a region is on.
      *
      *  Only the sources that are points are read, and the two points of the line are left out: they lie on the
-     *  line, so they carry no side. Sources on both sides — or none of them on either side — leave the side
-     *  undetermined, and the tool then refuses rather than folding a pleat the wrong way. */
-    static auto SideOf(const QVector<SourceItem> &source, quint32 firstId, quint32 secondId,
+     *  line, so they carry no side. Fabric on both sides — or none of it on either side — leaves the side
+     *  undetermined, and the tool then refuses rather than folding a pleat the wrong way.
+     *
+     *  @a region is what is read, and it is the run of the ordered selection the pleat takes (see OPleatPlace). */
+    static auto SideOf(const QVector<SourceItem> &region, quint32 firstId, quint32 secondId,
                        const VContainer *data) -> OPleatSide;
 
-    /** @brief The plan of the pleats: how far each line was carried, and the mark of each end of each pleat.
+    /** @brief The plan of the pleats: the region of each one, and what every object travels.
      *
      *  @a values holds the value of each departure line, in pixels and in the same order as @a departures; the
-     *  caller evaluates the formulas, since a formula is the tool's business and not the rule's. The side is
-     *  read here, of every departure line that can answer for it, so that a line the selection straddles says
-     *  nothing instead of refusing the whole operation. */
+     *  caller evaluates the formulas, since a formula is the tool's business and not the rule's. @a source is the
+     *  ordered selection: its order is the contract, and the region of a pleat is the run that lies between the
+     *  two points of its line. */
     static auto Compose(const QVector<OPleatDeparture> &departures, const QVector<qreal> &values,
                         const QVector<SourceItem> &source, const VContainer *data) -> OPleatPlan;
 

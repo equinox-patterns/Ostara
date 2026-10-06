@@ -121,8 +121,8 @@ void VisOperation::RefreshPreviewLines(bool drawImages)
 
         if (drawImages && firstHasImage && secondHasImage)
         {
-            const QPointF first = PointImage(firstPoint);
-            const QPointF second = PointImage(secondPoint);
+            const QPointF first = PointImage(attached.first, firstPoint);
+            const QPointF second = PointImage(attached.second, secondPoint);
             DrawLine(image, QLineF(first, second), Qt::SolidLine);
         }
         else

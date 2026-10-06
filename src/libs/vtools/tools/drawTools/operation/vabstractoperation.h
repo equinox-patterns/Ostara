@@ -258,6 +258,9 @@ protected:
      *  The test that decides between a lite and a full parse needs them (see ProcessOperationToolOptions): turning
      *  a cap off, or the display of the rotations on, takes objects away or brings them back, and nothing else in
      *  the element says so. Empty for an operation that draws nothing of its own. */
+    auto ExtraLayerableObjects(const QDomElement &toolElement) const
+        -> QVector<QPair<quint32, quint32>> override;
+
     virtual auto DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32>
     {
         Q_UNUSED(domElement)

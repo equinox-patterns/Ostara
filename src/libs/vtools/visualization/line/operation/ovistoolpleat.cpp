@@ -161,11 +161,11 @@ void OVisToolPleat::RefreshGeometry()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OVisToolPleat::PointImage(const QPointF &point) const -> QPointF
+auto OVisToolPleat::PointImage(quint32 id, const QPointF &point) const -> QPointF
 {
-    // A pleat takes the fabric that lies beyond each of its departure lines, so two points of the selection do not
-    // travel the same distance: the plan is asked, exactly as the operation asks it (see OPleatPlan::Move).
-    return point + m_plan.Move(point);
+    // A pleat takes the run of the ordered selection between the two points of its departure line, so two objects
+    // do not travel the same distance: the object is asked, exactly as the operation asks it (see OPleatPlan::Move).
+    return point + m_plan.Move(id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -208,8 +208,8 @@ void OVisToolPleat::DrawDeparturePoints()
         // passes through (see OPleatPlan::Place).
         OPleatEnd one = m_departures.at(departure).first;
         OPleatEnd two = m_departures.at(departure).second;
-        one.position = m_plan.Place(one.position, departure, 0);
-        two.position = m_plan.Place(two.position, departure, 0);
+        one.position = m_plan.Place(one, departure, 0);
+        two.position = m_plan.Place(two, departure, 0);
 
         dot(m_firstDots, first++, VColorRole::VisSupportColor2, one, Light(departure));
         dot(m_secondDots, second++, VColorRole::VisSupportColor4, two, Light(departure));
@@ -306,9 +306,8 @@ void OVisToolPleat::DrawFigure()
 
         for (int rank = 0; rank <= place.pleats; ++rank)
         {
-            segment(m_plan.Place(line.first.position, departure, rank),
-                    m_plan.Place(line.second.position, departure, rank), VColorRole::VisSupportColor3, Qt::SolidLine,
-                    Light(departure));
+            segment(m_plan.Place(line.first, departure, rank), m_plan.Place(line.second, departure, rank),
+                    VColorRole::VisSupportColor3, Qt::SolidLine, Light(departure));
         }
     }
 
@@ -330,9 +329,10 @@ void OVisToolPleat::DrawFigure()
 
                 // The fold line of the pleat: its departure line, carried by the pleats taken before it and
                 // translated by half a step — its own step, along its own normal.
-                const QPointF shift = place.carry + place.step * rank + place.step / 2.;
-                segment(line.first.position + shift, line.second.position + shift, VColorRole::VisSupportColor3,
-                        Qt::DotLine, Light(departure));
+                const QPointF shift = place.step / 2.; // the fold line, half a step beyond the place it belongs to
+                segment(m_plan.Place(line.first, departure, rank) + shift,
+                        m_plan.Place(line.second, departure, rank) + shift, VColorRole::VisSupportColor3, Qt::DotLine,
+                        Light(departure));
             }
         }
     }
@@ -352,7 +352,7 @@ void OVisToolPleat::DrawFigure()
         const OPleatEnd &prise = (mark.end == 1) ? line.second : line.first;
 
         const int rank = mark.pleat - place.firstPleat;
-        const QPointF origin = m_plan.Place(prise.position, mark.departure, rank);
+        const QPointF origin = m_plan.Place(prise, mark.departure, rank);
         const QPointF copy = origin + place.step;
 
         segment(mark.point, origin, VColorRole::VisSupportColor3, Qt::SolidLine, Light(mark.departure));

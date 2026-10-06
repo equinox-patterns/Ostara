@@ -3241,6 +3241,31 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
                 }
             }
         }
+
+        // The figure of a pleat: the departure lines and the places the folds carried them to, the fold lines, the
+        // points the operation carries itself, and the two sides of every cap. An item with no attribute at all is
+        // a place the operation stands for by itself, and names nothing.
+        const QDomElement pleat = toolElement.firstChildElement(QStringLiteral("pleatDisplay"));
+        for (QDomElement item = pleat.firstChildElement(QStringLiteral("item")); !item.isNull();
+             item = item.nextSiblingElement(QStringLiteral("item")))
+        {
+            for (const QString &attribute : {QStringLiteral("copy"), QStringLiteral("point")})
+            {
+                if (const quint32 pointId = item.attribute(attribute).toUInt(); pointId != NULL_ID)
+                {
+                    objects.append({pointId, toolId});
+                }
+            }
+
+            for (const QString &attribute : {QStringLiteral("line"), QStringLiteral("foldLine"),
+                                             QStringLiteral("side1"), QStringLiteral("side2")})
+            {
+                if (const quint32 lineId = item.attribute(attribute).toUInt(); lineId != NULL_ID)
+                {
+                    objects.append({lineId, lineId});
+                }
+            }
+        }
     }
 
     return objects;

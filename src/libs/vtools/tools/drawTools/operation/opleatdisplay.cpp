@@ -146,14 +146,14 @@ auto EndpointKind(const OPleatPlan &plan, const QVector<OPleatDeparture> &depart
     -> OPleatEndpoint
 {
     const OPleatEnd prise = EndOf(departures, departure, end);
-    const QPointF place = plan.Place(prise.position, departure, line);
+    const QPointF place = plan.Place(prise, departure, line);
 
     if (VFuzzyComparePoints(place, prise.position, kPlaceTolerance))
     {
         return OPleatEndpoint::Prise; // the line as the user drew it: there is nothing to create
     }
 
-    if (VFuzzyComparePoints(place, prise.position + plan.Move(prise.position), kPlaceTolerance)
+    if (VFuzzyComparePoints(place, prise.position + plan.Move(prise.pointId), kPlaceTolerance)
         && OOperationLines::PointImage(prise.pointId, source, destination, {}) != NULL_ID)
     {
         // The place is where the operation carries that point: making a second point there would leave two of
@@ -398,7 +398,7 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
                 const QSharedPointer<VPointF> source = PointOf(prise.pointId, data);
                 const QPointF offset = source.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
                                                        : QPointF(source->mx(), source->my());
-                PlacePoint(copy.point, plan.Place(prise.position, departure, line), copy.name, offset, idTool, data);
+                PlacePoint(copy.point, plan.Place(prise, departure, line), copy.name, offset, idTool, data);
             }
         }
     }

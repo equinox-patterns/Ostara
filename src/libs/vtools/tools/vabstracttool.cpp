@@ -524,7 +524,9 @@ void VAbstractTool::AttachToActiveLayer()
         return;
     }
 
-    doc->AddItemsToGroup(VAbstractPattern::LayerableObjectsOfTool(element, m_id), active);
+    QVector<QPair<quint32, quint32>> objects = VAbstractPattern::LayerableObjectsOfTool(element, m_id);
+    objects += ExtraLayerableObjects(element);
+    doc->AddItemsToGroup(objects, active);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

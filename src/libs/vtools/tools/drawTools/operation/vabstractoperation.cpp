@@ -464,6 +464,29 @@ void VAbstractOperation::SetCopyStyle(quint32 objectId, const QString &penStyle,
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractOperation::ExtraLayerableObjects(const QDomElement &toolElement) const
+    -> QVector<QPair<quint32, quint32>>
+{
+    // The objects of the figure: the base asks the operation which element holds them (see DisplayObjectIds), and
+    // the pairs follow the contract a layer is written with — a point answers to the operation that owns it, a line
+    // to its own id.
+    QVector<QPair<quint32, quint32>> objects;
+
+    for (const quint32 id : DisplayObjectIds(toolElement))
+    {
+        if (id == NULL_ID || !getData()->HasObject(id))
+        {
+            continue;
+        }
+
+        const bool point = getData()->GetGObject(id)->getType() == GOType::Point;
+        objects.append(point ? qMakePair(id, m_id) : qMakePair(id, id));
+    }
+
+    return objects;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VAbstractOperation::GroupVisibility(quint32 object, bool visible)
 {
     if (!operatedObjects.contains(object))
@@ -1447,6 +1470,7 @@ void VAbstractOperation::HandleVisibilityGroupChange(QUndoCommand *parent)
             initData.doc = doc;
             initData.source = m_source;
             initData.lines = m_lines;
+            initData.keptInPlace = KeptInPlace(); // what the tool is built on stays out, whenever the layer is made
 
             VAbstractOperation::CreateVisibilityGroup(initData, parent);
         }

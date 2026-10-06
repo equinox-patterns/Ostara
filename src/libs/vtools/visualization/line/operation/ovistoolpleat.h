@@ -56,9 +56,10 @@ public:
 
     void RefreshGeometry() override;
 
-    /** @brief Where a point of the selection lands: a pleat takes the fabric that lies beyond each of its lines, so
-     *  two points do not travel the same distance, and the plan is what answers for one of them. */
-    auto PointImage(const QPointF &point) const -> QPointF override;
+    /** @brief Where an object of the selection lands: a pleat takes the run of the ordered selection that lies
+     *  between the two points of its line, so two objects do not travel the same distance, and the plan answers
+     *  for the object itself. */
+    auto PointImage(quint32 id, const QPointF &point) const -> QPointF override;
 
     /** @brief The departure lines of the pleats being built, the point of the line the user is picking, the boxes,
      *  and the line being edited, so the preview replays the very folds the tool will build — figure included.
